@@ -18,17 +18,20 @@ import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { setFlashMessage } from '../flash-message'
-import { html, plainText, sendHtml } from '../html'
 import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in'
 import { seeOther, serviceUnavailable } from '../middleware'
-import { type FathomEnv, type PhaseEnv, page } from '../page'
+import type { FathomEnv, PhaseEnv } from '../page'
 import { type PublicUrlEnv, toUrl } from '../public-url'
+import { handlePageResponse } from '../response'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../routes'
 import { isSlackUser } from '../slack-user'
 import { saveSlackUserId } from '../slack-user-id'
 import { NonEmptyStringC, ordNonEmptyString } from '../types/string'
 import { generateUuid } from '../types/uuid'
 import { type GetUserEnv, type User, getUser, maybeGetUser } from '../user'
+import { accessDeniedMessage } from './access-denied-message'
+import { connectSlackPage } from './connect-slack-page'
+import { failureMessage } from './failure-message'
 
 export interface SlackOAuthEnv {
   slackOauth: Omit<OAuthEnv['oauth'], 'redirectUri'>
@@ -227,91 +230,21 @@ export const connectSlackError = (error: string) =>
     .otherwise(() => showFailureMessage)
 
 const showConnectSlackPage = flow(
-  RM.fromReaderK(connectSlackPage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareKW(sendHtml),
+  ({ user }: { user: User }) => RM.of({ user }),
+  RM.apS('response', RM.of(connectSlackPage)),
+  RM.ichainW(handlePageResponse),
 )
 
 const showAccessDeniedMessage = pipe(
-  maybeGetUser,
-  RM.chainReaderKW(accessDeniedMessage),
-  RM.ichainFirst(() => RM.status(Status.Forbidden)),
-  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
-  RM.ichainFirst(() => RM.clearCookie('slack-state', { httpOnly: true })),
-  RM.ichainMiddlewareKW(sendHtml),
+  RM.of({}),
+  RM.apS('user', maybeGetUser),
+  RM.apS('response', RM.of(accessDeniedMessage)),
+  RM.ichainW(handlePageResponse),
 )
 
 const showFailureMessage = pipe(
-  maybeGetUser,
-  RM.chainReaderKW(failureMessage),
-  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
-  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
-  RM.ichainFirst(() => RM.clearCookie('slack-state', { httpOnly: true })),
-  RM.ichainMiddlewareK(sendHtml),
+  RM.of({}),
+  RM.apS('user', maybeGetUser),
+  RM.apS('response', RM.of(failureMessage)),
+  RM.ichainW(handlePageResponse),
 )
-
-function connectSlackPage({ user }: { user: User }) {
-  return page({
-    title: plainText`Connect your Community Slack Account`,
-    content: html`
-      <main id="main-content">
-        <h1>Connect your Community Slack Account</h1>
-
-        <p>You can connect your PREreview profile to your account on the PREreview Community Slack.</p>
-
-        <p>We’ll show your ORCID iD on your Slack profile.</p>
-
-        <h2>Before you start</h2>
-
-        <p>
-          You need to have an account on the PREreview Community Slack. If you don’t, fill out the
-          <a href="https://bit.ly/PREreview-Slack">registration form</a> to create one.
-        </p>
-
-        <p>
-          We’ll send you to Slack, where they will ask you to log in to the PREreview Community Slack and grant
-          PREreview access to your account there. You may have already done these steps, and Slack will return you to
-          PREreview.
-        </p>
-
-        <a href="${format(connectSlackStartMatch.formatter, {})}" role="button" draggable="false">Start now</a>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
-}
-
-function accessDeniedMessage(user?: User) {
-  return page({
-    title: plainText`Sorry, we can’t connect your account`,
-    content: html`
-      <main id="main-content">
-        <h1>Sorry, we can’t connect your account</h1>
-
-        <p>You have denied PREreview access to your Community Slack account.</p>
-
-        <p>Please try again.</p>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
-}
-
-function failureMessage(user?: User) {
-  return page({
-    title: plainText`Sorry, we’re having problems`,
-    content: html`
-      <main id="main-content">
-        <h1>Sorry, we’re having problems</h1>
-
-        <p>We’re unable to connect your account right now.</p>
-
-        <p>Please try again later.</p>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
-}

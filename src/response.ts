@@ -1,5 +1,7 @@
+import cookie from 'cookie'
 import * as R from 'fp-ts/Reader'
 import * as RA from 'fp-ts/ReadonlyArray'
+import * as RR from 'fp-ts/ReadonlyRecord'
 import { pipe } from 'fp-ts/function'
 import { type HeadersOpen, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
@@ -204,6 +206,7 @@ export const handlePageResponse = ({
           ),
     ),
     RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
+    RM.ichainFirst(() => RM.fromMiddleware(deleteSlackState)),
     RM.ichainFirst(() =>
       RM.fromMiddleware(
         match(response.canonical)
@@ -407,6 +410,13 @@ function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R
     },
   })
 }
+
+const deleteSlackState = pipe(
+  M.decodeHeader<HeadersOpen, unknown, string>('Cookie', D.string.decode),
+  M.orElse(() => M.right('')),
+  M.map(header => RR.has('slack-state', cookie.parse(header))),
+  M.chain(hasCookie => (hasCookie ? M.clearCookie('slack-state', { httpOnly: true }) : M.right(undefined))),
+)
 
 // https://github.com/Microsoft/TypeScript/issues/25760#issuecomment-614417742
 type Optional<T, K extends keyof T> = Omit<T, K> & Partial<T>

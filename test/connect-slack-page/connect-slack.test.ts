@@ -9,24 +9,32 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import * as _ from '../../src/connect-slack-page'
+import { rawHtml } from '../../src/html'
+import type { TemplatePageEnv } from '../../src/page'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../src/routes'
 import type { EditSlackUserIdEnv } from '../../src/slack-user-id'
 import type { GenerateUuidEnv } from '../../src/types/uuid'
+import type { GetUserOnboardingEnv } from '../../src/user-onboarding'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('connectSlack', () => {
   describe('when the user is logged in', () => {
-    test.prop([fc.oauth(), fc.user(), fc.connection()])(
+    test.prop([fc.oauth(), fc.user(), fc.connection(), fc.userOnboarding(), fc.html()])(
       'when the Slack is not already connected',
-      async (orcidOauth, user, connection) => {
+      async (orcidOauth, user, connection, userOnboarding, page) => {
+        const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
+        const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
         const actual = await runMiddleware(
           _.connectSlack({
             isSlackUser: () => TE.right(false),
             getUser: () => M.of(user),
+            getUserOnboarding,
             orcidOauth,
             publicUrl: new URL('http://example.com'),
+            templatePage,
           }),
           connection,
         )()
@@ -34,10 +42,22 @@ describe('connectSlack', () => {
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.OK },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, private' },
+            { type: 'setHeader', name: 'Vary', value: 'Cookie' },
             { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
+            { type: 'setBody', body: page.toString() },
           ]),
         )
+
+        expect(getUserOnboarding).toHaveBeenCalledWith(user.orcid)
+        expect(templatePage).toHaveBeenCalledWith({
+          title: expect.stringContaining('Connect'),
+          content: expect.stringContaining('Connect'),
+          skipLinks: [[rawHtml('Skip to main content'), '#main']],
+          js: [],
+          user,
+          userOnboarding,
+        })
       },
     )
 
@@ -48,8 +68,10 @@ describe('connectSlack', () => {
           _.connectSlack({
             isSlackUser: () => TE.right(true),
             getUser: () => M.of(user),
+            getUserOnboarding: shouldNotBeCalled,
             orcidOauth,
             publicUrl: new URL('http://example.com'),
+            templatePage: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -75,8 +97,10 @@ describe('connectSlack', () => {
           _.connectSlack({
             isSlackUser: () => TE.left('unavailable'),
             getUser: () => M.of(user),
+            getUserOnboarding: shouldNotBeCalled,
             orcidOauth,
             publicUrl: new URL('http://example.com'),
+            templatePage: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -100,8 +124,10 @@ describe('connectSlack', () => {
         _.connectSlack({
           isSlackUser: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
+          getUserOnboarding: shouldNotBeCalled,
           orcidOauth,
           publicUrl,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -270,9 +296,11 @@ describe('connectSlackCode', () => {
             },
           ),
           getUser: () => M.of(user),
+          getUserOnboarding: shouldNotBeCalled,
           publicUrl,
           saveSlackUserId,
           slackOauth: oauth,
+          templatePage: shouldNotBeCalled,
           unsignValue,
         }),
         connection,
@@ -295,14 +323,18 @@ describe('connectSlackCode', () => {
   test.prop([
     fc.string(),
     fc.user(),
+    fc.userOnboarding(),
     fc.oauth(),
     fc.origin(),
     fc.string(),
     fc.string(),
     fc.lorem().chain(state => fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
+    fc.html(),
   ])(
     'when the access token cannot be decoded',
-    async (code, user, oauth, publicUrl, accessToken, state, connection) => {
+    async (code, user, userOnboarding, oauth, publicUrl, accessToken, state, connection, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const slackUserIdStore = new Keyv()
       const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
         status: Status.OK,
@@ -316,9 +348,11 @@ describe('connectSlackCode', () => {
         )({
           fetch,
           getUser: () => M.of(user),
+          getUserOnboarding: () => TE.right(userOnboarding),
           publicUrl,
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
+          templatePage,
           unsignValue: () => O.some(state),
         }),
         connection,
@@ -330,9 +364,17 @@ describe('connectSlackCode', () => {
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('Sorry'),
+        content: expect.stringContaining('problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main']],
+        js: [],
+        user,
+        userOnboarding,
+      })
       expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
       expect(fetch.done()).toBeTruthy()
     },
@@ -341,6 +383,7 @@ describe('connectSlackCode', () => {
   test.prop([
     fc.string(),
     fc.user(),
+    fc.userOnboarding(),
     fc.oauth(),
     fc.origin(),
     fc.string(),
@@ -348,70 +391,103 @@ describe('connectSlackCode', () => {
     fc.connection({
       headers: fc.record({ Cookie: fc.lorem() }, { withDeletedKeys: true }),
     }),
-  ])("when the state doesn't match", async (code, user, oauth, publicUrl, state, unsignedState, connection) => {
-    const actual = await runMiddleware(
-      _.connectSlackCode(
-        code,
-        state,
-      )({
-        fetch: shouldNotBeCalled,
-        getUser: () => M.of(user),
-        publicUrl,
-        saveSlackUserId: shouldNotBeCalled,
-        slackOauth: oauth,
-        unsignValue: () => O.some(unsignedState),
-      }),
-      connection,
-    )()
+    fc.html(),
+  ])(
+    "when the state doesn't match",
+    async (code, user, userOnboarding, oauth, publicUrl, state, unsignedState, connection, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      const actual = await runMiddleware(
+        _.connectSlackCode(
+          code,
+          state,
+        )({
+          fetch: shouldNotBeCalled,
+          getUser: () => M.of(user),
+          getUserOnboarding: () => TE.right(userOnboarding),
+          publicUrl,
+          saveSlackUserId: shouldNotBeCalled,
+          slackOauth: oauth,
+          templatePage,
+          unsignValue: () => O.some(unsignedState),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: page.toString() },
+        ]),
+      )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('Sorry'),
+        content: expect.stringContaining('problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main']],
+        js: [],
+        user,
+        userOnboarding,
+      })
+    },
+  )
 
   test.prop([
     fc.string(),
     fc.user(),
+    fc.userOnboarding(),
     fc.oauth(),
     fc.origin(),
     fc.string(),
     fc.lorem().chain(state => fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
-  ])("when the state can't be unsigned", async (code, user, oauth, publicUrl, state, connection) => {
-    const actual = await runMiddleware(
-      _.connectSlackCode(
-        code,
-        state,
-      )({
-        fetch: shouldNotBeCalled,
-        getUser: () => M.of(user),
-        publicUrl,
-        saveSlackUserId: shouldNotBeCalled,
-        slackOauth: oauth,
-        unsignValue: () => O.none,
-      }),
-      connection,
-    )()
+    fc.html(),
+  ])(
+    "when the state can't be unsigned",
+    async (code, user, userOnboarding, oauth, publicUrl, state, connection, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      const actual = await runMiddleware(
+        _.connectSlackCode(
+          code,
+          state,
+        )({
+          fetch: shouldNotBeCalled,
+          getUser: () => M.of(user),
+          getUserOnboarding: () => TE.right(userOnboarding),
+          publicUrl,
+          saveSlackUserId: shouldNotBeCalled,
+          slackOauth: oauth,
+          templatePage,
+          unsignValue: () => O.none,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: page.toString() },
+        ]),
+      )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('Sorry'),
+        content: expect.stringContaining('problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main']],
+        js: [],
+        user,
+        userOnboarding,
+      })
+    },
+  )
 
   test.prop([
     fc.string(),
     fc.user(),
+    fc.userOnboarding(),
     fc.oauth(),
     fc.origin(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
@@ -420,9 +496,12 @@ describe('connectSlackCode', () => {
       .chain(state =>
         fc.tuple(fc.constant(state), fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
       ),
+    fc.html(),
   ])(
     'when the response has a non-200/404 status code',
-    async (code, user, oauth, publicUrl, accessToken, [state, connection]) => {
+    async (code, user, userOnboarding, oauth, publicUrl, accessToken, [state, connection], page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const slackUserIdStore = new Keyv()
       const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
         status: Status.OK,
@@ -436,9 +515,11 @@ describe('connectSlackCode', () => {
         )({
           fetch,
           getUser: () => M.of(user),
+          getUserOnboarding: () => TE.right(userOnboarding),
           publicUrl,
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
+          templatePage,
           unsignValue: () => O.some(state),
         }),
         connection,
@@ -450,9 +531,17 @@ describe('connectSlackCode', () => {
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('Sorry'),
+        content: expect.stringContaining('problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main']],
+        js: [],
+        user,
+        userOnboarding,
+      })
       expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
       expect(fetch.done()).toBeTruthy()
     },
@@ -461,68 +550,34 @@ describe('connectSlackCode', () => {
   test.prop([
     fc.string(),
     fc.user(),
+    fc.userOnboarding(),
     fc.oauth(),
     fc.origin(),
     fc.error(),
     fc.string(),
     fc.lorem().chain(state => fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
-  ])('when fetch throws an error', async (code, user, oauth, publicUrl, error, state, connection) => {
-    const slackUserIdStore = new Keyv()
+    fc.html(),
+  ])(
+    'when fetch throws an error',
+    async (code, user, userOnboarding, oauth, publicUrl, error, state, connection, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-    const actual = await runMiddleware(
-      _.connectSlackCode(
-        code,
-        state,
-      )({
-        fetch: () => Promise.reject(error),
-        getUser: () => M.of(user),
-        publicUrl,
-        saveSlackUserId: shouldNotBeCalled,
-        slackOauth: oauth,
-        unsignValue: () => O.some(state),
-      }),
-      connection,
-    )()
+      const slackUserIdStore = new Keyv()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-    expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
-  })
-})
-
-describe('connectSlackError', () => {
-  test.prop([fc.either(fc.oneof(fc.error(), fc.constant('no-session')), fc.user()), fc.connection()])(
-    'with an access_denied error',
-    async (user, connection) => {
       const actual = await runMiddleware(
-        _.connectSlackError('access_denied')({ getUser: () => M.fromEither(user) }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Forbidden },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
-
-  test.prop([fc.either(fc.oneof(fc.error(), fc.constant('no-session')), fc.user()), fc.string(), fc.connection()])(
-    'with an unknown error',
-    async (user, error, connection) => {
-      const actual = await runMiddleware(
-        _.connectSlackError(error)({ getUser: () => M.fromEither(user) }),
+        _.connectSlackCode(
+          code,
+          state,
+        )({
+          fetch: () => Promise.reject(error),
+          getUser: () => M.of(user),
+          getUserOnboarding: () => TE.right(userOnboarding),
+          publicUrl,
+          saveSlackUserId: shouldNotBeCalled,
+          slackOauth: oauth,
+          templatePage,
+          unsignValue: () => O.some(state),
+        }),
         connection,
       )()
 
@@ -532,9 +587,91 @@ describe('connectSlackError', () => {
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('Sorry'),
+        content: expect.stringContaining('problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main']],
+        js: [],
+        user,
+        userOnboarding,
+      })
+      expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
     },
   )
+})
+
+describe('connectSlackError', () => {
+  test.prop([
+    fc.either(fc.oneof(fc.error(), fc.constant('no-session')), fc.user()),
+    fc.userOnboarding(),
+    fc.connection(),
+    fc.html(),
+  ])('with an access_denied error', async (user, userOnboarding, connection, page) => {
+    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
+    const actual = await runMiddleware(
+      _.connectSlackError('access_denied')({
+        getUser: () => M.fromEither(user),
+        getUserOnboarding: () => TE.right(userOnboarding),
+        templatePage,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.Forbidden },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: page.toString() },
+      ]),
+    )
+    expect(templatePage).toHaveBeenCalledWith({
+      title: expect.stringContaining('Sorry'),
+      content: expect.stringContaining('connect'),
+      skipLinks: [[rawHtml('Skip to main content'), '#main']],
+      js: [],
+      user: E.isRight(user) ? user.right : undefined,
+      userOnboarding: E.isRight(user) ? userOnboarding : undefined,
+    })
+  })
+
+  test.prop([
+    fc.either(fc.oneof(fc.error(), fc.constant('no-session')), fc.user()),
+    fc.userOnboarding(),
+    fc.string(),
+    fc.connection(),
+    fc.html(),
+  ])('with an unknown error', async (user, userOnboarding, error, connection, page) => {
+    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
+    const actual = await runMiddleware(
+      _.connectSlackError(error)({
+        getUser: () => M.fromEither(user),
+        getUserOnboarding: () => TE.right(userOnboarding),
+        templatePage,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: page.toString() },
+      ]),
+    )
+    expect(templatePage).toHaveBeenCalledWith({
+      title: expect.stringContaining('Sorry'),
+      content: expect.stringContaining('problems'),
+      skipLinks: [[rawHtml('Skip to main content'), '#main']],
+      js: [],
+      user: E.isRight(user) ? user.right : undefined,
+      userOnboarding: E.isRight(user) ? userOnboarding : undefined,
+    })
+  })
 })
