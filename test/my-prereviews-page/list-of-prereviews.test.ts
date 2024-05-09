@@ -12,6 +12,7 @@ test.prop([fc.nonEmptyArray(fc.prereview()), fc.user()])('toResponse', (prerevie
   expect(actual).toStrictEqual({
     _tag: 'PageResponse',
     canonical: format(myPrereviewsMatch.formatter, {}),
+    current: 'my-prereviews',
     status: Status.OK,
     title: expect.stringContaining('My PREreviews'),
     main: expect.stringContaining('My PREreviews'),

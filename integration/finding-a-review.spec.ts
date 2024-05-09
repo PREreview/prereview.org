@@ -5,6 +5,8 @@ import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ fetch, page }) => {
+  await page.goto('/')
+
   fetch.get(
     {
       name: 'profile-prereviews',
@@ -109,9 +111,10 @@ test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ 
     },
   )
 
-  await page.goto('/my-prereviews')
+  await page.getByRole('link', { name: 'My PREreviews' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('My PREreviews')
+  await expect(page.getByRole('link', { name: 'My PREreviews' })).toHaveAttribute('aria-current', 'page')
 
   fetch
     .getOnce('http://zenodo.test/api/records/7747129', {

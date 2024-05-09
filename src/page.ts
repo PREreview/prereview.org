@@ -19,6 +19,7 @@ import {
   logInMatch,
   logOutMatch,
   myDetailsMatch,
+  myPrereviewsMatch,
   partnersMatch,
   peopleMatch,
   privacyPolicyMatch,
@@ -57,6 +58,7 @@ export interface Page {
     | 'how-to-use'
     | 'live-reviews'
     | 'my-details'
+    | 'my-prereviews'
     | 'partners'
     | 'people'
     | 'privacy-policy'
@@ -179,21 +181,28 @@ export function page({
                           : ''}
                         ${user && type !== 'streamline'
                           ? html` <li>
-                              <a
-                                href="${format(myDetailsMatch.formatter, {})}"
-                                ${current === 'my-details' ? html`aria-current="page"` : ''}
-                                >My
-                                details${match(userOnboarding)
-                                  .with(
-                                    { seenMyDetailsPage: false },
-                                    () =>
-                                      html` <span role="status"
-                                        ><span class="visually-hidden">New notification</span></span
-                                      >`,
-                                  )
-                                  .otherwise(() => '')}</a
-                              >
-                            </li>`
+                                <a
+                                  href="${format(myDetailsMatch.formatter, {})}"
+                                  ${current === 'my-details' ? html`aria-current="page"` : ''}
+                                  >My
+                                  details${match(userOnboarding)
+                                    .with(
+                                      { seenMyDetailsPage: false },
+                                      () =>
+                                        html` <span role="status"
+                                          ><span class="visually-hidden">New notification</span></span
+                                        >`,
+                                    )
+                                    .otherwise(() => '')}</a
+                                >
+                              </li>
+                              <li>
+                                <a
+                                  href="${format(myPrereviewsMatch.formatter, {})}"
+                                  ${current === 'my-prereviews' ? html`aria-current="page"` : ''}
+                                  >My PREreviews</a
+                                >
+                              </li>`
                           : ''}
                         ${user ? html` <li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
                         ${!user && current === 'home'

@@ -101,6 +101,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
       </ol>
     `,
     canonical: format(myPrereviewsMatch.formatter, {}),
+    current: 'my-prereviews',
   })
 
 function formatList(

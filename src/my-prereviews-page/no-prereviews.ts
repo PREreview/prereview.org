@@ -34,4 +34,5 @@ export const toResponse: (NoPrereviews: NoPrereviews) => PageResponse = () =>
       <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
     `,
     canonical: format(myPrereviewsMatch.formatter, {}),
+    current: 'my-prereviews',
   })
