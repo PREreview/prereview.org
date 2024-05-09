@@ -108,6 +108,7 @@ import {
   removeAvatar,
   verifyContactEmailAddress,
 } from './my-details-page'
+import { myPrereviews } from './my-prereviews-page'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid'
 import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page'
 import { partners } from './partners'
@@ -181,6 +182,7 @@ import {
   logInMatch,
   logOutMatch,
   myDetailsMatch,
+  myPrereviewsMatch,
   orcidCodeMatch,
   orcidErrorMatch,
   partnersMatch,
@@ -819,6 +821,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getPrereview: withEnv(getPrereviewFromZenodo, env),
         })),
+      ),
+    ),
+    pipe(
+      myPrereviewsMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apS('response', RM.of(myPrereviews)),
+          RM.ichainW(handleResponse),
+        ),
       ),
     ),
     pipe(

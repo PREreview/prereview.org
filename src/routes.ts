@@ -190,6 +190,8 @@ export const connectSlackErrorMatch = pipe(
 
 export const disconnectSlackMatch = pipe(P.lit('disconnect-slack'), P.then(P.end))
 
+export const myPrereviewsMatch = pipe(P.lit('my-prereviews'), P.then(P.end))
+
 export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
 
 export const changeAvatarMatch = pipe(P.lit('my-details'), P.then(P.lit('change-avatar')), P.then(P.end))
