@@ -10,7 +10,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ 
       name: 'profile-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-2695-5951 metadata.creators.person_or_org.name:"Orange Panda"',
+        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097 metadata.creators.person_or_org.name:"Orange Panda"',
         size: 100,
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
@@ -120,7 +120,7 @@ test.extend(canLogIn).extend(areLoggedIn)('might not load my PREreviews in time'
       name: 'profile-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-2695-5951 metadata.creators.person_or_org.name:"Orange Panda"',
+        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097 metadata.creators.person_or_org.name:"Orange Panda"',
         size: 100,
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
