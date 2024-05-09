@@ -1,6 +1,7 @@
 import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { identity, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
+import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import type { Response } from '../response'
 import type { User } from '../user'
@@ -12,9 +13,12 @@ import * as UnableToLoadPrereviews from './unable-to-load-prereviews'
 
 export const myPrereviews = ({ user }: { user?: User }): RT.ReaderTask<Prereviews.GetMyPrereviewsEnv, Response> =>
   pipe(
-    RTE.fromEither(RequireLogIn.ensureUserIsLoggedIn(user)),
-    RTE.chainW(Prereviews.getMyPrereviews),
-    RTE.chainEitherKW(NoPrereviews.ensureThereArePrereviews),
+    RTE.Do,
+    RTE.apS('user', RTE.fromEither(RequireLogIn.ensureUserIsLoggedIn(user))),
+    RTE.bindW(
+      'prereviews',
+      flow(get('user'), Prereviews.getMyPrereviews, RTE.chainEitherKW(NoPrereviews.ensureThereArePrereviews)),
+    ),
     RTE.matchW(identity, ListOfPrereviews.ListOfPrereviews),
     RT.map(result =>
       match(result)

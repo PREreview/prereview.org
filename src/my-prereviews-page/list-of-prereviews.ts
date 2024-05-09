@@ -17,9 +17,9 @@ export interface ListOfPrereviews {
   readonly prereviews: ReadonlyNonEmptyArray<Prereview>
 }
 
-export const ListOfPrereviews = (prereviews: ReadonlyNonEmptyArray<Prereview>): ListOfPrereviews => ({
+export const ListOfPrereviews = (args: Omit<ListOfPrereviews, '_tag'>): ListOfPrereviews => ({
   _tag: 'ListOfPrereviews',
-  prereviews,
+  ...args,
 })
 
 export const toResponse = ({ prereviews }: ListOfPrereviews) =>

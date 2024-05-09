@@ -7,7 +7,9 @@ import { expect, test } from '../base'
 import PlainDate = Temporal.PlainDate
 
 test('content looks right', async ({ showPage }) => {
-  const response = _.toResponse(_.ListOfPrereviews([prereview1, prereview2, prereview3, prereview4, prereview5]))
+  const response = _.toResponse(
+    _.ListOfPrereviews({ prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5] }),
+  )
 
   const content = await showPage(response)
 
