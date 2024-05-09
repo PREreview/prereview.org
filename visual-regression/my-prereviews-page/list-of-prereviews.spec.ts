@@ -1,14 +1,23 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
+import type { Orcid } from 'orcid-id-ts'
 import { rawHtml } from '../../src/html'
 import * as _ from '../../src/my-prereviews-page/list-of-prereviews'
+import type { Pseudonym } from '../../src/types/pseudonym'
 import { expect, test } from '../base'
 
 import PlainDate = Temporal.PlainDate
 
 test('content looks right', async ({ showPage }) => {
   const response = _.toResponse(
-    _.ListOfPrereviews({ prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5] }),
+    _.ListOfPrereviews({
+      prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
+      user: {
+        name: 'Josiah Carberry',
+        orcid: '0000-0002-1825-0097' as Orcid,
+        pseudonym: 'Orange Panda' as Pseudonym,
+      },
+    }),
   )
 
   const content = await showPage(response)

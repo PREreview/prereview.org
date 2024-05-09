@@ -6,8 +6,8 @@ import * as _ from '../../src/my-prereviews-page/list-of-prereviews'
 import { myPrereviewsMatch } from '../../src/routes'
 import * as fc from './fc'
 
-test.prop([fc.nonEmptyArray(fc.prereview())])('toResponse', prereviews => {
-  const actual = _.toResponse(_.ListOfPrereviews({ prereviews }))
+test.prop([fc.nonEmptyArray(fc.prereview()), fc.user()])('toResponse', (prereviews, user) => {
+  const actual = _.toResponse(_.ListOfPrereviews({ prereviews, user }))
 
   expect(actual).toStrictEqual({
     _tag: 'PageResponse',
