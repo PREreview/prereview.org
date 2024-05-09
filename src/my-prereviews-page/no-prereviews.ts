@@ -25,15 +25,11 @@ export const toResponse: (NoPrereviews: NoPrereviews) => PageResponse = () =>
     main: html`
       <h1>My PREreviews</h1>
 
-      <h2>PREreviews</h2>
-
       <div class="inset">
         <p>You haven’t published a PREreview yet.</p>
 
         <p>When you do, it’ll appear here.</p>
       </div>
-
-      ), )}
     `,
     canonical: format(myPrereviewsMatch.formatter, {}),
   })
