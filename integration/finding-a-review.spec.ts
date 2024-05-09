@@ -2,7 +2,15 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
-import { expect, prereviewWasRemoved, test } from './base'
+import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base'
+
+test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ page }, testInfo) => {
+  await page.goto('/my-prereviews')
+
+  testInfo.fail()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('My PREreviews')
+})
 
 test('can find and view a review', async ({ fetch, page }) => {
   const record: Record = {

@@ -829,7 +829,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apS('response', RM.of(myPrereviews)),
+          RM.bindW('response', flow(myPrereviews, RM.of)),
           RM.ichainW(handleResponse),
         ),
       ),
