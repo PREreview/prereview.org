@@ -258,6 +258,38 @@ export const getPrereviewsForProfileFromZenodo = flow(
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
+export const getPrereviewsForUserFromZenodo = flow(
+  (user: User) =>
+    new URLSearchParams({
+      q: `metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}"`,
+      size: '100',
+      sort: 'publication-desc',
+      resource_type: 'publication::publication-peerreview',
+    }),
+  getCommunityRecords('prereview-reviews'),
+  RTE.local(revalidateIfStale()),
+  RTE.local(useStaleCache()),
+  RTE.local(timeoutRequest(2000)),
+  RTE.chainReaderTaskKW(
+    flow(records => records.hits.hits, RT.traverseArray(recordToRecentPrereview), RT.map(RA.rights)),
+  ),
+  RTE.orElseFirstW(
+    RTE.fromReaderIOK(
+      flow(
+        error => ({
+          error: match(error)
+            .with(P.instanceOf(Error), error => error.message)
+            .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+            .with({ _tag: P.string }, D.draw)
+            .exhaustive(),
+        }),
+        L.errorP('Unable to get records for user from Zenodo'),
+      ),
+    ),
+  ),
+  RTE.mapLeft(() => 'unavailable' as const),
+)
+
 export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
   pipe(
     new URLSearchParams({

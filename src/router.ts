@@ -9,7 +9,6 @@ import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as T from 'fp-ts/Task'
-import * as TE from 'fp-ts/TaskEither'
 import { constVoid, constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
@@ -286,6 +285,7 @@ import {
   getPrereviewsForPreprintFromZenodo,
   getPrereviewsForProfileFromZenodo,
   getPrereviewsForSciety,
+  getPrereviewsForUserFromZenodo,
   getRecentPrereviewsFromZenodo,
   refreshPrereview,
 } from './zenodo'
@@ -837,7 +837,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getMyPrereviews: () => TE.left('unavailable' as const),
+          getMyPrereviews: withEnv(getPrereviewsForUserFromZenodo, env),
         })),
       ),
     ),
