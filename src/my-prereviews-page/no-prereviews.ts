@@ -4,7 +4,7 @@ import * as RA from 'fp-ts/ReadonlyArray'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import { html, plainText } from '../html'
 import { PageResponse } from '../response'
-import { myPrereviewsMatch } from '../routes'
+import { myPrereviewsMatch, reviewAPreprintMatch } from '../routes'
 import type { Prereview } from './prereviews'
 
 export interface NoPrereviews {
@@ -30,6 +30,8 @@ export const toResponse: (NoPrereviews: NoPrereviews) => PageResponse = () =>
 
         <p>When you do, it’ll appear here.</p>
       </div>
+
+      <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
     `,
     canonical: format(myPrereviewsMatch.formatter, {}),
   })
