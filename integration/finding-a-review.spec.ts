@@ -12,7 +12,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('My PREreviews')
 })
 
-test('might not load my PREreviews', async ({ page }) => {
+test.extend(canLogIn).extend(areLoggedIn)('might not load my PREreviews', async ({ page }) => {
   await page.goto('/my-prereviews')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
