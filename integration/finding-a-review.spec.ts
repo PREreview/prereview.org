@@ -12,6 +12,12 @@ test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('My PREreviews')
 })
 
+test('might not load my PREreviews', async ({ page }) => {
+  await page.goto('/my-prereviews')
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+})
+
 test('can find and view a review', async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
