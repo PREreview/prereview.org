@@ -10,9 +10,8 @@ import * as UnableToLoadPrereviews from './unable-to-load-prereviews'
 
 export const myPrereviews = ({ user }: { user?: User }): RT.ReaderTask<Prereviews.GetMyPrereviewsEnv, Response> =>
   pipe(
-    RTE.Do,
-    RTE.apS('user', RTE.fromEither(RequireLogIn.ensureUserIsLoggedIn(user))),
-    RTE.bindW('prereviews', ({ user }) => Prereviews.getMyPrereviews(user)),
+    RTE.fromEither(RequireLogIn.ensureUserIsLoggedIn(user)),
+    RTE.chainW(Prereviews.getMyPrereviews),
     RTE.matchW(identity, () => UnableToLoadPrereviews.UnableToLoadPrereviews),
     RT.map(result =>
       match(result)
