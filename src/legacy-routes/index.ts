@@ -243,6 +243,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(RM.fromMiddlewareK(() => movedPermanently(format(ediaStatementMatch.formatter, {})))),
     ),
     pipe(
+      pipe(P.lit('edia'), P.then(P.end)).parser,
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(ediaStatementMatch.formatter, {})))),
+    ),
+    pipe(
       pipe(P.lit('events'), P.then(type('eventUuid', UuidC)), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
     ),
@@ -374,6 +378,14 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('validate'), P.then(type('preprintUuid', UuidC)), P.then(P.end)).parser,
       P.map(({ preprintUuid }) => redirectToPreprintReviews(preprintUuid)),
+    ),
+    pipe(
+      pipe(P.lit(')'), P.then(P.end)).parser,
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
+    ),
+    pipe(
+      pipe(P.lit('),'), P.then(P.end)).parser,
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
     ),
   ],
   concatAll(P.getParserMonoid()),
