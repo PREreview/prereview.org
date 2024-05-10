@@ -2131,6 +2131,14 @@ skip-link {
     inline-size: fit-content;
     margin-inline: auto;
     padding: var(--space-2xs);
+
+    &.box {
+      background-color: var(--color-background);
+
+      @media (forced-colors: active) {
+        forced-color-adjust: none;
+      }
+    }
   }
 
   & img {

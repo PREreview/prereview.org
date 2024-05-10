@@ -11,6 +11,11 @@ export const partners = PageResponse({
 
     <ol class="logos">
       <li>
+        <a href="https://africanrn.org/" class="box">
+          <img src="${assets['aren.png']}" width="600" height="199" alt="African Reproducibility Network" />
+        </a>
+      </li>
+      <li>
         <a href="https://info.africarxiv.org/">
           <img src="${assets['africarxiv.svg']}" width="518" height="551" alt="AfricArXiv" />
         </a>
