@@ -360,11 +360,11 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
 const getRapidPrereviews = (id: PreprintId) =>
   isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
 
-const triggerRefreshOfPrereview = (id: number) =>
+const triggerRefreshOfPrereview = (id: number, user: User) =>
   RIO.asks((env: Parameters<ReturnType<typeof refreshPrereview>>[0]) => {
     void pipe(
       RTE.fromTask(T.delay(2000)(T.of(undefined))),
-      RTE.chainW(() => refreshPrereview(id)),
+      RTE.chainW(() => refreshPrereview(id, user)),
     )(env)().catch(constVoid)
   })
 
@@ -398,13 +398,13 @@ const publishPrereview = (newPrereview: NewPrereview) =>
         ),
       ),
     ),
-    RTE.chainFirstReaderIOKW(([, review]) => triggerRefreshOfPrereview(review)),
+    RTE.chainFirstReaderIOKW(([, review]) => triggerRefreshOfPrereview(review, newPrereview.user)),
   )
 
 const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseudonym') =>
   pipe(
     addAuthorToRecordOnZenodo(id, user, persona),
-    RTE.chainFirstReaderIOKW(() => triggerRefreshOfPrereview(id)),
+    RTE.chainFirstReaderIOKW(() => triggerRefreshOfPrereview(id, user)),
   )
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(

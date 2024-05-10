@@ -356,11 +356,13 @@ export const getPrereviewsForPreprintFromZenodo = flow(
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
-export const refreshPrereview = flow(
-  getPrereviewFromZenodo,
-  RTE.chainFirstW(review => getPrereviewsForPreprintFromZenodo(review.preprint.id)),
-  RTE.local(reloadCache()),
-)
+export const refreshPrereview = (id: number, user: User) =>
+  pipe(
+    getPrereviewFromZenodo(id),
+    RTE.chainFirstW(review => getPrereviewsForPreprintFromZenodo(review.preprint.id)),
+    RTE.chainFirstW(() => getPrereviewsForUserFromZenodo(user)),
+    RTE.local(reloadCache()),
+  )
 
 export const addAuthorToRecordOnZenodo = (
   id: number,
