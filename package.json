@@ -60,7 +60,7 @@
     "zenodo-ts": "^0.1.20"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.24.4",
+    "@babel/preset-env": "^7.24.5",
     "@babel/preset-typescript": "^7.24.1",
     "@csstools/postcss-global-data": "^2.1.1",
     "@csstools/stylelint-no-at-nest-rule": "^1.0.0",
