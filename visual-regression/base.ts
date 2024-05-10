@@ -2,13 +2,16 @@ import { type Locator, test as baseTest } from '@playwright/test'
 import path from 'path'
 import { P, match } from 'ts-pattern'
 import { html } from '../src/html'
-import { page as templatePage } from '../src/page'
+import { type Page, page as templatePage } from '../src/page'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../src/response'
 
 export { expect } from '@playwright/test'
 
 interface ShowPage {
-  showPage(response: PageResponse | StreamlinePageResponse): Promise<Locator>
+  showPage(
+    response: PageResponse | StreamlinePageResponse,
+    extra?: Pick<Page, 'skipLinks' | 'user' | 'userOnboarding'>,
+  ): Promise<Locator>
 
   showTwoUpPage(response: TwoUpPageResponse): Promise<[Locator, Locator]>
 }
@@ -33,7 +36,7 @@ export const test = baseTest.extend<ShowPage>({
     await use(page)
   },
   showPage: async ({ page }, use) => {
-    await use(async function showPage(response) {
+    await use(async function showPage(response, extra = {}) {
       const content = html`
         ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 
@@ -41,6 +44,7 @@ export const test = baseTest.extend<ShowPage>({
       `
 
       const pageHtml = templatePage({
+        ...extra,
         content,
         title: response.title,
         js: response.js,

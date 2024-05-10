@@ -1,44 +1,41 @@
 import type { Orcid } from 'orcid-id-ts'
 import { html, plainText } from '../src/html'
-import { page as templatePage } from '../src/page'
+import { PageResponse } from '../src/response'
 import type { Pseudonym } from '../src/types/pseudonym'
 import type { User } from '../src/user'
 import { expect, test } from './base'
 
-test('page layout looks right', async ({ page }) => {
-  const pageHtml = templatePage({
-    content: html`<p id="main">hello</p>`,
+test('page layout looks right', async ({ showPage }) => {
+  const response = PageResponse({
+    main: html`<p>hello</p>`,
     title: plainText('Something'),
-  })({})
+  })
 
-  await page.setContent(pageHtml.toString())
+  const content = await showPage(response)
 
-  await expect(page).toHaveScreenshot({ fullPage: true })
+  await expect(content.page()).toHaveScreenshot({ fullPage: true })
 })
 
-test('page layout looks right when there is a user', async ({ page }) => {
-  const pageHtml = templatePage({
-    content: html`<p id="main">hello</p>`,
+test('page layout looks right when there is a user', async ({ showPage }) => {
+  const response = PageResponse({
+    main: html`<p>hello</p>`,
     title: plainText('Something'),
-    user,
-  })({})
+  })
 
-  await page.setContent(pageHtml.toString())
+  const content = await showPage(response, { user })
 
-  await expect(page).toHaveScreenshot({ fullPage: true })
+  await expect(content.page()).toHaveScreenshot({ fullPage: true })
 })
 
-test("page layout looks right when my-details hasn't been seen", async ({ page }) => {
-  const pageHtml = templatePage({
-    content: html`<p id="main">hello</p>`,
+test("page layout looks right when my-details hasn't been seen", async ({ showPage }) => {
+  const response = PageResponse({
+    main: html`<p>hello</p>`,
     title: plainText('Something'),
-    user,
-    userOnboarding: { seenMyDetailsPage: false },
-  })({})
+  })
 
-  await page.setContent(pageHtml.toString())
+  const content = await showPage(response, { user, userOnboarding: { seenMyDetailsPage: false } })
 
-  await expect(page).toHaveScreenshot({ fullPage: true })
+  await expect(content.page()).toHaveScreenshot({ fullPage: true })
 })
 
 const user = {
