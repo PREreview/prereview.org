@@ -25,7 +25,7 @@
       }
     },
     {
-      "files": ["integration/**/*.ts"],
+      "files": ["integration/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
         "no-empty-pattern": "off"
       }
