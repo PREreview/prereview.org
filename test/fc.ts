@@ -312,7 +312,7 @@ export const twoUpPageResponse = (): fc.Arbitrary<TwoUpPageResponse> =>
 export const redirectResponse = (): fc.Arbitrary<RedirectResponse> =>
   fc.record({
     _tag: constant('RedirectResponse'),
-    status: constantFrom(Status.SeeOther, Status.Found),
+    status: constantFrom(Status.SeeOther, Status.Found, Status.MovedPermanently),
     location: fc.oneof(fc.webPath(), url()),
   })
 

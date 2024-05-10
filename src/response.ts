@@ -67,7 +67,7 @@ export interface TwoUpPageResponse {
 
 export interface RedirectResponse {
   readonly _tag: 'RedirectResponse'
-  readonly status: typeof Status.SeeOther | typeof Status.Found
+  readonly status: typeof Status.SeeOther | typeof Status.Found | typeof Status.MovedPermanently
   readonly location: URL | string
 }
 
