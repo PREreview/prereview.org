@@ -1,16 +1,19 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
+import { rawHtml } from '../../src/html'
+import type { TemplatePageEnv } from '../../src/page'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
 
 describe('writeReviewResultsSupported', () => {
@@ -47,6 +50,7 @@ describe('writeReviewResultsSupported', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -102,6 +106,7 @@ describe('writeReviewResultsSupported', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -132,6 +137,7 @@ describe('writeReviewResultsSupported', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -158,6 +164,7 @@ describe('writeReviewResultsSupported', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -181,6 +188,7 @@ describe('writeReviewResultsSupported', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -205,17 +213,20 @@ describe('writeReviewResultsSupported', () => {
     }),
     fc.user(),
     fc.questionsForm(),
+    fc.html(),
   ])(
     'without saying if the results are supported by the data',
-    async (preprintId, preprintTitle, connection, user, newReview) => {
+    async (preprintId, preprintTitle, connection, user, newReview, page) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewResultsSupported(preprintId)({
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          templatePage,
         }),
         connection,
       )()
@@ -224,9 +235,17 @@ describe('writeReviewResultsSupported', () => {
         E.right([
           { type: 'setStatus', status: Status.BadRequest },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('Error:'),
+        content: expect.stringContaining('problem'),
+        skipLinks: [[rawHtml('Skip to form'), '#form']],
+        js: ['conditional-inputs.js', 'error-summary.js'],
+        type: 'streamline',
+        user,
+      })
     },
   )
 
@@ -247,6 +266,7 @@ describe('writeReviewResultsSupported', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -275,6 +295,7 @@ describe('writeReviewResultsSupported', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
