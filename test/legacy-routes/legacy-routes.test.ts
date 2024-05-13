@@ -9,6 +9,7 @@ import { ExpressConnection } from 'hyper-ts/express'
 import { createRequest, createResponse } from 'node-mocks-http'
 import { rawHtml } from '../../src/html'
 import * as _ from '../../src/legacy-routes'
+import type { TemplatePageEnv } from '../../src/page'
 import { preprintReviewsMatch, profileMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
@@ -142,14 +143,17 @@ describe('legacyRoutes', () => {
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/about/${uuid}`) })),
       fc.either(fc.constant('no-session'), fc.user()),
-    ])('when the profile ID is not found', async (connection, user) => {
+      fc.html(),
+    ])('when the profile ID is not found', async (connection, user, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: shouldNotBeCalled,
           getProfileIdFromUuid: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -159,9 +163,15 @@ describe('legacyRoutes', () => {
           { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('not found'),
+        content: expect.stringContaining('not found'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user: E.isRight(user) ? user.right : undefined,
+      })
     })
 
     test.prop([
@@ -226,14 +236,17 @@ describe('legacyRoutes', () => {
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/preprints/${uuid}`) })),
       fc.either(fc.constant('no-session'), fc.user()),
-    ])('when the ID is not found', async (connection, user) => {
+      fc.html(),
+    ])('when the ID is not found', async (connection, user, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('not-found'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -246,6 +259,12 @@ describe('legacyRoutes', () => {
           { type: 'setBody', body: expect.anything() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('not found'),
+        content: expect.stringContaining('not found'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user: E.isRight(user) ? user.right : undefined,
+      })
     })
 
     test.prop([
@@ -319,14 +338,17 @@ describe('legacyRoutes', () => {
         .tuple(fc.uuid(), fc.uuid())
         .chain(([uuid1, uuid2]) => fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) })),
       fc.either(fc.constant('no-session'), fc.user()),
-    ])('when the ID is not found', async (connection, user) => {
+      fc.html(),
+    ])('when the ID is not found', async (connection, user, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('not-found'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -336,9 +358,15 @@ describe('legacyRoutes', () => {
           { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('not found'),
+        content: expect.stringContaining('not found'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user: E.isRight(user) ? user.right : undefined,
+      })
     })
 
     test.prop([
@@ -405,14 +433,17 @@ describe('legacyRoutes', () => {
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/validate/${uuid}`) })),
       fc.either(fc.constant('no-session'), fc.user()),
-    ])('when the ID is not found', async (connection, user) => {
+      fc.html(),
+    ])('when the ID is not found', async (connection, user, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('not-found'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -422,9 +453,15 @@ describe('legacyRoutes', () => {
           { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('not found'),
+        content: expect.stringContaining('not found'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user: E.isRight(user) ? user.right : undefined,
+      })
     })
 
     test.prop([

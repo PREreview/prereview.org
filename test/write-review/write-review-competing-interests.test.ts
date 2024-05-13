@@ -168,15 +168,17 @@ describe('writeReviewCompetingInterests', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.html()])(
     'when the preprint cannot be found',
-    async (preprintId, connection, user) => {
+    async (preprintId, connection, user, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.writeReviewCompetingInterests(preprintId)({
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -186,9 +188,15 @@ describe('writeReviewCompetingInterests', () => {
           { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('not found'),
+        content: expect.stringContaining('not found'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user,
+      })
     },
   )
 

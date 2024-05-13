@@ -171,6 +171,7 @@ describe('connectSlackStart', () => {
           publicUrl,
           signValue,
           slackOauth,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -213,6 +214,7 @@ describe('connectSlackStart', () => {
           publicUrl,
           signValue: shouldNotBeCalled,
           slackOauth,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()

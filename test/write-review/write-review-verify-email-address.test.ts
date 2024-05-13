@@ -7,6 +7,8 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import type { GetContactEmailAddressEnv, SaveContactEmailAddressEnv } from '../../src/contact-email-address'
+import { rawHtml } from '../../src/html'
+import type { TemplatePageEnv } from '../../src/page'
 import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { FormC, formKey } from '../../src/write-review/form'
@@ -48,6 +50,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -82,11 +85,24 @@ describe('writeReviewVerifyEmailAddress', () => {
     fc.user(),
     fc.verifiedContactEmailAddress(),
     fc.uuid(),
+    fc.html(),
   ])(
     'when the email address is already verified',
-    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, contactEmailAddress, id) => {
+    async (
+      orcidOauth,
+      publicUrl,
+      preprintId,
+      preprintTitle,
+      connection,
+      newReview,
+      user,
+      contactEmailAddress,
+      id,
+      page,
+    ) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
@@ -100,6 +116,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -109,9 +126,15 @@ describe('writeReviewVerifyEmailAddress', () => {
           { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('not found'),
+        content: expect.stringContaining('not found'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user,
+      })
     },
   )
 
@@ -125,11 +148,24 @@ describe('writeReviewVerifyEmailAddress', () => {
     fc.user(),
     fc.unverifiedContactEmailAddress(),
     fc.uuid(),
+    fc.html(),
   ])(
     "when the verification token doesn't match",
-    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, contactEmailAddress, id) => {
+    async (
+      orcidOauth,
+      publicUrl,
+      preprintId,
+      preprintTitle,
+      connection,
+      newReview,
+      user,
+      contactEmailAddress,
+      id,
+      page,
+    ) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
@@ -143,6 +179,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -152,9 +189,15 @@ describe('writeReviewVerifyEmailAddress', () => {
           { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('not found'),
+        content: expect.stringContaining('not found'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user,
+      })
     },
   )
 
@@ -167,11 +210,13 @@ describe('writeReviewVerifyEmailAddress', () => {
     fc.form(),
     fc.user(),
     fc.uuid(),
+    fc.html(),
   ])(
     'when there is no email address',
-    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, id) => {
+    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, id, page) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
@@ -185,6 +230,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -194,9 +240,15 @@ describe('writeReviewVerifyEmailAddress', () => {
           { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('not found'),
+        content: expect.stringContaining('not found'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user,
+      })
     },
   )
 
@@ -227,6 +279,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -263,6 +316,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         orcidOauth,
         publicUrl,
         saveContactEmailAddress: shouldNotBeCalled,
+        templatePage: shouldNotBeCalled,
       }),
       connection,
     )()
@@ -295,6 +349,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -310,9 +365,11 @@ describe('writeReviewVerifyEmailAddress', () => {
     },
   )
 
-  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.uuid()])(
+  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.uuid(), fc.html()])(
     'when the preprint cannot be found',
-    async (orcidOauth, publicUrl, preprintId, connection, user, id) => {
+    async (orcidOauth, publicUrl, preprintId, connection, user, id, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
           preprintId,
@@ -325,6 +382,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -334,9 +392,15 @@ describe('writeReviewVerifyEmailAddress', () => {
           { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('not found'),
+        content: expect.stringContaining('not found'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user,
+      })
     },
   )
 
@@ -355,6 +419,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -408,6 +473,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
