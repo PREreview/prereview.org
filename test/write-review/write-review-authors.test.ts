@@ -423,7 +423,7 @@ describe('writeReviewAuthors', () => {
       E.right([
         { type: 'setStatus', status: Status.BadRequest },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
+        { type: 'setBody', body: page.toString() },
       ]),
     )
     expect(templatePage).toHaveBeenCalledWith({

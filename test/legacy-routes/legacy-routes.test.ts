@@ -265,7 +265,7 @@ describe('legacyRoutes', () => {
           { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
