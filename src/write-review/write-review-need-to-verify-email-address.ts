@@ -1,11 +1,12 @@
 import { format } from 'fp-ts-routing'
 import { flow, pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import {
   type UnverifiedContactEmailAddress,
+  type VerifyContactEmailAddressForReviewEnv,
   maybeGetContactEmailAddress,
   verifyContactEmailAddressForReview,
 } from '../contact-email-address'
@@ -13,14 +14,14 @@ import { deleteFlashMessage, getFlashMessage, setFlashMessage } from '../flash-m
 import { html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { showNotificationBanner } from '../notification-banner'
-import { page } from '../page'
+import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, templatePage } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
 } from '../routes'
-import { type User, getUser } from '../user'
+import { type GetUserEnv, type User, getUser } from '../user'
 import { getForm, redirectToNextForm } from './form'
 
 const FlashMessageD = D.literal('verify-contact-email-resend')
@@ -42,6 +43,15 @@ export const writeReviewNeedToVerifyEmailAddress = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
+          .returnType<
+            RM.ReaderMiddleware<
+              GetUserEnv & FathomEnv & PhaseEnv & TemplatePageEnv & VerifyContactEmailAddressForReviewEnv,
+              StatusOpen,
+              ResponseEnded,
+              never,
+              void
+            >
+          >()
           .with({ contactEmailAddress: { type: 'verified' } }, state =>
             RM.fromMiddleware(redirectToNextForm(preprint.id)(state.form)),
           )
@@ -113,7 +123,7 @@ function needToVerifyEmailAddressMessage({
   preprint: PreprintTitle
   user: User
 }) {
-  return page({
+  return templatePage({
     title: plainText`Verify your email address – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
