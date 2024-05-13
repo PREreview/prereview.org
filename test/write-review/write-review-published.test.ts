@@ -31,7 +31,6 @@ describe('writeReviewPublished', () => {
     fc.origin(),
     fc.record({ doi: fc.doi(), form: fc.completedForm(), id: fc.integer() }),
     fc.user(),
-    fc.doi(),
   ])(
     'when the form is complete',
     async (
