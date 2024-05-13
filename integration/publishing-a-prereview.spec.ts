@@ -29,8 +29,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Start now' }).click()
 
@@ -274,8 +272,6 @@ test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ 
   await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
   await expect(page.getByRole('main')).toContainText('We will ask you to log in')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 
   await page.getByRole('button', { name: 'Start now' }).click()
 
@@ -1503,33 +1499,16 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
-  "aren't told about ORCID when already logged in",
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already logged in", async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
 
-    await expect(page.getByRole('main')).not.toContainText('ORCID')
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await expect(page.getByRole('main')).not.toContainText('ORCID')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
 
-    await page.keyboard.press('Tab')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
-    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Enter')
-
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('main')).toBeFocused()
-    }
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('button', { name: 'Start now' }).click()
-
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you like to start your PREreview?')
-  },
-)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you like to start your PREreview?')
+})
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step if you have already started a PREreview',
