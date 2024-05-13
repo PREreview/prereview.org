@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { flow, identity, pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
@@ -17,7 +17,7 @@ import {
 } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
+import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, templatePage } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   writeReviewFindingsNextStepsMatch,
@@ -26,7 +26,7 @@ import {
   writeReviewReviewTypeMatch,
 } from '../routes'
 import { NonEmptyStringC } from '../types/string'
-import { type User, getUser } from '../user'
+import { type GetUserEnv, type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
 export const writeReviewNovel = flow(
@@ -93,6 +93,15 @@ const handleNovelForm = ({ form, preprint, user }: { form: Form; preprint: Prepr
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
+        .returnType<
+          RM.ReaderMiddleware<
+            GetUserEnv & FathomEnv & PhaseEnv & TemplatePageEnv,
+            StatusOpen,
+            ResponseEnded,
+            never,
+            void
+          >
+        >()
         .with('form-unavailable', () => serviceUnavailable)
         .with({ novel: P.any }, showNovelErrorForm(preprint, user))
         .exhaustive(),
@@ -139,7 +148,7 @@ type NovelForm = Fields<typeof novelFields>
 function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
   const error = hasAnError(form)
 
-  return page({
+  return templatePage({
     title: plainText`${error ? 'Error: ' : ''}Is the preprint likely to advance academic knowledge?
  – PREreview of “${preprint.title}”`,
     content: html`
