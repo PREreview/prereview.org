@@ -1,5 +1,5 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import cookieSignature from 'cookie-signature'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
@@ -7,11 +7,14 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
+import { rawHtml } from '../../src/html'
+import type { TemplatePageEnv } from '../../src/page'
 import { writeReviewMatch } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
 import { PublishedReviewC } from '../../src/write-review/published-review'
 import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
 
 describe('writeReviewPublished', () => {
@@ -31,6 +34,7 @@ describe('writeReviewPublished', () => {
     fc.origin(),
     fc.record({ doi: fc.doi(), form: fc.completedForm(), id: fc.integer() }),
     fc.user(),
+    fc.html(),
   ])(
     'when the form is complete',
     async (
@@ -40,12 +44,14 @@ describe('writeReviewPublished', () => {
       publicUrl,
       publishedReview,
       user,
+      page,
     ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, {
         user: UserC.encode(user),
         'published-review': PublishedReviewC.encode(publishedReview),
       })
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
@@ -55,6 +61,7 @@ describe('writeReviewPublished', () => {
           secret,
           sessionCookie,
           sessionStore,
+          templatePage,
         }),
         connection,
       )()
@@ -64,9 +71,16 @@ describe('writeReviewPublished', () => {
         E.right([
           { type: 'setStatus', status: Status.OK },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('published'),
+        content: expect.stringContaining('published'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        type: 'streamline',
+        user,
+      })
     },
   )
 
@@ -98,6 +112,7 @@ describe('writeReviewPublished', () => {
           secret,
           sessionCookie,
           sessionStore,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -147,6 +162,7 @@ describe('writeReviewPublished', () => {
           secret,
           sessionCookie,
           sessionStore,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -193,6 +209,7 @@ describe('writeReviewPublished', () => {
           secret,
           sessionCookie,
           sessionStore,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -219,6 +236,7 @@ describe('writeReviewPublished', () => {
           secret,
           sessionCookie,
           sessionStore: new Keyv(),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()

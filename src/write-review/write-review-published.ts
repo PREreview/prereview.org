@@ -6,7 +6,7 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
+import { templatePage } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { toUrl } from '../public-url'
 import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from '../routes'
@@ -61,7 +61,7 @@ function successMessage({
   return pipe(
     toUrl(reviewMatch.formatter, { id }),
     R.chainW(url =>
-      page({
+      templatePage({
         title: plainText`PREreview published`,
         content: html`
           <main id="main-content">
