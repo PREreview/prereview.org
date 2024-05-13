@@ -17,7 +17,7 @@ import {
 import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form'
 import { html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
+import { templatePage } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   writeReviewConductMatch,
@@ -152,7 +152,7 @@ interface EnterEmailAddressForm {
 function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAddressForm) {
   const error = hasAnError(form)
 
-  return page({
+  return templatePage({
     title: plainText`${error ? 'Error: ' : ''}Contact details – PREreview of “${preprint.title}”`,
     content: html`
       <nav>

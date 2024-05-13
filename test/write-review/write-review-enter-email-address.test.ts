@@ -7,6 +7,8 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import type { SaveContactEmailAddressEnv, VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address'
+import { rawHtml } from '../../src/html'
+import type { TemplatePageEnv } from '../../src/page'
 import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { FormC, formKey } from '../../src/write-review/form'
@@ -36,6 +38,7 @@ describe('writeReviewEnterEmailAddress', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
@@ -62,11 +65,13 @@ describe('writeReviewEnterEmailAddress', () => {
     fc.form(),
     fc.user(),
     fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
+    fc.html(),
   ])(
     'when the user needs to verify their email address',
-    async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress) => {
+    async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress, page) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewEnterEmailAddress(preprintId)({
@@ -76,6 +81,7 @@ describe('writeReviewEnterEmailAddress', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
@@ -85,9 +91,17 @@ describe('writeReviewEnterEmailAddress', () => {
         E.right([
           { type: 'setStatus', status: Status.OK },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('Contact details'),
+        content: expect.stringContaining('Contact details'),
+        skipLinks: [[rawHtml('Skip to form'), '#form']],
+        js: [],
+        type: 'streamline',
+        user,
+      })
     },
   )
 
@@ -134,6 +148,7 @@ describe('writeReviewEnterEmailAddress', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           saveContactEmailAddress,
+          templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview,
         }),
         connection,
@@ -181,11 +196,13 @@ describe('writeReviewEnterEmailAddress', () => {
     fc.uuid(),
     fc.user(),
     fc.form(),
+    fc.html(),
   ])(
     "when an email address isn't given",
-    async (preprintId, preprintTitle, connection, verificationToken, user, newReview) => {
+    async (preprintId, preprintTitle, connection, verificationToken, user, newReview, page) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewEnterEmailAddress(preprintId)({
@@ -195,6 +212,7 @@ describe('writeReviewEnterEmailAddress', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
@@ -204,9 +222,17 @@ describe('writeReviewEnterEmailAddress', () => {
         E.right([
           { type: 'setStatus', status: Status.BadRequest },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('Error:'),
+        content: expect.stringContaining('problem'),
+        skipLinks: [[rawHtml('Skip to form'), '#form']],
+        js: ['error-summary.js'],
+        type: 'streamline',
+        user,
+      })
     },
   )
 
@@ -221,6 +247,7 @@ describe('writeReviewEnterEmailAddress', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
@@ -251,6 +278,7 @@ describe('writeReviewEnterEmailAddress', () => {
           getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
@@ -278,6 +306,7 @@ describe('writeReviewEnterEmailAddress', () => {
           getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
@@ -305,6 +334,7 @@ describe('writeReviewEnterEmailAddress', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
           saveContactEmailAddress: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
