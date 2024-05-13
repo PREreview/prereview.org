@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as I from 'fp-ts/Identity'
 import { flow, pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
@@ -10,7 +10,7 @@ import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
+import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, templatePage } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   writeReviewAddAuthorsMatch,
@@ -18,7 +18,7 @@ import {
   writeReviewMatch,
   writeReviewPersonaMatch,
 } from '../routes'
-import { type User, getUser } from '../user'
+import { type GetUserEnv, type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
 export const writeReviewAuthors = flow(
@@ -110,6 +110,15 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     ),
     RM.orElseW(error =>
       match(error)
+        .returnType<
+          RM.ReaderMiddleware<
+            GetUserEnv & FathomEnv & PhaseEnv & TemplatePageEnv,
+            StatusOpen,
+            ResponseEnded,
+            never,
+            void
+          >
+        >()
         .with('form-unavailable', () => serviceUnavailable)
         .with({ moreAuthors: P.any }, showAuthorsErrorForm(preprint, user))
         .exhaustive(),
@@ -138,7 +147,7 @@ interface AuthorsForm {
 function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User) {
   const error = hasAnError(form)
 
-  return page({
+  return templatePage({
     title: plainText`${error ? 'Error: ' : ''}Did you review this preprint with anyone else? – PREreview of “${
       preprint.title
     }”`,

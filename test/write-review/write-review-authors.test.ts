@@ -1,16 +1,19 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
+import { rawHtml } from '../../src/html'
+import type { TemplatePageEnv } from '../../src/page'
 import { writeReviewAddAuthorsMatch, writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
 
 describe('writeReviewAuthors', () => {
@@ -33,6 +36,7 @@ describe('writeReviewAuthors', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -67,15 +71,18 @@ describe('writeReviewAuthors', () => {
       }),
       fc.user(),
       fc.form(),
-    ])("when they haven't read and agreed", async (preprintId, preprintTitle, connection, user, newReview) => {
+      fc.html(),
+    ])("when they haven't read and agreed", async (preprintId, preprintTitle, connection, user, newReview, page) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintId)({
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          templatePage,
         }),
         connection,
       )()
@@ -84,9 +91,17 @@ describe('writeReviewAuthors', () => {
         E.right([
           { type: 'setStatus', status: Status.BadRequest },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('Error:'),
+        content: expect.stringContaining('problem'),
+        skipLinks: [[rawHtml('Skip to form'), '#form']],
+        js: ['conditional-inputs.js', 'error-summary.js'],
+        type: 'streamline',
+        user,
+      })
     })
 
     describe("when they don't want to be listed", () => {
@@ -111,6 +126,7 @@ describe('writeReviewAuthors', () => {
             formStore,
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
+            templatePage: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -152,6 +168,7 @@ describe('writeReviewAuthors', () => {
             formStore,
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
+            templatePage: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -196,6 +213,7 @@ describe('writeReviewAuthors', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -235,6 +253,7 @@ describe('writeReviewAuthors', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -262,6 +281,7 @@ describe('writeReviewAuthors', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -288,6 +308,7 @@ describe('writeReviewAuthors', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -311,6 +332,7 @@ describe('writeReviewAuthors', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -334,6 +356,7 @@ describe('writeReviewAuthors', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -364,15 +387,18 @@ describe('writeReviewAuthors', () => {
     }),
     fc.user(),
     fc.form(),
-  ])('without a moreAuthors', async (preprintId, preprintTitle, connection, user, newReview) => {
+    fc.html(),
+  ])('without a moreAuthors', async (preprintId, preprintTitle, connection, user, newReview, page) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
     const actual = await runMiddleware(
       _.writeReviewAuthors(preprintId)({
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
         getUser: () => M.of(user),
+        templatePage,
       }),
       connection,
     )()
@@ -384,5 +410,13 @@ describe('writeReviewAuthors', () => {
         { type: 'setBody', body: expect.anything() },
       ]),
     )
+    expect(templatePage).toHaveBeenCalledWith({
+      title: expect.stringContaining('Error:'),
+      content: expect.stringContaining('problem'),
+      skipLinks: [[rawHtml('Skip to form'), '#form']],
+      js: ['conditional-inputs.js', 'error-summary.js'],
+      type: 'streamline',
+      user,
+    })
   })
 })
