@@ -1,5 +1,5 @@
 export { FormStoreEnv } from './form'
-export { writeReview } from './write-review-page'
+export { writeReview } from './write-a-prereview-page'
 export { writeReviewAddAuthor } from './add-author-page'
 export { writeReviewAddAuthors } from './add-authors-page'
 export { writeReviewChangeAuthor } from './change-author-page'
