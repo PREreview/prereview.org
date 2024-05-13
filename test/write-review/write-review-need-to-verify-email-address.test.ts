@@ -215,16 +215,18 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.html()])(
     'when the preprint cannot be loaded',
-    async (preprintId, connection, user) => {
+    async (preprintId, connection, user, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
-          templatePage: shouldNotBeCalled,
+          templatePage,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
@@ -235,9 +237,15 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('having problems'),
+        content: expect.stringContaining('having problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user,
+      })
     },
   )
 

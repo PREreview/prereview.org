@@ -1,11 +1,10 @@
-import type * as R from 'fp-ts/Reader'
 import { pipe } from 'fp-ts/function'
 import type { HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { match } from 'ts-pattern'
-import { type Html, html, plainText, sendHtml } from './html'
-import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page, templatePage } from './page'
+import { html, plainText, sendHtml } from './html'
+import { templatePage } from './page'
 import { PageResponse } from './response'
 import { type User, maybeGetUser } from './user'
 
@@ -14,7 +13,6 @@ export function handleError(error: HttpError<typeof Status.NotFound | typeof Sta
     maybeGetUser,
     RM.chainReaderKW(
       match(error)
-        .returnType<(user?: User) => R.Reader<FathomEnv & PhaseEnv & TemplatePageEnv, Html>>()
         .with({ status: Status.NotFound }, () => notFoundPage)
         .with({ status: Status.ServiceUnavailable }, () => problemsPage)
         .exhaustive(),
@@ -48,7 +46,7 @@ function notFoundPage(user?: User) {
 }
 
 function problemsPage(user?: User) {
-  return page({
+  return templatePage({
     title: plainText`Sorry, we’re having problems`,
     content: html`
       <main id="main-content">

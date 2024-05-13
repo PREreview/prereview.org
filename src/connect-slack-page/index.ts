@@ -20,7 +20,7 @@ import { P, match } from 'ts-pattern'
 import { setFlashMessage } from '../flash-message'
 import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in'
 import { seeOther, serviceUnavailable } from '../middleware'
-import type { FathomEnv, PhaseEnv, TemplatePageEnv } from '../page'
+import type { TemplatePageEnv } from '../page'
 import { type PublicUrlEnv, toUrl } from '../public-url'
 import { handlePageResponse } from '../response'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../routes'
@@ -115,7 +115,7 @@ export const connectSlack = pipe(
     match(error)
       .returnType<
         RM.ReaderMiddleware<
-          GetUserEnv & FathomEnv & OrcidOAuthEnv & PhaseEnv & PublicUrlEnv & TemplatePageEnv,
+          GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv,
           StatusOpen,
           ResponseEnded,
           never,
@@ -149,7 +149,7 @@ export const connectSlackStart = pipe(
     match(error)
       .returnType<
         RM.ReaderMiddleware<
-          GetUserEnv & FathomEnv & OrcidOAuthEnv & PhaseEnv & PublicUrlEnv & TemplatePageEnv,
+          GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv,
           StatusOpen,
           ResponseEnded,
           never,

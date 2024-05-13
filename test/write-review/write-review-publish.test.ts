@@ -421,35 +421,46 @@ describe('writeReviewPublish', () => {
       ),
     ),
     fc.user(),
-  ])('when the preprint cannot be loaded', async (preprintId, [connection, sessionCookie, sessionId, secret], user) => {
-    const sessionStore = new Keyv()
-    await sessionStore.set(sessionId, { user: UserC.encode(user) })
+    fc.html(),
+  ])(
+    'when the preprint cannot be loaded',
+    async (preprintId, [connection, sessionCookie, sessionId, secret], user, page) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-    const actual = await runMiddleware(
-      _.writeReviewPublish(preprintId)({
-        formStore: new Keyv(),
-        getContactEmailAddress: shouldNotBeCalled,
-        getPreprintTitle: () => TE.left('unavailable'),
-        getUser: () => M.of(user),
-        getUserOnboarding: shouldNotBeCalled,
-        publishPrereview: shouldNotBeCalled,
-        secret,
-        sessionCookie,
-        sessionStore,
-        templatePage: shouldNotBeCalled,
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.writeReviewPublish(preprintId)({
+          formStore: new Keyv(),
+          getContactEmailAddress: shouldNotBeCalled,
+          getPreprintTitle: () => TE.left('unavailable'),
+          getUser: () => M.of(user),
+          getUserOnboarding: shouldNotBeCalled,
+          publishPrereview: shouldNotBeCalled,
+          secret,
+          sessionCookie,
+          sessionStore,
+          templatePage,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: page.toString() },
+        ]),
+      )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('having problems'),
+        content: expect.stringContaining('having problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user,
+      })
+    },
+  )
 
   test.prop([
     fc.indeterminatePreprintId(),

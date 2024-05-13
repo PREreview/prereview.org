@@ -90,9 +90,11 @@ describe('connectSlack', () => {
       },
     )
 
-    test.prop([fc.oauth(), fc.user(), fc.connection()])(
+    test.prop([fc.oauth(), fc.user(), fc.connection(), fc.html()])(
       "when the Slack user can't be loaded",
-      async (orcidOauth, user, connection) => {
+      async (orcidOauth, user, connection, page) => {
+        const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
         const actual = await runMiddleware(
           _.connectSlack({
             isSlackUser: () => TE.left('unavailable'),
@@ -100,7 +102,7 @@ describe('connectSlack', () => {
             getUserOnboarding: shouldNotBeCalled,
             orcidOauth,
             publicUrl: new URL('http://example.com'),
-            templatePage: shouldNotBeCalled,
+            templatePage,
           }),
           connection,
         )()
@@ -110,9 +112,15 @@ describe('connectSlack', () => {
             { type: 'setStatus', status: Status.ServiceUnavailable },
             { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
             { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
+            { type: 'setBody', body: page.toString() },
           ]),
         )
+        expect(templatePage).toHaveBeenCalledWith({
+          title: expect.stringContaining('having problems'),
+          content: expect.stringContaining('having problems'),
+          skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+          user,
+        })
       },
     )
   })

@@ -261,11 +261,13 @@ describe('writeReviewVerifyEmailAddress', () => {
     fc.form(),
     fc.user(),
     fc.uuid(),
+    fc.html(),
   ])(
     "when the email address can't be loaded",
-    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, id) => {
+    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, id, page) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
@@ -279,7 +281,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -289,9 +291,15 @@ describe('writeReviewVerifyEmailAddress', () => {
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('having problems'),
+        content: expect.stringContaining('having problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user,
+      })
     },
   )
 
@@ -334,9 +342,11 @@ describe('writeReviewVerifyEmailAddress', () => {
     )
   })
 
-  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.uuid()])(
+  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.uuid(), fc.html()])(
     'when the preprint cannot be loaded',
-    async (orcidOauth, publicUrl, preprintId, connection, user, id) => {
+    async (orcidOauth, publicUrl, preprintId, connection, user, id, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
           preprintId,
@@ -349,7 +359,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -359,9 +369,15 @@ describe('writeReviewVerifyEmailAddress', () => {
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('having problems'),
+        content: expect.stringContaining('having problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user,
+      })
     },
   )
 
@@ -458,9 +474,12 @@ describe('writeReviewVerifyEmailAddress', () => {
     fc.connection(),
     fc.uuid(),
     fc.error(),
+    fc.html(),
   ])(
     "when the user can't be loaded",
-    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, id, error) => {
+    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, id, error, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
           preprintId,
@@ -473,7 +492,7 @@ describe('writeReviewVerifyEmailAddress', () => {
           orcidOauth,
           publicUrl,
           saveContactEmailAddress: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -483,9 +502,15 @@ describe('writeReviewVerifyEmailAddress', () => {
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('Sorry'),
+        content: expect.stringContaining('problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user: undefined,
+      })
     },
   )
 })

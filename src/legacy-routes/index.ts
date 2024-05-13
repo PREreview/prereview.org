@@ -15,7 +15,7 @@ import * as D from 'io-ts/Decoder'
 import { match, P as p } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { movedPermanently, notFound, serviceUnavailable } from '../middleware'
-import type { FathomEnv, PhaseEnv, TemplatePageEnv } from '../page'
+import type { TemplatePageEnv } from '../page'
 import { handlePageResponse } from '../response'
 import {
   aboutUsMatch,
@@ -47,12 +47,10 @@ import type { GetUserOnboardingEnv } from '../user-onboarding'
 import { removedForNowPage } from './removed-for-now-page'
 import { removedPermanentlyPage } from './removed-permanently-page'
 
-export type LegacyEnv = FathomEnv &
-  GetPreprintIdFromUuidEnv &
+export type LegacyEnv = GetPreprintIdFromUuidEnv &
   GetProfileIdFromUuidEnv &
   GetUserEnv &
   GetUserOnboardingEnv &
-  PhaseEnv &
   TemplatePageEnv
 
 export interface GetPreprintIdFromUuidEnv {

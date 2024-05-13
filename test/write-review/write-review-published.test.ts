@@ -145,14 +145,16 @@ describe('writeReviewPublished', () => {
     ),
     fc.record({ doi: fc.doi(), form: fc.completedForm(), id: fc.integer() }),
     fc.user(),
+    fc.html(),
   ])(
     'when the preprint cannot be loaded',
-    async (preprintId, [connection, sessionCookie, sessionId, secret], publishedReview, user) => {
+    async (preprintId, [connection, sessionCookie, sessionId, secret], publishedReview, user, page) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, {
         user: UserC.encode(user),
         'published-review': PublishedReviewC.encode(publishedReview),
       })
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
@@ -162,7 +164,7 @@ describe('writeReviewPublished', () => {
           secret,
           sessionCookie,
           sessionStore,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -172,9 +174,15 @@ describe('writeReviewPublished', () => {
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('having problems'),
+        content: expect.stringContaining('having problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user,
+      })
     },
   )
 

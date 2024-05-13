@@ -7,7 +7,7 @@ import type { Uuid } from 'uuid-ts'
 import { getContactEmailAddress, isUnverified, saveContactEmailAddress } from '../contact-email-address'
 import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
-import type { FathomEnv, PhaseEnv, TemplatePageEnv } from '../page'
+import type { TemplatePageEnv } from '../page'
 import { getPreprintTitle } from '../preprint'
 import type { PublicUrlEnv } from '../public-url'
 import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../routes'
@@ -48,7 +48,7 @@ export const writeReviewVerifyEmailAddress = (id: IndeterminatePreprintId, verif
           match(error)
             .returnType<
               RM.ReaderMiddleware<
-                FathomEnv & GetUserEnv & OrcidOAuthEnv & PhaseEnv & PublicUrlEnv & TemplatePageEnv,
+                GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv,
                 StatusOpen,
                 ResponseEnded,
                 never,

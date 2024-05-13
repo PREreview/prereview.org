@@ -8,7 +8,6 @@ import * as _ from '../src/middleware'
 import type { TemplatePageEnv } from '../src/page'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
-import { shouldNotBeCalled } from './should-not-be-called'
 
 test.prop([fc.connection(), fc.cookieName(), fc.string()])('seeOther', async (connection, location) => {
   const actual = await runMiddleware(_.seeOther(location), connection)()
@@ -58,14 +57,13 @@ test.prop([fc.connection(), fc.either(fc.constant('no-session'), fc.user()), fc.
   },
 )
 
-test.prop([fc.connection(), fc.either(fc.constant('no-session'), fc.user())])(
+test.prop([fc.connection(), fc.either(fc.constant('no-session'), fc.user()), fc.html()])(
   'serviceUnavailable',
-  async (connection, user) => {
+  async (connection, user, page) => {
+    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
     const actual = await runMiddleware(
-      _.serviceUnavailable({
-        getUser: () => M.fromEither(user),
-        templatePage: shouldNotBeCalled,
-      }),
+      _.serviceUnavailable({ getUser: () => M.fromEither(user), templatePage }),
       connection,
     )()
 
@@ -74,8 +72,14 @@ test.prop([fc.connection(), fc.either(fc.constant('no-session'), fc.user())])(
         { type: 'setStatus', status: Status.ServiceUnavailable },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
+        { type: 'setBody', body: page.toString() },
       ]),
     )
+    expect(templatePage).toHaveBeenCalledWith({
+      title: expect.stringContaining('having problems'),
+      content: expect.stringContaining('having problems'),
+      skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+      user: E.isRight(user) ? user.right : undefined,
+    })
   },
 )

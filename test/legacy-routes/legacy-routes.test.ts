@@ -177,14 +177,17 @@ describe('legacyRoutes', () => {
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/about/${uuid}`) })),
       fc.either(fc.constant('no-session'), fc.user()),
-    ])('when the profile ID is unavailable', async (connection, user) => {
+      fc.html(),
+    ])('when the profile ID is unavailable', async (connection, user, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: shouldNotBeCalled,
           getProfileIdFromUuid: () => TE.left('unavailable'),
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -194,9 +197,15 @@ describe('legacyRoutes', () => {
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('having problems'),
+        content: expect.stringContaining('having problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user: E.isRight(user) ? user.right : undefined,
+      })
     })
   })
 
@@ -270,14 +279,17 @@ describe('legacyRoutes', () => {
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/preprints/${uuid}`) })),
       fc.either(fc.constant('no-session'), fc.user()),
-    ])('when the ID is unavailable', async (connection, user) => {
+      fc.html(),
+    ])('when the ID is unavailable', async (connection, user, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('unavailable'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -287,9 +299,15 @@ describe('legacyRoutes', () => {
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('having problems'),
+        content: expect.stringContaining('having problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user: E.isRight(user) ? user.right : undefined,
+      })
     })
   })
 
@@ -374,14 +392,17 @@ describe('legacyRoutes', () => {
         .tuple(fc.uuid(), fc.uuid())
         .chain(([uuid1, uuid2]) => fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) })),
       fc.either(fc.constant('no-session'), fc.user()),
-    ])('when the ID is unavailable', async (connection, user) => {
+      fc.html(),
+    ])('when the ID is unavailable', async (connection, user, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('unavailable'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -391,9 +412,15 @@ describe('legacyRoutes', () => {
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('having problems'),
+        content: expect.stringContaining('having problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user: E.isRight(user) ? user.right : undefined,
+      })
     })
   })
 
@@ -467,14 +494,17 @@ describe('legacyRoutes', () => {
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/validate/${uuid}`) })),
       fc.either(fc.constant('no-session'), fc.user()),
-    ])('when the ID is unavailable', async (connection, user) => {
+      fc.html(),
+    ])('when the ID is unavailable', async (connection, user, page) => {
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('unavailable'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -484,9 +514,15 @@ describe('legacyRoutes', () => {
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('having problems'),
+        content: expect.stringContaining('having problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        user: E.isRight(user) ? user.right : undefined,
+      })
     })
   })
 

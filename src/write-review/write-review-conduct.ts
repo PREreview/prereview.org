@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { flow, pipe } from 'fp-ts/function'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
@@ -9,7 +9,7 @@ import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, templatePage } from '../page'
+import { templatePage } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   codeOfConductMatch,
@@ -17,7 +17,7 @@ import {
   writeReviewConductMatch,
   writeReviewMatch,
 } from '../routes'
-import { type GetUserEnv, type User, getUser } from '../user'
+import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
 export const writeReviewConduct = flow(
@@ -84,15 +84,6 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
-        .returnType<
-          RM.ReaderMiddleware<
-            GetUserEnv & FathomEnv & PhaseEnv & TemplatePageEnv,
-            StatusOpen,
-            ResponseEnded,
-            never,
-            void
-          >
-        >()
         .with('form-unavailable', () => serviceUnavailable)
         .with({ conduct: P.any }, showCodeOfConductErrorForm(preprint, user))
         .exhaustive(),
