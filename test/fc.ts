@@ -34,7 +34,7 @@ import type {
   OpenAuthorInvite,
 } from '../src/author-invite'
 import type { CareerStage } from '../src/career-stage'
-import type { OrcidOAuthEnv } from '../src/connect-orcid/oauth-code'
+import type { OrcidOAuthEnv } from '../src/connect-orcid'
 import type {
   ContactEmailAddress,
   UnverifiedContactEmailAddress,
