@@ -8,6 +8,8 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
+import { rawHtml } from '../../src/html'
+import type { TemplatePageEnv } from '../../src/page'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
@@ -544,6 +546,7 @@ describe('writeReviewPublish', () => {
       .map(parts => merge.withOptions({ mergeArrays: false }, ...parts)),
     fc.user(),
     fc.verifiedContactEmailAddress(),
+    fc.html(),
   ])(
     'when the PREreview cannot be published',
     async (
@@ -553,11 +556,13 @@ describe('writeReviewPublish', () => {
       newReview,
       user,
       contactEmailAddress,
+      page,
     ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
@@ -570,7 +575,7 @@ describe('writeReviewPublish', () => {
           secret,
           sessionCookie,
           sessionStore,
-          templatePage: shouldNotBeCalled,
+          templatePage,
         }),
         connection,
       )()
@@ -579,10 +584,17 @@ describe('writeReviewPublish', () => {
         E.right([
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
       expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toStrictEqual(FormC.encode(newReview))
+      expect(templatePage).toHaveBeenCalledWith({
+        title: expect.stringContaining('problems'),
+        content: expect.stringContaining('problems'),
+        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        type: 'streamline',
+        user,
+      })
     },
   )
 })

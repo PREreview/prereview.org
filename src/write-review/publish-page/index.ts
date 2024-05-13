@@ -11,7 +11,7 @@ import { P, match } from 'ts-pattern'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../../contact-email-address'
 import { type Html, fixHeadingLevels, html, plainText, sendHtml } from '../../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware'
-import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page } from '../../page'
+import { type TemplatePageEnv, templatePage } from '../../page'
 import { type PreprintTitle, getPreprintTitle } from '../../preprint'
 import { handlePageResponse } from '../../response'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../routes'
@@ -82,7 +82,7 @@ const decideNextStep = (state: {
   match(state)
     .returnType<
       RM.ReaderMiddleware<
-        GetUserOnboardingEnv & FathomEnv & PhaseEnv & TemplatePageEnv & FormStoreEnv & PublishPrereviewEnv & SessionEnv,
+        GetUserOnboardingEnv & TemplatePageEnv & FormStoreEnv & PublishPrereviewEnv & SessionEnv,
         StatusOpen,
         ResponseEnded,
         never,
@@ -310,7 +310,7 @@ function renderReview(form: CompletedForm) {
 }
 
 function failureMessage(user: User) {
-  return page({
+  return templatePage({
     title: plainText`Sorry, we’re having problems`,
     content: html`
       <main id="main-content">
