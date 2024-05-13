@@ -7,6 +7,7 @@ import * as s from 'fp-ts/string'
 import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
+import type { PublicUrlEnv } from './public-url'
 import {
   aboutUsMatch,
   clubsMatch,
@@ -87,11 +88,11 @@ export function page({
   js = [],
   user,
   userOnboarding,
-}: Page): R.Reader<FathomEnv & PhaseEnv, Html> {
+}: Page): R.Reader<FathomEnv & PhaseEnv & PublicUrlEnv, Html> {
   const scripts = pipe(js, RA.uniq(stringEq()), RA.concatW(skipLinks.length > 0 ? ['skip-link.js' as const] : []))
 
   return R.asks(
-    ({ fathomId, phase }) => html`
+    ({ fathomId, phase, publicUrl }) => html`
       <!doctype html>
       <html lang="en" dir="ltr" prefix="og: https://ogp.me/ns#">
         <head>
@@ -117,24 +118,9 @@ export function page({
           ${description ? html`<meta property="og:description" content="${description}" />` : ''}
           ${current === 'home'
             ? html`
-                <meta
-                  property="og:image"
-                  content="https://raw.githubusercontent.com/PREreview/assets/160314b3fa0aae15edb6e3bb4a2c72f51121a7d0/logo/logo-horizontal-white.png"
-                />
-                <meta property="og:image:width" content="2013" />
-                <meta property="og:image:height" content="675" />
-                <meta
-                  property="og:image"
-                  content="https://raw.githubusercontent.com/PREreview/assets/160314b3fa0aae15edb6e3bb4a2c72f51121a7d0/logo/logo-vertical-white.png"
-                />
-                <meta property="og:image:width" content="1605" />
-                <meta property="og:image:height" content="933" />
-                <meta
-                  property="og:image"
-                  content="https://raw.githubusercontent.com/PREreview/assets/160314b3fa0aae15edb6e3bb4a2c72f51121a7d0/logo/mark-square-white.png"
-                />
-                <meta property="og:image:width" content="573" />
-                <meta property="og:image:height" content="573" />
+                <meta property="og:image" content="${new URL(assets['prereview-og.png'], publicUrl).href}" />
+                <meta property="og:image:width" content="1200" />
+                <meta property="og:image:height" content="630" />
               `
             : ''}
           <link rel="icon" href="${assets['favicon.ico']}" sizes="32x32" />

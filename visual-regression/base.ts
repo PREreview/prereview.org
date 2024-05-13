@@ -17,6 +17,9 @@ interface ShowPage {
 }
 
 export const test = baseTest.extend<ShowPage>({
+  baseURL: async ({}, use) => {
+    await use('http://example.com')
+  },
   page: async ({ page }, use) => {
     await page.route('**/*', (route, request) => {
       return match(request.url())
@@ -35,7 +38,7 @@ export const test = baseTest.extend<ShowPage>({
 
     await use(page)
   },
-  showPage: async ({ page }, use) => {
+  showPage: async ({ baseURL, page }, use) => {
     await use(async function showPage(response, extra = {}) {
       const content = html`
         ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
@@ -48,7 +51,7 @@ export const test = baseTest.extend<ShowPage>({
         content,
         title: response.title,
         js: response.js,
-      })({})
+      })({ publicUrl: new URL(String(baseURL)) })
 
       await page.setContent(pageHtml.toString())
 
@@ -64,7 +67,7 @@ export const test = baseTest.extend<ShowPage>({
       return page.locator('.contents')
     })
   },
-  showTwoUpPage: async ({ page }, use) => {
+  showTwoUpPage: async ({ baseURL, page }, use) => {
     await use(async response => {
       const content = html`
         <h1 class="visually-hidden">${response.h1}</h1>
@@ -78,7 +81,7 @@ export const test = baseTest.extend<ShowPage>({
         content,
         title: response.title,
         type: 'two-up',
-      })({})
+      })({ publicUrl: new URL(String(baseURL)) })
 
       await page.setContent(pageHtml.toString())
 
