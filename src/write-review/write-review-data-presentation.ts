@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { flow, identity, pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
@@ -17,7 +17,7 @@ import {
 } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
+import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, templatePage } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   writeReviewDataPresentationMatch,
@@ -26,7 +26,7 @@ import {
   writeReviewReviewTypeMatch,
 } from '../routes'
 import { NonEmptyStringC } from '../types/string'
-import { type User, getUser } from '../user'
+import { type GetUserEnv, type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
 export const writeReviewDataPresentation = flow(
@@ -92,6 +92,15 @@ const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; prep
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
+        .returnType<
+          RM.ReaderMiddleware<
+            GetUserEnv & FathomEnv & PhaseEnv & TemplatePageEnv,
+            StatusOpen,
+            ResponseEnded,
+            never,
+            void
+          >
+        >()
         .with('form-unavailable', () => serviceUnavailable)
         .with({ dataPresentation: P.any }, showDataPresentationErrorForm(preprint, user))
         .exhaustive(),
@@ -149,7 +158,7 @@ type DataPresentationForm = Fields<typeof dataPresentationFields>
 function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationForm, user: User) {
   const error = hasAnError(form)
 
-  return page({
+  return templatePage({
     title: plainText`${
       error ? 'Error: ' : ''
     }Are the data presentations, including visualizations, well-suited to represent the data?
