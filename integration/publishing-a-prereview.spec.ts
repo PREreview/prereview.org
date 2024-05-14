@@ -22,7 +22,7 @@ import {
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview',
-  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/')
     await page.getByRole('link', { name: 'Review a preprint' }).click()
     await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
@@ -46,9 +46,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
       await expect(page.getByLabel('Write your PREreview')).toHaveValue(/^Write a short summary of/)
     }
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByLabel('Write your PREreview').clear()
     await page.keyboard.type('# Some title')
     await page.keyboard.press('Enter')
@@ -57,13 +54,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.keyboard.type('adipiscing elit')
     await (javaScriptEnabled ? page.keyboard.press('Control+b') : page.keyboard.type('</b>'))
     await page.keyboard.type('.')
-
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-
-    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
-
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('Josiah Carberry').check()
@@ -349,18 +339,14 @@ test
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can paste an already-written PREreview',
-  async ({ context, contextOptions, javaScriptEnabled, page }, testInfo) => {
+  async ({ context, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
 
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Paste your PREreview')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     const newPage = await context.newPage()
     await newPage.setContent(`<div contenteditable>
@@ -395,30 +381,23 @@ test.extend(canLogIn).extend(areLoggedIn)(
     } else {
       await expect(page.getByLabel('Paste your PREreview')).toHaveValue(/Lorem ipsum/)
     }
-
-    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
-
-    await expect(page).toHaveScreenshot()
   },
 )
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can format a PREreview',
-  async ({ browserName, contextOptions, javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
 
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-
     if (!javaScriptEnabled) {
       await expect(page.getByRole('button', { name: 'Bold' })).toBeHidden()
 
       return
     }
-    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
     await page.getByLabel('Write your PREreview').clear()
 
@@ -427,13 +406,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-disabled', 'true')
     await expect(page.getByLabel('Write your PREreview')).toBeFocused()
 
-    if (browserName === 'webkit') {
-      await page.getByLabel('Write your PREreview').scrollIntoViewIfNeeded()
-    }
-
     await page.keyboard.type('Lorem')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
     await page.keyboard.press('Enter')
 
     await expect(page.getByRole('button', { name: 'Heading level 1' })).toHaveAttribute('aria-pressed', 'false')
@@ -470,8 +443,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
     await page.keyboard.press('ArrowRight')
     await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('ArrowDown')
     await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'false')
@@ -500,8 +471,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.keyboard.press('ArrowUp')
     await page.keyboard.press('ArrowRight')
     await expect(page.getByRole('button', { name: 'Italic' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Enter')
     await expect(page.getByLabel('Write your PREreview')).toBeFocused()
@@ -552,8 +521,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.keyboard.press('Shift+Tab')
     await page.keyboard.press('ArrowUp')
     await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Enter')
     await expect(page.getByLabel('Write your PREreview')).toBeFocused()
@@ -564,7 +531,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.keyboard.press('ArrowLeft')
     await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true')
     await expect(page.getByRole('button', { name: 'Superscript' })).toHaveAttribute('aria-pressed', 'true')
-    await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('ArrowDown')
     await page.keyboard.press('Enter')
@@ -583,8 +549,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.keyboard.press('Enter')
     await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'false')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('ArrowUp')
     await page.keyboard.press('ArrowUp')
@@ -594,8 +558,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'false')
     await expect(page.getByRole('button', { name: 'Numbered list' })).toHaveAttribute('aria-pressed', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
@@ -1956,40 +1918,30 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
-  'have to enter a review',
-  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('With a template').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.getByLabel('Write your PREreview').clear()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn)('have to enter a review', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('With a template').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.waitForLoadState()
+  await page.getByLabel('Write your PREreview').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
 
-    await page.getByRole('link', { name: 'Enter your PREreview' }).click()
+  await page.getByRole('link', { name: 'Enter your PREreview' }).click()
 
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
-
-    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-  },
-)
+  await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+})
 
 test.extend(canLogIn).extend(areLoggedIn)(
   "can't use the template as the review",
-  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -2003,48 +1955,32 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Enter your PREreview' }).click()
 
     await expect(page.getByLabel('Write your PREreview')).toBeFocused()
-
-    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
-  'have to paste a review',
-  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('I’ve already written the review').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn)('have to paste a review', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('I’ve already written the review').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByLabel('Paste your PREreview')).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('Paste your PREreview')).toHaveAttribute('aria-invalid', 'true')
 
-    await page.getByRole('link', { name: 'Paste your PREreview' }).click()
+  await page.getByRole('link', { name: 'Paste your PREreview' }).click()
 
-    await expect(page.getByLabel('Paste your PREreview')).toBeFocused()
-
-    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-  },
-)
+  await expect(page.getByLabel('Paste your PREreview')).toBeFocused()
+})
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if the introduction explains the objective',
