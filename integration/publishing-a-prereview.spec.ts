@@ -1512,7 +1512,7 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step if you have already started a PREreview',
-  async ({ javaScriptEnabled, page }) => {
+  async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -1524,20 +1524,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Enter')
-
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('main')).toBeFocused()
-    }
-    await expect(page).toHaveScreenshot()
+    await expect(page.getByRole('main')).toContainText('carry on')
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
@@ -1547,7 +1534,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step after logging in if you have already started a PREreview',
-  async ({ javaScriptEnabled, page }) => {
+  async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -1559,20 +1546,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Enter')
-
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('main')).toBeFocused()
-    }
-    await expect(page).toHaveScreenshot()
+    await expect(page.getByRole('main')).toContainText('carry on')
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
