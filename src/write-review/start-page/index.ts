@@ -2,18 +2,17 @@ import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { pipe } from 'fp-ts/function'
-import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { html, plainText } from '../../html'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
-import { type GetPreprintEnv, type PreprintTitle, getPreprint } from '../../preprint'
-import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../../response'
-import { preprintReviewsMatch, writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../routes'
+import { type GetPreprintEnv, getPreprint } from '../../preprint'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
+import { writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../routes'
 import type { IndeterminatePreprintId } from '../../types/preprint-id'
 import type { User } from '../../user'
-import { type Form, type FormStoreEnv, getForm, nextFormMatch } from '../form'
+import { type FormStoreEnv, getForm } from '../form'
 import { ownPreprintPage } from '../own-preprint-page'
 import { ensureUserIsNotAnAuthor } from '../user-is-author'
+import { carryOnPage } from './carry-on-page'
 
 export const writeReviewStart = ({
   id,
@@ -61,26 +60,3 @@ export const writeReviewStart = ({
         ),
     ),
   )
-
-function carryOnPage(preprint: PreprintTitle, form: Form) {
-  return StreamlinePageResponse({
-    title: plainText`Write a PREreview`,
-    nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
-    `,
-    main: html`
-      <h1>Write a PREreview</h1>
-
-      <p>
-        As you’ve already started a PREreview of
-        <cite lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</cite>, we’ll take
-        you to the next step so you can carry&nbsp;on.
-      </p>
-
-      <a href="${format(nextFormMatch(form).formatter, { id: preprint.id })}" role="button" draggable="false"
-        >Continue</a
-      >
-    `,
-    canonical: format(writeReviewStartMatch.formatter, { id: preprint.id }),
-  })
-}
