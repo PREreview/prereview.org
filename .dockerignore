@@ -8,6 +8,7 @@
 /integration-results/
 /node_modules/
 /src/manifest.json
+/visual-regression/snapshots/
 /.env
 /.env.dist
 /.gitignore
