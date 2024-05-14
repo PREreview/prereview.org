@@ -20,7 +20,7 @@ export { NewPrereview, PublishPrereviewEnv, writeReviewPublish } from './publish
 export { writeReviewPublished } from './write-review-published'
 export { writeReviewReadyFullReview } from './write-review-ready-full-review'
 export { writeReviewResultsSupported } from './write-review-results-supported'
-export { writeReviewReview } from './write-review-review'
+export { writeReviewReview } from './write-review-page'
 export { writeReviewReviewType } from './write-review-review-type'
 export { writeReviewShouldRead } from './write-review-should-read'
 export { writeReviewStart } from './start-page'
