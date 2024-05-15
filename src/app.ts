@@ -133,6 +133,8 @@ export const app = (config: ConfigEnv) => {
     .use((req, res, next) => {
       const requestId = req.header('Fly-Request-Id') ?? null
 
+      const startTime = Date.now()
+
       pipe(
         {
           method: req.method,
@@ -145,7 +147,16 @@ export const app = (config: ConfigEnv) => {
       )(config)()
 
       res.once('finish', () => {
-        pipe({ status: res.statusCode, requestId }, L.infoP('Sent HTTP response'))(config)()
+        pipe(
+          {
+            method: req.method,
+            url: req.url,
+            status: res.statusCode,
+            requestId,
+            time: Date.now() - startTime,
+          },
+          L.infoP('Sent HTTP response'),
+        )(config)()
       })
 
       res.once('close', () => {
@@ -154,7 +165,13 @@ export const app = (config: ConfigEnv) => {
         }
 
         pipe(
-          { status: res.statusCode, requestId },
+          {
+            method: req.method,
+            url: req.url,
+            status: res.statusCode,
+            requestId,
+            time: Date.now() - startTime,
+          },
           L.warnP('HTTP response may not have been completely sent'),
         )(config)()
       })
