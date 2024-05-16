@@ -1,5 +1,4 @@
 import slashes from 'connect-slashes'
-import type { Doi } from 'doi-ts'
 import express from 'express'
 import type { Json } from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
@@ -27,6 +26,7 @@ import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid }
 import { type LegacyEnv, legacyRoutes } from './legacy-routes'
 import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer'
+import { getFieldsFromOpenAlex } from './openalex'
 import { page } from './page'
 import { getPreprintFromPhilsci } from './philsci'
 import { handleResponse } from './response'
@@ -70,7 +70,9 @@ const getPreprint = flow(
 )
 
 const getPreprintFields = (preprint: IndeterminatePreprintId) =>
-  preprint.value === ('10.1101/2023.06.12.544578' as Doi) ? TE.right(['13' as const, '24' as const]) : TE.right([])
+  match(preprint)
+    .with({ type: 'philsci' }, () => TE.right([]))
+    .otherwise(preprint => getFieldsFromOpenAlex(preprint.value))
 
 const getPreprintTitle = flow(
   getPreprint,
