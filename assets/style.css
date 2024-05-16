@@ -474,7 +474,7 @@ nav {
 }
 
 header {
-  :not(body, .contents) > & {
+  :not(body, .contents, li > article) > & {
     & :any-link {
       color: inherit;
     }
@@ -1821,20 +1821,23 @@ skip-link {
   }
 
   & article {
+    display: flex;
     position: relative;
+    flex-direction: column;
     block-size: 100%;
     inline-size: 100%;
     padding-block: var(--space-xs);
     padding-inline: var(--space-s);
 
+    & > .categories {
+      order: -1;
+      margin-block: 0 var(--space-2xs);
+    }
+
     & > header {
       & > :not(.visually-hidden):first-child,
       & > .visually-hidden:first-child + * {
         margin-block-start: 0;
-      }
-
-      & + :not(.visually-hidden) {
-        margin-block-start: var(--space-xs);
       }
     }
 
@@ -1946,8 +1949,6 @@ skip-link {
     }
 
     & article {
-      display: flex;
-      flex-direction: column;
       inline-size: min(95vw - var(--space-s-m) * 2, 20em);
       margin-block-start: 0;
 
