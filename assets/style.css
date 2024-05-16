@@ -1884,6 +1884,25 @@ skip-link {
         text-decoration: none;
       }
     }
+
+    & > :--list {
+      margin-block-start: var(--space-2xs);
+      padding-inline-start: 0;
+      list-style-type: none;
+      color: var(--color-text-light);
+      font-size: var(--step--1);
+
+      & > li {
+        display: inline;
+
+        &:not(:last-of-type) {
+          &::after {
+            content: '\2000•\2000';
+            white-space: nowrap;
+          }
+        }
+      }
+    }
   }
 
   & h2 {
@@ -1932,12 +1951,12 @@ skip-link {
       inline-size: min(95vw - var(--space-s-m) * 2, 20em);
       margin-block-start: 0;
 
-      > :not(.visually-hidden, header, dl) {
+      > :not(.visually-hidden, header, :--list, dl) {
         flex-grow: 1;
       }
     }
 
-    & dl {
+    & :where(:--list, dl) {
       font-size: var(--step--2);
     }
 

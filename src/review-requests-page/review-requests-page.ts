@@ -1,3 +1,4 @@
+import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
@@ -35,6 +36,16 @@ export const createPage = ({ currentPage, totalPages, reviewRequests }: ReviewRe
                     >${request.preprint.title}</cite
                   >
                 </a>
+
+                ${request.preprint.id.value === ('10.1101/2023.06.12.544578' as Doi)
+                  ? html`
+                      <ul class="categories">
+                        ${['Biochemistry, Genetics and Molecular Biology', 'Immunology and Microbiology'].map(
+                          field => html`<li>${field}</li>`,
+                        )}
+                      </ul>
+                    `
+                  : ''}
 
                 <dl>
                   <dt>Review published</dt>
