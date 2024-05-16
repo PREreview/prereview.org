@@ -108,9 +108,16 @@ export const createPage = ({
               <h2 id="recent-review-requests-title">Recent review requests</h2>
               <ol class="cards" aria-labelledby="recent-review-requests-title" tabindex="0">
                 ${requests.map(
-                  request => html`
+                  (request, index) => html`
                     <li>
-                      <article>
+                      <article aria-labelledby="request-${index}-title">
+                        <h3 id="request-${index}-title" class="visually-hidden">
+                          Review request for
+                          <cite dir="${getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
+                            >${request.preprint.title}</cite
+                          >
+                        </h3>
+
                         <a
                           href="${format(writeReviewMatch.formatter, {
                             id: request.preprint.id,
@@ -199,7 +206,14 @@ export const createPage = ({
                 ${prereviews.map(
                   prereview => html`
                     <li>
-                      <article>
+                      <article aria-labelledby="prereview-${prereview.id}-title">
+                        <h3 id="prereview-${prereview.id}-title" class="visually-hidden">
+                          PREreview of
+                          <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
+                            >${prereview.preprint.title}</cite
+                          >
+                        </h3>
+
                         <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
                           ${formatList('en')(prereview.reviewers)}
                           ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed

@@ -1932,7 +1932,7 @@ skip-link {
       inline-size: min(95vw - var(--space-s-m) * 2, 20em);
       margin-block-start: 0;
 
-      > :not(header, dl) {
+      > :not(.visually-hidden, header, dl) {
         flex-grow: 1;
       }
     }

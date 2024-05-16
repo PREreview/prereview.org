@@ -15,9 +15,16 @@ export const createPage = ({ currentPage, totalPages, reviewRequests }: ReviewRe
 
       <ol class="cards">
         ${reviewRequests.map(
-          request => html`
+          (request, index) => html`
             <li>
-              <article>
+              <article aria-labelledby="request-${index}-title">
+                <h2 id="request-${index}-title" class="visually-hidden">
+                  Review request for
+                  <cite dir="${getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
+                    >${request.preprint.title}</cite
+                  >
+                </h2>
+
                 <a
                   href="${format(writeReviewMatch.formatter, {
                     id: request.preprint.id,
