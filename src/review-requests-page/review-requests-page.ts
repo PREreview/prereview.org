@@ -6,6 +6,7 @@ import { html, plainText } from '../html'
 import { PageResponse } from '../response'
 import { reviewRequestsMatch, writeReviewMatch } from '../routes'
 import { renderDate } from '../time'
+import { getFieldName } from '../types/field'
 import type { ReviewRequests } from './review-requests'
 
 export const createPage = ({ currentPage, totalPages, reviewRequests }: ReviewRequests) =>
@@ -40,9 +41,7 @@ export const createPage = ({ currentPage, totalPages, reviewRequests }: ReviewRe
                 ${request.preprint.id.value === ('10.1101/2023.06.12.544578' as Doi)
                   ? html`
                       <ul class="categories">
-                        ${['Biochemistry, Genetics and Molecular Biology', 'Immunology and Microbiology'].map(
-                          field => html`<li>${field}</li>`,
-                        )}
+                        ${['13' as const, '24' as const].map(field => html`<li>${getFieldName(field)}</li>`)}
                       </ul>
                     `
                   : ''}
