@@ -1,8 +1,10 @@
 import slashes from 'connect-slashes'
+import type { Doi } from 'doi-ts'
 import express from 'express'
 import type { Json } from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as TE from 'fp-ts/TaskEither'
 import { apply, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -40,6 +42,7 @@ export type ConfigEnv = Omit<
   | 'getUser'
   | 'getUserOnboarding'
   | 'getPreprint'
+  | 'getPreprintFields'
   | 'getPreprintTitle'
   | 'templatePage'
   | 'getPreprintIdFromUuid'
@@ -65,6 +68,9 @@ const getPreprint = flow(
       .otherwise(identity),
   ),
 )
+
+const getPreprintFields = (preprint: IndeterminatePreprintId) =>
+  preprint.value === ('10.1101/2023.06.12.544578' as Doi) ? TE.right(['13' as const, '24' as const]) : TE.right([])
 
 const getPreprintTitle = flow(
   getPreprint,
@@ -271,6 +277,7 @@ export const app = (config: ConfigEnv) => {
           getUser: withEnv(() => getUser, env),
           getUserOnboarding: withEnv(getUserOnboarding, env),
           getPreprint: withEnv(getPreprint, env),
+          getPreprintFields,
           getPreprintTitle: withEnv(getPreprintTitle, env),
           templatePage: withEnv(page, env),
           getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),

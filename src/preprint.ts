@@ -5,6 +5,7 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import type { Html } from './html'
 import type { PartialDate } from './time'
+import type { FieldId } from './types/field'
 import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id'
 
 export interface Preprint {
@@ -49,6 +50,10 @@ export interface GetPreprintTitleEnv {
   getPreprintTitle: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', PreprintTitle>
 }
 
+export interface GetPreprintFieldsEnv {
+  getPreprintFields: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', ReadonlyArray<FieldId>>
+}
+
 export const doesPreprintExist = (id: IndeterminatePreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ doesPreprintExist }: DoesPreprintExistEnv) => doesPreprintExist(id)))
 
@@ -62,3 +67,8 @@ export const getPreprintTitle = (
   id: IndeterminatePreprintId,
 ): RTE.ReaderTaskEither<GetPreprintTitleEnv, 'not-found' | 'unavailable', PreprintTitle> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(id)))
+
+export const getPreprintFields = (
+  id: IndeterminatePreprintId,
+): RTE.ReaderTaskEither<GetPreprintFieldsEnv, 'not-found' | 'unavailable', ReadonlyArray<FieldId>> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintFields }) => getPreprintFields(id)))

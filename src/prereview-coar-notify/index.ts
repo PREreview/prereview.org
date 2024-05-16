@@ -1,4 +1,3 @@
-import type { Doi } from 'doi-ts'
 import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -7,7 +6,7 @@ import { flow, identity, pipe } from 'fp-ts/function'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import type { RecentReviewRequest } from '../home-page'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint'
+import { type GetPreprintFieldsEnv, type GetPreprintTitleEnv, getPreprintFields, getPreprintTitle } from '../preprint'
 import type { ReviewRequestPreprintId } from '../review-request'
 import type { ReviewRequests } from '../review-requests-page'
 import type { GenerateUuidEnv } from '../types/uuid'
@@ -34,7 +33,7 @@ export const publishToPrereviewCoarNotifyInbox = (
 export const getReviewRequestsFromPrereviewCoarNotify = (
   page: number,
 ): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
+  FetchEnv & GetPreprintFieldsEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
   'not-found' | 'unavailable',
   ReviewRequests
 > =>
@@ -66,8 +65,16 @@ export const getReviewRequestsFromPrereviewCoarNotify = (
                       ),
                     ),
                   ),
-                  RTE.let('fields', () =>
-                    preprint.value === ('10.1101/2023.06.12.544578' as Doi) ? ['13' as const, '24' as const] : [],
+                  RTE.apSW(
+                    'fields',
+                    pipe(
+                      getPreprintFields(preprint),
+                      RTE.orElseW(error =>
+                        match(error)
+                          .with('not-found', () => RTE.right(RA.empty))
+                          .otherwise(RTE.left),
+                      ),
+                    ),
                   ),
                 ),
               ),
