@@ -1,10 +1,39 @@
-export type FieldId = keyof typeof fields
+export type FieldId = (typeof fieldIds)[number]
+
+export const fieldIds = [
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23',
+  '24',
+  '25',
+  '26',
+  '27',
+  '28',
+  '29',
+  '30',
+  '31',
+  '32',
+  '33',
+  '34',
+  '35',
+  '36',
+] as const
 
 export function getFieldName(id: FieldId): string {
-  return fields[id]
+  return fieldNames[id]
 }
 
-const fields = {
+const fieldNames = {
   '11': 'Agricultural and Biological Sciences',
   '12': 'Arts and Humanities',
   '13': 'Biochemistry, Genetics and Molecular Biology',
@@ -31,4 +60,4 @@ const fields = {
   '34': 'Veterinary',
   '35': 'Dentistry',
   '36': 'Health Professions',
-}
+} satisfies Record<FieldId, string>

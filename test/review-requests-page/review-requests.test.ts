@@ -17,7 +17,9 @@ describe('reviewRequests', () => {
       fc.record({
         currentPage: fc.integer(),
         totalPages: fc.integer(),
-        reviewRequests: fc.nonEmptyArray(fc.record({ published: fc.plainDate(), preprint: fc.preprintTitle() })),
+        reviewRequests: fc.nonEmptyArray(
+          fc.record({ fields: fc.array(fc.fieldId()), published: fc.plainDate(), preprint: fc.preprintTitle() }),
+        ),
       }),
     ])('when the requests can be loaded', async (user, page, reviewRequests) => {
       const actual = await _.reviewRequests({ page, user })({

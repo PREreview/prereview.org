@@ -1,3 +1,4 @@
+import type { Doi } from 'doi-ts'
 import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -64,6 +65,9 @@ export const getReviewRequestsFromPrereviewCoarNotify = (
                           .otherwise(identity),
                       ),
                     ),
+                  ),
+                  RTE.let('fields', () =>
+                    preprint.value === ('10.1101/2023.06.12.544578' as Doi) ? ['13' as const, '24' as const] : [],
                   ),
                 ),
               ),

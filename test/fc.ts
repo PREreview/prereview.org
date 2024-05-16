@@ -75,6 +75,7 @@ import {
 } from '../src/status-code'
 import { type ClubId, clubIds } from '../src/types/club-id'
 import type { EmailAddress } from '../src/types/email-address'
+import { type FieldId, fieldIds } from '../src/types/field'
 import {
   type AfricarxivFigsharePreprintId,
   type AfricarxivOsfPreprintId,
@@ -852,6 +853,8 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     techrxivPreprintId(),
     zenodoPreprintId(),
   )
+
+export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
 
 export const reviewRequest = (): fc.Arbitrary<ReviewRequest> =>
   fc.oneof(incompleteReviewRequest(), completedReviewRequest())

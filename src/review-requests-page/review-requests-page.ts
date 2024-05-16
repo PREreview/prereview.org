@@ -1,4 +1,3 @@
-import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
@@ -38,10 +37,10 @@ export const createPage = ({ currentPage, totalPages, reviewRequests }: ReviewRe
                   >
                 </a>
 
-                ${request.preprint.id.value === ('10.1101/2023.06.12.544578' as Doi)
+                ${request.fields.length > 0
                   ? html`
                       <ul class="categories">
-                        ${['13' as const, '24' as const].map(field => html`<li>${getFieldName(field)}</li>`)}
+                        ${request.fields.map(field => html`<li>${getFieldName(field)}</li>`)}
                       </ul>
                     `
                   : ''}
