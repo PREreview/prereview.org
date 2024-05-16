@@ -1929,9 +1929,12 @@ skip-link {
     & article {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       inline-size: min(95vw - var(--space-s-m) * 2, 20em);
       margin-block-start: 0;
+
+      > :not(header, dl) {
+        flex-grow: 1;
+      }
     }
 
     & dl {
