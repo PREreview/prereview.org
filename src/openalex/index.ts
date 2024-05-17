@@ -3,9 +3,10 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
+import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { fieldIdFromOpenAlexId } from './ids'
 import { getFields, getWorkByDoi } from './work'
 
@@ -25,6 +26,9 @@ export const getFieldsFromOpenAlex = flow(
           RT.of('unavailable' as const),
           RT.chainFirstReaderIOK(() => L.errorP('Failed to get fields from OpenAlex')({ error: D.draw(error) })),
         ),
+      )
+      .with({ _tag: 'UnexpectedStatusCode', actual: P.union(Status.NotFound, Status.Gone) }, () =>
+        RT.of('not-found' as const),
       )
       .with({ _tag: 'UnexpectedStatusCode' }, ({ actual }) =>
         pipe(
