@@ -7,11 +7,14 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
 import { P, match } from 'ts-pattern'
+import { revalidateIfStale, useStaleCache } from '../fetch'
 import { fieldIdFromOpenAlexId } from './ids'
 import { getFields, getWorkByDoi } from './work'
 
 export const getFieldsFromOpenAlex = flow(
   getWorkByDoi,
+  RTE.local(revalidateIfStale()),
+  RTE.local(useStaleCache()),
   RTE.map(flow(getFields, RA.filterMap(fieldIdFromOpenAlexId))),
   orLeftW(error =>
     match(error)
