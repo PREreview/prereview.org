@@ -37,6 +37,7 @@ describe('getRecentReviewRequests', () => {
       fetch,
       clock: SystemClock,
       logger: () => IO.of(undefined),
+      sleep: () => Promise.resolve(),
     })()
 
     expect(result).toStrictEqual(E.right(requests))
@@ -71,6 +72,7 @@ describe('getRecentReviewRequests', () => {
       fetch,
       clock: SystemClock,
       logger: () => IO.of(undefined),
+      sleep: () => Promise.resolve(),
     })()
 
     expect(result).toStrictEqual(E.right(requests))
@@ -91,6 +93,7 @@ describe('getRecentReviewRequests', () => {
         fetch: () => Promise.reject(reason),
         clock: SystemClock,
         logger: () => IO.of(undefined),
+        sleep: () => Promise.resolve(),
       })()
 
       expect(result).toStrictEqual(E.left('unavailable'))
@@ -103,6 +106,7 @@ describe('getRecentReviewRequests', () => {
           fetch: () => Promise.resolve(response),
           clock: SystemClock,
           logger: () => IO.of(undefined),
+          sleep: () => Promise.resolve(),
         })()
 
         expect(result).toStrictEqual(E.left('unavailable'))

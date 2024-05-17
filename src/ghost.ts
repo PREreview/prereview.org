@@ -9,7 +9,7 @@ import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
+import { type SleepEnv, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { type Html, sanitizeHtml } from './html'
 
 export interface GhostApiEnv {
@@ -46,10 +46,10 @@ const GhostPageD = pipe(
 
 export const getPage: (
   id: string,
-) => RTE.ReaderTaskEither<GhostApiEnv & F.FetchEnv, 'not-found' | 'unavailable', Html> = flow(
+) => RTE.ReaderTaskEither<GhostApiEnv & F.FetchEnv & SleepEnv, 'not-found' | 'unavailable', Html> = flow(
   RTE.fromReaderK(id => ghostUrl(`pages/${id}`)),
   RTE.chainW(flow(F.Request('GET'), F.send)),
-  RTE.local(revalidateIfStale()),
+  RTE.local(revalidateIfStale<F.FetchEnv & GhostApiEnv & SleepEnv>()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.filterOrElseW(F.hasStatus(Status.OK), identity),

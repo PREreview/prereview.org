@@ -5,6 +5,7 @@ import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, identity, pipe } from 'fp-ts/function'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
+import type { SleepEnv } from '../fetch'
 import type { RecentReviewRequest } from '../home-page'
 import { type GetPreprintFieldsEnv, type GetPreprintTitleEnv, getPreprintFields, getPreprintTitle } from '../preprint'
 import type { ReviewRequestPreprintId } from '../review-request'
@@ -33,7 +34,7 @@ export const publishToPrereviewCoarNotifyInbox = (
 export const getReviewRequestsFromPrereviewCoarNotify = (
   page: number,
 ): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintFieldsEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
+  FetchEnv & GetPreprintFieldsEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv & SleepEnv,
   'not-found' | 'unavailable',
   ReviewRequests
 > =>
@@ -88,7 +89,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = (
 export const getRecentReviewRequestsFromPrereviewCoarNotify = (
   page: number,
 ): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintFieldsEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
+  FetchEnv & GetPreprintFieldsEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv & SleepEnv,
   'not-found' | 'unavailable',
   ReadonlyArray<RecentReviewRequest>
 > =>

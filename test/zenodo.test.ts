@@ -151,6 +151,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
             .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
             .otherwise(() => TE.left('not-found')),
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -262,6 +263,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         fetch,
         getPreprintTitle: () => TE.right(preprint),
         logger: () => IO.of(undefined),
+        sleep: () => Promise.resolve(),
       })()
 
       expect(actual).toStrictEqual(
@@ -398,6 +400,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
             .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
             .otherwise(() => TE.left(error)),
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -537,6 +540,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           .with('10.1101/2022.01.13.476201', () => TE.left(error1))
           .otherwise(() => TE.left(error2)),
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -563,6 +567,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       ),
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
@@ -589,6 +594,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         fetch,
         getPreprintTitle: shouldNotBeCalled,
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
@@ -602,6 +608,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       fetch: shouldNotBeCalled,
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
@@ -687,6 +694,7 @@ describe('getPrereviewFromZenodo', () => {
         ),
       getPreprint,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
       wasPrereviewRemoved: () => false,
     })()
 
@@ -769,6 +777,7 @@ describe('getPrereviewFromZenodo', () => {
       fetch,
       getPreprint: () => TE.right(preprint),
       logger: () => IO.of(undefined),
+      sleep: () => Promise.resolve(),
       wasPrereviewRemoved: () => false,
     })()
 
@@ -802,6 +811,7 @@ describe('getPrereviewFromZenodo', () => {
       fetch: shouldNotBeCalled,
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
       wasPrereviewRemoved,
     })()
 
@@ -819,6 +829,7 @@ describe('getPrereviewFromZenodo', () => {
         }),
         getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
         wasPrereviewRemoved: () => false,
       })()
 
@@ -881,6 +892,7 @@ describe('getPrereviewFromZenodo', () => {
         fetch,
         getPreprint: () => TE.right(preprint),
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
         wasPrereviewRemoved: () => false,
       })()
 
@@ -900,6 +912,7 @@ describe('getPrereviewFromZenodo', () => {
       fetch,
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
       wasPrereviewRemoved: () => false,
     })()
 
@@ -964,6 +977,7 @@ describe('getPrereviewFromZenodo', () => {
         fetch,
         getPreprint: () => TE.left(error),
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
         wasPrereviewRemoved: () => false,
       })()
 
@@ -1021,6 +1035,7 @@ describe('getPrereviewFromZenodo', () => {
       }),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
       wasPrereviewRemoved: () => false,
     })()
 
@@ -1100,6 +1115,7 @@ describe('getPrereviewFromZenodo', () => {
       }),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
       wasPrereviewRemoved: () => false,
     })()
 
@@ -1160,6 +1176,7 @@ describe('getPrereviewFromZenodo', () => {
         fetch,
         getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
         wasPrereviewRemoved: () => false,
       })()
 
@@ -1220,6 +1237,7 @@ describe('getPrereviewFromZenodo', () => {
         }),
         getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
         wasPrereviewRemoved: () => false,
       })()
 
@@ -1284,6 +1302,7 @@ describe('getPrereviewFromZenodo', () => {
       fetch,
       getPreprint: () => TE.right(preprint),
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
       wasPrereviewRemoved: () => false,
     })()
 
@@ -1410,6 +1429,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               .otherwise(() => TE.left('not-found')),
           clock: SystemClock,
           logger: () => IO.of(undefined),
+          sleep: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual(
@@ -1555,6 +1575,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               .otherwise(() => TE.left('not-found')),
           clock: SystemClock,
           logger: () => IO.of(undefined),
+          sleep: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual(
@@ -1653,6 +1674,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         fetch,
         getPreprintTitle: () => TE.right(preprint),
         logger: () => IO.of(undefined),
+        sleep: () => Promise.resolve(),
       })()
 
       expect(actual).toStrictEqual(
@@ -1784,6 +1806,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
             .otherwise(() => TE.left(error)),
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -1824,6 +1847,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
       fetch,
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -1948,6 +1972,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
             .otherwise(() => TE.left('not-found')),
         clock: SystemClock,
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -2043,6 +2068,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
       fetch,
       getPreprintTitle: () => TE.right(preprint),
       logger: () => IO.of(undefined),
+      sleep: () => Promise.resolve(),
     })()
 
     expect(actual).toStrictEqual(
@@ -2173,6 +2199,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
             .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
             .otherwise(() => TE.left(error)),
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -2213,6 +2240,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
       fetch,
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -2349,6 +2377,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
             .otherwise(() => TE.left('not-found')),
         clock: SystemClock,
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -2392,6 +2421,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
       getPreprintTitle: shouldNotBeCalled,
       clock: SystemClock,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.right([]))
@@ -2485,6 +2515,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
       fetch,
       getPreprintTitle: () => TE.right(preprint),
       logger: () => IO.of(undefined),
+      sleep: () => Promise.resolve(),
     })()
 
     expect(actual).toStrictEqual(
@@ -2526,6 +2557,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
       fetch,
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -2660,6 +2692,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
             .otherwise(() => TE.left('not-found')),
         clock: SystemClock,
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -2751,6 +2784,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
             .otherwise(() => TE.left('not-found')),
         clock: SystemClock,
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right([]))
@@ -2837,6 +2871,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
         )
         .getOnce('http://example.com/review.html/content', { body: 'Some text' }),
       logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(
@@ -2926,6 +2961,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
       clock: SystemClock,
       fetch,
       logger: () => IO.of(undefined),
+      sleep: () => Promise.resolve(),
     })()
 
     expect(actual).toStrictEqual(
@@ -2961,6 +2997,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
         clock: SystemClock,
         fetch,
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
@@ -3033,6 +3070,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
         clock: SystemClock,
         fetch,
         logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))

@@ -3,6 +3,10 @@ import type { Json } from 'fp-ts/Json'
 import { constVoid } from 'fp-ts/function'
 import * as L from 'logger-fp-ts'
 
+export interface SleepEnv {
+  readonly sleep: (duration: number) => Promise<void>
+}
+
 export function useStaleCache<E extends F.FetchEnv>(): (env: E) => E {
   return env => ({ ...env, fetch: (url, init) => env.fetch(url, { cache: 'force-cache', ...init }) })
 }
@@ -11,7 +15,7 @@ export function reloadCache<E extends F.FetchEnv>(): (env: E) => E {
   return env => ({ ...env, fetch: (url, init) => env.fetch(url, { ...init, cache: 'reload' }) })
 }
 
-export function revalidateIfStale<E extends F.FetchEnv>(): (env: E) => E {
+export function revalidateIfStale<E extends F.FetchEnv & SleepEnv>(): (env: E) => E {
   const openRequests = new Set<string>()
 
   return env => ({
@@ -23,7 +27,8 @@ export function revalidateIfStale<E extends F.FetchEnv>(): (env: E) => E {
         openRequests.add(url)
 
         void env
-          .fetch(url, { ...init, cache: 'no-cache' })
+          .sleep(Math.min(200 * openRequests.size, 1_000))
+          .then(() => env.fetch(url, { ...init, cache: 'no-cache' }))
           .then(response => response.text())
           .catch(constVoid)
           .finally(() => openRequests.delete(url))
@@ -31,6 +36,7 @@ export function revalidateIfStale<E extends F.FetchEnv>(): (env: E) => E {
 
       return response
     },
+    sleep: env.sleep,
   })
 }
 

@@ -6,6 +6,7 @@ import { Status } from 'hyper-ts'
 import * as _ from '../src/datacite'
 import { rawHtml } from '../src/html'
 import * as fc from './fc'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('isDatacitePreprintDoi', () => {
   test.prop([fc.datacitePreprintDoi()])('with a DataCite DOI', doi => {
@@ -187,7 +188,7 @@ describe('getPreprintFromDatacite', () => {
           },
         })
 
-        const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+        const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
         expect(actual).toStrictEqual(
           E.right({
@@ -366,7 +367,7 @@ describe('getPreprintFromDatacite', () => {
         },
       })
 
-      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -548,7 +549,7 @@ describe('getPreprintFromDatacite', () => {
           },
         })
 
-        const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+        const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
         expect(actual).toStrictEqual(
           E.right({
@@ -752,7 +753,7 @@ describe('getPreprintFromDatacite', () => {
         },
       })
 
-      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -917,7 +918,7 @@ describe('getPreprintFromDatacite', () => {
         },
       })
 
-      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1039,7 +1040,7 @@ describe('getPreprintFromDatacite', () => {
         },
       })
 
-      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1230,7 +1231,7 @@ describe('getPreprintFromDatacite', () => {
           { throws: new Error('Network error') },
         )
 
-      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: () => Promise.resolve() })()
 
       expect(actual).toStrictEqual(
         E.right(
@@ -1251,7 +1252,7 @@ describe('getPreprintFromDatacite', () => {
       .sandbox()
       .getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, { status: Status.NotFound })
 
-    const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+    const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
     expect(fetch.done()).toBeTruthy()
@@ -1416,7 +1417,7 @@ describe('getPreprintFromDatacite', () => {
         },
       })
 
-      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
       expect(actual).toStrictEqual(E.left('not-a-preprint'))
     },
@@ -1429,7 +1430,7 @@ describe('getPreprintFromDatacite', () => {
         .sandbox()
         .getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, response)
 
-      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
       expect(fetch.done()).toBeTruthy()

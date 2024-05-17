@@ -6,6 +6,7 @@ import { Status } from 'hyper-ts'
 import * as _ from '../src/ghost'
 import { rawHtml } from '../src/html'
 import * as fc from './fc'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('getPage', () => {
   test.prop([
@@ -21,6 +22,7 @@ describe('getPage', () => {
           { body: { pages: [{ html: html.toString() }] } },
         ),
       ghostApi: { key },
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.right(html))
@@ -43,6 +45,7 @@ describe('getPage', () => {
           },
         ),
         ghostApi: { key },
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -72,6 +75,7 @@ describe('getPage', () => {
           },
         ),
         ghostApi: { key },
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -103,6 +107,7 @@ describe('getPage', () => {
     const actual = await _.getPage(id)({
       fetch,
       ghostApi: { key },
+      sleep: () => Promise.resolve(),
     })()
 
     expect(actual).toStrictEqual(E.right(html))
@@ -121,6 +126,7 @@ describe('getPage', () => {
     const actual = await _.getPage(id)({
       fetch,
       ghostApi: { key },
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -140,6 +146,7 @@ describe('getPage', () => {
       const actual = await _.getPage(id)({
         fetch,
         ghostApi: { key },
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
@@ -158,6 +165,7 @@ describe('getPage', () => {
     const actual = await _.getPage(id)({
       fetch,
       ghostApi: { key },
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -172,6 +180,7 @@ describe('getPage', () => {
     const actual = await _.getPage(id)({
       fetch: () => Promise.reject(error),
       ghostApi: { key },
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))

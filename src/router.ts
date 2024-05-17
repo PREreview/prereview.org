@@ -75,6 +75,7 @@ import type {
   CanSeeReviewRequestsEnv,
   CanUploadAvatarEnv,
 } from './feature-flags'
+import type { SleepEnv } from './fetch'
 import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home-page'
@@ -359,6 +360,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   SlackApiUpdateEnv &
   SlackOAuthEnv &
   Keyv.SlackUserIdStoreEnv &
+  SleepEnv &
   TemplatePageEnv &
   Keyv.UserOnboardingStoreEnv &
   WasPrereviewRemovedEnv &

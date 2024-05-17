@@ -18,7 +18,7 @@ import * as uuid from 'uuid-ts'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import type { Email } from './email'
-import { collapseRequests, logFetch, useStaleCache } from './fetch'
+import { type SleepEnv, collapseRequests, logFetch, useStaleCache } from './fetch'
 import { pageNotFound } from './http-error'
 import { getUserOnboarding } from './keyv'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview'
@@ -47,6 +47,7 @@ export type ConfigEnv = Omit<
   | 'getPreprintIdFromUuid'
   | 'getProfileIdFromUuid'
   | 'sendEmail'
+  | 'sleep'
 > &
   (MailjetApiEnv | NodemailerEnv) & {
     allowSiteCrawlers: boolean
@@ -271,7 +272,7 @@ export const app = (config: ConfigEnv) => {
     .use((req, res, next) => {
       return pipe(
         appMiddleware,
-        R.local((env: ConfigEnv): RouterEnv & LegacyEnv => ({
+        R.local((env: ConfigEnv & SleepEnv): RouterEnv & LegacyEnv => ({
           ...env,
           doesPreprintExist: withEnv(doesPreprintExist, env),
           generateUuid: uuid.v4(),
@@ -288,18 +289,17 @@ export const app = (config: ConfigEnv) => {
         })),
         R.local(collapseRequests()),
         R.local(logFetch()),
-        R.local(
-          (appEnv: ConfigEnv): ConfigEnv => ({
-            ...appEnv,
-            logger: pipe(
-              appEnv.logger,
-              l.contramap(entry => ({
-                ...entry,
-                payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
-              })),
-            ),
-          }),
-        ),
+        R.local((appEnv: ConfigEnv): ConfigEnv & SleepEnv => ({
+          ...appEnv,
+          logger: pipe(
+            appEnv.logger,
+            l.contramap(entry => ({
+              ...entry,
+              payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
+            })),
+          ),
+          sleep: duration => new Promise(resolve => setTimeout(resolve, duration)),
+        })),
         apply(config),
         toRequestHandler,
       )(req, res, next)

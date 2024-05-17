@@ -6,6 +6,7 @@ import { Status } from 'hyper-ts'
 import * as _ from '../src/edia-statement'
 import { ediaStatementMatch } from '../src/routes'
 import * as fc from './fc'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('ediaStatement', () => {
   test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 })])('when the page can be loaded', async key => {
@@ -17,7 +18,7 @@ describe('ediaStatement', () => {
       { body: { pages: [{ html: '<p>Foo<script>bar</script></p>' }] } },
     )
 
-    const actual = await _.ediaStatement({ fetch, ghostApi: { key } })()
+    const actual = await _.ediaStatement({ fetch, ghostApi: { key }, sleep: shouldNotBeCalled })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -42,7 +43,7 @@ describe('ediaStatement', () => {
         response,
       )
 
-      const actual = await _.ediaStatement({ fetch, ghostApi: { key } })()
+      const actual = await _.ediaStatement({ fetch, ghostApi: { key }, sleep: shouldNotBeCalled })()
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',

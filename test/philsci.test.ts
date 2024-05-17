@@ -6,6 +6,7 @@ import { Status } from 'hyper-ts'
 import { rawHtml } from '../src/html'
 import * as _ from '../src/philsci'
 import * as fc from './fc'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('getPreprintFromPhilsci', () => {
   test.prop([fc.philsciPreprintId()])('when the preprint can be loaded', async id => {
@@ -84,7 +85,7 @@ describe('getPreprintFromPhilsci', () => {
         },
       )
 
-    const actual = await _.getPreprintFromPhilsci(id)({ fetch })()
+    const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: shouldNotBeCalled })()
 
     expect(actual).toStrictEqual(
       E.right({
@@ -196,7 +197,7 @@ describe('getPreprintFromPhilsci', () => {
         { throws: new Error('Network error') },
       )
 
-    const actual = await _.getPreprintFromPhilsci(id)({ fetch })()
+    const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: () => Promise.resolve() })()
 
     expect(actual).toStrictEqual(
       E.right(
@@ -221,7 +222,7 @@ describe('getPreprintFromPhilsci', () => {
           response,
         )
 
-      const actual = await _.getPreprintFromPhilsci(id)({ fetch })()
+      const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: shouldNotBeCalled })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
     },
@@ -303,7 +304,7 @@ describe('getPreprintFromPhilsci', () => {
         },
       )
 
-    const actual = await _.getPreprintFromPhilsci(id)({ fetch })()
+    const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: shouldNotBeCalled })()
 
     expect(actual).toStrictEqual(E.left('not-a-preprint'))
   })
@@ -318,7 +319,7 @@ describe('getPreprintFromPhilsci', () => {
           response,
         )
 
-      const actual = await _.getPreprintFromPhilsci(id)({ fetch })()
+      const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: shouldNotBeCalled })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
       expect(fetch.done()).toBeTruthy()

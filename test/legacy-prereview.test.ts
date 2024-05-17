@@ -459,6 +459,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           url,
           update,
         },
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -553,6 +554,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           url,
           update,
         },
+        sleep: () => Promise.resolve(),
       })()
 
       expect(actual).toStrictEqual(
@@ -598,6 +600,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           url,
           update,
         },
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right([]))
@@ -629,6 +632,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
         url,
         update,
       },
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))

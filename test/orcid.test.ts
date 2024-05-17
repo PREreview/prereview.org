@@ -8,6 +8,7 @@ import { Status } from 'hyper-ts'
 import type { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/orcid'
 import * as fc from './fc'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('getNameFromOrcid', () => {
   describe('when the request succeeds', () => {
@@ -37,6 +38,7 @@ describe('getNameFromOrcid', () => {
         clock: SystemClock,
         logger: () => IO.of(undefined),
         orcidApiUrl: url,
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right(expected))
@@ -55,6 +57,7 @@ describe('getNameFromOrcid', () => {
         }),
         logger: () => IO.of(undefined),
         orcidApiUrl: url,
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right(expected))
@@ -68,6 +71,7 @@ describe('getNameFromOrcid', () => {
         }),
         logger: () => IO.of(undefined),
         orcidApiUrl: url,
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
@@ -85,6 +89,7 @@ describe('getNameFromOrcid', () => {
         }),
         logger: () => IO.of(undefined),
         orcidApiUrl: url,
+        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
@@ -105,6 +110,7 @@ describe('getNameFromOrcid', () => {
       logger: () => IO.of(undefined),
       orcidApiUrl: url,
       orcidApiToken: token,
+      sleep: shouldNotBeCalled,
     })()
 
     expect(fetch.done()).toBeTruthy()
@@ -130,6 +136,7 @@ describe('getNameFromOrcid', () => {
       fetch,
       logger: () => IO.of(undefined),
       orcidApiUrl: url,
+      sleep: () => Promise.resolve(),
     })()
 
     expect(actual).toStrictEqual(E.right('Daniela Saderi'))
@@ -156,6 +163,7 @@ describe('getNameFromOrcid', () => {
       fetch,
       logger: () => IO.of(undefined),
       orcidApiUrl: url,
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -168,6 +176,7 @@ describe('getNameFromOrcid', () => {
       fetch: () => Promise.reject('network error'),
       logger: () => IO.of(undefined),
       orcidApiUrl: url,
+      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))

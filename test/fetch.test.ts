@@ -1,10 +1,11 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as IO from 'fp-ts/IO'
 import * as _ from '../src/fetch'
 import * as fc from './fc'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('revalidateIfStale', () => {
   test.prop([
@@ -30,7 +31,9 @@ describe('revalidateIfStale', () => {
         { name: 'revalidate', method, url: url.href, functionMatcher: (_, req) => req.cache === 'no-cache' },
         fetchResponse2,
       )
-    const env = _.revalidateIfStale()({ fetch })
+    const sleep = jest.fn<_.SleepEnv['sleep']>(_ => Promise.resolve())
+
+    const env = _.revalidateIfStale()({ fetch, sleep })
 
     const response = await env.fetch(url.href, { headers, method })
 
@@ -40,6 +43,7 @@ describe('revalidateIfStale', () => {
       'x-local-cache-status': 'stale',
     })
     expect(fetch.done()).toBeTruthy()
+    expect(sleep).toHaveBeenCalledTimes(1)
   })
 
   test.prop([
@@ -65,7 +69,9 @@ describe('revalidateIfStale', () => {
         { name: 'revalidate', method, url: url.href, functionMatcher: (_, req) => req.cache === 'no-cache' },
         fetchResponse2,
       )
-    const env = _.revalidateIfStale()({ fetch })
+    const sleep = jest.fn<_.SleepEnv['sleep']>(_ => Promise.resolve())
+
+    const env = _.revalidateIfStale()({ fetch, sleep })
 
     const [response1, response2] = await Promise.all([
       env.fetch(url.href, { headers, method }),
@@ -83,6 +89,7 @@ describe('revalidateIfStale', () => {
       'x-local-cache-status': 'stale',
     })
     expect(fetch.done()).toBeTruthy()
+    expect(sleep).toHaveBeenCalledTimes(1)
   })
 
   test.prop([
@@ -105,7 +112,7 @@ describe('revalidateIfStale', () => {
         { name: 'revalidate', method, url: url.href, functionMatcher: (_, req) => req.cache === 'no-cache' },
         { throws: error },
       )
-    const env = _.revalidateIfStale()({ fetch })
+    const env = _.revalidateIfStale()({ fetch, sleep: () => Promise.resolve() })
 
     const response = await env.fetch(url.href, { headers, method })
 
@@ -127,7 +134,7 @@ describe('revalidateIfStale', () => {
     }),
   ])("doesn't revalidate if the response is not stale", async (url, method, headers, fetchResponse) => {
     const fetch = fetchMock.sandbox().once({ url: url.href, method }, fetchResponse)
-    const env = _.revalidateIfStale()({ fetch })
+    const env = _.revalidateIfStale()({ fetch, sleep: shouldNotBeCalled })
 
     const response = await env.fetch(url.href, { headers, method })
 
