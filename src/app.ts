@@ -3,7 +3,6 @@ import express from 'express'
 import type { Json } from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import * as TE from 'fp-ts/TaskEither'
 import { apply, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -71,7 +70,7 @@ const getPreprint = flow(
 
 const getPreprintFields = (preprint: IndeterminatePreprintId) =>
   match(preprint)
-    .with({ type: 'philsci' }, () => TE.right([]))
+    .with({ type: 'philsci' }, () => RTE.right([]))
     .otherwise(preprint => getFieldsFromOpenAlex(preprint.value))
 
 const getPreprintTitle = flow(
@@ -279,7 +278,7 @@ export const app = (config: ConfigEnv) => {
           getUser: withEnv(() => getUser, env),
           getUserOnboarding: withEnv(getUserOnboarding, env),
           getPreprint: withEnv(getPreprint, env),
-          getPreprintFields,
+          getPreprintFields: withEnv(getPreprintFields, env),
           getPreprintTitle: withEnv(getPreprintTitle, env),
           templatePage: withEnv(page, env),
           getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),

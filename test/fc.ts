@@ -1026,10 +1026,12 @@ export const nonCacheableStatusCode = (): fc.Arbitrary<NonCacheableStatusCodes> 
 export const fetchResponse = ({
   headers: headers_,
   status,
+  json,
   text,
 }: {
   headers?: fc.Arbitrary<Headers>
   status?: fc.Arbitrary<number>
+  json?: fc.Arbitrary<Json>
   text?: fc.Arbitrary<string>
 } = {}): fc.Arbitrary<F.Response> =>
   fc
@@ -1038,7 +1040,7 @@ export const fetchResponse = ({
       status: status ?? fc.integer(),
       statusText: fc.string(),
       url: fc.string(),
-      text: text ?? fc.string(),
+      text: json ? json.map(JSON.stringify) : text ?? fc.string(),
     })
     .map(args =>
       Object.defineProperties(
