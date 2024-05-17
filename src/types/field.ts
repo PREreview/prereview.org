@@ -33,6 +33,10 @@ export function getFieldName(id: FieldId): string {
   return fieldNames[id]
 }
 
+export function isFieldId(value: unknown): value is FieldId {
+  return typeof value === 'string' && (fieldIds as ReadonlyArray<string>).includes(value)
+}
+
 const fieldNames = {
   '11': 'Agricultural and Biological Sciences',
   '12': 'Arts and Humanities',
