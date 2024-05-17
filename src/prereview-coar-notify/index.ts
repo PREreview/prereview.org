@@ -88,7 +88,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = (
 export const getRecentReviewRequestsFromPrereviewCoarNotify = (
   page: number,
 ): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
+  FetchEnv & GetPreprintFieldsEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
   'not-found' | 'unavailable',
   ReadonlyArray<RecentReviewRequest>
 > =>
@@ -108,6 +108,17 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
                 match(error)
                   .with('not-found', () => 'unavailable' as const)
                   .otherwise(identity),
+              ),
+            ),
+          ),
+          RTE.apSW(
+            'fields',
+            pipe(
+              getPreprintFields(preprint),
+              RTE.orElseW(error =>
+                match(error)
+                  .with('not-found', () => RTE.right(RA.empty))
+                  .otherwise(RTE.left),
               ),
             ),
           ),

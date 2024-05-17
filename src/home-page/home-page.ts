@@ -19,6 +19,7 @@ import {
   writeReviewMatch,
 } from '../routes'
 import { renderDate } from '../time'
+import { getFieldName } from '../types/field'
 import type { RecentPrereview } from './recent-prereviews'
 import type { RecentReviewRequest } from './recent-review-requests'
 
@@ -128,6 +129,14 @@ export const createPage = ({
                             >${request.preprint.title}</cite
                           >
                         </a>
+
+                        ${request.fields.length > 0
+                          ? html`
+                              <ul class="categories">
+                                ${request.fields.map(field => html`<li>${getFieldName(field)}</li>`)}
+                              </ul>
+                            `
+                          : ''}
 
                         <dl>
                           <dt>Review published</dt>
