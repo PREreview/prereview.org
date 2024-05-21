@@ -1,6 +1,5 @@
 import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
@@ -16,7 +15,7 @@ export const getFieldsFromOpenAlex = flow(
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.map(flow(getFields, RA.filterMap(fieldIdFromOpenAlexId))),
-  orLeftW(error =>
+  RTE.orLeftW(error =>
     match(error)
       .with({ _tag: 'NetworkError' }, ({ error }) =>
         pipe(
@@ -42,10 +41,3 @@ export const getFieldsFromOpenAlex = flow(
       .exhaustive(),
   ),
 )
-
-// https://github.com/gcanti/fp-ts/pull/1938
-function orLeftW<E1, R2, E2>(
-  onLeft: (e: E1) => RT.ReaderTask<R2, E2>,
-): <R1, A>(fa: RTE.ReaderTaskEither<R1, E1, A>) => ReaderTaskEither<R1 & R2, E2, A> {
-  return RTE.orLeft(onLeft) as never
-}
