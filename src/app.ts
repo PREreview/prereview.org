@@ -229,10 +229,11 @@ export const app = (config: ConfigEnv) => {
         },
       }),
     )
-    .use('/api/v2', (req, res, next) => {
+    .use((req, res, next) => {
       createProxyMiddleware({
-        target: `${config.legacyPrereviewApi.url.href}/api/v2`,
+        target: config.legacyPrereviewApi.url,
         changeOrigin: true,
+        pathFilter: '/api/v2/',
         on: {
           proxyReq: (proxyReq, req) => {
             const payload = {
