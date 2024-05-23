@@ -7,7 +7,7 @@ import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import type { SleepEnv } from '../fetch'
 import type { RecentReviewRequest } from '../home-page'
-import { type GetPreprintFieldsEnv, type GetPreprintTitleEnv, getPreprintFields, getPreprintTitle } from '../preprint'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint'
 import type { ReviewRequestPreprintId } from '../review-request'
 import type { ReviewRequests } from '../review-requests-page'
 import type { GenerateUuidEnv } from '../types/uuid'
@@ -34,7 +34,7 @@ export const publishToPrereviewCoarNotifyInbox = (
 export const getReviewRequestsFromPrereviewCoarNotify = (
   page: number,
 ): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintFieldsEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv & SleepEnv,
+  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv & SleepEnv,
   'not-found' | 'unavailable',
   ReviewRequests
 > =>
@@ -51,7 +51,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = (
           pipe(
             RTE.fromOption(() => 'not-found' as const)(RA.lookup(page - 1, pages)),
             RTE.chainW(
-              RTE.traverseReadonlyNonEmptyArrayWithIndex((_, { timestamp, preprint }) =>
+              RTE.traverseReadonlyNonEmptyArrayWithIndex((_, { timestamp, preprint, fields }) =>
                 pipe(
                   RTE.Do,
                   RTE.let('published', () => timestamp.toZonedDateTimeISO('UTC').toPlainDate()),
@@ -66,17 +66,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = (
                       ),
                     ),
                   ),
-                  RTE.apSW(
-                    'fields',
-                    pipe(
-                      getPreprintFields(preprint),
-                      RTE.orElseW(error =>
-                        match(error)
-                          .with('not-found', () => RTE.right(RA.empty))
-                          .otherwise(RTE.left),
-                      ),
-                    ),
-                  ),
+                  RTE.let('fields', () => fields),
                 ),
               ),
             ),
@@ -89,7 +79,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = (
 export const getRecentReviewRequestsFromPrereviewCoarNotify = (
   page: number,
 ): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintFieldsEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv & SleepEnv,
+  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv & SleepEnv,
   'not-found' | 'unavailable',
   ReadonlyArray<RecentReviewRequest>
 > =>
@@ -97,7 +87,7 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
     RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
     RTE.chainOptionKW(() => 'not-found' as const)(flow(RA.chunksOf(5), RA.lookup(page - 1))),
     RTE.chainW(
-      RTE.traverseArray(({ timestamp, preprint }: RecentReviewRequestFromPrereviewCoarNotify) =>
+      RTE.traverseArray(({ timestamp, preprint, fields }: RecentReviewRequestFromPrereviewCoarNotify) =>
         pipe(
           RTE.Do,
           RTE.let('published', () => timestamp.toZonedDateTimeISO('UTC').toPlainDate()),
@@ -112,17 +102,7 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
               ),
             ),
           ),
-          RTE.apSW(
-            'fields',
-            pipe(
-              getPreprintFields(preprint),
-              RTE.orElseW(error =>
-                match(error)
-                  .with('not-found', () => RTE.right(RA.empty))
-                  .otherwise(RTE.left),
-              ),
-            ),
-          ),
+          RTE.let('fields', () => fields),
         ),
       ),
     ),

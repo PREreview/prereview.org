@@ -25,7 +25,6 @@ import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid }
 import { type LegacyEnv, legacyRoutes } from './legacy-routes'
 import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer'
-import { getFieldsFromOpenAlex } from './openalex'
 import { page } from './page'
 import { getPreprintFromPhilsci } from './philsci'
 import { handleResponse } from './response'
@@ -41,7 +40,6 @@ export type ConfigEnv = Omit<
   | 'getUser'
   | 'getUserOnboarding'
   | 'getPreprint'
-  | 'getPreprintFields'
   | 'getPreprintTitle'
   | 'templatePage'
   | 'getPreprintIdFromUuid'
@@ -68,11 +66,6 @@ const getPreprint = flow(
       .otherwise(identity),
   ),
 )
-
-const getPreprintFields = (preprint: IndeterminatePreprintId) =>
-  match(preprint)
-    .with({ type: 'philsci' }, () => RTE.right([]))
-    .otherwise(preprint => getFieldsFromOpenAlex(preprint.value))
 
 const getPreprintTitle = flow(
   getPreprint,
@@ -280,7 +273,6 @@ export const app = (config: ConfigEnv) => {
           getUser: withEnv(() => getUser, env),
           getUserOnboarding: withEnv(getUserOnboarding, env),
           getPreprint: withEnv(getPreprint, env),
-          getPreprintFields: withEnv(getPreprintFields, env),
           getPreprintTitle: withEnv(getPreprintTitle, env),
           templatePage: withEnv(page, env),
           getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),

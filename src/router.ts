@@ -114,13 +114,7 @@ import { type OrcidApiEnv, getNameFromOrcid } from './orcid'
 import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page'
 import { partners } from './partners'
 import { people } from './people'
-import type {
-  DoesPreprintExistEnv,
-  GetPreprintEnv,
-  GetPreprintFieldsEnv,
-  GetPreprintTitleEnv,
-  ResolvePreprintIdEnv,
-} from './preprint'
+import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint'
 import { preprintReviews } from './preprint-reviews-page'
 import {
   type PrereviewCoarNotifyEnv,
@@ -327,7 +321,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   ResolvePreprintIdEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
-  GetPreprintFieldsEnv &
   GetPreprintTitleEnv &
   GetUserEnv &
   GetUserOnboardingEnv &

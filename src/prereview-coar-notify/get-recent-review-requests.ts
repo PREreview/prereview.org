@@ -12,6 +12,7 @@ import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
 import safeStableStringify from 'safe-stable-stringify'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from '../fetch'
+import { isFieldId } from '../types/field'
 import { parsePreprintDoi } from '../types/preprint-id'
 
 import Instant = Temporal.Instant
@@ -48,6 +49,8 @@ const DoiUrlC = C.make(
   { encode: id => Doi.toUrl(id.value).href },
 )
 
+const FieldIdC = pipe(C.string, C.refine(isFieldId, 'FieldId'))
+
 export const RecentReviewRequestsC = pipe(
   JsonC,
   C.compose(
@@ -55,6 +58,7 @@ export const RecentReviewRequestsC = pipe(
       C.struct({
         timestamp: InstantC,
         preprint: DoiUrlC,
+        fields: C.array(FieldIdC),
       }),
     ),
   ),
