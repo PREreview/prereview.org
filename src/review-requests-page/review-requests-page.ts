@@ -124,7 +124,14 @@ export const createEmptyPage = ({ language }: Pick<ReviewRequests, 'language'>) 
   })
 
 const form = ({ language }: Pick<ReviewRequests, 'language'>) => html`
-  <form method="get" action="${format(reviewRequestsMatch.formatter, {})}" novalidate>
+  <form
+    method="get"
+    action="${format(reviewRequestsMatch.formatter, {})}"
+    novalidate
+    role="search"
+    aria-labelledby="filter-label"
+  >
+    <h2 class="visually-hidden" id="filter-label">Filter</h2>
     <input type="hidden" name="page" value="1" />
     <label for="language">Filter by language</label>
     <select name="language" id="language">
