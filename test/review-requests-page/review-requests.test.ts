@@ -14,6 +14,7 @@ describe('reviewRequests', () => {
     fc.record({
       currentPage: fc.integer(),
       totalPages: fc.integer(),
+      language: fc.option(fc.languageCode(), { nil: undefined }),
       reviewRequests: fc.nonEmptyArray(
         fc.record({
           fields: fc.array(fc.fieldId()),
@@ -30,7 +31,10 @@ describe('reviewRequests', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      canonical: format(reviewRequestsMatch.formatter, { page: reviewRequests.currentPage, language }),
+      canonical: format(reviewRequestsMatch.formatter, {
+        page: reviewRequests.currentPage,
+        language: reviewRequests.language,
+      }),
       current: 'review-requests',
       status: Status.OK,
       title: expect.stringContaining('requests'),
