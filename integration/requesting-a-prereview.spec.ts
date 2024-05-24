@@ -386,10 +386,13 @@ test('can view an older request in a specific language', async ({ page }) => {
   await page.getByRole('link', { name: 'See all requests' }).click()
 
   await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
+  await expect(page.getByLabel('Filter by language').locator('[selected]')).toHaveText('Any')
 
-  await page.goto('/review-requests?page=1&language=en')
+  await page.getByLabel('Filter by language').selectOption('English')
+  await page.getByRole('button', { name: 'Filter results' }).click()
 
   await expect(page).toHaveTitle('Recent review requests (English, page 1) | PREreview')
+  await expect(page.getByLabel('Filter by language').locator('[selected]')).toHaveText('English')
   await expect(
     page.getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' }),
   ).toBeHidden()

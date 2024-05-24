@@ -1,5 +1,7 @@
 import { format } from 'fp-ts-routing'
-import iso6391 from 'iso-639-1'
+import * as RA from 'fp-ts/ReadonlyArray'
+import { pipe } from 'fp-ts/function'
+import iso6391, { type LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../html'
@@ -14,6 +16,8 @@ export const createPage = ({ currentPage, totalPages, language, reviewRequests }
     title: plainText`Recent review requests (${language ? `${iso6391.getName(language)}, ` : ''}page ${currentPage})`,
     main: html`
       <h1>Recent review requests</h1>
+
+      ${form({ language })}
 
       <ol class="cards">
         ${reviewRequests.map(
@@ -41,7 +45,7 @@ export const createPage = ({ currentPage, totalPages, language, reviewRequests }
                 ${request.subfields.length > 0
                   ? html`
                       <ul class="categories">
-                        ${request.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
+                        ${request.subfields.map(subfield => html` <li>${getSubfieldName(subfield)}</li>`)}
                       </ul>
                     `
                   : ''}
@@ -107,6 +111,8 @@ export const createEmptyPage = ({ language }: Pick<ReviewRequests, 'language'>) 
     main: html`
       <h1>Recent review requests</h1>
 
+      ${form({ language })}
+
       <div class="inset">
         <p>No review requests have been published yet.</p>
 
@@ -116,3 +122,21 @@ export const createEmptyPage = ({ language }: Pick<ReviewRequests, 'language'>) 
     canonical: format(reviewRequestsMatch.formatter, { page: 1, language }),
     current: 'review-requests',
   })
+
+const form = ({ language }: Pick<ReviewRequests, 'language'>) => html`
+  <form>
+    <input type="hidden" name="page" value="1" />
+    <label for="language">Filter by language</label>
+    <select name="language" id="language">
+      <option value="" ${language === undefined ? html`selected` : ''}>Any</option>
+      ${pipe(
+        ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
+        RA.map(language => [language, iso6391.getName(language)] as const),
+        RA.map(
+          ([code, name]) => html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
+        ),
+      )}
+    </select>
+    <button>Filter results</button>
+  </form>
+`

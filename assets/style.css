@@ -1370,6 +1370,35 @@ notification-banner {
   }
 }
 
+select {
+  max-inline-size: 100%;
+  padding-block: var(--space-3xs);
+  padding-inline: var(--space-2xs);
+  border: var(--width-divider) solid currentcolor;
+  border-radius: 0;
+  background-color: var(--color-background);
+  color: inherit;
+  font: inherit;
+
+  &:not([hidden]) {
+    display: block;
+  }
+
+  &:focus-visible {
+    outline-offset: 0;
+  }
+
+  label + & {
+    margin-block-start: var(--space-4xs);
+  }
+
+  @media screen {
+    @media (forced-colors: active) {
+      border-color: CanvasText;
+    }
+  }
+}
+
 :--input {
   max-block-size: 30vb;
   max-inline-size: 100%;
