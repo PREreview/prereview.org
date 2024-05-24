@@ -27,6 +27,20 @@ const IntegerFromStringC = C.make(
   },
 )
 
+// Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
+// Refs https://github.com/gcanti/io-ts/issues/625#issuecomment-1007478009
+export const EmptyAsUndefinedC = <I, O, A>(codec: C.Codec<I, O, A>) =>
+  C.make(
+    D.union(
+      codec,
+      pipe(
+        D.literal(''),
+        D.map(() => undefined),
+      ),
+    ),
+    { encode: value => (value === undefined ? '' : codec.encode(value)) },
+  ) satisfies C.Codec<I, O | '', A | undefined>
+
 const LanguageC = pipe(C.string, C.refine(iso6391Validate, 'LanguageCode'))
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
@@ -389,7 +403,11 @@ export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit
 
 export const reviewRequestsMatch = pipe(
   P.lit('review-requests'),
-  P.then(query(pipe(C.struct({ page: IntegerFromStringC }), C.intersect(C.partial({ language: LanguageC }))))),
+  P.then(
+    query(
+      pipe(C.struct({ page: IntegerFromStringC }), C.intersect(C.partial({ language: EmptyAsUndefinedC(LanguageC) }))),
+    ),
+  ),
   P.then(P.end),
 )
 
