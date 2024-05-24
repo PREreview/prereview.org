@@ -1536,7 +1536,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       reviewRequestsMatch.parser,
       P.map(({ language, page }) =>
         pipe(
-          RM.of({ language, page }),
+          RM.of({ language, page: page ?? 1 }),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(reviewRequests)),
           RM.ichainW(handleResponse),

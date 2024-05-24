@@ -403,11 +403,7 @@ export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit
 
 export const reviewRequestsMatch = pipe(
   P.lit('review-requests'),
-  P.then(
-    query(
-      pipe(C.struct({ page: IntegerFromStringC }), C.intersect(C.partial({ language: EmptyAsUndefinedC(LanguageC) }))),
-    ),
-  ),
+  P.then(query(C.partial({ language: EmptyAsUndefinedC(LanguageC), page: IntegerFromStringC }))),
   P.then(P.end),
 )
 
