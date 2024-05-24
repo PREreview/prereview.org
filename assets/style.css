@@ -1900,7 +1900,7 @@ skip-link {
 
         &:not(:last-of-type) {
           &::after {
-            content: '\2000•\2000';
+            content: '\2000•\2000\200b';
             white-space: nowrap;
           }
         }
