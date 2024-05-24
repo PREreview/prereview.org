@@ -14,6 +14,7 @@ import PlainDate = Temporal.PlainDate
 export interface ReviewRequests {
   readonly currentPage: number
   readonly totalPages: number
+  readonly language?: LanguageCode
   readonly reviewRequests: RNEA.ReadonlyNonEmptyArray<{
     readonly published: PlainDate
     readonly fields: ReadonlyArray<FieldId>
@@ -27,11 +28,14 @@ export interface ReviewRequests {
 }
 
 export interface GetReviewRequestsEnv {
-  getReviewRequests: (page: number) => TE.TaskEither<'not-found' | 'unavailable', ReviewRequests>
+  getReviewRequests: (args: {
+    language?: LanguageCode
+    page: number
+  }) => TE.TaskEither<'not-found' | 'unavailable', ReviewRequests>
 }
 
-export const getReviewRequests = (page: number) =>
+export const getReviewRequests = (...args: Parameters<GetReviewRequestsEnv['getReviewRequests']>) =>
   pipe(
     RTE.ask<GetReviewRequestsEnv>(),
-    RTE.chainTaskEitherK(({ getReviewRequests }) => getReviewRequests(page)),
+    RTE.chainTaskEitherK(({ getReviewRequests }) => getReviewRequests(...args)),
   )

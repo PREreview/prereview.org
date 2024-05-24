@@ -9,6 +9,7 @@ import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+import iso6391, { type LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
 import safeStableStringify from 'safe-stable-stringify'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from '../fetch'
@@ -54,6 +55,8 @@ const FieldIdC = pipe(C.string, C.refine(isFieldId, 'FieldId'))
 
 const SubfieldIdC = pipe(C.string, C.refine(isSubfieldId, 'SubfieldId'))
 
+const LanguageC = pipe(C.string, C.refine(iso6391Validate, 'LanguageCode'))
+
 export const RecentReviewRequestsC = pipe(
   JsonC,
   C.compose(
@@ -63,6 +66,7 @@ export const RecentReviewRequestsC = pipe(
         preprint: DoiUrlC,
         fields: C.array(FieldIdC),
         subfields: C.array(SubfieldIdC),
+        language: C.nullable(LanguageC),
       }),
     ),
   ),
@@ -81,3 +85,8 @@ export const getRecentReviewRequests = flow(
   RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get recent review requests')))),
   RTE.mapLeft(() => 'unavailable' as const),
 )
+
+// https://github.com/meikidd/iso-639-1/pull/61
+function iso6391Validate(code: string): code is LanguageCode {
+  return iso6391.validate(code)
+}

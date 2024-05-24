@@ -1,4 +1,5 @@
 import { format } from 'fp-ts-routing'
+import iso6391 from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../html'
@@ -8,9 +9,9 @@ import { renderDate } from '../time'
 import { getSubfieldName } from '../types/subfield'
 import type { ReviewRequests } from './review-requests'
 
-export const createPage = ({ currentPage, totalPages, reviewRequests }: ReviewRequests) =>
+export const createPage = ({ currentPage, totalPages, language, reviewRequests }: ReviewRequests) =>
   PageResponse({
-    title: plainText`Recent review requests (page ${currentPage})`,
+    title: plainText`Recent review requests (${language ? `${iso6391.getName(language)}, ` : ''}page ${currentPage})`,
     main: html`
       <h1>Recent review requests</h1>
 
@@ -85,13 +86,17 @@ export const createPage = ({ currentPage, totalPages, reviewRequests }: ReviewRe
 
       <nav class="pager">
         ${currentPage > 1
-          ? html`<a href="${format(reviewRequestsMatch.formatter, { page: currentPage - 1 })}" rel="prev">Newer</a>`
+          ? html`<a href="${format(reviewRequestsMatch.formatter, { page: currentPage - 1, language })}" rel="prev"
+              >Newer</a
+            >`
           : ''}
         ${currentPage < totalPages
-          ? html`<a href="${format(reviewRequestsMatch.formatter, { page: currentPage + 1 })}" rel="next">Older</a>`
+          ? html`<a href="${format(reviewRequestsMatch.formatter, { page: currentPage + 1, language })}" rel="next"
+              >Older</a
+            >`
           : ''}
       </nav>
     `,
-    canonical: format(reviewRequestsMatch.formatter, { page: currentPage }),
+    canonical: format(reviewRequestsMatch.formatter, { page: currentPage, language }),
     current: 'review-requests',
   })

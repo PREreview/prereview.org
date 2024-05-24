@@ -793,12 +793,14 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         {
           timestamp: '2024-04-26T08:25:54.526Z',
           preprint: '10.1101/2023.02.28.529746',
+          language: 'es',
           fields: ['13', '24'],
           subfields: ['1312', '2403'],
         },
         {
           timestamp: '2024-04-25T10:42:37.213Z',
           preprint: '10.1101/2022.01.13.476201',
+          language: 'en',
           fields: ['13', '28', '21'],
           subfields: ['1312', '2804', '2105'],
         },

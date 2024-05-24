@@ -21,6 +21,7 @@ describe('getRecentReviewRequests', () => {
             .filter(id => !['biorxiv', 'medrxiv', 'zenodo', 'africarxiv'].includes(id.type)),
           fields: fc.array(fc.fieldId()),
           subfields: fc.array(fc.subfieldId()),
+          language: fc.languageCode(),
         }),
       )
       .chain(requests =>
@@ -57,6 +58,7 @@ describe('getRecentReviewRequests', () => {
             .filter(id => !['biorxiv', 'medrxiv', 'zenodo', 'africarxiv'].includes(id.type)),
           fields: fc.array(fc.fieldId()),
           subfields: fc.array(fc.subfieldId()),
+          language: fc.languageCode(),
         }),
       )
       .chain(requests =>

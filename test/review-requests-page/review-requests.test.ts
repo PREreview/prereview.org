@@ -10,6 +10,7 @@ import * as fc from '../fc'
 describe('reviewRequests', () => {
   test.prop([
     fc.integer(),
+    fc.option(fc.languageCode(), { nil: undefined }),
     fc.record({
       currentPage: fc.integer(),
       totalPages: fc.integer(),
@@ -22,14 +23,14 @@ describe('reviewRequests', () => {
         }),
       ),
     }),
-  ])('when the requests can be loaded', async (page, reviewRequests) => {
-    const actual = await _.reviewRequests({ page })({
+  ])('when the requests can be loaded', async (page, language, reviewRequests) => {
+    const actual = await _.reviewRequests({ language, page })({
       getReviewRequests: () => TE.right(reviewRequests),
     })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      canonical: format(reviewRequestsMatch.formatter, { page: reviewRequests.currentPage }),
+      canonical: format(reviewRequestsMatch.formatter, { page: reviewRequests.currentPage, language }),
       current: 'review-requests',
       status: Status.OK,
       title: expect.stringContaining('requests'),
@@ -39,39 +40,45 @@ describe('reviewRequests', () => {
     })
   })
 
-  test.prop([fc.integer()])("when the requests can't be loaded", async page => {
-    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('unavailable'))
+  test.prop([fc.integer(), fc.option(fc.languageCode(), { nil: undefined })])(
+    "when the requests can't be loaded",
+    async (page, language) => {
+      const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('unavailable'))
 
-    const actual = await _.reviewRequests({ page })({
-      getReviewRequests,
-    })()
+      const actual = await _.reviewRequests({ language, page })({
+        getReviewRequests,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
-      skipToLabel: 'main',
-      js: [],
-    })
-    expect(getReviewRequests).toHaveBeenCalledWith(page)
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getReviewRequests).toHaveBeenCalledWith({ language, page })
+    },
+  )
 
-  test.prop([fc.integer()])("when the requests can't be found", async page => {
-    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('not-found'))
+  test.prop([fc.integer(), fc.option(fc.languageCode(), { nil: undefined })])(
+    "when the requests can't be found",
+    async (page, language) => {
+      const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('not-found'))
 
-    const actual = await _.reviewRequests({ page })({
-      getReviewRequests,
-    })()
+      const actual = await _.reviewRequests({ language, page })({
+        getReviewRequests,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.NotFound,
-      title: expect.stringContaining('not found'),
-      main: expect.stringContaining('not found'),
-      skipToLabel: 'main',
-      js: [],
-    })
-    expect(getReviewRequests).toHaveBeenCalledWith(page)
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.stringContaining('not found'),
+        main: expect.stringContaining('not found'),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getReviewRequests).toHaveBeenCalledWith({ language, page })
+    },
+  )
 })

@@ -5,6 +5,7 @@ import * as O from 'fp-ts/Option'
 import { identity, pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+import iso6391, { type LanguageCode } from 'iso-639-1'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import { ClubIdC } from './types/club-id'
@@ -25,6 +26,8 @@ const IntegerFromStringC = C.make(
     encode: String,
   },
 )
+
+const LanguageC = pipe(C.string, C.refine(iso6391Validate, 'LanguageCode'))
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
@@ -386,7 +389,7 @@ export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit
 
 export const reviewRequestsMatch = pipe(
   P.lit('review-requests'),
-  P.then(query(C.struct({ page: IntegerFromStringC }))),
+  P.then(query(pipe(C.struct({ page: IntegerFromStringC }), C.intersect(C.partial({ language: LanguageC }))))),
   P.then(P.end),
 )
 
@@ -500,3 +503,8 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
 const singleton = <K extends string, V>(k: K, v: V): { [_ in K]: V } => ({ [k as any]: v }) as any
+
+// https://github.com/meikidd/iso-639-1/pull/61
+function iso6391Validate(code: string): code is LanguageCode {
+  return iso6391.validate(code)
+}
