@@ -1,12 +1,6 @@
 import * as RT from 'fp-ts/ReaderTask'
-import * as b from 'fp-ts/boolean'
 import { pipe } from 'fp-ts/function'
-import {
-  type CanRequestReviewsEnv,
-  type CanSeeReviewRequestsEnv,
-  canRequestReviews,
-  canSeeReviewRequests,
-} from '../feature-flags'
+import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags'
 import type { PageResponse } from '../response'
 import type { User } from '../user'
 import { createPage } from './home-page'
@@ -20,25 +14,11 @@ export const home = ({
   user,
 }: {
   user?: User
-}): RT.ReaderTask<
-  CanRequestReviewsEnv & CanSeeReviewRequestsEnv & GetRecentPrereviewsEnv & GetRecentReviewRequestsEnv,
-  PageResponse
-> =>
+}): RT.ReaderTask<CanRequestReviewsEnv & GetRecentPrereviewsEnv & GetRecentReviewRequestsEnv, PageResponse> =>
   pipe(
     RT.Do,
     RT.apS('recentPrereviews', getRecentPrereviews()),
     RT.apSW('canRequestReviews', RT.fromReader(canRequestReviews(user))),
-    RT.apSW(
-      'recentReviewRequests',
-      pipe(
-        RT.fromReader(canSeeReviewRequests(user)),
-        RT.chainW(
-          b.matchW(
-            () => RT.of([]),
-            () => getRecentReviewRequests(),
-          ),
-        ),
-      ),
-    ),
+    RT.apSW('recentReviewRequests', getRecentReviewRequests()),
     RT.map(createPage),
   )

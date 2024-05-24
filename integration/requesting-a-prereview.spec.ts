@@ -1,5 +1,5 @@
 import { Status } from 'hyper-ts'
-import { areLoggedIn, canLogIn, canRequestReviews, canSeeReviewRequests, expect, test } from './base'
+import { areLoggedIn, canLogIn, canRequestReviews, expect, test } from './base'
 
 test.extend(canLogIn).extend(canRequestReviews)('can request a PREreview', async ({ fetch, page }) => {
   await page.goto('/')
@@ -356,7 +356,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)('have to cho
   await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
 })
 
-test.extend(canSeeReviewRequests)('can view a recent request', async ({ page }) => {
+test('can view a recent request', async ({ page }) => {
   await page.goto('/')
   await page
     .getByRole('region', { name: 'Recent review requests' })
@@ -366,7 +366,7 @@ test.extend(canSeeReviewRequests)('can view a recent request', async ({ page }) 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
 })
 
-test.extend(canSeeReviewRequests)('can view an older request', async ({ page }) => {
+test('can view an older request', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'See all requests' }).click()
 

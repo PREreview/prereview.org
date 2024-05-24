@@ -69,12 +69,7 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from './email'
-import type {
-  CanConnectOrcidProfileEnv,
-  CanRequestReviewsEnv,
-  CanSeeReviewRequestsEnv,
-  CanUploadAvatarEnv,
-} from './feature-flags'
+import type { CanConnectOrcidProfileEnv, CanRequestReviewsEnv, CanUploadAvatarEnv } from './feature-flags'
 import type { SleepEnv } from './fetch'
 import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
@@ -315,7 +310,6 @@ const withEnv =
 export type RouterEnv = Keyv.AvatarStoreEnv &
   CanConnectOrcidProfileEnv &
   CanRequestReviewsEnv &
-  CanSeeReviewRequestsEnv &
   CanUploadAvatarEnv &
   DoesPreprintExistEnv &
   ResolvePreprintIdEnv &
