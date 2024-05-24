@@ -46,6 +46,7 @@ test('content looks on the last page', async ({ showPage }) => {
 const reviewRequest1 = {
   published: PlainDate.from('2024-04-24'),
   fields: ['33'],
+  subfields: ['3304'],
   preprint: {
     id: { type: 'scielo', value: '10.1590/scielopreprints.8406' as Doi<'1590'> },
     language: 'pt',
@@ -56,6 +57,7 @@ const reviewRequest1 = {
 const reviewRequest2 = {
   published: PlainDate.from('2024-04-24'),
   fields: [],
+  subfields: [],
   preprint: {
     id: { type: 'scielo', value: '10.1590/scielopreprints.8470' as Doi<'1590'> },
     language: 'pt',
@@ -66,6 +68,7 @@ const reviewRequest2 = {
 const reviewRequest3 = {
   published: PlainDate.from('2024-04-23'),
   fields: ['23', '13'],
+  subfields: ['2303', '1312'],
   preprint: {
     id: { type: 'biorxiv', value: '10.1101/2024.04.20.590411' as Doi<'1101'> },
     language: 'en',
@@ -76,6 +79,7 @@ const reviewRequest3 = {
 const reviewRequest4 = {
   published: PlainDate.from('2024-04-23'),
   fields: ['23', '36', '33'],
+  subfields: ['2307', '3600', '3308'],
   preprint: {
     id: { type: 'scielo', value: '10.1590/scielopreprints.8326' as Doi<'1590'> },
     language: 'es',
@@ -86,6 +90,7 @@ const reviewRequest4 = {
 const reviewRequest5 = {
   published: PlainDate.from('2024-04-22'),
   fields: ['32'],
+  subfields: ['3204'],
   preprint: {
     id: { type: 'scielo', value: '10.1590/scielopreprints.7792' as Doi<'1590'> },
     language: 'pt',

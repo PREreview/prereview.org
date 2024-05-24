@@ -112,6 +112,7 @@ import {
 import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/types/profile-id'
 import type { Pseudonym } from '../src/types/pseudonym'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/string'
+import { type SubfieldId, subfieldIds } from '../src/types/subfield'
 import type { User } from '../src/user'
 import type { UserOnboarding } from '../src/user-onboarding'
 import { shouldNotBeCalled } from './should-not-be-called'
@@ -855,6 +856,8 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
   )
 
 export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
+
+export const subfieldId = (): fc.Arbitrary<SubfieldId> => fc.constantFrom(...subfieldIds)
 
 export const reviewRequest = (): fc.Arbitrary<ReviewRequest> =>
   fc.oneof(incompleteReviewRequest(), completedReviewRequest())

@@ -5,7 +5,7 @@ import { html, plainText } from '../html'
 import { PageResponse } from '../response'
 import { reviewRequestsMatch, writeReviewMatch } from '../routes'
 import { renderDate } from '../time'
-import { getFieldName } from '../types/field'
+import { getSubfieldName } from '../types/subfield'
 import type { ReviewRequests } from './review-requests'
 
 export const createPage = ({ currentPage, totalPages, reviewRequests }: ReviewRequests) =>
@@ -37,10 +37,10 @@ export const createPage = ({ currentPage, totalPages, reviewRequests }: ReviewRe
                   >
                 </a>
 
-                ${request.fields.length > 0
+                ${request.subfields.length > 0
                   ? html`
                       <ul class="categories">
-                        ${request.fields.map(field => html`<li>${getFieldName(field)}</li>`)}
+                        ${request.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
                       </ul>
                     `
                   : ''}

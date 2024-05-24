@@ -18,7 +18,12 @@ describe('reviewRequests', () => {
         currentPage: fc.integer(),
         totalPages: fc.integer(),
         reviewRequests: fc.nonEmptyArray(
-          fc.record({ fields: fc.array(fc.fieldId()), published: fc.plainDate(), preprint: fc.preprintTitle() }),
+          fc.record({
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            published: fc.plainDate(),
+            preprint: fc.preprintTitle(),
+          }),
         ),
       }),
     ])('when the requests can be loaded', async (user, page, reviewRequests) => {

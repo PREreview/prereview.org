@@ -6,12 +6,14 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html'
 import type { FieldId } from '../types/field'
 import type { PreprintId } from '../types/preprint-id'
+import type { SubfieldId } from '../types/subfield'
 
 import PlainDate = Temporal.PlainDate
 
 export interface RecentReviewRequest {
   readonly published: PlainDate
   readonly fields: ReadonlyArray<FieldId>
+  readonly subfields: ReadonlyArray<SubfieldId>
   readonly preprint: {
     readonly id: PreprintId
     readonly language: LanguageCode

@@ -20,6 +20,7 @@ describe('getRecentReviewRequests', () => {
             .indeterminatePreprintIdWithDoi()
             .filter(id => !['biorxiv', 'medrxiv', 'zenodo', 'africarxiv'].includes(id.type)),
           fields: fc.array(fc.fieldId()),
+          subfields: fc.array(fc.subfieldId()),
         }),
       )
       .chain(requests =>
@@ -55,6 +56,7 @@ describe('getRecentReviewRequests', () => {
             .indeterminatePreprintIdWithDoi()
             .filter(id => !['biorxiv', 'medrxiv', 'zenodo', 'africarxiv'].includes(id.type)),
           fields: fc.array(fc.fieldId()),
+          subfields: fc.array(fc.subfieldId()),
         }),
       )
       .chain(requests =>

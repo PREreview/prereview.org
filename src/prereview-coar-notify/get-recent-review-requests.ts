@@ -14,6 +14,7 @@ import safeStableStringify from 'safe-stable-stringify'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from '../fetch'
 import { isFieldId } from '../types/field'
 import { parsePreprintDoi } from '../types/preprint-id'
+import { isSubfieldId } from '../types/subfield'
 
 import Instant = Temporal.Instant
 
@@ -51,6 +52,8 @@ const DoiUrlC = C.make(
 
 const FieldIdC = pipe(C.string, C.refine(isFieldId, 'FieldId'))
 
+const SubfieldIdC = pipe(C.string, C.refine(isSubfieldId, 'SubfieldId'))
+
 export const RecentReviewRequestsC = pipe(
   JsonC,
   C.compose(
@@ -59,6 +62,7 @@ export const RecentReviewRequestsC = pipe(
         timestamp: InstantC,
         preprint: DoiUrlC,
         fields: C.array(FieldIdC),
+        subfields: C.array(SubfieldIdC),
       }),
     ),
   ),
