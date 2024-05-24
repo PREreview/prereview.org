@@ -356,33 +356,27 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)('have to cho
   await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canSeeReviewRequests)(
-  'can view a recent request',
-  async ({ page }) => {
-    await page.goto('/')
-    await page
-      .getByRole('region', { name: 'Recent review requests' })
-      .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })
-      .click()
+test.extend(canSeeReviewRequests)('can view a recent request', async ({ page }) => {
+  await page.goto('/')
+  await page
+    .getByRole('region', { name: 'Recent review requests' })
+    .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })
+    .click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
-  },
-)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
+})
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canSeeReviewRequests)(
-  'can view an older request',
-  async ({ page }) => {
-    await page.goto('/')
-    await page.getByRole('link', { name: 'See all requests' }).click()
+test.extend(canSeeReviewRequests)('can view an older request', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'See all requests' }).click()
 
-    await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent review requests')
-    await expect(page.getByRole('link', { name: 'Requests', exact: true })).toHaveAttribute('aria-current', 'page')
+  await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent review requests')
+  await expect(page.getByRole('link', { name: 'Requests', exact: true })).toHaveAttribute('aria-current', 'page')
 
-    await page
-      .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })
-      .click()
+  await page
+    .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })
+    .click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
-  },
-)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
+})
