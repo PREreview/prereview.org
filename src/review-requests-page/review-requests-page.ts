@@ -100,3 +100,19 @@ export const createPage = ({ currentPage, totalPages, language, reviewRequests }
     canonical: format(reviewRequestsMatch.formatter, { page: currentPage, language }),
     current: 'review-requests',
   })
+
+export const createEmptyPage = ({ language }: Pick<ReviewRequests, 'language'>) =>
+  PageResponse({
+    title: plainText`Recent review requests (${language ? `${iso6391.getName(language)}, ` : ''}page 1)`,
+    main: html`
+      <h1>Recent review requests</h1>
+
+      <div class="inset">
+        <p>No review requests have been published yet.</p>
+
+        <p>When they do, they’ll appear here.</p>
+      </div>
+    `,
+    canonical: format(reviewRequestsMatch.formatter, { page: 1, language }),
+    current: 'review-requests',
+  })

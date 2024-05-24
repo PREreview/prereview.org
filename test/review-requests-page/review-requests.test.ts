@@ -65,24 +65,44 @@ describe('reviewRequests', () => {
     },
   )
 
-  test.prop([fc.integer(), fc.option(fc.languageCode(), { nil: undefined })])(
-    "when the requests can't be found",
-    async (page, language) => {
-      const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('not-found'))
+  test.prop([fc.option(fc.languageCode(), { nil: undefined })])("when requests can't be found", async language => {
+    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('not-found'))
 
-      const actual = await _.reviewRequests({ language, page })({
-        getReviewRequests,
-      })()
+    const actual = await _.reviewRequests({ language, page: 1 })({
+      getReviewRequests,
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
-        skipToLabel: 'main',
-        js: [],
-      })
-      expect(getReviewRequests).toHaveBeenCalledWith({ language, page })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(reviewRequestsMatch.formatter, { page: 1, language }),
+      current: 'review-requests',
+      status: Status.OK,
+      title: expect.stringContaining('requests'),
+      main: expect.stringContaining('requests'),
+      skipToLabel: 'main',
+      js: [],
+    })
+    expect(getReviewRequests).toHaveBeenCalledWith({ language, page: 1 })
+  })
+
+  test.prop([
+    fc.oneof(fc.integer({ max: 0 }), fc.integer({ min: 2 })),
+    fc.option(fc.languageCode(), { nil: undefined }),
+  ])("when the requests page can't be found", async (page, language) => {
+    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('not-found'))
+
+    const actual = await _.reviewRequests({ language, page })({
+      getReviewRequests,
+    })()
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.NotFound,
+      title: expect.stringContaining('not found'),
+      main: expect.stringContaining('not found'),
+      skipToLabel: 'main',
+      js: [],
+    })
+    expect(getReviewRequests).toHaveBeenCalledWith({ language, page })
+  })
 })

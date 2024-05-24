@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html'
 import type { ReviewRequests } from '../../src/review-requests-page'
-import { createPage } from '../../src/review-requests-page/review-requests-page'
+import { createEmptyPage, createPage } from '../../src/review-requests-page/review-requests-page'
 import { expect, test } from '../base'
 
 import PlainDate = Temporal.PlainDate
@@ -19,6 +19,14 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right when empty', async ({ showPage }) => {
+  const response = createEmptyPage({})
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks right with a language', async ({ showPage }) => {
   const response = createPage({
     currentPage: 1,
@@ -26,6 +34,14 @@ test('content looks right with a language', async ({ showPage }) => {
     language: 'es',
     reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
   })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when empty with a language', async ({ showPage }) => {
+  const response = createEmptyPage({ language: 'es' })
 
   const content = await showPage(response)
 

@@ -6,7 +6,7 @@ import { match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import type { PageResponse } from '../response'
 import { type GetReviewRequestsEnv, getReviewRequests } from './review-requests'
-import { createPage } from './review-requests-page'
+import { createEmptyPage, createPage } from './review-requests-page'
 
 export { GetReviewRequestsEnv, ReviewRequests } from './review-requests'
 
@@ -22,7 +22,7 @@ export const reviewRequests = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('not-found', () => pageNotFound)
+          .with('not-found', () => (page === 1 ? createEmptyPage({ language }) : pageNotFound))
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
       createPage,
