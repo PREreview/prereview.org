@@ -152,7 +152,7 @@ const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =
     <h2 class="visually-hidden" id="filter-label">Filter</h2>
     <input type="hidden" name="page" value="1" />
     <div>
-      <label for="language">Filter by language</label>
+      <label for="language">Language</label>
       <select name="language" id="language">
         <option value="" ${language === undefined ? html`selected` : ''}>Any</option>
         ${pipe(
@@ -167,7 +167,7 @@ const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =
       </select>
     </div>
     <div>
-      <label for="field">Filter by field</label>
+      <label for="field">Field</label>
       <select name="field" id="field">
         <option value="" ${field === undefined ? html`selected` : ''}>Any</option>
         ${pipe(
