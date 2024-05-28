@@ -1528,6 +1528,47 @@ html-editor {
   }
 }
 
+form[role='search'] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-block-start: var(--space-xs-s);
+  column-gap: var(--space-2xs-s);
+  font-size: var(--step--1);
+  row-gap: var(--space-s-m);
+
+  @media screen {
+    @media (width >= 30em) {
+      flex-flow: row wrap;
+      align-items: flex-end;
+    }
+  }
+
+  & label {
+    margin-block-start: 0;
+  }
+
+  & > div {
+    @media screen {
+      @media (width >= 30em) {
+        max-inline-size: 40vw;
+      }
+    }
+  }
+
+  & > :--button {
+    margin-block-start: 0;
+    padding-block: var(--space-3xs);
+    padding-inline: var(--space-2xs);
+    border-radius: var(--radius-divider-narrow);
+    font-size: inherit;
+  }
+
+  & + * {
+    margin-block-start: var(--space-l-xl);
+  }
+}
+
 single-use-form {
   .submitting {
     display: flex;
