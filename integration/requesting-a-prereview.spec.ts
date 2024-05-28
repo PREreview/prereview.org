@@ -405,3 +405,23 @@ test('can view an older request in a specific language', async ({ page }) => {
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
 })
+
+test('can view an older request in a specific field', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'See all requests' }).click()
+
+  await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
+
+  await page.goto('/review-requests?field=24')
+
+  await expect(page).toHaveTitle('Recent review requests (Immunology and Microbiology, page 1) | PREreview')
+  await expect(
+    page.getByRole('link', { name: 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' }),
+  ).toBeHidden()
+
+  await page
+    .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })
+    .click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
+})

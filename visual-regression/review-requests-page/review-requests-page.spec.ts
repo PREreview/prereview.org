@@ -40,8 +40,29 @@ test('content looks right with a language', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right with a field', async ({ showPage }) => {
+  const response = createPage({
+    currentPage: 1,
+    totalPages: 3,
+    field: '30',
+    reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks right when empty with a language', async ({ showPage }) => {
   const response = createEmptyPage({ language: 'es' })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when empty with a field', async ({ showPage }) => {
+  const response = createEmptyPage({ field: '30' })
 
   const content = await showPage(response)
 

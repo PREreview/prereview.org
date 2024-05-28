@@ -9,6 +9,7 @@ import iso6391, { type LanguageCode } from 'iso-639-1'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import { ClubIdC } from './types/club-id'
+import { isFieldId } from './types/field'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './types/preprint-id'
 import type { OrcidProfileId, PseudonymProfileId } from './types/profile-id'
 import { PseudonymC } from './types/pseudonym'
@@ -40,6 +41,8 @@ export const EmptyAsUndefinedC = <I, O, A>(codec: C.Codec<I, O, A>) =>
     ),
     { encode: value => (value === undefined ? '' : codec.encode(value)) },
   ) satisfies C.Codec<I, O | '', A | undefined>
+
+const FieldIdC = pipe(C.string, C.refine(isFieldId, 'FieldId'))
 
 const LanguageC = pipe(C.string, C.refine(iso6391Validate, 'LanguageCode'))
 
@@ -403,7 +406,15 @@ export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit
 
 export const reviewRequestsMatch = pipe(
   P.lit('review-requests'),
-  P.then(query(C.partial({ language: EmptyAsUndefinedC(LanguageC), page: IntegerFromStringC }))),
+  P.then(
+    query(
+      C.partial({
+        field: EmptyAsUndefinedC(FieldIdC),
+        language: EmptyAsUndefinedC(LanguageC),
+        page: IntegerFromStringC,
+      }),
+    ),
+  ),
   P.then(P.end),
 )
 

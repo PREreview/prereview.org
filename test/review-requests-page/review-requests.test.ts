@@ -10,10 +10,12 @@ import * as fc from '../fc'
 describe('reviewRequests', () => {
   test.prop([
     fc.integer(),
+    fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
     fc.record({
       currentPage: fc.integer(),
       totalPages: fc.integer(),
+      field: fc.option(fc.fieldId(), { nil: undefined }),
       language: fc.option(fc.languageCode(), { nil: undefined }),
       reviewRequests: fc.nonEmptyArray(
         fc.record({
@@ -24,8 +26,8 @@ describe('reviewRequests', () => {
         }),
       ),
     }),
-  ])('when the requests can be loaded', async (page, language, reviewRequests) => {
-    const actual = await _.reviewRequests({ language, page })({
+  ])('when the requests can be loaded', async (page, field, language, reviewRequests) => {
+    const actual = await _.reviewRequests({ field, language, page })({
       getReviewRequests: () => TE.right(reviewRequests),
     })()
 
@@ -33,6 +35,7 @@ describe('reviewRequests', () => {
       _tag: 'PageResponse',
       canonical: format(reviewRequestsMatch.formatter, {
         page: reviewRequests.currentPage,
+        field: reviewRequests.field,
         language: reviewRequests.language,
       }),
       current: 'review-requests',
@@ -44,54 +47,59 @@ describe('reviewRequests', () => {
     })
   })
 
-  test.prop([fc.integer(), fc.option(fc.languageCode(), { nil: undefined })])(
-    "when the requests can't be loaded",
-    async (page, language) => {
-      const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('unavailable'))
+  test.prop([
+    fc.integer(),
+    fc.option(fc.fieldId(), { nil: undefined }),
+    fc.option(fc.languageCode(), { nil: undefined }),
+  ])("when the requests can't be loaded", async (page, field, language) => {
+    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('unavailable'))
 
-      const actual = await _.reviewRequests({ language, page })({
-        getReviewRequests,
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
-        skipToLabel: 'main',
-        js: [],
-      })
-      expect(getReviewRequests).toHaveBeenCalledWith({ language, page })
-    },
-  )
-
-  test.prop([fc.option(fc.languageCode(), { nil: undefined })])("when requests can't be found", async language => {
-    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('not-found'))
-
-    const actual = await _.reviewRequests({ language, page: 1 })({
+    const actual = await _.reviewRequests({ field, language, page })({
       getReviewRequests,
     })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      canonical: format(reviewRequestsMatch.formatter, { page: 1, language }),
-      current: 'review-requests',
-      status: Status.OK,
-      title: expect.stringContaining('requests'),
-      main: expect.stringContaining('requests'),
+      status: Status.ServiceUnavailable,
+      title: expect.stringContaining('problems'),
+      main: expect.stringContaining('problems'),
       skipToLabel: 'main',
       js: [],
     })
-    expect(getReviewRequests).toHaveBeenCalledWith({ language, page: 1 })
+    expect(getReviewRequests).toHaveBeenCalledWith({ field, language, page })
   })
+
+  test.prop([fc.option(fc.fieldId(), { nil: undefined }), fc.option(fc.languageCode(), { nil: undefined })])(
+    "when requests can't be found",
+    async (field, language) => {
+      const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('not-found'))
+
+      const actual = await _.reviewRequests({ field, language, page: 1 })({
+        getReviewRequests,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(reviewRequestsMatch.formatter, { page: 1, field, language }),
+        current: 'review-requests',
+        status: Status.OK,
+        title: expect.stringContaining('requests'),
+        main: expect.stringContaining('requests'),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getReviewRequests).toHaveBeenCalledWith({ field, language, page: 1 })
+    },
+  )
 
   test.prop([
     fc.oneof(fc.integer({ max: 0 }), fc.integer({ min: 2 })),
+    fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
-  ])("when the requests page can't be found", async (page, language) => {
+  ])("when the requests page can't be found", async (page, field, language) => {
     const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('not-found'))
 
-    const actual = await _.reviewRequests({ language, page })({
+    const actual = await _.reviewRequests({ field, language, page })({
       getReviewRequests,
     })()
 
@@ -103,6 +111,6 @@ describe('reviewRequests', () => {
       skipToLabel: 'main',
       js: [],
     })
-    expect(getReviewRequests).toHaveBeenCalledWith({ language, page })
+    expect(getReviewRequests).toHaveBeenCalledWith({ field, language, page })
   })
 })

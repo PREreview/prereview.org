@@ -10,16 +10,17 @@ import { type Html, html, plainText, rawHtml } from '../html'
 import { PageResponse } from '../response'
 import { reviewRequestsMatch, writeReviewMatch } from '../routes'
 import { renderDate } from '../time'
+import { getFieldName } from '../types/field'
 import { getSubfieldName } from '../types/subfield'
 import type { ReviewRequests } from './review-requests'
 
-export const createPage = ({ currentPage, totalPages, language, reviewRequests }: ReviewRequests) =>
+export const createPage = ({ currentPage, totalPages, language, field, reviewRequests }: ReviewRequests) =>
   PageResponse({
-    title: title({ currentPage, language }),
+    title: title({ currentPage, field, language }),
     main: html`
       <h1>Recent review requests</h1>
 
-      ${form({ language })}
+      ${form({ field, language })}
 
       <ol class="cards">
         ${reviewRequests.map(
@@ -92,28 +93,32 @@ export const createPage = ({ currentPage, totalPages, language, reviewRequests }
 
       <nav class="pager">
         ${currentPage > 1
-          ? html`<a href="${format(reviewRequestsMatch.formatter, { page: currentPage - 1, language })}" rel="prev"
+          ? html`<a
+              href="${format(reviewRequestsMatch.formatter, { page: currentPage - 1, field, language })}"
+              rel="prev"
               >Newer</a
             >`
           : ''}
         ${currentPage < totalPages
-          ? html`<a href="${format(reviewRequestsMatch.formatter, { page: currentPage + 1, language })}" rel="next"
+          ? html`<a
+              href="${format(reviewRequestsMatch.formatter, { page: currentPage + 1, field, language })}"
+              rel="next"
               >Older</a
             >`
           : ''}
       </nav>
     `,
-    canonical: format(reviewRequestsMatch.formatter, { page: currentPage, language }),
+    canonical: format(reviewRequestsMatch.formatter, { page: currentPage, field, language }),
     current: 'review-requests',
   })
 
-export const createEmptyPage = ({ language }: Pick<ReviewRequests, 'language'>) =>
+export const createEmptyPage = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =>
   PageResponse({
-    title: title({ currentPage: 1, language }),
+    title: title({ currentPage: 1, field, language }),
     main: html`
       <h1>Recent review requests</h1>
 
-      ${form({ language })}
+      ${form({ field, language })}
 
       <div class="inset">
         <p>No review requests have been published yet.</p>
@@ -121,17 +126,19 @@ export const createEmptyPage = ({ language }: Pick<ReviewRequests, 'language'>) 
         <p>When they do, they’ll appear here.</p>
       </div>
     `,
-    canonical: format(reviewRequestsMatch.formatter, { page: 1, language }),
+    canonical: format(reviewRequestsMatch.formatter, { page: 1, field, language }),
     current: 'review-requests',
   })
 
-const title = ({ currentPage, language }: Pick<ReviewRequests, 'currentPage' | 'language'>) => {
-  const details = RA.append(`page ${currentPage}`)([language ? iso6391.getName(language) : undefined].filter(isString))
+const title = ({ currentPage, field, language }: Pick<ReviewRequests, 'currentPage' | 'field' | 'language'>) => {
+  const details = RA.append(`page ${currentPage}`)(
+    [field ? getFieldName(field) : undefined, language ? iso6391.getName(language) : undefined].filter(isString),
+  )
 
   return plainText`Recent review requests (${formatList('en', { style: 'narrow' })(details)})`
 }
 
-const form = ({ language }: Pick<ReviewRequests, 'language'>) => html`
+const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) => html`
   <form
     method="get"
     action="${format(reviewRequestsMatch.formatter, {})}"
@@ -152,6 +159,7 @@ const form = ({ language }: Pick<ReviewRequests, 'language'>) => html`
         ),
       )}
     </select>
+    ${field ? html`<input type="hidden" name="field" value="${field}" />` : ''}
     <button>Filter results</button>
   </form>
 `

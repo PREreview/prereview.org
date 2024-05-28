@@ -11,6 +11,7 @@ import type { RecentReviewRequest } from '../home-page'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint'
 import type { ReviewRequestPreprintId } from '../review-request'
 import type { ReviewRequests } from '../review-requests-page'
+import type { FieldId } from '../types/field'
 import type { GenerateUuidEnv } from '../types/uuid'
 import type { User } from '../user'
 import { constructCoarPayload } from './construct-coar-payload'
@@ -33,9 +34,11 @@ export const publishToPrereviewCoarNotifyInbox = (
   )
 
 export const getReviewRequestsFromPrereviewCoarNotify = ({
+  field,
   language,
   page,
 }: {
+  field?: FieldId
   language?: LanguageCode
   page: number
 }): RTE.ReaderTaskEither<
@@ -45,6 +48,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
 > =>
   pipe(
     RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
+    RTE.map(field ? RA.filter(request => request.fields.includes(field)) : identity),
     RTE.map(language ? RA.filter(request => request.language === language) : identity),
     RTE.map(RA.chunksOf(5)),
     RTE.chainW(pages =>
@@ -52,6 +56,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
         RTE.Do,
         RTE.let('currentPage', () => page),
         RTE.let('totalPages', () => pages.length),
+        RTE.let('field', () => field),
         RTE.let('language', () => language),
         RTE.apS(
           'reviewRequests',
