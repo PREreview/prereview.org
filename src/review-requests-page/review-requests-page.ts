@@ -10,7 +10,7 @@ import { type Html, html, plainText, rawHtml } from '../html'
 import { PageResponse } from '../response'
 import { reviewRequestsMatch, writeReviewMatch } from '../routes'
 import { renderDate } from '../time'
-import { getFieldName } from '../types/field'
+import { type FieldId, fieldIds, getFieldName } from '../types/field'
 import { getSubfieldName } from '../types/subfield'
 import type { ReviewRequests } from './review-requests'
 
@@ -159,7 +159,15 @@ const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =
         ),
       )}
     </select>
-    ${field ? html`<input type="hidden" name="field" value="${field}" />` : ''}
+    <label for="field">Filter by field</label>
+    <select name="field" id="field">
+      <option value="" ${field === undefined ? html`selected` : ''}>Any</option>
+      ${pipe(
+        fieldIds,
+        RA.map(field => [field, getFieldName(field)] satisfies [FieldId, string]),
+        RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
+      )}
+    </select>
     <button>Filter results</button>
   </form>
 `

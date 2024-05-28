@@ -410,11 +410,16 @@ test('can view an older request in a specific field', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'See all requests' }).click()
 
-  await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
+  const filters = page.getByRole('search', { name: 'Filter' })
 
-  await page.goto('/review-requests?field=24')
+  await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
+  await expect(filters.getByLabel('Filter by field').locator('[selected]')).toHaveText('Any')
+
+  await filters.getByLabel('Filter by field').selectOption('Immunology and Microbiology')
+  await filters.getByRole('button', { name: 'Filter results' }).click()
 
   await expect(page).toHaveTitle('Recent review requests (Immunology and Microbiology, page 1) | PREreview')
+  await expect(filters.getByLabel('Filter by field').locator('[selected]')).toHaveText('Immunology and Microbiology')
   await expect(
     page.getByRole('link', { name: 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' }),
   ).toBeHidden()
