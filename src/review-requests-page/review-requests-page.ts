@@ -1,10 +1,12 @@
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/ReadonlyArray'
-import { pipe } from 'fp-ts/function'
+import type * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
+import { flow, pipe } from 'fp-ts/function'
+import { isString } from 'fp-ts/string'
 import iso6391, { type LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html'
+import { type Html, html, plainText, rawHtml } from '../html'
 import { PageResponse } from '../response'
 import { reviewRequestsMatch, writeReviewMatch } from '../routes'
 import { renderDate } from '../time'
@@ -13,7 +15,7 @@ import type { ReviewRequests } from './review-requests'
 
 export const createPage = ({ currentPage, totalPages, language, reviewRequests }: ReviewRequests) =>
   PageResponse({
-    title: plainText`Recent review requests (${language ? `${iso6391.getName(language)}, ` : ''}page ${currentPage})`,
+    title: title({ currentPage, language }),
     main: html`
       <h1>Recent review requests</h1>
 
@@ -107,7 +109,7 @@ export const createPage = ({ currentPage, totalPages, language, reviewRequests }
 
 export const createEmptyPage = ({ language }: Pick<ReviewRequests, 'language'>) =>
   PageResponse({
-    title: plainText`Recent review requests (${language ? `${iso6391.getName(language)}, ` : ''}page 1)`,
+    title: title({ currentPage: 1, language }),
     main: html`
       <h1>Recent review requests</h1>
 
@@ -122,6 +124,12 @@ export const createEmptyPage = ({ language }: Pick<ReviewRequests, 'language'>) 
     canonical: format(reviewRequestsMatch.formatter, { page: 1, language }),
     current: 'review-requests',
   })
+
+const title = ({ currentPage, language }: Pick<ReviewRequests, 'currentPage' | 'language'>) => {
+  const details = RA.append(`page ${currentPage}`)([language ? iso6391.getName(language) : undefined].filter(isString))
+
+  return plainText`Recent review requests (${formatList('en')(details)})`
+}
 
 const form = ({ language }: Pick<ReviewRequests, 'language'>) => html`
   <form
@@ -147,3 +155,11 @@ const form = ({ language }: Pick<ReviewRequests, 'language'>) => html`
     <button>Filter results</button>
   </form>
 `
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: RNEA.ReadonlyNonEmptyArray<string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(list => formatter.format(list), rawHtml)
+}
