@@ -128,7 +128,7 @@ export const createEmptyPage = ({ language }: Pick<ReviewRequests, 'language'>) 
 const title = ({ currentPage, language }: Pick<ReviewRequests, 'currentPage' | 'language'>) => {
   const details = RA.append(`page ${currentPage}`)([language ? iso6391.getName(language) : undefined].filter(isString))
 
-  return plainText`Recent review requests (${formatList('en')(details)})`
+  return plainText`Recent review requests (${formatList('en', { style: 'narrow' })(details)})`
 }
 
 const form = ({ language }: Pick<ReviewRequests, 'language'>) => html`
