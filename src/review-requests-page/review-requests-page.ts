@@ -1,6 +1,9 @@
 import { format } from 'fp-ts-routing'
+import * as Ord from 'fp-ts/Ord'
+import { type Ordering, sign } from 'fp-ts/Ordering'
 import * as RA from 'fp-ts/ReadonlyArray'
 import type * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
+import { snd } from 'fp-ts/ReadonlyTuple'
 import { flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import iso6391, { type LanguageCode } from 'iso-639-1'
@@ -154,6 +157,7 @@ const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =
       ${pipe(
         ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
         RA.map(language => [language, iso6391.getName(language)] as const),
+        RA.sort(Ord.contramap(snd)(ordString('en'))),
         RA.map(
           ([code, name]) => html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
         ),
@@ -165,12 +169,21 @@ const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =
       ${pipe(
         fieldIds,
         RA.map(field => [field, getFieldName(field)] satisfies [FieldId, string]),
+        RA.sort(Ord.contramap(snd)(ordString('en'))),
         RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
       )}
     </select>
     <button>Filter results</button>
   </form>
 `
+
+const ordString = (locale: LanguageCode) => Ord.fromCompare(localeCompare(locale))
+
+function localeCompare(...args: ConstructorParameters<typeof Intl.Collator>): (a: string, b: string) => Ordering {
+  const collator = new Intl.Collator(...args)
+
+  return flow((a, b) => collator.compare(a, b), sign)
+}
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
