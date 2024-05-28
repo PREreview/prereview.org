@@ -38,6 +38,7 @@ export interface PageResponse {
   readonly nav?: Html
   readonly main: Html
   readonly skipToLabel: 'form' | 'main' | 'prereview'
+  readonly extraSkipLink?: [Html, string]
   readonly js: Required<Page>['js']
 }
 
@@ -188,6 +189,7 @@ export const handlePageResponse = ({
               .exhaustive(),
             `#${response.skipToLabel}`,
           ],
+          ...(response._tag === 'PageResponse' && response.extraSkipLink ? [response.extraSkipLink] : []),
         ],
         current: response.current,
         js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),

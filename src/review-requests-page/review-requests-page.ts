@@ -20,12 +20,13 @@ import type { ReviewRequests } from './review-requests'
 export const createPage = ({ currentPage, totalPages, language, field, reviewRequests }: ReviewRequests) =>
   PageResponse({
     title: title({ currentPage, field, language }),
+    extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent review requests</h1>
 
       ${form({ field, language })}
 
-      <ol class="cards">
+      <ol class="cards" id="results">
         ${reviewRequests.map(
           (request, index) => html`
             <li>
@@ -118,12 +119,13 @@ export const createPage = ({ currentPage, totalPages, language, field, reviewReq
 export const createEmptyPage = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =>
   PageResponse({
     title: title({ currentPage: 1, field, language }),
+    extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent review requests</h1>
 
       ${form({ field, language })}
 
-      <div class="inset">
+      <div class="inset" id="results">
         <p>No review requests have been published yet.</p>
 
         <p>When they do, they’ll appear here.</p>
