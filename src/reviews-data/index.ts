@@ -50,6 +50,7 @@ const PreprintIdE = {
 
 const PrereviewE = E.struct({
   preprint: PreprintIdE,
+  server: StringE,
   createdAt: PlainDateE,
   doi: DoiE,
   author: StringE,
@@ -58,6 +59,7 @@ const PrereviewE = E.struct({
 
 interface FlatPrereview {
   preprint: IndeterminatePreprintId
+  server: string
   createdAt: PlainDate
   doi: Doi
   author: string
@@ -80,6 +82,7 @@ const toFlatEntry = (prereview: Prereview): ReadonlyArray<FlatPrereview> =>
     RA.filter(author => author.orcid !== undefined || isPseudonym(author.name)),
     RA.map(author => ({
       preprint: prereview.preprint,
+      server: prereview.preprint.type,
       createdAt: prereview.createdAt,
       doi: prereview.doi,
       author: author.orcid ?? author.name,
