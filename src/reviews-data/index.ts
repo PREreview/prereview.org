@@ -9,10 +9,12 @@ import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import * as E from 'io-ts/Encoder'
+import type { Orcid } from 'orcid-id-ts'
 import safeStableStringify from 'safe-stable-stringify'
 import { P, match } from 'ts-pattern'
 import type { ScietyListEnv } from '../sciety-list'
 import type { IndeterminatePreprintId } from '../types/preprint-id'
+import { isPseudonym } from '../types/pseudonym'
 
 import PlainDate = Temporal.PlainDate
 
@@ -20,7 +22,7 @@ export interface Prereview {
   preprint: IndeterminatePreprintId
   createdAt: PlainDate
   doi: Doi
-  authors: ReadonlyArray<{ name: string }>
+  authors: ReadonlyArray<{ name: string; orcid?: Orcid }>
 }
 
 export interface GetPrereviewsEnv {
@@ -51,6 +53,7 @@ const PrereviewE = E.struct({
   createdAt: PlainDateE,
   doi: DoiE,
   author: StringE,
+  authorType: StringE,
 }) satisfies E.Encoder<JsonRecord, FlatPrereview>
 
 interface FlatPrereview {
@@ -58,6 +61,7 @@ interface FlatPrereview {
   createdAt: PlainDate
   doi: Doi
   author: string
+  authorType: 'public' | 'pseudonym'
 }
 
 const PrereviewsE = ReadonlyArrayE(PrereviewE)
@@ -73,11 +77,13 @@ const isAllowed = pipe(
 const toFlatEntry = (prereview: Prereview): ReadonlyArray<FlatPrereview> =>
   pipe(
     prereview.authors,
+    RA.filter(author => author.orcid !== undefined || isPseudonym(author.name)),
     RA.map(author => ({
       preprint: prereview.preprint,
       createdAt: prereview.createdAt,
       doi: prereview.doi,
-      author: author.name,
+      author: author.orcid ?? author.name,
+      authorType: author.orcid === undefined ? 'pseudonym' : 'public',
     })),
   )
 
