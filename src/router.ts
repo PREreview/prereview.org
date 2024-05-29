@@ -133,6 +133,7 @@ import { handleResponse } from './response'
 import { reviewAPreprint } from './review-a-preprint-page'
 import { reviewPage } from './review-page'
 import { reviewRequests } from './review-requests-page'
+import { reviewsData } from './reviews-data'
 import { reviewsPage } from './reviews-page'
 import {
   aboutUsMatch,
@@ -197,6 +198,7 @@ import {
   reviewAPreprintMatch,
   reviewMatch,
   reviewRequestsMatch,
+  reviewsDataMatch,
   reviewsMatch,
   scietyListMatch,
   trainingsMatch,
@@ -1907,6 +1909,16 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             ),
             env,
           ),
+        })),
+      ),
+    ),
+    pipe(
+      reviewsDataMatch.parser,
+      P.map(() => reviewsData),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getPrereviews: withEnv(() => getPrereviewsForSciety, env),
         })),
       ),
     ),
