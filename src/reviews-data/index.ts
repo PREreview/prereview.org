@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
 import type { Json, JsonRecord } from 'fp-ts/Json'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as RA from 'fp-ts/ReadonlyArray'
 import type * as TE from 'fp-ts/TaskEither'
 import { constVoid, flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
@@ -49,8 +50,15 @@ const PrereviewE = E.struct({
   preprint: PreprintIdE,
   createdAt: PlainDateE,
   doi: DoiE,
-  authors: ReadonlyArrayE(E.struct({ name: StringE })),
-}) satisfies E.Encoder<JsonRecord, Prereview>
+  author: StringE,
+}) satisfies E.Encoder<JsonRecord, FlatPrereview>
+
+interface FlatPrereview {
+  preprint: IndeterminatePreprintId
+  createdAt: PlainDate
+  doi: Doi
+  author: string
+}
 
 const PrereviewsE = ReadonlyArrayE(PrereviewE)
 
@@ -62,9 +70,21 @@ const isAllowed = pipe(
   RM.bimap(() => 'forbidden' as const, constVoid),
 )
 
+const toFlatEntry = (prereview: Prereview): ReadonlyArray<FlatPrereview> =>
+  pipe(
+    prereview.authors,
+    RA.map(author => ({
+      preprint: prereview.preprint,
+      createdAt: prereview.createdAt,
+      doi: prereview.doi,
+      author: author.name,
+    })),
+  )
+
 export const reviewsData = pipe(
   isAllowed,
   RM.chainReaderTaskEitherKW(getPrereviews),
+  RM.map(RA.chain(toFlatEntry)),
   RM.map(PrereviewsE.encode),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainFirst(() => RM.contentType('application/json')),
