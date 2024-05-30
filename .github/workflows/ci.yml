@@ -339,6 +339,9 @@ jobs:
       - name: 'Tag image'
         run: docker tag ${{ needs.build-image.outputs.image }} ${{ steps.image.outputs.image }}
 
+      - name: 'Debug Fly registry connection'
+        run: "curl -I -H 'flyio-debug: doit' -w '%header{flyio-debug}' -s -o /dev/null https://registry.fly.io"
+
       - name: 'Push image'
         run: docker push ${{ steps.image.outputs.image }}
 
