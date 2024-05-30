@@ -189,7 +189,7 @@ export const createPage = ({
 
         <ul class="statistics">
           <li>
-            <data value="860">860</data>
+            <data value="887">887</data>
             PREreviews
           </li>
           <li>
@@ -197,7 +197,7 @@ export const createPage = ({
             preprint servers
           </li>
           <li>
-            <data value="2684">2,684</data>
+            <data value="2736">2,736</data>
             PREreviewers
           </li>
         </ul>
