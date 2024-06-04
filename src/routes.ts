@@ -285,7 +285,11 @@ export const profileMatch = pipe(P.lit('profiles'), P.then(type('profile', Profi
 
 export const preprintReviewsMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))
 
-export const reviewsMatch = pipe(P.lit('reviews'), P.then(query(C.struct({ page: IntegerFromStringC }))), P.then(P.end))
+export const reviewsMatch = pipe(
+  P.lit('reviews'),
+  P.then(query(C.partial({ page: IntegerFromStringC }))),
+  P.then(P.end),
+)
 
 export const reviewMatch = pipe(P.lit('reviews'), P.then(type('id', IntegerFromStringC)), P.then(P.end))
 

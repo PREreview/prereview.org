@@ -278,7 +278,7 @@ export const createPage = ({
               </ol>
 
               <nav>
-                <a href="${format(reviewsMatch.formatter, { page: 1 })}" class="forward">See all reviews</a>
+                <a href="${format(reviewsMatch.formatter, {})}" class="forward">See all reviews</a>
               </nav>
             </section>
           `,

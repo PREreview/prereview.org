@@ -448,7 +448,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(reviewsPage(page))),
+          RM.apSW('response', RM.fromReaderTask(reviewsPage(page ?? 1))),
           RM.ichainW(handleResponse),
         ),
       ),
