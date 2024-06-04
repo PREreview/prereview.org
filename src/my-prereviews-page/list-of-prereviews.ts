@@ -9,6 +9,7 @@ import { PageResponse } from '../response'
 import { myPrereviewsMatch, profileMatch, reviewMatch } from '../routes'
 import { renderDate } from '../time'
 import { OrcidProfileIdForUser, PseudonymProfileIdForUser } from '../types/profile-id'
+import { getSubfieldName } from '../types/subfield'
 import type { User } from '../user'
 import type { Prereview } from './prereviews'
 
@@ -61,6 +62,14 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
                     >${prereview.preprint.title}</cite
                   >
                 </a>
+
+                ${prereview.subfields.length > 0
+                  ? html`
+                      <ul class="categories">
+                        ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
+                      </ul>
+                    `
+                  : ''}
 
                 <dl>
                   <dt>Review published</dt>

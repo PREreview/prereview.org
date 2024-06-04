@@ -10,7 +10,9 @@ export const prereview = (): fc.Arbitrary<Prereview> =>
       club: fc.clubId(),
       reviewers: fc.nonEmptyArray(fc.string()),
       published: fc.plainDate(),
+      fields: fc.array(fc.fieldId()),
+      subfields: fc.array(fc.subfieldId()),
       preprint: fc.preprintTitle(),
     },
-    { requiredKeys: ['id', 'reviewers', 'published', 'preprint'] },
+    { requiredKeys: ['id', 'reviewers', 'published', 'fields', 'subfields', 'preprint'] },
   )
