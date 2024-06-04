@@ -9,6 +9,7 @@ import { type Html, html, plainText, rawHtml } from '../html'
 import { PageResponse } from '../response'
 import { reviewMatch, reviewsMatch } from '../routes'
 import { renderDate } from '../time'
+import { getSubfieldName } from '../types/subfield'
 import type { RecentPrereviews } from './recent-prereviews'
 
 export const createPage = ({ currentPage, totalPages, recentPrereviews }: RecentPrereviews) =>
@@ -34,6 +35,14 @@ export const createPage = ({ currentPage, totalPages, recentPrereviews }: Recent
                           >${prereview.preprint.title}</cite
                         >
                       </a>
+
+                      ${prereview.subfields.length > 0
+                        ? html`
+                            <ul class="categories">
+                              ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
+                            </ul>
+                          `
+                        : ''}
 
                       <dl>
                         <dt>Review published</dt>

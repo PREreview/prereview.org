@@ -46,15 +46,16 @@ import {
 } from 'zenodo-ts'
 import { getClubByName, getClubName } from './club-details'
 import { type SleepEnv, reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import type { RecentPrereview } from './home-page'
 import { plainText, sanitizeHtml } from './html'
 import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
 import type { Prereview as PreprintPrereview } from './preprint-reviews-page'
 import { type PublicUrlEnv, toUrl } from './public-url'
 import type { Prereview } from './review-page'
+import type { RecentPrereviews } from './reviews-page'
 import { reviewMatch } from './routes'
 import type { Prereview as ScietyPrereview } from './sciety-list'
 import type { ClubId } from './types/club-id'
+import { isFieldId } from './types/field'
 import {
   type IndeterminatePreprintId,
   PreprintDoiD,
@@ -63,6 +64,7 @@ import {
   fromUrl,
 } from './types/preprint-id'
 import type { ProfileId } from './types/profile-id'
+import { isSubfieldId } from './types/subfield'
 import type { User } from './user'
 import type { NewPrereview } from './write-review'
 
@@ -586,7 +588,7 @@ function recordToRecentPrereview(
 ): RTE.ReaderTaskEither<
   GetPreprintTitleEnv & L.LoggerEnv,
   'no reviewed preprint' | 'unavailable' | 'not-found',
-  RecentPrereview
+  RecentPrereviews['recentPrereviews'][number]
 > {
   return pipe(
     getReviewedPreprintId(record),
@@ -598,6 +600,8 @@ function recordToRecentPrereview(
         published: RTE.right(
           toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),
+        fields: RTE.right(getReviewFields(record)),
+        subfields: RTE.right(getReviewSubfields(record)),
         preprint: getPreprintTitle(preprintId),
       }),
     ),
@@ -645,6 +649,28 @@ function isInCommunity(record: Record) {
 function isPeerReview(record: Record) {
   return record.metadata.resource_type.type === 'publication' && record.metadata.resource_type.subtype === 'peerreview'
 }
+
+const getReviewFields = flow(
+  (record: Record) => record.metadata.subjects ?? [],
+  RA.filterMap(
+    flow(
+      get('identifier'),
+      O.fromNullableK(identifier => (/^https:\/\/openalex\.org\/fields\/(.+)$/.exec(identifier) ?? [])[1]),
+      O.filter(isFieldId),
+    ),
+  ),
+)
+
+const getReviewSubfields = flow(
+  (record: Record) => record.metadata.subjects ?? [],
+  RA.filterMap(
+    flow(
+      get('identifier'),
+      O.fromNullableK(identifier => (/^https:\/\/openalex\.org\/subfields\/(.+)$/.exec(identifier) ?? [])[1]),
+      O.filter(isSubfieldId),
+    ),
+  ),
+)
 
 const getReviewClub = flow(
   (record: Record) => record.metadata.contributors ?? [],

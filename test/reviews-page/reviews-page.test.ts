@@ -18,6 +18,8 @@ describe('reviewsPage', () => {
           id: fc.integer(),
           reviewers: fc.nonEmptyArray(fc.string()),
           published: fc.plainDate(),
+          fields: fc.array(fc.fieldId()),
+          subfields: fc.array(fc.subfieldId()),
           preprint: fc.preprintTitle(),
         }),
       ),
