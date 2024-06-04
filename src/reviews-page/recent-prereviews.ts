@@ -34,8 +34,8 @@ export interface GetRecentPrereviewsEnv {
   getRecentPrereviews: (page: number) => TE.TaskEither<'not-found' | 'unavailable', RecentPrereviews>
 }
 
-export const getRecentPrereviews = (page: number) =>
+export const getRecentPrereviews = (...args: Parameters<GetRecentPrereviewsEnv['getRecentPrereviews']>) =>
   pipe(
     RTE.ask<GetRecentPrereviewsEnv>(),
-    RTE.chainTaskEitherK(({ getRecentPrereviews }) => getRecentPrereviews(page)),
+    RTE.chainTaskEitherK(({ getRecentPrereviews }) => getRecentPrereviews(...args)),
   )
