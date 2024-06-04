@@ -44,7 +44,22 @@ describe('reviewsPage', () => {
     expect(getRecentPrereviews).toHaveBeenCalledWith(page)
   })
 
-  test.prop([fc.integer()])('when the page is not found', async page => {
+  test('when there are no reviews', async () => {
+    const actual = await _.reviewsPage(1)({ getRecentPrereviews: () => TE.left('not-found') })()
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(reviewsMatch.formatter, { page: 1 }),
+      current: 'reviews',
+      status: Status.OK,
+      title: expect.stringContaining('PREreviews'),
+      main: expect.stringContaining('PREreviews'),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
+
+  test.prop([fc.oneof(fc.integer({ max: 0 }), fc.integer({ min: 2 }))])('when the page is not found', async page => {
     const actual = await _.reviewsPage(page)({ getRecentPrereviews: () => TE.left('not-found') })()
 
     expect(actual).toStrictEqual({

@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html'
 import type { RecentPrereviews } from '../../src/reviews-page'
-import { createPage } from '../../src/reviews-page/reviews-page'
+import { createPage, emptyPage } from '../../src/reviews-page/reviews-page'
 import { expect, test } from '../base'
 
 import PlainDate = Temporal.PlainDate
@@ -15,6 +15,12 @@ test('content looks right', async ({ showPage }) => {
   })
 
   const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when empty', async ({ showPage }) => {
+  const content = await showPage(emptyPage)
 
   await expect(content).toHaveScreenshot()
 })

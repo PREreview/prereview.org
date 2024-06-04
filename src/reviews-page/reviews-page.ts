@@ -98,6 +98,21 @@ export const createPage = ({ currentPage, totalPages, recentPrereviews }: Recent
     current: 'reviews',
   })
 
+export const emptyPage = PageResponse({
+  title: plainText`Recent PREreviews (page 1)`,
+  main: html`
+    <h1>Recent PREreviews</h1>
+
+    <div class="inset">
+      <p>No PREreviews have been published yet.</p>
+
+      <p>When they do, they’ll appear here.</p>
+    </div>
+  `,
+  canonical: format(reviewsMatch.formatter, { page: 1 }),
+  current: 'reviews',
+})
+
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
 ): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
