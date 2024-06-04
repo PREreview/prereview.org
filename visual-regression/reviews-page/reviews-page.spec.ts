@@ -19,8 +19,31 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right with a field', async ({ showPage }) => {
+  const response = createPage({
+    currentPage: 1,
+    totalPages: 3,
+    field: '30',
+    recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks right when empty', async ({ showPage }) => {
-  const content = await showPage(emptyPage)
+  const response = emptyPage()
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when empty with a field', async ({ showPage }) => {
+  const response = emptyPage({ field: '30' })
+
+  const content = await showPage(response)
 
   await expect(content).toHaveScreenshot()
 })

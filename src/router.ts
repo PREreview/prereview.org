@@ -423,7 +423,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getRecentPrereviews: withEnv(
             () =>
               pipe(
-                getRecentPrereviewsFromZenodo(1),
+                getRecentPrereviewsFromZenodo({ page: 1 }),
                 RTE.matchW(
                   () => RA.empty,
                   ({ recentPrereviews }) => recentPrereviews,
@@ -444,11 +444,11 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       reviewsMatch.parser,
-      P.map(({ page }) =>
+      P.map(({ field, page }) =>
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(reviewsPage(page ?? 1))),
+          RM.apSW('response', RM.fromReaderTask(reviewsPage({ field, page: page ?? 1 }))),
           RM.ichainW(handleResponse),
         ),
       ),

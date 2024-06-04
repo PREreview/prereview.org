@@ -287,7 +287,7 @@ export const preprintReviewsMatch = pipe(P.lit('preprints'), P.then(type('id', P
 
 export const reviewsMatch = pipe(
   P.lit('reviews'),
-  P.then(query(C.partial({ page: IntegerFromStringC }))),
+  P.then(query(C.partial({ field: EmptyAsUndefinedC(FieldIdC), page: IntegerFromStringC }))),
   P.then(P.end),
 )
 

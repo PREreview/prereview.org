@@ -2,6 +2,7 @@ import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
+import { isString } from 'fp-ts/string'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details'
@@ -9,12 +10,13 @@ import { type Html, html, plainText, rawHtml } from '../html'
 import { PageResponse } from '../response'
 import { reviewMatch, reviewsMatch } from '../routes'
 import { renderDate } from '../time'
+import { type FieldId, getFieldName } from '../types/field'
 import { getSubfieldName } from '../types/subfield'
 import type { RecentPrereviews } from './recent-prereviews'
 
-export const createPage = ({ currentPage, totalPages, recentPrereviews }: RecentPrereviews) =>
+export const createPage = ({ currentPage, field, totalPages, recentPrereviews }: RecentPrereviews) =>
   PageResponse({
-    title: title({ currentPage }),
+    title: title({ currentPage, field }),
     main: html`
       <h1>Recent PREreviews</h1>
 
@@ -84,37 +86,44 @@ export const createPage = ({ currentPage, totalPages, recentPrereviews }: Recent
 
             <nav class="pager">
               ${currentPage > 1
-                ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage - 1 })}" rel="prev">Newer</a>`
+                ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage - 1, field })}" rel="prev"
+                    >Newer</a
+                  >`
                 : ''}
               ${currentPage < totalPages
-                ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage + 1 })}" rel="next">Older</a>`
+                ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage + 1, field })}" rel="next"
+                    >Older</a
+                  >`
                 : ''}
             </nav>
           `,
         ),
       )}
     `,
-    canonical: format(reviewsMatch.formatter, { page: currentPage }),
+    canonical: format(reviewsMatch.formatter, { page: currentPage, field }),
     current: 'reviews',
   })
 
-export const emptyPage = PageResponse({
-  title: title({ currentPage: 1 }),
-  main: html`
-    <h1>Recent PREreviews</h1>
+export const emptyPage = ({ field }: { field?: FieldId } = {}) =>
+  PageResponse({
+    title: title({ currentPage: 1, field }),
+    main: html`
+      <h1>Recent PREreviews</h1>
 
-    <div class="inset">
-      <p>No PREreviews have been published yet.</p>
+      <div class="inset">
+        <p>No PREreviews have been published yet.</p>
 
-      <p>When they do, they’ll appear here.</p>
-    </div>
-  `,
-  canonical: format(reviewsMatch.formatter, { page: 1 }),
-  current: 'reviews',
-})
+        <p>When they do, they’ll appear here.</p>
+      </div>
+    `,
+    canonical: format(reviewsMatch.formatter, { page: 1, field }),
+    current: 'reviews',
+  })
 
-function title({ currentPage }: Pick<RecentPrereviews, 'currentPage'>) {
-  return plainText`Recent PREreviews (page ${currentPage})`
+const title = ({ currentPage, field }: Pick<RecentPrereviews, 'currentPage' | 'field'>) => {
+  const details = RA.append(`page ${currentPage}`)([field ? getFieldName(field) : undefined].filter(isString))
+
+  return plainText`Recent PREreviews (${formatList('en', { style: 'narrow' })(details)})`
 }
 
 function formatList(

@@ -15,6 +15,7 @@ import PlainDate = Temporal.PlainDate
 export interface RecentPrereviews {
   readonly currentPage: number
   readonly totalPages: number
+  readonly field?: FieldId
   readonly recentPrereviews: RNEA.ReadonlyNonEmptyArray<{
     readonly club?: ClubId
     readonly id: number
@@ -31,7 +32,10 @@ export interface RecentPrereviews {
 }
 
 export interface GetRecentPrereviewsEnv {
-  getRecentPrereviews: (page: number) => TE.TaskEither<'not-found' | 'unavailable', RecentPrereviews>
+  getRecentPrereviews: (args: {
+    field?: FieldId
+    page: number
+  }) => TE.TaskEither<'not-found' | 'unavailable', RecentPrereviews>
 }
 
 export const getRecentPrereviews = (...args: Parameters<GetRecentPrereviewsEnv['getRecentPrereviews']>) =>

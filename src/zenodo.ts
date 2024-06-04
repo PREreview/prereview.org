@@ -55,7 +55,7 @@ import type { RecentPrereviews } from './reviews-page'
 import { reviewMatch } from './routes'
 import type { Prereview as ScietyPrereview } from './sciety-list'
 import type { ClubId } from './types/club-id'
-import { isFieldId } from './types/field'
+import { type FieldId, isFieldId } from './types/field'
 import {
   type IndeterminatePreprintId,
   PreprintDoiD,
@@ -107,72 +107,77 @@ export const getPrereviewsForSciety = pipe(
   ),
 )
 
-export const getRecentPrereviewsFromZenodo = flow(
-  RTE.fromPredicate(
-    (currentPage: number) => currentPage > 0,
-    () => 'not-found' as const,
-  )<unknown>,
-  RTE.bindTo('currentPage'),
-  RTE.bindW(
-    'records',
-    flow(
-      ({ currentPage }) =>
-        new URLSearchParams({
-          page: currentPage.toString(),
-          size: '5',
-          sort: 'publication-desc',
-          resource_type: 'publication::publication-peerreview',
-        }),
-      getCommunityRecords('prereview-reviews'),
+export const getRecentPrereviewsFromZenodo = ({ field, page }: { field?: FieldId; page: number }) =>
+  pipe(
+    RTE.Do,
+    RTE.let('currentPage', () => page),
+    RTE.let('field', () => field),
+    RTE.filterOrElse(
+      ({ currentPage }) => currentPage > 0,
+      () => 'not-found' as const,
     ),
-  ),
-  RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
-  RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(2000)),
-  RTE.bindW(
-    'hits',
-    RTE.fromOptionK(() => 'not-found' as const)(({ records }) => RNEA.fromReadonlyArray(records.hits.hits)),
-  ),
-  RTE.bindW(
-    'recentPrereviews',
-    flow(
-      ({ hits }) => hits,
-      RT.traverseArray(recordToRecentPrereview),
-      RT.map(flow(RA.rights, E.fromOptionK(() => 'unavailable' as const)(RNEA.fromReadonlyArray))),
+    RTE.bindW(
+      'records',
+      flow(
+        ({ currentPage, field }) =>
+          new URLSearchParams({
+            page: currentPage.toString(),
+            size: '5',
+            sort: 'publication-desc',
+            resource_type: 'publication::publication-peerreview',
+            q: field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
+          }),
+        getCommunityRecords('prereview-reviews'),
+      ),
     ),
-  ),
-  flow(
-    RTE.orElseFirstW(
-      RTE.fromReaderIOK(
-        flow(
-          error =>
-            match(error)
-              .with(P.instanceOf(Error), error => O.some(error.message))
-              .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
-              .with({ _tag: P.string }, error => O.some(D.draw(error)))
-              .with('unavailable', O.some)
-              .with('not-found', () => O.none)
-              .exhaustive(),
-          O.match(
-            () => RIO.of(undefined),
-            flow(error => ({ error }), L.errorP('Unable to get recent records from Zenodo')),
+    RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
+    RTE.local(useStaleCache()),
+    RTE.local(timeoutRequest(2000)),
+    RTE.bindW(
+      'hits',
+      RTE.fromOptionK(() => 'not-found' as const)(({ records }) => RNEA.fromReadonlyArray(records.hits.hits)),
+    ),
+    RTE.bindW(
+      'recentPrereviews',
+      flow(
+        ({ hits }) => hits,
+        RT.traverseArray(recordToRecentPrereview),
+        RT.map(flow(RA.rights, E.fromOptionK(() => 'unavailable' as const)(RNEA.fromReadonlyArray))),
+      ),
+    ),
+    flow(
+      RTE.orElseFirstW(
+        RTE.fromReaderIOK(
+          flow(
+            error =>
+              match(error)
+                .with(P.instanceOf(Error), error => O.some(error.message))
+                .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
+                .with({ _tag: P.string }, error => O.some(D.draw(error)))
+                .with('unavailable', O.some)
+                .with('not-found', () => O.none)
+                .exhaustive(),
+            O.match(
+              () => RIO.of(undefined),
+              flow(error => ({ error }), L.errorP('Unable to get recent records from Zenodo')),
+            ),
           ),
         ),
       ),
+      RTE.bimap(
+        error =>
+          match(error)
+            .with('not-found', identity)
+            .otherwise(() => 'unavailable' as const),
+        ({ currentPage, recentPrereviews, field, records }) => ({
+          currentPage,
+          field,
+          recentPrereviews,
+          totalPages: Math.ceil(records.hits.total / 5),
+        }),
+      ),
     ),
-    RTE.bimap(
-      error =>
-        match(error)
-          .with('not-found', identity)
-          .otherwise(() => 'unavailable' as const),
-      ({ currentPage, recentPrereviews, records }) => ({
-        currentPage,
-        recentPrereviews,
-        totalPages: Math.ceil(records.hits.total / 5),
-      }),
-    ),
-  ),
-)
+  )
 
 export const getPrereviewFromZenodo = (id: number) =>
   pipe(

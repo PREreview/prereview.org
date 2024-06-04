@@ -35,200 +35,204 @@ import { shouldNotBeCalled } from './should-not-be-called'
 import PlainDate = Temporal.PlainDate
 
 describe('getRecentPrereviewsFromZenodo', () => {
-  test.prop([fc.integer({ min: 1 }), fc.preprintTitle(), fc.preprintTitle()])(
-    'when the PREreviews can be loaded',
-    async (page, preprint1, preprint2) => {
-      const records: Records = {
-        hits: {
-          total: 2,
-          hits: [
-            {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
-              conceptrecid: 1061863,
-              files: [
+  test.prop([
+    fc.integer({ min: 1 }),
+    fc.option(fc.fieldId(), { nil: undefined }),
+    fc.preprintTitle(),
+    fc.preprintTitle(),
+  ])('when the PREreviews can be loaded', async (page, field, preprint1, preprint2) => {
+    const records: Records = {
+      hits: {
+        total: 2,
+        hits: [
+          {
+            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptrecid: 1061863,
+            files: [
+              {
+                links: {
+                  self: new URL('http://example.com/review.html/content'),
+                },
+                key: 'review.html',
+                size: 58,
+              },
+            ],
+            id: 1061864,
+            links: {
+              latest: new URL('http://example.com/latest'),
+              latest_html: new URL('http://example.com/latest_html'),
+            },
+            metadata: {
+              access_right: 'open',
+              communities: [{ id: 'prereview-reviews' }],
+              creators: [{ name: 'PREreviewer' }],
+              description: 'Description',
+              doi: '10.5281/zenodo.1061864' as Doi,
+              language: 'eng',
+              license: { id: 'cc-by-4.0' },
+              publication_date: new Date('2022-07-04'),
+              related_identifiers: [
                 {
-                  links: {
-                    self: new URL('http://example.com/review.html/content'),
-                  },
-                  key: 'review.html',
-                  size: 58,
+                  scheme: 'doi',
+                  identifier: '10.1101/2022.01.13.476201' as Doi,
+                  relation: 'reviews',
+                  resource_type: 'publication-preprint',
                 },
               ],
-              id: 1061864,
-              links: {
-                latest: new URL('http://example.com/latest'),
-                latest_html: new URL('http://example.com/latest_html'),
+              resource_type: {
+                type: 'publication',
+                subtype: 'peerreview',
               },
-              metadata: {
-                access_right: 'open',
-                communities: [{ id: 'prereview-reviews' }],
-                creators: [{ name: 'PREreviewer' }],
-                description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
-                language: 'eng',
-                license: { id: 'cc-by-4.0' },
-                publication_date: new Date('2022-07-04'),
-                related_identifiers: [
-                  {
-                    scheme: 'doi',
-                    identifier: '10.1101/2022.01.13.476201' as Doi,
-                    relation: 'reviews',
-                    resource_type: 'publication-preprint',
-                  },
-                ],
-                resource_type: {
-                  type: 'publication',
-                  subtype: 'peerreview',
-                },
-                subjects: [
-                  {
-                    term: 'Dynamics and Pathogenesis of Cholera Bacteria',
-                    identifier: 'https://openalex.org/T11684',
-                    scheme: 'url',
-                  },
-                  {
-                    term: 'Endocrinology',
-                    identifier: 'https://openalex.org/subfields/1310',
-                    scheme: 'url',
-                  },
-                  {
-                    term: 'Biochemistry, Genetics and Molecular Biology',
-                    identifier: 'https://openalex.org/fields/13',
-                    scheme: 'url',
-                  },
-                  {
-                    term: 'Life Sciences',
-                    identifier: 'https://openalex.org/domains/1',
-                    scheme: 'url',
-                  },
-                  {
-                    term: 'Genetic and Pathogenic Study of Plague Bacteria',
-                    identifier: 'https://openalex.org/T12232',
-                    scheme: 'url',
-                  },
-                  {
-                    term: 'Genetics',
-                    identifier: 'https://openalex.org/subfields/1311',
-                    scheme: 'url',
-                  },
-                  {
-                    term: 'Global Burden of Foodborne Pathogens',
-                    identifier: 'https://openalex.org/T10486',
-                    scheme: 'url',
-                  },
-                  {
-                    term: 'Food Science',
-                    identifier: 'https://openalex.org/subfields/1106',
-                    scheme: 'url',
-                  },
-                  {
-                    term: 'Agricultural and Biological Sciences',
-                    identifier: 'https://openalex.org/fields/11',
-                    scheme: 'url',
-                  },
-                ],
-                title: 'Title',
-              },
-            },
-            {
-              conceptdoi: '10.5072/zenodo.1065235' as Doi,
-              conceptrecid: 1065235,
-              files: [
+              subjects: [
                 {
-                  links: {
-                    self: new URL('http://example.com/review.html/content'),
-                  },
-                  key: 'review.html',
-                  size: 58,
+                  term: 'Dynamics and Pathogenesis of Cholera Bacteria',
+                  identifier: 'https://openalex.org/T11684',
+                  scheme: 'url',
+                },
+                {
+                  term: 'Endocrinology',
+                  identifier: 'https://openalex.org/subfields/1310',
+                  scheme: 'url',
+                },
+                {
+                  term: 'Biochemistry, Genetics and Molecular Biology',
+                  identifier: 'https://openalex.org/fields/13',
+                  scheme: 'url',
+                },
+                {
+                  term: 'Life Sciences',
+                  identifier: 'https://openalex.org/domains/1',
+                  scheme: 'url',
+                },
+                {
+                  term: 'Genetic and Pathogenic Study of Plague Bacteria',
+                  identifier: 'https://openalex.org/T12232',
+                  scheme: 'url',
+                },
+                {
+                  term: 'Genetics',
+                  identifier: 'https://openalex.org/subfields/1311',
+                  scheme: 'url',
+                },
+                {
+                  term: 'Global Burden of Foodborne Pathogens',
+                  identifier: 'https://openalex.org/T10486',
+                  scheme: 'url',
+                },
+                {
+                  term: 'Food Science',
+                  identifier: 'https://openalex.org/subfields/1106',
+                  scheme: 'url',
+                },
+                {
+                  term: 'Agricultural and Biological Sciences',
+                  identifier: 'https://openalex.org/fields/11',
+                  scheme: 'url',
                 },
               ],
-              id: 1065236,
-              links: {
-                latest: new URL('http://example.com/latest'),
-                latest_html: new URL('http://example.com/latest_html'),
-              },
-              metadata: {
-                access_right: 'open',
-                communities: [{ id: 'prereview-reviews' }],
-                creators: [{ name: 'Josiah Carberry' }],
-                description: 'Description',
-                doi: '10.5281/zenodo.1065236' as Doi,
-                language: 'eng',
-                license: { id: 'cc-by-4.0' },
-                publication_date: new Date('2022-07-05'),
-                related_identifiers: [
-                  {
-                    scheme: 'doi',
-                    identifier: '10.1101/2022.02.14.480364' as Doi,
-                    relation: 'reviews',
-                    resource_type: 'publication-preprint',
-                  },
-                ],
-                resource_type: {
-                  type: 'publication',
-                  subtype: 'peerreview',
-                },
-                title: 'Title',
-              },
+              title: 'Title',
             },
-          ],
+          },
+          {
+            conceptdoi: '10.5072/zenodo.1065235' as Doi,
+            conceptrecid: 1065235,
+            files: [
+              {
+                links: {
+                  self: new URL('http://example.com/review.html/content'),
+                },
+                key: 'review.html',
+                size: 58,
+              },
+            ],
+            id: 1065236,
+            links: {
+              latest: new URL('http://example.com/latest'),
+              latest_html: new URL('http://example.com/latest_html'),
+            },
+            metadata: {
+              access_right: 'open',
+              communities: [{ id: 'prereview-reviews' }],
+              creators: [{ name: 'Josiah Carberry' }],
+              description: 'Description',
+              doi: '10.5281/zenodo.1065236' as Doi,
+              language: 'eng',
+              license: { id: 'cc-by-4.0' },
+              publication_date: new Date('2022-07-05'),
+              related_identifiers: [
+                {
+                  scheme: 'doi',
+                  identifier: '10.1101/2022.02.14.480364' as Doi,
+                  relation: 'reviews',
+                  resource_type: 'publication-preprint',
+                },
+              ],
+              resource_type: {
+                type: 'publication',
+                subtype: 'peerreview',
+              },
+              title: 'Title',
+            },
+          },
+        ],
+      },
+    }
+
+    const actual = await _.getRecentPrereviewsFromZenodo({ field, page })({
+      clock: SystemClock,
+      fetch: fetchMock.sandbox().getOnce(
+        {
+          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
+          query: {
+            page,
+            size: '5',
+            sort: 'publication-desc',
+            resource_type: 'publication::publication-peerreview',
+            q: field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
+          },
         },
-      }
+        {
+          body: RecordsC.encode(records),
+          status: Status.OK,
+        },
+      ),
+      getPreprintTitle: id =>
+        match(id.value as unknown)
+          .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
+          .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
+          .otherwise(() => TE.left('not-found')),
+      logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
+    })()
 
-      const actual = await _.getRecentPrereviewsFromZenodo(page)({
-        clock: SystemClock,
-        fetch: fetchMock.sandbox().getOnce(
+    expect(actual).toStrictEqual(
+      E.right({
+        currentPage: page,
+        field,
+        recentPrereviews: [
           {
-            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-            query: {
-              page,
-              size: '5',
-              sort: 'publication-desc',
-              resource_type: 'publication::publication-peerreview',
-            },
+            club: undefined,
+            id: 1061864,
+            reviewers: ['PREreviewer'],
+            published: new Temporal.PlainDate(2022, 7, 4),
+            fields: ['13', '11'],
+            subfields: ['1310', '1311', '1106'],
+            preprint: preprint1,
           },
           {
-            body: RecordsC.encode(records),
-            status: Status.OK,
+            club: undefined,
+            id: 1065236,
+            reviewers: ['Josiah Carberry'],
+            published: new Temporal.PlainDate(2022, 7, 5),
+            fields: [],
+            subfields: [],
+            preprint: preprint2,
           },
-        ),
-        getPreprintTitle: id =>
-          match(id.value as unknown)
-            .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
-            .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
-            .otherwise(() => TE.left('not-found')),
-        logger: () => IO.of(undefined),
-        sleep: shouldNotBeCalled,
-      })()
-
-      expect(actual).toStrictEqual(
-        E.right({
-          currentPage: page,
-          recentPrereviews: [
-            {
-              club: undefined,
-              id: 1061864,
-              reviewers: ['PREreviewer'],
-              published: new Temporal.PlainDate(2022, 7, 4),
-              fields: ['13', '11'],
-              subfields: ['1310', '1311', '1106'],
-              preprint: preprint1,
-            },
-            {
-              club: undefined,
-              id: 1065236,
-              reviewers: ['Josiah Carberry'],
-              published: new Temporal.PlainDate(2022, 7, 5),
-              fields: [],
-              subfields: [],
-              preprint: preprint2,
-            },
-          ],
-          totalPages: 1,
-        }),
-      )
-    },
-  )
+        ],
+        totalPages: 1,
+      }),
+    )
+  })
 
   test.prop([fc.integer({ min: 1 }), fc.preprintTitle()])(
     'revalidates if the PREreviews are stale',
@@ -291,6 +295,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 size: '5',
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',
+                q: '',
               }).toString()}` && cache === 'force-cache',
           {
             body: RecordsC.encode(records),
@@ -305,11 +310,12 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 size: '5',
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',
+                q: '',
               }).toString()}` && cache === 'no-cache',
           { throws: new Error('Network error') },
         )
 
-      const actual = await _.getRecentPrereviewsFromZenodo(page)({
+      const actual = await _.getRecentPrereviewsFromZenodo({ page })({
         clock: SystemClock,
         fetch,
         getPreprintTitle: () => TE.right(preprint),
@@ -320,6 +326,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       expect(actual).toStrictEqual(
         E.right({
           currentPage: page,
+          field: undefined,
           recentPrereviews: [
             {
               club: undefined,
@@ -431,7 +438,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         },
       }
 
-      const actual = await _.getRecentPrereviewsFromZenodo(page)({
+      const actual = await _.getRecentPrereviewsFromZenodo({ page })({
         clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(
           {
@@ -459,6 +466,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       expect(actual).toStrictEqual(
         E.right({
           currentPage: page,
+          field: undefined,
           recentPrereviews: [
             {
               club: undefined,
@@ -587,7 +595,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       },
     )
 
-    const actual = await _.getRecentPrereviewsFromZenodo(page)({
+    const actual = await _.getRecentPrereviewsFromZenodo({ page })({
       clock: SystemClock,
       fetch,
       getPreprintTitle: id =>
@@ -603,7 +611,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
   })
 
   test.prop([fc.integer({ min: 1 })])('when the list is empty', async page => {
-    const actual = await _.getRecentPrereviewsFromZenodo(page)({
+    const actual = await _.getRecentPrereviewsFromZenodo({ page })({
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
         {
@@ -644,7 +652,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         { status },
       )
 
-      const actual = await _.getRecentPrereviewsFromZenodo(page)({
+      const actual = await _.getRecentPrereviewsFromZenodo({ page })({
         clock: SystemClock,
         fetch,
         getPreprintTitle: shouldNotBeCalled,
@@ -658,7 +666,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
   )
 
   test.prop([fc.integer({ max: 0 })])('when the page number is impossible', async page => {
-    const actual = await _.getRecentPrereviewsFromZenodo(page)({
+    const actual = await _.getRecentPrereviewsFromZenodo({ page })({
       clock: SystemClock,
       fetch: shouldNotBeCalled,
       getPreprintTitle: shouldNotBeCalled,
