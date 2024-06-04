@@ -14,7 +14,7 @@ import type { RecentPrereviews } from './recent-prereviews'
 
 export const createPage = ({ currentPage, totalPages, recentPrereviews }: RecentPrereviews) =>
   PageResponse({
-    title: plainText`Recent PREreviews (page ${currentPage})`,
+    title: title({ currentPage }),
     main: html`
       <h1>Recent PREreviews</h1>
 
@@ -99,7 +99,7 @@ export const createPage = ({ currentPage, totalPages, recentPrereviews }: Recent
   })
 
 export const emptyPage = PageResponse({
-  title: plainText`Recent PREreviews (page 1)`,
+  title: title({ currentPage: 1 }),
   main: html`
     <h1>Recent PREreviews</h1>
 
@@ -112,6 +112,10 @@ export const emptyPage = PageResponse({
   canonical: format(reviewsMatch.formatter, { page: 1 }),
   current: 'reviews',
 })
+
+function title({ currentPage }: Pick<RecentPrereviews, 'currentPage'>) {
+  return plainText`Recent PREreviews (page ${currentPage})`
+}
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
