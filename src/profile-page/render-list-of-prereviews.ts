@@ -9,6 +9,7 @@ import { type Html, html, rawHtml } from '../html'
 import { reviewMatch } from '../routes'
 import { renderDate } from '../time'
 import type { NonEmptyString } from '../types/string'
+import { getSubfieldName } from '../types/subfield'
 import type { Prereviews } from './prereviews'
 
 export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyString) {
@@ -39,6 +40,14 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyStr
                       >${prereview.preprint.title}</cite
                     >
                   </a>
+
+                  ${prereview.subfields.length > 0
+                    ? html`
+                        <ul class="categories">
+                          ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
+                        </ul>
+                      `
+                    : ''}
 
                   <dl>
                     <dt>Review published</dt>

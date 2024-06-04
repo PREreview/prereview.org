@@ -84,6 +84,8 @@ const prereview1 = {
   id: 11062553,
   reviewers: ['Ashraya Ravikumar', 'Stephanie Wankowicz', '2 other authors'],
   published: PlainDate.from('2024-04-25'),
+  fields: ['16'],
+  subfields: ['1607'],
   preprint: {
     id: { type: 'arxiv', value: '10.48550/arxiv.2402.04845' as Doi<'48550'> },
     language: 'en',
@@ -95,6 +97,8 @@ const prereview2 = {
   id: 10888905,
   reviewers: ['Alain Manuel Chaple Gil'],
   published: PlainDate.from('2024-03-28'),
+  fields: [],
+  subfields: [],
   preprint: {
     id: { type: 'scielo', value: '10.1590/scielopreprints.7628' as Doi<'1590'> },
     language: 'es',
@@ -125,6 +129,8 @@ const prereview3 = {
     '3 other authors',
   ],
   published: PlainDate.from('2024-03-25'),
+  fields: ['27'],
+  subfields: ['2746'],
   preprint: {
     id: { type: 'edarxiv', value: '10.35542/osf.io/hsnke' as Doi<'35542'> },
     language: 'en',
@@ -147,6 +153,8 @@ const prereview4 = {
     '3 other authors',
   ],
   published: PlainDate.from('2024-03-04'),
+  fields: ['27', '23'],
+  subfields: ['2725', '2303'],
   preprint: {
     id: { type: 'biorxiv', value: '10.1101/2023.12.21.572824' as Doi<'1101'> },
     language: 'en',
@@ -166,6 +174,8 @@ const prereview5 = {
     'Pedro Ricardo Bin',
   ],
   published: PlainDate.from('2023-12-20'),
+  fields: ['12', '33'],
+  subfields: ['1211', '3310', '1208'],
   preprint: {
     id: { type: 'scielo', value: '10.1590/scielopreprints.7395' as Doi<'1590'> },
     language: 'pt',

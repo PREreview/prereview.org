@@ -1557,6 +1557,53 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                     type: 'publication',
                     subtype: 'peerreview',
                   },
+                  subjects: [
+                    {
+                      term: 'Dynamics and Pathogenesis of Cholera Bacteria',
+                      identifier: 'https://openalex.org/T11684',
+                      scheme: 'url',
+                    },
+                    {
+                      term: 'Endocrinology',
+                      identifier: 'https://openalex.org/subfields/1310',
+                      scheme: 'url',
+                    },
+                    {
+                      term: 'Biochemistry, Genetics and Molecular Biology',
+                      identifier: 'https://openalex.org/fields/13',
+                      scheme: 'url',
+                    },
+                    {
+                      term: 'Life Sciences',
+                      identifier: 'https://openalex.org/domains/1',
+                      scheme: 'url',
+                    },
+                    {
+                      term: 'Genetic and Pathogenic Study of Plague Bacteria',
+                      identifier: 'https://openalex.org/T12232',
+                      scheme: 'url',
+                    },
+                    {
+                      term: 'Genetics',
+                      identifier: 'https://openalex.org/subfields/1311',
+                      scheme: 'url',
+                    },
+                    {
+                      term: 'Global Burden of Foodborne Pathogens',
+                      identifier: 'https://openalex.org/T10486',
+                      scheme: 'url',
+                    },
+                    {
+                      term: 'Food Science',
+                      identifier: 'https://openalex.org/subfields/1106',
+                      scheme: 'url',
+                    },
+                    {
+                      term: 'Agricultural and Biological Sciences',
+                      identifier: 'https://openalex.org/fields/11',
+                      scheme: 'url',
+                    },
+                  ],
                   title: 'Title',
                 },
               },
@@ -1644,8 +1691,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               id: 1061864,
               reviewers: ['PREreviewer'],
               published: new Temporal.PlainDate(2022, 7, 4),
-              fields: [],
-              subfields: [],
+              fields: ['13', '11'],
+              subfields: ['1310', '1311', '1106'],
               preprint: preprint1,
             },
             {
