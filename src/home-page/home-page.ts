@@ -231,6 +231,14 @@ export const createPage = ({
                           >
                         </a>
 
+                        ${prereview.subfields.length > 0
+                          ? html`
+                              <ul class="categories">
+                                ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
+                              </ul>
+                            `
+                          : ''}
+
                         <dl>
                           <dt>Review published</dt>
                           <dd>${renderDate(prereview.published)}</dd>
