@@ -10,6 +10,7 @@ import { PageResponse } from '../response'
 import { clubProfileMatch, profileMatch, reviewMatch } from '../routes'
 import { renderDate } from '../time'
 import type { ClubId } from '../types/club-id'
+import { getSubfieldName } from '../types/subfield'
 import type { Prereviews } from './prereviews'
 
 export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; prereviews: Prereviews }) {
@@ -70,6 +71,14 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
                           >${prereview.preprint.title}</cite
                         >
                       </a>
+
+                      ${prereview.subfields.length > 0
+                        ? html`
+                            <ul class="categories">
+                              ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
+                            </ul>
+                          `
+                        : ''}
 
                       <dl>
                         <dt>Review published</dt>
