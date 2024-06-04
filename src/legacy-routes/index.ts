@@ -30,7 +30,6 @@ import {
   profileMatch,
   resourcesMatch,
   reviewAPreprintMatch,
-  reviewsMatch,
   writeReviewReviewTypeMatch,
 } from '../routes'
 import {
@@ -323,10 +322,6 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('reviews'), P.then(P.lit('new')), P.then(P.end)).parser,
       P.map(RM.fromMiddlewareK(() => movedPermanently(format(reviewAPreprintMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('reviews'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(reviewsMatch.formatter, { page: 1 })))),
     ),
     pipe(
       pipe(P.lit('settings'), P.then(P.lit('api')), P.then(P.end)).parser,

@@ -54,7 +54,6 @@ describe('legacyRoutes', () => {
     ['/preprints/arXiv-2106.14108', '/preprints/doi-10.48550-arxiv.2106.14108'],
     ['/prereview.org', '/'],
     ['/PREreview.org', '/'],
-    ['/reviews', '/reviews?page=1'],
     ['/reviews/new', '/review-a-preprint'],
     ['/signup', '/log-in'],
     ['/users/61782', 'https://www.authorea.com/users/61782'],
