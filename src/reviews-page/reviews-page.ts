@@ -1,8 +1,12 @@
 import { format } from 'fp-ts-routing'
+import * as Ord from 'fp-ts/Ord'
+import { type Ordering, sign } from 'fp-ts/Ordering'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
+import { snd } from 'fp-ts/ReadonlyTuple'
 import { flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
+import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details'
@@ -10,7 +14,7 @@ import { type Html, html, plainText, rawHtml } from '../html'
 import { PageResponse } from '../response'
 import { reviewMatch, reviewsMatch } from '../routes'
 import { renderDate } from '../time'
-import { type FieldId, getFieldName } from '../types/field'
+import { type FieldId, fieldIds, getFieldName } from '../types/field'
 import { getSubfieldName } from '../types/subfield'
 import type { RecentPrereviews } from './recent-prereviews'
 
@@ -19,6 +23,8 @@ export const createPage = ({ currentPage, field, totalPages, recentPrereviews }:
     title: title({ currentPage, field }),
     main: html`
       <h1>Recent PREreviews</h1>
+
+      ${form({ field })}
 
       <ol class="cards">
         ${pipe(
@@ -101,6 +107,8 @@ export const emptyPage = ({ field }: { field?: FieldId } = {}) =>
     main: html`
       <h1>Recent PREreviews</h1>
 
+      ${form({ field })}
+
       <div class="inset">
         <p>No PREreviews have been published yet.</p>
 
@@ -115,6 +123,40 @@ const title = ({ currentPage, field }: Pick<RecentPrereviews, 'currentPage' | 'f
   const details = RA.append(`page ${currentPage}`)([field ? getFieldName(field) : undefined].filter(isString))
 
   return plainText`Recent PREreviews (${formatList('en', { style: 'narrow' })(details)})`
+}
+
+const form = ({ field }: Pick<RecentPrereviews, 'field'>) => html`
+  <form
+    method="get"
+    action="${format(reviewsMatch.formatter, {})}"
+    novalidate
+    role="search"
+    aria-labelledby="filter-label"
+  >
+    <h2 class="visually-hidden" id="filter-label">Filter</h2>
+    <input type="hidden" name="page" value="1" />
+    <div>
+      <label for="field">Field</label>
+      <select name="field" id="field">
+        <option value="" ${field === undefined ? html`selected` : ''}>Any</option>
+        ${pipe(
+          fieldIds,
+          RA.map(field => [field, getFieldName(field)] satisfies [FieldId, string]),
+          RA.sort(Ord.contramap(snd)(ordString('en'))),
+          RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
+        )}
+      </select>
+    </div>
+    <button>Filter results</button>
+  </form>
+`
+
+const ordString = (locale: LanguageCode) => Ord.fromCompare(localeCompare(locale))
+
+function localeCompare(...args: ConstructorParameters<typeof Intl.Collator>): (a: string, b: string) => Ordering {
+  const collator = new Intl.Collator(...args)
+
+  return flow((a, b) => collator.compare(a, b), sign)
 }
 
 function formatList(

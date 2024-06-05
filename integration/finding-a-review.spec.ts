@@ -850,11 +850,16 @@ test('can view an older review in a specific field', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
-  await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
+  const filters = page.getByRole('search', { name: 'Filter' })
 
-  await page.goto('/reviews?field=24')
+  await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
+  await expect(filters.getByLabel('Field').locator('[selected]')).toHaveText('Any')
+
+  await filters.getByLabel('Field').selectOption('Immunology and Microbiology')
+  await filters.getByRole('button', { name: 'Filter results' }).click()
 
   await expect(page).toHaveTitle('Recent PREreviews (Immunology and Microbiology, page 1) | PREreview')
+  await expect(filters.getByLabel('Field').locator('[selected]')).toHaveText('Immunology and Microbiology')
 })
 
 test('might not load the older reviews in time', async ({ fetch, page }) => {
