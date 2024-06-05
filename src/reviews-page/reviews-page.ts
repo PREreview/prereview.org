@@ -38,7 +38,7 @@ export const createPage = ({ currentPage, field, totalPages, recentPrereviews }:
                   ${prereview.subfields.length > 0
                     ? html`
                         <ul class="categories">
-                          ${prereview.subfields.map(subfield => html` <li>${getSubfieldName(subfield)}</li>`)}
+                          ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
                         </ul>
                       `
                     : ''}
