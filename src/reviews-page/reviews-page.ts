@@ -21,12 +21,13 @@ import type { RecentPrereviews } from './recent-prereviews'
 export const createPage = ({ currentPage, field, totalPages, recentPrereviews }: RecentPrereviews) =>
   PageResponse({
     title: title({ currentPage, field }),
+    extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent PREreviews</h1>
 
       ${form({ field })}
 
-      <ol class="cards">
+      <ol class="cards" id="results">
         ${pipe(
           recentPrereviews,
           RNEA.map(
@@ -104,12 +105,13 @@ export const createPage = ({ currentPage, field, totalPages, recentPrereviews }:
 export const emptyPage = ({ field }: { field?: FieldId } = {}) =>
   PageResponse({
     title: title({ currentPage: 1, field }),
+    extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent PREreviews</h1>
 
       ${form({ field })}
 
-      <div class="inset">
+      <div class="inset" id="results">
         <p>No PREreviews have been published yet.</p>
 
         <p>When they do, they’ll appear here.</p>

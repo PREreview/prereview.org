@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
+import { html } from '../../src/html'
 import * as _ from '../../src/reviews-page'
 import { reviewsMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -41,6 +42,7 @@ describe('reviewsPage', () => {
       title: expect.stringContaining('PREreviews'),
       main: expect.stringContaining('PREreviews'),
       skipToLabel: 'main',
+      extraSkipLink: [html`Skip to results`, '#results'],
       js: [],
     })
     expect(getRecentPrereviews).toHaveBeenCalledWith({ field, page })
@@ -57,6 +59,7 @@ describe('reviewsPage', () => {
       title: expect.stringContaining('PREreviews'),
       main: expect.stringContaining('PREreviews'),
       skipToLabel: 'main',
+      extraSkipLink: [html`Skip to results`, '#results'],
       js: [],
     })
   })
