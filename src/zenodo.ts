@@ -14,14 +14,11 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
-import * as RR from 'fp-ts/ReadonlyRecord'
 import { constVoid, flow, identity, pipe } from 'fp-ts/function'
 import { toUpperCase } from 'fp-ts/string'
 import { type HttpError, NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
-import iso6391, { type LanguageCode } from 'iso-639-1'
-import iso6393To1 from 'iso-639-3/to-1.json'
 import * as L from 'logger-fp-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
@@ -56,6 +53,7 @@ import { reviewMatch } from './routes'
 import type { Prereview as ScietyPrereview } from './sciety-list'
 import type { ClubId } from './types/club-id'
 import { type FieldId, isFieldId } from './types/field'
+import { iso6393To1, iso6393Validate } from './types/iso639'
 import {
   type IndeterminatePreprintId,
   PreprintDoiD,
@@ -535,7 +533,13 @@ function recordToPrereview(
         authors: RTE.right<F.FetchEnv & GetPreprintEnv & L.LoggerEnv>(getAuthors(record) as never),
         club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
         doi: RTE.right(record.metadata.doi),
-        language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
+        language: RTE.right(
+          pipe(
+            O.fromNullable(record.metadata.language),
+            O.filter(iso6393Validate),
+            O.match(() => undefined, iso6393To1),
+          ),
+        ),
         license: RTE.right(license),
         published: RTE.right(
           toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
@@ -566,7 +570,13 @@ function recordToPreprintPrereview(
         authors: RTE.right(getAuthors(record)),
         club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
         id: RTE.right(record.id),
-        language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
+        language: RTE.right(
+          pipe(
+            O.fromNullable(record.metadata.language),
+            O.filter(iso6393Validate),
+            O.match(() => undefined, iso6393To1),
+          ),
+        ),
         text: getReviewText(reviewTextUrl),
       }),
     ),
@@ -757,10 +767,3 @@ const UrlD = pipe(
     ),
   ),
 )
-
-function iso633To1(code: string): O.Option<LanguageCode> {
-  return pipe(RR.lookup(code, iso6393To1), O.filter(iso6391Validate))
-}
-
-// https://github.com/meikidd/iso-639-1/pull/61
-const iso6391Validate = iso6391.validate as (code: string) => code is LanguageCode
