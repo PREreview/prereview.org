@@ -105,6 +105,7 @@ import {
   verifyContactEmailAddress,
 } from './my-details-page'
 import { myPrereviews } from './my-prereviews-page'
+import { getCategoriesFromOpenAlex } from './openalex'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid'
 import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page'
 import { partners } from './partners'
@@ -1526,7 +1527,19 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                 ),
               env,
             ),
-            getPreprintSubjects: () => T.of([]),
+            getPreprintSubjects: withEnv(
+              (id: PreprintId) =>
+                pipe(
+                  match(id)
+                    .with({ type: 'philsci' }, () => RTE.of([]))
+                    .otherwise(id => getCategoriesFromOpenAlex(id.value)),
+                  RTE.match(
+                    () => [],
+                    RA.map(category => ({ id: category.id, name: category.display_name })),
+                  ),
+                ),
+              env,
+            ),
           }),
         })),
       ),
