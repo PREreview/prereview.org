@@ -143,7 +143,21 @@ const form = ({ field, language }: Pick<RecentPrereviews, 'field' | 'language'>)
   >
     <h2 class="visually-hidden" id="filter-label">Filter</h2>
     <input type="hidden" name="page" value="1" />
-    <input type="hidden" name="language" value="${language ?? ''}" />
+    <div>
+      <label for="language">Language</label>
+      <select name="language" id="language">
+        <option value="" ${language === undefined ? html`selected` : ''}>Any</option>
+        ${pipe(
+          ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
+          RA.map(language => [language, iso6391.getName(language)] as const),
+          RA.sort(Ord.contramap(snd)(ordString('en'))),
+          RA.map(
+            ([code, name]) =>
+              html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
+          ),
+        )}
+      </select>
+    </div>
     <div>
       <label for="field">Field</label>
       <select name="field" id="field">
