@@ -846,6 +846,17 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
 })
 
+test('can view an older review in a specific language', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'See all reviews' }).click()
+
+  await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
+
+  await page.goto('/reviews?language=en')
+
+  await expect(page).toHaveTitle('Recent PREreviews (English, page 1) | PREreview')
+})
+
 test('can view an older review in a specific field', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'See all reviews' }).click()

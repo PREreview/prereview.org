@@ -27,6 +27,7 @@ import {
 import { getClubName } from '../src/club-details'
 import { plainText, rawHtml } from '../src/html'
 import { reviewMatch } from '../src/routes'
+import { iso6391To3 } from '../src/types/iso639'
 import type { NewPrereview } from '../src/write-review'
 import * as _ from '../src/zenodo'
 import * as fc from './fc'
@@ -38,9 +39,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
   test.prop([
     fc.integer({ min: 1 }),
     fc.option(fc.fieldId(), { nil: undefined }),
+    fc.option(fc.languageCode(), { nil: undefined }),
     fc.preprintTitle(),
     fc.preprintTitle(),
-  ])('when the PREreviews can be loaded', async (page, field, preprint1, preprint2) => {
+  ])('when the PREreviews can be loaded', async (page, field, language, preprint1, preprint2) => {
     const records: Records = {
       hits: {
         total: 2,
@@ -178,7 +180,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       },
     }
 
-    const actual = await _.getRecentPrereviewsFromZenodo({ field, page })({
+    const actual = await _.getRecentPrereviewsFromZenodo({ field, language, page })({
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
         {
@@ -188,7 +190,9 @@ describe('getRecentPrereviewsFromZenodo', () => {
             size: '5',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
-            q: field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
+            q: `${
+              field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : ''
+            }${field && language ? ' AND ' : ''}${language ? `language:"${iso6391To3(language)}"` : ''}`,
           },
         },
         {
@@ -209,6 +213,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       E.right({
         currentPage: page,
         field,
+        language,
         recentPrereviews: [
           {
             club: undefined,
@@ -327,6 +332,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         E.right({
           currentPage: page,
           field: undefined,
+          language: undefined,
           recentPrereviews: [
             {
               club: undefined,
@@ -467,6 +473,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         E.right({
           currentPage: page,
           field: undefined,
+          language: undefined,
           recentPrereviews: [
             {
               club: undefined,

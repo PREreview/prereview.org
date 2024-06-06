@@ -444,11 +444,11 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       reviewsMatch.parser,
-      P.map(({ field, page }) =>
+      P.map(({ field, language, page }) =>
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(reviewsPage({ field, page: page ?? 1 }))),
+          RM.apSW('response', RM.fromReaderTask(reviewsPage({ field, language, page: page ?? 1 }))),
           RM.ichainW(handleResponse),
         ),
       ),

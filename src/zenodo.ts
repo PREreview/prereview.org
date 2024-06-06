@@ -19,6 +19,7 @@ import { toUpperCase } from 'fp-ts/string'
 import { type HttpError, NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
+import type { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
@@ -53,7 +54,7 @@ import { reviewMatch } from './routes'
 import type { Prereview as ScietyPrereview } from './sciety-list'
 import type { ClubId } from './types/club-id'
 import { type FieldId, isFieldId } from './types/field'
-import { iso6393To1, iso6393Validate } from './types/iso639'
+import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639'
 import {
   type IndeterminatePreprintId,
   PreprintDoiD,
@@ -105,11 +106,20 @@ export const getPrereviewsForSciety = pipe(
   ),
 )
 
-export const getRecentPrereviewsFromZenodo = ({ field, page }: { field?: FieldId; page: number }) =>
+export const getRecentPrereviewsFromZenodo = ({
+  field,
+  language,
+  page,
+}: {
+  field?: FieldId
+  language?: LanguageCode
+  page: number
+}) =>
   pipe(
     RTE.Do,
     RTE.let('currentPage', () => page),
     RTE.let('field', () => field),
+    RTE.let('language', () => language),
     RTE.filterOrElse(
       ({ currentPage }) => currentPage > 0,
       () => 'not-found' as const,
@@ -117,13 +127,18 @@ export const getRecentPrereviewsFromZenodo = ({ field, page }: { field?: FieldId
     RTE.bindW(
       'records',
       flow(
-        ({ currentPage, field }) =>
+        ({ currentPage, field, language }) =>
           new URLSearchParams({
             page: currentPage.toString(),
             size: '5',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
-            q: field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
+            q: [
+              field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
+              language ? `language:"${iso6391To3(language)}"` : '',
+            ]
+              .filter(a => a !== '')
+              .join(' AND '),
           }),
         getCommunityRecords('prereview-reviews'),
       ),
@@ -167,9 +182,10 @@ export const getRecentPrereviewsFromZenodo = ({ field, page }: { field?: FieldId
           match(error)
             .with('not-found', identity)
             .otherwise(() => 'unavailable' as const),
-        ({ currentPage, recentPrereviews, field, records }) => ({
+        ({ currentPage, recentPrereviews, field, language, records }) => ({
           currentPage,
           field,
+          language,
           recentPrereviews,
           totalPages: Math.ceil(records.hits.total / 5),
         }),

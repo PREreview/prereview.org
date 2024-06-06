@@ -16,6 +16,7 @@ export interface RecentPrereviews {
   readonly currentPage: number
   readonly totalPages: number
   readonly field?: FieldId
+  readonly language?: LanguageCode
   readonly recentPrereviews: RNEA.ReadonlyNonEmptyArray<{
     readonly club?: ClubId
     readonly id: number
@@ -34,6 +35,7 @@ export interface RecentPrereviews {
 export interface GetRecentPrereviewsEnv {
   getRecentPrereviews: (args: {
     field?: FieldId
+    language?: LanguageCode
     page: number
   }) => TE.TaskEither<'not-found' | 'unavailable', RecentPrereviews>
 }

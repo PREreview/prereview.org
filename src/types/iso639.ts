@@ -8,6 +8,8 @@ export const iso6393Validate = (code: string): code is Iso6393Code =>
 
 export const iso6393To1 = (code: Iso6393Code): Iso6391Code => iso6393To1Mapping[code]
 
+export const iso6391To3 = (code: Iso6391Code): Iso6393Code => swapFn(iso6393To1Mapping)[code]
+
 const iso6393To1Mapping = {
   aar: 'aa',
   abk: 'ab',
@@ -192,4 +194,9 @@ const iso6393To1Mapping = {
   zha: 'za',
   zho: 'zh',
   zul: 'zu',
-} satisfies Record<Iso6393Code, Iso6391Code>
+} satisfies Record<keyof Omit<typeof iso6393, 'hbs'>, Iso6391Code>
+
+const swapFn = <T extends Record<string, S>, S extends string>(obj: T): { [K in keyof T as T[K]]: K } =>
+  Object.entries(obj).reduce((res, [key, value]) => {
+    return { ...res, [value]: key }
+  }, {}) as never

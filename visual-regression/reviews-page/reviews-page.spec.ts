@@ -19,6 +19,19 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right with a language', async ({ showPage }) => {
+  const response = createPage({
+    currentPage: 1,
+    totalPages: 3,
+    language: 'es',
+    recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks right with a field', async ({ showPage }) => {
   const response = createPage({
     currentPage: 1,
@@ -34,6 +47,14 @@ test('content looks right with a field', async ({ showPage }) => {
 
 test('content looks right when empty', async ({ showPage }) => {
   const response = emptyPage()
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when empty with a language', async ({ showPage }) => {
+  const response = emptyPage({ language: 'es' })
 
   const content = await showPage(response)
 

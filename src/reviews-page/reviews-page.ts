@@ -6,7 +6,7 @@ import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { snd } from 'fp-ts/ReadonlyTuple'
 import { flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
-import type { LanguageCode } from 'iso-639-1'
+import iso6391, { type LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details'
@@ -18,14 +18,14 @@ import { type FieldId, fieldIds, getFieldName } from '../types/field'
 import { getSubfieldName } from '../types/subfield'
 import type { RecentPrereviews } from './recent-prereviews'
 
-export const createPage = ({ currentPage, field, totalPages, recentPrereviews }: RecentPrereviews) =>
+export const createPage = ({ currentPage, field, language, totalPages, recentPrereviews }: RecentPrereviews) =>
   PageResponse({
-    title: title({ currentPage, field }),
+    title: title({ currentPage, field, language }),
     extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent PREreviews</h1>
 
-      ${form({ field })}
+      ${form({ field, language })}
 
       <ol class="cards" id="results">
         ${pipe(
@@ -91,25 +91,29 @@ export const createPage = ({ currentPage, field, totalPages, recentPrereviews }:
 
       <nav class="pager">
         ${currentPage > 1
-          ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage - 1, field })}" rel="prev">Newer</a>`
+          ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage - 1, field, language })}" rel="prev"
+              >Newer</a
+            >`
           : ''}
         ${currentPage < totalPages
-          ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage + 1, field })}" rel="next">Older</a>`
+          ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage + 1, field, language })}" rel="next"
+              >Older</a
+            >`
           : ''}
       </nav>
     `,
-    canonical: format(reviewsMatch.formatter, { page: currentPage, field }),
+    canonical: format(reviewsMatch.formatter, { page: currentPage, field, language }),
     current: 'reviews',
   })
 
-export const emptyPage = ({ field }: { field?: FieldId } = {}) =>
+export const emptyPage = ({ field, language }: { field?: FieldId; language?: LanguageCode } = {}) =>
   PageResponse({
-    title: title({ currentPage: 1, field }),
+    title: title({ currentPage: 1, field, language }),
     extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent PREreviews</h1>
 
-      ${form({ field })}
+      ${form({ field, language })}
 
       <div class="inset" id="results">
         <p>No PREreviews have been published yet.</p>
@@ -117,17 +121,19 @@ export const emptyPage = ({ field }: { field?: FieldId } = {}) =>
         <p>When they do, they’ll appear here.</p>
       </div>
     `,
-    canonical: format(reviewsMatch.formatter, { page: 1, field }),
+    canonical: format(reviewsMatch.formatter, { page: 1, field, language }),
     current: 'reviews',
   })
 
-const title = ({ currentPage, field }: Pick<RecentPrereviews, 'currentPage' | 'field'>) => {
-  const details = RA.append(`page ${currentPage}`)([field ? getFieldName(field) : undefined].filter(isString))
+const title = ({ currentPage, field, language }: Pick<RecentPrereviews, 'currentPage' | 'field' | 'language'>) => {
+  const details = RA.append(`page ${currentPage}`)(
+    [field ? getFieldName(field) : undefined, language ? iso6391.getName(language) : undefined].filter(isString),
+  )
 
   return plainText`Recent PREreviews (${formatList('en', { style: 'narrow' })(details)})`
 }
 
-const form = ({ field }: Pick<RecentPrereviews, 'field'>) => html`
+const form = ({ field, language }: Pick<RecentPrereviews, 'field' | 'language'>) => html`
   <form
     method="get"
     action="${format(reviewsMatch.formatter, {})}"
@@ -137,6 +143,7 @@ const form = ({ field }: Pick<RecentPrereviews, 'field'>) => html`
   >
     <h2 class="visually-hidden" id="filter-label">Filter</h2>
     <input type="hidden" name="page" value="1" />
+    <input type="hidden" name="language" value="${language ?? ''}" />
     <div>
       <label for="field">Field</label>
       <select name="field" id="field">
