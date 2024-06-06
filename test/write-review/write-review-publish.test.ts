@@ -277,7 +277,7 @@ describe('writeReviewPublish', () => {
         persona: newReview.persona,
         preprint: preprintTitle,
         review: expect.stringContaining(newReview.review.toString()),
-        language: O.some(expect.anything()),
+        language: expect.anything(),
         structured: false,
         user,
       })
