@@ -14,6 +14,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
+import type * as T from 'fp-ts/Task'
 import { constVoid, flow, identity, pipe } from 'fp-ts/function'
 import { toUpperCase } from 'fp-ts/string'
 import { type HttpError, NotFound } from 'http-errors'
@@ -71,8 +72,17 @@ export interface WasPrereviewRemovedEnv {
   wasPrereviewRemoved: (id: number) => boolean
 }
 
+export interface GetPreprintSubjectsEnv {
+  getPreprintSubjects: (preprint: PreprintId) => T.Task<ReadonlyArray<{ id: URL; name: string }>>
+}
+
 const wasPrereviewRemoved = (id: number): R.Reader<WasPrereviewRemovedEnv, boolean> =>
   R.asks(({ wasPrereviewRemoved }) => wasPrereviewRemoved(id))
+
+const getPreprintSubjects = (
+  preprint: PreprintId,
+): RT.ReaderTask<GetPreprintSubjectsEnv, ReadonlyArray<{ id: URL; name: string }>> =>
+  R.asks(({ getPreprintSubjects }) => getPreprintSubjects(preprint))
 
 const getPrereviewsPageForSciety = flow(
   (page: number) =>
@@ -422,16 +432,17 @@ export const addAuthorToRecordOnZenodo = (
 export const createRecordOnZenodo: (
   newPrereview: NewPrereview,
 ) => ReaderTaskEither<
-  PublicUrlEnv & ZenodoAuthenticatedEnv & L.LoggerEnv,
+  PublicUrlEnv & ZenodoAuthenticatedEnv & GetPreprintSubjectsEnv & L.LoggerEnv,
   'unavailable',
   [Doi, number]
 > = newPrereview =>
   pipe(
     createEmptyDeposition(),
     RTE.bindTo('deposition'),
+    RTE.apSW('subjects', RTE.rightReaderTask(getPreprintSubjects(newPrereview.preprint.id))),
     RTE.bindW(
       'metadata',
-      RTE.fromReaderK(({ deposition }) => createDepositMetadata(deposition, newPrereview)),
+      RTE.fromReaderK(({ subjects, deposition }) => createDepositMetadata(deposition, newPrereview, subjects)),
     ),
     RTE.chainW(({ deposition, metadata }) => updateDeposition(metadata, deposition)),
     RTE.chainFirstW(
@@ -461,7 +472,11 @@ export const createRecordOnZenodo: (
     ),
   )
 
-function createDepositMetadata(deposition: EmptyDeposition, newPrereview: NewPrereview) {
+function createDepositMetadata(
+  deposition: EmptyDeposition,
+  newPrereview: NewPrereview,
+  subjects: ReadonlyArray<{ id: URL; name: string }>,
+) {
   return pipe(
     toUrl(reviewMatch.formatter, { id: deposition.id }),
     R.map(
@@ -506,6 +521,13 @@ ${newPrereview.review.toString()}`,
               scheme: 'url',
             },
           ],
+          subjects: pipe(
+            [...subjects],
+            A.match(
+              () => undefined,
+              NEA.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })),
+            ),
+          ),
         }) satisfies DepositMetadata,
     ),
   )
