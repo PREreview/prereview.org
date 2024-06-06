@@ -1,14 +1,17 @@
 import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as O from 'fp-ts/Option'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
+import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../../contact-email-address'
+import { detectLanguage } from '../../detect-language'
 import { type Html, fixHeadingLevels, html, plainText, sendHtml } from '../../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware'
 import { type TemplatePageEnv, templatePage } from '../../page'
@@ -30,6 +33,7 @@ export interface NewPrereview {
   persona: 'public' | 'pseudonym'
   preprint: PreprintTitle
   review: Html
+  language: O.Option<LanguageCode>
   structured: boolean
   user: User
 }
@@ -123,6 +127,11 @@ const handlePublishForm = ({
     RM.map(() => ({
       conduct: form.conduct,
       otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
+      language: match(form)
+        .returnType<O.Option<LanguageCode>>()
+        .with({ reviewType: 'questions' }, () => O.some('en'))
+        .with({ reviewType: 'freeform' }, form => detectLanguage(form.review))
+        .exhaustive(),
       persona: form.persona,
       preprint,
       review: renderReview(form),

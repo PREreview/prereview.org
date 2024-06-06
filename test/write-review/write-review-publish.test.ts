@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import cookieSignature from 'cookie-signature'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as O from 'fp-ts/Option'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
@@ -194,6 +195,7 @@ describe('writeReviewPublish', () => {
         persona: newReview.persona,
         preprint: preprintTitle,
         review: expect.stringContaining('<dl>'),
+        language: O.some('en'),
         structured: true,
         user,
       })
@@ -275,6 +277,7 @@ describe('writeReviewPublish', () => {
         persona: newReview.persona,
         preprint: preprintTitle,
         review: expect.stringContaining(newReview.review.toString()),
+        language: O.some(expect.anything()),
         structured: false,
         user,
       })

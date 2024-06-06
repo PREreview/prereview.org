@@ -10,6 +10,7 @@ import { isNonEmpty } from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import type { Json, JsonRecord } from 'fp-ts/Json'
 import type { NonEmptyArray } from 'fp-ts/NonEmptyArray'
+import * as O from 'fp-ts/Option'
 import { not } from 'fp-ts/Predicate'
 import type { Refinement } from 'fp-ts/Refinement'
 import type * as H from 'hyper-ts'
@@ -151,6 +152,11 @@ export function constantFrom<const T>(...values: Array<T>): Arbitrary<T> {
 
 export const set = <A>(arb: fc.Arbitrary<A>, constraints?: fc.UniqueArraySharedConstraints): fc.Arbitrary<Set<A>> =>
   fc.uniqueArray(arb, constraints).map(values => new Set(values))
+
+const some = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<O.Option<A>> => arb.map(O.some)
+
+export const maybe = <A>(someArb: fc.Arbitrary<A>): fc.Arbitrary<O.Option<A>> =>
+  fc.oneof(some(someArb), fc.constant(O.none))
 
 const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<E.Either<E, never>> => arb.map(E.left)
 

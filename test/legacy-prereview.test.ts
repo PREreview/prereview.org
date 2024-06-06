@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as O from 'fp-ts/Option'
 import { Status } from 'hyper-ts'
 import { rawHtml } from '../src/html'
 import * as _ from '../src/legacy-prereview'
@@ -683,6 +684,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
             title: rawHtml('foo'),
           },
           review: rawHtml('<p>hello</p>'),
+          language: O.none,
           structured,
           user,
         })(reviewDoi)({
@@ -736,6 +738,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
             title: rawHtml('foo'),
           },
           review: rawHtml('<p>hello</p>'),
+          language: O.none,
           structured,
           user,
         })(reviewDoi)({
@@ -773,6 +776,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
             title: rawHtml('foo'),
           },
           review: rawHtml('<p>hello</p>'),
+          language: O.none,
           structured,
           user,
         })(reviewDoi)({
@@ -808,6 +812,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
             title: rawHtml('foo'),
           },
           review: rawHtml('<p>hello</p>'),
+          language: O.none,
           structured,
           user,
         })(reviewDoi)({
@@ -843,6 +848,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
           title: rawHtml('foo'),
         },
         review: rawHtml('<p>hello</p>'),
+        language: O.none,
         structured,
         user,
       })(reviewDoi)({

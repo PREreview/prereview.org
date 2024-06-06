@@ -485,6 +485,7 @@ function createDepositMetadata(deposition: EmptyDeposition, newPrereview: NewPre
                 .otherwise(() => []),
             ),
           ),
+          language: O.toUndefined(newPrereview.language),
           description: `<p><strong>This Zenodo record is a permanently preserved version of a ${
             newPrereview.structured ? 'Structured ' : ''
           }PREreview. You can view the complete PREreview at <a href="${url.href}">${url.href}</a>.</strong></p>

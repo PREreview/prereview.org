@@ -7,6 +7,7 @@ import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
+import * as O from 'fp-ts/Option'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
@@ -3789,6 +3790,7 @@ describe('createRecordOnZenodo', () => {
         persona: fc.constant('public'),
         preprint: fc.preprintTitle(),
         review: fc.html(),
+        language: fc.maybe(fc.languageCode()),
         structured: fc.constant(false),
         user: fc.user(),
       }),
@@ -3884,6 +3886,7 @@ describe('createRecordOnZenodo', () => {
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
+                  ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   related_identifiers: [
                     {
                       ..._.toExternalIdentifier(newPrereview.preprint.id),
@@ -3934,6 +3937,7 @@ ${newPrereview.review.toString()}`,
         persona: fc.constant('public'),
         preprint: fc.preprintTitle(),
         review: fc.html(),
+        language: fc.maybe(fc.languageCode()),
         structured: fc.constant(true),
         user: fc.user(),
       }),
@@ -4030,6 +4034,7 @@ ${newPrereview.review.toString()}`,
 
 ${newPrereview.review.toString()}`,
                   keywords: ['Structured PREreview'],
+                  ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   related_identifiers: [
                     {
                       ..._.toExternalIdentifier(newPrereview.preprint.id),
@@ -4082,6 +4087,7 @@ ${newPrereview.review.toString()}`,
         persona: fc.constant('pseudonym'),
         preprint: fc.preprintTitle(),
         review: fc.html(),
+        language: fc.maybe(fc.languageCode()),
         structured: fc.constant(false),
         user: fc.user(),
       }),
@@ -4174,6 +4180,7 @@ ${newPrereview.review.toString()}`,
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
+                  ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   related_identifiers: [
                     {
                       ..._.toExternalIdentifier(newPrereview.preprint.id),
@@ -4224,6 +4231,7 @@ ${newPrereview.review.toString()}`,
         persona: fc.constant('pseudonym'),
         preprint: fc.preprintTitle(),
         review: fc.html(),
+        language: fc.maybe(fc.languageCode()),
         structured: fc.constant(true),
         user: fc.user(),
       }),
@@ -4317,6 +4325,7 @@ ${newPrereview.review.toString()}`,
 
 ${newPrereview.review.toString()}`,
                   keywords: ['Structured PREreview'],
+                  ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   related_identifiers: [
                     {
                       ..._.toExternalIdentifier(newPrereview.preprint.id),
@@ -4368,6 +4377,7 @@ ${newPrereview.review.toString()}`,
       persona: fc.constantFrom('public', 'pseudonym'),
       preprint: fc.preprintTitle(),
       review: fc.html(),
+      language: fc.maybe(fc.languageCode()),
       structured: fc.boolean(),
       user: fc.user(),
     }),
