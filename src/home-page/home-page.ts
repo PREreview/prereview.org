@@ -25,10 +25,12 @@ import type { RecentReviewRequest } from './recent-review-requests'
 
 export const createPage = ({
   canRequestReviews,
+  canSeeGatesLogo,
   recentPrereviews,
   recentReviewRequests,
 }: {
   canRequestReviews: boolean
+  canSeeGatesLogo: boolean
   recentPrereviews: ReadonlyArray<RecentPrereview>
   recentReviewRequests: ReadonlyArray<RecentReviewRequest>
 }) =>
@@ -300,6 +302,21 @@ export const createPage = ({
               />
             </a>
           </li>
+          ${canSeeGatesLogo
+            ? html`
+                <li>
+                  <a href="https://www.gatesfoundation.org/">
+                    <img
+                      src="${assets['gates.svg']}"
+                      width="500"
+                      height="100"
+                      loading="lazy"
+                      alt="Bill & Melinda Gates Foundation"
+                    />
+                  </a>
+                </li>
+              `
+            : ''}
           <li>
             <a href="https://chanzuckerberg.com/">
               <img

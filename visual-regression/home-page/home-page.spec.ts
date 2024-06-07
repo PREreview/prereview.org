@@ -12,6 +12,7 @@ test('content looks right', async ({ showPage }) => {
   const response = createPage({
     recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
     canRequestReviews: false,
+    canSeeGatesLogo: false,
     recentReviewRequests: [
       recentReviewRequest1,
       recentReviewRequest2,
@@ -30,6 +31,7 @@ test('content looks right when empty', async ({ showPage }) => {
   const response = createPage({
     recentPrereviews: [],
     canRequestReviews: false,
+    canSeeGatesLogo: false,
     recentReviewRequests: [],
   })
 
@@ -42,6 +44,7 @@ test('content looks right when reviews can be requested', async ({ showPage }) =
   const response = createPage({
     recentPrereviews: [recentPrereview1],
     canRequestReviews: true,
+    canSeeGatesLogo: false,
     recentReviewRequests: [recentReviewRequest1],
   })
 
