@@ -312,18 +312,13 @@ export const createPage = ({
             </a>
           </li>
           <li>
-            <a href="https://elifesciences.org/">
-              <img src="${assets['elife.svg']}" width="129" height="44" loading="lazy" alt="eLife" />
+            <a href="https://foundation.mozilla.org/">
+              <img src="${assets['mozilla.svg']}" width="280" height="80" loading="lazy" alt="Mozilla Foundation" />
             </a>
           </li>
           <li>
             <a href="https://wellcome.org/grant-funding/schemes/open-research-fund">
               <img src="${assets['wellcome.svg']}" width="181" height="181" loading="lazy" alt="Wellcome Trust" />
-            </a>
-          </li>
-          <li>
-            <a href="https://foundation.mozilla.org/">
-              <img src="${assets['mozilla.svg']}" width="280" height="80" loading="lazy" alt="Mozilla Foundation" />
             </a>
           </li>
         </ol>
