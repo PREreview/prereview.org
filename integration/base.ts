@@ -892,6 +892,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       clock: SystemClock,
       fetch,
       formStore,
+      canSeeGatesLogo: false,
       careerStageStore,
       coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
       contactEmailAddressStore,
