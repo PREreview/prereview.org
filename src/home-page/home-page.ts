@@ -28,11 +28,13 @@ export const createPage = ({
   canSeeGatesLogo,
   recentPrereviews,
   recentReviewRequests,
+  statistics,
 }: {
   canRequestReviews: boolean
   canSeeGatesLogo: boolean
   recentPrereviews: ReadonlyArray<RecentPrereview>
   recentReviewRequests: ReadonlyArray<RecentReviewRequest>
+  statistics: { prereviews: number; servers: number; users: number }
 }) =>
   PageResponse({
     title: plainText`PREreview: Open preprint reviews. For all researchers.`,
@@ -191,15 +193,15 @@ export const createPage = ({
 
         <ul class="statistics">
           <li>
-            <data value="887">887</data>
+            <data value="${statistics.prereviews}">${statistics.prereviews.toLocaleString('en')}</data>
             PREreviews
           </li>
           <li>
-            <data value="22">22</data>
+            <data value="${statistics.servers}">${statistics.servers.toLocaleString('en')}</data>
             preprint servers
           </li>
           <li>
-            <data value="2736">2,736</data>
+            <data value="${statistics.users}">${statistics.users.toLocaleString('en')}</data>
             PREreviewers
           </li>
         </ul>

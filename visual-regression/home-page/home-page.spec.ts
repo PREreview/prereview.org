@@ -20,6 +20,7 @@ test('content looks right', async ({ showPage }) => {
       recentReviewRequest4,
       recentReviewRequest5,
     ],
+    statistics,
   })
 
   const content = await showPage(response)
@@ -33,6 +34,7 @@ test('content looks right when empty', async ({ showPage }) => {
     canRequestReviews: false,
     canSeeGatesLogo: false,
     recentReviewRequests: [],
+    statistics,
   })
 
   const content = await showPage(response)
@@ -46,6 +48,7 @@ test('content looks right when reviews can be requested', async ({ showPage }) =
     canRequestReviews: true,
     canSeeGatesLogo: false,
     recentReviewRequests: [recentReviewRequest1],
+    statistics,
   })
 
   const content = await showPage(response)
@@ -213,3 +216,5 @@ const recentReviewRequest5 = {
     title: rawHtml('A VARIAÇÃO LEXICAL E FONOLÓGICA NA LIBRAS NA EXPRESSÃO DO CONCEITO ‘ELEVADOR’'),
   },
 } satisfies RecentReviewRequest
+
+const statistics = { prereviews: 887, servers: 22, users: 2736 }
