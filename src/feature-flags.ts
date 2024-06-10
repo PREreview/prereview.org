@@ -27,3 +27,10 @@ export interface CanSeeGatesLogoEnv {
 }
 
 export const canSeeGatesLogo = R.asks(({ canSeeGatesLogo }: CanSeeGatesLogoEnv) => canSeeGatesLogo)
+
+export interface CanUseSearchQueriesEnv {
+  canUseSearchQueries: (user?: User) => boolean
+}
+
+export const canUseSearchQueries = (user?: User) =>
+  R.asks(({ canUseSearchQueries }: CanUseSearchQueriesEnv) => canUseSearchQueries(user))

@@ -8,6 +8,7 @@ import type { Html } from '../html'
 import type { ClubId } from '../types/club-id'
 import type { FieldId } from '../types/field'
 import type { PreprintId } from '../types/preprint-id'
+import type { NonEmptyString } from '../types/string'
 import type { SubfieldId } from '../types/subfield'
 
 import PlainDate = Temporal.PlainDate
@@ -17,6 +18,7 @@ export interface RecentPrereviews {
   readonly totalPages: number
   readonly field?: FieldId
   readonly language?: LanguageCode
+  readonly query?: NonEmptyString
   readonly recentPrereviews: RNEA.ReadonlyNonEmptyArray<{
     readonly club?: ClubId
     readonly id: number
@@ -37,6 +39,7 @@ export interface GetRecentPrereviewsEnv {
     field?: FieldId
     language?: LanguageCode
     page: number
+    query?: NonEmptyString
   }) => TE.TaskEither<'not-found' | 'unavailable', RecentPrereviews>
 }
 

@@ -3,6 +3,7 @@ import type { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html'
 import type { RecentPrereviews } from '../../src/reviews-page'
 import { createPage, emptyPage } from '../../src/reviews-page/reviews-page'
+import type { NonEmptyString } from '../../src/types/string'
 import { expect, test } from '../base'
 
 import PlainDate = Temporal.PlainDate
@@ -11,6 +12,19 @@ test('content looks right', async ({ showPage }) => {
   const response = createPage({
     currentPage: 1,
     totalPages: 3,
+    recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right with a query', async ({ showPage }) => {
+  const response = createPage({
+    currentPage: 1,
+    totalPages: 3,
+    query: 'Josiah Carberry' as NonEmptyString,
     recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
   })
 
@@ -47,6 +61,14 @@ test('content looks right with a field', async ({ showPage }) => {
 
 test('content looks right when empty', async ({ showPage }) => {
   const response = emptyPage()
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when empty with a query', async ({ showPage }) => {
+  const response = emptyPage({ query: 'Josiah Carberry' as NonEmptyString })
 
   const content = await showPage(response)
 

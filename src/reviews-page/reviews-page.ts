@@ -15,12 +15,13 @@ import { PageResponse } from '../response'
 import { reviewMatch, reviewsMatch } from '../routes'
 import { renderDate } from '../time'
 import { type FieldId, fieldIds, getFieldName } from '../types/field'
+import type { NonEmptyString } from '../types/string'
 import { getSubfieldName } from '../types/subfield'
 import type { RecentPrereviews } from './recent-prereviews'
 
-export const createPage = ({ currentPage, field, language, totalPages, recentPrereviews }: RecentPrereviews) =>
+export const createPage = ({ currentPage, field, language, query, totalPages, recentPrereviews }: RecentPrereviews) =>
   PageResponse({
-    title: title({ currentPage, field, language }),
+    title: title({ currentPage, field, language, query }),
     extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent PREreviews</h1>
@@ -91,24 +92,32 @@ export const createPage = ({ currentPage, field, language, totalPages, recentPre
 
       <nav class="pager">
         ${currentPage > 1
-          ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage - 1, field, language })}" rel="prev"
+          ? html`<a
+              href="${format(reviewsMatch.formatter, { page: currentPage - 1, field, language, query })}"
+              rel="prev"
               >Newer</a
             >`
           : ''}
         ${currentPage < totalPages
-          ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage + 1, field, language })}" rel="next"
+          ? html`<a
+              href="${format(reviewsMatch.formatter, { page: currentPage + 1, field, language, query })}"
+              rel="next"
               >Older</a
             >`
           : ''}
       </nav>
     `,
-    canonical: format(reviewsMatch.formatter, { page: currentPage, field, language }),
+    canonical: format(reviewsMatch.formatter, { page: currentPage, field, language, query }),
     current: 'reviews',
   })
 
-export const emptyPage = ({ field, language }: { field?: FieldId; language?: LanguageCode } = {}) =>
+export const emptyPage = ({
+  field,
+  language,
+  query,
+}: { field?: FieldId; language?: LanguageCode; query?: NonEmptyString } = {}) =>
   PageResponse({
-    title: title({ currentPage: 1, field, language }),
+    title: title({ currentPage: 1, field, language, query }),
     extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent PREreviews</h1>
@@ -121,19 +130,24 @@ export const emptyPage = ({ field, language }: { field?: FieldId; language?: Lan
         <p>When they do, they’ll appear here.</p>
       </div>
     `,
-    canonical: format(reviewsMatch.formatter, { page: 1, field, language }),
+    canonical: format(reviewsMatch.formatter, { page: 1, field, language, query }),
     current: 'reviews',
   })
 
-const title = ({ currentPage, field, language }: Pick<RecentPrereviews, 'currentPage' | 'field' | 'language'>) => {
+const title = ({
+  currentPage,
+  field,
+  language,
+  query,
+}: Pick<RecentPrereviews, 'currentPage' | 'field' | 'language' | 'query'>) => {
   const details = RA.append(`page ${currentPage}`)(
-    [field ? getFieldName(field) : undefined, language ? iso6391.getName(language) : undefined].filter(isString),
+    [query, field ? getFieldName(field) : undefined, language ? iso6391.getName(language) : undefined].filter(isString),
   )
 
   return plainText`Recent PREreviews (${formatList('en', { style: 'narrow' })(details)})`
 }
 
-const form = ({ field, language }: Pick<RecentPrereviews, 'field' | 'language'>) => html`
+const form = ({ field, language, query }: Pick<RecentPrereviews, 'field' | 'language' | 'query'>) => html`
   <form
     method="get"
     action="${format(reviewsMatch.formatter, {})}"
@@ -143,6 +157,7 @@ const form = ({ field, language }: Pick<RecentPrereviews, 'field' | 'language'>)
   >
     <h2 class="visually-hidden" id="filter-label">Filter</h2>
     <input type="hidden" name="page" value="1" />
+    ${query ? html`<input type="hidden" name="query" value="${query}" />` : ''}
     <div>
       <label for="language">Language</label>
       <select name="language" id="language">

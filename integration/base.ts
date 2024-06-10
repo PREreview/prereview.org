@@ -32,7 +32,12 @@ import { type ConfigEnv, app } from '../src/app'
 import { AuthorInviteC } from '../src/author-invite'
 import { ContactEmailAddressC } from '../src/contact-email-address'
 import { createAuthorInviteEmail } from '../src/email'
-import type { CanConnectOrcidProfileEnv, CanRequestReviewsEnv, CanUploadAvatarEnv } from '../src/feature-flags'
+import type {
+  CanConnectOrcidProfileEnv,
+  CanRequestReviewsEnv,
+  CanUploadAvatarEnv,
+  CanUseSearchQueriesEnv,
+} from '../src/feature-flags'
 import { rawHtml } from '../src/html'
 import type {
   AuthorInviteStoreEnv,
@@ -78,6 +83,7 @@ interface AppFixtures {
   canRequestReviews: CanRequestReviewsEnv['canRequestReviews']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canUploadAvatar: CanUploadAvatarEnv['canUploadAvatar']
+  canUseSearchQueries: CanUseSearchQueriesEnv['canUseSearchQueries']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -100,6 +106,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(() => false)
   },
   canUploadAvatar: async ({}, use) => {
+    await use(() => false)
+  },
+  canUseSearchQueries: async ({}, use) => {
     await use(() => false)
   },
   careerStageStore: async ({}, use) => {
@@ -878,6 +887,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       canConnectOrcidProfile,
       canRequestReviews,
       canUploadAvatar,
+      canUseSearchQueries,
     },
     use,
   ) => {
@@ -888,6 +898,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       canConnectOrcidProfile,
       canRequestReviews,
       canUploadAvatar,
+      canUseSearchQueries,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
@@ -1723,6 +1734,16 @@ export const canUploadAvatar: Fixtures<
   Pick<AppFixtures, 'canUploadAvatar'>
 > = {
   canUploadAvatar: async ({}, use) => {
+    await use(() => true)
+  },
+}
+
+export const canUseSearchQueries: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canUseSearchQueries'>
+> = {
+  canUseSearchQueries: async ({}, use) => {
     await use(() => true)
   },
 }

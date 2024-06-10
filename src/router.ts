@@ -69,11 +69,13 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from './email'
-import type {
-  CanConnectOrcidProfileEnv,
-  CanRequestReviewsEnv,
-  CanSeeGatesLogoEnv,
-  CanUploadAvatarEnv,
+import {
+  type CanConnectOrcidProfileEnv,
+  type CanRequestReviewsEnv,
+  type CanSeeGatesLogoEnv,
+  type CanUploadAvatarEnv,
+  type CanUseSearchQueriesEnv,
+  canUseSearchQueries,
 } from './feature-flags'
 import type { SleepEnv } from './fetch'
 import { funding } from './funding'
@@ -320,6 +322,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   CanRequestReviewsEnv &
   CanSeeGatesLogoEnv &
   CanUploadAvatarEnv &
+  CanUseSearchQueriesEnv &
   DoesPreprintExistEnv &
   ResolvePreprintIdEnv &
   GenerateUuidEnv &
@@ -451,11 +454,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       reviewsMatch.parser,
-      P.map(({ field, language, page }) =>
+      P.map(({ field, language, page, query }) =>
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(reviewsPage({ field, language, page: page ?? 1 }))),
+          RM.bindW('canUseSearchQueries', ({ user }) => RM.rightReader(canUseSearchQueries(user))),
+          RM.bindW('response', ({ canUseSearchQueries }) =>
+            RM.fromReaderTask(reviewsPage({ canUseSearchQueries, field, language, page: page ?? 1, query })),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),

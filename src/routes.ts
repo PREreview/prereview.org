@@ -13,6 +13,7 @@ import { isFieldId } from './types/field'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './types/preprint-id'
 import type { OrcidProfileId, PseudonymProfileId } from './types/profile-id'
 import { PseudonymC } from './types/pseudonym'
+import { NonEmptyStringC } from './types/string'
 import { UuidC } from './types/uuid'
 
 const IntegerFromStringC = C.make(
@@ -293,6 +294,7 @@ export const reviewsMatch = pipe(
         field: EmptyAsUndefinedC(FieldIdC),
         language: EmptyAsUndefinedC(LanguageC),
         page: IntegerFromStringC,
+        query: EmptyAsUndefinedC(NonEmptyStringC),
       }),
     ),
   ),

@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base'
+import { areLoggedIn, canLogIn, canUseSearchQueries, expect, prereviewWasRemoved, test } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ fetch, page }) => {
   await page.goto('/')
@@ -844,6 +844,17 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
 
   await expect(page.getByRole('main')).toContainText('of the ASAPbio Metabolism Crowd')
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
+})
+
+test.extend(canUseSearchQueries)('can find an older review of a certain preprint', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'See all reviews' }).click()
+
+  await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
+
+  await page.goto('/reviews?query=Chlamydomonas+reinhardtii')
+
+  await expect(page).toHaveTitle('Recent PREreviews (Chlamydomonas reinhardtii, page 1) | PREreview')
 })
 
 test('can view an older review in a specific language', async ({ page }) => {
