@@ -155,30 +155,34 @@ const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =
     <input type="hidden" name="page" value="1" />
     <div>
       <label for="language">Language</label>
-      <select name="language" id="language">
-        <option value="" ${language === undefined ? html`selected` : ''}>Any</option>
-        ${pipe(
-          ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
-          RA.map(language => [language, iso6391.getName(language)] as const),
-          RA.sort(Ord.contramap(snd)(ordString('en'))),
-          RA.map(
-            ([code, name]) =>
-              html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
-          ),
-        )}
-      </select>
+      <div class="select">
+        <select name="language" id="language">
+          <option value="" ${language === undefined ? html`selected` : ''}>Any</option>
+          ${pipe(
+            ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
+            RA.map(language => [language, iso6391.getName(language)] as const),
+            RA.sort(Ord.contramap(snd)(ordString('en'))),
+            RA.map(
+              ([code, name]) =>
+                html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
+            ),
+          )}
+        </select>
+      </div>
     </div>
     <div>
       <label for="field">Field</label>
-      <select name="field" id="field">
-        <option value="" ${field === undefined ? html`selected` : ''}>Any</option>
-        ${pipe(
-          fieldIds,
-          RA.map(field => [field, getFieldName(field)] satisfies [FieldId, string]),
-          RA.sort(Ord.contramap(snd)(ordString('en'))),
-          RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
-        )}
-      </select>
+      <div class="select">
+        <select name="field" id="field">
+          <option value="" ${field === undefined ? html`selected` : ''}>Any</option>
+          ${pipe(
+            fieldIds,
+            RA.map(field => [field, getFieldName(field)] satisfies [FieldId, string]),
+            RA.sort(Ord.contramap(snd)(ordString('en'))),
+            RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
+          )}
+        </select>
+      </div>
     </div>
     <button>Filter results</button>
   </form>

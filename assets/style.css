@@ -1370,22 +1370,57 @@ notification-banner {
   }
 }
 
-select {
+.select {
+  display: grid;
+  grid-template-areas: 'select';
+  align-items: center;
   max-inline-size: 100%;
   padding-block: var(--space-3xs);
   padding-inline: var(--space-2xs);
   border: var(--width-divider) solid currentcolor;
-  border-radius: 0;
   background-color: var(--color-background);
-  color: inherit;
-  font: inherit;
 
-  &:not([hidden]) {
-    display: block;
+  &:focus-within {
+    @media screen {
+      outline: var(--color-focus) solid var(--width-divider);
+      outline-offset: 0;
+
+      @media (forced-colors: active) {
+        outline-color: Highlight;
+      }
+    }
   }
 
-  &:focus-visible {
-    outline-offset: 0;
+  & > select {
+    z-index: 1;
+    grid-area: select;
+    inline-size: 100%;
+    margin: 0;
+    padding-block: 0;
+    padding-inline: 0 calc(var(--space-2xs) + 0.8em);
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: inherit;
+    appearance: none;
+  }
+
+  &::after {
+    content: '';
+    grid-area: select;
+    justify-self: end;
+    block-size: 0.5em;
+    inline-size: 0.8em;
+    background-color: currentcolor;
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+
+    @media screen {
+      @media (forced-colors: active) {
+        background-color: CanvasText;
+      }
+    }
   }
 
   label + & {
