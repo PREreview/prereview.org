@@ -19,14 +19,17 @@ import type { NonEmptyString } from '../types/string'
 import { getSubfieldName } from '../types/subfield'
 import type { RecentPrereviews } from './recent-prereviews'
 
-export const createPage = ({ currentPage, field, language, query, totalPages, recentPrereviews }: RecentPrereviews) =>
+export const createPage = (
+  { currentPage, field, language, query, totalPages, recentPrereviews }: RecentPrereviews,
+  canUseSearchQueries: boolean,
+) =>
   PageResponse({
     title: title({ currentPage, field, language, query }),
     extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent PREreviews</h1>
 
-      ${form({ field, language, query })}
+      ${form({ canUseSearchQueries, field, language, query })}
 
       <ol class="cards" id="results">
         ${pipe(
@@ -111,18 +114,17 @@ export const createPage = ({ currentPage, field, language, query, totalPages, re
     current: 'reviews',
   })
 
-export const emptyPage = ({
-  field,
-  language,
-  query,
-}: { field?: FieldId; language?: LanguageCode; query?: NonEmptyString } = {}) =>
+export const emptyPage = (
+  { field, language, query }: { field?: FieldId; language?: LanguageCode; query?: NonEmptyString },
+  canUseSearchQueries: boolean,
+) =>
   PageResponse({
     title: title({ currentPage: 1, field, language, query }),
     extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent PREreviews</h1>
 
-      ${form({ field, language, query })}
+      ${form({ canUseSearchQueries, field, language, query })}
 
       <div class="inset" id="results">
         <p>No PREreviews have been published yet.</p>
@@ -147,7 +149,12 @@ const title = ({
   return plainText`Recent PREreviews (${formatList('en', { style: 'narrow' })(details)})`
 }
 
-const form = ({ field, language, query }: Pick<RecentPrereviews, 'field' | 'language' | 'query'>) => html`
+const form = ({
+  canUseSearchQueries,
+  field,
+  language,
+  query,
+}: Pick<RecentPrereviews, 'field' | 'language' | 'query'> & { canUseSearchQueries: boolean }) => html`
   <form
     method="get"
     action="${format(reviewsMatch.formatter, {})}"
@@ -157,7 +164,14 @@ const form = ({ field, language, query }: Pick<RecentPrereviews, 'field' | 'lang
   >
     <h2 class="visually-hidden" id="filter-label">Filter</h2>
     <input type="hidden" name="page" value="1" />
-    ${query ? html`<input type="hidden" name="query" value="${query}" />` : ''}
+    ${canUseSearchQueries
+      ? html`<div>
+          <label for="query">Query</label>
+          <input type="text" name="query" id="query" ${query === undefined ? '' : html`value="${query}"`} />
+        </div>`
+      : query
+        ? html`<input type="hidden" name="query" value="${query}" />`
+        : ''}
     <div>
       <label for="language">Language</label>
       <select name="language" id="language">

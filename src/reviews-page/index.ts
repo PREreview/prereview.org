@@ -32,10 +32,12 @@ export const reviewsPage = ({
       error =>
         match(error)
           .with('not-found', () =>
-            page === 1 ? emptyPage({ field, language, query: canUseSearchQueries ? query : undefined }) : pageNotFound,
+            page === 1
+              ? emptyPage({ field, language, query: canUseSearchQueries ? query : undefined }, canUseSearchQueries)
+              : pageNotFound,
           )
           .with('unavailable', () => failureMessage)
           .exhaustive(),
-      createPage,
+      prereviews => createPage(prereviews, canUseSearchQueries),
     ),
   )

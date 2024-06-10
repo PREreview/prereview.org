@@ -9,11 +9,14 @@ import { expect, test } from '../base'
 import PlainDate = Temporal.PlainDate
 
 test('content looks right', async ({ showPage }) => {
-  const response = createPage({
-    currentPage: 1,
-    totalPages: 3,
-    recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
-  })
+  const response = createPage(
+    {
+      currentPage: 1,
+      totalPages: 3,
+      recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
+    },
+    false,
+  )
 
   const content = await showPage(response)
 
@@ -21,12 +24,15 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right with a query', async ({ showPage }) => {
-  const response = createPage({
-    currentPage: 1,
-    totalPages: 3,
-    query: 'Josiah Carberry' as NonEmptyString,
-    recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
-  })
+  const response = createPage(
+    {
+      currentPage: 1,
+      totalPages: 3,
+      query: 'Josiah Carberry' as NonEmptyString,
+      recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
+    },
+    true,
+  )
 
   const content = await showPage(response)
 
@@ -34,12 +40,15 @@ test('content looks right with a query', async ({ showPage }) => {
 })
 
 test('content looks right with a language', async ({ showPage }) => {
-  const response = createPage({
-    currentPage: 1,
-    totalPages: 3,
-    language: 'es',
-    recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
-  })
+  const response = createPage(
+    {
+      currentPage: 1,
+      totalPages: 3,
+      language: 'es',
+      recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
+    },
+    false,
+  )
 
   const content = await showPage(response)
 
@@ -47,12 +56,15 @@ test('content looks right with a language', async ({ showPage }) => {
 })
 
 test('content looks right with a field', async ({ showPage }) => {
-  const response = createPage({
-    currentPage: 1,
-    totalPages: 3,
-    field: '30',
-    recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
-  })
+  const response = createPage(
+    {
+      currentPage: 1,
+      totalPages: 3,
+      field: '30',
+      recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
+    },
+    false,
+  )
 
   const content = await showPage(response)
 
@@ -60,7 +72,7 @@ test('content looks right with a field', async ({ showPage }) => {
 })
 
 test('content looks right when empty', async ({ showPage }) => {
-  const response = emptyPage()
+  const response = emptyPage({}, false)
 
   const content = await showPage(response)
 
@@ -68,7 +80,7 @@ test('content looks right when empty', async ({ showPage }) => {
 })
 
 test('content looks right when empty with a query', async ({ showPage }) => {
-  const response = emptyPage({ query: 'Josiah Carberry' as NonEmptyString })
+  const response = emptyPage({ query: 'Josiah Carberry' as NonEmptyString }, true)
 
   const content = await showPage(response)
 
@@ -76,7 +88,7 @@ test('content looks right when empty with a query', async ({ showPage }) => {
 })
 
 test('content looks right when empty with a language', async ({ showPage }) => {
-  const response = emptyPage({ language: 'es' })
+  const response = emptyPage({ language: 'es' }, false)
 
   const content = await showPage(response)
 
@@ -84,7 +96,7 @@ test('content looks right when empty with a language', async ({ showPage }) => {
 })
 
 test('content looks right when empty with a field', async ({ showPage }) => {
-  const response = emptyPage({ field: '30' })
+  const response = emptyPage({ field: '30' }, false)
 
   const content = await showPage(response)
 
@@ -92,11 +104,14 @@ test('content looks right when empty with a field', async ({ showPage }) => {
 })
 
 test('content looks on a middle page', async ({ showPage }) => {
-  const response = createPage({
-    currentPage: 2,
-    totalPages: 3,
-    recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
-  })
+  const response = createPage(
+    {
+      currentPage: 2,
+      totalPages: 3,
+      recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
+    },
+    false,
+  )
 
   const content = await showPage(response)
 
@@ -104,11 +119,14 @@ test('content looks on a middle page', async ({ showPage }) => {
 })
 
 test('content looks on the last page', async ({ showPage }) => {
-  const response = createPage({
-    currentPage: 3,
-    totalPages: 3,
-    recentPrereviews: [recentPrereview1],
-  })
+  const response = createPage(
+    {
+      currentPage: 3,
+      totalPages: 3,
+      recentPrereviews: [recentPrereview1],
+    },
+    false,
+  )
 
   const content = await showPage(response)
 

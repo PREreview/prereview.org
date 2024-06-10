@@ -850,11 +850,16 @@ test.extend(canUseSearchQueries)('can find an older review of a certain preprint
   await page.goto('/')
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
-  await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
+  const filters = page.getByRole('search', { name: 'Filter' })
 
-  await page.goto('/reviews?query=Chlamydomonas+reinhardtii')
+  await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
+  await expect(filters.getByLabel('Query')).toHaveValue('')
+
+  await filters.getByLabel('Query').fill('Chlamydomonas reinhardtii')
+  await filters.getByRole('button', { name: 'Filter results' }).click()
 
   await expect(page).toHaveTitle('Recent PREreviews (Chlamydomonas reinhardtii, page 1) | PREreview')
+  await expect(filters.getByLabel('Query')).toHaveValue('Chlamydomonas reinhardtii')
 })
 
 test('can view an older review in a specific language', async ({ page }) => {
