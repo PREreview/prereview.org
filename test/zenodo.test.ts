@@ -43,9 +43,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
     fc.integer({ min: 1 }),
     fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
+    fc.option(fc.nonEmptyString(), { nil: undefined }),
     fc.preprintTitle(),
     fc.preprintTitle(),
-  ])('when the PREreviews can be loaded', async (page, field, language, preprint1, preprint2) => {
+  ])('when the PREreviews can be loaded', async (page, field, language, query, preprint1, preprint2) => {
     const records: Records = {
       hits: {
         total: 2,
@@ -183,7 +184,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       },
     }
 
-    const actual = await _.getRecentPrereviewsFromZenodo({ field, language, page })({
+    const actual = await _.getRecentPrereviewsFromZenodo({ field, language, page, query })({
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
         {
@@ -195,7 +196,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
             resource_type: 'publication::publication-peerreview',
             q: `${
               field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : ''
-            }${field && language ? ' AND ' : ''}${language ? `language:"${iso6391To3(language)}"` : ''}`,
+            }${field && language ? ' AND ' : ''}${language ? `language:"${iso6391To3(language)}"` : ''}${(field || language) && query ? ' AND ' : ''}${query ?? ''}`,
           },
         },
         {
@@ -217,6 +218,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         currentPage: page,
         field,
         language,
+        query,
         recentPrereviews: [
           {
             club: undefined,
@@ -336,6 +338,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           currentPage: page,
           field: undefined,
           language: undefined,
+          query: undefined,
           recentPrereviews: [
             {
               club: undefined,
@@ -477,6 +480,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           currentPage: page,
           field: undefined,
           language: undefined,
+          query: undefined,
           recentPrereviews: [
             {
               club: undefined,

@@ -64,6 +64,7 @@ import {
   fromUrl,
 } from './types/preprint-id'
 import type { ProfileId } from './types/profile-id'
+import type { NonEmptyString } from './types/string'
 import { isSubfieldId } from './types/subfield'
 import type { User } from './user'
 import type { NewPrereview } from './write-review'
@@ -120,16 +121,19 @@ export const getRecentPrereviewsFromZenodo = ({
   field,
   language,
   page,
+  query,
 }: {
   field?: FieldId
   language?: LanguageCode
   page: number
+  query?: NonEmptyString
 }) =>
   pipe(
     RTE.Do,
     RTE.let('currentPage', () => page),
     RTE.let('field', () => field),
     RTE.let('language', () => language),
+    RTE.let('query', () => query),
     RTE.filterOrElse(
       ({ currentPage }) => currentPage > 0,
       () => 'not-found' as const,
@@ -146,6 +150,7 @@ export const getRecentPrereviewsFromZenodo = ({
             q: [
               field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
               language ? `language:"${iso6391To3(language)}"` : '',
+              query ?? '',
             ]
               .filter(a => a !== '')
               .join(' AND '),
@@ -192,10 +197,11 @@ export const getRecentPrereviewsFromZenodo = ({
           match(error)
             .with('not-found', identity)
             .otherwise(() => 'unavailable' as const),
-        ({ currentPage, recentPrereviews, field, language, records }) => ({
+        ({ currentPage, recentPrereviews, field, language, records, query }) => ({
           currentPage,
           field,
           language,
+          query,
           recentPrereviews,
           totalPages: Math.ceil(records.hits.total / 5),
         }),
