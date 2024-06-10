@@ -26,7 +26,7 @@ export const createPage = ({ currentPage, field, language, query, totalPages, re
     main: html`
       <h1>Recent PREreviews</h1>
 
-      ${form({ field, language })}
+      ${form({ field, language, query })}
 
       <ol class="cards" id="results">
         ${pipe(
@@ -122,7 +122,7 @@ export const emptyPage = ({
     main: html`
       <h1>Recent PREreviews</h1>
 
-      ${form({ field, language })}
+      ${form({ field, language, query })}
 
       <div class="inset" id="results">
         <p>No PREreviews have been published yet.</p>
