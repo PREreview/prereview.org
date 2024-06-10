@@ -1451,6 +1451,7 @@ notification-banner {
 
   &:not([size]) {
     inline-size: 100%;
+    min-inline-size: min(40vi, 30ch);
   }
 
   &:focus-visible {
@@ -1584,6 +1585,10 @@ form[role='search'] {
   }
 
   & > div {
+    &:has(> :--input) {
+      align-self: stretch;
+    }
+
     @media screen {
       @media (width >= 30em) {
         max-inline-size: 40vw;
