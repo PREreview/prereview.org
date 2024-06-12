@@ -1,5 +1,5 @@
 import { animals, colors } from 'anonymus'
-import { capitalCase } from 'capital-case'
+import { capitalCase } from 'case-anything'
 import { pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'

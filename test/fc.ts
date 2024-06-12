@@ -1,7 +1,7 @@
 import { fc } from '@fast-check/jest'
 import { Temporal } from '@js-temporal/polyfill'
 import { animals, colors } from 'anonymus'
-import { capitalCase } from 'capital-case'
+import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
 import type { Request, Response } from 'express'

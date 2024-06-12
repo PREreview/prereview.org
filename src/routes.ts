@@ -1,4 +1,4 @@
-import { capitalCase } from 'capital-case'
+import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
 import * as P from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
