@@ -1,5 +1,6 @@
 import slashes from 'connect-slashes'
 import express from 'express'
+import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -222,39 +223,41 @@ export const app = (config: ConfigEnv) => {
         },
       }),
     )
-    .use((req, res, next) => {
-      createProxyMiddleware({
-        target: config.legacyPrereviewApi.url,
-        changeOrigin: true,
-        pathFilter: '/api/v2/',
-        on: {
-          proxyReq: (proxyReq, req) => {
-            const payload = {
-              url: `${proxyReq.protocol}//${proxyReq.host}${proxyReq.path}`,
-              method: proxyReq.method,
-              requestId: req.headers['fly-request-id'] ?? null,
-            }
+    .use(
+      asyncHandler(
+        createProxyMiddleware({
+          target: config.legacyPrereviewApi.url,
+          changeOrigin: true,
+          pathFilter: '/api/v2/',
+          on: {
+            proxyReq: (proxyReq, req) => {
+              const payload = {
+                url: `${proxyReq.protocol}//${proxyReq.host}${proxyReq.path}`,
+                method: proxyReq.method,
+                requestId: req.headers['fly-request-id'] ?? null,
+              }
 
-            L.debugP('Sending proxy HTTP request')(payload)(config)()
+              L.debugP('Sending proxy HTTP request')(payload)(config)()
 
-            proxyReq.once('response', response => {
-              L.debugP('Received proxy HTTP response')({
-                ...payload,
-                status: response.statusCode as Json,
-                headers: response.headers as Json,
-              })(config)()
-            })
+              proxyReq.once('response', response => {
+                L.debugP('Received proxy HTTP response')({
+                  ...payload,
+                  status: response.statusCode as Json,
+                  headers: response.headers as Json,
+                })(config)()
+              })
 
-            proxyReq.once('error', error => {
-              L.warnP('Did not receive a proxy HTTP response')({
-                ...payload,
-                error: error.message,
-              })(config)()
-            })
+              proxyReq.once('error', error => {
+                L.warnP('Did not receive a proxy HTTP response')({
+                  ...payload,
+                  error: error.message,
+                })(config)()
+              })
+            },
           },
-        },
-      })(req, res, next)?.catch(() => next())
-    })
+        }),
+      ),
+    )
     .use(slashes(false))
     .use(express.urlencoded({ extended: true }))
     .use((req, res, next) => {
