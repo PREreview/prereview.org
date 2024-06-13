@@ -7,7 +7,7 @@ import { snd } from 'fp-ts/lib/ReadonlyTuple.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
 import iso6391, { type LanguageCode } from 'iso-639-1'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { PageResponse } from '../response.js'
@@ -33,7 +33,7 @@ export const createPage = ({ currentPage, totalPages, language, field, reviewReq
               <article aria-labelledby="request-${index}-title">
                 <h2 id="request-${index}-title" class="visually-hidden">
                   Review request for
-                  <cite dir="${getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
+                  <cite dir="${rtlDetect.getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
                     >${request.preprint.title}</cite
                   >
                 </h2>
@@ -44,7 +44,7 @@ export const createPage = ({ currentPage, totalPages, language, field, reviewReq
                   })}"
                 >
                   A review was requested for
-                  <cite dir="${getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
+                  <cite dir="${rtlDetect.getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
                     >${request.preprint.title}</cite
                   >
                 </a>

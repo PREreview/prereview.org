@@ -7,7 +7,7 @@ import { snd } from 'fp-ts/lib/ReadonlyTuple.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
 import iso6391, { type LanguageCode } from 'iso-639-1'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
@@ -41,7 +41,9 @@ export const createPage = (
                   <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
                     ${formatList('en')(prereview.reviewers)}
                     ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
-                    <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
+                    <cite
+                      dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                      lang="${prereview.preprint.language}"
                       >${prereview.preprint.title}</cite
                     >
                   </a>

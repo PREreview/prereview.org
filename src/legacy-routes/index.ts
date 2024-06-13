@@ -6,7 +6,7 @@ import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { constant, flow, pipe, tuple } from 'fp-ts/lib/function.js'
-import { NotFound } from 'http-errors'
+import httpErrors from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -384,7 +384,11 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
   concatAll(P.getParserMonoid()),
 )
 
-export const legacyRoutes = pipe(route(legacyRouter, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
+export const legacyRoutes = pipe(
+  route(legacyRouter, constant(new httpErrors.NotFound())),
+  RM.fromMiddleware,
+  RM.iflatten,
+)
 
 const showRemovedPermanentlyMessage = pipe(
   RM.of({}),

@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { html, plainText } from '../../html.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
@@ -17,8 +17,8 @@ export const carryOnPage = (preprint: PreprintTitle, form: Form) =>
 
       <p>
         As you’ve already started a PREreview of
-        <cite lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</cite>, we’ll take
-        you to the next step so you can carry&nbsp;on.
+        <cite lang="${preprint.language}" dir="${rtlDetect.getLangDir(preprint.language)}">${preprint.title}</cite>,
+        we’ll take you to the next step so you can carry&nbsp;on.
       </p>
 
       <a href="${format(nextFormMatch(form).formatter, { id: preprint.id })}" role="button" draggable="false"

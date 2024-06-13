@@ -17,7 +17,7 @@ import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { constVoid, flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { toUpperCase } from 'fp-ts/lib/string.js'
-import { type HttpError, NotFound } from 'http-errors'
+import httpErrors, { type HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -562,7 +562,7 @@ function recordToPrereview(
   return pipe(
     RTE.Do,
     RTE.apS('preprintId', getReviewedPreprintId(record)),
-    RTE.apSW('reviewTextUrl', RTE.fromOption(() => new NotFound())(getReviewUrl(record))),
+    RTE.apSW('reviewTextUrl', RTE.fromOption(() => new httpErrors.NotFound())(getReviewUrl(record))),
     RTE.apSW(
       'license',
       RTE.fromEither(
@@ -609,7 +609,7 @@ function recordToPreprintPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, HttpError<404> | 'text-unavailable', PreprintPrereview> {
   return pipe(
-    RTE.fromOption(() => new NotFound())(getReviewUrl(record)),
+    RTE.fromOption(() => new httpErrors.NotFound())(getReviewUrl(record)),
     RTE.chainW(reviewTextUrl =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right(getAuthors(record)),

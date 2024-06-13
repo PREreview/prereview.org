@@ -6,7 +6,7 @@ import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import type { Orcid } from 'orcid-id-ts'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
@@ -46,13 +46,17 @@ export const createPage = ({
     }
     `,
     h1: html`PREreviews of
-      <cite lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
+      <cite lang="${preprint.title.language}" dir="${rtlDetect.getLangDir(preprint.title.language)}"
         >${preprint.title.text}</cite
       >`,
     aside: html`
       <article aria-labelledby="preprint-title">
         <header>
-          <h2 lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}" id="preprint-title">
+          <h2
+            lang="${preprint.title.language}"
+            dir="${rtlDetect.getLangDir(preprint.title.language)}"
+            id="preprint-title"
+          >
             ${preprint.title.text}
           </h2>
 
@@ -123,7 +127,7 @@ export const createPage = ({
           ? html`
               <h3>Abstract</h3>
 
-              <div lang="${preprint.abstract.language}" dir="${getLangDir(preprint.abstract.language)}">
+              <div lang="${preprint.abstract.language}" dir="${rtlDetect.getLangDir(preprint.abstract.language)}">
                 ${fixHeadingLevels(3, preprint.abstract.text)}
               </div>
             `
@@ -185,7 +189,7 @@ function showReview(review: Prereview) {
           </div>
         </header>
 
-        <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
+        <div ${review.language ? html`lang="${review.language}" dir="${rtlDetect.getLangDir(review.language)}"` : ''}>
           ${fixHeadingLevels(
             3,
             rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5, stripTags: ['a'] })),

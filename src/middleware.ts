@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/lib/function.js'
-import { NotFound, ServiceUnavailable } from 'http-errors'
+import httpErrors from 'http-errors'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import { handleError } from './http-error.js'
@@ -22,8 +22,8 @@ export const movedPermanently: <E = never>(
     M.ichain(() => M.end()),
   )
 
-export const notFound = handleError(new NotFound())
+export const notFound = handleError(new httpErrors.NotFound())
 
-export const serviceUnavailable = handleError(new ServiceUnavailable())
+export const serviceUnavailable = handleError(new httpErrors.ServiceUnavailable())
 
 export const getMethod = M.gets(c => c.getMethod())

@@ -3,7 +3,7 @@ import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import type { Orcid } from 'orcid-id-ts'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
@@ -49,7 +49,9 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
               <div>
                 <dt>Title</dt>
                 <dd>
-                  <cite lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</cite>
+                  <cite lang="${preprint.language}" dir="${rtlDetect.getLangDir(preprint.language)}"
+                    >${preprint.title}</cite
+                  >
                 </dd>
               </div>
               <div>

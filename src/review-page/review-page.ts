@@ -3,7 +3,7 @@ import { format } from 'fp-ts-routing'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import type { Orcid } from 'orcid-id-ts'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
@@ -34,7 +34,7 @@ export const createPage = ({ id, review }: { id: number; review: Prereview }) =>
       <header>
         <h1>
           ${review.structured ? 'Structured ' : ''}PREreview of
-          <cite lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
+          <cite lang="${review.preprint.language}" dir="${rtlDetect.getLangDir(review.preprint.language)}"
             >${review.preprint.title}</cite
           >
         </h1>
@@ -86,7 +86,7 @@ export const createPage = ({ id, review }: { id: number; review: Prereview }) =>
         </dl>
       </header>
 
-      <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
+      <div ${review.language ? html`lang="${review.language}" dir="${rtlDetect.getLangDir(review.language)}"` : ''}>
         ${fixHeadingLevels(1, review.text)}
       </div>
 

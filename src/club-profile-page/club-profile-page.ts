@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import type { Club } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
@@ -67,7 +67,9 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
                           formatList('en'),
                         )}
                         reviewed
-                        <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
+                        <cite
+                          dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                          lang="${prereview.preprint.language}"
                           >${prereview.preprint.title}</cite
                         >
                       </a>

@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { html, plainText } from '../../html.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
@@ -17,9 +17,9 @@ export const requestReviewPage = ({ preprint, user }: { preprint: PreprintTitle;
 
       <p>
         You can request a PREreview of
-        <cite dir="${getLangDir(preprint.language)}" lang="${preprint.language}">${preprint.title}</cite>. A PREreview
-        is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a journal-organized
-        peer-review report.
+        <cite dir="${rtlDetect.getLangDir(preprint.language)}" lang="${preprint.language}">${preprint.title}</cite>. A
+        PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a
+        journal-organized peer-review report.
       </p>
 
       ${user

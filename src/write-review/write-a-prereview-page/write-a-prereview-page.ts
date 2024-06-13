@@ -2,7 +2,7 @@ import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
 import type { Preprint } from '../../preprint.js'
@@ -22,7 +22,7 @@ export const startPage = (preprint: Preprint, user?: User) =>
 
     <article class="preview" tabindex="0" aria-labelledby="preprint-title">
       <header>
-        <h2 lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}" id="preprint-title">
+        <h2 lang="${preprint.title.language}" dir="${rtlDetect.getLangDir(preprint.title.language)}" id="preprint-title">
           ${preprint.title.text}
         </h2>
 
@@ -96,7 +96,7 @@ export const startPage = (preprint: Preprint, user?: User) =>
       ${
         preprint.abstract
           ? html`
-              <div lang="${preprint.abstract.language}" dir="${getLangDir(preprint.abstract.language)}">
+              <div lang="${preprint.abstract.language}" dir="${rtlDetect.getLangDir(preprint.abstract.language)}">
                 ${fixHeadingLevels(2, preprint.abstract.text)}
               </div>
             `
@@ -106,7 +106,7 @@ export const startPage = (preprint: Preprint, user?: User) =>
 
     <p>
       You can write a PREreview of
-      <cite lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
+      <cite lang="${preprint.title.language}" dir="${rtlDetect.getLangDir(preprint.title.language)}"
       >${preprint.title.text}</cite
       >. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a
       journal-organized peer-review report.

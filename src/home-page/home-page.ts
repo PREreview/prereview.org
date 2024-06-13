@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
@@ -118,7 +118,9 @@ export const createPage = ({
                       <article aria-labelledby="request-${index}-title">
                         <h3 id="request-${index}-title" class="visually-hidden">
                           Review request for
-                          <cite dir="${getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
+                          <cite
+                            dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                            lang="${request.preprint.language}"
                             >${request.preprint.title}</cite
                           >
                         </h3>
@@ -129,7 +131,9 @@ export const createPage = ({
                           })}"
                         >
                           A review was requested for
-                          <cite dir="${getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
+                          <cite
+                            dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                            lang="${request.preprint.language}"
                             >${request.preprint.title}</cite
                           >
                         </a>
@@ -222,7 +226,9 @@ export const createPage = ({
                       <article aria-labelledby="prereview-${prereview.id}-title">
                         <h3 id="prereview-${prereview.id}-title" class="visually-hidden">
                           PREreview of
-                          <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
+                          <cite
+                            dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                            lang="${prereview.preprint.language}"
                             >${prereview.preprint.title}</cite
                           >
                         </h3>
@@ -230,7 +236,9 @@ export const createPage = ({
                         <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
                           ${formatList('en')(prereview.reviewers)}
                           ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
-                          <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
+                          <cite
+                            dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                            lang="${prereview.preprint.language}"
                             >${prereview.preprint.title}</cite
                           >
                         </a>

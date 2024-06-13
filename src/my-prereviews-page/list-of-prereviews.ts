@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { PageResponse } from '../response.js'
@@ -58,7 +58,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
                     formatList('en'),
                   )}
                   reviewed
-                  <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
+                  <cite dir="${rtlDetect.getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
                     >${prereview.preprint.title}</cite
                   >
                 </a>

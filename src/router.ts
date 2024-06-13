@@ -11,7 +11,7 @@ import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as T from 'fp-ts/lib/Task.js'
 import { constVoid, constant, flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
-import { NotFound } from 'http-errors'
+import httpErrors from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
 import type { SessionEnv } from 'hyper-ts-session'
@@ -1969,4 +1969,4 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
   concatAll(P.getParserMonoid()),
 )
 
-export const routes = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
+export const routes = pipe(route(router, constant(new httpErrors.NotFound())), RM.fromMiddleware, RM.iflatten)

@@ -8,7 +8,7 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import type { LanguageCode } from 'iso-639-1'
 import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
-import { getLangDir } from 'rtl-detect'
+import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
@@ -116,7 +116,7 @@ function startPage({ inviteId, review, user }: { inviteId: Uuid; review: Prerevi
         <header>
           <h2 id="prereview-title">
             ${review.structured ? 'Structured ' : ''}PREreview of
-            <cite lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
+            <cite lang="${review.preprint.language}" dir="${rtlDetect.getLangDir(review.preprint.language)}"
               >${review.preprint.title}</cite
             >
           </h2>
@@ -168,7 +168,7 @@ function startPage({ inviteId, review, user }: { inviteId: Uuid; review: Prerevi
           </dl>
         </header>
 
-        <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
+        <div ${review.language ? html`lang="${review.language}" dir="${rtlDetect.getLangDir(review.language)}"` : ''}>
           ${fixHeadingLevels(1, review.text)}
         </div>
 
