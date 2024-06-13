@@ -8,7 +8,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import katex from 'katex'
 import processMjml from 'mjml'
 import nanohtml from 'nanohtml'
-import raw from 'nanohtml/raw'
+import raw from 'nanohtml/raw.js'
 import sanitize from 'sanitize-html'
 import stripTags from 'striptags'
 
