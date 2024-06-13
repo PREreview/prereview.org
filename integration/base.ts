@@ -8,7 +8,7 @@ import {
 import { SystemClock } from 'clock-ts'
 import type { Doi } from 'doi-ts'
 import fetchMock, { type FetchMockSandbox } from 'fetch-mock'
-import type { JsonRecord } from 'fp-ts/Json'
+import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as fs from 'fs/promises'
 import type { Server } from 'http'
 import { Status } from 'hyper-ts'

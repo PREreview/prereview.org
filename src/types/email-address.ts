@@ -1,9 +1,9 @@
 import { isEmailValid } from '@hapi/address'
-import type { Eq } from 'fp-ts/Eq'
-import { pipe } from 'fp-ts/function'
-import * as s from 'fp-ts/string'
-import * as C from 'io-ts/Codec'
-import * as D from 'io-ts/Decoder'
+import type { Eq } from 'fp-ts/lib/Eq.js'
+import { pipe } from 'fp-ts/lib/function.js'
+import * as s from 'fp-ts/lib/string.js'
+import * as C from 'io-ts/lib/Codec.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import type { NonEmptyString } from './string.js'
 
 export type EmailAddress = NonEmptyString & EmailAddressBrand

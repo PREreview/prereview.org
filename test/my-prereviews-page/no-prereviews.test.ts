@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/my-prereviews-page/no-prereviews.js'
 import { myPrereviewsMatch } from '../../src/routes.js'

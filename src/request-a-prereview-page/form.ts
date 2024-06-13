@@ -1,8 +1,8 @@
 import * as Doi from 'doi-ts'
-import * as E from 'fp-ts/Either'
-import * as O from 'fp-ts/Option'
-import { flow, pipe } from 'fp-ts/function'
-import * as D from 'io-ts/Decoder'
+import * as E from 'fp-ts/lib/Either.js'
+import * as O from 'fp-ts/lib/Option.js'
+import { flow, pipe } from 'fp-ts/lib/function.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import { getInput } from '../form.js'
 
 export interface ValidForm {

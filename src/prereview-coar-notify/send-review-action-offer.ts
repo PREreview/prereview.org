@@ -1,6 +1,6 @@
 import * as F from 'fetch-fp-ts'
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import { identity, pipe } from 'fp-ts/function'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import { identity, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import { timeoutRequest } from '../fetch.js'
 import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-payload.js'

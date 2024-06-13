@@ -1,7 +1,7 @@
 import { hasRegistrant } from 'doi-ts'
-import * as O from 'fp-ts/Option'
-import { type Refinement, fromOptionK } from 'fp-ts/Refinement'
-import { pipe } from 'fp-ts/function'
+import * as O from 'fp-ts/lib/Option.js'
+import { type Refinement, fromOptionK } from 'fp-ts/lib/Refinement.js'
+import { pipe } from 'fp-ts/lib/function.js'
 import { P, match } from 'ts-pattern'
 import type {
   AfricarxivOsfPreprintId,

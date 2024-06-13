@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import * as TE from 'fp-ts/TaskEither'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { CanRequestReviewsEnv } from '../../src/feature-flags.js'
 import * as _ from '../../src/request-a-prereview-page/make-decision.js'
 import * as fc from '../fc.js'

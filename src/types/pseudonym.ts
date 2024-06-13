@@ -1,8 +1,8 @@
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
-import { pipe } from 'fp-ts/function'
-import * as C from 'io-ts/Codec'
-import * as D from 'io-ts/Decoder'
+import { pipe } from 'fp-ts/lib/function.js'
+import * as C from 'io-ts/lib/Codec.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import type { NonEmptyString } from './string.js'
 
 export type Pseudonym = NonEmptyString & PseudonymBrand

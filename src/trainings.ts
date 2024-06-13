@@ -1,6 +1,6 @@
 import { format } from 'fp-ts-routing'
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import { pipe } from 'fp-ts/function'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import { pipe } from 'fp-ts/lib/function.js'
 import { getPage } from './ghost.js'
 import { type Html, fixHeadingLevels, html, plainText } from './html.js'
 import { havingProblemsPage } from './http-error.js'

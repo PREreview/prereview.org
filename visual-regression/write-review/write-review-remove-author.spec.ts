@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import { missingE } from '../../src/form.js'
 import { html } from '../../src/html.js'
 import type { PreprintTitle } from '../../src/preprint.js'

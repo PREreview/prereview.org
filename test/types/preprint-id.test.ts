@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { type Doi, toUrl } from 'doi-ts'
-import * as O from 'fp-ts/Option'
+import * as O from 'fp-ts/lib/Option.js'
 import * as _ from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 

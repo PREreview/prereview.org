@@ -1,5 +1,5 @@
-import * as O from 'fp-ts/Option'
-import { flow, pipe } from 'fp-ts/function'
+import * as O from 'fp-ts/lib/Option.js'
+import { flow, pipe } from 'fp-ts/lib/function.js'
 import iso6391, { type LanguageCode } from 'iso-639-1'
 import { detect } from 'tinyld/heavy'
 import { type Html, plainText } from './html.js'

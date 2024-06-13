@@ -1,12 +1,12 @@
-import { sequenceS } from 'fp-ts/Apply'
-import * as E from 'fp-ts/Either'
-import * as O from 'fp-ts/Option'
-import * as RR from 'fp-ts/ReadonlyRecord'
-import { flow, pipe } from 'fp-ts/function'
-import { isString } from 'fp-ts/string'
-import * as DE from 'io-ts/DecodeError'
-import type * as D from 'io-ts/Decoder'
-import * as FS from 'io-ts/FreeSemigroup'
+import { sequenceS } from 'fp-ts/lib/Apply.js'
+import * as E from 'fp-ts/lib/Either.js'
+import * as O from 'fp-ts/lib/Option.js'
+import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
+import { flow, pipe } from 'fp-ts/lib/function.js'
+import { isString } from 'fp-ts/lib/string.js'
+import * as DE from 'io-ts/lib/DecodeError.js'
+import type * as D from 'io-ts/lib/Decoder.js'
+import * as FS from 'io-ts/lib/FreeSemigroup.js'
 
 export type FieldDecoders = EnforceNonEmptyRecord<Record<string, (input: unknown) => E.Either<unknown, unknown>>>
 

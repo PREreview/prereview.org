@@ -1,4 +1,4 @@
-import * as O from 'fp-ts/Option'
+import * as O from 'fp-ts/lib/Option.js'
 import { createFormPage } from '../../src/my-details-page/change-open-for-requests-form-page.js'
 import { expect, test } from '../base.js'
 

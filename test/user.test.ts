@@ -1,9 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import * as E from 'fp-ts/Either'
-import * as O from 'fp-ts/Option'
-import { pipe } from 'fp-ts/function'
-import * as D from 'io-ts/Decoder'
+import * as E from 'fp-ts/lib/Either.js'
+import * as O from 'fp-ts/lib/Option.js'
+import { pipe } from 'fp-ts/lib/function.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../src/user.js'
 import * as fc from './fc.js'
 

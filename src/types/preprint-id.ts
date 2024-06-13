@@ -1,8 +1,8 @@
 import { type Doi, hasRegistrant, isDoi, parse } from 'doi-ts'
-import * as O from 'fp-ts/Option'
-import { type Refinement, compose } from 'fp-ts/Refinement'
-import { flow, pipe } from 'fp-ts/function'
-import * as D from 'io-ts/Decoder'
+import * as O from 'fp-ts/lib/Option.js'
+import { type Refinement, compose } from 'fp-ts/lib/Refinement.js'
+import { flow, pipe } from 'fp-ts/lib/function.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 
 export type PreprintId =

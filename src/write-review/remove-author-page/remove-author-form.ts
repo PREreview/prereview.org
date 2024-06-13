@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { type MissingE, hasAnError } from '../../form.js'

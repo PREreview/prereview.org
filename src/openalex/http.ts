@@ -1,4 +1,4 @@
-import type * as D from 'io-ts/Decoder'
+import type * as D from 'io-ts/lib/Decoder.js'
 
 export interface NetworkError {
   readonly _tag: 'NetworkError'

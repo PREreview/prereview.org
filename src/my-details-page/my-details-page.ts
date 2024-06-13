@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/Option'
+import * as O from 'fp-ts/lib/Option.js'
 import { P, match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.js'
 import type { ContactEmailAddress } from '../contact-email-address.js'

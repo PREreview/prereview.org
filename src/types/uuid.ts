@@ -1,8 +1,8 @@
-import type { IO } from 'fp-ts/IO'
-import * as RIO from 'fp-ts/ReaderIO'
-import { pipe } from 'fp-ts/function'
-import * as C from 'io-ts/Codec'
-import * as D from 'io-ts/Decoder'
+import type { IO } from 'fp-ts/lib/IO.js'
+import * as RIO from 'fp-ts/lib/ReaderIO.js'
+import { pipe } from 'fp-ts/lib/function.js'
+import * as C from 'io-ts/lib/Codec.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import { type Uuid, isUuid } from 'uuid-ts'
 
 export interface GenerateUuidEnv {

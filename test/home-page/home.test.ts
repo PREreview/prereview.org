@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as T from 'fp-ts/Task'
+import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import type { CanRequestReviewsEnv } from '../../src/feature-flags.js'
 import * as _ from '../../src/home-page/index.js'

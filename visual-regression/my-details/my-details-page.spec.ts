@@ -1,4 +1,4 @@
-import * as O from 'fp-ts/Option'
+import * as O from 'fp-ts/lib/Option.js'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { createPage } from '../../src/my-details-page/my-details-page.js'

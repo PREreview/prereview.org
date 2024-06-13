@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/Option'
+import * as O from 'fp-ts/lib/Option.js'
 import { P, match } from 'ts-pattern'
 import { html, plainText } from '../html.js'
 import type { Location } from '../location.js'

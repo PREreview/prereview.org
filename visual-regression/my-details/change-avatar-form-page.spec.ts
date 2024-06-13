@@ -1,4 +1,4 @@
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import { missingE, tooBigE, wrongTypeE } from '../../src/form.js'
 import { createPage } from '../../src/my-details-page/change-avatar-form-page.js'
 import { expect, test } from '../base.js'

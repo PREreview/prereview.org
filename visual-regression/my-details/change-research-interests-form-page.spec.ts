@@ -1,4 +1,4 @@
-import * as O from 'fp-ts/Option'
+import * as O from 'fp-ts/lib/Option.js'
 import { createFormPage } from '../../src/my-details-page/change-research-interests-form-page.js'
 import type { NonEmptyString } from '../../src/types/string.js'
 import { expect, test } from '../base.js'

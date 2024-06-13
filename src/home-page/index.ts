@@ -1,5 +1,5 @@
-import * as RT from 'fp-ts/ReaderTask'
-import { pipe } from 'fp-ts/function'
+import * as RT from 'fp-ts/lib/ReaderTask.js'
+import { pipe } from 'fp-ts/lib/function.js'
 import {
   type CanRequestReviewsEnv,
   type CanSeeGatesLogoEnv,

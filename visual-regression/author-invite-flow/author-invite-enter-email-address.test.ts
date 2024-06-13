@@ -1,4 +1,4 @@
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import type { Uuid } from 'uuid-ts'
 import { enterEmailAddressForm } from '../../src/author-invite-flow/enter-email-address-page/enter-email-address-form.js'
 import { invalidE, missingE } from '../../src/form.js'

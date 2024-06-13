@@ -1,4 +1,4 @@
-import * as R from 'fp-ts/Reader'
+import * as R from 'fp-ts/lib/Reader.js'
 import type { User } from './user.js'
 
 export interface CanConnectOrcidProfileEnv {

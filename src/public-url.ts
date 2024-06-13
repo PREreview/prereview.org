@@ -1,7 +1,7 @@
 import { type Formatter, format } from 'fp-ts-routing'
-import * as R from 'fp-ts/Reader'
-import * as RE from 'fp-ts/ReaderEither'
-import { constant, pipe } from 'fp-ts/function'
+import * as R from 'fp-ts/lib/Reader.js'
+import * as RE from 'fp-ts/lib/ReaderEither.js'
+import { constant, pipe } from 'fp-ts/lib/function.js'
 
 export interface PublicUrlEnv {
   publicUrl: URL

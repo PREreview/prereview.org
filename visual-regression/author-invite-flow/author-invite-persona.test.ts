@@ -1,4 +1,4 @@
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { personaForm } from '../../src/author-invite-flow/persona-page/persona-form.js'

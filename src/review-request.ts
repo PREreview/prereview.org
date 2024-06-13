@@ -1,8 +1,8 @@
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import type * as TE from 'fp-ts/TaskEither'
-import { flow, pipe } from 'fp-ts/function'
-import * as C from 'io-ts/Codec'
-import * as D from 'io-ts/Decoder'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import type * as TE from 'fp-ts/lib/TaskEither.js'
+import { flow, pipe } from 'fp-ts/lib/function.js'
+import * as C from 'io-ts/lib/Codec.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type {

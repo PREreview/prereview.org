@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals'
-import * as O from 'fp-ts/Option'
+import * as O from 'fp-ts/lib/Option.js'
 import * as _ from '../src/detect-language.js'
 import { html, rawHtml } from '../src/html.js'
 

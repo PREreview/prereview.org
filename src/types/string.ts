@@ -1,9 +1,9 @@
-import type { Eq } from 'fp-ts/Eq'
-import type { Ord } from 'fp-ts/Ord'
-import { pipe } from 'fp-ts/function'
-import * as s from 'fp-ts/string'
-import * as C from 'io-ts/Codec'
-import * as D from 'io-ts/Decoder'
+import type { Eq } from 'fp-ts/lib/Eq.js'
+import type { Ord } from 'fp-ts/lib/Ord.js'
+import { pipe } from 'fp-ts/lib/function.js'
+import * as s from 'fp-ts/lib/string.js'
+import * as C from 'io-ts/lib/Codec.js'
+import * as D from 'io-ts/lib/Decoder.js'
 
 export type NonEmptyString = string & NonEmptyStringBrand
 

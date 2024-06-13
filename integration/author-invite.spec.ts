@@ -1,8 +1,8 @@
 import type { FetchMockSandbox } from 'fetch-mock'
-import * as E from 'fp-ts/Either'
-import * as J from 'fp-ts/Json'
-import { pipe } from 'fp-ts/function'
-import * as D from 'io-ts/Decoder'
+import * as E from 'fp-ts/lib/Either.js'
+import * as J from 'fp-ts/lib/Json.js'
+import { pipe } from 'fp-ts/lib/function.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import {
   canLogIn,
   expect,

@@ -1,7 +1,7 @@
-import { pipe } from 'fp-ts/function'
+import { pipe } from 'fp-ts/lib/function.js'
 import { NotFound, ServiceUnavailable } from 'http-errors'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
+import * as M from 'hyper-ts/lib/Middleware.js'
 import { handleError } from './http-error.js'
 
 export const seeOther: <E = never>(location: string) => M.Middleware<StatusOpen, ResponseEnded, E, void> = location =>

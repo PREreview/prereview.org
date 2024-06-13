@@ -1,9 +1,9 @@
 import cookie from 'cookie'
-import * as RR from 'fp-ts/ReadonlyRecord'
-import { flow, pipe } from 'fp-ts/function'
+import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
+import { flow, pipe } from 'fp-ts/lib/function.js'
 import type { HeadersOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
-import * as D from 'io-ts/Decoder'
+import * as M from 'hyper-ts/lib/Middleware.js'
+import * as D from 'io-ts/lib/Decoder.js'
 
 export const deleteFlashMessage = pipe(
   M.decodeHeader<HeadersOpen, unknown, string>('Cookie', D.string.decode),

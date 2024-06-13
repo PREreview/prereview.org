@@ -1,6 +1,6 @@
 import type * as F from 'fetch-fp-ts'
-import type { Json } from 'fp-ts/Json'
-import { constVoid } from 'fp-ts/function'
+import type { Json } from 'fp-ts/lib/Json.js'
+import { constVoid } from 'fp-ts/lib/function.js'
 import * as L from 'logger-fp-ts'
 
 export interface SleepEnv {

@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
 import markdownIt from 'markdown-it'
 import { P, match } from 'ts-pattern'

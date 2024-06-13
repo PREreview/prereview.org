@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import * as Response from '../response.js'
 import { myPrereviewsMatch } from '../routes.js'
 import type { User } from '../user.js'

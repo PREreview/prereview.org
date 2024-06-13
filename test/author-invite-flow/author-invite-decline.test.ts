@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as TE from 'fp-ts/TaskEither'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/decline-page/index.js'
 import * as _ from '../../src/author-invite-flow/index.js'

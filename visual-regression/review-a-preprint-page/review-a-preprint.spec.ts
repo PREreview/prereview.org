@@ -1,4 +1,4 @@
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import { invalidE } from '../../src/form.js'
 import { createPage } from '../../src/review-a-preprint-page/review-a-preprint.js'
 import { expect, test } from '../base.js'

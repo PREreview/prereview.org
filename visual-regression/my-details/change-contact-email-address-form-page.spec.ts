@@ -1,4 +1,4 @@
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import { invalidE, missingE } from '../../src/form.js'
 import { createFormPage } from '../../src/my-details-page/change-contact-email-address-form-page.js'
 import type { EmailAddress } from '../../src/types/email-address.js'

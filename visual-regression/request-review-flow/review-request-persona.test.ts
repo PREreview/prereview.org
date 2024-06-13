@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import type { Orcid } from 'orcid-id-ts'
 import { missingE } from '../../src/form.js'
 import { personaForm } from '../../src/request-review-flow/persona-page/persona-form.js'

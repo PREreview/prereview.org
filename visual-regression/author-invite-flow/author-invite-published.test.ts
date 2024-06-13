@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import * as TE from 'fp-ts/TaskEither'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { authorInvitePublished } from '../../src/author-invite-flow/index.js'

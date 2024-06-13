@@ -1,5 +1,5 @@
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import { flow, identity, pipe } from 'fp-ts/function'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { maybeGetAvatar } from '../avatar.js'

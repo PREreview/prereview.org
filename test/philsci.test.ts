@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
-import * as E from 'fp-ts/Either'
+import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
 import { rawHtml } from '../src/html.js'
 import * as _ from '../src/philsci.js'
