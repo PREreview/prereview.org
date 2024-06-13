@@ -9,7 +9,7 @@ import type { FieldId } from '../types/field.js'
 import { createEmptyPage, createPage } from './review-requests-page.js'
 import { type GetReviewRequestsEnv, getReviewRequests } from './review-requests.js'
 
-export { GetReviewRequestsEnv, ReviewRequests } from './review-requests.js'
+export type { GetReviewRequestsEnv, ReviewRequests } from './review-requests.js'
 
 export const reviewRequests = ({
   field,

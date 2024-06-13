@@ -12,8 +12,8 @@ import { createPage } from './home-page.js'
 import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews.js'
 import { type GetRecentReviewRequestsEnv, getRecentReviewRequests } from './recent-review-requests.js'
 
-export { RecentPrereview } from './recent-prereviews.js'
-export { RecentReviewRequest } from './recent-review-requests.js'
+export { type RecentPrereview } from './recent-prereviews.js'
+export { type RecentReviewRequest } from './recent-review-requests.js'
 
 export const home = ({
   user,

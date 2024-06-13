@@ -9,7 +9,7 @@ import { type GetPrereviewEnv, getPrereview } from './prereview.js'
 import { removedMessage } from './removed-message.js'
 import { createPage } from './review-page.js'
 
-export { GetPrereviewEnv, Prereview } from './prereview.js'
+export type { GetPrereviewEnv, Prereview } from './prereview.js'
 
 export const reviewPage = (id: number): RT.ReaderTask<GetPrereviewEnv, PageResponse> =>
   pipe(

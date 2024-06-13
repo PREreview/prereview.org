@@ -13,7 +13,7 @@ import { getSubfieldName } from '../types/subfield.js'
 import type { User } from '../user.js'
 import type { Prereview } from './prereviews.js'
 
-export { Prereview } from './prereviews.js'
+export type { Prereview } from './prereviews.js'
 
 export interface ListOfPrereviews {
   readonly _tag: 'ListOfPrereviews'

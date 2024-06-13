@@ -11,7 +11,7 @@ import { failureMessage } from './failure-message.js'
 import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews.js'
 import { createPage, emptyPage } from './reviews-page.js'
 
-export { GetRecentPrereviewsEnv, RecentPrereviews } from './recent-prereviews.js'
+export type { GetRecentPrereviewsEnv, RecentPrereviews } from './recent-prereviews.js'
 
 export const reviewsPage = ({
   canUseSearchQueries,

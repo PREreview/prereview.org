@@ -13,8 +13,8 @@ import { createPage } from './preprint-reviews.js'
 import { type GetPrereviewsEnv, getPrereviews } from './prereviews.js'
 import { type GetRapidPrereviewsEnv, getRapidPrereviews } from './rapid-prereviews.js'
 
-export { GetPrereviewsEnv, Prereview } from './prereviews.js'
-export { GetRapidPrereviewsEnv, RapidPrereview } from './rapid-prereviews.js'
+export type { GetPrereviewsEnv, Prereview } from './prereviews.js'
+export type { GetRapidPrereviewsEnv, RapidPrereview } from './rapid-prereviews.js'
 
 export const preprintReviews = (
   id: IndeterminatePreprintId,

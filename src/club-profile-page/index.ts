@@ -8,7 +8,7 @@ import type { ClubId } from '../types/club-id.js'
 import { createPage } from './club-profile-page.js'
 import { type GetPrereviewsEnv, getPrereviews } from './prereviews.js'
 
-export { GetPrereviewsEnv } from './prereviews.js'
+export { type GetPrereviewsEnv } from './prereviews.js'
 
 export const clubProfile = (id: ClubId): RT.ReaderTask<GetPrereviewsEnv, PageResponse> =>
   pipe(

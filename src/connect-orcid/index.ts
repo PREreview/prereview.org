@@ -1,5 +1,5 @@
 export { connectOrcid } from './connect-orcid.js'
 export { disconnectOrcid } from './disconnect-orcid.js'
-export { connectOrcidCode, OrcidOAuthEnv } from './oauth-code.js'
+export { connectOrcidCode, type OrcidOAuthEnv } from './oauth-code.js'
 export { connectOrcidError } from './oauth-error.js'
 export { connectOrcidStart } from './oauth-start.js'

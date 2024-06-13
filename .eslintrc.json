@@ -44,6 +44,7 @@
   },
   "rules": {
     "@typescript-eslint/array-type": ["error", { "default": "generic" }],
+    "@typescript-eslint/consistent-type-exports": ["error", { "fixMixedExportsWithInlineTypeSpecifier": true }],
     "@typescript-eslint/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
     "@typescript-eslint/no-confusing-void-expression": "off",
     "@typescript-eslint/no-import-type-side-effects": "error",
