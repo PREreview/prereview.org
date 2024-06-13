@@ -14,16 +14,24 @@ export function renderDate(date: PartialDate): Html {
       year =>
         html`<time datetime="${year}">${new PlainDate(year, 1, 1).toLocaleString('en', { year: 'numeric' })}</time>`,
     )
-    .with(
-      P.instanceOf(PlainYearMonth),
+    .when(
+      isPlainYearMonth,
       date =>
         html`<time datetime="${date.toString()}"
           >${date.toLocaleString('en', { calendar: date.calendarId, month: 'long', year: 'numeric' })}</time
         >`,
     )
-    .with(
-      P.instanceOf(PlainDate),
+    .when(
+      isPlainDate,
       date => html`<time datetime="${date.toString()}">${date.toLocaleString('en', { dateStyle: 'long' })}</time>`,
     )
     .exhaustive()
+}
+
+function isPlainDate(value: unknown): value is PlainDate {
+  return typeof value === 'object' && value?.constructor.name === 'PlainDate'
+}
+
+function isPlainYearMonth(value: unknown): value is PlainYearMonth {
+  return typeof value === 'object' && value?.constructor.name === 'PlainYearMonth'
 }

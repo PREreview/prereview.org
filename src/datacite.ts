@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill'
+import type { Temporal } from '@js-temporal/polyfill'
 import { type Work, getWork } from 'datacite-ts'
 import { type Doi, hasRegistrant } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
@@ -23,10 +23,6 @@ import type {
   PsychArchivesPreprintId,
   ZenodoPreprintId,
 } from './types/preprint-id.js'
-
-import Instant = Temporal.Instant
-import PlainDate = Temporal.PlainDate
-import PlainYearMonth = Temporal.PlainYearMonth
 
 export type DatacitePreprintId =
   | AfricarxivFigsharePreprintId
@@ -99,8 +95,8 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
         E.fromOptionK(() => 'no published date' as const)(findPublishedDate),
         E.map(({ date }) =>
           match(date)
-            .with(P.instanceOf(Instant), instant => instant.toZonedDateTimeISO('UTC').toPlainDate())
-            .with(P.union(P.instanceOf(PlainDate), P.instanceOf(PlainYearMonth), P.number), identity)
+            .when(isInstant, instant => instant.toZonedDateTimeISO('UTC').toPlainDate())
+            .with(P.union(P.when(isPlainDate), P.when(isPlainYearMonth), P.number), identity)
             .exhaustive(),
         ),
       ),
@@ -275,3 +271,15 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
     ),
   ),
 )
+
+function isInstant(value: unknown): value is Temporal.Instant {
+  return typeof value === 'object' && value?.constructor.name === 'Instant'
+}
+
+function isPlainDate(value: unknown): value is Temporal.PlainDate {
+  return typeof value === 'object' && value?.constructor.name === 'PlainDate'
+}
+
+function isPlainYearMonth(value: unknown): value is Temporal.PlainYearMonth {
+  return typeof value === 'object' && value?.constructor.name === 'PlainYearMonth'
+}
