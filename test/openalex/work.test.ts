@@ -4,9 +4,9 @@ import { toUrl } from 'doi-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
-import { NetworkError, UnexpectedStatusCode } from '../../src/openalex/http'
-import * as _ from '../../src/openalex/work'
-import * as fc from './fc'
+import { NetworkError, UnexpectedStatusCode } from '../../src/openalex/http.js'
+import * as _ from '../../src/openalex/work.js'
+import * as fc from './fc.js'
 
 describe('getWorkByDoi', () => {
   test.prop([

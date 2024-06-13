@@ -1,6 +1,6 @@
-import type { ReviewRequestPreprintId } from '../review-request'
-import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id'
-import type * as Form from './form'
+import type { ReviewRequestPreprintId } from '../review-request.js'
+import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
+import type * as Form from './form.js'
 
 export type Decision =
   | BeginFlow

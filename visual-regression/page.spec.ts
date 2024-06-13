@@ -1,9 +1,9 @@
 import type { Orcid } from 'orcid-id-ts'
-import { html, plainText } from '../src/html'
-import { PageResponse } from '../src/response'
-import type { Pseudonym } from '../src/types/pseudonym'
-import type { User } from '../src/user'
-import { expect, test } from './base'
+import { html, plainText } from '../src/html.js'
+import { PageResponse } from '../src/response.js'
+import type { Pseudonym } from '../src/types/pseudonym.js'
+import type { User } from '../src/user.js'
+import { expect, test } from './base.js'
 
 test('page layout looks right', async ({ showPage }) => {
   const response = PageResponse({

@@ -2,11 +2,11 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/connect-orcid/oauth-start'
-import type { CanConnectOrcidProfileEnv } from '../../src/feature-flags'
-import { connectOrcidMatch } from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+import * as _ from '../../src/connect-orcid/oauth-start.js'
+import type { CanConnectOrcidProfileEnv } from '../../src/feature-flags.js'
+import { connectOrcidMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('connectOrcidStart', () => {
   describe('when the user is logged in', () => {

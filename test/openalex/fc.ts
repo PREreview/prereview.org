@@ -1,7 +1,7 @@
-import type { Work } from '../../src/openalex/work'
-import * as fc from '../fc'
+import type { Work } from '../../src/openalex/work.js'
+import * as fc from '../fc.js'
 
-export * from '../fc'
+export * from '../fc.js'
 
 export const work = ({ topics }: { topics?: fc.Arbitrary<Work['topics']> } = {}): fc.Arbitrary<Work> =>
   fc.record({

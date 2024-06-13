@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import { html, plainText, rawHtml } from '../html'
-import { PageResponse } from '../response'
-import { homeMatch, requestAPrereviewMatch } from '../routes'
-import type * as Form from './form'
+import { html, plainText, rawHtml } from '../html.js'
+import { PageResponse } from '../response.js'
+import { homeMatch, requestAPrereviewMatch } from '../routes.js'
+import type * as Form from './form.js'
 
 export const requestAPrereviewPage = (form: Form.IncompleteForm) => {
   const error = form._tag === 'InvalidForm'

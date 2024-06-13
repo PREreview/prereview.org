@@ -3,10 +3,10 @@ import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import * as _ from '../src/code-of-conduct'
-import { codeOfConductMatch } from '../src/routes'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import * as _ from '../src/code-of-conduct.js'
+import { codeOfConductMatch } from '../src/routes.js'
+import * as fc from './fc.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('codeOfConduct', () => {
   test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 })])('when the page can be loaded', async key => {

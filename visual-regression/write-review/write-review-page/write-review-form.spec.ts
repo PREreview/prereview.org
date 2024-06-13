@@ -1,10 +1,10 @@
 import type { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
-import { invalidE, missingE } from '../../../src/form'
-import { html } from '../../../src/html'
-import type { PreprintTitle } from '../../../src/preprint'
-import { writeReviewForm } from '../../../src/write-review/write-review-page/write-review-form'
-import { expect, test } from '../../base'
+import { invalidE, missingE } from '../../../src/form.js'
+import { html } from '../../../src/html.js'
+import type { PreprintTitle } from '../../../src/preprint.js'
+import { writeReviewForm } from '../../../src/write-review/write-review-page/write-review-form.js'
+import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = writeReviewForm(preprint, { review: E.right(undefined) })

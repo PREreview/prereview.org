@@ -4,12 +4,12 @@ import type * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
-import type { Html } from '../html'
-import type { ClubId } from '../types/club-id'
-import type { FieldId } from '../types/field'
-import type { PreprintId } from '../types/preprint-id'
-import type { NonEmptyString } from '../types/string'
-import type { SubfieldId } from '../types/subfield'
+import type { Html } from '../html.js'
+import type { ClubId } from '../types/club-id.js'
+import type { FieldId } from '../types/field.js'
+import type { PreprintId } from '../types/preprint-id.js'
+import type { NonEmptyString } from '../types/string.js'
+import type { SubfieldId } from '../types/subfield.js'
 
 import PlainDate = Temporal.PlainDate
 

@@ -4,12 +4,12 @@ import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { pipe } from 'fp-ts/function'
 import { match } from 'ts-pattern'
-import { deleteAvatar, getAvatar } from '../avatar'
-import { havingProblemsPage } from '../http-error'
-import { FlashMessageResponse, LogInResponse, RedirectResponse } from '../response'
-import { myDetailsMatch } from '../routes'
-import type { User } from '../user'
-import { page } from './remove-avatar-form-page'
+import { deleteAvatar, getAvatar } from '../avatar.js'
+import { havingProblemsPage } from '../http-error.js'
+import { FlashMessageResponse, LogInResponse, RedirectResponse } from '../response.js'
+import { myDetailsMatch } from '../routes.js'
+import type { User } from '../user.js'
+import { page } from './remove-avatar-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof removeAvatar>>
 

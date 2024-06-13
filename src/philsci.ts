@@ -10,10 +10,10 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { sanitizeHtml } from './html'
-import type { Preprint } from './preprint'
-import type { PhilsciPreprintId } from './types/preprint-id'
+import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { sanitizeHtml } from './html.js'
+import type { Preprint } from './preprint.js'
+import type { PhilsciPreprintId } from './types/preprint-id.js'
 
 import PlainDate = Temporal.PlainDate
 import PlainYearMonth = Temporal.PlainYearMonth

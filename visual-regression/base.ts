@@ -1,9 +1,9 @@
 import { type Locator, test as baseTest } from '@playwright/test'
 import path from 'path'
 import { P, match } from 'ts-pattern'
-import { html } from '../src/html'
-import { type Page, page as templatePage } from '../src/page'
-import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../src/response'
+import { html } from '../src/html.js'
+import { type Page, page as templatePage } from '../src/page.js'
+import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../src/response.js'
 
 export { expect } from '@playwright/test'
 

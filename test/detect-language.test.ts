@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals'
 import * as O from 'fp-ts/Option'
-import * as _ from '../src/detect-language'
-import { html, rawHtml } from '../src/html'
+import * as _ from '../src/detect-language.js'
+import { html, rawHtml } from '../src/html.js'
 
 describe('detectLanguage', () => {
   test.each([

@@ -6,15 +6,18 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
-import type { SaveContactEmailAddressEnv, VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address'
-import { rawHtml } from '../../src/html'
-import type { TemplatePageEnv } from '../../src/page'
-import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../src/routes'
-import * as _ from '../../src/write-review'
-import { FormC, formKey } from '../../src/write-review/form'
-import { runMiddleware } from '../middleware'
-import { shouldNotBeCalled } from '../should-not-be-called'
-import * as fc from './fc'
+import type {
+  SaveContactEmailAddressEnv,
+  VerifyContactEmailAddressForReviewEnv,
+} from '../../src/contact-email-address.js'
+import { rawHtml } from '../../src/html.js'
+import type { TemplatePageEnv } from '../../src/page.js'
+import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../src/routes.js'
+import { FormC, formKey } from '../../src/write-review/form.js'
+import * as _ from '../../src/write-review/index.js'
+import { runMiddleware } from '../middleware.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as fc from './fc.js'
 
 describe('writeReviewEnterEmailAddress', () => {
   test.prop([

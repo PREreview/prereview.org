@@ -2,12 +2,12 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
-import { type MissingE, hasAnError } from '../../form'
-import { html, plainText, rawHtml } from '../../html'
-import type { PreprintTitle } from '../../preprint'
-import { StreamlinePageResponse } from '../../response'
-import { writeReviewAddAuthorsMatch, writeReviewRemoveAuthorMatch } from '../../routes'
-import type { NonEmptyString } from '../../types/string'
+import { type MissingE, hasAnError } from '../../form.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import type { PreprintTitle } from '../../preprint.js'
+import { StreamlinePageResponse } from '../../response.js'
+import { writeReviewAddAuthorsMatch, writeReviewRemoveAuthorMatch } from '../../routes.js'
+import type { NonEmptyString } from '../../types/string.js'
 
 export function removeAuthorForm({
   author,
@@ -112,6 +112,7 @@ export function removeAuthorForm({
     js: error ? ['error-summary.js'] : [],
   })
 }
+
 export interface RemoveAuthorForm {
   readonly removeAuthor: E.Either<MissingE, 'yes' | 'no' | undefined>
 }

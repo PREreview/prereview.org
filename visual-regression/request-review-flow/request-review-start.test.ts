@@ -1,7 +1,7 @@
 import type { Doi } from 'doi-ts'
-import { carryOnPage } from '../../src/request-review-flow/start-page/carry-on-page'
-import type { ReviewRequestPreprintId } from '../../src/review-request'
-import { expect, test } from '../base'
+import { carryOnPage } from '../../src/request-review-flow/start-page/carry-on-page.js'
+import type { ReviewRequestPreprintId } from '../../src/review-request.js'
+import { expect, test } from '../base.js'
 
 const preprint = {
   type: 'biorxiv',

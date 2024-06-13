@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC } from 'zenodo-ts'
-import { expect, test } from './base'
+import { expect, test } from './base.js'
 
 test('can find and view a club', async ({ fetch, page }) => {
   fetch

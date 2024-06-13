@@ -2,12 +2,12 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
-import { type MissingE, hasAnError } from '../../form'
-import { html, plainText, rawHtml } from '../../html'
-import { StreamlinePageResponse } from '../../response'
-import type { ReviewRequestPreprintId } from '../../review-request'
-import { preprintReviewsMatch, requestReviewPersonaMatch } from '../../routes'
-import type { User } from '../../user'
+import { type MissingE, hasAnError } from '../../form.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import { StreamlinePageResponse } from '../../response.js'
+import type { ReviewRequestPreprintId } from '../../review-request.js'
+import { preprintReviewsMatch, requestReviewPersonaMatch } from '../../routes.js'
+import type { User } from '../../user.js'
 
 export interface PersonaForm {
   readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>

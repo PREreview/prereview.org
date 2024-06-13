@@ -1,6 +1,6 @@
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../../html'
-import { StreamlinePageResponse } from '../../response'
+import { html, plainText } from '../../html.js'
+import { StreamlinePageResponse } from '../../response.js'
 
 export const failureMessage = StreamlinePageResponse({
   status: Status.ServiceUnavailable,

@@ -3,11 +3,11 @@ import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type MissingE, hasAnError } from '../../form'
-import { html, plainText, rawHtml } from '../../html'
-import { StreamlinePageResponse } from '../../response'
-import { authorInvitePersonaMatch } from '../../routes'
-import type { User } from '../../user'
+import { type MissingE, hasAnError } from '../../form.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import { StreamlinePageResponse } from '../../response.js'
+import { authorInvitePersonaMatch } from '../../routes.js'
+import type { User } from '../../user.js'
 
 export interface PersonaForm {
   readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>

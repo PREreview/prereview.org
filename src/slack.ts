@@ -12,10 +12,10 @@ import * as L from 'logger-fp-ts'
 import { type Orcid, toUrl } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
-import { timeoutRequest } from './fetch'
-import type { SlackUser } from './slack-user'
-import type { SlackUserId } from './slack-user-id'
-import { NonEmptyStringC } from './types/string'
+import { timeoutRequest } from './fetch.js'
+import type { SlackUserId } from './slack-user-id.js'
+import type { SlackUser } from './slack-user.js'
+import { NonEmptyStringC } from './types/string.js'
 
 export interface SlackApiEnv {
   slackApiToken: string

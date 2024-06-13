@@ -3,19 +3,19 @@ import * as E from 'fp-ts/Either'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
-import { type MissingE, hasAnError } from '../../form'
-import { html, plainText, rawHtml } from '../../html'
-import type { PreprintTitle } from '../../preprint'
-import { StreamlinePageResponse } from '../../response'
+import { type MissingE, hasAnError } from '../../form.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import type { PreprintTitle } from '../../preprint.js'
+import { StreamlinePageResponse } from '../../response.js'
 import {
   writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewChangeAuthorMatch,
   writeReviewRemoveAuthorMatch,
-} from '../../routes'
-import type { EmailAddress } from '../../types/email-address'
-import type { NonEmptyString } from '../../types/string'
+} from '../../routes.js'
+import type { EmailAddress } from '../../types/email-address.js'
+import type { NonEmptyString } from '../../types/string.js'
 
 interface AddAuthorsForm {
   readonly anotherAuthor: E.Either<MissingE, 'yes' | 'no' | undefined>

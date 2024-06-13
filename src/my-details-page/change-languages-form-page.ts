@@ -1,10 +1,10 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import { P, match } from 'ts-pattern'
-import { html, plainText } from '../html'
-import type { Languages } from '../languages'
-import { PageResponse } from '../response'
-import { changeLanguagesMatch, myDetailsMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import type { Languages } from '../languages.js'
+import { PageResponse } from '../response.js'
+import { changeLanguagesMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = (languages: O.Option<Languages>) =>
   PageResponse({

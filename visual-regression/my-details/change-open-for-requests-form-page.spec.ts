@@ -1,6 +1,6 @@
 import * as O from 'fp-ts/Option'
-import { createFormPage } from '../../src/my-details-page/change-open-for-requests-form-page'
-import { expect, test } from '../base'
+import { createFormPage } from '../../src/my-details-page/change-open-for-requests-form-page.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = createFormPage({ openForRequests: O.some({ value: true, visibility: 'public' }) })

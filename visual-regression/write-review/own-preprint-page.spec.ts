@@ -1,7 +1,7 @@
 import type { Doi } from 'doi-ts'
-import { writeReviewMatch } from '../../src/routes'
-import { ownPreprintPage } from '../../src/write-review/own-preprint-page'
-import { expect, test } from '../base'
+import { writeReviewMatch } from '../../src/routes.js'
+import { ownPreprintPage } from '../../src/write-review/own-preprint-page.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = ownPreprintPage(

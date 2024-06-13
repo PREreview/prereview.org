@@ -1,4 +1,4 @@
-import { expect, test } from './base'
+import { expect, test } from './base.js'
 
 test('when the page does not exist', async ({ page }) => {
   await page.goto('/this-should-not-find-anything')

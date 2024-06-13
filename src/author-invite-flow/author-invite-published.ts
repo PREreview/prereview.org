@@ -7,18 +7,18 @@ import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
-import { type Html, html, plainText } from '../html'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
-import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
+import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
+import { type Html, html, plainText } from '../html.js'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
+import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
   reviewMatch,
-} from '../routes'
-import type { User } from '../user'
+} from '../routes.js'
+import type { User } from '../user.js'
 
 export interface Prereview {
   doi: Doi

@@ -1,7 +1,7 @@
 import type { Doi } from 'doi-ts'
-import { publishedPage } from '../../src/request-review-flow/published-page/published-page'
-import type { ReviewRequestPreprintId } from '../../src/review-request'
-import { expect, test } from '../base'
+import { publishedPage } from '../../src/request-review-flow/published-page/published-page.js'
+import type { ReviewRequestPreprintId } from '../../src/review-request.js'
+import { expect, test } from '../base.js'
 
 const preprint = {
   type: 'biorxiv',

@@ -3,12 +3,12 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import type { SaveAuthorInviteEnv } from '../../src/author-invite'
-import * as _ from '../../src/author-invite-flow'
-import type { GetPrereviewEnv } from '../../src/author-invite-flow/decline-page'
-import { authorInviteDeclineMatch } from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+import type { GetPrereviewEnv } from '../../src/author-invite-flow/decline-page/index.js'
+import * as _ from '../../src/author-invite-flow/index.js'
+import type { SaveAuthorInviteEnv } from '../../src/author-invite.js'
+import { authorInviteDeclineMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('authorInviteDecline', () => {
   describe('when the form has been submitted', () => {

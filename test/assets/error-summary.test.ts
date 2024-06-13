@@ -1,5 +1,5 @@
 import { defineCE, expect, fixture } from '@open-wc/testing'
-import * as _ from '../../assets/error-summary'
+import * as _ from '../../assets/error-summary.js'
 
 describe('when it loads', () => {
   it('has temporary focus', async () => {

@@ -3,15 +3,15 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
 import { match } from 'ts-pattern'
-import { pageNotFound } from '../http-error'
-import type { PageResponse } from '../response'
-import type { FieldId } from '../types/field'
-import type { NonEmptyString } from '../types/string'
-import { failureMessage } from './failure-message'
-import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews'
-import { createPage, emptyPage } from './reviews-page'
+import { pageNotFound } from '../http-error.js'
+import type { PageResponse } from '../response.js'
+import type { FieldId } from '../types/field.js'
+import type { NonEmptyString } from '../types/string.js'
+import { failureMessage } from './failure-message.js'
+import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews.js'
+import { createPage, emptyPage } from './reviews-page.js'
 
-export { GetRecentPrereviewsEnv, RecentPrereviews } from './recent-prereviews'
+export { GetRecentPrereviewsEnv, RecentPrereviews } from './recent-prereviews.js'
 
 export const reviewsPage = ({
   canUseSearchQueries,

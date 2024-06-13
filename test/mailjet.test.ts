@@ -4,8 +4,8 @@ import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
-import * as _ from '../src/mailjet'
-import * as fc from './fc'
+import * as _ from '../src/mailjet.js'
+import * as fc from './fc.js'
 
 describe('sendEmailWithMailjet', () => {
   test.prop([

@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/connect-orcid/oauth-error'
-import * as fc from '../fc'
+import * as _ from '../../src/connect-orcid/oauth-error.js'
+import * as fc from '../fc.js'
 
 describe('connectOrcidError', () => {
   test('with an access_denied error', () => {

@@ -4,10 +4,10 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { Status } from 'hyper-ts'
-import { rawHtml } from '../src/html'
-import * as _ from '../src/legacy-prereview'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import { rawHtml } from '../src/html.js'
+import * as _ from '../src/legacy-prereview.js'
+import * as fc from './fc.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('getPreprintDoiFromLegacyPreviewUuid', () => {
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintDoi()])(

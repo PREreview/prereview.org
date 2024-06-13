@@ -12,21 +12,21 @@ import {
   type SaveAuthorInviteEnv,
   getAuthorInvite,
   saveAuthorInvite,
-} from '../../author-invite'
-import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../contact-email-address'
-import type { Html } from '../../html'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
+} from '../../author-invite.js'
+import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../contact-email-address.js'
+import type { Html } from '../../html.js'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
-} from '../../routes'
-import type { User } from '../../user'
-import { checkPage } from './check-page'
-import { failureMessage } from './failure-message'
+} from '../../routes.js'
+import type { User } from '../../user.js'
+import { checkPage } from './check-page.js'
+import { failureMessage } from './failure-message.js'
 
 export interface Prereview {
   preprint: {

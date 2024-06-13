@@ -14,20 +14,20 @@ import {
   hasAnError,
   optionalDecoder,
   requiredDecoder,
-} from '../form'
-import { html, plainText, rawHtml, sendHtml } from '../html'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { templatePage } from '../page'
-import { type PreprintTitle, getPreprintTitle } from '../preprint'
+} from '../form.js'
+import { html, plainText, rawHtml, sendHtml } from '../html.js'
+import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
+import { templatePage } from '../page.js'
+import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
 import {
   writeReviewDataPresentationMatch,
   writeReviewMatch,
   writeReviewResultsSupportedMatch,
   writeReviewReviewTypeMatch,
-} from '../routes'
-import { NonEmptyStringC } from '../types/string'
-import { type User, getUser } from '../user'
-import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
+} from '../routes.js'
+import { NonEmptyStringC } from '../types/string.js'
+import { type User, getUser } from '../user.js'
+import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
 
 export const writeReviewDataPresentation = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),

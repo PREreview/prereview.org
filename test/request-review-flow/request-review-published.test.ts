@@ -3,11 +3,11 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/request-review-flow'
-import type { GetReviewRequestEnv } from '../../src/review-request'
-import { requestReviewMatch, requestReviewPublishedMatch } from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+import * as _ from '../../src/request-review-flow/index.js'
+import type { GetReviewRequestEnv } from '../../src/review-request.js'
+import { requestReviewMatch, requestReviewPublishedMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('requestReviewPublished', () => {
   describe('when the user is logged in', () => {

@@ -1,13 +1,13 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
-import type { Club } from '../../src/club-details'
-import { createPage } from '../../src/club-profile-page/club-profile-page'
-import type { Prereviews } from '../../src/club-profile-page/prereviews'
-import { html, rawHtml } from '../../src/html'
-import type { ClubId } from '../../src/types/club-id'
-import type { EmailAddress } from '../../src/types/email-address'
-import { expect, test } from '../base'
+import type { Club } from '../../src/club-details.js'
+import { createPage } from '../../src/club-profile-page/club-profile-page.js'
+import type { Prereviews } from '../../src/club-profile-page/prereviews.js'
+import { html, rawHtml } from '../../src/html.js'
+import type { ClubId } from '../../src/types/club-id.js'
+import type { EmailAddress } from '../../src/types/email-address.js'
+import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
 

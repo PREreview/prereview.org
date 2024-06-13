@@ -3,10 +3,10 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/my-details-page/verify-contact-email-address'
-import { myDetailsMatch, verifyContactEmailAddressMatch } from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+import * as _ from '../../src/my-details-page/verify-contact-email-address.js'
+import { myDetailsMatch, verifyContactEmailAddressMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('verifyContactEmailAddress', () => {
   test.prop([fc.user(), fc.unverifiedContactEmailAddress()])(

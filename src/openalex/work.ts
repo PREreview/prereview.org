@@ -12,8 +12,8 @@ import { Status } from 'hyper-ts'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { timeoutRequest } from '../fetch'
-import { NetworkError, UnableToDecodeBody, UnexpectedStatusCode } from './http'
+import { timeoutRequest } from '../fetch.js'
+import { NetworkError, UnableToDecodeBody, UnexpectedStatusCode } from './http.js'
 
 export type Work = C.TypeOf<typeof WorkC>
 

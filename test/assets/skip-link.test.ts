@@ -1,5 +1,5 @@
 import { defineCE, expect, fixture } from '@open-wc/testing'
-import * as _ from '../../assets/skip-link'
+import * as _ from '../../assets/skip-link.js'
 
 describe('when a link is clicked', () => {
   it('sets focus to the target', async () => {

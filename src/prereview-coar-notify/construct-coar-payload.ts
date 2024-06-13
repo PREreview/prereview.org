@@ -3,12 +3,12 @@ import { format } from 'fp-ts-routing'
 import * as RIO from 'fp-ts/ReaderIO'
 import { pipe } from 'fp-ts/function'
 import { match } from 'ts-pattern'
-import type { ReviewRequestPreprintId } from '../review-request'
-import { profileMatch } from '../routes'
-import type { ProfileId } from '../types/profile-id'
-import { type GenerateUuidEnv, generateUuid } from '../types/uuid'
-import type { User } from '../user'
-import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-payload'
+import type { ReviewRequestPreprintId } from '../review-request.js'
+import { profileMatch } from '../routes.js'
+import type { ProfileId } from '../types/profile-id.js'
+import { type GenerateUuidEnv, generateUuid } from '../types/uuid.js'
+import type { User } from '../user.js'
+import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-payload.js'
 
 export const constructCoarPayload = ({
   coarNotifyUrl,

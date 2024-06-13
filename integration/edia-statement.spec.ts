@@ -1,4 +1,4 @@
-import { expect, test } from './base'
+import { expect, test } from './base.js'
 
 test('can read the EDIA statement', async ({ fetch, page }) => {
   await page.goto('/')

@@ -4,13 +4,13 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import { Eq as eqOrcid } from 'orcid-id-ts'
-import type { GetAuthorInviteEnv } from '../../src/author-invite'
-import * as _ from '../../src/author-invite-flow/enter-email-address-page'
+import * as _ from '../../src/author-invite-flow/enter-email-address-page/index.js'
+import type { GetAuthorInviteEnv } from '../../src/author-invite.js'
 import type {
   GetContactEmailAddressEnv,
   SaveContactEmailAddressEnv,
   VerifyContactEmailAddressForInvitedAuthorEnv,
-} from '../../src/contact-email-address'
+} from '../../src/contact-email-address.js'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -18,9 +18,9 @@ import {
   authorInviteMatch,
   authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePublishedMatch,
-} from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+} from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('authorInviteEnterEmailAddress', () => {
   describe('when the user is logged in', () => {

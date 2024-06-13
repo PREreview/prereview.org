@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html'
-import type { Languages } from '../languages'
-import { PageResponse } from '../response'
-import { changeLanguagesVisibilityMatch, myDetailsMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import type { Languages } from '../languages.js'
+import { PageResponse } from '../response.js'
+import { changeLanguagesVisibilityMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = ({ languages }: { languages: Languages }) =>
   PageResponse({

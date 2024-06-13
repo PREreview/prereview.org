@@ -17,7 +17,7 @@ import {
   isASlackUser,
   test,
   userIsBlocked,
-} from './base'
+} from './base.js'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ page }) => {
   await page.getByRole('link', { name: 'My details' }).click()

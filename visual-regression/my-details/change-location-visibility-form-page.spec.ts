@@ -1,6 +1,6 @@
-import { createFormPage } from '../../src/my-details-page/change-location-visibility-form-page'
-import type { NonEmptyString } from '../../src/types/string'
-import { expect, test } from '../base'
+import { createFormPage } from '../../src/my-details-page/change-location-visibility-form-page.js'
+import type { NonEmptyString } from '../../src/types/string.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = createFormPage({

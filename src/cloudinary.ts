@@ -16,8 +16,8 @@ import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
-import type { PublicUrlEnv } from './public-url'
-import { type NonEmptyString, NonEmptyStringC } from './types/string'
+import type { PublicUrlEnv } from './public-url.js'
+import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
 
 export interface CloudinaryApiEnv {
   cloudinaryApi: {

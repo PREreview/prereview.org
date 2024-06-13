@@ -1,5 +1,5 @@
 import { Status } from 'hyper-ts'
-import { areLoggedIn, canLogIn, canRequestReviews, expect, test } from './base'
+import { areLoggedIn, canLogIn, canRequestReviews, expect, test } from './base.js'
 
 test.extend(canLogIn).extend(canRequestReviews)('can request a PREreview', async ({ fetch, page }) => {
   await page.goto('/')

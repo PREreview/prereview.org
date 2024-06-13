@@ -1,5 +1,5 @@
 import { RecordsC } from 'zenodo-ts'
-import { expect, test } from './base'
+import { expect, test } from './base.js'
 
 test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
   fetch

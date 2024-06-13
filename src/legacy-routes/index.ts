@@ -14,9 +14,9 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { match, P as p } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { movedPermanently, notFound, serviceUnavailable } from '../middleware'
-import type { TemplatePageEnv } from '../page'
-import { handlePageResponse } from '../response'
+import { movedPermanently, notFound, serviceUnavailable } from '../middleware.js'
+import type { TemplatePageEnv } from '../page.js'
+import { handlePageResponse } from '../response.js'
 import {
   aboutUsMatch,
   clubsMatch,
@@ -31,20 +31,20 @@ import {
   resourcesMatch,
   reviewAPreprintMatch,
   writeReviewReviewTypeMatch,
-} from '../routes'
+} from '../routes.js'
 import {
   type ArxivPreprintId,
   type IndeterminatePreprintId,
   type PhilsciPreprintId,
   PreprintDoiD,
   fromPreprintDoi,
-} from '../types/preprint-id'
-import type { ProfileId } from '../types/profile-id'
-import { UuidC } from '../types/uuid'
-import { type GetUserEnv, maybeGetUser } from '../user'
-import type { GetUserOnboardingEnv } from '../user-onboarding'
-import { removedForNowPage } from './removed-for-now-page'
-import { removedPermanentlyPage } from './removed-permanently-page'
+} from '../types/preprint-id.js'
+import type { ProfileId } from '../types/profile-id.js'
+import { UuidC } from '../types/uuid.js'
+import type { GetUserOnboardingEnv } from '../user-onboarding.js'
+import { type GetUserEnv, maybeGetUser } from '../user.js'
+import { removedForNowPage } from './removed-for-now-page.js'
+import { removedPermanentlyPage } from './removed-permanently-page.js'
 
 export type LegacyEnv = GetPreprintIdFromUuidEnv &
   GetProfileIdFromUuidEnv &

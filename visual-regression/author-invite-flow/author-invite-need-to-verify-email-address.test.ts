@@ -1,7 +1,7 @@
 import type { Uuid } from 'uuid-ts'
-import { needToVerifyEmailAddressPage } from '../../src/author-invite-flow/need-to-verify-email-address-page/need-to-verify-email-address-page'
-import type { EmailAddress } from '../../src/types/email-address'
-import { expect, test } from '../base'
+import { needToVerifyEmailAddressPage } from '../../src/author-invite-flow/need-to-verify-email-address-page/need-to-verify-email-address-page.js'
+import type { EmailAddress } from '../../src/types/email-address.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = needToVerifyEmailAddressPage({

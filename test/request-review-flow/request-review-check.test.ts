@@ -3,18 +3,18 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import type { GetPreprintTitleEnv } from '../../src/preprint'
-import * as _ from '../../src/request-review-flow/check-page'
-import { RedirectResponse } from '../../src/response'
-import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request'
+import type { GetPreprintTitleEnv } from '../../src/preprint.js'
+import * as _ from '../../src/request-review-flow/check-page/index.js'
+import { RedirectResponse } from '../../src/response.js'
+import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request.js'
 import {
   requestReviewCheckMatch,
   requestReviewMatch,
   requestReviewPersonaMatch,
   requestReviewPublishedMatch,
-} from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+} from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('requestReviewCheck', () => {
   describe('when the user is logged in', () => {

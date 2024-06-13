@@ -1,12 +1,12 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
-import { rawHtml } from '../../src/html'
-import { createPage } from '../../src/profile-page/create-page'
-import type { Prereviews } from '../../src/profile-page/prereviews'
-import type { Pseudonym } from '../../src/types/pseudonym'
-import type { NonEmptyString } from '../../src/types/string'
-import { expect, test } from '../base'
+import { rawHtml } from '../../src/html.js'
+import { createPage } from '../../src/profile-page/create-page.js'
+import type { Prereviews } from '../../src/profile-page/prereviews.js'
+import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { NonEmptyString } from '../../src/types/string.js'
+import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
 

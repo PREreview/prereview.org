@@ -1,10 +1,10 @@
 import { format } from 'fp-ts-routing'
 import { getLangDir } from 'rtl-detect'
-import { html, plainText } from '../../html'
-import type { PreprintTitle } from '../../preprint'
-import { StreamlinePageResponse } from '../../response'
-import { preprintReviewsMatch, requestReviewMatch, requestReviewStartMatch } from '../../routes'
-import type { User } from '../../user'
+import { html, plainText } from '../../html.js'
+import type { PreprintTitle } from '../../preprint.js'
+import { StreamlinePageResponse } from '../../response.js'
+import { preprintReviewsMatch, requestReviewMatch, requestReviewStartMatch } from '../../routes.js'
+import type { User } from '../../user.js'
 
 export const requestReviewPage = ({ preprint, user }: { preprint: PreprintTitle; user?: User }) =>
   StreamlinePageResponse({

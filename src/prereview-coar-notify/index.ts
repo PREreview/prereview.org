@@ -6,17 +6,20 @@ import { flow, identity, pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import type { SleepEnv } from '../fetch'
-import type { RecentReviewRequest } from '../home-page'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint'
-import type { ReviewRequestPreprintId } from '../review-request'
-import type { ReviewRequests } from '../review-requests-page'
-import type { FieldId } from '../types/field'
-import type { GenerateUuidEnv } from '../types/uuid'
-import type { User } from '../user'
-import { constructCoarPayload } from './construct-coar-payload'
-import { type RecentReviewRequestFromPrereviewCoarNotify, getRecentReviewRequests } from './get-recent-review-requests'
-import { sendReviewActionOffer } from './send-review-action-offer'
+import type { SleepEnv } from '../fetch.js'
+import type { RecentReviewRequest } from '../home-page/index.js'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
+import type { ReviewRequestPreprintId } from '../review-request.js'
+import type { ReviewRequests } from '../review-requests-page/index.js'
+import type { FieldId } from '../types/field.js'
+import type { GenerateUuidEnv } from '../types/uuid.js'
+import type { User } from '../user.js'
+import { constructCoarPayload } from './construct-coar-payload.js'
+import {
+  type RecentReviewRequestFromPrereviewCoarNotify,
+  getRecentReviewRequests,
+} from './get-recent-review-requests.js'
+import { sendReviewActionOffer } from './send-review-action-offer.js'
 
 export interface PrereviewCoarNotifyEnv {
   readonly coarNotifyUrl: URL

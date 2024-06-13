@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { connectSlackStartMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { connectSlackStartMatch } from '../routes.js'
 
 export const connectSlackPage = PageResponse({
   title: plainText`Connect your Community Slack Account`,

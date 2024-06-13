@@ -1,11 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
-import { html } from '../../src/html'
-import type { Preprint } from '../../src/preprint'
-import type { Prereview, RapidPrereview } from '../../src/preprint-reviews-page'
-import { createPage } from '../../src/preprint-reviews-page/preprint-reviews'
-import { expect, test } from '../base'
+import { html } from '../../src/html.js'
+import type { Prereview, RapidPrereview } from '../../src/preprint-reviews-page/index.js'
+import { createPage } from '../../src/preprint-reviews-page/preprint-reviews.js'
+import type { Preprint } from '../../src/preprint.js'
+import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
 

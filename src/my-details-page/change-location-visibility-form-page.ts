@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html'
-import type { Location } from '../location'
-import { PageResponse } from '../response'
-import { changeLocationVisibilityMatch, myDetailsMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import type { Location } from '../location.js'
+import { PageResponse } from '../response.js'
+import { changeLocationVisibilityMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = ({ location }: { location: Location }) =>
   PageResponse({

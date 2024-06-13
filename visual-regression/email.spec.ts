@@ -1,12 +1,12 @@
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
-import { createAuthorInviteEmail, createContactEmailAddressVerificationEmailForInvitedAuthor } from '../src/email'
-import { html } from '../src/html'
-import type { EmailAddress } from '../src/types/email-address'
-import type { Pseudonym } from '../src/types/pseudonym'
-import type { NonEmptyString } from '../src/types/string'
-import { expect, test } from './base'
+import { createAuthorInviteEmail, createContactEmailAddressVerificationEmailForInvitedAuthor } from '../src/email.js'
+import { html } from '../src/html.js'
+import type { EmailAddress } from '../src/types/email-address.js'
+import type { Pseudonym } from '../src/types/pseudonym.js'
+import type { NonEmptyString } from '../src/types/string.js'
+import { expect, test } from './base.js'
 
 test('email-verification HTML for an invited author looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({

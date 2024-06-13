@@ -1,6 +1,6 @@
 import type { Doi } from 'doi-ts'
-import { createUnknownPreprintWithDoiPage } from '../../src/review-a-preprint-page/unknown-preprint-with-doi-page'
-import { expect, test } from '../base'
+import { createUnknownPreprintWithDoiPage } from '../../src/review-a-preprint-page/unknown-preprint-with-doi-page.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = createUnknownPreprintWithDoiPage({

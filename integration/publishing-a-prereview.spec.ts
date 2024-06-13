@@ -18,7 +18,7 @@ import {
   test,
   updatesLegacyPrereview,
   willPublishAReview,
-} from './base'
+} from './base.js'
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview',

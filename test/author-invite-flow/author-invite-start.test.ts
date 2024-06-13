@@ -4,17 +4,17 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import { Eq as eqOrcid } from 'orcid-id-ts'
-import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite'
-import * as _ from '../../src/author-invite-flow'
-import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-start'
+import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-start.js'
+import * as _ from '../../src/author-invite-flow/index.js'
+import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite.js'
 import {
   authorInviteDeclineMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
   authorInviteStartMatch,
-} from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+} from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('authorInviteStart', () => {
   describe('when the review can be loaded', () => {

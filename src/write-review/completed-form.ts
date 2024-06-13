@@ -1,10 +1,10 @@
 import { pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as E from 'io-ts/Encoder'
-import { RawHtmlC } from '../html'
-import { EmailAddressC } from '../types/email-address'
-import { NonEmptyStringC } from '../types/string'
-import type { Form } from './form'
+import { RawHtmlC } from '../html.js'
+import { EmailAddressC } from '../types/email-address.js'
+import { NonEmptyStringC } from '../types/string.js'
+import type { Form } from './form.js'
 
 export type CompletedForm = C.TypeOf<typeof CompletedFormC>
 

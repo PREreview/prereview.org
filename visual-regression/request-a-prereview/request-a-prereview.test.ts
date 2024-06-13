@@ -1,6 +1,6 @@
-import * as Form from '../../src/request-a-prereview-page/form'
-import { requestAPrereviewPage } from '../../src/request-a-prereview-page/request-a-prereview-page'
-import { expect, test } from '../base'
+import * as Form from '../../src/request-a-prereview-page/form.js'
+import { requestAPrereviewPage } from '../../src/request-a-prereview-page/request-a-prereview-page.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = requestAPrereviewPage(Form.EmptyForm)

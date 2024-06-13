@@ -16,7 +16,7 @@ import type {
   PsyarxivPreprintId,
   ScieloPreprintId,
   SocarxivPreprintId,
-} from './types/preprint-id'
+} from './types/preprint-id.js'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 

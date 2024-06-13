@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html'
-import type { ResearchInterests } from '../research-interests'
-import { PageResponse } from '../response'
-import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import type { ResearchInterests } from '../research-interests.js'
+import { PageResponse } from '../response.js'
+import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = ({ researchInterests }: { researchInterests: ResearchInterests }) =>
   PageResponse({

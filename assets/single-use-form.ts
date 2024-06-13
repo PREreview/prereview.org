@@ -1,4 +1,4 @@
-import { disableButton } from './dom'
+import { disableButton } from './dom.js'
 
 export class SingleUseForm extends HTMLElement {
   static element = 'single-use-form' as const

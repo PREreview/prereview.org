@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, expect, isASlackUser, test } from './base'
+import { areLoggedIn, canLogIn, expect, isASlackUser, test } from './base.js'
 
 test('can find and view a profile', async ({ fetch, page }) => {
   fetch

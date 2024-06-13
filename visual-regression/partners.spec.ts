@@ -1,5 +1,5 @@
-import { partners } from '../src/partners'
-import { expect, test } from './base'
+import { partners } from '../src/partners.js'
+import { expect, test } from './base.js'
 
 test('content looks right', async ({ showPage }) => {
   const content = await showPage(partners)

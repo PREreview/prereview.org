@@ -1,5 +1,5 @@
 import { defineCE, expect, fixture } from '@open-wc/testing'
-import * as _ from '../../assets/conditional-inputs'
+import * as _ from '../../assets/conditional-inputs.js'
 
 describe('when an option is selected', () => {
   it('sets focus to the target', async () => {

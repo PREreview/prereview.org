@@ -1,8 +1,8 @@
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { myDetailsMatch, removeAvatarMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { myDetailsMatch, removeAvatarMatch } from '../routes.js'
 
 export const page = PageResponse({
   status: Status.OK,

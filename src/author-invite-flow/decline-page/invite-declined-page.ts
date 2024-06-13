@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import type { Uuid } from 'uuid-ts'
-import { html, plainText } from '../../html'
-import { StreamlinePageResponse } from '../../response'
-import { authorInviteDeclineMatch } from '../../routes'
+import { html, plainText } from '../../html.js'
+import { StreamlinePageResponse } from '../../response.js'
+import { authorInviteDeclineMatch } from '../../routes.js'
 
 export const inviteDeclinedPage = (inviteId: Uuid) =>
   StreamlinePageResponse({

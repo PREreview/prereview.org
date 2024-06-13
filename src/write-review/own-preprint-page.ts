@@ -1,9 +1,9 @@
 import { type Formatter, format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { preprintReviewsMatch } from '../routes'
-import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { preprintReviewsMatch } from '../routes.js'
+import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 
 export const ownPreprintPage = (preprint: PreprintId, canonical: Formatter<{ id: IndeterminatePreprintId }>) =>
   PageResponse({

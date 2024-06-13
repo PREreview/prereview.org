@@ -2,8 +2,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as O from 'fp-ts/Option'
 import type { Orcid } from 'orcid-id-ts'
-import * as _ from '../src/club-details'
-import * as fc from './fc'
+import * as _ from '../src/club-details.js'
+import * as fc from './fc.js'
 
 describe('getClubByName', () => {
   test.each([

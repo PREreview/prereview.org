@@ -1,13 +1,13 @@
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
-import { html } from '../../src/html'
-import type { PreprintTitle } from '../../src/preprint'
-import type { EmailAddress } from '../../src/types/email-address'
-import type { Pseudonym } from '../../src/types/pseudonym'
-import type { NonEmptyString } from '../../src/types/string'
-import type { User } from '../../src/user'
-import { publishForm } from '../../src/write-review/publish-page/publish-form'
-import { expect, test } from '../base'
+import { html } from '../../src/html.js'
+import type { PreprintTitle } from '../../src/preprint.js'
+import type { EmailAddress } from '../../src/types/email-address.js'
+import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { NonEmptyString } from '../../src/types/string.js'
+import type { User } from '../../src/user.js'
+import { publishForm } from '../../src/write-review/publish-page/publish-form.js'
+import { expect, test } from '../base.js'
 
 const preprint = {
   id: {

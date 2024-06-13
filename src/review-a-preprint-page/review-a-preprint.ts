@@ -3,10 +3,10 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
-import type { InvalidE } from '../form'
-import { html, plainText, rawHtml } from '../html'
-import { PageResponse } from '../response'
-import { homeMatch, reviewAPreprintMatch } from '../routes'
+import type { InvalidE } from '../form.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { PageResponse } from '../response.js'
+import { homeMatch, reviewAPreprintMatch } from '../routes.js'
 
 export type SubmittedWhichPreprint = E.Either<InvalidE, Doi>
 export type UnsubmittedWhichPreprint = E.Right<undefined>

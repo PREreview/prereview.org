@@ -3,9 +3,9 @@ import type { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
-import type { Html } from '../html'
-import type { ClubId } from '../types/club-id'
-import type { PreprintId } from '../types/preprint-id'
+import type { Html } from '../html.js'
+import type { ClubId } from '../types/club-id.js'
+import type { PreprintId } from '../types/preprint-id.js'
 
 export interface Prereview {
   authors: {

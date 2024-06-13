@@ -2,9 +2,9 @@ import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/my-prereviews-page/list-of-prereviews'
-import { myPrereviewsMatch } from '../../src/routes'
-import * as fc from './fc'
+import * as _ from '../../src/my-prereviews-page/list-of-prereviews.js'
+import { myPrereviewsMatch } from '../../src/routes.js'
+import * as fc from './fc.js'
 
 test.prop([fc.nonEmptyArray(fc.prereview()), fc.user()])('toResponse', (prereviews, user) => {
   const actual = _.toResponse(_.ListOfPrereviews({ prereviews, user }))

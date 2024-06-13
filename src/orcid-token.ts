@@ -6,7 +6,7 @@ import { flow, pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import { type NonEmptyString, NonEmptyStringC, ordNonEmptyString } from './types/string'
+import { type NonEmptyString, NonEmptyStringC, ordNonEmptyString } from './types/string.js'
 
 export interface OrcidToken {
   readonly accessToken: NonEmptyString

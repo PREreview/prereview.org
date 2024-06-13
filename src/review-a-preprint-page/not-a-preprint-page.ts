@@ -1,8 +1,8 @@
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { reviewAPreprintMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { reviewAPreprintMatch } from '../routes.js'
 
 export const notAPreprintPage = PageResponse({
   status: Status.BadRequest,

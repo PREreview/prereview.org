@@ -3,21 +3,21 @@ import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
-import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags'
-import { havingProblemsPage, pageNotFound } from '../../http-error'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
+import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags.js'
+import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   type GetReviewRequestEnv,
   type SaveReviewRequestEnv,
   isReviewRequestPreprintId,
   maybeGetReviewRequest,
   saveReviewRequest,
-} from '../../review-request'
-import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../routes'
-import type { IndeterminatePreprintId } from '../../types/preprint-id'
-import type { User } from '../../user'
-import { carryOnPage } from './carry-on-page'
+} from '../../review-request.js'
+import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../routes.js'
+import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
+import type { User } from '../../user.js'
+import { carryOnPage } from './carry-on-page.js'
 
 export const requestReviewStart = ({
   preprint,

@@ -5,15 +5,15 @@ import {
   type CanSeeGatesLogoEnv,
   canRequestReviews,
   canSeeGatesLogo,
-} from '../feature-flags'
-import type { PageResponse } from '../response'
-import type { User } from '../user'
-import { createPage } from './home-page'
-import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews'
-import { type GetRecentReviewRequestsEnv, getRecentReviewRequests } from './recent-review-requests'
+} from '../feature-flags.js'
+import type { PageResponse } from '../response.js'
+import type { User } from '../user.js'
+import { createPage } from './home-page.js'
+import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews.js'
+import { type GetRecentReviewRequestsEnv, getRecentReviewRequests } from './recent-review-requests.js'
 
-export { RecentPrereview } from './recent-prereviews'
-export { RecentReviewRequest } from './recent-review-requests'
+export { RecentPrereview } from './recent-prereviews.js'
+export { RecentReviewRequest } from './recent-review-requests.js'
 
 export const home = ({
   user,

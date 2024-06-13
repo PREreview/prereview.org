@@ -4,12 +4,12 @@ import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html'
-import type { Preprint } from '../../preprint'
-import { StreamlinePageResponse } from '../../response'
-import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../routes'
-import { renderDate } from '../../time'
-import type { User } from '../../user'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
+import type { Preprint } from '../../preprint.js'
+import { StreamlinePageResponse } from '../../response.js'
+import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../routes.js'
+import { renderDate } from '../../time.js'
+import type { User } from '../../user.js'
 
 export const startPage = (preprint: Preprint, user?: User) =>
   StreamlinePageResponse({

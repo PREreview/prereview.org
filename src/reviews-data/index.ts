@@ -12,9 +12,9 @@ import * as E from 'io-ts/Encoder'
 import type { Orcid } from 'orcid-id-ts'
 import safeStableStringify from 'safe-stable-stringify'
 import { P, match } from 'ts-pattern'
-import type { ScietyListEnv } from '../sciety-list'
-import type { IndeterminatePreprintId } from '../types/preprint-id'
-import { isPseudonym } from '../types/pseudonym'
+import type { ScietyListEnv } from '../sciety-list/index.js'
+import type { IndeterminatePreprintId } from '../types/preprint-id.js'
+import { isPseudonym } from '../types/pseudonym.js'
 
 import PlainDate = Temporal.PlainDate
 

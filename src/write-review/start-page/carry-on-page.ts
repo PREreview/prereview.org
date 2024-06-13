@@ -1,10 +1,10 @@
 import { format } from 'fp-ts-routing'
 import { getLangDir } from 'rtl-detect'
-import { html, plainText } from '../../html'
-import type { PreprintTitle } from '../../preprint'
-import { StreamlinePageResponse } from '../../response'
-import { preprintReviewsMatch, writeReviewStartMatch } from '../../routes'
-import { type Form, nextFormMatch } from '../form'
+import { html, plainText } from '../../html.js'
+import type { PreprintTitle } from '../../preprint.js'
+import { StreamlinePageResponse } from '../../response.js'
+import { preprintReviewsMatch, writeReviewStartMatch } from '../../routes.js'
+import { type Form, nextFormMatch } from '../form.js'
 
 export const carryOnPage = (preprint: PreprintTitle, form: Form) =>
   StreamlinePageResponse({

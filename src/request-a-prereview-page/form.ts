@@ -3,7 +3,7 @@ import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
-import { getInput } from '../form'
+import { getInput } from '../form.js'
 
 export interface ValidForm {
   _tag: 'ValidForm'

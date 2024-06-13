@@ -12,10 +12,10 @@ import * as D from 'io-ts/Decoder'
 import iso6391, { type LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
 import safeStableStringify from 'safe-stable-stringify'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from '../fetch'
-import { isFieldId } from '../types/field'
-import { parsePreprintDoi } from '../types/preprint-id'
-import { isSubfieldId } from '../types/subfield'
+import { revalidateIfStale, timeoutRequest, useStaleCache } from '../fetch.js'
+import { isFieldId } from '../types/field.js'
+import { parsePreprintDoi } from '../types/preprint-id.js'
+import { isSubfieldId } from '../types/subfield.js'
 
 import Instant = Temporal.Instant
 

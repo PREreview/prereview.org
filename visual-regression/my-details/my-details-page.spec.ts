@@ -1,13 +1,13 @@
 import * as O from 'fp-ts/Option'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
-import { createPage } from '../../src/my-details-page/my-details-page'
-import type { EmailAddress } from '../../src/types/email-address'
-import type { Pseudonym } from '../../src/types/pseudonym'
-import type { NonEmptyString } from '../../src/types/string'
-import type { User } from '../../src/user'
-import type { UserOnboarding } from '../../src/user-onboarding'
-import { expect, test } from '../base'
+import { createPage } from '../../src/my-details-page/my-details-page.js'
+import type { EmailAddress } from '../../src/types/email-address.js'
+import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { NonEmptyString } from '../../src/types/string.js'
+import type { UserOnboarding } from '../../src/user-onboarding.js'
+import type { User } from '../../src/user.js'
+import { expect, test } from '../base.js'
 
 test('content looks right when publicly visible', async ({ showPage }) => {
   const response = createPage({

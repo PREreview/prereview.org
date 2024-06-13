@@ -3,12 +3,12 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/connect-orcid/connect-orcid'
-import type { CanConnectOrcidProfileEnv } from '../../src/feature-flags'
-import type { GetOrcidTokenEnv } from '../../src/orcid-token'
-import { connectOrcidMatch, connectOrcidStartMatch } from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+import * as _ from '../../src/connect-orcid/connect-orcid.js'
+import type { CanConnectOrcidProfileEnv } from '../../src/feature-flags.js'
+import type { GetOrcidTokenEnv } from '../../src/orcid-token.js'
+import { connectOrcidMatch, connectOrcidStartMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('connectOrcid', () => {
   describe('when the user is logged in', () => {

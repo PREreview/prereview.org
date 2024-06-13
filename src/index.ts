@@ -12,9 +12,9 @@ import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
-import { app } from './app'
-import { decodeEnv } from './env'
-import type { User } from './user'
+import { app } from './app.js'
+import { decodeEnv } from './env.js'
+import type { User } from './user.js'
 
 const env = decodeEnv(process)()
 

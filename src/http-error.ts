@@ -3,10 +3,10 @@ import type { HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { match } from 'ts-pattern'
-import { html, plainText, sendHtml } from './html'
-import { templatePage } from './page'
-import { PageResponse } from './response'
-import { type User, maybeGetUser } from './user'
+import { html, plainText, sendHtml } from './html.js'
+import { templatePage } from './page.js'
+import { PageResponse } from './response.js'
+import { type User, maybeGetUser } from './user.js'
 
 export function handleError(error: HttpError<typeof Status.NotFound | typeof Status.ServiceUnavailable>) {
   return pipe(

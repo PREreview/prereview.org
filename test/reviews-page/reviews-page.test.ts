@@ -3,10 +3,10 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import { html } from '../../src/html'
-import * as _ from '../../src/reviews-page'
-import { reviewsMatch } from '../../src/routes'
-import * as fc from '../fc'
+import { html } from '../../src/html.js'
+import * as _ from '../../src/reviews-page/index.js'
+import { reviewsMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
 
 describe('reviewsPage', () => {
   test.prop([

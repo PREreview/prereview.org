@@ -6,8 +6,8 @@ import { split } from 'fp-ts/string'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
 import { v4 } from 'uuid-ts'
-import { rawHtml } from './html'
-import { type NonEmptyString, NonEmptyStringC } from './types/string'
+import { rawHtml } from './html.js'
+import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
 
 export function decodeEnv(process: NodeJS.Process) {
   return pipe(

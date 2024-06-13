@@ -4,10 +4,10 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { encode } from 'html-entities'
 import { Status } from 'hyper-ts'
-import { getClubName } from '../../src/club-details'
-import * as _ from '../../src/club-profile-page'
-import { clubProfileMatch } from '../../src/routes'
-import * as fc from '../fc'
+import { getClubName } from '../../src/club-details.js'
+import * as _ from '../../src/club-profile-page/index.js'
+import { clubProfileMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
 
 describe('clubProfile', () => {
   test.prop([

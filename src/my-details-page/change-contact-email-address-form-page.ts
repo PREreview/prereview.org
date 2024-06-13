@@ -2,11 +2,11 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
-import { type InvalidE, type MissingE, hasAnError } from '../form'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes'
-import type { EmailAddress } from '../types/email-address'
+import { type InvalidE, type MissingE, hasAnError } from '../form.js'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes.js'
+import type { EmailAddress } from '../types/email-address.js'
 
 interface ChangeContactEmailAddressForm {
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>

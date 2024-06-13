@@ -5,11 +5,11 @@ import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
-import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes'
-import * as _ from '../../src/write-review'
-import { CompletedFormC } from '../../src/write-review/completed-form'
-import { FormC, formKey } from '../../src/write-review/form'
-import * as fc from './fc'
+import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes.js'
+import { CompletedFormC } from '../../src/write-review/completed-form.js'
+import { FormC, formKey } from '../../src/write-review/form.js'
+import * as _ from '../../src/write-review/index.js'
+import * as fc from './fc.js'
 
 describe('writeReviewReviewType', () => {
   test.prop([

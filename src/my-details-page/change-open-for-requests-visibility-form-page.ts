@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html'
-import type { IsOpenForRequests } from '../is-open-for-requests'
-import { PageResponse } from '../response'
-import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import type { IsOpenForRequests } from '../is-open-for-requests.js'
+import { PageResponse } from '../response.js'
+import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = ({ openForRequests }: { openForRequests: Extract<IsOpenForRequests, { value: true }> }) =>
   PageResponse({

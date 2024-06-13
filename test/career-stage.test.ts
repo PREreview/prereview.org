@@ -2,8 +2,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import * as D from 'io-ts/Decoder'
-import * as _ from '../src/career-stage'
-import * as fc from './fc'
+import * as _ from '../src/career-stage.js'
+import * as fc from './fc.js'
 
 describe('CareerStageC', () => {
   describe('decode', () => {

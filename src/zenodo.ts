@@ -43,31 +43,31 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { getClubByName, getClubName } from './club-details'
-import { type SleepEnv, reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { plainText, sanitizeHtml } from './html'
-import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
-import type { Prereview as PreprintPrereview } from './preprint-reviews-page'
-import { type PublicUrlEnv, toUrl } from './public-url'
-import type { Prereview } from './review-page'
-import type { RecentPrereviews } from './reviews-page'
-import { reviewMatch } from './routes'
-import type { Prereview as ScietyPrereview } from './sciety-list'
-import type { ClubId } from './types/club-id'
-import { type FieldId, isFieldId } from './types/field'
-import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639'
+import { getClubByName, getClubName } from './club-details.js'
+import { type SleepEnv, reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { plainText, sanitizeHtml } from './html.js'
+import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.js'
+import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint.js'
+import { type PublicUrlEnv, toUrl } from './public-url.js'
+import type { Prereview } from './review-page/index.js'
+import type { RecentPrereviews } from './reviews-page/index.js'
+import { reviewMatch } from './routes.js'
+import type { Prereview as ScietyPrereview } from './sciety-list/index.js'
+import type { ClubId } from './types/club-id.js'
+import { type FieldId, isFieldId } from './types/field.js'
+import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639.js'
 import {
   type IndeterminatePreprintId,
   PreprintDoiD,
   type PreprintId,
   fromPreprintDoi,
   fromUrl,
-} from './types/preprint-id'
-import type { ProfileId } from './types/profile-id'
-import type { NonEmptyString } from './types/string'
-import { isSubfieldId } from './types/subfield'
-import type { User } from './user'
-import type { NewPrereview } from './write-review'
+} from './types/preprint-id.js'
+import type { ProfileId } from './types/profile-id.js'
+import type { NonEmptyString } from './types/string.js'
+import { isSubfieldId } from './types/subfield.js'
+import type { User } from './user.js'
+import type { NewPrereview } from './write-review/index.js'
 
 export interface WasPrereviewRemovedEnv {
   wasPrereviewRemoved: (id: number) => boolean

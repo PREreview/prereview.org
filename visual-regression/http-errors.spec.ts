@@ -1,5 +1,5 @@
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../src/http-error'
-import { expect, test } from './base'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../src/http-error.js'
+import { expect, test } from './base.js'
 
 test('page-not-found page content looks right', async ({ showPage }) => {
   const content = await showPage(pageNotFound)

@@ -15,15 +15,15 @@ import {
   type SaveAuthorInviteEnv,
   getAuthorInvite,
   saveAuthorInvite,
-} from '../../author-invite'
-import type { Html } from '../../html'
-import { havingProblemsPage, pageNotFound } from '../../http-error'
-import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
-import { authorInviteDeclineMatch } from '../../routes'
-import type { ClubId } from '../../types/club-id'
-import type { PreprintId } from '../../types/preprint-id'
-import { declinePage } from './decline-page'
-import { inviteDeclinedPage } from './invite-declined-page'
+} from '../../author-invite.js'
+import type { Html } from '../../html.js'
+import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
+import { authorInviteDeclineMatch } from '../../routes.js'
+import type { ClubId } from '../../types/club-id.js'
+import type { PreprintId } from '../../types/preprint-id.js'
+import { declinePage } from './decline-page.js'
+import { inviteDeclinedPage } from './invite-declined-page.js'
 
 import PlainDate = Temporal.PlainDate
 

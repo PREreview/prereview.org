@@ -1,5 +1,5 @@
 import * as R from 'fp-ts/Reader'
-import type { User } from './user'
+import type { User } from './user.js'
 
 export interface CanConnectOrcidProfileEnv {
   canConnectOrcidProfile: (user: User) => boolean

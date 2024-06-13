@@ -3,9 +3,9 @@ import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/my-prereviews-page/no-prereviews'
-import { myPrereviewsMatch } from '../../src/routes'
-import * as fc from './fc'
+import * as _ from '../../src/my-prereviews-page/no-prereviews.js'
+import { myPrereviewsMatch } from '../../src/routes.js'
+import * as fc from './fc.js'
 
 describe('ensureThereArePrereviews', () => {
   test.prop([fc.nonEmptyArray(fc.prereview())])('when the list is not empty', prereviews => {

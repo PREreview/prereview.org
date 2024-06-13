@@ -7,9 +7,9 @@ import * as IO from 'fp-ts/IO'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import { P, isMatching } from 'ts-pattern'
-import * as _ from '../src/cloudinary'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import * as _ from '../src/cloudinary.js'
+import * as fc from './fc.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('getAvatarFromCloudinary', () => {
   test.prop([

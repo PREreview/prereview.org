@@ -4,10 +4,10 @@ import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
-import { getClubName } from '../club-details'
-import { type Html, html, plainText, rawHtml } from '../html'
+import { getClubName } from '../club-details.js'
+import { type Html, html, plainText, rawHtml } from '../html.js'
 import * as assets from '../manifest.json'
-import { PageResponse } from '../response'
+import { PageResponse } from '../response.js'
 import {
   aboutUsMatch,
   homeMatch,
@@ -17,11 +17,11 @@ import {
   reviewRequestsMatch,
   reviewsMatch,
   writeReviewMatch,
-} from '../routes'
-import { renderDate } from '../time'
-import { getSubfieldName } from '../types/subfield'
-import type { RecentPrereview } from './recent-prereviews'
-import type { RecentReviewRequest } from './recent-review-requests'
+} from '../routes.js'
+import { renderDate } from '../time.js'
+import { getSubfieldName } from '../types/subfield.js'
+import type { RecentPrereview } from './recent-prereviews.js'
+import type { RecentReviewRequest } from './recent-review-requests.js'
 
 export const createPage = ({
   canRequestReviews,

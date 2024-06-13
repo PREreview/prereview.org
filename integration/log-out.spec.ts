@@ -1,4 +1,4 @@
-import { areLoggedIn, canLogIn, expect, test } from './base'
+import { areLoggedIn, canLogIn, expect, test } from './base.js'
 
 test.extend(canLogIn).extend(areLoggedIn)('can log out', async ({ javaScriptEnabled, page }) => {
   const logOut = page.getByRole('link', { name: 'Log out' })

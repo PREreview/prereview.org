@@ -1,9 +1,9 @@
 import { merge } from 'ts-deepmerge'
-import { type CompletedForm, CompletedFormC } from '../../src/write-review/completed-form'
-import type { Form } from '../../src/write-review/form'
-import * as fc from '../fc'
+import { type CompletedForm, CompletedFormC } from '../../src/write-review/completed-form.js'
+import type { Form } from '../../src/write-review/form.js'
+import * as fc from '../fc.js'
 
-export * from '../fc'
+export * from '../fc.js'
 
 export const alreadyWritten = (): fc.Arbitrary<Required<Form>['alreadyWritten']> => fc.constantFrom('yes', 'no')
 

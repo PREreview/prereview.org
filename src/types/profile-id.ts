@@ -1,6 +1,6 @@
 import type { Orcid } from 'orcid-id-ts'
-import type { User } from '../user'
-import type { Pseudonym } from './pseudonym'
+import type { User } from '../user.js'
+import type { Pseudonym } from './pseudonym.js'
 
 export type ProfileId = OrcidProfileId | PseudonymProfileId
 

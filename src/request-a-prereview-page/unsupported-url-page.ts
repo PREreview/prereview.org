@@ -1,8 +1,8 @@
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { requestAPrereviewMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { requestAPrereviewMatch } from '../routes.js'
 
 export const unsupportedUrlPage = PageResponse({
   status: Status.BadRequest,

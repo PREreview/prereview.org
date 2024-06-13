@@ -1,6 +1,6 @@
 import type { Doi } from 'doi-ts'
-import { unknownPreprintPage } from '../../src/request-a-prereview-page/unknown-preprint-page'
-import { expect, test } from '../base'
+import { unknownPreprintPage } from '../../src/request-a-prereview-page/unknown-preprint-page.js'
+import { expect, test } from '../base.js'
 
 test('content looks right with a DOI ID', async ({ showPage }) => {
   const response = unknownPreprintPage({ type: 'biorxiv', value: '10.1101/2022.01.13.476201' as Doi<'1101'> })

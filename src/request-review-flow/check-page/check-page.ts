@@ -1,12 +1,12 @@
 import { format } from 'fp-ts-routing'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../../html'
-import { StreamlinePageResponse } from '../../response'
-import type { IncompleteReviewRequest, ReviewRequestPreprintId } from '../../review-request'
-import { profileMatch, requestReviewCheckMatch, requestReviewPersonaMatch } from '../../routes'
-import { isPseudonym } from '../../types/pseudonym'
-import type { User } from '../../user'
+import { html, plainText } from '../../html.js'
+import { StreamlinePageResponse } from '../../response.js'
+import type { IncompleteReviewRequest, ReviewRequestPreprintId } from '../../review-request.js'
+import { profileMatch, requestReviewCheckMatch, requestReviewPersonaMatch } from '../../routes.js'
+import { isPseudonym } from '../../types/pseudonym.js'
+import type { User } from '../../user.js'
 
 export function checkPage({
   preprint,

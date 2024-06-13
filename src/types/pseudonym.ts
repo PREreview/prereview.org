@@ -3,7 +3,7 @@ import { capitalCase } from 'case-anything'
 import { pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
-import type { NonEmptyString } from './string'
+import type { NonEmptyString } from './string.js'
 
 export type Pseudonym = NonEmptyString & PseudonymBrand
 

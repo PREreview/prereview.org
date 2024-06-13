@@ -4,8 +4,8 @@ import { SystemClock } from 'clock-ts'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import nodemailer from 'nodemailer'
-import * as _ from '../src/nodemailer'
-import * as fc from './fc'
+import * as _ from '../src/nodemailer.js'
+import * as fc from './fc.js'
 
 describe('sendEmailWithNodemailer', () => {
   test.prop([fc.email()])('when the email can be sent', async email => {

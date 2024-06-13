@@ -5,9 +5,9 @@ import type { Fetch } from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/prereview-coar-notify/get-recent-review-requests'
-import { RecentReviewRequestsC } from '../../src/prereview-coar-notify/get-recent-review-requests'
-import * as fc from './fc'
+import * as _ from '../../src/prereview-coar-notify/get-recent-review-requests.js'
+import { RecentReviewRequestsC } from '../../src/prereview-coar-notify/get-recent-review-requests.js'
+import * as fc from './fc.js'
 
 describe('getRecentReviewRequests', () => {
   test.prop([

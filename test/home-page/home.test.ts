@@ -3,10 +3,10 @@ import { expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as T from 'fp-ts/Task'
 import { Status } from 'hyper-ts'
-import type { CanRequestReviewsEnv } from '../../src/feature-flags'
-import * as _ from '../../src/home-page'
-import { homeMatch } from '../../src/routes'
-import * as fc from '../fc'
+import type { CanRequestReviewsEnv } from '../../src/feature-flags.js'
+import * as _ from '../../src/home-page/index.js'
+import { homeMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
 
 test.prop([fc.option(fc.user(), { nil: undefined }), fc.boolean(), fc.boolean()])(
   'home',

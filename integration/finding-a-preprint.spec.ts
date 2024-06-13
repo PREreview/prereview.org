@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordsC } from 'zenodo-ts'
-import { expect, test } from './base'
+import { expect, test } from './base.js'
 
 test('can find and view a preprint', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')

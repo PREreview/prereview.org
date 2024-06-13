@@ -5,12 +5,12 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
-import { havingProblemsPage } from '../http-error'
-import { type IsOpenForRequests, isOpenForRequests, saveOpenForRequests } from '../is-open-for-requests'
-import { LogInResponse, type PageResponse, RedirectResponse } from '../response'
-import { myDetailsMatch } from '../routes'
-import type { User } from '../user'
-import { createFormPage } from './change-open-for-requests-visibility-form-page'
+import { havingProblemsPage } from '../http-error.js'
+import { type IsOpenForRequests, isOpenForRequests, saveOpenForRequests } from '../is-open-for-requests.js'
+import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
+import { myDetailsMatch } from '../routes.js'
+import type { User } from '../user.js'
+import { createFormPage } from './change-open-for-requests-visibility-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof changeOpenForRequestsVisibility>>
 

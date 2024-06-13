@@ -5,8 +5,8 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
 import { P, match } from 'ts-pattern'
-import { revalidateIfStale, useStaleCache } from '../fetch'
-import { getCategories, getWorkByDoi } from './work'
+import { revalidateIfStale, useStaleCache } from '../fetch.js'
+import { getCategories, getWorkByDoi } from './work.js'
 
 export const getCategoriesFromOpenAlex = flow(
   getWorkByDoi,

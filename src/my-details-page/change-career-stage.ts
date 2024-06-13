@@ -7,12 +7,12 @@ import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { deleteCareerStage, getCareerStage, saveCareerStage } from '../career-stage'
-import { havingProblemsPage } from '../http-error'
-import { LogInResponse, RedirectResponse } from '../response'
-import { myDetailsMatch } from '../routes'
-import type { User } from '../user'
-import { createFormPage } from './change-career-stage-form-page'
+import { deleteCareerStage, getCareerStage, saveCareerStage } from '../career-stage.js'
+import { havingProblemsPage } from '../http-error.js'
+import { LogInResponse, RedirectResponse } from '../response.js'
+import { myDetailsMatch } from '../routes.js'
+import type { User } from '../user.js'
+import { createFormPage } from './change-career-stage-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof changeCareerStage>>
 

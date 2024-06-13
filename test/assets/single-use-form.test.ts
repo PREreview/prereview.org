@@ -1,5 +1,5 @@
 import { defineCE, expect, fixture, waitUntil } from '@open-wc/testing'
-import * as _ from '../../assets/single-use-form'
+import * as _ from '../../assets/single-use-form.js'
 
 describe('when the form is submitted', () => {
   it('prevents a second submission', async () => {

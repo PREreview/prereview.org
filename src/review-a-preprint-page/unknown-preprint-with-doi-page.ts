@@ -2,10 +2,10 @@ import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { reviewAPreprintMatch } from '../routes'
-import type { IndeterminatePreprintId } from '../types/preprint-id'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { reviewAPreprintMatch } from '../routes.js'
+import type { IndeterminatePreprintId } from '../types/preprint-id.js'
 
 export function createUnknownPreprintWithDoiPage(preprint: Extract<IndeterminatePreprintId, { value: Doi }>) {
   return PageResponse({

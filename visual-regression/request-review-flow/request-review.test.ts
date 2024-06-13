@@ -1,11 +1,11 @@
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
-import { html } from '../../src/html'
-import type { PreprintTitle } from '../../src/preprint'
-import { requestReviewPage } from '../../src/request-review-flow/request-review-page/request-review-page'
-import type { Pseudonym } from '../../src/types/pseudonym'
-import type { User } from '../../src/user'
-import { expect, test } from '../base'
+import { html } from '../../src/html.js'
+import type { PreprintTitle } from '../../src/preprint.js'
+import { requestReviewPage } from '../../src/request-review-flow/request-review-page/request-review-page.js'
+import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { User } from '../../src/user.js'
+import { expect, test } from '../base.js'
 
 const preprint = {
   id: {

@@ -4,10 +4,10 @@ import type * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
-import type { Html } from '../html'
-import type { FieldId } from '../types/field'
-import type { PreprintId } from '../types/preprint-id'
-import type { SubfieldId } from '../types/subfield'
+import type { Html } from '../html.js'
+import type { FieldId } from '../types/field.js'
+import type { PreprintId } from '../types/preprint-id.js'
+import type { SubfieldId } from '../types/subfield.js'
 
 import PlainDate = Temporal.PlainDate
 

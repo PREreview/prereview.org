@@ -1,7 +1,7 @@
 import * as E from 'fp-ts/Either'
-import { invalidE } from '../../src/form'
-import { createPage } from '../../src/review-a-preprint-page/review-a-preprint'
-import { expect, test } from '../base'
+import { invalidE } from '../../src/form.js'
+import { createPage } from '../../src/review-a-preprint-page/review-a-preprint.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = createPage(E.right(undefined))

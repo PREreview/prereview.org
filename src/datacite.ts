@@ -11,10 +11,10 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { parse } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import { detectLanguage, detectLanguageFrom } from './detect-language'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { sanitizeHtml } from './html'
-import type { Preprint } from './preprint'
+import { detectLanguage, detectLanguageFrom } from './detect-language.js'
+import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { sanitizeHtml } from './html.js'
+import type { Preprint } from './preprint.js'
 import type {
   AfricarxivFigsharePreprintId,
   AfricarxivZenodoPreprintId,
@@ -22,7 +22,7 @@ import type {
   OsfPreprintId,
   PsychArchivesPreprintId,
   ZenodoPreprintId,
-} from './types/preprint-id'
+} from './types/preprint-id.js'
 
 import Instant = Temporal.Instant
 import PlainDate = Temporal.PlainDate

@@ -1,7 +1,7 @@
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../html'
-import type * as Response from '../response'
-import { PageResponse } from '../response'
+import { html, plainText } from '../html.js'
+import type * as Response from '../response.js'
+import { PageResponse } from '../response.js'
 
 export interface UnableToLoadPrereviews {
   readonly _tag: 'UnableToLoadPrereviews'

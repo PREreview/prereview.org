@@ -6,9 +6,9 @@ import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html'
-import type { PreprintTitle } from '../../preprint'
-import { StreamlinePageResponse } from '../../response'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
+import type { PreprintTitle } from '../../preprint.js'
+import { StreamlinePageResponse } from '../../response.js'
 import {
   profileMatch,
   writeReviewAddAuthorsMatch,
@@ -26,10 +26,10 @@ import {
   writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
-} from '../../routes'
-import { isPseudonym } from '../../types/pseudonym'
-import type { User } from '../../user'
-import type { CompletedForm } from '../completed-form'
+} from '../../routes.js'
+import { isPseudonym } from '../../types/pseudonym.js'
+import type { User } from '../../user.js'
+import type { CompletedForm } from '../completed-form.js'
 
 export function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User) {
   return StreamlinePageResponse({

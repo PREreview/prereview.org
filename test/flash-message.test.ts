@@ -4,9 +4,9 @@ import * as E from 'fp-ts/Either'
 import type { HeadersOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import * as D from 'io-ts/Decoder'
-import * as _ from '../src/flash-message'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
+import * as _ from '../src/flash-message.js'
+import * as fc from './fc.js'
+import { runMiddleware } from './middleware.js'
 
 describe('deleteFlashMessage', () => {
   test.prop([

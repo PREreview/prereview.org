@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import type { CareerStage } from '../career-stage'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../routes'
+import type { CareerStage } from '../career-stage.js'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = ({ careerStage }: { careerStage: CareerStage }) =>
   PageResponse({

@@ -5,11 +5,11 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import Keyv from 'keyv'
-import * as _ from '../../src/connect-orcid/oauth-code'
-import type { EditOrcidTokenEnv } from '../../src/orcid-token'
-import { connectOrcidMatch, myDetailsMatch } from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+import * as _ from '../../src/connect-orcid/oauth-code.js'
+import type { EditOrcidTokenEnv } from '../../src/orcid-token.js'
+import { connectOrcidMatch, myDetailsMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('connectOrcidCode', () => {
   describe('when the access token can be decoded', () => {

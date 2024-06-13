@@ -1,12 +1,12 @@
 import type { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
 import type { Orcid } from 'orcid-id-ts'
-import { missingE } from '../../src/form'
-import { personaForm } from '../../src/request-review-flow/persona-page/persona-form'
-import type { ReviewRequestPreprintId } from '../../src/review-request'
-import type { Pseudonym } from '../../src/types/pseudonym'
-import type { User } from '../../src/user'
-import { expect, test } from '../base'
+import { missingE } from '../../src/form.js'
+import { personaForm } from '../../src/request-review-flow/persona-page/persona-form.js'
+import type { ReviewRequestPreprintId } from '../../src/review-request.js'
+import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { User } from '../../src/user.js'
+import { expect, test } from '../base.js'
 
 const user = {
   name: 'Josiah Carberry',

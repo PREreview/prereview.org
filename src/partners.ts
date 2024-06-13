@@ -1,8 +1,8 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from './html'
+import { html, plainText } from './html.js'
 import * as assets from './manifest.json'
-import { PageResponse } from './response'
-import { partnersMatch } from './routes'
+import { PageResponse } from './response.js'
+import { partnersMatch } from './routes.js'
 
 export const partners = PageResponse({
   title: plainText`Partners`,

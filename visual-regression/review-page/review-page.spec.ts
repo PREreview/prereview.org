@@ -1,10 +1,10 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
-import { html } from '../../src/html'
-import type { Prereview } from '../../src/review-page'
-import { createPage } from '../../src/review-page/review-page'
-import { expect, test } from '../base'
+import { html } from '../../src/html.js'
+import type { Prereview } from '../../src/review-page/index.js'
+import { createPage } from '../../src/review-page/review-page.js'
+import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
 

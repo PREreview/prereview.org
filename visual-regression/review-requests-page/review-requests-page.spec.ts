@@ -1,9 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
-import { rawHtml } from '../../src/html'
-import type { ReviewRequests } from '../../src/review-requests-page'
-import { createEmptyPage, createPage } from '../../src/review-requests-page/review-requests-page'
-import { expect, test } from '../base'
+import { rawHtml } from '../../src/html.js'
+import type { ReviewRequests } from '../../src/review-requests-page/index.js'
+import { createEmptyPage, createPage } from '../../src/review-requests-page/review-requests-page.js'
+import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
 

@@ -1,8 +1,8 @@
 import * as E from 'fp-ts/Either'
-import { invalidE, missingE } from '../../src/form'
-import { createFormPage } from '../../src/my-details-page/change-contact-email-address-form-page'
-import type { EmailAddress } from '../../src/types/email-address'
-import { expect, test } from '../base'
+import { invalidE, missingE } from '../../src/form.js'
+import { createFormPage } from '../../src/my-details-page/change-contact-email-address-form-page.js'
+import type { EmailAddress } from '../../src/types/email-address.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = createFormPage({ emailAddress: E.right('jcarberry@example.com' as EmailAddress) })

@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
 import type { Uuid } from 'uuid-ts'
-import type { UnverifiedContactEmailAddress } from '../../contact-email-address'
-import { html, plainText } from '../../html'
-import { StreamlinePageResponse } from '../../response'
-import { authorInviteNeedToVerifyEmailAddressMatch } from '../../routes'
+import type { UnverifiedContactEmailAddress } from '../../contact-email-address.js'
+import { html, plainText } from '../../html.js'
+import { StreamlinePageResponse } from '../../response.js'
+import { authorInviteNeedToVerifyEmailAddressMatch } from '../../routes.js'
 
 export function needToVerifyEmailAddressPage({
   contactEmailAddress,

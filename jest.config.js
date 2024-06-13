@@ -5,6 +5,7 @@ module.exports = {
   roots: ['./src/', './test/'],
   testPathIgnorePatterns: ['./test/assets/'],
   moduleFileExtensions: ['js', 'ts'],
+  moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' },
   transform: {
     '^.+\\.ts$': [
       'ts-jest',

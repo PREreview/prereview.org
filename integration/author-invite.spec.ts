@@ -11,7 +11,7 @@ import {
   invitedToBeAnAuthor,
   test,
   willUpdateAReview,
-} from './base'
+} from './base.js'
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
   'can accept an invite',

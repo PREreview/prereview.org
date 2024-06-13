@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { disconnectOrcidMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { disconnectOrcidMatch } from '../routes.js'
 
 export const disconnectOrcidPage = PageResponse({
   title: plainText`Disconnect your ORCID profile`,

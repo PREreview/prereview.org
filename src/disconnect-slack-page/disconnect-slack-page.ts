@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { disconnectSlackMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { disconnectSlackMatch } from '../routes.js'
 
 export const disconnectSlackPage = PageResponse({
   title: plainText`Disconnect your Community Slack Account`,

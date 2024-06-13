@@ -1,5 +1,5 @@
 import { expect, fixture } from '@open-wc/testing'
-import * as _ from '../../assets/dom'
+import * as _ from '../../assets/dom.js'
 
 describe('preventDefault', () => {
   it('calls preventDefault() on an event', () => {

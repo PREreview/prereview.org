@@ -2,8 +2,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
-import * as _ from '../src/email'
-import * as fc from './fc'
+import * as _ from '../src/email.js'
+import * as fc from './fc.js'
 
 describe('sendContactEmailAddressVerificationEmail', () => {
   test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress()])(

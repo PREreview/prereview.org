@@ -1,10 +1,10 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import { P, match } from 'ts-pattern'
-import { html, plainText } from '../html'
-import type { Location } from '../location'
-import { PageResponse } from '../response'
-import { changeLocationMatch, myDetailsMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import type { Location } from '../location.js'
+import { PageResponse } from '../response.js'
+import { changeLocationMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = (location: O.Option<Location>) =>
   PageResponse({

@@ -22,8 +22,7 @@ import multer, { MulterError } from 'multer'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
-import { aboutUs } from './about-us'
-import { type OpenAuthorInvite, createAuthorInvite } from './author-invite'
+import { aboutUs } from './about-us.js'
 import {
   authorInvite,
   authorInviteCheck,
@@ -34,16 +33,17 @@ import {
   authorInvitePublished,
   authorInviteStart,
   authorInviteVerifyEmailAddress,
-} from './author-invite-flow'
+} from './author-invite-flow/index.js'
+import { type OpenAuthorInvite, createAuthorInvite } from './author-invite.js'
 import {
   type CloudinaryApiEnv,
   getAvatarFromCloudinary,
   removeAvatarFromCloudinary,
   saveAvatarOnCloudinary,
-} from './cloudinary'
-import { clubProfile } from './club-profile-page'
-import { clubs } from './clubs'
-import { codeOfConduct } from './code-of-conduct'
+} from './cloudinary.js'
+import { clubProfile } from './club-profile-page/index.js'
+import { clubs } from './clubs.js'
+import { codeOfConduct } from './code-of-conduct.js'
 import {
   type OrcidOAuthEnv as ConnectOrcidOAuthEnv,
   connectOrcid,
@@ -51,16 +51,16 @@ import {
   connectOrcidError,
   connectOrcidStart,
   disconnectOrcid,
-} from './connect-orcid'
+} from './connect-orcid/index.js'
 import {
   type SlackOAuthEnv,
   connectSlack,
   connectSlackCode,
   connectSlackError,
   connectSlackStart,
-} from './connect-slack-page'
-import { disconnectSlack } from './disconnect-slack-page'
-import { ediaStatement } from './edia-statement'
+} from './connect-slack-page/index.js'
+import { disconnectSlack } from './disconnect-slack-page/index.js'
+import { ediaStatement } from './edia-statement.js'
 import {
   type SendEmailEnv,
   createAuthorInviteEmail,
@@ -68,7 +68,7 @@ import {
   sendContactEmailAddressVerificationEmail,
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
-} from './email'
+} from './email.js'
 import {
   type CanConnectOrcidProfileEnv,
   type CanRequestReviewsEnv,
@@ -76,13 +76,13 @@ import {
   type CanUploadAvatarEnv,
   type CanUseSearchQueriesEnv,
   canUseSearchQueries,
-} from './feature-flags'
-import type { SleepEnv } from './fetch'
-import { funding } from './funding'
-import type { GhostApiEnv } from './ghost'
-import { home } from './home-page'
-import { howToUse } from './how-to-use'
-import * as Keyv from './keyv'
+} from './feature-flags.js'
+import type { SleepEnv } from './fetch.js'
+import { funding } from './funding.js'
+import type { GhostApiEnv } from './ghost.js'
+import { home } from './home-page/index.js'
+import { howToUse } from './how-to-use.js'
+import * as Keyv from './keyv.js'
 import {
   type LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
@@ -90,10 +90,17 @@ import {
   getRapidPreviewsFromLegacyPrereview,
   isLegacyCompatiblePreprint,
   isLegacyCompatiblePrereview,
-} from './legacy-prereview'
-import { liveReviews } from './live-reviews'
-import { type IsUserBlockedEnv, type OrcidOAuthEnv, authenticate, authenticateError, logIn, logOut } from './log-in'
-import { getMethod } from './middleware'
+} from './legacy-prereview.js'
+import { liveReviews } from './live-reviews.js'
+import {
+  type IsUserBlockedEnv,
+  type OrcidOAuthEnv,
+  authenticate,
+  authenticateError,
+  logIn,
+  logOut,
+} from './log-in/index.js'
+import { getMethod } from './middleware.js'
 import {
   changeAvatar,
   changeCareerStage,
@@ -110,39 +117,39 @@ import {
   myDetails,
   removeAvatar,
   verifyContactEmailAddress,
-} from './my-details-page'
-import { myPrereviews } from './my-prereviews-page'
-import { getCategoriesFromOpenAlex } from './openalex'
-import { type OrcidApiEnv, getNameFromOrcid } from './orcid'
-import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page'
-import { partners } from './partners'
-import { people } from './people'
-import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint'
-import { preprintReviews } from './preprint-reviews-page'
+} from './my-details-page/index.js'
+import { myPrereviews } from './my-prereviews-page/index.js'
+import { getCategoriesFromOpenAlex } from './openalex/index.js'
+import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
+import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page.js'
+import { partners } from './partners.js'
+import { people } from './people.js'
+import { preprintReviews } from './preprint-reviews-page/index.js'
+import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
 import {
   type PrereviewCoarNotifyEnv,
   getRecentReviewRequestsFromPrereviewCoarNotify,
   getReviewRequestsFromPrereviewCoarNotify,
   publishToPrereviewCoarNotifyInbox,
-} from './prereview-coar-notify'
-import { privacyPolicy } from './privacy-policy'
-import { profile } from './profile-page'
-import type { PublicUrlEnv } from './public-url'
-import { requestAPrereview } from './request-a-prereview-page'
+} from './prereview-coar-notify/index.js'
+import { privacyPolicy } from './privacy-policy.js'
+import { profile } from './profile-page/index.js'
+import type { PublicUrlEnv } from './public-url.js'
+import { requestAPrereview } from './request-a-prereview-page/index.js'
 import {
   requestReview,
   requestReviewCheck,
   requestReviewPersona,
   requestReviewPublished,
   requestReviewStart,
-} from './request-review-flow'
-import { resources } from './resources'
-import { handleResponse } from './response'
-import { reviewAPreprint } from './review-a-preprint-page'
-import { reviewPage } from './review-page'
-import { reviewRequests } from './review-requests-page'
-import { reviewsData } from './reviews-data'
-import { reviewsPage } from './reviews-page'
+} from './request-review-flow/index.js'
+import { resources } from './resources.js'
+import { handleResponse } from './response.js'
+import { reviewAPreprint } from './review-a-preprint-page/index.js'
+import { reviewPage } from './review-page/index.js'
+import { reviewRequests } from './review-requests-page/index.js'
+import { reviewsData } from './reviews-data/index.js'
+import { reviewsPage } from './reviews-page/index.js'
 import {
   aboutUsMatch,
   authorInviteCheckMatch,
@@ -237,21 +244,21 @@ import {
   writeReviewShouldReadMatch,
   writeReviewStartMatch,
   writeReviewVerifyEmailAddressMatch,
-} from './routes'
-import { type ScietyListEnv, scietyList } from './sciety-list'
+} from './routes.js'
+import { type ScietyListEnv, scietyList } from './sciety-list/index.js'
+import type { SlackUserId } from './slack-user-id.js'
 import {
   type SlackApiEnv,
   type SlackApiUpdateEnv,
   addOrcidToSlackProfile,
   getUserFromSlack,
   removeOrcidFromSlackProfile,
-} from './slack'
-import type { SlackUserId } from './slack-user-id'
-import { trainings } from './trainings'
-import type { PreprintId } from './types/preprint-id'
-import { type GenerateUuidEnv, generateUuid } from './types/uuid'
-import { type GetUserEnv, type User, maybeGetUser } from './user'
-import type { GetUserOnboardingEnv } from './user-onboarding'
+} from './slack.js'
+import { trainings } from './trainings.js'
+import type { PreprintId } from './types/preprint-id.js'
+import { type GenerateUuidEnv, generateUuid } from './types/uuid.js'
+import type { GetUserOnboardingEnv } from './user-onboarding.js'
+import { type GetUserEnv, type User, maybeGetUser } from './user.js'
 import {
   type FormStoreEnv,
   type NewPrereview,
@@ -281,7 +288,7 @@ import {
   writeReviewShouldRead,
   writeReviewStart,
   writeReviewVerifyEmailAddress,
-} from './write-review'
+} from './write-review/index.js'
 import {
   type WasPrereviewRemovedEnv,
   addAuthorToRecordOnZenodo,
@@ -294,7 +301,7 @@ import {
   getPrereviewsForUserFromZenodo,
   getRecentPrereviewsFromZenodo,
   refreshPrereview,
-} from './zenodo'
+} from './zenodo.js'
 
 const isSlackUser = flow(
   Keyv.getSlackUserId,

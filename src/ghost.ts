@@ -9,8 +9,8 @@ import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
-import { type SleepEnv, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { type Html, sanitizeHtml } from './html'
+import { type SleepEnv, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { type Html, sanitizeHtml } from './html.js'
 
 export interface GhostApiEnv {
   ghostApi: {

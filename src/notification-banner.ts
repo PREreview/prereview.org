@@ -1,4 +1,4 @@
-import { type Html, html, rawHtml } from './html'
+import { type Html, html, rawHtml } from './html.js'
 
 interface NotificationBanner {
   readonly type: 'success' | 'failure' | 'notice'

@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import * as TE from 'fp-ts/TaskEither'
-import type { CanRequestReviewsEnv } from '../../src/feature-flags'
-import * as _ from '../../src/request-a-prereview-page/make-decision'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+import type { CanRequestReviewsEnv } from '../../src/feature-flags.js'
+import * as _ from '../../src/request-a-prereview-page/make-decision.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('makeDecision', () => {
   describe('when the user is logged in', () => {

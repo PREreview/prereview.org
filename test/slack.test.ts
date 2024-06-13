@@ -7,9 +7,9 @@ import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
 import { toUrl } from 'orcid-id-ts'
 import { URL } from 'url'
-import * as _ from '../src/slack'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import * as _ from '../src/slack.js'
+import * as fc from './fc.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('getUserFromSlack', () => {
   test.prop([fc.string(), fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.nonEmptyString(), fc.url()])(

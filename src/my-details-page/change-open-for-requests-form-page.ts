@@ -2,10 +2,10 @@ import { format } from 'fp-ts-routing'
 import type * as O from 'fp-ts/Option'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
-import { html, plainText, rawHtml } from '../html'
-import type { IsOpenForRequests } from '../is-open-for-requests'
-import { PageResponse } from '../response'
-import { changeOpenForRequestsMatch, myDetailsMatch } from '../routes'
+import { html, plainText, rawHtml } from '../html.js'
+import type { IsOpenForRequests } from '../is-open-for-requests.js'
+import { PageResponse } from '../response.js'
+import { changeOpenForRequestsMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = ({
   openForRequests,

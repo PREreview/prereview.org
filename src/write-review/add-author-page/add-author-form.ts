@@ -2,13 +2,13 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
-import { type InvalidE, type MissingE, hasAnError } from '../../form'
-import { html, plainText, rawHtml } from '../../html'
-import type { PreprintTitle } from '../../preprint'
-import { StreamlinePageResponse } from '../../response'
-import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes'
-import type { EmailAddress } from '../../types/email-address'
-import type { NonEmptyString } from '../../types/string'
+import { type InvalidE, type MissingE, hasAnError } from '../../form.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import type { PreprintTitle } from '../../preprint.js'
+import { StreamlinePageResponse } from '../../response.js'
+import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes.js'
+import type { EmailAddress } from '../../types/email-address.js'
+import type { NonEmptyString } from '../../types/string.js'
 
 export function addAuthorForm({
   form,
@@ -143,6 +143,7 @@ export function addAuthorForm({
     js: ['error-summary.js'],
   })
 }
+
 export interface AddAuthorForm {
   readonly name: E.Either<MissingE, NonEmptyString | undefined>
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>

@@ -2,12 +2,12 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
-import { type MissingE, hasAnError } from '../../form'
-import { type Html, html, plainText, rawHtml } from '../../html'
-import type { PreprintTitle } from '../../preprint'
-import { StreamlinePageResponse } from '../../response'
-import { writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../../routes'
-import { turndown } from './turndown'
+import { type MissingE, hasAnError } from '../../form.js'
+import { type Html, html, plainText, rawHtml } from '../../html.js'
+import type { PreprintTitle } from '../../preprint.js'
+import { StreamlinePageResponse } from '../../response.js'
+import { writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../../routes.js'
+import { turndown } from './turndown.js'
 
 export interface PasteReviewForm {
   readonly review: E.Either<MissingE, Html | undefined>

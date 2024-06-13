@@ -28,17 +28,17 @@ import {
   UnsubmittedDepositionC,
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
-import { type ConfigEnv, app } from '../src/app'
-import { AuthorInviteC } from '../src/author-invite'
-import { ContactEmailAddressC } from '../src/contact-email-address'
-import { createAuthorInviteEmail } from '../src/email'
+import { type ConfigEnv, app } from '../src/app.js'
+import { AuthorInviteC } from '../src/author-invite.js'
+import { ContactEmailAddressC } from '../src/contact-email-address.js'
+import { createAuthorInviteEmail } from '../src/email.js'
 import type {
   CanConnectOrcidProfileEnv,
   CanRequestReviewsEnv,
   CanUploadAvatarEnv,
   CanUseSearchQueriesEnv,
-} from '../src/feature-flags'
-import { rawHtml } from '../src/html'
+} from '../src/feature-flags.js'
+import { rawHtml } from '../src/html.js'
 import type {
   AuthorInviteStoreEnv,
   ContactEmailAddressStoreEnv,
@@ -48,12 +48,12 @@ import type {
   ResearchInterestsStoreEnv,
   ReviewRequestStoreEnv,
   UserOnboardingStoreEnv,
-} from '../src/keyv'
-import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
-import type { IsUserBlockedEnv } from '../src/log-in'
-import type { EmailAddress } from '../src/types/email-address'
-import type { NonEmptyString } from '../src/types/string'
-import type { WasPrereviewRemovedEnv } from '../src/zenodo'
+} from '../src/keyv.js'
+import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview.js'
+import type { IsUserBlockedEnv } from '../src/log-in/index.js'
+import type { EmailAddress } from '../src/types/email-address.js'
+import type { NonEmptyString } from '../src/types/string.js'
+import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
 
 import Logger = L.Logger
 import LogEntry = L.LogEntry

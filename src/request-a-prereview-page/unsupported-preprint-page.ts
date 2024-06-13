@@ -1,10 +1,10 @@
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { requestAPrereviewMatch } from '../routes'
-import type { PreprintId } from '../types/preprint-id'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { requestAPrereviewMatch } from '../routes.js'
+import type { PreprintId } from '../types/preprint-id.js'
 
 export const unsupportedPreprintPage = (preprint: PreprintId) =>
   PageResponse({

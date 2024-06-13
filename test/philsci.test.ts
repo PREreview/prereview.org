@@ -3,10 +3,10 @@ import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
-import { rawHtml } from '../src/html'
-import * as _ from '../src/philsci'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import { rawHtml } from '../src/html.js'
+import * as _ from '../src/philsci.js'
+import * as fc from './fc.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('getPreprintFromPhilsci', () => {
   test.prop([fc.philsciPreprintId()])('when the preprint can be loaded', async id => {

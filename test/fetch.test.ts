@@ -3,9 +3,9 @@ import { describe, expect, jest } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as IO from 'fp-ts/IO'
-import * as _ from '../src/fetch'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import * as _ from '../src/fetch.js'
+import * as fc from './fc.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('revalidateIfStale', () => {
   test.prop([

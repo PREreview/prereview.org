@@ -6,17 +6,17 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
-import { havingProblemsPage } from '../http-error'
+import { havingProblemsPage } from '../http-error.js'
 import {
   type IsOpenForRequests,
   type IsOpenForRequestsEnv,
   isOpenForRequests,
   saveOpenForRequests,
-} from '../is-open-for-requests'
-import { LogInResponse, RedirectResponse } from '../response'
-import { myDetailsMatch } from '../routes'
-import type { User } from '../user'
-import { createFormPage } from './change-open-for-requests-form-page'
+} from '../is-open-for-requests.js'
+import { LogInResponse, RedirectResponse } from '../response.js'
+import { myDetailsMatch } from '../routes.js'
+import type { User } from '../user.js'
+import { createFormPage } from './change-open-for-requests-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof changeOpenForRequests>>
 

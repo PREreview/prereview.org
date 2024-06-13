@@ -3,11 +3,11 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import { plainText } from '../../src/html'
-import * as _ from '../../src/profile-page'
-import { profileMatch } from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+import { plainText } from '../../src/html.js'
+import * as _ from '../../src/profile-page/index.js'
+import { profileMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('profile', () => {
   describe('with an ORCID iD', () => {

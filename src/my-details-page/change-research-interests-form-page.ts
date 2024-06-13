@@ -1,10 +1,10 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import { P, match } from 'ts-pattern'
-import { html, plainText, rawHtml } from '../html'
-import type { ResearchInterests } from '../research-interests'
-import { PageResponse } from '../response'
-import { changeResearchInterestsMatch, myDetailsMatch } from '../routes'
+import { html, plainText, rawHtml } from '../html.js'
+import type { ResearchInterests } from '../research-interests.js'
+import { PageResponse } from '../response.js'
+import { changeResearchInterestsMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = (researchInterests: O.Option<ResearchInterests>) =>
   PageResponse({
