@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v4.0.2
         if: ${{ !env.ACT }}
         with:
-          path: .webpack
+          path: .cache/webpack
           key: webpack-${{ github.head_ref || github.ref_name }}
           restore-keys: webpack-
 
