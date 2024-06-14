@@ -178,7 +178,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        shard: [1, 2, 3, 4, 5]
 
     steps:
       - name: 'Checkout code'
@@ -209,7 +209,7 @@ jobs:
         id: 'playwright'
         uses: docker://mcr.microsoft.com/playwright:v1.42.1-jammy
         with:
-          args: env HOME=/root npx playwright test --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
+          args: env HOME=/root npx playwright test integration --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
@@ -240,6 +240,55 @@ jobs:
 
       - name: 'Run smoke test'
         run: scripts/smoke-test.sh ${{ needs.build-image.outputs.image }}
+
+  test-visual-regression:
+    name: 'Visual regression test (${{ matrix.shard }}/${{ strategy.job-total }})'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    needs:
+      - build-assets
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5]
+
+    steps:
+      - name: 'Checkout code'
+        uses: nschloe/action-cached-lfs-checkout@v1.2.2
+
+      - name: 'Set up Node.js'
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version-file: package.json
+          cache: ${{ !env.ACT && 'npm' || '' }}
+
+      - name: 'Install dependencies'
+        run: npm ci --ignore-scripts
+
+      - name: 'Download assets'
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: assets
+          path: dist/assets
+
+      - name: 'Download assets manifest'
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: manifest
+          path: src
+
+      - name: 'Run Playwright'
+        id: 'playwright'
+        uses: docker://mcr.microsoft.com/playwright:v1.42.1-jammy
+        with:
+          args: env HOME=/root npx playwright test visual-regression --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
+
+      - name: 'Store results'
+        if: failure() && steps.playwright.outcome == 'failure'
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: visual-regression-tests-results-${{ matrix.shard }}
+          path: integration-results
 
   test-web:
     name: 'Web Tests'
@@ -311,6 +360,7 @@ jobs:
       - test
       - test-integration
       - test-smoke
+      - test-visual-regression
       - test-web
       - typecheck
 
