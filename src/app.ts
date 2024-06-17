@@ -133,9 +133,13 @@ export const app = (config: ConfigEnv) => {
   const app = express()
     .disable('x-powered-by')
     .use((req, res, next) => {
+      const url = new URL(req.url, config.publicUrl)
+
       const details = {
         method: req.method,
         url: req.url,
+        path: url.pathname,
+        query: Object.fromEntries(url.searchParams),
         requestId: req.header('Fly-Request-Id') ?? null,
       }
 
