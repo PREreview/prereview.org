@@ -133,17 +133,19 @@ export const app = (config: ConfigEnv) => {
   const app = express()
     .disable('x-powered-by')
     .use((req, res, next) => {
-      const requestId = req.header('Fly-Request-Id') ?? null
+      const details = {
+        method: req.method,
+        url: req.url,
+        requestId: req.header('Fly-Request-Id') ?? null,
+      }
 
       const startTime = Date.now()
 
       pipe(
         {
-          method: req.method,
-          url: req.url,
+          ...details,
           referrer: req.header('Referer') as Json,
           userAgent: req.header('User-Agent') as Json,
-          requestId,
         },
         L.infoP('Received HTTP request'),
       )(config)()
@@ -151,10 +153,8 @@ export const app = (config: ConfigEnv) => {
       res.once('finish', () => {
         pipe(
           {
-            method: req.method,
-            url: req.url,
+            ...details,
             status: res.statusCode,
-            requestId,
             time: Date.now() - startTime,
           },
           L.infoP('Sent HTTP response'),
@@ -168,10 +168,8 @@ export const app = (config: ConfigEnv) => {
 
         pipe(
           {
-            method: req.method,
-            url: req.url,
+            ...details,
             status: res.statusCode,
-            requestId,
             time: Date.now() - startTime,
           },
           L.warnP('HTTP response may not have been completely sent'),
