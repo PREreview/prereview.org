@@ -168,7 +168,7 @@ const form = ({
     <input type="hidden" name="page" value="1" />
     ${canUseSearchQueries
       ? html`<div>
-          <label for="query">Query</label>
+          <label for="query">Title or author</label>
           <input type="text" name="query" id="query" ${query === undefined ? '' : html`value="${query}"`} />
         </div>`
       : query
