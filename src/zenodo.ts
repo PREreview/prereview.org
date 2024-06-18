@@ -150,7 +150,7 @@ export const getRecentPrereviewsFromZenodo = ({
             q: [
               field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
               language ? `language:"${iso6391To3(language)}"` : '',
-              query ?? '',
+              query ? `(title:(${query}) OR metadata.creators.person_or_org.name:(${query}))` : '',
             ]
               .filter(a => a !== '')
               .join(' AND '),
