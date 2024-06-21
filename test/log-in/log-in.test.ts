@@ -416,6 +416,7 @@ describe('authenticateError', () => {
     const actual = await runMiddleware(
       _.authenticateError('access_denied')({
         getUserOnboarding: shouldNotBeCalled,
+        publicUrl: new URL('http://example.com'),
         templatePage,
       }),
       connection,
@@ -443,6 +444,7 @@ describe('authenticateError', () => {
     const actual = await runMiddleware(
       _.authenticateError(error)({
         getUserOnboarding: shouldNotBeCalled,
+        publicUrl: new URL('http://example.com'),
         templatePage,
       }),
       connection,

@@ -2,12 +2,13 @@ import cookie from 'cookie'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
-import { pipe } from 'fp-ts/lib/function.js'
+import { flow, pipe } from 'fp-ts/lib/function.js'
 import { type HeadersOpen, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
+import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message.js'
 import { type Html, html, sendHtml } from './html.js'
@@ -166,37 +167,57 @@ export const handlePageResponse = ({
 }: {
   response: PageResponse | StreamlinePageResponse
   user?: User
-}): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
+}): RM.ReaderMiddleware<
+  GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv,
+  StatusOpen,
+  ResponseEnded,
+  never,
+  void
+> =>
   pipe(
     RM.of({}),
     RM.apS('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
-    RM.chainReaderKW(({ message, userOnboarding }) =>
-      templatePage({
-        title: response.title,
-        description: response.description,
-        content: html`
-          ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
+    RM.apSW(
+      'canonical',
+      RM.rightReader(
+        match(response.canonical)
+          .with(P.string, canonical =>
+            R.asks(({ publicUrl }: PublicUrlEnv) => new URL(encodeURI(canonical), publicUrl).href),
+          )
+          .with(undefined, R.of)
+          .exhaustive(),
+      ),
+    ),
+    RM.bindW(
+      'body',
+      RM.fromReaderK(({ message, userOnboarding }) =>
+        templatePage({
+          title: response.title,
+          description: response.description,
+          content: html`
+            ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 
-          <main id="${response.skipToLabel}">${message ? showFlashMessage(message) : ''} ${response.main}</main>
-        `,
-        skipLinks: [
-          [
-            match(response.skipToLabel)
-              .with('form', () => html`Skip to form`)
-              .with('main', () => html`Skip to main content`)
-              .with('prereview', () => html`Skip to PREreview`)
-              .exhaustive(),
-            `#${response.skipToLabel}`,
+            <main id="${response.skipToLabel}">${message ? showFlashMessage(message) : ''} ${response.main}</main>
+          `,
+          skipLinks: [
+            [
+              match(response.skipToLabel)
+                .with('form', () => html`Skip to form`)
+                .with('main', () => html`Skip to main content`)
+                .with('prereview', () => html`Skip to PREreview`)
+                .exhaustive(),
+              `#${response.skipToLabel}`,
+            ],
+            ...(response._tag === 'PageResponse' && response.extraSkipLink ? [response.extraSkipLink] : []),
           ],
-          ...(response._tag === 'PageResponse' && response.extraSkipLink ? [response.extraSkipLink] : []),
-        ],
-        current: response.current,
-        js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
-        type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
-        user,
-        userOnboarding,
-      }),
+          current: response.current,
+          js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
+          type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
+          user,
+          userOnboarding,
+        }),
+      ),
     ),
     RM.ichainFirst(() => RM.status(response.status)),
     RM.ichainFirst(() =>
@@ -209,9 +230,9 @@ export const handlePageResponse = ({
     ),
     RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
     RM.ichainFirst(() => RM.fromMiddleware(deleteSlackState)),
-    RM.ichainFirst(() =>
+    RM.ichainFirst(props =>
       RM.fromMiddleware(
-        match(response.canonical)
+        match(props.canonical)
           .with(P.string, canonical => M.header('Link', `<${canonical}>; rel="canonical"`))
           .with(undefined, M.of<HeadersOpen>)
           .exhaustive(),
@@ -225,7 +246,7 @@ export const handlePageResponse = ({
           .exhaustive(),
       ),
     ),
-    RM.ichainMiddlewareK(sendHtml),
+    RM.ichainMiddlewareK(flow(get('body'), sendHtml)),
   )
 
 const handleTwoUpPageResponse = ({
@@ -234,31 +255,44 @@ const handleTwoUpPageResponse = ({
 }: {
   response: TwoUpPageResponse
   user?: User
-}): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
+}): RM.ReaderMiddleware<
+  GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv,
+  StatusOpen,
+  ResponseEnded,
+  never,
+  void
+> =>
   pipe(
     RM.of({}),
     RM.apS('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
-    RM.chainReaderKW(({ message, userOnboarding }) =>
-      templatePage({
-        title: response.title,
-        description: response.description,
-        content: html`
-          <h1 class="visually-hidden">${response.h1}</h1>
+    RM.apSW(
+      'canonical',
+      RM.asks(({ publicUrl }: PublicUrlEnv) => new URL(encodeURI(response.canonical), publicUrl).href),
+    ),
+    RM.bindW(
+      'body',
+      RM.fromReaderK(({ message, userOnboarding }) =>
+        templatePage({
+          title: response.title,
+          description: response.description,
+          content: html`
+            <h1 class="visually-hidden">${response.h1}</h1>
 
-          <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
+            <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
 
-          <main id="prereviews">${message ? showFlashMessage(message) : ''} ${response.main}</main>
-        `,
-        skipLinks: [
-          [html`Skip to preprint details`, '#preprint-details'],
-          [html`Skip to PREreviews`, '#prereviews'],
-        ],
-        js: message ? (['notification-banner.js'] as const) : [],
-        type: 'two-up',
-        user,
-        userOnboarding,
-      }),
+            <main id="prereviews">${message ? showFlashMessage(message) : ''} ${response.main}</main>
+          `,
+          skipLinks: [
+            [html`Skip to preprint details`, '#preprint-details'],
+            [html`Skip to PREreviews`, '#prereviews'],
+          ],
+          js: message ? (['notification-banner.js'] as const) : [],
+          type: 'two-up',
+          user,
+          userOnboarding,
+        }),
+      ),
     ),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainFirst(() =>
@@ -266,8 +300,8 @@ const handleTwoUpPageResponse = ({
     ),
     RM.ichainFirst(() => RM.header('Vary', 'Cookie')),
     RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
-    RM.ichainFirst(() => RM.header('Link', `<${response.canonical}>; rel="canonical"`)),
-    RM.ichainMiddlewareK(sendHtml),
+    RM.ichainFirst(({ canonical }) => RM.header('Link', `<${canonical}>; rel="canonical"`)),
+    RM.ichainMiddlewareK(flow(get('body'), sendHtml)),
   )
 
 const handleRedirectResponse = ({

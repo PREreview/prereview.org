@@ -16,6 +16,7 @@ import { type Html, fixHeadingLevels, html, plainText, sendHtml } from '../../ht
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware.js'
 import { type TemplatePageEnv, templatePage } from '../../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
+import type { PublicUrlEnv } from '../../public-url.js'
 import { handlePageResponse } from '../../response.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
@@ -86,7 +87,7 @@ const decideNextStep = (state: {
   match(state)
     .returnType<
       RM.ReaderMiddleware<
-        GetUserOnboardingEnv & TemplatePageEnv & FormStoreEnv & PublishPrereviewEnv & SessionEnv,
+        GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv & FormStoreEnv & PublishPrereviewEnv & SessionEnv,
         StatusOpen,
         ResponseEnded,
         never,

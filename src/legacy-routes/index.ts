@@ -16,6 +16,7 @@ import { match, P as p } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { movedPermanently, notFound, serviceUnavailable } from '../middleware.js'
 import type { TemplatePageEnv } from '../page.js'
+import type { PublicUrlEnv } from '../public-url.js'
 import { handlePageResponse } from '../response.js'
 import {
   aboutUsMatch,
@@ -50,6 +51,7 @@ export type LegacyEnv = GetPreprintIdFromUuidEnv &
   GetProfileIdFromUuidEnv &
   GetUserEnv &
   GetUserOnboardingEnv &
+  PublicUrlEnv &
   TemplatePageEnv
 
 export interface GetPreprintIdFromUuidEnv {

@@ -157,7 +157,11 @@ describe('handleResponse', () => {
       expect(actual).toStrictEqual(
         E.right(
           expect.arrayContaining([
-            { type: 'setHeader', name: 'Link', value: `<${response.canonical}>; rel="canonical"` },
+            {
+              type: 'setHeader',
+              name: 'Link',
+              value: `<${encodeURI(`${publicUrl}${response.canonical}`)}>; rel="canonical"`,
+            },
           ]),
         ),
       )
@@ -338,7 +342,11 @@ describe('handleResponse', () => {
       expect(actual).toStrictEqual(
         E.right(
           expect.arrayContaining([
-            { type: 'setHeader', name: 'Link', value: `<${response.canonical}>; rel="canonical"` },
+            {
+              type: 'setHeader',
+              name: 'Link',
+              value: `<${encodeURI(`${publicUrl}${response.canonical}`)}>; rel="canonical"`,
+            },
           ]),
         ),
       )
@@ -422,7 +430,11 @@ describe('handleResponse', () => {
           { type: 'setStatus', status: Status.OK },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, private' },
           { type: 'setHeader', name: 'Vary', value: 'Cookie' },
-          { type: 'setHeader', name: 'Link', value: `<${response.canonical}>; rel="canonical"` },
+          {
+            type: 'setHeader',
+            name: 'Link',
+            value: `<${encodeURI(`${publicUrl}${response.canonical}`)}>; rel="canonical"`,
+          },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: page.toString() },
         ]),
@@ -461,7 +473,11 @@ describe('handleResponse', () => {
             { type: 'setStatus', status: Status.OK },
             { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, public' },
             { type: 'setHeader', name: 'Vary', value: 'Cookie' },
-            { type: 'setHeader', name: 'Link', value: `<${response.canonical}>; rel="canonical"` },
+            {
+              type: 'setHeader',
+              name: 'Link',
+              value: `<${encodeURI(`${publicUrl}${response.canonical}`)}>; rel="canonical"`,
+            },
             { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
             { type: 'setBody', body: page.toString() },
           ]),

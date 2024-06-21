@@ -626,6 +626,7 @@ describe('connectSlackError', () => {
       _.connectSlackError('access_denied')({
         getUser: () => M.fromEither(user),
         getUserOnboarding: () => TE.right(userOnboarding),
+        publicUrl: new URL('http://example.com'),
         templatePage,
       }),
       connection,
@@ -662,6 +663,7 @@ describe('connectSlackError', () => {
       _.connectSlackError(error)({
         getUser: () => M.fromEither(user),
         getUserOnboarding: () => TE.right(userOnboarding),
+        publicUrl: new URL('http://example.com'),
         templatePage,
       }),
       connection,
