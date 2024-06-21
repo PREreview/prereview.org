@@ -58,7 +58,7 @@ const server = app({
   avatarStore: new Keyv({ namespace: 'avatar-store', store: keyvStore }),
   canConnectOrcidProfile: () => true,
   canRequestReviews: () => true,
-  canSeeGatesLogo: env.CAN_SEE_GATES_LOGO,
+  canSeeGatesLogo: true,
   canUploadAvatar: () => true,
   canUseSearchQueries: () => true,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
