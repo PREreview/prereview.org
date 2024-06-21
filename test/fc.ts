@@ -234,7 +234,12 @@ export const pageResponse = ({
 } = {}): fc.Arbitrary<PageResponse> =>
   fc.record({
     _tag: constant('PageResponse'),
-    canonical: canonical ?? fc.option(fc.string(), { nil: undefined }),
+    canonical:
+      canonical ??
+      fc.option(
+        url().map(url => url.pathname),
+        { nil: undefined },
+      ),
     current: fc.option(
       constantFrom(
         'about-us',
@@ -309,7 +314,7 @@ export const streamlinePageResponse = ({
 export const twoUpPageResponse = (): fc.Arbitrary<TwoUpPageResponse> =>
   fc.record({
     _tag: constant('TwoUpPageResponse'),
-    canonical: fc.string(),
+    canonical: url().map(url => url.pathname),
     title: plainText(),
     description: fc.oneof(plainText(), constant(undefined)),
     h1: html(),

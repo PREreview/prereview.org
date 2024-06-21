@@ -183,7 +183,9 @@ export const handlePageResponse = ({
       RM.rightReader(
         match(response.canonical)
           .with(P.string, canonical =>
-            R.asks(({ publicUrl }: PublicUrlEnv) => new URL(encodeURI(canonical), publicUrl).href),
+            R.asks(
+              ({ publicUrl }: PublicUrlEnv) => new URL(encodeURI(canonical).replace(/^([^/])/, '/$1'), publicUrl).href,
+            ),
           )
           .with(undefined, R.of)
           .exhaustive(),
@@ -268,7 +270,10 @@ const handleTwoUpPageResponse = ({
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
     RM.apSW(
       'canonical',
-      RM.asks(({ publicUrl }: PublicUrlEnv) => new URL(encodeURI(response.canonical), publicUrl).href),
+      RM.asks(
+        ({ publicUrl }: PublicUrlEnv) =>
+          new URL(encodeURI(response.canonical).replace(/^([^/])/, '/$1'), publicUrl).href,
+      ),
     ),
     RM.bindW(
       'body',

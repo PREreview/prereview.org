@@ -160,7 +160,7 @@ describe('handleResponse', () => {
             {
               type: 'setHeader',
               name: 'Link',
-              value: `<${encodeURI(`${publicUrl}${response.canonical}`)}>; rel="canonical"`,
+              value: `<${encodeURI(`${publicUrl.origin}/${response.canonical}`)}>; rel="canonical"`,
             },
           ]),
         ),
@@ -345,7 +345,7 @@ describe('handleResponse', () => {
             {
               type: 'setHeader',
               name: 'Link',
-              value: `<${encodeURI(`${publicUrl}${response.canonical}`)}>; rel="canonical"`,
+              value: `<${encodeURI(`${publicUrl.origin}/${response.canonical}`)}>; rel="canonical"`,
             },
           ]),
         ),
@@ -433,7 +433,7 @@ describe('handleResponse', () => {
           {
             type: 'setHeader',
             name: 'Link',
-            value: `<${encodeURI(`${publicUrl}${response.canonical}`)}>; rel="canonical"`,
+            value: `<${encodeURI(`${publicUrl.origin}${response.canonical}`)}>; rel="canonical"`,
           },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: page.toString() },
@@ -476,7 +476,7 @@ describe('handleResponse', () => {
             {
               type: 'setHeader',
               name: 'Link',
-              value: `<${encodeURI(`${publicUrl}${response.canonical}`)}>; rel="canonical"`,
+              value: `<${encodeURI(`${publicUrl.origin}${response.canonical}`)}>; rel="canonical"`,
             },
             { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
             { type: 'setBody', body: page.toString() },
