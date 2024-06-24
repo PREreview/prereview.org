@@ -632,6 +632,10 @@ h6 {
     & li {
       margin-block-start: 0;
     }
+
+    :--expander-button + & {
+      justify-content: flex-end;
+    }
   }
 
   fieldset > & {
