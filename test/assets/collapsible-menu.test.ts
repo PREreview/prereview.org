@@ -47,3 +47,44 @@ describe('when the screen is small', () => {
     expect(document.getElementById('nav')).to.have.attribute('hidden')
   })
 })
+
+describe('when the screen goes from large to small', () => {
+  it('collapses the menu', async () => {
+    await setViewport({ width: 640, height: 700 })
+
+    const element = defineCE(class extends _.CollapsibleMenu {})
+    const collapsibleMenu = await fixture<_.CollapsibleMenu>(
+      `<${element}>
+        <nav id="nav">
+          <ul><li><a href="#">Item</a></li></ul>
+        </nav>
+      </${element}>`,
+    )
+
+    await setViewport({ width: 639, height: 700 })
+
+    expect(collapsibleMenu.querySelector('button')).to.be.visible
+    expect(collapsibleMenu.querySelector('button')).to.have.attribute('aria-expanded', 'false')
+    expect(document.getElementById('nav')).to.have.attribute('hidden')
+  })
+})
+
+describe('when the screen goes from small to large', () => {
+  it('collapses the menu', async () => {
+    await setViewport({ width: 639, height: 700 })
+
+    const element = defineCE(class extends _.CollapsibleMenu {})
+    const collapsibleMenu = await fixture<_.CollapsibleMenu>(
+      `<${element}>
+        <nav id="nav">
+          <ul><li><a href="#">Item</a></li></ul>
+        </nav>
+      </${element}>`,
+    )
+
+    await setViewport({ width: 640, height: 700 })
+
+    expect(collapsibleMenu.querySelector('button')).not.to.be.visible
+    expect(document.getElementById('nav')).not.to.have.attribute('hidden')
+  })
+})

@@ -2,10 +2,6 @@ export class CollapsibleMenu extends HTMLElement {
   static element = 'collapsible-menu' as const
 
   connectedCallback() {
-    if (window.matchMedia('(min-width: 40em)').matches) {
-      return
-    }
-
     const nav = this.firstElementChild
 
     if (!(nav instanceof HTMLElement) || nav.localName !== 'nav') {
@@ -27,8 +23,17 @@ export class CollapsibleMenu extends HTMLElement {
       nav.hidden = button.getAttribute('aria-expanded') === 'false'
     })
 
+    const onSizeChange = ({ matches }: Pick<MediaQueryList, 'matches'>) => {
+      button.hidden = matches
+      nav.hidden = matches ? false : button.getAttribute('aria-expanded') === 'false'
+    }
+
+    const isSmallerScreen = window.matchMedia('(min-width: 40em)')
+
+    onSizeChange(isSmallerScreen)
+    isSmallerScreen.addEventListener('change', onSizeChange)
+
     this.prepend(button)
-    nav.hidden = true
   }
 }
 

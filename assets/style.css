@@ -439,7 +439,7 @@ nav {
     margin-block-start: var(--space-m);
   }
 
-  :--expander-button + & {
+  :--expander-button:not([hidden]) + & {
     flex-basis: 100%;
   }
 }
@@ -633,7 +633,7 @@ h6 {
       margin-block-start: 0;
     }
 
-    :--expander-button + & {
+    :--expander-button:not([hidden]) + & {
       justify-content: flex-end;
     }
   }
