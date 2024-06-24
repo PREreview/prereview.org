@@ -12,7 +12,10 @@
 @import url('space.css');
 @import url('step.css');
 
-@custom-selector :--button button:not([aria-pressed]), [role='button']:not([aria-pressed]), .button;
+@custom-selector :--button
+  button:not([aria-pressed], [aria-expanded]),
+  [role='button']:not([aria-pressed], [aria-expanded]),
+  .button;
 @custom-selector :--heading h1, h2, h3, h4, h5, h6;
 @custom-selector :--input [type='text'], :--textarea;
 @custom-selector :--list ol, ul;
