@@ -67,7 +67,7 @@ export interface Page {
     | 'review-requests'
     | 'reviews'
     | 'trainings'
-  readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
+  readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'collapsible-menu.js' | 'skip-link.js'>>
   readonly user?: User
   readonly userOnboarding?: UserOnboarding
 }
@@ -89,7 +89,12 @@ export function page({
   user,
   userOnboarding,
 }: Page): R.Reader<FathomEnv & PhaseEnv & PublicUrlEnv, Html> {
-  const scripts = pipe(js, RA.uniq(stringEq()), RA.concatW(skipLinks.length > 0 ? ['skip-link.js' as const] : []))
+  const scripts = pipe(
+    js,
+    RA.uniq(stringEq()),
+    RA.concatW(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
+    RA.concatW(type !== 'streamline' ? ['collapsible-menu.js' as const] : []),
+  )
 
   return R.asks(
     ({ fathomId, phase, publicUrl }) => html`
@@ -209,52 +214,54 @@ export function page({
 
               ${type !== 'streamline'
                 ? html`
-                    <nav>
-                      <ul>
-                        <li>
-                          <a
-                            href="${format(reviewsMatch.formatter, { page: 1 })}"
-                            ${current === 'reviews' ? html`aria-current="page"` : ''}
-                            >Reviews</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="${format(reviewRequestsMatch.formatter, { page: 1 })}"
-                            ${current === 'review-requests' ? html`aria-current="page"` : ''}
-                            >Requests</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="${format(trainingsMatch.formatter, {})}"
-                            ${current === 'trainings' ? html`aria-current="page"` : ''}
-                            >Trainings</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="${format(liveReviewsMatch.formatter, {})}"
-                            ${current === 'live-reviews' ? html`aria-current="page"` : ''}
-                            >Live Reviews</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="${format(resourcesMatch.formatter, {})}"
-                            ${current === 'resources' ? html`aria-current="page"` : ''}
-                            >Resources</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="${format(clubsMatch.formatter, {})}"
-                            ${current === 'clubs' ? html`aria-current="page"` : ''}
-                            >Clubs</a
-                          >
-                        </li>
-                      </ul>
-                    </nav>
+                    <collapsible-menu>
+                      <nav>
+                        <ul>
+                          <li>
+                            <a
+                              href="${format(reviewsMatch.formatter, { page: 1 })}"
+                              ${current === 'reviews' ? html`aria-current="page"` : ''}
+                              >Reviews</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="${format(reviewRequestsMatch.formatter, { page: 1 })}"
+                              ${current === 'review-requests' ? html`aria-current="page"` : ''}
+                              >Requests</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="${format(trainingsMatch.formatter, {})}"
+                              ${current === 'trainings' ? html`aria-current="page"` : ''}
+                              >Trainings</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="${format(liveReviewsMatch.formatter, {})}"
+                              ${current === 'live-reviews' ? html`aria-current="page"` : ''}
+                              >Live Reviews</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="${format(resourcesMatch.formatter, {})}"
+                              ${current === 'resources' ? html`aria-current="page"` : ''}
+                              >Resources</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="${format(clubsMatch.formatter, {})}"
+                              ${current === 'clubs' ? html`aria-current="page"` : ''}
+                              >Clubs</a
+                            >
+                          </li>
+                        </ul>
+                      </nav>
+                    </collapsible-menu>
                   `
                 : ''}
             </div>

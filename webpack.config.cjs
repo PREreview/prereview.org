@@ -16,6 +16,7 @@ module.exports = (env, argv) => ({
   },
   devtool: argv.mode === 'development' ? 'source-map' : false,
   entry: {
+    'collapsible-menu': path.resolve('assets', 'collapsible-menu.ts'),
     'conditional-inputs': path.resolve('assets', 'conditional-inputs.ts'),
     'editor-toolbar': path.resolve('assets', 'editor-toolbar.ts'),
     'error-summary': path.resolve('assets', 'error-summary.ts'),

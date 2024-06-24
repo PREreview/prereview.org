@@ -415,6 +415,10 @@ img {
   }
 }
 
+collapsible-menu {
+  display: contents;
+}
+
 nav {
   .contents > & {
     display: flex;
@@ -427,7 +431,7 @@ nav {
     margin-block-start: var(--space-2xs);
   }
 
-  :not(.contents, .header, .navigation, section) > & {
+  :not(.contents, .header, .navigation, section, collapsible-menu) > & {
     margin-block-start: var(--space-m);
   }
 }

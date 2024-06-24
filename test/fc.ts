@@ -265,7 +265,10 @@ export const pageResponse = ({
     description: fc.option(plainText(), { nil: undefined }),
     main: html(),
     js: fc.array(
-      js().filter((js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'skip-link.js'> => js !== 'skip-link.js'),
+      js().filter(
+        (js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'collapsible-menu.js' | 'skip-link.js'> =>
+          !['collapsible-menu.js', 'skip-link.js'].includes(js),
+      ),
     ),
   })
 
@@ -306,7 +309,10 @@ export const streamlinePageResponse = ({
     description: fc.option(plainText(), { nil: undefined }),
     main: html(),
     js: fc.array(
-      js().filter((js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'skip-link.js'> => js !== 'skip-link.js'),
+      js().filter(
+        (js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'collapsible-menu.js' | 'skip-link.js'> =>
+          !['collapsible-menu.js', 'skip-link.js'].includes(js),
+      ),
     ),
     allowRobots: allowRobots ?? fc.option(constant(false), { nil: undefined }),
   })
