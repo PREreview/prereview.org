@@ -750,6 +750,10 @@ test('can view an older review', async ({ fetch, page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
+  await page.addLocatorHandler(page.getByRole('button', { name: 'Menu', expanded: false }), async () => {
+    await page.getByRole('button', { name: 'Menu' }).click()
+  })
+
   await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent PREreviews')
   await expect(page.getByRole('link', { name: 'Reviews', exact: true })).toHaveAttribute('aria-current', 'page')

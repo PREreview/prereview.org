@@ -8,6 +8,10 @@ test('can read about trainings', async ({ fetch, page }) => {
     { body: { pages: [{ html: '<p>Some information about trainings.</p>' }] } },
   )
 
+  await page.addLocatorHandler(page.getByRole('button', { name: 'Menu', expanded: false }), async () => {
+    await page.getByRole('button', { name: 'Menu' }).click()
+  })
+
   await page.getByRole('link', { name: 'Trainings' }).click()
 
   await expect(page.getByRole('main')).toContainText('Some information about trainings.')

@@ -370,6 +370,10 @@ test('can view an older request', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'See all requests' }).click()
 
+  await page.addLocatorHandler(page.getByRole('button', { name: 'Menu', expanded: false }), async () => {
+    await page.getByRole('button', { name: 'Menu' }).click()
+  })
+
   await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent review requests')
   await expect(page.getByRole('link', { name: 'Requests', exact: true })).toHaveAttribute('aria-current', 'page')
