@@ -22,6 +22,7 @@
 @custom-selector :--scroller [role='region'][aria-labelledby][tabindex];
 @custom-selector :--textarea textarea, [contenteditable];
 @custom-selector :--toggle-button button[aria-pressed], [role='button'][aria-pressed];
+@custom-selector :--expander-button button[aria-expanded], [role='button'][aria-expanded];
 
 .visually-hidden:not(:focus, :active) {
   position: absolute;
@@ -436,6 +437,10 @@ nav {
 
   :not(.contents, .header, .navigation, section, collapsible-menu) > & {
     margin-block-start: var(--space-m);
+  }
+
+  :--expander-button + & {
+    flex-basis: 100%;
   }
 }
 
@@ -1232,6 +1237,58 @@ label {
   @media screen {
     @media (forced-colors: active) {
       border-color: ButtonBorder;
+    }
+  }
+}
+
+:--expander-button {
+  block-size: var(--space-l);
+  padding: var(--space-4xs-3xs);
+  padding-inline: 0 0.4ch;
+  border: var(--width-divider) solid transparent;
+  background-color: transparent;
+  color: var(--color-text);
+  font-size: var(--step-0);
+  user-select: none;
+  touch-action: manipulation;
+
+  @media screen {
+    @media (forced-colors: active) {
+      border-color: ButtonBorder;
+      background-color: ButtonFace;
+      color: ButtonText;
+    }
+  }
+
+  &:focus-visible {
+    outline-offset: 0;
+  }
+
+  &::before {
+    content: '';
+    margin-inline-end: 0.4ch;
+    padding-inline-end: 1.5em;
+    background-color: currentcolor;
+    mask-repeat: no-repeat;
+    mask-origin: content-box;
+    mask-position: left center;
+    mask-size: 1.5em;
+
+    @media (forced-colors: active) {
+      forced-color-adjust: none;
+      background-color: ButtonText;
+    }
+  }
+
+  &:is([aria-expanded='false']) {
+    &::before {
+      mask-image: url('remixicon/icons/Arrows/arrow-down-s-line.svg');
+    }
+  }
+
+  &:is([aria-expanded='true']) {
+    &::before {
+      mask-image: url('remixicon/icons/Arrows/arrow-up-s-line.svg');
     }
   }
 }
