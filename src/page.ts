@@ -359,14 +359,14 @@ export function page({
                       <span class="visually-hidden">on GitHub</span>
                     </li>
                   </ul>
+
+                  <div>
+                    PREreviews are available in our
+                    <a href="https://zenodo.org/communities/prereview-reviews/records">Zenodo&nbsp;Community</a>
+                    and the <a href="https://developers.zenodo.org/">Zenodo&nbsp;API</a>.
+                  </div>
                 `
               : ''}
-
-            <div>
-              PREreviews are available in our
-              <a href="https://zenodo.org/communities/prereview-reviews/records">Zenodo&nbsp;Community</a>
-              and the <a href="https://developers.zenodo.org/">Zenodo&nbsp;API</a>.
-            </div>
 
             <small>
               All content is available under a Creative&nbsp;Commons
