@@ -360,7 +360,7 @@ export function page({
                     </li>
                   </ul>
 
-                  <div>
+                  <div class="small">
                     PREreviews are available in our
                     <a href="https://zenodo.org/communities/prereview-reviews/records">Zenodo&nbsp;Community</a>
                     and the <a href="https://developers.zenodo.org/">Zenodo&nbsp;API</a>.
