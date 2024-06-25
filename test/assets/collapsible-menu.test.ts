@@ -1,4 +1,4 @@
-import { defineCE, expect, fixture } from '@open-wc/testing'
+import { defineCE, expect, fixture, waitUntil } from '@open-wc/testing'
 import { setViewport } from '@web/test-runner-commands'
 import * as _ from '../../assets/collapsible-menu.js'
 
@@ -63,7 +63,8 @@ describe('when the screen goes from large to small', () => {
 
     await setViewport({ width: 639, height: 700 })
 
-    expect(collapsibleMenu.querySelector('button')).to.be.visible
+    await waitUntil(() => !(collapsibleMenu.querySelector('button')?.hasAttribute('hidden') ?? false))
+
     expect(collapsibleMenu.querySelector('button')).to.have.attribute('aria-expanded', 'false')
     expect(document.getElementById('nav')).to.have.attribute('hidden')
   })
@@ -84,7 +85,8 @@ describe('when the screen goes from small to large', () => {
 
     await setViewport({ width: 640, height: 700 })
 
-    expect(collapsibleMenu.querySelector('button')).not.to.be.visible
+    await waitUntil(() => collapsibleMenu.querySelector('button')?.hasAttribute('hidden') ?? false)
+
     expect(document.getElementById('nav')).not.to.have.attribute('hidden')
   })
 })
