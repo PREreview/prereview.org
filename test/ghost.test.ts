@@ -29,6 +29,36 @@ describe('getPage', () => {
   })
 
   test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.stringOf(fc.alphanumeric(), { minLength: 1 })])(
+    'when the page contains links',
+    async (id, key) => {
+      const actual = await _.getPage(id)({
+        fetch: fetchMock.sandbox().getOnce(
+          { url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } },
+          {
+            body: {
+              pages: [
+                {
+                  html: '<a href="https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN">Start a Club!</a><a href="https://prereview.org/clubs/asapbio-cancer-biology" rel="noopener noreferrer">ASAPbio Cancer Biology Crowd</a><a href="https://prereview.org/clubs/asapbio-metabolism" rel="noopener noreferrer">ASAPbio Metabolism Crowd</a><a href="http://prereview.org">PREreview</a>',
+                },
+              ],
+            },
+          },
+        ),
+        ghostApi: { key },
+        sleep: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual(
+        E.right(
+          rawHtml(
+            '<a href="https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN">Start a Club!</a><a href="/clubs/asapbio-cancer-biology">ASAPbio Cancer Biology Crowd</a><a href="/clubs/asapbio-metabolism">ASAPbio Metabolism Crowd</a><a href="/">PREreview</a>',
+          ),
+        ),
+      )
+    },
+  )
+
+  test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.stringOf(fc.alphanumeric(), { minLength: 1 })])(
     'when the page contains an image',
     async (id, key) => {
       const actual = await _.getPage(id)({

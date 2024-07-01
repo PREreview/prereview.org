@@ -6,11 +6,10 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
 import { type SleepEnv, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
-import { type Html, sanitizeHtml } from './html.js'
+import { type Html, rawHtml, sanitizeHtml } from './html.js'
 
 export interface GhostApiEnv {
   ghostApi: {
@@ -59,7 +58,8 @@ export const getPage: (
       match(error)
         .with({ status: Status.NotFound }, () => 'not-found' as const)
         .otherwise(() => 'unavailable' as const),
-    get('pages.[0].html'),
+    response =>
+      rawHtml(response.pages[0].html.toString().replaceAll(/href="https?:\/\/prereview\.org\/?(.*?)"/g, 'href="/$1"')),
   ),
 )
 
