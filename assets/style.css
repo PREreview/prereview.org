@@ -2653,3 +2653,13 @@ skip-link {
     object-fit: cover;
   }
 }
+
+.club-logo {
+  inline-size: 15em;
+  max-inline-size: 25vi;
+
+  @media (width >= 50em) {
+    margin-inline-start: var(--space-xs);
+    float: inline-end;
+  }
+}

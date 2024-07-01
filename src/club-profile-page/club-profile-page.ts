@@ -6,6 +6,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import type { Club } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
+import * as assets from '../manifest.json'
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -19,6 +20,9 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
     main: html`
       <h1>${club.name}</h1>
 
+      ${id.startsWith('asapbio-')
+        ? html` <img src="${assets['asapbio.svg']}" width="1851" height="308" alt="ASAPbio" class="club-logo" /> `
+        : ''}
       ${club.description}
 
       <dl>
