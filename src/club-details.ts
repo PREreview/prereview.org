@@ -50,9 +50,6 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Arpita Ghosh', orcid: '0009-0003-2106-3270' as Orcid },
       { name: 'Garima Jain', orcid: '0000-0002-8079-9611' as Orcid },
     ],
-    joinLink: new URL(
-      'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
-    ),
   },
   'asapbio-cell-biology': {
     name: 'ASAPbio Cell Biology Crowd',
@@ -112,9 +109,6 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Pablo Ranea-Robles', orcid: '0000-0001-6478-3815' as Orcid },
       { name: 'Jonathon Coates', orcid: '0000-0001-9039-9219' as Orcid },
     ],
-    joinLink: new URL(
-      'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
-    ),
   },
   'asapbio-neurobiology': {
     name: 'ASAPbio Neurobiology Crowd',
@@ -126,9 +120,6 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Anna Oliveras', orcid: '0000-0002-5880-5245' as Orcid },
       { name: 'Ryan John Cubero', orcid: '0000-0003-0002-1867' as Orcid },
     ],
-    joinLink: new URL(
-      'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
-    ),
   },
   'biomass-biocatalysis': {
     name: 'Biomass and Biocatalysis Group',
