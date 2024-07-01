@@ -24,7 +24,7 @@ describe('getClubByName', () => {
 
 describe('isLeadFor', () => {
   test.each([
-    ['Jessica Polka', '0000-0001-6610-9293' as Orcid, ['asapbio-meta-research']],
+    ['Stephen Gabrielson', '0000-0001-9420-4466' as Orcid, ['asapbio-meta-research']],
     ['Jonathon Coates', '0000-0001-9039-9219' as Orcid, ['asapbio-metabolism']],
   ])('when a lead (%s)', (_name, orcid, expected) => {
     const actual = _.isLeadFor(orcid)

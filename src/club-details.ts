@@ -82,12 +82,11 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       </p>
     `,
     leads: [
+      { name: 'Jay Patel', orcid: '0000-0003-1040-3607' as Orcid },
       { name: 'Stephen Gabrielson', orcid: '0000-0001-9420-4466' as Orcid },
-      { name: 'Jessica Polka', orcid: '0000-0001-6610-9293' as Orcid },
+      { name: 'Martyn Rittman', orcid: '0000-0001-9327-3734' as Orcid },
     ],
-    joinLink: new URL(
-      'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
-    ),
+    joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
   'asapbio-microbiology': {
     name: 'ASAPbio Microbiology Crowd',
