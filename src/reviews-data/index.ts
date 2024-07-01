@@ -53,17 +53,15 @@ const PrereviewE = E.struct({
   server: StringE,
   createdAt: PlainDateE,
   doi: DoiE,
-  author: StringE,
-  authorType: StringE,
-}) satisfies E.Encoder<JsonRecord, FlatPrereview>
+  authors: ReadonlyArrayE(E.struct({ author: StringE, authorType: StringE })),
+}) satisfies E.Encoder<JsonRecord, TransformedPrereview>
 
-interface FlatPrereview {
+interface TransformedPrereview {
   preprint: IndeterminatePreprintId
   server: string
   createdAt: PlainDate
   doi: Doi
-  author: string
-  authorType: 'public' | 'pseudonym'
+  authors: ReadonlyArray<{ author: string; authorType: 'public' | 'pseudonym' }>
 }
 
 const PrereviewsE = ReadonlyArrayE(PrereviewE)
@@ -76,24 +74,25 @@ const isAllowed = pipe(
   RM.bimap(() => 'forbidden' as const, constVoid),
 )
 
-const toFlatEntry = (prereview: Prereview): ReadonlyArray<FlatPrereview> =>
-  pipe(
+const transform = (prereview: Prereview): TransformedPrereview => ({
+  preprint: prereview.preprint,
+  server: prereview.preprint.type,
+  createdAt: prereview.createdAt,
+  doi: prereview.doi,
+  authors: pipe(
     prereview.authors,
     RA.filter(author => author.orcid !== undefined || isPseudonym(author.name)),
     RA.map(author => ({
-      preprint: prereview.preprint,
-      server: prereview.preprint.type,
-      createdAt: prereview.createdAt,
-      doi: prereview.doi,
       author: author.orcid ?? author.name,
       authorType: author.orcid === undefined ? 'pseudonym' : 'public',
     })),
-  )
+  ),
+})
 
 export const reviewsData = pipe(
   isAllowed,
   RM.chainReaderTaskEitherKW(getPrereviews),
-  RM.map(RA.chain(toFlatEntry)),
+  RM.map(RA.map(transform)),
   RM.map(PrereviewsE.encode),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainFirst(() => RM.contentType('application/json')),
