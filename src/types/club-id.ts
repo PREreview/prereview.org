@@ -4,8 +4,11 @@ import * as D from 'io-ts/lib/Decoder.js'
 
 export const clubIds = [
   'asapbio-cancer-biology',
+  'asapbio-cell-biology',
+  'asapbio-immunology',
   'asapbio-meta-research',
   'asapbio-metabolism',
+  'asapbio-microbiology',
   'asapbio-neurobiology',
   'biomass-biocatalysis',
   'biophysics-leipzig',

@@ -54,6 +54,25 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
     ),
   },
+  'asapbio-cell-biology': {
+    name: 'ASAPbio Cell Biology Crowd',
+    description: html` <p>The ASAPbio Cell Biology Crowd reviews preprints about cell and molecular biology.</p> `,
+    leads: [
+      { name: 'Arpita Ghosh', orcid: '0000-0003-0036-4376' as Orcid },
+      { name: 'Anna Oliveras', orcid: '0000-0002-5880-5245' as Orcid },
+      { name: 'Joseph Biggane', orcid: '0000-0002-7857-2450' as Orcid },
+    ],
+    joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
+  },
+  'asapbio-immunology': {
+    name: 'ASAPbio Immunology Crowd',
+    description: html` <p>The ASAPbio Immunology Crowd reviews preprints about cellular immunology.</p> `,
+    leads: [
+      { name: 'Rio Sugimura', orcid: '0000-0001-5701-3628' as Orcid },
+      { name: 'Yanyang Chen', orcid: '0000-0003-4665-9671' as Orcid },
+    ],
+    joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
+  },
   'asapbio-meta-research': {
     name: 'ASAPbio Meta-Research Crowd',
     description: html`
@@ -69,6 +88,18 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     joinLink: new URL(
       'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
     ),
+  },
+  'asapbio-microbiology': {
+    name: 'ASAPbio Microbiology Crowd',
+    description: html`
+      <p>The ASAPbio Microbiology Crowd reviews preprints about microorganisms, fungi and microbiomes.</p>
+    `,
+    leads: [
+      { name: 'Corrado Nai', orcid: '0000-0002-6232-6634' as Orcid },
+      { name: 'Aneth David', orcid: '0000-0002-1633-297X' as Orcid },
+      { name: 'Femi Arogundade', orcid: '0000-0002-9222-1817' as Orcid },
+    ],
+    joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
   'asapbio-metabolism': {
     name: 'ASAPbio Metabolism Crowd',
