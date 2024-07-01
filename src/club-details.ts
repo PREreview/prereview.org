@@ -58,7 +58,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     name: 'ASAPbio Cell Biology Crowd',
     description: html` <p>The ASAPbio Cell Biology Crowd reviews preprints about cell and molecular biology.</p> `,
     leads: [
-      { name: 'Arpita Ghosh', orcid: '0000-0003-0036-4376' as Orcid },
+      { name: 'Arpita Ghosh', orcid: '0009-0003-2106-3270' as Orcid },
       { name: 'Anna Oliveras', orcid: '0000-0002-5880-5245' as Orcid },
       { name: 'Joseph Biggane', orcid: '0000-0002-7857-2450' as Orcid },
     ],
