@@ -111,7 +111,7 @@ export const getPrereviewsForSciety = pipe(
     flow(
       records => Math.ceil(records.hits.total / 100),
       RNEA.makeBy(i => getPrereviewsPageForSciety(i + 1)),
-      RTE.sequenceSeqArray,
+      RTE.sequenceArray,
       RTE.map(RA.flatten),
     ),
   ),
