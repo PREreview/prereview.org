@@ -47,7 +47,14 @@ import { getClubByName, getClubName } from './club-details.js'
 import { type SleepEnv, reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
 import { plainText, sanitizeHtml } from './html.js'
 import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.js'
-import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint.js'
+import {
+  type GetPreprintEnv,
+  type GetPreprintTitleEnv,
+  type ResolvePreprintIdEnv,
+  getPreprint,
+  getPreprintTitle,
+  resolvePreprintId,
+} from './preprint.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import type { Prereview } from './review-page/index.js'
 import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.js'
@@ -631,10 +638,14 @@ function recordToPreprintPrereview(
 
 function recordToScietyPrereview(
   record: Record,
-): RTE.ReaderTaskEither<L.LoggerEnv, 'no reviewed preprint', ScietyPrereview & ReviewsDataPrereview> {
+): RTE.ReaderTaskEither<
+  L.LoggerEnv & ResolvePreprintIdEnv,
+  'no reviewed preprint' | 'not-a-preprint' | 'not-found' | 'unavailable',
+  ScietyPrereview & ReviewsDataPrereview
+> {
   return pipe(
     RTE.of(record),
-    RTE.bindW('preprintId', getReviewedPreprintId),
+    RTE.bindW('preprintId', flow(getReviewedPreprintId, RTE.chainW(resolvePreprintId))),
     RTE.map(review => ({
       preprint: review.preprintId,
       createdAt: toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
