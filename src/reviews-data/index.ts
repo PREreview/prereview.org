@@ -9,6 +9,7 @@ import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
+import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import safeStableStringify from 'safe-stable-stringify'
 import { P, match } from 'ts-pattern'
@@ -23,6 +24,7 @@ export interface Prereview {
   createdAt: PlainDate
   doi: Doi
   authors: ReadonlyArray<{ name: string; orcid?: Orcid }>
+  language?: LanguageCode
 }
 
 export interface GetPrereviewsEnv {
@@ -48,13 +50,20 @@ const PreprintIdE = {
       .exhaustive(),
 } satisfies E.Encoder<string, IndeterminatePreprintId>
 
-const PrereviewE = E.struct({
-  preprint: PreprintIdE,
-  server: StringE,
-  createdAt: PlainDateE,
-  doi: DoiE,
-  authors: ReadonlyArrayE(E.struct({ author: StringE, authorType: StringE })),
-}) satisfies E.Encoder<JsonRecord, TransformedPrereview>
+const PrereviewE = pipe(
+  E.struct({
+    preprint: PreprintIdE,
+    server: StringE,
+    createdAt: PlainDateE,
+    doi: DoiE,
+    authors: ReadonlyArrayE(E.struct({ author: StringE, authorType: StringE })),
+  }),
+  E.intersect(
+    E.partial({
+      language: StringE,
+    }),
+  ),
+) satisfies E.Encoder<JsonRecord, TransformedPrereview>
 
 interface TransformedPrereview {
   preprint: IndeterminatePreprintId
@@ -62,6 +71,7 @@ interface TransformedPrereview {
   createdAt: PlainDate
   doi: Doi
   authors: ReadonlyArray<{ author: string; authorType: 'public' | 'pseudonym' }>
+  language?: LanguageCode
 }
 
 const PrereviewsE = ReadonlyArrayE(PrereviewE)
@@ -87,6 +97,7 @@ const transform = (prereview: Prereview): TransformedPrereview => ({
       authorType: author.orcid === undefined ? 'pseudonym' : 'public',
     })),
   ),
+  language: prereview.language,
 })
 
 export const reviewsData = pipe(

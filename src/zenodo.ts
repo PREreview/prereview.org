@@ -50,6 +50,7 @@ import type { Prereview as PreprintPrereview } from './preprint-reviews-page/ind
 import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import type { Prereview } from './review-page/index.js'
+import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.js'
 import type { RecentPrereviews } from './reviews-page/index.js'
 import { reviewMatch } from './routes.js'
 import type { Prereview as ScietyPrereview } from './sciety-list/index.js'
@@ -630,7 +631,7 @@ function recordToPreprintPrereview(
 
 function recordToScietyPrereview(
   record: Record,
-): RTE.ReaderTaskEither<L.LoggerEnv, 'no reviewed preprint', ScietyPrereview> {
+): RTE.ReaderTaskEither<L.LoggerEnv, 'no reviewed preprint', ScietyPrereview & ReviewsDataPrereview> {
   return pipe(
     RTE.of(record),
     RTE.bindW('preprintId', getReviewedPreprintId),
@@ -639,6 +640,11 @@ function recordToScietyPrereview(
       createdAt: toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
       doi: review.metadata.doi,
       authors: review.metadata.creators,
+      language: pipe(
+        O.fromNullable(review.metadata.language),
+        O.filter(iso6393Validate),
+        O.match(() => undefined, iso6393To1),
+      ),
     })),
   )
 }
