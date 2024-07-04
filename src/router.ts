@@ -88,6 +88,7 @@ import {
   createPrereviewOnLegacyPrereview,
   getPseudonymFromLegacyPrereview,
   getRapidPreviewsFromLegacyPrereview,
+  getUsersFromLegacyPrereview,
   isLegacyCompatiblePreprint,
   isLegacyCompatiblePrereview,
 } from './legacy-prereview.js'
@@ -1950,6 +1951,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       usersDataMatch.parser,
       P.map(() => usersData),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getUsers: withEnv(() => getUsersFromLegacyPrereview(), env),
+        })),
+      ),
     ),
     pipe(
       reviewsDataMatch.parser,

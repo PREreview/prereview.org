@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
@@ -40,6 +41,30 @@ const JsonD = {
 }
 
 const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
+
+const InstantD = pipe(
+  D.string,
+  D.parse(string =>
+    E.tryCatch(
+      () => Temporal.Instant.from(string),
+      () => D.error(string, 'Instant'),
+    ),
+  ),
+)
+
+const LegacyPrereviewUsersD = pipe(
+  JsonD,
+  D.compose(
+    D.struct({
+      data: D.array(
+        D.struct({
+          orcid: OrcidD,
+          createdAt: InstantD,
+        }),
+      ),
+    }),
+  ),
+)
 
 const LegacyPrereviewUserD = pipe(
   JsonD,
@@ -237,6 +262,23 @@ export const getPseudonymFromLegacyPrereview = (user: { orcid: Orcid; name: stri
       match(error)
         .with({ status: Status.NotFound }, () => createUserOnLegacyPrereview(user))
         .otherwise(() => RTE.left('unavailable' as const)),
+    ),
+  )
+
+export const getUsersFromLegacyPrereview = () =>
+  pipe(
+    RTE.fromReader(legacyPrereviewUrl('users')),
+    RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
+    RTE.chainW(F.send),
+    RTE.local(timeoutRequest(5000)),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUsersD)),
+    RTE.bimap(
+      () => 'unavailable' as const,
+      flow(
+        response => response.data,
+        RA.map(user => ({ orcid: user.orcid, timestamp: user.createdAt })),
+      ),
     ),
   )
 
