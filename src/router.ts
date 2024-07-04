@@ -217,6 +217,7 @@ import {
   reviewsMatch,
   scietyListMatch,
   trainingsMatch,
+  usersDataMatch,
   verifyContactEmailAddressMatch,
   writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
@@ -259,6 +260,7 @@ import type { PreprintId } from './types/preprint-id.js'
 import { type GenerateUuidEnv, generateUuid } from './types/uuid.js'
 import type { GetUserOnboardingEnv } from './user-onboarding.js'
 import { type GetUserEnv, type User, maybeGetUser } from './user.js'
+import { usersData } from './users-data/index.js'
 import {
   type FormStoreEnv,
   type NewPrereview,
@@ -1944,6 +1946,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ),
         })),
       ),
+    ),
+    pipe(
+      usersDataMatch.parser,
+      P.map(() => usersData),
     ),
     pipe(
       reviewsDataMatch.parser,
