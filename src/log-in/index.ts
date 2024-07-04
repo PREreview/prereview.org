@@ -5,7 +5,7 @@ import * as O from 'fp-ts/lib/Option.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as TE from 'fp-ts/lib/TaskEither.js'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { constant, flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
 import { type OAuthEnv, exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
@@ -130,7 +130,14 @@ export const authenticate = flow(
   ),
   flow(
     RM.ichainFirstW(flow(get('referer'), RM.redirect)),
-    RM.ichainFirstW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), newSessionForUser, storeSession)),
+    RM.ichainFirstW(
+      flow(
+        ({ user, pseudonym }) => ({ ...user, pseudonym }),
+        newSessionForUser,
+        storeSession,
+        orElseFirstW(RM.fromReaderIOK(error => L.errorP('Unable to store new session')({ error: error.message }))),
+      ),
+    ),
     RM.ichainW(({ referer }) =>
       referer === format(homeMatch.formatter, {}) ? RM.fromMiddleware(setFlashMessage('logged-in')) : RM.of(undefined),
     ),
@@ -175,3 +182,13 @@ const endSession = pipe(
   _endSession(),
   RM.orElseW(() => RM.right(undefined)),
 )
+
+function orElseFirstW<R2, E, I, O, M, B>(f: (e: E) => RM.ReaderMiddleware<R2, I, O, M, B>) {
+  return <R1, A>(ma: RM.ReaderMiddleware<R1, I, O, E, A>): RM.ReaderMiddleware<R2 & R1, I, O, E | M, A> =>
+    r =>
+    c =>
+      pipe(
+        ma(r)(c),
+        TE.orElseFirstW(e => f(e)(r)(c)),
+      )
+}
