@@ -119,7 +119,11 @@ module.exports = (env, argv) => ({
       new ImageMinimizerPlugin({
         minimizer: {
           implementation: ImageMinimizerPlugin.imageminMinify,
-          options: { plugins: [['svgo']] },
+          options: {
+            plugins: [
+              ['svgo', { plugins: [{ name: 'preset-default', params: { overrides: { inlineStyles: false } } }] }],
+            ],
+          },
         },
       }),
     ],
