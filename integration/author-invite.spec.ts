@@ -1,4 +1,4 @@
-import type { FetchMockSandbox } from 'fetch-mock'
+import type fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import { pipe } from 'fp-ts/lib/function.js'
@@ -265,7 +265,7 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
   },
 )
 
-const getLastMailjetEmailBody = (fetch: FetchMockSandbox) => {
+const getLastMailjetEmailBody = (fetch: fetchMock.FetchMockSandbox) => {
   return pipe(
     MailjetEmailD.decode(String(fetch.lastOptions('https://api.mailjet.com/v3.1/send')?.body)),
     E.match(
