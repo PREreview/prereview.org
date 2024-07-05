@@ -133,7 +133,7 @@
     "postcss": "^8.4.39",
     "postcss-font-display": "^0.3.0",
     "postcss-loader": "^8.1.1",
-    "postcss-preset-env": "^9.5.14",
+    "postcss-preset-env": "^9.5.15",
     "prettier": "^3.3.2",
     "prettier-plugin-sh": "^0.14.0",
     "prettier-plugin-toml": "^2.0.1",
