@@ -76,6 +76,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v6.2.0
         with:
+          context: .
           outputs: type=docker,dest=/tmp/image.tar
           cache-from: type=gha,ignore-error=true
           cache-to: type=gha,mode=max,ignore-error=true
