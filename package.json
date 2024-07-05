@@ -121,7 +121,7 @@
     "fp-ts-contrib": "^0.1.29",
     "glob": "^10.4.2",
     "image-minimizer-webpack-plugin": "^4.0.2",
-    "imagemin": "^8.0.1",
+    "imagemin": "^9.0.0",
     "imagemin-svgo": "^11.0.1",
     "iso-639-3": "^2.2.0",
     "it-all": "^1.0.6",
