@@ -26,7 +26,7 @@ const redis =
   env.REDIS_URI instanceof URL
     ? new Redis(env.REDIS_URI.href, { commandTimeout: 2 * 1000, enableAutoPipelining: true })
     : undefined
-const keyvStore = redis ? new KeyvRedis(redis) : undefined
+const createKeyvStore = () => (redis ? new KeyvRedis(redis) : undefined)
 
 redis?.on('connect', () => L.debug('Redis connected')(loggerEnv)())
 redis?.on('close', () => L.debug('Redis connection closed')(loggerEnv)())
@@ -54,8 +54,8 @@ const sendMailEnv = match(env)
 const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
-  authorInviteStore: new Keyv({ namespace: 'author-invite', store: keyvStore }),
-  avatarStore: new Keyv({ namespace: 'avatar-store', store: keyvStore }),
+  authorInviteStore: new Keyv({ namespace: 'author-invite', store: createKeyvStore() }),
+  avatarStore: new Keyv({ namespace: 'avatar-store', store: createKeyvStore() }),
   canConnectOrcidProfile: () => true,
   canRequestReviews: () => true,
   canSeeGatesLogo: true,
@@ -63,7 +63,7 @@ const server = app({
   canUseSearchQueries: () => true,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
   coarNotifyUrl: env.COAR_NOTIFY_URL,
-  contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: keyvStore }),
+  contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: createKeyvStore() }),
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: 'data/cache',
@@ -71,12 +71,12 @@ const server = app({
       'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
     },
   }),
-  formStore: new Keyv({ namespace: 'forms', store: keyvStore }),
-  careerStageStore: new Keyv({ namespace: 'career-stage', store: keyvStore }),
+  formStore: new Keyv({ namespace: 'forms', store: createKeyvStore() }),
+  careerStageStore: new Keyv({ namespace: 'career-stage', store: createKeyvStore() }),
   ghostApi: {
     key: env.GHOST_API_KEY,
   },
-  isOpenForRequestsStore: new Keyv({ namespace: 'is-open-for-requests', store: keyvStore }),
+  isOpenForRequestsStore: new Keyv({ namespace: 'is-open-for-requests', store: createKeyvStore() }),
   isUserBlocked: user => env.BLOCKED_USERS.includes(user),
   legacyPrereviewApi: {
     app: env.LEGACY_PREREVIEW_API_APP,
@@ -84,8 +84,8 @@ const server = app({
     url: env.LEGACY_PREREVIEW_URL,
     update: env.LEGACY_PREREVIEW_UPDATE,
   },
-  languagesStore: new Keyv({ namespace: 'languages', store: keyvStore }),
-  locationStore: new Keyv({ namespace: 'location', store: keyvStore }),
+  languagesStore: new Keyv({ namespace: 'languages', store: createKeyvStore() }),
+  locationStore: new Keyv({ namespace: 'location', store: createKeyvStore() }),
   ...sendMailEnv,
   orcidApiUrl: env.ORCID_API_URL,
   orcidApiToken: env.ORCID_API_READ_PUBLIC_TOKEN,
@@ -96,7 +96,7 @@ const server = app({
     revokeUrl: new URL(`${env.ORCID_URL.origin}/oauth/revoke`),
     tokenUrl: new URL(`${env.ORCID_URL.origin}/oauth/token`),
   },
-  orcidTokenStore: new Keyv({ namespace: 'orcid-token', store: keyvStore }),
+  orcidTokenStore: new Keyv({ namespace: 'orcid-token', store: createKeyvStore() }),
   phase:
     typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT !== 'undefined'
       ? {
@@ -105,12 +105,12 @@ const server = app({
         }
       : undefined,
   publicUrl: env.PUBLIC_URL,
-  researchInterestsStore: new Keyv({ namespace: 'research-interests', store: keyvStore }),
-  reviewRequestStore: new Keyv({ namespace: 'review-request', store: keyvStore }),
+  researchInterestsStore: new Keyv({ namespace: 'research-interests', store: createKeyvStore() }),
+  reviewRequestStore: new Keyv({ namespace: 'review-request', store: createKeyvStore() }),
   scietyListToken: env.SCIETY_LIST_TOKEN,
   secret: env.SECRET,
   sessionCookie: 'session',
-  sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),
+  sessionStore: new Keyv({ namespace: 'sessions', store: createKeyvStore(), ttl: 1000 * 60 * 60 * 24 * 30 }),
   slackOauth: {
     authorizeUrl: new URL('https://slack.com/oauth/v2/authorize'),
     clientId: env.SLACK_CLIENT_ID,
@@ -119,8 +119,8 @@ const server = app({
   },
   slackApiToken: env.SLACK_API_TOKEN,
   slackApiUpdate: env.SLACK_UPDATE,
-  slackUserIdStore: new Keyv({ namespace: 'slack-user-id', store: keyvStore }),
-  userOnboardingStore: new Keyv({ namespace: 'user-onboarding', store: keyvStore }),
+  slackUserIdStore: new Keyv({ namespace: 'slack-user-id', store: createKeyvStore() }),
+  userOnboardingStore: new Keyv({ namespace: 'user-onboarding', store: createKeyvStore() }),
   wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
