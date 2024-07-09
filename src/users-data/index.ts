@@ -11,12 +11,14 @@ import type { Orcid } from 'orcid-id-ts'
 import safeStableStringify from 'safe-stable-stringify'
 import { match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.js'
+import type { Location } from '../location.js'
 import type { ScietyListEnv } from '../sciety-list/index.js'
 
 export interface User {
   orcid: Orcid
   timestamp: Temporal.Instant
   careerStage?: CareerStage['value'] | undefined
+  location?: Location['value'] | undefined
 }
 
 export interface GetUsersEnv {
@@ -41,7 +43,7 @@ const UserE = pipe(
     orcid: OrcidE,
     timestamp: InstantE,
   }),
-  E.intersect(E.partial({ careerStage: E.id<CareerStage['value']>() })),
+  E.intersect(E.partial({ careerStage: E.id<CareerStage['value']>(), location: E.id<Location['value']>() })),
 )
 
 const UsersE = ReadonlyArrayE(UserE)

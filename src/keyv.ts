@@ -302,6 +302,11 @@ export const getLocation = flow(
   RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),
 )
 
+export const getAllLocations = pipe(
+  getAll(OrcidD, LocationC),
+  RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),
+)
+
 export const saveLocation = flow(
   setKey(OrcidE, LocationC),
   RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),

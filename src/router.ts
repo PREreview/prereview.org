@@ -1960,10 +1960,15 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                 RTE.Do,
                 RTE.apS('users', getUsersFromLegacyPrereview()),
                 RTE.apSW('careerStages', Keyv.getAllCareerStages),
-                RTE.map(({ users, careerStages }) =>
+                RTE.apSW('locations', Keyv.getAllLocations),
+                RTE.map(({ users, careerStages, locations }) =>
                   pipe(
                     users,
-                    RA.map(user => ({ ...user, careerStage: careerStages[user.orcid]?.value })),
+                    RA.map(user => ({
+                      ...user,
+                      careerStage: careerStages[user.orcid]?.value,
+                      location: locations[user.orcid]?.value,
+                    })),
                   ),
                 ),
               ),

@@ -1243,6 +1243,36 @@ describe('getLocation', () => {
   })
 })
 
+describe('getAllLocations', () => {
+  test.prop([fc.array(fc.tuple(fc.orcid(), fc.location()))])('when there are locations', async locations => {
+    const store = new Keyv()
+    await Promise.all(locations.map(([orcid, location]) => store.set(orcid, location)))
+
+    const actual = await _.getAllLocations({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.right(Object.fromEntries(locations)))
+  })
+
+  test.prop([fc.anything()])('when the store cannot be accessed', async error => {
+    const store = new Keyv()
+    store.iterator = async function* iterator() {
+      yield await Promise.reject(error)
+    }
+
+    const actual = await _.getAllLocations({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
 describe('saveLocation', () => {
   test.prop([fc.orcid(), fc.location()])('when the key contains a location', async (orcid, location) => {
     const store = new Keyv()
