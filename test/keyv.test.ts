@@ -274,6 +274,36 @@ describe('getCareerStage', () => {
   })
 })
 
+describe('getAllCareerStages', () => {
+  test.prop([fc.array(fc.tuple(fc.orcid(), fc.careerStage()))])('when there are career stages', async careerStages => {
+    const store = new Keyv()
+    await Promise.all(careerStages.map(([orcid, careerStage]) => store.set(orcid, careerStage)))
+
+    const actual = await _.getAllCareerStages({
+      careerStageStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.right(Object.fromEntries(careerStages)))
+  })
+
+  test.prop([fc.anything()])('when the store cannot be accessed', async error => {
+    const store = new Keyv()
+    store.iterator = async function* iterator() {
+      yield await Promise.reject(error)
+    }
+
+    const actual = await _.getAllCareerStages({
+      careerStageStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
 describe('saveCareerStage', () => {
   test.prop([fc.orcid(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
     const store = new Keyv()

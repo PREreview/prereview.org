@@ -10,11 +10,13 @@ import * as E from 'io-ts/lib/Encoder.js'
 import type { Orcid } from 'orcid-id-ts'
 import safeStableStringify from 'safe-stable-stringify'
 import { match } from 'ts-pattern'
+import type { CareerStage } from '../career-stage.js'
 import type { ScietyListEnv } from '../sciety-list/index.js'
 
 export interface User {
   orcid: Orcid
   timestamp: Temporal.Instant
+  careerStage?: CareerStage['value'] | undefined
 }
 
 export interface GetUsersEnv {
@@ -34,10 +36,13 @@ const InstantE: E.Encoder<string, Temporal.Instant> = StringE
 
 const ReadonlyArrayE = flow(E.array, E.readonly)
 
-const UserE = E.struct({
-  orcid: OrcidE,
-  timestamp: InstantE,
-})
+const UserE = pipe(
+  E.struct({
+    orcid: OrcidE,
+    timestamp: InstantE,
+  }),
+  E.intersect(E.partial({ careerStage: E.id<CareerStage['value']>() })),
+)
 
 const UsersE = ReadonlyArrayE(UserE)
 

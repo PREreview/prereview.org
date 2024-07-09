@@ -1,5 +1,6 @@
 import * as E from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import type { Decoder } from 'io-ts/lib/Decoder.js'
@@ -8,7 +9,7 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import * as EN from 'io-ts/lib/Encoder.js'
 import type Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.js'
 import { type CareerStage, CareerStageC } from './career-stage.js'
@@ -77,6 +78,8 @@ interface KeyvEnv {
   keyv: Keyv<unknown>
 }
 
+const OrcidD: Decoder<unknown, Orcid> = D.fromRefinement(isOrcid, 'ORCID')
+
 const OrcidE: Encoder<string, Orcid> = { encode: identity }
 
 const PreprintIdE: Encoder<string, PreprintId> = {
@@ -109,6 +112,17 @@ const deleteKey =
       ),
       RTE.mapLeft(() => 'unavailable'),
     )
+
+const getAll = <K extends string, V>(
+  keyDecoder: Decoder<unknown, K>,
+  valueDecoder: Decoder<unknown, V>,
+): RTE.ReaderTaskEither<KeyvEnv & L.LoggerEnv, 'unavailable', RR.ReadonlyRecord<K, V>> =>
+  pipe(
+    RTE.ask<KeyvEnv>(),
+    RTE.chainW(({ keyv }) => RTE.fromTaskEither(TE.tryCatch(() => toArray(keyv.iterator()), E.toError))),
+    RTE.chainEitherKW(D.array(D.tuple(keyDecoder, valueDecoder)).decode),
+    RTE.bimap(() => 'unavailable' as const, RR.fromEntries),
+  )
 
 const getKey =
   <K, V>(keyEncoder: Encoder<string, K>, valueDecoder: Decoder<unknown, V>) =>
@@ -180,6 +194,20 @@ export const deleteCareerStage = flow(
 export const getCareerStage = flow(
   getKey(
     OrcidE,
+    D.union(
+      CareerStageC,
+      pipe(
+        D.literal('early', 'mid', 'late'),
+        D.map(value => ({ value, visibility: 'restricted' }) satisfies CareerStage),
+      ),
+    ),
+  ),
+  RTE.local((env: CareerStageStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.careerStageStore })),
+)
+
+export const getAllCareerStages = pipe(
+  getAll(
+    OrcidD,
     D.union(
       CareerStageC,
       pipe(
@@ -344,3 +372,11 @@ export const saveReviewRequest = flow(
   setKey(UnderscoreTupleE(OrcidE, PreprintIdE), ReviewRequestC),
   RTE.local((env: ReviewRequestStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.reviewRequestStore })),
 )
+
+async function toArray<T>(asyncIterator: AsyncIterable<T>): Promise<ReadonlyArray<T>> {
+  const array = []
+  for await (const item of asyncIterator) {
+    array.push(item)
+  }
+  return array
+}

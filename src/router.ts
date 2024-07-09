@@ -1954,7 +1954,21 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getUsers: withEnv(() => getUsersFromLegacyPrereview(), env),
+          getUsers: withEnv(
+            () =>
+              pipe(
+                RTE.Do,
+                RTE.apS('users', getUsersFromLegacyPrereview()),
+                RTE.apSW('careerStages', Keyv.getAllCareerStages),
+                RTE.map(({ users, careerStages }) =>
+                  pipe(
+                    users,
+                    RA.map(user => ({ ...user, careerStage: careerStages[user.orcid]?.value })),
+                  ),
+                ),
+              ),
+            env,
+          ),
         })),
       ),
     ),
