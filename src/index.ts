@@ -1,4 +1,4 @@
-import { Headers, HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
+import { Headers, HttpBody, HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { toIncomingMessage } from '@effect/platform-node/NodeHttpServerRequest'
 import { createTerminus } from '@godaddy/terminus'
@@ -7,18 +7,22 @@ import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
 import { Config, Effect, Layer } from 'effect'
 import express from 'express'
+import * as List from 'fp-ts-contrib/lib/List.js'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import { pipe } from 'fp-ts/lib/function.js'
+import { execMiddleware } from 'hyper-ts'
+import { ExpressConnection } from 'hyper-ts/lib/express.js'
 import { Redis } from 'ioredis'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
+import { createRequest } from 'node-mocks-http'
 import { ServerResponse, createServer } from 'node:http'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
-import { app } from './app.js'
+import { app, hyperTsApp } from './app.js'
 import { decodeEnv } from './env.js'
 
 const env = decodeEnv(process)()
@@ -57,7 +61,7 @@ const sendMailEnv = match(env)
   }))
   .exhaustive()
 
-const server = app({
+const config: import('/home/hff/work/prereview/prereview.org/src/app').ConfigEnv = {
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   authorInviteStore: new Keyv({ namespace: 'author-invite', store: createKeyvStore() }),
@@ -130,7 +134,8 @@ const server = app({
   wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
-})
+}
+const server = app(config)
 
 const Router = HttpRouter.empty.pipe(HttpRouter.get('/', HttpServerResponse.html('hello')))
 
@@ -140,20 +145,49 @@ const testExpress = express().get('/foo', (req, res) =>
 
 const Server = Router.pipe(
   Effect.catchTags({
-    RouteNotFound: routeNotFound => {
-      const request = toIncomingMessage(routeNotFound.request)
-      const response: ServerResponse = new ServerResponse(request)
-      response.statusCode = 404
-      let body = ''
-      response.send = function (chunk) {
-        body += chunk
-      }
-      testExpress(request, response)
-      return HttpServerResponse.raw(body, {
-        status: response.statusCode,
-        headers: Headers.fromInput(response.getHeaders() as unknown as Headers.Input),
-      })
-    },
+    RouteNotFound: routeNotFound =>
+      Effect.gen(function* () {
+        const request = toIncomingMessage(routeNotFound.request)
+        const response: ServerResponse = new ServerResponse(request)
+        response.statusCode = 404
+        let body = ''
+        response.send = function (chunk) {
+          body += chunk
+        }
+        const hyperResult = hyperTsApp(null, config)
+        const result = yield* Effect.tryPromise(() =>
+          execMiddleware(hyperResult, new ExpressConnection(createRequest({ ...request }), response))().catch(e =>
+            console.log('>>> catch', e),
+          ),
+        )
+        if (E.isRight(result)) {
+          const connection = result.right as ExpressConnection<unknown>
+          const actions = List.toReversedArray(connection.actions)
+          let httpServerResponse = HttpServerResponse.empty()
+          console.log(actions)
+          actions.forEach(action => {
+            switch (action.type) {
+              case 'setBody':
+                httpServerResponse = HttpServerResponse.setBody(httpServerResponse, HttpBody.raw(action.body))
+                break
+              case 'setStatus':
+                httpServerResponse = HttpServerResponse.setStatus(httpServerResponse, action.status)
+                break
+              default:
+                break
+            }
+          })
+          if (httpServerResponse.status !== 404) {
+            return httpServerResponse
+          }
+        }
+        server(request, response)
+        response.on('finish', () => console.log('res finished'))
+        return HttpServerResponse.raw(body, {
+          status: response.statusCode,
+          headers: Headers.fromInput(response.getHeaders() as unknown as Headers.Input),
+        })
+      }),
   }),
   HttpServer.serve(),
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3001) })),
