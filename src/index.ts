@@ -1,10 +1,12 @@
-import { HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
+import { Headers, HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
+import { toIncomingMessage } from '@effect/platform-node/NodeHttpServerRequest'
 import { createTerminus } from '@godaddy/terminus'
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
 import { Config, Effect, Layer } from 'effect'
+import express from 'express'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -13,7 +15,7 @@ import { Redis } from 'ioredis'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
-import { createServer } from 'node:http'
+import { ServerResponse, createServer } from 'node:http'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
 import { app } from './app.js'
@@ -132,9 +134,26 @@ const server = app({
 
 const Router = HttpRouter.empty.pipe(HttpRouter.get('/', HttpServerResponse.html('hello')))
 
+const testExpress = express().get('/foo', (req, res) =>
+  res.status(201).setHeader('a-header', 24).send('hello from foo'),
+)
+
 const Server = Router.pipe(
   Effect.catchTags({
-    RouteNotFound: () => HttpServerResponse.text('boo!', { status: 200 }),
+    RouteNotFound: routeNotFound => {
+      const request = toIncomingMessage(routeNotFound.request)
+      const response: ServerResponse = new ServerResponse(request)
+      response.statusCode = 404
+      let body = ''
+      response.send = function (chunk) {
+        body += chunk
+      }
+      testExpress(request, response)
+      return HttpServerResponse.raw(body, {
+        status: response.statusCode,
+        headers: Headers.fromInput(response.getHeaders() as unknown as Headers.Input),
+      })
+    },
   }),
   HttpServer.serve(),
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3001) })),
