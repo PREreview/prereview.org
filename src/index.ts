@@ -1,7 +1,10 @@
+import { HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
+import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { createTerminus } from '@godaddy/terminus'
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
+import { Config, Layer } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -10,6 +13,7 @@ import { Redis } from 'ioredis'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
+import { createServer } from 'node:http'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
 import { app } from './app.js'
@@ -125,6 +129,15 @@ const server = app({
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
 })
+
+const Router = HttpRouter.empty.pipe(HttpRouter.get('/', HttpServerResponse.html('hello')))
+
+const Server = Router.pipe(
+  HttpServer.serve(),
+  Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3001) })),
+)
+
+Layer.launch(Server).pipe(NodeRuntime.runMain)
 
 server.on('listening', () => {
   L.debug('Server listening')(loggerEnv)()
