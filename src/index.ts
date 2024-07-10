@@ -4,7 +4,7 @@ import { createTerminus } from '@godaddy/terminus'
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Config, Layer } from 'effect'
+import { Config, Effect, Layer } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -133,6 +133,9 @@ const server = app({
 const Router = HttpRouter.empty.pipe(HttpRouter.get('/', HttpServerResponse.html('hello')))
 
 const Server = Router.pipe(
+  Effect.catchTags({
+    RouteNotFound: () => HttpServerResponse.text('boo!', { status: 200 }),
+  }),
   HttpServer.serve(),
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3001) })),
 )
