@@ -13,6 +13,7 @@ export const clubIds = [
   'biomass-biocatalysis',
   'biophysics-leipzig',
   'cara',
+  'etymos-analytica',
   'hhmi-training-pilot',
   'language-club',
   'marine-invertebrates',
