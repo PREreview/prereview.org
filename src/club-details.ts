@@ -198,6 +198,22 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Michele Avissar-Whiting', orcid: '0000-0003-0030-3135' as Orcid },
     ],
   },
+  'jmir-publications': {
+    name: 'JMIR Publications',
+    description: html`
+      <p>
+        <a href="https://jmirpublications.com/">JMIR Publications</a> teamed up with PREreview to expand our innovative
+        peer review offerings through
+        <a href="https://support.jmir.org/hc/en-us/articles/4408266275099">Live Reviews</a>: topic-centered, interactive
+        preprint review calls via a video conference tool such as Zoom.
+      </p>
+    `,
+    leads: [
+      { name: 'Shaochen (Shawn) Huang', orcid: '0000-0001-6570-0372' as Orcid },
+      { name: 'Tiffany I. Leung', orcid: '0000-0002-6007-4023' as Orcid },
+    ],
+    contact: 'ed-support@jmir.org' as EmailAddress,
+  },
   'language-club': {
     name: 'Language Club',
     description: html`

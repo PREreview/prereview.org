@@ -15,6 +15,7 @@ export const clubIds = [
   'cara',
   'etymos-analytica',
   'hhmi-training-pilot',
+  'jmir-publications',
   'language-club',
   'marine-invertebrates',
   'nsa-utd',
