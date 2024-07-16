@@ -219,14 +219,14 @@ export function page({
                         <ul>
                           <li>
                             <a
-                              href="${format(reviewsMatch.formatter, { page: 1 })}"
+                              href="${format(reviewsMatch.formatter, {})}"
                               ${current === 'reviews' ? html`aria-current="page"` : ''}
                               >Reviews</a
                             >
                           </li>
                           <li>
                             <a
-                              href="${format(reviewRequestsMatch.formatter, { page: 1 })}"
+                              href="${format(reviewRequestsMatch.formatter, {})}"
                               ${current === 'review-requests' ? html`aria-current="page"` : ''}
                               >Requests</a
                             >

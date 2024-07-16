@@ -216,28 +216,32 @@ describe('collapseRequests', () => {
   })
 
   test.prop([
-    fc.tuple(
-      fc.webUrl(),
-      fc.record(
-        {
-          cache: fc.constantFrom('default', 'no-store', 'reload', 'no-cache', 'force-cache', 'only-if-cached'),
-          headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
-          method: fc.requestMethod(),
-        },
-        { requiredKeys: ['headers', 'method'] },
-      ),
-    ),
-    fc.tuple(
-      fc.webUrl(),
-      fc.record(
-        {
-          cache: fc.constantFrom('default', 'no-store', 'reload', 'no-cache', 'force-cache', 'only-if-cached'),
-          headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
-          method: fc.requestMethod(),
-        },
-        { requiredKeys: ['headers', 'method'] },
-      ),
-    ),
+    fc
+      .tuple(
+        fc.tuple(
+          fc.webUrl(),
+          fc.record(
+            {
+              cache: fc.constantFrom('default', 'no-store', 'reload', 'no-cache', 'force-cache', 'only-if-cached'),
+              headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
+              method: fc.requestMethod(),
+            },
+            { requiredKeys: ['headers', 'method'] },
+          ),
+        ),
+        fc.tuple(
+          fc.webUrl(),
+          fc.record(
+            {
+              cache: fc.constantFrom('default', 'no-store', 'reload', 'no-cache', 'force-cache', 'only-if-cached'),
+              headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
+              method: fc.requestMethod(),
+            },
+            { requiredKeys: ['headers', 'method'] },
+          ),
+        ),
+      )
+      .filter(([request1, request2]) => JSON.stringify(request1) !== JSON.stringify(request2)),
     fc.record({
       status: fc.integer({ min: 200, max: 599 }),
       headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
@@ -246,7 +250,7 @@ describe('collapseRequests', () => {
       status: fc.integer({ min: 200, max: 599 }),
       headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
     }),
-  ])('when the requests are different', async (request1, request2, fetchResponse1, fetchResponse2) => {
+  ])('when the requests are different', async ([request1, request2], fetchResponse1, fetchResponse2) => {
     const fetch = fetchMock
       .sandbox()
       .once({ url: request1[0], method: request1[1].method }, fetchResponse1)

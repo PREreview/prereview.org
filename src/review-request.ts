@@ -13,6 +13,7 @@ import type {
   MedrxivPreprintId,
   OsfPreprintsPreprintId,
   PreprintId,
+  PreprintsorgPreprintId,
   PsyarxivPreprintId,
   ScieloPreprintId,
   SocarxivPreprintId,
@@ -27,6 +28,7 @@ export type ReviewRequestPreprintId =
   | EdarxivPreprintId
   | MedrxivPreprintId
   | OsfPreprintsPreprintId
+  | PreprintsorgPreprintId
   | PsyarxivPreprintId
   | ScieloPreprintId
   | SocarxivPreprintId
@@ -114,6 +116,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
       'edarxiv',
       'medrxiv',
       'osf-preprints',
+      'preprints.org',
       'psyarxiv',
       'scielo',
       'socarxiv',

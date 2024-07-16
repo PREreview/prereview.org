@@ -1010,7 +1010,7 @@ test('might not load the older reviews in time', async ({ fetch, page }) => {
     { overwriteRoutes: true },
   )
 
-  await page.goto('/reviews?page=1')
+  await page.goto('/reviews')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
 })

@@ -29,6 +29,6 @@ export const home = ({
     RT.apSW('canRequestReviews', RT.fromReader(canRequestReviews(user))),
     RT.apSW('canSeeGatesLogo', RT.fromReader(canSeeGatesLogo)),
     RT.apSW('recentReviewRequests', getRecentReviewRequests()),
-    RT.let('statistics', () => ({ prereviews: 891, servers: 22, users: 2744 })),
+    RT.let('statistics', () => ({ prereviews: 914, servers: 22, users: 2800 })),
     RT.map(createPage),
   )
