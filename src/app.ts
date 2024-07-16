@@ -6,7 +6,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { apply, flow, identity, pipe } from 'fp-ts/lib/function.js'
 import helmet from 'helmet'
-import http from 'http'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { getSession } from 'hyper-ts-session'
@@ -268,39 +267,40 @@ export const app = (config: ConfigEnv) => {
 
       next()
     })
+    .use((req, res, next) => {
+      return pipe(
+        appMiddleware,
+        R.local((env: ConfigEnv & SleepEnv): RouterEnv & LegacyEnv => ({
+          ...env,
+          doesPreprintExist: withEnv(doesPreprintExist, env),
+          generateUuid: uuid.v4(),
+          getUser: withEnv(() => getUser, env),
+          getUserOnboarding: withEnv(getUserOnboarding, env),
+          getPreprint: withEnv(getPreprint, env),
+          getPreprintTitle: withEnv(getPreprintTitle, env),
+          templatePage: withEnv(page, env),
+          getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
+          getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
+          resolvePreprintId: withEnv(resolvePreprintId, env),
+          sendEmail: withEnv(sendEmail, env),
+        })),
+        R.local(collapseRequests()),
+        R.local(logFetch()),
+        R.local((appEnv: ConfigEnv): ConfigEnv & SleepEnv => ({
+          ...appEnv,
+          logger: pipe(
+            appEnv.logger,
+            l.contramap(entry => ({
+              ...entry,
+              payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
+            })),
+          ),
+          sleep: duration => new Promise(resolve => setTimeout(resolve, duration)),
+        })),
+        apply(config),
+        toRequestHandler,
+      )(req, res, next)
+    })
 
   return app
 }
-
-export const hyperTsApp = (requestId: string | null, config: ConfigEnv) =>
-  pipe(
-    appMiddleware,
-    R.local((env: ConfigEnv & SleepEnv): RouterEnv & LegacyEnv => ({
-      ...env,
-      doesPreprintExist: withEnv(doesPreprintExist, env),
-      generateUuid: uuid.v4(),
-      getUser: withEnv(() => getUser, env),
-      getUserOnboarding: withEnv(getUserOnboarding, env),
-      getPreprint: withEnv(getPreprint, env),
-      getPreprintTitle: withEnv(getPreprintTitle, env),
-      templatePage: withEnv(page, env),
-      getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
-      getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
-      resolvePreprintId: withEnv(resolvePreprintId, env),
-      sendEmail: withEnv(sendEmail, env),
-    })),
-    R.local(collapseRequests()),
-    R.local(logFetch()),
-    R.local((appEnv: ConfigEnv): ConfigEnv & SleepEnv => ({
-      ...appEnv,
-      logger: pipe(
-        appEnv.logger,
-        l.contramap(entry => ({
-          ...entry,
-          payload: { requestId, ...entry.payload },
-        })),
-      ),
-      sleep: duration => new Promise(resolve => setTimeout(resolve, duration)),
-    })),
-    apply(config),
-  )
