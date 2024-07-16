@@ -1,6 +1,5 @@
-import { Headers, HttpBody, HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
-import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
-import { toIncomingMessage } from '@effect/platform-node/NodeHttpServerRequest'
+import { HttpBody, HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
+import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/platform-node'
 import { createTerminus } from '@godaddy/terminus'
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
@@ -19,7 +18,7 @@ import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
 import { createRequest } from 'node-mocks-http'
-import { ServerResponse, createServer } from 'node:http'
+import { createServer } from 'node:http'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
 import { app, hyperTsApp } from './app.js'
@@ -147,13 +146,8 @@ const Server = Router.pipe(
   Effect.catchTags({
     RouteNotFound: routeNotFound =>
       Effect.gen(function* () {
-        const request = toIncomingMessage(routeNotFound.request)
-        const response: ServerResponse = new ServerResponse(request)
-        response.statusCode = 404
-        let body = ''
-        response.send = function (chunk) {
-          body += chunk
-        }
+        const request = NodeHttpServerRequest.toIncomingMessage(routeNotFound.request)
+        const response = NodeHttpServerRequest.toServerResponse(routeNotFound.request)
         const hyperResult = hyperTsApp(null, config)
         const result = yield* Effect.tryPromise(() =>
           execMiddleware(hyperResult, new ExpressConnection(createRequest({ ...request }), response))().catch(e =>
@@ -182,11 +176,8 @@ const Server = Router.pipe(
           }
         }
         server(request, response)
-        response.on('finish', () => console.log('res finished'))
-        return HttpServerResponse.raw(body, {
-          status: response.statusCode,
-          headers: Headers.fromInput(response.getHeaders() as unknown as Headers.Input),
-        })
+        yield* Effect.promise(() => new Promise(resolve => response.on('close', resolve, { once: true })))
+        return HttpServerResponse.empty()
       }),
   }),
   HttpServer.serve(),

@@ -5,8 +5,8 @@
     "npm": "9 || 10"
   },
   "dependencies": {
-    "@effect/platform": "^0.58.21",
-    "@effect/platform-node": "^0.53.20",
+    "@effect/platform": "^0.59.0",
+    "@effect/platform-node": "^0.54.1",
     "@godaddy/terminus": "^4.12.1",
     "@hapi/address": "^5.1.1",
     "@js-temporal/polyfill": "^0.4.4",
@@ -22,7 +22,7 @@
     "crossref-ts": "^0.1.5",
     "datacite-ts": "^0.1.4",
     "doi-ts": "^0.1.9",
-    "effect": "^3.4.8",
+    "effect": "^3.5.4",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
     "fetch-fp-ts": "^0.1.6",
