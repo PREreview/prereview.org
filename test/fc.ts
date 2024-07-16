@@ -1023,7 +1023,7 @@ const headerName = () =>
 export const headers = (include: fc.Arbitrary<Record<string, string>> = constant({})) =>
   fc
     .tuple(
-      fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init =>
+      fc.option(fc.dictionary(headerName(), fc.lorem()), { nil: undefined }).map(init =>
         Object.defineProperties(new Headers(init), {
           [fc.toStringMethod]: { value: () => fc.stringify(init) },
         }),
