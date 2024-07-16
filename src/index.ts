@@ -5,7 +5,6 @@ import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
 import { Config, Effect, Layer } from 'effect'
-import express from 'express'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -17,7 +16,7 @@ import fetch from 'make-fetch-happen'
 import { createServer } from 'node:http'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
-import { app } from './app.js'
+import { type ConfigEnv, app } from './app.js'
 import { decodeEnv } from './env.js'
 
 const env = decodeEnv(process)()
@@ -56,7 +55,7 @@ const sendMailEnv = match(env)
   }))
   .exhaustive()
 
-const config: import('/home/hff/work/prereview/prereview.org/src/app').ConfigEnv = {
+const config: ConfigEnv = {
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   authorInviteStore: new Keyv({ namespace: 'author-invite', store: createKeyvStore() }),
@@ -134,10 +133,6 @@ const server = app(config)
 
 const Router = HttpRouter.empty.pipe(HttpRouter.get('/', HttpServerResponse.html('hello')))
 
-const testExpress = express().get('/foo', (req, res) =>
-  res.status(201).setHeader('a-header', 24).send('hello from foo'),
-)
-
 const Server = Router.pipe(
   Effect.catchTags({
     RouteNotFound: routeNotFound =>
@@ -145,7 +140,7 @@ const Server = Router.pipe(
         const request = NodeHttpServerRequest.toIncomingMessage(routeNotFound.request)
         const response = NodeHttpServerRequest.toServerResponse(routeNotFound.request)
         server(request, response)
-        yield* Effect.promise(() => new Promise(resolve => response.on('close', resolve, { once: true })))
+        yield* Effect.promise(() => new Promise(resolve => response.once('close', resolve)))
         return HttpServerResponse.empty()
       }),
   }),
