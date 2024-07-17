@@ -2,10 +2,10 @@ import { HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/platform-node'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Config, Effect, Layer, Scope } from 'effect'
+import { Config, Effect, Layer, type Scope } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import { pipe } from 'fp-ts/lib/function.js'
-import { Redis } from 'ioredis'
+import { Redis as IoRedis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import { createServer } from 'node:http'
 import { RedisService, effectifiedExpressApp } from './effectified-app.js'
@@ -18,9 +18,9 @@ const loggerEnv: L.LoggerEnv = {
   logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
 }
 
-const redis: Effect.Effect<Redis, never, Scope.Scope> = Effect.acquireRelease(
+const redis: Effect.Effect<IoRedis, never, Scope.Scope> = Effect.acquireRelease(
   Effect.suspend(() => {
-    const redis = new Redis(env.REDIS_URI.href, {
+    const redis = new IoRedis(env.REDIS_URI.href, {
       commandTimeout: 2 * 1000,
       enableAutoPipelining: true,
     })
@@ -33,6 +33,8 @@ const redis: Effect.Effect<Redis, never, Scope.Scope> = Effect.acquireRelease(
   }),
   redis => Effect.promise(() => redis.quit()),
 )
+
+const redisLayer: Layer.Layer<RedisService> = Layer.scoped(RedisService, redis)
 
 if (env.ZENODO_URL.href.includes('sandbox')) {
   dns.setDefaultResultOrder('ipv4first')
@@ -54,6 +56,7 @@ const Server = Router.pipe(
   }),
   HttpServer.serve(),
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
+  Layer.provide(redisLayer),
 )
 
-Layer.launch(Server).pipe(Effect.provideServiceEffect(RedisService, redis), Effect.scoped, NodeRuntime.runMain)
+Layer.launch(Server).pipe(NodeRuntime.runMain)
