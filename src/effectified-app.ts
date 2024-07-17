@@ -1,6 +1,7 @@
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
-import { pipe } from 'effect'
+import { Effect, pipe } from 'effect'
+import type { Express } from 'express'
 import * as C from 'fp-ts/lib/Console.js'
 import type { Redis } from 'ioredis'
 import Keyv from 'keyv'
@@ -11,7 +12,7 @@ import { P, match } from 'ts-pattern'
 import { type ConfigEnv, app } from './app.js'
 import { decodeEnv } from './env.js'
 
-export const createEffectifiedExpressApp = (redis: Redis) => {
+export const createEffectifiedExpressApp = (redis: Redis): Effect.Effect<Express> => {
   const env = decodeEnv(process)()
 
   const createKeyvStore = () => new KeyvRedis(redis)
@@ -111,5 +112,5 @@ export const createEffectifiedExpressApp = (redis: Redis) => {
 
   const server = app(config)
 
-  return server
+  return Effect.succeed(server)
 }

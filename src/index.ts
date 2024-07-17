@@ -35,7 +35,7 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
 
 const Router = HttpRouter.empty.pipe(HttpRouter.get('/', HttpServerResponse.html('hello')))
 
-const server = createEffectifiedExpressApp(redis)
+const effectifiedExpressApp = createEffectifiedExpressApp(redis)
 
 const Server = Router.pipe(
   Effect.catchTags({
@@ -43,7 +43,8 @@ const Server = Router.pipe(
       Effect.gen(function* () {
         const request = NodeHttpServerRequest.toIncomingMessage(routeNotFound.request)
         const response = NodeHttpServerRequest.toServerResponse(routeNotFound.request)
-        server(request, response)
+        const expressApp = yield* effectifiedExpressApp
+        expressApp(request, response)
         yield* Effect.promise(() => new Promise(resolve => response.once('close', resolve)))
         return HttpServerResponse.empty()
       }),
@@ -53,40 +54,3 @@ const Server = Router.pipe(
 )
 
 Layer.launch(Server).pipe(NodeRuntime.runMain)
-
-server.on('listening', () => {
-  L.debug('Server listening')(loggerEnv)()
-})
-
-createTerminus(server, {
-  healthChecks: {
-    '/health': async () => {
-      if (!(redis instanceof Redis)) {
-        return
-      }
-
-      if (redis.status !== 'ready') {
-        throw new Error(`Redis not ready (${redis.status})`)
-      }
-
-      await redis.ping()
-    },
-  },
-  logger: (message, error) => L.errorP(message)({ name: error.name, message: error.message })(loggerEnv)(),
-  onShutdown: RT.fromReaderIO(L.debug('Shutting server down'))(loggerEnv),
-  onSignal: async () => {
-    L.debug('Signal received')(loggerEnv)()
-
-    if (!(redis instanceof Redis)) {
-      return
-    }
-
-    await redis
-      .quit()
-      .then(() => L.debug('Redis disconnected')(loggerEnv)())
-      .catch((error: unknown) =>
-        L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
-      )
-  },
-  signals: ['SIGINT', 'SIGTERM'],
-})
