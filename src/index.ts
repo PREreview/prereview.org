@@ -40,7 +40,27 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
   dns.setDefaultResultOrder('ipv4first')
 }
 
-const Router = HttpRouter.empty.pipe(HttpRouter.get('/', HttpServerResponse.html('hello')))
+const healthRoute = Effect.gen(function* () {
+  const redis = yield* RedisService
+  yield* Effect.tryPromise({
+    try: async () => {
+      if (redis.status !== 'ready') {
+        throw new Error(`Redis not ready (${redis.status})`)
+      }
+
+      await redis.ping()
+    },
+    catch: () => {
+      return HttpServerResponse.raw('redis not ready', { status: 500 })
+    },
+  })
+  return HttpServerResponse.raw('healthy')
+})
+
+const Router = HttpRouter.empty.pipe(
+  HttpRouter.get('/', HttpServerResponse.html('hello')),
+  HttpRouter.get('/health', healthRoute),
+)
 
 const Server = Router.pipe(
   Effect.catchTags({
