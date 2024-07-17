@@ -834,6 +834,7 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
   fc.oneof(
     africarxivFigsharePreprintId(),
     africarxivZenodoPreprintId(),
+    arcadiaSciencePreprintId(),
     arxivPreprintId(),
     osfPreprintId(),
     psychArchivesPreprintId(),

@@ -18,6 +18,7 @@ import type { Preprint } from './preprint.js'
 import type {
   AfricarxivFigsharePreprintId,
   AfricarxivZenodoPreprintId,
+  ArcadiaSciencePreprintId,
   ArxivPreprintId,
   OsfPreprintId,
   PsychArchivesPreprintId,
@@ -27,6 +28,7 @@ import type {
 export type DatacitePreprintId =
   | AfricarxivFigsharePreprintId
   | AfricarxivZenodoPreprintId
+  | ArcadiaSciencePreprintId
   | ArxivPreprintId
   | OsfPreprintId
   | PsychArchivesPreprintId
@@ -38,6 +40,7 @@ export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']>
   '17605',
   '23668',
   '48550',
+  '57844',
 )
 
 export const getPreprintFromDatacite = flow(
@@ -62,7 +65,8 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
         work.types.resourceType?.toLowerCase() === 'preprint' ||
         work.types.resourceTypeGeneral?.toLowerCase() === 'preprint' ||
         (work.types.resourceTypeGeneral?.toLowerCase() === 'text' && hasRegistrant('48550')(work.doi)) ||
-        (work.types.resourceTypeGeneral === undefined && hasRegistrant('23668')(work.doi)),
+        (work.types.resourceTypeGeneral === undefined && hasRegistrant('23668')(work.doi)) ||
+        hasRegistrant('57844')(work.doi),
       () => 'not a preprint',
     ),
     E.apSW(
@@ -114,6 +118,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           E.fromOptionK(() => 'unknown language' as const)(({ text }) =>
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
+              .with({ type: 'arcadia-science' }, () => O.some('en' as const))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
@@ -139,6 +144,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           E.fromOptionK(() => 'unknown language')(({ text }) =>
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
+              .with({ type: 'arcadia-science' }, () => O.some('en' as const))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
@@ -223,6 +229,19 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
           type: 'africarxiv',
           value: work.doi,
         }) satisfies AfricarxivZenodoPreprintId,
+    ),
+  ),
+  pipe(
+    D.fromStruct({
+      doi: D.fromRefinement(hasRegistrant('57844'), 'DOI'),
+      publisher: D.literal('Arcadia Science'),
+    }),
+    D.map(
+      work =>
+        ({
+          type: 'arcadia-science',
+          value: work.doi,
+        }) satisfies ArcadiaSciencePreprintId,
     ),
   ),
   pipe(
