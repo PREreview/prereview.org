@@ -1,17 +1,14 @@
 import { HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/platform-node'
-import { createTerminus } from '@godaddy/terminus'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
 import { Config, Effect, Layer } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
-import * as E from 'fp-ts/lib/Either.js'
-import * as RT from 'fp-ts/lib/ReaderTask.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import { Redis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import { createServer } from 'node:http'
-import { createEffectifiedExpressApp } from './effectified-app.js'
+import { RedisService, effectifiedExpressApp } from './effectified-app.js'
 import { decodeEnv } from './env.js'
 
 const env = decodeEnv(process)()
@@ -35,8 +32,6 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
 
 const Router = HttpRouter.empty.pipe(HttpRouter.get('/', HttpServerResponse.html('hello')))
 
-const effectifiedExpressApp = createEffectifiedExpressApp(redis)
-
 const Server = Router.pipe(
   Effect.catchTags({
     RouteNotFound: routeNotFound =>
@@ -53,4 +48,4 @@ const Server = Router.pipe(
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
 )
 
-Layer.launch(Server).pipe(NodeRuntime.runMain)
+Layer.launch(Server).pipe(Effect.provideService(RedisService, redis), NodeRuntime.runMain)

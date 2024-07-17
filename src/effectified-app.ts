@@ -1,6 +1,6 @@
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
-import { Effect, pipe } from 'effect'
+import { Context, Effect, pipe } from 'effect'
 import type { Express } from 'express'
 import * as C from 'fp-ts/lib/Console.js'
 import type { Redis } from 'ioredis'
@@ -12,7 +12,10 @@ import { P, match } from 'ts-pattern'
 import { type ConfigEnv, app } from './app.js'
 import { decodeEnv } from './env.js'
 
-export const createEffectifiedExpressApp = (redis: Redis): Effect.Effect<Express> => {
+export class RedisService extends Context.Tag('RedisService')<RedisService, Redis>() {}
+
+export const effectifiedExpressApp: Effect.Effect<Express, never, RedisService> = Effect.gen(function* () {
+  const redis = yield* RedisService
   const env = decodeEnv(process)()
 
   const createKeyvStore = () => new KeyvRedis(redis)
@@ -112,5 +115,5 @@ export const createEffectifiedExpressApp = (redis: Redis): Effect.Effect<Express
 
   const server = app(config)
 
-  return Effect.succeed(server)
-}
+  return server
+})
