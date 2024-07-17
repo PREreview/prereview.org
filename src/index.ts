@@ -1,10 +1,16 @@
-import { HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
+import {
+  Headers,
+  HttpMiddleware,
+  HttpRouter,
+  HttpServer,
+  HttpServerRequest,
+  HttpServerResponse,
+} from '@effect/platform'
 import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/platform-node'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Config, Effect, Layer, type Scope } from 'effect'
+import { Config, Effect, Layer, Logger, type Scope, pipe } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import { Redis as IoRedis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import { createServer } from 'node:http'
@@ -42,6 +48,7 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
 
 const healthRoute = Effect.gen(function* () {
   const redis = yield* RedisService
+  yield* Effect.log('healthcheck called')
   yield* Effect.tryPromise({
     try: async () => {
       if (redis.status !== 'ready') {
@@ -62,6 +69,18 @@ const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/health', healthRoute),
 )
 
+const requestIdLogging = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const requestId = yield* pipe(
+      HttpServerRequest.HttpServerRequest,
+      Effect.map(req => req.headers),
+      Effect.flatMap(Headers.get('request-id')),
+      Effect.orElseSucceed(() => null),
+    )
+    return yield* app.pipe(Effect.annotateLogs('requestId', requestId))
+  }),
+)
+
 const Server = Router.pipe(
   Effect.catchTags({
     RouteNotFound: routeNotFound =>
@@ -74,9 +93,9 @@ const Server = Router.pipe(
         return HttpServerResponse.empty()
       }),
   }),
-  HttpServer.serve(),
+  HttpServer.serve(requestIdLogging),
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Layer.provide(redisLayer),
 )
 
-Layer.launch(Server).pipe(NodeRuntime.runMain)
+Layer.launch(Server).pipe(Effect.provide(Logger.pretty), NodeRuntime.runMain)
