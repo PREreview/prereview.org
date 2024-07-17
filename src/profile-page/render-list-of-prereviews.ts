@@ -58,6 +58,7 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyStr
                     <dd>
                       ${match(prereview.preprint.id.type)
                         .with('africarxiv', () => 'AfricArXiv Preprints')
+                        .with('arcadia-science', () => 'Arcadia Science')
                         .with('arxiv', () => 'arXiv')
                         .with('authorea', () => 'Authorea')
                         .with('biorxiv', () => 'bioRxiv')

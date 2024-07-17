@@ -75,6 +75,7 @@ export const createPage = ({
               <dd>
                 ${match(preprint.id.type)
                   .with('africarxiv', () => 'AfricArXiv Preprints')
+                  .with('arcadia-science', () => 'Arcadia Science')
                   .with('arxiv', () => 'arXiv')
                   .with('authorea', () => 'Authorea')
                   .with('biorxiv', () => 'bioRxiv')

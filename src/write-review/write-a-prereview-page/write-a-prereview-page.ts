@@ -45,6 +45,7 @@ export const startPage = (preprint: Preprint, user?: User) =>
             <dd>
               ${match(preprint.id.type)
                 .with('africarxiv', () => 'AfricArXiv Preprints')
+                .with('arcadia-science', () => 'Arcadia Science')
                 .with('arxiv', () => 'arXiv')
                 .with('authorea', () => 'Authorea')
                 .with('biorxiv', () => 'bioRxiv')

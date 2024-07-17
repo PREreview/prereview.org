@@ -64,6 +64,7 @@ export const createPage = ({ currentPage, totalPages, language, field, reviewReq
                   <dd>
                     ${match(request.preprint.id.type)
                       .with('africarxiv', () => 'AfricArXiv Preprints')
+                      .with('arcadia-science', () => 'Arcadia Science')
                       .with('arxiv', () => 'arXiv')
                       .with('authorea', () => 'Authorea')
                       .with('biorxiv', () => 'bioRxiv')

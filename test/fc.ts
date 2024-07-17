@@ -82,6 +82,7 @@ import {
   type AfricarxivOsfPreprintId,
   type AfricarxivPreprintId,
   type AfricarxivZenodoPreprintId,
+  type ArcadiaSciencePreprintId,
   type ArxivPreprintId,
   type AuthoreaPreprintId,
   type BiorxivOrMedrxivPreprintId,
@@ -486,6 +487,12 @@ export const africarxivZenodoPreprintId = (): fc.Arbitrary<AfricarxivZenodoPrepr
     value: doi(constant('5281')),
   })
 
+export const arcadiaSciencePreprintId = (): fc.Arbitrary<ArcadiaSciencePreprintId> =>
+  fc.record({
+    type: constant('arcadia-science'),
+    value: doi(constant('57844')),
+  })
+
 export const arxivPreprintId = (): fc.Arbitrary<ArxivPreprintId> =>
   fc.record({
     type: constant('arxiv'),
@@ -771,6 +778,7 @@ export const preprintId = (): fc.Arbitrary<PreprintId> => fc.oneof(philsciPrepri
 export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>> =>
   fc.oneof(
     africarxivPreprintId(),
+    arcadiaSciencePreprintId(),
     arxivPreprintId(),
     authoreaPreprintId(),
     biorxivPreprintId(),
@@ -858,6 +866,7 @@ export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId>
 export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, ReviewRequestPreprintId>> =>
   fc.oneof(
     africarxivPreprintId(),
+    arcadiaSciencePreprintId(),
     authoreaPreprintId(),
     chemrxivPreprintId(),
     eartharxivPreprintId(),
