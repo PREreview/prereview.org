@@ -71,6 +71,7 @@ const EnvD = pipe(
     ORCID_URL: withDefault(UrlD, new URL('https://orcid.org/')),
     ORCID_API_URL: withDefault(UrlD, new URL('https://pub.orcid.org/')),
     PUBLIC_URL: UrlD,
+    REDIS_URI: UrlD,
     REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
     SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, v4()() as unknown as NonEmptyString),
     SECRET: D.string,
@@ -98,7 +99,6 @@ const EnvD = pipe(
       ORCID_API_READ_PUBLIC_TOKEN: D.string,
       PHASE_TAG: D.string,
       PHASE_TEXT: HtmlD,
-      REDIS_URI: UrlD,
     }),
   ),
 )
