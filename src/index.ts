@@ -2,7 +2,7 @@ import { HttpRouter, HttpServer, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/platform-node'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Config, Effect, Layer } from 'effect'
+import { Config, Effect, Layer, Scope } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import { Redis } from 'ioredis'
@@ -18,13 +18,21 @@ const loggerEnv: L.LoggerEnv = {
   logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
 }
 
-const redis = new Redis(env.REDIS_URI.href, { commandTimeout: 2 * 1000, enableAutoPipelining: true })
-
-redis.on('connect', () => L.debug('Redis connected')(loggerEnv)())
-redis.on('close', () => L.debug('Redis connection closed')(loggerEnv)())
-redis.on('reconnecting', () => L.info('Redis reconnecting')(loggerEnv)())
-redis.removeAllListeners('error')
-redis.on('error', (error: Error) => L.errorP('Redis connection error')({ error: error.message })(loggerEnv)())
+const redis: Effect.Effect<Redis, never, Scope.Scope> = Effect.acquireRelease(
+  Effect.suspend(() => {
+    const redis = new Redis(env.REDIS_URI.href, {
+      commandTimeout: 2 * 1000,
+      enableAutoPipelining: true,
+    })
+    redis.on('connect', () => L.debug('Redis connected')(loggerEnv)())
+    redis.on('close', () => L.debug('Redis connection closed')(loggerEnv)())
+    redis.on('reconnecting', () => L.info('Redis reconnecting')(loggerEnv)())
+    redis.removeAllListeners('error')
+    redis.on('error', (error: Error) => L.errorP('Redis connection error')({ error: error.message })(loggerEnv)())
+    return Effect.succeed(redis)
+  }),
+  redis => Effect.promise(() => redis.quit()),
+)
 
 if (env.ZENODO_URL.href.includes('sandbox')) {
   dns.setDefaultResultOrder('ipv4first')
@@ -48,4 +56,4 @@ const Server = Router.pipe(
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
 )
 
-Layer.launch(Server).pipe(Effect.provideService(RedisService, redis), NodeRuntime.runMain)
+Layer.launch(Server).pipe(Effect.provideServiceEffect(RedisService, redis), Effect.scoped, NodeRuntime.runMain)
