@@ -1060,7 +1060,7 @@ export const fetchResponse = ({
       status: status ?? fc.integer(),
       statusText: fc.string(),
       url: fc.string(),
-      text: json ? json.map(JSON.stringify) : text ?? fc.string(),
+      text: json ? json.map(JSON.stringify) : (text ?? fc.string()),
     })
     .map(args =>
       Object.defineProperties(
