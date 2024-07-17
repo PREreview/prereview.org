@@ -145,7 +145,7 @@ const Server = Router.pipe(
       }),
   }),
   HttpServer.serve(),
-  Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3001) })),
+  Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
 )
 
 Layer.launch(Server).pipe(NodeRuntime.runMain)
@@ -186,5 +186,3 @@ createTerminus(server, {
   },
   signals: ['SIGINT', 'SIGTERM'],
 })
-
-server.listen(3000)
