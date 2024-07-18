@@ -133,7 +133,7 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
 export const sendPrereviewToPrereviewCoarNotifyInbox = (
   newPrereview: NewPrereview,
   id: number,
-): RTE.ReaderTaskEither<F.FetchEnv & PrereviewCoarNotifyEnv & PublicUrlEnv, 'unavailable', void> =>
+): RTE.ReaderTaskEither<F.FetchEnv & LoggerEnv & PrereviewCoarNotifyEnv & PublicUrlEnv, 'unavailable', void> =>
   pipe(
     RTE.Do,
     RTE.apS(

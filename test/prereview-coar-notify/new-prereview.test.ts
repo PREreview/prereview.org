@@ -1,7 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
+import * as IO from 'fp-ts/lib/IO.js'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/prereview-coar-notify/new-prereview.js'
 import * as fc from './fc.js'
@@ -12,7 +14,11 @@ describe('postNewPrereview', () => {
     async (baseUrl, apiToken, newPrereview, response) => {
       const fetch = jest.fn<FetchEnv['fetch']>(_ => Promise.resolve(response))
 
-      const result = await _.postNewPrereview({ baseUrl, apiToken, newPrereview })({ fetch })()
+      const result = await _.postNewPrereview({ baseUrl, apiToken, newPrereview })({
+        fetch,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(result).toStrictEqual(E.right(undefined))
       expect(fetch).toHaveBeenCalledWith(`${baseUrl.origin}/prereviews`, {
@@ -29,6 +35,8 @@ describe('postNewPrereview', () => {
       async (baseUrl, apiToken, newPrereview, reason) => {
         const result = await _.postNewPrereview({ baseUrl, apiToken, newPrereview })({
           fetch: () => Promise.reject(reason),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(result).toStrictEqual(E.left('unavailable'))
@@ -43,6 +51,8 @@ describe('postNewPrereview', () => {
     ])('with an unexpected status', async (baseUrl, apiToken, newPrereview, response) => {
       const result = await _.postNewPrereview({ baseUrl, apiToken, newPrereview })({
         fetch: () => Promise.resolve(response),
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
       })()
 
       expect(result).toStrictEqual(E.left('unavailable'))
