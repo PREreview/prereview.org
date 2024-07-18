@@ -9,19 +9,24 @@ import { match } from 'ts-pattern'
 import type { SleepEnv } from '../fetch.js'
 import type { RecentReviewRequest } from '../home-page/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
+import { type PublicUrlEnv, toUrl } from '../public-url.js'
 import type { ReviewRequestPreprintId } from '../review-request.js'
 import type { ReviewRequests } from '../review-requests-page/index.js'
+import { reviewMatch } from '../routes.js'
 import type { FieldId } from '../types/field.js'
 import type { GenerateUuidEnv } from '../types/uuid.js'
 import type { User } from '../user.js'
+import type { NewPrereview } from '../write-review/index.js'
 import { constructCoarPayload } from './construct-coar-payload.js'
 import {
   type RecentReviewRequestFromPrereviewCoarNotify,
   getRecentReviewRequests,
 } from './get-recent-review-requests.js'
+import { postNewPrereview } from './new-prereview.js'
 import { sendReviewActionOffer } from './send-review-action-offer.js'
 
 export interface PrereviewCoarNotifyEnv {
+  readonly coarNotifyToken: string
   readonly coarNotifyUrl: URL
 }
 
@@ -123,4 +128,29 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
         ),
       ),
     ),
+  )
+
+export const sendPrereviewToPrereviewCoarNotifyInbox = (
+  newPrereview: NewPrereview,
+  id: number,
+): RTE.ReaderTaskEither<F.FetchEnv & PrereviewCoarNotifyEnv & PublicUrlEnv, 'unavailable', void> =>
+  pipe(
+    RTE.Do,
+    RTE.apS(
+      'baseUrl',
+      RTE.asks(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => coarNotifyUrl),
+    ),
+    RTE.apS(
+      'apiToken',
+      RTE.asks(({ coarNotifyToken }: PrereviewCoarNotifyEnv) => coarNotifyToken),
+    ),
+    RTE.apSW('prereviewUrl', RTE.rightReader(toUrl(reviewMatch.formatter, { id }))),
+    RTE.let('newPrereview', ({ prereviewUrl }) => ({
+      url: prereviewUrl,
+      author: match(newPrereview.persona)
+        .with('public', () => ({ name: newPrereview.user.name }))
+        .with('pseudonym', () => ({ name: newPrereview.user.pseudonym }))
+        .exhaustive(),
+    })),
+    RTE.chainW(postNewPrereview),
   )

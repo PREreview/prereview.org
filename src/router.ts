@@ -132,6 +132,7 @@ import {
   getRecentReviewRequestsFromPrereviewCoarNotify,
   getReviewRequestsFromPrereviewCoarNotify,
   publishToPrereviewCoarNotifyInbox,
+  sendPrereviewToPrereviewCoarNotifyInbox,
 } from './prereview-coar-notify/index.js'
 import { privacyPolicy } from './privacy-policy.js'
 import { profile } from './profile-page/index.js'
@@ -416,6 +417,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
         ),
       ),
     ),
+    RTE.chainFirstReaderIOKW(([, review]) => sendPrereviewToPrereviewCoarNotifyInbox(newPrereview, review)),
     RTE.chainFirstReaderIOKW(([, review]) => triggerRefreshOfPrereview(review, newPrereview.user)),
   )
 

@@ -62,6 +62,7 @@ const server = app({
   canUploadAvatar: () => true,
   canUseSearchQueries: () => true,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
+  coarNotifyToken: env.COAR_NOTIFY_TOKEN,
   coarNotifyUrl: env.COAR_NOTIFY_URL,
   contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: createKeyvStore() }),
   fathomId: env.FATHOM_SITE_ID,

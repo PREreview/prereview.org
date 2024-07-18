@@ -1226,6 +1226,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       formStore,
       canSeeGatesLogo: false,
       careerStageStore,
+      coarNotifyToken: 'token',
       coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
       contactEmailAddressStore,
       ghostApi: {
@@ -1541,6 +1542,7 @@ export const willPublishAReview: Fixtures<
         },
         { status: Status.ServiceUnavailable },
       )
+      .postOnce('http://coar-notify.prereview.test/prereviews', { status: Status.Created })
 
     await use(fetch)
   },

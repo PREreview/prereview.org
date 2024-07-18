@@ -1,4 +1,5 @@
 import type { CoarReviewActionOfferPayload } from '../../src/prereview-coar-notify/coar-review-action-offer-payload.js'
+import type { NewPrereview } from '../../src/prereview-coar-notify/new-prereview.js'
 import * as fc from '../fc.js'
 
 export * from '../fc.js'
@@ -25,6 +26,14 @@ export const coarReviewActionOfferPayload = (): fc.Arbitrary<CoarReviewActionOff
     actor: fc.record({
       id: fc.string(),
       type: fc.constant('Person'),
+      name: fc.string(),
+    }),
+  })
+
+export const newPrereview = (): fc.Arbitrary<NewPrereview> =>
+  fc.record({
+    url: fc.url(),
+    author: fc.record({
       name: fc.string(),
     }),
   })
