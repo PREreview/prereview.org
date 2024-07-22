@@ -32,11 +32,17 @@ RUN npm ci --ignore-scripts --production
 FROM npm AS build-prod
 ENV NODE_ENV=production
 
+RUN apk add --no-cache bash
+ADD https://github.com/unsplash/intlc/releases/download/v0.8.3/intlc-v0.8.3-linux-x86_64 /usr/local/bin/intlc
+RUN chmod +x /usr/local/bin/intlc
+
 COPY --from=npm-dev /app/node_modules/ node_modules/
 COPY tsconfig.build.json \
   tsconfig.json \
   webpack.config.cjs \
   ./
+COPY scripts/ scripts/
+COPY locales/ locales/
 COPY src/ src/
 COPY assets/ assets/
 

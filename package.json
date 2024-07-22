@@ -154,18 +154,20 @@
     "webpack-remove-empty-scripts": "^1.0.4"
   },
   "scripts": {
-    "prebuild": "del dist src/manifest.json",
+    "prebuild": "del dist src/locales src/manifest.json",
     "build": "run-p build:*",
-    "build:app": "wait-on src/manifest.json && tsc --project tsconfig.build.json",
+    "build:app": "wait-on src/locales src/manifest.json && tsc --project tsconfig.build.json",
     "build:assets": "webpack build --mode production",
+    "build:translations": "scripts/intlc.sh",
     "format": "prettier --ignore-unknown --check '**'",
     "format:fix": "npm run format -- --write",
     "lint": "run-p --aggregate-output lint:*",
     "lint:css": "stylelint '**/*.css'",
     "lint:ts": "eslint . --max-warnings 0",
     "start": "run-p start:*",
-    "start:app": "wait-on src/manifest.json && tsx watch --clear-screen=false --require dotenv/config src/index.ts",
+    "start:app": "wait-on src/locales src/manifest.json && tsx watch --clear-screen=false --require dotenv/config src/index.ts",
     "start:assets": "webpack watch --mode development",
+    "start:translations": "scripts/intlc.sh",
     "test": "jest",
     "test:integration": "docker run --rm --volume \"$(pwd)\"/integration/snapshots:/app/integration/snapshots --volume \"$(pwd)\"/integration-results:/app/integration-results",
     "typecheck": "tsc --noEmit"
