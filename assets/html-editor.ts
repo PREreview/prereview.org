@@ -10,6 +10,8 @@ import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
 import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
 import { disableButton, enableButton, preventDefault } from './dom.js'
 
+const translateDep = import('./locales/html-editor.js')
+
 const deps = Promise.all([
   import('@tiptap/core'),
   import('@tiptap/extension-link'),
@@ -55,8 +57,10 @@ export class HtmlEditor extends HTMLElement {
 
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
+    const translateHtmlEditor = await translateDep
+
     const toolbarButtons = Promise.all([
-      createButton('Bold', boldIcon),
+      createButton(translateHtmlEditor.bold(), boldIcon),
       createButton('Italic', italicIcon),
       createButton('Subscript', subscriptIcon),
       createButton('Superscript', superscriptIcon),
