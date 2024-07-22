@@ -1,11 +1,12 @@
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
+import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
+import * as translateHomePage from '../locales/home-page.js'
 import * as assets from '../manifest.json'
 import { PageResponse } from '../response.js'
 import {
@@ -37,10 +38,10 @@ export const createPage = ({
   statistics: { prereviews: number; servers: number; users: number }
 }) =>
   PageResponse({
-    title: plainText`PREreview: Open preprint reviews. For all researchers.`,
+    title: plainText`PREreview: ${translateHomePage.slogan({ swoosh: identity })}`,
     main: html`
       <div class="hero">
-        <h1>Open preprint reviews. For&nbsp;<em>all</em> researchers.</h1>
+        <h1>${rawHtml(translateHomePage.slogan({ swoosh: text => `<em>${text}</em>` }))}</h1>
         <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
 
         <div class="button-group">
