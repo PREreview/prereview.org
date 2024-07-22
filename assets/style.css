@@ -2382,6 +2382,7 @@ skip-link {
       block-size: var(--space-xs);
       background-image: url('underline.svg');
       background-repeat: no-repeat;
+      background-size: 100% 100%;
       inset-block-start: 82%;
       inset-inline: 0;
     }
