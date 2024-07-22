@@ -21,6 +21,8 @@ jobs:
     name: 'Build assets'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
+    needs:
+      - build-locales
 
     steps:
       - name: 'Checkout code'
@@ -42,6 +44,12 @@ jobs:
           path: .cache/webpack
           key: webpack-${{ github.head_ref || github.ref_name }}
           restore-keys: webpack-
+
+      - name: 'Download assets locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales-assets
+          path: assets/locales
 
       - name: 'Build assets'
         run: npm run build:assets
@@ -89,13 +97,21 @@ jobs:
           echo "container=$container" >> $GITHUB_OUTPUT
 
       - name: 'Copy files'
-        run: docker container cp ${{ steps.container.outputs.container }}:/app/src/ .
+        run: |
+          docker container cp ${{ steps.container.outputs.container }}:/app/assets/ .
+          docker container cp ${{ steps.container.outputs.container }}:/app/src/ .
 
       - name: 'Upload locales'
         uses: actions/upload-artifact@v4.3.4
         with:
           name: locales
           path: src/locales
+
+      - name: 'Upload assets locales'
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: locales-assets
+          path: assets/locales
 
   build-image:
     name: 'Build image'
@@ -200,6 +216,12 @@ jobs:
         with:
           name: locales
           path: src/locales
+
+      - name: 'Download assets locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales-assets
+          path: assets/locales
 
       - name: 'Run the linter'
         run: npm run lint:ts
@@ -402,6 +424,12 @@ jobs:
 
       - name: 'Install browsers'
         run: npx playwright install
+
+      - name: 'Download assets locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales-assets
+          path: assets/locales
 
       - name: 'Run the tests'
         run: npx web-test-runner
