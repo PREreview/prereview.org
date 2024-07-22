@@ -40,7 +40,7 @@ export const createPage = ({
     title: plainText`PREreview: Open preprint reviews. For all researchers.`,
     main: html`
       <div class="hero">
-        <h1>Open preprint reviews.<br />For&nbsp;<em>all</em> researchers.</h1>
+        <h1>Open preprint reviews. For&nbsp;<em>all</em> researchers.</h1>
         <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
 
         <div class="button-group">

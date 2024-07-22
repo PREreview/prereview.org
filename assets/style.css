@@ -2372,7 +2372,17 @@ skip-link {
 .hero {
   display: flow-root;
 
+  & h1 {
+    max-inline-size: 90%;
+    text-wrap: balance;
+
+    @media (width >= 50em) {
+      max-inline-size: 58%;
+    }
+  }
+
   & em {
+    display: inline-block;
     position: relative;
     font-style: inherit;
 
