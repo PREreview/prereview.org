@@ -12,6 +12,18 @@ COPY .npmrc \
   ./
 
 #
+# Stage: intlc environment
+#
+FROM debian:12.6-slim AS intlc
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+WORKDIR /app
+
+ADD https://github.com/unsplash/intlc/releases/download/v0.8.3/intlc-v0.8.3-linux-x86_64 /usr/local/bin/intlc
+
+RUN chmod +x /usr/local/bin/intlc
+
+#
 # Stage: Development NPM install
 #
 FROM npm AS npm-dev
@@ -25,6 +37,16 @@ RUN npm ci --ignore-scripts
 FROM npm AS npm-prod
 
 RUN npm ci --ignore-scripts --production
+
+#
+# Stage: Intlc build
+#
+FROM intlc AS build-intlc
+
+COPY scripts/ scripts/
+COPY locales/ locales/
+
+RUN scripts/intlc.sh
 
 #
 # Stage: Production build
