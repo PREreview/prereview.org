@@ -61,6 +61,7 @@ COPY tsconfig.build.json \
   ./
 COPY src/ src/
 COPY assets/ assets/
+COPY --from=build-intlc /app/assets/locales/ assets/locales/
 COPY --from=build-intlc /app/src/locales/ src/locales/
 
 RUN npx run-p build:assets build:app
