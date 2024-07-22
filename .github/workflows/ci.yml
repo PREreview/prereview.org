@@ -467,6 +467,12 @@ jobs:
           name: locales
           path: src/locales
 
+      - name: 'Download assets locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales-assets
+          path: assets/locales
+
       - name: 'Run typechecker'
         run: npm run typecheck
 
