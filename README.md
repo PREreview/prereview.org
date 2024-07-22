@@ -8,9 +8,11 @@ The source code for [prereview.org].
 
 <summary>Requirements</summary>
 
+- [Bash]
 - [Docker]
 - [Docker Compose]
 - [GNU Make]
+- [intlc]
 - [mkcert]
 - [Node.js]
 - [Git LFS]
@@ -34,11 +36,13 @@ You will also have a `.env` file. This file contains environment variables contr
 
 Once it passes CI, we deploy every commit on the `main` branch to [prereview.org] and [sandbox.prereview.org], which [Fly.io] hosts.
 
+[bash]: https://www.gnu.org/software/bash/
 [docker]: https://www.docker.com/
 [docker compose]: https://docs.docker.com/compose/
 [fly.io]: https://fly.io/
 [git lfs]: https://git-lfs.github.com/
 [gnu make]: https://www.gnu.org/software/make/
+[intlc]: https://github.com/unsplash/intlc
 [mkcert]: https://github.com/FiloSottile/mkcert
 [node.js]: https://nodejs.org/
 [prereview.org]: https://prereview.org/

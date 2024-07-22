@@ -3,4 +3,5 @@
 /data/
 /dist/
 /integration-results/
+/src/locales/
 /*.js

@@ -6,4 +6,5 @@
 /integration-results/
 /node_modules/
 /src/manifest.json
+/src/locales/
 /.env
