@@ -2,6 +2,7 @@
 /.dev/
 /.git/
 /.github/
+/assets/locales/
 /data/
 /dist/
 /integration/snapshots/

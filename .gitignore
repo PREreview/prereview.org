@@ -1,6 +1,7 @@
 /.cache/
 /.dev/server.crt
 /.dev/server.key
+/assets/locales/
 /data/
 /dist/
 /integration-results/

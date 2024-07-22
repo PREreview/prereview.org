@@ -155,7 +155,7 @@
     "webpack-remove-empty-scripts": "^1.0.4"
   },
   "scripts": {
-    "prebuild": "del dist src/locales src/manifest.json",
+    "prebuild": "del assets/locales dist src/locales src/manifest.json",
     "build": "run-p build:*",
     "build:app": "wait-on src/locales src/manifest.json && tsc --project tsconfig.build.json",
     "build:assets": "webpack build --mode production",
