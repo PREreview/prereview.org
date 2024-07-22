@@ -1,5 +1,6 @@
 /.cache/
-/.dev/
+/.dev/server.crt
+/.dev/server.key
 /.git/
 /.github/
 /assets/locales/

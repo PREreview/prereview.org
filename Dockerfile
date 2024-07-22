@@ -20,6 +20,7 @@ ENV LC_ALL=C.UTF-8
 WORKDIR /app
 
 ADD https://github.com/unsplash/intlc/releases/download/v0.8.3/intlc-v0.8.3-linux-x86_64 /usr/local/bin/intlc
+COPY --from=ghcr.io/tests-always-included/mo:3.0.5 /usr/local/bin/mo /usr/local/bin/mo
 
 RUN chmod +x /usr/local/bin/intlc
 
@@ -43,6 +44,7 @@ RUN npm ci --ignore-scripts --production
 #
 FROM intlc AS build-intlc
 
+COPY .dev/ .dev/
 COPY scripts/ scripts/
 COPY locales/ locales/
 
