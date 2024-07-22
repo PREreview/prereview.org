@@ -6,7 +6,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
-import * as translateHomePage from '../locales/home-page.js'
+import { translateHomePage } from '../locales/home-page.js'
 import * as assets from '../manifest.json'
 import { PageResponse } from '../response.js'
 import {
@@ -38,10 +38,10 @@ export const createPage = ({
   statistics: { prereviews: number; servers: number; users: number }
 }) =>
   PageResponse({
-    title: plainText`PREreview: ${translateHomePage.slogan({ swoosh: identity })}`,
+    title: plainText`PREreview: ${translateHomePage('en-US')('slogan', { swoosh: identity })}`,
     main: html`
       <div class="hero">
-        <h1>${rawHtml(translateHomePage.slogan({ swoosh: text => `<em>${text}</em>` }))}</h1>
+        <h1>${rawHtml(translateHomePage('en-US')('slogan', { swoosh: text => `<em>${text}</em>` }))}</h1>
         <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
 
         <div class="button-group">

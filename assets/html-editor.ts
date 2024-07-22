@@ -57,10 +57,10 @@ export class HtmlEditor extends HTMLElement {
 
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
-    const translateHtmlEditor = await translateDep
+    const { translateHtmlEditor } = await translateDep
 
     const toolbarButtons = Promise.all([
-      createButton(translateHtmlEditor.bold(), boldIcon),
+      createButton(translateHtmlEditor('en-US')('bold'), boldIcon),
       createButton('Italic', italicIcon),
       createButton('Subscript', subscriptIcon),
       createButton('Superscript', superscriptIcon),

@@ -14,6 +14,7 @@ compile_module() {
 
     intlc compile "locales/en-US/$module.json" -l "en-US" > "$directory/en-US.ts"
 
+    moduleName=$(echo "$module" | sed -r 's/(^|[-_ ]+)([0-9a-z])/\U\2/g')
     mo .dev/locale-module.ts.mustache > "$target/locales/$module.ts"
   done
 }

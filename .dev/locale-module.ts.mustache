@@ -1,1 +1,20 @@
-export * from './{{module}}/en-US.js'
+import * as enUsTranslations from './{{module}}/en-US.js'
+
+const translations = {
+  'en-US': enUsTranslations
+}
+
+type SupportedLocale = keyof typeof translations
+
+type Translations = typeof translations['en-US']
+
+export const translate{{moduleName}} =
+  (locale: SupportedLocale) =>
+  <K extends keyof Translations>(key: K, ...args: Parameters<Translations[K]>): string => {
+    if (key in translations[locale]) {
+      // @ts-ignore
+      return translations[locale][key](...args)
+    }
+    // @ts-ignore
+    return translations['en-US'][key](...args)
+  }
