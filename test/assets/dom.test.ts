@@ -127,3 +127,57 @@ describe('getTargetElement', () => {
     })
   })
 })
+
+describe('getLang', () => {
+  describe('there is a lang', () => {
+    describe('on the element', () => {
+      it('finds the lang', async () => {
+        const element = await fixture<HTMLDivElement>('<div lang="en-US"></div>')
+
+        await expect(_.getLang(element)).to.equal('en-US')
+      })
+
+      describe('on the parent', () => {
+        it('finds the lang', async () => {
+          await fixture('<div lang="en-US"><div id="element"></div></div>')
+
+          await expect(_.getLang(document.getElementById('element')!)).to.equal('en-US')
+        })
+      })
+
+      describe('on an ancestor', () => {
+        it('finds the lang', async () => {
+          await fixture('<div lang="en-US"><div><div id="element"></div></div></div>')
+
+          await expect(_.getLang(document.getElementById('element')!)).to.equal('en-US')
+        })
+      })
+    })
+  })
+
+  describe("there isn't a lang", () => {
+    describe('on the element', () => {
+      it('returns an unknown lang', async () => {
+        const element = await fixture<HTMLDivElement>('<div></div>')
+
+        await expect(_.getLang(element)).to.equal('')
+      })
+
+      describe('on the parent', () => {
+        it('finds the lang', async () => {
+          await fixture('<div><div id="element"></div></div>')
+
+          await expect(_.getLang(document.getElementById('element')!)).to.equal('')
+        })
+      })
+
+      describe('on an ancestor', () => {
+        it('finds the lang', async () => {
+          await fixture('<div><div><div id="element"></div></div></div>')
+
+          await expect(_.getLang(document.getElementById('element')!)).to.equal('')
+        })
+      })
+    })
+  })
+})

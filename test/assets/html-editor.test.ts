@@ -22,3 +22,39 @@ describe('while it loads', () => {
     expect(htmlEditor.querySelector('textarea')).to.be.have.attribute('hidden')
   })
 })
+
+describe('with a supported locale', () => {
+  it('uses the locale', async () => {
+    const element = defineCE(class extends _.HtmlEditor {})
+    await fixture<HTMLFormElement>('<form id="form"/>')
+    const htmlEditor = await fixture<_.HtmlEditor>(
+      `<div lang="en-US">
+        <${element}>
+          <textarea form="form"/>
+        </${element}>
+      </div>`,
+    )
+
+    await waitUntil(() => !htmlEditor.querySelector('.loading'), undefined, { timeout: 2000 })
+
+    expect(htmlEditor.querySelector('editor-toolbar button')).to.have.text('Bold')
+  })
+})
+
+describe('with an unsupported locale', () => {
+  it('uses the default locale', async () => {
+    const element = defineCE(class extends _.HtmlEditor {})
+    await fixture<HTMLFormElement>('<form id="form"/>')
+    const htmlEditor = await fixture<_.HtmlEditor>(
+      `<div lang="th-TH-u-nu-thai">
+        <${element}>
+          <textarea form="form"/>
+        </${element}>
+      </div>`,
+    )
+
+    await waitUntil(() => !htmlEditor.querySelector('.loading'), undefined, { timeout: 2000 })
+
+    expect(htmlEditor.querySelector('editor-toolbar button')).to.have.text('Bold')
+  })
+})

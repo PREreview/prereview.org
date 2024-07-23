@@ -1,3 +1,6 @@
 export type SupportedLocale = 'en-US'
 
 export const DefaultLocale: SupportedLocale = 'en-US'
+
+export const isSupportedLocale = (locale: string): locale is SupportedLocale =>
+  locale === 'en-US'
