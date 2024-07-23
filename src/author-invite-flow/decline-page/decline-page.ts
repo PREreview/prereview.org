@@ -54,7 +54,7 @@ export const declinePage = ({ inviteId, review }: { inviteId: Uuid; review: Prer
             <dl>
               <div>
                 <dt>Published</dt>
-                <dd>${renderDate(review.published)}</dd>
+                <dd>${renderDate('en')(review.published)}</dd>
               </div>
               <div>
                 <dt>DOI</dt>

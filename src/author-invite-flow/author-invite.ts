@@ -142,7 +142,7 @@ function startPage({ inviteId, review, user }: { inviteId: Uuid; review: Prerevi
           <dl>
             <div>
               <dt>Published</dt>
-              <dd>${renderDate(review.published)}</dd>
+              <dd>${renderDate('en')(review.published)}</dd>
             </div>
             <div>
               <dt>DOI</dt>

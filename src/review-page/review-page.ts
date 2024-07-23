@@ -60,7 +60,7 @@ export const createPage = ({ id, review }: { id: number; review: Prereview }) =>
         <dl>
           <div>
             <dt>Published</dt>
-            <dd>${renderDate(review.published)}</dd>
+            <dd>${renderDate('en')(review.published)}</dd>
           </div>
           <div>
             <dt>DOI</dt>

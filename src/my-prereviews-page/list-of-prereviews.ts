@@ -73,7 +73,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
 
                 <dl>
                   <dt>Review published</dt>
-                  <dd>${renderDate(prereview.published)}</dd>
+                  <dd>${renderDate('en')(prereview.published)}</dd>
                   <dt>Preprint server</dt>
                   <dd>
                     ${match(prereview.preprint.id.type)

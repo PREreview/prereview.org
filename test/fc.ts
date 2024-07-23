@@ -226,6 +226,29 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
 
 export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
 
+export const locale = (): fc.Arbitrary<string> =>
+  constantFrom(
+    'de',
+    'de-AT',
+    'de-DE-u-co-phonebk',
+    'en',
+    'en-001',
+    'en-GB-u-ca-islamic',
+    'en-US',
+    'en-emodeng',
+    'es',
+    'es-419',
+    'km',
+    'km-Khmr-KH',
+    'km-fonipa',
+    'hi',
+    'th',
+    'th-TH-u-nu-thai',
+    'zh',
+    'zh-CN',
+    'zh-Hans-CN',
+  )
+
 export const pageResponse = ({
   canonical,
   status,

@@ -59,7 +59,7 @@ export const createPage = ({ currentPage, totalPages, language, field, reviewReq
 
                 <dl>
                   <dt>Review published</dt>
-                  <dd>${renderDate(request.published)}</dd>
+                  <dd>${renderDate('en')(request.published)}</dd>
                   <dt>Preprint server</dt>
                   <dd>
                     ${match(request.preprint.id.type)

@@ -38,7 +38,7 @@ export const startPage = (preprint: Preprint, user?: User) =>
         <dl>
           <div>
             <dt>Posted</dt>
-            <dd>${renderDate(preprint.posted)}</dd>
+            <dd>${renderDate('en')(preprint.posted)}</dd>
           </div>
           <div>
             <dt>Server</dt>
