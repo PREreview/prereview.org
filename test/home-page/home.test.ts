@@ -25,8 +25,8 @@ test.prop([fc.option(fc.user(), { nil: undefined }), fc.boolean(), fc.boolean()]
       canonical: format(homeMatch.formatter, {}),
       current: 'home',
       status: Status.OK,
-      title: expect.stringContaining('PREreview'),
-      main: expect.anything(),
+      title: expect.any(Function),
+      main: expect.any(Function),
       skipToLabel: 'main',
       js: [],
     })
