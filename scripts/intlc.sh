@@ -35,6 +35,13 @@ compile_target() {
 
   mkdir -p "$target/locales"
 
+  declare -A moduleNames
+
+  for module in $modules; do
+    moduleName=$(echo "$module" | sed -r 's/(^|[-_ ]+)([0-9a-z])/\U\2/g')
+    moduleNames[$moduleName]=$module
+  done
+
   mo .dev/locale-index.ts.mustache > "$target/locales/index.ts"
 }
 

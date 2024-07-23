@@ -82,7 +82,6 @@
           "remixicon/**/*.svg",
           "tinyld/heavy",
           "integration/base",
-          "locales/*",
           "types/*",
           "*/index.js"
         ]

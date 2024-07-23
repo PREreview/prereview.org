@@ -11,7 +11,7 @@ import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
 import { disableButton, enableButton, getLang, preventDefault } from './dom.js'
 import { DefaultLocale, isSupportedLocale } from './locales/index.js'
 
-const translateDep = import('./locales/html-editor.js')
+const translateDep = import('./locales/index.js')
 
 const deps = Promise.all([
   import('@tiptap/core'),
@@ -58,13 +58,13 @@ export class HtmlEditor extends HTMLElement {
 
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
-    const { translateHtmlEditor } = await translateDep
+    const { translate } = await translateDep
 
     const lang = getLang(this)
     const locale = isSupportedLocale(lang) ? lang : DefaultLocale
 
     const toolbarButtons = Promise.all([
-      createButton(translateHtmlEditor(locale)('bold'), boldIcon),
+      createButton(translate(locale, 'html-editor', 'bold'), boldIcon),
       createButton('Italic', italicIcon),
       createButton('Subscript', subscriptIcon),
       createButton('Superscript', superscriptIcon),
