@@ -1,6 +1,6 @@
-export type SupportedLocale = '{{defaultLocale}}'
+export type SupportedLocale = {{#locales}}| '{{.}}'{{/locales}}
 
 export const DefaultLocale: SupportedLocale = '{{defaultLocale}}'
 
 export const isSupportedLocale = (locale: string): locale is SupportedLocale =>
-  locale === '{{defaultLocale}}'
+  [{{#locales}}'{{.}}', {{/locales}}].includes(locale)

@@ -1,7 +1,11 @@
-import * as defaultTranslations from './{{module}}/{{defaultLocale}}.js'
+{{#locales}}
+  import * as l{{@key}} from './{{module}}/{{.}}.js'
+{{/locales}}
 
 const translations = {
-  '{{defaultLocale}}': defaultTranslations
+{{#locales}}
+  '{{.}}': l{{@key}},
+{{/locales}}
 }
 
 type SupportedLocale = keyof typeof translations

@@ -5,15 +5,23 @@
 defaultLocale="en-US"
 modules=$(find "locales/$defaultLocale" -name "*.json" -exec basename "{}" .json \;)
 declare -a targets=("assets" "src")
+mapfile -t locales < <(find "locales" -maxdepth 1 -mindepth 1 -type d -exec basename "{}" \;)
 
 compile_module() {
   module="$1"
 
   for target in "${targets[@]}"; do
-    directory="${target}/locales/$module"
-    mkdir -p "$directory"
+    for locale in "${locales[@]}"; do
+      localeFile="locales/$locale/$module.json"
+      directory="${target}/locales/$module"
+      mkdir -p "$directory"
 
-    intlc compile "locales/$defaultLocale/$module.json" -l "$defaultLocale" > "$directory/$defaultLocale.ts"
+      if [ -f "$localeFile" ]; then
+        intlc compile "$localeFile" -l "$locale" > "$directory/$locale.ts"
+      else
+        echo "export {}" > "$directory/$locale.ts"
+      fi
+    done
 
     moduleName=$(echo "$module" | sed -r 's/(^|[-_ ]+)([0-9a-z])/\U\2/g')
     mo .dev/locale-module.ts.mustache > "$target/locales/$module.ts"
