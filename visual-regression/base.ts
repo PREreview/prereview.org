@@ -2,6 +2,7 @@ import { type Locator, test as baseTest } from '@playwright/test'
 import path from 'path'
 import { P, match } from 'ts-pattern'
 import { html } from '../src/html.js'
+import { DefaultLocale } from '../src/locales/index.js'
 import { type Page, page as templatePage } from '../src/page.js'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../src/response.js'
 
@@ -41,15 +42,19 @@ export const test = baseTest.extend<ShowPage>({
   showPage: async ({ baseURL, page }, use) => {
     await use(async function showPage(response, extra = {}) {
       const content = html`
-        ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
+        ${response.nav
+          ? html` <nav>${typeof response.nav === 'function' ? response.nav(DefaultLocale) : response.nav}</nav>`
+          : ''}
 
-        <main id="${response.skipToLabel}">${response.main}</main>
+        <main id="${response.skipToLabel}">
+          ${typeof response.main === 'function' ? response.main(DefaultLocale) : response.main}
+        </main>
       `
 
       const pageHtml = templatePage({
         ...extra,
         content,
-        title: response.title,
+        title: typeof response.title === 'function' ? response.title(DefaultLocale) : response.title,
         js: response.js,
       })({ publicUrl: new URL(String(baseURL)) })
 
@@ -70,16 +75,20 @@ export const test = baseTest.extend<ShowPage>({
   showTwoUpPage: async ({ baseURL, page }, use) => {
     await use(async response => {
       const content = html`
-        <h1 class="visually-hidden">${response.h1}</h1>
+        <h1 class="visually-hidden">${typeof response.h1 === 'function' ? response.h1(DefaultLocale) : response.h1}</h1>
 
-        <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
+        <aside id="preprint-details" tabindex="0" aria-label="Preprint details">
+          ${typeof response.aside === 'function' ? response.aside(DefaultLocale) : response.aside}
+        </aside>
 
-        <main id="prereviews">${response.main}</main>
+        <main id="prereviews">
+          ${typeof response.main === 'function' ? response.main(DefaultLocale) : response.main}
+        </main>
       `
 
       const pageHtml = templatePage({
         content,
-        title: response.title,
+        title: typeof response.title === 'function' ? response.title(DefaultLocale) : response.title,
         type: 'two-up',
       })({ publicUrl: new URL(String(baseURL)) })
 
