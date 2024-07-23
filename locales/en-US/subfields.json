@@ -1,0 +1,758 @@
+{
+  "subfield1100": {
+    "message": "General Agricultural and Biological Sciences"
+  },
+  "subfield1102": {
+    "message": "Agronomy and Crop Science"
+  },
+  "subfield1103": {
+    "message": "Animal Science and Zoology"
+  },
+  "subfield1104": {
+    "message": "Aquatic Science"
+  },
+  "subfield1105": {
+    "message": "Ecology, Evolution, Behavior and Systematics"
+  },
+  "subfield1106": {
+    "message": "Food Science"
+  },
+  "subfield1107": {
+    "message": "Forestry"
+  },
+  "subfield1108": {
+    "message": "Horticulture"
+  },
+  "subfield1109": {
+    "message": "Insect Science"
+  },
+  "subfield1110": {
+    "message": "Plant Science"
+  },
+  "subfield1111": {
+    "message": "Soil Science"
+  },
+  "subfield1200": {
+    "message": "General Arts and Humanities"
+  },
+  "subfield1202": {
+    "message": "History"
+  },
+  "subfield1203": {
+    "message": "Language and Linguistics"
+  },
+  "subfield1204": {
+    "message": "Archeology"
+  },
+  "subfield1205": {
+    "message": "Classics"
+  },
+  "subfield1206": {
+    "message": "Conservation"
+  },
+  "subfield1207": {
+    "message": "History and Philosophy of Science"
+  },
+  "subfield1208": {
+    "message": "Literature and Literary Theory"
+  },
+  "subfield1209": {
+    "message": "Museology"
+  },
+  "subfield1210": {
+    "message": "Music"
+  },
+  "subfield1211": {
+    "message": "Philosophy"
+  },
+  "subfield1212": {
+    "message": "Religious studies"
+  },
+  "subfield1213": {
+    "message": "Visual Arts and Performing Arts"
+  },
+  "subfield1302": {
+    "message": "Aging"
+  },
+  "subfield1303": {
+    "message": "Biochemistry"
+  },
+  "subfield1304": {
+    "message": "Biophysics"
+  },
+  "subfield1305": {
+    "message": "Biotechnology"
+  },
+  "subfield1306": {
+    "message": "Cancer Research"
+  },
+  "subfield1307": {
+    "message": "Cell Biology"
+  },
+  "subfield1308": {
+    "message": "Clinical Biochemistry"
+  },
+  "subfield1309": {
+    "message": "Developmental Biology"
+  },
+  "subfield1310": {
+    "message": "Endocrinology"
+  },
+  "subfield1311": {
+    "message": "Genetics"
+  },
+  "subfield1312": {
+    "message": "Molecular Biology"
+  },
+  "subfield1313": {
+    "message": "Molecular Medicine"
+  },
+  "subfield1314": {
+    "message": "Physiology"
+  },
+  "subfield1315": {
+    "message": "Structural Biology"
+  },
+  "subfield1402": {
+    "message": "Accounting"
+  },
+  "subfield1403": {
+    "message": "Business and International Management"
+  },
+  "subfield1404": {
+    "message": "Management Information Systems"
+  },
+  "subfield1405": {
+    "message": "Management of Technology and Innovation"
+  },
+  "subfield1406": {
+    "message": "Marketing"
+  },
+  "subfield1407": {
+    "message": "Organizational Behavior and Human Resource Management"
+  },
+  "subfield1408": {
+    "message": "Strategy and Management"
+  },
+  "subfield1409": {
+    "message": "Tourism, Leisure and Hospitality Management"
+  },
+  "subfield1410": {
+    "message": "Industrial relations"
+  },
+  "subfield1502": {
+    "message": "Bioengineering"
+  },
+  "subfield1503": {
+    "message": "Catalysis"
+  },
+  "subfield1504": {
+    "message": "Chemical Health and Safety"
+  },
+  "subfield1506": {
+    "message": "Filtration and Separation"
+  },
+  "subfield1507": {
+    "message": "Fluid Flow and Transfer Processes"
+  },
+  "subfield1508": {
+    "message": "Process Chemistry and Technology"
+  },
+  "subfield1602": {
+    "message": "Analytical Chemistry"
+  },
+  "subfield1603": {
+    "message": "Electrochemistry"
+  },
+  "subfield1604": {
+    "message": "Inorganic Chemistry"
+  },
+  "subfield1605": {
+    "message": "Organic Chemistry"
+  },
+  "subfield1606": {
+    "message": "Physical and Theoretical Chemistry"
+  },
+  "subfield1607": {
+    "message": "Spectroscopy"
+  },
+  "subfield1702": {
+    "message": "Artificial Intelligence"
+  },
+  "subfield1703": {
+    "message": "Computational Theory and Mathematics"
+  },
+  "subfield1704": {
+    "message": "Computer Graphics and Computer-Aided Design"
+  },
+  "subfield1705": {
+    "message": "Computer Networks and Communications"
+  },
+  "subfield1706": {
+    "message": "Computer Science Applications"
+  },
+  "subfield1707": {
+    "message": "Computer Vision and Pattern Recognition"
+  },
+  "subfield1708": {
+    "message": "Hardware and Architecture"
+  },
+  "subfield1709": {
+    "message": "Human-Computer Interaction"
+  },
+  "subfield1710": {
+    "message": "Information Systems"
+  },
+  "subfield1711": {
+    "message": "Signal Processing"
+  },
+  "subfield1712": {
+    "message": "Software"
+  },
+  "subfield1800": {
+    "message": "General Decision Sciences"
+  },
+  "subfield1802": {
+    "message": "Information Systems and Management"
+  },
+  "subfield1803": {
+    "message": "Management Science and Operations Research"
+  },
+  "subfield1804": {
+    "message": "Statistics, Probability and Uncertainty"
+  },
+  "subfield1902": {
+    "message": "Atmospheric Science"
+  },
+  "subfield1904": {
+    "message": "Earth-Surface Processes"
+  },
+  "subfield1906": {
+    "message": "Geochemistry and Petrology"
+  },
+  "subfield1907": {
+    "message": "Geology"
+  },
+  "subfield1908": {
+    "message": "Geophysics"
+  },
+  "subfield1910": {
+    "message": "Oceanography"
+  },
+  "subfield1911": {
+    "message": "Paleontology"
+  },
+  "subfield1912": {
+    "message": "Space and Planetary Science"
+  },
+  "subfield2000": {
+    "message": "General Economics, Econometrics and Finance"
+  },
+  "subfield2002": {
+    "message": "Economics and Econometrics"
+  },
+  "subfield2003": {
+    "message": "Finance"
+  },
+  "subfield2100": {
+    "message": "General Energy"
+  },
+  "subfield2102": {
+    "message": "Energy Engineering and Power Technology"
+  },
+  "subfield2103": {
+    "message": "Fuel Technology"
+  },
+  "subfield2104": {
+    "message": "Nuclear Energy and Engineering"
+  },
+  "subfield2105": {
+    "message": "Renewable Energy, Sustainability and the Environment"
+  },
+  "subfield2200": {
+    "message": "General Engineering"
+  },
+  "subfield2202": {
+    "message": "Aerospace Engineering"
+  },
+  "subfield2203": {
+    "message": "Automotive Engineering"
+  },
+  "subfield2204": {
+    "message": "Biomedical Engineering"
+  },
+  "subfield2205": {
+    "message": "Civil and Structural Engineering"
+  },
+  "subfield2206": {
+    "message": "Computational Mechanics"
+  },
+  "subfield2207": {
+    "message": "Control and Systems Engineering"
+  },
+  "subfield2208": {
+    "message": "Electrical and Electronic Engineering"
+  },
+  "subfield2209": {
+    "message": "Industrial and Manufacturing Engineering"
+  },
+  "subfield2210": {
+    "message": "Mechanical Engineering"
+  },
+  "subfield2211": {
+    "message": "Mechanics of Materials"
+  },
+  "subfield2212": {
+    "message": "Ocean Engineering"
+  },
+  "subfield2213": {
+    "message": "Safety, Risk, Reliability and Quality"
+  },
+  "subfield2214": {
+    "message": "Media Technology"
+  },
+  "subfield2215": {
+    "message": "Building and Construction"
+  },
+  "subfield2216": {
+    "message": "Architecture"
+  },
+  "subfield2302": {
+    "message": "Ecological Modeling"
+  },
+  "subfield2303": {
+    "message": "Ecology"
+  },
+  "subfield2304": {
+    "message": "Environmental Chemistry"
+  },
+  "subfield2305": {
+    "message": "Environmental Engineering"
+  },
+  "subfield2306": {
+    "message": "Global and Planetary Change"
+  },
+  "subfield2307": {
+    "message": "Health, Toxicology and Mutagenesis"
+  },
+  "subfield2308": {
+    "message": "Management, Monitoring, Policy and Law"
+  },
+  "subfield2309": {
+    "message": "Nature and Landscape Conservation"
+  },
+  "subfield2310": {
+    "message": "Pollution"
+  },
+  "subfield2311": {
+    "message": "Waste Management and Disposal"
+  },
+  "subfield2312": {
+    "message": "Water Science and Technology"
+  },
+  "subfield2402": {
+    "message": "Applied Microbiology and Biotechnology"
+  },
+  "subfield2403": {
+    "message": "Immunology"
+  },
+  "subfield2404": {
+    "message": "Microbiology"
+  },
+  "subfield2405": {
+    "message": "Parasitology"
+  },
+  "subfield2406": {
+    "message": "Virology"
+  },
+  "subfield2500": {
+    "message": "General Materials Science"
+  },
+  "subfield2502": {
+    "message": "Biomaterials"
+  },
+  "subfield2503": {
+    "message": "Ceramics and Composites"
+  },
+  "subfield2504": {
+    "message": "Electronic, Optical and Magnetic Materials"
+  },
+  "subfield2505": {
+    "message": "Materials Chemistry"
+  },
+  "subfield2506": {
+    "message": "Metals and Alloys"
+  },
+  "subfield2507": {
+    "message": "Polymers and Plastics"
+  },
+  "subfield2508": {
+    "message": "Surfaces, Coatings and Films"
+  },
+  "subfield2602": {
+    "message": "Algebra and Number Theory"
+  },
+  "subfield2604": {
+    "message": "Applied Mathematics"
+  },
+  "subfield2605": {
+    "message": "Computational Mathematics"
+  },
+  "subfield2607": {
+    "message": "Discrete Mathematics and Combinatorics"
+  },
+  "subfield2608": {
+    "message": "Geometry and Topology"
+  },
+  "subfield2610": {
+    "message": "Mathematical Physics"
+  },
+  "subfield2611": {
+    "message": "Modeling and Simulation"
+  },
+  "subfield2612": {
+    "message": "Numerical Analysis"
+  },
+  "subfield2613": {
+    "message": "Statistics and Probability"
+  },
+  "subfield2614": {
+    "message": "Theoretical Computer Science"
+  },
+  "subfield2702": {
+    "message": "Anatomy"
+  },
+  "subfield2703": {
+    "message": "Anesthesiology and Pain Medicine"
+  },
+  "subfield2704": {
+    "message": "Biochemistry"
+  },
+  "subfield2705": {
+    "message": "Cardiology and Cardiovascular Medicine"
+  },
+  "subfield2706": {
+    "message": "Critical Care and Intensive Care Medicine"
+  },
+  "subfield2707": {
+    "message": "Complementary and alternative medicine"
+  },
+  "subfield2708": {
+    "message": "Dermatology"
+  },
+  "subfield2711": {
+    "message": "Emergency Medicine"
+  },
+  "subfield2712": {
+    "message": "Endocrinology, Diabetes and Metabolism"
+  },
+  "subfield2713": {
+    "message": "Epidemiology"
+  },
+  "subfield2714": {
+    "message": "Family Practice"
+  },
+  "subfield2715": {
+    "message": "Gastroenterology"
+  },
+  "subfield2716": {
+    "message": "Genetics"
+  },
+  "subfield2717": {
+    "message": "Geriatrics and Gerontology"
+  },
+  "subfield2718": {
+    "message": "Health Informatics"
+  },
+  "subfield2720": {
+    "message": "Hematology"
+  },
+  "subfield2721": {
+    "message": "Hepatology"
+  },
+  "subfield2723": {
+    "message": "Immunology and Allergy"
+  },
+  "subfield2724": {
+    "message": "Internal Medicine"
+  },
+  "subfield2725": {
+    "message": "Infectious Diseases"
+  },
+  "subfield2726": {
+    "message": "Microbiology"
+  },
+  "subfield2727": {
+    "message": "Nephrology"
+  },
+  "subfield2728": {
+    "message": "Neurology"
+  },
+  "subfield2729": {
+    "message": "Obstetrics and Gynecology"
+  },
+  "subfield2730": {
+    "message": "Oncology"
+  },
+  "subfield2731": {
+    "message": "Ophthalmology"
+  },
+  "subfield2732": {
+    "message": "Orthopedics and Sports Medicine"
+  },
+  "subfield2733": {
+    "message": "Otorhinolaryngology"
+  },
+  "subfield2734": {
+    "message": "Pathology and Forensic Medicine"
+  },
+  "subfield2735": {
+    "message": "Pediatrics, Perinatology and Child Health"
+  },
+  "subfield2736": {
+    "message": "Pharmacology"
+  },
+  "subfield2737": {
+    "message": "Physiology"
+  },
+  "subfield2738": {
+    "message": "Psychiatry and Mental health"
+  },
+  "subfield2739": {
+    "message": "Public Health, Environmental and Occupational Health"
+  },
+  "subfield2740": {
+    "message": "Pulmonary and Respiratory Medicine"
+  },
+  "subfield2741": {
+    "message": "Radiology, Nuclear Medicine and Imaging"
+  },
+  "subfield2742": {
+    "message": "Rehabilitation"
+  },
+  "subfield2743": {
+    "message": "Reproductive Medicine"
+  },
+  "subfield2745": {
+    "message": "Rheumatology"
+  },
+  "subfield2746": {
+    "message": "Surgery"
+  },
+  "subfield2747": {
+    "message": "Transplantation"
+  },
+  "subfield2748": {
+    "message": "Urology"
+  },
+  "subfield2802": {
+    "message": "Behavioral Neuroscience"
+  },
+  "subfield2803": {
+    "message": "Biological Psychiatry"
+  },
+  "subfield2804": {
+    "message": "Cellular and Molecular Neuroscience"
+  },
+  "subfield2805": {
+    "message": "Cognitive Neuroscience"
+  },
+  "subfield2806": {
+    "message": "Developmental Neuroscience"
+  },
+  "subfield2807": {
+    "message": "Endocrine and Autonomic Systems"
+  },
+  "subfield2808": {
+    "message": "Neurology"
+  },
+  "subfield2809": {
+    "message": "Sensory Systems"
+  },
+  "subfield2910": {
+    "message": "Issues, ethics and legal aspects"
+  },
+  "subfield2911": {
+    "message": "Leadership and Management"
+  },
+  "subfield2916": {
+    "message": "Nutrition and Dietetics"
+  },
+  "subfield2922": {
+    "message": "Research and Theory"
+  },
+  "subfield3002": {
+    "message": "Drug Discovery"
+  },
+  "subfield3003": {
+    "message": "Pharmaceutical Science"
+  },
+  "subfield3004": {
+    "message": "Pharmacology"
+  },
+  "subfield3005": {
+    "message": "Toxicology"
+  },
+  "subfield3102": {
+    "message": "Acoustics and Ultrasonics"
+  },
+  "subfield3103": {
+    "message": "Astronomy and Astrophysics"
+  },
+  "subfield3104": {
+    "message": "Condensed Matter Physics"
+  },
+  "subfield3105": {
+    "message": "Instrumentation"
+  },
+  "subfield3106": {
+    "message": "Nuclear and High Energy Physics"
+  },
+  "subfield3107": {
+    "message": "Atomic and Molecular Physics, and Optics"
+  },
+  "subfield3108": {
+    "message": "Radiation"
+  },
+  "subfield3109": {
+    "message": "Statistical and Nonlinear Physics"
+  },
+  "subfield3200": {
+    "message": "General Psychology"
+  },
+  "subfield3202": {
+    "message": "Applied Psychology"
+  },
+  "subfield3203": {
+    "message": "Clinical Psychology"
+  },
+  "subfield3204": {
+    "message": "Developmental and Educational Psychology"
+  },
+  "subfield3205": {
+    "message": "Experimental and Cognitive Psychology"
+  },
+  "subfield3206": {
+    "message": "Neuropsychology and Physiological Psychology"
+  },
+  "subfield3207": {
+    "message": "Social Psychology"
+  },
+  "subfield3300": {
+    "message": "General Social Sciences"
+  },
+  "subfield3302": {
+    "message": "Archeology"
+  },
+  "subfield3303": {
+    "message": "Development"
+  },
+  "subfield3304": {
+    "message": "Education"
+  },
+  "subfield3305": {
+    "message": "Geography, Planning and Development"
+  },
+  "subfield3306": {
+    "message": "Health"
+  },
+  "subfield3307": {
+    "message": "Human Factors and Ergonomics"
+  },
+  "subfield3308": {
+    "message": "Law"
+  },
+  "subfield3309": {
+    "message": "Library and Information Sciences"
+  },
+  "subfield3310": {
+    "message": "Linguistics and Language"
+  },
+  "subfield3311": {
+    "message": "Safety Research"
+  },
+  "subfield3312": {
+    "message": "Sociology and Political Science"
+  },
+  "subfield3313": {
+    "message": "Transportation"
+  },
+  "subfield3314": {
+    "message": "Anthropology"
+  },
+  "subfield3315": {
+    "message": "Communication"
+  },
+  "subfield3316": {
+    "message": "Cultural Studies"
+  },
+  "subfield3317": {
+    "message": "Demography"
+  },
+  "subfield3318": {
+    "message": "Gender Studies"
+  },
+  "subfield3319": {
+    "message": "Life-span and Life-course Studies"
+  },
+  "subfield3320": {
+    "message": "Political Science and International Relations"
+  },
+  "subfield3321": {
+    "message": "Public Administration"
+  },
+  "subfield3322": {
+    "message": "Urban Studies"
+  },
+  "subfield3402": {
+    "message": "Equine"
+  },
+  "subfield3404": {
+    "message": "Small Animals"
+  },
+  "subfield3500": {
+    "message": "General Dentistry"
+  },
+  "subfield3504": {
+    "message": "Oral Surgery"
+  },
+  "subfield3505": {
+    "message": "Orthodontics"
+  },
+  "subfield3506": {
+    "message": "Periodontics"
+  },
+  "subfield3600": {
+    "message": "General Health Professions"
+  },
+  "subfield3603": {
+    "message": "Complementary and Manual Therapy"
+  },
+  "subfield3604": {
+    "message": "Emergency Medical Services"
+  },
+  "subfield3605": {
+    "message": "Health Information Management"
+  },
+  "subfield3607": {
+    "message": "Medical Laboratory Technology"
+  },
+  "subfield3608": {
+    "message": "Medical Terminology"
+  },
+  "subfield3609": {
+    "message": "Occupational Therapy"
+  },
+  "subfield3611": {
+    "message": "Pharmacy"
+  },
+  "subfield3612": {
+    "message": "Physical Therapy, Sports Therapy and Rehabilitation"
+  },
+  "subfield3614": {
+    "message": "Radiological and Ultrasound Technology"
+  },
+  "subfield3616": {
+    "message": "Speech and Hearing"
+  }
+}
