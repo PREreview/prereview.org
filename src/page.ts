@@ -7,7 +7,7 @@ import * as s from 'fp-ts/lib/string.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
-import { DefaultLocale } from './locales/index.js'
+import { DefaultLocale, type SupportedLocale } from './locales/index.js'
 import * as assets from './manifest.json'
 import type { PublicUrlEnv } from './public-url.js'
 import {
@@ -46,6 +46,7 @@ export interface PhaseEnv {
 }
 
 export interface Page {
+  readonly locale?: SupportedLocale
   readonly title: PlainText
   readonly description?: PlainText
   readonly type?: 'two-up' | 'streamline'
@@ -81,6 +82,7 @@ export interface TemplatePageEnv {
 export const templatePage = (page: Page) => R.asks(({ templatePage }: TemplatePageEnv) => templatePage(page))
 
 export function page({
+  locale = DefaultLocale,
   title,
   description,
   type,
@@ -101,7 +103,7 @@ export function page({
   return R.asks(
     ({ fathomId, phase, publicUrl }) => html`
       <!doctype html>
-      <html lang="${DefaultLocale}" dir="${rtlDetect.getLangDir(DefaultLocale)}" prefix="og: https://ogp.me/ns#">
+      <html lang="${locale}" dir="${rtlDetect.getLangDir(locale)}" prefix="og: https://ogp.me/ns#">
         <head>
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -122,7 +124,7 @@ export function page({
             : ''}
 
           <meta property="og:title" content="${title}" />
-          ${description ? html`<meta property="og:description" content="${description}" />` : ''}
+          ${description ? html` <meta property="og:description" content="${description}" />` : ''}
           ${current === 'home'
             ? html`
                 <meta property="og:image" content="${new URL(assets['prereview-og.png'], publicUrl).href}" />
