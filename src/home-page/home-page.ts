@@ -42,12 +42,18 @@ export const createPage = ({
     main: locale => html`
       <div class="hero">
         <h1>${rawHtml(translate(locale, 'home-page', 'slogan', { swoosh: text => `<em>${text}</em>` }))}</h1>
-        <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
+        <p>${translate(locale, 'home-page', 'heroText')}</p>
 
         <div class="button-group">
-          <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
+          <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button"
+            >${translate(locale, 'home-page', 'reviewPreprintButton')}</a
+          >
           ${canRequestReviews
-            ? html` <a href="${format(requestAPrereviewMatch.formatter, {})}">Request a review</a> `
+            ? html`
+                <a href="${format(requestAPrereviewMatch.formatter, {})}"
+                  >${translate(locale, 'home-page', 'requestReviewButton')}</a
+                >
+              `
             : ''}
         </div>
 
@@ -56,22 +62,23 @@ export const createPage = ({
 
       <div class="overview">
         <section aria-labelledby="for-underserved-researchers-title">
-          <h2 id="for-underserved-researchers-title">For underserved researchers</h2>
+          <h2 id="for-underserved-researchers-title">
+            ${translate(locale, 'home-page', 'overviewUnderservedResearchersTitle')}
+          </h2>
 
-          <p>
-            We support and empower diverse and historically excluded communities of researchers (particularly those at
-            early stages of their career) to find a voice, train, and engage in peer review.
-          </p>
+          <p>${translate(locale, 'home-page', 'overviewUnderservedResearchersText')}</p>
         </section>
 
         <div></div>
 
         <section aria-labelledby="a-better-way-title">
-          <h2 id="a-better-way-title">A better way</h2>
+          <h2 id="a-better-way-title">${translate(locale, 'home-page', 'overviewBetterWayTitle')}</h2>
 
-          <p>Making science and scholarship more equitable, transparent, and collaborative.</p>
+          <p>${translate(locale, 'home-page', 'overviewBetterWayText')}</p>
 
-          <a href="${format(aboutUsMatch.formatter, {})}" class="forward">Our mission</a>
+          <a href="${format(aboutUsMatch.formatter, {})}" class="forward"
+            >${translate(locale, 'home-page', 'overviewBetterWayLink')}</a
+          >
         </section>
       </div>
 
@@ -111,7 +118,7 @@ export const createPage = ({
           `,
           requests => html`
             <section aria-labelledby="recent-review-requests-title">
-              <h2 id="recent-review-requests-title">Recent review requests</h2>
+              <h2 id="recent-review-requests-title">${translate(locale, 'home-page', 'requestsTitle')}</h2>
               <ol class="cards" aria-labelledby="recent-review-requests-title" tabindex="0">
                 ${requests.map(
                   (request, index) => html`
@@ -187,7 +194,9 @@ export const createPage = ({
               </ol>
 
               <nav>
-                <a href="${format(reviewRequestsMatch.formatter, {})}" class="forward">See all requests</a>
+                <a href="${format(reviewRequestsMatch.formatter, {})}" class="forward"
+                  >${translate(locale, 'home-page', 'requestsLink')}</a
+                >
               </nav>
             </section>
           `,
@@ -195,20 +204,32 @@ export const createPage = ({
       )}
 
       <section aria-labelledby="statistics-title">
-        <h2 id="statistics-title">Statistics</h2>
+        <h2 id="statistics-title">${translate(locale, 'home-page', 'statisticsTitle')}</h2>
 
         <ul class="statistics">
           <li>
-            <data value="${statistics.prereviews}">${statistics.prereviews.toLocaleString(locale)}</data>
-            PREreviews
+            ${rawHtml(
+              translate(locale, 'home-page', 'statisticsReviews', {
+                number: statistics.prereviews,
+                data: text => `<data value="${statistics.servers}">${text}</data>`,
+              }),
+            )}
           </li>
           <li>
-            <data value="${statistics.servers}">${statistics.servers.toLocaleString(locale)}</data>
-            preprint servers
+            ${rawHtml(
+              translate(locale, 'home-page', 'statisticsServers', {
+                number: statistics.servers,
+                data: text => `<data value="${statistics.servers}">${text}</data>`,
+              }),
+            )}
           </li>
           <li>
-            <data value="${statistics.users}">${statistics.users.toLocaleString(locale)}</data>
-            PREreviewers
+            ${rawHtml(
+              translate(locale, 'home-page', 'statisticsUsers', {
+                number: statistics.users,
+                data: text => `<data value="${statistics.users}">${text}</data>`,
+              }),
+            )}
           </li>
         </ul>
       </section>
@@ -219,7 +240,7 @@ export const createPage = ({
           () => '',
           prereviews => html`
             <section aria-labelledby="recent-prereviews-title">
-              <h2 id="recent-prereviews-title">Recent PREreviews</h2>
+              <h2 id="recent-prereviews-title">${translate(locale, 'home-page', 'reviewsTitle')}</h2>
 
               <ol class="cards" aria-labelledby="recent-prereviews-title" tabindex="0">
                 ${prereviews.map(
@@ -293,7 +314,9 @@ export const createPage = ({
               </ol>
 
               <nav>
-                <a href="${format(reviewsMatch.formatter, {})}" class="forward">See all reviews</a>
+                <a href="${format(reviewsMatch.formatter, {})}" class="forward"
+                  >${translate(locale, 'home-page', 'reviewsLink')}</a
+                >
               </nav>
             </section>
           `,
@@ -301,7 +324,7 @@ export const createPage = ({
       )}
 
       <section aria-labelledby="funders-title">
-        <h2 id="funders-title">Funders</h2>
+        <h2 id="funders-title">${translate(locale, 'home-page', 'fundersTitle')}</h2>
 
         <ol class="logos">
           <li>
