@@ -210,7 +210,7 @@ const form = ({
   </form>
 `
 
-const ordString = (locale: LanguageCode) => Ord.fromCompare(localeCompare(locale))
+const ordString = flow(localeCompare, Ord.fromCompare)
 
 function localeCompare(...args: ConstructorParameters<typeof Intl.Collator>): (a: string, b: string) => Ordering {
   const collator = new Intl.Collator(...args)
