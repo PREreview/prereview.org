@@ -21,4 +21,14 @@ compile_module() {
 
 for module in $modules; do compile_module "$module" & done
 
+compile_target() {
+  target="$1"
+
+  mkdir -p "$target/locales"
+
+  mo .dev/locale-index.ts.mustache > "$target/locales/index.ts"
+}
+
+for target in "${targets[@]}"; do compile_target "$target" & done
+
 wait

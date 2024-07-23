@@ -10,6 +10,7 @@ import iso6391, { type LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { reviewRequestsMatch, writeReviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -59,7 +60,7 @@ export const createPage = ({ currentPage, totalPages, language, field, reviewReq
 
                 <dl>
                   <dt>Review published</dt>
-                  <dd>${renderDate('en')(request.published)}</dd>
+                  <dd>${renderDate(DefaultLocale)(request.published)}</dd>
                   <dt>Preprint server</dt>
                   <dd>
                     ${match(request.preprint.id.type)
@@ -141,7 +142,7 @@ const title = ({ currentPage, field, language }: Pick<ReviewRequests, 'currentPa
     [field ? getFieldName(field) : undefined, language ? iso6391.getName(language) : undefined].filter(isString),
   )
 
-  return plainText`Recent review requests (${formatList('en', { style: 'narrow' })(details)})`
+  return plainText`Recent review requests (${formatList(DefaultLocale, { style: 'narrow' })(details)})`
 }
 
 const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) => html`
@@ -162,7 +163,7 @@ const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =
           ${pipe(
             ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
             RA.map(language => [language, iso6391.getName(language)] as const),
-            RA.sort(Ord.contramap(snd)(ordString('en'))),
+            RA.sort(Ord.contramap(snd)(ordString(DefaultLocale))),
             RA.map(
               ([code, name]) =>
                 html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
@@ -179,7 +180,7 @@ const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =
           ${pipe(
             fieldIds,
             RA.map(field => [field, getFieldName(field)] satisfies [FieldId, string]),
-            RA.sort(Ord.contramap(snd)(ordString('en'))),
+            RA.sort(Ord.contramap(snd)(ordString(DefaultLocale))),
             RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
           )}
         </select>

@@ -4,8 +4,10 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as s from 'fp-ts/lib/string.js'
+import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
+import { DefaultLocale } from './locales/index.js'
 import * as assets from './manifest.json'
 import type { PublicUrlEnv } from './public-url.js'
 import {
@@ -99,7 +101,7 @@ export function page({
   return R.asks(
     ({ fathomId, phase, publicUrl }) => html`
       <!doctype html>
-      <html lang="en" dir="ltr" prefix="og: https://ogp.me/ns#">
+      <html lang="${DefaultLocale}" dir="${rtlDetect.getLangDir(DefaultLocale)}" prefix="og: https://ogp.me/ns#">
         <head>
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />

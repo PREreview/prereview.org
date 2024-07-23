@@ -8,6 +8,7 @@ import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { getClubName } from '../../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
+import { DefaultLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteDeclineMatch, clubProfileMatch, profileMatch } from '../../routes.js'
 import { renderDate } from '../../time.js'
@@ -41,7 +42,7 @@ export const declinePage = ({ inviteId, review }: { inviteId: Uuid; review: Prer
                     ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
                     : [],
                 ),
-                formatList('en'),
+                formatList(DefaultLocale),
               )}
               ${review.club
                 ? html`of the
@@ -54,7 +55,7 @@ export const declinePage = ({ inviteId, review }: { inviteId: Uuid; review: Prer
             <dl>
               <div>
                 <dt>Published</dt>
-                <dd>${renderDate('en')(review.published)}</dd>
+                <dd>${renderDate(DefaultLocale)(review.published)}</dd>
               </div>
               <div>
                 <dt>DOI</dt>

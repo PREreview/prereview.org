@@ -7,6 +7,7 @@ import rtlDetect from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
+import { DefaultLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import {
@@ -118,7 +119,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                 ? html`
                     <div>
                       <dt>Invited author${review.otherAuthors.length !== 1 ? 's' : ''}</dt>
-                      <dd>${pipe(review.otherAuthors, RNEA.map(get('name')), formatList('en'))}</dd>
+                      <dd>${pipe(review.otherAuthors, RNEA.map(get('name')), formatList(DefaultLocale))}</dd>
                       <dd>
                         <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
                           >Change <span class="visually-hidden">invited authors</span></a

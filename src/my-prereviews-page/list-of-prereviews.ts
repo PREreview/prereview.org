@@ -5,6 +5,7 @@ import { flow, pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { myPrereviewsMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -55,7 +56,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
                   ${pipe(
                     prereview.reviewers,
                     RNEA.map(name => html`<b>${name}</b>`),
-                    formatList('en'),
+                    formatList(DefaultLocale),
                   )}
                   reviewed
                   <cite dir="${rtlDetect.getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
@@ -73,7 +74,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
 
                 <dl>
                   <dt>Review published</dt>
-                  <dd>${renderDate('en')(prereview.published)}</dd>
+                  <dd>${renderDate(DefaultLocale)(prereview.published)}</dd>
                   <dt>Preprint server</dt>
                   <dd>
                     ${match(prereview.preprint.id.type)

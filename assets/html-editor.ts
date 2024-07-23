@@ -9,6 +9,7 @@ import bulletedListIcon from 'remixicon/icons/Editor/list-unordered.svg'
 import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
 import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
 import { disableButton, enableButton, preventDefault } from './dom.js'
+import { DefaultLocale } from './locales/index.js'
 
 const translateDep = import('./locales/html-editor.js')
 
@@ -60,7 +61,7 @@ export class HtmlEditor extends HTMLElement {
     const { translateHtmlEditor } = await translateDep
 
     const toolbarButtons = Promise.all([
-      createButton(translateHtmlEditor('en-US')('bold'), boldIcon),
+      createButton(translateHtmlEditor(DefaultLocale)('bold'), boldIcon),
       createButton('Italic', italicIcon),
       createButton('Subscript', subscriptIcon),
       createButton('Superscript', superscriptIcon),

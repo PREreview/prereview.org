@@ -7,6 +7,7 @@ import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { translateHomePage } from '../locales/home-page.js'
+import { DefaultLocale } from '../locales/index.js'
 import * as assets from '../manifest.json'
 import { PageResponse } from '../response.js'
 import {
@@ -38,10 +39,10 @@ export const createPage = ({
   statistics: { prereviews: number; servers: number; users: number }
 }) =>
   PageResponse({
-    title: plainText`PREreview: ${translateHomePage('en-US')('slogan', { swoosh: identity })}`,
+    title: plainText`PREreview: ${translateHomePage(DefaultLocale)('slogan', { swoosh: identity })}`,
     main: html`
       <div class="hero">
-        <h1>${rawHtml(translateHomePage('en-US')('slogan', { swoosh: text => `<em>${text}</em>` }))}</h1>
+        <h1>${rawHtml(translateHomePage(DefaultLocale)('slogan', { swoosh: text => `<em>${text}</em>` }))}</h1>
         <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
 
         <div class="button-group">
@@ -149,7 +150,7 @@ export const createPage = ({
 
                         <dl>
                           <dt>Review published</dt>
-                          <dd>${renderDate('en')(request.published)}</dd>
+                          <dd>${renderDate(DefaultLocale)(request.published)}</dd>
                           <dt>Preprint server</dt>
                           <dd>
                             ${match(request.preprint.id.type)
@@ -199,15 +200,15 @@ export const createPage = ({
 
         <ul class="statistics">
           <li>
-            <data value="${statistics.prereviews}">${statistics.prereviews.toLocaleString('en')}</data>
+            <data value="${statistics.prereviews}">${statistics.prereviews.toLocaleString(DefaultLocale)}</data>
             PREreviews
           </li>
           <li>
-            <data value="${statistics.servers}">${statistics.servers.toLocaleString('en')}</data>
+            <data value="${statistics.servers}">${statistics.servers.toLocaleString(DefaultLocale)}</data>
             preprint servers
           </li>
           <li>
-            <data value="${statistics.users}">${statistics.users.toLocaleString('en')}</data>
+            <data value="${statistics.users}">${statistics.users.toLocaleString(DefaultLocale)}</data>
             PREreviewers
           </li>
         </ul>
@@ -236,7 +237,7 @@ export const createPage = ({
                         </h3>
 
                         <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                          ${formatList('en')(prereview.reviewers)}
+                          ${formatList(DefaultLocale)(prereview.reviewers)}
                           ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
                           <cite
                             dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
@@ -255,7 +256,7 @@ export const createPage = ({
 
                         <dl>
                           <dt>Review published</dt>
-                          <dd>${renderDate('en')(prereview.published)}</dd>
+                          <dd>${renderDate(DefaultLocale)(prereview.published)}</dd>
                           <dt>Preprint server</dt>
                           <dd>
                             ${match(prereview.preprint.id.type)

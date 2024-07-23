@@ -5,6 +5,7 @@ import { flow, pipe } from 'fp-ts/lib/function.js'
 import { P, match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch } from '../routes.js'
 import type { ProfileId } from '../types/profile-id.js'
@@ -126,7 +127,7 @@ function renderContentForOrcid({
                         club =>
                           html`<a href="${format(clubProfileMatch.formatter, { id: club })}">${getClubName(club)}</a>`,
                       ),
-                      formatList('en'),
+                      formatList(DefaultLocale),
                     )}
                   </dd>
                 </div>

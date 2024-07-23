@@ -7,6 +7,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -24,7 +25,7 @@ export const createPage = ({ id, review }: { id: number; review: Prereview }) =>
           ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
           : [],
       ),
-      formatList('en'),
+      formatList(DefaultLocale),
     )}${review.club ? plainText` of the ${getClubName(review.club)}` : ''}.`,
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back">See other reviews</a>
@@ -49,7 +50,7 @@ export const createPage = ({ id, review }: { id: number; review: Prereview }) =>
                 ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
                 : [],
             ),
-            formatList('en'),
+            formatList(DefaultLocale),
           )}
           ${review.club
             ? html`of the
@@ -60,7 +61,7 @@ export const createPage = ({ id, review }: { id: number; review: Prereview }) =>
         <dl>
           <div>
             <dt>Published</dt>
-            <dd>${renderDate('en')(review.published)}</dd>
+            <dd>${renderDate(DefaultLocale)(review.published)}</dd>
           </div>
           <div>
             <dt>DOI</dt>
