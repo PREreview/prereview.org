@@ -2,7 +2,8 @@
 
 . "$(which mo)"
 
-modules=$(find "locales/en-US" -name "*.json" -exec basename "{}" .json \;)
+defaultLocale="en-US"
+modules=$(find "locales/$defaultLocale" -name "*.json" -exec basename "{}" .json \;)
 declare -a targets=("assets" "src")
 
 compile_module() {
@@ -12,7 +13,7 @@ compile_module() {
     directory="${target}/locales/$module"
     mkdir -p "$directory"
 
-    intlc compile "locales/en-US/$module.json" -l "en-US" > "$directory/en-US.ts"
+    intlc compile "locales/$defaultLocale/$module.json" -l "$defaultLocale" > "$directory/$defaultLocale.ts"
 
     moduleName=$(echo "$module" | sed -r 's/(^|[-_ ]+)([0-9a-z])/\U\2/g')
     mo .dev/locale-module.ts.mustache > "$target/locales/$module.ts"

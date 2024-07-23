@@ -1,12 +1,12 @@
-import * as enUsTranslations from './{{module}}/en-US.js'
+import * as defaultTranslations from './{{module}}/{{defaultLocale}}.js'
 
 const translations = {
-  'en-US': enUsTranslations
+  '{{defaultLocale}}': defaultTranslations
 }
 
 type SupportedLocale = keyof typeof translations
 
-type Translations = typeof translations['en-US']
+type Translations = typeof translations['{{defaultLocale}}']
 
 export const translate{{moduleName}} =
   (locale: SupportedLocale) =>
@@ -16,5 +16,5 @@ export const translate{{moduleName}} =
       return translations[locale][key](...args)
     }
     // @ts-ignore
-    return translations['en-US'][key](...args)
+    return translations['{{defaultLocale}}'][key](...args)
   }
