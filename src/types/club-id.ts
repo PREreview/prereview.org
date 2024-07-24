@@ -21,6 +21,7 @@ export const clubIds = [
   'nsa-utd',
   'open-box-science',
   'open-science-community-iraqi',
+  'prosac',
   'reviewing-dental-articles-club',
   'rr-id-student-reviewer-club',
   'sg-biofilms-microbiome',

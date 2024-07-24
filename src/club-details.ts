@@ -315,6 +315,24 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     leads: [{ name: 'Assist. Prof. Dr. Salwan M. Abdulateef', orcid: '0000-0002-7389-0003' as Orcid }],
     contact: 'ag.salwan.mahmood@uoanbar.edu.iq' as EmailAddress,
   },
+  prosac: {
+    name: 'Proteostasis and Cancer Team INSERM U1242',
+    description: html`
+      <p>
+        The Proteostasis and Cancer team is aiming at characterizing how protein homeostasis (a.k.a. proteostasis)
+        control might play a role in cancer development. In particular, the team focuses principally (but not
+        exclusively) on the signalling pathways sustaining proteostasis in the Endoplasmic Reticulum (ER), the clinical
+        relevance of such mechanisms, and the potential of their therapeutic targeting in solid tumours (mainly brain
+        and breast cancers).
+      </p>
+      <p>
+        This club will provide pre-reviews of preprints as part of our team’s journal clubs. We thereby aim to provide
+        constructive criticism to the authors while training the students and postdoctoral researchers in our team to
+        review articles.
+      </p>
+    `,
+    leads: [{ name: 'Elodie Lafont', orcid: '0000-0003-1978-7491' as Orcid }],
+  },
   'reviewing-dental-articles-club': {
     name: 'Reviewing Dental Articles Club',
     description: html`
