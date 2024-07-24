@@ -17,9 +17,9 @@ export const aboutUs = pipe(
 function createPage(content: Html) {
   return ({ translate }: { translate: LocaleTranslate }) =>
     PageResponse({
-      title: plainText(translate('about-us', 'title')),
+      title: plainText(translate('about-us', 'title')()),
       main: html`
-        <h1>${translate('about-us', 'title')}</h1>
+        <h1>${translate('about-us', 'title')()}</h1>
 
         ${fixHeadingLevels(1, content)}
       `,

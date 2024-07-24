@@ -1,5 +1,5 @@
 {{#moduleNames}}
-import { translate{{@key}} } from './{{.}}.js'
+import * as {{@key}} from './{{.}}.js'
 {{/moduleNames}}
 
 export type SupportedLocale = {{#locales}}| '{{.}}'{{/locales}}
@@ -9,23 +9,30 @@ export const DefaultLocale: SupportedLocale = '{{defaultLocale}}'
 export const isSupportedLocale = (locale: string): locale is SupportedLocale =>
   [{{#locales}}'{{.}}', {{/locales}}].includes(locale)
 
-type Module = keyof typeof modules
+type Module = keyof Translations
+type Key<M extends Module> = keyof Translations[M]
 
 const modules = {
 {{#moduleNames}}
-  '{{.}}': translate{{@key}},
+  '{{.}}': {{@key}}.translate{{@key}},
+{{/moduleNames}}
+}
+
+type Translations = {
+{{#moduleNames}}
+  '{{.}}': {{@key}}.Translations,
 {{/moduleNames}}
 }
 
 export const translate =
-  <M extends Module>(locale: SupportedLocale, module: M, ...args: Parameters<ReturnType<(typeof modules)[M]>>): ReturnType<ReturnType<(typeof modules)[M]>> => {
+  <M extends Module, K extends Key<M>>(locale: SupportedLocale, module: M, key: K): Translations[M][K] => {
     // @ts-ignore
-    return modules[module](locale)(...args)
+    return modules[module](locale)(key)
   }
 
-export const localeTranslate = (locale: SupportedLocale) => <M extends Module>(module: M, ...args: Parameters<ReturnType<(typeof modules)[M]>>): ReturnType<ReturnType<(typeof modules)[M]>> => {
+export const localeTranslate = (locale: SupportedLocale) => <M extends Module, K extends Key<M>>(module: M, key: K): Translations[M][K] => {
     // @ts-ignore
-    return modules[module](locale)(...args)
+    return modules[module](locale)(key)
   }
 
 export type LocaleTranslate = ReturnType<typeof localeTranslate>

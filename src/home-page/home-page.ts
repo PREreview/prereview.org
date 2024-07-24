@@ -38,20 +38,20 @@ export const createPage = ({
   statistics: { prereviews: number; servers: number; users: number }
 }) =>
   PageResponse({
-    title: locale => plainText`PREreview: ${translate(locale, 'home-page', 'slogan', { swoosh: identity })}`,
+    title: locale => plainText`PREreview: ${translate(locale, 'home-page', 'slogan')({ swoosh: identity })}`,
     main: locale => html`
       <div class="hero">
-        <h1>${rawHtml(translate(locale, 'home-page', 'slogan', { swoosh: text => `<em>${text}</em>` }))}</h1>
-        <p>${translate(locale, 'home-page', 'heroText')}</p>
+        <h1>${rawHtml(translate(locale, 'home-page', 'slogan')({ swoosh: text => `<em>${text}</em>` }))}</h1>
+        <p>${translate(locale, 'home-page', 'heroText')()}</p>
 
         <div class="button-group">
           <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button"
-            >${translate(locale, 'home-page', 'reviewPreprintButton')}</a
+            >${translate(locale, 'home-page', 'reviewPreprintButton')()}</a
           >
           ${canRequestReviews
             ? html`
                 <a href="${format(requestAPrereviewMatch.formatter, {})}"
-                  >${translate(locale, 'home-page', 'requestReviewButton')}</a
+                  >${translate(locale, 'home-page', 'requestReviewButton')()}</a
                 >
               `
             : ''}
@@ -63,21 +63,21 @@ export const createPage = ({
       <div class="overview">
         <section aria-labelledby="for-underserved-researchers-title">
           <h2 id="for-underserved-researchers-title">
-            ${translate(locale, 'home-page', 'overviewUnderservedResearchersTitle')}
+            ${translate(locale, 'home-page', 'overviewUnderservedResearchersTitle')()}
           </h2>
 
-          <p>${translate(locale, 'home-page', 'overviewUnderservedResearchersText')}</p>
+          <p>${translate(locale, 'home-page', 'overviewUnderservedResearchersText')()}</p>
         </section>
 
         <div></div>
 
         <section aria-labelledby="a-better-way-title">
-          <h2 id="a-better-way-title">${translate(locale, 'home-page', 'overviewBetterWayTitle')}</h2>
+          <h2 id="a-better-way-title">${translate(locale, 'home-page', 'overviewBetterWayTitle')()}</h2>
 
-          <p>${translate(locale, 'home-page', 'overviewBetterWayText')}</p>
+          <p>${translate(locale, 'home-page', 'overviewBetterWayText')()}</p>
 
           <a href="${format(aboutUsMatch.formatter, {})}" class="forward"
-            >${translate(locale, 'home-page', 'overviewBetterWayLink')}</a
+            >${translate(locale, 'home-page', 'overviewBetterWayLink')()}</a
           >
         </section>
       </div>
@@ -118,7 +118,7 @@ export const createPage = ({
           `,
           requests => html`
             <section aria-labelledby="recent-review-requests-title">
-              <h2 id="recent-review-requests-title">${translate(locale, 'home-page', 'requestsTitle')}</h2>
+              <h2 id="recent-review-requests-title">${translate(locale, 'home-page', 'requestsTitle')()}</h2>
               <ol class="cards" aria-labelledby="recent-review-requests-title" tabindex="0">
                 ${requests.map(
                   (request, index) => html`
@@ -197,7 +197,7 @@ export const createPage = ({
 
               <nav>
                 <a href="${format(reviewRequestsMatch.formatter, {})}" class="forward"
-                  >${translate(locale, 'home-page', 'requestsLink')}</a
+                  >${translate(locale, 'home-page', 'requestsLink')()}</a
                 >
               </nav>
             </section>
@@ -206,12 +206,16 @@ export const createPage = ({
       )}
 
       <section aria-labelledby="statistics-title">
-        <h2 id="statistics-title">${translate(locale, 'home-page', 'statisticsTitle')}</h2>
+        <h2 id="statistics-title">${translate(locale, 'home-page', 'statisticsTitle')()}</h2>
 
         <ul class="statistics">
           <li>
             ${rawHtml(
-              translate(locale, 'home-page', 'statisticsReviews', {
+              translate(
+                locale,
+                'home-page',
+                'statisticsReviews',
+              )({
                 number: statistics.prereviews,
                 data: text => `<data value="${statistics.servers}">${text}</data>`,
               }),
@@ -219,7 +223,11 @@ export const createPage = ({
           </li>
           <li>
             ${rawHtml(
-              translate(locale, 'home-page', 'statisticsServers', {
+              translate(
+                locale,
+                'home-page',
+                'statisticsServers',
+              )({
                 number: statistics.servers,
                 data: text => `<data value="${statistics.servers}">${text}</data>`,
               }),
@@ -227,7 +235,11 @@ export const createPage = ({
           </li>
           <li>
             ${rawHtml(
-              translate(locale, 'home-page', 'statisticsUsers', {
+              translate(
+                locale,
+                'home-page',
+                'statisticsUsers',
+              )({
                 number: statistics.users,
                 data: text => `<data value="${statistics.users}">${text}</data>`,
               }),
@@ -242,7 +254,7 @@ export const createPage = ({
           () => '',
           prereviews => html`
             <section aria-labelledby="recent-prereviews-title">
-              <h2 id="recent-prereviews-title">${translate(locale, 'home-page', 'reviewsTitle')}</h2>
+              <h2 id="recent-prereviews-title">${translate(locale, 'home-page', 'reviewsTitle')()}</h2>
 
               <ol class="cards" aria-labelledby="recent-prereviews-title" tabindex="0">
                 ${prereviews.map(
@@ -319,7 +331,7 @@ export const createPage = ({
 
               <nav>
                 <a href="${format(reviewsMatch.formatter, {})}" class="forward"
-                  >${translate(locale, 'home-page', 'reviewsLink')}</a
+                  >${translate(locale, 'home-page', 'reviewsLink')()}</a
                 >
               </nav>
             </section>
@@ -328,7 +340,7 @@ export const createPage = ({
       )}
 
       <section aria-labelledby="funders-title">
-        <h2 id="funders-title">${translate(locale, 'home-page', 'fundersTitle')}</h2>
+        <h2 id="funders-title">${translate(locale, 'home-page', 'fundersTitle')()}</h2>
 
         <ol class="logos">
           <li>
