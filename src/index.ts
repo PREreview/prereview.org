@@ -18,11 +18,14 @@ import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
 import { createServer } from 'node:http'
 import { aboutUs } from './about-us.js'
+import { withEnv } from './app.js'
 import { RedisService, effectifiedExpressApp } from './effectified-app.js'
 import { decodeEnv } from './env.js'
 import type { SleepEnv } from './fetch.js'
 import type { GhostApiEnv } from './ghost.js'
-import type { PageResponse } from './response.js'
+import { DefaultLocale } from './locales/index.js'
+import { type TemplatePageEnv, page } from './page.js'
+import { type PageResponse, toPage } from './response.js'
 
 const env = decodeEnv(process)()
 
@@ -72,15 +75,20 @@ const healthRoute = Effect.gen(function* () {
 })
 
 const toHttpServerResponse = (
-  pageResponse: RT.ReaderTask<GhostApiEnv & FetchEnv & SleepEnv, PageResponse>,
+  pageResponse: RT.ReaderTask<Context.Tag.Service<LegacyDeps>, PageResponse>,
 ): Effect.Effect<HttpServerResponse.HttpServerResponse, never, LegacyDeps> =>
   Effect.gen(function* () {
     const deps = yield* LegacyDeps
     const legacyResponse = yield* Effect.promise(pageResponse(deps))
-    return yield* HttpServerResponse.html(legacyResponse.main.toString())
+    return yield* HttpServerResponse.html(
+      toPage({ locale: DefaultLocale, message: undefined, userOnboarding: undefined })(
+        legacyResponse,
+        undefined,
+      )(deps).toString(),
+    )
   })
 
-class LegacyDeps extends Context.Tag('LegacyDeps')<LegacyDeps, GhostApiEnv & FetchEnv & SleepEnv>() {}
+class LegacyDeps extends Context.Tag('LegacyDeps')<LegacyDeps, GhostApiEnv & FetchEnv & SleepEnv & TemplatePageEnv>() {}
 
 const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/', HttpServerResponse.html('hello')),
@@ -100,7 +108,7 @@ const requestIdLogging = HttpMiddleware.make(app =>
   }),
 )
 
-const legacyDeps: GhostApiEnv & FetchEnv & SleepEnv = {
+const legacyDeps = LegacyDeps.of({
   fetch: fetch.defaults({
     cachePath: 'data/cache',
     headers: {
@@ -111,7 +119,18 @@ const legacyDeps: GhostApiEnv & FetchEnv & SleepEnv = {
     key: env.GHOST_API_KEY,
   },
   sleep: duration => new Promise(resolve => setTimeout(resolve, duration)),
-}
+  templatePage: withEnv(page, {
+    publicUrl: env.PUBLIC_URL,
+    fathomId: env.FATHOM_SITE_ID,
+    phase:
+      typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT !== 'undefined'
+        ? {
+            tag: env.PHASE_TAG,
+            text: env.PHASE_TEXT,
+          }
+        : undefined,
+  }),
+})
 
 const Server = Router.pipe(
   Effect.catchTags({

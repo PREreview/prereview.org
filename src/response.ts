@@ -19,7 +19,7 @@ import { type Page, type TemplatePageEnv, templatePage } from './page.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import { orcidCodeMatch } from './routes.js'
 import { isCacheable } from './status-code.js'
-import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding.js'
+import { type GetUserOnboardingEnv, type UserOnboarding, maybeGetUserOnboarding } from './user-onboarding.js'
 import type { User } from './user.js'
 
 export type Response =
@@ -162,6 +162,54 @@ const FlashMessageD = D.literal(
   'avatar-removed',
 )
 
+export const toPage =
+  ({
+    locale,
+    message,
+    userOnboarding,
+  }: {
+    locale: SupportedLocale
+    message: D.TypeOf<typeof FlashMessageD> | undefined
+    userOnboarding: UserOnboarding | undefined
+  }) =>
+  (response: PageResponse | StreamlinePageResponse, user: User | undefined) =>
+    templatePage({
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      locale: locale !== DefaultLocale ? locale : undefined,
+      title: typeof response.title === 'function' ? response.title(locale) : response.title,
+      description: typeof response.description === 'function' ? response.description(locale) : response.description,
+      content: html`
+        ${response.nav
+          ? html` <nav>${typeof response.nav === 'function' ? response.nav(locale) : response.nav}</nav>`
+          : ''}
+
+        <main id="${response.skipToLabel}">
+          ${message ? showFlashMessage(message) : ''}
+          ${typeof response.main === 'function' ? response.main(locale) : response.main}
+        </main>
+      `,
+      skipLinks: [
+        [
+          match(response.skipToLabel)
+            .with('form', () => html`Skip to form`)
+            .with('main', () => html`Skip to main content`)
+            .with('prereview', () => html`Skip to PREreview`)
+            .exhaustive(),
+          `#${response.skipToLabel}`,
+        ],
+        ...(response._tag === 'PageResponse' && response.extraSkipLink
+          ? typeof response.extraSkipLink === 'function'
+            ? [response.extraSkipLink(locale)]
+            : [response.extraSkipLink]
+          : []),
+      ],
+      current: response.current,
+      js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
+      type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
+      user,
+      userOnboarding,
+    })
+
 export const handlePageResponse = ({
   response,
   user,
@@ -195,43 +243,8 @@ export const handlePageResponse = ({
     ),
     RM.bindW(
       'body',
-      RM.fromReaderK(({ locale, message, userOnboarding }) =>
-        templatePage({
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          locale: locale !== DefaultLocale ? locale : undefined,
-          title: typeof response.title === 'function' ? response.title(locale) : response.title,
-          description: typeof response.description === 'function' ? response.description(locale) : response.description,
-          content: html`
-            ${response.nav
-              ? html` <nav>${typeof response.nav === 'function' ? response.nav(locale) : response.nav}</nav>`
-              : ''}
-
-            <main id="${response.skipToLabel}">
-              ${message ? showFlashMessage(message) : ''}
-              ${typeof response.main === 'function' ? response.main(locale) : response.main}
-            </main>
-          `,
-          skipLinks: [
-            [
-              match(response.skipToLabel)
-                .with('form', () => html`Skip to form`)
-                .with('main', () => html`Skip to main content`)
-                .with('prereview', () => html`Skip to PREreview`)
-                .exhaustive(),
-              `#${response.skipToLabel}`,
-            ],
-            ...(response._tag === 'PageResponse' && response.extraSkipLink
-              ? typeof response.extraSkipLink === 'function'
-                ? [response.extraSkipLink(locale)]
-                : [response.extraSkipLink]
-              : []),
-          ],
-          current: response.current,
-          js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
-          type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
-          user,
-          userOnboarding,
-        }),
+      RM.fromReaderK(({ locale, userOnboarding, message }) =>
+        toPage({ locale, userOnboarding, message })(response, user),
       ),
     ),
     RM.ichainFirst(() => RM.status(response.status)),

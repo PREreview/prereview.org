@@ -123,7 +123,7 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
   ),
 )
 
-const withEnv =
+export const withEnv =
   <R, A extends ReadonlyArray<unknown>, B>(f: (...a: A) => R.Reader<R, B>, env: R) =>
   (...a: A) =>
     f(...a)(env)
