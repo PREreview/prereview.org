@@ -4,6 +4,7 @@ import { pipe } from 'fp-ts/lib/function.js'
 import { getPage } from './ghost.js'
 import { type Html, fixHeadingLevels, html, plainText } from './html.js'
 import { havingProblemsPage } from './http-error.js'
+import { translate } from './locales/index.js'
 import { PageResponse } from './response.js'
 import { aboutUsMatch } from './routes.js'
 
@@ -14,9 +15,9 @@ export const aboutUs = pipe(
 
 function createPage(content: Html) {
   return PageResponse({
-    title: plainText`About us`,
+    title: plainText(translate('en-US', 'about-us', 'title')),
     main: html`
-      <h1>About us</h1>
+      <h1>${translate('en-US', 'about-us', 'title')}</h1>
 
       ${fixHeadingLevels(1, content)}
     `,
