@@ -9,13 +9,20 @@ import {
 import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/platform-node'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Config, Effect, Layer, Logger, type Scope, pipe } from 'effect'
+import { Config, Context, Effect, Layer, Logger, type Scope, pipe } from 'effect'
+import type { FetchEnv } from 'fetch-fp-ts'
 import * as C from 'fp-ts/lib/Console.js'
+import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import { Redis as IoRedis } from 'ioredis'
 import * as L from 'logger-fp-ts'
+import fetch from 'make-fetch-happen'
 import { createServer } from 'node:http'
+import { aboutUs } from './about-us.js'
 import { RedisService, effectifiedExpressApp } from './effectified-app.js'
 import { decodeEnv } from './env.js'
+import type { SleepEnv } from './fetch.js'
+import type { GhostApiEnv } from './ghost.js'
+import type { PageResponse } from './response.js'
 
 const env = decodeEnv(process)()
 
@@ -64,8 +71,20 @@ const healthRoute = Effect.gen(function* () {
   return HttpServerResponse.raw('healthy')
 })
 
+const toHttpServerResponse = (
+  pageResponse: RT.ReaderTask<GhostApiEnv & FetchEnv & SleepEnv, PageResponse>,
+): Effect.Effect<HttpServerResponse.HttpServerResponse, never, LegacyDeps> =>
+  Effect.gen(function* () {
+    const deps = yield* LegacyDeps
+    const legacyResponse = yield* Effect.promise(pageResponse(deps))
+    return yield* HttpServerResponse.html(legacyResponse.main.toString())
+  })
+
+class LegacyDeps extends Context.Tag('LegacyDeps')<LegacyDeps, GhostApiEnv & FetchEnv & SleepEnv>() {}
+
 const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/', HttpServerResponse.html('hello')),
+  HttpRouter.get('/about', toHttpServerResponse(aboutUs)),
   HttpRouter.get('/health', healthRoute),
 )
 
@@ -80,6 +99,19 @@ const requestIdLogging = HttpMiddleware.make(app =>
     return yield* app.pipe(Effect.annotateLogs('requestId', requestId))
   }),
 )
+
+const legacyDeps: GhostApiEnv & FetchEnv & SleepEnv = {
+  fetch: fetch.defaults({
+    cachePath: 'data/cache',
+    headers: {
+      'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
+    },
+  }),
+  ghostApi: {
+    key: env.GHOST_API_KEY,
+  },
+  sleep: duration => new Promise(resolve => setTimeout(resolve, duration)),
+}
 
 const Server = Router.pipe(
   Effect.catchTags({
@@ -96,6 +128,7 @@ const Server = Router.pipe(
   HttpServer.serve(requestIdLogging),
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Layer.provide(redisLayer),
+  Layer.provide(Layer.succeed(LegacyDeps, legacyDeps)),
 )
 
 Layer.launch(Server).pipe(Effect.provide(Logger.pretty), NodeRuntime.runMain)
