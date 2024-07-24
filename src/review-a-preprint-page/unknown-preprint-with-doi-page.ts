@@ -18,6 +18,7 @@ export function createUnknownPreprintWithDoiPage(preprint: Extract<Indeterminate
         We think the DOI <q class="select-all" translate="no">${preprint.value}</q> could be
         ${match(preprint.type)
           .with('africarxiv', () => 'an AfricArXiv')
+          .with('arcadia-science', () => 'an Arcadia Science')
           .with('arxiv', () => 'an arXiv')
           .with('authorea', () => 'an Authorea')
           .with('biorxiv', () => 'a bioRxiv')

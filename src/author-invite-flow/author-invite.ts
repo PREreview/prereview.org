@@ -15,6 +15,7 @@ import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteDeclineMatch,
@@ -131,7 +132,7 @@ function startPage({ inviteId, review, user }: { inviteId: Uuid; review: Prerevi
                   ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
                   : [],
               ),
-              formatList('en'),
+              formatList(DefaultLocale),
             )}
             ${review.club
               ? html`of the
@@ -142,7 +143,7 @@ function startPage({ inviteId, review, user }: { inviteId: Uuid; review: Prerevi
           <dl>
             <div>
               <dt>Published</dt>
-              <dd>${renderDate(review.published)}</dd>
+              <dd>${renderDate(DefaultLocale)(review.published)}</dd>
             </div>
             <div>
               <dt>DOI</dt>

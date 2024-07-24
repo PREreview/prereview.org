@@ -11,6 +11,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { reviewMatch, reviewsMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -39,7 +40,7 @@ export const createPage = (
               <li>
                 <article>
                   <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                    ${formatList('en')(prereview.reviewers)}
+                    ${formatList(DefaultLocale)(prereview.reviewers)}
                     ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
                     <cite
                       dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
@@ -58,11 +59,12 @@ export const createPage = (
 
                   <dl>
                     <dt>Review published</dt>
-                    <dd>${renderDate(prereview.published)}</dd>
+                    <dd>${renderDate(DefaultLocale)(prereview.published)}</dd>
                     <dt>Preprint server</dt>
                     <dd>
                       ${match(prereview.preprint.id.type)
                         .with('africarxiv', () => 'AfricArXiv Preprints')
+                        .with('arcadia-science', () => 'Arcadia Science')
                         .with('arxiv', () => 'arXiv')
                         .with('authorea', () => 'Authorea')
                         .with('biorxiv', () => 'bioRxiv')
@@ -148,7 +150,7 @@ const title = ({
     [query, field ? getFieldName(field) : undefined, language ? iso6391.getName(language) : undefined].filter(isString),
   )
 
-  return plainText`Recent PREreviews (${formatList('en', { style: 'narrow' })(details)})`
+  return plainText`Recent PREreviews (${formatList(DefaultLocale, { style: 'narrow' })(details)})`
 }
 
 const form = ({
@@ -182,7 +184,7 @@ const form = ({
           ${pipe(
             ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
             RA.map(language => [language, iso6391.getName(language)] as const),
-            RA.sort(Ord.contramap(snd)(ordString('en'))),
+            RA.sort(Ord.contramap(snd)(ordString(DefaultLocale))),
             RA.map(
               ([code, name]) =>
                 html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
@@ -199,7 +201,7 @@ const form = ({
           ${pipe(
             fieldIds,
             RA.map(field => [field, getFieldName(field)] satisfies [FieldId, string]),
-            RA.sort(Ord.contramap(snd)(ordString('en'))),
+            RA.sort(Ord.contramap(snd)(ordString(DefaultLocale))),
             RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
           )}
         </select>
@@ -209,7 +211,7 @@ const form = ({
   </form>
 `
 
-const ordString = (locale: LanguageCode) => Ord.fromCompare(localeCompare(locale))
+const ordString = flow(localeCompare, Ord.fromCompare)
 
 function localeCompare(...args: ConstructorParameters<typeof Intl.Collator>): (a: string, b: string) => Ordering {
   const collator = new Intl.Collator(...args)

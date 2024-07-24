@@ -6,6 +6,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, rawHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import { reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import type { NonEmptyString } from '../types/string.js'
@@ -33,7 +34,7 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyStr
                     ${pipe(
                       prereview.reviewers,
                       RNEA.map(name => html`<b>${name}</b>`),
-                      formatList('en'),
+                      formatList(DefaultLocale),
                     )}
                     ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
                     <cite
@@ -53,11 +54,12 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyStr
 
                   <dl>
                     <dt>Review published</dt>
-                    <dd>${renderDate(prereview.published)}</dd>
+                    <dd>${renderDate(DefaultLocale)(prereview.published)}</dd>
                     <dt>Preprint server</dt>
                     <dd>
                       ${match(prereview.preprint.id.type)
                         .with('africarxiv', () => 'AfricArXiv Preprints')
+                        .with('arcadia-science', () => 'Arcadia Science')
                         .with('arxiv', () => 'arXiv')
                         .with('authorea', () => 'Authorea')
                         .with('biorxiv', () => 'bioRxiv')

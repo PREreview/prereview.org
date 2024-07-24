@@ -21,13 +21,15 @@ jobs:
     name: 'Build assets'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
+    needs:
+      - build-locales
 
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v4.1.7
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -43,20 +45,73 @@ jobs:
           key: webpack-${{ github.head_ref || github.ref_name }}
           restore-keys: webpack-
 
+      - name: 'Download assets locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales-assets
+          path: assets/locales
+
       - name: 'Build assets'
         run: npm run build:assets
 
       - name: 'Upload assets'
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.4
         with:
           name: assets
           path: dist/assets
 
       - name: 'Upload manifest'
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.4
         with:
           name: manifest
           path: src/manifest.json
+
+  build-locales:
+    name: 'Build locales'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v4.1.7
+
+      - name: 'Set up Docker Build'
+        uses: docker/setup-buildx-action@v3.4.0
+
+      - name: 'Build intlc image'
+        id: build
+        uses: docker/build-push-action@v6.4.0
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          context: .
+          target: build-intlc
+          outputs: type=docker
+          cache-from: type=gha,ignore-error=true
+          cache-to: type=gha,mode=max,ignore-error=true
+
+      - name: 'Create container'
+        id: container
+        run: |
+          container=$(docker container create "${{ steps.build.outputs.imageid }}")
+          echo "container=$container" >> $GITHUB_OUTPUT
+
+      - name: 'Copy files'
+        run: |
+          docker container cp ${{ steps.container.outputs.container }}:/app/assets/ .
+          docker container cp ${{ steps.container.outputs.container }}:/app/src/ .
+
+      - name: 'Upload locales'
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: locales
+          path: src/locales
+
+      - name: 'Upload assets locales'
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: locales-assets
+          path: assets/locales
 
   build-image:
     name: 'Build image'
@@ -74,7 +129,7 @@ jobs:
 
       - name: 'Build image'
         id: build
-        uses: docker/build-push-action@v6.3.0
+        uses: docker/build-push-action@v6.4.0
         with:
           context: .
           outputs: type=docker,dest=/tmp/image.tar
@@ -82,7 +137,7 @@ jobs:
           cache-to: type=gha,mode=max,ignore-error=true
 
       - name: 'Upload build'
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.4
         with:
           name: image
           path: /tmp/image.tar
@@ -97,7 +152,7 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -118,7 +173,7 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -135,13 +190,14 @@ jobs:
     timeout-minutes: 30
     needs:
       - build-assets
+      - build-locales
 
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v4.1.7
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -150,10 +206,22 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4.1.8
         with:
           name: manifest
           path: src
+
+      - name: 'Download locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales
+          path: src/locales
+
+      - name: 'Download assets locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales-assets
+          path: assets/locales
 
       - name: 'Run the linter'
         run: npm run lint:ts
@@ -164,6 +232,7 @@ jobs:
     timeout-minutes: 30
     needs:
       - build-assets
+      - build-locales
     strategy:
       fail-fast: false
       matrix:
@@ -174,7 +243,7 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -183,10 +252,16 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4.1.8
         with:
           name: manifest
           path: src
+
+      - name: 'Download locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales
+          path: src/locales
 
       - name: 'Run the tests'
         run: npm run test -- --shard=${{ matrix.shard }}/${{ strategy.job-total }}
@@ -197,6 +272,7 @@ jobs:
     timeout-minutes: 30
     needs:
       - build-assets
+      - build-locales
     strategy:
       fail-fast: false
       matrix:
@@ -207,7 +283,7 @@ jobs:
         uses: nschloe/action-cached-lfs-checkout@v1.2.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -216,16 +292,22 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: 'Download assets'
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4.1.8
         with:
           name: assets
           path: dist/assets
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4.1.8
         with:
           name: manifest
           path: src
+
+      - name: 'Download locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales
+          path: src/locales
 
       - name: 'Run Playwright'
         id: 'playwright'
@@ -235,7 +317,7 @@ jobs:
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.4
         with:
           name: integration-tests-results-${{ matrix.shard }}
           path: integration-results
@@ -252,7 +334,7 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       - name: 'Download image'
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4.1.8
         with:
           name: image
           path: /tmp
@@ -269,6 +351,7 @@ jobs:
     timeout-minutes: 30
     needs:
       - build-assets
+      - build-locales
     strategy:
       fail-fast: false
       matrix:
@@ -279,7 +362,7 @@ jobs:
         uses: nschloe/action-cached-lfs-checkout@v1.2.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -288,16 +371,22 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: 'Download assets'
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4.1.8
         with:
           name: assets
           path: dist/assets
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4.1.8
         with:
           name: manifest
           path: src
+
+      - name: 'Download locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales
+          path: src/locales
 
       - name: 'Run Playwright'
         id: 'playwright'
@@ -307,7 +396,7 @@ jobs:
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.4
         with:
           name: visual-regression-tests-results-${{ matrix.shard }}
           path: integration-results
@@ -322,7 +411,7 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -336,6 +425,12 @@ jobs:
       - name: 'Install browsers'
         run: npx playwright install
 
+      - name: 'Download assets locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales-assets
+          path: assets/locales
+
       - name: 'Run the tests'
         run: npx web-test-runner
 
@@ -345,13 +440,14 @@ jobs:
     timeout-minutes: 30
     needs:
       - build-assets
+      - build-locales
 
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v4.1.7
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -360,10 +456,22 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4.1.8
         with:
           name: manifest
           path: src
+
+      - name: 'Download locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales
+          path: src/locales
+
+      - name: 'Download assets locales'
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: locales-assets
+          path: assets/locales
 
       - name: 'Run typechecker'
         run: npm run typecheck
@@ -397,7 +505,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 'Download image'
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4.1.8
         with:
           name: image
           path: /tmp

@@ -5,6 +5,7 @@ import { flow, pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
+import { DefaultLocale } from '../../locales/index.js'
 import type { Preprint } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../routes.js'
@@ -31,20 +32,21 @@ export const startPage = (preprint: Preprint, user?: User) =>
           ${pipe(
             preprint.authors,
             RNEA.map(author => author.name),
-            formatList('en'),
+            formatList(DefaultLocale),
           )}
         </div>
 
         <dl>
           <div>
             <dt>Posted</dt>
-            <dd>${renderDate(preprint.posted)}</dd>
+            <dd>${renderDate(DefaultLocale)(preprint.posted)}</dd>
           </div>
           <div>
             <dt>Server</dt>
             <dd>
               ${match(preprint.id.type)
                 .with('africarxiv', () => 'AfricArXiv Preprints')
+                .with('arcadia-science', () => 'Arcadia Science')
                 .with('arxiv', () => 'arXiv')
                 .with('authorea', () => 'Authorea')
                 .with('biorxiv', () => 'bioRxiv')

@@ -1,9 +1,11 @@
 /.cache/
 /.dev/server.crt
 /.dev/server.key
+/assets/locales/
 /data/
 /dist/
 /integration-results/
 /node_modules/
 /src/manifest.json
+/src/locales/
 /.env

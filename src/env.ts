@@ -58,6 +58,7 @@ const EnvD = pipe(
     ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
     BLOCKED_USERS: withDefault(CommaSeparatedListD(OrcidD), []),
     CAN_SEE_GATES_LOGO: withDefault(BooleanD, false),
+    COAR_NOTIFY_TOKEN: D.string,
     COAR_NOTIFY_URL: UrlD,
     CLOUDINARY_API_KEY: D.string,
     CLOUDINARY_API_SECRET: D.string,

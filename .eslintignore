@@ -1,6 +1,8 @@
 /.cache/
 /.dev/
+/assets/locales/
 /data/
 /dist/
 /integration-results/
+/src/locales/
 /*.js

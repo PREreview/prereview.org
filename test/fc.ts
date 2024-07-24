@@ -82,6 +82,7 @@ import {
   type AfricarxivOsfPreprintId,
   type AfricarxivPreprintId,
   type AfricarxivZenodoPreprintId,
+  type ArcadiaSciencePreprintId,
   type ArxivPreprintId,
   type AuthoreaPreprintId,
   type BiorxivOrMedrxivPreprintId,
@@ -224,6 +225,29 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
     )
 
 export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
+
+export const locale = (): fc.Arbitrary<string> =>
+  constantFrom(
+    'de',
+    'de-AT',
+    'de-DE-u-co-phonebk',
+    'en',
+    'en-001',
+    'en-GB-u-ca-islamic',
+    'en-US',
+    'en-emodeng',
+    'es',
+    'es-419',
+    'km',
+    'km-Khmr-KH',
+    'km-fonipa',
+    'hi',
+    'th',
+    'th-TH-u-nu-thai',
+    'zh',
+    'zh-CN',
+    'zh-Hans-CN',
+  )
 
 export const pageResponse = ({
   canonical,
@@ -484,6 +508,12 @@ export const africarxivZenodoPreprintId = (): fc.Arbitrary<AfricarxivZenodoPrepr
   fc.record({
     type: constant('africarxiv'),
     value: doi(constant('5281')),
+  })
+
+export const arcadiaSciencePreprintId = (): fc.Arbitrary<ArcadiaSciencePreprintId> =>
+  fc.record({
+    type: constant('arcadia-science'),
+    value: doi(constant('57844')),
   })
 
 export const arxivPreprintId = (): fc.Arbitrary<ArxivPreprintId> =>
@@ -771,6 +801,7 @@ export const preprintId = (): fc.Arbitrary<PreprintId> => fc.oneof(philsciPrepri
 export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>> =>
   fc.oneof(
     africarxivPreprintId(),
+    arcadiaSciencePreprintId(),
     arxivPreprintId(),
     authoreaPreprintId(),
     biorxivPreprintId(),
@@ -826,6 +857,7 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
   fc.oneof(
     africarxivFigsharePreprintId(),
     africarxivZenodoPreprintId(),
+    arcadiaSciencePreprintId(),
     arxivPreprintId(),
     osfPreprintId(),
     psychArchivesPreprintId(),
@@ -858,6 +890,7 @@ export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId>
 export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, ReviewRequestPreprintId>> =>
   fc.oneof(
     africarxivPreprintId(),
+    arcadiaSciencePreprintId(),
     authoreaPreprintId(),
     chemrxivPreprintId(),
     eartharxivPreprintId(),
@@ -1060,7 +1093,7 @@ export const fetchResponse = ({
       status: status ?? fc.integer(),
       statusText: fc.string(),
       url: fc.string(),
-      text: json ? json.map(JSON.stringify) : text ?? fc.string(),
+      text: json ? json.map(JSON.stringify) : (text ?? fc.string()),
     })
     .map(args =>
       Object.defineProperties(

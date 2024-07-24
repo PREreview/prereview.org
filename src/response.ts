@@ -12,6 +12,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message.js'
 import { type Html, html, sendHtml } from './html.js'
+import { DefaultLocale, type SupportedLocale } from './locales/index.js'
 import type { OrcidOAuthEnv } from './log-in/index.js'
 import { showNotificationBanner } from './notification-banner.js'
 import { type Page, type TemplatePageEnv, templatePage } from './page.js'
@@ -34,12 +35,12 @@ export interface PageResponse {
   readonly canonical?: string
   readonly current?: Page['current']
   readonly status: Status
-  readonly title: Page['title']
-  readonly description?: Page['description']
-  readonly nav?: Html
-  readonly main: Html
+  readonly title: Page['title'] | ((lang: SupportedLocale) => Page['title'])
+  readonly description?: Page['description'] | ((lang: SupportedLocale) => Page['description'])
+  readonly nav?: Html | ((lang: SupportedLocale) => Html)
+  readonly main: Html | ((lang: SupportedLocale) => Html)
   readonly skipToLabel: 'form' | 'main' | 'prereview'
-  readonly extraSkipLink?: [Html, string]
+  readonly extraSkipLink?: [Html, string] | ((lang: SupportedLocale) => [Html, string])
   readonly js: Required<Page>['js']
 }
 
@@ -48,10 +49,10 @@ export interface StreamlinePageResponse {
   readonly canonical?: string
   readonly current?: Page['current']
   readonly status: Status
-  readonly title: Page['title']
-  readonly description?: Page['description']
-  readonly nav?: Html
-  readonly main: Html
+  readonly title: Page['title'] | ((lang: SupportedLocale) => Page['title'])
+  readonly description?: Page['description'] | ((lang: SupportedLocale) => Page['description'])
+  readonly nav?: Html | ((lang: SupportedLocale) => Html)
+  readonly main: Html | ((lang: SupportedLocale) => Html)
   readonly skipToLabel: 'form' | 'main'
   readonly js: Required<Page>['js']
   readonly allowRobots?: false
@@ -60,11 +61,11 @@ export interface StreamlinePageResponse {
 export interface TwoUpPageResponse {
   readonly _tag: 'TwoUpPageResponse'
   readonly canonical: string
-  readonly title: Page['title']
-  readonly description: Page['description']
-  readonly h1: Html
-  readonly aside: Html
-  readonly main: Html
+  readonly title: Page['title'] | ((lang: SupportedLocale) => Page['title'])
+  readonly description?: Page['description'] | ((lang: SupportedLocale) => Page['description'])
+  readonly h1: Html | ((lang: SupportedLocale) => Html)
+  readonly aside: Html | ((lang: SupportedLocale) => Html)
+  readonly main: Html | ((lang: SupportedLocale) => Html)
 }
 
 export interface RedirectResponse {
@@ -176,6 +177,7 @@ export const handlePageResponse = ({
 > =>
   pipe(
     RM.of({}),
+    RM.apS('locale', RM.of(DefaultLocale)),
     RM.apS('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
     RM.apSW(
@@ -193,14 +195,21 @@ export const handlePageResponse = ({
     ),
     RM.bindW(
       'body',
-      RM.fromReaderK(({ message, userOnboarding }) =>
+      RM.fromReaderK(({ locale, message, userOnboarding }) =>
         templatePage({
-          title: response.title,
-          description: response.description,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          locale: locale !== DefaultLocale ? locale : undefined,
+          title: typeof response.title === 'function' ? response.title(locale) : response.title,
+          description: typeof response.description === 'function' ? response.description(locale) : response.description,
           content: html`
-            ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
+            ${response.nav
+              ? html` <nav>${typeof response.nav === 'function' ? response.nav(locale) : response.nav}</nav>`
+              : ''}
 
-            <main id="${response.skipToLabel}">${message ? showFlashMessage(message) : ''} ${response.main}</main>
+            <main id="${response.skipToLabel}">
+              ${message ? showFlashMessage(message) : ''}
+              ${typeof response.main === 'function' ? response.main(locale) : response.main}
+            </main>
           `,
           skipLinks: [
             [
@@ -211,7 +220,11 @@ export const handlePageResponse = ({
                 .exhaustive(),
               `#${response.skipToLabel}`,
             ],
-            ...(response._tag === 'PageResponse' && response.extraSkipLink ? [response.extraSkipLink] : []),
+            ...(response._tag === 'PageResponse' && response.extraSkipLink
+              ? typeof response.extraSkipLink === 'function'
+                ? [response.extraSkipLink(locale)]
+                : [response.extraSkipLink]
+              : []),
           ],
           current: response.current,
           js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
@@ -266,6 +279,7 @@ const handleTwoUpPageResponse = ({
 > =>
   pipe(
     RM.of({}),
+    RM.apS('locale', RM.of(DefaultLocale)),
     RM.apS('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
     RM.apSW(
@@ -277,16 +291,23 @@ const handleTwoUpPageResponse = ({
     ),
     RM.bindW(
       'body',
-      RM.fromReaderK(({ message, userOnboarding }) =>
+      RM.fromReaderK(({ locale, message, userOnboarding }) =>
         templatePage({
-          title: response.title,
-          description: response.description,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          locale: locale !== DefaultLocale ? locale : undefined,
+          title: typeof response.title === 'function' ? response.title(locale) : response.title,
+          description: typeof response.description === 'function' ? response.description(locale) : response.description,
           content: html`
-            <h1 class="visually-hidden">${response.h1}</h1>
+            <h1 class="visually-hidden">${typeof response.h1 === 'function' ? response.h1(locale) : response.h1}</h1>
 
-            <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
+            <aside id="preprint-details" tabindex="0" aria-label="Preprint details">
+              ${typeof response.aside === 'function' ? response.aside(locale) : response.aside}
+            </aside>
 
-            <main id="prereviews">${message ? showFlashMessage(message) : ''} ${response.main}</main>
+            <main id="prereviews">
+              ${message ? showFlashMessage(message) : ''}
+              ${typeof response.main === 'function' ? response.main(locale) : response.main}
+            </main>
           `,
           skipLinks: [
             [html`Skip to preprint details`, '#preprint-details'],

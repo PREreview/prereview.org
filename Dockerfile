@@ -12,6 +12,19 @@ COPY .npmrc \
   ./
 
 #
+# Stage: intlc environment
+#
+FROM debian:12.6-slim AS intlc
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+WORKDIR /app
+
+ADD https://github.com/unsplash/intlc/releases/download/v0.8.3/intlc-v0.8.3-linux-x86_64 /usr/local/bin/intlc
+COPY --from=ghcr.io/tests-always-included/mo:3.0.5 /usr/local/bin/mo /usr/local/bin/mo
+
+RUN chmod +x /usr/local/bin/intlc
+
+#
 # Stage: Development NPM install
 #
 FROM npm AS npm-dev
@@ -27,6 +40,17 @@ FROM npm AS npm-prod
 RUN npm ci --ignore-scripts --production
 
 #
+# Stage: Intlc build
+#
+FROM intlc AS build-intlc
+
+COPY .dev/ .dev/
+COPY scripts/ scripts/
+COPY locales/ locales/
+
+RUN scripts/intlc.sh
+
+#
 # Stage: Production build
 #
 FROM npm AS build-prod
@@ -39,8 +63,10 @@ COPY tsconfig.build.json \
   ./
 COPY src/ src/
 COPY assets/ assets/
+COPY --from=build-intlc /app/assets/locales/ assets/locales/
+COPY --from=build-intlc /app/src/locales/ src/locales/
 
-RUN npm run build
+RUN npx run-p build:assets build:app
 
 #
 # Stage: Integration test environment
@@ -50,8 +76,7 @@ WORKDIR /app
 
 COPY --from=npm-dev /app/ .
 COPY --from=build-prod /app/dist/assets/ dist/assets/
-COPY src/ src/
-COPY --from=build-prod /app/src/manifest.json src/
+COPY --from=build-prod /app/src/ src/
 COPY integration/ integration/
 COPY visual-regression/ visual-regression/
 COPY playwright.config.ts .

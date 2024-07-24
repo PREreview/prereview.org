@@ -6,6 +6,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import type { Club } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import * as assets from '../manifest.json'
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch, reviewMatch } from '../routes.js'
@@ -38,7 +39,7 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
                   >${lead.name}</a
                 >`,
             ),
-            formatList('en'),
+            formatList(DefaultLocale),
           )}
         </dd>
       </dl>
@@ -68,7 +69,7 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
                         ${pipe(
                           prereview.reviewers,
                           RNEA.map(name => html`<b>${name}</b>`),
-                          formatList('en'),
+                          formatList(DefaultLocale),
                         )}
                         reviewed
                         <cite
@@ -88,11 +89,12 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
 
                       <dl>
                         <dt>Review published</dt>
-                        <dd>${renderDate(prereview.published)}</dd>
+                        <dd>${renderDate(DefaultLocale)(prereview.published)}</dd>
                         <dt>Preprint server</dt>
                         <dd>
                           ${match(prereview.preprint.id.type)
                             .with('africarxiv', () => 'AfricArXiv Preprints')
+                            .with('arcadia-science', () => 'Arcadia Science')
                             .with('arxiv', () => 'arXiv')
                             .with('authorea', () => 'Authorea')
                             .with('biorxiv', () => 'bioRxiv')

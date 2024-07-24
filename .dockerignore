@@ -1,12 +1,15 @@
 /.cache/
-/.dev/
+/.dev/server.crt
+/.dev/server.key
 /.git/
 /.github/
+/assets/locales/
 /data/
 /dist/
 /integration/snapshots/
 /integration-results/
 /node_modules/
+/src/locales/
 /src/manifest.json
 /visual-regression/snapshots/
 /.env

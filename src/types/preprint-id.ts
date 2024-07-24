@@ -7,6 +7,7 @@ import { P, match } from 'ts-pattern'
 
 export type PreprintId =
   | AfricarxivPreprintId
+  | ArcadiaSciencePreprintId
   | ArxivPreprintId
   | AuthoreaPreprintId
   | BiorxivPreprintId
@@ -47,6 +48,11 @@ export interface AfricarxivOsfPreprintId {
 export interface AfricarxivZenodoPreprintId {
   readonly type: 'africarxiv'
   readonly value: Doi<'5281'>
+}
+
+export interface ArcadiaSciencePreprintId {
+  readonly type: 'arcadia-science'
+  readonly value: Doi<'57844'>
 }
 
 export interface ArxivPreprintId {
@@ -192,6 +198,7 @@ export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { v
   '35542',
   '36227',
   '48550',
+  '57844',
 )
 
 export const PreprintDoiD: D.Decoder<unknown, Extract<IndeterminatePreprintId, { value: Doi }>['value']> =
@@ -232,6 +239,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('35542'), doi => ({ type: 'edarxiv', value: doi }) satisfies EdarxivPreprintId)
     .when(hasRegistrant('36227'), doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId)
     .when(hasRegistrant('48550'), doi => ({ type: 'arxiv', value: doi }) satisfies ArxivPreprintId)
+    .when(hasRegistrant('57844'), doi => ({ type: 'arcadia-science', value: doi }) satisfies ArcadiaSciencePreprintId)
     .exhaustive()
 }
 

@@ -12,6 +12,7 @@ import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import type { Preprint } from '../preprint.js'
 import { TwoUpPageResponse } from '../response.js'
 import { isReviewRequestPreprintId } from '../review-request.js'
@@ -34,7 +35,7 @@ export const createPage = ({
 }) =>
   TwoUpPageResponse({
     title: plainText`PREreviews of “${preprint.title.text}”`,
-    description: plainText`Authored by ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList('en'))}.
+    description: plainText`Authored by ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList(DefaultLocale))}.
     ${
       preprint.abstract
         ? plainText`
@@ -62,19 +63,20 @@ export const createPage = ({
 
           <div class="byline">
             <span class="visually-hidden">Authored</span> by
-            ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList('en'))}
+            ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList(DefaultLocale))}
           </div>
 
           <dl>
             <div>
               <dt>Posted</dt>
-              <dd>${renderDate(preprint.posted)}</dd>
+              <dd>${renderDate(DefaultLocale)(preprint.posted)}</dd>
             </div>
             <div>
               <dt>Server</dt>
               <dd>
                 ${match(preprint.id.type)
                   .with('africarxiv', () => 'AfricArXiv Preprints')
+                  .with('arcadia-science', () => 'Arcadia Science')
                   .with('arxiv', () => 'arXiv')
                   .with('authorea', () => 'Authorea')
                   .with('biorxiv', () => 'bioRxiv')
@@ -183,7 +185,7 @@ function showReview(review: Prereview) {
                   ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
                   : [],
               ),
-              formatList('en'),
+              formatList(DefaultLocale),
             )}
             ${review.club ? html`of the ${getClubName(review.club)}` : ''}
           </div>
@@ -215,7 +217,7 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
 
     <div class="byline">
       <span class="visually-hidden">Authored</span> by
-      ${pipe(rapidPrereviews, RNEA.map(flow(get('author'), displayAuthor)), formatList('en'))}
+      ${pipe(rapidPrereviews, RNEA.map(flow(get('author'), displayAuthor)), formatList(DefaultLocale))}
     </div>
 
     <details>
@@ -284,25 +286,25 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
                 <tr>
                   <th scope="row">${displayRapidPrereviewQuestion(question)}</th>
                   <td class="numeric">
-                    ${(answers.yes / rapidPrereviews.length).toLocaleString('en', {
+                    ${(answers.yes / rapidPrereviews.length).toLocaleString(DefaultLocale, {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}
                   </td>
                   <td class="numeric">
-                    ${(answers.unsure / rapidPrereviews.length).toLocaleString('en', {
+                    ${(answers.unsure / rapidPrereviews.length).toLocaleString(DefaultLocale, {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}
                   </td>
                   <td class="numeric">
-                    ${(answers.na / rapidPrereviews.length).toLocaleString('en', {
+                    ${(answers.na / rapidPrereviews.length).toLocaleString(DefaultLocale, {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}
                   </td>
                   <td class="numeric">
-                    ${(answers.no / rapidPrereviews.length).toLocaleString('en', {
+                    ${(answers.no / rapidPrereviews.length).toLocaleString(DefaultLocale, {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}

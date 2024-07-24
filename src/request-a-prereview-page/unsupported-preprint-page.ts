@@ -17,6 +17,7 @@ export const unsupportedPreprintPage = (preprint: PreprintId) =>
         We don’t support requests for this
         ${match(preprint.type)
           .with('africarxiv', () => 'AfricArXiv')
+          .with('arcadia-science', () => 'Arcadia Science')
           .with('arxiv', () => 'arXiv')
           .with('authorea', () => 'Authorea')
           .with('biorxiv', () => 'bioRxiv')

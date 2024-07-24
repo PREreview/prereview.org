@@ -1,0 +1,56 @@
+{
+  "slogan": {
+    "message": "Open preprint reviews. For <swoosh>all</swoosh> researchers."
+  },
+  "heroText": {
+    "message": "Provide and receive constructive feedback on preprints from an international community of your peers."
+  },
+  "reviewPreprintButton": {
+    "message": "Review a preprint"
+  },
+  "requestReviewButton": {
+    "message": "Request a review"
+  },
+  "overviewUnderservedResearchersTitle": {
+    "message": "For underserved researchers"
+  },
+  "overviewUnderservedResearchersText": {
+    "message": "We support and empower diverse and historically excluded communities of researchers (particularly those at early stages of their career) to find a voice, train, and engage in peer review."
+  },
+  "overviewBetterWayTitle": {
+    "message": "A better way"
+  },
+  "overviewBetterWayText": {
+    "message": "Making science and scholarship more equitable, transparent, and collaborative."
+  },
+  "overviewBetterWayLink": {
+    "message": "Our mission"
+  },
+  "requestsTitle": {
+    "message": "Recent review requests"
+  },
+  "requestsLink": {
+    "message": "See all requests"
+  },
+  "statisticsTitle": {
+    "message": "Statistics"
+  },
+  "statisticsReviews": {
+    "message": "<data>{number, number}</data> PREreviews"
+  },
+  "statisticsServers": {
+    "message": "<data>{number, number}</data> preprint servers"
+  },
+  "statisticsUsers": {
+    "message": "<data>{number, number}</data> PREreviewers"
+  },
+  "reviewsTitle": {
+    "message": "Recent PREreviews"
+  },
+  "reviewsLink": {
+    "message": "See all reviews"
+  },
+  "fundersTitle": {
+    "message": "Funders"
+  }
+}
