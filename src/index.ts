@@ -24,7 +24,8 @@ import { decodeEnv } from './env.js'
 import type { SleepEnv } from './fetch.js'
 import type { GhostApiEnv } from './ghost.js'
 import { DefaultLocale } from './locales/index.js'
-import { type TemplatePageEnv, page } from './page.js'
+import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page } from './page.js'
+import type { PublicUrlEnv } from './public-url.js'
 import { type PageResponse, toPage } from './response.js'
 
 const env = decodeEnv(process)()
@@ -88,7 +89,15 @@ const toHttpServerResponse = (
     )
   })
 
-class LegacyDeps extends Context.Tag('LegacyDeps')<LegacyDeps, GhostApiEnv & FetchEnv & SleepEnv & TemplatePageEnv>() {}
+class LegacyConfig extends Context.Tag('LegacyConfig')<
+  LegacyConfig,
+  GhostApiEnv & FathomEnv & PhaseEnv & PublicUrlEnv
+>() {}
+
+class LegacyDeps extends Context.Tag('LegacyDeps')<
+  LegacyDeps,
+  Context.Tag.Service<LegacyConfig> & FetchEnv & SleepEnv & TemplatePageEnv
+>() {}
 
 const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/', HttpServerResponse.html('hello')),
@@ -108,28 +117,34 @@ const requestIdLogging = HttpMiddleware.make(app =>
   }),
 )
 
-const legacyDeps = LegacyDeps.of({
-  fetch: fetch.defaults({
-    cachePath: 'data/cache',
-    headers: {
-      'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
-    },
-  }),
+const legacyConfig = LegacyConfig.of({
   ghostApi: {
     key: env.GHOST_API_KEY,
   },
-  sleep: duration => new Promise(resolve => setTimeout(resolve, duration)),
-  templatePage: withEnv(page, {
-    publicUrl: env.PUBLIC_URL,
-    fathomId: env.FATHOM_SITE_ID,
-    phase:
-      typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT !== 'undefined'
-        ? {
-            tag: env.PHASE_TAG,
-            text: env.PHASE_TEXT,
-          }
-        : undefined,
-  }),
+  publicUrl: env.PUBLIC_URL,
+  fathomId: env.FATHOM_SITE_ID,
+  phase:
+    typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT !== 'undefined'
+      ? {
+          tag: env.PHASE_TAG,
+          text: env.PHASE_TEXT,
+        }
+      : undefined,
+})
+
+const legacyDeps = Effect.gen(function* () {
+  const config = yield* LegacyConfig
+  return LegacyDeps.of({
+    ...config,
+    fetch: fetch.defaults({
+      cachePath: 'data/cache',
+      headers: {
+        'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
+      },
+    }),
+    sleep: duration => new Promise(resolve => setTimeout(resolve, duration)),
+    templatePage: withEnv(page, config),
+  })
 })
 
 const Server = Router.pipe(
@@ -147,7 +162,8 @@ const Server = Router.pipe(
   HttpServer.serve(requestIdLogging),
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Layer.provide(redisLayer),
-  Layer.provide(Layer.succeed(LegacyDeps, legacyDeps)),
+  Layer.provide(Layer.effect(LegacyDeps, legacyDeps)),
+  Layer.provide(Layer.succeed(LegacyConfig, legacyConfig)),
 )
 
 Layer.launch(Server).pipe(Effect.provide(Logger.pretty), NodeRuntime.runMain)
