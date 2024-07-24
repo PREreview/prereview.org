@@ -22,3 +22,10 @@ export const translate =
     // @ts-ignore
     return modules[module](locale)(...args)
   }
+
+export const localeTranslate = (locale: SupportedLocale) => <M extends Module>(module: M, ...args: Parameters<ReturnType<(typeof modules)[M]>>): ReturnType<ReturnType<(typeof modules)[M]>> => {
+    // @ts-ignore
+    return modules[module](locale)(...args)
+  }
+
+export type LocaleTranslate = ReturnType<typeof localeTranslate>

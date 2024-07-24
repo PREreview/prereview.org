@@ -9,7 +9,7 @@ import {
 import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/platform-node'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Config, Context, Effect, Layer, Logger, type Scope, pipe } from 'effect'
+import { Config, Context, Effect, Layer, Logger, type Scope, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as C from 'fp-ts/lib/Console.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -23,7 +23,7 @@ import { RedisService, effectifiedExpressApp } from './effectified-app.js'
 import { decodeEnv } from './env.js'
 import type { SleepEnv } from './fetch.js'
 import type { GhostApiEnv } from './ghost.js'
-import { DefaultLocale } from './locales/index.js'
+import { DefaultLocale, type LocaleTranslate, localeTranslate } from './locales/index.js'
 import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page } from './page.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { type PageResponse, toPage } from './response.js'
@@ -76,16 +76,17 @@ const healthRoute = Effect.gen(function* () {
 })
 
 const toHttpServerResponse = (
-  pageResponse: RT.ReaderTask<Context.Tag.Service<LegacyDeps>, PageResponse>,
-): Effect.Effect<HttpServerResponse.HttpServerResponse, never, LegacyDeps> =>
+  pageResponse: RT.ReaderTask<Context.Tag.Service<LegacyDeps> & Context.Tag.Service<PerRequestDeps>, PageResponse>,
+): Effect.Effect<HttpServerResponse.HttpServerResponse, never, LegacyDeps | PerRequestDeps> =>
   Effect.gen(function* () {
-    const deps = yield* LegacyDeps
-    const legacyResponse = yield* Effect.promise(pageResponse(deps))
+    const legacyDeps = yield* LegacyDeps
+    const perRequestDeps = yield* PerRequestDeps
+    const legacyResponse = yield* Effect.promise(pageResponse({ ...legacyDeps, ...perRequestDeps }))
     return yield* HttpServerResponse.html(
       toPage({ locale: DefaultLocale, message: undefined, userOnboarding: undefined })(
         legacyResponse,
         undefined,
-      )(deps).toString(),
+      )(legacyDeps).toString(),
     )
   })
 
@@ -94,10 +95,16 @@ class LegacyConfig extends Context.Tag('LegacyConfig')<
   GhostApiEnv & FathomEnv & PhaseEnv & PublicUrlEnv
 >() {}
 
+interface LocaleTranslateEnv {
+  translate: LocaleTranslate
+}
+
 class LegacyDeps extends Context.Tag('LegacyDeps')<
   LegacyDeps,
   Context.Tag.Service<LegacyConfig> & FetchEnv & SleepEnv & TemplatePageEnv
 >() {}
+
+class PerRequestDeps extends Context.Tag('PerRequestDeps')<PerRequestDeps, LocaleTranslateEnv>() {}
 
 const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/', HttpServerResponse.html('hello')),
@@ -147,6 +154,12 @@ const legacyDeps = Effect.gen(function* () {
   })
 })
 
+const providePerRequestsDeps = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    return yield* app.pipe(Effect.provideService(PerRequestDeps, { translate: localeTranslate(DefaultLocale) }))
+  }),
+)
+
 const Server = Router.pipe(
   Effect.catchTags({
     RouteNotFound: routeNotFound =>
@@ -159,7 +172,7 @@ const Server = Router.pipe(
         return HttpServerResponse.empty()
       }),
   }),
-  HttpServer.serve(requestIdLogging),
+  HttpServer.serve(flow(requestIdLogging, providePerRequestsDeps)),
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Layer.provide(redisLayer),
   Layer.provide(Layer.effect(LegacyDeps, legacyDeps)),

@@ -485,17 +485,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       ),
     ),
     pipe(
-      aboutUsMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(aboutUs)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-    ),
-    pipe(
       howToUseMatch.parser,
       P.map(() =>
         pipe(
