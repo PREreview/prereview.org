@@ -10,15 +10,14 @@ const translations = {
 
 type SupportedLocale = keyof typeof translations
 
-type Translations = typeof translations['{{defaultLocale}}']
+export type Translations = typeof translations['{{defaultLocale}}']
 
 export const translate{{moduleName}} =
   (locale: SupportedLocale) =>
-  <K extends keyof Translations>(key: K, ...args: Parameters<Translations[K]>): string => {
+  <K extends keyof Translations>(key: K): Translations[K] => {
     if (key in translations[locale]) {
       // @ts-ignore
-      return translations[locale][key](...args)
+      return translations[locale][key]
     }
-    // @ts-ignore
-    return translations['{{defaultLocale}}'][key](...args)
+    return translations['{{defaultLocale}}'][key]
   }
