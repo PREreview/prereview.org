@@ -28,6 +28,12 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
             <img src="${assets['asapbio.svg']}" width="1851" height="308" alt="ASAPbio" class="club-logo" />
           `,
         )
+        .with(
+          'jmir-publications',
+          () => html`
+            <img src="${assets['jmir.svg']}" width="537" height="86" alt="JMIR Publications" class="club-logo" />
+          `,
+        )
         .otherwise(() => '')}
       ${club.description}
 
