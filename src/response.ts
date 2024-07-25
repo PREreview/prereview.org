@@ -11,8 +11,8 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message.js'
-import { type Html, html, sendHtml } from './html.js'
-import { DefaultLocale, type SupportedLocale } from './locales/index.js'
+import { type Html, html, rawHtml, sendHtml } from './html.js'
+import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
 import type { OrcidOAuthEnv } from './log-in/index.js'
 import { showNotificationBanner } from './notification-banner.js'
 import { type Page, type TemplatePageEnv, templatePage } from './page.js'
@@ -212,14 +212,7 @@ export const handlePageResponse = ({
             </main>
           `,
           skipLinks: [
-            [
-              match(response.skipToLabel)
-                .with('form', () => html`Skip to form`)
-                .with('main', () => html`Skip to main content`)
-                .with('prereview', () => html`Skip to PREreview`)
-                .exhaustive(),
-              `#${response.skipToLabel}`,
-            ],
+            [rawHtml(translate(locale, 'skip-links', response.skipToLabel)()), `#${response.skipToLabel}`],
             ...(response._tag === 'PageResponse' && response.extraSkipLink
               ? typeof response.extraSkipLink === 'function'
                 ? [response.extraSkipLink(locale)]

@@ -1,0 +1,11 @@
+{
+  "main": {
+    "message": "Skip to main content"
+  },
+  "form": {
+    "message": "Skip to form"
+  },
+  "prereview": {
+    "message": "Skip to PREreview"
+  }
+}
