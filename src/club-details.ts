@@ -121,6 +121,21 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Ryan John Cubero', orcid: '0000-0003-0002-1867' as Orcid },
     ],
   },
+  'bimsb-neuroscience': {
+    name: 'Biophysics Probing Neuroscience Lab',
+    description: html`
+      <p>
+        We are a young lab part of BIMSB (Berlin Institute for Medical Systems Biology) located in Berlin (Germany). We
+        seek to understand how intrinsically disordered proteins (dys)regulate brain metabolism using advanced imaging
+        techniques.
+      </p>
+      <p>
+        We want to convert our running journal club into a preprint club with the goal to support open science and
+        early-career researchers participation in peer-review processes. We aim to produce 4 preprint reviews a year.
+      </p>
+    `,
+    leads: [{ name: 'Anna Oliveras', orcid: '0000-0002-5880-5245' as Orcid }],
+  },
   'biomass-biocatalysis': {
     name: 'Biomass and Biocatalysis Group',
     description: html`
