@@ -125,12 +125,19 @@ export const createPage = ({
                     <li>
                       <article aria-labelledby="request-${index}-title">
                         <h3 id="request-${index}-title" class="visually-hidden">
-                          Review request for
-                          <cite
-                            dir="${rtlDetect.getLangDir(request.preprint.language)}"
-                            lang="${request.preprint.language}"
-                            >${request.preprint.title}</cite
-                          >
+                          ${rawHtml(
+                            translate(
+                              locale,
+                              'requests-list',
+                              'requestTitle',
+                            )({
+                              preprint: html`<cite
+                                dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                                lang="${request.preprint.language}"
+                                >${request.preprint.title}</cite
+                              >`.toString(),
+                            }),
+                          )}
                         </h3>
 
                         <a
@@ -138,12 +145,19 @@ export const createPage = ({
                             id: request.preprint.id,
                           })}"
                         >
-                          A review was requested for
-                          <cite
-                            dir="${rtlDetect.getLangDir(request.preprint.language)}"
-                            lang="${request.preprint.language}"
-                            >${request.preprint.title}</cite
-                          >
+                          ${rawHtml(
+                            translate(
+                              locale,
+                              'requests-list',
+                              'requestText',
+                            )({
+                              preprint: html`<cite
+                                dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                                lang="${request.preprint.language}"
+                                >${request.preprint.title}</cite
+                              >`.toString(),
+                            }),
+                          )}
                         </a>
 
                         ${request.subfields.length > 0
@@ -157,9 +171,9 @@ export const createPage = ({
                           : ''}
 
                         <dl>
-                          <dt>Review published</dt>
+                          <dt>${translate(locale, 'requests-list', 'requestPublished')()}</dt>
                           <dd>${renderDate(locale)(request.published)}</dd>
-                          <dt>Preprint server</dt>
+                          <dt>${translate(locale, 'requests-list', 'requestServer')()}</dt>
                           <dd>
                             ${match(request.preprint.id.type)
                               .with('africarxiv', () => 'AfricArXiv Preprints')
@@ -284,7 +298,7 @@ export const createPage = ({
                           ? html`
                               <ul class="categories">
                                 ${prereview.subfields.map(
-                                  subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
+                                  subfield => html` <li>${getSubfieldName(subfield, locale)}</li>`,
                                 )}
                               </ul>
                             `
