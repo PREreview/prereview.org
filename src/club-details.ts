@@ -207,6 +207,23 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
         <a href="https://support.jmir.org/hc/en-us/articles/4408266275099">Live Reviews</a>: topic-centered, interactive
         preprint review calls via a video conference tool such as Zoom.
       </p>
+      <p>
+        The <a href="https://jmirx.org/">JMIRx series of journals</a> is a groundbreaking “<a
+          href="https://www.jmir.org/2019/12/e17578/"
+          >superjournal</a
+        >” series, which sits on top of preprint servers (eg, medRxiv and bioRxiv) and publishes preprint peer reviews
+        and revised versions of record of preprints in indexed journals such as
+        <a href="https://xmed.jmir.org/">JMIRx Med</a> (the first PubMed-indexed overlay journal in the world).
+        <a href="https://xmed.jmir.org/themes/1147-prereview">#PREreview</a> is one of the communities and sections in
+        the journal.
+      </p>
+      <p>
+        PREreview reports can be used in lieu of a formal invited peer review to revise and publish a preprint in a
+        JMIRx journal or another <a href="https://planp.science/">Plan P</a>–compatible journal. To learn more about the
+        JMIRx project, see our help article “What is JMIRx?” To self-nominate a preprint for JMIRx or PREreview live
+        review, please use the <a href="https://med.jmirx.org/landing">JMIRx submission form</a> and choose “PREreview”
+        as your peer review option.
+      </p>
     `,
     leads: [
       { name: 'Shaochen (Shawn) Huang', orcid: '0000-0001-6570-0372' as Orcid },
