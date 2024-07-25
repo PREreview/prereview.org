@@ -6,7 +6,7 @@
     "message": "A review was requested for {preprint}"
   },
   "requestPublished": {
-    "message": "Review published"
+    "message": "Request published"
   },
   "requestServer": {
     "message": "Preprint server"
