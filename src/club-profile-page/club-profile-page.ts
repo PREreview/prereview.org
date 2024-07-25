@@ -87,7 +87,7 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
                       ${prereview.subfields.length > 0
                         ? html`
                             <ul class="categories">
-                              ${prereview.subfields.map(subfield => html` <li>${getSubfieldName(subfield)}</li>`)}
+                              ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
                             </ul>
                           `
                         : ''}
