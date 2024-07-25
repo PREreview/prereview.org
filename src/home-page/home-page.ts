@@ -298,7 +298,7 @@ export const createPage = ({
                           ? html`
                               <ul class="categories">
                                 ${prereview.subfields.map(
-                                  subfield => html` <li>${getSubfieldName(subfield, locale)}</li>`,
+                                  subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
                                 )}
                               </ul>
                             `
