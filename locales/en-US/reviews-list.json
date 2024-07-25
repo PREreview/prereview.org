@@ -1,0 +1,17 @@
+{
+  "reviewTitle": {
+    "message": "PREreview of {preprint}"
+  },
+  "reviewText": {
+    "message": "{reviewers} reviewed {preprint}"
+  },
+  "clubReviewText": {
+    "message": "{reviewers} of the {club} reviewed {preprint}"
+  },
+  "reviewPublished": {
+    "message": "Review published"
+  },
+  "reviewServer": {
+    "message": "Preprint server"
+  }
+}

@@ -14,7 +14,6 @@ import {
   homeMatch,
   requestAPrereviewMatch,
   reviewAPreprintMatch,
-  reviewMatch,
   reviewRequestsMatch,
   reviewsMatch,
   writeReviewMatch,
@@ -276,22 +275,54 @@ export const createPage = ({
                     <li>
                       <article aria-labelledby="prereview-${prereview.id}-title">
                         <h3 id="prereview-${prereview.id}-title" class="visually-hidden">
-                          PREreview of
-                          <cite
-                            dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                            lang="${prereview.preprint.language}"
-                            >${prereview.preprint.title}</cite
-                          >
+                          ${rawHtml(
+                            translate(
+                              locale,
+                              'reviews-list',
+                              'reviewTitle',
+                            )({
+                              preprint: html`<cite
+                                dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                                lang="${prereview.preprint.language}"
+                                >${prereview.preprint.title}</cite
+                              >`.toString(),
+                            }),
+                          )}
                         </h3>
 
-                        <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                          ${formatList(locale)(prereview.reviewers)}
-                          ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
-                          <cite
-                            dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                            lang="${prereview.preprint.language}"
-                            >${prereview.preprint.title}</cite
-                          >
+                        <a
+                          href="${format(writeReviewMatch.formatter, {
+                            id: prereview.preprint.id,
+                          })}"
+                        >
+                          ${rawHtml(
+                            prereview.club
+                              ? translate(
+                                  locale,
+                                  'reviews-list',
+                                  'clubReviewText',
+                                )({
+                                  club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
+                                  reviewers: formatList(locale)(prereview.reviewers).toString(),
+                                  preprint: html`<cite
+                                    dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                                    lang="${prereview.preprint.language}"
+                                    >${prereview.preprint.title}</cite
+                                  >`.toString(),
+                                })
+                              : translate(
+                                  locale,
+                                  'reviews-list',
+                                  'reviewText',
+                                )({
+                                  reviewers: formatList(locale)(prereview.reviewers).toString(),
+                                  preprint: html`<cite
+                                    dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                                    lang="${prereview.preprint.language}"
+                                    >${prereview.preprint.title}</cite
+                                  >`.toString(),
+                                }),
+                          )}
                         </a>
 
                         ${prereview.subfields.length > 0
@@ -305,9 +336,9 @@ export const createPage = ({
                           : ''}
 
                         <dl>
-                          <dt>Review published</dt>
+                          <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
                           <dd>${renderDate(locale)(prereview.published)}</dd>
-                          <dt>Preprint server</dt>
+                          <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
                           <dd>
                             ${match(prereview.preprint.id.type)
                               .with('africarxiv', () => 'AfricArXiv Preprints')
