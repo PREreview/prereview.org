@@ -3,7 +3,7 @@ import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import type { Club } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { DefaultLocale } from '../locales/index.js'
@@ -21,9 +21,14 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
     main: html`
       <h1>${club.name}</h1>
 
-      ${id.startsWith('asapbio-')
-        ? html` <img src="${assets['asapbio.svg']}" width="1851" height="308" alt="ASAPbio" class="club-logo" /> `
-        : ''}
+      ${match(id)
+        .with(
+          P.string.startsWith('asapbio-'),
+          () => html`
+            <img src="${assets['asapbio.svg']}" width="1851" height="308" alt="ASAPbio" class="club-logo" />
+          `,
+        )
+        .otherwise(() => '')}
       ${club.description}
 
       <dl>
@@ -82,7 +87,7 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
                       ${prereview.subfields.length > 0
                         ? html`
                             <ul class="categories">
-                              ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
+                              ${prereview.subfields.map(subfield => html` <li>${getSubfieldName(subfield)}</li>`)}
                             </ul>
                           `
                         : ''}
