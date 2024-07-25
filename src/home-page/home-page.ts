@@ -14,6 +14,7 @@ import {
   homeMatch,
   requestAPrereviewMatch,
   reviewAPreprintMatch,
+  reviewMatch,
   reviewRequestsMatch,
   reviewsMatch,
   writeReviewMatch,
@@ -290,11 +291,7 @@ export const createPage = ({
                           )}
                         </h3>
 
-                        <a
-                          href="${format(writeReviewMatch.formatter, {
-                            id: prereview.preprint.id,
-                          })}"
-                        >
+                        <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
                           ${rawHtml(
                             prereview.club
                               ? translate(
