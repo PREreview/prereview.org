@@ -7,7 +7,7 @@ import * as s from 'fp-ts/lib/string.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
-import { DefaultLocale, type SupportedLocale } from './locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
 import * as assets from './manifest.json'
 import type { PublicUrlEnv } from './public-url.js'
 import {
@@ -156,22 +156,30 @@ export function page({
                       <ul>
                         ${type !== 'streamline'
                           ? html`
-                              <li><a href="https://content.prereview.org/">Blog</a></li>
+                              <li>
+                                <a href="https://content.prereview.org/"
+                                  >${translate(locale, 'header', 'menuBlog')()}</a
+                                >
+                              </li>
                               <li>
                                 <a
                                   href="${format(aboutUsMatch.formatter, {})}"
                                   ${current === 'about-us' ? html`aria-current="page"` : ''}
-                                  >About</a
+                                  >${translate(locale, 'header', 'menuAboutUs')()}</a
                                 >
                               </li>
                               <li>
                                 <a
                                   href="${format(partnersMatch.formatter, {})}"
                                   ${current === 'partners' ? html`aria-current="page"` : ''}
-                                  >Partners</a
+                                  >${translate(locale, 'header', 'menuPartners')()}</a
                                 >
                               </li>
-                              <li><a href="https://donorbox.org/prereview">Donate</a></li>
+                              <li>
+                                <a href="https://donorbox.org/prereview"
+                                  >${translate(locale, 'header', 'menuDonate')()}</a
+                                >
+                              </li>
                             `
                           : ''}
                         ${user && type !== 'streamline'
@@ -179,13 +187,14 @@ export function page({
                                 <a
                                   href="${format(myDetailsMatch.formatter, {})}"
                                   ${current === 'my-details' ? html`aria-current="page"` : ''}
-                                  >My
-                                  details${match(userOnboarding)
+                                  >${translate(locale, 'header', 'menuMyDetails')()}${match(userOnboarding)
                                     .with(
                                       { seenMyDetailsPage: false },
                                       () =>
                                         html` <span role="status"
-                                          ><span class="visually-hidden">New notification</span></span
+                                          ><span class="visually-hidden"
+                                            >${translate(locale, 'header', 'menuNewNotification')()}</span
+                                          ></span
                                         >`,
                                     )
                                     .otherwise(() => '')}</a
@@ -195,13 +204,23 @@ export function page({
                                 <a
                                   href="${format(myPrereviewsMatch.formatter, {})}"
                                   ${current === 'my-prereviews' ? html`aria-current="page"` : ''}
-                                  >My PREreviews</a
+                                  >${translate(locale, 'header', 'menuMyPrereviews')()}</a
                                 >
                               </li>`
                           : ''}
-                        ${user ? html` <li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
+                        ${user
+                          ? html` <li>
+                              <a href="${format(logOutMatch.formatter, {})}"
+                                >${translate(locale, 'header', 'menuLogOut')()}</a
+                              >
+                            </li>`
+                          : ''}
                         ${!user && current === 'home'
-                          ? html` <li><a href="${format(logInMatch.formatter, {})}">Log in</a></li>`
+                          ? html` <li>
+                              <a href="${format(logInMatch.formatter, {})}"
+                                >${translate(locale, 'header', 'menuLogIn')()}</a
+                              >
+                            </li>`
                           : ''}
                       </ul>
                     </nav>
@@ -225,42 +244,42 @@ export function page({
                             <a
                               href="${format(reviewsMatch.formatter, {})}"
                               ${current === 'reviews' ? html`aria-current="page"` : ''}
-                              >Reviews</a
+                              >${translate(locale, 'header', 'menuReviews')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(reviewRequestsMatch.formatter, {})}"
                               ${current === 'review-requests' ? html`aria-current="page"` : ''}
-                              >Requests</a
+                              >${translate(locale, 'header', 'menuRequests')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(trainingsMatch.formatter, {})}"
                               ${current === 'trainings' ? html`aria-current="page"` : ''}
-                              >Trainings</a
+                              >${translate(locale, 'header', 'menuTrainings')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(liveReviewsMatch.formatter, {})}"
                               ${current === 'live-reviews' ? html`aria-current="page"` : ''}
-                              >Live Reviews</a
+                              >${translate(locale, 'header', 'menuLiveReviews')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(resourcesMatch.formatter, {})}"
                               ${current === 'resources' ? html`aria-current="page"` : ''}
-                              >Resources</a
+                              >${translate(locale, 'header', 'menuResources')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(clubsMatch.formatter, {})}"
                               ${current === 'clubs' ? html`aria-current="page"` : ''}
-                              >Clubs</a
+                              >${translate(locale, 'header', 'menuClubs')()}</a
                             >
                           </li>
                         </ul>
