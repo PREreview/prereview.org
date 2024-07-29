@@ -1,0 +1,14 @@
+{
+  "devName": {
+    "message": "Dev"
+  },
+  "devText": {
+    "message": "Local development"
+  },
+  "sandboxName": {
+    "message": "Sandbox"
+  },
+  "sandboxText": {
+    "message": "This version is a sandbox."
+  }
+}

@@ -139,26 +139,14 @@ export function page({
 
           <header>
             <div class="navigation">
-              ${match(environmentLabel)
-                .with(
-                  'dev',
-                  () => html`
+              ${environmentLabel
+                ? html`
                     <div class="phase-banner">
-                      <strong class="tag">dev</strong>
-                      <span>Local development</span>
+                      <strong class="tag">${translate(locale, 'environment', `${environmentLabel}Name`)()}</strong>
+                      <span>${translate(locale, 'environment', `${environmentLabel}Text`)()}</span>
                     </div>
-                  `,
-                )
-                .with(
-                  'sandbox',
-                  () => html`
-                    <div class="phase-banner">
-                      <strong class="tag">sandbox</strong>
-                      <span>This version is a sandbox.</span>
-                    </div>
-                  `,
-                )
-                .otherwise(() => '')}
+                  `
+                : ''}
               ${user || type !== 'streamline'
                 ? html`
                     <nav>
