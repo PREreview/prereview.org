@@ -6,7 +6,6 @@ import { split } from 'fp-ts/lib/string.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import { v4 } from 'uuid-ts'
-import { rawHtml } from './html.js'
 import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
 
 export function decodeEnv(process: NodeJS.Process) {
@@ -43,8 +42,6 @@ const UrlD = pipe(
     ),
   ),
 )
-
-const HtmlD = pipe(D.string, D.map(rawHtml))
 
 const CommaSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
   pipe(D.string, D.map(split(',')), D.compose(D.array(decoder)))
@@ -94,11 +91,10 @@ const EnvD = pipe(
   ),
   D.intersect(
     D.partial({
+      ENVIRONMENT_LABEL: D.literal('dev', 'sandbox'),
       FATHOM_SITE_ID: D.string,
       LOG_FORMAT: D.literal('json'),
       ORCID_API_READ_PUBLIC_TOKEN: D.string,
-      PHASE_TAG: D.string,
-      PHASE_TEXT: HtmlD,
       REDIS_URI: UrlD,
     }),
   ),
