@@ -34,16 +34,17 @@ export const publishedPage = ({
         <h2>What happens next</h2>
 
         <p>
-          You’ll be able to see your PREreview shortly.
-          ${isScietyPreprint(preprint.id)
-            ? html`
-                It’ll also appear on
+          You’ll be able to see your PREreview shortly. It’ll also appear on our
+          <a href="https://bit.ly/PREreview-Slack" target="_blank" rel="noopener noreferrer"
+            >Community Slack<span class="visually-hidden"> (opens in a new tab)</span></a
+          >${isScietyPreprint(preprint.id)
+            ? html` and
                 <a href="https://sciety.org/" target="_blank" rel="noopener noreferrer"
                   >Sciety<span class="visually-hidden"> (opens in a new tab)</span></a
-                >.
-              `
-            : ''}
+                >`
+            : ''}.
         </p>
+
         ${form.moreAuthors === 'yes' && form.otherAuthors.length === 0
           ? html`
               <div class="inset">
