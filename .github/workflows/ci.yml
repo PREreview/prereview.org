@@ -520,12 +520,6 @@ jobs:
       - name: 'Tag image'
         run: docker tag ${{ needs.build-image.outputs.image }} ${{ steps.image.outputs.image }}
 
-      - name: 'Debug Fly connection'
-        run: "curl -H 'flyio-debug: doit' -v https://debug.fly.dev"
-
-      - name: 'Debug Fly registry connection'
-        run: "curl -H 'flyio-debug: doit' -v https://registry.fly.io"
-
       - name: 'Push image'
         run: docker push ${{ steps.image.outputs.image }}
 
