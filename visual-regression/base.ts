@@ -17,6 +17,8 @@ interface ShowPage {
   showTwoUpPage(response: TwoUpPageResponse): Promise<[Locator, Locator]>
 
   showHtml(html: Html): Promise<void>
+
+  templatePage(page: Page): Html
 }
 
 export const test = baseTest.extend<ShowPage>({
@@ -41,7 +43,7 @@ export const test = baseTest.extend<ShowPage>({
 
     await use(page)
   },
-  showPage: async ({ baseURL, page, showHtml }, use) => {
+  showPage: async ({ page, showHtml, templatePage }, use) => {
     await use(async function showPage(response, extra = {}) {
       const content = html`
         ${response.nav
@@ -58,14 +60,14 @@ export const test = baseTest.extend<ShowPage>({
         content,
         title: typeof response.title === 'function' ? response.title(DefaultLocale) : response.title,
         js: response.js,
-      })({ publicUrl: new URL(String(baseURL)) })
+      })
 
       await showHtml(pageHtml)
 
       return page.locator('.contents')
     })
   },
-  showTwoUpPage: async ({ baseURL, page, showHtml }, use) => {
+  showTwoUpPage: async ({ page, showHtml, templatePage }, use) => {
     await use(async response => {
       const content = html`
         <h1 class="visually-hidden">${typeof response.h1 === 'function' ? response.h1(DefaultLocale) : response.h1}</h1>
@@ -83,7 +85,7 @@ export const test = baseTest.extend<ShowPage>({
         content,
         title: typeof response.title === 'function' ? response.title(DefaultLocale) : response.title,
         type: 'two-up',
-      })({ publicUrl: new URL(String(baseURL)) })
+      })
 
       await showHtml(pageHtml)
 
@@ -103,5 +105,8 @@ export const test = baseTest.extend<ShowPage>({
         await page.setViewportSize(viewportSize)
       }
     })
+  },
+  templatePage: async ({ baseURL }, use) => {
+    await use(page => templatePage(page)({ publicUrl: new URL(String(baseURL)) }))
   },
 })
