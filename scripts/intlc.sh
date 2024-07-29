@@ -5,7 +5,7 @@ set -e
 
 defaultLocale="en-US"
 modules=$(find "locales/$defaultLocale" -name "*.json" -exec basename "{}" .json \;)
-assetsModules=("html-editor")
+assetsModules=("collapsible-menu" "html-editor")
 mapfile -t srcModules < <(printf "%s\n" "${modules[@]}" "${assetsModules[@]}" "${assetsModules[@]}" | sort | uniq -u)
 mapfile -t locales < <(find "locales" -maxdepth 1 -mindepth 1 -type d -exec basename "{}" \;)
 
