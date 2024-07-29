@@ -14,7 +14,6 @@ import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
 import { app } from './app.js'
 import { decodeEnv } from './env.js'
-import { html } from './html.js'
 
 const env = decodeEnv(process)()
 
@@ -66,6 +65,7 @@ const server = app({
   coarNotifyToken: env.COAR_NOTIFY_TOKEN,
   coarNotifyUrl: env.COAR_NOTIFY_URL,
   contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: createKeyvStore() }),
+  environmentLabel: env.ENVIRONMENT_LABEL,
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: 'data/cache',
@@ -99,11 +99,6 @@ const server = app({
     tokenUrl: new URL(`${env.ORCID_URL.origin}/oauth/token`),
   },
   orcidTokenStore: new Keyv({ namespace: 'orcid-token', store: createKeyvStore() }),
-  phase: match(env.ENVIRONMENT_LABEL)
-    .with('dev', tag => ({ tag, text: html`Local development` }))
-    .with('sandbox', tag => ({ tag, text: html`This version is a sandbox.` }))
-    .with(undefined, () => undefined)
-    .exhaustive(),
   publicUrl: env.PUBLIC_URL,
   researchInterestsStore: new Keyv({ namespace: 'research-interests', store: createKeyvStore() }),
   reviewRequestStore: new Keyv({ namespace: 'review-request', store: createKeyvStore() }),

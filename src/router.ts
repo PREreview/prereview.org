@@ -122,7 +122,7 @@ import {
 import { myPrereviews } from './my-prereviews-page/index.js'
 import { getCategoriesFromOpenAlex } from './openalex/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
-import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page.js'
+import type { EnvironmentLabelEnv, FathomEnv, TemplatePageEnv } from './page.js'
 import { partners } from './partners.js'
 import { people } from './people.js'
 import { preprintReviews } from './preprint-reviews-page/index.js'
@@ -336,6 +336,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   CanUseSearchQueriesEnv &
   DoesPreprintExistEnv &
   ResolvePreprintIdEnv &
+  EnvironmentLabelEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
   GetPreprintTitleEnv &
@@ -358,7 +359,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   OrcidApiEnv &
   Keyv.OrcidTokenStoreEnv &
   OrcidOAuthEnv &
-  PhaseEnv &
   PrereviewCoarNotifyEnv &
   PublicUrlEnv &
   Keyv.ResearchInterestsStoreEnv &

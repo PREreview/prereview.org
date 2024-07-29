@@ -38,11 +38,8 @@ export interface FathomEnv {
   readonly fathomId?: string
 }
 
-export interface PhaseEnv {
-  readonly phase?: {
-    readonly tag: string
-    readonly text: Html
-  }
+export interface EnvironmentLabelEnv {
+  readonly environmentLabel?: 'dev' | 'sandbox'
 }
 
 export interface Page {
@@ -92,7 +89,7 @@ export function page({
   js = [],
   user,
   userOnboarding,
-}: Page): R.Reader<FathomEnv & PhaseEnv & PublicUrlEnv, Html> {
+}: Page): R.Reader<EnvironmentLabelEnv & FathomEnv & PublicUrlEnv, Html> {
   const scripts = pipe(
     js,
     RA.uniq(stringEq()),
@@ -101,7 +98,7 @@ export function page({
   )
 
   return R.asks(
-    ({ fathomId, phase, publicUrl }) => html`
+    ({ fathomId, environmentLabel, publicUrl }) => html`
       <!doctype html>
       <html lang="${locale}" dir="${rtlDetect.getLangDir(locale)}" prefix="og: https://ogp.me/ns#">
         <head>
@@ -142,14 +139,26 @@ export function page({
 
           <header>
             <div class="navigation">
-              ${phase
-                ? html`
+              ${match(environmentLabel)
+                .with(
+                  'dev',
+                  () => html`
                     <div class="phase-banner">
-                      <strong class="tag">${phase.tag}</strong>
-                      <span>${phase.text}</span>
+                      <strong class="tag">dev</strong>
+                      <span>Local development</span>
                     </div>
-                  `
-                : ''}
+                  `,
+                )
+                .with(
+                  'sandbox',
+                  () => html`
+                    <div class="phase-banner">
+                      <strong class="tag">sandbox</strong>
+                      <span>This version is a sandbox.</span>
+                    </div>
+                  `,
+                )
+                .otherwise(() => '')}
               ${user || type !== 'streamline'
                 ? html`
                     <nav>
