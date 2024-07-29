@@ -17,7 +17,7 @@ export { writeReviewNeedToVerifyEmailAddress } from './write-review-need-to-veri
 export { writeReviewNovel } from './write-review-novel.js'
 export { writeReviewPersona } from './write-review-persona.js'
 export { type NewPrereview, type PublishPrereviewEnv, writeReviewPublish } from './publish-page/index.js'
-export { writeReviewPublished } from './write-review-published.js'
+export { writeReviewPublished } from './published-page/index.js'
 export { writeReviewReadyFullReview } from './write-review-ready-full-review.js'
 export { writeReviewResultsSupported } from './write-review-results-supported.js'
 export { writeReviewReview } from './write-review-page/index.js'
