@@ -1,7 +1,7 @@
 import { type Locator, test as baseTest } from '@playwright/test'
 import path from 'path'
 import { P, match } from 'ts-pattern'
-import { html } from '../src/html.js'
+import { type Html, html } from '../src/html.js'
 import { DefaultLocale } from '../src/locales/index.js'
 import { type Page, page as templatePage } from '../src/page.js'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../src/response.js'
@@ -15,6 +15,8 @@ interface ShowPage {
   ): Promise<Locator>
 
   showTwoUpPage(response: TwoUpPageResponse): Promise<[Locator, Locator]>
+
+  showHtml(html: Html): Promise<void>
 }
 
 export const test = baseTest.extend<ShowPage>({
@@ -39,7 +41,7 @@ export const test = baseTest.extend<ShowPage>({
 
     await use(page)
   },
-  showPage: async ({ baseURL, page }, use) => {
+  showPage: async ({ baseURL, page, showHtml }, use) => {
     await use(async function showPage(response, extra = {}) {
       const content = html`
         ${response.nav
@@ -58,21 +60,12 @@ export const test = baseTest.extend<ShowPage>({
         js: response.js,
       })({ publicUrl: new URL(String(baseURL)) })
 
-      await page.setContent(pageHtml.toString())
-
-      const viewportSize = page.viewportSize()
-
-      if (viewportSize) {
-        const height = await page.evaluate(() => document.documentElement.scrollHeight).then(Math.ceil)
-        await page.setViewportSize({ width: viewportSize.width, height })
-        await page.waitForLoadState('networkidle')
-        await page.setViewportSize(viewportSize)
-      }
+      await showHtml(pageHtml)
 
       return page.locator('.contents')
     })
   },
-  showTwoUpPage: async ({ baseURL, page }, use) => {
+  showTwoUpPage: async ({ baseURL, page, showHtml }, use) => {
     await use(async response => {
       const content = html`
         <h1 class="visually-hidden">${typeof response.h1 === 'function' ? response.h1(DefaultLocale) : response.h1}</h1>
@@ -92,7 +85,14 @@ export const test = baseTest.extend<ShowPage>({
         type: 'two-up',
       })({ publicUrl: new URL(String(baseURL)) })
 
-      await page.setContent(pageHtml.toString())
+      await showHtml(pageHtml)
+
+      return [page.locator('.contents > main'), page.locator('.contents > aside')] as const
+    })
+  },
+  showHtml: async ({ page }, use) => {
+    await use(async html => {
+      await page.setContent(html.toString())
 
       const viewportSize = page.viewportSize()
 
@@ -102,8 +102,6 @@ export const test = baseTest.extend<ShowPage>({
         await page.waitForLoadState('networkidle')
         await page.setViewportSize(viewportSize)
       }
-
-      return [page.locator('.contents > main'), page.locator('.contents > aside')] as const
     })
   },
 })
