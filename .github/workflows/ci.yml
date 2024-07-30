@@ -75,31 +75,20 @@ jobs:
       - name: 'Checkout code'
         uses: actions/checkout@v4.1.7
 
-      - name: 'Set up Docker Build'
-        uses: docker/setup-buildx-action@v3.4.0
-
-      - name: 'Build intlc image'
-        id: build
-        uses: docker/build-push-action@v6.4.0
-        env:
-          DOCKER_BUILD_SUMMARY: false
+      - name: 'Set up intlc'
+        uses: unsplash/setup-intlc@v1.0.0
         with:
-          context: .
-          target: build-intlc
-          outputs: type=docker
-          cache-from: type=gha,ignore-error=true
-          cache-to: type=gha,mode=max,ignore-error=true
+          version: 0.8.3
 
-      - name: 'Create container'
-        id: container
-        run: |
-          container=$(docker container create "${{ steps.build.outputs.imageid }}")
-          echo "container=$container" >> $GITHUB_OUTPUT
+      - name: 'Set up mo'
+        uses: shrink/actions-docker-extract@v3.0.0
+        with:
+          image: ghcr.io/tests-always-included/mo:3.0.5
+          path: /usr/local/bin/mo
+          destination: /usr/local/bin
 
-      - name: 'Copy files'
-        run: |
-          docker container cp ${{ steps.container.outputs.container }}:/app/assets/ .
-          docker container cp ${{ steps.container.outputs.container }}:/app/src/ .
+      - name: 'Build locales'
+        run: scripts/intlc.sh
 
       - name: 'Upload locales'
         uses: actions/upload-artifact@v4.3.4
