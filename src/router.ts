@@ -42,6 +42,7 @@ import {
   saveAvatarOnCloudinary,
 } from './cloudinary.js'
 import { clubProfile } from './club-profile-page/index.js'
+import { clubsData } from './clubs-data/index.js'
 import { clubs } from './clubs.js'
 import { codeOfConduct } from './code-of-conduct.js'
 import {
@@ -176,6 +177,7 @@ import {
   changeResearchInterestsMatch,
   changeResearchInterestsVisibilityMatch,
   clubProfileMatch,
+  clubsDataMatch,
   clubsMatch,
   codeOfConductMatch,
   connectOrcidCodeMatch,
@@ -1978,6 +1980,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ),
         })),
       ),
+    ),
+    pipe(
+      clubsDataMatch.parser,
+      P.map(() => clubsData),
     ),
     pipe(
       reviewsDataMatch.parser,
