@@ -37,7 +37,7 @@ const loggerEnv: L.LoggerEnv = {
   logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
 }
 
-const redis: Effect.Effect<IoRedis, never, Scope.Scope> = Effect.acquireRelease(
+const redis: Effect.Effect<Context.Tag.Service<RedisService>, never, Scope.Scope> = Effect.acquireRelease(
   Effect.suspend(() => {
     const redis = new IoRedis(env.REDIS_URI.href, {
       commandTimeout: 2 * 1000,
@@ -112,8 +112,32 @@ class LegacyDeps extends Context.Tag('LegacyDeps')<
 
 class PerRequestDeps extends Context.Tag('PerRequestDeps')<PerRequestDeps, LocaleTranslateEnv & UserEnv>() {}
 
+const orcid = Effect.gen(function* () {
+  const redisClient = yield* RedisService
+  const sessionId = '853dbd33-f595-4170-b5b3-e345a866fcc8'
+  const value = yield* Schema.encode(sessionSchema)({
+    value: {
+      user: {
+        name: 'Josiah Carberry',
+        orcid: '0000-0002-1825-0097',
+        pseudonym: 'Orange Panda',
+      },
+    },
+  })
+  yield* Effect.tryPromise(() => redisClient.set(`sessions:${sessionId}`, value))
+
+  return yield* pipe(
+    HttpServerResponse.empty({ status: 301, headers: Headers.fromInput({ location: '/' }) }),
+    HttpServerResponse.setCookies([
+      ['session', sessionId],
+      ['flash-message', 'logged-in'],
+    ]),
+  )
+})
+
 const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/about', toHttpServerResponse(aboutUs)),
+  HttpRouter.get('/orcid', orcid),
   HttpRouter.get('/health', healthRoute),
 )
 
@@ -153,6 +177,18 @@ const legacyDeps = Effect.gen(function* () {
   })
 })
 
+const sessionSchema = Schema.parseJson(
+  Schema.Struct({
+    value: Schema.Struct({
+      user: Schema.Struct({
+        name: Schema.String,
+        orcid: Schema.String,
+        pseudonym: Schema.String,
+      }),
+    }),
+  }),
+)
+
 const providePerRequestsDeps = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const redisClient = yield* RedisService
@@ -163,21 +199,7 @@ const providePerRequestsDeps = HttpMiddleware.make(app =>
       Effect.andThen(Array.head),
       Effect.andThen(id => redisClient.get(`sessions:${id}`)),
       Effect.tap(value => Effect.succeed(console.log('+++ ', value))),
-      Effect.andThen(
-        Schema.decodeUnknown(
-          Schema.parseJson(
-            Schema.Struct({
-              value: Schema.Struct({
-                user: Schema.Struct({
-                  name: Schema.String,
-                  orcid: Schema.String,
-                  pseudonym: Schema.String,
-                }),
-              }),
-            }),
-          ),
-        ),
-      ),
+      Effect.andThen(Schema.decodeUnknown(sessionSchema)),
       Effect.andThen(session => session.value.user),
       Effect.asSome,
       Effect.tapError(e => Effect.succeed(console.log('>>> ', e))),
