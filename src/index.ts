@@ -155,16 +155,39 @@ const legacyDeps = Effect.gen(function* () {
 
 const providePerRequestsDeps = HttpMiddleware.make(app =>
   Effect.gen(function* () {
-    const sessionId = yield* pipe(
+    const redisClient = yield* RedisService
+    const user = yield* pipe(
       HttpServerRequest.schemaCookies(Schema.Struct({ session: Schema.String })),
       Effect.andThen(({ session }) => session),
       Effect.andThen(signed => signed.split('.')),
       Effect.andThen(Array.head),
+      Effect.andThen(id => redisClient.get(`sessions:${id}`)),
+      Effect.tap(value => Effect.succeed(console.log('+++ ', value))),
+      Effect.andThen(
+        Schema.decodeUnknown(
+          Schema.parseJson(
+            Schema.Struct({
+              value: Schema.Struct({
+                user: Schema.Struct({
+                  name: Schema.String,
+                  orcid: Schema.String,
+                  pseudonym: Schema.String,
+                }),
+              }),
+            }),
+          ),
+        ),
+      ),
+      Effect.andThen(session => session.value.user),
       Effect.asSome,
+      Effect.tapError(e => Effect.succeed(console.log('>>> ', e))),
       Effect.orElseSucceed(() => Option.none()),
     )
     return yield* app.pipe(
-      Effect.provideService(PerRequestDeps, { translate: localeTranslate(DefaultLocale), user: Option.none() }),
+      Effect.provideService(PerRequestDeps, {
+        translate: localeTranslate(DefaultLocale),
+        user: user as Option.Option<User>,
+      }),
     )
   }),
 )
