@@ -107,7 +107,6 @@ class LegacyDeps extends Context.Tag('LegacyDeps')<
 class PerRequestDeps extends Context.Tag('PerRequestDeps')<PerRequestDeps, LocaleTranslateEnv>() {}
 
 const Router = HttpRouter.empty.pipe(
-  HttpRouter.get('/', HttpServerResponse.html('hello')),
   HttpRouter.get('/about', toHttpServerResponse(aboutUs)),
   HttpRouter.get('/health', healthRoute),
 )
