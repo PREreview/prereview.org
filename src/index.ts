@@ -9,7 +9,7 @@ import {
 import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/platform-node'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Config, Context, Effect, Layer, Logger, type Scope, flow, pipe } from 'effect'
+import { Config, Context, Effect, Layer, Logger, Option, type Scope, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as C from 'fp-ts/lib/Console.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -27,6 +27,7 @@ import { DefaultLocale, type LocaleTranslate, localeTranslate } from './locales/
 import { type EnvironmentLabelEnv, type FathomEnv, type TemplatePageEnv, page } from './page.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { type PageResponse, toPage } from './response.js'
+import type { User } from './user.js'
 
 const env = decodeEnv(process)()
 
@@ -85,7 +86,7 @@ const toHttpServerResponse = (
     return yield* HttpServerResponse.html(
       toPage({ locale: DefaultLocale, message: undefined, userOnboarding: undefined })(
         legacyResponse,
-        undefined,
+        Option.getOrUndefined(perRequestDeps.user),
       )(legacyDeps).toString(),
     )
   })
@@ -99,12 +100,16 @@ interface LocaleTranslateEnv {
   translate: LocaleTranslate
 }
 
+interface UserEnv {
+  user: Option.Option<User>
+}
+
 class LegacyDeps extends Context.Tag('LegacyDeps')<
   LegacyDeps,
   Context.Tag.Service<LegacyConfig> & FetchEnv & SleepEnv & TemplatePageEnv
 >() {}
 
-class PerRequestDeps extends Context.Tag('PerRequestDeps')<PerRequestDeps, LocaleTranslateEnv>() {}
+class PerRequestDeps extends Context.Tag('PerRequestDeps')<PerRequestDeps, LocaleTranslateEnv & UserEnv>() {}
 
 const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/about', toHttpServerResponse(aboutUs)),
@@ -149,7 +154,9 @@ const legacyDeps = Effect.gen(function* () {
 
 const providePerRequestsDeps = HttpMiddleware.make(app =>
   Effect.gen(function* () {
-    return yield* app.pipe(Effect.provideService(PerRequestDeps, { translate: localeTranslate(DefaultLocale) }))
+    return yield* app.pipe(
+      Effect.provideService(PerRequestDeps, { translate: localeTranslate(DefaultLocale), user: Option.none() }),
+    )
   }),
 )
 
