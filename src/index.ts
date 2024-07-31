@@ -172,7 +172,7 @@ const Server = Router.pipe(
         return HttpServerResponse.empty()
       }),
   }),
-  HttpServer.serve(flow(requestIdLogging, providePerRequestsDeps)),
+  HttpServer.serve(flow(HttpMiddleware.logger, requestIdLogging, providePerRequestsDeps)),
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Layer.provide(redisLayer),
   Layer.provide(Layer.effect(LegacyDeps, legacyDeps)),
