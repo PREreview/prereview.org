@@ -121,6 +121,21 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Ryan John Cubero', orcid: '0000-0003-0002-1867' as Orcid },
     ],
   },
+  'bimsb-neuroscience': {
+    name: 'Biophysics Probing Neuroscience Lab',
+    description: html`
+      <p>
+        We are a young lab part of BIMSB (Berlin Institute for Medical Systems Biology) located in Berlin (Germany). We
+        seek to understand how intrinsically disordered proteins (dys)regulate brain metabolism using advanced imaging
+        techniques.
+      </p>
+      <p>
+        We want to convert our running journal club into a preprint club with the goal to support open science and
+        early-career researchers participation in peer-review processes. We aim to produce 4 preprint reviews a year.
+      </p>
+    `,
+    leads: [{ name: 'Anna Oliveras', orcid: '0000-0002-5880-5245' as Orcid }],
+  },
   'biomass-biocatalysis': {
     name: 'Biomass and Biocatalysis Group',
     description: html`
@@ -206,6 +221,23 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
         peer review offerings through
         <a href="https://support.jmir.org/hc/en-us/articles/4408266275099">Live Reviews</a>: topic-centered, interactive
         preprint review calls via a video conference tool such as Zoom.
+      </p>
+      <p>
+        The <a href="https://jmirx.org/">JMIRx series of journals</a> is a groundbreaking “<a
+          href="https://www.jmir.org/2019/12/e17578/"
+          >superjournal</a
+        >” series, which sits on top of preprint servers (eg, medRxiv and bioRxiv) and publishes preprint peer reviews
+        and revised versions of record of preprints in indexed journals such as
+        <a href="https://xmed.jmir.org/">JMIRx Med</a> (the first PubMed-indexed overlay journal in the world).
+        <a href="https://xmed.jmir.org/themes/1147-prereview">#PREreview</a> is one of the communities and sections in
+        the journal.
+      </p>
+      <p>
+        PREreview reports can be used in lieu of a formal invited peer review to revise and publish a preprint in a
+        JMIRx journal or another <a href="https://planp.science/">Plan P</a>–compatible journal. To learn more about the
+        JMIRx project, see our help article “What is JMIRx?” To self-nominate a preprint for JMIRx or PREreview live
+        review, please use the <a href="https://med.jmirx.org/landing">JMIRx submission form</a> and choose “PREreview”
+        as your peer review option.
       </p>
     `,
     leads: [
@@ -314,6 +346,24 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Assist. Prof. Dr. Salwan M. Abdulateef', orcid: '0000-0002-7389-0003' as Orcid }],
     contact: 'ag.salwan.mahmood@uoanbar.edu.iq' as EmailAddress,
+  },
+  prosac: {
+    name: 'Proteostasis and Cancer Team INSERM U1242',
+    description: html`
+      <p>
+        The Proteostasis and Cancer team is aiming at characterizing how protein homeostasis (a.k.a. proteostasis)
+        control might play a role in cancer development. In particular, the team focuses principally (but not
+        exclusively) on the signalling pathways sustaining proteostasis in the Endoplasmic Reticulum (ER), the clinical
+        relevance of such mechanisms, and the potential of their therapeutic targeting in solid tumours (mainly brain
+        and breast cancers).
+      </p>
+      <p>
+        This club will provide pre-reviews of preprints as part of our team’s journal clubs. We thereby aim to provide
+        constructive criticism to the authors while training the students and postdoctoral researchers in our team to
+        review articles.
+      </p>
+    `,
+    leads: [{ name: 'Elodie Lafont', orcid: '0000-0003-1978-7491' as Orcid }],
   },
   'reviewing-dental-articles-club': {
     name: 'Reviewing Dental Articles Club',

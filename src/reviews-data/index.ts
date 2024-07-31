@@ -14,6 +14,7 @@ import type { Orcid } from 'orcid-id-ts'
 import safeStableStringify from 'safe-stable-stringify'
 import { P, match } from 'ts-pattern'
 import type { ScietyListEnv } from '../sciety-list/index.js'
+import type { ClubId } from '../types/club-id.js'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 import { isPseudonym } from '../types/pseudonym.js'
 
@@ -26,6 +27,7 @@ export interface Prereview {
   authors: ReadonlyArray<{ name: string; orcid?: Orcid }>
   language?: LanguageCode
   type: 'full' | 'structured'
+  club?: ClubId
 }
 
 export interface GetPrereviewsEnv {
@@ -63,6 +65,7 @@ const PrereviewE = pipe(
   E.intersect(
     E.partial({
       language: StringE,
+      club: StringE,
     }),
   ),
 ) satisfies E.Encoder<JsonRecord, TransformedPrereview>
@@ -75,6 +78,7 @@ interface TransformedPrereview {
   authors: ReadonlyArray<{ author: string; authorType: 'public' | 'pseudonym' }>
   language?: LanguageCode
   type: 'full' | 'structured'
+  club?: ClubId
 }
 
 const PrereviewsE = ReadonlyArrayE(PrereviewE)
@@ -102,6 +106,7 @@ const transform = (prereview: Prereview): TransformedPrereview => ({
   ),
   language: prereview.language,
   type: prereview.type,
+  club: prereview.club,
 })
 
 export const reviewsData = pipe(

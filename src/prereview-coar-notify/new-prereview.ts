@@ -28,6 +28,6 @@ export const postNewPrereview = ({
     F.send,
     RTE.mapLeft(() => 'network'),
     RTE.filterOrElseW(F.hasStatus(Status.Created), () => 'non-201-response' as const),
-    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get recent review requests')))),
+    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to post new PREreview')))),
     RTE.bimap(() => 'unavailable' as const, constVoid),
   )

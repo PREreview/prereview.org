@@ -1,0 +1,14 @@
+{
+  "requestTitle": {
+    "message": "Review request for {preprint}"
+  },
+  "requestText": {
+    "message": "A review was requested for {preprint}"
+  },
+  "requestPublished": {
+    "message": "Request published"
+  },
+  "requestServer": {
+    "message": "Preprint server"
+  }
+}

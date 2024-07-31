@@ -52,6 +52,7 @@ export const effectifiedExpressApp: Effect.Effect<Express, never, RedisService> 
     coarNotifyUrl: env.COAR_NOTIFY_URL,
     coarNotifyToken: env.COAR_NOTIFY_TOKEN,
     contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: createKeyvStore() }),
+    environmentLabel: env.ENVIRONMENT_LABEL,
     fathomId: env.FATHOM_SITE_ID,
     fetch: fetch.defaults({
       cachePath: 'data/cache',
@@ -85,13 +86,6 @@ export const effectifiedExpressApp: Effect.Effect<Express, never, RedisService> 
       tokenUrl: new URL(`${env.ORCID_URL.origin}/oauth/token`),
     },
     orcidTokenStore: new Keyv({ namespace: 'orcid-token', store: createKeyvStore() }),
-    phase:
-      typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT !== 'undefined'
-        ? {
-            tag: env.PHASE_TAG,
-            text: env.PHASE_TEXT,
-          }
-        : undefined,
     publicUrl: env.PUBLIC_URL,
     researchInterestsStore: new Keyv({ namespace: 'research-interests', store: createKeyvStore() }),
     reviewRequestStore: new Keyv({ namespace: 'review-request', store: createKeyvStore() }),

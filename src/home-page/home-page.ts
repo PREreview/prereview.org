@@ -84,38 +84,8 @@ export const createPage = ({
 
       ${pipe(
         recentReviewRequests,
-        RA.match(
-          () => html`
-            <section class="tops" aria-labelledby="tops-title">
-              <h2 id="tops-title" class="visually-hidden">Year of Open Science</h2>
-
-              <img src="${assets['tops.png']}" width="400" height="564" loading="lazy" alt="" />
-
-              <div>
-                <p>
-                  PREreview joined the US White House, 10 federal agencies, a coalition of more than 85 universities,
-                  and other organizations in a commitment to advancing 4
-                  <a href="https://nasa.github.io/Transform-to-Open-Science-Book/Year_of_Open_Science_Guide/readme.html"
-                    >Year of Open Science</a
-                  >
-                  goals to:
-                </p>
-
-                <ol>
-                  <li>Develop a strategic plan for open science.</li>
-                  <li>Improve the transparency, integrity, and equity of reviews.</li>
-                  <li>Account for open science activities in evaluations.</li>
-                  <li>Engage underrepresented communities in the advancement of open science.</li>
-                </ol>
-
-                <a
-                  href="https://nasa.github.io/Transform-to-Open-Science-Book/Year_of_Open_Science_Guide/participants/PREreview.html"
-                  class="forward"
-                  >How PREreview is fulfilling this commitment</a
-                >
-              </div>
-            </section>
-          `,
+        RA.matchW(
+          () => '',
           requests => html`
             <section aria-labelledby="recent-review-requests-title">
               <h2 id="recent-review-requests-title">${translate(locale, 'home-page', 'requestsTitle')()}</h2>
@@ -125,12 +95,19 @@ export const createPage = ({
                     <li>
                       <article aria-labelledby="request-${index}-title">
                         <h3 id="request-${index}-title" class="visually-hidden">
-                          Review request for
-                          <cite
-                            dir="${rtlDetect.getLangDir(request.preprint.language)}"
-                            lang="${request.preprint.language}"
-                            >${request.preprint.title}</cite
-                          >
+                          ${rawHtml(
+                            translate(
+                              locale,
+                              'requests-list',
+                              'requestTitle',
+                            )({
+                              preprint: html`<cite
+                                dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                                lang="${request.preprint.language}"
+                                >${request.preprint.title}</cite
+                              >`.toString(),
+                            }),
+                          )}
                         </h3>
 
                         <a
@@ -138,12 +115,19 @@ export const createPage = ({
                             id: request.preprint.id,
                           })}"
                         >
-                          A review was requested for
-                          <cite
-                            dir="${rtlDetect.getLangDir(request.preprint.language)}"
-                            lang="${request.preprint.language}"
-                            >${request.preprint.title}</cite
-                          >
+                          ${rawHtml(
+                            translate(
+                              locale,
+                              'requests-list',
+                              'requestText',
+                            )({
+                              preprint: html`<cite
+                                dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                                lang="${request.preprint.language}"
+                                >${request.preprint.title}</cite
+                              >`.toString(),
+                            }),
+                          )}
                         </a>
 
                         ${request.subfields.length > 0
@@ -157,9 +141,9 @@ export const createPage = ({
                           : ''}
 
                         <dl>
-                          <dt>Review published</dt>
+                          <dt>${translate(locale, 'requests-list', 'requestPublished')()}</dt>
                           <dd>${renderDate(locale)(request.published)}</dd>
-                          <dt>Preprint server</dt>
+                          <dt>${translate(locale, 'requests-list', 'requestServer')()}</dt>
                           <dd>
                             ${match(request.preprint.id.type)
                               .with('africarxiv', () => 'AfricArXiv Preprints')
@@ -262,22 +246,50 @@ export const createPage = ({
                     <li>
                       <article aria-labelledby="prereview-${prereview.id}-title">
                         <h3 id="prereview-${prereview.id}-title" class="visually-hidden">
-                          PREreview of
-                          <cite
-                            dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                            lang="${prereview.preprint.language}"
-                            >${prereview.preprint.title}</cite
-                          >
+                          ${rawHtml(
+                            translate(
+                              locale,
+                              'reviews-list',
+                              'reviewTitle',
+                            )({
+                              preprint: html`<cite
+                                dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                                lang="${prereview.preprint.language}"
+                                >${prereview.preprint.title}</cite
+                              >`.toString(),
+                            }),
+                          )}
                         </h3>
 
                         <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                          ${formatList(locale)(prereview.reviewers)}
-                          ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
-                          <cite
-                            dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                            lang="${prereview.preprint.language}"
-                            >${prereview.preprint.title}</cite
-                          >
+                          ${rawHtml(
+                            prereview.club
+                              ? translate(
+                                  locale,
+                                  'reviews-list',
+                                  'clubReviewText',
+                                )({
+                                  club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
+                                  reviewers: formatList(locale)(prereview.reviewers).toString(),
+                                  preprint: html`<cite
+                                    dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                                    lang="${prereview.preprint.language}"
+                                    >${prereview.preprint.title}</cite
+                                  >`.toString(),
+                                })
+                              : translate(
+                                  locale,
+                                  'reviews-list',
+                                  'reviewText',
+                                )({
+                                  reviewers: formatList(locale)(prereview.reviewers).toString(),
+                                  preprint: html`<cite
+                                    dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                                    lang="${prereview.preprint.language}"
+                                    >${prereview.preprint.title}</cite
+                                  >`.toString(),
+                                }),
+                          )}
                         </a>
 
                         ${prereview.subfields.length > 0
@@ -291,9 +303,9 @@ export const createPage = ({
                           : ''}
 
                         <dl>
-                          <dt>Review published</dt>
+                          <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
                           <dd>${renderDate(locale)(prereview.published)}</dd>
-                          <dt>Preprint server</dt>
+                          <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
                           <dd>
                             ${match(prereview.preprint.id.type)
                               .with('africarxiv', () => 'AfricArXiv Preprints')

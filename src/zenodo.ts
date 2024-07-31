@@ -657,6 +657,7 @@ function recordToScietyPrereview(
         O.match(() => undefined, iso6393To1),
       ),
       type: record.metadata.keywords?.includes('Structured PREreview') === true ? 'structured' : 'full',
+      club: pipe(getReviewClub(record), O.toUndefined),
     })),
   )
 }

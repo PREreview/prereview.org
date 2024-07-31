@@ -24,7 +24,7 @@ import { decodeEnv } from './env.js'
 import type { SleepEnv } from './fetch.js'
 import type { GhostApiEnv } from './ghost.js'
 import { DefaultLocale, type LocaleTranslate, localeTranslate } from './locales/index.js'
-import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page } from './page.js'
+import { type EnvironmentLabelEnv, type FathomEnv, type TemplatePageEnv, page } from './page.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { type PageResponse, toPage } from './response.js'
 
@@ -92,7 +92,7 @@ const toHttpServerResponse = (
 
 class LegacyConfig extends Context.Tag('LegacyConfig')<
   LegacyConfig,
-  GhostApiEnv & FathomEnv & PhaseEnv & PublicUrlEnv
+  GhostApiEnv & FathomEnv & PublicUrlEnv & EnvironmentLabelEnv
 >() {}
 
 interface LocaleTranslateEnv {
@@ -125,18 +125,12 @@ const requestIdLogging = HttpMiddleware.make(app =>
 )
 
 const legacyConfig = LegacyConfig.of({
+  environmentLabel: env.ENVIRONMENT_LABEL,
   ghostApi: {
     key: env.GHOST_API_KEY,
   },
   publicUrl: env.PUBLIC_URL,
   fathomId: env.FATHOM_SITE_ID,
-  phase:
-    typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT !== 'undefined'
-      ? {
-          tag: env.PHASE_TAG,
-          text: env.PHASE_TEXT,
-        }
-      : undefined,
 })
 
 const legacyDeps = Effect.gen(function* () {

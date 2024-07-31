@@ -1,0 +1,59 @@
+{
+  "newsletterText": {
+    "message": "Learn about upcoming events and updates."
+  },
+  "newsletterLink": {
+    "message": "Subscribe to our newsletter"
+  },
+  "slackText": {
+    "message": "Come join the conversation!"
+  },
+  "slackLink": {
+    "message": "Join our Slack Community"
+  },
+  "menuDonate": {
+    "message": "Donate"
+  },
+  "menuPeople": {
+    "message": "People"
+  },
+  "menuFunding": {
+    "message": "How we’re funded"
+  },
+  "menuCodeOfConduct": {
+    "message": "Code of Conduct"
+  },
+  "menuEdiaStatement": {
+    "message": "EDIA Statement"
+  },
+  "menuPrivacyPolicy": {
+    "message": "Privacy Policy"
+  },
+  "menuBlog": {
+    "message": "Blog"
+  },
+  "menuHowToUse": {
+    "message": "How to use"
+  },
+  "contactEmail": {
+    "message": "Email us at {address}"
+  },
+  "contactTwitter": {
+    "message": "{handle} on Twitter"
+  },
+  "contactMastodon": {
+    "message": "{handle} on Mastodon"
+  },
+  "contactLinkedIn": {
+    "message": "{handle} on LinkedIn"
+  },
+  "contactGitHub": {
+    "message": "{handle} on GitHub"
+  },
+  "zenodo": {
+    "message": "PREreviews are available in our <community>Zenodo Community</community> and the <api>Zenodo API</api>."
+  },
+  "copyright": {
+    "message": "All content is available under a Creative Commons <link>Attribution 4.0 International license</link>, except where otherwise stated."
+  }
+}

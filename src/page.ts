@@ -7,7 +7,7 @@ import * as s from 'fp-ts/lib/string.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
-import { DefaultLocale, type SupportedLocale } from './locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
 import * as assets from './manifest.json'
 import type { PublicUrlEnv } from './public-url.js'
 import {
@@ -38,11 +38,8 @@ export interface FathomEnv {
   readonly fathomId?: string
 }
 
-export interface PhaseEnv {
-  readonly phase?: {
-    readonly tag: string
-    readonly text: Html
-  }
+export interface EnvironmentLabelEnv {
+  readonly environmentLabel?: 'dev' | 'sandbox'
 }
 
 export interface Page {
@@ -92,7 +89,7 @@ export function page({
   js = [],
   user,
   userOnboarding,
-}: Page): R.Reader<FathomEnv & PhaseEnv & PublicUrlEnv, Html> {
+}: Page): R.Reader<EnvironmentLabelEnv & FathomEnv & PublicUrlEnv, Html> {
   const scripts = pipe(
     js,
     RA.uniq(stringEq()),
@@ -101,7 +98,7 @@ export function page({
   )
 
   return R.asks(
-    ({ fathomId, phase, publicUrl }) => html`
+    ({ fathomId, environmentLabel, publicUrl }) => html`
       <!doctype html>
       <html lang="${locale}" dir="${rtlDetect.getLangDir(locale)}" prefix="og: https://ogp.me/ns#">
         <head>
@@ -142,11 +139,11 @@ export function page({
 
           <header>
             <div class="navigation">
-              ${phase
+              ${environmentLabel
                 ? html`
                     <div class="phase-banner">
-                      <strong class="tag">${phase.tag}</strong>
-                      <span>${phase.text}</span>
+                      <strong class="tag">${translate(locale, 'environment', `${environmentLabel}Name`)()}</strong>
+                      <span>${translate(locale, 'environment', `${environmentLabel}Text`)()}</span>
                     </div>
                   `
                 : ''}
@@ -156,22 +153,30 @@ export function page({
                       <ul>
                         ${type !== 'streamline'
                           ? html`
-                              <li><a href="https://content.prereview.org/">Blog</a></li>
+                              <li>
+                                <a href="https://content.prereview.org/"
+                                  >${translate(locale, 'header', 'menuBlog')()}</a
+                                >
+                              </li>
                               <li>
                                 <a
                                   href="${format(aboutUsMatch.formatter, {})}"
                                   ${current === 'about-us' ? html`aria-current="page"` : ''}
-                                  >About</a
+                                  >${translate(locale, 'header', 'menuAboutUs')()}</a
                                 >
                               </li>
                               <li>
                                 <a
                                   href="${format(partnersMatch.formatter, {})}"
                                   ${current === 'partners' ? html`aria-current="page"` : ''}
-                                  >Partners</a
+                                  >${translate(locale, 'header', 'menuPartners')()}</a
                                 >
                               </li>
-                              <li><a href="https://donorbox.org/prereview">Donate</a></li>
+                              <li>
+                                <a href="https://donorbox.org/prereview"
+                                  >${translate(locale, 'header', 'menuDonate')()}</a
+                                >
+                              </li>
                             `
                           : ''}
                         ${user && type !== 'streamline'
@@ -179,13 +184,14 @@ export function page({
                                 <a
                                   href="${format(myDetailsMatch.formatter, {})}"
                                   ${current === 'my-details' ? html`aria-current="page"` : ''}
-                                  >My
-                                  details${match(userOnboarding)
+                                  >${translate(locale, 'header', 'menuMyDetails')()}${match(userOnboarding)
                                     .with(
                                       { seenMyDetailsPage: false },
                                       () =>
                                         html` <span role="status"
-                                          ><span class="visually-hidden">New notification</span></span
+                                          ><span class="visually-hidden"
+                                            >${translate(locale, 'header', 'menuNewNotification')()}</span
+                                          ></span
                                         >`,
                                     )
                                     .otherwise(() => '')}</a
@@ -195,13 +201,23 @@ export function page({
                                 <a
                                   href="${format(myPrereviewsMatch.formatter, {})}"
                                   ${current === 'my-prereviews' ? html`aria-current="page"` : ''}
-                                  >My PREreviews</a
+                                  >${translate(locale, 'header', 'menuMyPrereviews')()}</a
                                 >
                               </li>`
                           : ''}
-                        ${user ? html` <li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
+                        ${user
+                          ? html` <li>
+                              <a href="${format(logOutMatch.formatter, {})}"
+                                >${translate(locale, 'header', 'menuLogOut')()}</a
+                              >
+                            </li>`
+                          : ''}
                         ${!user && current === 'home'
-                          ? html` <li><a href="${format(logInMatch.formatter, {})}">Log in</a></li>`
+                          ? html` <li>
+                              <a href="${format(logInMatch.formatter, {})}"
+                                >${translate(locale, 'header', 'menuLogIn')()}</a
+                              >
+                            </li>`
                           : ''}
                       </ul>
                     </nav>
@@ -225,42 +241,42 @@ export function page({
                             <a
                               href="${format(reviewsMatch.formatter, {})}"
                               ${current === 'reviews' ? html`aria-current="page"` : ''}
-                              >Reviews</a
+                              >${translate(locale, 'header', 'menuReviews')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(reviewRequestsMatch.formatter, {})}"
                               ${current === 'review-requests' ? html`aria-current="page"` : ''}
-                              >Requests</a
+                              >${translate(locale, 'header', 'menuRequests')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(trainingsMatch.formatter, {})}"
                               ${current === 'trainings' ? html`aria-current="page"` : ''}
-                              >Trainings</a
+                              >${translate(locale, 'header', 'menuTrainings')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(liveReviewsMatch.formatter, {})}"
                               ${current === 'live-reviews' ? html`aria-current="page"` : ''}
-                              >Live Reviews</a
+                              >${translate(locale, 'header', 'menuLiveReviews')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(resourcesMatch.formatter, {})}"
                               ${current === 'resources' ? html`aria-current="page"` : ''}
-                              >Resources</a
+                              >${translate(locale, 'header', 'menuResources')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(clubsMatch.formatter, {})}"
                               ${current === 'clubs' ? html`aria-current="page"` : ''}
-                              >Clubs</a
+                              >${translate(locale, 'header', 'menuClubs')()}</a
                             >
                           </li>
                         </ul>
@@ -281,102 +297,176 @@ export function page({
                   </div>
 
                   <div>
-                    Learn about upcoming events and updates.
+                    ${translate(locale, 'footer', 'newsletterText')()}
                     <a href="https://prereview.civicrm.org/civicrm/mailing/url?u=17&qid=30" class="forward"
-                      >Subscribe to our newsletter</a
+                      >${translate(locale, 'footer', 'newsletterLink')()}</a
                     >
                   </div>
 
                   <div>
-                    Come join the conversation!
-                    <a href="https://bit.ly/PREreview-Slack" class="forward">Join our Slack Community</a>
+                    ${translate(locale, 'footer', 'slackText')()}
+                    <a href="https://bit.ly/PREreview-Slack" class="forward"
+                      >${translate(locale, 'footer', 'slackLink')()}</a
+                    >
                   </div>
 
                   <ul aria-label="Support links">
-                    <li><a href="https://donorbox.org/prereview">Donate</a></li>
+                    <li><a href="https://donorbox.org/prereview">${translate(locale, 'footer', 'menuDonate')()}</a></li>
                     <li>
                       <a
                         href="${format(peopleMatch.formatter, {})}"
                         ${current === 'people' ? html`aria-current="page"` : ''}
-                        >People</a
+                        >${translate(locale, 'footer', 'menuPeople')()}</a
                       >
                     </li>
                     <li>
                       <a
                         href="${format(fundingMatch.formatter, {})}"
                         ${current === 'funding' ? html`aria-current="page"` : ''}
-                        >How we’re funded</a
+                        >${translate(locale, 'footer', 'menuFunding')()}</a
                       >
                     </li>
                     <li>
                       <a
                         href="${format(codeOfConductMatch.formatter, {})}"
                         ${current === 'code-of-conduct' ? html`aria-current="page"` : ''}
-                        >Code of Conduct</a
+                        >${translate(locale, 'footer', 'menuCodeOfConduct')()}</a
                       >
                     </li>
                     <li>
                       <a
                         href="${format(ediaStatementMatch.formatter, {})}"
                         ${current === 'edia-statement' ? html`aria-current="page"` : ''}
-                        >EDIA Statement</a
+                        >${translate(locale, 'footer', 'menuEdiaStatement')()}</a
                       >
                     </li>
                     <li>
                       <a
                         href="${format(privacyPolicyMatch.formatter, {})}"
                         ${current === 'privacy-policy' ? html`aria-current="page"` : ''}
-                        >Privacy Policy</a
+                        >${translate(locale, 'footer', 'menuPrivacyPolicy')()}</a
                       >
                     </li>
-                    <li><a href="https://content.prereview.org/">Blog</a></li>
+                    <li><a href="https://content.prereview.org/">${translate(locale, 'footer', 'menuBlog')()}</a></li>
                     <li>
                       <a
                         href="${format(howToUseMatch.formatter, {})}"
                         ${current === 'how-to-use' ? html`aria-current="page"` : ''}
-                        >How to use</a
+                        >${translate(locale, 'footer', 'menuHowToUse')()}</a
                       >
                     </li>
                   </ul>
 
                   <ul class="contacts" aria-label="Contact us">
                     <li>
-                      <span class="visually-hidden">Email us at</span>
-                      <a href="mailto:contact@prereview.org" class="email" translate="no">contact@prereview.org</a>
+                      <span class="visually-hidden">
+                        ${rawHtml(
+                          translate(
+                            locale,
+                            'footer',
+                            'contactEmail',
+                          )({
+                            address: html`</span><a href="mailto:contact@prereview.org" class="email" translate="no"
+                            >contact@prereview.org</a
+                            ><span class="visually-hidden">`.toString(),
+                          }),
+                        )}
+                      </span>
                     </li>
                     <li>
-                      <a href="https://twitter.com/PREreview_" class="twitter" translate="no">@PREreview_</a>
-                      <span class="visually-hidden">on Twitter</span>
+                      <span class="visually-hidden">
+                        ${rawHtml(
+                          translate(
+                            locale,
+                            'footer',
+                            'contactTwitter',
+                          )({
+                            handle: html`</span><a href="https://twitter.com/PREreview_" class="twitter" translate="no"
+                            >@PREreview_</a
+                            ><span class="visually-hidden">`.toString(),
+                          }),
+                        )}
+                      </span>
                     </li>
                     <li>
-                      <a href="https://mas.to/@prereview" class="mastodon" translate="no">@prereview@mas.to</a>
-                      <span class="visually-hidden">on Mastodon</span>
+                      <span class="visually-hidden">
+                        ${rawHtml(
+                          translate(
+                            locale,
+                            'footer',
+                            'contactMastodon',
+                          )({
+                            handle: html`</span><a href="https://mas.to/@prereview" class="mastodon" translate="no"
+                            >@prereview@mas.to</a
+                            ><span class="visually-hidden">`.toString(),
+                          }),
+                        )}
+                      </span>
                     </li>
                     <li>
-                      <a href="https://www.linkedin.com/company/prereview/" class="linked-in" translate="no"
-                        >PREreview</a
+                      <span class="visually-hidden">
+                        ${rawHtml(
+                          translate(
+                            locale,
+                            'footer',
+                            'contactLinkedIn',
+                          )({
+                            handle: html`</span><a
+                              href="https://www.linkedin.com/company/prereview/"
+                              class="linked-in"
+                              translate="no"
+                            >PREreview</a
+                            ><span class="visually-hidden">`.toString(),
+                          }),
+                        )}</span
                       >
-                      <span class="visually-hidden">on LinkedIn</span>
                     </li>
                     <li>
-                      <a href="https://github.com/PREreview" class="github" translate="no">PREreview</a>
-                      <span class="visually-hidden">on GitHub</span>
+                      <span class="visually-hidden">
+                        ${rawHtml(
+                          translate(
+                            locale,
+                            'footer',
+                            'contactGitHub',
+                          )({
+                            handle: html`</span><a href="https://github.com/PREreview" class="github" translate="no"
+                            >PREreview</a
+                            ><span class="visually-hidden">`.toString(),
+                          }),
+                        )}
+                      </span>
                     </li>
                   </ul>
 
                   <div class="small">
-                    PREreviews are available in our
-                    <a href="https://zenodo.org/communities/prereview-reviews/records">Zenodo&nbsp;Community</a>
-                    and the <a href="https://developers.zenodo.org/">Zenodo&nbsp;API</a>.
+                    ${rawHtml(
+                      translate(
+                        locale,
+                        'footer',
+                        'zenodo',
+                      )({
+                        community: text =>
+                          html`<a href="https://zenodo.org/communities/prereview-reviews/records"
+                            >${text}</a
+                          >`.toString(),
+                        api: text => html`<a href="https://developers.zenodo.org/">${text}</a>`.toString(),
+                      }),
+                    )}
                   </div>
                 `
               : ''}
 
             <small>
-              All content is available under a Creative&nbsp;Commons
-              <a href="https://creativecommons.org/licenses/by/4.0/" rel="license"
-                >Attribution&nbsp;4.0 International license</a
-              >, except where otherwise stated.
+              ${rawHtml(
+                translate(
+                  locale,
+                  'footer',
+                  'copyright',
+                )({
+                  link: text =>
+                    html`<a href="https://creativecommons.org/licenses/by/4.0/" rel="license">${text}</a>`.toString(),
+                }),
+              )}
             </small>
           </footer>
         </body>

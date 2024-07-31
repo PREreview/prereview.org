@@ -11,8 +11,8 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message.js'
-import { type Html, html, sendHtml } from './html.js'
-import { DefaultLocale, type SupportedLocale } from './locales/index.js'
+import { type Html, html, rawHtml, sendHtml } from './html.js'
+import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
 import type { OrcidOAuthEnv } from './log-in/index.js'
 import { showNotificationBanner } from './notification-banner.js'
 import { type Page, type TemplatePageEnv, templatePage } from './page.js'
@@ -184,7 +184,7 @@ export const toPage =
           : ''}
 
         <main id="${response.skipToLabel}">
-          ${message ? showFlashMessage(message) : ''}
+          ${message ? showFlashMessage(message, locale) : ''}
           ${typeof response.main === 'function' ? response.main(locale) : response.main}
         </main>
       `,
@@ -318,7 +318,7 @@ const handleTwoUpPageResponse = ({
             </aside>
 
             <main id="prereviews">
-              ${message ? showFlashMessage(message) : ''}
+              ${message ? showFlashMessage(message, locale) : ''}
               ${typeof response.main === 'function' ? response.main(locale) : response.main}
             </main>
           `,
@@ -390,83 +390,83 @@ const handleLogInResponse = ({
     R.local(addRedirectUri()),
   )
 
-function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>) {
+function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>, locale: SupportedLocale) {
   return match(message)
     .with('logged-out', () =>
       showNotificationBanner({
         type: 'success',
-        title: html`Success`,
-        content: html`<p>You have been logged out.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageLoggedOut')())}</p>`,
       }),
     )
     .with('logged-in', () =>
       showNotificationBanner({
         type: 'success',
-        title: html`Success`,
-        content: html`<p>You have been logged in.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageLoggedIn')())}</p>`,
       }),
     )
     .with('blocked', () =>
       showNotificationBanner({
         type: 'failure',
-        title: html`Access denied`,
-        content: html` <p>You are not allowed to log in.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleAccessDenied')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageLogInBlocked')())}</p>`,
       }),
     )
     .with('verify-contact-email', () =>
       showNotificationBanner({
         type: 'notice',
-        title: html`Important`,
-        content: html`<p>We’re sending you an email. Please open it and follow the link to verify your address.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleImportant')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageVerifyEmail')())}</p>`,
       }),
     )
     .with('contact-email-verified', () =>
       showNotificationBanner({
         type: 'success',
-        title: html`Success`,
-        content: html`<p>Your email address has been verified.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageEmailVerified')())}</p>`,
       }),
     )
     .with('orcid-connected', () =>
       showNotificationBanner({
         type: 'success',
-        title: html`Success`,
-        content: html` <p>Your ORCID profile has been connected.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageOrcidConnected')())}</p>`,
       }),
     )
     .with('orcid-disconnected', () =>
       showNotificationBanner({
         type: 'success',
-        title: html`Success`,
-        content: html` <p>Your ORCID profile has been disconnected.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageOrcidDisconnected')())}</p>`,
       }),
     )
     .with('slack-connected', () =>
       showNotificationBanner({
         type: 'success',
-        title: html`Success`,
-        content: html`<p>Your Community Slack account has been connected.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageSlackConnected')())}</p>`,
       }),
     )
     .with('slack-disconnected', () =>
       showNotificationBanner({
         type: 'success',
-        title: html`Success`,
-        content: html` <p>Your Community Slack account has been disconnected.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageSlackDisconnected')())}</p>`,
       }),
     )
     .with('avatar-changed', () =>
       showNotificationBanner({
         type: 'success',
-        title: html`Success`,
-        content: html` <p>Your avatar has been changed.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageAvatarChanged')())}</p>`,
       }),
     )
     .with('avatar-removed', () =>
       showNotificationBanner({
         type: 'success',
-        title: html`Success`,
-        content: html` <p>Your avatar has been removed.</p>`,
+        title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageAvatarRemoved')())}</p>`,
       }),
     )
     .exhaustive()

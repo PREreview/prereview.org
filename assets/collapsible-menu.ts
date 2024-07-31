@@ -1,7 +1,12 @@
+import { getLang } from './dom.js'
+import { DefaultLocale, isSupportedLocale } from './locales/index.js'
+
+const translateDep = import('./locales/index.js')
+
 export class CollapsibleMenu extends HTMLElement {
   static element = 'collapsible-menu' as const
 
-  connectedCallback() {
+  async connectedCallback() {
     const nav = this.firstElementChild
 
     if (!(nav instanceof HTMLElement) || nav.localName !== 'nav') {
@@ -16,7 +21,13 @@ export class CollapsibleMenu extends HTMLElement {
     button.type = 'button'
     button.setAttribute('aria-expanded', 'false')
     button.setAttribute('aria-controls', nav.id)
-    button.innerText = 'Menu'
+
+    const { translate } = await translateDep
+
+    const lang = getLang(this)
+    const locale = isSupportedLocale(lang) ? lang : DefaultLocale
+
+    button.innerText = translate(locale, 'collapsible-menu', 'menu')()
 
     button.addEventListener('click', () => {
       button.setAttribute('aria-expanded', button.getAttribute('aria-expanded') === 'true' ? 'false' : 'true')

@@ -42,6 +42,7 @@ import {
   saveAvatarOnCloudinary,
 } from './cloudinary.js'
 import { clubProfile } from './club-profile-page/index.js'
+import { clubsData } from './clubs-data/index.js'
 import { clubs } from './clubs.js'
 import { codeOfConduct } from './code-of-conduct.js'
 import {
@@ -122,7 +123,7 @@ import {
 import { myPrereviews } from './my-prereviews-page/index.js'
 import { getCategoriesFromOpenAlex } from './openalex/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
-import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page.js'
+import type { EnvironmentLabelEnv, FathomEnv, TemplatePageEnv } from './page.js'
 import { partners } from './partners.js'
 import { people } from './people.js'
 import { preprintReviews } from './preprint-reviews-page/index.js'
@@ -176,6 +177,7 @@ import {
   changeResearchInterestsMatch,
   changeResearchInterestsVisibilityMatch,
   clubProfileMatch,
+  clubsDataMatch,
   clubsMatch,
   codeOfConductMatch,
   connectOrcidCodeMatch,
@@ -336,6 +338,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   CanUseSearchQueriesEnv &
   DoesPreprintExistEnv &
   ResolvePreprintIdEnv &
+  EnvironmentLabelEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
   GetPreprintTitleEnv &
@@ -358,7 +361,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   OrcidApiEnv &
   Keyv.OrcidTokenStoreEnv &
   OrcidOAuthEnv &
-  PhaseEnv &
   PrereviewCoarNotifyEnv &
   PublicUrlEnv &
   Keyv.ResearchInterestsStoreEnv &
@@ -1967,6 +1969,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ),
         })),
       ),
+    ),
+    pipe(
+      clubsDataMatch.parser,
+      P.map(() => clubsData),
     ),
     pipe(
       reviewsDataMatch.parser,
