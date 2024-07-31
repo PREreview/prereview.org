@@ -22,7 +22,6 @@ import multer, { MulterError } from 'multer'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
-import { aboutUs } from './about-us.js'
 import {
   authorInvite,
   authorInviteCheck,
@@ -154,7 +153,6 @@ import { reviewRequests } from './review-requests-page/index.js'
 import { reviewsData } from './reviews-data/index.js'
 import { reviewsPage } from './reviews-page/index.js'
 import {
-  aboutUsMatch,
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
