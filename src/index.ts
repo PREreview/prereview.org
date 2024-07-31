@@ -7,9 +7,10 @@ import {
   HttpServerResponse,
 } from '@effect/platform'
 import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/platform-node'
+import { Schema } from '@effect/schema'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Config, Context, Effect, Layer, Logger, Option, type Scope, flow, pipe } from 'effect'
+import { Array, Config, Context, Effect, Layer, Logger, Option, type Scope, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as C from 'fp-ts/lib/Console.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -154,6 +155,14 @@ const legacyDeps = Effect.gen(function* () {
 
 const providePerRequestsDeps = HttpMiddleware.make(app =>
   Effect.gen(function* () {
+    const sessionId = yield* pipe(
+      HttpServerRequest.schemaCookies(Schema.Struct({ session: Schema.String })),
+      Effect.andThen(({ session }) => session),
+      Effect.andThen(signed => signed.split('.')),
+      Effect.andThen(Array.head),
+      Effect.asSome,
+      Effect.orElseSucceed(() => Option.none()),
+    )
     return yield* app.pipe(
       Effect.provideService(PerRequestDeps, { translate: localeTranslate(DefaultLocale), user: Option.none() }),
     )
