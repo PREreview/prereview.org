@@ -70,6 +70,7 @@ export const createPage = ({ currentPage, totalPages, language, field, reviewReq
                       .with('authorea', () => 'Authorea')
                       .with('biorxiv', () => 'bioRxiv')
                       .with('chemrxiv', () => 'ChemRxiv')
+                      .with('curvenote', () => 'Curvenote')
                       .with('eartharxiv', () => 'EarthArXiv')
                       .with('ecoevorxiv', () => 'EcoEvoRxiv')
                       .with('edarxiv', () => 'EdArXiv')

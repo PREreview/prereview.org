@@ -88,6 +88,7 @@ import {
   type BiorxivOrMedrxivPreprintId,
   type BiorxivPreprintId,
   type ChemrxivPreprintId,
+  type CurvenotePreprintId,
   type EartharxivPreprintId,
   type EcoevorxivPreprintId,
   type EdarxivPreprintId,
@@ -566,6 +567,12 @@ export const chemrxivPreprintUrl = (): fc.Arbitrary<URL> =>
     .stringOf(alphanumeric(), { minLength: 1 })
     .map(id => new URL(`https://chemrxiv.org/engage/chemrxiv/article-details/${id}`))
 
+export const curvenotePreprintId = (): fc.Arbitrary<CurvenotePreprintId> =>
+  fc.record({
+    type: constant('curvenote'),
+    value: doi(constant('62329')),
+  })
+
 export const eartharxivPreprintId = (): fc.Arbitrary<EartharxivPreprintId> =>
   fc.record({
     type: constant('eartharxiv'),
@@ -806,6 +813,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
     authoreaPreprintId(),
     biorxivPreprintId(),
     chemrxivPreprintId(),
+    curvenotePreprintId(),
     eartharxivPreprintId(),
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
@@ -893,6 +901,7 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     arcadiaSciencePreprintId(),
     authoreaPreprintId(),
     chemrxivPreprintId(),
+    curvenotePreprintId(),
     eartharxivPreprintId(),
     engrxivPreprintId(),
     metaarxivPreprintId(),
