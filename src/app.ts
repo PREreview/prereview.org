@@ -6,7 +6,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { apply, flow, identity, pipe } from 'fp-ts/lib/function.js'
 import helmet from 'helmet'
-import http from 'http'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { getSession } from 'hyper-ts-session'
@@ -129,8 +128,8 @@ const withEnv =
   (...a: A) =>
     f(...a)(env)
 
-export const app = (config: ConfigEnv) => {
-  const app = express()
+export const app = (config: ConfigEnv) =>
+  express()
     .disable('x-powered-by')
     .use((req, res, next) => {
       const url = new URL(req.url, config.publicUrl)
@@ -302,6 +301,3 @@ export const app = (config: ConfigEnv) => {
         toRequestHandler,
       )(req, res, next)
     })
-
-  return http.createServer(app)
-}
