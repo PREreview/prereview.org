@@ -205,6 +205,7 @@ export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { v
   '36227',
   '48550',
   '57844',
+  '62329',
 )
 
 export const PreprintDoiD: D.Decoder<unknown, Extract<IndeterminatePreprintId, { value: Doi }>['value']> =
