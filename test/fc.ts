@@ -845,6 +845,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     authoreaPreprintId(),
     biorxivPreprintId(),
     chemrxivPreprintId(),
+    curvenotePreprintId(),
     eartharxivPreprintId(),
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
