@@ -394,6 +394,8 @@ jobs:
     name: 'Web Tests'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
+    needs:
+      - build-locales
 
     steps:
       - name: 'Checkout code'
