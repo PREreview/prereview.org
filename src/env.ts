@@ -69,6 +69,7 @@ const EnvD = pipe(
     ORCID_URL: withDefault(UrlD, new URL('https://orcid.org/')),
     ORCID_API_URL: withDefault(UrlD, new URL('https://pub.orcid.org/')),
     PUBLIC_URL: UrlD,
+    REDIS_URI: UrlD,
     REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
     SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, v4()() as unknown as NonEmptyString),
     SECRET: D.string,
@@ -95,7 +96,6 @@ const EnvD = pipe(
       FATHOM_SITE_ID: D.string,
       LOG_FORMAT: D.literal('json'),
       ORCID_API_READ_PUBLIC_TOKEN: D.string,
-      REDIS_URI: UrlD,
     }),
   ),
 )

@@ -23,17 +23,14 @@ const loggerEnv: L.LoggerEnv = {
   logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
 }
 
-const redis =
-  env.REDIS_URI instanceof URL
-    ? new Redis(env.REDIS_URI.href, { commandTimeout: 2 * 1000, enableAutoPipelining: true })
-    : undefined
-const createKeyvStore = () => (redis ? new KeyvRedis(redis) : undefined)
+const redis = new Redis(env.REDIS_URI.href, { commandTimeout: 2 * 1000, enableAutoPipelining: true })
+const createKeyvStore = () => new KeyvRedis(redis)
 
-redis?.on('connect', () => L.debug('Redis connected')(loggerEnv)())
-redis?.on('close', () => L.debug('Redis connection closed')(loggerEnv)())
-redis?.on('reconnecting', () => L.info('Redis reconnecting')(loggerEnv)())
-redis?.removeAllListeners('error')
-redis?.on('error', (error: Error) => L.errorP('Redis connection error')({ error: error.message })(loggerEnv)())
+redis.on('connect', () => L.debug('Redis connected')(loggerEnv)())
+redis.on('close', () => L.debug('Redis connection closed')(loggerEnv)())
+redis.on('reconnecting', () => L.info('Redis reconnecting')(loggerEnv)())
+redis.removeAllListeners('error')
+redis.on('error', (error: Error) => L.errorP('Redis connection error')({ error: error.message })(loggerEnv)())
 
 if (env.ZENODO_URL.href.includes('sandbox')) {
   dns.setDefaultResultOrder('ipv4first')
@@ -131,10 +128,6 @@ server.on('listening', () => {
 createTerminus(server, {
   healthChecks: {
     '/health': async () => {
-      if (!(redis instanceof Redis)) {
-        return
-      }
-
       if (redis.status !== 'ready') {
         throw new Error(`Redis not ready (${redis.status})`)
       }
@@ -146,10 +139,6 @@ createTerminus(server, {
   onShutdown: RT.fromReaderIO(L.debug('Shutting server down'))(loggerEnv),
   onSignal: async () => {
     L.debug('Signal received')(loggerEnv)()
-
-    if (!(redis instanceof Redis)) {
-      return
-    }
 
     await redis
       .quit()
