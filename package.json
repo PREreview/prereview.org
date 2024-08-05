@@ -64,7 +64,7 @@
     "@babel/preset-typescript": "^7.24.7",
     "@csstools/postcss-global-data": "^2.1.1",
     "@csstools/stylelint-no-at-nest-rule": "^1.0.0",
-    "@fast-check/jest": "^1.8.2",
+    "@fast-check/jest": "^2.0.1",
     "@ibm/plex": "^6.4.1",
     "@open-wc/testing": "^4.0.0",
     "@playwright/test": "^1.42.1",
