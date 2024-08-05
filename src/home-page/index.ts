@@ -6,6 +6,7 @@ import {
   canRequestReviews,
   canSeeGatesLogo,
 } from '../feature-flags.js'
+import type { SupportedLocale } from '../locales/index.js'
 import type { PageResponse } from '../response.js'
 import type { User } from '../user.js'
 import { createPage } from './home-page.js'
@@ -16,8 +17,10 @@ export { type RecentPrereview } from './recent-prereviews.js'
 export { type RecentReviewRequest } from './recent-review-requests.js'
 
 export const home = ({
+  locale,
   user,
 }: {
+  locale: SupportedLocale
   user?: User
 }): RT.ReaderTask<
   CanRequestReviewsEnv & GetRecentPrereviewsEnv & GetRecentReviewRequestsEnv & CanSeeGatesLogoEnv,
@@ -30,5 +33,6 @@ export const home = ({
     RT.apSW('canSeeGatesLogo', RT.fromReader(canSeeGatesLogo)),
     RT.apSW('recentReviewRequests', getRecentReviewRequests()),
     RT.let('statistics', () => ({ prereviews: 931, servers: 24, users: 2834 })),
+    RT.let('locale', () => locale),
     RT.map(createPage),
   )

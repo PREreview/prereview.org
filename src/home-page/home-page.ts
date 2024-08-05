@@ -6,7 +6,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
-import { translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import * as assets from '../manifest.json'
 import { PageResponse } from '../response.js'
 import {
@@ -27,19 +27,21 @@ import type { RecentReviewRequest } from './recent-review-requests.js'
 export const createPage = ({
   canRequestReviews,
   canSeeGatesLogo,
+  locale,
   recentPrereviews,
   recentReviewRequests,
   statistics,
 }: {
   canRequestReviews: boolean
   canSeeGatesLogo: boolean
+  locale: SupportedLocale
   recentPrereviews: ReadonlyArray<RecentPrereview>
   recentReviewRequests: ReadonlyArray<RecentReviewRequest>
   statistics: { prereviews: number; servers: number; users: number }
 }) =>
   PageResponse({
-    title: locale => plainText`PREreview: ${translate(locale, 'home-page', 'slogan')({ swoosh: identity })}`,
-    main: locale => html`
+    title: plainText`PREreview: ${translate(locale, 'home-page', 'slogan')({ swoosh: identity })}`,
+    main: html`
       <div class="hero">
         <h1>${rawHtml(translate(locale, 'home-page', 'slogan')({ swoosh: text => `<em>${text}</em>` }))}</h1>
         <p>${translate(locale, 'home-page', 'heroText')()}</p>

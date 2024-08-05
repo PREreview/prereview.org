@@ -27,6 +27,7 @@ import {
 } from 'node-mocks-http'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
+import type { SupportedLocale } from '../assets/locales/index.js'
 import type {
   AssignedAuthorInvite,
   AuthorInvite,
@@ -47,6 +48,7 @@ import type { Email } from '../src/email.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
 import type { Languages } from '../src/languages.js'
+import { DefaultLocale } from '../src/locales/index.js'
 import type { Location } from '../src/location.js'
 import * as assets from '../src/manifest.json'
 import type { OrcidToken } from '../src/orcid-token.js'
@@ -249,6 +251,8 @@ export const locale = (): fc.Arbitrary<string> =>
     'zh-CN',
     'zh-Hans-CN',
   )
+
+export const supportedLocale = (): fc.Arbitrary<SupportedLocale> => constant(DefaultLocale)
 
 export const pageResponse = ({
   canonical,
