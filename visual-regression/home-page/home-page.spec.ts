@@ -1,10 +1,10 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
-import { DefaultLocale } from '../../assets/locales/index.js'
 import { createPage } from '../../src/home-page/home-page.js'
 import type { RecentPrereview } from '../../src/home-page/index.js'
 import type { RecentReviewRequest } from '../../src/home-page/recent-review-requests.js'
 import { rawHtml } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
