@@ -19,7 +19,7 @@ import { type Page, type TemplatePageEnv, templatePage } from './page.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import { orcidCodeMatch } from './routes.js'
 import { isCacheable } from './status-code.js'
-import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding.js'
+import { type GetUserOnboardingEnv, type UserOnboarding, maybeGetUserOnboarding } from './user-onboarding.js'
 import type { User } from './user.js'
 
 export type Response =
@@ -162,6 +162,62 @@ const FlashMessageD = D.literal(
   'avatar-removed',
 )
 
+export const toPage = ({
+  locale = DefaultLocale,
+  message,
+  userOnboarding,
+  response,
+  user,
+}: {
+  locale?: SupportedLocale
+  message?: D.TypeOf<typeof FlashMessageD>
+  userOnboarding?: UserOnboarding
+  response: PageResponse | StreamlinePageResponse | TwoUpPageResponse
+  user?: User | undefined
+}): Page =>
+  response._tag === 'TwoUpPageResponse'
+    ? {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        locale: locale !== DefaultLocale ? locale : undefined,
+        title: response.title,
+        description: response.description,
+        content: html`
+          <h1 class="visually-hidden">${response.h1}</h1>
+
+          <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
+
+          <main id="prereviews">${message ? showFlashMessage(message, locale) : ''} ${response.main}</main>
+        `,
+        skipLinks: [
+          [html`Skip to preprint details`, '#preprint-details'],
+          [html`Skip to PREreviews`, '#prereviews'],
+        ],
+        js: message ? (['notification-banner.js'] as const) : [],
+        type: 'two-up',
+        user,
+        userOnboarding,
+      }
+    : {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        locale: locale !== DefaultLocale ? locale : undefined,
+        title: response.title,
+        description: response.description,
+        content: html`
+          ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
+
+          <main id="${response.skipToLabel}">${message ? showFlashMessage(message, locale) : ''}${response.main}</main>
+        `,
+        skipLinks: [
+          [rawHtml(translate(locale, 'skip-links', response.skipToLabel)()), `#${response.skipToLabel}`],
+          ...(response._tag === 'PageResponse' && response.extraSkipLink ? [response.extraSkipLink] : []),
+        ],
+        current: response.current,
+        js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
+        type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
+        user,
+        userOnboarding,
+      }
+
 export const handlePageResponse = ({
   response,
   user,
@@ -195,29 +251,8 @@ export const handlePageResponse = ({
     ),
     RM.bindW(
       'body',
-      RM.fromReaderK(({ locale, message, userOnboarding }) =>
-        templatePage({
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          locale: locale !== DefaultLocale ? locale : undefined,
-          title: response.title,
-          description: response.description,
-          content: html`
-            ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
-
-            <main id="${response.skipToLabel}">
-              ${message ? showFlashMessage(message, locale) : ''} ${response.main}
-            </main>
-          `,
-          skipLinks: [
-            [rawHtml(translate(locale, 'skip-links', response.skipToLabel)()), `#${response.skipToLabel}`],
-            ...(response._tag === 'PageResponse' && response.extraSkipLink ? [response.extraSkipLink] : []),
-          ],
-          current: response.current,
-          js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
-          type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
-          user,
-          userOnboarding,
-        }),
+      RM.fromReaderK(({ locale, userOnboarding, message }) =>
+        templatePage(toPage({ locale, userOnboarding, message, response, user })),
       ),
     ),
     RM.ichainFirst(() => RM.status(response.status)),
@@ -277,28 +312,16 @@ const handleTwoUpPageResponse = ({
     ),
     RM.bindW(
       'body',
-      RM.fromReaderK(({ locale, message, userOnboarding }) =>
-        templatePage({
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          locale: locale !== DefaultLocale ? locale : undefined,
-          title: response.title,
-          description: response.description,
-          content: html`
-            <h1 class="visually-hidden">${response.h1}</h1>
-
-            <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
-
-            <main id="prereviews">${message ? showFlashMessage(message, locale) : ''} ${response.main}</main>
-          `,
-          skipLinks: [
-            [html`Skip to preprint details`, '#preprint-details'],
-            [html`Skip to PREreviews`, '#prereviews'],
-          ],
-          js: message ? (['notification-banner.js'] as const) : [],
-          type: 'two-up',
-          user,
-          userOnboarding,
-        }),
+      RM.fromReaderK(({ locale, userOnboarding, message }) =>
+        templatePage(
+          toPage({
+            locale,
+            userOnboarding,
+            message,
+            response,
+            user,
+          }),
+        ),
       ),
     ),
     RM.ichainFirst(() => RM.status(Status.OK)),

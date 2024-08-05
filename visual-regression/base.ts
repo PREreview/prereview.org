@@ -1,16 +1,16 @@
 import { type Locator, test as baseTest } from '@playwright/test'
 import path from 'path'
 import { P, match } from 'ts-pattern'
-import { type Html, html } from '../src/html.js'
+import type { Html } from '../src/html.js'
 import { type Page, page as templatePage } from '../src/page.js'
-import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../src/response.js'
+import { PageResponse, type StreamlinePageResponse, type TwoUpPageResponse, toPage } from '../src/response.js'
 
 export { expect } from '@playwright/test'
 
 interface ShowPage {
   showPage(
     response: PageResponse | StreamlinePageResponse,
-    extra?: Pick<Page, 'skipLinks' | 'user' | 'userOnboarding'>,
+    extra?: Omit<Partial<Parameters<typeof toPage>[0]>, 'response'>,
   ): Promise<Locator>
 
   showTwoUpPage(response: TwoUpPageResponse): Promise<[Locator, Locator]>
@@ -44,18 +44,17 @@ export const test = baseTest.extend<ShowPage>({
   },
   showPage: async ({ page, showHtml, templatePage }, use) => {
     await use(async function showPage(response, extra = {}) {
-      const content = html`
-        ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
-
-        <main id="${response.skipToLabel}">${response.main}</main>
-      `
-
-      const pageHtml = templatePage({
-        ...extra,
-        content,
-        title: response.title,
-        js: response.js,
-      })
+      const pageHtml = templatePage(
+        toPage({
+          ...extra,
+          response: PageResponse({
+            title: response.title,
+            main: response.main,
+            nav: response.nav,
+            js: response.js,
+          }),
+        }),
+      )
 
       await showHtml(pageHtml)
 
@@ -64,19 +63,7 @@ export const test = baseTest.extend<ShowPage>({
   },
   showTwoUpPage: async ({ page, showHtml, templatePage }, use) => {
     await use(async response => {
-      const content = html`
-        <h1 class="visually-hidden">${response.h1}</h1>
-
-        <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
-
-        <main id="prereviews">${response.main}</main>
-      `
-
-      const pageHtml = templatePage({
-        content,
-        title: response.title,
-        type: 'two-up',
-      })
+      const pageHtml = templatePage(toPage({ response }))
 
       await showHtml(pageHtml)
 
