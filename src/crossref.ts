@@ -20,6 +20,7 @@ import type {
   AuthoreaPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
+  CurvenotePreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
   EdarxivPreprintId,
@@ -41,6 +42,7 @@ export type CrossrefPreprintId =
   | AuthoreaPreprintId
   | BiorxivPreprintId
   | ChemrxivPreprintId
+  | CurvenotePreprintId
   | EartharxivPreprintId
   | EcoevorxivPreprintId
   | EdarxivPreprintId
@@ -74,6 +76,7 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']>
   '32942',
   '35542',
   '36227',
+  '62329',
 )
 
 export const getPreprintFromCrossref = flow(
@@ -131,6 +134,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'authorea', text: P.select() }, detectLanguage)
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'chemrxiv' }, () => O.some('en' as const))
+              .with({ type: 'curvenote' }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
               .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
               .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
@@ -169,6 +173,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'authorea', text: P.select() }, detectLanguage)
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'chemrxiv' }, () => O.some('en' as const))
+              .with({ type: 'curvenote' }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
               .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
               .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
@@ -258,6 +263,19 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
           type: 'chemrxiv',
           value: work.DOI,
         }) satisfies ChemrxivPreprintId,
+    ),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('62329'), 'DOI'),
+      publisher: D.literal('Curvenote Inc.'),
+    }),
+    D.map(
+      work =>
+        ({
+          type: 'curvenote',
+          value: work.DOI,
+        }) satisfies CurvenotePreprintId,
     ),
   ),
   pipe(

@@ -128,8 +128,8 @@ export const withEnv =
   (...a: A) =>
     f(...a)(env)
 
-export const app = (config: ConfigEnv) => {
-  const app = express()
+export const app = (config: ConfigEnv) =>
+  express()
     .disable('x-powered-by')
     .use((req, res, next) => {
       const url = new URL(req.url, config.publicUrl)
@@ -301,6 +301,3 @@ export const app = (config: ConfigEnv) => {
         toRequestHandler,
       )(req, res, next)
     })
-
-  return app
-}

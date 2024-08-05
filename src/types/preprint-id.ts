@@ -12,6 +12,7 @@ export type PreprintId =
   | AuthoreaPreprintId
   | BiorxivPreprintId
   | ChemrxivPreprintId
+  | CurvenotePreprintId
   | EartharxivPreprintId
   | EcoevorxivPreprintId
   | EdarxivPreprintId
@@ -73,6 +74,11 @@ export interface BiorxivPreprintId {
 export interface ChemrxivPreprintId {
   readonly type: 'chemrxiv'
   readonly value: Doi<'26434'>
+}
+
+export interface CurvenotePreprintId {
+  readonly type: 'curvenote'
+  readonly value: Doi<'62329'>
 }
 
 export interface EartharxivPreprintId {
@@ -199,6 +205,7 @@ export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { v
   '36227',
   '48550',
   '57844',
+  '62329',
 )
 
 export const PreprintDoiD: D.Decoder<unknown, Extract<IndeterminatePreprintId, { value: Doi }>['value']> =
@@ -240,6 +247,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('36227'), doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId)
     .when(hasRegistrant('48550'), doi => ({ type: 'arxiv', value: doi }) satisfies ArxivPreprintId)
     .when(hasRegistrant('57844'), doi => ({ type: 'arcadia-science', value: doi }) satisfies ArcadiaSciencePreprintId)
+    .when(hasRegistrant('62329'), doi => ({ type: 'curvenote', value: doi }) satisfies CurvenotePreprintId)
     .exhaustive()
 }
 

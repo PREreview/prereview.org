@@ -51,6 +51,7 @@ export const startPage = (preprint: Preprint, user?: User) =>
                 .with('authorea', () => 'Authorea')
                 .with('biorxiv', () => 'bioRxiv')
                 .with('chemrxiv', () => 'ChemRxiv')
+                .with('curvenote', () => 'Curvenote')
                 .with('eartharxiv', () => 'EarthArXiv')
                 .with('ecoevorxiv', () => 'EcoEvoRxiv')
                 .with('edarxiv', () => 'EdArXiv')

@@ -4,6 +4,7 @@ import { createPage } from '../../src/home-page/home-page.js'
 import type { RecentPrereview } from '../../src/home-page/index.js'
 import type { RecentReviewRequest } from '../../src/home-page/recent-review-requests.js'
 import { rawHtml } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
@@ -21,6 +22,7 @@ test('content looks right', async ({ showPage }) => {
       recentReviewRequest5,
     ],
     statistics,
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -35,6 +37,7 @@ test('content looks right when empty', async ({ showPage }) => {
     canSeeGatesLogo: false,
     recentReviewRequests: [],
     statistics,
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -49,6 +52,7 @@ test('content looks right when reviews can be requested', async ({ showPage }) =
     canSeeGatesLogo: false,
     recentReviewRequests: [recentReviewRequest1],
     statistics,
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)

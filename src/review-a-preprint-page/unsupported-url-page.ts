@@ -11,9 +11,9 @@ export const unsupportedUrlPage = PageResponse({
     <h1>Sorry, we don’t support this URL</h1>
 
     <p>
-      We support preprints from AfricArXiv, Arcadia&nbsp;Science, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv,
-      EcoEvoRxiv, EdArXiv, engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives,
-      Research&nbsp;Square, SciELO, ScienceOpen, SocArXiv, TechRxiv and Zenodo.
+      We support preprints from AfricArXiv, Arcadia&nbsp;Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote,
+      EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv,
+      PsychArchives, Research&nbsp;Square, SciELO, ScienceOpen, SocArXiv, TechRxiv and Zenodo.
     </p>
 
     <p>

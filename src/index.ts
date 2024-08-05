@@ -25,7 +25,7 @@ import { decodeEnv } from './env.js'
 import type { SleepEnv } from './fetch.js'
 import type { GhostApiEnv } from './ghost.js'
 import { DefaultLocale, type LocaleTranslate, localeTranslate } from './locales/index.js'
-import { type EnvironmentLabelEnv, type FathomEnv, type TemplatePageEnv, page } from './page.js'
+import { type EnvironmentLabelEnv, type FathomEnv, type TemplatePageEnv, page, templatePage } from './page.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { type PageResponse, toPage } from './response.js'
 import type { User } from './user.js'
@@ -85,9 +85,14 @@ const toHttpServerResponse = (
     const perRequestDeps = yield* PerRequestDeps
     const legacyResponse = yield* Effect.promise(pageResponse({ ...legacyDeps, ...perRequestDeps }))
     return yield* HttpServerResponse.html(
-      toPage({ locale: DefaultLocale, message: undefined, userOnboarding: undefined })(
-        legacyResponse,
-        Option.getOrUndefined(perRequestDeps.user),
+      templatePage(
+        toPage({
+          locale: DefaultLocale,
+          message: undefined,
+          userOnboarding: undefined,
+          response: legacyResponse,
+          user: Option.getOrUndefined(perRequestDeps.user),
+        }),
       )(legacyDeps).toString(),
     )
   })

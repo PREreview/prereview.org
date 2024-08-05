@@ -24,6 +24,7 @@ export function createUnknownPreprintWithDoiPage(preprint: Extract<Indeterminate
           .with('biorxiv', () => 'a bioRxiv')
           .with('biorxiv-medrxiv', () => 'a bioRxiv or medRxiv')
           .with('chemrxiv', () => 'a ChemRxiv')
+          .with('curvenote', () => 'a Curvenote')
           .with('eartharxiv', () => 'an EarthArXiv')
           .with('ecoevorxiv', () => 'an EcoEvoRxiv')
           .with('edarxiv', () => 'an EdArXiv')

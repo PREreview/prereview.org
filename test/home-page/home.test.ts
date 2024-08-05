@@ -8,12 +8,12 @@ import * as _ from '../../src/home-page/index.js'
 import { homeMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'
 
-test.prop([fc.option(fc.user(), { nil: undefined }), fc.boolean(), fc.boolean()])(
+test.prop([fc.supportedLocale(), fc.option(fc.user(), { nil: undefined }), fc.boolean(), fc.boolean()])(
   'home',
-  async (user, canUserRequestReviews, canSeeGatesLogo) => {
+  async (locale, user, canUserRequestReviews, canSeeGatesLogo) => {
     const canRequestReviews = jest.fn<CanRequestReviewsEnv['canRequestReviews']>(_ => canUserRequestReviews)
 
-    const actual = await _.home({ user })({
+    const actual = await _.home({ locale, user })({
       getRecentPrereviews: () => T.of([]),
       canRequestReviews,
       canSeeGatesLogo,
@@ -25,8 +25,8 @@ test.prop([fc.option(fc.user(), { nil: undefined }), fc.boolean(), fc.boolean()]
       canonical: format(homeMatch.formatter, {}),
       current: 'home',
       status: Status.OK,
-      title: expect.any(Function),
-      main: expect.any(Function),
+      title: expect.stringContaining('PREreview'),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })

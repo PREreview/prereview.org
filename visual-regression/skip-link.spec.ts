@@ -8,7 +8,7 @@ test('visibly hidden when not focussed', async ({ showPage }) => {
     title: plainText('Something'),
   })
 
-  const content = await showPage(response, { skipLinks: [[html`Skip to main content`, `#${response.skipToLabel}`]] })
+  const content = await showPage(response)
   const page = content.page()
 
   const skipLink = page.getByRole('link', { name: 'Skip to main content' })

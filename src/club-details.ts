@@ -173,6 +173,26 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     ],
     contact: 'jenny.leopold@medizin.uni-leipzig.de' as EmailAddress,
   },
+  bios2: {
+    name: 'Computational Biodiversity Science and Services',
+    description: html`
+      <p>
+        BIOS² is a community of early career researchers who are exploring and applying modern-day computational and
+        quantitative techniques to address the challenges of biodiversity sciences.
+      </p>
+      <p>
+        The BIOS² PREreview Club is a community of practice where we apply kind peer review principles to advance
+        scientific discussions on biodiversity sciences, ecology and biological conservation with respect and fairness.
+        We embrace open science values, and so our reviews always consider reproducibility, replicability, FAIR and CARE
+        principles, and EDIA in scientific products.
+      </p>
+    `,
+    leads: [
+      { name: 'Gracielle Higino', orcid: '0000-0003-2791-8383' as Orcid },
+      { name: 'Timothée Poisot', orcid: '0000-0002-0735-5184' as Orcid },
+    ],
+    joinLink: new URL('https://tally.so/r/wdPM9d'),
+  },
   cara: {
     name: 'CARA: Critical Analysis of Research Articles Club',
     description: html`
