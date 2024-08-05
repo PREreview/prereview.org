@@ -15,13 +15,6 @@
     .text {
       fill: var(--color-text);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-background: CanvasText;
-        --color-text: Canvas;
-      }
-    }
   </style>
 
   <rect class="text" height="181.42" width="173.42" x="1.5" y="0" />

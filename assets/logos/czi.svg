@@ -9,12 +9,6 @@
     .icon {
       fill: var(--icon-color);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --icon-color: CanvasText;
-      }
-    }
   </style>
 
   <g class="icon">

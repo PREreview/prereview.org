@@ -13,18 +13,6 @@
     .text {
       fill: var(--color-text);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-curve: CanvasText;
-        --color-text: CanvasText;
-      }
-
-      .text {
-        stroke: Canvas;
-        stroke-width: 1;
-      }
-    }
   </style>
 
   <title xml:lang="en">SciELO</title>

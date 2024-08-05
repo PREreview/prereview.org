@@ -22,28 +22,6 @@
     #slogan {
       fill: rgb(26, 37, 76);
     }
-
-    @media screen and (forced-colors: active) {
-      #mark .globe {
-        fill: CanvasText;
-      }
-
-      #mark .lines {
-        fill: Canvas;
-      }
-
-      #mark .land {
-        fill: Canvas;
-      }
-
-      #name {
-        fill: CanvasText;
-      }
-
-      #slogan {
-        fill: CanvasText;
-      }
-    }
   </style>
 
   <g id="mark">

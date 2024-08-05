@@ -22,18 +22,6 @@
     .dots {
       fill: var(--color-primary);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-background: Canvas;
-        --color-primary: CanvasText;
-        --color-text: CanvasText;
-      }
-
-      .dots {
-        fill: var(--color-background);
-      }
-    }
   </style>
 
   <clipPath id="clip-circle" transform="translate(-290.2 -213.04)">

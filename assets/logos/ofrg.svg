@@ -14,16 +14,6 @@
     .title {
       fill: var(--color-text);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-text: CanvasText;
-      }
-
-      .circle > * {
-        fill: var(--color-text);
-      }
-    }
   </style>
 
   <g class="text" transform="translate(-82.134163,-138.38452)">
