@@ -35,12 +35,12 @@ export interface PageResponse {
   readonly canonical?: string
   readonly current?: Page['current']
   readonly status: Status
-  readonly title: Page['title'] | ((lang: SupportedLocale) => Page['title'])
-  readonly description?: Page['description'] | ((lang: SupportedLocale) => Page['description'])
-  readonly nav?: Html | ((lang: SupportedLocale) => Html)
-  readonly main: Html | ((lang: SupportedLocale) => Html)
+  readonly title: Page['title']
+  readonly description?: Page['description']
+  readonly nav?: Html
+  readonly main: Html
   readonly skipToLabel: 'form' | 'main' | 'prereview'
-  readonly extraSkipLink?: [Html, string] | ((lang: SupportedLocale) => [Html, string])
+  readonly extraSkipLink?: [Html, string]
   readonly js: Required<Page>['js']
 }
 
@@ -49,10 +49,10 @@ export interface StreamlinePageResponse {
   readonly canonical?: string
   readonly current?: Page['current']
   readonly status: Status
-  readonly title: Page['title'] | ((lang: SupportedLocale) => Page['title'])
-  readonly description?: Page['description'] | ((lang: SupportedLocale) => Page['description'])
-  readonly nav?: Html | ((lang: SupportedLocale) => Html)
-  readonly main: Html | ((lang: SupportedLocale) => Html)
+  readonly title: Page['title']
+  readonly description?: Page['description']
+  readonly nav?: Html
+  readonly main: Html
   readonly skipToLabel: 'form' | 'main'
   readonly js: Required<Page>['js']
   readonly allowRobots?: false
@@ -61,11 +61,11 @@ export interface StreamlinePageResponse {
 export interface TwoUpPageResponse {
   readonly _tag: 'TwoUpPageResponse'
   readonly canonical: string
-  readonly title: Page['title'] | ((lang: SupportedLocale) => Page['title'])
-  readonly description?: Page['description'] | ((lang: SupportedLocale) => Page['description'])
-  readonly h1: Html | ((lang: SupportedLocale) => Html)
-  readonly aside: Html | ((lang: SupportedLocale) => Html)
-  readonly main: Html | ((lang: SupportedLocale) => Html)
+  readonly title: Page['title']
+  readonly description?: Page['description']
+  readonly h1: Html
+  readonly aside: Html
+  readonly main: Html
 }
 
 export interface RedirectResponse {
@@ -199,25 +199,18 @@ export const handlePageResponse = ({
         templatePage({
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           locale: locale !== DefaultLocale ? locale : undefined,
-          title: typeof response.title === 'function' ? response.title(locale) : response.title,
-          description: typeof response.description === 'function' ? response.description(locale) : response.description,
+          title: response.title,
+          description: response.description,
           content: html`
-            ${response.nav
-              ? html` <nav>${typeof response.nav === 'function' ? response.nav(locale) : response.nav}</nav>`
-              : ''}
+            ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 
             <main id="${response.skipToLabel}">
-              ${message ? showFlashMessage(message, locale) : ''}
-              ${typeof response.main === 'function' ? response.main(locale) : response.main}
+              ${message ? showFlashMessage(message, locale) : ''} ${response.main}
             </main>
           `,
           skipLinks: [
             [rawHtml(translate(locale, 'skip-links', response.skipToLabel)()), `#${response.skipToLabel}`],
-            ...(response._tag === 'PageResponse' && response.extraSkipLink
-              ? typeof response.extraSkipLink === 'function'
-                ? [response.extraSkipLink(locale)]
-                : [response.extraSkipLink]
-              : []),
+            ...(response._tag === 'PageResponse' && response.extraSkipLink ? [response.extraSkipLink] : []),
           ],
           current: response.current,
           js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
@@ -288,19 +281,14 @@ const handleTwoUpPageResponse = ({
         templatePage({
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           locale: locale !== DefaultLocale ? locale : undefined,
-          title: typeof response.title === 'function' ? response.title(locale) : response.title,
-          description: typeof response.description === 'function' ? response.description(locale) : response.description,
+          title: response.title,
+          description: response.description,
           content: html`
-            <h1 class="visually-hidden">${typeof response.h1 === 'function' ? response.h1(locale) : response.h1}</h1>
+            <h1 class="visually-hidden">${response.h1}</h1>
 
-            <aside id="preprint-details" tabindex="0" aria-label="Preprint details">
-              ${typeof response.aside === 'function' ? response.aside(locale) : response.aside}
-            </aside>
+            <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
 
-            <main id="prereviews">
-              ${message ? showFlashMessage(message, locale) : ''}
-              ${typeof response.main === 'function' ? response.main(locale) : response.main}
-            </main>
+            <main id="prereviews">${message ? showFlashMessage(message, locale) : ''} ${response.main}</main>
           `,
           skipLinks: [
             [html`Skip to preprint details`, '#preprint-details'],
