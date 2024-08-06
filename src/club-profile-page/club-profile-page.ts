@@ -31,7 +31,9 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
         .with(
           'jmir-publications',
           () => html`
-            <img src="${assets['jmir.svg']}" width="537" height="86" alt="JMIR Publications" class="club-logo" />
+            <a href="https://jmirpublications.com/"
+              ><img src="${assets['jmir.svg']}" width="537" height="86" alt="JMIR Publications" class="club-logo"
+            /></a>
           `,
         )
         .otherwise(() => '')}
