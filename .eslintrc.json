@@ -27,6 +27,12 @@
       }
     },
     {
+      "files": ["test/assets/**/*.test.ts"],
+      "rules": {
+        "@typescript-eslint/no-unused-expressions": "off"
+      }
+    },
+    {
       "files": ["integration/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
         "no-empty-pattern": "off"
