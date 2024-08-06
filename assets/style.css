@@ -2406,11 +2406,17 @@ skip-link {
       content: '';
       position: absolute;
       block-size: var(--space-xs);
-      background-image: url('underline.svg');
-      background-repeat: no-repeat;
-      background-size: 100% 100%;
+      background-color: var(--color-primary);
+      mask-image: url('underline.svg');
+      mask-repeat: no-repeat;
+      mask-size: 100% 100%;
       inset-block-start: 82%;
       inset-inline: 0;
+
+      @media (forced-colors: active) {
+        forced-color-adjust: none;
+        background-color: CanvasText;
+      }
     }
   }
 
