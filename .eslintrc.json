@@ -35,6 +35,7 @@
     {
       "files": ["integration/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
+        "@typescript-eslint/unbound-method": "off",
         "no-empty-pattern": "off"
       }
     },
