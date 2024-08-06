@@ -704,7 +704,7 @@ function getAuthors(record: Record | InProgressDeposition): Prereview['authors']
   }
 
   const anonymous = pipe(
-    O.fromNullable(last.name.match(/^([1-9][0-9]*) other authors?$/)),
+    O.fromNullable(/^([1-9][0-9]*) other authors?$/.exec(last.name)),
     O.chain(RA.lookup(1)),
     O.match(
       () => 0,

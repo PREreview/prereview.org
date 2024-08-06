@@ -216,7 +216,7 @@ export const app = (config: ConfigEnv) =>
     .use(
       express.static('dist/assets', {
         setHeaders: (res, path) => {
-          if (path.match(/\.[a-z0-9]{8,}\.[A-z0-9]+(?:\.map)?$/)) {
+          if (/\.[a-z0-9]{8,}\.[A-z0-9]+(?:\.map)?$/.exec(path)) {
             res.setHeader('Cache-Control', `public, max-age=${60 * 60 * 24 * 365}, immutable`)
           } else {
             res.setHeader('Cache-Control', `public, max-age=${60 * 60}, stale-while-revalidate=${60 * 60 * 24}`)
