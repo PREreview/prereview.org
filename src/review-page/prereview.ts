@@ -28,6 +28,7 @@ export interface Prereview {
     title: Html
     url: URL
   }
+  requested: boolean
   structured: boolean
   text: Html
 }

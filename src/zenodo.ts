@@ -606,6 +606,7 @@ function recordToPrereview(
             url: preprint.url,
           })),
         ),
+        requested: RTE.right(record.metadata.keywords?.includes('Requested PREreview') === true),
         structured: RTE.right(record.metadata.keywords?.includes('Structured PREreview') === true),
         text: getReviewText(reviewTextUrl),
       }),

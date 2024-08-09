@@ -102,6 +102,7 @@ const review = {
     language: 'en',
     url: new URL('https://biorxiv.org/lookup/doi/10.1101/2023.12.21.572824'),
   },
+  requested: false,
   structured: false,
   text: html`<p>
       The SARS-CoV-2 virus has experienced tremendous selective pressure over the course of the global pandemic with
@@ -186,6 +187,7 @@ const structuredReview = {
     language: 'fr',
     url: new URL('https://osf.io/hsnke'),
   },
+  requested: false,
   structured: true,
   text: html` <dl>
       <dt>Does the introduction explain the objective of the research presented in the preprint?</dt>

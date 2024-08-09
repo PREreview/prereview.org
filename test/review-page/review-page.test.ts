@@ -25,6 +25,7 @@ describe('reviewPage', () => {
         title: fc.html(),
         url: fc.url(),
       }),
+      requested: fc.boolean(),
       structured: fc.boolean(),
       text: fc.html(),
     }),
