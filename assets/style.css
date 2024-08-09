@@ -2335,11 +2335,13 @@ skip-link {
   font-size: var(--step--2);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-weight: 500;
 
   @media screen {
+    @media (width >= 30em) {
+      font-size: var(--step--1);
+    }
+
     @media (forced-colors: active) {
       border: var(--width-divider-narrow) solid currentcolor;
     }
