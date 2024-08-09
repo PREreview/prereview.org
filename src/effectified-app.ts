@@ -22,7 +22,10 @@ export const effectifiedExpressApp: Effect.Effect<Express, never, RedisService> 
 
   const loggerEnv: L.LoggerEnv = {
     clock: SystemClock,
-    logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
+    logger: pipe(
+      () => () => undefined,
+      L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry)),
+    ),
   }
 
   const sendMailEnv = match(env)

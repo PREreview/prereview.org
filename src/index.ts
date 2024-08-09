@@ -88,6 +88,7 @@ const toHttpServerResponse = (
     const legacyResponse = yield* Effect.promise(pageResponse({ ...legacyDeps, ...perRequestDeps }))
     const flashMessage = yield* FlashMessageState
     const message = yield* Ref.get(flashMessage)
+    console.log('>>> get ref:', message)
     return yield* HttpServerResponse.html(
       templatePage(
         toPage({
@@ -134,14 +135,9 @@ const orcid = Effect.gen(function* () {
     },
   })
   yield* Effect.tryPromise(() => redisClient.set(`sessions:${sessionId}`, value))
+  yield* FlashMessageState.pipe(Effect.flatMap(Ref.set('logged-in' as FlashMessage | undefined)))
 
-  return yield* pipe(
-    HttpServerResponse.empty({ status: 301, headers: Headers.fromInput({ location: '/' }) }),
-    HttpServerResponse.setCookies([
-      ['session', sessionId],
-      ['flash-message', 'logged-in'],
-    ]),
-  )
+  return yield* pipe(HttpServerResponse.empty({ status: 301, headers: Headers.fromInput({ location: '/' }) }))
 })
 
 const Router = HttpRouter.empty.pipe(
@@ -214,12 +210,35 @@ const providePerRequestsDeps = HttpMiddleware.make(app =>
       Effect.tapError(e => Effect.succeed(console.log('>>> ', e))),
       Effect.orElseSucceed(() => Option.none()),
     )
-    return yield* app.pipe(
+
+    const loadFlashMessage = pipe(
+      HttpServerRequest.schemaCookies(Schema.Struct({ 'flash-message': Schema.UndefinedOr(Schema.String) })),
+      Effect.andThen(record => record['flash-message'] as FlashMessage | undefined),
+      Effect.tap(value => console.log('>>> loading:', value)),
+      Effect.andThen(Ref.make),
+    )
+
+    const persistFlashMessage = (response: HttpServerResponse.HttpServerResponse) =>
+      Effect.gen(function* () {
+        const message = (yield* pipe(FlashMessageState, Effect.andThen(Ref.get))) ?? 'no-flash-message'
+        console.log('>>> persisting:', message)
+        console.log('>>> response:', response)
+        const modified = yield* pipe(
+          HttpServerResponse.setCookie(response, 'flash-message', message),
+          Effect.andThen(HttpServerResponse.setHeader('foo', 'bar')),
+        )
+        console.log('>>> modified:', modified)
+        return modified
+      })
+
+    return yield* pipe(
+      app,
       Effect.provideService(PerRequestDeps, {
         translate: localeTranslate(DefaultLocale),
         user: user as Option.Option<User>,
       }),
-      Effect.provideService(FlashMessageState, Ref.unsafeMake(undefined as FlashMessage | undefined)),
+      Effect.andThen(persistFlashMessage),
+      Effect.provideServiceEffect(FlashMessageState, loadFlashMessage),
     )
   }),
 )
@@ -236,7 +255,8 @@ const Server = Router.pipe(
         return HttpServerResponse.empty()
       }),
   }),
-  HttpServer.serve(flow(HttpMiddleware.logger, requestIdLogging, providePerRequestsDeps)),
+  providePerRequestsDeps,
+  HttpServer.serve(flow(HttpMiddleware.logger, requestIdLogging)),
   Layer.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Layer.provide(redisLayer),
   Layer.provide(Layer.effect(LegacyDeps, legacyDeps)),
