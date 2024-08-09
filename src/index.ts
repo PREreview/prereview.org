@@ -10,7 +10,7 @@ import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/plat
 import { Schema } from '@effect/schema'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Array, Config, Context, Effect, Layer, Logger, Option, type Scope, flow, pipe } from 'effect'
+import { Array, Config, Context, Effect, Layer, Logger, Option, Ref, type Scope, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as C from 'fp-ts/lib/Console.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -27,7 +27,7 @@ import type { GhostApiEnv } from './ghost.js'
 import { DefaultLocale, type LocaleTranslate, localeTranslate } from './locales/index.js'
 import { type EnvironmentLabelEnv, type FathomEnv, type TemplatePageEnv, page, templatePage } from './page.js'
 import type { PublicUrlEnv } from './public-url.js'
-import { type PageResponse, toPage } from './response.js'
+import { type FlashMessage, type PageResponse, toPage } from './response.js'
 import type { User } from './user.js'
 
 const env = decodeEnv(process)()
@@ -77,18 +77,22 @@ const healthRoute = Effect.gen(function* () {
   return HttpServerResponse.raw('healthy')
 })
 
+class FlashMessageState extends Context.Tag('FlashMessage')<FlashMessageState, Ref.Ref<FlashMessage | undefined>>() {}
+
 const toHttpServerResponse = (
   pageResponse: RT.ReaderTask<Context.Tag.Service<LegacyDeps> & Context.Tag.Service<PerRequestDeps>, PageResponse>,
-): Effect.Effect<HttpServerResponse.HttpServerResponse, never, LegacyDeps | PerRequestDeps> =>
+): Effect.Effect<HttpServerResponse.HttpServerResponse, never, LegacyDeps | PerRequestDeps | FlashMessageState> =>
   Effect.gen(function* () {
     const legacyDeps = yield* LegacyDeps
     const perRequestDeps = yield* PerRequestDeps
     const legacyResponse = yield* Effect.promise(pageResponse({ ...legacyDeps, ...perRequestDeps }))
+    const flashMessage = yield* FlashMessageState
+    const message = yield* Ref.get(flashMessage)
     return yield* HttpServerResponse.html(
       templatePage(
         toPage({
           locale: DefaultLocale,
-          message: undefined,
+          message,
           userOnboarding: undefined,
           response: legacyResponse,
           user: Option.getOrUndefined(perRequestDeps.user),
@@ -215,6 +219,7 @@ const providePerRequestsDeps = HttpMiddleware.make(app =>
         translate: localeTranslate(DefaultLocale),
         user: user as Option.Option<User>,
       }),
+      Effect.provideService(FlashMessageState, Ref.unsafeMake(undefined as FlashMessage | undefined)),
     )
   }),
 )

@@ -162,6 +162,8 @@ const FlashMessageD = D.literal(
   'avatar-removed',
 )
 
+export type FlashMessage = D.TypeOf<typeof FlashMessageD>
+
 export const toPage = ({
   locale = DefaultLocale,
   message,
@@ -170,7 +172,7 @@ export const toPage = ({
   user,
 }: {
   locale?: SupportedLocale
-  message?: D.TypeOf<typeof FlashMessageD>
+  message?: FlashMessage
   userOnboarding?: UserOnboarding
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse
   user?: User | undefined
