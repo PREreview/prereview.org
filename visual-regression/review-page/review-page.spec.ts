@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { Prereview } from '../../src/review-page/index.js'
 import { createPage } from '../../src/review-page/review-page.js'
 import { expect, test } from '../base.js'
@@ -11,6 +12,7 @@ import PlainDate = Temporal.PlainDate
 test('content looks right', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
+    locale: DefaultLocale,
     review,
   })
 
@@ -22,6 +24,7 @@ test('content looks right', async ({ showPage }) => {
 test('content looks right with anonymous authors', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
+    locale: DefaultLocale,
     review: {
       ...review,
       authors: {
@@ -39,6 +42,7 @@ test('content looks right with anonymous authors', async ({ showPage }) => {
 test('content looks right when in a club', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
+    locale: DefaultLocale,
     review: { ...review, club: 'hhmi-training-pilot' },
   })
 
@@ -50,6 +54,7 @@ test('content looks right when in a club', async ({ showPage }) => {
 test("content looks right when it's requested", async ({ showPage }) => {
   const response = createPage({
     id: 1234,
+    locale: DefaultLocale,
     review: { ...review, requested: true },
   })
 
@@ -61,6 +66,7 @@ test("content looks right when it's requested", async ({ showPage }) => {
 test('content looks right with an addendum', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
+    locale: DefaultLocale,
     review: {
       ...review,
       addendum: html`<p>The 'Competing interests' section should read:</p>
@@ -80,6 +86,7 @@ test('content looks right with an addendum', async ({ showPage }) => {
 test('content looks right when it is structured', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
+    locale: DefaultLocale,
     review: structuredReview,
   })
 

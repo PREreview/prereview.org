@@ -836,11 +836,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       reviewMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({}),
+      P.map(
+        flow(
+          RM.of,
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(reviewPage(id))),
+          RM.apS('locale', RM.of(DefaultLocale)),
+          RM.bindW('response', RM.fromReaderTaskK(reviewPage)),
           RM.ichainW(handleResponse),
         ),
       ),
