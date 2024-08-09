@@ -47,6 +47,17 @@ test('content looks right when in a club', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test("content looks right when it's requested", async ({ showPage }) => {
+  const response = createPage({
+    id: 1234,
+    review: { ...review, requested: true },
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks right with an addendum', async ({ showPage }) => {
   const response = createPage({
     id: 1234,

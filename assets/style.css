@@ -2344,6 +2344,14 @@ skip-link {
       border: var(--width-divider-narrow) solid currentcolor;
     }
   }
+
+  header > & {
+    margin-block-start: var(--space-s-m);
+
+    & + * {
+      margin-block-start: var(--space-3xs-2xs);
+    }
+  }
 }
 
 .logos {

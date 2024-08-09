@@ -33,6 +33,8 @@ export const createPage = ({ id, review }: { id: number; review: Prereview }) =>
     `,
     main: html`
       <header>
+        ${review.requested ? html`<span class="tag">Requested PREreview</span>` : ''}
+
         <h1>
           ${review.structured ? 'Structured ' : ''}PREreview of
           <cite lang="${review.preprint.language}" dir="${rtlDetect.getLangDir(review.preprint.language)}"
