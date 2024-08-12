@@ -133,6 +133,7 @@ import {
   type PrereviewCoarNotifyEnv,
   getRecentReviewRequestsFromPrereviewCoarNotify,
   getReviewRequestsFromPrereviewCoarNotify,
+  isReviewRequested,
   publishToPrereviewCoarNotifyInbox,
   sendPrereviewToPrereviewCoarNotifyInbox,
 } from './prereview-coar-notify/index.js'
@@ -1569,7 +1570,13 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                 ),
               env,
             ),
-            isReviewRequested: () => false,
+            isReviewRequested: withEnv(
+              flow(
+                isReviewRequested,
+                RTE.getOrElse(() => RT.of(false)),
+              ),
+              env,
+            ),
           }),
         })),
       ),

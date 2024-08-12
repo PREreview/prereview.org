@@ -86,7 +86,7 @@ export interface GetPreprintSubjectsEnv {
 }
 
 export interface IsReviewRequestedEnv {
-  isReviewRequested: (preprint: PreprintId) => boolean
+  isReviewRequested: (preprint: PreprintId) => T.Task<boolean>
 }
 
 const wasPrereviewRemoved = (id: number): R.Reader<WasPrereviewRemovedEnv, boolean> =>
@@ -97,7 +97,7 @@ const getPreprintSubjects = (
 ): RT.ReaderTask<GetPreprintSubjectsEnv, ReadonlyArray<{ id: URL; name: string }>> =>
   R.asks(({ getPreprintSubjects }) => getPreprintSubjects(preprint))
 
-const isReviewRequested = (preprint: PreprintId): R.Reader<IsReviewRequestedEnv, boolean> =>
+const isReviewRequested = (preprint: PreprintId): RT.ReaderTask<IsReviewRequestedEnv, boolean> =>
   R.asks(({ isReviewRequested }) => isReviewRequested(preprint))
 
 const getPrereviewsPageForSciety = flow(
@@ -461,7 +461,7 @@ export const createRecordOnZenodo: (
     createEmptyDeposition(),
     RTE.bindTo('deposition'),
     RTE.apSW('subjects', RTE.rightReaderTask(getPreprintSubjects(newPrereview.preprint.id))),
-    RTE.apSW('requested', RTE.rightReader(isReviewRequested(newPrereview.preprint.id))),
+    RTE.apSW('requested', RTE.rightReaderTask(isReviewRequested(newPrereview.preprint.id))),
     RTE.bindW(
       'metadata',
       RTE.fromReaderK(({ subjects, deposition, requested }) =>

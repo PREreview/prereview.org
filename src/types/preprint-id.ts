@@ -1,4 +1,5 @@
-import { type Doi, hasRegistrant, isDoi, parse } from 'doi-ts'
+import { type Doi, Eq as eqDoi, hasRegistrant, isDoi, parse } from 'doi-ts'
+import * as Eq from 'fp-ts/lib/Eq.js'
 import * as O from 'fp-ts/lib/Option.js'
 import { type Refinement, compose } from 'fp-ts/lib/Refinement.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
@@ -180,6 +181,18 @@ export interface ZenodoOrAfricarxivPreprintId {
   readonly type: 'zenodo-africarxiv'
   readonly value: Doi<'5281'>
 }
+
+export const eqPreprintId: Eq.Eq<IndeterminatePreprintId> = Eq.fromEquals((a, b) => {
+  if (a.type !== b.type) {
+    return false
+  }
+
+  if (a.type === 'philsci') {
+    return a.value === b.value
+  }
+
+  return eqDoi.equals(a.value, b.value as typeof a.value)
+})
 
 export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> = hasRegistrant(
   '1101',

@@ -3819,7 +3819,7 @@ describe('createRecordOnZenodo', () => {
       fc.doi(),
     ])('with a PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
       const getPreprintSubjects = jest.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
-      const isReviewRequested = jest.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => requested)
+      const isReviewRequested = jest.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => T.of(requested))
 
       const emptyDeposition: EmptyDeposition = {
         id: 1,
@@ -3979,7 +3979,7 @@ ${newPrereview.review.toString()}`,
       fc.doi(),
     ])('with a Structured PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
       const getPreprintSubjects = jest.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
-      const isReviewRequested = jest.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => requested)
+      const isReviewRequested = jest.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => T.of(requested))
 
       const emptyDeposition: EmptyDeposition = {
         id: 1,
@@ -4266,7 +4266,7 @@ ${newPrereview.review.toString()}`,
             status: Status.Accepted,
           }),
         getPreprintSubjects: () => T.of(subjects),
-        isReviewRequested: () => requested,
+        isReviewRequested: () => T.of(requested),
         logger: () => IO.of(undefined),
         publicUrl,
         zenodoApiKey,
@@ -4418,7 +4418,7 @@ ${newPrereview.review.toString()}`,
             status: Status.Accepted,
           }),
         getPreprintSubjects: () => T.of(subjects),
-        isReviewRequested: () => requested,
+        isReviewRequested: () => T.of(requested),
         logger: () => IO.of(undefined),
         publicUrl,
         zenodoApiKey,
@@ -4452,7 +4452,7 @@ ${newPrereview.review.toString()}`,
       clock: SystemClock,
       fetch: () => response,
       getPreprintSubjects: () => T.of(subjects),
-      isReviewRequested: () => requested,
+      isReviewRequested: () => T.of(requested),
       logger: () => IO.of(undefined),
       publicUrl,
       zenodoApiKey,
