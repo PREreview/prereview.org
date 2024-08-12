@@ -16,7 +16,7 @@ import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { constVoid, flow, identity, pipe } from 'fp-ts/lib/function.js'
-import { toUpperCase } from 'fp-ts/lib/string.js'
+import { isString, toUpperCase } from 'fp-ts/lib/string.js'
 import httpErrors, { type HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -85,6 +85,10 @@ export interface GetPreprintSubjectsEnv {
   getPreprintSubjects: (preprint: PreprintId) => T.Task<ReadonlyArray<{ id: URL; name: string }>>
 }
 
+export interface IsReviewRequestedEnv {
+  isReviewRequested: (preprint: PreprintId) => boolean
+}
+
 const wasPrereviewRemoved = (id: number): R.Reader<WasPrereviewRemovedEnv, boolean> =>
   R.asks(({ wasPrereviewRemoved }) => wasPrereviewRemoved(id))
 
@@ -92,6 +96,9 @@ const getPreprintSubjects = (
   preprint: PreprintId,
 ): RT.ReaderTask<GetPreprintSubjectsEnv, ReadonlyArray<{ id: URL; name: string }>> =>
   R.asks(({ getPreprintSubjects }) => getPreprintSubjects(preprint))
+
+const isReviewRequested = (preprint: PreprintId): R.Reader<IsReviewRequestedEnv, boolean> =>
+  R.asks(({ isReviewRequested }) => isReviewRequested(preprint))
 
 const getPrereviewsPageForSciety = flow(
   (page: number) =>
@@ -446,7 +453,7 @@ export const addAuthorToRecordOnZenodo = (
 export const createRecordOnZenodo: (
   newPrereview: NewPrereview,
 ) => ReaderTaskEither<
-  PublicUrlEnv & ZenodoAuthenticatedEnv & GetPreprintSubjectsEnv & L.LoggerEnv,
+  PublicUrlEnv & ZenodoAuthenticatedEnv & GetPreprintSubjectsEnv & IsReviewRequestedEnv & L.LoggerEnv,
   'unavailable',
   [Doi, number]
 > = newPrereview =>
@@ -454,9 +461,12 @@ export const createRecordOnZenodo: (
     createEmptyDeposition(),
     RTE.bindTo('deposition'),
     RTE.apSW('subjects', RTE.rightReaderTask(getPreprintSubjects(newPrereview.preprint.id))),
+    RTE.apSW('requested', RTE.rightReader(isReviewRequested(newPrereview.preprint.id))),
     RTE.bindW(
       'metadata',
-      RTE.fromReaderK(({ subjects, deposition }) => createDepositMetadata(deposition, newPrereview, subjects)),
+      RTE.fromReaderK(({ subjects, deposition, requested }) =>
+        createDepositMetadata(deposition, newPrereview, subjects, requested),
+      ),
     ),
     RTE.chainW(({ deposition, metadata }) => updateDeposition(metadata, deposition)),
     RTE.chainFirstW(
@@ -490,6 +500,7 @@ function createDepositMetadata(
   deposition: EmptyDeposition,
   newPrereview: NewPrereview,
   subjects: ReadonlyArray<{ id: URL; name: string }>,
+  requested: boolean,
 ) {
   return pipe(
     toUrl(reviewMatch.formatter, { id: deposition.id }),
@@ -521,7 +532,14 @@ function createDepositMetadata(
 
 ${newPrereview.review.toString()}`,
           communities: [{ identifier: 'prereview-reviews' }],
-          keywords: newPrereview.structured ? ['Structured PREreview'] : undefined,
+          keywords: pipe(
+            [
+              requested ? 'Requested PREreview' : undefined,
+              newPrereview.structured ? 'Structured PREreview' : undefined,
+            ],
+            A.filter(isString),
+            A.matchW(() => undefined, identity),
+          ),
           related_identifiers: [
             {
               ...toExternalIdentifier(newPrereview.preprint.id),

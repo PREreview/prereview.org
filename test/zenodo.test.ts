@@ -3813,11 +3813,13 @@ describe('createRecordOnZenodo', () => {
         user: fc.user(),
       }),
       fc.array(fc.record({ id: fc.url(), name: fc.string() })),
+      fc.boolean(),
       fc.string(),
       fc.origin(),
       fc.doi(),
-    ])('with a PREreview', async (newPrereview, subjects, zenodoApiKey, publicUrl, reviewDoi) => {
+    ])('with a PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
       const getPreprintSubjects = jest.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
+      const isReviewRequested = jest.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => requested)
 
       const emptyDeposition: EmptyDeposition = {
         id: 1,
@@ -3907,6 +3909,7 @@ describe('createRecordOnZenodo', () => {
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
+                  ...(requested ? { keywords: ['Requested PREreview'] } : {}),
                   ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
@@ -3947,6 +3950,7 @@ ${newPrereview.review.toString()}`,
             status: Status.Accepted,
           }),
         getPreprintSubjects,
+        isReviewRequested,
         logger: () => IO.of(undefined),
         publicUrl,
         zenodoApiKey,
@@ -3954,6 +3958,7 @@ ${newPrereview.review.toString()}`,
 
       expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
       expect(getPreprintSubjects).toHaveBeenCalledWith(newPrereview.preprint.id)
+      expect(isReviewRequested).toHaveBeenCalledWith(newPrereview.preprint.id)
     })
 
     test.prop([
@@ -3968,11 +3973,13 @@ ${newPrereview.review.toString()}`,
         user: fc.user(),
       }),
       fc.array(fc.record({ id: fc.url(), name: fc.string() })),
+      fc.boolean(),
       fc.string(),
       fc.origin(),
       fc.doi(),
-    ])('with a Structured PREreview', async (newPrereview, subjects, zenodoApiKey, publicUrl, reviewDoi) => {
+    ])('with a Structured PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
       const getPreprintSubjects = jest.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
+      const isReviewRequested = jest.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => requested)
 
       const emptyDeposition: EmptyDeposition = {
         id: 1,
@@ -4062,7 +4069,7 @@ ${newPrereview.review.toString()}`,
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
-                  keywords: ['Structured PREreview'],
+                  keywords: [requested ? 'Requested PREreview' : undefined, 'Structured PREreview'].filter(isString),
                   ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
@@ -4103,6 +4110,7 @@ ${newPrereview.review.toString()}`,
             status: Status.Accepted,
           }),
         getPreprintSubjects,
+        isReviewRequested,
         logger: () => IO.of(undefined),
         publicUrl,
         zenodoApiKey,
@@ -4110,6 +4118,7 @@ ${newPrereview.review.toString()}`,
 
       expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
       expect(getPreprintSubjects).toHaveBeenCalledWith(newPrereview.preprint.id)
+      expect(isReviewRequested).toHaveBeenCalledWith(newPrereview.preprint.id)
     })
   })
 
@@ -4126,10 +4135,11 @@ ${newPrereview.review.toString()}`,
         user: fc.user(),
       }),
       fc.array(fc.record({ id: fc.url(), name: fc.string() })),
+      fc.boolean(),
       fc.string(),
       fc.origin(),
       fc.doi(),
-    ])('with a PREreview', async (newPrereview, subjects, zenodoApiKey, publicUrl, reviewDoi) => {
+    ])('with a PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
       const emptyDeposition: EmptyDeposition = {
         id: 1,
         links: {
@@ -4215,6 +4225,7 @@ ${newPrereview.review.toString()}`,
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
+                  ...(requested ? { keywords: ['Requested PREreview'] } : {}),
                   ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
@@ -4255,6 +4266,7 @@ ${newPrereview.review.toString()}`,
             status: Status.Accepted,
           }),
         getPreprintSubjects: () => T.of(subjects),
+        isReviewRequested: () => requested,
         logger: () => IO.of(undefined),
         publicUrl,
         zenodoApiKey,
@@ -4275,10 +4287,11 @@ ${newPrereview.review.toString()}`,
         user: fc.user(),
       }),
       fc.array(fc.record({ id: fc.url(), name: fc.string() })),
+      fc.boolean(),
       fc.string(),
       fc.origin(),
       fc.doi(),
-    ])('with a Structured PREreview', async (newPrereview, subjects, zenodoApiKey, publicUrl, reviewDoi) => {
+    ])('with a Structured PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
       const emptyDeposition: EmptyDeposition = {
         id: 1,
         links: {
@@ -4364,7 +4377,7 @@ ${newPrereview.review.toString()}`,
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
-                  keywords: ['Structured PREreview'],
+                  keywords: [requested ? 'Requested PREreview' : undefined, 'Structured PREreview'].filter(isString),
                   ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
@@ -4405,6 +4418,7 @@ ${newPrereview.review.toString()}`,
             status: Status.Accepted,
           }),
         getPreprintSubjects: () => T.of(subjects),
+        isReviewRequested: () => requested,
         logger: () => IO.of(undefined),
         publicUrl,
         zenodoApiKey,
@@ -4426,17 +4440,19 @@ ${newPrereview.review.toString()}`,
       user: fc.user(),
     }),
     fc.array(fc.record({ id: fc.url(), name: fc.string() })),
+    fc.boolean(),
     fc.string(),
     fc.origin(),
     fc.oneof(
       fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),
     ),
-  ])('Zenodo is unavailable', async (newPrereview, subjects, zenodoApiKey, publicUrl, response) => {
+  ])('Zenodo is unavailable', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, response) => {
     const actual = await _.createRecordOnZenodo(newPrereview)({
       clock: SystemClock,
       fetch: () => response,
       getPreprintSubjects: () => T.of(subjects),
+      isReviewRequested: () => requested,
       logger: () => IO.of(undefined),
       publicUrl,
       zenodoApiKey,
