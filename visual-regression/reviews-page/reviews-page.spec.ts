@@ -1,6 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { RecentPrereviews } from '../../src/reviews-page/index.js'
 import { createPage, emptyPage } from '../../src/reviews-page/reviews-page.js'
 import type { NonEmptyString } from '../../src/types/string.js'
@@ -16,6 +17,7 @@ test('content looks right', async ({ showPage }) => {
       recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
     },
     false,
+    DefaultLocale,
   )
 
   const content = await showPage(response)
@@ -32,6 +34,7 @@ test('content looks right with a query', async ({ showPage }) => {
       recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
     },
     true,
+    DefaultLocale,
   )
 
   const content = await showPage(response)
@@ -48,6 +51,7 @@ test('content looks right with a language', async ({ showPage }) => {
       recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
     },
     false,
+    DefaultLocale,
   )
 
   const content = await showPage(response)
@@ -64,6 +68,7 @@ test('content looks right with a field', async ({ showPage }) => {
       recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
     },
     false,
+    DefaultLocale,
   )
 
   const content = await showPage(response)
@@ -72,7 +77,7 @@ test('content looks right with a field', async ({ showPage }) => {
 })
 
 test('content looks right when empty', async ({ showPage }) => {
-  const response = emptyPage({}, false)
+  const response = emptyPage({}, false, DefaultLocale)
 
   const content = await showPage(response)
 
@@ -80,7 +85,7 @@ test('content looks right when empty', async ({ showPage }) => {
 })
 
 test('content looks right when empty with a query', async ({ showPage }) => {
-  const response = emptyPage({ query: 'Josiah Carberry' as NonEmptyString }, true)
+  const response = emptyPage({ query: 'Josiah Carberry' as NonEmptyString }, true, DefaultLocale)
 
   const content = await showPage(response)
 
@@ -88,7 +93,7 @@ test('content looks right when empty with a query', async ({ showPage }) => {
 })
 
 test('content looks right when empty with a language', async ({ showPage }) => {
-  const response = emptyPage({ language: 'es' }, false)
+  const response = emptyPage({ language: 'es' }, false, DefaultLocale)
 
   const content = await showPage(response)
 
@@ -96,7 +101,7 @@ test('content looks right when empty with a language', async ({ showPage }) => {
 })
 
 test('content looks right when empty with a field', async ({ showPage }) => {
-  const response = emptyPage({ field: '30' }, false)
+  const response = emptyPage({ field: '30' }, false, DefaultLocale)
 
   const content = await showPage(response)
 
@@ -111,6 +116,7 @@ test('content looks on a middle page', async ({ showPage }) => {
       recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
     },
     false,
+    DefaultLocale,
   )
 
   const content = await showPage(response)
@@ -126,6 +132,7 @@ test('content looks on the last page', async ({ showPage }) => {
       recentPrereviews: [recentPrereview1],
     },
     false,
+    DefaultLocale,
   )
 
   const content = await showPage(response)

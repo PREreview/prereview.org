@@ -11,7 +11,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { reviewMatch, reviewsMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -23,14 +23,15 @@ import type { RecentPrereviews } from './recent-prereviews.js'
 export const createPage = (
   { currentPage, field, language, query, totalPages, recentPrereviews }: RecentPrereviews,
   canUseSearchQueries: boolean,
+  locale: SupportedLocale,
 ) =>
   PageResponse({
-    title: title({ currentPage, field, language, query }),
+    title: title({ currentPage, field, language, locale, query }),
     extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent PREreviews</h1>
 
-      ${form({ canUseSearchQueries, field, language, query })}
+      ${form({ canUseSearchQueries, field, language, locale, query })}
 
       <ol class="cards" id="results">
         ${pipe(
@@ -40,7 +41,7 @@ export const createPage = (
               <li>
                 <article>
                   <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                    ${formatList(DefaultLocale)(prereview.reviewers)}
+                    ${formatList(locale)(prereview.reviewers)}
                     ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
                     <cite
                       dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
@@ -59,7 +60,7 @@ export const createPage = (
 
                   <dl>
                     <dt>Review published</dt>
-                    <dd>${renderDate(DefaultLocale)(prereview.published)}</dd>
+                    <dd>${renderDate(locale)(prereview.published)}</dd>
                     <dt>Preprint server</dt>
                     <dd>
                       ${match(prereview.preprint.id.type)
@@ -122,14 +123,15 @@ export const createPage = (
 export const emptyPage = (
   { field, language, query }: { field?: FieldId; language?: LanguageCode; query?: NonEmptyString },
   canUseSearchQueries: boolean,
+  locale: SupportedLocale,
 ) =>
   PageResponse({
-    title: title({ currentPage: 1, field, language, query }),
+    title: title({ currentPage: 1, field, language, locale, query }),
     extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent PREreviews</h1>
 
-      ${form({ canUseSearchQueries, field, language, query })}
+      ${form({ canUseSearchQueries, field, language, locale, query })}
 
       <div class="inset" id="results">
         <p>No PREreviews have been published yet.</p>
@@ -145,21 +147,26 @@ const title = ({
   currentPage,
   field,
   language,
+  locale,
   query,
-}: Pick<RecentPrereviews, 'currentPage' | 'field' | 'language' | 'query'>) => {
+}: Pick<RecentPrereviews, 'currentPage' | 'field' | 'language' | 'query'> & { locale: SupportedLocale }) => {
   const details = RA.append(`page ${currentPage}`)(
     [query, field ? getFieldName(field) : undefined, language ? iso6391.getName(language) : undefined].filter(isString),
   )
 
-  return plainText`Recent PREreviews (${formatList(DefaultLocale, { style: 'narrow' })(details)})`
+  return plainText`Recent PREreviews (${formatList(locale, { style: 'narrow' })(details)})`
 }
 
 const form = ({
   canUseSearchQueries,
   field,
   language,
+  locale,
   query,
-}: Pick<RecentPrereviews, 'field' | 'language' | 'query'> & { canUseSearchQueries: boolean }) => html`
+}: Pick<RecentPrereviews, 'field' | 'language' | 'query'> & {
+  canUseSearchQueries: boolean
+  locale: SupportedLocale
+}) => html`
   <form
     method="get"
     action="${format(reviewsMatch.formatter, {})}"
@@ -185,7 +192,7 @@ const form = ({
           ${pipe(
             ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
             RA.map(language => [language, iso6391.getName(language)] as const),
-            RA.sort(Ord.contramap(snd)(ordString(DefaultLocale))),
+            RA.sort(Ord.contramap(snd)(ordString(locale))),
             RA.map(
               ([code, name]) =>
                 html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
@@ -202,7 +209,7 @@ const form = ({
           ${pipe(
             fieldIds,
             RA.map(field => [field, getFieldName(field)] satisfies [FieldId, string]),
-            RA.sort(Ord.contramap(snd)(ordString(DefaultLocale))),
+            RA.sort(Ord.contramap(snd)(ordString(locale))),
             RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
           )}
         </select>

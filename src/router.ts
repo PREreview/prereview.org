@@ -475,9 +475,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
+          RM.apS('locale', RM.of(DefaultLocale)),
           RM.bindW('canUseSearchQueries', ({ user }) => RM.rightReader(canUseSearchQueries(user))),
-          RM.bindW('response', ({ canUseSearchQueries }) =>
-            RM.fromReaderTask(reviewsPage({ canUseSearchQueries, field, language, page: page ?? 1, query })),
+          RM.bindW('response', ({ canUseSearchQueries, locale }) =>
+            RM.fromReaderTask(reviewsPage({ canUseSearchQueries, field, language, locale, page: page ?? 1, query })),
           ),
           RM.ichainW(handleResponse),
         ),
