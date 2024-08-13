@@ -11,7 +11,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { reviewMatch, reviewsMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -27,9 +27,9 @@ export const createPage = (
 ) =>
   PageResponse({
     title: title({ currentPage, field, language, locale, query }),
-    extraSkipLink: [html`Skip to results`, '#results'],
+    extraSkipLink: [html`${translate(locale, 'reviews-page', 'skipResults')()}`, '#results'],
     main: html`
-      <h1>Recent PREreviews</h1>
+      <h1>${translate(locale, 'reviews-page', 'title')()}</h1>
 
       ${form({ canUseSearchQueries, field, language, locale, query })}
 
@@ -41,13 +41,34 @@ export const createPage = (
               <li>
                 <article>
                   <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                    ${formatList(locale)(prereview.reviewers)}
-                    ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
-                    <cite
-                      dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                      lang="${prereview.preprint.language}"
-                      >${prereview.preprint.title}</cite
-                    >
+                    ${rawHtml(
+                      prereview.club
+                        ? translate(
+                            locale,
+                            'reviews-list',
+                            'clubReviewText',
+                          )({
+                            club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
+                            reviewers: formatList(locale)(prereview.reviewers).toString(),
+                            preprint: html`<cite
+                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                              lang="${prereview.preprint.language}"
+                              >${prereview.preprint.title}</cite
+                            >`.toString(),
+                          })
+                        : translate(
+                            locale,
+                            'reviews-list',
+                            'reviewText',
+                          )({
+                            reviewers: formatList(locale)(prereview.reviewers).toString(),
+                            preprint: html`<cite
+                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                              lang="${prereview.preprint.language}"
+                              >${prereview.preprint.title}</cite
+                            >`.toString(),
+                          }),
+                    )}
                   </a>
 
                   ${prereview.subfields.length > 0
@@ -59,9 +80,9 @@ export const createPage = (
                     : ''}
 
                   <dl>
-                    <dt>Review published</dt>
+                    <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
                     <dd>${renderDate(locale)(prereview.published)}</dd>
-                    <dt>Preprint server</dt>
+                    <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
                     <dd>
                       ${match(prereview.preprint.id.type)
                         .with('africarxiv', () => 'AfricArXiv Preprints')
@@ -104,14 +125,14 @@ export const createPage = (
           ? html`<a
               href="${format(reviewsMatch.formatter, { page: currentPage - 1, field, language, query })}"
               rel="prev"
-              >Newer</a
+              >${translate(locale, 'reviews-page', 'pagerNewer')()}</a
             >`
           : ''}
         ${currentPage < totalPages
           ? html`<a
               href="${format(reviewsMatch.formatter, { page: currentPage + 1, field, language, query })}"
               rel="next"
-              >Older</a
+              >${translate(locale, 'reviews-page', 'pagerOlder')()}</a
             >`
           : ''}
       </nav>
@@ -127,16 +148,16 @@ export const emptyPage = (
 ) =>
   PageResponse({
     title: title({ currentPage: 1, field, language, locale, query }),
-    extraSkipLink: [html`Skip to results`, '#results'],
+    extraSkipLink: [html`${translate(locale, 'reviews-page', 'skipResults')()}`, '#results'],
     main: html`
-      <h1>Recent PREreviews</h1>
+      <h1>${translate(locale, 'reviews-page', 'title')()}</h1>
 
       ${form({ canUseSearchQueries, field, language, locale, query })}
 
       <div class="inset" id="results">
-        <p>No PREreviews have been published yet.</p>
+        <p>${translate(locale, 'reviews-page', 'noResults')()}</p>
 
-        <p>When they do, they’ll appear here.</p>
+        <p>${translate(locale, 'reviews-page', 'appearHere')()}</p>
       </div>
     `,
     canonical: format(reviewsMatch.formatter, { page: 1, field, language, query }),
@@ -156,7 +177,13 @@ const title = ({
     ),
   )
 
-  return plainText`Recent PREreviews (${formatList(locale, { style: 'narrow' })(details)})`
+  return plainText(
+    translate(
+      locale,
+      'reviews-page',
+      'titleWithDetails',
+    )({ details: formatList(locale, { style: 'narrow' })(details).toString() }),
+  )
 }
 
 const form = ({
@@ -176,21 +203,23 @@ const form = ({
     role="search"
     aria-labelledby="filter-label"
   >
-    <h2 class="visually-hidden" id="filter-label">Filter</h2>
+    <h2 class="visually-hidden" id="filter-label">${translate(locale, 'reviews-page', 'filterTitle')()}</h2>
     <input type="hidden" name="page" value="1" />
     ${canUseSearchQueries
       ? html`<div>
-          <label for="query">Title or author</label>
+          <label for="query">${translate(locale, 'reviews-page', 'filterTitleAuthorLabel')()}</label>
           <input type="text" name="query" id="query" ${query === undefined ? '' : html`value="${query}"`} />
         </div>`
       : query
         ? html`<input type="hidden" name="query" value="${query}" />`
         : ''}
     <div>
-      <label for="language">Language</label>
+      <label for="language">${translate(locale, 'reviews-page', 'filterLanguageLabel')()}</label>
       <div class="select">
         <select name="language" id="language">
-          <option value="" ${language === undefined ? html`selected` : ''}>Any</option>
+          <option value="" ${language === undefined ? html`selected` : ''}>
+            ${translate(locale, 'reviews-page', 'filterLanguageAny')()}
+          </option>
           ${pipe(
             ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
             RA.map(language => [language, iso6391.getName(language)] as const),
@@ -204,10 +233,12 @@ const form = ({
       </div>
     </div>
     <div>
-      <label for="field">Field</label>
+      <label for="field">${translate(locale, 'reviews-page', 'filterFieldLabel')()}</label>
       <div class="select">
         <select name="field" id="field">
-          <option value="" ${field === undefined ? html`selected` : ''}>Any</option>
+          <option value="" ${field === undefined ? html`selected` : ''}>
+            ${translate(locale, 'reviews-page', 'filterFieldAny')()}
+          </option>
           ${pipe(
             fieldIds,
             RA.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, string]),
@@ -217,7 +248,7 @@ const form = ({
         </select>
       </div>
     </div>
-    <button>Filter results</button>
+    <button>${translate(locale, 'reviews-page', 'filterButton')()}</button>
   </form>
 `
 
