@@ -1,0 +1,38 @@
+{
+  "reviewTitle": {
+    "message": "PREreview of {preprint}"
+  },
+  "structuredReviewTitle": {
+    "message": "Structured PREreview of {preprint}"
+  },
+  "requestedPrereview": {
+    "message": "Requested PREreview"
+  },
+  "otherReviewsLink": {
+    "message": "See other reviews"
+  },
+  "readPreprintLink": {
+    "message": "Read the preprint"
+  },
+  "reviewAuthors": {
+    "message": "<hide>Authored</hide> by {authors}"
+  },
+  "clubReviewAuthors": {
+    "message": "<hide>Authored</hide> by {authors} of the {club}"
+  },
+  "otherAuthors": {
+    "message": "{otherAuthors, plural, one {{otherAuthors, number} other author} other {{otherAuthors, number} other authors}}"
+  },
+  "published": {
+    "message": "Published"
+  },
+  "license": {
+    "message": "License"
+  },
+  "licenseCcBy40": {
+    "message": "Attribution 4.0 International"
+  },
+  "addendumTitle": {
+    "message": "Addendum"
+  }
+}

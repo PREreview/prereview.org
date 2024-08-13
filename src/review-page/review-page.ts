@@ -1,13 +1,13 @@
 import { toUrl } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
+import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -16,53 +16,127 @@ import type { Prereview } from './prereview.js'
 
 export const createPage = ({ id, locale, review }: { id: number; locale: SupportedLocale; review: Prereview }) =>
   PageResponse({
-    title: plainText`${review.structured ? 'Structured ' : ''}PREreview of “${review.preprint.title}”`,
-    description: plainText`Authored by ${pipe(
-      review.authors.named,
-      RNEA.map(displayAuthor),
-      RNEA.concatW(
-        review.authors.anonymous > 0
-          ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
-          : [],
-      ),
-      formatList(locale),
-    )}${review.club ? plainText` of the ${getClubName(review.club)}` : ''}.`,
+    title: plainText(
+      translate(
+        locale,
+        'review-page',
+        review.structured ? 'structuredReviewTitle' : 'reviewTitle',
+      )({ preprint: plainText`“${review.preprint.title}”`.toString() }),
+    ),
+    description: plainText(
+      review.club
+        ? translate(
+            locale,
+            'review-page',
+            'clubReviewAuthors',
+          )({
+            authors: pipe(
+              review.authors.named,
+              RNEA.map(displayAuthor),
+              RNEA.concatW(
+                review.authors.anonymous > 0
+                  ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                  : [],
+              ),
+              formatList(locale),
+            ).toString(),
+            club: getClubName(review.club),
+            hide: identity,
+          })
+        : translate(
+            locale,
+            'review-page',
+            'reviewAuthors',
+          )({
+            authors: pipe(
+              review.authors.named,
+              RNEA.map(displayAuthor),
+              RNEA.concatW(
+                review.authors.anonymous > 0
+                  ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                  : [],
+              ),
+              formatList(locale),
+            ).toString(),
+            hide: identity,
+          }),
+    ),
     nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back">See other reviews</a>
-      <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
+      <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
+        >${translate(locale, 'review-page', 'otherReviewsLink')()}</a
+      >
+      <a href="${review.preprint.url.href}" class="forward"
+        >${translate(locale, 'review-page', 'readPreprintLink')()}</a
+      >
     `,
     main: html`
       <header>
-        ${review.requested ? html`<span class="tag">Requested PREreview</span>` : ''}
+        ${review.requested
+          ? html`<span class="tag">${translate(locale, 'review-page', 'requestedPrereview')()}</span>`
+          : ''}
 
         <h1>
-          ${review.structured ? 'Structured ' : ''}PREreview of
-          <cite lang="${review.preprint.language}" dir="${rtlDetect.getLangDir(review.preprint.language)}"
-            >${review.preprint.title}</cite
-          >
+          ${rawHtml(
+            translate(
+              locale,
+              'review-page',
+              review.structured ? 'structuredReviewTitle' : 'reviewTitle',
+            )({
+              preprint: html`<cite
+                lang="${review.preprint.language}"
+                dir="${rtlDetect.getLangDir(review.preprint.language)}"
+                >${review.preprint.title}</cite
+              >`.toString(),
+            }),
+          )}
         </h1>
 
         <div class="byline">
-          <span class="visually-hidden">Authored</span> by
-          ${pipe(
-            review.authors.named,
-            RNEA.map(displayAuthor),
-            RNEA.concatW(
-              review.authors.anonymous > 0
-                ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
-                : [],
-            ),
-            formatList(locale),
+          ${rawHtml(
+            review.club
+              ? translate(
+                  locale,
+                  'review-page',
+                  'clubReviewAuthors',
+                )({
+                  authors: pipe(
+                    review.authors.named,
+                    RNEA.map(displayAuthor),
+                    RNEA.concatW(
+                      review.authors.anonymous > 0
+                        ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                        : [],
+                    ),
+                    formatList(locale),
+                  ).toString(),
+                  club: html`<a href="${format(clubProfileMatch.formatter, { id: review.club })}"
+                    >${getClubName(review.club)}</a
+                  >`.toString(),
+                  hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                })
+              : translate(
+                  locale,
+                  'review-page',
+                  'reviewAuthors',
+                )({
+                  authors: pipe(
+                    review.authors.named,
+                    RNEA.map(displayAuthor),
+                    RNEA.concatW(
+                      review.authors.anonymous > 0
+                        ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                        : [],
+                    ),
+                    formatList(locale),
+                  ).toString(),
+                  hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                }),
           )}
-          ${review.club
-            ? html`of the
-                <a href="${format(clubProfileMatch.formatter, { id: review.club })}">${getClubName(review.club)}</a>`
-            : ''}
         </div>
 
         <dl>
           <div>
-            <dt>Published</dt>
+            <dt>${translate(locale, 'review-page', 'published')()}</dt>
             <dd>${renderDate(locale)(review.published)}</dd>
           </div>
           <div>
@@ -70,7 +144,7 @@ export const createPage = ({ id, locale, review }: { id: number; locale: Support
             <dd><a href="${toUrl(review.doi).href}" class="doi" translate="no">${review.doi}</a></dd>
           </div>
           <div>
-            <dt>License</dt>
+            <dt>${translate(locale, 'review-page', 'license')()}</dt>
             <dd>
               ${match(review.license)
                 .with(
@@ -78,7 +152,9 @@ export const createPage = ({ id, locale, review }: { id: number; locale: Support
                   () => html`
                     <a href="https://creativecommons.org/licenses/by/4.0/">
                       <dfn>
-                        <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
+                        <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
+                          ><span translate="no">CC BY 4.0</span></abbr
+                        >
                       </dfn>
                     </a>
                   `,
@@ -95,7 +171,7 @@ export const createPage = ({ id, locale, review }: { id: number; locale: Support
 
       ${review.addendum
         ? html`
-            <h2>Addendum</h2>
+            <h2>${translate(locale, 'review-page', 'addendumTitle')()}</h2>
 
             ${fixHeadingLevels(2, review.addendum)}
           `
