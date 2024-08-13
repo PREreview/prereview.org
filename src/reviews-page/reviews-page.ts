@@ -151,7 +151,9 @@ const title = ({
   query,
 }: Pick<RecentPrereviews, 'currentPage' | 'field' | 'language' | 'query'> & { locale: SupportedLocale }) => {
   const details = RA.append(`page ${currentPage}`)(
-    [query, field ? getFieldName(field) : undefined, language ? iso6391.getName(language) : undefined].filter(isString),
+    [query, field ? getFieldName(field, locale) : undefined, language ? iso6391.getName(language) : undefined].filter(
+      isString,
+    ),
   )
 
   return plainText`Recent PREreviews (${formatList(locale, { style: 'narrow' })(details)})`
@@ -208,7 +210,7 @@ const form = ({
           <option value="" ${field === undefined ? html`selected` : ''}>Any</option>
           ${pipe(
             fieldIds,
-            RA.map(field => [field, getFieldName(field)] satisfies [FieldId, string]),
+            RA.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, string]),
             RA.sort(Ord.contramap(snd)(ordString(locale))),
             RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
           )}
