@@ -2264,6 +2264,37 @@ skip-link {
   }
 }
 
+.global-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-block: var(--width-divider-narrow) solid transparent;
+  margin-block-end: var(--space-xs-s);
+  padding-block: var(--space-2xs);
+  padding-inline: max(var(--space-s-m), calc(var(--space-s-m) + (100% - 75rem) / 2));
+  column-gap: var(--space-2xs);
+  background-color: var(--color-yellow-20);
+  font-size: var(--step--1);
+  row-gap: var(--space-xs-s);
+
+  &::before {
+    content: '';
+    block-size: 1.1em;
+    inline-size: 1.1em;
+    background-color: currentcolor;
+    mask-image: url('remixicon/icons/System/error-warning-line.svg');
+    mask-repeat: no-repeat;
+    mask-origin: content-box;
+    mask-position: left bottom 40%;
+    mask-size: 1.1em;
+
+    @media (forced-colors: active) {
+      forced-color-adjust: none;
+      background-color: CanvasText;
+    }
+  }
+}
+
 .navigation {
   display: flex;
   flex-wrap: wrap;
