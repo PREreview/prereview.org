@@ -171,7 +171,7 @@ const title = ({
   locale,
   query,
 }: Pick<RecentPrereviews, 'currentPage' | 'field' | 'language' | 'query'> & { locale: SupportedLocale }) => {
-  const details = RA.append(`page ${currentPage}`)(
+  const details = RA.append(translate(locale, 'reviews-page', 'pageNumber')({ page: currentPage }))(
     [
       query,
       field ? getFieldName(field, locale) : undefined,

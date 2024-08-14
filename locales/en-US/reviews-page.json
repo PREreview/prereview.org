@@ -5,6 +5,9 @@
   "titleWithDetails": {
     "message": "Recent PREreviews ({details})"
   },
+  "pageNumber": {
+    "message": "page {page, number}"
+  },
   "skipResults": {
     "message": "Skip to results"
   },
