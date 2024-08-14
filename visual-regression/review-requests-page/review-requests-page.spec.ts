@@ -1,6 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { ReviewRequests } from '../../src/review-requests-page/index.js'
 import { createEmptyPage, createPage } from '../../src/review-requests-page/review-requests-page.js'
 import { expect, test } from '../base.js'
@@ -12,6 +13,7 @@ test('content looks right', async ({ showPage }) => {
     currentPage: 1,
     totalPages: 3,
     reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -20,7 +22,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when empty', async ({ showPage }) => {
-  const response = createEmptyPage({})
+  const response = createEmptyPage({ locale: DefaultLocale })
 
   const content = await showPage(response)
 
@@ -33,6 +35,7 @@ test('content looks right with a language', async ({ showPage }) => {
     totalPages: 3,
     language: 'es',
     reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -46,6 +49,7 @@ test('content looks right with a field', async ({ showPage }) => {
     totalPages: 3,
     field: '30',
     reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -54,7 +58,7 @@ test('content looks right with a field', async ({ showPage }) => {
 })
 
 test('content looks right when empty with a language', async ({ showPage }) => {
-  const response = createEmptyPage({ language: 'es' })
+  const response = createEmptyPage({ language: 'es', locale: DefaultLocale })
 
   const content = await showPage(response)
 
@@ -62,7 +66,7 @@ test('content looks right when empty with a language', async ({ showPage }) => {
 })
 
 test('content looks right when empty with a field', async ({ showPage }) => {
-  const response = createEmptyPage({ field: '30' })
+  const response = createEmptyPage({ field: '30', locale: DefaultLocale })
 
   const content = await showPage(response)
 
@@ -74,6 +78,7 @@ test('content looks on a middle page', async ({ showPage }) => {
     currentPage: 2,
     totalPages: 3,
     reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -86,6 +91,7 @@ test('content looks on the last page', async ({ showPage }) => {
     currentPage: 3,
     totalPages: 3,
     reviewRequests: [reviewRequest1],
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)

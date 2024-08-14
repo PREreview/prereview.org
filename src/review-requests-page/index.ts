@@ -4,6 +4,7 @@ import { pipe } from 'fp-ts/lib/function.js'
 import type { LanguageCode } from 'iso-639-1'
 import { match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
+import type { SupportedLocale } from '../locales/index.js'
 import type { PageResponse } from '../response.js'
 import type { FieldId } from '../types/field.js'
 import { createEmptyPage, createPage } from './review-requests-page.js'
@@ -14,18 +15,21 @@ export type { GetReviewRequestsEnv, ReviewRequests } from './review-requests.js'
 export const reviewRequests = ({
   field,
   language,
+  locale,
   page,
 }: {
   field?: FieldId
   language?: LanguageCode
+  locale: SupportedLocale
   page: number
 }): RT.ReaderTask<GetReviewRequestsEnv, PageResponse> =>
   pipe(
     getReviewRequests({ field, language, page }),
+    RTE.let('locale', () => locale),
     RTE.matchW(
       error =>
         match(error)
-          .with('not-found', () => (page === 1 ? createEmptyPage({ field, language }) : pageNotFound))
+          .with('not-found', () => (page === 1 ? createEmptyPage({ field, language, locale }) : pageNotFound))
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
       createPage,

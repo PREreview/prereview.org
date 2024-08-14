@@ -6,11 +6,11 @@ import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { snd } from 'fp-ts/lib/ReadonlyTuple.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
-import iso6391, { type LanguageCode } from 'iso-639-1'
+import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { reviewRequestsMatch, writeReviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -18,14 +18,21 @@ import { type FieldId, fieldIds, getFieldName } from '../types/field.js'
 import { getSubfieldName } from '../types/subfield.js'
 import type { ReviewRequests } from './review-requests.js'
 
-export const createPage = ({ currentPage, totalPages, language, field, reviewRequests }: ReviewRequests) =>
+export const createPage = ({
+  currentPage,
+  totalPages,
+  language,
+  locale,
+  field,
+  reviewRequests,
+}: ReviewRequests & { locale: SupportedLocale }) =>
   PageResponse({
-    title: title({ currentPage, field, language }),
+    title: title({ currentPage, field, language, locale }),
     extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent review requests</h1>
 
-      ${form({ field, language })}
+      ${form({ field, language, locale })}
 
       <ol class="cards" id="results">
         ${reviewRequests.map(
@@ -53,14 +60,14 @@ export const createPage = ({ currentPage, totalPages, language, field, reviewReq
                 ${request.subfields.length > 0
                   ? html`
                       <ul class="categories">
-                        ${request.subfields.map(subfield => html` <li>${getSubfieldName(subfield)}</li>`)}
+                        ${request.subfields.map(subfield => html` <li>${getSubfieldName(subfield, locale)}</li>`)}
                       </ul>
                     `
                   : ''}
 
                 <dl>
                   <dt>Request published</dt>
-                  <dd>${renderDate(DefaultLocale)(request.published)}</dd>
+                  <dd>${renderDate(locale)(request.published)}</dd>
                   <dt>Preprint server</dt>
                   <dd>
                     ${match(request.preprint.id.type)
@@ -119,14 +126,18 @@ export const createPage = ({ currentPage, totalPages, language, field, reviewReq
     current: 'review-requests',
   })
 
-export const createEmptyPage = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =>
+export const createEmptyPage = ({
+  field,
+  language,
+  locale,
+}: Pick<ReviewRequests, 'field' | 'language'> & { locale: SupportedLocale }) =>
   PageResponse({
-    title: title({ currentPage: 1, field, language }),
+    title: title({ currentPage: 1, field, language, locale }),
     extraSkipLink: [html`Skip to results`, '#results'],
     main: html`
       <h1>Recent review requests</h1>
 
-      ${form({ field, language })}
+      ${form({ field, language, locale })}
 
       <div class="inset" id="results">
         <p>No review requests have been published yet.</p>
@@ -138,15 +149,27 @@ export const createEmptyPage = ({ field, language }: Pick<ReviewRequests, 'field
     current: 'review-requests',
   })
 
-const title = ({ currentPage, field, language }: Pick<ReviewRequests, 'currentPage' | 'field' | 'language'>) => {
+const title = ({
+  currentPage,
+  field,
+  language,
+  locale,
+}: Pick<ReviewRequests, 'currentPage' | 'field' | 'language'> & { locale: SupportedLocale }) => {
   const details = RA.append(`page ${currentPage}`)(
-    [field ? getFieldName(field) : undefined, language ? iso6391.getName(language) : undefined].filter(isString),
+    [
+      field ? getFieldName(field, locale) : undefined,
+      language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
+    ].filter(isString),
   )
 
-  return plainText`Recent review requests (${formatList(DefaultLocale, { style: 'narrow' })(details)})`
+  return plainText`Recent review requests (${formatList(locale, { style: 'narrow' })(details)})`
 }
 
-const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) => html`
+const form = ({
+  field,
+  language,
+  locale,
+}: Pick<ReviewRequests, 'field' | 'language'> & { locale: SupportedLocale }) => html`
   <form
     method="get"
     action="${format(reviewRequestsMatch.formatter, {})}"
@@ -163,8 +186,11 @@ const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =
           <option value="" ${language === undefined ? html`selected` : ''}>Any</option>
           ${pipe(
             ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
-            RA.map(language => [language, iso6391.getName(language)] as const),
-            RA.sort(Ord.contramap(snd)(ordString(DefaultLocale))),
+            RA.map(
+              language =>
+                [language, new Intl.DisplayNames(locale, { type: 'language' }).of(language) ?? language] as const,
+            ),
+            RA.sort(Ord.contramap(snd)(ordString(locale))),
             RA.map(
               ([code, name]) =>
                 html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
@@ -180,8 +206,8 @@ const form = ({ field, language }: Pick<ReviewRequests, 'field' | 'language'>) =
           <option value="" ${field === undefined ? html`selected` : ''}>Any</option>
           ${pipe(
             fieldIds,
-            RA.map(field => [field, getFieldName(field)] satisfies [FieldId, string]),
-            RA.sort(Ord.contramap(snd)(ordString(DefaultLocale))),
+            RA.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, string]),
+            RA.sort(Ord.contramap(snd)(ordString(locale))),
             RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
           )}
         </select>

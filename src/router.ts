@@ -1592,6 +1592,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ field, language, page: page ?? 1 }),
           RM.apS('user', maybeGetUser),
+          RM.apS('locale', RM.of(DefaultLocale)),
           RM.bindW('response', RM.fromReaderTaskK(reviewRequests)),
           RM.ichainW(handleResponse),
         ),
