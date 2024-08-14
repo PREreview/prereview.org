@@ -20,6 +20,7 @@ import { UuidC } from './types/uuid.js'
 
 interface Route<A> {
   path: HttpRouter.PathInput
+  href: (a: A) => string
   schema: Schema.Schema<A, { [K in keyof A]: string }>
 }
 
@@ -30,6 +31,7 @@ export interface ParamsRouteParams {
 
 export const paramsRoute: Route<ParamsRouteParams> = {
   path: '/params/:id',
+  href: (params: ParamsRouteParams) => `/params/${params.id}?foo=${params.foo}`,
   schema: Schema.Struct({ id: Schema.NumberFromString, foo: Schema.String }),
 }
 

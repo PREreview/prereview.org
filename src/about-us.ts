@@ -7,7 +7,7 @@ import { type Html, fixHeadingLevels, html, plainText } from './html.js'
 import { havingProblemsPage } from './http-error.js'
 import type { LocaleTranslate } from './locales/index.js'
 import { PageResponse } from './response.js'
-import { aboutUsMatch } from './routes.js'
+import { aboutUsMatch, paramsRoute } from './routes.js'
 
 export const aboutUs = pipe(
   getPage('6154aa157741400e8722bb14'),
@@ -20,6 +20,7 @@ function createPage(content: Html) {
       title: plainText(translate('about-us', 'title')()),
       main: html`
         <h1>${translate('about-us', 'title')()}</h1>
+        <a href="${paramsRoute.href({ id: 134, foo: 'bar' })}">link to params test page</a>
 
         ${fixHeadingLevels(1, content)}
       `,
