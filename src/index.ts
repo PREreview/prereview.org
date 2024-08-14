@@ -28,6 +28,7 @@ import { DefaultLocale, type LocaleTranslate, localeTranslate } from './locales/
 import { type EnvironmentLabelEnv, type FathomEnv, type TemplatePageEnv, page, templatePage } from './page.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { type FlashMessage, type PageResponse, toPage } from './response.js'
+import { type ParamsRouteParams, paramsRoute } from './routes.js'
 import type { User } from './user.js'
 
 const env = decodeEnv(process)()
@@ -140,12 +141,10 @@ const orcid = Effect.gen(function* () {
   return yield* pipe(HttpServerResponse.empty({ status: 301, headers: Headers.fromInput({ location: '/' }) }))
 })
 
-const ParamsSchema = Schema.Struct({ id: Schema.NumberFromString, foo: Schema.String })
-
-const thePage = (params: Schema.Schema.Type<typeof ParamsSchema>) => HttpServerResponse.json(params)
+const thePage = (params: ParamsRouteParams) => HttpServerResponse.json(params)
 
 const ParamsHandler = Effect.gen(function* () {
-  const pathParams = yield* HttpRouter.schemaParams(ParamsSchema)
+  const pathParams = yield* HttpRouter.schemaParams(paramsRoute.schema)
 
   return yield* thePage({ ...pathParams })
 })
@@ -154,7 +153,7 @@ const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/about', toHttpServerResponse(aboutUs)),
   HttpRouter.get('/orcid', orcid),
   HttpRouter.get('/health', healthRoute),
-  HttpRouter.get('/params/:id', ParamsHandler),
+  HttpRouter.get(paramsRoute.path, ParamsHandler),
 )
 
 const requestIdLogging = HttpMiddleware.make(app =>

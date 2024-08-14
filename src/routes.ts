@@ -1,3 +1,5 @@
+import type { HttpRouter } from '@effect/platform'
+import { Schema } from '@effect/schema'
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
 import * as P from 'fp-ts-routing'
@@ -15,6 +17,21 @@ import type { OrcidProfileId, PseudonymProfileId } from './types/profile-id.js'
 import { PseudonymC } from './types/pseudonym.js'
 import { NonEmptyStringC } from './types/string.js'
 import { UuidC } from './types/uuid.js'
+
+interface Route<A> {
+  path: HttpRouter.PathInput
+  schema: Schema.Schema<A, { [K in keyof A]: string }>
+}
+
+export interface ParamsRouteParams {
+  id: number
+  foo: string
+}
+
+export const paramsRoute: Route<ParamsRouteParams> = {
+  path: '/params/:id',
+  schema: Schema.Struct({ id: Schema.NumberFromString, foo: Schema.String }),
+}
 
 const IntegerFromStringC = C.make(
   pipe(
