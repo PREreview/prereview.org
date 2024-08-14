@@ -10,7 +10,7 @@ import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { reviewRequestsMatch, writeReviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -28,9 +28,9 @@ export const createPage = ({
 }: ReviewRequests & { locale: SupportedLocale }) =>
   PageResponse({
     title: title({ currentPage, field, language, locale }),
-    extraSkipLink: [html`Skip to results`, '#results'],
+    extraSkipLink: [html`${translate(locale, 'review-requests-page', 'skipResults')()}`, '#results'],
     main: html`
-      <h1>Recent review requests</h1>
+      <h1>${translate(locale, 'review-requests-page', 'title')()}</h1>
 
       ${form({ field, language, locale })}
 
@@ -40,21 +40,38 @@ export const createPage = ({
             <li>
               <article aria-labelledby="request-${index}-title">
                 <h2 id="request-${index}-title" class="visually-hidden">
-                  Review request for
-                  <cite dir="${rtlDetect.getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
-                    >${request.preprint.title}</cite
-                  >
+                  ${rawHtml(
+                    translate(
+                      locale,
+                      'requests-list',
+                      'requestTitle',
+                    )({
+                      preprint: html`<cite
+                        dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                        lang="${request.preprint.language}"
+                        >${request.preprint.title}</cite
+                      >`.toString(),
+                    }),
+                  )}
                 </h2>
 
                 <a
                   href="${format(writeReviewMatch.formatter, {
                     id: request.preprint.id,
                   })}"
-                >
-                  A review was requested for
-                  <cite dir="${rtlDetect.getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
-                    >${request.preprint.title}</cite
-                  >
+                  >${rawHtml(
+                    translate(
+                      locale,
+                      'requests-list',
+                      'requestText',
+                    )({
+                      preprint: html`<cite
+                        dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                        lang="${request.preprint.language}"
+                        >${request.preprint.title}</cite
+                      >`.toString(),
+                    }),
+                  )}
                 </a>
 
                 ${request.subfields.length > 0
@@ -66,9 +83,9 @@ export const createPage = ({
                   : ''}
 
                 <dl>
-                  <dt>Request published</dt>
+                  <dt>${translate(locale, 'requests-list', 'requestPublished')()}</dt>
                   <dd>${renderDate(locale)(request.published)}</dd>
-                  <dt>Preprint server</dt>
+                  <dt>${translate(locale, 'requests-list', 'requestServer')()}</dt>
                   <dd>
                     ${match(request.preprint.id.type)
                       .with('africarxiv', () => 'AfricArXiv Preprints')
@@ -110,14 +127,14 @@ export const createPage = ({
           ? html`<a
               href="${format(reviewRequestsMatch.formatter, { page: currentPage - 1, field, language })}"
               rel="prev"
-              >Newer</a
+              >${translate(locale, 'review-requests-page', 'pagerNewer')()}</a
             >`
           : ''}
         ${currentPage < totalPages
           ? html`<a
               href="${format(reviewRequestsMatch.formatter, { page: currentPage + 1, field, language })}"
               rel="next"
-              >Older</a
+              >${translate(locale, 'review-requests-page', 'pagerOlder')()}</a
             >`
           : ''}
       </nav>
@@ -133,16 +150,16 @@ export const createEmptyPage = ({
 }: Pick<ReviewRequests, 'field' | 'language'> & { locale: SupportedLocale }) =>
   PageResponse({
     title: title({ currentPage: 1, field, language, locale }),
-    extraSkipLink: [html`Skip to results`, '#results'],
+    extraSkipLink: [html`${translate(locale, 'review-requests-page', 'skipResults')()}`, '#results'],
     main: html`
-      <h1>Recent review requests</h1>
+      <h1>${translate(locale, 'review-requests-page', 'title')()}</h1>
 
       ${form({ field, language, locale })}
 
       <div class="inset" id="results">
-        <p>No review requests have been published yet.</p>
+        <p>${translate(locale, 'review-requests-page', 'noResults')()}</p>
 
-        <p>When they do, they’ll appear here.</p>
+        <p>${translate(locale, 'review-requests-page', 'appearHere')()}</p>
       </div>
     `,
     canonical: format(reviewRequestsMatch.formatter, { page: 1, field, language }),
@@ -155,14 +172,20 @@ const title = ({
   language,
   locale,
 }: Pick<ReviewRequests, 'currentPage' | 'field' | 'language'> & { locale: SupportedLocale }) => {
-  const details = RA.append(`page ${currentPage}`)(
+  const details = RA.append(translate(locale, 'review-requests-page', 'pageNumber')({ page: currentPage }))(
     [
       field ? getFieldName(field, locale) : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
     ].filter(isString),
   )
 
-  return plainText`Recent review requests (${formatList(locale, { style: 'narrow' })(details)})`
+  return plainText(
+    translate(
+      locale,
+      'review-requests-page',
+      'titleWithDetails',
+    )({ details: formatList(locale, { style: 'narrow' })(details).toString() }),
+  )
 }
 
 const form = ({
@@ -177,13 +200,15 @@ const form = ({
     role="search"
     aria-labelledby="filter-label"
   >
-    <h2 class="visually-hidden" id="filter-label">Filter</h2>
+    <h2 class="visually-hidden" id="filter-label">${translate(locale, 'review-requests-page', 'filterTitle')()}</h2>
     <input type="hidden" name="page" value="1" />
     <div>
-      <label for="language">Language</label>
+      <label for="language">${translate(locale, 'review-requests-page', 'filterLanguageLabel')()}</label>
       <div class="select">
         <select name="language" id="language">
-          <option value="" ${language === undefined ? html`selected` : ''}>Any</option>
+          <option value="" ${language === undefined ? html`selected` : ''}>
+            ${translate(locale, 'review-requests-page', 'filterLanguageAny')()}
+          </option>
           ${pipe(
             ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
             RA.map(
@@ -200,10 +225,12 @@ const form = ({
       </div>
     </div>
     <div>
-      <label for="field">Field</label>
+      <label for="field">${translate(locale, 'review-requests-page', 'filterFieldLabel')()}</label>
       <div class="select">
         <select name="field" id="field">
-          <option value="" ${field === undefined ? html`selected` : ''}>Any</option>
+          <option value="" ${field === undefined ? html`selected` : ''}>
+            ${translate(locale, 'review-requests-page', 'filterFieldAny')()}
+          </option>
           ${pipe(
             fieldIds,
             RA.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, string]),
@@ -213,7 +240,7 @@ const form = ({
         </select>
       </div>
     </div>
-    <button>Filter results</button>
+    <button>${translate(locale, 'review-requests-page', 'filterButton')()}</button>
   </form>
 `
 
