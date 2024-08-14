@@ -9,6 +9,7 @@ import * as fc from '../fc.js'
 
 describe('reviewPage', () => {
   test.prop([
+    fc.supportedLocale(),
     fc.integer(),
     fc.record({
       authors: fc.record({
@@ -25,13 +26,14 @@ describe('reviewPage', () => {
         title: fc.html(),
         url: fc.url(),
       }),
+      requested: fc.boolean(),
       structured: fc.boolean(),
       text: fc.html(),
     }),
-  ])('when the review can be loaded', async (id, prereview) => {
+  ])('when the review can be loaded', async (locale, id, prereview) => {
     const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-    const actual = await _.reviewPage(id)({ getPrereview })()
+    const actual = await _.reviewPage({ id, locale })({ getPrereview })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -47,8 +49,8 @@ describe('reviewPage', () => {
     expect(getPrereview).toHaveBeenCalledWith(id)
   })
 
-  test.prop([fc.integer()])('when the review is not found', async id => {
-    const actual = await _.reviewPage(id)({ getPrereview: () => TE.left('not-found') })()
+  test.prop([fc.supportedLocale(), fc.integer()])('when the review is not found', async (locale, id) => {
+    const actual = await _.reviewPage({ id, locale })({ getPrereview: () => TE.left('not-found') })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -60,8 +62,8 @@ describe('reviewPage', () => {
     })
   })
 
-  test.prop([fc.integer()])('when the review was removed', async id => {
-    const actual = await _.reviewPage(id)({ getPrereview: () => TE.left('removed') })()
+  test.prop([fc.supportedLocale(), fc.integer()])('when the review was removed', async (locale, id) => {
+    const actual = await _.reviewPage({ id, locale })({ getPrereview: () => TE.left('removed') })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -73,8 +75,8 @@ describe('reviewPage', () => {
     })
   })
 
-  test.prop([fc.integer()])('when the review cannot be loaded', async id => {
-    const actual = await _.reviewPage(id)({ getPrereview: () => TE.left('unavailable') })()
+  test.prop([fc.supportedLocale(), fc.integer()])('when the review cannot be loaded', async (locale, id) => {
+    const actual = await _.reviewPage({ id, locale })({ getPrereview: () => TE.left('unavailable') })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',

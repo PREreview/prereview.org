@@ -14,7 +14,7 @@ COPY .npmrc \
 #
 # Stage: intlc environment
 #
-FROM debian:12.6-slim AS intlc
+FROM amd64/debian:12.6-slim AS intlc
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 WORKDIR /app
@@ -71,7 +71,7 @@ RUN npx run-p build:assets build:app
 #
 # Stage: Integration test environment
 #
-FROM mcr.microsoft.com/playwright:v1.42.1-jammy AS test-integration
+FROM mcr.microsoft.com/playwright:v1.46.0-jammy AS test-integration
 WORKDIR /app
 
 COPY --from=npm-dev /app/ .

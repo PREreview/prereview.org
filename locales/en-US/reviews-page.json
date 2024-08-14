@@ -1,0 +1,44 @@
+{
+  "title": {
+    "message": "Recent PREreviews"
+  },
+  "titleWithDetails": {
+    "message": "Recent PREreviews ({details})"
+  },
+  "skipResults": {
+    "message": "Skip to results"
+  },
+  "filterTitle": {
+    "message": "Filter"
+  },
+  "filterTitleAuthorLabel": {
+    "message": "Title or author"
+  },
+  "filterLanguageLabel": {
+    "message": "Language"
+  },
+  "filterLanguageAny": {
+    "message": "Any"
+  },
+  "filterFieldLabel": {
+    "message": "Field"
+  },
+  "filterFieldAny": {
+    "message": "Any"
+  },
+  "filterButton": {
+    "message": "Filter results"
+  },
+  "pagerNewer": {
+    "message": "Newer"
+  },
+  "pagerOlder": {
+    "message": "Older"
+  },
+  "noResults": {
+    "message": "No PREreviews have been published yet."
+  },
+  "appearHere": {
+    "message": "When they do, they’ll appear here."
+  }
+}

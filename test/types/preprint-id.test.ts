@@ -5,6 +5,65 @@ import * as O from 'fp-ts/lib/Option.js'
 import * as _ from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 
+describe('eqPreprintId', () => {
+  test.prop([fc.indeterminatePreprintId().map(id => [id, id] as const)], {
+    examples: [
+      [
+        [
+          { type: 'biorxiv', value: '10.1101/abc123' as Doi<'1101'> },
+          { type: 'biorxiv', value: '10.1101/abc123' as Doi<'1101'> },
+        ],
+      ],
+      [
+        [
+          { type: 'philsci', value: 1 },
+          { type: 'philsci', value: 1 },
+        ],
+      ],
+      [
+        [
+          { type: 'biorxiv', value: '10.1101/abc123' as Doi<'1101'> },
+          { type: 'biorxiv', value: '10.1101/Abc123' as Doi<'1101'> },
+        ],
+      ],
+    ],
+  })('with the same preprint ID', ([id1, id2]) => {
+    expect(_.eqPreprintId.equals(id1, id2)).toBe(true)
+  })
+
+  test.prop(
+    [
+      fc
+        .tuple(fc.indeterminatePreprintId(), fc.indeterminatePreprintId())
+        .filter(([id1, id2]) => id1.type !== id2.type),
+    ],
+    {
+      examples: [
+        [
+          [
+            { type: 'biorxiv', value: '10.1101/abc123' as Doi<'1101'> },
+            { type: 'biorxiv', value: '10.1101/abc124' as Doi<'1101'> },
+          ],
+        ],
+        [
+          [
+            { type: 'philsci', value: 1 },
+            { type: 'philsci', value: 2 },
+          ],
+        ],
+        [
+          [
+            { type: 'biorxiv', value: '10.1101/abc123' as Doi<'1101'> },
+            { type: 'biorxiv-medrxiv', value: '10.1101/abc123' as Doi<'1101'> },
+          ],
+        ],
+      ],
+    },
+  )('with different preprint IDs', ([id1, id2]) => {
+    expect(_.eqPreprintId.equals(id1, id2)).toBe(false)
+  })
+})
+
 describe('isPreprintDoi', () => {
   test.prop([fc.preprintDoi()])('with a preprint DOI', doi => {
     expect(_.isPreprintDoi(doi)).toBe(true)

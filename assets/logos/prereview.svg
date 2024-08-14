@@ -30,14 +30,6 @@
     .primary {
       fill: var(--color-primary);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-background: Canvas;
-        --color-primary: CanvasText;
-        --color-text: CanvasText;
-      }
-    }
   </style>
 
   <g id="text">

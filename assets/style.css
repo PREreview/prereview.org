@@ -403,6 +403,14 @@ body > footer {
     align-self: center;
     inline-size: 1.3em;
     border-radius: var(--width-divider);
+
+    @media screen {
+      @media (forced-colors: active) {
+        forced-color-adjust: auto;
+        background-color: transparent;
+        box-shadow: none;
+      }
+    }
   }
 }
 
@@ -416,6 +424,14 @@ img {
 
   :--heading:not(.visually-hidden) + & {
     margin-block-start: var(--space-xs);
+  }
+
+  @media screen {
+    @media (forced-colors: active) {
+      forced-color-adjust: none;
+      background-color: var(--color-background);
+      box-shadow: 0 0 0 var(--space-3xs) var(--color-background);
+    }
   }
 }
 
@@ -858,6 +874,14 @@ math {
       border: var(--width-divider-wide) solid var(--color-black-900);
       border-radius: 50%;
       object-fit: cover;
+
+      @media screen {
+        @media (forced-colors: active) {
+          forced-color-adjust: auto;
+          background-color: transparent;
+          box-shadow: none;
+        }
+      }
     }
   }
 
@@ -2311,13 +2335,23 @@ skip-link {
   font-size: var(--step--2);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-weight: 500;
 
   @media screen {
+    @media (width >= 30em) {
+      font-size: var(--step--1);
+    }
+
     @media (forced-colors: active) {
       border: var(--width-divider-narrow) solid currentcolor;
+    }
+  }
+
+  header > & {
+    margin-block-start: var(--space-s-m);
+
+    & + * {
+      margin-block-start: var(--space-3xs-2xs);
     }
   }
 }
@@ -2337,14 +2371,6 @@ skip-link {
     inline-size: fit-content;
     margin-inline: auto;
     padding: var(--space-2xs);
-
-    &.box {
-      background-color: var(--color-background);
-
-      @media (forced-colors: active) {
-        forced-color-adjust: none;
-      }
-    }
   }
 
   & img {
@@ -2390,11 +2416,17 @@ skip-link {
       content: '';
       position: absolute;
       block-size: var(--space-xs);
-      background-image: url('underline.svg');
-      background-repeat: no-repeat;
-      background-size: 100% 100%;
+      background-color: var(--color-primary);
+      mask-image: url('underline.svg');
+      mask-repeat: no-repeat;
+      mask-size: 100% 100%;
       inset-block-start: 82%;
       inset-inline: 0;
+
+      @media (forced-colors: active) {
+        forced-color-adjust: none;
+        background-color: CanvasText;
+      }
     }
   }
 
@@ -2431,7 +2463,10 @@ skip-link {
     }
 
     @media (forced-colors: active) {
+      forced-color-adjust: auto;
+      background-color: transparent;
       filter: drop-shadow(0 0 0.05em CanvasText);
+      box-shadow: none;
     }
   }
 }
@@ -2620,6 +2655,14 @@ skip-link {
     border: var(--width-divider-wide) solid var(--color-black-900);
     border-radius: 50%;
     object-fit: cover;
+
+    @media screen {
+      @media (forced-colors: active) {
+        forced-color-adjust: auto;
+        background-color: transparent;
+        box-shadow: none;
+      }
+    }
   }
 }
 

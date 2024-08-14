@@ -8,12 +8,6 @@
     path {
       fill: var(--color-primary);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-primary: CanvasText;
-      }
-    }
   </style>
 
   <path d="m141.22,21.84c-45.18,-11.61 -134.64,-6.2 -139.58,15.53c-15.37,-49.94 153.79,-35.98 149.27,-31.43" />

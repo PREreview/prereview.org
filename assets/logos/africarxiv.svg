@@ -9,16 +9,6 @@
     .text {
       fill: var(--color-text);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-text: CanvasText;
-      }
-
-      .symbol path {
-        fill: var(--color-text);
-      }
-    }
   </style>
 
   <clipPath clipPathUnits="userSpaceOnUse" id="clipPath662">

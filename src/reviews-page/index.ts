@@ -4,6 +4,7 @@ import { pipe } from 'fp-ts/lib/function.js'
 import type { LanguageCode } from 'iso-639-1'
 import { match } from 'ts-pattern'
 import { pageNotFound } from '../http-error.js'
+import type { SupportedLocale } from '../locales/index.js'
 import type { PageResponse } from '../response.js'
 import type { FieldId } from '../types/field.js'
 import type { NonEmptyString } from '../types/string.js'
@@ -17,12 +18,14 @@ export const reviewsPage = ({
   canUseSearchQueries,
   field,
   language,
+  locale,
   page,
   query,
 }: {
   canUseSearchQueries: boolean
   field?: FieldId
   language?: LanguageCode
+  locale: SupportedLocale
   page: number
   query?: NonEmptyString
 }): RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> =>
@@ -33,11 +36,15 @@ export const reviewsPage = ({
         match(error)
           .with('not-found', () =>
             page === 1
-              ? emptyPage({ field, language, query: canUseSearchQueries ? query : undefined }, canUseSearchQueries)
+              ? emptyPage(
+                  { field, language, query: canUseSearchQueries ? query : undefined },
+                  canUseSearchQueries,
+                  locale,
+                )
               : pageNotFound,
           )
           .with('unavailable', () => failureMessage)
           .exhaustive(),
-      prereviews => createPage(prereviews, canUseSearchQueries),
+      prereviews => createPage(prereviews, canUseSearchQueries, locale),
     ),
   )

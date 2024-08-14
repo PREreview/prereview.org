@@ -14,13 +14,6 @@
     .text {
       fill: var(--color-text);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-background: CanvasText;
-        --color-text: Canvas;
-      }
-    }
   </style>
 
   <path class="background" d="M0 0h279.77v80H0z" />

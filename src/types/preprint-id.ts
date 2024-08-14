@@ -1,4 +1,5 @@
-import { type Doi, hasRegistrant, isDoi, parse } from 'doi-ts'
+import { type Doi, Eq as eqDoi, hasRegistrant, isDoi, parse } from 'doi-ts'
+import * as Eq from 'fp-ts/lib/Eq.js'
 import * as O from 'fp-ts/lib/Option.js'
 import { type Refinement, compose } from 'fp-ts/lib/Refinement.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
@@ -181,6 +182,18 @@ export interface ZenodoOrAfricarxivPreprintId {
   readonly value: Doi<'5281'>
 }
 
+export const eqPreprintId: Eq.Eq<IndeterminatePreprintId> = Eq.fromEquals((a, b) => {
+  if (a.type !== b.type) {
+    return false
+  }
+
+  if (a.type === 'philsci') {
+    return a.value === b.value
+  }
+
+  return eqDoi.equals(a.value, b.value as typeof a.value)
+})
+
 export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> = hasRegistrant(
   '1101',
   '1590',
@@ -277,13 +290,13 @@ const extractFromDoiPath = flow(decodeURIComponent, parsePreprintDoi)
 
 const extractFromArxivPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i)?.[1]),
+  O.fromNullableK(s => /\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i.exec(s)?.[1]),
   O.chain(flow(suffix => `10.48550/arXiv.${suffix}`, parsePreprintDoi)),
 )
 
 const extractFromAuthoreaPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^doi\/full\/(.+?)$/i)?.[1]),
+  O.fromNullableK(s => /^doi\/full\/(.+?)$/i.exec(s)?.[1]),
   O.filter(pipe(isDoi, compose(hasRegistrant('22541')))),
   O.map(doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId),
 )
@@ -291,7 +304,7 @@ const extractFromAuthoreaPath = flow(
 const extractFromBiorxivMedrxivPath = (type: 'biorxiv' | 'medrxiv') =>
   flow(
     decodeURIComponent,
-    O.fromNullableK(s => s.match(/(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i)?.[1]),
+    O.fromNullableK(s => /(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i.exec(s)?.[1]),
     O.map(suffix => `10.1101/${suffix}`),
     O.filter(pipe(isDoi, compose(hasRegistrant('1101')))),
     O.map(doi => ({ type, value: doi }) satisfies BiorxivPreprintId | MedrxivPreprintId),
@@ -299,20 +312,20 @@ const extractFromBiorxivMedrxivPath = (type: 'biorxiv' | 'medrxiv') =>
 
 const extractFromEdarxivPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i)?.[1]),
+  O.fromNullableK(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
   O.chain(flow(id => `10.35542/osf.io/${id}`, parsePreprintDoi)),
 )
 
 const extractFromEngrxivPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^preprint\/[^/]+\/([1-9][0-9]*)(?:\/|$)/i)?.[1]),
+  O.fromNullableK(s => /^preprint\/[^/]+\/([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
   O.chain(flow(id => `10.31224/${id}`, parsePreprintDoi)),
 )
 
 const extractFromFigsharePath = (type: 'africarxiv') =>
   flow(
     decodeURIComponent,
-    O.fromNullableK(s => s.match(/^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i)?.[1]),
+    O.fromNullableK(s => /^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i.exec(s)?.[1]),
     O.map(id => `10.6084/m9.figshare.${id}.v1`),
     O.filter(pipe(isDoi, compose(hasRegistrant('6084')))),
     O.map(doi => ({ type, value: doi }) satisfies AfricarxivFigsharePreprintId),
@@ -321,7 +334,7 @@ const extractFromFigsharePath = (type: 'africarxiv') =>
 const extractFromOsfPath = flow(
   decodeURIComponent,
   O.fromNullableK(s =>
-    s.match(/^(?:preprints\/(?:(africarxiv|metaarxiv|socarxiv)\/)?)?([a-z0-9]+)(?:\/?$|\/download)/i),
+    /^(?:preprints\/(?:(africarxiv|metaarxiv|socarxiv)\/)?)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s),
   ),
   O.map(([, prefix, id]) =>
     match(prefix)
@@ -335,32 +348,32 @@ const extractFromOsfPath = flow(
 
 const extractFromPhilsciPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/)?.[1]),
+  O.fromNullableK(s => /^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
   O.chainEitherK(flow(id => parseInt(id, 10), D.number.decode)),
   O.map(id => ({ type: 'philsci', value: id }) satisfies PhilsciPreprintId),
 )
 
 const extractFromPreprintsorgPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^manuscript\/([a-z0-9.]+)\/(v[1-9][0-9]*)(?:$|\/)/i)),
+  O.fromNullableK(s => /^manuscript\/([a-z0-9.]+)\/(v[1-9][0-9]*)(?:$|\/)/i.exec(s)),
   O.chain(flow(([, id, version]) => `10.20944/preprints${id}.${version}`, parsePreprintDoi)),
 )
 
 const extractFromPsyarxivPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i)?.[1]),
+  O.fromNullableK(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
   O.chain(flow(id => `10.31234/osf.io/${id}`, parsePreprintDoi)),
 )
 
 const extractFromResearchSquarePath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/\/(rs-[1-9][0-9]*\/v[1-9][0-9]*)(?:[./]|$)/)?.[1]),
+  O.fromNullableK(s => /\/(rs-[1-9][0-9]*\/v[1-9][0-9]*)(?:[./]|$)/.exec(s)?.[1]),
   O.chain(flow(id => `10.21203/rs.3.${id}`, parsePreprintDoi)),
 )
 
 const extractFromScieloPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/)?.[1]),
+  O.fromNullableK(s => /^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
   O.chain(flow(id => `10.1590/SciELOPreprints.${id}`, parsePreprintDoi)),
 )
 
@@ -371,13 +384,13 @@ const extractFromScienceOpenQueryString = flow(
 
 const extractFromTechrxivPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^doi\/(?:full|pdf|xml)\/(.+?)$/i)?.[1]),
+  O.fromNullableK(s => /^doi\/(?:full|pdf|xml)\/(.+?)$/i.exec(s)?.[1]),
   O.filter(pipe(isDoi, compose(hasRegistrant('36227')))),
   O.map(doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId),
 )
 
 const extractFromZenodoPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^record\/([1-9][0-9]*)(?:$|\/)/)?.[1]),
+  O.fromNullableK(s => /^record\/([1-9][0-9]*)(?:$|\/)/.exec(s)?.[1]),
   O.chain(flow(id => `10.5281/zenodo.${id}`, parsePreprintDoi)),
 )

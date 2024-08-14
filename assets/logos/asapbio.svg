@@ -14,13 +14,6 @@
     .symbol {
       fill: var(--color-primary);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-primary: CanvasText;
-        --color-text: CanvasText;
-      }
-    }
   </style>
 
   <path

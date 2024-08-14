@@ -22,13 +22,6 @@
     .secondary {
       fill: var(--color-secondary);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-primary: CanvasText;
-        --color-secondary: CanvasText;
-      }
-    }
   </style>
 
   <path

@@ -18,13 +18,6 @@
     .symbol .initials {
       fill: var(--color-text);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-primary: CanvasText;
-        --color-text: CanvasText;
-      }
-    }
   </style>
 
   <g class="text">

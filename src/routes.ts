@@ -91,7 +91,7 @@ const PreprintDoiC = C.make(
   pipe(
     D.string,
     D.parse(s => {
-      const [, match] = s.match(/^doi-(.+)$/) ?? []
+      const [, match] = /^doi-(.+)$/.exec(s) ?? []
 
       if (typeof match === 'string' && match.toLowerCase() === match) {
         return pipe(PreprintDoiD, D.map(fromPreprintDoi)).decode(match.replaceAll('-', '/').replaceAll('+', '-'))
@@ -109,7 +109,7 @@ const PreprintPhilsciC = C.make(
   pipe(
     D.string,
     D.parse(s => {
-      const [, match] = s.match(/^philsci-([1-9][0-9]*)$/) ?? []
+      const [, match] = /^philsci-([1-9][0-9]*)$/.exec(s) ?? []
 
       if (typeof match === 'string') {
         return D.success({ type: 'philsci', value: parseInt(match, 10) } satisfies PhilsciPreprintId)

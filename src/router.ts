@@ -132,6 +132,7 @@ import {
   type PrereviewCoarNotifyEnv,
   getRecentReviewRequestsFromPrereviewCoarNotify,
   getReviewRequestsFromPrereviewCoarNotify,
+  isReviewRequested,
   publishToPrereviewCoarNotifyInbox,
   sendPrereviewToPrereviewCoarNotifyInbox,
 } from './prereview-coar-notify/index.js'
@@ -472,9 +473,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
+          RM.apS('locale', RM.of(DefaultLocale)),
           RM.bindW('canUseSearchQueries', ({ user }) => RM.rightReader(canUseSearchQueries(user))),
-          RM.bindW('response', ({ canUseSearchQueries }) =>
-            RM.fromReaderTask(reviewsPage({ canUseSearchQueries, field, language, page: page ?? 1, query })),
+          RM.bindW('response', ({ canUseSearchQueries, locale }) =>
+            RM.fromReaderTask(reviewsPage({ canUseSearchQueries, field, language, locale, page: page ?? 1, query })),
           ),
           RM.ichainW(handleResponse),
         ),
@@ -823,11 +825,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       reviewMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({}),
+      P.map(
+        flow(
+          RM.of,
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(reviewPage(id))),
+          RM.apS('locale', RM.of(DefaultLocale)),
+          RM.bindW('response', RM.fromReaderTaskK(reviewPage)),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -1553,6 +1556,13 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                     RA.map(category => ({ id: category.id, name: category.display_name })),
                   ),
                 ),
+              env,
+            ),
+            isReviewRequested: withEnv(
+              flow(
+                isReviewRequested,
+                RTE.getOrElse(() => RT.of(false)),
+              ),
               env,
             ),
           }),

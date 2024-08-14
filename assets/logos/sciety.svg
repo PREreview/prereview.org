@@ -9,16 +9,6 @@
     .text {
       fill: var(--color-text);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-text: CanvasText;
-      }
-
-      .logo path {
-        fill: var(--color-text);
-      }
-    }
   </style>
 
   <g class="logo" transform="translate(0.47752809,0.28651685)">

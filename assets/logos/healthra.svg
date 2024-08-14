@@ -14,12 +14,6 @@
     .text {
       fill: var(--color-primary);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-primary: CanvasText;
-      }
-    }
   </style>
 
   <g class="text">

@@ -18,18 +18,6 @@
     .text {
       fill: var(--color-text);
     }
-
-    @media screen and (forced-colors: active) {
-      :root {
-        --color-background: Canvas;
-        --color-circle: CanvasText;
-        --color-text: CanvasText;
-      }
-
-      .logo path {
-        fill: var(--color-circle);
-      }
-    }
   </style>
 
   <g class="logo">

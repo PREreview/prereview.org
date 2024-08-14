@@ -5,12 +5,15 @@ import { SystemClock } from 'clock-ts'
 import type { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
+import * as A from 'fp-ts/lib/Array.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { identity, pipe } from 'fp-ts/lib/function.js'
+import { isString } from 'fp-ts/lib/string.js'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import {
@@ -698,104 +701,113 @@ describe('getPrereviewFromZenodo', () => {
     fc.preprint(),
     fc.option(fc.clubId(), { nil: undefined }),
     fc.boolean(),
+    fc.boolean(),
     fc.oneof(
       fc.constant([0, []]),
       fc.constant([1, [{ name: '1 other author' }]]),
       fc.integer({ min: 2 }).map(number => [number, [{ name: `${number} other authors` }]] as const),
     ),
-  ])('when the PREreview can be loaded', async (id, preprint, club, structured, [expectedAnonymous, otherAuthors]) => {
-    const record: Record = {
-      conceptdoi: '10.5072/zenodo.1061863' as Doi,
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        contributors: club
-          ? [
-              {
-                type: 'ResearchGroup',
-                name: getClubName(club),
-              },
-            ]
-          : undefined,
-        creators: [{ name: 'PREreviewer' }, ...otherAuthors],
-        description: 'Description',
-        doi: '10.5281/zenodo.1061864' as Doi,
-        keywords: structured ? ['Structured PREreview'] : undefined,
-        language: 'eng',
-        license: { id: 'cc-by-4.0' },
-        notes: '<p>Some note.</p>',
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
+  ])(
+    'when the PREreview can be loaded',
+    async (id, preprint, club, requested, structured, [expectedAnonymous, otherAuthors]) => {
+      const record: Record = {
+        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptrecid: 1061863,
+        files: [
           {
-            ..._.toExternalIdentifier(preprint.id),
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
+            links: {
+              self: new URL('http://example.com/review.html/content'),
+            },
+            key: 'review.html',
+            size: 58,
           },
         ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
+        id,
+        links: {
+          latest: new URL('http://example.com/latest'),
+          latest_html: new URL('http://example.com/latest_html'),
         },
-        title: 'Title',
-      },
-    }
-
-    const getPreprint = jest.fn(_ => TE.right(preprint))
-
-    const actual = await _.getPrereviewFromZenodo(id)({
-      clock: SystemClock,
-      fetch: fetchMock
-        .sandbox()
-        .getOnce(`https://zenodo.org/api/records/${id}`, {
-          body: RecordC.encode(record),
-          status: Status.OK,
-        })
-        .getOnce(
-          { url: 'http://example.com/review.html/content', functionMatcher: (_, req) => req.cache === 'force-cache' },
-          { body: 'Some text' },
-        ),
-      getPreprint,
-      logger: () => IO.of(undefined),
-      sleep: shouldNotBeCalled,
-      wasPrereviewRemoved: () => false,
-    })()
-
-    expect(actual).toStrictEqual(
-      E.right({
-        addendum: rawHtml('<p>Some note.</p>'),
-        authors: { named: [{ name: 'PREreviewer' }], anonymous: expectedAnonymous },
-        club,
-        doi: '10.5281/zenodo.1061864' as Doi,
-        language: 'en',
-        license: 'CC-BY-4.0',
-        published: PlainDate.from('2022-07-05'),
-        preprint: {
-          id: preprint.id,
-          title: preprint.title.text,
-          language: preprint.title.language,
-          url: preprint.url,
+        metadata: {
+          access_right: 'open',
+          communities: [{ id: 'prereview-reviews' }],
+          contributors: club
+            ? [
+                {
+                  type: 'ResearchGroup',
+                  name: getClubName(club),
+                },
+              ]
+            : undefined,
+          creators: [{ name: 'PREreviewer' }, ...otherAuthors],
+          description: 'Description',
+          doi: '10.5281/zenodo.1061864' as Doi,
+          keywords: pipe(
+            [requested ? 'Requested PREreview' : undefined, structured ? 'Structured PREreview' : undefined],
+            A.filter(isString),
+            A.matchW(() => undefined, identity),
+          ),
+          language: 'eng',
+          license: { id: 'cc-by-4.0' },
+          notes: '<p>Some note.</p>',
+          publication_date: new Date('2022-07-05'),
+          related_identifiers: [
+            {
+              ..._.toExternalIdentifier(preprint.id),
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
+            },
+          ],
+          resource_type: {
+            type: 'publication',
+            subtype: 'peerreview',
+          },
+          title: 'Title',
         },
-        structured,
-        text: rawHtml('Some text'),
-      }),
-    )
-    expect(getPreprint).toHaveBeenCalledWith(expect.objectContaining({ value: preprint.id.value }))
-  })
+      }
+
+      const getPreprint = jest.fn(_ => TE.right(preprint))
+
+      const actual = await _.getPrereviewFromZenodo(id)({
+        clock: SystemClock,
+        fetch: fetchMock
+          .sandbox()
+          .getOnce(`https://zenodo.org/api/records/${id}`, {
+            body: RecordC.encode(record),
+            status: Status.OK,
+          })
+          .getOnce(
+            { url: 'http://example.com/review.html/content', functionMatcher: (_, req) => req.cache === 'force-cache' },
+            { body: 'Some text' },
+          ),
+        getPreprint,
+        logger: () => IO.of(undefined),
+        sleep: shouldNotBeCalled,
+        wasPrereviewRemoved: () => false,
+      })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          addendum: rawHtml('<p>Some note.</p>'),
+          authors: { named: [{ name: 'PREreviewer' }], anonymous: expectedAnonymous },
+          club,
+          doi: '10.5281/zenodo.1061864' as Doi,
+          language: 'en',
+          license: 'CC-BY-4.0',
+          published: PlainDate.from('2022-07-05'),
+          preprint: {
+            id: preprint.id,
+            title: preprint.title.text,
+            language: preprint.title.language,
+            url: preprint.url,
+          },
+          requested,
+          structured,
+          text: rawHtml('Some text'),
+        }),
+      )
+      expect(getPreprint).toHaveBeenCalledWith(expect.objectContaining({ value: preprint.id.value }))
+    },
+  )
 
   test.prop([fc.integer(), fc.preprint()])('revalidates if the PREreview is stale', async (id, preprint) => {
     const record: Record = {
@@ -873,6 +885,7 @@ describe('getPrereviewFromZenodo', () => {
           language: preprint.title.language,
           url: preprint.url,
         },
+        requested: false,
         structured: false,
         text: rawHtml('Some text'),
       }),
@@ -3800,11 +3813,13 @@ describe('createRecordOnZenodo', () => {
         user: fc.user(),
       }),
       fc.array(fc.record({ id: fc.url(), name: fc.string() })),
+      fc.boolean(),
       fc.string(),
       fc.origin(),
       fc.doi(),
-    ])('with a PREreview', async (newPrereview, subjects, zenodoApiKey, publicUrl, reviewDoi) => {
+    ])('with a PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
       const getPreprintSubjects = jest.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
+      const isReviewRequested = jest.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => T.of(requested))
 
       const emptyDeposition: EmptyDeposition = {
         id: 1,
@@ -3894,6 +3909,7 @@ describe('createRecordOnZenodo', () => {
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
+                  ...(requested ? { keywords: ['Requested PREreview'] } : {}),
                   ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
@@ -3934,6 +3950,7 @@ ${newPrereview.review.toString()}`,
             status: Status.Accepted,
           }),
         getPreprintSubjects,
+        isReviewRequested,
         logger: () => IO.of(undefined),
         publicUrl,
         zenodoApiKey,
@@ -3941,6 +3958,7 @@ ${newPrereview.review.toString()}`,
 
       expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
       expect(getPreprintSubjects).toHaveBeenCalledWith(newPrereview.preprint.id)
+      expect(isReviewRequested).toHaveBeenCalledWith(newPrereview.preprint.id)
     })
 
     test.prop([
@@ -3955,11 +3973,13 @@ ${newPrereview.review.toString()}`,
         user: fc.user(),
       }),
       fc.array(fc.record({ id: fc.url(), name: fc.string() })),
+      fc.boolean(),
       fc.string(),
       fc.origin(),
       fc.doi(),
-    ])('with a Structured PREreview', async (newPrereview, subjects, zenodoApiKey, publicUrl, reviewDoi) => {
+    ])('with a Structured PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
       const getPreprintSubjects = jest.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
+      const isReviewRequested = jest.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => T.of(requested))
 
       const emptyDeposition: EmptyDeposition = {
         id: 1,
@@ -4049,7 +4069,7 @@ ${newPrereview.review.toString()}`,
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
-                  keywords: ['Structured PREreview'],
+                  keywords: [requested ? 'Requested PREreview' : undefined, 'Structured PREreview'].filter(isString),
                   ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
@@ -4090,6 +4110,7 @@ ${newPrereview.review.toString()}`,
             status: Status.Accepted,
           }),
         getPreprintSubjects,
+        isReviewRequested,
         logger: () => IO.of(undefined),
         publicUrl,
         zenodoApiKey,
@@ -4097,6 +4118,7 @@ ${newPrereview.review.toString()}`,
 
       expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
       expect(getPreprintSubjects).toHaveBeenCalledWith(newPrereview.preprint.id)
+      expect(isReviewRequested).toHaveBeenCalledWith(newPrereview.preprint.id)
     })
   })
 
@@ -4113,10 +4135,11 @@ ${newPrereview.review.toString()}`,
         user: fc.user(),
       }),
       fc.array(fc.record({ id: fc.url(), name: fc.string() })),
+      fc.boolean(),
       fc.string(),
       fc.origin(),
       fc.doi(),
-    ])('with a PREreview', async (newPrereview, subjects, zenodoApiKey, publicUrl, reviewDoi) => {
+    ])('with a PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
       const emptyDeposition: EmptyDeposition = {
         id: 1,
         links: {
@@ -4202,6 +4225,7 @@ ${newPrereview.review.toString()}`,
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
+                  ...(requested ? { keywords: ['Requested PREreview'] } : {}),
                   ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
@@ -4242,6 +4266,7 @@ ${newPrereview.review.toString()}`,
             status: Status.Accepted,
           }),
         getPreprintSubjects: () => T.of(subjects),
+        isReviewRequested: () => T.of(requested),
         logger: () => IO.of(undefined),
         publicUrl,
         zenodoApiKey,
@@ -4262,10 +4287,11 @@ ${newPrereview.review.toString()}`,
         user: fc.user(),
       }),
       fc.array(fc.record({ id: fc.url(), name: fc.string() })),
+      fc.boolean(),
       fc.string(),
       fc.origin(),
       fc.doi(),
-    ])('with a Structured PREreview', async (newPrereview, subjects, zenodoApiKey, publicUrl, reviewDoi) => {
+    ])('with a Structured PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
       const emptyDeposition: EmptyDeposition = {
         id: 1,
         links: {
@@ -4351,7 +4377,7 @@ ${newPrereview.review.toString()}`,
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
-                  keywords: ['Structured PREreview'],
+                  keywords: [requested ? 'Requested PREreview' : undefined, 'Structured PREreview'].filter(isString),
                   ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
@@ -4392,6 +4418,7 @@ ${newPrereview.review.toString()}`,
             status: Status.Accepted,
           }),
         getPreprintSubjects: () => T.of(subjects),
+        isReviewRequested: () => T.of(requested),
         logger: () => IO.of(undefined),
         publicUrl,
         zenodoApiKey,
@@ -4413,17 +4440,19 @@ ${newPrereview.review.toString()}`,
       user: fc.user(),
     }),
     fc.array(fc.record({ id: fc.url(), name: fc.string() })),
+    fc.boolean(),
     fc.string(),
     fc.origin(),
     fc.oneof(
       fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),
     ),
-  ])('Zenodo is unavailable', async (newPrereview, subjects, zenodoApiKey, publicUrl, response) => {
+  ])('Zenodo is unavailable', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, response) => {
     const actual = await _.createRecordOnZenodo(newPrereview)({
       clock: SystemClock,
       fetch: () => response,
       getPreprintSubjects: () => T.of(subjects),
+      isReviewRequested: () => T.of(requested),
       logger: () => IO.of(undefined),
       publicUrl,
       zenodoApiKey,
