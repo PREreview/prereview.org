@@ -7,7 +7,7 @@ import {
   HttpServerResponse,
 } from '@effect/platform'
 import { NodeHttpServer, NodeHttpServerRequest, NodeRuntime } from '@effect/platform-node'
-import { Schema } from '@effect/schema'
+import { ParseResult, Schema } from '@effect/schema'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
 import { Array, Config, Context, Effect, Layer, Logger, Option, Ref, type Scope, flow, pipe } from 'effect'
@@ -28,7 +28,7 @@ import { DefaultLocale, type LocaleTranslate, localeTranslate } from './locales/
 import { type EnvironmentLabelEnv, type FathomEnv, type TemplatePageEnv, page, templatePage } from './page.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { type FlashMessage, type PageResponse, toPage } from './response.js'
-import { type ParamsRouteParams, paramsRoute } from './routes.js'
+import { type ParamsRouteParams, Route, paramsRoute } from './routes.js'
 import type { User } from './user.js'
 
 const env = decodeEnv(process)()
@@ -143,17 +143,18 @@ const orcid = Effect.gen(function* () {
 
 const thePage = (params: ParamsRouteParams) => HttpServerResponse.json(params)
 
-const ParamsHandler = Effect.gen(function* () {
-  const pathParams = yield* HttpRouter.schemaParams(paramsRoute.schema)
-
-  return yield* thePage({ ...pathParams })
-})
+const getRoute =
+  <A, E1, R1>(route: Route<A>, handler: (a: A) => Effect.Effect<HttpServerResponse.HttpServerResponse, E1, R1>) =>
+  <E, R>(
+    self: HttpRouter.HttpRouter<E, R>,
+  ): HttpRouter.HttpRouter<E1 | E | ParseResult.ParseError, R | HttpRouter.HttpRouter.ExcludeProvided<R1>> =>
+    HttpRouter.get(self, route.path, HttpRouter.schemaParams(route.schema).pipe(Effect.andThen(handler)))
 
 const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/about', toHttpServerResponse(aboutUs)),
   HttpRouter.get('/orcid', orcid),
   HttpRouter.get('/health', healthRoute),
-  HttpRouter.get(paramsRoute.path, ParamsHandler),
+  getRoute(paramsRoute, thePage),
 )
 
 const requestIdLogging = HttpMiddleware.make(app =>

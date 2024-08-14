@@ -18,7 +18,7 @@ import { PseudonymC } from './types/pseudonym.js'
 import { NonEmptyStringC } from './types/string.js'
 import { UuidC } from './types/uuid.js'
 
-interface Route<A> {
+export interface Route<A> {
   path: HttpRouter.PathInput
   href: (a: A) => string
   schema: Schema.Schema<A, { [K in keyof A]: string }>
