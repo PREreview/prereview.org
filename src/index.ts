@@ -140,12 +140,15 @@ const orcid = Effect.gen(function* () {
   return yield* pipe(HttpServerResponse.empty({ status: 301, headers: Headers.fromInput({ location: '/' }) }))
 })
 
-const ParamsSchema = Schema.Struct({ id: Schema.NumberFromString })
+const ParamsSchema = Schema.Struct({ id: Schema.NumberFromString, foo: Schema.String })
 
-const ParamsHandler = pipe(
-  HttpRouter.schemaPathParams(ParamsSchema),
-  Effect.andThen(({ id }) => HttpServerResponse.text(id.toString())),
-)
+const thePage = (params: Schema.Schema.Type<typeof ParamsSchema>) => HttpServerResponse.json(params)
+
+const ParamsHandler = Effect.gen(function* () {
+  const pathParams = yield* HttpRouter.schemaParams(ParamsSchema)
+
+  return yield* thePage({ ...pathParams })
+})
 
 const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/about', toHttpServerResponse(aboutUs)),
