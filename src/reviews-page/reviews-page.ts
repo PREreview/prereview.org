@@ -6,7 +6,7 @@ import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { snd } from 'fp-ts/lib/ReadonlyTuple.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
-import iso6391, { type LanguageCode } from 'iso-639-1'
+import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
@@ -172,9 +172,11 @@ const title = ({
   query,
 }: Pick<RecentPrereviews, 'currentPage' | 'field' | 'language' | 'query'> & { locale: SupportedLocale }) => {
   const details = RA.append(`page ${currentPage}`)(
-    [query, field ? getFieldName(field, locale) : undefined, language ? iso6391.getName(language) : undefined].filter(
-      isString,
-    ),
+    [
+      query,
+      field ? getFieldName(field, locale) : undefined,
+      language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
+    ].filter(isString),
   )
 
   return plainText(
@@ -222,7 +224,10 @@ const form = ({
           </option>
           ${pipe(
             ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
-            RA.map(language => [language, iso6391.getName(language)] as const),
+            RA.map(
+              language =>
+                [language, new Intl.DisplayNames(locale, { type: 'language' }).of(language) ?? language] as const,
+            ),
             RA.sort(Ord.contramap(snd)(ordString(locale))),
             RA.map(
               ([code, name]) =>
