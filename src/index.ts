@@ -141,14 +141,34 @@ const orcid = Effect.gen(function* () {
   return yield* pipe(HttpServerResponse.empty({ status: 301, headers: Headers.fromInput({ location: '/' }) }))
 })
 
-const thePage = (params: ParamsRouteParams) => HttpServerResponse.json(params)
+const thePage = (params: ParamsRouteParams) =>
+  Effect.gen(function* () {
+    yield* Effect.log('hello')
+
+    return yield* HttpServerResponse.json(params)
+  })
 
 const getRoute =
   <A, E1, R1>(route: Route<A>, handler: (a: A) => Effect.Effect<HttpServerResponse.HttpServerResponse, E1, R1>) =>
   <E, R>(
     self: HttpRouter.HttpRouter<E, R>,
   ): HttpRouter.HttpRouter<E1 | E | ParseResult.ParseError, R | HttpRouter.HttpRouter.ExcludeProvided<R1>> =>
-    HttpRouter.get(self, route.path, HttpRouter.schemaParams(route.schema).pipe(Effect.andThen(handler)))
+    HttpRouter.get(
+      self,
+      route.path,
+      HttpRouter.schemaParams(route.schema).pipe(
+        Effect.tap(params =>
+          Effect.gen(function* () {
+            const context = yield* HttpRouter.RouteContext
+
+            yield* Effect.annotateLogsScoped('route.params', params)
+            yield* Effect.annotateLogsScoped('route.method', context.route.method)
+            yield* Effect.annotateLogsScoped('route.path', context.route.path)
+          }),
+        ),
+        Effect.andThen(handler),
+      ),
+    )
 
 const Router = HttpRouter.empty.pipe(
   HttpRouter.get('/about', toHttpServerResponse(aboutUs)),
