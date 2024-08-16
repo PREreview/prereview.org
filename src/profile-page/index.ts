@@ -7,16 +7,17 @@ import type { ProfileId } from '../types/profile-id.js'
 import { createPage } from './create-page.js'
 import { getOrcidProfile } from './orcid-profile.js'
 import { getPseudonymProfile } from './pseudonym-profile.js'
+import type { SupportedLocale } from '../locales/index.js'
 
 export type Env = EnvFor<ReturnType<typeof profile>>
 
-export const profile = (profileId: ProfileId) =>
+export const profile = ({locale, profile: profileId}:{profile: ProfileId, locale: SupportedLocale}) =>
   match(profileId)
-    .with({ type: 'orcid' }, profileForOrcid)
-    .with({ type: 'pseudonym' }, profileForPseudonym)
+    .with({ type: 'orcid' }, profileForOrcid(locale))
+    .with({ type: 'pseudonym' }, profileForPseudonym(locale))
     .exhaustive()
 
-const profileForOrcid = flow(
+const profileForOrcid = (locale: SupportedLocale) => flow(
   getOrcidProfile,
   RTE.match(
     error =>
@@ -24,18 +25,18 @@ const profileForOrcid = flow(
         .with('not-found', () => pageNotFound)
         .with('unavailable', () => havingProblemsPage)
         .exhaustive(),
-    createPage,
+    profile => createPage(profile,locale),
   ),
 )
 
-const profileForPseudonym = flow(
+const profileForPseudonym = (locale: SupportedLocale) => flow(
   getPseudonymProfile,
   RTE.match(
     error =>
       match(error)
         .with('unavailable', () => havingProblemsPage)
         .exhaustive(),
-    createPage,
+    profile => createPage(profile, locale),
   ),
 )
 

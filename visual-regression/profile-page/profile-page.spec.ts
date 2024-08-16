@@ -9,6 +9,7 @@ import type { NonEmptyString } from '../../src/types/string.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
+import { DefaultLocale } from '../../src/locales/index.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = createPage({
@@ -28,7 +29,7 @@ test('content looks right', async ({ showPage }) => {
     avatar: new URL('https://placehold.co/300x300'),
     isOpenForRequests: true,
     prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
-  })
+  }, DefaultLocale)
 
   const content = await showPage(response)
 
@@ -49,7 +50,7 @@ test('content looks right when empty', async ({ showPage }) => {
     avatar: undefined,
     isOpenForRequests: false,
     prereviews: [],
-  })
+  }, DefaultLocale)
 
   const content = await showPage(response)
 
@@ -61,7 +62,7 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
     type: 'pseudonym',
     name: 'Orange Panda' as Pseudonym,
     prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
-  })
+  }, DefaultLocale)
 
   const content = await showPage(response)
 
@@ -73,7 +74,7 @@ test('content looks right with a pseudonym when empty', async ({ showPage }) => 
     type: 'pseudonym',
     name: 'Orange Panda' as Pseudonym,
     prereviews: [],
-  })
+  }, DefaultLocale)
 
   const content = await showPage(response)
 

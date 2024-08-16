@@ -6,14 +6,14 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, rawHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import type { NonEmptyString } from '../types/string.js'
 import { getSubfieldName } from '../types/subfield.js'
 import type { Prereviews } from './prereviews.js'
 
-export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyString) {
+export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyString, locale: SupportedLocale) {
   return pipe(
     prereviews,
     RA.match(
@@ -34,7 +34,7 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyStr
                     ${pipe(
                       prereview.reviewers,
                       RNEA.map(name => html`<b>${name}</b>`),
-                      formatList(DefaultLocale),
+                      formatList(locale),
                     )}
                     ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
                     <cite
@@ -47,14 +47,14 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyStr
                   ${prereview.subfields.length > 0
                     ? html`
                         <ul class="categories">
-                          ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
+                          ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
                         </ul>
                       `
                     : ''}
 
                   <dl>
                     <dt>Review published</dt>
-                    <dd>${renderDate(DefaultLocale)(prereview.published)}</dd>
+                    <dd>${renderDate(locale)(prereview.published)}</dd>
                     <dt>Preprint server</dt>
                     <dd>
                       ${match(prereview.preprint.id.type)

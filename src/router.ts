@@ -1279,11 +1279,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       profileMatch.parser,
-      P.map(({ profile: profileId }) =>
-        pipe(
-          RM.of({}),
+      P.map(
+        flow(
+          RM.of,
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(profile(profileId))),
+          RM.apS('locale', RM.of(DefaultLocale)),
+          RM.bindW('response', RM.fromReaderTaskK(profile)),
           RM.ichainW(handleResponse),
         ),
       ),

@@ -5,7 +5,7 @@ import { flow, pipe } from 'fp-ts/lib/function.js'
 import { P, match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch } from '../routes.js'
 import type { ProfileId } from '../types/profile-id.js'
@@ -14,7 +14,7 @@ import type { OrcidProfile } from './orcid-profile.js'
 import type { PseudonymProfile } from './pseudonym-profile.js'
 import { renderListOfPrereviews } from './render-list-of-prereviews.js'
 
-export function createPage(profile: OrcidProfile | PseudonymProfile) {
+export function createPage(profile: OrcidProfile | PseudonymProfile, locale: SupportedLocale) {
   return PageResponse({
     title: plainText(
       match(profile)
@@ -23,8 +23,8 @@ export function createPage(profile: OrcidProfile | PseudonymProfile) {
         .exhaustive(),
     ),
     main: match(profile)
-      .with({ type: 'orcid' }, renderContentForOrcid)
-      .with({ type: 'pseudonym' }, renderContentForPseudonym)
+      .with({ type: 'orcid' }, profile => renderContentForOrcid(profile, locale))
+      .with({ type: 'pseudonym' }, profile => renderContentForPseudonym(profile, locale))
       .exhaustive(),
     canonical: format(profileMatch.formatter, {
       profile: match(profile)
@@ -48,7 +48,7 @@ function renderContentForOrcid({
   avatar,
   isOpenForRequests,
   prereviews,
-}: OrcidProfile) {
+}: OrcidProfile, locale: SupportedLocale) {
   return html`
     <div class="profile-header">
       <div>
@@ -127,7 +127,7 @@ function renderContentForOrcid({
                         club =>
                           html`<a href="${format(clubProfileMatch.formatter, { id: club })}">${getClubName(club)}</a>`,
                       ),
-                      formatList(DefaultLocale),
+                      formatList(locale),
                     )}
                   </dd>
                 </div>
@@ -162,11 +162,12 @@ function renderContentForOrcid({
         .with({ name: P.string }, profile => profile.name)
         .with({ orcid: P.string }, () => 'This person' as NonEmptyString)
         .exhaustive(),
+        locale,
     )}
   `
 }
 
-function renderContentForPseudonym({ name, prereviews }: PseudonymProfile) {
+function renderContentForPseudonym({ name, prereviews }: PseudonymProfile, locale: SupportedLocale) {
   return html`
     <div class="profile-header">
       <div>
@@ -176,7 +177,7 @@ function renderContentForPseudonym({ name, prereviews }: PseudonymProfile) {
 
     <h2>PREreviews</h2>
 
-    ${renderListOfPrereviews(prereviews, name)}
+    ${renderListOfPrereviews(prereviews, name, locale)}
   `
 }
 
