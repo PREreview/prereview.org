@@ -36,19 +36,22 @@ export function createPage(profile: OrcidProfile | PseudonymProfile, locale: Sup
   })
 }
 
-function renderContentForOrcid({
-  name,
-  orcid,
-  slackUser,
-  careerStage,
-  researchInterests,
-  location,
-  languages,
-  clubs,
-  avatar,
-  isOpenForRequests,
-  prereviews,
-}: OrcidProfile, locale: SupportedLocale) {
+function renderContentForOrcid(
+  {
+    name,
+    orcid,
+    slackUser,
+    careerStage,
+    researchInterests,
+    location,
+    languages,
+    clubs,
+    avatar,
+    isOpenForRequests,
+    prereviews,
+  }: OrcidProfile,
+  locale: SupportedLocale,
+) {
   return html`
     <div class="profile-header">
       <div>
@@ -162,7 +165,7 @@ function renderContentForOrcid({
         .with({ name: P.string }, profile => profile.name)
         .with({ orcid: P.string }, () => 'This person' as NonEmptyString)
         .exhaustive(),
-        locale,
+      locale,
     )}
   `
 }

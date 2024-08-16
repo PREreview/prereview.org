@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { rawHtml } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import { createPage } from '../../src/profile-page/create-page.js'
 import type { Prereviews } from '../../src/profile-page/prereviews.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
@@ -9,27 +10,29 @@ import type { NonEmptyString } from '../../src/types/string.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
-import { DefaultLocale } from '../../src/locales/index.js'
 
 test('content looks right', async ({ showPage }) => {
-  const response = createPage({
-    type: 'orcid',
-    name: 'Josiah Carberry' as NonEmptyString,
-    orcid: '0000-0002-1825-0097' as Orcid,
-    slackUser: {
-      name: 'jcarberry',
-      image: new URL('https://placehold.co/48x48'),
-      profile: new URL('http://example.com/'),
+  const response = createPage(
+    {
+      type: 'orcid',
+      name: 'Josiah Carberry' as NonEmptyString,
+      orcid: '0000-0002-1825-0097' as Orcid,
+      slackUser: {
+        name: 'jcarberry',
+        image: new URL('https://placehold.co/48x48'),
+        profile: new URL('http://example.com/'),
+      },
+      careerStage: 'late',
+      researchInterests: 'Psychoceramics' as NonEmptyString,
+      location: 'Providence, Rhode Island' as NonEmptyString,
+      languages: 'English' as NonEmptyString,
+      clubs: ['asapbio-cancer-biology', 'language-club'],
+      avatar: new URL('https://placehold.co/300x300'),
+      isOpenForRequests: true,
+      prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
     },
-    careerStage: 'late',
-    researchInterests: 'Psychoceramics' as NonEmptyString,
-    location: 'Providence, Rhode Island' as NonEmptyString,
-    languages: 'English' as NonEmptyString,
-    clubs: ['asapbio-cancer-biology', 'language-club'],
-    avatar: new URL('https://placehold.co/300x300'),
-    isOpenForRequests: true,
-    prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
-  }, DefaultLocale)
+    DefaultLocale,
+  )
 
   const content = await showPage(response)
 
@@ -37,20 +40,23 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when empty', async ({ showPage }) => {
-  const response = createPage({
-    type: 'orcid',
-    name: 'Josiah Carberry' as NonEmptyString,
-    orcid: '0000-0002-1825-0097' as Orcid,
-    slackUser: undefined,
-    careerStage: undefined,
-    researchInterests: undefined,
-    location: undefined,
-    languages: undefined,
-    clubs: [],
-    avatar: undefined,
-    isOpenForRequests: false,
-    prereviews: [],
-  }, DefaultLocale)
+  const response = createPage(
+    {
+      type: 'orcid',
+      name: 'Josiah Carberry' as NonEmptyString,
+      orcid: '0000-0002-1825-0097' as Orcid,
+      slackUser: undefined,
+      careerStage: undefined,
+      researchInterests: undefined,
+      location: undefined,
+      languages: undefined,
+      clubs: [],
+      avatar: undefined,
+      isOpenForRequests: false,
+      prereviews: [],
+    },
+    DefaultLocale,
+  )
 
   const content = await showPage(response)
 
@@ -58,11 +64,14 @@ test('content looks right when empty', async ({ showPage }) => {
 })
 
 test('content looks right with a pseudonym', async ({ showPage }) => {
-  const response = createPage({
-    type: 'pseudonym',
-    name: 'Orange Panda' as Pseudonym,
-    prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
-  }, DefaultLocale)
+  const response = createPage(
+    {
+      type: 'pseudonym',
+      name: 'Orange Panda' as Pseudonym,
+      prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
+    },
+    DefaultLocale,
+  )
 
   const content = await showPage(response)
 
@@ -70,11 +79,14 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
 })
 
 test('content looks right with a pseudonym when empty', async ({ showPage }) => {
-  const response = createPage({
-    type: 'pseudonym',
-    name: 'Orange Panda' as Pseudonym,
-    prereviews: [],
-  }, DefaultLocale)
+  const response = createPage(
+    {
+      type: 'pseudonym',
+      name: 'Orange Panda' as Pseudonym,
+      prereviews: [],
+    },
+    DefaultLocale,
+  )
 
   const content = await showPage(response)
 

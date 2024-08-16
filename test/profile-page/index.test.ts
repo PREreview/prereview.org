@@ -57,7 +57,7 @@ describe('profile', () => {
         const getSlackUser = jest.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
         const isOpenForRequests = jest.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
 
-        const actual = await _.profile({locale,profile})({
+        const actual = await _.profile({ locale, profile })({
           getAvatar,
           getCareerStage,
           getLanguages,
@@ -104,8 +104,8 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])("when the name can't be found", async (locale,profile, avatar, prereviews) => {
-      const actual = await _.profile({locale,profile})({
+    ])("when the name can't be found", async (locale, profile, avatar, prereviews) => {
+      const actual = await _.profile({ locale, profile })({
         getAvatar: () => TE.of(avatar),
         getCareerStage: () => TE.left('not-found'),
         getLanguages: () => TE.left('not-found'),
@@ -141,8 +141,8 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when the name is unavailable', async (locale,profile, avatar, prereviews) => {
-      const actual = await _.profile({locale,profile})({
+    ])('when the name is unavailable', async (locale, profile, avatar, prereviews) => {
+      const actual = await _.profile({ locale, profile })({
         getAvatar: () => TE.of(avatar),
         getCareerStage: () => TE.left('not-found'),
         getLanguages: () => TE.left('not-found'),
@@ -178,8 +178,8 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])("when the avatar can't be found", async (locale,profile, name, prereviews) => {
-      const actual = await _.profile({locale,profile})({
+    ])("when the avatar can't be found", async (locale, profile, name, prereviews) => {
+      const actual = await _.profile({ locale, profile })({
         getAvatar: () => TE.left('not-found'),
         getCareerStage: () => TE.left('not-found'),
         getLanguages: () => TE.left('not-found'),
@@ -216,8 +216,8 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when the avatar is unavailable', async (locale,profile, name, prereviews) => {
-      const actual = await _.profile({locale,profile})({
+    ])('when the avatar is unavailable', async (locale, profile, name, prereviews) => {
+      const actual = await _.profile({ locale, profile })({
         getAvatar: () => TE.left('unavailable'),
         getCareerStage: () => TE.left('not-found'),
         getLanguages: () => TE.left('not-found'),
@@ -253,8 +253,8 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when the career stage is unavailable', async (locale,profile, name, prereviews) => {
-      const actual = await _.profile({locale,profile})({
+    ])('when the career stage is unavailable', async (locale, profile, name, prereviews) => {
+      const actual = await _.profile({ locale, profile })({
         getAvatar: () => TE.left('not-found'),
         getCareerStage: () => TE.left('unavailable'),
         getLanguages: () => TE.left('not-found'),
@@ -290,8 +290,8 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when the research interests are unavailable', async (locale,profile, name, prereviews) => {
-      const actual = await _.profile({locale,profile})({
+    ])('when the research interests are unavailable', async (locale, profile, name, prereviews) => {
+      const actual = await _.profile({ locale, profile })({
         getAvatar: () => TE.left('not-found'),
         getCareerStage: () => TE.left('not-found'),
         getLanguages: () => TE.left('not-found'),
@@ -327,8 +327,8 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when the location is unavailable', async (locale,profile, name, prereviews) => {
-      const actual = await _.profile({locale,profile})({
+    ])('when the location is unavailable', async (locale, profile, name, prereviews) => {
+      const actual = await _.profile({ locale, profile })({
         getAvatar: () => TE.left('not-found'),
         getCareerStage: () => TE.left('not-found'),
         getLanguages: () => TE.left('not-found'),
@@ -364,8 +364,8 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when languages are unavailable', async (locale,profile, name, prereviews) => {
-      const actual = await _.profile({locale,profile})({
+    ])('when languages are unavailable', async (locale, profile, name, prereviews) => {
+      const actual = await _.profile({ locale, profile })({
         getAvatar: () => TE.left('not-found'),
         getCareerStage: () => TE.left('not-found'),
         getLanguages: () => TE.left('unavailable'),
@@ -401,8 +401,8 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when the Slack user is unavailable', async (locale,profile, name, prereviews) => {
-      const actual = await _.profile({locale,profile})({
+    ])('when the Slack user is unavailable', async (locale, profile, name, prereviews) => {
+      const actual = await _.profile({ locale, profile })({
         getAvatar: () => TE.left('not-found'),
         getCareerStage: () => TE.left('not-found'),
         getLanguages: () => TE.left('not-found'),
@@ -438,8 +438,8 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when being open for requests is unavailable', async (locale,profile, name, prereviews) => {
-      const actual = await _.profile({locale,profile})({
+    ])('when being open for requests is unavailable', async (locale, profile, name, prereviews) => {
+      const actual = await _.profile({ locale, profile })({
         getAvatar: () => TE.left('not-found'),
         getCareerStage: () => TE.left('not-found'),
         getLanguages: () => TE.left('not-found'),
@@ -476,10 +476,10 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when the data can be loaded', async (locale,profile, prereviews) => {
+    ])('when the data can be loaded', async (locale, profile, prereviews) => {
       const getPrereviews = jest.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
 
-      const actual = await _.profile({locale,profile})({
+      const actual = await _.profile({ locale, profile })({
         getAvatar: shouldNotBeCalled,
         getCareerStage: shouldNotBeCalled,
         getLanguages: () => TE.left('not-found'),
@@ -505,10 +505,10 @@ describe('profile', () => {
   })
 })
 
-test.prop([  fc.supportedLocale(),fc.profileId(), fc.url(), fc.option(fc.nonEmptyString(), { nil: undefined })])(
+test.prop([fc.supportedLocale(), fc.profileId(), fc.url(), fc.option(fc.nonEmptyString(), { nil: undefined })])(
   "when the PREreviews can't be loaded",
-  async (locale,profile, avatar, name) => {
-    const actual = await _.profile({locale,profile})({
+  async (locale, profile, avatar, name) => {
+    const actual = await _.profile({ locale, profile })({
       getAvatar: () => TE.of(avatar),
       getCareerStage: () => TE.left('not-found'),
       getLanguages: () => TE.left('not-found'),
