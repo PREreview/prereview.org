@@ -612,7 +612,7 @@ function recordToPrereview(
           ),
         ),
         license: RTE.right(license),
-        live: RTE.right(false),
+        live: RTE.right(record.metadata.keywords?.includes('Live Review') === true),
         published: RTE.right(
           toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),

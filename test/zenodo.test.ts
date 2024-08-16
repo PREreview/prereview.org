@@ -702,6 +702,7 @@ describe('getPrereviewFromZenodo', () => {
     fc.option(fc.clubId(), { nil: undefined }),
     fc.boolean(),
     fc.boolean(),
+    fc.boolean(),
     fc.oneof(
       fc.constant([0, []]),
       fc.constant([1, [{ name: '1 other author' }]]),
@@ -709,7 +710,7 @@ describe('getPrereviewFromZenodo', () => {
     ),
   ])(
     'when the PREreview can be loaded',
-    async (id, preprint, club, requested, structured, [expectedAnonymous, otherAuthors]) => {
+    async (id, preprint, club, requested, structured, live, [expectedAnonymous, otherAuthors]) => {
       const record: Record = {
         conceptdoi: '10.5072/zenodo.1061863' as Doi,
         conceptrecid: 1061863,
@@ -742,7 +743,11 @@ describe('getPrereviewFromZenodo', () => {
           description: 'Description',
           doi: '10.5281/zenodo.1061864' as Doi,
           keywords: pipe(
-            [requested ? 'Requested PREreview' : undefined, structured ? 'Structured PREreview' : undefined],
+            [
+              requested ? 'Requested PREreview' : undefined,
+              structured ? 'Structured PREreview' : undefined,
+              live ? 'Live Review' : undefined,
+            ],
             A.filter(isString),
             A.matchW(() => undefined, identity),
           ),
@@ -793,7 +798,7 @@ describe('getPrereviewFromZenodo', () => {
           doi: '10.5281/zenodo.1061864' as Doi,
           language: 'en',
           license: 'CC-BY-4.0',
-          live: false,
+          live,
           published: PlainDate.from('2022-07-05'),
           preprint: {
             id: preprint.id,
