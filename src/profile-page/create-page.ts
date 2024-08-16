@@ -9,7 +9,6 @@ import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch } from '../routes.js'
 import type { ProfileId } from '../types/profile-id.js'
-import type { NonEmptyString } from '../types/string.js'
 import type { OrcidProfile } from './orcid-profile.js'
 import type { PseudonymProfile } from './pseudonym-profile.js'
 import { renderListOfPrereviews } from './render-list-of-prereviews.js'
@@ -159,14 +158,7 @@ function renderContentForOrcid(
           </div>
         `
       : ''}
-    ${renderListOfPrereviews(
-      prereviews,
-      match({ name, orcid })
-        .with({ name: P.string }, profile => profile.name)
-        .with({ orcid: P.string }, () => 'This person' as NonEmptyString)
-        .exhaustive(),
-      locale,
-    )}
+    ${renderListOfPrereviews(prereviews, name, locale)}
   `
 }
 

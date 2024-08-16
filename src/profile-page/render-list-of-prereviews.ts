@@ -13,13 +13,17 @@ import type { NonEmptyString } from '../types/string.js'
 import { getSubfieldName } from '../types/subfield.js'
 import type { Prereviews } from './prereviews.js'
 
-export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyString, locale: SupportedLocale) {
+export function renderListOfPrereviews(
+  prereviews: Prereviews,
+  name: NonEmptyString | undefined,
+  locale: SupportedLocale,
+) {
   return pipe(
     prereviews,
     RA.match(
       () => html`
         <div class="inset">
-          <p>${name} hasn’t published a PREreview yet.</p>
+          <p>${name ?? 'This person'} hasn’t published a PREreview yet.</p>
 
           <p>When they do, it’ll appear here.</p>
         </div>
