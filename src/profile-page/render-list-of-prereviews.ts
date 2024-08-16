@@ -47,7 +47,11 @@ export function renderListOfPrereviews(
                             'clubReviewText',
                           )({
                             club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
-                            reviewers: formatList(locale)(prereview.reviewers).toString(),
+                            reviewers: pipe(
+                              prereview.reviewers,
+                              RNEA.map(name => html`<b>${name}</b>`),
+                              formatList(locale),
+                            ).toString(),
                             preprint: html`<cite
                               dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
                               lang="${prereview.preprint.language}"
@@ -59,7 +63,11 @@ export function renderListOfPrereviews(
                             'reviews-list',
                             'reviewText',
                           )({
-                            reviewers: formatList(locale)(prereview.reviewers).toString(),
+                            reviewers: pipe(
+                              prereview.reviewers,
+                              RNEA.map(name => html`<b>${name}</b>`),
+                              formatList(locale),
+                            ).toString(),
                             preprint: html`<cite
                               dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
                               lang="${prereview.preprint.language}"
