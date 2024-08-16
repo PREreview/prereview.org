@@ -5,7 +5,7 @@ import { flow, pipe } from 'fp-ts/lib/function.js'
 import { P, match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch } from '../routes.js'
 import type { ProfileId } from '../types/profile-id.js'
@@ -57,7 +57,7 @@ function renderContentForOrcid(
         <h1>
           ${match({ name, orcid })
             .with({ name: P.string }, profile => profile.name)
-            .with({ orcid: P.string }, () => 'Anonymous')
+            .with({ orcid: P.string }, () => translate(locale, 'profile-page', 'anonymous')())
             .exhaustive()}
         </h1>
 
@@ -70,7 +70,7 @@ function renderContentForOrcid(
           ${slackUser
             ? html`
                 <div>
-                  <dt>Slack Community name</dt>
+                  <dt>${translate(locale, 'profile-page', 'slackName')()}</dt>
                   <dd>
                     <span class="slack">
                       <img src="${slackUser.image.href}" alt="" width="48" height="48" />
@@ -83,21 +83,15 @@ function renderContentForOrcid(
           ${careerStage
             ? html`
                 <div>
-                  <dt>Career stage</dt>
-                  <dd>
-                    ${match(careerStage)
-                      .with('early', () => 'Early')
-                      .with('mid', () => 'Mid')
-                      .with('late', () => 'Late')
-                      .exhaustive()}
-                  </dd>
+                  <dt>${translate(locale, 'profile-page', 'careerStage')()}</dt>
+                  <dd>${translate(locale, 'profile-page', `careerStage${capitalize(careerStage)}`)()}</dd>
                 </div>
               `
             : ''}
           ${researchInterests
             ? html`
                 <div>
-                  <dt>Research interests</dt>
+                  <dt>${translate(locale, 'profile-page', 'researchInterests')()}</dt>
                   <dd>${researchInterests}</dd>
                 </div>
               `
@@ -105,7 +99,7 @@ function renderContentForOrcid(
           ${location
             ? html`
                 <div>
-                  <dt>Location</dt>
+                  <dt>${translate(locale, 'profile-page', 'location')()}</dt>
                   <dd>${location}</dd>
                 </div>
               `
@@ -113,7 +107,7 @@ function renderContentForOrcid(
           ${languages
             ? html`
                 <div>
-                  <dt>Languages</dt>
+                  <dt>${translate(locale, 'profile-page', 'languages')()}</dt>
                   <dd>${languages}</dd>
                 </div>
               `
@@ -121,7 +115,7 @@ function renderContentForOrcid(
           ${RA.isNonEmpty(clubs)
             ? html`
                 <div>
-                  <dt>Clubs</dt>
+                  <dt>${translate(locale, 'profile-page', 'clubs')()}</dt>
                   <dd>
                     ${pipe(
                       clubs,
@@ -141,19 +135,25 @@ function renderContentForOrcid(
       ${avatar instanceof URL ? html` <img src="${avatar.href}" width="300" height="300" alt="" /> ` : ''}
     </div>
 
-    <h2>PREreviews</h2>
+    <h2>${translate(locale, 'profile-page', 'prereviewsTitle')()}</h2>
 
     ${isOpenForRequests
       ? html`
           <div class="inset">
-            ${match({ name, orcid })
-              .with({ name: P.string }, profile => profile.name)
-              .with({ orcid: P.string }, () => 'This person')
-              .exhaustive()}
-            is happy to take requests for a PREreview.
+            ${name
+              ? translate(locale, 'profile-page', 'openForRequests')({ name })
+              : translate(locale, 'profile-page', 'openForRequestsAnonymous')()}
             ${slackUser
-              ? html`They can be contacted on our
-                  <a href="https://content.prereview.org/join-prereview-slack/">Slack Community</a>.`
+              ? rawHtml(
+                  translate(
+                    locale,
+                    'profile-page',
+                    'contactSlack',
+                  )({
+                    link: text =>
+                      html`<a href="https://content.prereview.org/join-prereview-slack/">${text}</a>.`.toString(),
+                  }),
+                )
               : ''}
           </div>
         `
@@ -170,7 +170,7 @@ function renderContentForPseudonym({ name, prereviews }: PseudonymProfile, local
       </div>
     </div>
 
-    <h2>PREreviews</h2>
+    <h2>${translate(locale, 'profile-page', 'prereviewsTitle')()}</h2>
 
     ${renderListOfPrereviews(prereviews, name, locale)}
   `
@@ -186,4 +186,8 @@ function formatList(
     list => formatter.format(list),
     rawHtml,
   )
+}
+
+function capitalize<T extends string>(self: T): Capitalize<T> {
+  return ((self[0]?.toUpperCase() ?? '') + self.slice(1)) as Capitalize<T>
 }

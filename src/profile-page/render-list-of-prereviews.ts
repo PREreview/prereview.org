@@ -6,7 +6,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, rawHtml } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import type { NonEmptyString } from '../types/string.js'
@@ -23,9 +23,13 @@ export function renderListOfPrereviews(
     RA.match(
       () => html`
         <div class="inset">
-          <p>${name ?? 'This person'} hasn’t published a PREreview yet.</p>
+          <p>
+            ${name
+              ? translate(locale, 'profile-page', 'noResults')({ name })
+              : translate(locale, 'profile-page', 'noResultsAnonymous')()}
+          </p>
 
-          <p>When they do, it’ll appear here.</p>
+          <p>${translate(locale, 'profile-page', 'appearHere')()}</p>
         </div>
       `,
       prereviews => html`
@@ -35,17 +39,34 @@ export function renderListOfPrereviews(
               <li>
                 <article>
                   <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                    ${pipe(
-                      prereview.reviewers,
-                      RNEA.map(name => html`<b>${name}</b>`),
-                      formatList(locale),
+                    ${rawHtml(
+                      prereview.club
+                        ? translate(
+                            locale,
+                            'reviews-list',
+                            'clubReviewText',
+                          )({
+                            club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
+                            reviewers: formatList(locale)(prereview.reviewers).toString(),
+                            preprint: html`<cite
+                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                              lang="${prereview.preprint.language}"
+                              >${prereview.preprint.title}</cite
+                            >`.toString(),
+                          })
+                        : translate(
+                            locale,
+                            'reviews-list',
+                            'reviewText',
+                          )({
+                            reviewers: formatList(locale)(prereview.reviewers).toString(),
+                            preprint: html`<cite
+                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                              lang="${prereview.preprint.language}"
+                              >${prereview.preprint.title}</cite
+                            >`.toString(),
+                          }),
                     )}
-                    ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
-                    <cite
-                      dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                      lang="${prereview.preprint.language}"
-                      >${prereview.preprint.title}</cite
-                    >
                   </a>
 
                   ${prereview.subfields.length > 0
@@ -57,9 +78,9 @@ export function renderListOfPrereviews(
                     : ''}
 
                   <dl>
-                    <dt>Review published</dt>
+                    <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
                     <dd>${renderDate(locale)(prereview.published)}</dd>
-                    <dt>Preprint server</dt>
+                    <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
                     <dd>
                       ${match(prereview.preprint.id.type)
                         .with('africarxiv', () => 'AfricArXiv Preprints')
