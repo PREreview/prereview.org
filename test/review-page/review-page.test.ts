@@ -19,6 +19,7 @@ describe('reviewPage', () => {
       doi: fc.doi(),
       language: fc.option(fc.languageCode(), { nil: undefined }),
       license: fc.constant('CC-BY-4.0'),
+      live: fc.boolean(),
       published: fc.plainDate(),
       preprint: fc.record({
         id: fc.preprintId(),

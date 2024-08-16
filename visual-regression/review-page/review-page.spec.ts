@@ -63,6 +63,18 @@ test("content looks right when it's requested", async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test("content looks right when it's live", async ({ showPage }) => {
+  const response = createPage({
+    id: 1234,
+    locale: DefaultLocale,
+    review: { ...review, live: true },
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks right with an addendum', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
@@ -113,6 +125,7 @@ const review = {
   doi: '10.5281/zenodo.10779310' as Doi<'5281'>,
   language: 'en',
   license: 'CC-BY-4.0',
+  live: false,
   published: PlainDate.from('2024-03-04'),
   preprint: {
     id: { type: 'biorxiv', value: '10.1101/2023.12.21.572824' as Doi<'1101'> },
@@ -198,6 +211,7 @@ const structuredReview = {
   doi: '10.5281/zenodo.10775334' as Doi<'5281'>,
   language: 'en',
   license: 'CC-BY-4.0',
+  live: false,
   published: PlainDate.from('2024-03-03'),
   preprint: {
     id: { type: 'edarxiv', value: '10.35542/osf.io/hsnke' as Doi<'35542'> },

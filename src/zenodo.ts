@@ -612,6 +612,7 @@ function recordToPrereview(
           ),
         ),
         license: RTE.right(license),
+        live: RTE.right(false),
         published: RTE.right(
           toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),

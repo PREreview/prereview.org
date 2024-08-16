@@ -793,6 +793,7 @@ describe('getPrereviewFromZenodo', () => {
           doi: '10.5281/zenodo.1061864' as Doi,
           language: 'en',
           license: 'CC-BY-4.0',
+          live: false,
           published: PlainDate.from('2022-07-05'),
           preprint: {
             id: preprint.id,
@@ -878,6 +879,7 @@ describe('getPrereviewFromZenodo', () => {
         doi: '10.5281/zenodo.1061864' as Doi,
         language: undefined,
         license: 'CC-BY-4.0',
+        live: false,
         published: PlainDate.from('2022-07-05'),
         preprint: {
           id: preprint.id,

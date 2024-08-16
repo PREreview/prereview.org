@@ -74,6 +74,7 @@ export const createPage = ({ id, locale, review }: { id: number; locale: Support
         ${review.requested
           ? html`<span class="tag">${translate(locale, 'review-page', 'requestedPrereview')()}</span>`
           : ''}
+        ${review.live ? html`<span class="tag">${translate(locale, 'review-page', 'liveReview')()}</span>` : ''}
 
         <h1>
           ${rawHtml(

@@ -8,6 +8,9 @@
   "requestedPrereview": {
     "message": "Requested PREreview"
   },
+  "liveReview": {
+    "message": "Live Review"
+  },
   "otherReviewsLink": {
     "message": "See other reviews"
   },
