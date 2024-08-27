@@ -11,7 +11,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as T from 'fp-ts/lib/Task.js'
@@ -421,7 +420,7 @@ export const addAuthorToRecordOnZenodo = (
   id: number,
   user: User,
   persona: 'public' | 'pseudonym',
-): ReaderTaskEither<ZenodoAuthenticatedEnv, 'unavailable', void> =>
+): RTE.ReaderTaskEither<ZenodoAuthenticatedEnv, 'unavailable', void> =>
   pipe(
     getDeposition(id),
     RTE.filterOrElseW(depositionIsSubmitted, () => 'not published' as const),
@@ -452,7 +451,7 @@ export const addAuthorToRecordOnZenodo = (
 
 export const createRecordOnZenodo: (
   newPrereview: NewPrereview,
-) => ReaderTaskEither<
+) => RTE.ReaderTaskEither<
   PublicUrlEnv & ZenodoAuthenticatedEnv & GetPreprintSubjectsEnv & IsReviewRequestedEnv & L.LoggerEnv,
   'unavailable',
   [Doi, number]

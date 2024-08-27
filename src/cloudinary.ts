@@ -4,7 +4,6 @@ import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -230,4 +229,4 @@ const destroyImageOnCloudinary = (publicId: NonEmptyString) =>
     RTE.bimap(() => 'unavailable' as const, constVoid),
   )
 
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never
+type EnvFor<T> = T extends R.Reader<infer R, unknown> ? R : never

@@ -1,5 +1,4 @@
 import * as E from 'fp-ts/lib/Either.js'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as RE from 'fp-ts/lib/ReaderEither.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -87,4 +86,4 @@ const ensureUserCanRequestReviews: (user?: User) => RE.ReaderEither<CanRequestRe
     ),
   )
 
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never
+type EnvFor<T> = T extends R.Reader<infer R, unknown> ? R : never

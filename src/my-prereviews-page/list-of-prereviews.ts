@@ -1,6 +1,5 @@
 import { format } from 'fp-ts-routing'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
@@ -18,7 +17,7 @@ export type { Prereview } from './prereviews.js'
 
 export interface ListOfPrereviews {
   readonly _tag: 'ListOfPrereviews'
-  readonly prereviews: ReadonlyNonEmptyArray<Prereview>
+  readonly prereviews: RNEA.ReadonlyNonEmptyArray<Prereview>
   readonly user: User
 }
 

@@ -1,5 +1,4 @@
 import { type Doi, isDoi } from 'doi-ts'
-import { format } from 'fp-ts-routing'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as O from 'fp-ts/lib/Option.js'
@@ -143,7 +142,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(
         RM.fromMiddlewareK(({ suffix }) =>
           movedPermanently(
-            format(preprintReviewsMatch.formatter, {
+            P.format(preprintReviewsMatch.formatter, {
               id: {
                 type: 'biorxiv-medrxiv',
                 value: `10.1101/${suffix}` as Doi<'1101'>,
@@ -158,7 +157,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(
         RM.fromMiddlewareK(({ suffix }) =>
           movedPermanently(
-            format(preprintReviewsMatch.formatter, {
+            P.format(preprintReviewsMatch.formatter, {
               id: {
                 type: 'zenodo-africarxiv',
                 value: `10.5281/${suffix}` as Doi<'5281'>,
@@ -195,11 +194,11 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
 
     pipe(
       pipe(P.lit('coc'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(codeOfConductMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('communities'), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(clubsMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(clubsMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('communities'), P.then(P.str('communityName')), P.then(query(C.partial({}))), P.then(P.end)).parser,
@@ -223,27 +222,27 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('docs'), P.then(P.lit('about')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(aboutUsMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(aboutUsMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('docs'), P.then(P.lit('codeofconduct')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(codeOfConductMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('docs'), P.then(P.lit('code_of_conduct')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(codeOfConductMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('docs'), P.then(P.lit('resources')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(resourcesMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(resourcesMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('edi-statement'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(ediaStatementMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(ediaStatementMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('edia'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(ediaStatementMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(ediaStatementMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('events'), P.then(type('eventUuid', UuidC)), P.then(P.end)).parser,
@@ -255,7 +254,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('find-a-preprint'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(reviewAPreprintMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(reviewAPreprintMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('inst'), P.then(P.str('instId')), P.then(query(C.partial({}))), P.then(P.end)).parser,
@@ -263,15 +262,15 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('login'), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(logInMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('logout'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(logOutMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(logOutMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('preprint-journal-clubs'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(liveReviewsMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(liveReviewsMatch.formatter, {})))),
     ),
     pipe(
       pipe(
@@ -283,7 +282,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       ).parser,
       P.map(
         RM.fromMiddlewareK(({ preprintId }) =>
-          movedPermanently(format(writeReviewReviewTypeMatch.formatter, { id: preprintId })),
+          movedPermanently(P.format(writeReviewReviewTypeMatch.formatter, { id: preprintId })),
         ),
       ),
     ),
@@ -291,7 +290,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       pipe(P.lit('preprints'), P.then(type('preprintId', ArxivPreprintIdC)), P.then(P.end)).parser,
       P.map(
         RM.fromMiddlewareK(({ preprintId }) =>
-          movedPermanently(format(preprintReviewsMatch.formatter, { id: preprintId })),
+          movedPermanently(P.format(preprintReviewsMatch.formatter, { id: preprintId })),
         ),
       ),
     ),
@@ -311,11 +310,11 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('prereview.org'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(homeMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('PREreview.org'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(homeMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('prereviewers'), P.then(query(C.record(C.string))), P.then(P.end)).parser,
@@ -323,7 +322,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('reviews'), P.then(P.lit('new')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(reviewAPreprintMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(reviewAPreprintMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('settings'), P.then(P.lit('api')), P.then(P.end)).parser,
@@ -335,7 +334,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('signup'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(logInMatch.formatter, {})))),
     ),
     pipe(
       pipe(
@@ -376,11 +375,11 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit(')'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(homeMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('),'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(homeMatch.formatter, {})))),
     ),
   ],
   concatAll(P.getParserMonoid()),
@@ -408,7 +407,7 @@ const showRemovedForNowMessage = pipe(
 
 const redirectToPreprintReviews = flow(
   RM.fromReaderTaskEitherK(getPreprintIdFromUuid),
-  RM.ichainMiddlewareK(id => movedPermanently(format(preprintReviewsMatch.formatter, { id }))),
+  RM.ichainMiddlewareK(id => movedPermanently(P.format(preprintReviewsMatch.formatter, { id }))),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)
@@ -419,7 +418,7 @@ const redirectToPreprintReviews = flow(
 
 const redirectToProfile = flow(
   RM.fromReaderTaskEitherK(getProfileIdFromUuid),
-  RM.ichainMiddlewareK(profile => movedPermanently(format(profileMatch.formatter, { profile }))),
+  RM.ichainMiddlewareK(profile => movedPermanently(P.format(profileMatch.formatter, { profile }))),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)

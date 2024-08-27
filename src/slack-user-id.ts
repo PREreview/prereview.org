@@ -4,7 +4,6 @@ import * as RS from 'fp-ts/lib/ReadonlySet.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
-import type { Codec } from 'io-ts/lib/Codec.js'
 import type { Orcid } from 'orcid-id-ts'
 import { type NonEmptyString, NonEmptyStringC, ordNonEmptyString } from './types/string.js'
 
@@ -26,7 +25,7 @@ export interface DeleteSlackUserIdEnv {
   deleteSlackUserId: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
 }
 
-const ReadonlySetC = <O, A>(item: Codec<unknown, O, A>, ordItem: Ord<A>) =>
+const ReadonlySetC = <O, A>(item: C.Codec<unknown, O, A>, ordItem: Ord<A>) =>
   pipe(C.array(item), C.readonly, C.imap(RS.fromReadonlyArray(ordItem), RS.toReadonlyArray(ordItem)))
 
 export const SlackUserIdC = C.struct({
