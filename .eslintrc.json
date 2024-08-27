@@ -33,6 +33,12 @@
       }
     },
     {
+      "files": ["assets/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }]
+      }
+    },
+    {
       "files": ["integration/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
         "@typescript-eslint/unbound-method": "off",
