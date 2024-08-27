@@ -97,8 +97,6 @@ export function page({
     RA.concatW(type !== 'streamline' ? ['collapsible-menu.js' as const] : []),
   )
 
-  const now = new Date()
-
   return R.asks(
     ({ fathomId, environmentLabel, publicUrl }) => html`
       <!doctype html>
@@ -288,19 +286,6 @@ export function page({
                 : ''}
             </div>
           </header>
-
-          ${now.getTime() >= new Date('2024-08-20T20:00:00Z').getTime() &&
-          now.getTime() < new Date('2024-08-21T20:00:00Z').getTime()
-            ? html`
-                <div class="global-bar">
-                  <span>
-                    Parts of PREreview might not be working as
-                    <a href="https://status.crossref.org/incidents/0klmfy35248s">Crossref is unavailable</a> from
-                    Tuesday, 20&nbsp;August 20:00&nbsp;UTC to Wednesday, 21&nbsp;August 20:00&nbsp;UTC
-                  </span>
-                </div>
-              `
-            : ''}
 
           <div class="contents">${content}</div>
 
