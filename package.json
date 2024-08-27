@@ -146,7 +146,7 @@
     "stylelint-use-logical-spec": "^5.0.1",
     "ts-deepmerge": "^7.0.1",
     "ts-jest": "^29.2.4",
-    "tsx": "^4.16.5",
+    "tsx": "^4.19.0",
     "typescript": "^5.5.4",
     "wait-on": "^7.2.0",
     "webpack": "^5.93.0",
