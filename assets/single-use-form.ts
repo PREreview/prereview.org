@@ -1,7 +1,5 @@
 import { disableButton, getLang } from './dom.js'
-import { DefaultLocale, isSupportedLocale } from './locales/index.js'
-
-const translateDep = import('./locales/index.js')
+import { DefaultLocale, isSupportedLocale, translate } from './locales/index.js'
 
 export class SingleUseForm extends HTMLElement {
   static element = 'single-use-form' as const
@@ -12,7 +10,7 @@ export class SingleUseForm extends HTMLElement {
     this.addEventListener('submit', this.onSubmit)
   }
 
-  private onSubmit = async (event: SubmitEvent) => {
+  private onSubmit = (event: SubmitEvent) => {
     const form = event.target
     if (!(form instanceof HTMLFormElement)) {
       return
@@ -21,8 +19,6 @@ export class SingleUseForm extends HTMLElement {
     if (form.dataset['submitted'] === 'true') {
       event.preventDefault()
     } else {
-      const { translate } = await translateDep
-
       const lang = getLang(this)
       const locale = isSupportedLocale(lang) ? lang : DefaultLocale
 
