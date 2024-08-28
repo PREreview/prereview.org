@@ -242,7 +242,8 @@ export const handlePageResponse = ({
         match(response.canonical)
           .with(P.string, canonical =>
             R.asks(
-              ({ publicUrl }: PublicUrlEnv) => new URL(encodeURI(canonical).replace(/^([^/])/, '/$1'), publicUrl).href,
+              ({ publicUrl }: PublicUrlEnv) =>
+                new URL(`${publicUrl.origin}${encodeURI(canonical).replace(/^([^/])/, '/$1')}`).href,
             ),
           )
           .with(undefined, R.of)
@@ -307,7 +308,7 @@ const handleTwoUpPageResponse = ({
       'canonical',
       RM.asks(
         ({ publicUrl }: PublicUrlEnv) =>
-          new URL(encodeURI(response.canonical).replace(/^([^/])/, '/$1'), publicUrl).href,
+          new URL(`${publicUrl.origin}${encodeURI(response.canonical).replace(/^([^/])/, '/$1')}`).href,
       ),
     ),
     RM.bindW(
@@ -376,7 +377,7 @@ const handleLogInResponse = ({
   response: LogInResponse
 }): RM.ReaderMiddleware<OrcidOAuthEnv & PublicUrlEnv, StatusOpen, ResponseEnded, never, void> =>
   pipe(
-    RM.asks(({ publicUrl }: PublicUrlEnv) => new URL(response.location, publicUrl).href),
+    RM.asks(({ publicUrl }: PublicUrlEnv) => new URL(`${publicUrl.origin}${response.location}`).href),
     RM.ichainW(requestAuthorizationCode('/authenticate')),
     R.local(addRedirectUri()),
   )

@@ -609,7 +609,7 @@ describe('handleResponse', () => {
                   response_type: 'code',
                   redirect_uri: new URL('/orcid', publicUrl).toString(),
                   scope: '/authenticate',
-                  state: new URL(response.location, publicUrl).href,
+                  state: new URL(`${publicUrl.origin}${response.location}`).href,
                 }).toString()}`,
                 orcidOauth.authorizeUrl,
               ).href,
