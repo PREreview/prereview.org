@@ -1,6 +1,7 @@
 import slashes from 'connect-slashes'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
+import { toError } from 'fp-ts/lib/Either.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -11,6 +12,7 @@ import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { getSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { toRequestHandler } from 'hyper-ts/lib/express.js'
+import type { Redis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO.js'
 import { match, P as p } from 'ts-pattern'
@@ -49,6 +51,8 @@ export type ConfigEnv = Omit<
 > &
   (MailjetApiEnv | NodemailerEnv) & {
     allowSiteCrawlers: boolean
+  } & {
+    redis?: Redis
   }
 
 const getPreprintFromSource = (id: IndeterminatePreprintId) =>
@@ -213,6 +217,27 @@ export const app = (config: ConfigEnv) =>
       res.type('text/plain')
       res.send('User-agent: *\nAllow: /')
     })
+    .get(
+      '/health',
+      asyncHandler(async (req, res) => {
+        if (config.redis === undefined) {
+          res.json({ status: 'ok' })
+          return
+        }
+        try {
+          if (config.redis.status !== 'ready') {
+            throw new Error(`Redis not ready (${config.redis.status})`)
+          }
+          await config.redis.ping()
+        } catch (error) {
+          const foo = toError(error)
+          L.errorP('healthcheck failed')({ message: foo.message, name: foo.name })(config)()
+          res.status(503).json({ status: 'error' })
+          return
+        }
+        res.json({ status: 'ok' })
+      }),
+    )
     .use(
       express.static('dist/assets', {
         setHeaders: (res, path) => {

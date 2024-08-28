@@ -100,6 +100,7 @@ const server = http.createServer(
     },
     orcidTokenStore: new Keyv({ namespace: 'orcid-token', store: createKeyvStore() }),
     publicUrl: env.PUBLIC_URL,
+    redis,
     researchInterestsStore: new Keyv({ namespace: 'research-interests', store: createKeyvStore() }),
     reviewRequestStore: new Keyv({ namespace: 'review-request', store: createKeyvStore() }),
     scietyListToken: env.SCIETY_LIST_TOKEN,
@@ -127,15 +128,6 @@ server.on('listening', () => {
 })
 
 createTerminus(server, {
-  healthChecks: {
-    '/health': async () => {
-      if (redis.status !== 'ready') {
-        throw new Error(`Redis not ready (${redis.status})`)
-      }
-
-      await redis.ping()
-    },
-  },
   logger: (message, error) => L.errorP(message)({ name: error.name, message: error.message })(loggerEnv)(),
   onShutdown: RT.fromReaderIO(L.debug('Shutting server down'))(loggerEnv),
   onSignal: async () => {
