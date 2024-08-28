@@ -2,7 +2,7 @@ import { NodeRuntime } from '@effect/platform-node'
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Effect, Layer } from 'effect'
+import { Context, Effect, Layer } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import { pipe } from 'fp-ts/lib/function.js'
@@ -119,28 +119,34 @@ const expressServer = app({
   zenodoUrl: env.ZENODO_URL,
 })
 
+class Express extends Context.Tag('Express')<Express, ReturnType<typeof app>>() {}
+
 NodeRuntime.runMain(
   Layer.launch(
-    Layer.scopedDiscard(
-      Effect.acquireRelease(
-        Effect.sync(() => {
-          const listeningHttpServer = expressServer.listen(3000)
-          L.debug('Server listening')(loggerEnv)()
-          return listeningHttpServer
-        }),
-        server =>
-          Effect.promise(async () => {
-            L.debug('Shutting server down')(loggerEnv)()
-            server.close()
-
-            await redis
-              .quit()
-              .then(() => L.debug('Redis disconnected')(loggerEnv)())
-              .catch((error: unknown) =>
-                L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
-              )
+    pipe(
+      Layer.scopedDiscard(
+        Effect.acquireRelease(
+          Effect.gen(function* () {
+            const app = yield* Express
+            const listeningHttpServer = app.listen(3000)
+            L.debug('Server listening')(loggerEnv)()
+            return listeningHttpServer
           }),
+          server =>
+            Effect.promise(async () => {
+              L.debug('Shutting server down')(loggerEnv)()
+              server.close()
+
+              await redis
+                .quit()
+                .then(() => L.debug('Redis disconnected')(loggerEnv)())
+                .catch((error: unknown) =>
+                  L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
+                )
+            }),
+        ),
       ),
+      Layer.provide(Layer.sync(Express, () => expressServer)),
     ),
   ),
 )
