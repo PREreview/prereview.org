@@ -121,32 +121,29 @@ const expressServer = app({
 
 class Express extends Context.Tag('Express')<Express, ReturnType<typeof app>>() {}
 
-NodeRuntime.runMain(
-  Layer.launch(
-    pipe(
-      Layer.scopedDiscard(
-        Effect.acquireRelease(
-          Effect.gen(function* () {
-            const app = yield* Express
-            const listeningHttpServer = app.listen(3000)
-            L.debug('Server listening')(loggerEnv)()
-            return listeningHttpServer
-          }),
-          server =>
-            Effect.promise(async () => {
-              L.debug('Shutting server down')(loggerEnv)()
-              server.close()
+pipe(
+  Effect.acquireRelease(
+    Effect.gen(function* () {
+      const app = yield* Express
+      const listeningHttpServer = app.listen(3000)
+      L.debug('Server listening')(loggerEnv)()
+      return listeningHttpServer
+    }),
+    server =>
+      Effect.promise(async () => {
+        L.debug('Shutting server down')(loggerEnv)()
+        server.close()
 
-              await redis
-                .quit()
-                .then(() => L.debug('Redis disconnected')(loggerEnv)())
-                .catch((error: unknown) =>
-                  L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
-                )
-            }),
-        ),
-      ),
-      Layer.provide(Layer.sync(Express, () => expressServer)),
-    ),
+        await redis
+          .quit()
+          .then(() => L.debug('Redis disconnected')(loggerEnv)())
+          .catch((error: unknown) =>
+            L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
+          )
+      }),
   ),
+  Layer.scopedDiscard,
+  Layer.provide(Layer.sync(Express, () => expressServer)),
+  Layer.launch,
+  NodeRuntime.runMain,
 )
