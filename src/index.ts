@@ -1,11 +1,10 @@
-import { createTerminus } from '@godaddy/terminus'
+import { NodeRuntime } from '@effect/platform-node'
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
-import * as RT from 'fp-ts/lib/ReaderTask.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import http from 'http'
 import { Redis } from 'ioredis'
@@ -127,20 +126,24 @@ server.on('listening', () => {
   L.debug('Server listening')(loggerEnv)()
 })
 
-createTerminus(server, {
-  logger: (message, error) => L.errorP(message)({ name: error.name, message: error.message })(loggerEnv)(),
-  onShutdown: RT.fromReaderIO(L.debug('Shutting server down'))(loggerEnv),
-  onSignal: async () => {
-    L.debug('Signal received')(loggerEnv)()
+NodeRuntime.runMain(
+  Layer.launch(
+    Layer.scopedDiscard(
+      Effect.acquireRelease(
+        Effect.sync(() => server.listen(3000)),
+        server =>
+          Effect.promise(async () => {
+            L.debug('Shutting server down')(loggerEnv)()
+            server.close()
 
-    await redis
-      .quit()
-      .then(() => L.debug('Redis disconnected')(loggerEnv)())
-      .catch((error: unknown) =>
-        L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
-      )
-  },
-  signals: ['SIGINT', 'SIGTERM'],
-})
-
-Effect.runFork(Effect.sync(() => server.listen(3000)))
+            await redis
+              .quit()
+              .then(() => L.debug('Redis disconnected')(loggerEnv)())
+              .catch((error: unknown) =>
+                L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
+              )
+          }),
+      ),
+    ),
+  ),
+)
