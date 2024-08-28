@@ -135,6 +135,27 @@ const withEnv =
 export const app = (config: ConfigEnv) =>
   express()
     .disable('x-powered-by')
+    .get(
+      '/health',
+      asyncHandler(async (req, res) => {
+        if (config.redis === undefined) {
+          res.json({ status: 'ok' })
+          return
+        }
+        try {
+          if (config.redis.status !== 'ready') {
+            throw new Error(`Redis not ready (${config.redis.status})`)
+          }
+          await config.redis.ping()
+        } catch (error) {
+          const foo = toError(error)
+          L.errorP('healthcheck failed')({ message: foo.message, name: foo.name })(config)()
+          res.status(503).json({ status: 'error' })
+          return
+        }
+        res.json({ status: 'ok' })
+      }),
+    )
     .use((req, res, next) => {
       const url = new URL(req.url, config.publicUrl)
 
@@ -217,27 +238,6 @@ export const app = (config: ConfigEnv) =>
       res.type('text/plain')
       res.send('User-agent: *\nAllow: /')
     })
-    .get(
-      '/health',
-      asyncHandler(async (req, res) => {
-        if (config.redis === undefined) {
-          res.json({ status: 'ok' })
-          return
-        }
-        try {
-          if (config.redis.status !== 'ready') {
-            throw new Error(`Redis not ready (${config.redis.status})`)
-          }
-          await config.redis.ping()
-        } catch (error) {
-          const foo = toError(error)
-          L.errorP('healthcheck failed')({ message: foo.message, name: foo.name })(config)()
-          res.status(503).json({ status: 'error' })
-          return
-        }
-        res.json({ status: 'ok' })
-      }),
-    )
     .use(
       express.static('dist/assets', {
         setHeaders: (res, path) => {
