@@ -140,7 +140,6 @@ export const {
   option,
   record,
   string,
-  stringOf,
   tuple,
   uniqueArray,
   webUrl,
@@ -423,14 +422,14 @@ export const oauth = (): fc.Arbitrary<Omit<OrcidOAuthEnv['orcidOauth'] & OAuthEn
 export const doiRegistrant = (): fc.Arbitrary<string> =>
   fc
     .tuple(
-      fc.stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), { minLength: 2 }),
-      fc.array(fc.stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), { minLength: 1 })),
+      fc.string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), minLength: 2 }),
+      fc.array(fc.string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), minLength: 1 })),
     )
     .map(([one, two]) => [one, ...two].join('.'))
 
 export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbitrary<Doi<R>> =>
   fc
-    .tuple(withRegistrant ?? doiRegistrant(), fc.unicodeString({ minLength: 1 }))
+    .tuple(withRegistrant ?? doiRegistrant(), fc.string({ unit: 'grapheme', minLength: 1 }))
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
     .filter(isDoi as Refinement<unknown, Doi<R>>)
 
@@ -486,8 +485,8 @@ export const africarxivFigsharePreprintId = (): fc.Arbitrary<AfricarxivFigshareP
 export const africarxivFigsharePreprintUrl = (): fc.Arbitrary<[URL, AfricarxivFigsharePreprintId]> =>
   fc
     .tuple(
-      fc.stringOf(fc.oneof(alphanumeric(), constant('-')), { minLength: 1 }),
-      fc.stringOf(fc.oneof(alphanumeric(), constantFrom('_')), { minLength: 1 }),
+      fc.string({ unit: fc.oneof(alphanumeric(), constant('-')), minLength: 1 }),
+      fc.string({ unit: fc.oneof(alphanumeric(), constantFrom('_')), minLength: 1 }),
       fc.integer({ min: 1 }),
     )
     .map(([type, title, id]) => [
@@ -503,7 +502,7 @@ export const africarxivOsfPreprintId = (): fc.Arbitrary<AfricarxivOsfPreprintId>
 
 export const africarxivOsfPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivOsfPreprintId]> =>
   fc
-    .stringOf(alphanumeric(), { minLength: 1 })
+    .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => [
       new URL(`https://osf.io/preprints/africarxiv/${id}`),
       { type: 'africarxiv', value: `10.31730/osf.io/${id}` as Doi<'31730'> },
@@ -529,7 +528,7 @@ export const arxivPreprintId = (): fc.Arbitrary<ArxivPreprintId> =>
 
 export const arxivPreprintUrl = (): fc.Arbitrary<[URL, ArxivPreprintId]> =>
   fc
-    .stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
+    .string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), minLength: 1 })
     .filter(suffix => isDoi(`10.48550/${suffix}`))
     .map(suffix => [
       new URL(`https://arxiv.org/abs/${suffix}`),
@@ -553,7 +552,7 @@ export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
 
 export const biorxivPreprintUrl = (): fc.Arbitrary<[URL, BiorxivPreprintId]> =>
   fc
-    .stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
+    .string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), minLength: 1 })
     .filter(suffix => isDoi(`10.1101/${suffix}`))
     .map(suffix => [
       new URL(`https://www.biorxiv.org/content/10.1101/${suffix}`),
@@ -568,7 +567,7 @@ export const chemrxivPreprintId = (): fc.Arbitrary<ChemrxivPreprintId> =>
 
 export const chemrxivPreprintUrl = (): fc.Arbitrary<URL> =>
   fc
-    .stringOf(alphanumeric(), { minLength: 1 })
+    .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => new URL(`https://chemrxiv.org/engage/chemrxiv/article-details/${id}`))
 
 export const curvenotePreprintId = (): fc.Arbitrary<CurvenotePreprintId> =>
@@ -603,7 +602,7 @@ export const edarxivPreprintId = (): fc.Arbitrary<EdarxivPreprintId> =>
 
 export const edarxivPreprintUrl = (): fc.Arbitrary<[URL, EdarxivPreprintId]> =>
   fc
-    .stringOf(alphanumeric(), { minLength: 1 })
+    .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => [
       new URL(`https://edarxiv.org/${id}`),
       { type: 'edarxiv', value: `10.35542/osf.io/${id}` as Doi<'35542'> },
@@ -631,7 +630,7 @@ export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
 
 export const medrxivPreprintUrl = (): fc.Arbitrary<[URL, MedrxivPreprintId]> =>
   fc
-    .stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
+    .string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), minLength: 1 })
     .filter(suffix => isDoi(`10.1101/${suffix}`))
     .map(suffix => [
       new URL(`https://www.medrxiv.org/content/10.1101/${suffix}`),
@@ -646,7 +645,7 @@ export const metaarxivPreprintId = (): fc.Arbitrary<MetaarxivPreprintId> =>
 
 export const metaarxivPreprintUrl = (): fc.Arbitrary<[URL, MetaarxivPreprintId]> =>
   fc
-    .stringOf(alphanumeric(), { minLength: 1 })
+    .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => [
       new URL(`https://osf.io/preprints/metaarxiv/${id}`),
       { type: 'metaarxiv', value: `10.31222/osf.io/${id}` as Doi<'31222'> },
@@ -666,7 +665,7 @@ export const osfPreprintsPreprintId = (): fc.Arbitrary<OsfPreprintsPreprintId> =
 
 export const osfPreprintsPreprintUrl = (): fc.Arbitrary<[URL, OsfPreprintsPreprintId]> =>
   fc
-    .stringOf(alphanumeric(), { minLength: 1 })
+    .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => [
       new URL(`https://osf.io/${id}`),
       { type: 'osf-preprints', value: `10.31219/osf.io/${id}` as Doi<'31219'> },
@@ -690,7 +689,7 @@ export const preprintsorgPreprintId = (): fc.Arbitrary<PreprintsorgPreprintId> =
 export const preprintsorgPreprintUrl = (): fc.Arbitrary<[URL, PreprintsorgPreprintId]> =>
   fc
     .tuple(
-      fc.stringOf(fc.oneof(alphanumeric(), constant('.')), { minLength: 1 }).filter(id => !/^\.{1,2}$/.test(id)),
+      fc.string({ unit: fc.oneof(alphanumeric(), constant('.')), minLength: 1 }).filter(id => !/^\.{1,2}$/.test(id)),
       fc.integer({ min: 1 }),
     )
     .map(([id, version]) => [
@@ -706,7 +705,7 @@ export const psyarxivPreprintId = (): fc.Arbitrary<PsyarxivPreprintId> =>
 
 export const psyarxivPreprintUrl = (): fc.Arbitrary<[URL, PsyarxivPreprintId]> =>
   fc
-    .stringOf(alphanumeric(), { minLength: 1 })
+    .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => [
       new URL(`https://psyarxiv.com/${id}`),
       { type: 'psyarxiv', value: `10.31234/osf.io/${id}` as Doi<'31234'> },
@@ -766,7 +765,7 @@ export const socarxivPreprintId = (): fc.Arbitrary<SocarxivPreprintId> =>
 
 export const socarxivPreprintUrl = (): fc.Arbitrary<[URL, SocarxivPreprintId]> =>
   fc
-    .stringOf(alphanumeric(), { minLength: 1 })
+    .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => [
       new URL(`https://osf.io/preprints/socarxiv/${id}`),
       { type: 'socarxiv', value: `10.31235/osf.io/${id}` as Doi<'31235'> },
@@ -879,7 +878,8 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
 
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc
-    .stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), {
+    .string({
+      unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'),
       minLength: 4 + 4 + 4 + 3,
       maxLength: 4 + 4 + 4 + 3,
     })
@@ -1062,10 +1062,10 @@ export const requestMethod = (): fc.Arbitrary<RequestMethod> =>
   constantFrom('CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE')
 
 const headerName = () =>
-  fc.stringOf(
-    fc.char().filter(char => /^[\^_`a-zA-Z\-0-9!#$%&'*+.|~]$/.test(char)),
-    { minLength: 1 },
-  )
+  fc.string({
+    unit: fc.string({ minLength: 1, maxLength: 1 }).filter(char => /^[\^_`a-zA-Z\-0-9!#$%&'*+.|~]$/.test(char)),
+    minLength: 1,
+  })
 
 export const headers = (include: fc.Arbitrary<Record<string, string>> = constant({})) =>
   fc
@@ -1160,7 +1160,7 @@ export const nonEmptyArray = <T>(
 export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ minLength: 1 }).filter(isNonEmptyString)
 
 export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<NonEmptyString> =>
-  fc.stringOf(charArb, { minLength: 1 }).filter(isNonEmptyString)
+  fc.string({ unit: charArb, minLength: 1 }).filter(isNonEmptyString)
 
 export const languageCode = (): fc.Arbitrary<LanguageCode> => constantFrom(...ISO6391.getAllCodes())
 

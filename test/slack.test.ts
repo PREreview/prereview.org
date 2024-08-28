@@ -12,7 +12,7 @@ import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('getUserFromSlack', () => {
-  test.prop([fc.string(), fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.nonEmptyString(), fc.url()])(
+  test.prop([fc.string(), fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.nonEmptyString(), fc.url()])(
     'when the user can be decoded',
     async (slackApiToken, user, name, image) => {
       const fetch = fetchMock.sandbox().getOnce(
@@ -44,7 +44,7 @@ describe('getUserFromSlack', () => {
 
   test.prop([
     fc.string(),
-    fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     fc.fetchResponse({ status: fc.constant(Status.OK) }),
   ])("when the user can't be decoded", async (slackApiToken, user, response) => {
     const fetch = fetchMock.sandbox().getOnce(
@@ -67,7 +67,7 @@ describe('getUserFromSlack', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.string(), fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.nonEmptyString()])(
+  test.prop([fc.string(), fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.nonEmptyString()])(
     'when the response has a Slack error',
     async (slackApiToken, user, error) => {
       const fetch = fetchMock.sandbox().getOnce(
@@ -93,7 +93,7 @@ describe('getUserFromSlack', () => {
 
   test.prop([
     fc.string(),
-    fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK),
   ])('when the response has a non-200 status code', async (slackApiToken, user, status) => {
     const fetch = fetchMock.sandbox().getOnce(
@@ -116,7 +116,7 @@ describe('getUserFromSlack', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.string(), fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.error()])(
+  test.prop([fc.string(), fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.error()])(
     'when fetch throws an error',
     async (slackApiToken, user, error) => {
       const actual = await _.getUserFromSlack(user)({

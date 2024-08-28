@@ -15,8 +15,8 @@ describe('getAvatarFromCloudinary', () => {
   test.prop([
     fc.record({
       cloudName: fc.lorem({ maxCount: 1 }),
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.orcid(),
     fc.nonEmptyStringOf(fc.alphanumeric()),
@@ -41,8 +41,8 @@ describe('getAvatarFromCloudinary', () => {
   test.prop([
     fc.record({
       cloudName: fc.lorem({ maxCount: 1 }),
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.orcid(),
   ])("when the ORCID iD doesn't have an avatar", async (cloudinaryApi, orcid) => {
@@ -57,8 +57,8 @@ describe('getAvatarFromCloudinary', () => {
   test.prop([
     fc.record({
       cloudName: fc.lorem({ maxCount: 1 }),
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.orcid(),
   ])('when the avatar is unavailable', async (cloudinaryApi, orcid) => {
@@ -77,8 +77,8 @@ describe('saveAvatarOnCloudinary', () => {
       fc.date(),
       fc.record({
         cloudName: fc.lorem({ maxCount: 1 }),
-        key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-        secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+        key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+        secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       }),
       fc.origin(),
       fc.orcid(),
@@ -134,8 +134,8 @@ describe('saveAvatarOnCloudinary', () => {
       fc.date(),
       fc.record({
         cloudName: fc.lorem({ maxCount: 1 }),
-        key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-        secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+        key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+        secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       }),
       fc.origin(),
       fc.orcid(),
@@ -212,8 +212,8 @@ describe('saveAvatarOnCloudinary', () => {
       fc.date(),
       fc.record({
         cloudName: fc.lorem({ maxCount: 1 }),
-        key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-        secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+        key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+        secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       }),
       fc.origin(),
       fc.orcid(),
@@ -266,8 +266,8 @@ describe('saveAvatarOnCloudinary', () => {
     fc.date(),
     fc.record({
       cloudName: fc.lorem({ maxCount: 1 }),
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.origin(),
     fc.orcid(),
@@ -312,8 +312,8 @@ describe('saveAvatarOnCloudinary', () => {
     fc.date(),
     fc.record({
       cloudName: fc.lorem({ maxCount: 1 }),
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.origin(),
     fc.orcid(),
@@ -354,8 +354,8 @@ describe('removeAvatarFromCloudinary', () => {
     fc.date(),
     fc.record({
       cloudName: fc.lorem({ maxCount: 1 }),
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.orcid(),
     fc.nonEmptyString(),
@@ -401,8 +401,8 @@ describe('removeAvatarFromCloudinary', () => {
     fc.date(),
     fc.record({
       cloudName: fc.lorem({ maxCount: 1 }),
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.orcid(),
     fc.nonEmptyString(),
@@ -435,8 +435,8 @@ describe('removeAvatarFromCloudinary', () => {
     fc.date(),
     fc.record({
       cloudName: fc.lorem({ maxCount: 1 }),
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.orcid(),
     fc.nonEmptyString(),
@@ -462,8 +462,8 @@ describe('removeAvatarFromCloudinary', () => {
     fc.date(),
     fc.record({
       cloudName: fc.lorem({ maxCount: 1 }),
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.orcid(),
   ])('when the avatar cannot be loaded locally', async (date, cloudinaryApi, orcid) => {
@@ -486,8 +486,8 @@ describe('removeAvatarFromCloudinary', () => {
     fc.date(),
     fc.record({
       cloudName: fc.lorem({ maxCount: 1 }),
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.orcid(),
   ])('when there is no avatar', async (date, cloudinaryApi, orcid) => {

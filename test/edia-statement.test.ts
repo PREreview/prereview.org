@@ -9,7 +9,7 @@ import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('ediaStatement', () => {
-  test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 })])('when the page can be loaded', async key => {
+  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('when the page can be loaded', async key => {
     const fetch = fetchMock.sandbox().getOnce(
       {
         url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb17',
@@ -32,7 +32,7 @@ describe('ediaStatement', () => {
     })
   })
 
-  test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.fetchResponse()])(
+  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.fetchResponse()])(
     'when the page cannot be loaded',
     async (key, response) => {
       const fetch = fetchMock.sandbox().getOnce(

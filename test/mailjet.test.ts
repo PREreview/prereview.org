@@ -10,8 +10,8 @@ import * as fc from './fc.js'
 describe('sendEmailWithMailjet', () => {
   test.prop([
     fc.record({
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       sandbox: fc.boolean(),
     }),
     fc.email(),
@@ -52,8 +52,8 @@ describe('sendEmailWithMailjet', () => {
 
   test.prop([
     fc.record({
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       sandbox: fc.boolean(),
     }),
     fc.email(),
@@ -80,8 +80,8 @@ describe('sendEmailWithMailjet', () => {
 
   test.prop([
     fc.record({
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       sandbox: fc.boolean(),
     }),
     fc.email(),
@@ -109,8 +109,8 @@ describe('sendEmailWithMailjet', () => {
 
   test.prop([
     fc.record({
-      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       sandbox: fc.boolean(),
     }),
     fc.email(),
