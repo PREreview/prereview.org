@@ -143,7 +143,7 @@ pipe(
       }),
   ),
   Layer.scopedDiscard,
-  Layer.provide(Layer.sync(Express, () => expressServer)),
   Layer.launch,
+  Effect.provideService(Express, expressServer),
   NodeRuntime.runMain,
 )
