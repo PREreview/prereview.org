@@ -2,6 +2,7 @@ import { createTerminus } from '@godaddy/terminus'
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
+import { Effect } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -150,4 +151,4 @@ createTerminus(server, {
   signals: ['SIGINT', 'SIGTERM'],
 })
 
-server.listen(3000)
+Effect.runFork(Effect.sync(() => server.listen(3000)))
