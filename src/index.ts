@@ -122,15 +122,15 @@ const server = http.createServer(
   }),
 )
 
-server.on('listening', () => {
-  L.debug('Server listening')(loggerEnv)()
-})
-
 NodeRuntime.runMain(
   Layer.launch(
     Layer.scopedDiscard(
       Effect.acquireRelease(
-        Effect.sync(() => server.listen(3000)),
+        Effect.sync(() => {
+          const listeningHttpServer = server.listen(3000)
+          L.debug('Server listening')(loggerEnv)()
+          return listeningHttpServer
+        }),
         server =>
           Effect.promise(async () => {
             L.debug('Shutting server down')(loggerEnv)()
