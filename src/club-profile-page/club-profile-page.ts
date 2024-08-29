@@ -7,7 +7,7 @@ import { P, match } from 'ts-pattern'
 import type { Club } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { DefaultLocale } from '../locales/index.js'
-import * as assets from '../manifest.json'
+import assets from '../manifest.json' assert { type: 'json' }
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'

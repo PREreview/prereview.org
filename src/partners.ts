@@ -1,6 +1,6 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText } from './html.js'
-import * as assets from './manifest.json'
+import assets from './manifest.json' assert { type: 'json' }
 import { PageResponse } from './response.js'
 import { partnersMatch } from './routes.js'
 

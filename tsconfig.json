@@ -1,9 +1,9 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
+    "allowJs": true,
     "lib": ["dom", "dom.iterable", "es2023"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "nodenext",
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
     "resolveJsonModule": true,

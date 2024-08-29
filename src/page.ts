@@ -8,7 +8,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
 import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
-import * as assets from './manifest.json'
+import assets from './manifest.json' assert { type: 'json' }
 import type { PublicUrlEnv } from './public-url.js'
 import {
   aboutUsMatch,

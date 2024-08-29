@@ -4,7 +4,9 @@
     "node": "20",
     "npm": "9 || 10"
   },
+  "type": "module",
   "dependencies": {
+    "@arendjr/text-clipper": "npm:@jsr/arendjr__text-clipper@^3.0.0",
     "@effect/platform-node": "^0.57.4",
     "@hapi/address": "^5.1.1",
     "@js-temporal/polyfill": "^0.4.4",
@@ -53,7 +55,6 @@
     "sanitize-html": "^2.13.0",
     "spectacles-ts": "^1.0.7",
     "striptags": "^3.2.0",
-    "text-clipper": "^2.2.0",
     "tinyld": "^1.3.4",
     "ts-pattern": "^5.3.1",
     "turndown": "^7.2.0",

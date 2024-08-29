@@ -89,7 +89,7 @@ ENTRYPOINT ["npx", "playwright", "test"]
 FROM node AS prod
 ENV NODE_ENV=production
 
-RUN mkdir data && chown node:node data
+RUN mkdir data && chown node:node data && echo '{"type": "module"}' > /app/package.json
 COPY --from=npm-prod /app/node_modules/ node_modules/
 COPY --from=build-prod /app/dist/ dist/
 

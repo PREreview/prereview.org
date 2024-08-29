@@ -50,7 +50,7 @@ import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
 import type { Languages } from '../src/languages.js'
 import { DefaultLocale } from '../src/locales/index.js'
 import type { Location } from '../src/location.js'
-import * as assets from '../src/manifest.json'
+import assets from '../src/manifest.json' assert { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.js'
 import type { Preprint, PreprintTitle } from '../src/preprint.js'
 import type { ResearchInterests } from '../src/research-interests.js'
