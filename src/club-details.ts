@@ -233,6 +233,25 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Michele Avissar-Whiting', orcid: '0000-0003-0030-3135' as Orcid },
     ],
   },
+  'intersectional-feminist': {
+    name: 'Intersectional Feminist Club',
+    description: html`
+      <p>
+        Institute for Globally Distributed Open Research and Education (IGDORE) is a research institute dedicated to
+        improving the quality of science and quality of life for scientists, students, and their families.
+      </p>
+      <p>
+        Intersectional feminist perspectives and practices aren't only for women, they are a lens to bridge our own
+        internal diverse ways of thinking, knowing, experiencing and feeling. Thus by highlighting how these human
+        aspects of our unique identities come together, we can shape the science we know, as it evolves and grows,
+        throughout the course of our lived experiences.
+      </p>
+    `,
+    leads: [{ name: 'Safieh Shah', orcid: '0000-0001-5358-9240' as Orcid }],
+    joinLink: new URL(
+      'https://docs.google.com/forms/d/e/1FAIpQLSf3JWQg-B_cLuEe84sz3-GJj-J9wHf4CR2kno6i-Tcs6tb5Yg/viewform',
+    ),
+  },
   'jmir-publications': {
     name: 'JMIR Publications',
     description: html`
