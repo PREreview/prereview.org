@@ -146,11 +146,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
   async ({ fetch, javaScriptEnabled, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
     await page.getByRole('link', { name: 'Upload avatar' }).click()
-    await page.getByLabel('Upload an avatar').setInputFiles(path.join(__dirname, 'fixtures', '600x400.png'))
+    await page.getByLabel('Upload an avatar').setInputFiles(path.join(import.meta.dirname, 'fixtures', '600x400.png'))
 
     fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/upload', { body: { public_id: 'an-avatar' } })
     await page.route('https://res.cloudinary.com/**/*', route =>
-      route.fulfill({ path: path.join(__dirname, 'fixtures', '300x300.png') }),
+      route.fulfill({ path: path.join(import.meta.dirname, 'fixtures', '300x300.png') }),
     )
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -490,7 +490,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
   'have to upload an image as an avatar',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/my-details/change-avatar')
-    await page.getByLabel('Upload an avatar').setInputFiles(__filename)
+    await page.getByLabel('Upload an avatar').setInputFiles(import.meta.filename)
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
