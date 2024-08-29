@@ -27,6 +27,10 @@ updates:
       babel:
         patterns:
           - '@babel/*'
+      fast-check:
+        patterns:
+          - '@fast-check/*'
+          - 'fast-check'
       tiptap:
         patterns:
           - '@tiptap/*'
