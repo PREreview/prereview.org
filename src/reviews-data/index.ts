@@ -29,6 +29,7 @@ export interface Prereview {
   type: 'full' | 'structured'
   club?: ClubId
   live: boolean
+  requested: boolean
 }
 
 export interface GetPrereviewsEnv {
@@ -63,6 +64,7 @@ const PrereviewE = pipe(
     authors: ReadonlyArrayE(E.struct({ author: StringE, authorType: StringE })),
     type: StringE,
     live: E.id(),
+    requested: E.id(),
   }),
   E.intersect(
     E.partial({
@@ -82,6 +84,7 @@ interface TransformedPrereview {
   type: 'full' | 'structured'
   club?: ClubId
   live: boolean
+  requested: boolean
 }
 
 const PrereviewsE = ReadonlyArrayE(PrereviewE)
@@ -111,6 +114,7 @@ const transform = (prereview: Prereview): TransformedPrereview => ({
   type: prereview.type,
   club: prereview.club,
   live: prereview.live,
+  requested: prereview.requested,
 })
 
 export const reviewsData = pipe(
