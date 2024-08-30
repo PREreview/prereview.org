@@ -677,6 +677,8 @@ function recordToScietyPrereview(
       ),
       type: record.metadata.keywords?.includes('Structured PREreview') === true ? 'structured' : 'full',
       club: pipe(getReviewClub(record), O.toUndefined),
+      live: record.metadata.keywords?.includes('Live Review') === true,
+      requested: record.metadata.keywords?.includes('Requested PREreview') === true,
     })),
   )
 }
