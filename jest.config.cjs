@@ -3,7 +3,7 @@ module.exports = {
   injectGlobals: false,
   testEnvironment: 'node',
   roots: ['./src/', './test/'],
-  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@arendjr/text-clipper/|cdigit)'],
+  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@arendjr/text-clipper/|case-anything|cdigit)'],
   testPathIgnorePatterns: ['./test/assets/'],
   moduleFileExtensions: ['js', 'ts'],
   moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' },
