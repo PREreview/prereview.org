@@ -1,18 +1,25 @@
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../html.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 
-export const removedForNowPage = PageResponse({
-  title: plainText`Sorry, we’ve removed this page for now`,
-  status: Status.NotFound,
-  main: html`
-    <h1>Sorry, we’ve removed this page for now</h1>
+export const removedForNowPage = (locale: SupportedLocale) =>
+  PageResponse({
+    title: plainText(translate(locale, 'legacy-routes', 'temporaryTitle')()),
+    status: Status.NotFound,
+    main: html`
+      <h1>${translate(locale, 'legacy-routes', 'temporaryTitle')()}</h1>
 
-    <p>We’re making changes to PREreview and have removed this page for now.</p>
+      <p>${translate(locale, 'legacy-routes', 'temporaryMessage')()}</p>
 
-    <p>
-      If you have any questions or you selected a link or button, please
-      <a href="mailto:help@prereview.org">get in touch</a>.
-    </p>
-  `,
-})
+      <p>
+        ${rawHtml(
+          translate(
+            locale,
+            'legacy-routes',
+            'getInTouch',
+          )({ link: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
+        )}
+      </p>
+    `,
+  })
