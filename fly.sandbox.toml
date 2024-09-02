@@ -10,6 +10,7 @@ LOG_FORMAT = "json"
 MAILJET_API_SANDBOX = "false"
 ORCID_API_URL = "https://api.orcid.org/"
 PUBLIC_URL = "https://sandbox.prereview.org/"
+VERIFY_CACHE = "false"
 ZENODO_URL = "https://sandbox.zenodo.org/"
 
 [mounts]

@@ -123,11 +123,13 @@ const expressServer = Effect.succeed(
   }),
 )
 
-void Promise.resolve()
-  .then(() => L.debug('Verifying cache')(loggerEnv)())
-  .then(() => cacache.verify('data/cache', { concurrency: 5 }))
-  .then((stats: JsonRecord) => L.debugP('Cache verified')(stats)(loggerEnv)())
-  .catch((error: unknown) => L.errorP('Failed to verify cache')({ error: E.toError(error).message })(loggerEnv)())
+if (env.VERIFY_CACHE) {
+  void Promise.resolve()
+    .then(() => L.debug('Verifying cache')(loggerEnv)())
+    .then(() => cacache.verify('data/cache', { concurrency: 5 }))
+    .then((stats: JsonRecord) => L.debugP('Cache verified')(stats)(loggerEnv)())
+    .catch((error: unknown) => L.errorP('Failed to verify cache')({ error: E.toError(error).message })(loggerEnv)())
+}
 
 class Express extends Context.Tag('Express')<Express, ReturnType<typeof app>>() {}
 
