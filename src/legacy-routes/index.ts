@@ -395,7 +395,7 @@ export const legacyRoutes = pipe(
 const showRemovedPermanentlyMessage = pipe(
   RM.of({}),
   RM.apS('user', maybeGetUser),
-  RM.apSW('response', RM.of(removedPermanentlyPage)),
+  RM.apSW('response', RM.of(removedPermanentlyPage(DefaultLocale))),
   RM.ichainW(handlePageResponse),
 )
 
