@@ -2,13 +2,13 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
 import cookieSignature from 'cookie-signature'
+import { Chunk, Effect, identity, Stream } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
-import all from 'it-all'
 import Keyv from 'keyv'
 import { rawHtml } from '../../src/html.js'
 import * as _ from '../../src/log-in/index.js'
@@ -466,3 +466,11 @@ describe('authenticateError', () => {
     })
   })
 })
+
+function all<A>(iterable: AsyncIterable<A>): Promise<ReadonlyArray<A>> {
+  return Stream.fromAsyncIterable(iterable, identity).pipe(
+    Stream.runCollect,
+    Effect.map(Chunk.toArray),
+    Effect.runPromise,
+  )
+}
