@@ -1,11 +1,13 @@
 import { NodeRuntime } from '@effect/platform-node'
 import KeyvRedis from '@keyv/redis'
+import cacache from 'cacache'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
 import { Context, Effect, Layer } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import { pipe } from 'fp-ts/lib/function.js'
+import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import { Redis } from 'ioredis'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
@@ -120,6 +122,12 @@ const expressServer = Effect.succeed(
     zenodoUrl: env.ZENODO_URL,
   }),
 )
+
+void Promise.resolve()
+  .then(() => L.debug('Verifying cache')(loggerEnv)())
+  .then(() => cacache.verify('data/cache', { concurrency: 5 }))
+  .then((stats: JsonRecord) => L.debugP('Cache verified')(stats)(loggerEnv)())
+  .catch((error: unknown) => L.errorP('Failed to verify cache')({ error: E.toError(error).message })(loggerEnv)())
 
 class Express extends Context.Tag('Express')<Express, ReturnType<typeof app>>() {}
 
