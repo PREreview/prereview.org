@@ -37,5 +37,14 @@
   },
   "addendumTitle": {
     "message": "Addendum"
+  },
+  "responsesTitle": {
+    "message": "Responses"
+  },
+  "responseTitle": {
+    "message": "Response by {authors, plural, one {{author}} other {{author} et al.}}"
+  },
+  "responseAuthors": {
+    "message": "<hide>Authored</hide> by {authors}"
   }
 }

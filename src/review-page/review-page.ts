@@ -193,7 +193,7 @@ export const createPage = ({
       ${RA.isNonEmpty(responses)
         ? html`
             <article aria-labelledby="responses-title">
-              <h2 id="responses-title">Responses</h2>
+              <h2 id="responses-title">${translate(locale, 'review-page', 'responsesTitle')()}</h2>
               <ol class="cards">
                 ${pipe(
                   responses,
@@ -203,13 +203,31 @@ export const createPage = ({
                         <article aria-labelledby="response-${response.id}-title">
                           <header>
                             <h3 class="visually-hidden" id="response-${response.id}-title">
-                              Response by ${response.authors.named[0].name}
-                              ${response.authors.named.length > 1 ? 'et al.' : ''}
+                              ${translate(
+                                locale,
+                                'review-page',
+                                'responseTitle',
+                              )({
+                                author: pipe(RNEA.head(response.authors.named), get('name')),
+                                authors: response.authors.named.length,
+                              })}
                             </h3>
 
                             <div class="byline">
-                              <span class="visually-hidden">Authored</span> by
-                              ${pipe(response.authors.named, RNEA.map(get('name')), formatList(locale))}
+                              ${rawHtml(
+                                translate(
+                                  locale,
+                                  'review-page',
+                                  'responseAuthors',
+                                )({
+                                  authors: pipe(
+                                    response.authors.named,
+                                    RNEA.map(get('name')),
+                                    formatList(locale),
+                                  ).toString(),
+                                  hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                                }),
+                              )}
                             </div>
 
                             <dl>
