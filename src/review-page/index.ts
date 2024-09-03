@@ -11,6 +11,7 @@ import { removedMessage } from './removed-message.js'
 import { createPage } from './review-page.js'
 
 export type { GetPrereviewEnv, Prereview } from './prereview.js'
+export type { Response } from './response.js'
 
 export const reviewPage = ({
   id,
@@ -23,6 +24,7 @@ export const reviewPage = ({
     RTE.Do,
     RTE.let('id', () => id),
     RTE.apS('review', getPrereview(id)),
+    RTE.let('responses', () => []),
     RTE.let('locale', () => locale),
     RTE.match(
       error =>

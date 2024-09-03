@@ -1,9 +1,11 @@
 import { toUrl } from 'doi-ts'
 import { format } from 'fp-ts-routing'
+import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
+import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
@@ -13,8 +15,19 @@ import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } fro
 import { renderDate } from '../time.js'
 import { isPseudonym } from '../types/pseudonym.js'
 import type { Prereview } from './prereview.js'
+import type { Response } from './response.js'
 
-export const createPage = ({ id, locale, review }: { id: number; locale: SupportedLocale; review: Prereview }) =>
+export const createPage = ({
+  id,
+  locale,
+  review,
+  responses,
+}: {
+  id: number
+  locale: SupportedLocale
+  review: Prereview
+  responses: ReadonlyArray<Response>
+}) =>
   PageResponse({
     title: plainText(
       translate(
@@ -175,6 +188,77 @@ export const createPage = ({ id, locale, review }: { id: number; locale: Support
             <h2>${translate(locale, 'review-page', 'addendumTitle')()}</h2>
 
             ${fixHeadingLevels(2, review.addendum)}
+          `
+        : ''}
+      ${RA.isNonEmpty(responses)
+        ? html`
+            <article aria-labelledby="responses-title">
+              <h2 id="responses-title">Responses</h2>
+              <ol class="cards">
+                ${pipe(
+                  responses,
+                  RNEA.map(
+                    response => html`
+                      <li>
+                        <article aria-labelledby="response-${response.id}-title">
+                          <header>
+                            <h3 class="visually-hidden" id="response-${response.id}-title">
+                              Response by ${response.authors.named[0].name}
+                              ${response.authors.named.length > 1 ? 'et al.' : ''}
+                            </h3>
+
+                            <div class="byline">
+                              <span class="visually-hidden">Authored</span> by
+                              ${pipe(response.authors.named, RNEA.map(get('name')), formatList(locale))}
+                            </div>
+
+                            <dl>
+                              <div>
+                                <dt>${translate(locale, 'review-page', 'published')()}</dt>
+                                <dd>${renderDate(locale)(response.published)}</dd>
+                              </div>
+                              <div>
+                                <dt>DOI</dt>
+                                <dd>
+                                  <a href="${toUrl(response.doi).href}" class="doi" translate="no">${response.doi}</a>
+                                </dd>
+                              </div>
+                              <div>
+                                <dt>${translate(locale, 'review-page', 'license')()}</dt>
+                                <dd>
+                                  ${match(response.license)
+                                    .with(
+                                      'CC-BY-4.0',
+                                      () => html`
+                                        <a href="https://creativecommons.org/licenses/by/4.0/">
+                                          <dfn>
+                                            <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
+                                              ><span translate="no">CC BY 4.0</span></abbr
+                                            >
+                                          </dfn>
+                                        </a>
+                                      `,
+                                    )
+                                    .exhaustive()}
+                                </dd>
+                              </div>
+                            </dl>
+                          </header>
+
+                          <div
+                            ${response.language
+                              ? html`lang="${response.language}" dir="${rtlDetect.getLangDir(response.language)}"`
+                              : ''}
+                          >
+                            ${fixHeadingLevels(3, response.text)}
+                          </div>
+                        </article>
+                      </li>
+                    `,
+                  ),
+                )}
+              </ol>
+            </article>
           `
         : ''}
     `,

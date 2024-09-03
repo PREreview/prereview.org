@@ -3,7 +3,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import type { Prereview } from '../../src/review-page/index.js'
+import type { Prereview, Response } from '../../src/review-page/index.js'
 import { createPage } from '../../src/review-page/review-page.js'
 import { expect, test } from '../base.js'
 
@@ -14,6 +14,7 @@ test('content looks right', async ({ showPage }) => {
     id: 1234,
     locale: DefaultLocale,
     review,
+    responses: [],
   })
 
   const content = await showPage(response)
@@ -32,6 +33,7 @@ test('content looks right with anonymous authors', async ({ showPage }) => {
         anonymous: 3,
       },
     },
+    responses: [],
   })
 
   const content = await showPage(response)
@@ -44,6 +46,7 @@ test('content looks right when in a club', async ({ showPage }) => {
     id: 1234,
     locale: DefaultLocale,
     review: { ...review, club: 'hhmi-training-pilot' },
+    responses: [],
   })
 
   const content = await showPage(response)
@@ -56,6 +59,7 @@ test("content looks right when it's requested", async ({ showPage }) => {
     id: 1234,
     locale: DefaultLocale,
     review: { ...review, requested: true },
+    responses: [],
   })
 
   const content = await showPage(response)
@@ -68,6 +72,7 @@ test("content looks right when it's live", async ({ showPage }) => {
     id: 1234,
     locale: DefaultLocale,
     review: { ...review, live: true },
+    responses: [],
   })
 
   const content = await showPage(response)
@@ -88,6 +93,7 @@ test('content looks right with an addendum', async ({ showPage }) => {
           from Resurrect Bio Ltd.
         </p>`,
     },
+    responses: [],
   })
 
   const content = await showPage(response)
@@ -100,6 +106,20 @@ test('content looks right when it is structured', async ({ showPage }) => {
     id: 1234,
     locale: DefaultLocale,
     review: structuredReview,
+    responses: [],
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when there are responses', async ({ showPage }) => {
+  const response = createPage({
+    id: 1234,
+    locale: DefaultLocale,
+    review,
+    responses: [response1, response2],
   })
 
   const content = await showPage(response)
@@ -258,3 +278,27 @@ const structuredReview = {
     <h2>Competing interests</h2>
     <p>The author declares that they have no competing interests.</p>`,
 } satisfies Prereview
+
+const response1 = {
+  authors: {
+    named: [{ name: 'Josiah Carberry', orcid: '0000-0002-1825-0097' as Orcid }, { name: 'Jean-Baptiste Botul' }],
+  },
+  doi: '10.5281/zenodo.10779311' as Doi<'5281'>,
+  language: 'en',
+  license: 'CC-BY-4.0',
+  id: 10779310,
+  published: PlainDate.from('2024-03-09'),
+  text: html`<p>This is a comment.</p>`,
+} satisfies Response
+
+const response2 = {
+  authors: {
+    named: [{ name: 'Arne Saknussemm' }],
+  },
+  doi: '10.5281/zenodo.10779312' as Doi<'5281'>,
+  language: 'is',
+  license: 'CC-BY-4.0',
+  id: 10779310,
+  published: PlainDate.from('2024-04-15'),
+  text: html`<p>Þetta er athugasemd.</p>`,
+} satisfies Response
