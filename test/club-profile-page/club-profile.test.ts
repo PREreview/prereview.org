@@ -22,10 +22,11 @@ describe('clubProfile', () => {
         preprint: fc.preprintTitle(),
       }),
     ),
-  ])('when the data can be loaded', async (clubId, prereviews) => {
+    fc.supportedLocale(),
+  ])('when the data can be loaded', async (clubId, prereviews, locale) => {
     const getPrereviews = jest.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.right(prereviews))
 
-    const actual = await _.clubProfile(clubId)({ getPrereviews })()
+    const actual = await _.clubProfile(clubId, locale)({ getPrereviews })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -39,8 +40,8 @@ describe('clubProfile', () => {
     expect(getPrereviews).toHaveBeenCalledWith(clubId)
   })
 
-  test.prop([fc.clubId()])('when the PREreviews are unavailable', async clubId => {
-    const actual = await _.clubProfile(clubId)({ getPrereviews: () => TE.left('unavailable') })()
+  test.prop([fc.clubId(), fc.supportedLocale()])('when the PREreviews are unavailable', async (clubId, locale) => {
+    const actual = await _.clubProfile(clubId, locale)({ getPrereviews: () => TE.left('unavailable') })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',

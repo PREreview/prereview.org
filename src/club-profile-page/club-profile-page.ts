@@ -6,7 +6,7 @@ import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import type { Club } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import assets from '../manifest.json' assert { type: 'json' }
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch, reviewMatch } from '../routes.js'
@@ -15,7 +15,17 @@ import type { ClubId } from '../types/club-id.js'
 import { getSubfieldName } from '../types/subfield.js'
 import type { Prereviews } from './prereviews.js'
 
-export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; prereviews: Prereviews }) {
+export function createPage({
+  club,
+  id,
+  prereviews,
+  locale,
+}: {
+  club: Club
+  id: ClubId
+  prereviews: Prereviews
+  locale: SupportedLocale
+}) {
   return PageResponse({
     title: plainText`${club.name}`,
     main: html`
@@ -52,7 +62,7 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
                   >${lead.name}</a
                 >`,
             ),
-            formatList(DefaultLocale),
+            formatList(locale),
           )}
         </dd>
       </dl>
@@ -82,7 +92,7 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
                         ${pipe(
                           prereview.reviewers,
                           RNEA.map(name => html`<b>${name}</b>`),
-                          formatList(DefaultLocale),
+                          formatList(locale),
                         )}
                         reviewed
                         <cite
@@ -102,7 +112,7 @@ export function createPage({ club, id, prereviews }: { club: Club; id: ClubId; p
 
                       <dl>
                         <dt>Review published</dt>
-                        <dd>${renderDate(DefaultLocale)(prereview.published)}</dd>
+                        <dd>${renderDate(locale)(prereview.published)}</dd>
                         <dt>Preprint server</dt>
                         <dd>
                           ${match(prereview.preprint.id.type)

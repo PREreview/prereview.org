@@ -1,6 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
+import { DefaultLocale } from '../../assets/locales/index.js'
 import type { Club } from '../../src/club-details.js'
 import { createPage } from '../../src/club-profile-page/club-profile-page.js'
 import type { Prereviews } from '../../src/club-profile-page/prereviews.js'
@@ -16,6 +17,7 @@ test('content looks right', async ({ showPage }) => {
     club: club1,
     id,
     prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -24,7 +26,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when empty', async ({ showPage }) => {
-  const response = createPage({ club: club2, id, prereviews: [] })
+  const response = createPage({ club: club2, id, prereviews: [], locale: DefaultLocale })
 
   const content = await showPage(response)
 

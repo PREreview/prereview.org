@@ -1309,7 +1309,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(clubProfile(id))),
+          RM.apSW('response', RM.fromReaderTask(clubProfile(id, DefaultLocale))),
           RM.ichainW(handleResponse),
         ),
       ),
