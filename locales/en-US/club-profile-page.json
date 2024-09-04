@@ -1,0 +1,23 @@
+{
+  "clubLeads": {
+    "message": "Club leads"
+  },
+  "contactClub": {
+    "message": "Contact the club"
+  },
+  "joinClub": {
+    "message": "Join the club"
+  },
+  "prereviews": {
+    "message": "PREreviews"
+  },
+  "noResults": {
+    "message": "The {name} hasn’t published a PREreview yet."
+  },
+  "appearHere": {
+    "message": "When they do, it’ll appear here."
+  },
+  "card": {
+    "message": "{names} reviewed {title}"
+  }
+}

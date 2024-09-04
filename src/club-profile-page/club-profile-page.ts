@@ -5,8 +5,8 @@ import { flow, pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import type { Club } from '../club-details.js'
-import { type Html, html, plainText, rawHtml } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { html, plainText, rawHtml, type Html } from '../html.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import assets from '../manifest.json' assert { type: 'json' }
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch, reviewMatch } from '../routes.js'
@@ -50,7 +50,7 @@ export function createPage({
       ${club.description}
 
       <dl>
-        <dt>Club leads</dt>
+        <dt>${translate(locale, 'club-profile-page', 'clubLeads')()}</dt>
         <dd>
           ${pipe(
             club.leads,
@@ -67,19 +67,27 @@ export function createPage({
         </dd>
       </dl>
 
-      ${club.contact ? html`<a href="mailto:${club.contact}" class="button">Contact the club</a>` : ''}
-      ${club.joinLink ? html`<a href="${club.joinLink.href}" class="button">Join the club</a> ` : ''}
+      ${club.contact
+        ? html`<a href="mailto:${club.contact}" class="button"
+            >${translate(locale, 'club-profile-page', 'contactClub')()}</a
+          >`
+        : ''}
+      ${club.joinLink
+        ? html`<a href="${club.joinLink.href}" class="button"
+            >${translate(locale, 'club-profile-page', 'joinClub')()}</a
+          > `
+        : ''}
 
-      <h2>PREreviews</h2>
+      <h2>${translate(locale, 'club-profile-page', 'prereviews')()}</h2>
 
       ${pipe(
         prereviews,
         RA.match(
           () => html`
             <div class="inset">
-              <p>The ${club.name} hasn’t published a PREreview yet.</p>
+              <p>${translate(locale, 'club-profile-page', 'noResults')({ name: club.name })}</p>
 
-              <p>When they do, it’ll appear here.</p>
+              <p>${translate(locale, 'club-profile-page', 'appearHere')()}</p>
             </div>
           `,
           prereviews => html`
@@ -89,31 +97,43 @@ export function createPage({
                   <li>
                     <article>
                       <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                        ${pipe(
-                          prereview.reviewers,
-                          RNEA.map(name => html`<b>${name}</b>`),
-                          formatList(locale),
+                        ${rawHtml(
+                          translate(
+                            locale,
+                            'reviews-list',
+                            'reviewText',
+                          )({
+                            reviewers: pipe(
+                              prereview.reviewers,
+                              RNEA.map(name => html`<b>${name}</b>`),
+                              formatList(locale),
+                              String,
+                            ),
+                            preprint: html`
+                              <cite
+                                dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                                lang="${prereview.preprint.language}"
+                                >${prereview.preprint.title}</cite
+                              >
+                            `.toString(),
+                          }),
                         )}
-                        reviewed
-                        <cite
-                          dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                          lang="${prereview.preprint.language}"
-                          >${prereview.preprint.title}</cite
-                        >
                       </a>
 
                       ${prereview.subfields.length > 0
                         ? html`
                             <ul class="categories">
-                              ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield)}</li>`)}
+                              ${prereview.subfields.map(
+                                subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
+                              )}
                             </ul>
                           `
                         : ''}
 
                       <dl>
-                        <dt>Review published</dt>
+                        <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
                         <dd>${renderDate(locale)(prereview.published)}</dd>
-                        <dt>Preprint server</dt>
+                        <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
                         <dd>
                           ${match(prereview.preprint.id.type)
                             .with('africarxiv', () => 'AfricArXiv Preprints')
