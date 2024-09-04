@@ -1,10 +1,8 @@
-import { Context, Effect } from 'effect'
+import { Effect } from 'effect'
 import { toError } from 'fp-ts/lib/Either.js'
 import { Redis as IoRedis } from 'ioredis'
 import * as L from 'logger-fp-ts'
-import { DeprecatedEnvVars } from './env.js'
-
-export class DeprecatedLoggerEnv extends Context.Tag('DeprecatedLoggerEnv')<DeprecatedLoggerEnv, L.LoggerEnv>() {}
+import { DeprecatedEnvVars, DeprecatedLoggerEnv } from './Context.js'
 
 const makeRedis = Effect.gen(function* () {
   const env = yield* DeprecatedEnvVars

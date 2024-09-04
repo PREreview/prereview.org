@@ -2,16 +2,16 @@ import { NodeRuntime } from '@effect/platform-node'
 import cacache from 'cacache'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
-import { Context, Effect, Layer } from 'effect'
+import { Effect, Layer } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as L from 'logger-fp-ts'
-import type { app } from './app.js'
-import { decodeEnv, DeprecatedEnvVars } from './env.js'
-import { expressServer, Redis } from './ExpressServer.js'
-import { DeprecatedLoggerEnv, redisLifecycle } from './Redis.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, Express, Redis } from './Context.js'
+import { decodeEnv } from './env.js'
+import { expressServer } from './ExpressServer.js'
+import { redisLifecycle } from './Redis.js'
 
 const env = decodeEnv(process)()
 
@@ -31,8 +31,6 @@ if (env.VERIFY_CACHE) {
     .then((stats: JsonRecord) => L.debugP('Cache verified')(stats)(loggerEnv)())
     .catch((error: unknown) => L.errorP('Failed to verify cache')({ error: E.toError(error).message })(loggerEnv)())
 }
-
-class Express extends Context.Tag('Express')<Express, ReturnType<typeof app>>() {}
 
 const expressServerLifecycle = Effect.acquireRelease(
   Effect.gen(function* () {

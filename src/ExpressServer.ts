@@ -1,18 +1,16 @@
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
-import { Context, Effect } from 'effect'
+import { Effect } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import { pipe } from 'fp-ts/lib/function.js'
-import type { Redis as IoRedis } from 'ioredis'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
 import { app } from './app.js'
+import { Redis } from './Context.js'
 import { decodeEnv } from './env.js'
-
-export class Redis extends Context.Tag('Redis')<Redis, IoRedis>() {}
 
 export const expressServer = Effect.gen(function* () {
   const redis = yield* Redis

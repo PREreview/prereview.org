@@ -1,4 +1,3 @@
-import { Context } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IOE from 'fp-ts/lib/IOEither.js'
@@ -9,7 +8,7 @@ import { isOrcid } from 'orcid-id-ts'
 import { v4 } from 'uuid-ts'
 import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
 
-export class DeprecatedEnvVars extends Context.Tag('DeprecatedEnvVars')<DeprecatedEnvVars, D.TypeOf<typeof EnvD>>() {}
+export type EnvVars = D.TypeOf<typeof EnvD>
 
 export function decodeEnv(process: NodeJS.Process) {
   return pipe(
