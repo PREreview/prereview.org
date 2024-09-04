@@ -1,25 +1,17 @@
 import KeyvRedis from '@keyv/redis'
-import { SystemClock } from 'clock-ts'
 import { Effect } from 'effect'
-import * as C from 'fp-ts/lib/Console.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import Keyv from 'keyv'
-import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
 import { app } from './app.js'
-import { Redis } from './Context.js'
-import { decodeEnv } from './env.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, Redis } from './Context.js'
 
 export const expressServer = Effect.gen(function* () {
   const redis = yield* Redis
+  const env = yield* DeprecatedEnvVars
+  const loggerEnv = yield* DeprecatedLoggerEnv
 
-  const env = decodeEnv(process)()
-  const loggerEnv: L.LoggerEnv = {
-    clock: SystemClock,
-    logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
-  }
   const sendMailEnv = match(env)
     .with({ MAILJET_API_KEY: P.string }, env => ({
       mailjetApi: {
