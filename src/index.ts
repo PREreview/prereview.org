@@ -9,7 +9,7 @@ import { pipe } from 'fp-ts/lib/function.js'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as L from 'logger-fp-ts'
 import type { app } from './app.js'
-import { decodeEnv } from './env.js'
+import { decodeEnv, DeprecatedEnvVars } from './env.js'
 import { expressServer, Redis } from './ExpressServer.js'
 import { redisLifecycle } from './Redis.js'
 
@@ -54,6 +54,7 @@ pipe(
   Layer.launch,
   Effect.provideServiceEffect(Express, expressServer),
   Effect.provideServiceEffect(Redis, redisLifecycle),
+  Effect.provideService(DeprecatedEnvVars, env),
   Effect.scoped,
   NodeRuntime.runMain,
 )
