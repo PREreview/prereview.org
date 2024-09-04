@@ -7,11 +7,11 @@ import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
-import { Redis } from 'ioredis'
+import { Redis as IoRedis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import type { app } from './app.js'
 import { decodeEnv } from './env.js'
-import { expressServer } from './ExpressServer.js'
+import { expressServer, Redis } from './ExpressServer.js'
 
 const env = decodeEnv(process)()
 
@@ -20,7 +20,7 @@ const loggerEnv: L.LoggerEnv = {
   logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
 }
 
-const redis = new Redis(env.REDIS_URI.href, { commandTimeout: 2 * 1000, enableAutoPipelining: true })
+const redis = new IoRedis(env.REDIS_URI.href, { commandTimeout: 2 * 1000, enableAutoPipelining: true })
 
 redis.on('connect', () => L.debug('Redis connected')(loggerEnv)())
 redis.on('close', () => L.debug('Redis connection closed')(loggerEnv)())
@@ -67,6 +67,7 @@ pipe(
   expressServerLifecycle,
   Layer.scopedDiscard,
   Layer.launch,
-  Effect.provideServiceEffect(Express, expressServer(redis)),
+  Effect.provideServiceEffect(Express, expressServer),
+  Effect.provideServiceEffect(Redis, Effect.succeed(redis)),
   NodeRuntime.runMain,
 )
