@@ -133,27 +133,29 @@ if (env.VERIFY_CACHE) {
 
 class Express extends Context.Tag('Express')<Express, ReturnType<typeof app>>() {}
 
-pipe(
-  Effect.acquireRelease(
-    Effect.gen(function* () {
-      const app = yield* Express
-      const listeningHttpServer = app.listen(3000)
-      L.debug('Server listening')(loggerEnv)()
-      return listeningHttpServer
-    }),
-    server =>
-      Effect.promise(async () => {
-        L.debug('Shutting server down')(loggerEnv)()
-        server.close()
+const expressServerLifecycle = Effect.acquireRelease(
+  Effect.gen(function* () {
+    const app = yield* Express
+    const listeningHttpServer = app.listen(3000)
+    L.debug('Server listening')(loggerEnv)()
+    return listeningHttpServer
+  }),
+  server =>
+    Effect.promise(async () => {
+      L.debug('Shutting server down')(loggerEnv)()
+      server.close()
 
-        await redis
-          .quit()
-          .then(() => L.debug('Redis disconnected')(loggerEnv)())
-          .catch((error: unknown) =>
-            L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
-          )
-      }),
-  ),
+      await redis
+        .quit()
+        .then(() => L.debug('Redis disconnected')(loggerEnv)())
+        .catch((error: unknown) =>
+          L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
+        )
+    }),
+)
+
+pipe(
+  expressServerLifecycle,
   Layer.scopedDiscard,
   Layer.launch,
   Effect.provideServiceEffect(Express, expressServer),
