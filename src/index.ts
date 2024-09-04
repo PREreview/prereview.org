@@ -49,18 +49,22 @@ const expressServerLifecycle = Effect.acquireRelease(
     L.debug('Server listening')(loggerEnv)()
     return listeningHttpServer
   }),
-  server =>
-    Effect.promise(async () => {
-      L.debug('Shutting server down')(loggerEnv)()
-      server.close()
+  server => {
+    L.debug('Shutting server down')(loggerEnv)()
+    server.close()
+    return Effect.void
+  },
+)
 
-      await redis
-        .quit()
-        .then(() => L.debug('Redis disconnected')(loggerEnv)())
-        .catch((error: unknown) =>
-          L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
-        )
-    }),
+const redisLifecycle = Effect.acquireRelease(Effect.succeed(redis), redis =>
+  Effect.promise(async () => {
+    await redis
+      .quit()
+      .then(() => L.debug('Redis disconnected')(loggerEnv)())
+      .catch((error: unknown) =>
+        L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
+      )
+  }),
 )
 
 pipe(
@@ -68,6 +72,7 @@ pipe(
   Layer.scopedDiscard,
   Layer.launch,
   Effect.provideServiceEffect(Express, expressServer),
-  Effect.provideServiceEffect(Redis, Effect.succeed(redis)),
+  Effect.provideServiceEffect(Redis, redisLifecycle),
+  Effect.scoped,
   NodeRuntime.runMain,
 )
