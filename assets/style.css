@@ -525,6 +525,15 @@ article {
     }
   }
 
+  main > &:not(.preview) {
+    margin-block-start: var(--space-xl-2xl);
+    border-block-start: var(--width-divider) solid var(--color-divider-light);
+
+    & > :first-child {
+      margin-block-start: var(--space-s-m);
+    }
+  }
+
   & > header > :first-child {
     margin-block-start: 0;
   }
