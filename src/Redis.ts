@@ -1,21 +1,15 @@
-import { SystemClock } from 'clock-ts'
-import { Effect, pipe } from 'effect'
-import * as C from 'fp-ts/lib/Console.js'
+import { Context, Effect } from 'effect'
 import { toError } from 'fp-ts/lib/Either.js'
 import { Redis as IoRedis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import { DeprecatedEnvVars } from './env.js'
 
+export class DeprecatedLoggerEnv extends Context.Tag('DeprecatedLoggerEnv')<DeprecatedLoggerEnv, L.LoggerEnv>() {}
+
 export const redisLifecycle = Effect.acquireRelease(
   Effect.gen(function* () {
     const env = yield* DeprecatedEnvVars
-    const loggerEnv: L.LoggerEnv = {
-      clock: SystemClock,
-      logger: pipe(
-        C.log,
-        L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry)),
-      ),
-    }
+    const loggerEnv = yield* DeprecatedLoggerEnv
     const redis = new IoRedis(env.REDIS_URI.href, { commandTimeout: 2 * 1000, enableAutoPipelining: true })
 
     redis.on('connect', () => L.debug('Redis connected')(loggerEnv)())
@@ -28,14 +22,7 @@ export const redisLifecycle = Effect.acquireRelease(
   }),
   redis =>
     Effect.gen(function* () {
-      const env = yield* DeprecatedEnvVars
-      const loggerEnv: L.LoggerEnv = {
-        clock: SystemClock,
-        logger: pipe(
-          C.log,
-          L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry)),
-        ),
-      }
+      const loggerEnv = yield* DeprecatedLoggerEnv
       yield* Effect.promise(() =>
         redis
           .quit()

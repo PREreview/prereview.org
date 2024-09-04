@@ -11,7 +11,7 @@ import * as L from 'logger-fp-ts'
 import type { app } from './app.js'
 import { decodeEnv, DeprecatedEnvVars } from './env.js'
 import { expressServer, Redis } from './ExpressServer.js'
-import { redisLifecycle } from './Redis.js'
+import { DeprecatedLoggerEnv, redisLifecycle } from './Redis.js'
 
 const env = decodeEnv(process)()
 
@@ -54,6 +54,7 @@ pipe(
   Layer.launch,
   Effect.provideServiceEffect(Express, expressServer),
   Effect.provideServiceEffect(Redis, redisLifecycle),
+  Effect.provideService(DeprecatedLoggerEnv, loggerEnv),
   Effect.provideService(DeprecatedEnvVars, env),
   Effect.scoped,
   NodeRuntime.runMain,
