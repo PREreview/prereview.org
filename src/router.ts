@@ -9,6 +9,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as T from 'fp-ts/lib/Task.js'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { constVoid, constant, flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
 import httpErrors from 'http-errors'
@@ -851,6 +852,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getPrereview: withEnv(getPrereviewFromZenodo, env),
+          getResponses: () => TE.right([]),
         })),
       ),
     ),
