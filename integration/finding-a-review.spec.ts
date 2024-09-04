@@ -161,6 +161,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ 
     .getOnce('https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html/content', {
       body: '<p>PTP1b has been an attractive target for drug development due to ...</p>',
     })
+    .getOnce(
+      {
+        name: 'responses',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.5281/zenodo.7747129"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    )
 
   await page
     .getByRole('link', {
@@ -353,6 +361,14 @@ test('can find and view a review', async ({ fetch, page }) => {
     .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
+    .getOnce(
+      {
+        name: 'responses',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    )
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page
@@ -452,6 +468,14 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
         </dl>
       `,
     })
+    .getOnce(
+      {
+        name: 'responses',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    )
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page
@@ -462,6 +486,143 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
   await expect(page.getByRole('main')).toContainText(
     'Does the introduction explain the objective of the research presented in the preprint?',
   )
+})
+
+test('can find and view a response to a review', async ({ fetch, page }) => {
+  const record: Record = {
+    conceptdoi: '10.5072/zenodo.1061863' as Doi,
+    conceptrecid: 1061863,
+    files: [
+      {
+        links: {
+          self: new URL('http://example.com/review.html/content'),
+        },
+        key: 'review.html',
+        size: 58,
+      },
+    ],
+    id: 1061864,
+    links: {
+      latest: new URL('http://example.com/latest'),
+      latest_html: new URL('http://example.com/latest_html'),
+    },
+    metadata: {
+      access_right: 'open',
+      communities: [{ id: 'prereview-reviews' }],
+      creators: [
+        { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
+        { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
+        { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
+        { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
+        { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
+        { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
+      ],
+      description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+      doi: '10.5072/zenodo.1061864' as Doi,
+      license: { id: 'cc-by-4.0' },
+      publication_date: new Date('2022-07-05'),
+      related_identifiers: [
+        {
+          identifier: '10.1101/2022.01.13.476201',
+          relation: 'reviews',
+          resource_type: 'publication-preprint',
+          scheme: 'doi',
+        },
+        {
+          identifier: '10.5072/zenodo.1061863',
+          relation: 'isVersionOf',
+          scheme: 'doi',
+        },
+      ],
+      resource_type: {
+        type: 'publication',
+        subtype: 'peerreview',
+      },
+      title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+    },
+  }
+
+  fetch.get(
+    {
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
+  )
+
+  fetch
+    .getOnce('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
+    .get('http://example.com/review.html/content', {
+      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+    })
+    .getOnce(
+      {
+        name: 'responses',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+      },
+      {
+        body: RecordsC.encode({
+          hits: {
+            total: 1,
+            hits: [
+              {
+                conceptdoi: '10.5072/zenodo.1061865' as Doi,
+                conceptrecid: 1061863,
+                files: [
+                  {
+                    links: {
+                      self: new URL('http://example.com/response.html/content'),
+                    },
+                    key: 'review.html',
+                    size: 58,
+                  },
+                ],
+                id: 1061864,
+                links: {
+                  latest: new URL('http://example.com/latest'),
+                  latest_html: new URL('http://example.com/latest_html'),
+                },
+                metadata: {
+                  access_right: 'open',
+                  communities: [{ id: 'prereview-reviews' }],
+                  creators: [{ name: 'PREreviewer' }],
+                  description: 'Description',
+                  doi: '10.5281/zenodo.1061866' as Doi,
+                  language: 'eng',
+                  license: { id: 'cc-by-4.0' },
+                  publication_date: new Date('2022-07-04'),
+                  related_identifiers: [
+                    {
+                      scheme: 'doi',
+                      identifier: '10.5072/zenodo.1061864' as Doi,
+                      relation: 'references',
+                      resource_type: 'publication-peerreview',
+                    },
+                  ],
+                  resource_type: {
+                    type: 'publication',
+                    subtype: 'other',
+                  },
+                  title: 'Title',
+                },
+              },
+            ],
+          },
+        }),
+      },
+    )
+    .get('http://example.com/response.html/content', {
+      body: '<h1>Some title in the response</h1><p>... some response text ...</p>',
+    })
+
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page
+    .getByRole('article', { name: 'PREreview by Jingfang Hao et al.' })
+    .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al.' })
+    .click()
+
+  await expect(page.getByRole('article', { name: 'Responses' })).toContainText('some response text')
 })
 
 test("can find and view a review that's part of a club", async ({ fetch, page }) => {
@@ -532,6 +693,14 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
     .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
+    .getOnce(
+      {
+        name: 'responses',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    )
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page
@@ -601,6 +770,14 @@ test('can view a recent review', async ({ fetch, page }) => {
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
+    .getOnce(
+      {
+        name: 'responses',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    )
 
   await page.goto('/')
   await page
@@ -673,6 +850,14 @@ test("can view a recent review that's part of a club", async ({ fetch, page }) =
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
+    .getOnce(
+      {
+        name: 'responses',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    )
 
   await page.goto('/')
   await page
@@ -746,6 +931,14 @@ test('can view an older review', async ({ fetch, page }) => {
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
+    .getOnce(
+      {
+        name: 'responses',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    )
 
   await page.goto('/')
   await page.getByRole('link', { name: 'See all reviews' }).click()
@@ -834,6 +1027,14 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
+    .getOnce(
+      {
+        name: 'responses',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    )
 
   await page.goto('/')
   await page.getByRole('link', { name: 'See all reviews' }).click()

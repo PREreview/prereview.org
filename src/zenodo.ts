@@ -55,7 +55,7 @@ import {
   resolvePreprintId,
 } from './preprint.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
-import type { Prereview } from './review-page/index.js'
+import type { Prereview, Response } from './review-page/index.js'
 import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.js'
 import type { RecentPrereviews } from './reviews-page/index.js'
 import { reviewMatch } from './routes.js'
@@ -408,6 +408,37 @@ export const getPrereviewsForPreprintFromZenodo = flow(
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
+export const getResponsesForPrereviewFromZenodo = flow(
+  (id: Doi) =>
+    new URLSearchParams({
+      q: `related.identifier:"${id}"`,
+      size: '100',
+      sort: 'publication-desc',
+      resource_type: 'publication::publication-other',
+    }),
+  getCommunityRecords('prereview-reviews'),
+  RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
+  RTE.local(useStaleCache()),
+  RTE.local(timeoutRequest(2000)),
+  RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToPrereviewResponse))),
+  RTE.orElseFirstW(
+    RTE.fromReaderIOK(
+      flow(
+        error => ({
+          error: match(error)
+            .with(P.instanceOf(Error), error => error.message)
+            .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+            .with({ _tag: P.string }, D.draw)
+            .with('unknown-license', 'text-unavailable', identity)
+            .exhaustive(),
+        }),
+        L.errorP('Unable to get responses for PREreview from Zenodo'),
+      ),
+    ),
+  ),
+  RTE.mapLeft(() => 'unavailable' as const),
+)
+
 export const refreshPrereview = (id: number, user: User) =>
   pipe(
     getPrereviewFromZenodo(id),
@@ -627,6 +658,43 @@ function recordToPrereview(
         requested: RTE.right(record.metadata.keywords?.includes('Requested PREreview') === true),
         structured: RTE.right(record.metadata.keywords?.includes('Structured PREreview') === true),
         text: getReviewText(reviewTextUrl),
+      }),
+    ),
+  )
+}
+
+function recordToPrereviewResponse(
+  record: Record,
+): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, HttpError<404> | 'text-unavailable' | 'unknown-license', Response> {
+  return pipe(
+    RTE.Do,
+    RTE.apSW('responseTextUrl', RTE.fromOption(() => new httpErrors.NotFound())(getReviewUrl(record))),
+    RTE.apSW(
+      'license',
+      RTE.fromEither(
+        pipe(
+          PrereviewLicenseD.decode(record),
+          E.mapLeft(() => 'unknown-license' as const),
+        ),
+      ),
+    ),
+    RTE.chainW(({ license, responseTextUrl }) =>
+      sequenceS(RTE.ApplyPar)({
+        authors: RTE.right({ named: getAuthors(record).named }),
+        doi: RTE.right(record.metadata.doi),
+        language: RTE.right(
+          pipe(
+            O.fromNullable(record.metadata.language),
+            O.filter(iso6393Validate),
+            O.match(() => undefined, iso6393To1),
+          ),
+        ),
+        id: RTE.right(record.id),
+        license: RTE.right(license),
+        published: RTE.right(
+          toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
+        ),
+        text: getReviewText(responseTextUrl),
       }),
     ),
   )
