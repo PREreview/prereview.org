@@ -222,7 +222,7 @@ export const createPage = ({
                                 )({
                                   authors: pipe(
                                     response.authors.named,
-                                    RNEA.map(get('name')),
+                                    RNEA.map(displayAuthor),
                                     formatList(locale),
                                   ).toString(),
                                   hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),

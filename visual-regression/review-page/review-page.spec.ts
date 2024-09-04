@@ -281,7 +281,7 @@ const structuredReview = {
 
 const response1 = {
   authors: {
-    named: [{ name: 'Josiah Carberry', orcid: '0000-0002-1825-0097' as Orcid }, { name: 'Jean-Baptiste Botul' }],
+    named: [{ name: 'Josiah Carberry', orcid: '0000-0002-1825-0097' as Orcid }, { name: 'Orange Panda' }],
   },
   doi: '10.5281/zenodo.10779311' as Doi<'5281'>,
   language: 'en',
