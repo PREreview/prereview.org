@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
@@ -142,13 +142,13 @@ const review = {
     ],
     anonymous: 0,
   },
-  doi: '10.5281/zenodo.10779310' as Doi<'5281'>,
+  doi: Doi('10.5281/zenodo.10779310'),
   language: 'en',
   license: 'CC-BY-4.0',
   live: false,
   published: PlainDate.from('2024-03-04'),
   preprint: {
-    id: { type: 'biorxiv', value: '10.1101/2023.12.21.572824' as Doi<'1101'> },
+    id: { type: 'biorxiv', value: Doi('10.1101/2023.12.21.572824') },
     title: html`Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants`,
     language: 'en',
     url: new URL('https://biorxiv.org/lookup/doi/10.1101/2023.12.21.572824'),
@@ -228,13 +228,13 @@ const structuredReview = {
     named: [{ name: 'Justice Nyakura', orcid: '0000-0003-1065-1950' as Orcid }],
     anonymous: 0,
   },
-  doi: '10.5281/zenodo.10775334' as Doi<'5281'>,
+  doi: Doi('10.5281/zenodo.10775334'),
   language: 'en',
   license: 'CC-BY-4.0',
   live: false,
   published: PlainDate.from('2024-03-03'),
   preprint: {
-    id: { type: 'edarxiv', value: '10.35542/osf.io/hsnke' as Doi<'35542'> },
+    id: { type: 'edarxiv', value: Doi('10.35542/osf.io/hsnke') },
     title: html`A population perspective on international students in Australian universities`,
     language: 'fr',
     url: new URL('https://osf.io/hsnke'),
@@ -283,7 +283,7 @@ const response1 = {
   authors: {
     named: [{ name: 'Josiah Carberry', orcid: '0000-0002-1825-0097' as Orcid }, { name: 'Orange Panda' }],
   },
-  doi: '10.5281/zenodo.10779311' as Doi<'5281'>,
+  doi: Doi('10.5281/zenodo.10779311'),
   language: 'en',
   license: 'CC-BY-4.0',
   id: 10779310,
@@ -295,7 +295,7 @@ const response2 = {
   authors: {
     named: [{ name: 'Arne Saknussemm' }],
   },
-  doi: '10.5281/zenodo.10779312' as Doi<'5281'>,
+  doi: Doi('10.5281/zenodo.10779312'),
   language: 'is',
   license: 'CC-BY-4.0',
   id: 10779310,

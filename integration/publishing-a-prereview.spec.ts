@@ -1,4 +1,4 @@
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import type fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -641,7 +641,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await expect(page.getByRole('main')).not.toContainText('other authors’ details')
 
     const record = {
-      conceptdoi: '10.5072/zenodo.1055805' as Doi,
+      conceptdoi: Doi('10.5072/zenodo.1055805'),
       conceptrecid: 1055805,
       files: [
         {
@@ -667,7 +667,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
           },
         ],
         description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
-        doi: '10.5072/zenodo.1055806' as Doi,
+        doi: Doi('10.5072/zenodo.1055806'),
         license: { id: 'cc-by-4.0' },
         publication_date: new Date('2022-07-05'),
         related_identifiers: [

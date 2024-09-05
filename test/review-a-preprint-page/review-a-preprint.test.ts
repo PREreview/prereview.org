@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
@@ -40,23 +40,20 @@ describe('reviewAPreprint', () => {
       {
         examples: [
           [
-            ['10.1101/2021.06.18.21258689' as Doi<'1101'>, { preprint: 'https://doi.org/10.1101/2021.06.18.21258689' }], // doi.org URL,
+            [Doi('10.1101/2021.06.18.21258689'), { preprint: 'https://doi.org/10.1101/2021.06.18.21258689' }], // doi.org URL,
+          ],
+          [
+            [Doi('10.1101/2021.06.18.21258689'), { preprint: ' https://doi.org/10.1101/2021.06.18.21258689 ' }], // doi.org URL with whitespace,
           ],
           [
             [
-              '10.1101/2021.06.18.21258689' as Doi<'1101'>,
-              { preprint: ' https://doi.org/10.1101/2021.06.18.21258689 ' },
-            ], // doi.org URL with whitespace,
-          ],
-          [
-            [
-              '10.1101/2021.06.18.21258689' as Doi<'1101'>,
+              Doi('10.1101/2021.06.18.21258689'),
               { preprint: 'https://www.biorxiv.org/content/10.1101/2021.06.18.21258689' },
             ], // biorxiv.org URL,
           ],
           [
             [
-              '10.1101/2021.06.18.21258689' as Doi<'1101'>,
+              Doi('10.1101/2021.06.18.21258689'),
               { preprint: ' http://www.biorxiv.org/content/10.1101/2021.06.18.21258689 ' },
             ], // biorxiv.org URL with whitespace,
           ],

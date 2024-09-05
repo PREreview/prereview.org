@@ -1,4 +1,4 @@
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import type { PreprintTitle } from '../../src/preprint.js'
@@ -10,7 +10,7 @@ import { expect, test } from '../base.js'
 const preprint = {
   id: {
     type: 'biorxiv',
-    value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+    value: Doi('10.1101/2022.01.13.476201'),
   },
   title: html`Cytoplasmic protein-free mRNA induces stress granules by two G3BP1/2-dependent mechanisms`,
   language: 'en',

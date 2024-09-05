@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { SystemClock } from 'clock-ts'
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as A from 'fp-ts/lib/Array.js'
@@ -55,7 +55,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         total: 2,
         hits: [
           {
-            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1061863'),
             conceptrecid: 1061863,
             files: [
               {
@@ -76,14 +76,14 @@ describe('getRecentPrereviewsFromZenodo', () => {
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'PREreviewer' }],
               description: 'Description',
-              doi: '10.5281/zenodo.1061864' as Doi,
+              doi: Doi('10.5281/zenodo.1061864'),
               language: 'eng',
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-04'),
               related_identifiers: [
                 {
                   scheme: 'doi',
-                  identifier: '10.1101/2022.01.13.476201' as Doi,
+                  identifier: Doi('10.1101/2022.01.13.476201'),
                   relation: 'reviews',
                   resource_type: 'publication-preprint',
                 },
@@ -143,7 +143,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
             },
           },
           {
-            conceptdoi: '10.5072/zenodo.1065235' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1065235'),
             conceptrecid: 1065235,
             files: [
               {
@@ -164,14 +164,14 @@ describe('getRecentPrereviewsFromZenodo', () => {
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'Josiah Carberry' }],
               description: 'Description',
-              doi: '10.5281/zenodo.1065236' as Doi,
+              doi: Doi('10.5281/zenodo.1065236'),
               language: 'eng',
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-05'),
               related_identifiers: [
                 {
                   scheme: 'doi',
-                  identifier: '10.1101/2022.02.14.480364' as Doi,
+                  identifier: Doi('10.1101/2022.02.14.480364'),
                   relation: 'reviews',
                   resource_type: 'publication-preprint',
                 },
@@ -255,7 +255,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           total: 1,
           hits: [
             {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
               conceptrecid: 1061863,
               files: [
                 {
@@ -276,13 +276,13 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
+                doi: Doi('10.5281/zenodo.1061864'),
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    identifier: Doi('10.1101/2022.02.14.480364'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -368,7 +368,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           total: 2,
           hits: [
             {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
               conceptrecid: 1061863,
               files: [
                 {
@@ -389,14 +389,14 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
+                doi: Doi('10.5281/zenodo.1061864'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-04'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    identifier: Doi('10.1101/2022.01.13.476201'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -409,7 +409,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               },
             },
             {
-              conceptdoi: '10.5072/zenodo.1065235' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1065235'),
               conceptrecid: 1065235,
               files: [
                 {
@@ -430,14 +430,14 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Josiah Carberry' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1065236' as Doi,
+                doi: Doi('10.5281/zenodo.1065236'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    identifier: Doi('10.1101/2022.02.14.480364'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -511,7 +511,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         total: 2,
         hits: [
           {
-            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1061863'),
             conceptrecid: 1061863,
             files: [
               {
@@ -532,14 +532,14 @@ describe('getRecentPrereviewsFromZenodo', () => {
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'PREreviewer' }],
               description: 'Description',
-              doi: '10.5281/zenodo.1061864' as Doi,
+              doi: Doi('10.5281/zenodo.1061864'),
               language: 'eng',
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-04'),
               related_identifiers: [
                 {
                   scheme: 'doi',
-                  identifier: '10.1101/2022.01.13.476201' as Doi,
+                  identifier: Doi('10.1101/2022.01.13.476201'),
                   relation: 'reviews',
                   resource_type: 'publication-preprint',
                 },
@@ -552,7 +552,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
             },
           },
           {
-            conceptdoi: '10.5072/zenodo.1065235' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1065235'),
             conceptrecid: 1065235,
             files: [
               {
@@ -573,14 +573,14 @@ describe('getRecentPrereviewsFromZenodo', () => {
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'Josiah Carberry' }],
               description: 'Description',
-              doi: '10.5281/zenodo.1065236' as Doi,
+              doi: Doi('10.5281/zenodo.1065236'),
               language: 'eng',
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-05'),
               related_identifiers: [
                 {
                   scheme: 'doi',
-                  identifier: '10.1101/2022.02.14.480364' as Doi,
+                  identifier: Doi('10.1101/2022.02.14.480364'),
                   relation: 'reviews',
                   resource_type: 'publication-preprint',
                 },
@@ -712,7 +712,7 @@ describe('getPrereviewFromZenodo', () => {
     'when the PREreview can be loaded',
     async (id, preprint, club, requested, structured, live, [expectedAnonymous, otherAuthors]) => {
       const record: Record = {
-        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptdoi: Doi('10.5072/zenodo.1061863'),
         conceptrecid: 1061863,
         files: [
           {
@@ -741,7 +741,7 @@ describe('getPrereviewFromZenodo', () => {
             : undefined,
           creators: [{ name: 'PREreviewer' }, ...otherAuthors],
           description: 'Description',
-          doi: '10.5281/zenodo.1061864' as Doi,
+          doi: Doi('10.5281/zenodo.1061864'),
           keywords: pipe(
             [
               requested ? 'Requested PREreview' : undefined,
@@ -795,7 +795,7 @@ describe('getPrereviewFromZenodo', () => {
           addendum: rawHtml('<p>Some note.</p>'),
           authors: { named: [{ name: 'PREreviewer' }], anonymous: expectedAnonymous },
           club,
-          doi: '10.5281/zenodo.1061864' as Doi,
+          doi: Doi('10.5281/zenodo.1061864'),
           language: 'en',
           license: 'CC-BY-4.0',
           live,
@@ -817,7 +817,7 @@ describe('getPrereviewFromZenodo', () => {
 
   test.prop([fc.integer(), fc.preprint()])('revalidates if the PREreview is stale', async (id, preprint) => {
     const record: Record = {
-      conceptdoi: '10.5072/zenodo.1061863' as Doi,
+      conceptdoi: Doi('10.5072/zenodo.1061863'),
       conceptrecid: 1061863,
       files: [
         {
@@ -838,7 +838,7 @@ describe('getPrereviewFromZenodo', () => {
         communities: [{ id: 'prereview-reviews' }],
         creators: [{ name: 'PREreviewer' }],
         description: 'Description',
-        doi: '10.5281/zenodo.1061864' as Doi,
+        doi: Doi('10.5281/zenodo.1061864'),
         license: { id: 'cc-by-4.0' },
         publication_date: new Date('2022-07-05'),
         related_identifiers: [
@@ -881,7 +881,7 @@ describe('getPrereviewFromZenodo', () => {
         addendum: undefined,
         authors: { named: [{ name: 'PREreviewer' }], anonymous: 0 },
         club: undefined,
-        doi: '10.5281/zenodo.1061864' as Doi,
+        doi: Doi('10.5281/zenodo.1061864'),
         language: undefined,
         license: 'CC-BY-4.0',
         live: false,
@@ -938,7 +938,7 @@ describe('getPrereviewFromZenodo', () => {
     'when the review text cannot be loaded',
     async (id, preprint, textStatus) => {
       const record: Record = {
-        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptdoi: Doi('10.5072/zenodo.1061863'),
         conceptrecid: 1061863,
         files: [
           {
@@ -959,7 +959,7 @@ describe('getPrereviewFromZenodo', () => {
           communities: [{ id: 'prereview-reviews' }],
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
-          doi: '10.5281/zenodo.1061864' as Doi,
+          doi: Doi('10.5281/zenodo.1061864'),
           license: { id: 'cc-by-4.0' },
           publication_date: new Date('2022-07-05'),
           related_identifiers: [
@@ -1021,7 +1021,7 @@ describe('getPrereviewFromZenodo', () => {
     'when the preprint cannot be loaded',
     async (id, preprintDoi, error) => {
       const record: Record = {
-        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptdoi: Doi('10.5072/zenodo.1061863'),
         conceptrecid: 1061863,
         files: [
           {
@@ -1042,7 +1042,7 @@ describe('getPrereviewFromZenodo', () => {
           communities: [{ id: 'prereview-reviews' }],
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
-          doi: '10.5281/zenodo.1061864' as Doi,
+          doi: Doi('10.5281/zenodo.1061864'),
           license: { id: 'cc-by-4.0' },
           publication_date: new Date('2022-07-05'),
           related_identifiers: [
@@ -1085,7 +1085,7 @@ describe('getPrereviewFromZenodo', () => {
 
   test.prop([fc.integer(), fc.preprintDoi()])('when the record is not in the community', async (id, preprintDoi) => {
     const record: Record = {
-      conceptdoi: '10.5072/zenodo.1061863' as Doi,
+      conceptdoi: Doi('10.5072/zenodo.1061863'),
       conceptrecid: 1061863,
       files: [
         {
@@ -1105,7 +1105,7 @@ describe('getPrereviewFromZenodo', () => {
         access_right: 'open',
         creators: [{ name: 'PREreviewer' }],
         description: 'Description',
-        doi: '10.5281/zenodo.1061864' as Doi,
+        doi: Doi('10.5281/zenodo.1061864'),
         license: { id: 'cc-by-4.0' },
         publication_date: new Date('2022-07-05'),
         related_identifiers: [
@@ -1164,7 +1164,7 @@ describe('getPrereviewFromZenodo', () => {
     ),
   ])('when the record is not a peer review', async (id, preprintDoi, publicationType) => {
     const record: Record = {
-      conceptdoi: '10.5072/zenodo.1061863' as Doi,
+      conceptdoi: Doi('10.5072/zenodo.1061863'),
       conceptrecid: 1061863,
       files: [
         {
@@ -1185,7 +1185,7 @@ describe('getPrereviewFromZenodo', () => {
         communities: [{ id: 'prereview-reviews' }],
         creators: [{ name: 'PREreviewer' }],
         description: 'Description',
-        doi: '10.5281/zenodo.1061864' as Doi,
+        doi: Doi('10.5281/zenodo.1061864'),
         license: { id: 'cc-by-4.0' },
         publication_date: new Date('2022-07-05'),
         related_identifiers: [
@@ -1223,7 +1223,7 @@ describe('getPrereviewFromZenodo', () => {
     'when the record does not have a CC-BY-4.0 license',
     async (id, preprintDoi, license) => {
       const record: Record = {
-        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptdoi: Doi('10.5072/zenodo.1061863'),
         conceptrecid: 1061863,
         files: [
           {
@@ -1244,7 +1244,7 @@ describe('getPrereviewFromZenodo', () => {
           communities: [{ id: 'prereview-reviews' }],
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
-          doi: '10.5281/zenodo.1061864' as Doi,
+          doi: Doi('10.5281/zenodo.1061864'),
           license: { id: license },
           publication_date: new Date('2022-07-05'),
           related_identifiers: [
@@ -1286,7 +1286,7 @@ describe('getPrereviewFromZenodo', () => {
     'when the record does not review a preprint with a preprint DOI',
     async (id, identifier) => {
       const record: Record = {
-        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptdoi: Doi('10.5072/zenodo.1061863'),
         conceptrecid: 1061863,
         files: [
           {
@@ -1307,7 +1307,7 @@ describe('getPrereviewFromZenodo', () => {
           communities: [{ id: 'prereview-reviews' }],
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
-          doi: '10.5281/zenodo.1061864' as Doi,
+          doi: Doi('10.5281/zenodo.1061864'),
           license: { id: 'cc-by-4.0' },
           publication_date: new Date('2022-07-05'),
           related_identifiers: [
@@ -1358,7 +1358,7 @@ describe('getPrereviewFromZenodo', () => {
     ),
   ])('when the record does not have a HTML file', async (id, preprint, files) => {
     const record: Record = {
-      conceptdoi: '10.5072/zenodo.1061863' as Doi,
+      conceptdoi: Doi('10.5072/zenodo.1061863'),
       conceptrecid: 1061863,
       files,
       id,
@@ -1371,7 +1371,7 @@ describe('getPrereviewFromZenodo', () => {
         communities: [{ id: 'prereview-reviews' }],
         creators: [{ name: 'PREreviewer' }],
         description: 'Description',
-        doi: '10.5281/zenodo.1061864' as Doi,
+        doi: Doi('10.5281/zenodo.1061864'),
         license: { id: 'cc-by-4.0' },
         publication_date: new Date('2022-07-05'),
         related_identifiers: [
@@ -1418,7 +1418,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             total: 2,
             hits: [
               {
-                conceptdoi: '10.5072/zenodo.1061863' as Doi,
+                conceptdoi: Doi('10.5072/zenodo.1061863'),
                 conceptrecid: 1061863,
                 files: [
                   {
@@ -1439,14 +1439,14 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   communities: [{ id: 'prereview-reviews' }],
                   creators: [{ name: 'PREreviewer' }],
                   description: 'Description',
-                  doi: '10.5281/zenodo.1061864' as Doi,
+                  doi: Doi('10.5281/zenodo.1061864'),
                   language: 'eng',
                   license: { id: 'cc-by-4.0' },
                   publication_date: new Date('2022-07-04'),
                   related_identifiers: [
                     {
                       scheme: 'doi',
-                      identifier: '10.1101/2022.01.13.476201' as Doi,
+                      identifier: Doi('10.1101/2022.01.13.476201'),
                       relation: 'reviews',
                       resource_type: 'publication-preprint',
                     },
@@ -1459,7 +1459,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 },
               },
               {
-                conceptdoi: '10.5072/zenodo.1065235' as Doi,
+                conceptdoi: Doi('10.5072/zenodo.1065235'),
                 conceptrecid: 1065235,
                 files: [
                   {
@@ -1480,14 +1480,14 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   communities: [{ id: 'prereview-reviews' }],
                   creators: [{ name: 'Josiah Carberry' }],
                   description: 'Description',
-                  doi: '10.5281/zenodo.1065236' as Doi,
+                  doi: Doi('10.5281/zenodo.1065236'),
                   language: 'eng',
                   license: { id: 'cc-by-4.0' },
                   publication_date: new Date('2022-07-05'),
                   related_identifiers: [
                     {
                       scheme: 'doi',
-                      identifier: '10.1101/2022.02.14.480364' as Doi,
+                      identifier: Doi('10.1101/2022.02.14.480364'),
                       relation: 'reviews',
                       resource_type: 'publication-preprint',
                     },
@@ -1562,7 +1562,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             total: 2,
             hits: [
               {
-                conceptdoi: '10.5072/zenodo.1061863' as Doi,
+                conceptdoi: Doi('10.5072/zenodo.1061863'),
                 conceptrecid: 1061863,
                 files: [
                   {
@@ -1583,14 +1583,14 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   communities: [{ id: 'prereview-reviews' }],
                   creators: [{ name: 'PREreviewer' }],
                   description: 'Description',
-                  doi: '10.5281/zenodo.1061864' as Doi,
+                  doi: Doi('10.5281/zenodo.1061864'),
                   language: 'eng',
                   license: { id: 'cc-by-4.0' },
                   publication_date: new Date('2022-07-04'),
                   related_identifiers: [
                     {
                       scheme: 'doi',
-                      identifier: '10.1101/2022.01.13.476201' as Doi,
+                      identifier: Doi('10.1101/2022.01.13.476201'),
                       relation: 'reviews',
                       resource_type: 'publication-preprint',
                     },
@@ -1650,7 +1650,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 },
               },
               {
-                conceptdoi: '10.5072/zenodo.1065235' as Doi,
+                conceptdoi: Doi('10.5072/zenodo.1065235'),
                 conceptrecid: 1065235,
                 files: [
                   {
@@ -1677,14 +1677,14 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   ],
                   creators: [{ name: 'Josiah Carberry' }],
                   description: 'Description',
-                  doi: '10.5281/zenodo.1065236' as Doi,
+                  doi: Doi('10.5281/zenodo.1065236'),
                   language: 'eng',
                   license: { id: 'cc-by-4.0' },
                   publication_date: new Date('2022-07-05'),
                   related_identifiers: [
                     {
                       scheme: 'doi',
-                      identifier: '10.1101/2022.02.14.480364' as Doi,
+                      identifier: Doi('10.1101/2022.02.14.480364'),
                       relation: 'reviews',
                       resource_type: 'publication-preprint',
                     },
@@ -1760,7 +1760,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           total: 1,
           hits: [
             {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
               conceptrecid: 1061863,
               files: [
                 {
@@ -1781,13 +1781,13 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
+                doi: Doi('10.5281/zenodo.1061864'),
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    identifier: Doi('10.1101/2022.02.14.480364'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -1854,7 +1854,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           total: 2,
           hits: [
             {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
               conceptrecid: 1061863,
               files: [
                 {
@@ -1875,14 +1875,14 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
+                doi: Doi('10.5281/zenodo.1061864'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-04'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    identifier: Doi('10.1101/2022.01.13.476201'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -1895,7 +1895,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               },
             },
             {
-              conceptdoi: '10.5072/zenodo.1065235' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1065235'),
               conceptrecid: 1065235,
               files: [
                 {
@@ -1916,14 +1916,14 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Josiah Carberry' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1065236' as Doi,
+                doi: Doi('10.5281/zenodo.1065236'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    identifier: Doi('10.1101/2022.02.14.480364'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -2020,7 +2020,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
           total: 2,
           hits: [
             {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
               conceptrecid: 1061863,
               files: [
                 {
@@ -2041,14 +2041,14 @@ describe('getPrereviewsForUserFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
+                doi: Doi('10.5281/zenodo.1061864'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-04'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    identifier: Doi('10.1101/2022.01.13.476201'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -2108,7 +2108,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
               },
             },
             {
-              conceptdoi: '10.5072/zenodo.1065235' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1065235'),
               conceptrecid: 1065235,
               files: [
                 {
@@ -2129,14 +2129,14 @@ describe('getPrereviewsForUserFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Josiah Carberry' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1065236' as Doi,
+                doi: Doi('10.5281/zenodo.1065236'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    identifier: Doi('10.1101/2022.02.14.480364'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -2209,7 +2209,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
         total: 1,
         hits: [
           {
-            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1061863'),
             conceptrecid: 1061863,
             files: [
               {
@@ -2230,13 +2230,13 @@ describe('getPrereviewsForUserFromZenodo', () => {
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'PREreviewer' }],
               description: 'Description',
-              doi: '10.5281/zenodo.1061864' as Doi,
+              doi: Doi('10.5281/zenodo.1061864'),
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-05'),
               related_identifiers: [
                 {
                   scheme: 'doi',
-                  identifier: '10.1101/2022.02.14.480364' as Doi,
+                  identifier: Doi('10.1101/2022.02.14.480364'),
                   relation: 'reviews',
                   resource_type: 'publication-preprint',
                 },
@@ -2302,7 +2302,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
           total: 2,
           hits: [
             {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
               conceptrecid: 1061863,
               files: [
                 {
@@ -2323,14 +2323,14 @@ describe('getPrereviewsForUserFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
+                doi: Doi('10.5281/zenodo.1061864'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-04'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    identifier: Doi('10.1101/2022.01.13.476201'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -2343,7 +2343,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
               },
             },
             {
-              conceptdoi: '10.5072/zenodo.1065235' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1065235'),
               conceptrecid: 1065235,
               files: [
                 {
@@ -2364,14 +2364,14 @@ describe('getPrereviewsForUserFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Josiah Carberry' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1065236' as Doi,
+                doi: Doi('10.5281/zenodo.1065236'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    identifier: Doi('10.1101/2022.02.14.480364'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -2468,7 +2468,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           total: 2,
           hits: [
             {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
               conceptrecid: 1061863,
               files: [
                 {
@@ -2495,14 +2495,14 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   },
                 ],
                 description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
+                doi: Doi('10.5281/zenodo.1061864'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-04'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    identifier: Doi('10.1101/2022.01.13.476201'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -2562,7 +2562,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
               },
             },
             {
-              conceptdoi: '10.5072/zenodo.1065235' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1065235'),
               conceptrecid: 1065235,
               files: [
                 {
@@ -2589,14 +2589,14 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   },
                 ],
                 description: 'Description',
-                doi: '10.5281/zenodo.1065236' as Doi,
+                doi: Doi('10.5281/zenodo.1065236'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    identifier: Doi('10.1101/2022.02.14.480364'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -2695,7 +2695,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         total: 1,
         hits: [
           {
-            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1061863'),
             conceptrecid: 1061863,
             files: [
               {
@@ -2722,13 +2722,13 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 },
               ],
               description: 'Description',
-              doi: '10.5281/zenodo.1061864' as Doi,
+              doi: Doi('10.5281/zenodo.1061864'),
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-05'),
               related_identifiers: [
                 {
                   scheme: 'doi',
-                  identifier: '10.1101/2022.02.14.480364' as Doi,
+                  identifier: Doi('10.1101/2022.02.14.480364'),
                   relation: 'reviews',
                   resource_type: 'publication-preprint',
                 },
@@ -2836,7 +2836,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           total: 2,
           hits: [
             {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
               conceptrecid: 1061863,
               files: [
                 {
@@ -2863,14 +2863,14 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   },
                 ],
                 description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
+                doi: Doi('10.5281/zenodo.1061864'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-04'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    identifier: Doi('10.1101/2022.01.13.476201'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -2883,7 +2883,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
               },
             },
             {
-              conceptdoi: '10.5072/zenodo.1065235' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1065235'),
               conceptrecid: 1065235,
               files: [
                 {
@@ -2910,14 +2910,14 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   },
                 ],
                 description: 'Description',
-                doi: '10.5281/zenodo.1065236' as Doi,
+                doi: Doi('10.5281/zenodo.1065236'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    identifier: Doi('10.1101/2022.02.14.480364'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -2983,7 +2983,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           total: 1,
           hits: [
             {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
               conceptrecid: 1061863,
               files: [
                 {
@@ -3004,14 +3004,14 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
+                doi: Doi('10.5281/zenodo.1061864'),
                 language: 'eng',
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-04'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    identifier: Doi('10.1101/2022.01.13.476201'),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -3065,7 +3065,7 @@ describe('getResponsesForPrereviewFromZenodo', () => {
         total: 2,
         hits: [
           {
-            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1061863'),
             conceptrecid: 1061863,
             files: [
               {
@@ -3086,14 +3086,14 @@ describe('getResponsesForPrereviewFromZenodo', () => {
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'PREreviewer' }],
               description: 'Description',
-              doi: '10.5281/zenodo.1061864' as Doi,
+              doi: Doi('10.5281/zenodo.1061864'),
               language: 'eng',
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-04'),
               related_identifiers: [
                 {
                   scheme: 'doi',
-                  identifier: '10.1101/2022.01.13.476201' as Doi,
+                  identifier: Doi('10.1101/2022.01.13.476201'),
                   relation: 'reviews',
                   resource_type: 'publication-preprint',
                 },
@@ -3106,7 +3106,7 @@ describe('getResponsesForPrereviewFromZenodo', () => {
             },
           },
           {
-            conceptdoi: '10.5072/zenodo.1065235' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1065235'),
             conceptrecid: 1065235,
             files: [
               {
@@ -3127,14 +3127,14 @@ describe('getResponsesForPrereviewFromZenodo', () => {
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'Josiah Carberry' }],
               description: 'Description',
-              doi: '10.5281/zenodo.1065236' as Doi,
+              doi: Doi('10.5281/zenodo.1065236'),
               language: 'eng',
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-05'),
               related_identifiers: [
                 {
                   scheme: 'doi',
-                  identifier: '10.1101/2022.02.14.480364' as Doi,
+                  identifier: Doi('10.1101/2022.02.14.480364'),
                   relation: 'reviews',
                   resource_type: 'publication-preprint',
                 },
@@ -3205,7 +3205,7 @@ describe('getResponsesForPrereviewFromZenodo', () => {
         total: 1,
         hits: [
           {
-            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1061863'),
             conceptrecid: 1061863,
             files: [
               {
@@ -3226,13 +3226,13 @@ describe('getResponsesForPrereviewFromZenodo', () => {
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'PREreviewer' }],
               description: 'Description',
-              doi: '10.5281/zenodo.1061864' as Doi,
+              doi: Doi('10.5281/zenodo.1061864'),
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-05'),
               related_identifiers: [
                 {
                   scheme: 'doi',
-                  identifier: '10.1101/2022.02.14.480364' as Doi,
+                  identifier: Doi('10.1101/2022.02.14.480364'),
                   relation: 'reviews',
                   resource_type: 'publication-preprint',
                 },
@@ -3347,7 +3347,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
         total: 1,
         hits: [
           {
-            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1061863'),
             conceptrecid: 1061863,
             files: [
               {
@@ -3376,7 +3376,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
                 : undefined,
               creators: [{ name: 'PREreviewer' }, ...otherAuthors],
               description: 'Description',
-              doi: '10.5281/zenodo.1061864' as Doi,
+              doi: Doi('10.5281/zenodo.1061864'),
               language: 'eng',
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-05'),
@@ -3433,7 +3433,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
         total: 1,
         hits: [
           {
-            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptdoi: Doi('10.5072/zenodo.1061863'),
             conceptrecid: 1061863,
             files: [
               {
@@ -3454,7 +3454,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'PREreviewer' }],
               description: 'Description',
-              doi: '10.5281/zenodo.1061864' as Doi,
+              doi: Doi('10.5281/zenodo.1061864'),
               license: { id: 'cc-by-4.0' },
               publication_date: new Date('2022-07-05'),
               resource_type: {
@@ -3553,7 +3553,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
           total: 1,
           hits: [
             {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
               conceptrecid: 1061863,
               files: [
                 {
@@ -3574,7 +3574,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
-                doi: '10.5281/zenodo.1061864' as Doi,
+                doi: Doi('10.5281/zenodo.1061864'),
                 license: { id: 'cc-by-4.0' },
                 publication_date: new Date('2022-07-05'),
                 resource_type: {

@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { type Doi, toUrl } from 'doi-ts'
+import { Doi, toUrl } from 'doi-ts'
 import * as _ from '../src/sciety.js'
 import * as fc from './fc.js'
 
@@ -63,13 +63,13 @@ test.prop(
     examples: [
       [
         [
-          { type: 'biorxiv', value: '10.1101/journal/pone.0011111' as Doi } as _.PreprintIdSupportedBySciety,
+          { type: 'biorxiv', value: Doi('10.1101/journal/pone.0011111') } as _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/journal/pone.0011111',
         ],
       ],
       [
         [
-          { type: 'biorxiv', value: '10.1101/456#789' as Doi } as _.PreprintIdSupportedBySciety,
+          { type: 'biorxiv', value: Doi('10.1101/456#789') } as _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/456%23789',
         ],
       ],
@@ -77,26 +77,26 @@ test.prop(
         [
           {
             type: 'biorxiv',
-            value: '10.1101/(SICI)1096-8644(199808)106:4<483::AID-AJPA4>3.0.CO;2-K' as Doi,
+            value: Doi('10.1101/(SICI)1096-8644(199808)106:4<483::AID-AJPA4>3.0.CO;2-K'),
           } as _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/(SICI)1096-8644(199808)106:4%3C483::AID-AJPA4%3E3.0.CO;2-K',
         ],
       ],
       [
         [
-          { type: 'biorxiv', value: '10.1101/./' as Doi } as _.PreprintIdSupportedBySciety,
+          { type: 'biorxiv', value: Doi('10.1101/./') } as _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/.%2F',
         ],
       ],
       [
         [
-          { type: 'biorxiv', value: '10.1101/../' as Doi } as _.PreprintIdSupportedBySciety,
+          { type: 'biorxiv', value: Doi('10.1101/../') } as _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/..%2F',
         ],
       ],
       [
         [
-          { type: 'biorxiv', value: '10.1101/\\' as Doi } as _.PreprintIdSupportedBySciety,
+          { type: 'biorxiv', value: Doi('10.1101/\\') } as _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/%5C',
         ],
       ],

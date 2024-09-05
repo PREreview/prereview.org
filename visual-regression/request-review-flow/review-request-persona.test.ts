@@ -1,4 +1,4 @@
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import type { Orcid } from 'orcid-id-ts'
 import { missingE } from '../../src/form.js'
@@ -16,7 +16,7 @@ const user = {
 
 const preprint = {
   type: 'biorxiv',
-  value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+  value: Doi('10.1101/2022.01.13.476201'),
 } satisfies ReviewRequestPreprintId
 
 test('content looks right', async ({ showPage }) => {

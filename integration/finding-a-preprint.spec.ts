@@ -1,4 +1,4 @@
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordsC } from 'zenodo-ts'
@@ -19,7 +19,7 @@ test('can find and view a preprint', async ({ fetch, page }) => {
             total: 1,
             hits: [
               {
-                conceptdoi: '10.5072/zenodo.1061863' as Doi,
+                conceptdoi: Doi('10.5072/zenodo.1061863'),
                 conceptrecid: 1061863,
                 files: [
                   {
@@ -48,7 +48,7 @@ test('can find and view a preprint', async ({ fetch, page }) => {
                   ],
                   description:
                     '<p>The manuscript &quot;The role of LHCBM1 in non-photochemical quenching in <em>Chlamydomonas reinhardtii</em>&quot; by Liu et al. aims to elucidate how LHCBM1 is involved in non-photochemical quenching (NPQ) in <em>Chlamydomonas reinhardtii</em>. The Chlamydomonas mutant lacking LHCBM1 (<em>npq5</em>) displays a low NPQ phenotype. The authors found that the antenna size and LHCSR3 accumulation are not responsible for the lower NPQ phenotype in <em>npq5</em>. They also artificially acidified the lumenal pH to protonate LHCSR3 for NPQ induction and found that <em>npq5 </em>NPQ is still low. They propose that absence of LHCBM1 could alter the association of LHCSR3 with the PSII supercomplex or that LHCBM1 interacts with LHCSR3 which would enhance its quenching capacity. This work enriches the knowledge about the impact of lack of LHCBM1 on antenna size, PSII function, LHCSR1 and 3 proteins accumulation and NPQ capacity during a 48-h high light treatment.</p>',
-                  doi: '10.5281/zenodo.1061864' as Doi,
+                  doi: Doi('10.5281/zenodo.1061864'),
                   license: { id: 'cc-by-4.0' },
                   publication_date: new Date('2022-07-05'),
                   related_identifiers: [

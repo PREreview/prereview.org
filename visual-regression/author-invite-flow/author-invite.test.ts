@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
@@ -28,12 +28,12 @@ test('content looks right', async ({ showPage }) => {
           ],
           anonymous: 2,
         },
-        doi: '10.5072/zenodo.1061864' as Doi,
+        doi: Doi('10.5072/zenodo.1061864'),
         license: 'CC-BY-4.0',
         preprint: {
           id: {
             type: 'biorxiv',
-            value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+            value: Doi('10.1101/2022.01.13.476201'),
           },
           title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
           language: 'en',
@@ -87,12 +87,12 @@ test('content looks right when logged in', async ({ showPage }) => {
           ],
           anonymous: 0,
         },
-        doi: '10.5072/zenodo.1061864' as Doi,
+        doi: Doi('10.5072/zenodo.1061864'),
         license: 'CC-BY-4.0',
         preprint: {
           id: {
             type: 'biorxiv',
-            value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+            value: Doi('10.1101/2022.01.13.476201'),
           },
           title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
           language: 'en',

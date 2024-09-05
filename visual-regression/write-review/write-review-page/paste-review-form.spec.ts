@@ -1,4 +1,4 @@
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import { missingE } from '../../../src/form.js'
 import { html } from '../../../src/html.js'
@@ -33,7 +33,7 @@ test('content looks right when the review is missing', async ({ showPage }) => {
 const preprint = {
   id: {
     type: 'biorxiv',
-    value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+    value: Doi('10.1101/2022.01.13.476201'),
   },
   title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
   language: 'en',

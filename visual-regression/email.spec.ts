@@ -1,4 +1,4 @@
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { createAuthorInviteEmail, createContactEmailAddressVerificationEmailForInvitedAuthor } from '../src/email.js'
@@ -60,7 +60,7 @@ test('author-invite HTML looks right', async ({ page }) => {
       preprint: {
         id: {
           type: 'biorxiv',
-          value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+          value: Doi('10.1101/2022.01.13.476201'),
         },
         title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
         language: 'en',
@@ -85,7 +85,7 @@ test('author-invite text looks right', async ({ page }) => {
       preprint: {
         id: {
           type: 'biorxiv',
-          value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+          value: Doi('10.1101/2022.01.13.476201'),
         },
         title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
         language: 'en',

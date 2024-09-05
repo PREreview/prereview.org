@@ -1,4 +1,4 @@
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
@@ -19,7 +19,7 @@ test('content looks right', async ({ showPage }) => {
     getAuthorInvite: () => TE.right({ status: 'completed', orcid: '0000-0002-1825-0097' as Orcid, review: 1234 }),
     getPrereview: () =>
       TE.right({
-        doi: '10.5072/zenodo.1061864' as Doi,
+        doi: Doi('10.5072/zenodo.1061864'),
         preprint: {
           title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
           language: 'en',

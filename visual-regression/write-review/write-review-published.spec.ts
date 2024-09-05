@@ -1,4 +1,4 @@
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import type { PreprintTitle } from '../../src/preprint.js'
@@ -13,7 +13,7 @@ import { expect, test } from '../base.js'
 test('content looks right', async ({ page, showHtml, templatePage }) => {
   const pageHtml = publishedPage({
     review: {
-      doi: '10.5281/zenodo.10779310' as Doi,
+      doi: Doi('10.5281/zenodo.10779310'),
       id: 10779310,
       form,
     },
@@ -30,7 +30,7 @@ test('content looks right', async ({ page, showHtml, templatePage }) => {
 test('content looks right when the preprint is not on Sciety', async ({ page, showHtml, templatePage }) => {
   const pageHtml = publishedPage({
     review: {
-      doi: '10.5281/zenodo.10779310' as Doi,
+      doi: Doi('10.5281/zenodo.10779310'),
       id: 10779310,
       form,
     },
@@ -51,7 +51,7 @@ test('content looks right when the preprint is not on Sciety', async ({ page, sh
 test('content looks right when there are more authors', async ({ page, showHtml, templatePage }) => {
   const pageHtml = publishedPage({
     review: {
-      doi: '10.5281/zenodo.10779310' as Doi,
+      doi: Doi('10.5281/zenodo.10779310'),
       id: 10779310,
       form: {
         ...form,
@@ -76,7 +76,7 @@ test('content looks right when there are more authors', async ({ page, showHtml,
 const preprint = {
   id: {
     type: 'biorxiv',
-    value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+    value: Doi('10.1101/2022.01.13.476201'),
   },
   title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
   language: 'en',

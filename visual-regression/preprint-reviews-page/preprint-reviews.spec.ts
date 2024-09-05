@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import type { Prereview, RapidPrereview } from '../../src/preprint-reviews-page/index.js'
@@ -57,7 +57,7 @@ const preprint = {
     { name: 'Wojciech Nawrocki', orcid: '0000-0001-5124-3000' as Orcid },
     { name: 'Roberta Croce', orcid: '0000-0003-3469-834X' as Orcid },
   ],
-  id: { type: 'biorxiv', value: '10.1101/2022.01.13.476201' as Doi<'1101'> },
+  id: { type: 'biorxiv', value: Doi('10.1101/2022.01.13.476201') },
   posted: PlainDate.from('2022-01-14'),
   abstract: {
     text: html`<p>
