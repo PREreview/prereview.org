@@ -21,7 +21,7 @@
     "cookie-signature": "^1.2.1",
     "crossref-ts": "^0.1.5",
     "datacite-ts": "^0.1.4",
-    "doi-ts": "^0.1.9",
+    "doi-ts": "^0.1.10",
     "effect": "^3.7.2",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
