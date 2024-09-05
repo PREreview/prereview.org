@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { createPage } from '../../src/profile-page/create-page.js'
@@ -16,7 +16,7 @@ test('content looks right', async ({ showPage }) => {
     {
       type: 'orcid',
       name: 'Josiah Carberry' as NonEmptyString,
-      orcid: '0000-0002-1825-0097' as Orcid,
+      orcid: Orcid('0000-0002-1825-0097'),
       slackUser: {
         name: 'jcarberry',
         image: new URL('https://placehold.co/48x48'),
@@ -44,7 +44,7 @@ test('content looks right when empty', async ({ showPage }) => {
     {
       type: 'orcid',
       name: 'Josiah Carberry' as NonEmptyString,
-      orcid: '0000-0002-1825-0097' as Orcid,
+      orcid: Orcid('0000-0002-1825-0097'),
       slackUser: undefined,
       careerStage: undefined,
       researchInterests: undefined,

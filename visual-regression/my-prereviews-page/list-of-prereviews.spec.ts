@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { rawHtml } from '../../src/html.js'
 import * as _ from '../../src/my-prereviews-page/list-of-prereviews.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
@@ -14,7 +14,7 @@ test('content looks right', async ({ showPage }) => {
       prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
       user: {
         name: 'Josiah Carberry',
-        orcid: '0000-0002-1825-0097' as Orcid,
+        orcid: Orcid('0000-0002-1825-0097'),
         pseudonym: 'Orange Panda' as Pseudonym,
       },
     }),

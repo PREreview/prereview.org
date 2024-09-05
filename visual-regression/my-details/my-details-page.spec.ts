@@ -1,5 +1,5 @@
 import * as O from 'fp-ts/lib/Option.js'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { createPage } from '../../src/my-details-page/my-details-page.js'
 import type { EmailAddress } from '../../src/types/email-address.js'
@@ -104,7 +104,7 @@ test('content looks right when empty', async ({ showPage }) => {
 
 const user = {
   name: 'Josiah Carberry',
-  orcid: '0000-0002-1825-0097' as Orcid,
+  orcid: Orcid('0000-0002-1825-0097'),
   pseudonym: 'Orange Panda' as Pseudonym,
 } satisfies User
 

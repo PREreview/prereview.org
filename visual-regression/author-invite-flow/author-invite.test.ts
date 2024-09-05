@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { authorInvite } from '../../src/author-invite-flow/index.js'
 import { html } from '../../src/html.js'
@@ -19,12 +19,12 @@ test('content looks right', async ({ showPage }) => {
       TE.right({
         authors: {
           named: [
-            { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
-            { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
-            { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
-            { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
-            { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
-            { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
+            { name: 'Jingfang Hao', orcid: Orcid('0000-0003-4436-3420') },
+            { name: 'Pierrick Bru', orcid: Orcid('0000-0001-5854-0905') },
+            { name: 'Alizée Malnoë', orcid: Orcid('0000-0002-8777-3174') },
+            { name: 'Aurélie Crepin', orcid: Orcid('0000-0002-4754-6823') },
+            { name: 'Jack Forsman', orcid: Orcid('0000-0002-5111-8901') },
+            { name: 'Domenica Farci', orcid: Orcid('0000-0002-3691-2699') },
           ],
           anonymous: 2,
         },
@@ -68,7 +68,7 @@ test('content looks right when logged in', async ({ showPage }) => {
     id: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
     user: {
       name: 'Josiah Carberry',
-      orcid: '0000-0002-1825-0097' as Orcid,
+      orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
   })({
@@ -78,12 +78,12 @@ test('content looks right when logged in', async ({ showPage }) => {
       TE.right({
         authors: {
           named: [
-            { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
-            { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
-            { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
-            { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
-            { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
-            { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
+            { name: 'Jingfang Hao', orcid: Orcid('0000-0003-4436-3420') },
+            { name: 'Pierrick Bru', orcid: Orcid('0000-0001-5854-0905') },
+            { name: 'Alizée Malnoë', orcid: Orcid('0000-0002-8777-3174') },
+            { name: 'Aurélie Crepin', orcid: Orcid('0000-0002-4754-6823') },
+            { name: 'Jack Forsman', orcid: Orcid('0000-0002-5111-8901') },
+            { name: 'Domenica Farci', orcid: Orcid('0000-0002-3691-2699') },
           ],
           anonymous: 0,
         },

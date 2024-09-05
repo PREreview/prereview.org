@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import type { Prereview, RapidPrereview } from '../../src/preprint-reviews-page/index.js'
 import { createPage } from '../../src/preprint-reviews-page/preprint-reviews.js'
@@ -54,8 +54,8 @@ test('content looks right with rapid PREreviews', async ({ showTwoUpPage }) => {
 const preprint = {
   authors: [
     { name: 'Xin Liu' },
-    { name: 'Wojciech Nawrocki', orcid: '0000-0001-5124-3000' as Orcid },
-    { name: 'Roberta Croce', orcid: '0000-0003-3469-834X' as Orcid },
+    { name: 'Wojciech Nawrocki', orcid: Orcid('0000-0001-5124-3000') },
+    { name: 'Roberta Croce', orcid: Orcid('0000-0003-3469-834X') },
   ],
   id: { type: 'biorxiv', value: Doi('10.1101/2022.01.13.476201') },
   posted: PlainDate.from('2022-01-14'),
@@ -88,9 +88,9 @@ const prereview1 = {
   id: 11062553,
   authors: {
     named: [
-      { name: 'Ashraya Ravikumar', orcid: '0000-0002-4902-4025' as Orcid },
-      { name: 'Stephanie Wankowicz', orcid: '0000-0002-4225-7459' as Orcid },
-      { name: 'Flip Jansen', orcid: '0009-0004-7336-0274' as Orcid },
+      { name: 'Ashraya Ravikumar', orcid: Orcid('0000-0002-4902-4025') },
+      { name: 'Stephanie Wankowicz', orcid: Orcid('0000-0002-4225-7459') },
+      { name: 'Flip Jansen', orcid: Orcid('0009-0004-7336-0274') },
     ],
     anonymous: 1,
   },
@@ -284,7 +284,7 @@ const prereview1 = {
 const prereview2 = {
   id: 10888905,
   authors: {
-    named: [{ name: 'Alain Manuel Chaple Gil', orcid: '0000-0002-8571-4429' as Orcid }],
+    named: [{ name: 'Alain Manuel Chaple Gil', orcid: Orcid('0000-0002-8571-4429') }],
     anonymous: 0,
   },
   club: 'reviewing-dental-articles-club',
@@ -368,23 +368,23 @@ const prereview3 = {
   id: 10870479,
   authors: {
     named: [
-      { name: 'Vanessa Fairhurst', orcid: '0000-0001-8511-8689' as Orcid },
-      { name: 'Femi Qudus Arogundade', orcid: '0000-0002-9222-1817' as Orcid },
-      { name: 'Cesar Acevedo-Triana', orcid: '0000-0002-1296-9957' as Orcid },
-      { name: 'Kylie Yui Dan', orcid: '0000-0001-5894-4651' as Orcid },
+      { name: 'Vanessa Fairhurst', orcid: Orcid('0000-0001-8511-8689') },
+      { name: 'Femi Qudus Arogundade', orcid: Orcid('0000-0002-9222-1817') },
+      { name: 'Cesar Acevedo-Triana', orcid: Orcid('0000-0002-1296-9957') },
+      { name: 'Kylie Yui Dan', orcid: Orcid('0000-0001-5894-4651') },
       { name: 'Emerald Swan' },
-      { name: 'Lamis Elkheir', orcid: '0000-0002-3516-334X' as Orcid },
+      { name: 'Lamis Elkheir', orcid: Orcid('0000-0002-3516-334X') },
       { name: 'Hickory Jaguar' },
-      { name: 'Syeda Azra', orcid: '0009-0001-6430-851X' as Orcid },
-      { name: 'María Sol Ruiz', orcid: '0000-0001-9008-3302' as Orcid },
-      { name: 'Juan Bizzotto', orcid: '0000-0002-7844-2162' as Orcid },
-      { name: 'Janaynne Carvalho do Amaral', orcid: '0000-0002-9817-4572' as Orcid },
-      { name: 'Ebuka Ezeike', orcid: '0000-0003-3452-0306' as Orcid },
-      { name: 'Ranea-Robles P.', orcid: '0000-0001-6478-3815' as Orcid },
-      { name: 'María Eugenia Segretin', orcid: '0000-0002-6336-0703' as Orcid },
-      { name: 'Samir  Hachani', orcid: '0000-0002-9280-8941' as Orcid },
-      { name: 'Anna Oliveras', orcid: '0000-0002-5880-5245' as Orcid },
-      { name: 'Prof. MI Subhani, PhD., PDoc.', orcid: '0000-0003-1127-1853' as Orcid },
+      { name: 'Syeda Azra', orcid: Orcid('0009-0001-6430-851X') },
+      { name: 'María Sol Ruiz', orcid: Orcid('0000-0001-9008-3302') },
+      { name: 'Juan Bizzotto', orcid: Orcid('0000-0002-7844-2162') },
+      { name: 'Janaynne Carvalho do Amaral', orcid: Orcid('0000-0002-9817-4572') },
+      { name: 'Ebuka Ezeike', orcid: Orcid('0000-0003-3452-0306') },
+      { name: 'Ranea-Robles P.', orcid: Orcid('0000-0001-6478-3815') },
+      { name: 'María Eugenia Segretin', orcid: Orcid('0000-0002-6336-0703') },
+      { name: 'Samir  Hachani', orcid: Orcid('0000-0002-9280-8941') },
+      { name: 'Anna Oliveras', orcid: Orcid('0000-0002-5880-5245') },
+      { name: 'Prof. MI Subhani, PhD., PDoc.', orcid: Orcid('0000-0003-1127-1853') },
     ],
     anonymous: 3,
   },
@@ -651,15 +651,15 @@ const prereview4 = {
   id: 10779310,
   authors: {
     named: [
-      { name: 'James Fraser', orcid: '0000-0002-5080-2859' as Orcid },
-      { name: 'Luisa Vasconcelos', orcid: '0000-0003-2016-5606' as Orcid },
-      { name: 'Liyi Cheng', orcid: '0000-0002-5708-7835' as Orcid },
-      { name: 'Samantha  Lish', orcid: '0000-0003-0060-1458' as Orcid },
-      { name: 'S. Chan Baek', orcid: '0009-0004-3002-8888' as Orcid },
-      { name: 'Lang Ding', orcid: '0000-0002-5365-9445' as Orcid },
-      { name: 'Alexandra Probst', orcid: '0000-0001-8389-8159' as Orcid },
-      { name: 'Naiya Phillips', orcid: '0000-0003-1836-5182' as Orcid },
-      { name: 'William Grubbe', orcid: '0000-0002-4933-2626' as Orcid },
+      { name: 'James Fraser', orcid: Orcid('0000-0002-5080-2859') },
+      { name: 'Luisa Vasconcelos', orcid: Orcid('0000-0003-2016-5606') },
+      { name: 'Liyi Cheng', orcid: Orcid('0000-0002-5708-7835') },
+      { name: 'Samantha  Lish', orcid: Orcid('0000-0003-0060-1458') },
+      { name: 'S. Chan Baek', orcid: Orcid('0009-0004-3002-8888') },
+      { name: 'Lang Ding', orcid: Orcid('0000-0002-5365-9445') },
+      { name: 'Alexandra Probst', orcid: Orcid('0000-0001-8389-8159') },
+      { name: 'Naiya Phillips', orcid: Orcid('0000-0003-1836-5182') },
+      { name: 'William Grubbe', orcid: Orcid('0000-0002-4933-2626') },
     ],
     anonymous: 3,
   },
@@ -739,13 +739,13 @@ const prereview5 = {
   id: 10411168,
   authors: {
     named: [
-      { name: 'Miguel Oliveira, Jr.', orcid: '0000-0002-0866-0535' as Orcid },
-      { name: 'Arthur Ronald Brasil Terto', orcid: '0000-0003-4806-4946' as Orcid },
-      { name: 'Cleber Ataíde', orcid: '0000-0002-9340-9977' as Orcid },
-      { name: 'Glayci Kelli Reis da Silva Xavier', orcid: '0000-0002-2934-4734' as Orcid },
-      { name: 'Kyvia Fernanda Tenório da Silva', orcid: '0000-0002-0509-3555' as Orcid },
-      { name: 'Marcelo Travassos da Silva', orcid: '0000-0002-5425-5071' as Orcid },
-      { name: 'Pedro Ricardo Bin', orcid: '0000-0002-7547-3430' as Orcid },
+      { name: 'Miguel Oliveira, Jr.', orcid: Orcid('0000-0002-0866-0535') },
+      { name: 'Arthur Ronald Brasil Terto', orcid: Orcid('0000-0003-4806-4946') },
+      { name: 'Cleber Ataíde', orcid: Orcid('0000-0002-9340-9977') },
+      { name: 'Glayci Kelli Reis da Silva Xavier', orcid: Orcid('0000-0002-2934-4734') },
+      { name: 'Kyvia Fernanda Tenório da Silva', orcid: Orcid('0000-0002-0509-3555') },
+      { name: 'Marcelo Travassos da Silva', orcid: Orcid('0000-0002-5425-5071') },
+      { name: 'Pedro Ricardo Bin', orcid: Orcid('0000-0002-7547-3430') },
     ],
     anonymous: 0,
   },
@@ -955,7 +955,7 @@ const prereview5 = {
 } satisfies Prereview
 
 const rapidPrereview1 = {
-  author: { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
+  author: { name: 'Alizée Malnoë', orcid: Orcid('0000-0002-8777-3174') },
   questions: {
     availableCode: 'na',
     availableData: 'no',

@@ -1,5 +1,5 @@
 import { Doi } from 'doi-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { createAuthorInviteEmail, createContactEmailAddressVerificationEmailForInvitedAuthor } from '../src/email.js'
 import { html } from '../src/html.js'
@@ -12,7 +12,7 @@ test('email-verification HTML for an invited author looks right', async ({ page 
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
     user: {
       name: 'Josiah Carberry',
-      orcid: '0000-0002-1825-0097' as Orcid,
+      orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
     emailAddress: {
@@ -32,7 +32,7 @@ test('email-verification text for an invited author looks right', async ({ page 
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
     user: {
       name: 'Josiah Carberry',
-      orcid: '0000-0002-1825-0097' as Orcid,
+      orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
     emailAddress: {

@@ -1,5 +1,5 @@
 import { Doi } from 'doi-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { checkPage } from '../../src/request-review-flow/check-page/check-page.js'
 import { failureMessage } from '../../src/request-review-flow/check-page/failure-message.js'
 import type { ReviewRequestPreprintId } from '../../src/review-request.js'
@@ -20,7 +20,7 @@ test('content looks right', async ({ showPage }) => {
     },
     user: {
       name: 'Josiah Carberry',
-      orcid: '0000-0002-1825-0097' as Orcid,
+      orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
   })
@@ -39,7 +39,7 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
     },
     user: {
       name: 'Josiah Carberry',
-      orcid: '0000-0002-1825-0097' as Orcid,
+      orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
   })

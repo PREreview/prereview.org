@@ -3,7 +3,7 @@ import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/datacite.js'
 import { rawHtml } from '../src/html.js'
 import * as fc from './fc.js'
@@ -670,14 +670,14 @@ describe('getPreprintFromDatacite', () => {
           E.right({
             abstract: undefined,
             authors: [
-              { name: 'Prachee Avasthi', orcid: '0000-0002-1688-722X' as Orcid },
+              { name: 'Prachee Avasthi', orcid: Orcid('0000-0002-1688-722X') },
               { name: 'Ben Braverman', orcid: undefined },
-              { name: 'Brae M. Bigge', orcid: '0000-0002-0907-4597' as Orcid },
-              { name: 'Tara Essock-Burns', orcid: '0000-0003-4159-6974' as Orcid },
-              { name: 'Ryan Lane', orcid: '0000-0002-5887-2069' as Orcid },
-              { name: 'David G. Mets', orcid: '0000-0002-0803-0912' as Orcid },
-              { name: 'Austin H. Patton', orcid: '0000-0003-1286-9005' as Orcid },
-              { name: 'Ryan York', orcid: '0000-0002-1073-1494' as Orcid },
+              { name: 'Brae M. Bigge', orcid: Orcid('0000-0002-0907-4597') },
+              { name: 'Tara Essock-Burns', orcid: Orcid('0000-0003-4159-6974') },
+              { name: 'Ryan Lane', orcid: Orcid('0000-0002-5887-2069') },
+              { name: 'David G. Mets', orcid: Orcid('0000-0002-0803-0912') },
+              { name: 'Austin H. Patton', orcid: Orcid('0000-0003-1286-9005') },
+              { name: 'Ryan York', orcid: Orcid('0000-0002-1073-1494') },
             ],
             id,
             posted,

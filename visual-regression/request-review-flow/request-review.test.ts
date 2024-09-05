@@ -1,5 +1,5 @@
 import { Doi } from 'doi-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { requestReviewPage } from '../../src/request-review-flow/request-review-page/request-review-page.js'
@@ -18,7 +18,7 @@ const preprint = {
 
 const user = {
   name: 'Josiah Carberry',
-  orcid: '0000-0002-1825-0097' as Orcid,
+  orcid: Orcid('0000-0002-1825-0097'),
   pseudonym: 'Orange Panda' as Pseudonym,
 } satisfies User
 

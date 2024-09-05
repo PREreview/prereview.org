@@ -1,4 +1,4 @@
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { html, plainText } from '../src/html.js'
 import { PageResponse } from '../src/response.js'
 import type { Pseudonym } from '../src/types/pseudonym.js'
@@ -40,6 +40,6 @@ test("page layout looks right when my-details hasn't been seen", async ({ showPa
 
 const user = {
   name: 'Josiah Carberry',
-  orcid: '0000-0002-1825-0097' as Orcid,
+  orcid: Orcid('0000-0002-1825-0097'),
   pseudonym: 'Orange Panda' as Pseudonym,
 } satisfies User

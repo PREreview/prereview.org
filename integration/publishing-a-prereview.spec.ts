@@ -6,7 +6,7 @@ import { constVoid, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC, type Record as ZenodoRecord } from 'zenodo-ts'
 import {
@@ -663,7 +663,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
         creators: [
           {
             name: 'Josiah Carberry',
-            orcid: '0000-0002-1825-0097' as Orcid,
+            orcid: Orcid('0000-0002-1825-0097'),
           },
         ],
         description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',

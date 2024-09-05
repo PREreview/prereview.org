@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { Prereview, Response } from '../../src/review-page/index.js'
@@ -130,15 +130,15 @@ test('content looks right when there are responses', async ({ showPage }) => {
 const review = {
   authors: {
     named: [
-      { name: 'James Fraser', orcid: '0000-0002-5080-2859' as Orcid },
-      { name: 'Luisa Vasconcelos', orcid: '0000-0003-2016-5606' as Orcid },
-      { name: 'Liyi Cheng', orcid: '0000-0002-5708-7835' as Orcid },
-      { name: 'Samantha  Lish', orcid: '0000-0003-0060-1458' as Orcid },
-      { name: 'S. Chan Baek', orcid: '0009-0004-3002-8888' as Orcid },
-      { name: 'Lang Ding', orcid: '0000-0002-5365-9445' as Orcid },
-      { name: 'Alexandra Probst', orcid: '0000-0001-8389-8159' as Orcid },
-      { name: 'Naiya Phillips', orcid: '0000-0003-1836-5182' as Orcid },
-      { name: 'William Grubbe', orcid: '0000-0002-4933-2626' as Orcid },
+      { name: 'James Fraser', orcid: Orcid('0000-0002-5080-2859') },
+      { name: 'Luisa Vasconcelos', orcid: Orcid('0000-0003-2016-5606') },
+      { name: 'Liyi Cheng', orcid: Orcid('0000-0002-5708-7835') },
+      { name: 'Samantha  Lish', orcid: Orcid('0000-0003-0060-1458') },
+      { name: 'S. Chan Baek', orcid: Orcid('0009-0004-3002-8888') },
+      { name: 'Lang Ding', orcid: Orcid('0000-0002-5365-9445') },
+      { name: 'Alexandra Probst', orcid: Orcid('0000-0001-8389-8159') },
+      { name: 'Naiya Phillips', orcid: Orcid('0000-0003-1836-5182') },
+      { name: 'William Grubbe', orcid: Orcid('0000-0002-4933-2626') },
     ],
     anonymous: 0,
   },
@@ -225,7 +225,7 @@ const review = {
 
 const structuredReview = {
   authors: {
-    named: [{ name: 'Justice Nyakura', orcid: '0000-0003-1065-1950' as Orcid }],
+    named: [{ name: 'Justice Nyakura', orcid: Orcid('0000-0003-1065-1950') }],
     anonymous: 0,
   },
   doi: Doi('10.5281/zenodo.10775334'),
@@ -281,7 +281,7 @@ const structuredReview = {
 
 const response1 = {
   authors: {
-    named: [{ name: 'Josiah Carberry', orcid: '0000-0002-1825-0097' as Orcid }, { name: 'Orange Panda' }],
+    named: [{ name: 'Josiah Carberry', orcid: Orcid('0000-0002-1825-0097') }, { name: 'Orange Panda' }],
   },
   doi: Doi('10.5281/zenodo.10779311'),
   language: 'en',

@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import type { Club } from '../../src/club-details.js'
 import { createPage } from '../../src/club-profile-page/club-profile-page.js'
 import type { Prereviews } from '../../src/club-profile-page/prereviews.js'
@@ -42,8 +42,8 @@ const club1 = {
     </p>
   `,
   leads: [
-    { name: 'Arpita Ghosh', orcid: '0009-0003-2106-3270' as Orcid },
-    { name: 'Garima Jain', orcid: '0000-0002-8079-9611' as Orcid },
+    { name: 'Arpita Ghosh', orcid: Orcid('0009-0003-2106-3270') },
+    { name: 'Garima Jain', orcid: Orcid('0000-0002-8079-9611') },
   ],
   contact: 'email@example.com' as EmailAddress,
   joinLink: new URL(
@@ -59,7 +59,7 @@ const club2 = {
       cancer.
     </p>
   `,
-  leads: [{ name: 'Arpita Ghosh', orcid: '0009-0003-2106-3270' as Orcid }],
+  leads: [{ name: 'Arpita Ghosh', orcid: Orcid('0009-0003-2106-3270') }],
 } satisfies Club
 
 const id = 'asapbio-cancer-biology' satisfies ClubId

@@ -1,6 +1,6 @@
 import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { missingE } from '../../src/form.js'
 import { personaForm } from '../../src/request-review-flow/persona-page/persona-form.js'
 import type { ReviewRequestPreprintId } from '../../src/review-request.js'
@@ -10,7 +10,7 @@ import { expect, test } from '../base.js'
 
 const user = {
   name: 'Josiah Carberry',
-  orcid: '0000-0002-1825-0097' as Orcid,
+  orcid: Orcid('0000-0002-1825-0097'),
   pseudonym: 'Orange Panda' as Pseudonym,
 } satisfies User
 

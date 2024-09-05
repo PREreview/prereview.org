@@ -5,7 +5,7 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import { Status } from 'hyper-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/orcid.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
@@ -22,10 +22,10 @@ describe('getNameFromOrcid', () => {
       ],
       {
         examples: [
-          [new URL('https://pub.orcid.org'), '0000-0002-1825-0097' as Orcid, ['Josiah', 'Carberry', 'Josiah Carberry']],
+          [new URL('https://pub.orcid.org'), Orcid('0000-0002-1825-0097'), ['Josiah', 'Carberry', 'Josiah Carberry']],
           [
             new URL('https://pub.orcid.org'),
-            '0000-0002-1825-0097' as Orcid,
+            Orcid('0000-0002-1825-0097'),
             [' Josiah ', ' Carberry ', 'Josiah Carberry'],
           ],
         ],
@@ -46,8 +46,8 @@ describe('getNameFromOrcid', () => {
 
     test.prop([fc.origin(), fc.orcid(), fc.nonEmptyString().map(givenName => [givenName, givenName.trim()])], {
       examples: [
-        [new URL('https://pub.orcid.org'), '0000-0002-1825-0097' as Orcid, ['Josiah', 'Josiah']],
-        [new URL('https://pub.orcid.org'), '0000-0002-1825-0097' as Orcid, [' Josiah ', 'Josiah']],
+        [new URL('https://pub.orcid.org'), Orcid('0000-0002-1825-0097'), ['Josiah', 'Josiah']],
+        [new URL('https://pub.orcid.org'), Orcid('0000-0002-1825-0097'), [' Josiah ', 'Josiah']],
       ],
     })('without a family name', async (url, orcid, [givenName, expected]) => {
       const actual = await _.getNameFromOrcid(orcid)({

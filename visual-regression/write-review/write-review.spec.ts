@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import type { Preprint } from '../../src/preprint.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
@@ -29,8 +29,8 @@ test('content looks right when logged in', async ({ showPage }) => {
 const preprint = {
   authors: [
     { name: 'Xin Liu' },
-    { name: 'Wojciech Nawrocki', orcid: '0000-0001-5124-3000' as Orcid },
-    { name: 'Roberta Croce', orcid: '0000-0003-3469-834X' as Orcid },
+    { name: 'Wojciech Nawrocki', orcid: Orcid('0000-0001-5124-3000') },
+    { name: 'Roberta Croce', orcid: Orcid('0000-0003-3469-834X') },
   ],
   id: { type: 'biorxiv', value: Doi('10.1101/2022.01.13.476201') },
   posted: PlainDate.from('2022-01-14'),
@@ -61,6 +61,6 @@ const preprint = {
 
 const user = {
   name: 'Josiah Carberry',
-  orcid: '0000-0002-1825-0097' as Orcid,
+  orcid: Orcid('0000-0002-1825-0097'),
   pseudonym: 'Orange Panda' as Pseudonym,
 } satisfies User
