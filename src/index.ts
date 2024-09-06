@@ -1,6 +1,5 @@
 import { NodeRuntime } from '@effect/platform-node'
 import { SystemClock } from 'clock-ts'
-import * as dns from 'dns'
 import { Effect, Layer } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import { pipe } from 'fp-ts/lib/function.js'
@@ -9,6 +8,7 @@ import { DeprecatedEnvVars, DeprecatedLoggerEnv, Express, Redis } from './Contex
 import { decodeEnv } from './env.js'
 import { expressServer } from './ExpressServer.js'
 import { expressServerLifecycle } from './ExpressServerLifecycle.js'
+import { mitigateZenodoSandboxIpv6Issue } from './MitigateZenodoSandboxIpv6Issue.js'
 import { redisLifecycle } from './Redis.js'
 import { verifyCache } from './VerifyCache.js'
 
@@ -22,12 +22,9 @@ const localLoggerEnv: L.LoggerEnv = {
   ),
 }
 
-if (localEnv.ZENODO_URL.href.includes('sandbox')) {
-  dns.setDefaultResultOrder('ipv4first')
-}
-
 pipe(
-  expressServerLifecycle,
+  mitigateZenodoSandboxIpv6Issue,
+  Effect.andThen(expressServerLifecycle),
   Effect.tap(verifyCache),
   Layer.scopedDiscard,
   Layer.launch,
