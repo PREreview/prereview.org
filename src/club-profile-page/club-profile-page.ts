@@ -50,7 +50,7 @@ export function createPage({
       ${club.description}
 
       <dl>
-        <dt>${translate(locale, 'club-profile-page', 'clubLeads')()}</dt>
+        <dt>${translate(locale, 'club-profile-page')('clubLeads')()}</dt>
         <dd>
           ${pipe(
             club.leads,
@@ -69,25 +69,25 @@ export function createPage({
 
       ${club.contact
         ? html`<a href="mailto:${club.contact}" class="button"
-            >${translate(locale, 'club-profile-page', 'contactClub')()}</a
+            >${translate(locale, 'club-profile-page')('contactClub')()}</a
           >`
         : ''}
       ${club.joinLink
         ? html`<a href="${club.joinLink.href}" class="button"
-            >${translate(locale, 'club-profile-page', 'joinClub')()}</a
+            >${translate(locale, 'club-profile-page')('joinClub')()}</a
           > `
         : ''}
 
-      <h2>${translate(locale, 'club-profile-page', 'prereviews')()}</h2>
+      <h2>${translate(locale, 'club-profile-page')('prereviews')()}</h2>
 
       ${pipe(
         prereviews,
         RA.match(
           () => html`
             <div class="inset">
-              <p>${translate(locale, 'club-profile-page', 'noResults')({ name: club.name })}</p>
+              <p>${translate(locale, 'club-profile-page')('noResults')({ name: club.name })}</p>
 
-              <p>${translate(locale, 'club-profile-page', 'appearHere')()}</p>
+              <p>${translate(locale, 'club-profile-page')('appearHere')()}</p>
             </div>
           `,
           prereviews => html`
@@ -98,11 +98,7 @@ export function createPage({
                     <article>
                       <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
                         ${rawHtml(
-                          translate(
-                            locale,
-                            'reviews-list',
-                            'reviewText',
-                          )({
+                          translate(locale, 'reviews-list')('reviewText')({
                             reviewers: pipe(
                               prereview.reviewers,
                               RNEA.map(name => html`<b>${name}</b>`),
@@ -131,9 +127,9 @@ export function createPage({
                         : ''}
 
                       <dl>
-                        <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
+                        <dt>${translate(locale, 'reviews-list')('reviewPublished')()}</dt>
                         <dd>${renderDate(locale)(prereview.published)}</dd>
-                        <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
+                        <dt>${translate(locale, 'reviews-list')('reviewServer')()}</dt>
                         <dd>
                           ${match(prereview.preprint.id.type)
                             .with('africarxiv', () => 'AfricArXiv Preprints')

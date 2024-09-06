@@ -64,7 +64,7 @@ export class HtmlEditor extends HTMLElement {
     const locale = isSupportedLocale(lang) ? lang : DefaultLocale
 
     const toolbarButtons = Promise.all([
-      createButton(translate(locale, 'html-editor', 'bold')(), boldIcon),
+      createButton(translate(locale, 'html-editor')('bold')(), boldIcon),
       createButton('Italic', italicIcon),
       createButton('Subscript', subscriptIcon),
       createButton('Superscript', superscriptIcon),

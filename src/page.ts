@@ -142,8 +142,8 @@ export function page({
               ${environmentLabel
                 ? html`
                     <div class="phase-banner">
-                      <strong class="tag">${translate(locale, 'environment', `${environmentLabel}Name`)()}</strong>
-                      <span>${translate(locale, 'environment', `${environmentLabel}Text`)()}</span>
+                      <strong class="tag">${translate(locale, 'environment')(`${environmentLabel}Name`)()}</strong>
+                      <span>${translate(locale, 'environment')(`${environmentLabel}Text`)()}</span>
                     </div>
                   `
                 : ''}
@@ -155,26 +155,26 @@ export function page({
                           ? html`
                               <li>
                                 <a href="https://content.prereview.org/"
-                                  >${translate(locale, 'header', 'menuBlog')()}</a
+                                  >${translate(locale, 'header')('menuBlog')()}</a
                                 >
                               </li>
                               <li>
                                 <a
                                   href="${format(aboutUsMatch.formatter, {})}"
                                   ${current === 'about-us' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuAboutUs')()}</a
+                                  >${translate(locale, 'header')('menuAboutUs')()}</a
                                 >
                               </li>
                               <li>
                                 <a
                                   href="${format(partnersMatch.formatter, {})}"
                                   ${current === 'partners' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuPartners')()}</a
+                                  >${translate(locale, 'header')('menuPartners')()}</a
                                 >
                               </li>
                               <li>
                                 <a href="https://donorbox.org/prereview"
-                                  >${translate(locale, 'header', 'menuDonate')()}</a
+                                  >${translate(locale, 'header')('menuDonate')()}</a
                                 >
                               </li>
                             `
@@ -184,13 +184,13 @@ export function page({
                                 <a
                                   href="${format(myDetailsMatch.formatter, {})}"
                                   ${current === 'my-details' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuMyDetails')()}${match(userOnboarding)
+                                  >${translate(locale, 'header')('menuMyDetails')()}${match(userOnboarding)
                                     .with(
                                       { seenMyDetailsPage: false },
                                       () =>
                                         html` <span role="status"
                                           ><span class="visually-hidden"
-                                            >${translate(locale, 'header', 'menuNewNotification')()}</span
+                                            >${translate(locale, 'header')('menuNewNotification')()}</span
                                           ></span
                                         >`,
                                     )
@@ -201,21 +201,21 @@ export function page({
                                 <a
                                   href="${format(myPrereviewsMatch.formatter, {})}"
                                   ${current === 'my-prereviews' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuMyPrereviews')()}</a
+                                  >${translate(locale, 'header')('menuMyPrereviews')()}</a
                                 >
                               </li>`
                           : ''}
                         ${user
                           ? html` <li>
                               <a href="${format(logOutMatch.formatter, {})}"
-                                >${translate(locale, 'header', 'menuLogOut')()}</a
+                                >${translate(locale, 'header')('menuLogOut')()}</a
                               >
                             </li>`
                           : ''}
                         ${!user && current === 'home'
                           ? html` <li>
                               <a href="${format(logInMatch.formatter, {})}"
-                                >${translate(locale, 'header', 'menuLogIn')()}</a
+                                >${translate(locale, 'header')('menuLogIn')()}</a
                               >
                             </li>`
                           : ''}
@@ -241,42 +241,42 @@ export function page({
                             <a
                               href="${format(reviewsMatch.formatter, {})}"
                               ${current === 'reviews' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuReviews')()}</a
+                              >${translate(locale, 'header')('menuReviews')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(reviewRequestsMatch.formatter, {})}"
                               ${current === 'review-requests' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuRequests')()}</a
+                              >${translate(locale, 'header')('menuRequests')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(trainingsMatch.formatter, {})}"
                               ${current === 'trainings' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuTrainings')()}</a
+                              >${translate(locale, 'header')('menuTrainings')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(liveReviewsMatch.formatter, {})}"
                               ${current === 'live-reviews' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuLiveReviews')()}</a
+                              >${translate(locale, 'header')('menuLiveReviews')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(resourcesMatch.formatter, {})}"
                               ${current === 'resources' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuResources')()}</a
+                              >${translate(locale, 'header')('menuResources')()}</a
                             >
                           </li>
                           <li>
                             <a
                               href="${format(clubsMatch.formatter, {})}"
                               ${current === 'clubs' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuClubs')()}</a
+                              >${translate(locale, 'header')('menuClubs')()}</a
                             >
                           </li>
                         </ul>
@@ -297,62 +297,62 @@ export function page({
                   </div>
 
                   <div>
-                    ${translate(locale, 'footer', 'newsletterText')()}
+                    ${translate(locale, 'footer')('newsletterText')()}
                     <a href="https://prereview.civicrm.org/civicrm/mailing/url?u=17&qid=30" class="forward"
-                      >${translate(locale, 'footer', 'newsletterLink')()}</a
+                      >${translate(locale, 'footer')('newsletterLink')()}</a
                     >
                   </div>
 
                   <div>
-                    ${translate(locale, 'footer', 'slackText')()}
+                    ${translate(locale, 'footer')('slackText')()}
                     <a href="https://bit.ly/PREreview-Slack" class="forward"
-                      >${translate(locale, 'footer', 'slackLink')()}</a
+                      >${translate(locale, 'footer')('slackLink')()}</a
                     >
                   </div>
 
                   <ul aria-label="Support links">
-                    <li><a href="https://donorbox.org/prereview">${translate(locale, 'footer', 'menuDonate')()}</a></li>
+                    <li><a href="https://donorbox.org/prereview">${translate(locale, 'footer')('menuDonate')()}</a></li>
                     <li>
                       <a
                         href="${format(peopleMatch.formatter, {})}"
                         ${current === 'people' ? html`aria-current="page"` : ''}
-                        >${translate(locale, 'footer', 'menuPeople')()}</a
+                        >${translate(locale, 'footer')('menuPeople')()}</a
                       >
                     </li>
                     <li>
                       <a
                         href="${format(fundingMatch.formatter, {})}"
                         ${current === 'funding' ? html`aria-current="page"` : ''}
-                        >${translate(locale, 'footer', 'menuFunding')()}</a
+                        >${translate(locale, 'footer')('menuFunding')()}</a
                       >
                     </li>
                     <li>
                       <a
                         href="${format(codeOfConductMatch.formatter, {})}"
                         ${current === 'code-of-conduct' ? html`aria-current="page"` : ''}
-                        >${translate(locale, 'footer', 'menuCodeOfConduct')()}</a
+                        >${translate(locale, 'footer')('menuCodeOfConduct')()}</a
                       >
                     </li>
                     <li>
                       <a
                         href="${format(ediaStatementMatch.formatter, {})}"
                         ${current === 'edia-statement' ? html`aria-current="page"` : ''}
-                        >${translate(locale, 'footer', 'menuEdiaStatement')()}</a
+                        >${translate(locale, 'footer')('menuEdiaStatement')()}</a
                       >
                     </li>
                     <li>
                       <a
                         href="${format(privacyPolicyMatch.formatter, {})}"
                         ${current === 'privacy-policy' ? html`aria-current="page"` : ''}
-                        >${translate(locale, 'footer', 'menuPrivacyPolicy')()}</a
+                        >${translate(locale, 'footer')('menuPrivacyPolicy')()}</a
                       >
                     </li>
-                    <li><a href="https://content.prereview.org/">${translate(locale, 'footer', 'menuBlog')()}</a></li>
+                    <li><a href="https://content.prereview.org/">${translate(locale, 'footer')('menuBlog')()}</a></li>
                     <li>
                       <a
                         href="${format(howToUseMatch.formatter, {})}"
                         ${current === 'how-to-use' ? html`aria-current="page"` : ''}
-                        >${translate(locale, 'footer', 'menuHowToUse')()}</a
+                        >${translate(locale, 'footer')('menuHowToUse')()}</a
                       >
                     </li>
                   </ul>
@@ -361,11 +361,7 @@ export function page({
                     <li>
                       <span class="visually-hidden">
                         ${rawHtml(
-                          translate(
-                            locale,
-                            'footer',
-                            'contactEmail',
-                          )({
+                          translate(locale, 'footer')('contactEmail')({
                             address: html`</span><a href="mailto:contact@prereview.org" class="email" translate="no"
                             >contact@prereview.org</a
                             ><span class="visually-hidden">`.toString(),
@@ -376,11 +372,7 @@ export function page({
                     <li>
                       <span class="visually-hidden">
                         ${rawHtml(
-                          translate(
-                            locale,
-                            'footer',
-                            'contactTwitter',
-                          )({
+                          translate(locale, 'footer')('contactTwitter')({
                             handle: html`</span><a href="https://twitter.com/PREreview_" class="twitter" translate="no"
                             >@PREreview_</a
                             ><span class="visually-hidden">`.toString(),
@@ -391,11 +383,7 @@ export function page({
                     <li>
                       <span class="visually-hidden">
                         ${rawHtml(
-                          translate(
-                            locale,
-                            'footer',
-                            'contactMastodon',
-                          )({
+                          translate(locale, 'footer')('contactMastodon')({
                             handle: html`</span><a href="https://mas.to/@prereview" class="mastodon" translate="no"
                             >@prereview@mas.to</a
                             ><span class="visually-hidden">`.toString(),
@@ -406,11 +394,7 @@ export function page({
                     <li>
                       <span class="visually-hidden">
                         ${rawHtml(
-                          translate(
-                            locale,
-                            'footer',
-                            'contactLinkedIn',
-                          )({
+                          translate(locale, 'footer')('contactLinkedIn')({
                             handle: html`</span><a
                               href="https://www.linkedin.com/company/prereview/"
                               class="linked-in"
@@ -424,11 +408,7 @@ export function page({
                     <li>
                       <span class="visually-hidden">
                         ${rawHtml(
-                          translate(
-                            locale,
-                            'footer',
-                            'contactGitHub',
-                          )({
+                          translate(locale, 'footer')('contactGitHub')({
                             handle: html`</span><a href="https://github.com/PREreview" class="github" translate="no"
                             >PREreview</a
                             ><span class="visually-hidden">`.toString(),
@@ -440,11 +420,7 @@ export function page({
 
                   <div class="small">
                     ${rawHtml(
-                      translate(
-                        locale,
-                        'footer',
-                        'zenodo',
-                      )({
+                      translate(locale, 'footer')('zenodo')({
                         community: text =>
                           html`<a href="https://zenodo.org/communities/prereview-reviews/records"
                             >${text}</a
@@ -458,11 +434,7 @@ export function page({
 
             <small>
               ${rawHtml(
-                translate(
-                  locale,
-                  'footer',
-                  'copyright',
-                )({
+                translate(locale, 'footer')('copyright')({
                   link: text =>
                     html`<a href="https://creativecommons.org/licenses/by/4.0/" rel="license">${text}</a>`.toString(),
                 }),

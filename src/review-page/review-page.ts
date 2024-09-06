@@ -30,25 +30,19 @@ export const createPage = ({
 }) =>
   PageResponse({
     title: plainText(
-      translate(
-        locale,
-        'review-page',
-        review.structured ? 'structuredReviewTitle' : 'reviewTitle',
-      )({ preprint: plainText`“${review.preprint.title}”`.toString() }),
+      translate(locale, 'review-page')(review.structured ? 'structuredReviewTitle' : 'reviewTitle')({
+        preprint: plainText`“${review.preprint.title}”`.toString(),
+      }),
     ),
     description: plainText(
       review.club
-        ? translate(
-            locale,
-            'review-page',
-            'clubReviewAuthors',
-          )({
+        ? translate(locale, 'review-page')('clubReviewAuthors')({
             authors: pipe(
               review.authors.named,
               RNEA.map(displayAuthor),
               RNEA.concatW(
                 review.authors.anonymous > 0
-                  ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                  ? [translate(locale, 'review-page')('otherAuthors')({ otherAuthors: review.authors.anonymous })]
                   : [],
               ),
               formatList(locale),
@@ -56,17 +50,13 @@ export const createPage = ({
             club: getClubName(review.club),
             hide: identity,
           })
-        : translate(
-            locale,
-            'review-page',
-            'reviewAuthors',
-          )({
+        : translate(locale, 'review-page')('reviewAuthors')({
             authors: pipe(
               review.authors.named,
               RNEA.map(displayAuthor),
               RNEA.concatW(
                 review.authors.anonymous > 0
-                  ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                  ? [translate(locale, 'review-page')('otherAuthors')({ otherAuthors: review.authors.anonymous })]
                   : [],
               ),
               formatList(locale),
@@ -76,26 +66,22 @@ export const createPage = ({
     ),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
-        >${translate(locale, 'review-page', 'otherReviewsLink')()}</a
+        >${translate(locale, 'review-page')('otherReviewsLink')()}</a
       >
       <a href="${review.preprint.url.href}" class="forward"
-        >${translate(locale, 'review-page', 'readPreprintLink')()}</a
+        >${translate(locale, 'review-page')('readPreprintLink')()}</a
       >
     `,
     main: html`
       <header>
         ${review.requested
-          ? html`<span class="tag">${translate(locale, 'review-page', 'requestedPrereview')()}</span>`
+          ? html`<span class="tag">${translate(locale, 'review-page')('requestedPrereview')()}</span>`
           : ''}
-        ${review.live ? html`<span class="tag">${translate(locale, 'review-page', 'liveReview')()}</span>` : ''}
+        ${review.live ? html`<span class="tag">${translate(locale, 'review-page')('liveReview')()}</span>` : ''}
 
         <h1>
           ${rawHtml(
-            translate(
-              locale,
-              'review-page',
-              review.structured ? 'structuredReviewTitle' : 'reviewTitle',
-            )({
+            translate(locale, 'review-page')(review.structured ? 'structuredReviewTitle' : 'reviewTitle')({
               preprint: html`<cite
                 lang="${review.preprint.language}"
                 dir="${rtlDetect.getLangDir(review.preprint.language)}"
@@ -108,17 +94,13 @@ export const createPage = ({
         <div class="byline">
           ${rawHtml(
             review.club
-              ? translate(
-                  locale,
-                  'review-page',
-                  'clubReviewAuthors',
-                )({
+              ? translate(locale, 'review-page')('clubReviewAuthors')({
                   authors: pipe(
                     review.authors.named,
                     RNEA.map(displayAuthor),
                     RNEA.concatW(
                       review.authors.anonymous > 0
-                        ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                        ? [translate(locale, 'review-page')('otherAuthors')({ otherAuthors: review.authors.anonymous })]
                         : [],
                     ),
                     formatList(locale),
@@ -128,17 +110,13 @@ export const createPage = ({
                   >`.toString(),
                   hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
                 })
-              : translate(
-                  locale,
-                  'review-page',
-                  'reviewAuthors',
-                )({
+              : translate(locale, 'review-page')('reviewAuthors')({
                   authors: pipe(
                     review.authors.named,
                     RNEA.map(displayAuthor),
                     RNEA.concatW(
                       review.authors.anonymous > 0
-                        ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                        ? [translate(locale, 'review-page')('otherAuthors')({ otherAuthors: review.authors.anonymous })]
                         : [],
                     ),
                     formatList(locale),
@@ -150,7 +128,7 @@ export const createPage = ({
 
         <dl>
           <div>
-            <dt>${translate(locale, 'review-page', 'published')()}</dt>
+            <dt>${translate(locale, 'review-page')('published')()}</dt>
             <dd>${renderDate(locale)(review.published)}</dd>
           </div>
           <div>
@@ -158,7 +136,7 @@ export const createPage = ({
             <dd><a href="${toUrl(review.doi).href}" class="doi" translate="no">${review.doi}</a></dd>
           </div>
           <div>
-            <dt>${translate(locale, 'review-page', 'license')()}</dt>
+            <dt>${translate(locale, 'review-page')('license')()}</dt>
             <dd>
               ${match(review.license)
                 .with(
@@ -166,7 +144,7 @@ export const createPage = ({
                   () => html`
                     <a href="https://creativecommons.org/licenses/by/4.0/">
                       <dfn>
-                        <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
+                        <abbr title="${translate(locale, 'review-page')('licenseCcBy40')()}"
                           ><span translate="no">CC BY 4.0</span></abbr
                         >
                       </dfn>
@@ -185,7 +163,7 @@ export const createPage = ({
 
       ${review.addendum
         ? html`
-            <h2>${translate(locale, 'review-page', 'addendumTitle')()}</h2>
+            <h2>${translate(locale, 'review-page')('addendumTitle')()}</h2>
 
             ${fixHeadingLevels(2, review.addendum)}
           `
@@ -193,7 +171,7 @@ export const createPage = ({
       ${RA.isNonEmpty(responses)
         ? html`
             <article aria-labelledby="responses-title">
-              <h2 id="responses-title">${translate(locale, 'review-page', 'responsesTitle')()}</h2>
+              <h2 id="responses-title">${translate(locale, 'review-page')('responsesTitle')()}</h2>
               <ol class="cards">
                 ${pipe(
                   responses,
@@ -203,11 +181,7 @@ export const createPage = ({
                         <article aria-labelledby="response-${response.id}-title">
                           <header>
                             <h3 class="visually-hidden" id="response-${response.id}-title">
-                              ${translate(
-                                locale,
-                                'review-page',
-                                'responseTitle',
-                              )({
+                              ${translate(locale, 'review-page')('responseTitle')({
                                 author: pipe(RNEA.head(response.authors.named), get('name')),
                                 authors: response.authors.named.length,
                               })}
@@ -215,11 +189,7 @@ export const createPage = ({
 
                             <div class="byline">
                               ${rawHtml(
-                                translate(
-                                  locale,
-                                  'review-page',
-                                  'responseAuthors',
-                                )({
+                                translate(locale, 'review-page')('responseAuthors')({
                                   authors: pipe(
                                     response.authors.named,
                                     RNEA.map(displayAuthor),
@@ -232,7 +202,7 @@ export const createPage = ({
 
                             <dl>
                               <div>
-                                <dt>${translate(locale, 'review-page', 'published')()}</dt>
+                                <dt>${translate(locale, 'review-page')('published')()}</dt>
                                 <dd>${renderDate(locale)(response.published)}</dd>
                               </div>
                               <div>
@@ -242,7 +212,7 @@ export const createPage = ({
                                 </dd>
                               </div>
                               <div>
-                                <dt>${translate(locale, 'review-page', 'license')()}</dt>
+                                <dt>${translate(locale, 'review-page')('license')()}</dt>
                                 <dd>
                                   ${match(response.license)
                                     .with(
@@ -250,7 +220,7 @@ export const createPage = ({
                                       () => html`
                                         <a href="https://creativecommons.org/licenses/by/4.0/">
                                           <dfn>
-                                            <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
+                                            <abbr title="${translate(locale, 'review-page')('licenseCcBy40')()}"
                                               ><span translate="no">CC BY 4.0</span></abbr
                                             >
                                           </dfn>

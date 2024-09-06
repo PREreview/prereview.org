@@ -32,7 +32,7 @@ export const fieldIds = [
 ] as const
 
 export function getFieldName(id: FieldId, locale = DefaultLocale): string {
-  return translate(locale, 'fields', `field${id}`)()
+  return translate(locale, 'fields')(`field${id}`)()
 }
 
 export function isFieldId(value: string): value is FieldId {

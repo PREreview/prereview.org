@@ -25,7 +25,7 @@ type Translations = {
 }
 
 export const translate =
-  <M extends Module, K extends Key<M>>(locale: SupportedLocale, module: M, key: K): Translations[M][K] => {
+  <M extends Module>(locale: SupportedLocale, module: M) => <K extends Key<M>>(key: K): Translations[M][K] => {
     // @ts-ignore
     return modules[module](locale)(key)
   }

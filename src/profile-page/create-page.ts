@@ -57,7 +57,7 @@ function renderContentForOrcid(
         <h1>
           ${match({ name, orcid })
             .with({ name: P.string }, profile => profile.name)
-            .with({ orcid: P.string }, () => translate(locale, 'profile-page', 'anonymous')())
+            .with({ orcid: P.string }, () => translate(locale, 'profile-page')('anonymous')())
             .exhaustive()}
         </h1>
 
@@ -70,7 +70,7 @@ function renderContentForOrcid(
           ${slackUser
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'slackName')()}</dt>
+                  <dt>${translate(locale, 'profile-page')('slackName')()}</dt>
                   <dd>
                     <span class="slack">
                       <img src="${slackUser.image.href}" alt="" width="48" height="48" />
@@ -83,15 +83,15 @@ function renderContentForOrcid(
           ${careerStage
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'careerStage')()}</dt>
-                  <dd>${translate(locale, 'profile-page', `careerStage${capitalize(careerStage)}`)()}</dd>
+                  <dt>${translate(locale, 'profile-page')('careerStage')()}</dt>
+                  <dd>${translate(locale, 'profile-page')(`careerStage${capitalize(careerStage)}`)()}</dd>
                 </div>
               `
             : ''}
           ${researchInterests
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'researchInterests')()}</dt>
+                  <dt>${translate(locale, 'profile-page')('researchInterests')()}</dt>
                   <dd>${researchInterests}</dd>
                 </div>
               `
@@ -99,7 +99,7 @@ function renderContentForOrcid(
           ${location
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'location')()}</dt>
+                  <dt>${translate(locale, 'profile-page')('location')()}</dt>
                   <dd>${location}</dd>
                 </div>
               `
@@ -107,7 +107,7 @@ function renderContentForOrcid(
           ${languages
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'languages')()}</dt>
+                  <dt>${translate(locale, 'profile-page')('languages')()}</dt>
                   <dd>${languages}</dd>
                 </div>
               `
@@ -115,7 +115,7 @@ function renderContentForOrcid(
           ${RA.isNonEmpty(clubs)
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'clubs')()}</dt>
+                  <dt>${translate(locale, 'profile-page')('clubs')()}</dt>
                   <dd>
                     ${pipe(
                       clubs,
@@ -135,21 +135,17 @@ function renderContentForOrcid(
       ${avatar instanceof URL ? html` <img src="${avatar.href}" width="300" height="300" alt="" /> ` : ''}
     </div>
 
-    <h2>${translate(locale, 'profile-page', 'prereviewsTitle')()}</h2>
+    <h2>${translate(locale, 'profile-page')('prereviewsTitle')()}</h2>
 
     ${isOpenForRequests
       ? html`
           <div class="inset">
             ${name
-              ? translate(locale, 'profile-page', 'openForRequests')({ name })
-              : translate(locale, 'profile-page', 'openForRequestsAnonymous')()}
+              ? translate(locale, 'profile-page')('openForRequests')({ name })
+              : translate(locale, 'profile-page')('openForRequestsAnonymous')()}
             ${slackUser
               ? rawHtml(
-                  translate(
-                    locale,
-                    'profile-page',
-                    'contactSlack',
-                  )({
+                  translate(locale, 'profile-page')('contactSlack')({
                     link: text =>
                       html`<a href="https://content.prereview.org/join-prereview-slack/">${text}</a>.`.toString(),
                   }),
@@ -170,7 +166,7 @@ function renderContentForPseudonym({ name, prereviews }: PseudonymProfile, local
       </div>
     </div>
 
-    <h2>${translate(locale, 'profile-page', 'prereviewsTitle')()}</h2>
+    <h2>${translate(locale, 'profile-page')('prereviewsTitle')()}</h2>
 
     ${renderListOfPrereviews(prereviews, name, locale)}
   `

@@ -258,7 +258,7 @@ export const subfieldIds = [
 ] as const
 
 export function getSubfieldName(id: SubfieldId, locale = DefaultLocale): string {
-  return translate(locale, 'subfields', `subfield${id}`)()
+  return translate(locale, 'subfields')(`subfield${id}`)()
 }
 
 export function isSubfieldId(value: string): value is SubfieldId {

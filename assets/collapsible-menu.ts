@@ -27,7 +27,7 @@ export class CollapsibleMenu extends HTMLElement {
     const lang = getLang(this)
     const locale = isSupportedLocale(lang) ? lang : DefaultLocale
 
-    button.innerText = translate(locale, 'collapsible-menu', 'menu')()
+    button.innerText = translate(locale, 'collapsible-menu')('menu')()
 
     button.addEventListener('click', () => {
       button.setAttribute('aria-expanded', button.getAttribute('aria-expanded') === 'true' ? 'false' : 'true')

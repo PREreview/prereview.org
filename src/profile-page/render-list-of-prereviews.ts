@@ -25,11 +25,11 @@ export function renderListOfPrereviews(
         <div class="inset">
           <p>
             ${name
-              ? translate(locale, 'profile-page', 'noResults')({ name })
-              : translate(locale, 'profile-page', 'noResultsAnonymous')()}
+              ? translate(locale, 'profile-page')('noResults')({ name })
+              : translate(locale, 'profile-page')('noResultsAnonymous')()}
           </p>
 
-          <p>${translate(locale, 'profile-page', 'appearHere')()}</p>
+          <p>${translate(locale, 'profile-page')('appearHere')()}</p>
         </div>
       `,
       prereviews => html`
@@ -41,11 +41,7 @@ export function renderListOfPrereviews(
                   <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
                     ${rawHtml(
                       prereview.club
-                        ? translate(
-                            locale,
-                            'reviews-list',
-                            'clubReviewText',
-                          )({
+                        ? translate(locale, 'reviews-list')('clubReviewText')({
                             club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
                             reviewers: pipe(
                               prereview.reviewers,
@@ -58,11 +54,7 @@ export function renderListOfPrereviews(
                               >${prereview.preprint.title}</cite
                             >`.toString(),
                           })
-                        : translate(
-                            locale,
-                            'reviews-list',
-                            'reviewText',
-                          )({
+                        : translate(locale, 'reviews-list')('reviewText')({
                             reviewers: pipe(
                               prereview.reviewers,
                               RNEA.map(name => html`<b>${name}</b>`),
@@ -86,9 +78,9 @@ export function renderListOfPrereviews(
                     : ''}
 
                   <dl>
-                    <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
+                    <dt>${translate(locale, 'reviews-list')('reviewPublished')()}</dt>
                     <dd>${renderDate(locale)(prereview.published)}</dd>
-                    <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
+                    <dt>${translate(locale, 'reviews-list')('reviewServer')()}</dt>
                     <dd>
                       ${match(prereview.preprint.id.type)
                         .with('africarxiv', () => 'AfricArXiv Preprints')

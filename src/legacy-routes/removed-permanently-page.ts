@@ -5,20 +5,18 @@ import { PageResponse } from '../response.js'
 
 export const removedPermanentlyPage = (locale: SupportedLocale) =>
   PageResponse({
-    title: plainText(translate(locale, 'legacy-routes', 'permanentlyTitle')()),
+    title: plainText(translate(locale, 'legacy-routes')('permanentlyTitle')()),
     status: Status.Gone,
     main: html`
-      <h1>${translate(locale, 'legacy-routes', 'permanentlyTitle')()}</h1>
+      <h1>${translate(locale, 'legacy-routes')('permanentlyTitle')()}</h1>
 
-      <p>${translate(locale, 'legacy-routes', 'permanentlyMessage')()}</p>
+      <p>${translate(locale, 'legacy-routes')('permanentlyMessage')()}</p>
 
       <p>
         ${rawHtml(
-          translate(
-            locale,
-            'legacy-routes',
-            'getInTouch',
-          )({ link: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
+          translate(locale, 'legacy-routes')('getInTouch')({
+            link: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString(),
+          }),
         )}
       </p>
     `,
