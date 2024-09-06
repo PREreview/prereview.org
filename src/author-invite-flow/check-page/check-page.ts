@@ -19,26 +19,27 @@ export function checkPage({
   user: User
   locale: SupportedLocale
 }) {
+  const t = translate(locale, 'author-invite-flow')
   return StreamlinePageResponse({
-    title: plainText`${translate(locale, 'author-invite-flow')('checkTitle')()}`,
+    title: plainText`${t('checkTitle')()}`,
     main: html`
       <single-use-form>
         <form method="post" action="${format(authorInviteCheckMatch.formatter, { id: inviteId })}" novalidate>
-          <h1>${translate(locale, 'author-invite-flow')('checkYourDetails')()}</h1>
+          <h1>${t('checkYourDetails')()}</h1>
 
           <div class="summary-card">
             <div>
-              <h2>${translate(locale, 'author-invite-flow')('yourDetails')()}</h2>
+              <h2>${t('yourDetails')()}</h2>
             </div>
 
             <dl class="summary-list">
               <div>
-                <dt>${translate(locale, 'author-invite-flow')('publishedName')()}</dt>
+                <dt>${t('publishedName')()}</dt>
                 <dd>${displayAuthor(persona === 'public' ? user : { name: user.pseudonym })}</dd>
                 <dd>
                   <a href="${format(authorInvitePersonaMatch.formatter, { id: inviteId })}"
                     >${rawHtml(
-                      translate(locale, 'author-invite-flow')('changeName')({
+                      t('changeName')({
                         visuallyHidden: (s: string) => `<span class="visually-hidden">${s}</span>`,
                       }),
                     )}
@@ -48,11 +49,11 @@ export function checkPage({
             </dl>
           </div>
 
-          <h2>${translate(locale, 'author-invite-flow')('nowPublish')()}</h2>
+          <h2>${t('nowPublish')()}</h2>
 
-          <p>${translate(locale, 'author-invite-flow')('weWillAddYourName')()}</p>
+          <p>${t('weWillAddYourName')()}</p>
 
-          <button>${translate(locale, 'author-invite-flow')('updatePrereview')()}</button>
+          <button>${t('updatePrereview')()}</button>
         </form>
       </single-use-form>
     `,
