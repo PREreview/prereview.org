@@ -11,6 +11,7 @@ import * as L from 'logger-fp-ts'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, Express, Redis } from './Context.js'
 import { decodeEnv } from './env.js'
 import { expressServer } from './ExpressServer.js'
+import { expressServerLifecycle } from './ExpressServerLifecycle.js'
 import { redisLifecycle } from './Redis.js'
 
 const env = decodeEnv(process)()
@@ -31,20 +32,6 @@ if (env.VERIFY_CACHE) {
     .then((stats: JsonRecord) => L.debugP('Cache verified')(stats)(loggerEnv)())
     .catch((error: unknown) => L.errorP('Failed to verify cache')({ error: E.toError(error).message })(loggerEnv)())
 }
-
-const expressServerLifecycle = Effect.acquireRelease(
-  Effect.gen(function* () {
-    const app = yield* Express
-    const listeningHttpServer = app.listen(3000)
-    L.debug('Server listening')(loggerEnv)()
-    return listeningHttpServer
-  }),
-  server => {
-    L.debug('Shutting server down')(loggerEnv)()
-    server.close()
-    return Effect.void
-  },
-)
 
 pipe(
   expressServerLifecycle,
