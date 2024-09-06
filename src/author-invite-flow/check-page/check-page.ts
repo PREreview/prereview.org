@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
-import { html, plainText } from '../../html.js'
+import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../routes.js'
@@ -24,31 +24,37 @@ export function checkPage({
     main: html`
       <single-use-form>
         <form method="post" action="${format(authorInviteCheckMatch.formatter, { id: inviteId })}" novalidate>
-          <h1>Check your details</h1>
+          <h1>${translate(locale, 'author-invite-flow', 'checkYourDetails')()}</h1>
 
           <div class="summary-card">
             <div>
-              <h2>Your details</h2>
+              <h2>${translate(locale, 'author-invite-flow', 'yourDetails')()}</h2>
             </div>
 
             <dl class="summary-list">
               <div>
-                <dt>Published name</dt>
+                <dt>${translate(locale, 'author-invite-flow', 'publishedName')()}</dt>
                 <dd>${displayAuthor(persona === 'public' ? user : { name: user.pseudonym })}</dd>
                 <dd>
                   <a href="${format(authorInvitePersonaMatch.formatter, { id: inviteId })}"
-                    >Change <span class="visually-hidden">name</span></a
-                  >
+                    >${rawHtml(
+                      translate(
+                        locale,
+                        'author-invite-flow',
+                        'changeName',
+                      )({ visuallyHidden: (s: string) => `<span class="visually-hidden">${s}</span>` }),
+                    )}
+                  </a>
                 </dd>
               </div>
             </dl>
           </div>
 
-          <h2>Now publish your updated PREreview</h2>
+          <h2>${translate(locale, 'author-invite-flow', 'nowPublish')()}</h2>
 
-          <p>We will add your name to the author list.</p>
+          <p>${translate(locale, 'author-invite-flow', 'weWillAddYourName')()}</p>
 
-          <button>Update PREreview</button>
+          <button>${translate(locale, 'author-invite-flow', 'updatePrereview')()}</button>
         </form>
       </single-use-form>
     `,

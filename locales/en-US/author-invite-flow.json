@@ -1,5 +1,26 @@
 {
   "checkTitle": {
     "message": "Check your details"
+  },
+  "checkYourDetails": {
+    "message": "Check your details"
+  },
+  "yourDetails": {
+    "message": "Your details"
+  },
+  "publishedName": {
+    "message": "Published name"
+  },
+  "changeName": {
+    "message": "Change <visuallyHidden>name</visuallyHidden>"
+  },
+  "nowPublish": {
+    "message": "Now publish your updated PREreview"
+  },
+  "weWillAddYourName": {
+    "message": "We will add your name to the author list."
+  },
+  "updatePrereview": {
+    "message": "Update PREreview"
   }
 }
