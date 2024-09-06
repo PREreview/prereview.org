@@ -16,6 +16,7 @@ import {
 import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../contact-email-address.js'
 import type { Html } from '../../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   authorInviteDeclineMatch,
@@ -61,10 +62,12 @@ export const authorInviteCheck = ({
   id,
   method,
   user,
+  locale,
 }: {
   id: Uuid
   method: string
   user?: User
+  locale: SupportedLocale
 }): RT.ReaderTask<
   AddAuthorToPrereviewEnv & GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
@@ -72,6 +75,7 @@ export const authorInviteCheck = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.let('locale', () => locale),
     RTE.let('inviteId', () => id),
     RTE.bindW('invite', ({ user }) =>
       pipe(

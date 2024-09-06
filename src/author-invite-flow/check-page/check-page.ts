@@ -2,6 +2,7 @@ import { format } from 'fp-ts-routing'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { html, plainText } from '../../html.js'
+import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../routes.js'
 import { isPseudonym } from '../../types/pseudonym.js'
@@ -11,13 +12,15 @@ export function checkPage({
   inviteId,
   persona,
   user,
+  locale,
 }: {
   inviteId: Uuid
   persona: 'public' | 'pseudonym'
   user: User
+  locale: SupportedLocale
 }) {
   return StreamlinePageResponse({
-    title: plainText`Check your details`,
+    title: plainText`${translate(locale, 'author-invite-flow', 'checkTitle')()}`,
     main: html`
       <single-use-form>
         <form method="post" action="${format(authorInviteCheckMatch.formatter, { id: inviteId })}" novalidate>
