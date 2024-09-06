@@ -11,6 +11,24 @@ node_modules: package.json package-lock.json
 
 check: format lint-ts lint-css typecheck test-fast
 
+src/locales: $(shell find locales -type f)
+	echo 'building locales'
+	scripts/intlc.sh
+	touch src/locales
+
+src/manifest.json: src/locales $(shell find assets -type f | grep -v assets/locales)
+	npx webpack build --mode development
+	touch src/manifest.json
+
+.PHONY: dev
+dev: .env node_modules start-services src/manifest.json
+	REDIS_URI=redis://$(shell docker compose port redis 6379) SMTP_URI=smtp://$(shell docker compose port mailcatcher 1025) npx tsx watch --require dotenv/config src/index.ts
+
+.PHONY: watch-dev
+watch-dev:
+	find locales assets -type f | grep -v assets/locales | entr -cr make dev
+
+
 start: .env node_modules start-services
 	REDIS_URI=redis://$(shell docker compose port redis 6379) SMTP_URI=smtp://$(shell docker compose port mailcatcher 1025) npm start
 
