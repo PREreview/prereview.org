@@ -90,14 +90,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   authorInviteStore: async ({}, use) => {
     await use(new Keyv())
   },
-  baseURL: async ({ server }, use) => {
-    const address = server.address()
-
-    if (typeof address !== 'object' || address === null) {
-      throw new Error('Unable to find a port')
-    }
-
-    await use(`http://localhost:${address.port}`)
+  baseURL: async ({ port }, use) => {
+    await use(`http://localhost:${port}`)
   },
   canConnectOrcidProfile: async ({}, use) => {
     await use(() => false)
@@ -1185,108 +1179,111 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   reviewRequestStore: async ({}, use) => {
     await use(new Keyv())
   },
-  server: async (
-    {
-      fetch,
-      logger,
-      oauthServer,
-      port,
-      updatesLegacyPrereview,
-      formStore,
-      careerStageStore,
-      contactEmailAddressStore,
-      isOpenForRequestsStore,
-      isUserBlocked,
-      languagesStore,
-      locationStore,
-      researchInterestsStore,
-      reviewRequestStore,
-      slackUserIdStore,
-      userOnboardingStore,
-      wasPrereviewRemoved,
-      authorInviteStore,
-      canConnectOrcidProfile,
-      canRequestReviews,
-      canUploadAvatar,
-      canUseSearchQueries,
-    },
-    use,
-  ) => {
-    const server = http.createServer(
-      app({
-        allowSiteCrawlers: true,
+  server: [
+    async (
+      {
+        fetch,
+        logger,
+        oauthServer,
+        port,
+        updatesLegacyPrereview,
+        formStore,
+        careerStageStore,
+        contactEmailAddressStore,
+        isOpenForRequestsStore,
+        isUserBlocked,
+        languagesStore,
+        locationStore,
+        researchInterestsStore,
+        reviewRequestStore,
+        slackUserIdStore,
+        userOnboardingStore,
+        wasPrereviewRemoved,
         authorInviteStore,
-        avatarStore: new Keyv(),
         canConnectOrcidProfile,
         canRequestReviews,
         canUploadAvatar,
         canUseSearchQueries,
-        cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
-        clock: SystemClock,
-        fetch,
-        formStore,
-        canSeeGatesLogo: false,
-        careerStageStore,
-        coarNotifyToken: 'token',
-        coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
-        contactEmailAddressStore,
-        ghostApi: {
-          key: 'key',
-        },
-        isOpenForRequestsStore,
-        isUserBlocked,
-        languagesStore,
-        legacyPrereviewApi: {
-          app: 'app',
-          key: 'key',
-          url: new URL('http://prereview.test'),
-          update: updatesLegacyPrereview,
-        },
-        locationStore,
-        logger,
-        mailjetApi: {
-          key: 'key',
-          secret: 'secret',
-          sandbox: false,
-        },
-        orcidApiUrl: new URL('http://api.orcid.test/'),
-        orcidOauth: {
-          authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
-          clientId: 'client-id',
-          clientSecret: 'client-secret',
-          revokeUrl: new URL('http://orcid.test/revoke'),
-          tokenUrl: new URL('http://orcid.test/token'),
-        },
-        orcidTokenStore: new Keyv(),
-        publicUrl: new URL(`http://localhost:${port}`),
-        researchInterestsStore,
-        reviewRequestStore,
-        scietyListToken: 'secret' as NonEmptyString,
-        secret: '',
-        sessionCookie: 'session',
-        sessionStore: new Keyv(),
-        slackApiToken: '',
-        slackApiUpdate: true,
-        slackOauth: {
-          authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
-          clientId: 'client-id',
-          clientSecret: 'client-secret',
-          tokenUrl: new URL('http://slack.test/token'),
-        },
-        slackUserIdStore,
-        userOnboardingStore,
-        wasPrereviewRemoved,
-        zenodoApiKey: '',
-        zenodoUrl: new URL('http://zenodo.test/'),
-      }),
-    )
+      },
+      use,
+    ) => {
+      const server = http.createServer(
+        app({
+          allowSiteCrawlers: true,
+          authorInviteStore,
+          avatarStore: new Keyv(),
+          canConnectOrcidProfile,
+          canRequestReviews,
+          canUploadAvatar,
+          canUseSearchQueries,
+          cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
+          clock: SystemClock,
+          fetch,
+          formStore,
+          canSeeGatesLogo: false,
+          careerStageStore,
+          coarNotifyToken: 'token',
+          coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
+          contactEmailAddressStore,
+          ghostApi: {
+            key: 'key',
+          },
+          isOpenForRequestsStore,
+          isUserBlocked,
+          languagesStore,
+          legacyPrereviewApi: {
+            app: 'app',
+            key: 'key',
+            url: new URL('http://prereview.test'),
+            update: updatesLegacyPrereview,
+          },
+          locationStore,
+          logger,
+          mailjetApi: {
+            key: 'key',
+            secret: 'secret',
+            sandbox: false,
+          },
+          orcidApiUrl: new URL('http://api.orcid.test/'),
+          orcidOauth: {
+            authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
+            clientId: 'client-id',
+            clientSecret: 'client-secret',
+            revokeUrl: new URL('http://orcid.test/revoke'),
+            tokenUrl: new URL('http://orcid.test/token'),
+          },
+          orcidTokenStore: new Keyv(),
+          publicUrl: new URL(`http://localhost:${port}`),
+          researchInterestsStore,
+          reviewRequestStore,
+          scietyListToken: 'secret' as NonEmptyString,
+          secret: '',
+          sessionCookie: 'session',
+          sessionStore: new Keyv(),
+          slackApiToken: '',
+          slackApiUpdate: true,
+          slackOauth: {
+            authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
+            clientId: 'client-id',
+            clientSecret: 'client-secret',
+            tokenUrl: new URL('http://slack.test/token'),
+          },
+          slackUserIdStore,
+          userOnboardingStore,
+          wasPrereviewRemoved,
+          zenodoApiKey: '',
+          zenodoUrl: new URL('http://zenodo.test/'),
+        }),
+      )
 
-    server.listen(port)
+      server.listen(port)
 
-    await use(server)
+      await use(server)
 
-    server.close()
-  },
+      server.close()
+    },
+    { auto: true },
+  ],
   slackUserIdStore: async ({}, use) => {
     await use(new Keyv())
   },
