@@ -32,15 +32,5 @@ export function getTargetElement(link: HTMLAnchorElement): HTMLElement | null {
 }
 
 export function getLang(element: HTMLElement): string {
-  const lang = element.getAttribute('lang')
-
-  if (typeof lang === 'string') {
-    return lang
-  }
-
-  if (element.parentElement) {
-    return getLang(element.parentElement)
-  }
-
-  return ''
+  return element.closest('[lang]')?.getAttribute('lang') ?? ''
 }
