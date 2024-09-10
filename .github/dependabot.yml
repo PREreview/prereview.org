@@ -27,6 +27,10 @@ updates:
       babel:
         patterns:
           - '@babel/*'
+      effect:
+        patterns:
+          - '@effect/*'
+          - 'effect'
       fast-check:
         patterns:
           - '@fast-check/*'
