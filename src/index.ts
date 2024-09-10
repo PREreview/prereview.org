@@ -1,22 +1,19 @@
-import { HttpServer } from '@effect/platform'
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { Config, Effect, Layer } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, Express, ExpressConfig, Redis } from './Context.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, Redis } from './Context.js'
 import { makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
-import { ExpressHttpApp } from './ExpressHttpApp.js'
-import { ExpressConfigLive, expressServer } from './ExpressServer.js'
+import { ExpressConfigLive } from './ExpressServer.js'
+import { Program } from './Program.js'
 import { redisLifecycle } from './Redis.js'
 import { verifyCache } from './VerifyCache.js'
 
 pipe(
-  ExpressHttpApp,
-  HttpServer.serve(),
+  Program,
   Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
   Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
-  Effect.provideServiceEffect(Express, expressServer),
   Effect.provideServiceEffect(ExpressConfig, ExpressConfigLive),
   Effect.provideServiceEffect(Redis, redisLifecycle),
   Effect.provideServiceEffect(DeprecatedLoggerEnv, makeDeprecatedLoggerEnv),
