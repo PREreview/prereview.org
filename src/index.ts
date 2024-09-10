@@ -13,8 +13,7 @@ import { verifyCache } from './VerifyCache.js'
 
 pipe(
   mitigateZenodoSandboxIpv6Issue,
-  Effect.andThen(pipe(ExpressHttpApp, HttpServer.serve(), Layer.launch)),
-  Effect.tap(verifyCache),
+  Effect.andThen(pipe(ExpressHttpApp, HttpServer.serve(), Layer.merge(Layer.effectDiscard(verifyCache)), Layer.launch)),
   Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Effect.provideServiceEffect(Express, expressServer),
   Effect.provideServiceEffect(Redis, redisLifecycle),
