@@ -29,8 +29,8 @@ compile_module() {
   mo .dev/locale-module.ts.mustache > "$target/locales/$module.ts"
 }
 
-for module in "${assetsModules[@]}"; do compile_module "assets" "$module"; done
-for module in "${srcModules[@]}"; do compile_module "src" "$module"; done
+for module in "${assetsModules[@]}"; do compile_module "assets" "$module" & done
+for module in "${srcModules[@]}"; do compile_module "src" "$module" & done
 
 compile_target() {
   target="$1"
@@ -48,7 +48,7 @@ compile_target() {
   mo .dev/locale-index.ts.mustache > "$target/locales/index.ts"
 }
 
-compile_target "assets" "${assetsModules[*]}"
-compile_target "src" "${srcModules[*]}"
+compile_target "assets" "${assetsModules[*]}" &
+compile_target "src" "${srcModules[*]}" &
 
 wait
