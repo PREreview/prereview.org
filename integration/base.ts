@@ -1,3 +1,4 @@
+import { NodeHttpServer } from '@effect/platform-node'
 import {
   type Fixtures,
   type PlaywrightTestArgs,
@@ -7,10 +8,11 @@ import {
 } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
+import { Effect, Fiber, Layer, pipe } from 'effect'
 import fetchMock from 'fetch-mock'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as fs from 'fs/promises'
-import http, { type Server } from 'http'
+import http from 'http'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
@@ -28,9 +30,10 @@ import {
   UnsubmittedDepositionC,
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
-import { type ConfigEnv, app } from '../src/app.js'
+import type { ConfigEnv } from '../src/app.js'
 import { AuthorInviteC } from '../src/author-invite.js'
 import { ContactEmailAddressC } from '../src/contact-email-address.js'
+import { ExpressConfig } from '../src/Context.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import type {
   CanConnectOrcidProfileEnv,
@@ -51,6 +54,7 @@ import type {
 } from '../src/keyv.js'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview.js'
 import type { IsUserBlockedEnv } from '../src/log-in/index.js'
+import { Program } from '../src/Program.js'
 import type { EmailAddress } from '../src/types/email-address.js'
 import type { NonEmptyString } from '../src/types/string.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
@@ -65,7 +69,7 @@ interface AppFixtures {
   logger: Logger
   oauthServer: OAuth2Server
   port: number
-  server: Server
+  server: Fiber.RuntimeFiber<never>
   updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
   formStore: Keyv<JsonRecord>
   careerStageStore: Keyv<unknown>
@@ -1207,8 +1211,11 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
       use,
     ) => {
-      const server = http.createServer(
-        app({
+      const server = pipe(
+        Program,
+        Layer.launch,
+        Effect.provide(NodeHttpServer.layer(() => http.createServer(), { port })),
+        Effect.provideService(ExpressConfig, {
           allowSiteCrawlers: true,
           authorInviteStore,
           avatarStore: new Keyv(),
@@ -1273,14 +1280,15 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           wasPrereviewRemoved,
           zenodoApiKey: '',
           zenodoUrl: new URL('http://zenodo.test/'),
-        }),
+        } satisfies ConfigEnv),
+        Effect.orDie,
       )
 
-      server.listen(port)
+      const fiber = Effect.runFork(server)
 
-      await use(server)
+      await use(fiber)
 
-      server.close()
+      await pipe(Fiber.interrupt(fiber), Effect.runPromise)
     },
     { auto: true },
   ],
