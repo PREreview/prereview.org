@@ -4,10 +4,16 @@ import Keyv from 'keyv'
 import fetch from 'make-fetch-happen'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
-import { app } from './app.js'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, Redis } from './Context.js'
+import { app, type ConfigEnv } from './app.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, Redis } from './Context.js'
 
 export const expressServer = Effect.gen(function* () {
+  const config = yield* ExpressConfig
+
+  return app(config)
+})
+
+export const ExpressConfigLive = Effect.gen(function* () {
   const redis = yield* Redis
   const env = yield* DeprecatedEnvVars
   const loggerEnv = yield* DeprecatedLoggerEnv
@@ -26,7 +32,7 @@ export const expressServer = Effect.gen(function* () {
     .exhaustive()
   const createKeyvStore = () => new KeyvRedis(redis)
 
-  return app({
+  return {
     ...loggerEnv,
     allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
     authorInviteStore: new Keyv({ namespace: 'author-invite', store: createKeyvStore() }),
@@ -95,5 +101,5 @@ export const expressServer = Effect.gen(function* () {
     wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
     zenodoApiKey: env.ZENODO_API_KEY,
     zenodoUrl: env.ZENODO_URL,
-  })
+  } satisfies ConfigEnv
 })
