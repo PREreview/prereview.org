@@ -1,11 +1,10 @@
 import cacache from 'cacache'
-import { Effect, Inspectable, pipe } from 'effect'
-import { DeprecatedEnvVars } from './Context.js'
+import { Config, Effect, Inspectable, pipe } from 'effect'
 
 export const verifyCache = Effect.gen(function* () {
-  const env = yield* DeprecatedEnvVars
+  const verifyCache = yield* Config.withDefault(Config.boolean('VERIFY_CACHE'), true)
 
-  if (!env.VERIFY_CACHE) {
+  if (!verifyCache) {
     return yield* Effect.void
   }
 
