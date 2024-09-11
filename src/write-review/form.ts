@@ -1,7 +1,6 @@
 import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import type { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { flow, identity, pipe } from 'fp-ts/lib/function.js'
@@ -39,7 +38,7 @@ import { NonEmptyStringC } from '../types/string.js'
 export type Form = C.TypeOf<typeof FormC>
 
 export interface FormStoreEnv {
-  formStore: Keyv<JsonRecord>
+  formStore: Keyv
 }
 
 export function formKey(user: Orcid, preprint: PreprintId) {
@@ -55,7 +54,7 @@ export function getForm(
 ): ReaderTaskEither<FormStoreEnv, 'no-form' | 'form-unavailable', Form> {
   return flow(
     TE.tryCatchK(
-      async ({ formStore }) => await formStore.get(formKey(user, preprint)),
+      async ({ formStore }): Promise<unknown> => await formStore.get(formKey(user, preprint)),
       () => 'form-unavailable' as const,
     ),
     TE.chainEitherKW(

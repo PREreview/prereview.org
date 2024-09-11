@@ -27,55 +27,55 @@ import { UuidC } from './types/uuid.js'
 import { type UserOnboarding, UserOnboardingC } from './user-onboarding.js'
 
 export interface AuthorInviteStoreEnv {
-  authorInviteStore: Keyv<unknown>
+  authorInviteStore: Keyv
 }
 
 export interface AvatarStoreEnv {
-  avatarStore: Keyv<unknown>
+  avatarStore: Keyv
 }
 
 export interface CareerStageStoreEnv {
-  careerStageStore: Keyv<unknown>
+  careerStageStore: Keyv
 }
 
 export interface ContactEmailAddressStoreEnv {
-  contactEmailAddressStore: Keyv<unknown>
+  contactEmailAddressStore: Keyv
 }
 
 export interface IsOpenForRequestsStoreEnv {
-  isOpenForRequestsStore: Keyv<unknown>
+  isOpenForRequestsStore: Keyv
 }
 
 export interface LanguagesStoreEnv {
-  languagesStore: Keyv<unknown>
+  languagesStore: Keyv
 }
 
 export interface LocationStoreEnv {
-  locationStore: Keyv<unknown>
+  locationStore: Keyv
 }
 
 export interface ResearchInterestsStoreEnv {
-  researchInterestsStore: Keyv<unknown>
+  researchInterestsStore: Keyv
 }
 
 export interface OrcidTokenStoreEnv {
-  orcidTokenStore: Keyv<unknown>
+  orcidTokenStore: Keyv
 }
 
 export interface ReviewRequestStoreEnv {
-  reviewRequestStore: Keyv<unknown>
+  reviewRequestStore: Keyv
 }
 
 export interface SlackUserIdStoreEnv {
-  slackUserIdStore: Keyv<unknown>
+  slackUserIdStore: Keyv
 }
 
 export interface UserOnboardingStoreEnv {
-  userOnboardingStore: Keyv<unknown>
+  userOnboardingStore: Keyv
 }
 
 interface KeyvEnv {
-  keyv: Keyv<unknown>
+  keyv: Keyv
 }
 
 const OrcidD: Decoder<unknown, Orcid> = D.fromRefinement(isOrcid, 'ORCID')

@@ -10,7 +10,6 @@ import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
 import { Effect, Fiber, Layer, pipe } from 'effect'
 import fetchMock from 'fetch-mock'
-import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as fs from 'fs/promises'
 import http from 'http'
 import { Status } from 'hyper-ts'
@@ -71,8 +70,8 @@ interface AppFixtures {
   port: number
   server: Fiber.RuntimeFiber<never>
   updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
-  formStore: Keyv<JsonRecord>
-  careerStageStore: Keyv<unknown>
+  formStore: Keyv
+  careerStageStore: Keyv
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
   languagesStore: LanguagesStoreEnv['languagesStore']
   locationStore: LocationStoreEnv['locationStore']
