@@ -212,10 +212,6 @@ export const app = (config: ConfigEnv) =>
         strictTransportSecurity: config.publicUrl.protocol === 'https:',
       }),
     )
-    .get('/robots.txt', (req, res) => {
-      res.type('text/plain')
-      res.send('User-agent: *\nAllow: /')
-    })
     .use(
       express.static('dist/assets', {
         setHeaders: (res, path) => {

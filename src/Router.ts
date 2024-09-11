@@ -36,4 +36,5 @@ export const Router = pipe(
       ),
     ),
   ),
+  HttpRouter.get('/robots.txt', HttpServerResponse.text('User-agent: *\nAllow: /')),
 )
