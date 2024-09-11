@@ -35,6 +35,10 @@ updates:
         patterns:
           - '@fast-check/*'
           - 'fast-check'
+      keyv:
+        patterns:
+          - '@keyv/*'
+          - 'keyv'
       tiptap:
         patterns:
           - '@tiptap/*'
