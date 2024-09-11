@@ -207,7 +207,7 @@ describe('authenticate', () => {
         }),
         connection,
       )()
-      const sessions = await all(sessionStore.iterator(undefined))
+      const sessions = await all(sessionStore.iterator!(undefined))
 
       expect(sessions).toStrictEqual([
         [expect.anything(), { user: { name: accessToken.name, orcid: accessToken.orcid, pseudonym } }],
@@ -270,7 +270,8 @@ describe('authenticate', () => {
         }),
         connection,
       )()
-      const sessions = await all(sessionStore.iterator(undefined))
+
+      const sessions = await all(sessionStore.iterator!(undefined))
 
       expect(sessions).toStrictEqual([])
       expect(actual).toStrictEqual(
@@ -328,7 +329,7 @@ describe('authenticate', () => {
         }),
         connection,
       )()
-      const sessions = await all(sessionStore.iterator(undefined))
+      const sessions = await all(sessionStore.iterator!(undefined))
 
       expect(sessions).toStrictEqual([])
       expect(actual).toStrictEqual(
@@ -386,7 +387,7 @@ describe('authenticate', () => {
         }),
         connection,
       )()
-      const sessions = await all(sessionStore.iterator(undefined))
+      const sessions = await all(sessionStore.iterator!(undefined))
 
       expect(sessions).toStrictEqual([
         [expect.anything(), { user: { name: accessToken.name, orcid: accessToken.orcid, pseudonym } }],
