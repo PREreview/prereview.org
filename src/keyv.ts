@@ -1,4 +1,5 @@
 import * as E from 'fp-ts/lib/Either.js'
+import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -103,7 +104,11 @@ const deleteKey =
           RTE.orElseFirstW(
             RTE.fromReaderIOK(
               flow(
-                error => ({ error: error.message, key: keyEncoder.encode(key), namespace: keyv.opts.namespace }),
+                error => ({
+                  error: error.message,
+                  key: keyEncoder.encode(key),
+                  namespace: keyv.opts.namespace as Json,
+                }),
                 L.errorP('Failed to delete key'),
               ),
             ),
@@ -119,7 +124,11 @@ const getAll = <K extends string, V>(
 ): RTE.ReaderTaskEither<KeyvEnv & L.LoggerEnv, 'unavailable', RR.ReadonlyRecord<K, V>> =>
   pipe(
     RTE.ask<KeyvEnv>(),
-    RTE.chainW(({ keyv }) => RTE.fromTaskEither(TE.tryCatch(() => toArray(keyv.iterator()), E.toError))),
+    RTE.chainW(({ keyv }) =>
+      RTE.fromTaskEither(
+        TE.tryCatch(() => (keyv.iterator ? toArray(keyv.iterator(undefined)) : Promise.resolve([])), E.toError),
+      ),
+    ),
     RTE.chainEitherKW(D.array(D.tuple(keyDecoder, valueDecoder)).decode),
     RTE.bimap(() => 'unavailable' as const, RR.fromEntries),
   )
@@ -135,7 +144,11 @@ const getKey =
           RTE.orElseFirstW(
             RTE.fromReaderIOK(
               flow(
-                error => ({ error: error.message, key: keyEncoder.encode(key), namespace: keyv.opts.namespace }),
+                error => ({
+                  error: error.message,
+                  key: keyEncoder.encode(key),
+                  namespace: keyv.opts.namespace as Json,
+                }),
                 L.errorP('Failed to get key'),
               ),
             ),
@@ -166,7 +179,11 @@ const setKey =
           RTE.orElseFirstW(
             RTE.fromReaderIOK(
               flow(
-                error => ({ error: error.message, key: keyEncoder.encode(key), namespace: keyv.opts.namespace }),
+                error => ({
+                  error: error.message,
+                  key: keyEncoder.encode(key),
+                  namespace: keyv.opts.namespace as Json,
+                }),
                 L.errorP('Failed to set key'),
               ),
             ),
