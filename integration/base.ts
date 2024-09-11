@@ -8,7 +8,7 @@ import {
 } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { Effect, Fiber, Layer, pipe } from 'effect'
+import { ConfigProvider, Effect, Fiber, Layer, pipe } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
@@ -1280,6 +1280,11 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           zenodoApiKey: '',
           zenodoUrl: new URL('http://zenodo.test/'),
         } satisfies ConfigEnv),
+        Effect.provide(
+          Layer.setConfigProvider(
+            ConfigProvider.fromMap(new Map([['PUBLIC_URL', new URL(`http://localhost:${port}`).href]])),
+          ),
+        ),
         Effect.orDie,
       )
 
