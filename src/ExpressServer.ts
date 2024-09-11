@@ -1,7 +1,7 @@
+import { HttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
 import { Effect } from 'effect'
 import Keyv from 'keyv'
-import fetch from 'make-fetch-happen'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
 import { app, type ConfigEnv } from './app.js'
@@ -17,6 +17,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
   const redis = yield* Redis
   const env = yield* DeprecatedEnvVars
   const loggerEnv = yield* DeprecatedLoggerEnv
+  const fetch = yield* HttpClient.Fetch
 
   const sendMailEnv = match(env)
     .with({ MAILJET_API_KEY: P.string }, env => ({
@@ -52,12 +53,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
     }),
     environmentLabel: env.ENVIRONMENT_LABEL,
     fathomId: env.FATHOM_SITE_ID,
-    fetch: fetch.defaults({
-      cachePath: 'data/cache',
-      headers: {
-        'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
-      },
-    }),
+    fetch,
     formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
     careerStageStore: new Keyv({ emitErrors: false, namespace: 'career-stage', store: createKeyvStore() }),
     ghostApi: {
