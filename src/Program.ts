@@ -75,11 +75,15 @@ const annotateLogsWithRequestId = HttpMiddleware.make(app =>
   ),
 )
 
+const logStopped = Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logInfo('Server stopped')))
+
 export const Program = pipe(
   Router,
   Effect.catchTag('RouteNotFound', () => ExpressHttpApp),
   addSecurityHeaders,
   addXRobotsTagHeader,
   HttpServer.serve(annotateLogsWithRequestId),
+  HttpServer.withLogAddress,
+  Layer.provide(logStopped),
   Layer.provide(Layer.effect(Express, expressServer)),
 )
