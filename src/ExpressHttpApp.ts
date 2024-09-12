@@ -11,10 +11,10 @@ export const ExpressHttpApp: HttpApp.Default<never, Express | HttpServerRequest.
     const nodeRequest = NodeHttpServerRequest.toIncomingMessage(request)
     const nodeResponse = NodeHttpServerRequest.toServerResponse(request)
 
-    express(nodeRequest, nodeResponse)
+    return yield* Effect.async<HttpServerResponse.HttpServerResponse>(resume => {
+      nodeResponse.once('close', () => resume(Effect.succeed(HttpServerResponse.empty())))
 
-    yield* Effect.promise(() => new Promise(resolve => nodeResponse.once('close', resolve)))
-
-    return HttpServerResponse.empty()
+      express(nodeRequest, nodeResponse)
+    })
   },
 )
