@@ -1,4 +1,4 @@
-import { HttpClient } from '@effect/platform'
+import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { Config, Effect, Layer, Logger, LogLevel } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
@@ -19,7 +19,7 @@ pipe(
   Effect.provideServiceEffect(ExpressConfig, ExpressConfigLive),
   Effect.provideServiceEffect(Redis, redisLifecycle),
   Effect.provideServiceEffect(
-    HttpClient.Fetch,
+    FetchHttpClient.Fetch,
     Effect.gen(function* () {
       const env = yield* DeprecatedEnvVars
 

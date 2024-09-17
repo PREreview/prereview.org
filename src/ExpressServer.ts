@@ -1,4 +1,4 @@
-import { HttpClient } from '@effect/platform'
+import { FetchHttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
 import { Effect } from 'effect'
 import Keyv from 'keyv'
@@ -17,7 +17,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
   const redis = yield* Redis
   const env = yield* DeprecatedEnvVars
   const loggerEnv = yield* DeprecatedLoggerEnv
-  const fetch = yield* HttpClient.Fetch
+  const fetch = yield* FetchHttpClient.Fetch
 
   const sendMailEnv = match(env)
     .with({ MAILJET_API_KEY: P.string }, env => ({
