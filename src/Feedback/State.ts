@@ -4,8 +4,10 @@ import type { Html } from '../html.js'
 
 export class FeedbackNotStarted extends Data.TaggedClass('FeedbackNotStarted') {}
 
-export class FeedbackInProgress extends Data.TaggedClass('FeedbackInProgress')<{
-  text?: Html
+export class FeedbackInProgress extends Data.TaggedClass('FeedbackInProgress') {}
+
+export class FeedbackReadyForPublishing extends Data.TaggedClass('FeedbackReadyForPublishing')<{
+  feedback: Html
 }> {}
 
 export class FeedbackPublished extends Data.TaggedClass('FeedbackPublished')<{
@@ -13,4 +15,4 @@ export class FeedbackPublished extends Data.TaggedClass('FeedbackPublished')<{
   id: number
 }> {}
 
-export type FeedbackState = FeedbackNotStarted | FeedbackInProgress | FeedbackPublished
+export type FeedbackState = FeedbackNotStarted | FeedbackInProgress | FeedbackReadyForPublishing | FeedbackPublished
