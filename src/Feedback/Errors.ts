@@ -1,11 +1,15 @@
 import { Data } from 'effect'
 
-export type FeedbackError = FeedbackAlreadyStarted | FeedbackNotStarted | FeedbackIncomplete | FeedbackAlreadyPublished
+export type FeedbackError =
+  | FeedbackWasAlreadyStarted
+  | FeedbackHasNotBeenStarted
+  | FeedbackIsIncomplete
+  | FeedbackWasAlreadyPublished
 
-export class FeedbackAlreadyStarted extends Data.TaggedError('FeedbackAlreadyStarted') {}
+export class FeedbackWasAlreadyStarted extends Data.TaggedError('FeedbackWasAlreadyStarted') {}
 
-export class FeedbackNotStarted extends Data.TaggedError('FeedbackNotStarted') {}
+export class FeedbackHasNotBeenStarted extends Data.TaggedError('FeedbackHasNotBeenStarted') {}
 
-export class FeedbackIncomplete extends Data.TaggedError('FeedbackIncomplete') {}
+export class FeedbackIsIncomplete extends Data.TaggedError('FeedbackIsIncomplete') {}
 
-export class FeedbackAlreadyPublished extends Data.TaggedError('FeedbackAlreadyPublished') {}
+export class FeedbackWasAlreadyPublished extends Data.TaggedError('FeedbackWasAlreadyPublished') {}

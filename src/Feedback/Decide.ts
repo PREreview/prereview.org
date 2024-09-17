@@ -10,33 +10,33 @@ const onStartFeedback = (command: Commands.StartFeedback) =>
     Match.tag('FeedbackNotStarted', () =>
       Either.right(new Events.FeedbackWasStarted({ prereviewId: command.prereviewId, authorId: command.authorId })),
     ),
-    Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackAlreadyStarted())),
-    Match.tag('FeedbackReadyForPublishing', () => Either.left(new Errors.FeedbackAlreadyStarted())),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackAlreadyPublished())),
+    Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackWasAlreadyStarted())),
+    Match.tag('FeedbackReadyForPublishing', () => Either.left(new Errors.FeedbackWasAlreadyStarted())),
+    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
 const onEnterFeedback = (command: Commands.EnterFeedback) =>
   flow(
     Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackNotStarted())),
+    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
     Match.tag('FeedbackInProgress', () => Either.right(new Events.FeedbackWasEntered({ feedback: command.feedback }))),
     Match.tag('FeedbackReadyForPublishing', () =>
       Either.right(new Events.FeedbackWasEntered({ feedback: command.feedback })),
     ),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackAlreadyPublished())),
+    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
 const onMarkFeedbackAsPublished = (command: Commands.MarkFeedbackAsPublished) =>
   flow(
     Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackNotStarted())),
-    Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIncomplete())),
+    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
     Match.tag('FeedbackReadyForPublishing', () =>
       Either.right(new Events.FeedbackWasPublished({ id: command.id, doi: command.doi })),
     ),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackAlreadyPublished())),
+    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
