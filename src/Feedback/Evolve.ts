@@ -27,8 +27,8 @@ const onFeedbackWasPublished = (event: Events.FeedbackWasPublished) =>
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', identity),
     Match.tag('FeedbackInProgress', identity),
-    Match.tag('FeedbackReadyForPublishing', identity),
-    Match.tag('FeedbackPublished', () => new State.FeedbackPublished({ id: event.id, doi: event.doi })),
+    Match.tag('FeedbackReadyForPublishing', () => new State.FeedbackPublished({ id: event.id, doi: event.doi })),
+    Match.tag('FeedbackPublished', identity),
     Match.exhaustive,
   )
 
@@ -39,5 +39,5 @@ export const EvolveFeedback = (state: State.FeedbackState): ((event: Events.Feed
     Match.tag('FeedbackWasEntered', onFeedbackWasEntered),
     Match.tag('FeedbackWasPublished', onFeedbackWasPublished),
     Match.exhaustive,
-    Function.apply(state),
+    Function.apply(state)<State.FeedbackState>,
   )
