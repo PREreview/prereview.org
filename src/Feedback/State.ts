@@ -9,11 +9,8 @@ export class FeedbackInProgress extends Data.TaggedClass('FeedbackInProgress')<{
 }> {}
 
 export class FeedbackPublished extends Data.TaggedClass('FeedbackPublished')<{
-  doi: Doi,
+  doi: Doi
   id: number
 }> {}
 
-export type FeedbackState =
-  | FeedbackNotStarted
-  | FeedbackInProgress
-  | FeedbackPublished
+export type FeedbackState = FeedbackNotStarted | FeedbackInProgress | FeedbackPublished
