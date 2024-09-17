@@ -1,3 +1,6 @@
 export * from './Commands.js'
+export * from './Decide.js'
+export * from './Errors.js'
 export * from './Events.js'
+export * from './Evolve.js'
 export * from './State.js'
