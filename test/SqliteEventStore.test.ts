@@ -68,7 +68,7 @@ describe('when the last known version is out of date', () => {
 
         const error = yield* Effect.flip(eventStore.commitEvent(resourceId, 0)(event2))
 
-        expect(error).toBeInstanceOf(EventStore.FailedToCommitEvent)
+        expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
         const actual = yield* eventStore.getEvents(resourceId)
 

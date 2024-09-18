@@ -58,24 +58,45 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
           payload: event,
         })
 
-        yield* sql`
-          INSERT INTO
-            events (
-              event_id,
-              resource_id,
-              resource_version,
-              payload
-            )
-          VALUES (
-            ${encoded.event_id},
-            ${encoded.resource_id},
-            ${encoded.resource_version},
-            ${encoded.payload}
-          )
-        `.raw
+        const results = yield* pipe(
+          sql`
+            INSERT INTO
+              events (
+                event_id,
+                resource_id,
+                resource_version,
+                payload
+              )
+            SELECT
+              ${encoded.event_id},
+              ${encoded.resource_id},
+              ${encoded.resource_version},
+              ${encoded.payload}
+            WHERE
+              NOT EXISTS (
+                SELECT
+                  event_id
+                FROM
+                  events
+                WHERE
+                  resource_id = ${encoded.resource_id}
+                  AND resource_version = ${encoded.resource_version}
+              )
+          `.raw,
+          Effect.andThen(Schema.decodeUnknown(SqliteResults)),
+        )
+
+        if (results.changes !== 1) {
+          yield* new EventStore.ResourceHasChanged()
+        }
 
         return newResourceVersion
-      }).pipe(Effect.mapError(() => new EventStore.FailedToCommitEvent()))
+      }).pipe(
+        Effect.catchTags({
+          SqlError: () => new EventStore.FailedToCommitEvent(),
+          ParseError: () => new EventStore.FailedToCommitEvent(),
+        }),
+      )
 
     return { getEvents, commitEvent }
   },
@@ -87,3 +108,5 @@ const EventsTable = Schema.Struct({
   resourceVersion: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('resource_version')),
   payload: Schema.parseJson(FeedbackEvent),
 })
+
+const SqliteResults = Schema.Struct({ changes: Schema.Number })
