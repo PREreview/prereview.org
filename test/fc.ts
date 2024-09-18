@@ -45,6 +45,7 @@ import type {
 import type { CrossrefPreprintId } from '../src/crossref.js'
 import type { DatacitePreprintId } from '../src/datacite.js'
 import type { Email } from '../src/email.js'
+import * as Feedback from '../src/Feedback/index.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
 import type { Languages } from '../src/languages.js'
@@ -1224,6 +1225,32 @@ export const preprintTitle = ({ id }: { id?: fc.Arbitrary<PreprintId> } = {}): f
     language: languageCode(),
     title: html(),
   })
+
+export const feedbackWasStarted = (): fc.Arbitrary<Feedback.FeedbackWasStarted> =>
+  fc
+    .record({
+      prereviewId: fc.integer(),
+      authorId: orcid(),
+    })
+    .map(data => new Feedback.FeedbackWasStarted(data))
+
+export const feedbackWasEntered = (): fc.Arbitrary<Feedback.FeedbackWasEntered> =>
+  fc
+    .record({
+      feedback: html(),
+    })
+    .map(data => new Feedback.FeedbackWasEntered(data))
+
+export const feedbackWasPublished = (): fc.Arbitrary<Feedback.FeedbackWasPublished> =>
+  fc
+    .record({
+      id: fc.integer(),
+      doi: doi(),
+    })
+    .map(data => new Feedback.FeedbackWasPublished(data))
+
+export const feedbackEvent = (): fc.Arbitrary<Feedback.FeedbackEvent> =>
+  fc.oneof(feedbackWasStarted(), feedbackWasEntered(), feedbackWasPublished())
 
 // https://github.com/gcanti/fp-ts/issues/1680
 type EndsWith<Full extends string, End extends string> = string extends Full
