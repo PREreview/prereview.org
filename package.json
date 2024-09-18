@@ -7,8 +7,8 @@
   "type": "module",
   "dependencies": {
     "@arendjr/text-clipper": "npm:@jsr/arendjr__text-clipper@^3.0.0",
-    "@effect/platform": "^0.65.1",
-    "@effect/platform-node": "^0.60.1",
+    "@effect/platform": "^0.65.3",
+    "@effect/platform-node": "^0.60.3",
     "@effect/schema": "^0.73.0",
     "@hapi/address": "^5.1.1",
     "@js-temporal/polyfill": "^0.4.4",
