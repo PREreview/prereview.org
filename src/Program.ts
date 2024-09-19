@@ -1,12 +1,16 @@
 import { Headers, HttpMiddleware, HttpServer, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { Schema } from '@effect/schema'
 import cspBuilder from 'content-security-policy-builder'
-import { Config, Effect, Layer, pipe } from 'effect'
-import { Express, Locale } from './Context.js'
+import cookieSignature from 'cookie-signature'
+import { Config, Effect, Layer, Option, pipe } from 'effect'
+import * as Uuid from 'uuid-ts'
+import { Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
 import { DefaultLocale } from './locales/index.js'
 import { Router } from './Router.js'
 import * as TemplatePage from './TemplatePage.js'
+import { UserSchema } from './user.js'
 
 const addSecurityHeaders = HttpMiddleware.make(app =>
   Effect.gen(function* () {
@@ -77,6 +81,28 @@ const annotateLogsWithRequestId = HttpMiddleware.make(app =>
   ),
 )
 
+const getLoggedInUser = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const { secret, sessionCookie, sessionStore } = yield* ExpressConfig
+
+    const session = yield* pipe(
+      HttpServerRequest.schemaCookies(
+        Schema.Struct({ session: pipe(Schema.propertySignature(Schema.String), Schema.fromKey(sessionCookie)) }),
+      ),
+      Effect.andThen(({ session }) => cookieSignature.unsign(session, secret)),
+      Effect.andThen(Option.liftPredicate(Uuid.isUuid)),
+      Effect.andThen(sessionId => sessionStore.get(sessionId)),
+      Effect.andThen(Schema.decodeUnknown(Schema.Struct({ user: UserSchema }))),
+      Effect.option,
+    )
+
+    return yield* Option.match(session, {
+      onNone: () => app,
+      onSome: ({ user }) => Effect.provideService(app, LoggedInUser, user),
+    })
+  }),
+)
+
 const logStopped = Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logInfo('Server stopped')))
 
 export const Program = pipe(
@@ -84,6 +110,7 @@ export const Program = pipe(
   Effect.catchTag('RouteNotFound', () => ExpressHttpApp),
   addSecurityHeaders,
   addXRobotsTagHeader,
+  getLoggedInUser,
   Effect.provideService(Locale, DefaultLocale),
   HttpServer.serve(annotateLogsWithRequestId),
   HttpServer.withLogAddress,

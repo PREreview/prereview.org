@@ -1,3 +1,4 @@
+import { Schema } from '@effect/schema'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
@@ -8,7 +9,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
-import { PseudonymC } from './types/pseudonym.js'
+import { Pseudonym } from './types/index.js'
 
 export type User = C.TypeOf<typeof UserC>
 
@@ -28,10 +29,18 @@ export const maybeGetUser = pipe(
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
+const OrcidSchema = pipe(Schema.String, Schema.filter(isOrcid))
+
 export const UserC = C.struct({
   name: C.string,
   orcid: OrcidC,
-  pseudonym: PseudonymC,
+  pseudonym: Pseudonym.PseudonymC,
+})
+
+export const UserSchema = Schema.Struct({
+  name: Schema.String,
+  orcid: OrcidSchema,
+  pseudonym: Pseudonym.PseudonymSchema,
 })
 
 export const newSessionForUser: (user: User) => JsonRecord = flow(UserC.encode, user => RR.singleton('user', user))

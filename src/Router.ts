@@ -1,7 +1,7 @@
 import { HttpMiddleware, HttpRouter, HttpServerResponse } from '@effect/platform'
 import { Effect, identity, Option, pipe } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import { Locale, Redis } from './Context.js'
+import { Locale, LoggedInUser, Redis } from './Context.js'
 import { type PageResponse, toPage } from './response.js'
 import * as Routes from './routes.js'
 import { TemplatePage } from './TemplatePage.js'
@@ -62,12 +62,14 @@ function toHttpServerResponse(
   return Effect.gen(function* () {
     const locale = yield* Locale
     const templatePage = yield* TemplatePage
+    const user = yield* Effect.serviceOption(LoggedInUser)
 
     return yield* pipe(
       templatePage(
         toPage({
           locale,
           response,
+          user: Option.getOrUndefined(user),
         }),
       ).toString(),
       HttpServerResponse.html,

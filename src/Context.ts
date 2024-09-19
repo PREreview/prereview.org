@@ -6,6 +6,7 @@ import type { ConfigEnv } from './app.js'
 import type { EnvVars } from './env.js'
 import type { EventStore as EventStoreService } from './EventStore.js'
 import type { SupportedLocale } from './locales/index.js'
+import type { User } from './user.js'
 
 export class DeprecatedEnvVars extends Context.Tag('DeprecatedEnvVars')<DeprecatedEnvVars, EnvVars>() {}
 
@@ -16,6 +17,8 @@ export class Express extends Context.Tag('Express')<Express, ExpressServer>() {}
 export class ExpressConfig extends Context.Tag('ExpressConfig')<ExpressConfig, ConfigEnv>() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}
+
+export class LoggedInUser extends Context.Tag('User')<LoggedInUser, User>() {}
 
 export class Redis extends Context.Tag('Redis')<Redis, IoRedis>() {}
 
