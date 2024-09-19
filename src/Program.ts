@@ -6,6 +6,7 @@ import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
 import { DefaultLocale } from './locales/index.js'
 import { Router } from './Router.js'
+import * as TemplatePage from './TemplatePage.js'
 
 const addSecurityHeaders = HttpMiddleware.make(app =>
   Effect.gen(function* () {
@@ -88,4 +89,5 @@ export const Program = pipe(
   HttpServer.withLogAddress,
   Layer.provide(logStopped),
   Layer.provide(Layer.effect(Express, expressServer)),
+  Layer.provide(Layer.effect(TemplatePage.TemplatePage, TemplatePage.make)),
 )
