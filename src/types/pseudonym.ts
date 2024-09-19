@@ -1,3 +1,4 @@
+import { Schema } from '@effect/schema'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { pipe } from 'fp-ts/lib/function.js'
@@ -8,6 +9,11 @@ import type { NonEmptyString } from './string.js'
 export type Pseudonym = NonEmptyString & PseudonymBrand
 
 export const PseudonymC = C.fromDecoder(pipe(D.string, D.refine(isPseudonym, 'Pseudonym')))
+
+export const PseudonymSchema: Schema.Schema<Pseudonym, string> = pipe(
+  Schema.String,
+  Schema.filter(isPseudonym, { message: () => 'not a pseudonym' }),
+)
 
 export function isPseudonym(value: string): value is Pseudonym {
   const parts = value.split(' ', 2)

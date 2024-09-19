@@ -1,5 +1,7 @@
+import { ArrayFormatter, Schema } from '@effect/schema'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Either } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../../src/types/pseudonym.js'
 import * as fc from '../fc.js'
@@ -27,6 +29,34 @@ describe('PseudonymC', () => {
 
   test.prop([fc.pseudonym()])('encode', pseudonym => {
     const actual = _.PseudonymC.encode(pseudonym)
+
+    expect(actual).toStrictEqual(pseudonym)
+  })
+})
+
+describe('PseudonymSchema', () => {
+  describe('decode', () => {
+    test.prop([fc.pseudonym()])('with a pseudonym', string => {
+      const actual = Schema.decodeSync(_.PseudonymSchema)(string)
+
+      expect(actual).toStrictEqual(string)
+    })
+
+    test.prop([fc.string()])('with a non-pseudonym', string => {
+      const actual = Either.mapLeft(Schema.decodeEither(_.PseudonymSchema)(string), ArrayFormatter.formatErrorSync)
+
+      expect(actual).toStrictEqual(Either.left([expect.objectContaining({ message: 'not a pseudonym' })]))
+    })
+
+    test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
+      const actual = Schema.decodeUnknownEither(_.PseudonymSchema)(value)
+
+      expect(actual).toStrictEqual(Either.left(expect.anything()))
+    })
+  })
+
+  test.prop([fc.pseudonym()])('encode', pseudonym => {
+    const actual = Schema.encodeSync(_.PseudonymSchema)(pseudonym)
 
     expect(actual).toStrictEqual(pseudonym)
   })
