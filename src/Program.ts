@@ -1,9 +1,10 @@
 import { Headers, HttpMiddleware, HttpServer, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import cspBuilder from 'content-security-policy-builder'
 import { Config, Effect, Layer, pipe } from 'effect'
-import { Express } from './Context.js'
+import { Express, Locale } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
+import { DefaultLocale } from './locales/index.js'
 import { Router } from './Router.js'
 
 const addSecurityHeaders = HttpMiddleware.make(app =>
@@ -82,6 +83,7 @@ export const Program = pipe(
   Effect.catchTag('RouteNotFound', () => ExpressHttpApp),
   addSecurityHeaders,
   addXRobotsTagHeader,
+  Effect.provideService(Locale, DefaultLocale),
   HttpServer.serve(annotateLogsWithRequestId),
   HttpServer.withLogAddress,
   Layer.provide(logStopped),
