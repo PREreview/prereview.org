@@ -4,7 +4,7 @@ import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { apply, flow, identity, pipe } from 'fp-ts/lib/function.js'
+import { apply, pipe } from 'fp-ts/lib/function.js'
 import helmet from 'helmet'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
@@ -17,10 +17,9 @@ import * as l from 'logging-ts/lib/IO.js'
 import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
 import { type RouterEnv, routes } from './app-router.js'
-import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref.js'
-import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite.js'
 import type { Email } from './email.js'
-import { type SleepEnv, collapseRequests, logFetch, useStaleCache } from './fetch.js'
+import { type SleepEnv, collapseRequests, logFetch } from './fetch.js'
+import { doesPreprintExist, getPreprint, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
 import { pageNotFound } from './http-error.js'
 import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
@@ -28,9 +27,7 @@ import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
 import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet.js'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
 import { page } from './page.js'
-import { getPreprintFromPhilsci } from './philsci.js'
 import { handleResponse } from './response.js'
-import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import { getUserFromSession, maybeGetUser } from './user.js'
 
 export type ConfigEnv = Omit<
@@ -53,50 +50,6 @@ export type ConfigEnv = Omit<
   } & {
     redis?: Redis
   }
-
-const getPreprintFromSource = (id: IndeterminatePreprintId) =>
-  match(id)
-    .with({ type: 'philsci' }, getPreprintFromPhilsci)
-    .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
-    .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
-    .exhaustive()
-
-const getPreprint = flow(
-  getPreprintFromSource,
-  RTE.mapLeft(error =>
-    match(error)
-      .with('not-a-preprint', () => 'not-found' as const)
-      .otherwise(identity),
-  ),
-)
-
-const getPreprintTitle = flow(
-  getPreprint,
-  RTE.local(useStaleCache()),
-  RTE.map(preprint => ({
-    id: preprint.id,
-    language: preprint.title.language,
-    title: preprint.title.text,
-  })),
-)
-
-const resolvePreprintId = flow(
-  getPreprintFromSource,
-  RTE.local(useStaleCache()),
-  RTE.map(preprint => preprint.id),
-)
-
-const doesPreprintExist = flow(
-  resolvePreprintId,
-  RTE.map(() => true),
-  RTE.orElseW(error =>
-    match(error)
-      .with('not-found', () => RTE.right(false))
-      .with('not-a-preprint', RTE.left)
-      .with('unavailable', RTE.left)
-      .exhaustive(),
-  ),
-)
 
 const sendEmail = (email: Email) =>
   RTE.asksReaderTaskEitherW(
