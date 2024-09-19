@@ -1,5 +1,7 @@
+import { ArrayFormatter, Schema } from '@effect/schema'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Either } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../../src/types/string.js'
 import * as fc from '../fc.js'
@@ -29,6 +31,34 @@ describe('NonEmptyStringC', () => {
     const actual = _.NonEmptyStringC.encode(string)
 
     expect(actual).toStrictEqual(string)
+  })
+})
+
+describe('NonEmptyStringSchema', () => {
+  describe('decode', () => {
+    test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('with a non-empty string', string => {
+      const actual = Schema.decodeSync(_.NonEmptyStringSchema)(string)
+
+      expect(actual).toStrictEqual(string)
+    })
+
+    test.prop([fc.string({ unit: fc.invisibleCharacter() })])('with an empty string', string => {
+      const actual = Either.mapLeft(Schema.decodeEither(_.NonEmptyStringSchema)(string), ArrayFormatter.formatErrorSync)
+
+      expect(actual).toStrictEqual(Either.left([expect.objectContaining({ message: 'string is empty' })]))
+    })
+
+    test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
+      const actual = Schema.decodeUnknownEither(_.NonEmptyStringSchema)(value)
+
+      expect(actual).toStrictEqual(Either.left(expect.anything()))
+    })
+  })
+
+  test.prop([fc.pseudonym()])('encode', pseudonym => {
+    const actual = Schema.encodeSync(_.NonEmptyStringSchema)(pseudonym)
+
+    expect(actual).toStrictEqual(pseudonym)
   })
 })
 
