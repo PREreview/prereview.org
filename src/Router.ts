@@ -1,10 +1,27 @@
-import { HttpRouter, HttpServerResponse } from '@effect/platform'
+import { HttpMiddleware, HttpRouter, HttpServerResponse } from '@effect/platform'
 import { Effect, identity, Option, pipe } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import { Redis } from './Context.js'
+import { Locale, Redis } from './Context.js'
+import { type PageResponse, toPage } from './response.js'
+import * as Routes from './routes.js'
+import { TemplatePage } from './TemplatePage.js'
+import * as WriteFeedbackFlow from './WriteFeedbackFlow/index.js'
 
 export const Router = pipe(
   HttpRouter.empty,
+  HttpRouter.get(
+    Routes.WriteFeedback.path,
+    pipe(
+      HttpRouter.schemaParams(Routes.WriteFeedback.schema),
+      Effect.andThen(WriteFeedbackFlow.WriteFeedbackPage),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
+  HttpRouter.use(
+    HttpMiddleware.make(
+      Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
+    ),
+  ),
   HttpRouter.get(
     '/health',
     Effect.gen(function* () {
@@ -38,3 +55,22 @@ export const Router = pipe(
   ),
   HttpRouter.get('/robots.txt', HttpServerResponse.text('User-agent: *\nAllow: /')),
 )
+
+function toHttpServerResponse(
+  response: PageResponse,
+): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage> {
+  return Effect.gen(function* () {
+    const locale = yield* Locale
+    const templatePage = yield* TemplatePage
+
+    return yield* pipe(
+      templatePage(
+        toPage({
+          locale,
+          response,
+        }),
+      ).toString(),
+      HttpServerResponse.html,
+    )
+  })
+}

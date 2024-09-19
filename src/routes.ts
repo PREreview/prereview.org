@@ -1,3 +1,5 @@
+import type { HttpRouter } from '@effect/platform'
+import { Schema } from '@effect/schema'
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
 import * as P from 'fp-ts-routing'
@@ -15,6 +17,18 @@ import type { OrcidProfileId, PseudonymProfileId } from './types/profile-id.js'
 import { PseudonymC } from './types/pseudonym.js'
 import { NonEmptyStringC } from './types/string.js'
 import { UuidC } from './types/uuid.js'
+
+export interface Route<A extends { readonly [K in keyof A]: unknown }> {
+  path: HttpRouter.PathInput
+  href: (a: A) => string
+  schema: Schema.Schema<A, { readonly [K in keyof A]: string }>
+}
+
+export const WriteFeedback: Route<{ id: number }> = {
+  path: '/reviews/:id/write-feedback',
+  href: params => `/reviews/${params.id}/write-feedback`,
+  schema: Schema.Struct({ id: Schema.NumberFromString }),
+}
 
 const IntegerFromStringC = C.make(
   pipe(
