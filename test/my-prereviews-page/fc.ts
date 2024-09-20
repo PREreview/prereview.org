@@ -3,7 +3,7 @@ import * as fc from '../fc.js'
 
 export * from '../fc.js'
 
-export const prereview = (): fc.Arbitrary<Prereview> =>
+export const localPrereview = (): fc.Arbitrary<Prereview> =>
   fc.record(
     {
       id: fc.integer(),

@@ -8,7 +8,7 @@ import { myPrereviewsMatch } from '../../src/routes.js'
 import * as fc from './fc.js'
 
 describe('ensureThereArePrereviews', () => {
-  test.prop([fc.nonEmptyArray(fc.prereview())])('when the list is not empty', prereviews => {
+  test.prop([fc.nonEmptyArray(fc.localPrereview())])('when the list is not empty', prereviews => {
     const actual = _.ensureThereArePrereviews(prereviews)
 
     expect(actual).toStrictEqual(E.right(prereviews))

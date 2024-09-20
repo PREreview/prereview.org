@@ -6,7 +6,7 @@ import * as _ from '../../src/my-prereviews-page/list-of-prereviews.js'
 import { myPrereviewsMatch } from '../../src/routes.js'
 import * as fc from './fc.js'
 
-test.prop([fc.nonEmptyArray(fc.prereview()), fc.user()])('toResponse', (prereviews, user) => {
+test.prop([fc.nonEmptyArray(fc.localPrereview()), fc.user()])('toResponse', (prereviews, user) => {
   const actual = _.toResponse(_.ListOfPrereviews({ prereviews, user }))
 
   expect(actual).toStrictEqual({
