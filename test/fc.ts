@@ -3,13 +3,12 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
+import { Array } from 'effect'
 import type { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import type * as F from 'fetch-fp-ts'
-import { isNonEmpty } from 'fp-ts/lib/Array.js'
 import * as E from 'fp-ts/lib/Either.js'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
-import type { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray.js'
 import * as O from 'fp-ts/lib/Option.js'
 import { not } from 'fp-ts/lib/Predicate.js'
 import type { Refinement } from 'fp-ts/lib/Refinement.js'
@@ -1156,7 +1155,7 @@ export const connection = <S = H.StatusOpen>(...args: Parameters<typeof request>
 export const nonEmptyArray = <T>(
   arb: fc.Arbitrary<T>,
   constraints: fc.ArrayConstraints = {},
-): fc.Arbitrary<NonEmptyArray<T>> => fc.array(arb, { minLength: 1, ...constraints }).filter(isNonEmpty)
+): fc.Arbitrary<Array.NonEmptyArray<T>> => fc.array(arb, { minLength: 1, ...constraints }).filter(Array.isNonEmptyArray)
 
 export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ minLength: 1 }).filter(isNonEmptyString)
 
