@@ -19,104 +19,105 @@ export const startPage = (preprint: Preprint, user?: User) =>
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
     `,
     main: html`
-    <h1>Write a PREreview</h1>
+      <h1>Write a PREreview</h1>
 
-    <article class="preview" tabindex="0" aria-labelledby="preprint-title">
-      <header>
-        <h2 lang="${preprint.title.language}" dir="${rtlDetect.getLangDir(preprint.title.language)}" id="preprint-title">
-          ${preprint.title.text}
-        </h2>
+      <article class="preview" tabindex="0" aria-labelledby="preprint-title">
+        <header>
+          <h2
+            lang="${preprint.title.language}"
+            dir="${rtlDetect.getLangDir(preprint.title.language)}"
+            id="preprint-title"
+          >
+            ${preprint.title.text}
+          </h2>
 
-        <div class="byline">
-          <span class="visually-hidden">Authored</span> by
-          ${pipe(
-            preprint.authors,
-            RNEA.map(author => author.name),
-            formatList(DefaultLocale),
-          )}
-        </div>
-
-        <dl>
-          <div>
-            <dt>Posted</dt>
-            <dd>${renderDate(DefaultLocale)(preprint.posted)}</dd>
+          <div class="byline">
+            <span class="visually-hidden">Authored</span> by
+            ${pipe(
+              preprint.authors,
+              RNEA.map(author => author.name),
+              formatList(DefaultLocale),
+            )}
           </div>
-          <div>
-            <dt>Server</dt>
-            <dd>
-              ${match(preprint.id.type)
-                .with('africarxiv', () => 'AfricArXiv Preprints')
-                .with('arcadia-science', () => 'Arcadia Science')
-                .with('arxiv', () => 'arXiv')
-                .with('authorea', () => 'Authorea')
-                .with('biorxiv', () => 'bioRxiv')
-                .with('chemrxiv', () => 'ChemRxiv')
-                .with('curvenote', () => 'Curvenote')
-                .with('eartharxiv', () => 'EarthArXiv')
-                .with('ecoevorxiv', () => 'EcoEvoRxiv')
-                .with('edarxiv', () => 'EdArXiv')
-                .with('engrxiv', () => 'engrXiv')
-                .with('medrxiv', () => 'medRxiv')
-                .with('metaarxiv', () => 'MetaArXiv')
-                .with('osf', () => 'OSF')
-                .with('osf-preprints', () => 'OSF Preprints')
-                .with('philsci', () => 'PhilSci-Archive')
-                .with('preprints.org', () => 'Preprints.org')
-                .with('psyarxiv', () => 'PsyArXiv')
-                .with('psycharchives', () => 'PsychArchives')
-                .with('research-square', () => 'Research Square')
-                .with('scielo', () => 'SciELO Preprints')
-                .with('science-open', () => 'ScienceOpen Preprints')
-                .with('socarxiv', () => 'SocArXiv')
-                .with('techrxiv', () => 'TechRxiv')
-                .with('zenodo', () => 'Zenodo')
-                .exhaustive()}
-            </dd>
-          </div>
-          ${match(preprint.id)
-            .with(
-              { type: 'philsci' },
-              id => html`
-                <div>
-                  <dt>Item ID</dt>
-                  <dd>${id.value}</dd>
-                </div>
-              `,
-            )
-            .with(
-              { value: P.when(isDoi) },
-              id => html`
-                <div>
-                  <dt>DOI</dt>
-                  <dd class="doi" translate="no">${id.value}</dd>
-                </div>
-              `,
-            )
-            .exhaustive()}
-        </dl>
-      </header>
 
-      ${
-        preprint.abstract
+          <dl>
+            <div>
+              <dt>Posted</dt>
+              <dd>${renderDate(DefaultLocale)(preprint.posted)}</dd>
+            </div>
+            <div>
+              <dt>Server</dt>
+              <dd>
+                ${match(preprint.id.type)
+                  .with('africarxiv', () => 'AfricArXiv Preprints')
+                  .with('arcadia-science', () => 'Arcadia Science')
+                  .with('arxiv', () => 'arXiv')
+                  .with('authorea', () => 'Authorea')
+                  .with('biorxiv', () => 'bioRxiv')
+                  .with('chemrxiv', () => 'ChemRxiv')
+                  .with('curvenote', () => 'Curvenote')
+                  .with('eartharxiv', () => 'EarthArXiv')
+                  .with('ecoevorxiv', () => 'EcoEvoRxiv')
+                  .with('edarxiv', () => 'EdArXiv')
+                  .with('engrxiv', () => 'engrXiv')
+                  .with('medrxiv', () => 'medRxiv')
+                  .with('metaarxiv', () => 'MetaArXiv')
+                  .with('osf', () => 'OSF')
+                  .with('osf-preprints', () => 'OSF Preprints')
+                  .with('philsci', () => 'PhilSci-Archive')
+                  .with('preprints.org', () => 'Preprints.org')
+                  .with('psyarxiv', () => 'PsyArXiv')
+                  .with('psycharchives', () => 'PsychArchives')
+                  .with('research-square', () => 'Research Square')
+                  .with('scielo', () => 'SciELO Preprints')
+                  .with('science-open', () => 'ScienceOpen Preprints')
+                  .with('socarxiv', () => 'SocArXiv')
+                  .with('techrxiv', () => 'TechRxiv')
+                  .with('zenodo', () => 'Zenodo')
+                  .exhaustive()}
+              </dd>
+            </div>
+            ${match(preprint.id)
+              .with(
+                { type: 'philsci' },
+                id => html`
+                  <div>
+                    <dt>Item ID</dt>
+                    <dd>${id.value}</dd>
+                  </div>
+                `,
+              )
+              .with(
+                { value: P.when(isDoi) },
+                id => html`
+                  <div>
+                    <dt>DOI</dt>
+                    <dd class="doi" translate="no">${id.value}</dd>
+                  </div>
+                `,
+              )
+              .exhaustive()}
+          </dl>
+        </header>
+
+        ${preprint.abstract
           ? html`
               <div lang="${preprint.abstract.language}" dir="${rtlDetect.getLangDir(preprint.abstract.language)}">
                 ${fixHeadingLevels(2, preprint.abstract.text)}
               </div>
             `
-          : ''
-      }
-    </article>
+          : ''}
+      </article>
 
-    <p>
-      You can write a PREreview of
-      <cite lang="${preprint.title.language}" dir="${rtlDetect.getLangDir(preprint.title.language)}"
-      >${preprint.title.text}</cite
-      >. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a
-      journal-organized peer-review report.
-    </p>
+      <p>
+        You can write a PREreview of
+        <cite lang="${preprint.title.language}" dir="${rtlDetect.getLangDir(preprint.title.language)}"
+          >${preprint.title.text}</cite
+        >. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a
+        journal-organized peer-review report.
+      </p>
 
-    ${
-      user
+      ${user
         ? ''
         : html`
             <h2>Before you start</h2>
@@ -133,14 +134,12 @@ export const startPage = (preprint: Preprint, user?: User) =>
                 </p>
               </div>
             </details>
-          `
-    }
+          `}
 
-    <a href="${format(writeReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
-    >Start now</a
-    >
-    </main>
-  `,
+      <a href="${format(writeReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
+        >Start now</a
+      >
+    `,
     canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
   })
 
