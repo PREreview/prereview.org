@@ -9,7 +9,7 @@ import {
 } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { ConfigProvider, Effect, Fiber, Layer, pipe } from 'effect'
+import { ConfigProvider, Effect, Logger as EffectLogger, Fiber, Layer, pipe } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
@@ -34,6 +34,7 @@ import type { ConfigEnv } from '../src/app.js'
 import { AuthorInviteC } from '../src/author-invite.js'
 import { ContactEmailAddressC } from '../src/contact-email-address.js'
 import { DeprecatedLoggerEnv, ExpressConfig } from '../src/Context.js'
+import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import {
   type CanConnectOrcidProfileEnv,
@@ -1288,6 +1289,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         } as unknown as typeof ExpressConfig.Service),
         Effect.provideService(CanWriteFeedback, canWriteFeedback),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
+        Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
         Effect.provide(
           Layer.setConfigProvider(
