@@ -3058,8 +3058,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
   )
 })
 
-describe('getResponsesForPrereviewFromZenodo', () => {
-  test.prop([fc.doi()])('when the responses can be loaded', async id => {
+describe('getFeedbackForPrereviewFromZenodo', () => {
+  test.prop([fc.doi()])('when the feedback can be loaded', async id => {
     const records: Records = {
       hits: {
         total: 2,
@@ -3070,9 +3070,9 @@ describe('getResponsesForPrereviewFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/response1.html/content'),
+                  self: new URL('http://example.com/feedback1.html/content'),
                 },
-                key: 'response.html',
+                key: 'feedback.html',
                 size: 58,
               },
             ],
@@ -3111,9 +3111,9 @@ describe('getResponsesForPrereviewFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/response2.html/content'),
+                  self: new URL('http://example.com/feedback2.html/content'),
                 },
-                key: 'response.html',
+                key: 'feedback.html',
                 size: 58,
               },
             ],
@@ -3150,7 +3150,7 @@ describe('getResponsesForPrereviewFromZenodo', () => {
       },
     }
 
-    const actual = await _.getResponsesForPrereviewFromZenodo(id)({
+    const actual = await _.getFeedbackForPrereviewFromZenodo(id)({
       fetch: fetchMock
         .sandbox()
         .getOnce(
@@ -3168,8 +3168,8 @@ describe('getResponsesForPrereviewFromZenodo', () => {
             status: Status.OK,
           },
         )
-        .getOnce('http://example.com/response1.html/content', { body: 'Some text' })
-        .getOnce('http://example.com/response2.html/content', { body: 'Some other text' }),
+        .getOnce('http://example.com/feedback1.html/content', { body: 'Some text' })
+        .getOnce('http://example.com/feedback2.html/content', { body: 'Some other text' }),
       clock: SystemClock,
       logger: () => IO.of(undefined),
       sleep: shouldNotBeCalled,
@@ -3199,7 +3199,7 @@ describe('getResponsesForPrereviewFromZenodo', () => {
     )
   })
 
-  test.prop([fc.doi()])('revalidates if the responses are stale', async id => {
+  test.prop([fc.doi()])('revalidates if the feedback are stale', async id => {
     const records: Records = {
       hits: {
         total: 1,
@@ -3210,9 +3210,9 @@ describe('getResponsesForPrereviewFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/response.html/content'),
+                  self: new URL('http://example.com/feedback.html/content'),
                 },
-                key: 'response.html',
+                key: 'feedback.html',
                 size: 58,
               },
             ],
@@ -3275,9 +3275,9 @@ describe('getResponsesForPrereviewFromZenodo', () => {
             }).toString()}` && cache === 'no-cache',
         { throws: new Error('Network error') },
       )
-      .getOnce('http://example.com/response.html/content', { body: 'Some text' })
+      .getOnce('http://example.com/feedback.html/content', { body: 'Some text' })
 
-    const actual = await _.getResponsesForPrereviewFromZenodo(id)({
+    const actual = await _.getFeedbackForPrereviewFromZenodo(id)({
       clock: SystemClock,
       fetch,
       logger: () => IO.of(undefined),
@@ -3306,7 +3306,7 @@ describe('getResponsesForPrereviewFromZenodo', () => {
       min: 400,
       max: 599,
     }),
-  ])('when the responses cannot be loaded', async (id, status) => {
+  ])('when the feedback cannot be loaded', async (id, status) => {
     const fetch = fetchMock.sandbox().getOnce(
       {
         url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
@@ -3320,7 +3320,7 @@ describe('getResponsesForPrereviewFromZenodo', () => {
       { status },
     )
 
-    const actual = await _.getResponsesForPrereviewFromZenodo(id)({
+    const actual = await _.getFeedbackForPrereviewFromZenodo(id)({
       clock: SystemClock,
       fetch,
       logger: () => IO.of(undefined),

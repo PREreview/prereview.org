@@ -14,19 +14,19 @@ import { PageResponse } from '../response.js'
 import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import { isPseudonym } from '../types/pseudonym.js'
+import type { Feedback } from './feedback.js'
 import type { Prereview } from './prereview.js'
-import type { Response } from './response.js'
 
 export const createPage = ({
   id,
   locale,
   review,
-  responses,
+  feedback,
 }: {
   id: number
   locale: SupportedLocale
   review: Prereview
-  responses: ReadonlyArray<Response>
+  feedback: ReadonlyArray<Feedback>
 }) =>
   PageResponse({
     title: plainText(
@@ -190,26 +190,26 @@ export const createPage = ({
             ${fixHeadingLevels(2, review.addendum)}
           `
         : ''}
-      ${RA.isNonEmpty(responses)
+      ${RA.isNonEmpty(feedback)
         ? html`
-            <article aria-labelledby="responses-title">
-              <h2 id="responses-title">${translate(locale, 'review-page', 'responsesTitle')()}</h2>
+            <article aria-labelledby="feedback-title">
+              <h2 id="feedback-title">${translate(locale, 'review-page', 'feedbackTitle')()}</h2>
               <ol class="cards">
                 ${pipe(
-                  responses,
+                  feedback,
                   RNEA.map(
-                    response => html`
+                    item => html`
                       <li>
-                        <article aria-labelledby="response-${response.id}-title">
+                        <article aria-labelledby="feedback-${item.id}-title">
                           <header>
-                            <h3 class="visually-hidden" id="response-${response.id}-title">
+                            <h3 class="visually-hidden" id="feedback-${item.id}-title">
                               ${translate(
                                 locale,
                                 'review-page',
-                                'responseTitle',
+                                'feedbackItemTitle',
                               )({
-                                author: pipe(RNEA.head(response.authors.named), get('name')),
-                                authors: response.authors.named.length,
+                                author: pipe(RNEA.head(item.authors.named), get('name')),
+                                authors: item.authors.named.length,
                               })}
                             </h3>
 
@@ -218,10 +218,10 @@ export const createPage = ({
                                 translate(
                                   locale,
                                   'review-page',
-                                  'responseAuthors',
+                                  'feedbackItemAuthors',
                                 )({
                                   authors: pipe(
-                                    response.authors.named,
+                                    item.authors.named,
                                     RNEA.map(displayAuthor),
                                     formatList(locale),
                                   ).toString(),
@@ -233,18 +233,18 @@ export const createPage = ({
                             <dl>
                               <div>
                                 <dt>${translate(locale, 'review-page', 'published')()}</dt>
-                                <dd>${renderDate(locale)(response.published)}</dd>
+                                <dd>${renderDate(locale)(item.published)}</dd>
                               </div>
                               <div>
                                 <dt>DOI</dt>
                                 <dd>
-                                  <a href="${toUrl(response.doi).href}" class="doi" translate="no">${response.doi}</a>
+                                  <a href="${toUrl(item.doi).href}" class="doi" translate="no">${item.doi}</a>
                                 </dd>
                               </div>
                               <div>
                                 <dt>${translate(locale, 'review-page', 'license')()}</dt>
                                 <dd>
-                                  ${match(response.license)
+                                  ${match(item.license)
                                     .with(
                                       'CC-BY-4.0',
                                       () => html`
@@ -264,11 +264,11 @@ export const createPage = ({
                           </header>
 
                           <div
-                            ${response.language
-                              ? html`lang="${response.language}" dir="${rtlDetect.getLangDir(response.language)}"`
+                            ${item.language
+                              ? html`lang="${item.language}" dir="${rtlDetect.getLangDir(item.language)}"`
                               : ''}
                           >
-                            ${fixHeadingLevels(3, response.text)}
+                            ${fixHeadingLevels(3, item.text)}
                           </div>
                         </article>
                       </li>

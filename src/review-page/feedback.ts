@@ -9,7 +9,7 @@ import type { Html } from '../html.js'
 
 import PlainDate = Temporal.PlainDate
 
-export interface Response {
+export interface Feedback {
   authors: {
     named: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
   }
@@ -21,9 +21,9 @@ export interface Response {
   text: Html
 }
 
-export interface GetResponsesEnv {
-  getResponses: (id: Doi) => TE.TaskEither<'unavailable', ReadonlyArray<Response>>
+export interface GetFeedbackEnv {
+  getFeedback: (id: Doi) => TE.TaskEither<'unavailable', ReadonlyArray<Feedback>>
 }
 
-export const getResponses = (id: Doi): RTE.ReaderTaskEither<GetResponsesEnv, 'unavailable', ReadonlyArray<Response>> =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getResponses }) => getResponses(id)))
+export const getFeedback = (id: Doi): RTE.ReaderTaskEither<GetFeedbackEnv, 'unavailable', ReadonlyArray<Feedback>> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getFeedback }) => getFeedback(id)))

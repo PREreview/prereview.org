@@ -6,13 +6,13 @@ import { pageNotFound } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
 import type { PageResponse } from '../response.js'
 import { failureMessage } from './failure-message.js'
+import { type GetFeedbackEnv, getFeedback } from './feedback.js'
 import { type GetPrereviewEnv, getPrereview } from './prereview.js'
 import { removedMessage } from './removed-message.js'
-import { type GetResponsesEnv, getResponses } from './response.js'
 import { createPage } from './review-page.js'
 
+export type { Feedback, GetFeedbackEnv } from './feedback.js'
 export type { GetPrereviewEnv, Prereview } from './prereview.js'
-export type { GetResponsesEnv, Response } from './response.js'
 
 export const reviewPage = ({
   id,
@@ -20,12 +20,12 @@ export const reviewPage = ({
 }: {
   id: number
   locale: SupportedLocale
-}): RT.ReaderTask<GetPrereviewEnv & GetResponsesEnv, PageResponse> =>
+}): RT.ReaderTask<GetPrereviewEnv & GetFeedbackEnv, PageResponse> =>
   pipe(
     RTE.Do,
     RTE.let('id', () => id),
     RTE.apS('review', getPrereview(id)),
-    RTE.bindW('responses', ({ review }) => getResponses(review.doi)),
+    RTE.bindW('feedback', ({ review }) => getFeedback(review.doi)),
     RTE.let('locale', () => locale),
     RTE.match(
       error =>

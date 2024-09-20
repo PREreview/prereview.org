@@ -38,13 +38,13 @@
   "addendumTitle": {
     "message": "Addendum"
   },
-  "responsesTitle": {
-    "message": "Responses"
+  "feedbackTitle": {
+    "message": "Feedback"
   },
-  "responseTitle": {
-    "message": "Response by {authors, plural, one {{author}} other {{author} et al.}}"
+  "feedbackItemTitle": {
+    "message": "Feedback by {authors, plural, one {{author}} other {{author} et al.}}"
   },
-  "responseAuthors": {
+  "feedbackItemAuthors": {
     "message": "<hide>Authored</hide> by {authors}"
   }
 }
