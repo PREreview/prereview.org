@@ -1,4 +1,5 @@
 import { Schema } from '@effect/schema'
+import { Data, Effect } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
@@ -9,6 +10,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
+import { LoggedInUser } from './Context.js'
 import { Pseudonym } from './types/index.js'
 
 export type User = C.TypeOf<typeof UserC>
@@ -49,3 +51,10 @@ export const getUserFromSession: (session: JsonRecord) => O.Option<User> = flow(
   RR.lookup('user'),
   O.chainEitherK(UserC.decode),
 )
+
+export const EnsureUserIsLoggedIn: Effect.Effect<User, UserIsNotLoggedIn> = Effect.mapError(
+  Effect.serviceOptional(LoggedInUser),
+  () => new UserIsNotLoggedIn(),
+)
+
+export class UserIsNotLoggedIn extends Data.TaggedError('UserIsNotLoggedIn') {}

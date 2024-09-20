@@ -1,11 +1,11 @@
-import { Data, Effect } from 'effect'
-import { LoggedInUser } from '../../Context.js'
+import { Effect } from 'effect'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type * as Response from '../../response.js'
+import { EnsureUserIsLoggedIn } from '../../user.js'
 
 export const WriteFeedbackPage = (): Effect.Effect<Response.PageResponse> =>
   Effect.gen(function* () {
-    yield* Effect.mapError(Effect.serviceOptional(LoggedInUser), () => new UserIsNotLoggedIn())
+    yield* EnsureUserIsLoggedIn
 
     return havingProblemsPage
   }).pipe(
@@ -13,5 +13,3 @@ export const WriteFeedbackPage = (): Effect.Effect<Response.PageResponse> =>
       UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
     }),
   )
-
-class UserIsNotLoggedIn extends Data.TaggedError('UserIsNotLoggedIn') {}
