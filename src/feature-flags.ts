@@ -1,5 +1,21 @@
+import { Context, Data, Effect, Option } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
-import type { User } from './user.js'
+import { EnsureUserIsLoggedIn, type User, type UserIsNotLoggedIn } from './user.js'
+
+export class CanWriteFeedback extends Context.Tag('CanWriteFeedback')<CanWriteFeedback, (user: User) => boolean>() {}
+
+export class NotAllowedToWriteFeedback extends Data.TaggedError('NotAllowedToWriteFeedback') {}
+
+export const EnsureCanWriteFeedback: Effect.Effect<void, NotAllowedToWriteFeedback | UserIsNotLoggedIn> = Effect.gen(
+  function* () {
+    const user = yield* EnsureUserIsLoggedIn
+    const canWriteFeedback = yield* Effect.serviceOption(CanWriteFeedback)
+
+    if (Option.isNone(canWriteFeedback) || !canWriteFeedback.value(user)) {
+      yield* new NotAllowedToWriteFeedback()
+    }
+  },
+)
 
 export interface CanConnectOrcidProfileEnv {
   canConnectOrcidProfile: (user: User) => boolean
