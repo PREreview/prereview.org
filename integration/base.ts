@@ -35,11 +35,12 @@ import { AuthorInviteC } from '../src/author-invite.js'
 import { ContactEmailAddressC } from '../src/contact-email-address.js'
 import { DeprecatedLoggerEnv, ExpressConfig } from '../src/Context.js'
 import { createAuthorInviteEmail } from '../src/email.js'
-import type {
-  CanConnectOrcidProfileEnv,
-  CanRequestReviewsEnv,
-  CanUploadAvatarEnv,
-  CanUseSearchQueriesEnv,
+import {
+  type CanConnectOrcidProfileEnv,
+  type CanRequestReviewsEnv,
+  type CanUploadAvatarEnv,
+  type CanUseSearchQueriesEnv,
+  CanWriteFeedback,
 } from '../src/feature-flags.js'
 import { rawHtml } from '../src/html.js'
 import type {
@@ -88,6 +89,7 @@ interface AppFixtures {
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canUploadAvatar: CanUploadAvatarEnv['canUploadAvatar']
   canUseSearchQueries: CanUseSearchQueriesEnv['canUseSearchQueries']
+  canWriteFeedback: typeof CanWriteFeedback.Service
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -107,6 +109,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(() => false)
   },
   canUseSearchQueries: async ({}, use) => {
+    await use(() => false)
+  },
+  canWriteFeedback: async ({}, use) => {
     await use(() => false)
   },
   careerStageStore: async ({}, use) => {
@@ -1208,6 +1213,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canRequestReviews,
         canUploadAvatar,
         canUseSearchQueries,
+        canWriteFeedback,
       },
       use,
     ) => {
@@ -1280,6 +1286,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           zenodoApiKey: '',
           zenodoUrl: new URL('http://zenodo.test/'),
         } as unknown as typeof ExpressConfig.Service),
+        Effect.provideService(CanWriteFeedback, canWriteFeedback),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
         Effect.provide(
@@ -1760,6 +1767,16 @@ export const canUseSearchQueries: Fixtures<
   Pick<AppFixtures, 'canUseSearchQueries'>
 > = {
   canUseSearchQueries: async ({}, use) => {
+    await use(() => true)
+  },
+}
+
+export const canWriteFeedback: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canWriteFeedback'>
+> = {
+  canWriteFeedback: async ({}, use) => {
     await use(() => true)
   },
 }

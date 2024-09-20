@@ -53,6 +53,7 @@ import type { Location } from '../src/location.js'
 import assets from '../src/manifest.json' assert { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.js'
 import type { Preprint, PreprintTitle } from '../src/preprint.js'
+import { Prereview } from '../src/Prereview.js'
 import type { ResearchInterests } from '../src/research-interests.js'
 import type {
   FlashMessageResponse,
@@ -1224,6 +1225,31 @@ export const preprintTitle = ({ id }: { id?: fc.Arbitrary<PreprintId> } = {}): f
     language: languageCode(),
     title: html(),
   })
+
+export const prereview = (): fc.Arbitrary<Prereview> =>
+  fc
+    .record({
+      authors: fc.record({
+        named: nonEmptyArray(fc.record({ name: fc.string(), orcid: orcid() }, { requiredKeys: ['name'] })),
+        anonymous: fc.integer({ min: 0 }),
+      }),
+      doi: doi(),
+      id: fc.integer(),
+      language: fc.option(languageCode(), { nil: undefined }),
+      license: constant('CC-BY-4.0'),
+      live: fc.boolean(),
+      published: plainDate(),
+      preprint: fc.record({
+        id: preprintId(),
+        language: languageCode(),
+        title: html(),
+        url: url(),
+      }),
+      requested: fc.boolean(),
+      structured: fc.boolean(),
+      text: html(),
+    })
+    .map(args => new Prereview(args))
 
 export const feedbackWasStarted = (): fc.Arbitrary<Feedback.FeedbackWasStarted> =>
   fc
