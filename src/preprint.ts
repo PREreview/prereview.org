@@ -1,3 +1,4 @@
+import { Context, Data, type Effect } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
@@ -48,6 +49,17 @@ export interface GetPreprintEnv {
 export interface GetPreprintTitleEnv {
   getPreprintTitle: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', PreprintTitle>
 }
+
+export class PreprintIsNotFound extends Data.TaggedError('PreprintIsNotFound') {}
+
+export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailable') {}
+
+export const Preprint = Data.struct<Preprint>
+
+export class GetPreprint extends Context.Tag('GetPreprint')<
+  GetPreprint,
+  (id: IndeterminatePreprintId) => Effect.Effect<Preprint, PreprintIsNotFound | PreprintIsUnavailable>
+>() {}
 
 export const doesPreprintExist = (id: IndeterminatePreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ doesPreprintExist }: DoesPreprintExistEnv) => doesPreprintExist(id)))
