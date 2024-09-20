@@ -34,7 +34,7 @@ pipe(
   Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.provide(Logger.replaceEffect(Logger.defaultLogger, DeprecatedLogger)),
   Effect.provideServiceEffect(DeprecatedLoggerEnv, makeDeprecatedLoggerEnv),
-  Effect.provideService(DeprecatedEnvVars, makeDeprecatedEnvVars),
+  Effect.provideServiceEffect(DeprecatedEnvVars, Effect.sync(makeDeprecatedEnvVars)),
   Effect.scoped,
   NodeRuntime.runMain({ disablePrettyLogger: true }),
 )

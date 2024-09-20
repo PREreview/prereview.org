@@ -7,7 +7,7 @@ import * as L from 'logger-fp-ts'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, type DeprecatedSleepEnv } from './Context.js'
 import { decodeEnv } from './env.js'
 
-export const makeDeprecatedEnvVars = decodeEnv(process)()
+export const makeDeprecatedEnvVars = decodeEnv(process)
 
 export const makeDeprecatedLoggerEnv = Effect.gen(function* () {
   const env = yield* DeprecatedEnvVars
