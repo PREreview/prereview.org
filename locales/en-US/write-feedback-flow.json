@@ -1,0 +1,26 @@
+{
+  "writeFeedbackTitle": {
+    "message": "Write feedback"
+  },
+  "backToPrereview": {
+    "message": "Back to PREreview"
+  },
+  "youCanWrite": {
+    "message": "You can write feedback on this PREreview of {preprint}."
+  },
+  "beforeStartHeading": {
+    "message": "Before you start"
+  },
+  "orcidLogIn": {
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one."
+  },
+  "whatIsOrcidHeading": {
+    "message": "What is an ORCID iD?"
+  },
+  "whatIsOrcid": {
+    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name."
+  },
+  "startNowButton": {
+    "message": "Start now"
+  }
+}

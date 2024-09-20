@@ -20,12 +20,14 @@ export const WriteFeedbackPage = ({
   user?: User
 }) =>
   StreamlinePageResponse({
-    title: plainText`Write feedback`,
+    title: plainText(translate(locale, 'write-feedback-flow', 'writeFeedbackTitle')()),
     nav: html`
-      <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back">Back to PREreview</a>
+      <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"
+        >${translate(locale, 'write-feedback-flow', 'backToPrereview')()}</a
+      >
     `,
     main: html`
-      <h1>Write feedback</h1>
+      <h1>${translate(locale, 'write-feedback-flow', 'writeFeedbackTitle')()}</h1>
 
       <article class="preview" tabindex="0" aria-labelledby="prereview-title">
         <header>
@@ -137,32 +139,46 @@ export const WriteFeedbackPage = ({
       </article>
 
       <p>
-        You can write feedback on this PREreview of
-        <cite lang="${prereview.preprint.language}" dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-          >${prereview.preprint.title}</cite
-        >.
+        ${rawHtml(
+          translate(
+            locale,
+            'write-feedback-flow',
+            'youCanWrite',
+          )({
+            preprint: html`<cite
+              lang="${prereview.preprint.language}"
+              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+              >${prereview.preprint.title}</cite
+            >`.toString(),
+          }),
+        )}
       </p>
 
       ${user
         ? ''
         : html`
-            <h2>Before you start</h2>
+            <h2>${translate(locale, 'write-feedback-flow', 'beforeStartHeading')()}</h2>
 
-            <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
+            <p>${translate(locale, 'write-feedback-flow', 'orcidLogIn')()}</p>
 
             <details>
-              <summary><span>What is an ORCID&nbsp;iD?</span></summary>
+              <summary><span>${translate(locale, 'write-feedback-flow', 'whatIsOrcidHeading')()}</span></summary>
 
               <div>
                 <p>
-                  An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a unique identifier that distinguishes
-                  you from everyone with the same or similar name.
+                  ${rawHtml(
+                    translate(
+                      locale,
+                      'write-feedback-flow',
+                      'whatIsOrcid',
+                    )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString() }),
+                  )}
                 </p>
               </div>
             </details>
           `}
 
-      <a role="button" draggable="false">Start now</a>
+      <a role="button" draggable="false">${translate(locale, 'write-feedback-flow', 'startNowButton')()}</a>
     `,
     canonical: Routes.WriteFeedback.href({ id: prereview.id }),
   })
