@@ -2,7 +2,7 @@ import { HttpMiddleware, HttpRouter, HttpServerResponse } from '@effect/platform
 import { Effect, identity, Option, pipe } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale, LoggedInUser, Redis } from './Context.js'
-import { type PageResponse, toPage } from './response.js'
+import { type PageResponse, type StreamlinePageResponse, toPage, type TwoUpPageResponse } from './response.js'
 import * as Routes from './routes.js'
 import { TemplatePage } from './TemplatePage.js'
 import * as WriteFeedbackFlow from './WriteFeedbackFlow/index.js'
@@ -57,7 +57,7 @@ export const Router = pipe(
 )
 
 function toHttpServerResponse(
-  response: PageResponse,
+  response: PageResponse | StreamlinePageResponse | TwoUpPageResponse,
 ): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage> {
   return Effect.gen(function* () {
     const locale = yield* Locale
