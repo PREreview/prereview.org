@@ -1,12 +1,20 @@
-import { Headers, HttpMiddleware, HttpServer, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import {
+  FetchHttpClient,
+  Headers,
+  HttpMiddleware,
+  HttpServer,
+  HttpServerRequest,
+  HttpServerResponse,
+} from '@effect/platform'
 import { Schema } from '@effect/schema'
 import cspBuilder from 'content-security-policy-builder'
 import cookieSignature from 'cookie-signature'
 import { Config, Effect, Layer, Option, pipe } from 'effect'
 import * as Uuid from 'uuid-ts'
-import { Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
+import { DeprecatedLoggerEnv, Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
+import { collapseRequests, logFetch } from './fetch.js'
 import { DefaultLocale } from './locales/index.js'
 import { Router } from './Router.js'
 import * as TemplatePage from './TemplatePage.js'
@@ -103,6 +111,16 @@ const getLoggedInUser = HttpMiddleware.make(app =>
   }),
 )
 
+const setUpFetch = Layer.effect(
+  FetchHttpClient.Fetch,
+  Effect.gen(function* () {
+    const fetch = yield* FetchHttpClient.Fetch
+    const logger = yield* DeprecatedLoggerEnv
+
+    return pipe({ fetch, ...logger }, logFetch(), collapseRequests()).fetch
+  }),
+)
+
 const logStopped = Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logInfo('Server stopped')))
 
 export const Program = pipe(
@@ -117,4 +135,5 @@ export const Program = pipe(
   Layer.provide(logStopped),
   Layer.provide(Layer.effect(Express, expressServer)),
   Layer.provide(Layer.effect(TemplatePage.TemplatePage, TemplatePage.make)),
+  Layer.provide(setUpFetch),
 )

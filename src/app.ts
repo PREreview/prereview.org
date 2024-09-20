@@ -18,7 +18,7 @@ import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
 import { type RouterEnv, routes } from './app-router.js'
 import type { Email } from './email.js'
-import { type SleepEnv, collapseRequests, logFetch } from './fetch.js'
+import type { SleepEnv } from './fetch.js'
 import { doesPreprintExist, getPreprint, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
 import { pageNotFound } from './http-error.js'
 import { getUserOnboarding } from './keyv.js'
@@ -236,8 +236,6 @@ export const app = (config: ConfigEnv) =>
           resolvePreprintId: withEnv(resolvePreprintId, env),
           sendEmail: withEnv(sendEmail, env),
         })),
-        R.local(collapseRequests()),
-        R.local(logFetch()),
         R.local((appEnv: ConfigEnv): ConfigEnv & SleepEnv => ({
           ...appEnv,
           logger: pipe(

@@ -1,3 +1,4 @@
+import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
 import {
   type Fixtures,
@@ -32,7 +33,7 @@ import {
 import type { ConfigEnv } from '../src/app.js'
 import { AuthorInviteC } from '../src/author-invite.js'
 import { ContactEmailAddressC } from '../src/contact-email-address.js'
-import { ExpressConfig } from '../src/Context.js'
+import { DeprecatedLoggerEnv, ExpressConfig } from '../src/Context.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import type {
   CanConnectOrcidProfileEnv,
@@ -1224,7 +1225,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           canUseSearchQueries,
           cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
           clock: SystemClock,
-          fetch,
           formStore,
           canSeeGatesLogo: false,
           careerStageStore,
@@ -1279,7 +1279,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           wasPrereviewRemoved,
           zenodoApiKey: '',
           zenodoUrl: new URL('http://zenodo.test/'),
-        } satisfies ConfigEnv),
+        } as unknown as typeof ExpressConfig.Service),
+        Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
+        Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
         Effect.provide(
           Layer.setConfigProvider(
             ConfigProvider.fromMap(new Map([['PUBLIC_URL', new URL(`http://localhost:${port}`).href]])),

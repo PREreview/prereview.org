@@ -9,15 +9,15 @@ import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, Redis } from './
 
 export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig
+  const fetch = yield* FetchHttpClient.Fetch
 
-  return app(config)
+  return app({ fetch, ...config } as unknown as ConfigEnv)
 })
 
 export const ExpressConfigLive = Effect.gen(function* () {
   const redis = yield* Redis
   const env = yield* DeprecatedEnvVars
   const loggerEnv = yield* DeprecatedLoggerEnv
-  const fetch = yield* FetchHttpClient.Fetch
 
   const sendMailEnv = match(env)
     .with({ MAILJET_API_KEY: P.string }, env => ({
@@ -53,7 +53,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     }),
     environmentLabel: env.ENVIRONMENT_LABEL,
     fathomId: env.FATHOM_SITE_ID,
-    fetch,
     formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
     careerStageStore: new Keyv({ emitErrors: false, namespace: 'career-stage', store: createKeyvStore() }),
     ghostApi: {
@@ -110,5 +109,5 @@ export const ExpressConfigLive = Effect.gen(function* () {
     wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
     zenodoApiKey: env.ZENODO_API_KEY,
     zenodoUrl: env.ZENODO_URL,
-  } satisfies ConfigEnv
+  } satisfies typeof ExpressConfig.Service
 })

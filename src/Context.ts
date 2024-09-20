@@ -14,7 +14,7 @@ export class DeprecatedLoggerEnv extends Context.Tag('DeprecatedLoggerEnv')<Depr
 
 export class Express extends Context.Tag('Express')<Express, ExpressServer>() {}
 
-export class ExpressConfig extends Context.Tag('ExpressConfig')<ExpressConfig, ConfigEnv>() {}
+export class ExpressConfig extends Context.Tag('ExpressConfig')<ExpressConfig, Omit<ConfigEnv, 'fetch'>>() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}
 
