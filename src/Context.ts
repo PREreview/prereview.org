@@ -5,6 +5,7 @@ import type { LoggerEnv } from 'logger-fp-ts'
 import type { ConfigEnv } from './app.js'
 import type { EnvVars } from './env.js'
 import type { EventStore as EventStoreService } from './EventStore.js'
+import type { SleepEnv } from './fetch.js'
 import type { SupportedLocale } from './locales/index.js'
 import type { User } from './user.js'
 
@@ -12,9 +13,11 @@ export class DeprecatedEnvVars extends Context.Tag('DeprecatedEnvVars')<Deprecat
 
 export class DeprecatedLoggerEnv extends Context.Tag('DeprecatedLoggerEnv')<DeprecatedLoggerEnv, LoggerEnv>() {}
 
+export class DeprecatedSleepEnv extends Context.Tag('DeprecatedSleepEnv')<DeprecatedSleepEnv, SleepEnv>() {}
+
 export class Express extends Context.Tag('Express')<Express, ExpressServer>() {}
 
-export class ExpressConfig extends Context.Tag('ExpressConfig')<ExpressConfig, Omit<ConfigEnv, 'fetch'>>() {}
+export class ExpressConfig extends Context.Tag('ExpressConfig')<ExpressConfig, Omit<ConfigEnv, 'fetch' | 'sleep'>>() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}
 

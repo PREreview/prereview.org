@@ -18,7 +18,6 @@ import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
 import { type RouterEnv, routes } from './app-router.js'
 import type { Email } from './email.js'
-import type { SleepEnv } from './fetch.js'
 import { doesPreprintExist, getPreprint, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
 import { pageNotFound } from './http-error.js'
 import { getUserOnboarding } from './keyv.js'
@@ -43,7 +42,6 @@ export type ConfigEnv = Omit<
   | 'getPreprintIdFromUuid'
   | 'getProfileIdFromUuid'
   | 'sendEmail'
-  | 'sleep'
 > &
   (MailjetApiEnv | NodemailerEnv) & {
     allowSiteCrawlers: boolean
@@ -222,7 +220,7 @@ export const app = (config: ConfigEnv) =>
     .use((req, res, next) => {
       return pipe(
         appMiddleware,
-        R.local((env: ConfigEnv & SleepEnv): RouterEnv & LegacyEnv => ({
+        R.local((env: ConfigEnv): RouterEnv & LegacyEnv => ({
           ...env,
           doesPreprintExist: withEnv(doesPreprintExist, env),
           generateUuid: uuid.v4(),
@@ -236,17 +234,18 @@ export const app = (config: ConfigEnv) =>
           resolvePreprintId: withEnv(resolvePreprintId, env),
           sendEmail: withEnv(sendEmail, env),
         })),
-        R.local((appEnv: ConfigEnv): ConfigEnv & SleepEnv => ({
-          ...appEnv,
-          logger: pipe(
-            appEnv.logger,
-            l.contramap(entry => ({
-              ...entry,
-              payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
-            })),
-          ),
-          sleep: duration => new Promise(resolve => setTimeout(resolve, duration)),
-        })),
+        R.local(
+          (appEnv: ConfigEnv): ConfigEnv => ({
+            ...appEnv,
+            logger: pipe(
+              appEnv.logger,
+              l.contramap(entry => ({
+                ...entry,
+                payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
+              })),
+            ),
+          }),
+        ),
         apply(config),
         toRequestHandler,
       )(req, res, next)

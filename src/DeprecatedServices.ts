@@ -1,10 +1,10 @@
 import { SystemClock } from 'clock-ts'
-import { Array, Effect, HashMap, Inspectable, Logger, Match } from 'effect'
+import { Array, Effect, HashMap, Inspectable, Logger, Match, Runtime } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import type * as J from 'fp-ts/lib/Json.js'
 import * as L from 'logger-fp-ts'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv } from './Context.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, type DeprecatedSleepEnv } from './Context.js'
 import { decodeEnv } from './env.js'
 
 export const makeDeprecatedEnvVars = decodeEnv(process)()
@@ -15,6 +15,14 @@ export const makeDeprecatedLoggerEnv = Effect.gen(function* () {
     clock: SystemClock,
     logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
   }
+})
+
+export const makeDeprecatedSleepEnv = Effect.gen(function* () {
+  const runtime = yield* Effect.runtime()
+
+  return {
+    sleep: (duration: number) => Runtime.runPromise(runtime)(Effect.sleep(`${duration} millis`)),
+  } satisfies typeof DeprecatedSleepEnv.Service
 })
 
 export const DeprecatedLogger = Effect.gen(function* () {

@@ -11,7 +11,8 @@ import cspBuilder from 'content-security-policy-builder'
 import cookieSignature from 'cookie-signature'
 import { Config, Effect, Layer, Option, pipe } from 'effect'
 import * as Uuid from 'uuid-ts'
-import { DeprecatedLoggerEnv, Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
+import { DeprecatedLoggerEnv, DeprecatedSleepEnv, Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
+import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
 import { collapseRequests, logFetch } from './fetch.js'
@@ -136,4 +137,5 @@ export const Program = pipe(
   Layer.provide(Layer.effect(Express, expressServer)),
   Layer.provide(Layer.effect(TemplatePage.TemplatePage, TemplatePage.make)),
   Layer.provide(setUpFetch),
+  Layer.provide(Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv)),
 )
