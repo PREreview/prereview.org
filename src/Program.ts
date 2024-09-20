@@ -9,7 +9,8 @@ import {
 import { Schema } from '@effect/schema'
 import cspBuilder from 'content-security-policy-builder'
 import cookieSignature from 'cookie-signature'
-import { Config, Effect, flow, Layer, Match, Option, pipe } from 'effect'
+import { type Array, Config, Effect, flow, Layer, Match, Option, pipe, Runtime } from 'effect'
+import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import * as Uuid from 'uuid-ts'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
@@ -19,9 +20,12 @@ import { collapseRequests, logFetch } from './fetch.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import { DefaultLocale } from './locales/index.js'
 import * as Preprint from './preprint.js'
+import * as Prereview from './Prereview.js'
 import { Router } from './Router.js'
 import * as TemplatePage from './TemplatePage.js'
+import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import { UserSchema } from './user.js'
+import { getPrereviewFromZenodo } from './zenodo.js'
 
 const addSecurityHeaders = HttpMiddleware.make(app =>
   Effect.gen(function* () {
@@ -114,6 +118,73 @@ const getLoggedInUser = HttpMiddleware.make(app =>
   }),
 )
 
+const getPrereview = Layer.effect(
+  Prereview.GetPrereview,
+  Effect.gen(function* () {
+    const { wasPrereviewRemoved, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
+    const fetch = yield* FetchHttpClient.Fetch
+    const logger = yield* DeprecatedLoggerEnv
+    const getPreprintService = yield* Preprint.GetPreprint
+    const runtime = yield* Effect.runtime()
+    const sleep = yield* DeprecatedSleepEnv
+
+    const getPreprint = (id: IndeterminatePreprintId) => () =>
+      Runtime.runPromise(runtime)(
+        pipe(
+          getPreprintService(id),
+          Effect.catchTags({
+            PreprintIsNotFound: () => Effect.fail('not-found' as const),
+            PreprintIsUnavailable: () => Effect.fail('unavailable' as const),
+          }),
+          Effect.either,
+        ),
+      )
+
+    return id =>
+      pipe(
+        Effect.promise(
+          getPrereviewFromZenodo(id)({
+            fetch,
+            getPreprint,
+            ...sleep,
+            wasPrereviewRemoved,
+            zenodoApiKey,
+            zenodoUrl,
+            ...logger,
+          }),
+        ),
+        Effect.andThen(
+          flow(
+            Match.value,
+            Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
+            Match.when({ _tag: 'Right' }, response =>
+              Effect.succeed(
+                new Prereview.Prereview({
+                  ...response.right,
+                  authors: {
+                    ...response.right.authors,
+                    named: fixArrayType(response.right.authors.named),
+                  },
+                  id,
+                }),
+              ),
+            ),
+            Match.exhaustive,
+          ),
+        ),
+        Effect.mapError(
+          flow(
+            Match.value,
+            Match.when('not-found', () => new Prereview.PrereviewIsNotFound()),
+            Match.when('removed', () => new Prereview.PrereviewWasRemoved()),
+            Match.when('unavailable', () => new Prereview.PrereviewIsUnavailable()),
+            Match.exhaustive,
+          ),
+        ),
+      )
+  }),
+)
+
 const getPreprint = Layer.effect(
   Preprint.GetPreprint,
   Effect.gen(function* () {
@@ -167,7 +238,12 @@ export const Program = pipe(
   Layer.provide(logStopped),
   Layer.provide(Layer.effect(Express, expressServer)),
   Layer.provide(Layer.effect(TemplatePage.TemplatePage, TemplatePage.make)),
+  Layer.provide(getPrereview),
   Layer.provide(getPreprint),
   Layer.provide(setUpFetch),
   Layer.provide(Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv)),
 )
+
+function fixArrayType<A>(array: ReadonlyNonEmptyArray<A>): Array.NonEmptyReadonlyArray<A> {
+  return array as Array.NonEmptyReadonlyArray<A>
+}
