@@ -19,6 +19,25 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
       )
     `
 
+    const getAllEvents: EventStore.EventStore['getAllEvents'] = Effect.gen(function* () {
+      const rows = yield* pipe(
+        sql`
+            SELECT
+              event_id,
+              resource_id,
+              resource_version,
+              payload
+            FROM
+              events
+            ORDER BY
+              resource_version ASC
+          `,
+        Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable))),
+      )
+
+      return Array.map(rows, row => ({ resourceId: row.resourceId, event: row.payload, version: row.resourceVersion }))
+    }).pipe(Effect.mapError(() => new EventStore.FailedToGetEvents()))
+
     const getEvents: EventStore.EventStore['getEvents'] = resourceId =>
       Effect.gen(function* () {
         const rows = yield* pipe(
@@ -98,7 +117,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
         }),
       )
 
-    return { getEvents, commitEvent }
+    return { getAllEvents, getEvents, commitEvent }
   },
 )
 

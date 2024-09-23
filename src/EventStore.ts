@@ -9,6 +9,11 @@ export class FailedToCommitEvent extends Data.TaggedError('FailedToCommitEvent')
 export class ResourceHasChanged extends Data.TaggedError('ResourceHasChanged') {}
 
 export interface EventStore {
+  readonly getAllEvents: Effect.Effect<
+    ReadonlyArray<{ readonly event: FeedbackEvent; readonly version: number; readonly resourceId: Uuid }>,
+    FailedToGetEvents
+  >
+
   readonly getEvents: (
     resourceId: Uuid,
   ) => Effect.Effect<

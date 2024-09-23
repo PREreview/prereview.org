@@ -11,8 +11,10 @@ it.prop([fc.uuid()])('starts empty', resourceId =>
     const eventStore = yield* _.make
 
     const actual = yield* eventStore.getEvents(resourceId)
+    const all = yield* eventStore.getAllEvents
 
     expect(actual).toStrictEqual({ events: [], latestVersion: 0 })
+    expect(all).toStrictEqual([])
   }).pipe(
     Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
     Effect.provide(TestContext.TestContext),
@@ -27,8 +29,10 @@ it.prop([fc.uuid(), fc.feedbackEvent()])('creates a new resource', (resourceId, 
     yield* eventStore.commitEvent(resourceId, 0)(event)
 
     const actual = yield* eventStore.getEvents(resourceId)
+    const all = yield* eventStore.getAllEvents
 
     expect(actual).toStrictEqual({ events: [event], latestVersion: 1 })
+    expect(all).toStrictEqual([{ event, resourceId, version: 1 }])
   }).pipe(
     Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
     Effect.provide(TestContext.TestContext),
@@ -47,8 +51,13 @@ describe('when the last known version is up to date', () => {
         yield* eventStore.commitEvent(resourceId, 1)(event2)
 
         const actual = yield* eventStore.getEvents(resourceId)
+        const all = yield* eventStore.getAllEvents
 
         expect(actual).toStrictEqual({ events: [event1, event2], latestVersion: 2 })
+        expect(all).toStrictEqual([
+          { event: event1, resourceId, version: 1 },
+          { event: event2, resourceId, version: 2 },
+        ])
       }).pipe(
         Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
         Effect.provide(TestContext.TestContext),
@@ -71,8 +80,10 @@ describe('when the last known version is out of date', () => {
         expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
         const actual = yield* eventStore.getEvents(resourceId)
+        const all = yield* eventStore.getAllEvents
 
         expect(actual).toStrictEqual({ events: [event1], latestVersion: 1 })
+        expect(all).toStrictEqual([{ event: event1, resourceId, version: 1 }])
       }).pipe(
         Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
         Effect.provide(TestContext.TestContext),
@@ -101,6 +112,14 @@ it.prop([
     const actual2 = yield* eventStore.getEvents(resourceId2)
 
     expect(actual2).toStrictEqual({ events: [event2, event3], latestVersion: 2 })
+
+    const all = yield* eventStore.getAllEvents
+
+    expect(all).toStrictEqual([
+      { event: event1, resourceId: resourceId1, version: 1 },
+      { event: event2, resourceId: resourceId2, version: 1 },
+      { event: event3, resourceId: resourceId2, version: 2 },
+    ])
   }).pipe(
     Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
     Effect.provide(TestContext.TestContext),
