@@ -30,6 +30,12 @@ export const WriteFeedback: Route<{ id: number }> = {
   schema: Schema.Struct({ id: Schema.NumberFromString }),
 }
 
+export const WriteFeedbackStartNow: Route<{ id: number }> = {
+  path: '/reviews/:id/write-feedback/start-now',
+  href: params => `/reviews/${params.id}/write-feedback/start-now`,
+  schema: Schema.Struct({ id: Schema.NumberFromString }),
+}
+
 const IntegerFromStringC = C.make(
   pipe(
     D.string,

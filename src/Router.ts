@@ -17,6 +17,14 @@ export const Router = pipe(
       Effect.andThen(toHttpServerResponse),
     ),
   ),
+  HttpRouter.get(
+    Routes.WriteFeedbackStartNow.path,
+    pipe(
+      HttpRouter.schemaParams(Routes.WriteFeedbackStartNow.schema),
+      Effect.andThen(WriteFeedbackFlow.StartNow),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
   HttpRouter.use(
     HttpMiddleware.make(
       Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),

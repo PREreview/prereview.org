@@ -178,7 +178,9 @@ export const WriteFeedbackPage = ({
             </details>
           `}
 
-      <a role="button" draggable="false">${translate(locale, 'write-feedback-flow', 'startNowButton')()}</a>
+      <a href="${Routes.WriteFeedbackStartNow.href({ id: prereview.id })}" role="button" draggable="false"
+        >${translate(locale, 'write-feedback-flow', 'startNowButton')()}</a
+      >
     `,
     canonical: Routes.WriteFeedback.href({ id: prereview.id }),
   })

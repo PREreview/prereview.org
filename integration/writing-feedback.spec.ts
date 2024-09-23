@@ -2,7 +2,7 @@ import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type Record, RecordC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, canWriteFeedback, expect, test } from './base.js'
+import { areLoggedIn, canLogIn, canWriteFeedback, test } from './base.js'
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   'can write feedback on a PREreview',
@@ -69,6 +69,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864')
     await page.goto('/reviews/1061864/write-feedback')
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write feedback')
+    await page.getByRole('button', { name: 'Start now' }).click()
   },
 )
