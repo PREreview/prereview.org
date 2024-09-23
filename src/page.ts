@@ -287,6 +287,17 @@ export function page({
             </div>
           </header>
 
+          ${current === 'home'
+            ? html`
+                <div class="global-bar">
+                  <span>
+                    Help shape the future of our community! Share your insights by taking our quick
+                    <a href="https://bit.ly/PREreview-Survey-2024">Community&nbsp;Survey</a>.
+                  </span>
+                </div>
+              `
+            : ''}
+
           <div class="contents">${content}</div>
 
           <footer>
