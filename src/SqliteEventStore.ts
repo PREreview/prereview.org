@@ -102,9 +102,11 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
   },
 )
 
+const UuidSchema = pipe(Schema.String, Schema.filter(Uuid.isUuid))
+
 const EventsTable = Schema.Struct({
-  eventId: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('event_id')),
-  resourceId: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('resource_id')),
+  eventId: Schema.propertySignature(UuidSchema).pipe(Schema.fromKey('event_id')),
+  resourceId: Schema.propertySignature(UuidSchema).pipe(Schema.fromKey('resource_id')),
   resourceVersion: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('resource_version')),
   payload: Schema.parseJson(FeedbackEvent),
 })
