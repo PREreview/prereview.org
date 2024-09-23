@@ -1,7 +1,7 @@
 import { SqliteClient } from '@effect/sql-sqlite-node'
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Config, Effect, TestContext } from 'effect'
+import { Config, Effect, Equal, TestContext } from 'effect'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/SqliteEventStore.js'
 import * as fc from './fc.js'
@@ -81,26 +81,29 @@ describe('when the last known version is out of date', () => {
   )
 })
 
-it.prop([fc.uuid(), fc.uuid(), fc.feedbackEvent(), fc.feedbackEvent(), fc.feedbackEvent()])(
-  'isolates resources',
-  (resourceId1, resourceId2, event1, event2, event3) =>
-    Effect.gen(function* () {
-      const eventStore = yield* _.make
+it.prop([
+  fc.tuple(fc.uuid(), fc.uuid()).filter(([a, b]) => !Equal.equals(a, b)),
+  fc.feedbackEvent(),
+  fc.feedbackEvent(),
+  fc.feedbackEvent(),
+])('isolates resources', ([resourceId1, resourceId2], event1, event2, event3) =>
+  Effect.gen(function* () {
+    const eventStore = yield* _.make
 
-      yield* eventStore.commitEvent(resourceId1, 0)(event1)
-      yield* eventStore.commitEvent(resourceId2, 0)(event2)
-      yield* eventStore.commitEvent(resourceId2, 1)(event3)
+    yield* eventStore.commitEvent(resourceId1, 0)(event1)
+    yield* eventStore.commitEvent(resourceId2, 0)(event2)
+    yield* eventStore.commitEvent(resourceId2, 1)(event3)
 
-      const actual1 = yield* eventStore.getEvents(resourceId1)
+    const actual1 = yield* eventStore.getEvents(resourceId1)
 
-      expect(actual1).toStrictEqual({ events: [event1], latestVersion: 1 })
+    expect(actual1).toStrictEqual({ events: [event1], latestVersion: 1 })
 
-      const actual2 = yield* eventStore.getEvents(resourceId2)
+    const actual2 = yield* eventStore.getEvents(resourceId2)
 
-      expect(actual2).toStrictEqual({ events: [event2, event3], latestVersion: 2 })
-    }).pipe(
-      Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
-    ),
+    expect(actual2).toStrictEqual({ events: [event2, event3], latestVersion: 2 })
+  }).pipe(
+    Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
+    Effect.provide(TestContext.TestContext),
+    Effect.runPromise,
+  ),
 )
