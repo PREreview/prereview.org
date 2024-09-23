@@ -1,5 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
+import { SqliteClient } from '@effect/sql-sqlite-node'
 import {
   type Fixtures,
   type PlaywrightTestArgs,
@@ -9,7 +10,7 @@ import {
 } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { ConfigProvider, Effect, Logger as EffectLogger, Fiber, Layer, pipe } from 'effect'
+import { Config, ConfigProvider, Effect, Logger as EffectLogger, Fiber, Layer, pipe } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
@@ -1289,6 +1290,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         } as unknown as typeof ExpressConfig.Service),
         Effect.provideService(CanWriteFeedback, canWriteFeedback),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
+        Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
         Effect.provide(

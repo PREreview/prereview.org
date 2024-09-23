@@ -12,16 +12,26 @@ import cookieSignature from 'cookie-signature'
 import { type Array, Config, Effect, flow, Layer, Match, Option, pipe, Runtime } from 'effect'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import * as Uuid from 'uuid-ts'
-import { DeprecatedLoggerEnv, DeprecatedSleepEnv, Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
+import {
+  DeprecatedLoggerEnv,
+  DeprecatedSleepEnv,
+  EventStore,
+  Express,
+  ExpressConfig,
+  Locale,
+  LoggedInUser,
+} from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
+import * as Feedback from './Feedback/index.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import { DefaultLocale } from './locales/index.js'
 import * as Preprint from './preprint.js'
 import * as Prereview from './Prereview.js'
 import { Router } from './Router.js'
+import * as SqliteEventStore from './SqliteEventStore.js'
 import * as TemplatePage from './TemplatePage.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import { UserSchema } from './user.js'
@@ -240,6 +250,13 @@ export const Program = pipe(
   Layer.provide(Layer.effect(TemplatePage.TemplatePage, TemplatePage.make)),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
+  Layer.provide(
+    Layer.effect(
+      Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
+      Feedback.makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview,
+    ),
+  ),
+  Layer.provide(Layer.effect(EventStore, SqliteEventStore.make)),
   Layer.provide(setUpFetch),
   Layer.provide(Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv)),
 )

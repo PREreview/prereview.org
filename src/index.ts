@@ -1,5 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
+import { SqliteClient } from '@effect/sql-sqlite-node'
 import { Config, Effect, Layer, Logger, LogLevel } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
@@ -33,6 +34,7 @@ pipe(
   Effect.provideService(CanWriteFeedback, isPrereviewTeam),
   Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Effect.provideServiceEffect(ExpressConfig, ExpressConfigLive),
+  Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
   Effect.provideServiceEffect(Redis, redisLifecycle),
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,
