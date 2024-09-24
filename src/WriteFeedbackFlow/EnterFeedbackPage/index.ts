@@ -6,6 +6,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
+import * as EnterFeedbackFrom from './EnterFeedbackForm.js'
 import { EnterFeedbackPage as MakeResponse } from './EnterFeedbackPage.js'
 
 export const EnterFeedbackPage = ({
@@ -34,10 +35,20 @@ export const EnterFeedbackPage = ({
       Match.value(feedback),
       Match.tag('FeedbackNotStarted', () => pageNotFound),
       Match.tag('FeedbackInProgress', feedback =>
-        MakeResponse({ feedbackId, locale, prereviewId: feedback.prereviewId }),
+        MakeResponse({
+          feedbackId,
+          form: EnterFeedbackFrom.fromFeedback(feedback),
+          locale,
+          prereviewId: feedback.prereviewId,
+        }),
       ),
       Match.tag('FeedbackReadyForPublishing', feedback =>
-        MakeResponse({ feedbackId, locale, prereviewId: feedback.prereviewId }),
+        MakeResponse({
+          feedbackId,
+          form: EnterFeedbackFrom.fromFeedback(feedback),
+          locale,
+          prereviewId: feedback.prereviewId,
+        }),
       ),
       Match.tag('FeedbackPublished', () =>
         Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) }),
