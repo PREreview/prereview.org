@@ -11,7 +11,6 @@ import cspBuilder from 'content-security-policy-builder'
 import cookieSignature from 'cookie-signature'
 import { type Array, Config, Effect, flow, Layer, Match, Option, pipe, Runtime } from 'effect'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import * as Uuid from 'uuid-ts'
 import {
   DeprecatedLoggerEnv,
   DeprecatedSleepEnv,
@@ -33,6 +32,7 @@ import * as Prereview from './Prereview.js'
 import { Router } from './Router.js'
 import * as SqliteEventStore from './SqliteEventStore.js'
 import * as TemplatePage from './TemplatePage.js'
+import { Uuid } from './types/index.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import { UserSchema } from './user.js'
 import { getPrereviewFromZenodo } from './zenodo.js'
@@ -115,7 +115,7 @@ const getLoggedInUser = HttpMiddleware.make(app =>
         Schema.Struct({ session: pipe(Schema.propertySignature(Schema.String), Schema.fromKey(sessionCookie)) }),
       ),
       Effect.andThen(({ session }) => cookieSignature.unsign(session, secret)),
-      Effect.andThen(Option.liftPredicate(Uuid.isUuid)),
+      Effect.andThen(Schema.decodeUnknown(Uuid.UuidSchema)),
       Effect.andThen(sessionId => sessionStore.get(sessionId)),
       Effect.andThen(Schema.decodeUnknown(Schema.Struct({ user: UserSchema }))),
       Effect.option,
@@ -259,6 +259,7 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.effect(EventStore, SqliteEventStore.make)),
   Layer.provide(setUpFetch),
+  Layer.provide(Layer.effect(Uuid.GenerateUuid, Uuid.make)),
   Layer.provide(Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv)),
 )
 

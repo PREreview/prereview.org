@@ -1,13 +1,14 @@
 import { Schema } from '@effect/schema'
 import { SqlClient, type SqlError } from '@effect/sql'
 import { Array, Effect, flow, pipe } from 'effect'
-import * as Uuid from 'uuid-ts'
 import * as EventStore from './EventStore.js'
 import { FeedbackEvent } from './Feedback/index.js'
+import { Uuid } from './types/index.js'
 
-export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlClient.SqlClient> = Effect.gen(
-  function* () {
+export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlClient.SqlClient | Uuid.GenerateUuid> =
+  Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
+    const generateUuid = yield* Uuid.GenerateUuid
 
     yield* sql`
       CREATE TABLE IF NOT EXISTS events (
@@ -68,7 +69,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
     const commitEvent: EventStore.EventStore['commitEvent'] = (resourceId, lastKnownVersion) => event =>
       Effect.gen(function* () {
         const newResourceVersion = lastKnownVersion + 1
-        const eventId = yield* Effect.sync(Uuid.v4())
+        const eventId = yield* generateUuid
 
         const encoded = yield* Schema.encode(EventsTable)({
           eventId,
@@ -118,14 +119,11 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
       )
 
     return { getAllEvents, getEvents, commitEvent }
-  },
-)
-
-const UuidSchema = pipe(Schema.String, Schema.filter(Uuid.isUuid))
+  })
 
 const EventsTable = Schema.Struct({
-  eventId: Schema.propertySignature(UuidSchema).pipe(Schema.fromKey('event_id')),
-  resourceId: Schema.propertySignature(UuidSchema).pipe(Schema.fromKey('resource_id')),
+  eventId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('event_id')),
+  resourceId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('resource_id')),
   resourceVersion: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('resource_version')),
   payload: Schema.parseJson(FeedbackEvent),
 })

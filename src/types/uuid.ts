@@ -1,9 +1,22 @@
+import { Schema } from '@effect/schema'
+import { Context, Effect } from 'effect'
 import type { IO } from 'fp-ts/lib/IO.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { type Uuid, isUuid } from 'uuid-ts'
+import { type Uuid, isUuid, v4 } from 'uuid-ts'
+
+export type { Uuid } from 'uuid-ts'
+
+export class GenerateUuid extends Context.Tag('GenerateUuid')<GenerateUuid, Effect.Effect<Uuid>>() {}
+
+export const make: Effect.Effect<typeof GenerateUuid.Service> = Effect.succeed(Effect.sync(v4()))
+
+export const UuidSchema: Schema.Schema<Uuid, string> = pipe(
+  Schema.String,
+  Schema.filter(isUuid, { message: () => 'not a UUID' }),
+)
 
 export interface GenerateUuidEnv {
   generateUuid: IO<Uuid>

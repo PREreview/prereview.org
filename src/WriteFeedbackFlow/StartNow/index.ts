@@ -1,10 +1,10 @@
 import { Array, Effect, Option, Record } from 'effect'
-import * as Uuid from 'uuid-ts'
 import { EnsureCanWriteFeedback } from '../../feature-flags.js'
 import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { GetPrereview } from '../../Prereview.js'
 import type * as Response from '../../response.js'
+import { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
 
 export const StartNow = ({
@@ -14,7 +14,10 @@ export const StartNow = ({
 }): Effect.Effect<
   Response.PageResponse,
   never,
-  GetPrereview | Feedback.HandleFeedbackCommand | Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
+  | Uuid.GenerateUuid
+  | GetPrereview
+  | Feedback.HandleFeedbackCommand
+  | Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -33,7 +36,8 @@ export const StartNow = ({
     return yield* Option.match(existingFeedbackId, {
       onNone: () =>
         Effect.gen(function* () {
-          const feedbackId = yield* Effect.sync(Uuid.v4())
+          const generateUuid = yield* Uuid.GenerateUuid
+          const feedbackId = yield* generateUuid
 
           const handleCommand = yield* Feedback.HandleFeedbackCommand
 
