@@ -90,7 +90,7 @@ describe('StartNow', () => {
         fc.supportedLocale(),
         fc.user(),
         fc.prereview(),
-        fc.dictionary(fc.uuid(), fc.oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())),
+        fc.dictionary(fc.uuid(), fc.oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing()), { minKeys: 1 }),
       ])('when they have started feedback', (id, locale, user, prereview, feedback) =>
         Effect.gen(function* () {
           const actual = yield* _.StartNow({ id })
