@@ -90,13 +90,7 @@ export const EnterFeedbackPage = ({
               Match.tag(
                 'CompletedForm',
                 form => html`
-                  <textarea
-                    id="feedback"
-                    name="feedback"
-                    rows="20"
-                    aria-invalid="true"
-                    aria-errormessage="feedback-error"
-                  >
+                  <textarea id="feedback" name="feedback" rows="20">
 ${Turndown.turndown(form.feedback.toString())}</textarea
                   >
                   <textarea hidden disabled>${form.feedback}</textarea>
