@@ -1,5 +1,5 @@
-import { Headers, HttpMiddleware, HttpRouter, HttpServerResponse } from '@effect/platform'
-import { Effect, identity, Option, pipe } from 'effect'
+import { Headers, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { Effect, identity, Option, pipe, Record } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale, LoggedInUser, Redis } from './Context.js'
 import {
@@ -43,6 +43,14 @@ export const Router = pipe(
     Routes.WriteFeedbackEnterFeedback.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteFeedbackEnterFeedback.schema),
+      Effect.bind('body', () =>
+        Effect.gen(function* () {
+          const request = yield* HttpServerRequest.HttpServerRequest
+          const form = yield* request.urlParamsBody
+
+          return Record.fromEntries(form)
+        }),
+      ),
       Effect.andThen(WriteFeedbackFlow.EnterFeedbackSubmission),
       Effect.andThen(toHttpServerResponse),
     ),

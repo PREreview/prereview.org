@@ -63,13 +63,15 @@ export const EnterFeedbackPage = ({
   )
 
 export const EnterFeedbackSubmission = ({
+  body,
   feedbackId,
 }: {
+  body: unknown
   feedbackId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
   never,
-  Feedback.GetFeedback
+  Feedback.GetFeedback | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -82,13 +84,32 @@ export const EnterFeedbackSubmission = ({
       return pageNotFound
     }
 
-    return pipe(
+    const locale = yield* Locale
+
+    return yield* pipe(
       Match.value(feedback),
-      Match.tag('FeedbackNotStarted', () => pageNotFound),
-      Match.tag('FeedbackInProgress', () => havingProblemsPage),
-      Match.tag('FeedbackReadyForPublishing', () => havingProblemsPage),
+      Match.tag('FeedbackNotStarted', () => Effect.succeed(pageNotFound)),
+      Match.tag('FeedbackInProgress', 'FeedbackReadyForPublishing', feedback =>
+        Effect.gen(function* () {
+          const form = yield* EnterFeedbackForm.fromBody(body)
+
+          return pipe(
+            Match.value(form),
+            Match.tag('CompletedForm', () => havingProblemsPage),
+            Match.tag('InvalidForm', form =>
+              MakeResponse({
+                feedbackId,
+                form,
+                locale,
+                prereviewId: feedback.prereviewId,
+              }),
+            ),
+            Match.exhaustive,
+          )
+        }),
+      ),
       Match.tag('FeedbackPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) }),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })),
       ),
       Match.exhaustive,
     )
