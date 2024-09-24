@@ -98,10 +98,12 @@ describe('StartNow', () => {
           const actual = yield* _.StartNow({ id })
 
           expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
+            _tag: 'StreamlinePageResponse',
+            canonical: Routes.WriteFeedbackStartNow.href({ id: prereview.id }),
+            status: StatusCodes.OK,
+            title: expect.stringContaining('feedback'),
+            nav: expect.stringContaining('Back'),
+            main: expect.stringContaining('Continue'),
             skipToLabel: 'main',
             js: [],
           })

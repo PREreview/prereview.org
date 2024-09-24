@@ -1,4 +1,5 @@
 import { Array, Effect, Option, Record } from 'effect'
+import { Locale } from '../../Context.js'
 import { EnsureCanWriteFeedback } from '../../feature-flags.js'
 import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
@@ -7,18 +8,20 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
+import { CarryOnPage } from './CarryOnPage.js'
 
 export const StartNow = ({
   id,
 }: {
   id: number
 }): Effect.Effect<
-  Response.PageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
   never,
   | Uuid.GenerateUuid
   | GetPrereview
   | Feedback.HandleFeedbackCommand
   | Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
+  | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -49,7 +52,12 @@ export const StartNow = ({
 
           return Response.RedirectResponse({ location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }) })
         }),
-      onSome: () => Effect.succeed(havingProblemsPage),
+      onSome: feedbackId =>
+        Effect.gen(function* () {
+          const locale = yield* Locale
+
+          return CarryOnPage({ feedbackId, prereview, locale })
+        }),
     })
   }).pipe(
     Effect.catchTags({
