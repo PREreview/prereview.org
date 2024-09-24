@@ -1,5 +1,5 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { Effect, Equal, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale, LoggedInUser } from '../../src/Context.js'
@@ -162,33 +162,76 @@ describe('EnterFeedbackPage', () => {
 describe('EnterFeedbackSubmission', () => {
   describe('when there is a user', () => {
     describe('when the feedback is in progress', () => {
-      test.prop([
-        fc.uuid(),
-        fc
-          .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())
-          .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-        fc.supportedLocale(),
-        fc.record({ feedback: fc.nonEmptyString() }),
-      ])('when there is feedback', (feedbackId, [feedback, user], locale, body) =>
-        Effect.gen(function* () {
-          const actual = yield* _.EnterFeedbackSubmission({ body, feedbackId })
+      describe('when there is feedback', () => {
+        test.prop([
+          fc.uuid(),
+          fc
+            .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())
+            .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+          fc.supportedLocale(),
+          fc.record({ feedback: fc.html() }),
+        ])('when the feedback can be entered', (feedbackId, [feedback, user], locale, body) =>
+          Effect.gen(function* () {
+            const handleFeedbackCommand = jest.fn<typeof Feedback.HandleFeedbackCommand.Service>(_ => Effect.void)
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-          Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
-        ),
-      )
+            const actual = yield* Effect.provideService(
+              _.EnterFeedbackSubmission({ body: { feedback: body.feedback.toString() }, feedbackId }),
+              Feedback.HandleFeedbackCommand,
+              handleFeedbackCommand,
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.SERVICE_UNAVAILABLE,
+              title: expect.stringContaining('problems'),
+              main: expect.stringContaining('problems'),
+              skipToLabel: 'main',
+              js: [],
+            })
+
+            expect(handleFeedbackCommand).toHaveBeenCalledWith({
+              feedbackId,
+              command: new Feedback.EnterFeedback({ feedback: body.feedback }),
+            })
+          }).pipe(
+            Effect.provideService(Locale, locale),
+            Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+            Effect.provideService(LoggedInUser, user),
+            Effect.provide(TestContext.TestContext),
+            Effect.runPromise,
+          ),
+        )
+
+        test.prop([
+          fc.uuid(),
+          fc
+            .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())
+            .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+          fc.supportedLocale(),
+          fc.record({ feedback: fc.nonEmptyString() }),
+          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.feedbackError()),
+        ])("when the feedback can't be entered", (feedbackId, [feedback, user], locale, body, error) =>
+          Effect.gen(function* () {
+            const actual = yield* _.EnterFeedbackSubmission({ body, feedbackId })
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.SERVICE_UNAVAILABLE,
+              title: expect.stringContaining('problems'),
+              main: expect.stringContaining('problems'),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(
+            Effect.provideService(Locale, locale),
+            Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+            Effect.provideService(Feedback.HandleFeedbackCommand, () => Effect.fail(error)),
+            Effect.provideService(LoggedInUser, user),
+            Effect.provide(TestContext.TestContext),
+            Effect.runPromise,
+          ),
+        )
+      })
 
       test.prop([
         fc.uuid(),
@@ -217,6 +260,7 @@ describe('EnterFeedbackSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -243,6 +287,7 @@ describe('EnterFeedbackSubmission', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -266,6 +311,7 @@ describe('EnterFeedbackSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -294,6 +340,7 @@ describe('EnterFeedbackSubmission', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -317,6 +364,7 @@ describe('EnterFeedbackSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
+          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -339,6 +387,7 @@ describe('EnterFeedbackSubmission', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Feedback.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),

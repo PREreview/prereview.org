@@ -71,7 +71,7 @@ export const EnterFeedbackSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
   never,
-  Feedback.GetFeedback | Locale
+  Feedback.GetFeedback | Feedback.HandleFeedbackCommand | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -93,16 +93,35 @@ export const EnterFeedbackSubmission = ({
         Effect.gen(function* () {
           const form = yield* EnterFeedbackForm.fromBody(body)
 
-          return pipe(
+          return yield* pipe(
             Match.value(form),
-            Match.tag('CompletedForm', () => havingProblemsPage),
-            Match.tag('InvalidForm', form =>
-              MakeResponse({
-                feedbackId,
-                form,
-                locale,
-                prereviewId: feedback.prereviewId,
+            Match.tag('CompletedForm', form =>
+              Effect.gen(function* () {
+                const handleCommand = yield* Feedback.HandleFeedbackCommand
+
+                yield* pipe(
+                  handleCommand({
+                    feedbackId,
+                    command: new Feedback.EnterFeedback({ feedback: form.feedback }),
+                  }),
+                  Effect.catchIf(
+                    cause => cause._tag !== 'UnableToHandleCommand',
+                    cause => new Feedback.UnableToHandleCommand({ cause }),
+                  ),
+                )
+
+                return havingProblemsPage
               }),
+            ),
+            Match.tag('InvalidForm', form =>
+              Effect.succeed(
+                MakeResponse({
+                  feedbackId,
+                  form,
+                  locale,
+                  prereviewId: feedback.prereviewId,
+                }),
+              ),
             ),
             Match.exhaustive,
           )
@@ -116,6 +135,7 @@ export const EnterFeedbackSubmission = ({
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
+      UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
     }),
   )
