@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, TestContext } from 'effect'
+import { Effect, Equal, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { LoggedInUser } from '../../src/Context.js'
 import * as Feedback from '../../src/Feedback/index.js'
@@ -10,48 +10,54 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('EnterFeedbackPage', () => {
   describe('when there is a user', () => {
-    test.prop([fc.uuid(), fc.oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing()), fc.user()])(
-      'when the feedback is in progress',
-      (feedbackId, feedback, user) =>
-        Effect.gen(function* () {
-          const actual = yield* _.EnterFeedbackPage({ feedbackId })
+    test.prop([
+      fc.uuid(),
+      fc
+        .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())
+        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+    ])('when the feedback is in progress', (feedbackId, [feedback, user]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.EnterFeedbackPage({ feedbackId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-          Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
-        ),
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.SERVICE_UNAVAILABLE,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(LoggedInUser, user),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
     )
 
-    test.prop([fc.uuid(), fc.feedbackPublished(), fc.user()])(
-      'when the feedback has been published',
-      (feedbackId, feedback, user) =>
-        Effect.gen(function* () {
-          const actual = yield* _.EnterFeedbackPage({ feedbackId })
+    test.prop([
+      fc.uuid(),
+      fc
+        .feedbackPublished()
+        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+    ])('when the feedback has been published', (feedbackId, [feedback, user]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.EnterFeedbackPage({ feedbackId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-          Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
-        ),
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.SERVICE_UNAVAILABLE,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(LoggedInUser, user),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
     )
 
     test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user()])(
@@ -74,6 +80,31 @@ describe('EnterFeedbackPage', () => {
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
         ),
+    )
+
+    test.prop([
+      fc.uuid(),
+      fc
+        .tuple(fc.feedbackState(), fc.user())
+        .filter(([state, user]) => state._tag !== 'FeedbackNotStarted' && !Equal.equals(state.authorId, user.orcid)),
+    ])('when the feedback is by a different author', (feedbackId, [feedback, user]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.EnterFeedbackPage({ feedbackId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NOT_FOUND,
+          title: expect.stringContaining('not found'),
+          main: expect.stringContaining('not found'),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(LoggedInUser, user),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
     )
 
     test.prop([fc.uuid(), fc.user()])("when the feedback can't be loaded", (feedbackId, user) =>

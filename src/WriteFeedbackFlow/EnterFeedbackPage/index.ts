@@ -1,4 +1,4 @@
-import { Effect, Match, pipe } from 'effect'
+import { Effect, Equal, Match, pipe } from 'effect'
 import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type * as Response from '../../response.js'
@@ -11,11 +11,15 @@ export const EnterFeedbackPage = ({
   feedbackId: Uuid.Uuid
 }): Effect.Effect<Response.PageResponse | Response.StreamlinePageResponse, never, Feedback.GetFeedback> =>
   Effect.gen(function* () {
-    yield* EnsureUserIsLoggedIn
+    const user = yield* EnsureUserIsLoggedIn
 
     const getFeedback = yield* Feedback.GetFeedback
 
     const feedback = yield* getFeedback(feedbackId)
+
+    if (feedback._tag !== 'FeedbackNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
+      return pageNotFound
+    }
 
     return pipe(
       Match.value(feedback),

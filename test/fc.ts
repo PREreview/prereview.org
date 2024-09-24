@@ -1165,10 +1165,10 @@ export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<No
 
 export const languageCode = (): fc.Arbitrary<LanguageCode> => constantFrom(...ISO6391.getAllCodes())
 
-export const user = (): fc.Arbitrary<User> =>
+export const user = ({ orcid: userOrcid }: { orcid?: fc.Arbitrary<User['orcid']> } = {}): fc.Arbitrary<User> =>
   fc.record({
     name: fc.string(),
-    orcid: orcid(),
+    orcid: userOrcid ?? orcid(),
     pseudonym: pseudonym(),
   })
 
