@@ -50,3 +50,40 @@ export const EnterFeedbackPage = ({
       UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
     }),
   )
+
+export const EnterFeedbackSubmission = ({
+  feedbackId,
+}: {
+  feedbackId: Uuid.Uuid
+}): Effect.Effect<
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  never,
+  Feedback.GetFeedback
+> =>
+  Effect.gen(function* () {
+    const user = yield* EnsureUserIsLoggedIn
+
+    const getFeedback = yield* Feedback.GetFeedback
+
+    const feedback = yield* getFeedback(feedbackId)
+
+    if (feedback._tag !== 'FeedbackNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
+      return pageNotFound
+    }
+
+    return pipe(
+      Match.value(feedback),
+      Match.tag('FeedbackNotStarted', () => pageNotFound),
+      Match.tag('FeedbackInProgress', () => havingProblemsPage),
+      Match.tag('FeedbackReadyForPublishing', () => havingProblemsPage),
+      Match.tag('FeedbackPublished', () =>
+        Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) }),
+      ),
+      Match.exhaustive,
+    )
+  }).pipe(
+    Effect.catchTags({
+      UnableToQuery: () => Effect.succeed(havingProblemsPage),
+      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+    }),
+  )
