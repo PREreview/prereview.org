@@ -43,6 +43,12 @@ export const WriteFeedbackEnterFeedback: Route<{ feedbackId: Uuid.Uuid }> = {
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
+export const WriteFeedbackPublished: Route<{ feedbackId: Uuid.Uuid }> = {
+  path: '/write-feedback/:feedbackId/feedback-published',
+  href: params => `/write-feedback/${params.feedbackId}/feedback-published`,
+  schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
+}
+
 const IntegerFromStringC = C.make(
   pipe(
     D.string,
