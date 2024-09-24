@@ -257,6 +257,7 @@ export const Program = pipe(
       Feedback.makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview,
     ),
   ),
+  Layer.provide(Layer.effect(Feedback.GetFeedback, Feedback.makeGetFeedback)),
   Layer.provide(Layer.effect(EventStore, SqliteEventStore.make)),
   Layer.provide(setUpFetch),
   Layer.provide(Layer.effect(Uuid.GenerateUuid, Uuid.make)),

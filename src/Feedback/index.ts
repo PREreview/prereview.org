@@ -55,6 +55,24 @@ export const makeHandleFeedbackCommand: Effect.Effect<typeof HandleFeedbackComma
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: Error }> {}
 
+export class GetFeedback extends Context.Tag('GetFeedback')<
+  GetFeedback,
+  (feedbackId: Uuid) => Effect.Effect<FeedbackState, UnableToQuery>
+>() {}
+
+export const makeGetFeedback: Effect.Effect<typeof GetFeedback.Service, never, EventStore> = Effect.gen(function* () {
+  const eventStore = yield* EventStore
+
+  return feedbackId =>
+    Effect.gen(function* () {
+      const { events } = yield* eventStore.getEvents(feedbackId)
+
+      return Array.reduce(events, new FeedbackNotStarted() as FeedbackState, (state, event) =>
+        EvolveFeedback(state)(event),
+      )
+    }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
+})
+
 export class GetAllUnpublishedFeedbackByAnAuthorForAPrereview extends Context.Tag(
   'GetAllUnpublishedFeedbackByAnAuthorForAPrereview',
 )<
