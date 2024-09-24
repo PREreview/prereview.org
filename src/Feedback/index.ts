@@ -4,6 +4,7 @@ import type { Uuid } from 'uuid-ts'
 import { EventStore } from '../Context.js'
 import type { FeedbackCommand } from './Commands.js'
 import { DecideFeedback } from './Decide.js'
+import type { FeedbackError } from './Errors.js'
 import { EvolveFeedback } from './Evolve.js'
 import * as Queries from './Queries.js'
 import {
@@ -20,17 +21,36 @@ export * from './Events.js'
 export * from './Evolve.js'
 export * from './State.js'
 
-export const handleFeedbackCommand = (id: Uuid, command: FeedbackCommand) =>
+export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: Error }> {}
+
+export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<
+  HandleFeedbackCommand,
+  (params: {
+    readonly feedbackId: Uuid
+    readonly command: FeedbackCommand
+  }) => Effect.Effect<void, UnableToHandleCommand | FeedbackError>
+>() {}
+
+export const makeHandleFeedbackCommand: Effect.Effect<typeof HandleFeedbackCommand.Service, never, EventStore> =
   Effect.gen(function* () {
     const eventStore = yield* EventStore
 
-    const { events, latestVersion } = yield* eventStore.getEvents(id)
+    return ({ feedbackId, command }) =>
+      Effect.gen(function* () {
+        const { events, latestVersion } = yield* eventStore.getEvents(feedbackId)
 
-    const state = Array.reduce(events, new FeedbackNotStarted() as FeedbackState, (state, event) =>
-      EvolveFeedback(state)(event),
-    )
+        const state = Array.reduce(events, new FeedbackNotStarted() as FeedbackState, (state, event) =>
+          EvolveFeedback(state)(event),
+        )
 
-    yield* pipe(DecideFeedback(state)(command), Effect.andThen(eventStore.commitEvent(id, latestVersion)))
+        yield* pipe(DecideFeedback(state)(command), Effect.andThen(eventStore.commitEvent(feedbackId, latestVersion)))
+      }).pipe(
+        Effect.catchTags({
+          FailedToCommitEvent: cause => new UnableToHandleCommand({ cause }),
+          FailedToGetEvents: cause => new UnableToHandleCommand({ cause }),
+          ResourceHasChanged: cause => new UnableToHandleCommand({ cause }),
+        }),
+      )
   })
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: Error }> {}

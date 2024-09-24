@@ -250,6 +250,7 @@ export const Program = pipe(
   Layer.provide(Layer.effect(TemplatePage.TemplatePage, TemplatePage.make)),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
+  Layer.provide(Layer.effect(Feedback.HandleFeedbackCommand, Feedback.makeHandleFeedbackCommand)),
   Layer.provide(
     Layer.effect(
       Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
