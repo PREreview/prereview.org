@@ -12,6 +12,7 @@ import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import { ClubIdC } from './types/club-id.js'
 import { isFieldId } from './types/field.js'
+import { Uuid } from './types/index.js'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './types/preprint-id.js'
 import type { OrcidProfileId, PseudonymProfileId } from './types/profile-id.js'
 import { PseudonymC } from './types/pseudonym.js'
@@ -34,6 +35,12 @@ export const WriteFeedbackStartNow: Route<{ id: number }> = {
   path: '/reviews/:id/write-feedback/start-now',
   href: params => `/reviews/${params.id}/write-feedback/start-now`,
   schema: Schema.Struct({ id: Schema.NumberFromString }),
+}
+
+export const WriteFeedbackEnterFeedback: Route<{ feedbackId: Uuid.Uuid }> = {
+  path: '/write-feedback/:feedbackId/write-your-feedback',
+  href: params => `/write-feedback/${params.feedbackId}/write-your-feedback`,
+  schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
 const IntegerFromStringC = C.make(

@@ -6,6 +6,7 @@ import { Locale, LoggedInUser } from '../../src/Context.js'
 import { CanWriteFeedback } from '../../src/feature-flags.js'
 import * as Feedback from '../../src/Feedback/index.js'
 import * as Prereview from '../../src/Prereview.js'
+import * as Routes from '../../src/routes.js'
 import { Uuid } from '../../src/types/index.js'
 import * as _ from '../../src/WriteFeedbackFlow/StartNow/index.js'
 import * as fc from '../fc.js'
@@ -28,12 +29,9 @@ describe('StartNow', () => {
               )
 
               expect(actual).toStrictEqual({
-                _tag: 'PageResponse',
-                status: StatusCodes.SERVICE_UNAVAILABLE,
-                title: expect.stringContaining('problems'),
-                main: expect.stringContaining('problems'),
-                skipToLabel: 'main',
-                js: [],
+                _tag: 'RedirectResponse',
+                status: StatusCodes.SEE_OTHER,
+                location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
               })
 
               expect(handleFeedbackCommand).toHaveBeenCalledWith({

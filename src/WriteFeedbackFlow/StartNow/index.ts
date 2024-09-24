@@ -3,7 +3,8 @@ import { EnsureCanWriteFeedback } from '../../feature-flags.js'
 import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { GetPrereview } from '../../Prereview.js'
-import type * as Response from '../../response.js'
+import * as Response from '../../response.js'
+import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
 
@@ -12,7 +13,7 @@ export const StartNow = ({
 }: {
   id: number
 }): Effect.Effect<
-  Response.PageResponse,
+  Response.PageResponse | Response.RedirectResponse,
   never,
   | Uuid.GenerateUuid
   | GetPrereview
@@ -46,7 +47,7 @@ export const StartNow = ({
             command: new Feedback.StartFeedback({ authorId: user.orcid, prereviewId: prereview.id }),
           })
 
-          return havingProblemsPage
+          return Response.RedirectResponse({ location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }) })
         }),
       onSome: () => Effect.succeed(havingProblemsPage),
     })
