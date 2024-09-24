@@ -1,7 +1,7 @@
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import { type Record, RecordC } from 'zenodo-ts'
+import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import { areLoggedIn, canLogIn, canWriteFeedback, test } from './base.js'
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
@@ -65,6 +65,14 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
       })
+      .get(
+        {
+          name: 'existing-feedback',
+          url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+        },
+        { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+      )
 
     await page.goto('/reviews/1061864')
     await page.goto('/reviews/1061864/write-feedback')
