@@ -1297,6 +1297,9 @@ export const feedbackError = (): fc.Arbitrary<Feedback.FeedbackError> =>
     feedbackWasAlreadyPublished(),
   )
 
+export const feedbackNotStarted = (): fc.Arbitrary<Feedback.FeedbackNotStarted> =>
+  constant(new Feedback.FeedbackNotStarted())
+
 export const feedbackInProgress = (): fc.Arbitrary<Feedback.FeedbackInProgress> =>
   fc
     .record({
@@ -1313,6 +1316,20 @@ export const feedbackReadyForPublishing = (): fc.Arbitrary<Feedback.FeedbackRead
       prereviewId: fc.integer(),
     })
     .map(data => new Feedback.FeedbackReadyForPublishing(data))
+
+export const feedbackPublished = (): fc.Arbitrary<Feedback.FeedbackPublished> =>
+  fc
+    .record({
+      authorId: orcid(),
+      doi: doi(),
+      feedback: html(),
+      id: fc.integer(),
+      prereviewId: fc.integer(),
+    })
+    .map(data => new Feedback.FeedbackPublished(data))
+
+export const feedbackState = (): fc.Arbitrary<Feedback.FeedbackState> =>
+  fc.oneof(feedbackNotStarted(), feedbackInProgress(), feedbackReadyForPublishing())
 
 // https://github.com/gcanti/fp-ts/issues/1680
 type EndsWith<Full extends string, End extends string> = string extends Full
