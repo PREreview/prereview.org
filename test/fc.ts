@@ -1298,12 +1298,19 @@ export const feedbackError = (): fc.Arbitrary<Feedback.FeedbackError> =>
   )
 
 export const feedbackInProgress = (): fc.Arbitrary<Feedback.FeedbackInProgress> =>
-  fc.constant(new Feedback.FeedbackInProgress())
+  fc
+    .record({
+      authorId: orcid(),
+      prereviewId: fc.integer(),
+    })
+    .map(data => new Feedback.FeedbackInProgress(data))
 
 export const feedbackReadyForPublishing = (): fc.Arbitrary<Feedback.FeedbackReadyForPublishing> =>
   fc
     .record({
+      authorId: orcid(),
       feedback: html(),
+      prereviewId: fc.integer(),
     })
     .map(data => new Feedback.FeedbackReadyForPublishing(data))
 

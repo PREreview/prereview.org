@@ -30,8 +30,15 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
     })
 
     expect(actual).toStrictEqual({
-      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress(),
-      '2b9e777b-f14d-4294-8e27-2b442e496050': new Feedback.FeedbackReadyForPublishing({ feedback: html`Some text` }),
+      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress({
+        authorId: Orcid('0000-0002-1825-0097'),
+        prereviewId: 123,
+      }),
+      '2b9e777b-f14d-4294-8e27-2b442e496050': new Feedback.FeedbackReadyForPublishing({
+        authorId: Orcid('0000-0002-1825-0097'),
+        feedback: html`Some text`,
+        prereviewId: 123,
+      }),
     })
   })
 
@@ -52,7 +59,12 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       authorId: Orcid('0000-0002-1825-0097'),
     })
 
-    expect(actual).toStrictEqual({ '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress() })
+    expect(actual).toStrictEqual({
+      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress({
+        authorId: Orcid('0000-0002-1825-0097'),
+        prereviewId: 123,
+      }),
+    })
   })
 
   test('ignores feedback for other PREreviews', () => {
@@ -72,7 +84,12 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       authorId: Orcid('0000-0002-1825-0097'),
     })
 
-    expect(actual).toStrictEqual({ '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress() })
+    expect(actual).toStrictEqual({
+      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress({
+        authorId: Orcid('0000-0002-1825-0097'),
+        prereviewId: 123,
+      }),
+    })
   })
 
   test('ignores feedback that has been published', () => {
@@ -100,6 +117,11 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       authorId: Orcid('0000-0002-1825-0097'),
     })
 
-    expect(actual).toStrictEqual({ '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress() })
+    expect(actual).toStrictEqual({
+      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress({
+        authorId: Orcid('0000-0002-1825-0097'),
+        prereviewId: 123,
+      }),
+    })
   })
 })
