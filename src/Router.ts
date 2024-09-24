@@ -1,8 +1,14 @@
-import { HttpMiddleware, HttpRouter, HttpServerResponse } from '@effect/platform'
+import { Headers, HttpMiddleware, HttpRouter, HttpServerResponse } from '@effect/platform'
 import { Effect, identity, Option, pipe } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale, LoggedInUser, Redis } from './Context.js'
-import { type PageResponse, type StreamlinePageResponse, toPage, type TwoUpPageResponse } from './response.js'
+import {
+  type PageResponse,
+  type RedirectResponse,
+  type StreamlinePageResponse,
+  toPage,
+  type TwoUpPageResponse,
+} from './response.js'
 import * as Routes from './routes.js'
 import { TemplatePage } from './TemplatePage.js'
 import * as WriteFeedbackFlow from './WriteFeedbackFlow/index.js'
@@ -65,9 +71,16 @@ export const Router = pipe(
 )
 
 function toHttpServerResponse(
-  response: PageResponse | StreamlinePageResponse | TwoUpPageResponse,
+  response: PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse,
 ): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage> {
   return Effect.gen(function* () {
+    if (response._tag === 'RedirectResponse') {
+      return yield* HttpServerResponse.empty({
+        status: response.status,
+        headers: Headers.fromInput({ Location: response.location.toString() }),
+      })
+    }
+
     const locale = yield* Locale
     const templatePage = yield* TemplatePage
     const user = yield* Effect.serviceOption(LoggedInUser)
