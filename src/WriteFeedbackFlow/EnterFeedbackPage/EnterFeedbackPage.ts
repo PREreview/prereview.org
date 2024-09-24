@@ -77,12 +77,11 @@ export const EnterFeedbackPage = ({
                 Either.match(form.feedback, {
                   onLeft: () => html`
                     <textarea
-                      id="review"
-                      name="review"
+                      id="feedback"
+                      name="feedback"
                       rows="20"
-                      aria-describedby="review-tip"
                       aria-invalid="true"
-                      aria-errormessage="review-error"
+                      aria-errormessage="feedback-error"
                     ></textarea>
                   `,
                   onRight: absurd<Html>,
@@ -92,12 +91,11 @@ export const EnterFeedbackPage = ({
                 'CompletedForm',
                 form => html`
                   <textarea
-                    id="review"
-                    name="review"
+                    id="feedback"
+                    name="feedback"
                     rows="20"
-                    aria-describedby="review-tip"
                     aria-invalid="true"
-                    aria-errormessage="review-error"
+                    aria-errormessage="feedback-error"
                   >
 ${Turndown.turndown(form.feedback.toString())}</textarea
                   >
