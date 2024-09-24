@@ -6,7 +6,7 @@ import { areLoggedIn, canLogIn, canWriteFeedback, expect, test } from './base.js
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   'can write feedback on a PREreview',
-  async ({ fetch, page }) => {
+  async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
       conceptdoi: Doi('10.5072/zenodo.1061863'),
       conceptrecid: 1061863,
@@ -78,6 +78,17 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
 
     await page.getByRole('button', { name: 'Start now' }).click()
+    await page.waitForLoadState()
+
+    await page.getByLabel('Write your feedback').click()
+    await page.keyboard.type('# Some title')
+    await page.keyboard.press('Enter')
+    await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
+    await (javaScriptEnabled ? page.keyboard.press('Control+b') : page.keyboard.type('<b>'))
+    await page.keyboard.type('adipiscing elit')
+    await (javaScriptEnabled ? page.keyboard.press('Control+b') : page.keyboard.type('</b>'))
+    await page.keyboard.type('.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
   },
 )
 
@@ -161,5 +172,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await expect(page.getByRole('main')).toContainText('carry on')
 
     await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write your feedback')
   },
 )
