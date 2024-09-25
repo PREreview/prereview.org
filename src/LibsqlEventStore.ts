@@ -16,6 +16,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
         resource_type TEXT NOT NULL,
         resource_id TEXT NOT NULL,
         resource_version number,
+        event_type TEXT NOT NULL,
         event_timestamp TEXT NOT NULL,
         payload TEXT NOT NULL,
         UNIQUE (resource_type, resource_id, resource_version)
@@ -30,6 +31,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               resource_type,
               resource_id,
               resource_version,
+              event_type,
               event_timestamp,
               payload
             FROM
@@ -52,6 +54,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               resource_type,
               resource_id,
               resource_version,
+              event_type,
               event_timestamp,
               payload
             FROM
@@ -84,6 +87,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
           resourceType: 'Feedback',
           resourceId,
           resourceVersion: newResourceVersion,
+          eventType: event._tag,
           eventTimestamp,
           payload: event,
         })
@@ -96,6 +100,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                 resource_type,
                 resource_id,
                 resource_version,
+                event_type,
                 event_timestamp,
                 payload
               )
@@ -104,6 +109,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               ${encoded.resource_type},
               ${encoded.resource_id},
               ${encoded.resource_version},
+              ${encoded.event_type},
               ${encoded.event_timestamp},
               ${encoded.payload}
             WHERE
@@ -141,6 +147,7 @@ const EventsTable = Schema.Struct({
   resourceType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('resource_type')),
   resourceId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('resource_id')),
   resourceVersion: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('resource_version')),
+  eventType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('event_type')),
   eventTimestamp: Schema.propertySignature(Schema.DateTimeUtc).pipe(Schema.fromKey('event_timestamp')),
   payload: Schema.parseJson(FeedbackEvent),
 })
