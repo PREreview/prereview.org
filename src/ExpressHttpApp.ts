@@ -1,6 +1,7 @@
 import { type HttpApp, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServerRequest } from '@effect/platform-node'
 import { Effect } from 'effect'
+import type { ErrorRequestHandler } from 'express'
 import { Express } from './Context.js'
 
 export const ExpressHttpApp: HttpApp.Default<never, Express | HttpServerRequest.HttpServerRequest> = Effect.gen(
@@ -14,7 +15,13 @@ export const ExpressHttpApp: HttpApp.Default<never, Express | HttpServerRequest.
     return yield* Effect.async<HttpServerResponse.HttpServerResponse>(resume => {
       nodeResponse.once('close', () => resume(Effect.succeed(HttpServerResponse.empty())))
 
-      express(nodeRequest, nodeResponse)
+      express.use(((error, req, res, next) => {
+        if (error instanceof Error && 'code' in error && error.code === 'ERR_HTTP_HEADERS_SENT') {
+          return next()
+        }
+
+        next(error)
+      }) satisfies ErrorRequestHandler)(nodeRequest, nodeResponse)
     })
   },
 )
