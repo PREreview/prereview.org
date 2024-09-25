@@ -243,7 +243,7 @@ export const Program = pipe(
   addXRobotsTagHeader,
   getLoggedInUser,
   Effect.provideService(Locale, DefaultLocale),
-  HttpServer.serve(annotateLogsWithRequestId),
+  HttpServer.serve(flow(HttpMiddleware.logger, annotateLogsWithRequestId)),
   HttpServer.withLogAddress,
   Layer.provide(logStopped),
   Layer.provide(Layer.effect(Express, expressServer)),

@@ -1,4 +1,4 @@
-import { type HttpApp, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { type HttpApp, HttpMiddleware, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServerRequest } from '@effect/platform-node'
 import { Effect } from 'effect'
 import type { ErrorRequestHandler } from 'express'
@@ -22,6 +22,6 @@ export const ExpressHttpApp: HttpApp.Default<never, Express | HttpServerRequest.
 
         next(error)
       }) satisfies ErrorRequestHandler)(nodeRequest, nodeResponse)
-    })
+    }).pipe(HttpMiddleware.withLoggerDisabled)
   },
 )

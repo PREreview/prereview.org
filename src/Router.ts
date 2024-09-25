@@ -1,7 +1,7 @@
 import { Headers, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Effect, identity, Option, pipe, Record } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import { Locale, LoggedInUser, Redis } from './Context.js'
+import { ExpressConfig, Locale, LoggedInUser, Redis } from './Context.js'
 import {
   type PageResponse,
   type RedirectResponse,
@@ -12,6 +12,26 @@ import {
 import * as Routes from './routes.js'
 import { TemplatePage } from './TemplatePage.js'
 import * as WriteFeedbackFlow from './WriteFeedbackFlow/index.js'
+
+const logRequest = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const request = yield* HttpServerRequest.HttpServerRequest
+    const { publicUrl } = yield* ExpressConfig
+
+    const url = new URL(request.url, publicUrl)
+
+    yield* Effect.annotateLogs(Effect.logInfo('Received HTTP request'), {
+      'http.method': request.method,
+      'http.url': request.url,
+      'http.path': url.pathname,
+      'http.query': Object.fromEntries(url.searchParams),
+      'http.referrer': Option.getOrUndefined(Headers.get(request.headers, 'Referer')),
+      'http.userAgent': Option.getOrUndefined(Headers.get(request.headers, 'User-Agent')),
+    })
+
+    return yield* app
+  }),
+)
 
 export const Router = pipe(
   HttpRouter.empty,
@@ -68,6 +88,7 @@ export const Router = pipe(
       Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
     ),
   ),
+  HttpRouter.use(logRequest),
   HttpRouter.get(
     '/health',
     Effect.gen(function* () {
@@ -97,6 +118,7 @@ export const Router = pipe(
           return yield* HttpServerResponse.json({ status: 'error' }, { status: StatusCodes.SERVICE_UNAVAILABLE })
         }),
       ),
+      HttpMiddleware.withLoggerDisabled,
     ),
   ),
   HttpRouter.get('/robots.txt', HttpServerResponse.text('User-agent: *\nAllow: /')),
