@@ -217,36 +217,38 @@ export const app = (config: ConfigEnv) =>
 
       next()
     })
-    .use((req, res, next) => {
-      return pipe(
-        appMiddleware,
-        R.local((env: ConfigEnv): RouterEnv & LegacyEnv => ({
-          ...env,
-          doesPreprintExist: withEnv(doesPreprintExist, env),
-          generateUuid: uuid.v4(),
-          getUser: withEnv(() => getUser, env),
-          getUserOnboarding: withEnv(getUserOnboarding, env),
-          getPreprint: withEnv(getPreprint, env),
-          getPreprintTitle: withEnv(getPreprintTitle, env),
-          templatePage: withEnv(page, env),
-          getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
-          getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
-          resolvePreprintId: withEnv(resolvePreprintId, env),
-          sendEmail: withEnv(sendEmail, env),
-        })),
-        R.local(
-          (appEnv: ConfigEnv): ConfigEnv => ({
-            ...appEnv,
-            logger: pipe(
-              appEnv.logger,
-              l.contramap(entry => ({
-                ...entry,
-                payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
-              })),
-            ),
-          }),
-        ),
-        apply(config),
-        toRequestHandler,
-      )(req, res, next)
-    })
+    .use(
+      asyncHandler((req, res, next) => {
+        return pipe(
+          appMiddleware,
+          R.local((env: ConfigEnv): RouterEnv & LegacyEnv => ({
+            ...env,
+            doesPreprintExist: withEnv(doesPreprintExist, env),
+            generateUuid: uuid.v4(),
+            getUser: withEnv(() => getUser, env),
+            getUserOnboarding: withEnv(getUserOnboarding, env),
+            getPreprint: withEnv(getPreprint, env),
+            getPreprintTitle: withEnv(getPreprintTitle, env),
+            templatePage: withEnv(page, env),
+            getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
+            getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
+            resolvePreprintId: withEnv(resolvePreprintId, env),
+            sendEmail: withEnv(sendEmail, env),
+          })),
+          R.local(
+            (appEnv: ConfigEnv): ConfigEnv => ({
+              ...appEnv,
+              logger: pipe(
+                appEnv.logger,
+                l.contramap(entry => ({
+                  ...entry,
+                  payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
+                })),
+              ),
+            }),
+          ),
+          apply(config),
+          toRequestHandler,
+        )(req, res, next)
+      }),
+    )
