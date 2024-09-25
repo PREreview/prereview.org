@@ -26,11 +26,11 @@ import { expressServer } from './ExpressServer.js'
 import * as Feedback from './Feedback/index.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
+import * as LibsqlEventStore from './LibsqlEventStore.js'
 import { DefaultLocale } from './locales/index.js'
 import * as Preprint from './preprint.js'
 import * as Prereview from './Prereview.js'
 import { Router } from './Router.js'
-import * as SqliteEventStore from './SqliteEventStore.js'
 import * as TemplatePage from './TemplatePage.js'
 import { Uuid } from './types/index.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
@@ -258,7 +258,7 @@ export const Program = pipe(
     ),
   ),
   Layer.provide(Layer.effect(Feedback.GetFeedback, Feedback.makeGetFeedback)),
-  Layer.provide(Layer.effect(EventStore, SqliteEventStore.make)),
+  Layer.provide(Layer.effect(EventStore, LibsqlEventStore.make)),
   Layer.provide(setUpFetch),
   Layer.provide(Layer.effect(Uuid.GenerateUuid, Uuid.make)),
   Layer.provide(Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv)),

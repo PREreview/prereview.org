@@ -30,16 +30,14 @@ RUN chmod +x /usr/local/bin/intlc
 FROM npm AS npm-dev
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
-RUN npm ci --ignore-scripts \
-  && (cd node_modules/better-sqlite3 && npx prebuild-install)
+RUN npm ci --ignore-scripts
 
 #
 # Stage: Production NPM install
 #
 FROM npm AS npm-prod
 
-RUN npm ci --ignore-scripts --production \
-  && (cd node_modules/better-sqlite3 && npx prebuild-install)
+RUN npm ci --ignore-scripts --production
 
 #
 # Stage: Intlc build

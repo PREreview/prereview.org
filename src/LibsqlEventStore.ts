@@ -103,10 +103,10 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                   AND resource_version = ${encoded.resource_version}
               )
           `.raw,
-          Effect.andThen(Schema.decodeUnknown(SqliteResults)),
+          Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
         )
 
-        if (results.changes !== 1) {
+        if (results.rowsAffected !== 1) {
           yield* new EventStore.ResourceHasChanged()
         }
 
@@ -128,4 +128,4 @@ const EventsTable = Schema.Struct({
   payload: Schema.parseJson(FeedbackEvent),
 })
 
-const SqliteResults = Schema.Struct({ changes: Schema.Number })
+const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })

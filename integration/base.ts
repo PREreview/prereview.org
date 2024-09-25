@@ -1,6 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
-import { SqliteClient } from '@effect/sql-sqlite-node'
+import { LibsqlClient } from '@effect/sql-libsql'
 import {
   type Fixtures,
   type PlaywrightTestArgs,
@@ -1290,7 +1290,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         } as unknown as typeof ExpressConfig.Service),
         Effect.provideService(CanWriteFeedback, canWriteFeedback),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
-        Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
+        Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
         Effect.provide(

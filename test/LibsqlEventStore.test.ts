@@ -1,9 +1,9 @@
-import { SqliteClient } from '@effect/sql-sqlite-node'
+import { LibsqlClient } from '@effect/sql-libsql'
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Config, Effect, Equal, TestContext } from 'effect'
 import * as EventStore from '../src/EventStore.js'
-import * as _ from '../src/SqliteEventStore.js'
+import * as _ from '../src/LibsqlEventStore.js'
 import { Uuid } from '../src/types/index.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
@@ -19,7 +19,7 @@ it.prop([fc.uuid()])('starts empty', resourceId =>
     expect(all).toStrictEqual([])
   }).pipe(
     Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
-    Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
+    Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
     Effect.provide(TestContext.TestContext),
     Effect.runPromise,
   ),
@@ -38,7 +38,7 @@ it.prop([fc.uuid(), fc.feedbackEvent()])('creates a new resource', (resourceId, 
     expect(all).toStrictEqual([{ event, resourceId, version: 1 }])
   }).pipe(
     Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-    Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
+    Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
     Effect.provide(TestContext.TestContext),
     Effect.runPromise,
   ),
@@ -64,7 +64,7 @@ describe('when the last known version is up to date', () => {
         ])
       }).pipe(
         Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-        Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
+        Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -91,7 +91,7 @@ describe('when the last known version is out of date', () => {
         expect(all).toStrictEqual([{ event: event1, resourceId, version: 1 }])
       }).pipe(
         Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-        Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
+        Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -128,7 +128,7 @@ it.prop([
     ])
   }).pipe(
     Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-    Effect.provide(SqliteClient.layer({ filename: Config.succeed(':memory:') })),
+    Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
     Effect.provide(TestContext.TestContext),
     Effect.runPromise,
   ),
