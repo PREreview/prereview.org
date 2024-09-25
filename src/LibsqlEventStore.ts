@@ -1,6 +1,6 @@
 import { Schema } from '@effect/schema'
 import { SqlClient, type SqlError } from '@effect/sql'
-import { Array, Effect, flow, pipe } from 'effect'
+import { Array, DateTime, Effect, flow, pipe } from 'effect'
 import * as EventStore from './EventStore.js'
 import { FeedbackEvent } from './Feedback/index.js'
 import { Uuid } from './types/index.js'
@@ -15,6 +15,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
         event_id TEXT NOT NULL PRIMARY KEY,
         resource_id TEXT NOT NULL,
         resource_version number,
+        event_timestamp TEXT NOT NULL,
         payload TEXT NOT NULL,
         UNIQUE (resource_id, resource_version)
       )
@@ -27,6 +28,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               event_id,
               resource_id,
               resource_version,
+              event_timestamp,
               payload
             FROM
               events
@@ -47,6 +49,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               event_id,
               resource_id,
               resource_version,
+              event_timestamp,
               payload
             FROM
               events
@@ -70,11 +73,13 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
       Effect.gen(function* () {
         const newResourceVersion = lastKnownVersion + 1
         const eventId = yield* generateUuid
+        const eventTimestamp = yield* DateTime.now
 
         const encoded = yield* Schema.encode(EventsTable)({
           eventId,
           resourceId,
           resourceVersion: newResourceVersion,
+          eventTimestamp,
           payload: event,
         })
 
@@ -85,12 +90,14 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                 event_id,
                 resource_id,
                 resource_version,
+                event_timestamp,
                 payload
               )
             SELECT
               ${encoded.event_id},
               ${encoded.resource_id},
               ${encoded.resource_version},
+              ${encoded.event_timestamp},
               ${encoded.payload}
             WHERE
               NOT EXISTS (
@@ -125,6 +132,7 @@ const EventsTable = Schema.Struct({
   eventId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('event_id')),
   resourceId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('resource_id')),
   resourceVersion: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('resource_version')),
+  eventTimestamp: Schema.propertySignature(Schema.DateTimeUtc).pipe(Schema.fromKey('event_timestamp')),
   payload: Schema.parseJson(FeedbackEvent),
 })
 
