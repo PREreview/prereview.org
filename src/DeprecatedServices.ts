@@ -1,5 +1,5 @@
 import { SystemClock } from 'clock-ts'
-import { Array, Effect, HashMap, Inspectable, Logger, Match, Runtime } from 'effect'
+import { Array, Effect, HashMap, Inspectable, List, Logger, Match, Runtime } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import type * as J from 'fp-ts/lib/Json.js'
@@ -31,6 +31,9 @@ export const DeprecatedLogger = Effect.gen(function* () {
   return Logger.make(options => {
     const message = pipe(Array.ensure(options.message), Array.map(Inspectable.toStringUnknown), Array.join(' '))
     const payload = Object.fromEntries(HashMap.toEntries(options.annotations)) as J.JsonRecord
+    const spans = Object.fromEntries(
+      List.map(options.spans, span => [span.label, options.date.getTime() - span.startTime]),
+    )
 
     return Match.value(options.logLevel).pipe(
       Match.tag('Fatal', () => L.errorP),
@@ -42,6 +45,6 @@ export const DeprecatedLogger = Effect.gen(function* () {
       Match.tag('All', () => L.debugP),
       Match.tag('None', () => L.debugP),
       Match.exhaustive,
-    )(message)(payload)(loggerEnv)()
+    )(message)({ ...payload, ...spans })(loggerEnv)()
   })
 })
