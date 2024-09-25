@@ -1218,6 +1218,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canWriteFeedback,
       },
       use,
+      testInfo,
     ) => {
       const server = pipe(
         Program,
@@ -1290,7 +1291,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         } as unknown as typeof ExpressConfig.Service),
         Effect.provideService(CanWriteFeedback, canWriteFeedback),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
-        Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
+        Effect.provide(LibsqlClient.layer({ url: Config.succeed(`file:${testInfo.outputPath('database.db')}`) })),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
         Effect.provide(
