@@ -34,7 +34,12 @@ pipe(
   Effect.provideService(CanWriteFeedback, isPrereviewTeam),
   Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Effect.provideServiceEffect(ExpressConfig, ExpressConfigLive),
-  Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
+  Effect.provide(
+    LibsqlClient.layer({
+      url: Config.string('LIBSQL_URL'),
+      authToken: Config.withDefault(Config.string('LIBSQL_AUTH_TOKEN'), undefined),
+    }),
+  ),
   Effect.provideServiceEffect(Redis, redisLifecycle),
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,
