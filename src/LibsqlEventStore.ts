@@ -13,11 +13,12 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
     yield* sql`
       CREATE TABLE IF NOT EXISTS events (
         event_id TEXT NOT NULL PRIMARY KEY,
+        resource_type TEXT NOT NULL,
         resource_id TEXT NOT NULL,
         resource_version number,
         event_timestamp TEXT NOT NULL,
         payload TEXT NOT NULL,
-        UNIQUE (resource_id, resource_version)
+        UNIQUE (resource_type, resource_id, resource_version)
       )
     `
 
@@ -26,6 +27,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
         sql`
             SELECT
               event_id,
+              resource_type,
               resource_id,
               resource_version,
               event_timestamp,
@@ -47,6 +49,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
           sql`
             SELECT
               event_id,
+              resource_type,
               resource_id,
               resource_version,
               event_timestamp,
@@ -54,7 +57,8 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
             FROM
               events
             WHERE
-              resource_id = ${resourceId}
+              resource_type = 'Feedback'
+              AND resource_id = ${resourceId}
             ORDER BY
               resource_version ASC
           `,
@@ -77,6 +81,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
 
         const encoded = yield* Schema.encode(EventsTable)({
           eventId,
+          resourceType: 'Feedback',
           resourceId,
           resourceVersion: newResourceVersion,
           eventTimestamp,
@@ -88,6 +93,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
             INSERT INTO
               events (
                 event_id,
+                resource_type,
                 resource_id,
                 resource_version,
                 event_timestamp,
@@ -95,6 +101,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               )
             SELECT
               ${encoded.event_id},
+              ${encoded.resource_type},
               ${encoded.resource_id},
               ${encoded.resource_version},
               ${encoded.event_timestamp},
@@ -106,7 +113,8 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                 FROM
                   events
                 WHERE
-                  resource_id = ${encoded.resource_id}
+                  resource_type = ${encoded.resource_type}
+                  AND resource_id = ${encoded.resource_id}
                   AND resource_version = ${encoded.resource_version}
               )
           `.raw,
@@ -130,6 +138,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
 
 const EventsTable = Schema.Struct({
   eventId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('event_id')),
+  resourceType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('resource_type')),
   resourceId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('resource_id')),
   resourceVersion: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('resource_version')),
   eventTimestamp: Schema.propertySignature(Schema.DateTimeUtc).pipe(Schema.fromKey('event_timestamp')),
