@@ -81,6 +81,11 @@ const getPrereview = Layer.effect(
   }),
 )
 
+const publishFeedback = Layer.effect(
+  Feedback.PublishFeedbackWithADoi,
+  Effect.succeed(() => Effect.fail(new Feedback.UnableToPublishFeedback({}))),
+)
+
 const getPreprint = Layer.effect(
   Preprint.GetPreprint,
   Effect.gen(function* () {
@@ -121,7 +126,8 @@ const setUpFetch = Layer.effect(
 )
 
 export const Program = pipe(
-  WebApp,
+  Layer.mergeAll(WebApp, Feedback.ReactToFeedbackEvents),
+  Layer.provide(publishFeedback),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
   Layer.provide(Layer.effect(Feedback.HandleFeedbackCommand, Feedback.makeHandleFeedbackCommand)),

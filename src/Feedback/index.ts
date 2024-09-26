@@ -1,16 +1,20 @@
-import { Array, Effect, pipe, PubSub } from 'effect'
+import { Array, Effect, Layer, Match, pipe, PubSub, Queue } from 'effect'
 import { EventStore } from '../Context.js'
+import type { Uuid } from '../types/index.js'
 import {
   FeedbackEvents,
   type GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
   type GetFeedback,
   type HandleFeedbackCommand,
+  type PublishFeedbackWithADoi,
   UnableToHandleCommand,
   UnableToQuery,
 } from './Context.js'
 import { DecideFeedback } from './Decide.js'
+import type { FeedbackEvent } from './Events.js'
 import { EvolveFeedback } from './Evolve.js'
 import * as Queries from './Queries.js'
+import { OnFeedbackPublicationWasRequested } from './React.js'
 import { FeedbackNotStarted, type FeedbackState } from './State.js'
 
 export * from './Commands.js'
@@ -78,3 +82,27 @@ export const makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview: Effect.Effect
       return Queries.GetAllUnpublishedFeedbackByAnAuthorForAPrereview(events)({ authorId, prereviewId })
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
+
+export const ReactToFeedbackEvents: Layer.Layer<
+  never,
+  never,
+  FeedbackEvents | GetFeedback | HandleFeedbackCommand | PublishFeedbackWithADoi
+> = Layer.scopedDiscard(
+  Effect.gen(function* () {
+    const feedbackEvents = yield* FeedbackEvents
+    const dequeue = yield* PubSub.subscribe(feedbackEvents)
+
+    yield* pipe(
+      Queue.take(dequeue),
+      Effect.andThen(
+        pipe(
+          Match.type<{ feedbackId: Uuid.Uuid; event: FeedbackEvent }>(),
+          Match.when({ event: { _tag: 'FeedbackPublicationWasRequested' } }, OnFeedbackPublicationWasRequested),
+          Match.orElse(() => Effect.void),
+        ),
+      ),
+      Effect.catchAll(() => Effect.void),
+      Effect.forever,
+    )
+  }),
+)

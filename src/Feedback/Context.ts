@@ -1,3 +1,4 @@
+import type { Doi } from 'doi-ts'
 import { Context, Data, type Effect, type PubSub, type Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
@@ -36,6 +37,13 @@ export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<
     readonly command: FeedbackCommand
   }) => Effect.Effect<void, UnableToHandleCommand | FeedbackError>
 >() {}
+
+export class PublishFeedbackWithADoi extends Context.Tag('PublishFeedbackWithADoi')<
+  PublishFeedbackWithADoi,
+  (feedback: FeedbackBeingPublished) => Effect.Effect<[Doi, number], UnableToPublishFeedback>
+>() {}
+
+export class UnableToPublishFeedback extends Data.TaggedError('UnableToPublishFeedback')<{ cause?: Error }> {}
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: Error }> {}
 
