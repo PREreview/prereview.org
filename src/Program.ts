@@ -136,7 +136,10 @@ export const Program = pipe(
     Layer.scoped(
       Feedback.FeedbackEvents,
       Effect.acquireRelease(
-        pipe(PubSub.unbounded<Feedback.FeedbackEvent>(), Effect.tap(Effect.logDebug('Feedback events started'))),
+        pipe(
+          PubSub.unbounded() satisfies Effect.Effect<typeof Feedback.FeedbackEvents.Service>,
+          Effect.tap(Effect.logDebug('Feedback events started')),
+        ),
         flow(PubSub.shutdown, Effect.tap(Effect.logDebug('Feedback events stopped'))),
       ),
     ),

@@ -40,7 +40,7 @@ export const makeHandleFeedbackCommand: Effect.Effect<
       yield* pipe(
         DecideFeedback(state)(command),
         Effect.tap(eventStore.commitEvent(feedbackId, latestVersion)),
-        Effect.andThen(event => PubSub.publish(feedbackEvents, event)),
+        Effect.andThen(event => PubSub.publish(feedbackEvents, { feedbackId, event })),
       )
     }).pipe(
       Effect.catchTags({

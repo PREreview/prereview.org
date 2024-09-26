@@ -6,7 +6,10 @@ import type { FeedbackError } from './Errors.js'
 import type { FeedbackEvent } from './Events.js'
 import type { FeedbackInProgress, FeedbackReadyForPublishing, FeedbackState } from './State.js'
 
-export class FeedbackEvents extends Context.Tag('FeedbackEvents')<FeedbackEvents, PubSub.PubSub<FeedbackEvent>>() {}
+export class FeedbackEvents extends Context.Tag('FeedbackEvents')<
+  FeedbackEvents,
+  PubSub.PubSub<{ readonly feedbackId: Uuid.Uuid; readonly event: FeedbackEvent }>
+>() {}
 
 export class GetAllUnpublishedFeedbackByAnAuthorForAPrereview extends Context.Tag(
   'GetAllUnpublishedFeedbackByAnAuthorForAPrereview',
