@@ -1,38 +1,25 @@
-import { Array, Context, Data, Effect, pipe, PubSub, type Record } from 'effect'
-import type { Orcid } from 'orcid-id-ts'
-import type { Uuid } from 'uuid-ts'
+import { Array, Effect, pipe, PubSub } from 'effect'
 import { EventStore } from '../Context.js'
-import type { FeedbackCommand } from './Commands.js'
+import {
+  FeedbackEvents,
+  type GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
+  type GetFeedback,
+  type HandleFeedbackCommand,
+  UnableToHandleCommand,
+  UnableToQuery,
+} from './Context.js'
 import { DecideFeedback } from './Decide.js'
-import type { FeedbackError } from './Errors.js'
-import type { FeedbackEvent } from './Events.js'
 import { EvolveFeedback } from './Evolve.js'
 import * as Queries from './Queries.js'
-import {
-  type FeedbackInProgress,
-  FeedbackNotStarted,
-  type FeedbackReadyForPublishing,
-  type FeedbackState,
-} from './State.js'
+import { FeedbackNotStarted, type FeedbackState } from './State.js'
 
 export * from './Commands.js'
+export * from './Context.js'
 export * from './Decide.js'
 export * from './Errors.js'
 export * from './Events.js'
 export * from './Evolve.js'
 export * from './State.js'
-
-export class FeedbackEvents extends Context.Tag('FeedbackEvents')<FeedbackEvents, PubSub.PubSub<FeedbackEvent>>() {}
-
-export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: Error }> {}
-
-export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<
-  HandleFeedbackCommand,
-  (params: {
-    readonly feedbackId: Uuid
-    readonly command: FeedbackCommand
-  }) => Effect.Effect<void, UnableToHandleCommand | FeedbackError>
->() {}
 
 export const makeHandleFeedbackCommand: Effect.Effect<
   typeof HandleFeedbackCommand.Service,
@@ -64,13 +51,6 @@ export const makeHandleFeedbackCommand: Effect.Effect<
     )
 })
 
-export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: Error }> {}
-
-export class GetFeedback extends Context.Tag('GetFeedback')<
-  GetFeedback,
-  (feedbackId: Uuid) => Effect.Effect<FeedbackState, UnableToQuery>
->() {}
-
 export const makeGetFeedback: Effect.Effect<typeof GetFeedback.Service, never, EventStore> = Effect.gen(function* () {
   const eventStore = yield* EventStore
 
@@ -83,16 +63,6 @@ export const makeGetFeedback: Effect.Effect<typeof GetFeedback.Service, never, E
       )
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
-
-export class GetAllUnpublishedFeedbackByAnAuthorForAPrereview extends Context.Tag(
-  'GetAllUnpublishedFeedbackByAnAuthorForAPrereview',
-)<
-  GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
-  (params: {
-    readonly authorId: Orcid
-    readonly prereviewId: number
-  }) => Effect.Effect<Record.ReadonlyRecord<Uuid, FeedbackInProgress | FeedbackReadyForPublishing>, UnableToQuery>
->() {}
 
 export const makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview: Effect.Effect<
   typeof GetAllUnpublishedFeedbackByAnAuthorForAPrereview.Service,
