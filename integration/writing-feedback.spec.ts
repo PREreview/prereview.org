@@ -89,6 +89,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await (javaScriptEnabled ? page.keyboard.press('Control+b') : page.keyboard.type('</b>'))
     await page.keyboard.type('.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your feedback')
   },
 )
 

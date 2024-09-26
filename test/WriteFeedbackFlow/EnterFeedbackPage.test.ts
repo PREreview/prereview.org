@@ -205,17 +205,18 @@ describe('EnterFeedbackSubmission', () => {
             )
 
             expect(actual).toStrictEqual({
-              _tag: 'PageResponse',
-              status: StatusCodes.SERVICE_UNAVAILABLE,
-              title: expect.stringContaining('problems'),
-              main: expect.stringContaining('problems'),
-              skipToLabel: 'main',
-              js: [],
+              _tag: 'RedirectResponse',
+              status: StatusCodes.SEE_OTHER,
+              location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
             })
 
             expect(handleFeedbackCommand).toHaveBeenCalledWith({
               feedbackId,
               command: new Feedback.EnterFeedback({ feedback: body.feedback }),
+            })
+            expect(handleFeedbackCommand).toHaveBeenCalledWith({
+              feedbackId,
+              command: new Feedback.PublishFeedback(),
             })
           }).pipe(
             Effect.provideService(Locale, locale),

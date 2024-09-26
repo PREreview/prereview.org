@@ -113,7 +113,18 @@ export const EnterFeedbackSubmission = ({
                   ),
                 )
 
-                return havingProblemsPage
+                yield* pipe(
+                  handleCommand({
+                    feedbackId,
+                    command: new Feedback.PublishFeedback(),
+                  }),
+                  Effect.catchIf(
+                    cause => cause._tag !== 'UnableToHandleCommand',
+                    cause => new Feedback.UnableToHandleCommand({ cause }),
+                  ),
+                )
+
+                return Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })
               }),
             ),
             Match.tag('InvalidForm', form =>
