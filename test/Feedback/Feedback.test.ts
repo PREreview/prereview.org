@@ -16,6 +16,9 @@ describe('when not started', () => {
       .when(new _.EnterFeedback({ feedback: html`<p>Some feedback.</p>` }))
       .thenError(new _.FeedbackHasNotBeenStarted()))
 
+  test('cannot request publication', () =>
+    given().when(new _.PublishFeedback()).thenError(new _.FeedbackHasNotBeenStarted()))
+
   test('cannot be marked as published', () =>
     given()
       .when(new _.MarkFeedbackAsPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
@@ -32,6 +35,11 @@ describe('when in progress', () => {
     given(new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .when(new _.EnterFeedback({ feedback: html`<p>Some feedback.</p>` }))
       .then(new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` })))
+
+  test('cannot request publication', () =>
+    given(new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.PublishFeedback())
+      .thenError(new _.FeedbackIsIncomplete()))
 
   test('cannot be marked as published', () =>
     given(new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -55,6 +63,14 @@ describe('when ready for publication', () => {
     )
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
       .then(new _.FeedbackWasEntered({ feedback: html`<p>Some different feedback.</p>` })))
+
+  test('can request publication', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+    )
+      .when(new _.PublishFeedback())
+      .then(new _.FeedbackPublicationWasRequested()))
 
   test('can be marked as published', () =>
     given(
@@ -82,6 +98,15 @@ describe('when published', () => {
       new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
     )
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
+      .thenError(new _.FeedbackWasAlreadyPublished()))
+
+  test('cannot be re-request publication', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+    )
+      .when(new _.PublishFeedback())
       .thenError(new _.FeedbackWasAlreadyPublished()))
 
   test('cannot be re-marked as published', () =>

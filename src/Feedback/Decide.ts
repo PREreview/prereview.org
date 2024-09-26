@@ -28,6 +28,16 @@ const onEnterFeedback = (command: Commands.EnterFeedback) =>
     Match.exhaustive,
   )
 
+const onPublishFeedback = () =>
+  flow(
+    Match.value<State.FeedbackState>,
+    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
+    Match.tag('FeedbackReadyForPublishing', () => Either.right(new Events.FeedbackPublicationWasRequested())),
+    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.exhaustive,
+  )
+
 const onMarkFeedbackAsPublished = (command: Commands.MarkFeedbackAsPublished) =>
   flow(
     Match.value<State.FeedbackState>,
@@ -47,6 +57,7 @@ export const DecideFeedback = (
     Match.value,
     Match.tag('StartFeedback', onStartFeedback),
     Match.tag('EnterFeedback', onEnterFeedback),
+    Match.tag('PublishFeedback', onPublishFeedback),
     Match.tag('MarkFeedbackAsPublished', onMarkFeedbackAsPublished),
     Match.exhaustive,
     Function.apply(state)<Either.Either<Events.FeedbackEvent, Errors.FeedbackError>>,

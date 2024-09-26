@@ -12,9 +12,11 @@ export class EnterFeedback extends Data.TaggedClass('EnterFeedback')<{
   feedback: Html
 }> {}
 
+export class PublishFeedback extends Data.TaggedClass('PublishFeedback') {}
+
 export class MarkFeedbackAsPublished extends Data.TaggedClass('MarkFeedbackAsPublished')<{
   id: number
   doi: Doi
 }> {}
 
-export type FeedbackCommand = StartFeedback | EnterFeedback | MarkFeedbackAsPublished
+export type FeedbackCommand = StartFeedback | EnterFeedback | PublishFeedback | MarkFeedbackAsPublished
