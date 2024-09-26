@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { type Array, Console, Effect, flow, Layer, Match, pipe, PubSub, Queue, Runtime } from 'effect'
+import { type Array, Effect, flow, Layer, Match, pipe, PubSub, Runtime } from 'effect'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
@@ -122,16 +122,6 @@ const setUpFetch = Layer.effect(
 
 export const Program = pipe(
   WebApp,
-  Layer.merge(
-    Layer.scopedDiscard(
-      Effect.gen(function* () {
-        const feedbackEvents = yield* Feedback.FeedbackEvents
-        const dequeue = yield* PubSub.subscribe(feedbackEvents)
-
-        yield* Queue.take(dequeue).pipe(Effect.andThen(Console.log))
-      }),
-    ),
-  ),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
   Layer.provide(Layer.effect(Feedback.HandleFeedbackCommand, Feedback.makeHandleFeedbackCommand)),
