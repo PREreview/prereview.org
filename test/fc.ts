@@ -1289,6 +1289,9 @@ export const feedbackHasNotBeenStarted = (): fc.Arbitrary<Feedback.FeedbackHasNo
 export const feedbackIsIncomplete = (): fc.Arbitrary<Feedback.FeedbackIsIncomplete> =>
   fc.constant(new Feedback.FeedbackIsIncomplete())
 
+export const feedbackIsBeingPublished = (): fc.Arbitrary<Feedback.FeedbackIsBeingPublished> =>
+  fc.constant(new Feedback.FeedbackIsBeingPublished())
+
 export const feedbackWasAlreadyPublished = (): fc.Arbitrary<Feedback.FeedbackWasAlreadyPublished> =>
   fc.constant(new Feedback.FeedbackWasAlreadyPublished())
 
@@ -1297,6 +1300,7 @@ export const feedbackError = (): fc.Arbitrary<Feedback.FeedbackError> =>
     feedbackWasAlreadyStarted(),
     feedbackHasNotBeenStarted(),
     feedbackIsIncomplete(),
+    feedbackIsBeingPublished(),
     feedbackWasAlreadyPublished(),
   )
 
@@ -1320,6 +1324,15 @@ export const feedbackReadyForPublishing = (): fc.Arbitrary<Feedback.FeedbackRead
     })
     .map(data => new Feedback.FeedbackReadyForPublishing(data))
 
+export const feedbackBeingPublished = (): fc.Arbitrary<Feedback.FeedbackBeingPublished> =>
+  fc
+    .record({
+      authorId: orcid(),
+      feedback: html(),
+      prereviewId: fc.integer(),
+    })
+    .map(data => new Feedback.FeedbackBeingPublished(data))
+
 export const feedbackPublished = (): fc.Arbitrary<Feedback.FeedbackPublished> =>
   fc
     .record({
@@ -1332,7 +1345,13 @@ export const feedbackPublished = (): fc.Arbitrary<Feedback.FeedbackPublished> =>
     .map(data => new Feedback.FeedbackPublished(data))
 
 export const feedbackState = (): fc.Arbitrary<Feedback.FeedbackState> =>
-  fc.oneof(feedbackNotStarted(), feedbackInProgress(), feedbackReadyForPublishing(), feedbackPublished())
+  fc.oneof(
+    feedbackNotStarted(),
+    feedbackInProgress(),
+    feedbackReadyForPublishing(),
+    feedbackBeingPublished(),
+    feedbackPublished(),
+  )
 
 // https://github.com/gcanti/fp-ts/issues/1680
 type EndsWith<Full extends string, End extends string> = string extends Full

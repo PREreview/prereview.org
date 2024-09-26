@@ -31,5 +31,10 @@ export const GetAllUnpublishedFeedbackByAnAuthorForAPrereview =
       Record.map(
         Array.reduce(new FeedbackNotStarted() as FeedbackState, (state, event) => EvolveFeedback(state)(event)),
       ),
-      Record.filter(state => state._tag === 'FeedbackInProgress' || state._tag === 'FeedbackReadyForPublishing'),
+      Record.filter(
+        state =>
+          state._tag === 'FeedbackInProgress' ||
+          state._tag === 'FeedbackReadyForPublishing' ||
+          state._tag === 'FeedbackBeingPublished',
+      ),
     )

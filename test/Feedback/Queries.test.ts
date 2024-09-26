@@ -22,6 +22,18 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
         event: new Feedback.FeedbackWasEntered({ feedback: html`Some text` }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
+      {
+        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.FeedbackWasEntered({ feedback: html`Some other text` }),
+        resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.FeedbackPublicationWasRequested(),
+        resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
+      },
     ]
 
     const actual = _.GetAllUnpublishedFeedbackByAnAuthorForAPrereview(events)({
@@ -37,6 +49,11 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       '2b9e777b-f14d-4294-8e27-2b442e496050': new Feedback.FeedbackReadyForPublishing({
         authorId: Orcid('0000-0002-1825-0097'),
         feedback: html`Some text`,
+        prereviewId: 123,
+      }),
+      'eb8146ea-e643-4ca3-9dc1-2f26013c42b0': new Feedback.FeedbackBeingPublished({
+        authorId: Orcid('0000-0002-1825-0097'),
+        feedback: html`Some other text`,
         prereviewId: 123,
       }),
     })

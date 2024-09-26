@@ -11,6 +11,7 @@ const onFeedbackWasStarted = (event: Events.FeedbackWasStarted) =>
     ),
     Match.tag('FeedbackInProgress', identity),
     Match.tag('FeedbackReadyForPublishing', identity),
+    Match.tag('FeedbackBeingPublished', identity),
     Match.tag('FeedbackPublished', identity),
     Match.exhaustive,
   )
@@ -27,6 +28,7 @@ const onFeedbackWasEntered = (event: Events.FeedbackWasEntered) =>
       'FeedbackReadyForPublishing',
       state => new State.FeedbackReadyForPublishing({ ...state, feedback: event.feedback }),
     ),
+    Match.tag('FeedbackBeingPublished', identity),
     Match.tag('FeedbackPublished', identity),
     Match.exhaustive,
   )
@@ -36,7 +38,8 @@ const onFeedbackPublicationWasRequested = () =>
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', identity),
     Match.tag('FeedbackInProgress', identity),
-    Match.tag('FeedbackReadyForPublishing', identity),
+    Match.tag('FeedbackReadyForPublishing', state => new State.FeedbackBeingPublished(state)),
+    Match.tag('FeedbackBeingPublished', identity),
     Match.tag('FeedbackPublished', identity),
     Match.exhaustive,
   )
@@ -48,6 +51,10 @@ const onFeedbackWasPublished = (event: Events.FeedbackWasPublished) =>
     Match.tag('FeedbackInProgress', identity),
     Match.tag(
       'FeedbackReadyForPublishing',
+      state => new State.FeedbackPublished({ ...state, id: event.id, doi: event.doi }),
+    ),
+    Match.tag(
+      'FeedbackBeingPublished',
       state => new State.FeedbackPublished({ ...state, id: event.id, doi: event.doi }),
     ),
     Match.tag('FeedbackPublished', identity),

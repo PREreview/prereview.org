@@ -12,6 +12,7 @@ const onStartFeedback = (command: Commands.StartFeedback) =>
     ),
     Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackWasAlreadyStarted())),
     Match.tag('FeedbackReadyForPublishing', () => Either.left(new Errors.FeedbackWasAlreadyStarted())),
+    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
@@ -24,6 +25,7 @@ const onEnterFeedback = (command: Commands.EnterFeedback) =>
     Match.tag('FeedbackReadyForPublishing', () =>
       Either.right(new Events.FeedbackWasEntered({ feedback: command.feedback })),
     ),
+    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
@@ -34,6 +36,7 @@ const onPublishFeedback = () =>
     Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
     Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
     Match.tag('FeedbackReadyForPublishing', () => Either.right(new Events.FeedbackPublicationWasRequested())),
+    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
@@ -44,6 +47,9 @@ const onMarkFeedbackAsPublished = (command: Commands.MarkFeedbackAsPublished) =>
     Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
     Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
     Match.tag('FeedbackReadyForPublishing', () =>
+      Either.right(new Events.FeedbackWasPublished({ id: command.id, doi: command.doi })),
+    ),
+    Match.tag('FeedbackBeingPublished', () =>
       Either.right(new Events.FeedbackWasPublished({ id: command.id, doi: command.doi })),
     ),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),

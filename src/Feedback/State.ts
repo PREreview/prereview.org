@@ -16,6 +16,12 @@ export class FeedbackReadyForPublishing extends Data.TaggedClass('FeedbackReadyF
   prereviewId: number
 }> {}
 
+export class FeedbackBeingPublished extends Data.TaggedClass('FeedbackBeingPublished')<{
+  authorId: Orcid
+  feedback: Html
+  prereviewId: number
+}> {}
+
 export class FeedbackPublished extends Data.TaggedClass('FeedbackPublished')<{
   authorId: Orcid
   doi: Doi
@@ -24,4 +30,9 @@ export class FeedbackPublished extends Data.TaggedClass('FeedbackPublished')<{
   prereviewId: number
 }> {}
 
-export type FeedbackState = FeedbackNotStarted | FeedbackInProgress | FeedbackReadyForPublishing | FeedbackPublished
+export type FeedbackState =
+  | FeedbackNotStarted
+  | FeedbackInProgress
+  | FeedbackReadyForPublishing
+  | FeedbackBeingPublished
+  | FeedbackPublished

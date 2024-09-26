@@ -4,7 +4,7 @@ import type { Uuid } from '../types/index.js'
 import type { FeedbackCommand } from './Commands.js'
 import type { FeedbackError } from './Errors.js'
 import type { FeedbackEvent } from './Events.js'
-import type { FeedbackInProgress, FeedbackReadyForPublishing, FeedbackState } from './State.js'
+import type { FeedbackBeingPublished, FeedbackInProgress, FeedbackReadyForPublishing, FeedbackState } from './State.js'
 
 export class FeedbackEvents extends Context.Tag('FeedbackEvents')<
   FeedbackEvents,
@@ -18,7 +18,10 @@ export class GetAllUnpublishedFeedbackByAnAuthorForAPrereview extends Context.Ta
   (params: {
     readonly authorId: Orcid
     readonly prereviewId: number
-  }) => Effect.Effect<Record.ReadonlyRecord<Uuid.Uuid, FeedbackInProgress | FeedbackReadyForPublishing>, UnableToQuery>
+  }) => Effect.Effect<
+    Record.ReadonlyRecord<Uuid.Uuid, FeedbackInProgress | FeedbackReadyForPublishing | FeedbackBeingPublished>,
+    UnableToQuery
+  >
 >() {}
 
 export class GetFeedback extends Context.Tag('GetFeedback')<

@@ -81,6 +81,44 @@ describe('when ready for publication', () => {
       .then(new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
 })
 
+describe('when being published', () => {
+  test('cannot be started again', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.FeedbackPublicationWasRequested(),
+    )
+      .when(new _.StartFeedback({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .thenError(new _.FeedbackIsBeingPublished()))
+
+  test('cannot re-enter feedback', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.FeedbackPublicationWasRequested(),
+    )
+      .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
+      .thenError(new _.FeedbackIsBeingPublished()))
+
+  test('cannot re-request publication', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.FeedbackPublicationWasRequested(),
+    )
+      .when(new _.PublishFeedback())
+      .thenError(new _.FeedbackIsBeingPublished()))
+
+  test('can be marked as published', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.FeedbackPublicationWasRequested(),
+    )
+      .when(new _.MarkFeedbackAsPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
+      .then(new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
+})
+
 describe('when published', () => {
   test('cannot be started again', () =>
     given(
