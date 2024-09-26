@@ -1,10 +1,11 @@
-import { Array, Context, Data, Effect, pipe, type Record } from 'effect'
+import { Array, Context, Data, Effect, pipe, PubSub, type Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { EventStore } from '../Context.js'
 import type { FeedbackCommand } from './Commands.js'
 import { DecideFeedback } from './Decide.js'
 import type { FeedbackError } from './Errors.js'
+import type { FeedbackEvent } from './Events.js'
 import { EvolveFeedback } from './Evolve.js'
 import * as Queries from './Queries.js'
 import {
@@ -21,6 +22,8 @@ export * from './Events.js'
 export * from './Evolve.js'
 export * from './State.js'
 
+export class FeedbackEvents extends Context.Tag('FeedbackEvents')<FeedbackEvents, PubSub.PubSub<FeedbackEvent>>() {}
+
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: Error }> {}
 
 export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<
@@ -31,27 +34,35 @@ export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<
   }) => Effect.Effect<void, UnableToHandleCommand | FeedbackError>
 >() {}
 
-export const makeHandleFeedbackCommand: Effect.Effect<typeof HandleFeedbackCommand.Service, never, EventStore> =
-  Effect.gen(function* () {
-    const eventStore = yield* EventStore
+export const makeHandleFeedbackCommand: Effect.Effect<
+  typeof HandleFeedbackCommand.Service,
+  never,
+  EventStore | FeedbackEvents
+> = Effect.gen(function* () {
+  const eventStore = yield* EventStore
+  const feedbackEvents = yield* FeedbackEvents
 
-    return ({ feedbackId, command }) =>
-      Effect.gen(function* () {
-        const { events, latestVersion } = yield* eventStore.getEvents(feedbackId)
+  return ({ feedbackId, command }) =>
+    Effect.gen(function* () {
+      const { events, latestVersion } = yield* eventStore.getEvents(feedbackId)
 
-        const state = Array.reduce(events, new FeedbackNotStarted() as FeedbackState, (state, event) =>
-          EvolveFeedback(state)(event),
-        )
-
-        yield* pipe(DecideFeedback(state)(command), Effect.andThen(eventStore.commitEvent(feedbackId, latestVersion)))
-      }).pipe(
-        Effect.catchTags({
-          FailedToCommitEvent: cause => new UnableToHandleCommand({ cause }),
-          FailedToGetEvents: cause => new UnableToHandleCommand({ cause }),
-          ResourceHasChanged: cause => new UnableToHandleCommand({ cause }),
-        }),
+      const state = Array.reduce(events, new FeedbackNotStarted() as FeedbackState, (state, event) =>
+        EvolveFeedback(state)(event),
       )
-  })
+
+      yield* pipe(
+        DecideFeedback(state)(command),
+        Effect.tap(eventStore.commitEvent(feedbackId, latestVersion)),
+        Effect.andThen(event => PubSub.publish(feedbackEvents, event)),
+      )
+    }).pipe(
+      Effect.catchTags({
+        FailedToCommitEvent: cause => new UnableToHandleCommand({ cause }),
+        FailedToGetEvents: cause => new UnableToHandleCommand({ cause }),
+        ResourceHasChanged: cause => new UnableToHandleCommand({ cause }),
+      }),
+    )
+})
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: Error }> {}
 
