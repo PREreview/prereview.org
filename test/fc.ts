@@ -1266,6 +1266,9 @@ export const feedbackWasEntered = (): fc.Arbitrary<Feedback.FeedbackWasEntered> 
     })
     .map(data => new Feedback.FeedbackWasEntered(data))
 
+export const feedbackPublicationWasRequested = (): fc.Arbitrary<Feedback.FeedbackPublicationWasRequested> =>
+  fc.constant(new Feedback.FeedbackPublicationWasRequested())
+
 export const feedbackWasPublished = (): fc.Arbitrary<Feedback.FeedbackWasPublished> =>
   fc
     .record({
@@ -1275,7 +1278,7 @@ export const feedbackWasPublished = (): fc.Arbitrary<Feedback.FeedbackWasPublish
     .map(data => new Feedback.FeedbackWasPublished(data))
 
 export const feedbackEvent = (): fc.Arbitrary<Feedback.FeedbackEvent> =>
-  fc.oneof(feedbackWasStarted(), feedbackWasEntered(), feedbackWasPublished())
+  fc.oneof(feedbackWasStarted(), feedbackWasEntered(), feedbackPublicationWasRequested(), feedbackWasPublished())
 
 export const feedbackWasAlreadyStarted = (): fc.Arbitrary<Feedback.FeedbackWasAlreadyStarted> =>
   fc.constant(new Feedback.FeedbackWasAlreadyStarted())
@@ -1329,7 +1332,7 @@ export const feedbackPublished = (): fc.Arbitrary<Feedback.FeedbackPublished> =>
     .map(data => new Feedback.FeedbackPublished(data))
 
 export const feedbackState = (): fc.Arbitrary<Feedback.FeedbackState> =>
-  fc.oneof(feedbackNotStarted(), feedbackInProgress(), feedbackReadyForPublishing())
+  fc.oneof(feedbackNotStarted(), feedbackInProgress(), feedbackReadyForPublishing(), feedbackPublished())
 
 // https://github.com/gcanti/fp-ts/issues/1680
 type EndsWith<Full extends string, End extends string> = string extends Full
