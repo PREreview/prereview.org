@@ -50,7 +50,9 @@ export const EnterFeedbackPage = ({
           prereviewId: feedback.prereviewId,
         }),
       ),
-      Match.tag('FeedbackBeingPublished', () => havingProblemsPage),
+      Match.tag('FeedbackBeingPublished', () =>
+        Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) }),
+      ),
       Match.tag('FeedbackPublished', () =>
         Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) }),
       ),
@@ -128,7 +130,9 @@ export const EnterFeedbackSubmission = ({
           )
         }),
       ),
-      Match.tag('FeedbackBeingPublished', () => Effect.succeed(havingProblemsPage)),
+      Match.tag('FeedbackBeingPublished', () =>
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })),
+      ),
       Match.tag('FeedbackPublished', () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })),
       ),

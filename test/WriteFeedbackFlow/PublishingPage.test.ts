@@ -5,27 +5,27 @@ import { StatusCodes } from 'http-status-codes'
 import { LoggedInUser } from '../../src/Context.js'
 import * as Feedback from '../../src/Feedback/index.js'
 import * as Routes from '../../src/routes.js'
-import * as _ from '../../src/WriteFeedbackFlow/PublishedPage/index.js'
+import * as _ from '../../src/WriteFeedbackFlow/PublishingPage/index.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
-describe('PublishedPage', () => {
+describe('PublishingPage', () => {
   describe('when there is a user', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackPublished()
+        .feedbackBeingPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-    ])('when the feedback is published', (feedbackId, [feedback, user]) =>
+    ])('when the feedback is being published', (feedbackId, [feedback, user]) =>
       Effect.gen(function* () {
-        const actual = yield* _.PublishedPage({ feedbackId })
+        const actual = yield* _.PublishingPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: Routes.WriteFeedbackPublished.href({ feedbackId }),
+          canonical: Routes.WriteFeedbackPublishing.href({ feedbackId }),
           status: StatusCodes.OK,
-          title: expect.stringContaining('published'),
-          main: expect.stringContaining('published'),
+          title: expect.stringContaining('publishing'),
+          main: expect.stringContaining('publishing'),
           skipToLabel: 'main',
           js: [],
         })
@@ -40,11 +40,33 @@ describe('PublishedPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing(), fc.feedbackBeingPublished())
+        .feedbackPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-    ])("when the feedback hasn't been published", (feedbackId, [feedback, user]) =>
+    ])('when the feedback is published', (feedbackId, [feedback, user]) =>
       Effect.gen(function* () {
-        const actual = yield* _.PublishedPage({ feedbackId })
+        const actual = yield* _.PublishingPage({ feedbackId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SEE_OTHER,
+          location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+        })
+      }).pipe(
+        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(LoggedInUser, user),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
+    )
+
+    test.prop([
+      fc.uuid(),
+      fc
+        .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())
+        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+    ])("when the feedback publication hasn't been requested", (feedbackId, [feedback, user]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.PublishingPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -66,7 +88,7 @@ describe('PublishedPage', () => {
       "when the feedback hasn't been started",
       (feedbackId, feedback, user) =>
         Effect.gen(function* () {
-          const actual = yield* _.PublishedPage({ feedbackId })
+          const actual = yield* _.PublishingPage({ feedbackId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -86,10 +108,12 @@ describe('PublishedPage', () => {
 
     test.prop([
       fc.uuid(),
-      fc.tuple(fc.feedbackPublished(), fc.user()).filter(([state, user]) => !Equal.equals(state.authorId, user.orcid)),
+      fc
+        .tuple(fc.feedbackBeingPublished(), fc.user())
+        .filter(([state, user]) => !Equal.equals(state.authorId, user.orcid)),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user]) =>
       Effect.gen(function* () {
-        const actual = yield* _.PublishedPage({ feedbackId })
+        const actual = yield* _.PublishingPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -109,7 +133,7 @@ describe('PublishedPage', () => {
 
     test.prop([fc.uuid(), fc.user()])("when the feedback can't be loaded", (feedbackId, user) =>
       Effect.gen(function* () {
-        const actual = yield* _.PublishedPage({ feedbackId })
+        const actual = yield* _.PublishingPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -130,7 +154,7 @@ describe('PublishedPage', () => {
 
   test.prop([fc.uuid()])("when there isn't a user", feedbackId =>
     Effect.gen(function* () {
-      const actual = yield* _.PublishedPage({ feedbackId })
+      const actual = yield* _.PublishingPage({ feedbackId })
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',

@@ -64,6 +64,30 @@ describe('EnterFeedbackPage', () => {
       ),
     )
 
+    test.prop([
+      fc.uuid(),
+      fc
+        .feedbackBeingPublished()
+        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+      fc.supportedLocale(),
+    ])('when the feedback is being published', (feedbackId, [feedback, user], locale) =>
+      Effect.gen(function* () {
+        const actual = yield* _.EnterFeedbackPage({ feedbackId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SEE_OTHER,
+          location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+        })
+      }).pipe(
+        Effect.provideService(Locale, locale),
+        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(LoggedInUser, user),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
+    )
+
     test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user(), fc.supportedLocale()])(
       "when the feedback hasn't been started",
       (feedbackId, feedback, user, locale) =>
@@ -283,6 +307,32 @@ describe('EnterFeedbackSubmission', () => {
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
           location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+        })
+      }).pipe(
+        Effect.provideService(Locale, locale),
+        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(LoggedInUser, user),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
+    )
+
+    test.prop([
+      fc.uuid(),
+      fc
+        .feedbackBeingPublished()
+        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+      fc.supportedLocale(),
+      fc.anything(),
+    ])('when the feedback is beingpublished', (feedbackId, [feedback, user], locale, body) =>
+      Effect.gen(function* () {
+        const actual = yield* _.EnterFeedbackSubmission({ body, feedbackId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SEE_OTHER,
+          location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
