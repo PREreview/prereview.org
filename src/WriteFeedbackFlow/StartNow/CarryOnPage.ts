@@ -1,6 +1,6 @@
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { html, plainText } from '../../html.js'
+import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import type { Prereview } from '../../Prereview.js'
 import { StreamlinePageResponse } from '../../response.js'
@@ -27,13 +27,24 @@ export const CarryOnPage = ({
       <h1>${translate(locale, 'write-feedback-flow', 'writeFeedbackTitle')()}</h1>
 
       <p>
-        As you’ve already started feedback on this PREreview of
-        <cite lang="${prereview.preprint.language}" dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-          >${prereview.preprint.title}</cite
-        >, we’ll take you to the next step so you can carry&nbsp;on.
+        ${rawHtml(
+          translate(
+            locale,
+            'write-feedback-flow',
+            'carryOnMessage',
+          )({
+            preprint: html`<cite
+              lang="${prereview.preprint.language}"
+              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+              >${prereview.preprint.title}</cite
+            >`.toString(),
+          }),
+        )}
       </p>
 
-      <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" role="button" draggable="false">Continue</a>
+      <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" role="button" draggable="false"
+        >${translate(locale, 'write-feedback-flow', 'continueButton')()}</a
+      >
     `,
     canonical: Routes.WriteFeedbackStartNow.href({ id: prereview.id }),
   })
