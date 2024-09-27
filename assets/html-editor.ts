@@ -49,36 +49,36 @@ export class HtmlEditor extends HTMLElement {
 
     textArea.readOnly = true
 
-    const status = document.createElement('div')
-    status.classList.add('loading', 'visually-hidden')
-    const statusText = document.createElement('span')
-    statusText.textContent = 'Loading'
-    status.append(statusText)
-    this.append(status)
-
-    setTimeout(() => status.classList.remove('visually-hidden'), 100)
-
     const { translate } = await translateDep
 
     const lang = getLang(this)
     const locale = isSupportedLocale(lang) ? lang : DefaultLocale
 
+    const status = document.createElement('div')
+    status.classList.add('loading', 'visually-hidden')
+    const statusText = document.createElement('span')
+    statusText.textContent = translate(locale, 'html-editor', 'loading')()
+    status.append(statusText)
+    this.append(status)
+
+    setTimeout(() => status.classList.remove('visually-hidden'), 100)
+
     const toolbarButtons = Promise.all([
       createButton(translate(locale, 'html-editor', 'bold')(), boldIcon),
-      createButton('Italic', italicIcon),
-      createButton('Subscript', subscriptIcon),
-      createButton('Superscript', superscriptIcon),
-      createButton('Link', linkIcon),
-      createButton('Heading level 1', heading1Icon),
-      createButton('Heading level 2', heading2Icon),
-      createButton('Heading level 3', heading3Icon),
-      createButton('Bulleted list', bulletedListIcon),
-      createButton('Numbered list', numberedListIcon),
+      createButton(translate(locale, 'html-editor', 'italic')(), italicIcon),
+      createButton(translate(locale, 'html-editor', 'subscript')(), subscriptIcon),
+      createButton(translate(locale, 'html-editor', 'superscript')(), superscriptIcon),
+      createButton(translate(locale, 'html-editor', 'link')(), linkIcon),
+      createButton(translate(locale, 'html-editor', 'headingLevel1')(), heading1Icon),
+      createButton(translate(locale, 'html-editor', 'headingLevel2')(), heading2Icon),
+      createButton(translate(locale, 'html-editor', 'headingLevel3')(), heading3Icon),
+      createButton(translate(locale, 'html-editor', 'bulletedList')(), bulletedListIcon),
+      createButton(translate(locale, 'html-editor', 'numberedList')(), numberedListIcon),
     ])
 
     const toolbar = document.createElement('editor-toolbar')
     toolbar.setAttribute('aria-controls', textArea.id)
-    toolbar.setAttribute('aria-label', 'Formatting')
+    toolbar.setAttribute('aria-label', translate(locale, 'html-editor', 'formatting')())
 
     const formatting = document.createElement('div')
     formatting.setAttribute('role', 'group')
@@ -217,7 +217,7 @@ export class HtmlEditor extends HTMLElement {
         return
       }
 
-      const href = window.prompt('Enter a URL')
+      const href = window.prompt(translate(locale, 'html-editor', 'enterAUrl')())
 
       if (typeof href !== 'string' || href === '') {
         return
