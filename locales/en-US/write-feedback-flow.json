@@ -40,5 +40,11 @@
   },
   "errorEnterFeedback": {
     "message": "<error>Error:</error> Enter your feedback"
+  },
+  "publishingTitle": {
+    "message": "We’re publishing your feedback"
+  },
+  "publishingSeeShortlyMessage": {
+    "message": "You’ll be able to see your feedback shortly."
   }
 }
