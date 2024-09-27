@@ -76,6 +76,7 @@ import {
   type CanSeeGatesLogoEnv,
   type CanUploadAvatarEnv,
   type CanUseSearchQueriesEnv,
+  type CanWriteFeedbackEnv,
   canUseSearchQueries,
 } from './feature-flags.js'
 import type { SleepEnv } from './fetch.js'
@@ -339,6 +340,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   CanSeeGatesLogoEnv &
   CanUploadAvatarEnv &
   CanUseSearchQueriesEnv &
+  CanWriteFeedbackEnv &
   DoesPreprintExistEnv &
   ResolvePreprintIdEnv &
   EnvironmentLabelEnv &

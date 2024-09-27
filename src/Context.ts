@@ -17,7 +17,10 @@ export class DeprecatedSleepEnv extends Context.Tag('DeprecatedSleepEnv')<Deprec
 
 export class Express extends Context.Tag('Express')<Express, ExpressServer>() {}
 
-export class ExpressConfig extends Context.Tag('ExpressConfig')<ExpressConfig, Omit<ConfigEnv, 'fetch' | 'sleep'>>() {}
+export class ExpressConfig extends Context.Tag('ExpressConfig')<
+  ExpressConfig,
+  Omit<ConfigEnv, 'canWriteFeedback' | 'fetch' | 'sleep'>
+>() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}
 

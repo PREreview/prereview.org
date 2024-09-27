@@ -45,11 +45,16 @@ describe('reviewPage', () => {
         text: fc.html(),
       }),
     ),
-  ])('when the review can be loaded', async (locale, id, prereview, feedback) => {
+    fc.boolean(),
+  ])('when the review can be loaded', async (locale, id, prereview, feedback, canWriteFeedback) => {
     const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
     const getFeedback = jest.fn<_.GetFeedbackEnv['getFeedback']>(_ => TE.right(feedback))
 
-    const actual = await _.reviewPage({ id, locale })({ getPrereview, getFeedback })()
+    const actual = await _.reviewPage({ id, locale })({
+      getPrereview,
+      getFeedback,
+      canWriteFeedback: () => canWriteFeedback,
+    })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -70,6 +75,7 @@ describe('reviewPage', () => {
     const actual = await _.reviewPage({ id, locale })({
       getPrereview: () => TE.left('not-found'),
       getFeedback: shouldNotBeCalled,
+      canWriteFeedback: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({
@@ -86,6 +92,7 @@ describe('reviewPage', () => {
     const actual = await _.reviewPage({ id, locale })({
       getPrereview: () => TE.left('removed'),
       getFeedback: shouldNotBeCalled,
+      canWriteFeedback: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({
@@ -102,6 +109,7 @@ describe('reviewPage', () => {
     const actual = await _.reviewPage({ id, locale })({
       getPrereview: () => TE.left('unavailable'),
       getFeedback: shouldNotBeCalled,
+      canWriteFeedback: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({
@@ -141,6 +149,7 @@ describe('reviewPage', () => {
     const actual = await _.reviewPage({ id, locale })({
       getPrereview: () => TE.right(prereview),
       getFeedback: () => TE.left('unavailable'),
+      canWriteFeedback: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({

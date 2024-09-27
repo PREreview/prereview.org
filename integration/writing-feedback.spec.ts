@@ -75,7 +75,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback).extend(willPu
       )
 
     await page.goto('/reviews/1061864')
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.getByRole('link', { name: 'Write feedback' }).click()
 
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
@@ -169,7 +169,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto('/reviews/1061864')
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.getByRole('link', { name: 'Write feedback' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write feedback')

@@ -11,6 +11,7 @@ import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
+import * as Routes from '../routes.js'
 import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import { isPseudonym } from '../types/pseudonym.js'
@@ -22,11 +23,13 @@ export const createPage = ({
   locale,
   review,
   feedback,
+  canWriteFeedback,
 }: {
   id: number
   locale: SupportedLocale
   review: Prereview
   feedback: ReadonlyArray<Feedback>
+  canWriteFeedback: boolean
 }) =>
   PageResponse({
     title: plainText(
@@ -190,92 +193,102 @@ export const createPage = ({
             ${fixHeadingLevels(2, review.addendum)}
           `
         : ''}
-      ${RA.isNonEmpty(feedback)
+      ${RA.isNonEmpty(feedback) || canWriteFeedback
         ? html`
             <article aria-labelledby="feedback-title">
               <h2 id="feedback-title">${translate(locale, 'review-page', 'feedbackTitle')()}</h2>
-              <ol class="cards">
-                ${pipe(
-                  feedback,
-                  RNEA.map(
-                    item => html`
-                      <li>
-                        <article aria-labelledby="feedback-${item.id}-title">
-                          <header>
-                            <h3 class="visually-hidden" id="feedback-${item.id}-title">
-                              ${translate(
-                                locale,
-                                'review-page',
-                                'feedbackItemTitle',
-                              )({
-                                author: pipe(RNEA.head(item.authors.named), get('name')),
-                                authors: item.authors.named.length,
-                              })}
-                            </h3>
+              ${canWriteFeedback
+                ? html`<a href="${Routes.WriteFeedback.href({ id })}" class="button">Write feedback</a>`
+                : ''}
+              ${pipe(
+                feedback,
+                RA.match(
+                  () => html`<p>No feedback has been published yet.</p>`,
+                  feedback =>
+                    html`<ol class="cards">
+                      ${pipe(
+                        feedback,
+                        RNEA.map(
+                          item => html`
+                            <li>
+                              <article aria-labelledby="feedback-${item.id}-title">
+                                <header>
+                                  <h3 class="visually-hidden" id="feedback-${item.id}-title">
+                                    ${translate(
+                                      locale,
+                                      'review-page',
+                                      'feedbackItemTitle',
+                                    )({
+                                      author: pipe(RNEA.head(item.authors.named), get('name')),
+                                      authors: item.authors.named.length,
+                                    })}
+                                  </h3>
 
-                            <div class="byline">
-                              ${rawHtml(
-                                translate(
-                                  locale,
-                                  'review-page',
-                                  'feedbackItemAuthors',
-                                )({
-                                  authors: pipe(
-                                    item.authors.named,
-                                    RNEA.map(displayAuthor),
-                                    formatList(locale),
-                                  ).toString(),
-                                  hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                                }),
-                              )}
-                            </div>
+                                  <div class="byline">
+                                    ${rawHtml(
+                                      translate(
+                                        locale,
+                                        'review-page',
+                                        'feedbackItemAuthors',
+                                      )({
+                                        authors: pipe(
+                                          item.authors.named,
+                                          RNEA.map(displayAuthor),
+                                          formatList(locale),
+                                        ).toString(),
+                                        hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                                      }),
+                                    )}
+                                  </div>
 
-                            <dl>
-                              <div>
-                                <dt>${translate(locale, 'review-page', 'published')()}</dt>
-                                <dd>${renderDate(locale)(item.published)}</dd>
-                              </div>
-                              <div>
-                                <dt>DOI</dt>
-                                <dd>
-                                  <a href="${toUrl(item.doi).href}" class="doi" translate="no">${item.doi}</a>
-                                </dd>
-                              </div>
-                              <div>
-                                <dt>${translate(locale, 'review-page', 'license')()}</dt>
-                                <dd>
-                                  ${match(item.license)
-                                    .with(
-                                      'CC-BY-4.0',
-                                      () => html`
-                                        <a href="https://creativecommons.org/licenses/by/4.0/">
-                                          <dfn>
-                                            <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
-                                              ><span translate="no">CC BY 4.0</span></abbr
-                                            >
-                                          </dfn>
-                                        </a>
-                                      `,
-                                    )
-                                    .exhaustive()}
-                                </dd>
-                              </div>
-                            </dl>
-                          </header>
+                                  <dl>
+                                    <div>
+                                      <dt>${translate(locale, 'review-page', 'published')()}</dt>
+                                      <dd>${renderDate(locale)(item.published)}</dd>
+                                    </div>
+                                    <div>
+                                      <dt>DOI</dt>
+                                      <dd>
+                                        <a href="${toUrl(item.doi).href}" class="doi" translate="no">${item.doi}</a>
+                                      </dd>
+                                    </div>
+                                    <div>
+                                      <dt>${translate(locale, 'review-page', 'license')()}</dt>
+                                      <dd>
+                                        ${match(item.license)
+                                          .with(
+                                            'CC-BY-4.0',
+                                            () => html`
+                                              <a href="https://creativecommons.org/licenses/by/4.0/">
+                                                <dfn>
+                                                  <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
+                                                    ><span translate="no">CC BY 4.0</span></abbr
+                                                  >
+                                                </dfn>
+                                              </a>
+                                            `,
+                                          )
+                                          .exhaustive()}
+                                      </dd>
+                                    </div>
+                                  </dl>
+                                </header>
 
-                          <div
-                            ${item.language
-                              ? html`lang="${item.language}" dir="${rtlDetect.getLangDir(item.language)}"`
-                              : ''}
-                          >
-                            ${fixHeadingLevels(3, item.text)}
-                          </div>
-                        </article>
-                      </li>
-                    `,
-                  ),
-                )}
-              </ol>
+                                <div
+                                  ${item.language
+                                    ? html`lang="${item.language}" dir="${rtlDetect.getLangDir(item.language)}"`
+                                    : ''}
+                                >
+                                  ${fixHeadingLevels(3, item.text)}
+                                </div>
+                              </article>
+                            </li>
+                          `,
+                        ),
+                      )}
+                    </ol>`,
+                ),
+              )}
             </article>
           `
         : ''}

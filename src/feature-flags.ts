@@ -17,6 +17,13 @@ export const EnsureCanWriteFeedback: Effect.Effect<void, NotAllowedToWriteFeedba
   },
 )
 
+export interface CanWriteFeedbackEnv {
+  canWriteFeedback: (user: User) => boolean
+}
+
+export const canWriteFeedback = (user: User) =>
+  R.asks(({ canWriteFeedback }: CanWriteFeedbackEnv) => canWriteFeedback(user))
+
 export interface CanConnectOrcidProfileEnv {
   canConnectOrcidProfile: (user: User) => boolean
 }
