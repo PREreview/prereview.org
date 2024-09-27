@@ -46,5 +46,17 @@
   },
   "publishingSeeShortlyMessage": {
     "message": "You’ll be able to see your feedback shortly."
+  },
+  "publishedTitle": {
+    "message": "Feedback published"
+  },
+  "publishedYourDoi": {
+    "message": "Your DOI {doi}"
+  },
+  "publishedHappensNextHeading": {
+    "message": "What happens next"
+  },
+  "publishedSeeShortlyMessage": {
+    "message": "You’ll be able to see your feedback shortly."
   }
 }

@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Equal, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import { LoggedInUser } from '../../src/Context.js'
+import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Feedback from '../../src/Feedback/index.js'
 import * as Routes from '../../src/routes.js'
 import * as _ from '../../src/WriteFeedbackFlow/PublishedPage/index.js'
@@ -16,7 +16,8 @@ describe('PublishedPage', () => {
       fc
         .feedbackPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-    ])('when the feedback is published', (feedbackId, [feedback, user]) =>
+      fc.supportedLocale(),
+    ])('when the feedback is published', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.PublishedPage({ feedbackId })
 
@@ -30,6 +31,7 @@ describe('PublishedPage', () => {
           js: [],
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -42,7 +44,8 @@ describe('PublishedPage', () => {
       fc
         .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing(), fc.feedbackBeingPublished())
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-    ])("when the feedback hasn't been published", (feedbackId, [feedback, user]) =>
+      fc.supportedLocale(),
+    ])("when the feedback hasn't been published", (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.PublishedPage({ feedbackId })
 
@@ -55,6 +58,7 @@ describe('PublishedPage', () => {
           js: [],
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -62,9 +66,9 @@ describe('PublishedPage', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user()])(
+    test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user(), fc.supportedLocale()])(
       "when the feedback hasn't been started",
-      (feedbackId, feedback, user) =>
+      (feedbackId, feedback, user, locale) =>
         Effect.gen(function* () {
           const actual = yield* _.PublishedPage({ feedbackId })
 
@@ -77,6 +81,7 @@ describe('PublishedPage', () => {
             js: [],
           })
         }).pipe(
+          Effect.provideService(Locale, locale),
           Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -87,7 +92,8 @@ describe('PublishedPage', () => {
     test.prop([
       fc.uuid(),
       fc.tuple(fc.feedbackPublished(), fc.user()).filter(([state, user]) => !Equal.equals(state.authorId, user.orcid)),
-    ])('when the feedback is by a different author', (feedbackId, [feedback, user]) =>
+      fc.supportedLocale(),
+    ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.PublishedPage({ feedbackId })
 
@@ -100,6 +106,7 @@ describe('PublishedPage', () => {
           js: [],
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -107,28 +114,31 @@ describe('PublishedPage', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.user()])("when the feedback can't be loaded", (feedbackId, user) =>
-      Effect.gen(function* () {
-        const actual = yield* _.PublishedPage({ feedbackId })
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale()])(
+      "when the feedback can't be loaded",
+      (feedbackId, user, locale) =>
+        Effect.gen(function* () {
+          const actual = yield* _.PublishedPage({ feedbackId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
-        Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
-      ),
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.SERVICE_UNAVAILABLE,
+            title: expect.stringContaining('problems'),
+            main: expect.stringContaining('problems'),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provideService(Locale, locale),
+          Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
     )
   })
 
-  test.prop([fc.uuid()])("when there isn't a user", feedbackId =>
+  test.prop([fc.uuid(), fc.supportedLocale()])("when there isn't a user", (feedbackId, locale) =>
     Effect.gen(function* () {
       const actual = yield* _.PublishedPage({ feedbackId })
 
@@ -141,6 +151,7 @@ describe('PublishedPage', () => {
         js: [],
       })
     }).pipe(
+      Effect.provideService(Locale, locale),
       Effect.provideService(Feedback.GetFeedback, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,

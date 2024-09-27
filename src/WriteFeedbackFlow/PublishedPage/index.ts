@@ -1,4 +1,5 @@
 import { Effect, Equal } from 'effect'
+import { Locale } from '../../Context.js'
 import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type * as Response from '../../response.js'
@@ -10,7 +11,7 @@ export const PublishedPage = ({
   feedbackId,
 }: {
   feedbackId: Uuid.Uuid
-}): Effect.Effect<Response.PageResponse | Response.StreamlinePageResponse, never, Feedback.GetFeedback> =>
+}): Effect.Effect<Response.PageResponse | Response.StreamlinePageResponse, never, Feedback.GetFeedback | Locale> =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
@@ -22,7 +23,9 @@ export const PublishedPage = ({
       return pageNotFound
     }
 
-    return MakeResponse({ doi: feedback.doi, feedbackId: feedbackId, prereviewId: feedback.prereviewId })
+    const locale = yield* Locale
+
+    return MakeResponse({ doi: feedback.doi, feedbackId: feedbackId, locale, prereviewId: feedback.prereviewId })
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),

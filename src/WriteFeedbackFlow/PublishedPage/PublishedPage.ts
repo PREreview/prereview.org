@@ -1,6 +1,7 @@
 import type * as Doi from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../../html.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
@@ -8,29 +9,38 @@ import type { Uuid } from '../../types/index.js'
 export const PublishedPage = ({
   feedbackId,
   doi,
+  locale,
   prereviewId,
 }: {
   feedbackId: Uuid.Uuid
   doi: Doi.Doi
+  locale: SupportedLocale
   prereviewId: number
 }) =>
   StreamlinePageResponse({
-    title: plainText`Feedback published`,
+    title: plainText(translate(locale, 'write-feedback-flow', 'publishedTitle')()),
     main: html`
       <div class="panel">
-        <h1>Feedback published</h1>
+        <h1>${translate(locale, 'write-feedback-flow', 'publishedTitle')()}</h1>
 
         <div>
-          Your DOI<br />
-          <strong class="doi" translate="no">${doi}</strong>
+          ${rawHtml(
+            translate(
+              locale,
+              'write-feedback-flow',
+              'publishedYourDoi',
+            )({ doi: html`<div><strong class="doi" translate="no">${doi}</strong></div>`.toString() }),
+          )}
         </div>
       </div>
 
-      <h2>What happens next</h2>
+      <h2>${translate(locale, 'write-feedback-flow', 'publishedHappensNextHeading')()}</h2>
 
-      <p>You’ll be able to see your feedback shortly.</p>
+      <p>${translate(locale, 'write-feedback-flow', 'publishedSeeShortlyMessage')()}</p>
 
-      <a href="${format(Routes.reviewMatch.formatter, { id: prereviewId })}" class="button">Back to PREreview</a>
+      <a href="${format(Routes.reviewMatch.formatter, { id: prereviewId })}" class="button"
+        >${translate(locale, 'write-feedback-flow', 'backToPrereview')()}</a
+      >
     `,
     canonical: Routes.WriteFeedbackPublished.href({ feedbackId }),
   })
