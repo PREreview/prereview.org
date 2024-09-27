@@ -170,7 +170,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto('/reviews/1061864')
     await page.getByRole('link', { name: 'Write feedback' }).click()
-    await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write feedback')
     await expect(page.getByRole('main')).toContainText('carry on')

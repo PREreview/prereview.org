@@ -12,6 +12,11 @@ export class FeedbackEvents extends Context.Tag('FeedbackEvents')<
   PubSub.PubSub<{ readonly feedbackId: Uuid.Uuid; readonly event: FeedbackEvent }>
 >() {}
 
+export class HasAuthorUnpublishedFeedbackForAPrereview extends Context.Tag('HasAuthorUnpublishedFeedbackForAPrereview')<
+  HasAuthorUnpublishedFeedbackForAPrereview,
+  (params: { readonly authorId: Orcid; readonly prereviewId: number }) => Effect.Effect<boolean, UnableToQuery>
+>() {}
+
 export class GetAllUnpublishedFeedbackByAnAuthorForAPrereview extends Context.Tag(
   'GetAllUnpublishedFeedbackByAnAuthorForAPrereview',
 )<
