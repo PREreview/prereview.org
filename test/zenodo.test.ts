@@ -4080,6 +4080,155 @@ describe('addAuthorToRecordOnZenodo', () => {
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
 })
+
+describe.only('createFeedbackOnZenodo', () => {
+  test.only.prop([fc.feedbackBeingPublished(), fc.prereview(), fc.string(), fc.origin(), fc.doi()])(
+    'when the feedback can be created',
+    async (feedback, prereview, zenodoApiKey, publicUrl, feedbackDoi) => {
+      const emptyDeposition: EmptyDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          prereserve_doi: {
+            doi: feedbackDoi,
+          },
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const unsubmittedDeposition: UnsubmittedDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          creators: [{ name: 'A PREreviewer' }],
+          description: 'Description',
+          prereserve_doi: {
+            doi: feedbackDoi,
+          },
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'other',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const submittedDeposition: SubmittedDeposition = {
+        id: 1,
+        links: {
+          edit: new URL('http://example.com/edit'),
+        },
+        metadata: {
+          creators: [{ name: 'A PREreviewer' }],
+          description: 'Description',
+          doi: feedbackDoi,
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'other',
+        },
+        state: 'done',
+        submitted: true,
+      }
+      const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: prereview.id })}`
+      const fetch = fetchMock.sandbox()
+      const actual = await _.createFeedbackOnZenodo({ feedback, prereview })({
+        clock: SystemClock,
+        fetch: fetch
+          .postOnce(
+            {
+              url: 'https://zenodo.org/api/deposit/depositions',
+              body: {},
+            },
+            {
+              body: EmptyDepositionC.encode(emptyDeposition),
+              status: Status.Created,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/self',
+              body: {
+                metadata: {
+                  upload_type: 'publication',
+                  publication_type: 'other',
+                  title: plainText`Feedback on a PREreview of “${prereview.preprint.title}”`.toString(),
+                  creators: [{ name: 'A PREreviewer' }],
+                  description: `<p><strong>This Zenodo record is a permanently preserved version of feedback on a PREreview. You can view the complete PREreview and feedback at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
+
+${feedback.feedback.toString()}`,
+                  communities: [{ identifier: 'prereview-reviews' }],
+                  related_identifiers: [
+                    {
+                      ..._.toExternalIdentifier(prereview.preprint.id),
+                      relation: 'references',
+                      resource_type: 'publication-preprint',
+                    },
+                    {
+                      identifier: prereview.doi,
+                      relation: 'references',
+                      resource_type: 'publication-peerreview',
+                      scheme: 'doi',
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+              status: Status.OK,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/bucket/feedback.html',
+              headers: { 'Content-Type': 'application/octet-stream' },
+              functionMatcher: (_, req) => req.body === feedback.feedback.toString(),
+            },
+            {
+              status: Status.Created,
+            },
+          )
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
+          }),
+        logger: () => IO.of(undefined),
+        publicUrl,
+        zenodoApiKey,
+      })()
+
+      expect(actual).toStrictEqual(E.right([feedbackDoi, 1]))
+    },
+  )
+
+  test.prop([
+    fc.feedbackBeingPublished(),
+    fc.prereview(),
+    fc.string(),
+    fc.origin(),
+    fc.oneof(
+      fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
+      fc.error().map(error => Promise.reject(error)),
+    ),
+  ])('Zenodo is unavailable', async (feedback, prereview, zenodoApiKey, publicUrl, response) => {
+    const actual = await _.createFeedbackOnZenodo({ feedback, prereview })({
+      clock: SystemClock,
+      fetch: () => response,
+      logger: () => IO.of(undefined),
+      publicUrl,
+      zenodoApiKey,
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
 describe('createRecordOnZenodo', () => {
   describe('as a public persona', () => {
     test.prop([

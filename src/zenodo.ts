@@ -42,6 +42,8 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
+import type * as Feedback from './Feedback/index.js'
+import type { Prereview as PrereviewType } from './Prereview.js'
 import { getClubByName, getClubName } from './club-details.js'
 import { type SleepEnv, reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
 import { plainText, sanitizeHtml } from './html.js'
@@ -55,7 +57,7 @@ import {
   resolvePreprintId,
 } from './preprint.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
-import type { Feedback, Prereview } from './review-page/index.js'
+import type { Prereview, Feedback as PrereviewFeedback } from './review-page/index.js'
 import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.js'
 import type { RecentPrereviews } from './reviews-page/index.js'
 import { reviewMatch } from './routes.js'
@@ -480,6 +482,45 @@ export const addAuthorToRecordOnZenodo = (
     RTE.bimap(() => 'unavailable', constVoid),
   )
 
+export const createFeedbackOnZenodo: (params: {
+  feedback: Feedback.FeedbackBeingPublished
+  prereview: PrereviewType
+}) => RTE.ReaderTaskEither<PublicUrlEnv & ZenodoAuthenticatedEnv & L.LoggerEnv, 'unavailable', [Doi, number]> = ({
+  feedback,
+  prereview,
+}) =>
+  pipe(
+    RTE.Do,
+    RTE.apS('deposition', createEmptyDeposition()),
+    RTE.apSW('metadata', RTE.fromReader(createDepositMetadataForFeedback({ feedback, prereview }))),
+    RTE.chainW(({ deposition, metadata }) => updateDeposition(metadata, deposition)),
+    RTE.chainFirstW(
+      uploadFile({
+        name: 'feedback.html',
+        content: feedback.feedback.toString(),
+      }),
+    ),
+    RTE.chainW(publishDeposition),
+    RTE.orElseFirstW(
+      RTE.fromReaderIOK(
+        flow(
+          error => ({
+            error: match(error)
+              .with(P.instanceOf(Error), error => error.message)
+              .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+              .with({ _tag: P.string }, D.draw)
+              .exhaustive(),
+          }),
+          L.errorP('Unable to create record on Zenodo'),
+        ),
+      ),
+    ),
+    RTE.bimap(
+      () => 'unavailable',
+      deposition => [deposition.metadata.doi, deposition.id],
+    ),
+  )
+
 export const createRecordOnZenodo: (
   newPrereview: NewPrereview,
 ) => RTE.ReaderTaskEither<
@@ -525,6 +566,44 @@ export const createRecordOnZenodo: (
       deposition => [deposition.metadata.doi, deposition.id],
     ),
   )
+
+function createDepositMetadataForFeedback({
+  feedback,
+  prereview,
+}: {
+  feedback: Feedback.FeedbackBeingPublished
+  prereview: PrereviewType
+}) {
+  return pipe(
+    toUrl(reviewMatch.formatter, { id: prereview.id }),
+    R.map(
+      url =>
+        ({
+          upload_type: 'publication',
+          publication_type: 'other',
+          title: plainText`Feedback on a PREreview of “${prereview.preprint.title}”`.toString(),
+          creators: [{ name: 'A PREreviewer' }],
+          description: `<p><strong>This Zenodo record is a permanently preserved version of feedback on a PREreview. You can view the complete PREreview and feedback at <a href="${url.href}">${url.href}</a>.</strong></p>
+
+${feedback.feedback.toString()}`,
+          communities: [{ identifier: 'prereview-reviews' }],
+          related_identifiers: [
+            {
+              ...toExternalIdentifier(prereview.preprint.id),
+              relation: 'references',
+              resource_type: 'publication-preprint',
+            },
+            {
+              identifier: prereview.doi,
+              relation: 'references',
+              resource_type: 'publication-peerreview',
+              scheme: 'doi',
+            },
+          ],
+        }) satisfies DepositMetadata,
+    ),
+  )
+}
 
 function createDepositMetadata(
   deposition: EmptyDeposition,
@@ -665,7 +744,11 @@ function recordToPrereview(
 
 function recordToPrereviewFeedback(
   record: Record,
-): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, HttpError<404> | 'text-unavailable' | 'unknown-license', Feedback> {
+): RTE.ReaderTaskEither<
+  F.FetchEnv & L.LoggerEnv,
+  HttpError<404> | 'text-unavailable' | 'unknown-license',
+  PrereviewFeedback
+> {
   return pipe(
     RTE.Do,
     RTE.apSW('feedbackTextUrl', RTE.fromOption(() => new httpErrors.NotFound())(getReviewUrl(record))),

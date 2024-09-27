@@ -2,9 +2,9 @@ import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, canWriteFeedback, expect, test } from './base.js'
+import { areLoggedIn, canLogIn, canWriteFeedback, expect, test, willPublishFeedback } from './base.js'
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback).extend(willPublishFeedback)(
   'can write feedback on a PREreview',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
@@ -91,6 +91,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your feedback')
+
+    await page.waitForTimeout(500)
+    await page.reload()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Feedback published')
   },
 )
 

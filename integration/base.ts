@@ -1736,6 +1736,141 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
   },
 }
 
+export const willPublishFeedback: Fixtures<
+  Pick<AppFixtures, 'fetch'>,
+  Record<never, never>,
+  Pick<AppFixtures, 'fetch'>
+> = {
+  fetch: async ({ fetch }, use) => {
+    const record = {
+      conceptdoi: Doi('10.5072/zenodo.112360'),
+      conceptrecid: 112360,
+      files: [
+        {
+          links: {
+            self: new URL('http://example.com/feedback.html/content'),
+          },
+          key: 'feedback.html',
+          size: 58,
+        },
+      ],
+      id: 112361,
+      links: {
+        latest: new URL('http://example.com/latest'),
+        latest_html: new URL('http://example.com/latest_html'),
+      },
+      metadata: {
+        access_right: 'open',
+        communities: [{ id: 'prereview-reviews' }],
+        creators: [
+          {
+            name: 'Josiah Carberry',
+            orcid: Orcid('0000-0002-1825-0097'),
+          },
+        ],
+        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+        doi: Doi('10.5072/zenodo.112360'),
+        license: { id: 'cc-by-4.0' },
+        publication_date: new Date('2022-07-05'),
+        related_identifiers: [
+          {
+            identifier: '10.1101/2022.01.13.476201',
+            relation: 'references',
+            resource_type: 'publication-preprint',
+            scheme: 'doi',
+          },
+          {
+            identifier: '10.5072/zenodo.1061864',
+            relation: 'references',
+            resource_type: 'publication-peerreview',
+            scheme: 'doi',
+          },
+          {
+            identifier: '10.5072/zenodo.112360',
+            relation: 'isVersionOf',
+            scheme: 'doi',
+          },
+        ],
+        resource_type: {
+          type: 'publication',
+          subtype: 'other',
+        },
+        title:
+          'Feedback on a PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      },
+    } satisfies ZenodoRecord
+
+    fetch
+      .postOnce('http://zenodo.test/api/deposit/depositions', {
+        body: EmptyDepositionC.encode({
+          ...record,
+          links: {
+            bucket: new URL('http://example.com/bucket'),
+            self: new URL('http://example.com/self'),
+          },
+          metadata: {
+            prereserve_doi: {
+              doi: record.metadata.doi,
+            },
+          },
+          state: 'unsubmitted',
+          submitted: false,
+        }),
+        status: Status.Created,
+      })
+      .putOnce('http://example.com/self', {
+        body: UnsubmittedDepositionC.encode({
+          ...record,
+          links: {
+            bucket: new URL('http://example.com/bucket'),
+            publish: new URL('http://example.com/publish'),
+            self: new URL('http://example.com/self'),
+          },
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            license: record.metadata.license.id,
+            prereserve_doi: {
+              doi: record.metadata.doi,
+            },
+            upload_type: 'publication',
+            publication_type: 'other',
+          },
+          state: 'unsubmitted',
+          submitted: false,
+        }),
+        status: Status.OK,
+      })
+      .putOnce('http://example.com/bucket/feedback.html', {
+        status: Status.Created,
+      })
+      .postOnce(
+        'http://example.com/publish',
+        {
+          body: SubmittedDepositionC.encode({
+            ...record,
+            links: {
+              edit: new URL('http://example.com/edit'),
+            },
+            metadata: {
+              ...record.metadata,
+              communities: [{ identifier: 'prereview-reviews' }],
+              license: record.metadata.license.id,
+              upload_type: 'publication',
+              publication_type: 'other',
+            },
+            state: 'done',
+            submitted: true,
+          }),
+          status: Status.Accepted,
+        },
+        { delay: 100 },
+      )
+
+    await use(fetch)
+  },
+}
+
 export const canConnectOrcidProfile: Fixtures<
   Record<never, never>,
   Record<never, never>,

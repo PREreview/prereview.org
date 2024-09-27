@@ -12,7 +12,7 @@ import * as Prereview from './Prereview.js'
 import { Uuid } from './types/index.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import { WebApp } from './WebApp.js'
-import { getPrereviewFromZenodo } from './zenodo.js'
+import { createFeedbackOnZenodo, getPrereviewFromZenodo } from './zenodo.js'
 
 const getPrereview = Layer.effect(
   Prereview.GetPrereview,
@@ -83,7 +83,46 @@ const getPrereview = Layer.effect(
 
 const publishFeedback = Layer.effect(
   Feedback.PublishFeedbackWithADoi,
-  Effect.succeed(() => Effect.fail(new Feedback.UnableToPublishFeedback({}))),
+  Effect.gen(function* () {
+    const { zenodoApiKey, zenodoUrl, publicUrl } = yield* ExpressConfig
+    const fetch = yield* FetchHttpClient.Fetch
+    const logger = yield* DeprecatedLoggerEnv
+    const getPrereview = yield* Prereview.GetPrereview
+
+    return feedback =>
+      pipe(
+        getPrereview(feedback.prereviewId),
+        Effect.andThen(prereview =>
+          Effect.promise(
+            createFeedbackOnZenodo({ feedback, prereview })({
+              fetch,
+              publicUrl,
+              zenodoApiKey,
+              zenodoUrl,
+              ...logger,
+            }),
+          ),
+        ),
+        Effect.andThen(
+          flow(
+            Match.value,
+            Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
+            Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
+            Match.exhaustive,
+          ),
+        ),
+        Effect.mapError(
+          flow(
+            Match.value,
+            Match.when('unavailable', () => new Feedback.UnableToPublishFeedback({})),
+            Match.tag('PrereviewIsNotFound', error => new Feedback.UnableToPublishFeedback({ cause: error })),
+            Match.tag('PrereviewIsUnavailable', error => new Feedback.UnableToPublishFeedback({ cause: error })),
+            Match.tag('PrereviewWasRemoved', error => new Feedback.UnableToPublishFeedback({ cause: error })),
+            Match.exhaustive,
+          ),
+        ),
+      )
+  }),
 )
 
 const getPreprint = Layer.effect(
