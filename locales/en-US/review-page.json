@@ -41,10 +41,16 @@
   "feedbackTitle": {
     "message": "Feedback"
   },
+  "noFeedback": {
+    "message": "No feedback has been published yet."
+  },
   "feedbackItemTitle": {
     "message": "Feedback by {authors, plural, one {{author}} other {{author} et al.}}"
   },
   "feedbackItemAuthors": {
     "message": "<hide>Authored</hide> by {authors}"
+  },
+  "writeFeedbackButton": {
+    "message": "Write feedback"
   }
 }

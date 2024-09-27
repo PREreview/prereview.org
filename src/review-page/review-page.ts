@@ -198,12 +198,14 @@ export const createPage = ({
             <article aria-labelledby="feedback-title">
               <h2 id="feedback-title">${translate(locale, 'review-page', 'feedbackTitle')()}</h2>
               ${canWriteFeedback
-                ? html`<a href="${Routes.WriteFeedback.href({ id })}" class="button">Write feedback</a>`
+                ? html`<a href="${Routes.WriteFeedback.href({ id })}" class="button"
+                    >${translate(locale, 'review-page', 'writeFeedbackButton')()}</a
+                  >`
                 : ''}
               ${pipe(
                 feedback,
                 RA.match(
-                  () => html`<p>No feedback has been published yet.</p>`,
+                  () => html`<p>${translate(locale, 'review-page', 'noFeedback')()}</p>`,
                   feedback =>
                     html`<ol class="cards">
                       ${pipe(
