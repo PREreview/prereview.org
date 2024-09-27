@@ -1,7 +1,8 @@
-import { absurd, Either, Match, pipe } from 'effect'
+import { absurd, Either, Function, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
+import { identity } from 'fp-ts/lib/function.js'
 import { StatusCodes } from 'http-status-codes'
-import { type Html, html, plainText } from '../../html.js'
+import { type Html, html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
@@ -22,7 +23,13 @@ export const EnterFeedbackPage = ({
 }) =>
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
-    title: form._tag === 'InvalidForm' ? plainText`Error: Write your feedback` : plainText`Write your feedback`,
+    title: plainText(
+      translate(
+        locale,
+        'write-feedback-flow',
+        'enterYourFeedbackTitle',
+      )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
+    ),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereviewId })}" class="back"
         >${translate(locale, 'write-feedback-flow', 'backToPrereview')()}</a
@@ -33,7 +40,7 @@ export const EnterFeedbackPage = ({
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
+                <h2 id="error-summary-title">${translate(locale, 'write-feedback-flow', 'errorSummaryHeading')()}</h2>
                 <ul>
                   ${Either.isLeft(form.feedback)
                     ? html`
@@ -41,7 +48,9 @@ export const EnterFeedbackPage = ({
                           <a href="#feedback">
                             ${pipe(
                               Match.value(form.feedback.left),
-                              Match.tag('Missing', () => 'Enter your feedback'),
+                              Match.tag('Missing', () =>
+                                translate(locale, 'write-feedback-flow', 'errorEnterFeedback')({ error: () => '' }),
+                              ),
                               Match.exhaustive,
                             )}
                           </a>
@@ -54,16 +63,21 @@ export const EnterFeedbackPage = ({
           : ''}
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
-          <h1><label id="feedback-label" for="feedback">Write your feedback</label></h1>
+          <h1>
+            <label id="feedback-label" for="feedback"
+              >${translate(locale, 'write-feedback-flow', 'enterYourFeedbackTitle')({ error: () => '' })}</label
+            >
+          </h1>
 
           ${form._tag === 'InvalidForm' && Either.isLeft(form.feedback)
             ? html`
                 <div class="error-message" id="feedback-error">
-                  <span class="visually-hidden">Error:</span>
                   ${pipe(
                     Match.value(form.feedback.left),
-                    Match.tag('Missing', () => 'Enter your feedback'),
+                    Match.tag('Missing', () => translate(locale, 'write-feedback-flow', 'errorEnterFeedback')),
                     Match.exhaustive,
+                    Function.apply({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
+                    rawHtml,
                   )}
                 </div>
               `
@@ -101,7 +115,7 @@ ${Turndown.turndown(form.feedback.toString())}</textarea
           </html-editor>
         </div>
 
-        <button>Save and continue</button>
+        <button>${translate(locale, 'write-feedback-flow', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

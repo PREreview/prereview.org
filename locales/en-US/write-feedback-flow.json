@@ -26,7 +26,19 @@
   "continueButton": {
     "message": "Continue"
   },
+  "saveContinueButton": {
+    "message": "Save and continue"
+  },
   "carryOnMessage": {
     "message": "As you’ve already started feedback on this PREreview of {preprint}, we’ll take you to the next step so you can carry on."
+  },
+  "enterYourFeedbackTitle": {
+    "message": "<error>Error:</error> Write your feedback"
+  },
+  "errorSummaryHeading": {
+    "message": "There is a problem"
+  },
+  "errorEnterFeedback": {
+    "message": "<error>Error:</error> Enter your feedback"
   }
 }
