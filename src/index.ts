@@ -31,7 +31,14 @@ pipe(
   Program,
   Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
-  Effect.provideService(CanWriteFeedback, isPrereviewTeam),
+  Effect.provideServiceEffect(
+    CanWriteFeedback,
+    Effect.gen(function* () {
+      const canWriteFeedback = yield* Config.withDefault(Config.boolean('CAN_WRITE_FEEDBACK'), false)
+
+      return user => canWriteFeedback && isPrereviewTeam(user)
+    }),
+  ),
   Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Effect.provideServiceEffect(ExpressConfig, ExpressConfigLive),
   Effect.provide(
