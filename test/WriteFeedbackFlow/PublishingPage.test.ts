@@ -25,6 +25,7 @@ describe('PublishingPage', () => {
           canonical: Routes.WriteFeedbackPublishing.href({ feedbackId }),
           status: StatusCodes.OK,
           title: expect.stringContaining('publishing'),
+          head: expect.stringContaining('refresh'),
           main: expect.stringContaining('publishing'),
           skipToLabel: 'main',
           js: [],

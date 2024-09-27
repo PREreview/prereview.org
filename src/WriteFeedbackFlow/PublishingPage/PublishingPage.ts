@@ -6,6 +6,7 @@ import type { Uuid } from '../../types/index.js'
 export const PublishingPage = ({ feedbackId }: { feedbackId: Uuid.Uuid }) =>
   StreamlinePageResponse({
     title: plainText`We’re publishing your feedback`,
+    head: html`<meta http-equiv="refresh" content="2" />`,
     main: html`
       <h1>We’re publishing your feedback</h1>
 

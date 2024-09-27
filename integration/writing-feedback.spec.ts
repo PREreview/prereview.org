@@ -92,9 +92,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback).extend(willPu
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your feedback')
 
-    await page.waitForTimeout(500)
-    await page.reload()
-
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Feedback published')
   },
 )
