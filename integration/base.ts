@@ -1866,6 +1866,9 @@ export const willPublishFeedback: Fixtures<
         },
         { delay: 100 },
       )
+      .getOnce('http://api.orcid.test/v3.0/0000-0002-1825-0097/personal-details', {
+        body: { name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' } } },
+      })
 
     await use(fetch)
   },

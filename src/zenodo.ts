@@ -14,6 +14,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as T from 'fp-ts/lib/Task.js'
+import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { constVoid, flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { isString, toUpperCase } from 'fp-ts/lib/string.js'
 import httpErrors, { type HttpError } from 'http-errors'
@@ -21,6 +22,7 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
+import type { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
@@ -90,6 +92,10 @@ export interface IsReviewRequestedEnv {
   isReviewRequested: (preprint: PreprintId) => T.Task<boolean>
 }
 
+export interface GetNameFromOrcidEnv {
+  getNameFromOrcid: (orcid: Orcid) => TE.TaskEither<'unavailable', NonEmptyString>
+}
+
 const wasPrereviewRemoved = (id: number): R.Reader<WasPrereviewRemovedEnv, boolean> =>
   R.asks(({ wasPrereviewRemoved }) => wasPrereviewRemoved(id))
 
@@ -100,6 +106,9 @@ const getPreprintSubjects = (
 
 const isReviewRequested = (preprint: PreprintId): RT.ReaderTask<IsReviewRequestedEnv, boolean> =>
   R.asks(({ isReviewRequested }) => isReviewRequested(preprint))
+
+const getNameFromOrcid = (orcid: Orcid): RTE.ReaderTaskEither<GetNameFromOrcidEnv, 'unavailable', NonEmptyString> =>
+  R.asks(({ getNameFromOrcid }) => getNameFromOrcid(orcid))
 
 const getPrereviewsPageForSciety = flow(
   (page: number) =>
@@ -485,14 +494,18 @@ export const addAuthorToRecordOnZenodo = (
 export const createFeedbackOnZenodo: (params: {
   feedback: Feedback.FeedbackBeingPublished
   prereview: PrereviewType
-}) => RTE.ReaderTaskEither<PublicUrlEnv & ZenodoAuthenticatedEnv & L.LoggerEnv, 'unavailable', [Doi, number]> = ({
-  feedback,
-  prereview,
-}) =>
+}) => RTE.ReaderTaskEither<
+  GetNameFromOrcidEnv & PublicUrlEnv & ZenodoAuthenticatedEnv & L.LoggerEnv,
+  'unavailable',
+  [Doi, number]
+> = ({ feedback, prereview }) =>
   pipe(
     RTE.Do,
-    RTE.apS('deposition', createEmptyDeposition()),
-    RTE.apSW('metadata', RTE.fromReader(createDepositMetadataForFeedback({ feedback, prereview }))),
+    RTE.apS('name', getNameFromOrcid(feedback.authorId)),
+    RTE.apSW('deposition', createEmptyDeposition()),
+    RTE.bindW('metadata', ({ name }) =>
+      RTE.fromReader(createDepositMetadataForFeedback({ feedback, name, prereview })),
+    ),
     RTE.chainW(({ deposition, metadata }) => updateDeposition(metadata, deposition)),
     RTE.chainFirstW(
       uploadFile({
@@ -506,6 +519,7 @@ export const createFeedbackOnZenodo: (params: {
         flow(
           error => ({
             error: match(error)
+              .with('unavailable', () => ({}))
               .with(P.instanceOf(Error), error => error.message)
               .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
               .with({ _tag: P.string }, D.draw)
@@ -570,9 +584,11 @@ export const createRecordOnZenodo: (
 function createDepositMetadataForFeedback({
   feedback,
   prereview,
+  name,
 }: {
   feedback: Feedback.FeedbackBeingPublished
   prereview: PrereviewType
+  name: NonEmptyString
 }) {
   return pipe(
     toUrl(reviewMatch.formatter, { id: prereview.id }),
@@ -582,7 +598,7 @@ function createDepositMetadataForFeedback({
           upload_type: 'publication',
           publication_type: 'other',
           title: plainText`Feedback on a PREreview of “${prereview.preprint.title}”`.toString(),
-          creators: [{ name: 'A PREreviewer' }],
+          creators: [{ name, orcid: feedback.authorId }],
           description: `<p><strong>This Zenodo record is a permanently preserved version of feedback on a PREreview. You can view the complete PREreview and feedback at <a href="${url.href}">${url.href}</a>.</strong></p>
 
 ${feedback.feedback.toString()}`,

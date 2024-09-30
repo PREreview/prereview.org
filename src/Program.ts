@@ -1,12 +1,14 @@
 import { FetchHttpClient } from '@effect/platform'
 import { type Array, Effect, flow, Layer, Match, pipe, PubSub, Runtime } from 'effect'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as Feedback from './Feedback/index.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import * as LibsqlEventStore from './LibsqlEventStore.js'
+import { getNameFromOrcid } from './orcid.js'
 import * as Preprint from './preprint.js'
 import * as Prereview from './Prereview.js'
 import { Uuid } from './types/index.js'
@@ -84,10 +86,11 @@ const getPrereview = Layer.effect(
 const publishFeedback = Layer.effect(
   Feedback.PublishFeedbackWithADoi,
   Effect.gen(function* () {
-    const { zenodoApiKey, zenodoUrl, publicUrl } = yield* ExpressConfig
+    const { orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl, publicUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
+    const sleep = yield* DeprecatedSleepEnv
 
     return feedback =>
       pipe(
@@ -96,6 +99,14 @@ const publishFeedback = Layer.effect(
           Effect.promise(
             createFeedbackOnZenodo({ feedback, prereview })({
               fetch,
+              getNameFromOrcid: orcid =>
+                pipe(
+                  getNameFromOrcid(orcid)({ orcidApiUrl, orcidApiToken, fetch, ...sleep, ...logger }),
+                  TE.filterOrElse(
+                    name => typeof name === 'string',
+                    () => 'unavailable',
+                  ),
+                ),
               publicUrl,
               zenodoApiKey,
               zenodoUrl,
