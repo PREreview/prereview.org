@@ -6,6 +6,7 @@ import type { Uuid } from '../../types/index.js'
 export const CheckPage = ({ feedback, feedbackId }: { feedback: Html; feedbackId: Uuid.Uuid }) =>
   StreamlinePageResponse({
     title: plainText`Check your feedback`,
+    nav: html` <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" class="back">Back</a>`,
     main: html`
       <single-use-form>
         <form method="post" action="${Routes.WriteFeedbackCheck.href({ feedbackId })}" novalidate>
