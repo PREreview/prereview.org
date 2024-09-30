@@ -25,6 +25,7 @@ describe('CheckPage', () => {
           canonical: Routes.WriteFeedbackCheck.href({ feedbackId }),
           status: StatusCodes.OK,
           title: expect.stringContaining('Check your feedback'),
+          nav: expect.stringContaining('Back'),
           main: expect.stringContaining('Check your feedback'),
           skipToLabel: 'form',
           js: ['single-use-form.js'],
