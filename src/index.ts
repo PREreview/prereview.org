@@ -42,10 +42,14 @@ pipe(
   Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
   Effect.provideServiceEffect(ExpressConfig, ExpressConfigLive),
   Effect.provide(
-    LibsqlClient.layer({
-      url: Config.string('LIBSQL_URL'),
-      authToken: Config.withDefault(Config.string('LIBSQL_AUTH_TOKEN'), undefined),
-    }),
+    Layer.mergeAll(
+      LibsqlClient.layer({
+        url: Config.string('LIBSQL_URL'),
+        authToken: Config.withDefault(Config.string('LIBSQL_AUTH_TOKEN'), undefined),
+      }),
+      Layer.effectDiscard(Effect.logDebug('Database connected')),
+      Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
+    ),
   ),
   Effect.provideServiceEffect(Redis, redisLifecycle),
   Effect.provideServiceEffect(
