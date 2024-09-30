@@ -51,3 +51,61 @@ export const CheckPage = ({
       UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
     }),
   )
+
+export const CheckPageSubmission = ({
+  feedbackId,
+}: {
+  feedbackId: Uuid.Uuid
+}): Effect.Effect<
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  never,
+  Feedback.GetFeedback | Feedback.HandleFeedbackCommand
+> =>
+  Effect.gen(function* () {
+    const user = yield* EnsureUserIsLoggedIn
+
+    const getFeedback = yield* Feedback.GetFeedback
+
+    const feedback = yield* getFeedback(feedbackId)
+
+    if (feedback._tag !== 'FeedbackNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
+      return pageNotFound
+    }
+
+    return yield* pipe(
+      Match.value(feedback),
+      Match.tag('FeedbackNotStarted', () => Effect.succeed(pageNotFound)),
+      Match.tag('FeedbackInProgress', () => Effect.succeed(pageNotFound)),
+      Match.tag('FeedbackReadyForPublishing', () =>
+        Effect.gen(function* () {
+          const handleCommand = yield* Feedback.HandleFeedbackCommand
+
+          yield* pipe(
+            handleCommand({
+              feedbackId,
+              command: new Feedback.PublishFeedback(),
+            }),
+            Effect.catchIf(
+              cause => cause._tag !== 'UnableToHandleCommand',
+              cause => new Feedback.UnableToHandleCommand({ cause }),
+            ),
+          )
+
+          return Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })
+        }),
+      ),
+      Match.tag('FeedbackBeingPublished', () =>
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })),
+      ),
+      Match.tag('FeedbackPublished', () =>
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })),
+      ),
+      Match.exhaustive,
+    )
+  }).pipe(
+    Effect.catchTags({
+      UnableToQuery: () => Effect.succeed(havingProblemsPage),
+      UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
+      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+    }),
+  )

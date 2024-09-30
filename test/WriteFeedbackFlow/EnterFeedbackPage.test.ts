@@ -214,10 +214,6 @@ describe('EnterFeedbackSubmission', () => {
               feedbackId,
               command: new Feedback.EnterFeedback({ feedback: body.feedback }),
             })
-            expect(handleFeedbackCommand).toHaveBeenCalledWith({
-              feedbackId,
-              command: new Feedback.PublishFeedback(),
-            })
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
