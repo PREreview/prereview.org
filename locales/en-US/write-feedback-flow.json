@@ -2,6 +2,9 @@
   "writeFeedbackTitle": {
     "message": "Write feedback"
   },
+  "back": {
+    "message": "Back"
+  },
   "backToPrereview": {
     "message": "Back to PREreview"
   },
@@ -40,6 +43,24 @@
   },
   "errorEnterFeedback": {
     "message": "<error>Error:</error> Enter your feedback"
+  },
+  "checkTitle": {
+    "message": "Check your feedback"
+  },
+  "checkYourFeedbackHeading": {
+    "message": "Your feedback"
+  },
+  "changeFeedback": {
+    "message": "Change <visuallyHidden>feedback</visuallyHidden>"
+  },
+  "nowPublishHeading": {
+    "message": "Now publish your feedback"
+  },
+  "nowPublishMessage": {
+    "message": "We will assign your feedback a DOI (a permanent identifier) and make it publicly available under a <license>CC BY 4.0 license</license>."
+  },
+  "publishButton": {
+    "message": "Publish feedback"
   },
   "publishingTitle": {
     "message": "We’re publishing your feedback"

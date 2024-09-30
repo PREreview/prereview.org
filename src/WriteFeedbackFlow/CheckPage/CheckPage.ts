@@ -1,37 +1,61 @@
-import { fixHeadingLevels, type Html, html, plainText } from '../../html.js'
+import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.js'
+import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 
-export const CheckPage = ({ feedback, feedbackId }: { feedback: Html; feedbackId: Uuid.Uuid }) =>
+export const CheckPage = ({
+  feedback,
+  feedbackId,
+  locale,
+}: {
+  feedback: Html
+  feedbackId: Uuid.Uuid
+  locale: SupportedLocale
+}) =>
   StreamlinePageResponse({
-    title: plainText`Check your feedback`,
-    nav: html` <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" class="back">Back</a>`,
+    title: plainText(translate(locale, 'write-feedback-flow', 'checkTitle')()),
+    nav: html` <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" class="back"
+      >${translate(locale, 'write-feedback-flow', 'back')()}</a
+    >`,
     main: html`
       <single-use-form>
         <form method="post" action="${Routes.WriteFeedbackCheck.href({ feedbackId })}" novalidate>
-          <h1>Check your feedback</h1>
+          <h1>${translate(locale, 'write-feedback-flow', 'checkTitle')()}</h1>
 
           <div class="summary-card">
             <div>
-              <h2 id="feedback-label">Your feedback</h2>
+              <h2 id="feedback-label">${translate(locale, 'write-feedback-flow', 'checkYourFeedbackHeading')()}</h2>
 
               <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}"
-                >Change <span class="visually-hidden">feedback</span></a
+                >${rawHtml(
+                  translate(
+                    locale,
+                    'write-feedback-flow',
+                    'changeFeedback',
+                  )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
+                )}</a
               >
             </div>
 
             <div aria-labelledby="feedback-label" role="region" tabindex="0">${fixHeadingLevels(2, feedback)}</div>
           </div>
 
-          <h2>Now publish your feedback</h2>
+          <h2>${translate(locale, 'write-feedback-flow', 'nowPublishHeading')()}</h2>
 
           <p>
-            We will assign your feedback a DOI (a permanent identifier) and make it publicly available under a
-            <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0 license</a>.
+            ${rawHtml(
+              translate(
+                locale,
+                'write-feedback-flow',
+                'nowPublishMessage',
+              )({
+                license: text => html`<a href="https://creativecommons.org/licenses/by/4.0/">${text}</a>`.toString(),
+              }),
+            )}
           </p>
 
-          <button>Publish feedback</button>
+          <button>${translate(locale, 'write-feedback-flow', 'publishButton')()}</button>
         </form>
       </single-use-form>
     `,

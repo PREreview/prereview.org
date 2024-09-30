@@ -1,4 +1,5 @@
 import { Effect, Equal, Match, pipe } from 'effect'
+import { Locale } from '../../Context.js'
 import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import * as Response from '../../response.js'
@@ -14,7 +15,7 @@ export const CheckPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
   never,
-  Feedback.GetFeedback
+  Feedback.GetFeedback | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -27,6 +28,8 @@ export const CheckPage = ({
       return pageNotFound
     }
 
+    const locale = yield* Locale
+
     return pipe(
       Match.value(feedback),
       Match.tag('FeedbackNotStarted', () => pageNotFound),
@@ -35,6 +38,7 @@ export const CheckPage = ({
         MakeResponse({
           feedback: feedback.feedback,
           feedbackId,
+          locale,
         }),
       ),
       Match.tag('FeedbackBeingPublished', () =>

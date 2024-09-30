@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Equal, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import { LoggedInUser } from '../../src/Context.js'
+import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Feedback from '../../src/Feedback/index.js'
 import * as Routes from '../../src/routes.js'
 import * as _ from '../../src/WriteFeedbackFlow/CheckPage/index.js'
@@ -16,7 +16,8 @@ describe('CheckPage', () => {
       fc
         .feedbackReadyForPublishing()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-    ])('when the feedback is ready for publishing', (feedbackId, [feedback, user]) =>
+      fc.supportedLocale(),
+    ])('when the feedback is ready for publishing', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPage({ feedbackId })
 
@@ -31,6 +32,7 @@ describe('CheckPage', () => {
           js: ['single-use-form.js'],
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -43,7 +45,8 @@ describe('CheckPage', () => {
       fc
         .feedbackPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-    ])('when the feedback has been published', (feedbackId, [feedback, user]) =>
+      fc.supportedLocale(),
+    ])('when the feedback has been published', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPage({ feedbackId })
 
@@ -53,6 +56,7 @@ describe('CheckPage', () => {
           location: Routes.WriteFeedbackPublished.href({ feedbackId }),
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -65,7 +69,8 @@ describe('CheckPage', () => {
       fc
         .feedbackBeingPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-    ])('when the feedback is being published', (feedbackId, [feedback, user]) =>
+      fc.supportedLocale(),
+    ])('when the feedback is being published', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPage({ feedbackId })
 
@@ -75,6 +80,7 @@ describe('CheckPage', () => {
           location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -87,7 +93,8 @@ describe('CheckPage', () => {
       fc
         .feedbackInProgress()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-    ])("when the feedback isn't complete", (feedbackId, [feedback, user]) =>
+      fc.supportedLocale(),
+    ])("when the feedback isn't complete", (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPage({ feedbackId })
 
@@ -100,6 +107,7 @@ describe('CheckPage', () => {
           js: [],
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -107,9 +115,9 @@ describe('CheckPage', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user()])(
+    test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user(), fc.supportedLocale()])(
       "when the feedback hasn't been started",
-      (feedbackId, feedback, user) =>
+      (feedbackId, feedback, user, locale) =>
         Effect.gen(function* () {
           const actual = yield* _.CheckPage({ feedbackId })
 
@@ -122,6 +130,7 @@ describe('CheckPage', () => {
             js: [],
           })
         }).pipe(
+          Effect.provideService(Locale, locale),
           Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -134,7 +143,8 @@ describe('CheckPage', () => {
       fc
         .tuple(fc.feedbackState(), fc.user())
         .filter(([state, user]) => state._tag !== 'FeedbackNotStarted' && !Equal.equals(state.authorId, user.orcid)),
-    ])('when the feedback is by a different author', (feedbackId, [feedback, user]) =>
+      fc.supportedLocale(),
+    ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPage({ feedbackId })
 
@@ -147,6 +157,7 @@ describe('CheckPage', () => {
           js: [],
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -154,28 +165,31 @@ describe('CheckPage', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.user()])("when the feedback can't be loaded", (feedbackId, user) =>
-      Effect.gen(function* () {
-        const actual = yield* _.CheckPage({ feedbackId })
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale()])(
+      "when the feedback can't be loaded",
+      (feedbackId, user, locale) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckPage({ feedbackId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
-        Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
-      ),
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.SERVICE_UNAVAILABLE,
+            title: expect.stringContaining('problems'),
+            main: expect.stringContaining('problems'),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provideService(Locale, locale),
+          Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
     )
   })
 
-  test.prop([fc.uuid()])("when there isn't a user", feedbackId =>
+  test.prop([fc.uuid(), fc.supportedLocale()])("when there isn't a user", (feedbackId, locale) =>
     Effect.gen(function* () {
       const actual = yield* _.CheckPage({ feedbackId })
 
@@ -188,6 +202,7 @@ describe('CheckPage', () => {
         js: [],
       })
     }).pipe(
+      Effect.provideService(Locale, locale),
       Effect.provideService(Feedback.GetFeedback, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
