@@ -46,7 +46,6 @@ export interface Page {
   readonly locale?: SupportedLocale
   readonly title: PlainText
   readonly description?: PlainText
-  readonly head?: Html
   readonly type?: 'two-up' | 'streamline'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
@@ -83,7 +82,6 @@ export function page({
   locale = DefaultLocale,
   title,
   description,
-  head,
   type,
   content,
   skipLinks = [],
@@ -133,7 +131,6 @@ export function page({
             : ''}
           <link rel="icon" href="${assets['favicon.ico']}" sizes="32x32" />
           <link rel="icon" href="${assets['favicon.svg']}" type="image/svg+xml" />
-          ${head ?? ''}
         </head>
         <body ${rawHtml(type === 'two-up' ? `class="${type}"` : '')}>
           ${skipLinks.length > 0

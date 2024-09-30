@@ -51,7 +51,6 @@ export interface StreamlinePageResponse {
   readonly status: Status
   readonly title: Page['title']
   readonly description?: Page['description']
-  readonly head?: Html
   readonly nav?: Html
   readonly main: Html
   readonly skipToLabel: 'form' | 'main'
@@ -203,7 +202,6 @@ export const toPage = ({
         locale: locale !== DefaultLocale ? locale : undefined,
         title: response.title,
         description: response.description,
-        head: response._tag === 'StreamlinePageResponse' ? response.head : undefined,
         content: html`
           ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 

@@ -32,6 +32,9 @@
   "saveContinueButton": {
     "message": "Save and continue"
   },
+  "reloadPageButton": {
+    "message": "Reload page"
+  },
   "carryOnMessage": {
     "message": "As you’ve already started feedback on this PREreview of {preprint}, we’ll take you to the next step so you can carry on."
   },

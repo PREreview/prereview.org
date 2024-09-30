@@ -7,11 +7,29 @@ import type { Uuid } from '../../types/index.js'
 export const PublishingPage = ({ feedbackId, locale }: { feedbackId: Uuid.Uuid; locale: SupportedLocale }) =>
   StreamlinePageResponse({
     title: plainText(translate(locale, 'write-feedback-flow', 'publishingTitle')()),
-    head: html`<meta http-equiv="refresh" content="2" />`,
     main: html`
       <h1>${translate(locale, 'write-feedback-flow', 'publishingTitle')()}</h1>
 
-      <p>${translate(locale, 'write-feedback-flow', 'publishingSeeShortlyMessage')()}</p>
+      <poll-redirect>
+        <div>
+          <p>${translate(locale, 'write-feedback-flow', 'publishingSeeShortlyMessage')()}</p>
+
+          <a href="${Routes.WriteFeedbackPublishing.href({ feedbackId })}" class="button"
+            >${translate(locale, 'write-feedback-flow', 'reloadPageButton')()}</a
+          >
+        </div>
+
+        <div hidden>
+          <p>${translate(locale, 'write-feedback-flow', 'publishingSeeShortlyMessage')()}</p>
+        </div>
+
+        <div hidden>
+          <a href="${Routes.WriteFeedbackPublished.href({ feedbackId })}" class="button"
+            >${translate(locale, 'write-feedback-flow', 'continueButton')()}</a
+          >
+        </div>
+      </poll-redirect>
     `,
     canonical: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+    js: ['poll-redirect.js'],
   })

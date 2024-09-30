@@ -93,6 +93,18 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback).extend(willPu
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your feedback')
 
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('link', { name: 'Continue' })).not.toBeVisible()
+
+      await page.getByRole('link', { name: 'Continue' }).click()
+    } else {
+      await expect(async () => {
+        await page.getByRole('link', { name: 'Reload page' }).click()
+
+        await expect(page.getByRole('heading', { level: 1 })).not.toHaveText('We’re publishing your feedback')
+      }).toPass()
+    }
+
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Feedback published')
   },
 )
