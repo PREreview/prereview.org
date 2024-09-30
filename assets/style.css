@@ -1619,6 +1619,26 @@ notification-banner {
   }
 }
 
+.loading {
+  @media (prefers-reduced-motion: no-preference) {
+    &::before {
+      content: '';
+      display: block;
+      block-size: var(--space-m-l);
+      inline-size: var(--space-m-l);
+      margin-block-start: var(--space-xs-s);
+      animation: rotation 1s linear infinite;
+      border: var(--width-divider-wide) solid var(--color-text);
+      border-radius: 50%;
+      border-inline-end-color: transparent;
+
+      @media (forced-colors: active) {
+        border-inline-end-color: Field;
+      }
+    }
+  }
+}
+
 html-editor {
   display: block;
   position: relative;
@@ -1647,22 +1667,6 @@ html-editor {
     user-select: none;
     inset: 0;
     row-gap: var(--space-2xs-xs);
-
-    @media (prefers-reduced-motion: no-preference) {
-      &::before {
-        content: '';
-        block-size: var(--space-m-l);
-        inline-size: var(--space-m-l);
-        animation: rotation 1s linear infinite;
-        border: var(--width-divider-wide) solid var(--color-text);
-        border-radius: 50%;
-        border-inline-end-color: transparent;
-
-        @media (forced-colors: active) {
-          border-inline-end-color: Field;
-        }
-      }
-    }
   }
 }
 

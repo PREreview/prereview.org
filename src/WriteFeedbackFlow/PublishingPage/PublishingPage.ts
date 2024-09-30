@@ -19,7 +19,7 @@ export const PublishingPage = ({ feedbackId, locale }: { feedbackId: Uuid.Uuid; 
           >
         </div>
 
-        <div hidden>
+        <div hidden class="loading">
           <p>${translate(locale, 'write-feedback-flow', 'publishingSeeShortlyMessage')()}</p>
         </div>
 
