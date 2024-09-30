@@ -27,7 +27,7 @@ export function revalidateIfStale<E extends F.FetchEnv & SleepEnv>(): (env: E) =
         openRequests.add(url)
 
         void env
-          .sleep(Math.min(200 * openRequests.size, 1_000))
+          .sleep(Math.min(200 * openRequests.size, 30_000))
           .then(() => env.fetch(url, { ...init, cache: 'no-cache' }))
           .then(response => response.text())
           .catch(constVoid)
