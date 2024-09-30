@@ -207,7 +207,7 @@ describe('EnterFeedbackSubmission', () => {
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
-              location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+              location: Routes.WriteFeedbackCheck.href({ feedbackId }),
             })
 
             expect(handleFeedbackCommand).toHaveBeenCalledWith({

@@ -124,7 +124,7 @@ export const EnterFeedbackSubmission = ({
                   ),
                 )
 
-                return Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })
+                return Response.RedirectResponse({ location: Routes.WriteFeedbackCheck.href({ feedbackId }) })
               }),
             ),
             Match.tag('InvalidForm', form =>

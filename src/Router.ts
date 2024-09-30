@@ -76,6 +76,14 @@ export const Router = pipe(
     ),
   ),
   HttpRouter.get(
+    Routes.WriteFeedbackCheck.path,
+    pipe(
+      HttpRouter.schemaParams(Routes.WriteFeedbackCheck.schema),
+      Effect.andThen(WriteFeedbackFlow.CheckPage),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
+  HttpRouter.get(
     Routes.WriteFeedbackPublishing.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteFeedbackPublishing.schema),
