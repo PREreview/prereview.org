@@ -275,6 +275,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
 
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.goto('/reviews/1061864')
     await page.getByRole('link', { name: 'Write feedback' }).click()
 
@@ -283,7 +286,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write your feedback')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your feedback')
   },
 )
 
