@@ -16,6 +16,12 @@ describe('when not started', () => {
       .when(new _.EnterFeedback({ feedback: html`<p>Some feedback.</p>` }))
       .thenError(new _.FeedbackHasNotBeenStarted()))
 
+  test('cannot agree to the code of conduct', () =>
+    given().when(new _.AgreeToCodeOfConduct()).thenError(new _.FeedbackHasNotBeenStarted()))
+
+  test('cannot request publication', () =>
+    given().when(new _.PublishFeedback()).thenError(new _.FeedbackHasNotBeenStarted()))
+
   test('cannot request publication', () =>
     given().when(new _.PublishFeedback()).thenError(new _.FeedbackHasNotBeenStarted()))
 
@@ -35,6 +41,19 @@ describe('when in progress', () => {
     given(new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .when(new _.EnterFeedback({ feedback: html`<p>Some feedback.</p>` }))
       .then(new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` })))
+
+  test('can agree to the code of conduct', () =>
+    given(new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.AgreeToCodeOfConduct())
+      .then(new _.CodeOfConductWasAgreed()))
+
+  test('re-agreeing to the code of conduct does nothing', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.CodeOfConductWasAgreed(),
+    )
+      .when(new _.AgreeToCodeOfConduct())
+      .then())
 
   test('cannot request publication', () =>
     given(new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -63,6 +82,14 @@ describe('when ready for publication', () => {
     )
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
       .then(new _.FeedbackWasEntered({ feedback: html`<p>Some different feedback.</p>` })))
+
+  test('agreeing to the code of conduct does nothing', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+    )
+      .when(new _.AgreeToCodeOfConduct())
+      .then())
 
   test('can request publication', () =>
     given(
@@ -98,6 +125,15 @@ describe('when being published', () => {
       new _.FeedbackPublicationWasRequested(),
     )
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
+      .thenError(new _.FeedbackIsBeingPublished()))
+
+  test('cannot agree to the code of conduct', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.FeedbackPublicationWasRequested(),
+    )
+      .when(new _.AgreeToCodeOfConduct())
       .thenError(new _.FeedbackIsBeingPublished()))
 
   test('re-requesting publication does nothing', () =>
@@ -136,6 +172,15 @@ describe('when published', () => {
       new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
     )
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
+      .thenError(new _.FeedbackWasAlreadyPublished()))
+
+  test('cannot agree to the code of conduct', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+    )
+      .when(new _.AgreeToCodeOfConduct())
       .thenError(new _.FeedbackWasAlreadyPublished()))
 
   test('cannot be re-request publication', () =>

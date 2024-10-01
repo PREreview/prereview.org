@@ -33,6 +33,17 @@ const onFeedbackWasEntered = (event: Events.FeedbackWasEntered) =>
     Match.exhaustive,
   )
 
+const onCodeOfConductWasAgreed = () =>
+  flow(
+    Match.value<State.FeedbackState>,
+    Match.tag('FeedbackNotStarted', identity),
+    Match.tag('FeedbackInProgress', state => new State.FeedbackInProgress({ ...state, codeOfConductAgreed: true })),
+    Match.tag('FeedbackReadyForPublishing', identity),
+    Match.tag('FeedbackBeingPublished', identity),
+    Match.tag('FeedbackPublished', identity),
+    Match.exhaustive,
+  )
+
 const onFeedbackPublicationWasRequested = () =>
   flow(
     Match.value<State.FeedbackState>,
@@ -66,6 +77,7 @@ export const EvolveFeedback = (state: State.FeedbackState): ((event: Events.Feed
     Match.value,
     Match.tag('FeedbackWasStarted', onFeedbackWasStarted),
     Match.tag('FeedbackWasEntered', onFeedbackWasEntered),
+    Match.tag('CodeOfConductWasAgreed', onCodeOfConductWasAgreed),
     Match.tag('FeedbackPublicationWasRequested', onFeedbackPublicationWasRequested),
     Match.tag('FeedbackWasPublished', onFeedbackWasPublished),
     Match.exhaustive,

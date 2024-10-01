@@ -8,6 +8,8 @@ export class FeedbackNotStarted extends Data.TaggedClass('FeedbackNotStarted') {
 export class FeedbackInProgress extends Data.TaggedClass('FeedbackInProgress')<{
   authorId: Orcid
   prereviewId: number
+  feedback?: Html
+  codeOfConductAgreed?: true
 }> {}
 
 export class FeedbackReadyForPublishing extends Data.TaggedClass('FeedbackReadyForPublishing')<{

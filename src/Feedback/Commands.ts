@@ -12,6 +12,8 @@ export class EnterFeedback extends Data.TaggedClass('EnterFeedback')<{
   feedback: Html
 }> {}
 
+export class AgreeToCodeOfConduct extends Data.TaggedClass('AgreeToCodeOfConduct') {}
+
 export class PublishFeedback extends Data.TaggedClass('PublishFeedback') {}
 
 export class MarkFeedbackAsPublished extends Data.TaggedClass('MarkFeedbackAsPublished')<{
@@ -19,4 +21,9 @@ export class MarkFeedbackAsPublished extends Data.TaggedClass('MarkFeedbackAsPub
   doi: Doi
 }> {}
 
-export type FeedbackCommand = StartFeedback | EnterFeedback | PublishFeedback | MarkFeedbackAsPublished
+export type FeedbackCommand =
+  | StartFeedback
+  | EnterFeedback
+  | AgreeToCodeOfConduct
+  | PublishFeedback
+  | MarkFeedbackAsPublished

@@ -34,6 +34,19 @@ const onEnterFeedback = (command: Commands.EnterFeedback) =>
     Match.exhaustive,
   )
 
+const onAgreeToCodeOfConduct = () =>
+  flow(
+    Match.value<State.FeedbackState>,
+    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('FeedbackInProgress', state =>
+      Either.right(!state.codeOfConductAgreed ? Array.of(new Events.CodeOfConductWasAgreed()) : Array.empty()),
+    ),
+    Match.tag('FeedbackReadyForPublishing', () => Either.right(Array.empty())),
+    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
+    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.exhaustive,
+  )
+
 const onPublishFeedback = () =>
   flow(
     Match.value<State.FeedbackState>,
@@ -67,6 +80,7 @@ export const DecideFeedback = (
     Match.value,
     Match.tag('StartFeedback', onStartFeedback),
     Match.tag('EnterFeedback', onEnterFeedback),
+    Match.tag('AgreeToCodeOfConduct', onAgreeToCodeOfConduct),
     Match.tag('PublishFeedback', onPublishFeedback),
     Match.tag('MarkFeedbackAsPublished', onMarkFeedbackAsPublished),
     Match.exhaustive,
