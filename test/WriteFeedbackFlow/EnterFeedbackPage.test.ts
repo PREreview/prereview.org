@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Feedback from '../../src/Feedback/index.js'
 import * as Routes from '../../src/routes.js'
+import * as DecideNextPage from '../../src/WriteFeedbackFlow/DecideNextPage.js'
 import * as _ from '../../src/WriteFeedbackFlow/EnterFeedbackPage/index.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
@@ -207,7 +208,9 @@ describe('EnterFeedbackSubmission', () => {
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
-              location: Routes.WriteFeedbackCheck.href({ feedbackId }),
+              location: DecideNextPage.NextPageAfterCommand({ command: 'EnterFeedback', feedback }).href({
+                feedbackId,
+              }),
             })
 
             expect(handleFeedbackCommand).toHaveBeenCalledWith({

@@ -5,7 +5,6 @@ import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { GetPrereview } from '../../Prereview.js'
 import * as Response from '../../response.js'
-import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
 import * as DecideNextPage from '../DecideNextPage.js'
@@ -51,7 +50,12 @@ export const StartNow = ({
             command: new Feedback.StartFeedback({ authorId: user.orcid, prereviewId: prereview.id }),
           })
 
-          return Response.RedirectResponse({ location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }) })
+          return Response.RedirectResponse({
+            location: DecideNextPage.NextPageAfterCommand({
+              command: 'StartFeedback',
+              feedback: new Feedback.FeedbackNotStarted(),
+            }).href({ feedbackId }),
+          })
         }),
       onSome: ([feedbackId, feedback]) =>
         Effect.gen(function* () {

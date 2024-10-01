@@ -21,3 +21,27 @@ describe('NextPageFromState', () => {
     expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackPublished)
   })
 })
+
+describe('NextPageAfterCommand', () => {
+  test.prop([fc.feedbackState()])('StartFeedback', feedback => {
+    expect(_.NextPageAfterCommand({ command: 'StartFeedback', feedback })).toStrictEqual(
+      Routes.WriteFeedbackEnterFeedback,
+    )
+  })
+
+  test.prop([fc.feedbackState()])('EnterFeedback', feedback => {
+    expect(_.NextPageAfterCommand({ command: 'EnterFeedback', feedback })).toStrictEqual(Routes.WriteFeedbackCheck)
+  })
+
+  test.prop([fc.feedbackState()])('AgreeToCodeOfConduct', feedback => {
+    expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
+      Routes.WriteFeedbackCheck,
+    )
+  })
+
+  test.prop([fc.feedbackState()])('PublishFeedback', feedback => {
+    expect(_.NextPageAfterCommand({ command: 'PublishFeedback', feedback })).toStrictEqual(
+      Routes.WriteFeedbackPublishing,
+    )
+  })
+})

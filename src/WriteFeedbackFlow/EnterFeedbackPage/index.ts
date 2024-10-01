@@ -6,6 +6,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
+import * as DecideNextPage from '../DecideNextPage.js'
 import * as EnterFeedbackForm from './EnterFeedbackForm.js'
 import { EnterFeedbackPage as MakeResponse } from './EnterFeedbackPage.js'
 
@@ -113,7 +114,11 @@ export const EnterFeedbackSubmission = ({
                   ),
                 )
 
-                return Response.RedirectResponse({ location: Routes.WriteFeedbackCheck.href({ feedbackId }) })
+                return Response.RedirectResponse({
+                  location: DecideNextPage.NextPageAfterCommand({ command: 'EnterFeedback', feedback }).href({
+                    feedbackId,
+                  }),
+                })
               }),
             ),
             Match.tag('InvalidForm', form =>

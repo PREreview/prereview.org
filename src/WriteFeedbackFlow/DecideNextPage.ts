@@ -12,3 +12,16 @@ export const NextPageFromState = pipe(
   Match.tag('FeedbackPublished', () => Routes.WriteFeedbackPublished),
   Match.exhaustive,
 )
+
+export const NextPageAfterCommand = pipe(
+  Match.type<{
+    command: Exclude<Feedback.FeedbackCommand, Feedback.MarkFeedbackAsPublished>['_tag']
+    feedback: Feedback.FeedbackState
+  }>(),
+  Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
+  Match.when({ command: 'StartFeedback' }, () => Routes.WriteFeedbackEnterFeedback),
+  Match.when({ command: 'EnterFeedback' }, () => Routes.WriteFeedbackCheck),
+  Match.when({ command: 'AgreeToCodeOfConduct' }, () => Routes.WriteFeedbackCheck),
+  Match.when({ command: 'PublishFeedback' }, () => Routes.WriteFeedbackPublishing),
+  Match.exhaustive,
+)

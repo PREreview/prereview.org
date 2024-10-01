@@ -8,6 +8,7 @@ import * as Feedback from '../../src/Feedback/index.js'
 import * as Prereview from '../../src/Prereview.js'
 import * as Routes from '../../src/routes.js'
 import { Uuid } from '../../src/types/index.js'
+import * as DecideNextPage from '../../src/WriteFeedbackFlow/DecideNextPage.js'
 import * as _ from '../../src/WriteFeedbackFlow/StartNow/index.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
@@ -31,7 +32,10 @@ describe('StartNow', () => {
               expect(actual).toStrictEqual({
                 _tag: 'RedirectResponse',
                 status: StatusCodes.SEE_OTHER,
-                location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
+                location: DecideNextPage.NextPageAfterCommand({
+                  command: 'StartFeedback',
+                  feedback: new Feedback.FeedbackNotStarted(),
+                }).href({ feedbackId }),
               })
 
               expect(handleFeedbackCommand).toHaveBeenCalledWith({
