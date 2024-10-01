@@ -8,6 +8,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
+import * as DecideNextPage from '../DecideNextPage.js'
 import { CarryOnPage } from './CarryOnPage.js'
 
 export const StartNow = ({
@@ -35,9 +36,9 @@ export const StartNow = ({
 
     const unpublishedFeedback = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
 
-    const existingFeedbackId = Array.head(Record.keys(unpublishedFeedback))
+    const existingFeedback = Array.head(Record.toEntries(unpublishedFeedback))
 
-    return yield* Option.match(existingFeedbackId, {
+    return yield* Option.match(existingFeedback, {
       onNone: () =>
         Effect.gen(function* () {
           const generateUuid = yield* Uuid.GenerateUuid
@@ -52,10 +53,10 @@ export const StartNow = ({
 
           return Response.RedirectResponse({ location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }) })
         }),
-      onSome: feedbackId =>
+      onSome: ([feedbackId, feedback]) =>
         Effect.gen(function* () {
           const locale = yield* Locale
-          const nextPage = Routes.WriteFeedbackEnterFeedback
+          const nextPage = DecideNextPage.NextPageFromState(feedback)
 
           return CarryOnPage({ feedbackId, nextPage, prereview, locale })
         }),
