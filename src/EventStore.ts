@@ -1,4 +1,5 @@
 import { Data, type Effect } from 'effect'
+import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { FeedbackEvent } from './Feedback/index.js'
 import type { Uuid } from './types/index.js'
 
@@ -21,8 +22,10 @@ export interface EventStore {
     FailedToGetEvents
   >
 
-  readonly commitEvent: (
+  readonly commitEvents: (
     resourceId: Uuid.Uuid,
     lastKnownVersion: number,
-  ) => (event: FeedbackEvent) => Effect.Effect<number, ResourceHasChanged | FailedToCommitEvent>
+  ) => (
+    ...event: ReadonlyNonEmptyArray<FeedbackEvent>
+  ) => Effect.Effect<number, ResourceHasChanged | FailedToCommitEvent>
 }

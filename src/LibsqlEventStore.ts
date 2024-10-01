@@ -76,70 +76,78 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
         return { events: Array.map(rows, row => row.payload), latestVersion }
       }).pipe(Effect.mapError(() => new EventStore.FailedToGetEvents()))
 
-    const commitEvent: EventStore.EventStore['commitEvent'] = (resourceId, lastKnownVersion) => event =>
-      Effect.gen(function* () {
-        const newResourceVersion = lastKnownVersion + 1
-        const eventId = yield* generateUuid
-        const eventTimestamp = yield* DateTime.now
+    const commitEvents: EventStore.EventStore['commitEvents'] =
+      (resourceId, lastKnownVersion) =>
+      (...events) =>
+        sql
+          .withTransaction(
+            Effect.reduce(events, lastKnownVersion, (lastKnownVersion, event) =>
+              Effect.gen(function* () {
+                const newResourceVersion = lastKnownVersion + 1
+                const eventId = yield* generateUuid
+                const eventTimestamp = yield* DateTime.now
 
-        const encoded = yield* Schema.encode(EventsTable)({
-          eventId,
-          resourceType: 'Feedback',
-          resourceId,
-          resourceVersion: newResourceVersion,
-          eventType: event._tag,
-          eventTimestamp,
-          payload: event,
-        })
+                const encoded = yield* Schema.encode(EventsTable)({
+                  eventId,
+                  resourceType: 'Feedback',
+                  resourceId,
+                  resourceVersion: newResourceVersion,
+                  eventType: event._tag,
+                  eventTimestamp,
+                  payload: event,
+                })
 
-        const results = yield* pipe(
-          sql`
-            INSERT INTO
-              events (
-                event_id,
-                resource_type,
-                resource_id,
-                resource_version,
-                event_type,
-                event_timestamp,
-                payload
-              )
-            SELECT
-              ${encoded.event_id},
-              ${encoded.resource_type},
-              ${encoded.resource_id},
-              ${encoded.resource_version},
-              ${encoded.event_type},
-              ${encoded.event_timestamp},
-              ${encoded.payload}
-            WHERE
-              NOT EXISTS (
-                SELECT
-                  event_id
-                FROM
-                  events
-                WHERE
-                  resource_type = ${encoded.resource_type}
-                  AND resource_id = ${encoded.resource_id}
-                  AND resource_version >= ${encoded.resource_version}
-              )
-          `.raw,
-          Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
-        )
+                const results = yield* pipe(
+                  sql`
+                    INSERT INTO
+                      events (
+                        event_id,
+                        resource_type,
+                        resource_id,
+                        resource_version,
+                        event_type,
+                        event_timestamp,
+                        payload
+                      )
+                    SELECT
+                      ${encoded.event_id},
+                      ${encoded.resource_type},
+                      ${encoded.resource_id},
+                      ${encoded.resource_version},
+                      ${encoded.event_type},
+                      ${encoded.event_timestamp},
+                      ${encoded.payload}
+                    WHERE
+                      NOT EXISTS (
+                        SELECT
+                          event_id
+                        FROM
+                          events
+                        WHERE
+                          resource_type = ${encoded.resource_type}
+                          AND resource_id = ${encoded.resource_id}
+                          AND resource_version >= ${encoded.resource_version}
+                      )
+                  `.raw,
+                  Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
+                )
 
-        if (results.rowsAffected !== 1) {
-          yield* new EventStore.ResourceHasChanged()
-        }
+                if (results.rowsAffected !== 1) {
+                  yield* new EventStore.ResourceHasChanged()
+                }
 
-        return newResourceVersion
-      }).pipe(
-        Effect.catchTags({
-          SqlError: () => new EventStore.FailedToCommitEvent(),
-          ParseError: () => new EventStore.FailedToCommitEvent(),
-        }),
-      )
+                return newResourceVersion
+              }),
+            ),
+          )
+          .pipe(
+            Effect.catchTags({
+              SqlError: () => new EventStore.FailedToCommitEvent(),
+              ParseError: () => new EventStore.FailedToCommitEvent(),
+            }),
+          )
 
-    return { getAllEvents, getEvents, commitEvent }
+    return { getAllEvents, getEvents, commitEvents }
   })
 
 const EventsTable = Schema.Struct({

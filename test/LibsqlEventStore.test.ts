@@ -1,7 +1,7 @@
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Config, Effect, Equal, TestContext } from 'effect'
+import { Array, Config, Effect, Equal, TestContext } from 'effect'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/LibsqlEventStore.js'
 import { Uuid } from '../src/types/index.js'
@@ -25,17 +25,17 @@ it.prop([fc.uuid()])('starts empty', resourceId =>
   ),
 )
 
-it.prop([fc.uuid(), fc.feedbackEvent()])('creates a new resource', (resourceId, event) =>
+it.prop([fc.uuid(), fc.nonEmptyArray(fc.feedbackEvent())])('creates a new resource', (resourceId, events) =>
   Effect.gen(function* () {
     const eventStore = yield* _.make
 
-    yield* eventStore.commitEvent(resourceId, 0)(event)
+    yield* eventStore.commitEvents(resourceId, 0)(...events)
 
     const actual = yield* eventStore.getEvents(resourceId)
     const all = yield* eventStore.getAllEvents
 
-    expect(actual).toStrictEqual({ events: [event], latestVersion: 1 })
-    expect(all).toStrictEqual([{ event, resourceId, version: 1 }])
+    expect(actual).toStrictEqual({ events, latestVersion: events.length })
+    expect(all).toStrictEqual(Array.map(events, (event, i) => ({ event, resourceId, version: i + 1 })))
   }).pipe(
     Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
     Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
@@ -51,8 +51,8 @@ describe('when the last known version is up to date', () => {
       Effect.gen(function* () {
         const eventStore = yield* _.make
 
-        yield* eventStore.commitEvent(resourceId, 0)(event1)
-        yield* eventStore.commitEvent(resourceId, 1)(event2)
+        yield* eventStore.commitEvents(resourceId, 0)(event1)
+        yield* eventStore.commitEvents(resourceId, 1)(event2)
 
         const actual = yield* eventStore.getEvents(resourceId)
         const all = yield* eventStore.getAllEvents
@@ -79,15 +79,15 @@ describe('when the last known version is out of date', () => {
       .chain(latestVersion => fc.tuple(fc.constant(latestVersion), fc.integer({ max: latestVersion - 1 }))),
     fc.feedbackEvent(),
     fc.feedbackEvent(),
-    fc.feedbackEvent(),
-  ])('does not replace an event', (resourceId, [event2Version, lastKnownVersion], event1, event2, event3) =>
+    fc.nonEmptyArray(fc.feedbackEvent()),
+  ])('does not replace an event', (resourceId, [event2Version, lastKnownVersion], event1, event2, events) =>
     Effect.gen(function* () {
       const eventStore = yield* _.make
 
-      yield* eventStore.commitEvent(resourceId, 0)(event1)
-      yield* eventStore.commitEvent(resourceId, event2Version - 1)(event2)
+      yield* eventStore.commitEvents(resourceId, 0)(event1)
+      yield* eventStore.commitEvents(resourceId, event2Version - 1)(event2)
 
-      const error = yield* Effect.flip(eventStore.commitEvent(resourceId, lastKnownVersion)(event3))
+      const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
 
       expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
@@ -117,9 +117,9 @@ it.prop([
   Effect.gen(function* () {
     const eventStore = yield* _.make
 
-    yield* eventStore.commitEvent(resourceId1, 0)(event1)
-    yield* eventStore.commitEvent(resourceId2, 0)(event2)
-    yield* eventStore.commitEvent(resourceId2, 1)(event3)
+    yield* eventStore.commitEvents(resourceId1, 0)(event1)
+    yield* eventStore.commitEvents(resourceId2, 0)(event2)
+    yield* eventStore.commitEvents(resourceId2, 1)(event3)
 
     const actual1 = yield* eventStore.getEvents(resourceId1)
 

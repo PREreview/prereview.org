@@ -43,7 +43,7 @@ export const makeHandleFeedbackCommand: Effect.Effect<
 
       yield* pipe(
         DecideFeedback(state)(command),
-        Effect.tap(eventStore.commitEvent(feedbackId, latestVersion)),
+        Effect.tap(eventStore.commitEvents(feedbackId, latestVersion)),
         Effect.andThen(event => PubSub.publish(feedbackEvents, { feedbackId, event })),
       )
     }).pipe(
