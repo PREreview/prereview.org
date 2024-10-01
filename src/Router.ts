@@ -76,6 +76,30 @@ export const Router = pipe(
     ),
   ),
   HttpRouter.get(
+    Routes.WriteFeedbackCodeOfConduct.path,
+    pipe(
+      HttpRouter.schemaParams(Routes.WriteFeedbackCodeOfConduct.schema),
+      Effect.andThen(WriteFeedbackFlow.CodeOfConductPage),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
+  HttpRouter.post(
+    Routes.WriteFeedbackCodeOfConduct.path,
+    pipe(
+      HttpRouter.schemaParams(Routes.WriteFeedbackCodeOfConduct.schema),
+      Effect.bind('body', () =>
+        Effect.gen(function* () {
+          const request = yield* HttpServerRequest.HttpServerRequest
+          const form = yield* request.urlParamsBody
+
+          return Record.fromEntries(form)
+        }),
+      ),
+      Effect.andThen(WriteFeedbackFlow.CodeOfConductSubmission),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
+  HttpRouter.get(
     Routes.WriteFeedbackCheck.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteFeedbackCheck.schema),

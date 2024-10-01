@@ -1,4 +1,5 @@
 export * from './CheckPage/index.js'
+export * from './CodeOfConductPage/index.js'
 export * from './EnterFeedbackPage/index.js'
 export * from './PublishedPage/index.js'
 export * from './PublishingPage/index.js'
