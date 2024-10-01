@@ -121,7 +121,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                 WHERE
                   resource_type = ${encoded.resource_type}
                   AND resource_id = ${encoded.resource_id}
-                  AND resource_version = ${encoded.resource_version}
+                  AND resource_version >= ${encoded.resource_version}
               )
           `.raw,
           Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
