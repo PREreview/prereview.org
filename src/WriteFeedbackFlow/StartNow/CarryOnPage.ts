@@ -9,10 +9,12 @@ import type { Uuid } from '../../types/index.js'
 
 export const CarryOnPage = ({
   feedbackId,
+  nextPage,
   prereview,
   locale,
 }: {
   feedbackId: Uuid.Uuid
+  nextPage: Routes.Route<{ feedbackId: Uuid.Uuid }>
   prereview: Prereview
   locale: SupportedLocale
 }) =>
@@ -42,7 +44,7 @@ export const CarryOnPage = ({
         )}
       </p>
 
-      <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" role="button" draggable="false"
+      <a href="${nextPage.href({ feedbackId })}" role="button" draggable="false"
         >${translate(locale, 'write-feedback-flow', 'continueButton')()}</a
       >
     `,

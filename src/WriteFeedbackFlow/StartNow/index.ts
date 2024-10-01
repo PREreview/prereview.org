@@ -55,8 +55,9 @@ export const StartNow = ({
       onSome: feedbackId =>
         Effect.gen(function* () {
           const locale = yield* Locale
+          const nextPage = Routes.WriteFeedbackEnterFeedback
 
-          return CarryOnPage({ feedbackId, prereview, locale })
+          return CarryOnPage({ feedbackId, nextPage, prereview, locale })
         }),
     })
   }).pipe(
