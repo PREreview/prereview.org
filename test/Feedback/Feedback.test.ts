@@ -100,14 +100,14 @@ describe('when being published', () => {
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
       .thenError(new _.FeedbackIsBeingPublished()))
 
-  test('cannot re-request publication', () =>
+  test('re-requesting publication does nothing', () =>
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.FeedbackPublicationWasRequested(),
     )
       .when(new _.PublishFeedback())
-      .thenError(new _.FeedbackIsBeingPublished()))
+      .then())
 
   test('can be marked as published', () =>
     given(

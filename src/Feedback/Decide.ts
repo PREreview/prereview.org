@@ -40,7 +40,7 @@ const onPublishFeedback = () =>
     Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
     Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
     Match.tag('FeedbackReadyForPublishing', () => Either.right(Array.of(new Events.FeedbackPublicationWasRequested()))),
-    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
+    Match.tag('FeedbackBeingPublished', () => Either.right(Array.empty())),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
