@@ -43,7 +43,12 @@ export const makeHandleFeedbackCommand: Effect.Effect<
 
       yield* pipe(
         DecideFeedback(state)(command),
-        Effect.tap(events => eventStore.commitEvents(feedbackId, latestVersion)(...events)),
+        Effect.tap(
+          Array.match({
+            onEmpty: () => Effect.void,
+            onNonEmpty: events => eventStore.commitEvents(feedbackId, latestVersion)(...events),
+          }),
+        ),
         Effect.andThen(Effect.forEach(event => PubSub.publish(feedbackEvents, { feedbackId, event }))),
       )
     }).pipe(

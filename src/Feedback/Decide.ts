@@ -62,9 +62,7 @@ const onMarkFeedbackAsPublished = (command: Commands.MarkFeedbackAsPublished) =>
 
 export const DecideFeedback = (
   state: State.FeedbackState,
-): ((
-  command: Commands.FeedbackCommand,
-) => Either.Either<Array.NonEmptyReadonlyArray<Events.FeedbackEvent>, Errors.FeedbackError>) =>
+): ((command: Commands.FeedbackCommand) => Either.Either<ReadonlyArray<Events.FeedbackEvent>, Errors.FeedbackError>) =>
   flow(
     Match.value,
     Match.tag('StartFeedback', onStartFeedback),
@@ -72,5 +70,5 @@ export const DecideFeedback = (
     Match.tag('PublishFeedback', onPublishFeedback),
     Match.tag('MarkFeedbackAsPublished', onMarkFeedbackAsPublished),
     Match.exhaustive,
-    Function.apply(state)<Either.Either<Array.NonEmptyReadonlyArray<Events.FeedbackEvent>, Errors.FeedbackError>>,
+    Function.apply(state)<Either.Either<ReadonlyArray<Events.FeedbackEvent>, Errors.FeedbackError>>,
   )

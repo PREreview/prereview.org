@@ -3,7 +3,7 @@ import { Array, Either } from 'effect'
 
 export type CommandHandlerSpecfication<Command, Event, Error> = (...givenEvents: ReadonlyArray<Event>) => {
   when: (command: Command) => {
-    then: (...expectedEvents: Array.NonEmptyReadonlyArray<Event>) => void
+    then: (...expectedEvents: ReadonlyArray<Event>) => void
     thenError: (expectedError: Error) => void
   }
 }
@@ -15,7 +15,7 @@ export const CommandHandlerSpecification = {
       evolve,
       initialState,
     }: {
-      decide: (state: State) => (command: Command) => Either.Either<Array.NonEmptyReadonlyArray<Event>, Error>
+      decide: (state: State) => (command: Command) => Either.Either<ReadonlyArray<Event>, Error>
       evolve: (state: State) => (event: Event) => State
       initialState: State
     }): CommandHandlerSpecfication<Command, Event, Error> =>
