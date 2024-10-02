@@ -2,7 +2,7 @@ import { Headers, HttpMiddleware, HttpServer, HttpServerRequest, HttpServerRespo
 import { Schema } from '@effect/schema'
 import cspBuilder from 'content-security-policy-builder'
 import cookieSignature from 'cookie-signature'
-import { Config, Effect, flow, Layer, Option, pipe } from 'effect'
+import { Cause, Config, Effect, flow, Layer, Option, pipe } from 'effect'
 import { Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
@@ -105,6 +105,14 @@ const getLoggedInUser = HttpMiddleware.make(app =>
 
 const logStopped = Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logInfo('Server stopped')))
 
+const logDefects = Effect.tapDefect(cause =>
+  Effect.annotateLogs(
+    Effect.logFatal('Failed to create response'),
+    'cause',
+    Cause.pretty(cause, { renderErrorCause: true }),
+  ),
+)
+
 export const WebApp = pipe(
   Router,
   Effect.catchTag('RouteNotFound', () => ExpressHttpApp),
@@ -112,6 +120,7 @@ export const WebApp = pipe(
   addXRobotsTagHeader,
   getLoggedInUser,
   Effect.provideService(Locale, DefaultLocale),
+  logDefects,
   HttpServer.serve(flow(HttpMiddleware.logger, annotateLogsWithRequestId)),
   HttpServer.withLogAddress,
   Layer.provide(logStopped),
