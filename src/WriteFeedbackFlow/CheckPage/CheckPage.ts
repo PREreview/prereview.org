@@ -15,7 +15,7 @@ export const CheckPage = ({
 }) =>
   StreamlinePageResponse({
     title: plainText(translate(locale, 'write-feedback-flow', 'checkTitle')()),
-    nav: html` <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" class="back"
+    nav: html` <a href="${Routes.WriteFeedbackCodeOfConduct.href({ feedbackId })}" class="back"
       >${translate(locale, 'write-feedback-flow', 'back')()}</a
     >`,
     main: html`

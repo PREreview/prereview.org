@@ -16,10 +16,22 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
       {
         event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        resourceId: '51a9ea9e-a960-4b51-83a5-9901a47690c2' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.FeedbackWasEntered({ feedback: html`Some text` }),
+        resourceId: '51a9ea9e-a960-4b51-83a5-9901a47690c2' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
         event: new Feedback.FeedbackWasEntered({ feedback: html`Some text` }),
+        resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.CodeOfConductWasAgreed(),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
@@ -28,6 +40,10 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
       {
         event: new Feedback.FeedbackWasEntered({ feedback: html`Some other text` }),
+        resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.CodeOfConductWasAgreed(),
         resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
       },
       {
@@ -44,6 +60,11 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
     expect(actual).toStrictEqual({
       '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress({
         authorId: Orcid('0000-0002-1825-0097'),
+        prereviewId: 123,
+      }),
+      '51a9ea9e-a960-4b51-83a5-9901a47690c2': new Feedback.FeedbackInProgress({
+        authorId: Orcid('0000-0002-1825-0097'),
+        feedback: html`Some text`,
         prereviewId: 123,
       }),
       '2b9e777b-f14d-4294-8e27-2b442e496050': new Feedback.FeedbackReadyForPublishing({
@@ -121,6 +142,10 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
       {
         event: new Feedback.FeedbackWasEntered({ feedback: html`Some text` }),
+        resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.CodeOfConductWasAgreed(),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {

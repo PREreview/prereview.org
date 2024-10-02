@@ -30,7 +30,7 @@ export const fromBody = (body: unknown) =>
 
 export const fromFeedback = pipe(
   Match.type<Feedback.FeedbackInProgress | Feedback.FeedbackReadyForPublishing>(),
-  Match.tag('FeedbackInProgress', () => new EmptyForm()),
+  Match.tag('FeedbackInProgress', ({ feedback }) => (feedback ? new CompletedForm({ feedback }) : new EmptyForm())),
   Match.tag('FeedbackReadyForPublishing', ({ feedback }) => new CompletedForm({ feedback })),
   Match.exhaustive,
 )

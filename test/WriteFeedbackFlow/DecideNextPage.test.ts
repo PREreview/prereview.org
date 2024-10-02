@@ -5,8 +5,17 @@ import * as Routes from '../../src/routes.js'
 import * as fc from '../fc.js'
 
 describe('NextPageFromState', () => {
-  test.prop([fc.feedbackInProgress()])('FeedbackInProgress', feedback => {
-    expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackEnterFeedback)
+  describe('FeedbackInProgress', () => {
+    test.prop([fc.feedbackInProgress({ feedback: fc.constant(undefined) })])('no feedback', feedback => {
+      expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackEnterFeedback)
+    })
+
+    test.prop([fc.feedbackInProgress({ feedback: fc.html(), codeOfConductAgreed: fc.constant(undefined) })])(
+      'no codeOfConductAgreed',
+      feedback => {
+        expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackCodeOfConduct)
+      },
+    )
   })
 
   test.prop([fc.feedbackReadyForPublishing()])('FeedbackReadyForPublishing', feedback => {
@@ -29,13 +38,52 @@ describe('NextPageAfterCommand', () => {
     )
   })
 
-  test.prop([fc.feedbackState()])('EnterFeedback', feedback => {
-    expect(_.NextPageAfterCommand({ command: 'EnterFeedback', feedback })).toStrictEqual(Routes.WriteFeedbackCheck)
+  describe('EnterFeedback', () => {
+    describe('FeedbackInProgress', () => {
+      test.prop([fc.feedbackInProgress({ codeOfConductAgreed: fc.constant(undefined) })])(
+        'no codeOfConductAgreed',
+        feedback => {
+          expect(_.NextPageAfterCommand({ command: 'EnterFeedback', feedback })).toStrictEqual(
+            Routes.WriteFeedbackCodeOfConduct,
+          )
+        },
+      )
+
+      test.prop([fc.feedbackInProgress({ codeOfConductAgreed: fc.constant(true) })])('completed', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'EnterFeedback', feedback })).toStrictEqual(Routes.WriteFeedbackCheck)
+      })
+    })
+
+    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'FeedbackInProgress')])(
+      'not FeedbackInProgress',
+      feedback => {
+        expect(_.NextPageAfterCommand({ command: 'EnterFeedback', feedback })).toStrictEqual(Routes.WriteFeedbackCheck)
+      },
+    )
   })
 
-  test.prop([fc.feedbackState()])('AgreeToCodeOfConduct', feedback => {
-    expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
-      Routes.WriteFeedbackCheck,
+  describe('AgreeToCodeOfConduct', () => {
+    describe('FeedbackInProgress', () => {
+      test.prop([fc.feedbackInProgress({ feedback: fc.constant(undefined) })])('no feedback', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
+          Routes.WriteFeedbackEnterFeedback,
+        )
+      })
+
+      test.prop([fc.feedbackInProgress({ feedback: fc.html() })])('completed', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
+          Routes.WriteFeedbackCheck,
+        )
+      })
+    })
+
+    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'FeedbackInProgress')])(
+      'not FeedbackInProgress',
+      feedback => {
+        expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
+          Routes.WriteFeedbackCheck,
+        )
+      },
     )
   })
 

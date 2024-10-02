@@ -20,10 +20,7 @@ const onFeedbackWasEntered = (event: Events.FeedbackWasEntered) =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', identity),
-    Match.tag(
-      'FeedbackInProgress',
-      state => new State.FeedbackReadyForPublishing({ ...state, feedback: event.feedback }),
-    ),
+    Match.tag('FeedbackInProgress', state => new State.FeedbackInProgress({ ...state, feedback: event.feedback })),
     Match.tag(
       'FeedbackReadyForPublishing',
       state => new State.FeedbackReadyForPublishing({ ...state, feedback: event.feedback }),
@@ -82,4 +79,19 @@ export const EvolveFeedback = (state: State.FeedbackState): ((event: Events.Feed
     Match.tag('FeedbackWasPublished', onFeedbackWasPublished),
     Match.exhaustive,
     Function.apply(state)<State.FeedbackState>,
+    checkIsReadyForPublication,
   )
+
+const checkIsReadyForPublication = (state: State.FeedbackState) => {
+  if (state._tag !== 'FeedbackInProgress') {
+    return state
+  }
+
+  const { codeOfConductAgreed, feedback, ...rest } = state
+
+  if (typeof feedback !== 'object' || codeOfConductAgreed !== true) {
+    return state
+  }
+
+  return new State.FeedbackReadyForPublishing({ ...rest, feedback })
+}

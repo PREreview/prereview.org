@@ -71,6 +71,7 @@ describe('when ready for publication', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
     )
       .when(new _.StartFeedback({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.FeedbackWasAlreadyStarted()))
@@ -79,6 +80,7 @@ describe('when ready for publication', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
     )
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
       .then(new _.FeedbackWasEntered({ feedback: html`<p>Some different feedback.</p>` })))
@@ -87,6 +89,7 @@ describe('when ready for publication', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
     )
       .when(new _.AgreeToCodeOfConduct())
       .then())
@@ -95,6 +98,7 @@ describe('when ready for publication', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
     )
       .when(new _.PublishFeedback())
       .then(new _.FeedbackPublicationWasRequested()))
@@ -103,6 +107,7 @@ describe('when ready for publication', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
     )
       .when(new _.MarkFeedbackAsPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
       .then(new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
@@ -113,6 +118,7 @@ describe('when being published', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
       .when(new _.StartFeedback({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -122,6 +128,7 @@ describe('when being published', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
@@ -131,6 +138,7 @@ describe('when being published', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
       .when(new _.AgreeToCodeOfConduct())
@@ -140,6 +148,7 @@ describe('when being published', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
       .when(new _.PublishFeedback())
@@ -149,6 +158,7 @@ describe('when being published', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
       .when(new _.MarkFeedbackAsPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
@@ -160,6 +170,7 @@ describe('when published', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
       new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
     )
       .when(new _.StartFeedback({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -169,15 +180,17 @@ describe('when published', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
       new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
     )
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
       .thenError(new _.FeedbackWasAlreadyPublished()))
 
-  test('cannot agree to the code of conduct', () =>
+  test('cannot re-agree to the code of conduct', () =>
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
       new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
     )
       .when(new _.AgreeToCodeOfConduct())
@@ -187,6 +200,7 @@ describe('when published', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
       new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
     )
       .when(new _.PublishFeedback())
@@ -196,6 +210,7 @@ describe('when published', () => {
     given(
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.CodeOfConductWasAgreed(),
       new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
     )
       .when(new _.MarkFeedbackAsPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))

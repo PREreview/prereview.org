@@ -1307,11 +1307,19 @@ export const feedbackError = (): fc.Arbitrary<Feedback.FeedbackError> =>
 export const feedbackNotStarted = (): fc.Arbitrary<Feedback.FeedbackNotStarted> =>
   constant(new Feedback.FeedbackNotStarted())
 
-export const feedbackInProgress = (): fc.Arbitrary<Feedback.FeedbackInProgress> =>
+export const feedbackInProgress = ({
+  codeOfConductAgreed,
+  feedback,
+}: {
+  codeOfConductAgreed?: fc.Arbitrary<Feedback.FeedbackInProgress['codeOfConductAgreed']>
+  feedback?: fc.Arbitrary<Feedback.FeedbackInProgress['feedback']>
+} = {}): fc.Arbitrary<Feedback.FeedbackInProgress> =>
   fc
     .record({
       authorId: orcid(),
       prereviewId: fc.integer(),
+      feedback: feedback ?? fc.option(html(), { nil: undefined }),
+      codeOfConductAgreed: codeOfConductAgreed ?? constantFrom(true, undefined),
     })
     .map(data => new Feedback.FeedbackInProgress(data))
 
