@@ -43,7 +43,15 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
       )
 
       return Array.map(rows, row => ({ resourceId: row.resourceId, event: row.payload, version: row.resourceVersion }))
-    }).pipe(Effect.mapError(() => new EventStore.FailedToGetEvents()))
+    }).pipe(
+      Effect.tapError(error =>
+        Effect.annotateLogs(Effect.logError('Unable to get all events'), {
+          error,
+          resourceType: 'Feedback',
+        }),
+      ),
+      Effect.mapError(() => new EventStore.FailedToGetEvents()),
+    )
 
     const getEvents: EventStore.EventStore['getEvents'] = resourceId =>
       Effect.gen(function* () {
@@ -74,7 +82,16 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
         })
 
         return { events: Array.map(rows, row => row.payload), latestVersion }
-      }).pipe(Effect.mapError(() => new EventStore.FailedToGetEvents()))
+      }).pipe(
+        Effect.tapError(error =>
+          Effect.annotateLogs(Effect.logError('Unable to get events'), {
+            error,
+            resourceId,
+            resourceType: 'Feedback',
+          }),
+        ),
+        Effect.mapError(() => new EventStore.FailedToGetEvents()),
+      )
 
     const commitEvents: EventStore.EventStore['commitEvents'] =
       (resourceId, lastKnownVersion) =>
@@ -141,6 +158,13 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
             ),
           )
           .pipe(
+            Effect.tapError(error =>
+              Effect.annotateLogs(Effect.logError('Unable to commit events'), {
+                error,
+                resourceId,
+                resourceType: 'Feedback',
+              }),
+            ),
             Effect.catchTags({
               SqlError: () => new EventStore.FailedToCommitEvent(),
               ParseError: () => new EventStore.FailedToCommitEvent(),
