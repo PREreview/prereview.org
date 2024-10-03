@@ -119,9 +119,9 @@ const getPrereviewsPageForSciety = flow(
       resource_type: 'publication::publication-peerreview',
     }),
   getCommunityRecords('prereview-reviews'),
-  RTE.map(records => records.hits.hits),
-  RTE.chainReaderTaskKW(flow(RT.traverseArray(recordToScietyPrereview), RT.map(RA.rights))),
-  RTE.mapLeft(() => 'unavailable' as const),
+  RTE.map(records => RA.chunksOf(20)(records.hits.hits)),
+  RTE.chainReaderTaskKW(RT.traverseSeqArray(flow(RT.traverseArray(recordToScietyPrereview), RT.map(RA.rights)))),
+  RTE.bimap(() => 'unavailable' as const, RA.flatten),
 )
 
 export const getPrereviewsForSciety = pipe(
