@@ -129,7 +129,13 @@ import type { EnvironmentLabelEnv, FathomEnv, TemplatePageEnv } from './page.js'
 import { partners } from './partners.js'
 import { people } from './people.js'
 import { preprintReviews } from './preprint-reviews-page/index.js'
-import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
+import type {
+  DoesPreprintExistEnv,
+  GetPreprintEnv,
+  GetPreprintIdEnv,
+  GetPreprintTitleEnv,
+  ResolvePreprintIdEnv,
+} from './preprint.js'
 import {
   type PrereviewCoarNotifyEnv,
   getRecentReviewRequestsFromPrereviewCoarNotify,
@@ -343,6 +349,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   CanWriteFeedbackEnv &
   DoesPreprintExistEnv &
   ResolvePreprintIdEnv &
+  GetPreprintIdEnv &
   EnvironmentLabelEnv &
   GenerateUuidEnv &
   GetPreprintEnv &

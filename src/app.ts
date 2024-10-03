@@ -18,7 +18,7 @@ import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
 import { type RouterEnv, routes } from './app-router.js'
 import type { Email } from './email.js'
-import { doesPreprintExist, getPreprint, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
+import { doesPreprintExist, getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
 import { pageNotFound } from './http-error.js'
 import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
@@ -33,6 +33,7 @@ export type ConfigEnv = Omit<
   RouterEnv & LegacyEnv,
   | 'doesPreprintExist'
   | 'resolvePreprintId'
+  | 'getPreprintId'
   | 'generateUuid'
   | 'getUser'
   | 'getUserOnboarding'
@@ -232,6 +233,7 @@ export const app = (config: ConfigEnv) =>
             templatePage: withEnv(page, env),
             getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
             getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
+            getPreprintId: withEnv(getPreprintId, env),
             resolvePreprintId: withEnv(resolvePreprintId, env),
             sendEmail: withEnv(sendEmail, env),
           })),

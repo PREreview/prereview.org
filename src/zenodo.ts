@@ -52,11 +52,11 @@ import { plainText, sanitizeHtml } from './html.js'
 import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.js'
 import {
   type GetPreprintEnv,
+  type GetPreprintIdEnv,
   type GetPreprintTitleEnv,
-  type ResolvePreprintIdEnv,
   getPreprint,
+  getPreprintId,
   getPreprintTitle,
-  resolvePreprintId,
 } from './preprint.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import type { Prereview, Feedback as PrereviewFeedback } from './review-page/index.js'
@@ -825,13 +825,13 @@ function recordToPreprintPrereview(
 function recordToScietyPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
-  L.LoggerEnv & ResolvePreprintIdEnv,
+  L.LoggerEnv & GetPreprintIdEnv,
   'no reviewed preprint' | 'not-a-preprint' | 'not-found' | 'unavailable',
   ScietyPrereview & ReviewsDataPrereview
 > {
   return pipe(
     RTE.of(record),
-    RTE.bindW('preprintId', flow(getReviewedPreprintId, RTE.chainW(resolvePreprintId))),
+    RTE.bindW('preprintId', flow(getReviewedPreprintId, RTE.chainW(getPreprintId))),
     RTE.map(review => ({
       preprint: review.preprintId,
       createdAt: toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
