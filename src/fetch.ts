@@ -23,7 +23,11 @@ export function revalidateIfStale<E extends F.FetchEnv & SleepEnv>(): (env: E) =
     fetch: async (url, init) => {
       const response = await env.fetch(url, init)
 
-      if (response.headers.get('x-local-cache-status') === 'stale' && !openRequests.has(url)) {
+      if (
+        response.headers.get('x-local-cache-status') === 'stale' &&
+        openRequests.size <= 200 &&
+        !openRequests.has(url)
+      ) {
         openRequests.add(url)
 
         void env
