@@ -1,11 +1,12 @@
+import type { FetchEnv } from 'fetch-fp-ts'
 import { flow, identity } from 'fp-ts/lib/function.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { match, P as p } from 'ts-pattern'
+import { match, P, P as p } from 'ts-pattern'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref.js'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite.js'
-import { useStaleCache } from './fetch.js'
+import { type SleepEnv, useStaleCache } from './fetch.js'
 import { getPreprintFromPhilsci } from './philsci.js'
-import type { IndeterminatePreprintId } from './types/preprint-id.js'
+import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id.js'
 
 export const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
@@ -33,11 +34,19 @@ export const getPreprintTitle = flow(
   })),
 )
 
-export const resolvePreprintId = flow(
-  getPreprintFromSource,
-  RTE.local(useStaleCache()),
-  RTE.map(preprint => preprint.id),
-)
+export const resolvePreprintId = (
+  id: IndeterminatePreprintId,
+): RTE.ReaderTaskEither<FetchEnv & SleepEnv, 'not-found' | 'not-a-preprint' | 'unavailable', PreprintId> =>
+  match(id)
+    .with(
+      { type: P.union('biorxiv-medrxiv', 'zenodo-africarxiv') },
+      flow(
+        getPreprintFromSource,
+        RTE.local(useStaleCache()),
+        RTE.map(preprint => preprint.id),
+      ),
+    )
+    .otherwise(id => RTE.right(id))
 
 export const doesPreprintExist = flow(
   resolvePreprintId,
