@@ -1654,7 +1654,10 @@ html-editor {
   }
 
   & > .loading {
-    display: flex;
+    &:not([hidden]) {
+      display: flex;
+    }
+
     position: absolute;
     z-index: 1;
     flex-direction: column;

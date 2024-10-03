@@ -137,7 +137,7 @@ export class HtmlEditor extends HTMLElement {
     })
 
     editor.on('create', () => {
-      status.remove()
+      status.hidden = true
       container.setAttribute('aria-busy', 'false')
       form.removeEventListener('submit', preventDefault)
       buttons.forEach(enableButton)

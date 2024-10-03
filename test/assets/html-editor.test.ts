@@ -15,7 +15,7 @@ describe('while it loads', () => {
     expect(htmlEditor.querySelector('textarea')).to.be.have.attribute('readonly')
     expect(htmlEditor.querySelector('.loading')).to.be.have.text('Loading')
 
-    await waitUntil(() => !htmlEditor.querySelector('.loading'), undefined, { timeout: 2000 })
+    await waitUntil(() => htmlEditor.querySelector<HTMLDivElement>('.loading')?.hidden, undefined, { timeout: 2000 })
 
     expect(htmlEditor.firstElementChild).to.have.attribute('aria-busy', 'false')
     expect(htmlEditor.querySelector('textarea')).to.be.have.attribute('readonly')
@@ -35,7 +35,7 @@ describe('with a supported locale', () => {
       </div>`,
     )
 
-    await waitUntil(() => !htmlEditor.querySelector('.loading'), undefined, { timeout: 2000 })
+    await waitUntil(() => htmlEditor.querySelector<HTMLDivElement>('.loading')?.hidden, undefined, { timeout: 2000 })
 
     expect(htmlEditor.querySelector('editor-toolbar button')).to.have.text('Bold')
   })
@@ -53,7 +53,7 @@ describe('with an unsupported locale', () => {
       </div>`,
     )
 
-    await waitUntil(() => !htmlEditor.querySelector('.loading'), undefined, { timeout: 2000 })
+    await waitUntil(() => htmlEditor.querySelector<HTMLDivElement>('.loading')?.hidden, undefined, { timeout: 2000 })
 
     expect(htmlEditor.querySelector('editor-toolbar button')).to.have.text('Bold')
   })
