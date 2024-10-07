@@ -11,6 +11,8 @@ describe('while it loads', () => {
       </${element}>`,
     )
 
+    await waitUntil(() => htmlEditor.querySelector<HTMLDivElement>('.loading'), undefined, { timeout: 2000 })
+
     expect(htmlEditor.firstElementChild).to.have.attribute('aria-busy', 'true')
     expect(htmlEditor.querySelector('textarea')).to.be.have.attribute('readonly')
     expect(htmlEditor.querySelector('.loading')).to.be.have.text('Loading')
