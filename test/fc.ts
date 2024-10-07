@@ -881,6 +881,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
 export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
   fc.oneof(
     africarxivFigsharePreprintId(),
+    africarxivUbuntunetPreprintId(),
     africarxivZenodoPreprintId(),
     arcadiaSciencePreprintId(),
     arxivPreprintId(),

@@ -17,6 +17,7 @@ import { sanitizeHtml } from './html.js'
 import type { Preprint } from './preprint.js'
 import type {
   AfricarxivFigsharePreprintId,
+  AfricarxivUbuntunetPreprintId,
   AfricarxivZenodoPreprintId,
   ArcadiaSciencePreprintId,
   ArxivPreprintId,
@@ -27,6 +28,7 @@ import type {
 
 export type DatacitePreprintId =
   | AfricarxivFigsharePreprintId
+  | AfricarxivUbuntunetPreprintId
   | AfricarxivZenodoPreprintId
   | ArcadiaSciencePreprintId
   | ArxivPreprintId
@@ -41,6 +43,7 @@ export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']>
   '23668',
   '48550',
   '57844',
+  '60763',
 )
 
 export const getPreprintFromDatacite = flow(
@@ -64,8 +67,8 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
       () =>
         work.types.resourceType?.toLowerCase() === 'preprint' ||
         work.types.resourceTypeGeneral?.toLowerCase() === 'preprint' ||
-        (work.types.resourceTypeGeneral?.toLowerCase() === 'text' && hasRegistrant('48550')(work.doi)) ||
-        (work.types.resourceTypeGeneral === undefined && hasRegistrant('23668')(work.doi)) ||
+        (work.types.resourceTypeGeneral?.toLowerCase() === 'text' && hasRegistrant('48550', '60763')(work.doi)) ||
+        (work.types.resourceTypeGeneral === undefined && hasRegistrant('23668', '60763')(work.doi)) ||
         hasRegistrant('57844')(work.doi),
       () => 'not a preprint',
     ),
@@ -189,6 +192,18 @@ const findPublishedDate = (dates: Work['dates']) =>
   )
 
 const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
+  pipe(
+    D.fromStruct({
+      doi: D.fromRefinement(hasRegistrant('60763'), 'DOI'),
+    }),
+    D.map(
+      work =>
+        ({
+          type: 'africarxiv',
+          value: work.doi,
+        }) satisfies AfricarxivUbuntunetPreprintId,
+    ),
+  ),
   pipe(
     D.fromStruct({
       doi: D.fromRefinement(hasRegistrant('6084'), 'DOI'),
