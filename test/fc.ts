@@ -84,6 +84,7 @@ import {
   type AfricarxivFigsharePreprintId,
   type AfricarxivOsfPreprintId,
   type AfricarxivPreprintId,
+  type AfricarxivUbuntunetPreprintId,
   type AfricarxivZenodoPreprintId,
   type ArcadiaSciencePreprintId,
   type ArxivPreprintId,
@@ -472,7 +473,12 @@ export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value']>
   datacitePreprintId().map(id => id.value)
 
 export const africarxivPreprintId = (): fc.Arbitrary<AfricarxivPreprintId> =>
-  fc.oneof(africarxivFigsharePreprintId(), africarxivOsfPreprintId(), africarxivZenodoPreprintId())
+  fc.oneof(
+    africarxivFigsharePreprintId(),
+    africarxivOsfPreprintId(),
+    africarxivUbuntunetPreprintId(),
+    africarxivZenodoPreprintId(),
+  )
 
 export const africarxivPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivPreprintId]> =>
   fc.oneof(africarxivFigsharePreprintUrl(), africarxivOsfPreprintUrl())
@@ -508,6 +514,12 @@ export const africarxivOsfPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivOsfPrep
       new URL(`https://osf.io/preprints/africarxiv/${id}`),
       { type: 'africarxiv', value: `10.31730/osf.io/${id}` as Doi<'31730'> },
     ])
+
+export const africarxivUbuntunetPreprintId = (): fc.Arbitrary<AfricarxivUbuntunetPreprintId> =>
+  fc.record({
+    type: constant('africarxiv'),
+    value: doi(constant('60763')),
+  })
 
 export const africarxivZenodoPreprintId = (): fc.Arbitrary<AfricarxivZenodoPreprintId> =>
   fc.record({

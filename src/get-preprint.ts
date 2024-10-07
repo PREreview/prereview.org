@@ -1,3 +1,4 @@
+import { hasRegistrant } from 'doi-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { flow, identity } from 'fp-ts/lib/function.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -11,6 +12,7 @@ import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id.js
 export const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
     .with({ type: 'philsci' }, getPreprintFromPhilsci)
+    .with({ type: 'africarxiv', value: p.when(hasRegistrant('60763')) }, () => RTE.left('unavailable' as const))
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
     .exhaustive()
