@@ -95,7 +95,7 @@
     "@types/make-fetch-happen": "^10.0.4",
     "@types/markdown-it": "^14.1.2",
     "@types/mjml": "^4.7.4",
-    "@types/mocha": "^10.0.8",
+    "@types/mocha": "^10.0.9",
     "@types/multer": "^1.4.12",
     "@types/node": "^20.16.10",
     "@types/nodemailer": "^6.4.16",
