@@ -902,6 +902,7 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
 
 export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId> =>
   fc.oneof(
+    africarxivUbuntunetPreprintId(),
     arxivPreprintId(),
     biorxivPreprintId(),
     ecoevorxivPreprintId(),
@@ -916,7 +917,9 @@ export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId>
 
 export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, ReviewRequestPreprintId>> =>
   fc.oneof(
-    africarxivPreprintId(),
+    africarxivFigsharePreprintId(),
+    africarxivOsfPreprintId(),
+    africarxivZenodoPreprintId(),
     arcadiaSciencePreprintId(),
     authoreaPreprintId(),
     chemrxivPreprintId(),

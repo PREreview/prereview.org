@@ -1,11 +1,13 @@
+import { hasRegistrant } from 'doi-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Orcid } from 'orcid-id-ts'
-import { match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import type {
+  AfricarxivUbuntunetPreprintId,
   ArxivPreprintId,
   BiorxivPreprintId,
   EcoevorxivPreprintId,
@@ -22,6 +24,7 @@ import type {
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 
 export type ReviewRequestPreprintId =
+  | AfricarxivUbuntunetPreprintId
   | ArxivPreprintId
   | BiorxivPreprintId
   | EcoevorxivPreprintId
@@ -108,18 +111,27 @@ export const saveReviewRequest = (
   )
 
 export function isReviewRequestPreprintId(preprint: PreprintId): preprint is ReviewRequestPreprintId {
-  return match(preprint.type)
+  return match(preprint)
     .with(
-      'arxiv',
-      'biorxiv',
-      'ecoevorxiv',
-      'edarxiv',
-      'medrxiv',
-      'osf-preprints',
-      'preprints.org',
-      'psyarxiv',
-      'scielo',
-      'socarxiv',
+      {
+        type: P.union(
+          'arxiv',
+          'biorxiv',
+          'ecoevorxiv',
+          'edarxiv',
+          'medrxiv',
+          'osf-preprints',
+          'preprints.org',
+          'psyarxiv',
+          'scielo',
+          'socarxiv',
+        ),
+      },
+      () => true,
+    )
+    .with(
+      { type: 'africarxiv' },
+      preprint => hasRegistrant('60763')(preprint.value),
       () => true,
     )
     .otherwise(() => false)
