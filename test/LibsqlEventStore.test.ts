@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Array, Config, Effect, Equal, Layer, TestContext } from 'effect'
+import { Array, Config, Effect, Equal, Layer, Logger, LogLevel, TestContext } from 'effect'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/LibsqlEventStore.js'
 import { Uuid } from '../src/types/index.js'
@@ -89,7 +89,10 @@ describe('when the last known version is out of date', () => {
       yield* eventStore.commitEvents(resourceId, 0)(event1)
       yield* eventStore.commitEvents(resourceId, event2Version - 1)(event2)
 
-      const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
+      const error = yield* Logger.withMinimumLogLevel(
+        Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events)),
+        LogLevel.None,
+      )
 
       expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
