@@ -1,7 +1,9 @@
+import { FileSystem } from '@effect/platform'
+import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Array, Config, Effect, Equal, TestContext } from 'effect'
+import { Array, Config, Effect, Equal, Layer, TestContext } from 'effect'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/LibsqlEventStore.js'
 import { Uuid } from '../src/types/index.js'
@@ -19,7 +21,7 @@ it.prop([fc.uuid()])('starts empty', resourceId =>
     expect(all).toStrictEqual([])
   }).pipe(
     Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
-    Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
+    Effect.provide(TestLibsqlClient),
     Effect.provide(TestContext.TestContext),
     Effect.runPromise,
   ),
@@ -38,7 +40,7 @@ it.prop([fc.uuid(), fc.nonEmptyArray(fc.feedbackEvent())])('creates a new resour
     expect(all).toStrictEqual(Array.map(events, (event, i) => ({ event, resourceId, version: i + 1 })))
   }).pipe(
     Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-    Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
+    Effect.provide(TestLibsqlClient),
     Effect.provide(TestContext.TestContext),
     Effect.runPromise,
   ),
@@ -64,7 +66,7 @@ describe('when the last known version is up to date', () => {
         ])
       }).pipe(
         Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-        Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
+        Effect.provide(TestLibsqlClient),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -101,7 +103,7 @@ describe('when the last known version is out of date', () => {
       ])
     }).pipe(
       Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-      Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
+      Effect.provide(TestLibsqlClient),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -138,8 +140,17 @@ it.prop([
     ])
   }).pipe(
     Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-    Effect.provide(LibsqlClient.layer({ url: Config.succeed(':memory:') })),
+    Effect.provide(TestLibsqlClient),
     Effect.provide(TestContext.TestContext),
     Effect.runPromise,
   ),
 )
+
+const TestLibsqlClient = Layer.unwrapScoped(
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem
+    const file = yield* fs.makeTempFileScoped()
+
+    return LibsqlClient.layer({ url: Config.succeed(`file:${file}`) })
+  }),
+).pipe(Layer.provide(NodeFileSystem.layer))
