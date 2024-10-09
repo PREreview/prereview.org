@@ -50,7 +50,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
           resourceType: 'Feedback',
         }),
       ),
-      Effect.mapError(() => new EventStore.FailedToGetEvents()),
+      Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     )
 
     const getEvents: EventStore.EventStore['getEvents'] = resourceId =>
@@ -90,7 +90,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
             resourceType: 'Feedback',
           }),
         ),
-        Effect.mapError(() => new EventStore.FailedToGetEvents()),
+        Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
       )
 
     const commitEvents: EventStore.EventStore['commitEvents'] =
@@ -166,8 +166,8 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               }),
             ),
             Effect.catchTags({
-              SqlError: () => new EventStore.FailedToCommitEvent(),
-              ParseError: () => new EventStore.FailedToCommitEvent(),
+              SqlError: error => new EventStore.FailedToCommitEvent({ cause: error }),
+              ParseError: error => new EventStore.FailedToCommitEvent({ cause: error }),
             }),
           )
 

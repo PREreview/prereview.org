@@ -3,9 +3,9 @@ import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { FeedbackEvent } from './Feedback/index.js'
 import type { Uuid } from './types/index.js'
 
-export class FailedToGetEvents extends Data.TaggedError('FailedToGetEvents') {}
+export class FailedToGetEvents extends Data.TaggedError('FailedToGetEvents')<{ cause?: Error }> {}
 
-export class FailedToCommitEvent extends Data.TaggedError('FailedToCommitEvent') {}
+export class FailedToCommitEvent extends Data.TaggedError('FailedToCommitEvent')<{ cause?: Error }> {}
 
 export class ResourceHasChanged extends Data.TaggedError('ResourceHasChanged') {}
 
