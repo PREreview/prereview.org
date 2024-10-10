@@ -49,31 +49,70 @@ describe('when the last known version is 0', () => {
 })
 
 describe('when the last known version is invalid', () => {
-  it.prop([fc.uuid(), fc.integer({ min: 1 }), fc.nonEmptyArray(fc.feedbackEvent())])(
-    'does not create a resource',
-    (resourceId, lastKnownVersion, events) =>
+  describe('when the resource does not exist', () => {
+    it.prop([fc.uuid(), fc.integer({ min: 1 }), fc.nonEmptyArray(fc.feedbackEvent())])(
+      'does not create a resource',
+      (resourceId, lastKnownVersion, events) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+
+          const error = yield* Logger.withMinimumLogLevel(
+            Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events)),
+            LogLevel.None,
+          )
+
+          expect(error).toBeInstanceOf(EventStore.FailedToCommitEvent)
+
+          const actual = yield* eventStore.getEvents(resourceId)
+          const all = yield* eventStore.getAllEvents
+
+          expect(actual).toStrictEqual({ events: [], latestVersion: 0 })
+          expect(all).toStrictEqual([])
+        }).pipe(
+          Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
+          Effect.provide(TestLibsqlClient),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
+    )
+  })
+
+  describe('when the resource does exist', () => {
+    it.prop([
+      fc.uuid(),
+      fc
+        .nonEmptyArray(fc.feedbackEvent())
+        .chain(existingEvents => fc.tuple(fc.constant(existingEvents), fc.integer({ min: existingEvents.length + 1 }))),
+      fc.nonEmptyArray(fc.feedbackEvent()),
+    ])('does nothing', (resourceId, [existingEvents, lastKnownVersion], events) =>
       Effect.gen(function* () {
         const eventStore = yield* _.make
+
+        yield* eventStore.commitEvents(resourceId, 0)(...existingEvents)
 
         const error = yield* Logger.withMinimumLogLevel(
           Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events)),
           LogLevel.None,
         )
 
-        expect(error).toBeInstanceOf(EventStore.FailedToCommitEvent)
+        expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
         const actual = yield* eventStore.getEvents(resourceId)
         const all = yield* eventStore.getAllEvents
 
-        expect(actual).toStrictEqual({ events: [], latestVersion: 0 })
-        expect(all).toStrictEqual([])
+        expect(actual).toStrictEqual({
+          events: existingEvents,
+          latestVersion: existingEvents.length,
+        })
+        expect(all).toHaveLength(existingEvents.length)
       }).pipe(
         Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
         Effect.provide(TestLibsqlClient),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
-  )
+    )
+  })
 })
 
 describe('when the last known version is up to date', () => {
@@ -106,18 +145,18 @@ describe('when the last known version is up to date', () => {
 describe('when the last known version is out of date', () => {
   it.prop([
     fc.uuid(),
-    fc
-      .integer({ min: 2 })
-      .chain(latestVersion => fc.tuple(fc.constant(latestVersion), fc.integer({ max: latestVersion - 1 }))),
-    fc.feedbackEvent(),
-    fc.feedbackEvent(),
+    fc.nonEmptyArray(fc.feedbackEvent()).chain(existingEvents =>
+      fc.tuple(
+        fc.constant(existingEvents),
+        fc.integer().filter(lastKnownVersion => lastKnownVersion !== existingEvents.length),
+      ),
+    ),
     fc.nonEmptyArray(fc.feedbackEvent()),
-  ])('does not replace an event', (resourceId, [event2Version, lastKnownVersion], event1, event2, events) =>
+  ])('does not replace an event', (resourceId, [existingEvents, lastKnownVersion], events) =>
     Effect.gen(function* () {
       const eventStore = yield* _.make
 
-      yield* eventStore.commitEvents(resourceId, 0)(event1)
-      yield* eventStore.commitEvents(resourceId, event2Version - 1)(event2)
+      yield* eventStore.commitEvents(resourceId, 0)(...existingEvents)
 
       const error = yield* Logger.withMinimumLogLevel(
         Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events)),
@@ -129,11 +168,11 @@ describe('when the last known version is out of date', () => {
       const actual = yield* eventStore.getEvents(resourceId)
       const all = yield* eventStore.getAllEvents
 
-      expect(actual).toStrictEqual({ events: [event1, event2], latestVersion: event2Version })
-      expect(all).toStrictEqual([
-        { event: event1, resourceId, version: 1 },
-        { event: event2, resourceId, version: event2Version },
-      ])
+      expect(actual).toStrictEqual({
+        events: existingEvents,
+        latestVersion: existingEvents.length,
+      })
+      expect(all).toHaveLength(existingEvents.length)
     }).pipe(
       Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
       Effect.provide(TestLibsqlClient),

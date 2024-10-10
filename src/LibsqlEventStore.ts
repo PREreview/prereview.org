@@ -113,6 +113,10 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                   version: lastKnownVersion,
                 })
 
+                const encodedNewVersion = yield* Schema.encode(ResourcesTable.fields.version)(
+                  lastKnownVersion + events.length,
+                )
+
                 if (lastKnownVersion === 0) {
                   const results = yield* pipe(
                     sql`
@@ -125,7 +129,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                       SELECT
                         ${encoded.id},
                         ${encoded.type},
-                        ${encoded.version}
+                        ${encodedNewVersion}
                       WHERE
                         NOT EXISTS (
                           SELECT
@@ -159,6 +163,22 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
 
                 if (rows.length !== 1) {
                   yield* new EventStore.FailedToCommitEvent({})
+                }
+
+                const results = yield* pipe(
+                  sql`
+                    UPDATE resources
+                    SET
+                      version = ${encodedNewVersion}
+                    WHERE
+                      id = ${encoded.id}
+                      AND version = ${encoded.version}
+                  `.raw,
+                  Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
+                )
+
+                if (results.rowsAffected !== 1) {
+                  yield* new EventStore.ResourceHasChanged()
                 }
               }),
               Effect.andThen(() =>
@@ -215,30 +235,6 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                     return newResourceVersion
                   }),
                 ),
-              ),
-              Effect.tap(newVersion =>
-                Effect.gen(function* () {
-                  const encoded = yield* Schema.encode(ResourcesTable)({
-                    id: resourceId,
-                    type: 'Feedback',
-                    version: newVersion,
-                  })
-
-                  const results = yield* pipe(
-                    sql`
-                      UPDATE resources
-                      SET
-                        version = ${encoded.version}
-                      WHERE
-                        id = ${encoded.id}
-                    `.raw,
-                    Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
-                  )
-
-                  if (results.rowsAffected !== 1) {
-                    yield* new EventStore.ResourceHasChanged()
-                  }
-                }),
               ),
             ),
           )
