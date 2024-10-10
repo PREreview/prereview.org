@@ -27,24 +27,54 @@ it.prop([fc.uuid()])('starts empty', resourceId =>
   ),
 )
 
-it.prop([fc.uuid(), fc.nonEmptyArray(fc.feedbackEvent())])('creates a new resource', (resourceId, events) =>
-  Effect.gen(function* () {
-    const eventStore = yield* _.make
+describe('when the last known version is 0', () => {
+  it.prop([fc.uuid(), fc.nonEmptyArray(fc.feedbackEvent())])('creates a new resource', (resourceId, events) =>
+    Effect.gen(function* () {
+      const eventStore = yield* _.make
 
-    yield* eventStore.commitEvents(resourceId, 0)(...events)
+      yield* eventStore.commitEvents(resourceId, 0)(...events)
 
-    const actual = yield* eventStore.getEvents(resourceId)
-    const all = yield* eventStore.getAllEvents
+      const actual = yield* eventStore.getEvents(resourceId)
+      const all = yield* eventStore.getAllEvents
 
-    expect(actual).toStrictEqual({ events, latestVersion: events.length })
-    expect(all).toStrictEqual(Array.map(events, (event, i) => ({ event, resourceId, version: i + 1 })))
-  }).pipe(
-    Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-    Effect.provide(TestLibsqlClient),
-    Effect.provide(TestContext.TestContext),
-    Effect.runPromise,
-  ),
-)
+      expect(actual).toStrictEqual({ events, latestVersion: events.length })
+      expect(all).toStrictEqual(Array.map(events, (event, i) => ({ event, resourceId, version: i + 1 })))
+    }).pipe(
+      Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
+      Effect.provide(TestLibsqlClient),
+      Effect.provide(TestContext.TestContext),
+      Effect.runPromise,
+    ),
+  )
+})
+
+describe('when the last known version is invalid', () => {
+  it.prop([fc.uuid(), fc.integer({ min: 1 }), fc.nonEmptyArray(fc.feedbackEvent())])(
+    'does not create a resource',
+    (resourceId, lastKnownVersion, events) =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make
+
+        const error = yield* Logger.withMinimumLogLevel(
+          Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events)),
+          LogLevel.None,
+        )
+
+        expect(error).toBeInstanceOf(EventStore.FailedToCommitEvent)
+
+        const actual = yield* eventStore.getEvents(resourceId)
+        const all = yield* eventStore.getAllEvents
+
+        expect(actual).toStrictEqual({ events: [], latestVersion: 0 })
+        expect(all).toStrictEqual([])
+      }).pipe(
+        Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
+        Effect.provide(TestLibsqlClient),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
+  )
+})
 
 describe('when the last known version is up to date', () => {
   it.prop([fc.uuid(), fc.feedbackEvent(), fc.feedbackEvent()])(

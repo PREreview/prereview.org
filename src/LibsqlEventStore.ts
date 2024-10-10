@@ -11,6 +11,12 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
     const generateUuid = yield* Uuid.GenerateUuid
 
     yield* sql`
+      CREATE TABLE IF NOT EXISTS resources (
+        id TEXT NOT NULL PRIMARY KEY
+      )
+    `
+
+    yield* sql`
       CREATE TABLE IF NOT EXISTS events (
         event_id TEXT NOT NULL PRIMARY KEY,
         resource_type TEXT NOT NULL,
@@ -19,6 +25,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
         event_type TEXT NOT NULL,
         event_timestamp TEXT NOT NULL,
         payload TEXT NOT NULL,
+        FOREIGN KEY(resource_id) REFERENCES resources(id)
         UNIQUE (resource_type, resource_id, resource_version)
       )
     `
@@ -98,62 +105,96 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
       (...events) =>
         sql
           .withTransaction(
-            Effect.reduce(events, lastKnownVersion, (lastKnownVersion, event) =>
+            pipe(
               Effect.gen(function* () {
-                const newResourceVersion = lastKnownVersion + 1
-                const eventId = yield* generateUuid
-                const eventTimestamp = yield* DateTime.now
-
-                const encoded = yield* Schema.encode(EventsTable)({
-                  eventId,
-                  resourceType: 'Feedback',
-                  resourceId,
-                  resourceVersion: newResourceVersion,
-                  eventTimestamp,
-                  event,
+                const encoded = yield* Schema.encode(ResourcesTable)({
+                  id: resourceId,
                 })
 
-                const results = yield* pipe(
-                  sql`
+                if (lastKnownVersion === 0) {
+                  return yield* sql`
                     INSERT INTO
-                      events (
-                        event_id,
-                        resource_type,
-                        resource_id,
-                        resource_version,
-                        event_type,
-                        event_timestamp,
-                        payload
+                      resources (
+                        id
                       )
-                    SELECT
-                      ${encoded.event_id},
-                      ${encoded.resource_type},
-                      ${encoded.resource_id},
-                      ${encoded.resource_version},
-                      ${encoded.event_type},
-                      ${encoded.event_timestamp},
-                      ${encoded.payload}
-                    WHERE
-                      NOT EXISTS (
-                        SELECT
-                          event_id
-                        FROM
-                          events
-                        WHERE
-                          resource_type = ${encoded.resource_type}
-                          AND resource_id = ${encoded.resource_id}
-                          AND resource_version >= ${encoded.resource_version}
-                      )
-                  `.raw,
-                  Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
-                )
-
-                if (results.rowsAffected !== 1) {
-                  yield* new EventStore.ResourceHasChanged()
+                    VALUES (
+                      ${encoded.id}
+                    )
+                  `
                 }
 
-                return newResourceVersion
+                const rows = yield* sql`
+                  SELECT
+                    id
+                  FROM
+                    resources
+                  WHERE
+                    id = ${resourceId}
+                `
+
+                if (rows.length !== 1) {
+                  yield* new EventStore.FailedToCommitEvent({})
+                }
               }),
+              Effect.andThen(() =>
+                Effect.reduce(events, lastKnownVersion, (lastKnownVersion, event) =>
+                  Effect.gen(function* () {
+                    const newResourceVersion = lastKnownVersion + 1
+                    const eventId = yield* generateUuid
+                    const eventTimestamp = yield* DateTime.now
+
+                    const encoded = yield* Schema.encode(EventsTable)({
+                      eventId,
+                      resourceType: 'Feedback',
+                      resourceId,
+                      resourceVersion: newResourceVersion,
+                      eventTimestamp,
+                      event,
+                    })
+
+                    const results = yield* pipe(
+                      sql`
+                        INSERT INTO
+                          events (
+                            event_id,
+                            resource_type,
+                            resource_id,
+                            resource_version,
+                            event_type,
+                            event_timestamp,
+                            payload
+                          )
+                        SELECT
+                          ${encoded.event_id},
+                          ${encoded.resource_type},
+                          ${encoded.resource_id},
+                          ${encoded.resource_version},
+                          ${encoded.event_type},
+                          ${encoded.event_timestamp},
+                          ${encoded.payload}
+                        WHERE
+                          NOT EXISTS (
+                            SELECT
+                              event_id
+                            FROM
+                              events
+                            WHERE
+                              resource_type = ${encoded.resource_type}
+                              AND resource_id = ${encoded.resource_id}
+                              AND resource_version >= ${encoded.resource_version}
+                          )
+                      `.raw,
+                      Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
+                    )
+
+                    if (results.rowsAffected !== 1) {
+                      yield* new EventStore.ResourceHasChanged()
+                    }
+
+                    return newResourceVersion
+                  }),
+                ),
+              ),
             ),
           )
           .pipe(
@@ -172,6 +213,10 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
 
     return { getAllEvents, getEvents, commitEvents }
   })
+
+const ResourcesTable = Schema.Struct({
+  id: Uuid.UuidSchema,
+})
 
 const EventsTable = Schema.transformOrFail(
   Schema.Struct({
