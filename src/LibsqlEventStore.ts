@@ -22,7 +22,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
       CREATE TABLE IF NOT EXISTS events (
         event_id TEXT NOT NULL PRIMARY KEY,
         resource_id TEXT NOT NULL,
-        resource_version number,
+        resource_version INTEGER NOT NULL,
         event_type TEXT NOT NULL,
         event_timestamp TEXT NOT NULL,
         payload TEXT NOT NULL,
