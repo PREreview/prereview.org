@@ -1,4 +1,4 @@
-import { Schema } from '@effect/schema'
+import { ParseResult, Schema } from '@effect/schema'
 import { SqlClient, type SqlError } from '@effect/sql'
 import { Array, DateTime, Effect, flow, pipe } from 'effect'
 import * as EventStore from './EventStore.js'
@@ -42,7 +42,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
         Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable))),
       )
 
-      return Array.map(rows, row => ({ resourceId: row.resourceId, event: row.payload, version: row.resourceVersion }))
+      return Array.map(rows, row => ({ resourceId: row.resourceId, event: row.event, version: row.resourceVersion }))
     }).pipe(
       Effect.tapError(error =>
         Effect.annotateLogs(Effect.logError('Unable to get all events'), {
@@ -81,7 +81,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
           onNonEmpty: flow(Array.lastNonEmpty, row => row.resourceVersion),
         })
 
-        return { events: Array.map(rows, row => row.payload), latestVersion }
+        return { events: Array.map(rows, row => row.event), latestVersion }
       }).pipe(
         Effect.tapError(error =>
           Effect.annotateLogs(Effect.logError('Unable to get events'), {
@@ -109,9 +109,8 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                   resourceType: 'Feedback',
                   resourceId,
                   resourceVersion: newResourceVersion,
-                  eventType: event._tag,
                   eventTimestamp,
-                  payload: event,
+                  event,
                 })
 
                 const results = yield* pipe(
@@ -174,14 +173,41 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
     return { getAllEvents, getEvents, commitEvents }
   })
 
-const EventsTable = Schema.Struct({
-  eventId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('event_id')),
-  resourceType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('resource_type')),
-  resourceId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('resource_id')),
-  resourceVersion: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('resource_version')),
-  eventType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('event_type')),
-  eventTimestamp: Schema.propertySignature(Schema.DateTimeUtc).pipe(Schema.fromKey('event_timestamp')),
-  payload: Schema.parseJson(FeedbackEvent),
-})
+const EventsTable = Schema.transformOrFail(
+  Schema.Struct({
+    eventId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('event_id')),
+    resourceType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('resource_type')),
+    resourceId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('resource_id')),
+    resourceVersion: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('resource_version')),
+    eventTimestamp: Schema.propertySignature(Schema.DateTimeUtc).pipe(Schema.fromKey('event_timestamp')),
+    eventType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('event_type')),
+    payload: Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
+  }),
+  Schema.typeSchema(
+    Schema.Struct({
+      eventId: Uuid.UuidSchema,
+      resourceType: Schema.String,
+      resourceId: Uuid.UuidSchema,
+      resourceVersion: Schema.Number,
+      eventTimestamp: Schema.DateTimeUtc,
+      event: FeedbackEvent,
+    }),
+  ),
+  {
+    strict: true,
+    decode: ({ eventType, payload, ...rest }) =>
+      Effect.gen(function* () {
+        const event = yield* ParseResult.decodeUnknown(FeedbackEvent)({ _tag: eventType, ...payload })
+
+        return { ...rest, event }
+      }),
+    encode: ({ event, ...rest }) =>
+      Effect.gen(function* () {
+        const { _tag, ...payload } = yield* ParseResult.encodeUnknown(FeedbackEvent)(event)
+
+        return { ...rest, eventType: _tag, payload }
+      }),
+  },
+)
 
 const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })
