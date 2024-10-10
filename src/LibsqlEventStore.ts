@@ -62,6 +62,8 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
 
     const getEvents: EventStore.EventStore['getEvents'] = resourceId =>
       Effect.gen(function* () {
+        const encodedResourceId = yield* Schema.encode(ResourcesTable.fields.id)(resourceId)
+
         const rows = yield* pipe(
           sql`
             SELECT
@@ -74,7 +76,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
             FROM
               events
             WHERE
-              resource_id = ${resourceId}
+              resource_id = ${encodedResourceId}
             ORDER BY
               resource_version ASC
           `,
@@ -151,8 +153,8 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                   FROM
                     resources
                   WHERE
-                    id = ${resourceId}
-                    AND type = 'Feedback'
+                    id = ${encoded.id}
+                    AND type = ${encoded.type}
                 `
 
                 if (rows.length !== 1) {
@@ -228,7 +230,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                       SET
                         version = ${encoded.version}
                       WHERE
-                        id = ${resourceId}
+                        id = ${encoded.id}
                     `.raw,
                     Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
                   )
