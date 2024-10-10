@@ -1,6 +1,9 @@
+import { Orcid } from 'orcid-id-ts'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import type { Uuid } from '../../../src/types/index.js'
+import type { Pseudonym } from '../../../src/types/pseudonym.js'
+import type { User } from '../../../src/user.js'
 import * as _ from '../../../src/WriteFeedbackFlow/CheckPage/CheckPage.js'
 import { expect, test } from '../../base.js'
 
@@ -9,12 +12,19 @@ test('content looks right', async ({ showPage }) => {
     feedback,
     feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
     locale: DefaultLocale,
+    user,
   })
 
   const content = await showPage(response)
 
   await expect(content).toHaveScreenshot()
 })
+
+const user = {
+  name: 'Josiah Carberry',
+  orcid: Orcid('0000-0002-1825-0097'),
+  pseudonym: 'Orange Panda' as Pseudonym,
+} satisfies User
 
 const feedback = html`
   <h1>Lorem ipsum</h1>
