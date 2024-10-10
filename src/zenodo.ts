@@ -501,10 +501,16 @@ export const createFeedbackOnZenodo: (params: {
 > = ({ feedback, prereview }) =>
   pipe(
     RTE.Do,
-    RTE.apS('name', getNameFromOrcid(feedback.authorId)),
+    RTE.apS(
+      'creator',
+      pipe(
+        getNameFromOrcid(feedback.authorId),
+        RTE.map(name => ({ name, orcid: feedback.authorId })),
+      ),
+    ),
     RTE.apSW('deposition', createEmptyDeposition()),
-    RTE.bindW('metadata', ({ name }) =>
-      RTE.fromReader(createDepositMetadataForFeedback({ feedback, name, prereview })),
+    RTE.bindW('metadata', ({ creator }) =>
+      RTE.fromReader(createDepositMetadataForFeedback({ creator, feedback, prereview })),
     ),
     RTE.chainW(({ deposition, metadata }) => updateDeposition(metadata, deposition)),
     RTE.chainFirstW(
@@ -582,13 +588,13 @@ export const createRecordOnZenodo: (
   )
 
 function createDepositMetadataForFeedback({
+  creator,
   feedback,
   prereview,
-  name,
 }: {
+  creator: { name: NonEmptyString; orcid?: Orcid }
   feedback: Feedback.FeedbackBeingPublished
   prereview: PrereviewType
-  name: NonEmptyString
 }) {
   return pipe(
     toUrl(reviewMatch.formatter, { id: prereview.id }),
@@ -598,7 +604,7 @@ function createDepositMetadataForFeedback({
           upload_type: 'publication',
           publication_type: 'other',
           title: plainText`Feedback on a PREreview of “${prereview.preprint.title}”`.toString(),
-          creators: [{ name, orcid: feedback.authorId }],
+          creators: [creator],
           description: `<p><strong>This Zenodo record is a permanently preserved version of feedback on a PREreview. You can view the complete PREreview and feedback at <a href="${url.href}">${url.href}</a>.</strong></p>
 
 ${feedback.feedback.toString()}`,
