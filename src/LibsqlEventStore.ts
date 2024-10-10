@@ -112,15 +112,32 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                 })
 
                 if (lastKnownVersion === 0) {
-                  return yield* sql`
-                    INSERT INTO
-                      resources (
-                        id
-                      )
-                    VALUES (
-                      ${encoded.id}
-                    )
-                  `
+                  const results = yield* pipe(
+                    sql`
+                      INSERT INTO
+                        resources (
+                          id
+                        )
+                      SELECT
+                        ${encoded.id}
+                      WHERE
+                        NOT EXISTS (
+                          SELECT
+                            id
+                          FROM
+                            resources
+                          WHERE
+                            id = ${encoded.id}
+                        )
+                    `.raw,
+                    Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
+                  )
+
+                  if (results.rowsAffected !== 1) {
+                    yield* new EventStore.ResourceHasChanged()
+                  }
+
+                  return
                 }
 
                 const rows = yield* sql`
