@@ -13,7 +13,8 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
     yield* sql`
       CREATE TABLE IF NOT EXISTS resources (
         id TEXT NOT NULL PRIMARY KEY,
-        type TEXT NOT NULL
+        type TEXT NOT NULL,
+        version INTEGER NOT NULL
       )
     `
 
@@ -107,6 +108,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                 const encoded = yield* Schema.encode(ResourcesTable)({
                   id: resourceId,
                   type: 'Feedback',
+                  version: lastKnownVersion,
                 })
 
                 if (lastKnownVersion === 0) {
@@ -115,11 +117,13 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                       INSERT INTO
                         resources (
                           id,
-                          type
+                          type,
+                          version
                         )
                       SELECT
                         ${encoded.id},
-                        ${encoded.type}
+                        ${encoded.type},
+                        ${encoded.version}
                       WHERE
                         NOT EXISTS (
                           SELECT
@@ -210,6 +214,30 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                   }),
                 ),
               ),
+              Effect.tap(newVersion =>
+                Effect.gen(function* () {
+                  const encoded = yield* Schema.encode(ResourcesTable)({
+                    id: resourceId,
+                    type: 'Feedback',
+                    version: newVersion,
+                  })
+
+                  const results = yield* pipe(
+                    sql`
+                      UPDATE resources
+                      SET
+                        version = ${encoded.version}
+                      WHERE
+                        id = ${resourceId}
+                    `.raw,
+                    Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
+                  )
+
+                  if (results.rowsAffected !== 1) {
+                    yield* new EventStore.ResourceHasChanged()
+                  }
+                }),
+              ),
             ),
           )
           .pipe(
@@ -232,6 +260,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
 const ResourcesTable = Schema.Struct({
   id: Uuid.UuidSchema,
   type: Schema.String,
+  version: Schema.Number,
 })
 
 const EventsTable = Schema.transformOrFail(
