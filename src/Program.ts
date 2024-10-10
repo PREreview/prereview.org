@@ -93,9 +93,21 @@ const publishFeedback = Layer.effect(
     const sleep = yield* DeprecatedSleepEnv
 
     return feedback =>
-      pipe(
-        getPrereview(feedback.prereviewId),
-        Effect.andThen(prereview =>
+      Effect.gen(function* () {
+        const prereview = yield* pipe(
+          getPrereview(feedback.prereviewId),
+          Effect.mapError(
+            flow(
+              Match.value,
+              Match.tag('PrereviewIsNotFound', error => new Feedback.UnableToPublishFeedback({ cause: error })),
+              Match.tag('PrereviewIsUnavailable', error => new Feedback.UnableToPublishFeedback({ cause: error })),
+              Match.tag('PrereviewWasRemoved', error => new Feedback.UnableToPublishFeedback({ cause: error })),
+              Match.exhaustive,
+            ),
+          ),
+        )
+
+        return yield* pipe(
           Effect.promise(
             createFeedbackOnZenodo({ feedback, prereview })({
               fetch,
@@ -113,26 +125,23 @@ const publishFeedback = Layer.effect(
               ...logger,
             }),
           ),
-        ),
-        Effect.andThen(
-          flow(
-            Match.value,
-            Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
-            Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
-            Match.exhaustive,
+          Effect.andThen(
+            flow(
+              Match.value,
+              Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
+              Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
+              Match.exhaustive,
+            ),
           ),
-        ),
-        Effect.mapError(
-          flow(
-            Match.value,
-            Match.when('unavailable', () => new Feedback.UnableToPublishFeedback({})),
-            Match.tag('PrereviewIsNotFound', error => new Feedback.UnableToPublishFeedback({ cause: error })),
-            Match.tag('PrereviewIsUnavailable', error => new Feedback.UnableToPublishFeedback({ cause: error })),
-            Match.tag('PrereviewWasRemoved', error => new Feedback.UnableToPublishFeedback({ cause: error })),
-            Match.exhaustive,
+          Effect.mapError(
+            flow(
+              Match.value,
+              Match.when('unavailable', () => new Feedback.UnableToPublishFeedback({})),
+              Match.exhaustive,
+            ),
           ),
-        ),
-      )
+        )
+      })
   }),
 )
 
