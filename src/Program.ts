@@ -1,7 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { type Array, Effect, flow, Layer, Match, pipe, PubSub, Runtime } from 'effect'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as Feedback from './Feedback/index.js'
@@ -107,18 +106,31 @@ const publishFeedback = Layer.effect(
           ),
         )
 
+        const name = yield* pipe(
+          Effect.promise(
+            getNameFromOrcid(feedback.authorId)({ orcidApiUrl, orcidApiToken, fetch, ...sleep, ...logger }),
+          ),
+          Effect.andThen(
+            flow(
+              Match.value,
+              Match.when({ _tag: 'Left' }, () => Effect.fail(new Feedback.UnableToPublishFeedback({}))),
+              Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
+              Match.exhaustive,
+            ),
+          ),
+          Effect.filterOrElse(
+            value => value !== undefined,
+            () => Effect.fail(new Feedback.UnableToPublishFeedback({})),
+          ),
+        )
+
         return yield* pipe(
           Effect.promise(
-            createFeedbackOnZenodo({ feedback, prereview })({
+            createFeedbackOnZenodo({
+              feedback: { ...feedback, author: { name, orcid: feedback.authorId } },
+              prereview,
+            })({
               fetch,
-              getNameFromOrcid: orcid =>
-                pipe(
-                  getNameFromOrcid(orcid)({ orcidApiUrl, orcidApiToken, fetch, ...sleep, ...logger }),
-                  TE.filterOrElse(
-                    name => typeof name === 'string',
-                    () => 'unavailable',
-                  ),
-                ),
               publicUrl,
               zenodoApiKey,
               zenodoUrl,
