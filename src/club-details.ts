@@ -327,6 +327,28 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     ],
     contact: 'lab239@exeter.ac.uk' as EmailAddress,
   },
+  neuroden: {
+    name: 'Neuroden',
+    description: html`
+      <p>
+        Neuroden is an organization that consists of undergraduate members that have common interest in cognitive
+        neuroscience.
+      </p>
+
+      <p>
+        Our purpose is to provide insightful, constructive peer-review feedback on preprint literature related to
+        cognitive neuroscience. Membership to this club is open to undergraduates from any College/University.
+      </p>
+    `,
+    leads: [
+      { name: 'Ryan Ram', orcid: Orcid('0009-0009-0072-4133') },
+      { name: 'Santhosh Diravidamani', orcid: Orcid('0009-0003-1843-7171') },
+      { name: 'Hardik Acharya', orcid: Orcid('0009-0005-6748-9888') },
+      { name: 'Abbas Saifuddin', orcid: Orcid('0009-0003-9667-6207') },
+      { name: 'Hamza Mustafa', orcid: Orcid('0009-0006-0344-5365') },
+    ],
+    contact: 'hsa230003@utdallas.edu' as EmailAddress,
+  },
   'nsa-utd': {
     name: 'Neuroscience Student Association at UTD',
     description: html`

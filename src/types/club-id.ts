@@ -21,6 +21,7 @@ export const clubIds = [
   'jmir-publications',
   'language-club',
   'marine-invertebrates',
+  'neuroden',
   'nsa-utd',
   'open-box-science',
   'open-science-community-iraqi',
