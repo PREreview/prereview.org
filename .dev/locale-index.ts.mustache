@@ -24,8 +24,17 @@ type Translations = {
 {{/moduleNames}}
 }
 
-export const translate =
-  <M extends Module, K extends Key<M>>(locale: SupportedLocale, module: M, key: K): Translations[M][K] => {
+export const translate: {
+  (locale: SupportedLocale): <M extends Module, K extends Key<M>>(module: M, key: K) => Translations[M][K] 
+  <M extends Module, K extends Key<M>>(locale: SupportedLocale, module: M, key: K): Translations[M][K] 
+} =
+  (locale: SupportedLocale, module?: string, key?: string) => {
+    if(!module) {
+      // @ts-ignore
+      return (module: string | number, key: any) => modules[module](locale)(key)
+    }
+
     // @ts-ignore
     return modules[module](locale)(key)
   }
+ 
