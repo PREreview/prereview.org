@@ -1,4 +1,4 @@
-.PHONY: check start start-services format lint-css lint-ts typecheck test test-fast test-integration update-snapshots test-integration-image
+.PHONY: check start start-app start-services format lint-css lint-ts typecheck test test-fast test-integration update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -11,8 +11,22 @@ node_modules: package.json package-lock.json
 
 check: format lint-ts lint-css typecheck test-fast
 
-start: .env node_modules start-services
-	REDIS_URI=redis://$(shell docker compose port redis 6379) SMTP_URI=smtp://$(shell docker compose port mailcatcher 1025) npm start
+src/locales: $(shell find locales -type f)
+	echo 'building locales'
+	scripts/intlc.sh
+	touch src/locales
+
+src/manifest.json: src/locales $(shell find assets -type f | grep -v assets/locales)
+	npx webpack build --mode development
+	touch src/manifest.json
+
+start-app: .env node_modules start-services src/manifest.json
+	REDIS_URI=redis://$(shell docker compose port redis 6379) \
+	SMTP_URI=smtp://$(shell docker compose port mailcatcher 1025) \
+  npx tsx watch --clear-screen=false --include=src/manifest.json --require dotenv/config src/index.ts
+
+start:
+	find locales assets -type f | grep --invert-match assets/locales | entr -r make start-app
 
 .dev/server.crt .dev/server.key: SHELL := /usr/bin/env bash
 .dev/server.crt .dev/server.key: .env
