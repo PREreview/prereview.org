@@ -43,7 +43,6 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import type { Prereview as PrereviewType } from './Prereview.js'
 import { getClubByName, getClubName } from './club-details.js'
 import { type SleepEnv, reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
 import { type Html, plainText, sanitizeHtml } from './html.js'
@@ -484,22 +483,24 @@ export const addAuthorToRecordOnZenodo = (
 
 interface FeedbackToPublish {
   author: { name: NonEmptyString; orcid?: Orcid }
-  authorId: Orcid
   feedback: Html
-  prereviewId: number
+  prereview: {
+    doi: Doi
+    id: number
+    preprint: {
+      id: PreprintId
+      title: Html
+    }
+  }
 }
 
-export const createFeedbackOnZenodo: (params: {
-  feedback: FeedbackToPublish
-  prereview: PrereviewType
-}) => RTE.ReaderTaskEither<PublicUrlEnv & ZenodoAuthenticatedEnv & L.LoggerEnv, 'unavailable', [Doi, number]> = ({
-  feedback,
-  prereview,
-}) =>
+export const createFeedbackOnZenodo = (
+  feedback: FeedbackToPublish,
+): RTE.ReaderTaskEither<PublicUrlEnv & ZenodoAuthenticatedEnv & L.LoggerEnv, 'unavailable', [Doi, number]> =>
   pipe(
     RTE.Do,
     RTE.apSW('deposition', createEmptyDeposition()),
-    RTE.apSW('metadata', RTE.fromReader(createDepositMetadataForFeedback({ feedback, prereview }))),
+    RTE.apSW('metadata', RTE.fromReader(createDepositMetadataForFeedback(feedback))),
     RTE.chainW(({ deposition, metadata }) => updateDeposition(metadata, deposition)),
     RTE.chainFirstW(
       uploadFile({
@@ -574,21 +575,15 @@ export const createRecordOnZenodo: (
     ),
   )
 
-function createDepositMetadataForFeedback({
-  feedback,
-  prereview,
-}: {
-  feedback: FeedbackToPublish
-  prereview: PrereviewType
-}) {
+function createDepositMetadataForFeedback(feedback: FeedbackToPublish) {
   return pipe(
-    toUrl(reviewMatch.formatter, { id: prereview.id }),
+    toUrl(reviewMatch.formatter, { id: feedback.prereview.id }),
     R.map(
       url =>
         ({
           upload_type: 'publication',
           publication_type: 'other',
-          title: plainText`Feedback on a PREreview of “${prereview.preprint.title}”`.toString(),
+          title: plainText`Feedback on a PREreview of “${feedback.prereview.preprint.title}”`.toString(),
           creators: [feedback.author],
           description: `<p><strong>This Zenodo record is a permanently preserved version of feedback on a PREreview. You can view the complete PREreview and feedback at <a href="${url.href}">${url.href}</a>.</strong></p>
 
@@ -596,12 +591,12 @@ ${feedback.feedback.toString()}`,
           communities: [{ identifier: 'prereview-reviews' }],
           related_identifiers: [
             {
-              ...toExternalIdentifier(prereview.preprint.id),
+              ...toExternalIdentifier(feedback.prereview.preprint.id),
               relation: 'references',
               resource_type: 'publication-preprint',
             },
             {
-              identifier: prereview.doi,
+              identifier: feedback.prereview.doi,
               relation: 'references',
               resource_type: 'publication-peerreview',
               scheme: 'doi',

@@ -4085,15 +4085,13 @@ describe('createFeedbackOnZenodo', () => {
   test.prop([
     fc.record({
       author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
-      authorId: fc.orcid(),
       feedback: fc.html(),
-      prereviewId: fc.integer(),
+      prereview: fc.prereview(),
     }),
-    fc.prereview(),
     fc.string(),
     fc.origin(),
     fc.doi(),
-  ])('when the feedback can be created', async (feedback, prereview, zenodoApiKey, publicUrl, feedbackDoi) => {
+  ])('when the feedback can be created', async (feedback, zenodoApiKey, publicUrl, feedbackDoi) => {
     const emptyDeposition: EmptyDeposition = {
       id: 1,
       links: {
@@ -4144,9 +4142,9 @@ describe('createFeedbackOnZenodo', () => {
       state: 'done',
       submitted: true,
     }
-    const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: prereview.id })}`
+    const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: feedback.prereview.id })}`
     const fetch = fetchMock.sandbox()
-    const actual = await _.createFeedbackOnZenodo({ feedback, prereview })({
+    const actual = await _.createFeedbackOnZenodo(feedback)({
       clock: SystemClock,
       fetch: fetch
         .postOnce(
@@ -4166,7 +4164,7 @@ describe('createFeedbackOnZenodo', () => {
               metadata: {
                 upload_type: 'publication',
                 publication_type: 'other',
-                title: plainText`Feedback on a PREreview of “${prereview.preprint.title}”`.toString(),
+                title: plainText`Feedback on a PREreview of “${feedback.prereview.preprint.title}”`.toString(),
                 creators: [feedback.author],
                 description: `<p><strong>This Zenodo record is a permanently preserved version of feedback on a PREreview. You can view the complete PREreview and feedback at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
@@ -4174,12 +4172,12 @@ ${feedback.feedback.toString()}`,
                 communities: [{ identifier: 'prereview-reviews' }],
                 related_identifiers: [
                   {
-                    ..._.toExternalIdentifier(prereview.preprint.id),
+                    ..._.toExternalIdentifier(feedback.prereview.preprint.id),
                     relation: 'references',
                     resource_type: 'publication-preprint',
                   },
                   {
-                    identifier: prereview.doi,
+                    identifier: feedback.prereview.doi,
                     relation: 'references',
                     resource_type: 'publication-peerreview',
                     scheme: 'doi',
@@ -4218,19 +4216,17 @@ ${feedback.feedback.toString()}`,
   test.prop([
     fc.record({
       author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
-      authorId: fc.orcid(),
       feedback: fc.html(),
-      prereviewId: fc.integer(),
+      prereview: fc.prereview(),
     }),
-    fc.prereview(),
     fc.string(),
     fc.origin(),
     fc.oneof(
       fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),
     ),
-  ])('Zenodo is unavailable', async (feedback, prereview, zenodoApiKey, publicUrl, response) => {
-    const actual = await _.createFeedbackOnZenodo({ feedback, prereview })({
+  ])('Zenodo is unavailable', async (feedback, zenodoApiKey, publicUrl, response) => {
+    const actual = await _.createFeedbackOnZenodo(feedback)({
       clock: SystemClock,
       fetch: () => response,
       logger: () => IO.of(undefined),

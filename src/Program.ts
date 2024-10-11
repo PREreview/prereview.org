@@ -126,10 +126,7 @@ const publishFeedback = Layer.effect(
 
         return yield* pipe(
           Effect.promise(
-            createFeedbackOnZenodo({
-              feedback: { ...feedback, author: { name, orcid: feedback.authorId } },
-              prereview,
-            })({
+            createFeedbackOnZenodo({ ...feedback, author: { name, orcid: feedback.authorId }, prereview })({
               fetch,
               publicUrl,
               zenodoApiKey,
