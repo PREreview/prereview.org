@@ -11,6 +11,7 @@ The source code for [prereview.org].
 - [Bash]
 - [Docker]
 - [Docker Compose]
+- [entr]
 - [GNU Make]
 - [intlc]
 - [mkcert]
@@ -40,6 +41,7 @@ Once it passes CI, we deploy every commit on the `main` branch to [prereview.org
 [bash]: https://www.gnu.org/software/bash/
 [docker]: https://www.docker.com/
 [docker compose]: https://docs.docker.com/compose/
+[entr]: https://eradman.com/entrproject/
 [fly.io]: https://fly.io/
 [git lfs]: https://git-lfs.github.com/
 [gnu make]: https://www.gnu.org/software/make/
