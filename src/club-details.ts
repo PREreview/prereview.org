@@ -459,10 +459,8 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
         collaboration.
       </p>
     `,
-    leads: [{ name: 'Makayla True', orcid: Orcid('0000-0003-3130-7593') }],
-    joinLink: new URL(
-      'https://docs.google.com/forms/d/e/1FAIpQLSdDfGS5BDYvHPX-UB20Z7CVC3uKmmBG0gKZVT2nqI1wxEmLXg/viewform',
-    ),
+    leads: [{ name: 'Hildy Fong Baker', orcid: Orcid('0000-0002-3836-1966') }],
+    contact: 'rrid@berkeley.edu' as EmailAddress,
   },
   'sg-biofilms-microbiome': {
     name: 'SG Biofilms and Microbiome Club',
