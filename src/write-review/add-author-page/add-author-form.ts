@@ -1,10 +1,11 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
+import { identity } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
-import { type InvalidE, type MissingE, hasAnError } from '../../form.js'
+import { hasAnError, type InvalidE, type MissingE } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
-import type { SupportedLocale } from '../../locales/index.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes.js'
@@ -15,6 +16,7 @@ export function addAuthorForm({
   form,
   preprint,
   otherAuthors = false,
+  locale,
 }: {
   form: AddAuthorForm
   preprint: PreprintTitle
@@ -23,24 +25,29 @@ export function addAuthorForm({
 }) {
   const error = hasAnError(form)
   const backMatch = otherAuthors ? writeReviewAddAuthorsMatch : writeReviewAuthorsMatch
+  const t = translate(locale)
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
-    nav: html`<a href="${format(backMatch.formatter, { id: preprint.id })}" class="back">Back</a>`,
+    title: plainText(
+      t('add-author-form', 'title')({ error: error ? identity : () => '', preprintTitle: preprint.title.toString() }),
+    ),
+    nav: html`<a href="${format(backMatch.formatter, { id: preprint.id })}" class="back"
+      >${t('add-author-form', 'back')()}</a
+    >`,
     main: html`
       <form method="post" action="${format(writeReviewAddAuthorMatch.formatter, { id: preprint.id })}" novalidate>
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
+                <h2 id="error-summary-title">${t('add-author-form', 'errorSummaryTitle')()}</h2>
                 <ul>
                   ${E.isLeft(form.name)
                     ? html`
                         <li>
                           <a href="#name">
                             ${match(form.name.left)
-                              .with({ _tag: 'MissingE' }, () => 'Enter their name')
+                              .with({ _tag: 'MissingE' }, t('add-author-form', 'enterTheirName'))
                               .exhaustive()}
                           </a>
                         </li>
@@ -51,11 +58,8 @@ export function addAuthorForm({
                         <li>
                           <a href="#email-address">
                             ${match(form.emailAddress.left)
-                              .with({ _tag: 'MissingE' }, () => 'Enter their email address')
-                              .with(
-                                { _tag: 'InvalidE' },
-                                () => 'Enter an email address in the correct format, like name@example.com',
-                              )
+                              .with({ _tag: 'MissingE' }, t('add-author-form', 'enterTheirEmail'))
+                              .with({ _tag: 'InvalidE' }, t('add-author-form', 'invalidEmail'))
                               .exhaustive()}
                           </a>
                         </li>
@@ -66,19 +70,19 @@ export function addAuthorForm({
             `
           : ''}
 
-        <h1>Add an author</h1>
+        <h1>${t('add-author-form', 'addAuthor')()}</h1>
 
         <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
-          <h2><label for="name">Name</label></h2>
+          <h2><label for="name">${t('add-author-form', 'nameInputLabel')()}</label></h2>
 
-          <p id="name-tip" role="note">They will be able to choose their published name.</p>
+          <p id="name-tip" role="note">${t('add-author-form', 'theyWillChooseTheirName')()}</p>
 
           ${E.isLeft(form.name)
             ? html`
                 <div class="error-message" id="name-error">
                   <span class="visually-hidden">Error:</span>
                   ${match(form.name.left)
-                    .with({ _tag: 'MissingE' }, () => 'Enter their name')
+                    .with({ _tag: 'MissingE' }, t('add-author-form', 'enterTheirName'))
                     .exhaustive()}
                 </div>
               `
@@ -100,20 +104,17 @@ export function addAuthorForm({
         </div>
 
         <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
-          <h2><label for="email-address">Email address</label></h2>
+          <h2><label for="email-address">${t('add-author-form', 'emailAddress')()}</label></h2>
 
-          <p id="email-address-tip" role="note">We’ll only use this to contact them about this PREreview.</p>
+          <p id="email-address-tip" role="note">${t('add-author-form', 'useOfEmail')()}</p>
 
           ${E.isLeft(form.emailAddress)
             ? html`
                 <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">Error:</span>
+                  <span class="visually-hidden">${t('add-author-form', 'error')()}:</span>
                   ${match(form.emailAddress.left)
-                    .with({ _tag: 'MissingE' }, () => 'Enter their email address')
-                    .with(
-                      { _tag: 'InvalidE' },
-                      () => 'Enter an email address in the correct format, like name@example.com',
-                    )
+                    .with({ _tag: 'MissingE' }, t('add-author-form', 'enterTheirEmail'))
+                    .with({ _tag: 'InvalidE' }, t('add-author-form', 'invalidEmail'))
                     .exhaustive()}
                 </div>
               `
@@ -137,7 +138,7 @@ export function addAuthorForm({
           />
         </div>
 
-        <button>Save and continue</button>
+        <button>${t('add-author-form', 'saveAndContinue')()}</button>
       </form>
     `,
     canonical: format(writeReviewAddAuthorMatch.formatter, { id: preprint.id }),

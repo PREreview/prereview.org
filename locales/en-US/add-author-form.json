@@ -1,0 +1,41 @@
+{
+  "title": {
+    "message": "<error>Error: </error>Add an author – PREreview of “{preprintTitle}”"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "errorSummaryTitle": {
+    "message": "There is a problem"
+  },
+  "enterTheirName": {
+    "message": "Enter their name"
+  },
+  "enterTheirEmail": {
+    "message": "Enter their email address"
+  },
+  "invalidEmail": {
+    "message": "Enter an email address in the correct format, like name@example.com"
+  },
+  "addAuthor": {
+    "message": "Add an author"
+  },
+  "nameInputLabel": {
+    "message": "Name"
+  },
+  "theyWillChooseTheirName": {
+    "message": "They will be able to choose their published name."
+  },
+  "emailAddress": {
+    "message": "Email address"
+  },
+  "useOfEmail": {
+    "message": "We’ll only use this to contact them about this PREreview."
+  },
+  "error": {
+    "message": "Error"
+  },
+  "saveAndContinue": {
+    "message": "Save and continue"
+  }
+}
