@@ -11,6 +11,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE, missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes.js'
@@ -48,6 +49,7 @@ export const writeReviewChangeAuthor = ({
         pipe(
           RTE.Do,
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+          RTE.apS('locale', RTE.of(DefaultLocale)),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
           RTE.let('body', () => body),
@@ -92,7 +94,10 @@ export const writeReviewChangeAuthor = ({
                   RT.of(
                     changeAuthorForm({
                       ...state,
-                      form: { name: E.right(state.author.name), emailAddress: E.right(state.author.emailAddress) },
+                      form: {
+                        name: E.right(state.author.name),
+                        emailAddress: E.right(state.author.emailAddress),
+                      },
                     }),
                   ),
                 ),
@@ -108,6 +113,7 @@ const handleChangeAuthorForm = ({
   number,
   preprint,
   user,
+  locale,
 }: {
   author: { name: NonEmptyString }
   body: unknown
@@ -115,6 +121,7 @@ const handleChangeAuthorForm = ({
   number: number
   preprint: PreprintTitle
   user: User
+  locale: SupportedLocale
 }) =>
   pipe(
     RTE.Do,
@@ -153,7 +160,7 @@ const handleChangeAuthorForm = ({
       error =>
         match(error)
           .with('form-unavailable', () => havingProblemsPage)
-          .with({ name: P.any }, error => changeAuthorForm({ author, form: error, number, preprint }))
+          .with({ name: P.any }, error => changeAuthorForm({ author, form: error, number, preprint, locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
     ),

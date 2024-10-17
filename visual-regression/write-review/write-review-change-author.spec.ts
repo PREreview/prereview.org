@@ -2,6 +2,7 @@ import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import { invalidE, missingE } from '../../src/form.js'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import type { EmailAddress } from '../../src/types/email-address.js'
 import type { NonEmptyString } from '../../src/types/string.js'
@@ -17,6 +18,8 @@ const preprint = {
   language: 'en',
 } satisfies PreprintTitle
 
+const locale = DefaultLocale
+
 test('content looks right', async ({ showPage }) => {
   const response = changeAuthorForm({
     author: { name: 'Josiah Carberry' as NonEmptyString },
@@ -26,6 +29,7 @@ test('content looks right', async ({ showPage }) => {
     },
     number: 1,
     preprint,
+    locale,
   })
 
   const content = await showPage(response)
@@ -42,6 +46,7 @@ test('content looks right when fields are missing', async ({ showPage }) => {
     },
     number: 1,
     preprint,
+    locale,
   })
 
   const content = await showPage(response)
@@ -58,6 +63,7 @@ test('content looks right when fields are invalid', async ({ showPage }) => {
     },
     number: 1,
     preprint,
+    locale,
   })
 
   const content = await showPage(response)
