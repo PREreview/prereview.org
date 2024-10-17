@@ -10,6 +10,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE, missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes.js'
@@ -45,6 +46,7 @@ export const writeReviewAddAuthor = ({
         pipe(
           RTE.Do,
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+          RTE.apS('locale', RTE.of(DefaultLocale)),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
           RTE.let('body', () => body),
@@ -62,7 +64,7 @@ export const writeReviewAddAuthor = ({
             state =>
               match(state)
                 .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleAddAuthorForm)
-                .with({ form: { moreAuthors: 'yes' } }, ({ form, preprint }) =>
+                .with({ form: { moreAuthors: 'yes' } }, ({ form, preprint, locale }) =>
                   RT.of(
                     addAuthorForm({
                       form: {
@@ -71,6 +73,7 @@ export const writeReviewAddAuthor = ({
                       },
                       preprint,
                       otherAuthors: (form.otherAuthors ?? []).length > 0,
+                      locale,
                     }),
                   ),
                 )
@@ -94,6 +97,7 @@ const handleAddAuthorForm = ({
   pipe(
     RTE.Do,
     RTE.let('name', () => pipe(NameFieldD.decode(body), E.mapLeft(missingE))),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.let('emailAddress', () =>
       pipe(
         EmailAddressFieldD.decode(body),
@@ -121,7 +125,12 @@ const handleAddAuthorForm = ({
         match(error)
           .with('form-unavailable', () => havingProblemsPage)
           .with({ name: P.any }, error =>
-            addAuthorForm({ form: error, preprint, otherAuthors: (form.otherAuthors ?? []).length > 0 }),
+            addAuthorForm({
+              form: error,
+              preprint,
+              otherAuthors: (form.otherAuthors ?? []).length > 0,
+              locale: error.locale,
+            }),
           )
           .exhaustive(),
       () => RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),

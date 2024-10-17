@@ -4,6 +4,7 @@ import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import { type InvalidE, type MissingE, hasAnError } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes.js'
@@ -18,6 +19,7 @@ export function addAuthorForm({
   form: AddAuthorForm
   preprint: PreprintTitle
   otherAuthors?: boolean
+  locale: SupportedLocale
 }) {
   const error = hasAnError(form)
   const backMatch = otherAuthors ? writeReviewAddAuthorsMatch : writeReviewAuthorsMatch

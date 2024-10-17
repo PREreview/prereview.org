@@ -1,5 +1,6 @@
 import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
+import { DefaultLocale } from '../../assets/locales/index.js'
 import { invalidE, missingE } from '../../src/form.js'
 import { html } from '../../src/html.js'
 import type { PreprintTitle } from '../../src/preprint.js'
@@ -15,6 +16,7 @@ const preprint = {
   title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
   language: 'en',
 } satisfies PreprintTitle
+const locale = DefaultLocale
 
 test('content looks right', async ({ showPage }) => {
   const response = addAuthorForm({
@@ -23,6 +25,7 @@ test('content looks right', async ({ showPage }) => {
       emailAddress: E.right(undefined),
     },
     preprint,
+    locale,
   })
 
   const content = await showPage(response)
@@ -37,6 +40,7 @@ test('content looks right when fields are missing', async ({ showPage }) => {
       emailAddress: E.left(missingE()),
     },
     preprint,
+    locale,
   })
 
   const content = await showPage(response)
@@ -51,6 +55,7 @@ test('content looks right when fields are invalid', async ({ showPage }) => {
       emailAddress: E.left(invalidE('not an email address')),
     },
     preprint,
+    locale,
   })
 
   const content = await showPage(response)
