@@ -10,6 +10,7 @@ import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorMatch, writeReviewMatch } from '../../routes.js'
@@ -46,6 +47,7 @@ export const writeReviewAddAuthors = ({
         pipe(
           RTE.Do,
           RTE.apS('user', pipe(RTE.fromNullable('no-session' as const)(user))),
+          RTE.apS('locale', RTE.of(DefaultLocale)),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
           RTE.let('body', () => body),
@@ -76,6 +78,7 @@ export const writeReviewAddAuthors = ({
                     ...state,
                     authors: state.authors.value,
                     form: { anotherAuthor: E.right(undefined) },
+                    locale: state.locale,
                   }),
                 )
                 .otherwise(() => pageNotFound),
@@ -89,11 +92,13 @@ const handleAddAuthorsForm = ({
   body,
   form,
   preprint,
+  locale,
 }: {
   authors: O.Some<RNEA.ReadonlyNonEmptyArray<NonNullable<Form['otherAuthors']>[number]>>
   body: unknown
   form: Form
   preprint: PreprintTitle
+  locale: SupportedLocale
 }) =>
   pipe(
     E.Do,
@@ -106,7 +111,7 @@ const handleAddAuthorsForm = ({
       ),
     ),
     E.matchW(
-      error => addAuthorsForm({ authors: authors.value, form: error, preprint }),
+      error => addAuthorsForm({ authors: authors.value, form: error, preprint, locale }),
       state =>
         match(state)
           .with({ anotherAuthor: 'yes' }, () =>

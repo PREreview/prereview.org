@@ -5,6 +5,7 @@ import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { type MissingE, hasAnError } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import {
@@ -29,6 +30,7 @@ export function addAuthorsForm({
   authors: ReadonlyNonEmptyArray<{ name: NonEmptyString; emailAddress: EmailAddress }>
   form: AddAuthorsForm
   preprint: PreprintTitle
+  locale: SupportedLocale
 }) {
   const error = hasAnError(form)
 

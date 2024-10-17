@@ -2,6 +2,7 @@ import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import { missingE } from '../../src/form.js'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import type { EmailAddress } from '../../src/types/email-address.js'
 import type { NonEmptyString } from '../../src/types/string.js'
@@ -17,6 +18,8 @@ const preprint = {
   language: 'en',
 } satisfies PreprintTitle
 
+const locale = DefaultLocale
+
 test('content looks right when there is another author', async ({ showPage }) => {
   const response = addAuthorsForm({
     authors: [{ name: 'Josiah Carberry' as NonEmptyString, emailAddress: 'jcarberry@example.com' as EmailAddress }],
@@ -24,6 +27,7 @@ test('content looks right when there is another author', async ({ showPage }) =>
       anotherAuthor: E.right(undefined),
     },
     preprint,
+    locale,
   })
 
   const content = await showPage(response)
@@ -43,6 +47,7 @@ test('content looks right when there are other authors', async ({ showPage }) =>
       anotherAuthor: E.right(undefined),
     },
     preprint,
+    locale,
   })
 
   const content = await showPage(response)
@@ -57,6 +62,7 @@ test('content looks right when fields are missing', async ({ showPage }) => {
       anotherAuthor: E.left(missingE()),
     },
     preprint,
+    locale,
   })
 
   const content = await showPage(response)
