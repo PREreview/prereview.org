@@ -1,6 +1,6 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../../html.js'
-import type { SupportedLocale } from '../../locales/index.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import { templatePage } from '../../page.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { preprintReviewsMatch } from '../../routes.js'
@@ -13,59 +13,63 @@ export const publishedPage = ({
   preprint,
   url,
   user,
+  locale,
 }: {
   review: PublishedReview
   preprint: PreprintTitle
   url: URL
   user: User
   locale: SupportedLocale
-}) =>
-  templatePage({
-    title: plainText`PREreview published`,
+}) => {
+  const t = translate(locale)
+  const opensInNewTab = t('published-page', 'opensInNewTab')()
+  const communitySlackLink = html`<a href="https://bit.ly/PREreview-Slack" target="_blank" rel="noopener noreferrer"
+    >${t('published-page', 'communitySlack')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
+  >`.toString()
+  const scietyLink = html`<a href="https://sciety.org/" target="_blank" rel="noopener noreferrer"
+    >Sciety<span class="visually-hidden"> (${opensInNewTab})</span></a
+  >`.toString()
+  const mailtoHelp = html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
+    >help@prereview.org<span class="visually-hidden"> (${opensInNewTab})</span></a
+  >`.toString()
+
+  return templatePage({
+    title: plainText(t('published-page', 'title')()),
     content: html`
       <main id="main-content">
         <div class="panel">
-          <h1>PREreview published</h1>
+          <h1>${t('published-page', 'title')()}</h1>
 
           <div>
-            Your DOI <br />
+            ${t('published-page', 'yourDoi')()} <br />
             <strong class="doi" translate="no">${doi}</strong>
           </div>
         </div>
 
-        <h2>What happens next</h2>
+        <h2>${t('published-page', 'whatHappensNext')()}</h2>
 
         <p>
-          You’ll be able to see your PREreview shortly. It’ll also appear on our
-          <a href="https://bit.ly/PREreview-Slack" target="_blank" rel="noopener noreferrer"
-            >Community Slack<span class="visually-hidden"> (opens in a new tab)</span></a
-          >${isScietyPreprint(preprint.id)
-            ? html` and
-                <a href="https://sciety.org/" target="_blank" rel="noopener noreferrer"
-                  >Sciety<span class="visually-hidden"> (opens in a new tab)</span></a
-                >`
-            : ''}.
+          ${rawHtml(
+            t(
+              'published-page',
+              'whereYouCanSeeYourPrereview',
+            )({ communitySlackLink, scietyLink, isScietyPreprint: isScietyPreprint(preprint.id) }),
+          )}
         </p>
 
         ${form.moreAuthors === 'yes' && form.otherAuthors.length === 0
           ? html`
               <div class="inset">
-                <p>
-                  Please let us know the other authors’ details (names and ORCID&nbsp;iDs), and we’ll add them to the
-                  PREreview. Our email address is
-                  <a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
-                    >help@prereview.org<span class="visually-hidden"> (opens in a new tab)</span></a
-                  >.
-                </p>
+                <p>${t('published-page', 'letUsKnowAuthorDetails')({ mailtoHelp })}</p>
               </div>
             `
           : form.moreAuthors === 'yes' && form.otherAuthors.length > 0
-            ? html`<p>We’ve sent emails to the other authors, inviting them to appear.</p> `
+            ? html`<p>${t('published-page', 'sentEmailsToAuthos')()}</p> `
             : ''}
 
-        <h2>Share your review</h2>
+        <h2>${t('published-page', 'shareYourReview')()}</h2>
 
-        <p>Let the community know that you published your review.</p>
+        <p>${t('published-page', 'letCommunityKnow')()}</p>
 
         <div class="button-group" role="group">
           <a
@@ -78,7 +82,7 @@ export const publishedPage = ({
             target="_blank"
             rel="noopener noreferrer"
             class="twitter"
-            >Write a Tweet<span class="visually-hidden"> (opens in a new tab)</span></a
+            >${t('published-page', 'writeATweet')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
           >
           <a
             href="https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({
@@ -87,32 +91,43 @@ export const publishedPage = ({
             target="_blank"
             rel="noopener noreferrer"
             class="linked-in"
-            >Share it on LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a
+            >${t('published-page', 'shareOnLinkedin')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
           >
           ${isScietyPreprint(preprint.id)
             ? html` <a href="${scietyUrl(preprint.id).href}" target="_blank" rel="noopener noreferrer" class="sciety"
-                >List it on Sciety<span class="visually-hidden"> (opens in a new tab)</span></a
+                >${t('published-page', 'listOnSciety')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
               >`
             : ''}
         </div>
 
-        <h2>Let us know how it went</h2>
+        <h2>${t('published-page', 'howItWent')()}</h2>
 
         <p>
-          <a
-            href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Schedule an interview<span class="visually-hidden"> (opens in a new tab)</span></a
-          >
-          with our product team to discuss your experience on PREreview. We gladly compensate interviewees in
-          appreciation for their help!
+          ${rawHtml(
+            t(
+              'published-page',
+              'scheduleAnInterview',
+            )({
+              link: (s: string) =>
+                html`
+                  <a
+                    href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >${s}<span class="visually-hidden"> (${opensInNewTab})</span></a
+                  >
+                `.toString(),
+            }),
+          )}
         </p>
 
-        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="button">Back to preprint</a>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="button"
+          >${t('published-page', 'backToPreprint')()}</a
+        >
       </main>
     `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
+    skipLinks: [[html`${t('published-page', 'skipToMain')()}`, '#main-content']],
     type: 'streamline',
     user,
   })
+}

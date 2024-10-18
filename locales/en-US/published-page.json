@@ -1,0 +1,53 @@
+{
+  "title": {
+    "message": "PREreview published"
+  },
+  "yourDoi": {
+    "message": "Your DOI"
+  },
+  "whatHappensNext": {
+    "message": "What happens next"
+  },
+  "whereYouCanSeeYourPrereview": {
+    "message": "You’ll be able to see your PREreview shortly. It’ll also appear on our {communitySlackLink}{isScietyPreprint, boolean, true { and {scietyLink}} false {}}."
+  },
+  "communitySlack": {
+    "message": "Community Slack"
+  },
+  "opensInNewTab": {
+    "message": "opens in a new tab"
+  },
+  "letUsKnowAuthorDetails": {
+    "message": "Please let us know the other authors’ details (names and ORCID&nbsp;iDs), and we’ll add them to the PREreview. Our email address is {mailtoHelp}."
+  },
+  "sentEmailsToAuthos": {
+    "message": "We’ve sent emails to the other authors, inviting them to appear."
+  },
+  "shareYourReview": {
+    "message": "Share your review"
+  },
+  "letCommunityKnow": {
+    "message": "Let the community know that you published your review."
+  },
+  "writeATweet": {
+    "message": "Write a Tweet"
+  },
+  "shareOnLinkedin": {
+    "message": "Share it on LinkedIn"
+  },
+  "listOnSciety": {
+    "message": "List it on Sciety"
+  },
+  "howItWent": {
+    "message": "Let us know how it went"
+  },
+  "scheduleAnInterview": {
+    "message": "<link>Schedule an interview</link> with our product team to discuss your experience on PREreview. We gladly compensate interviewees in appreciation for their help!"
+  },
+  "backToPreprint": {
+    "message": "Back to preprint"
+  },
+  "skipToMain": {
+    "message": "Skip to main content"
+  }
+}
