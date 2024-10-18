@@ -1,5 +1,6 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { templatePage } from '../../page.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { preprintReviewsMatch } from '../../routes.js'
@@ -17,6 +18,7 @@ export const publishedPage = ({
   preprint: PreprintTitle
   url: URL
   user: User
+  locale: SupportedLocale
 }) =>
   templatePage({
     title: plainText`PREreview published`,

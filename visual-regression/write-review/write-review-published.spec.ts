@@ -1,6 +1,7 @@
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import type { EmailAddress } from '../../src/types/email-address.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
@@ -9,6 +10,8 @@ import type { User } from '../../src/user.js'
 import type { CompletedForm } from '../../src/write-review/completed-form.js'
 import { publishedPage } from '../../src/write-review/published-page/published-page.js'
 import { expect, test } from '../base.js'
+
+const locale = DefaultLocale
 
 test('content looks right', async ({ page, showHtml, templatePage }) => {
   const pageHtml = publishedPage({
@@ -20,6 +23,7 @@ test('content looks right', async ({ page, showHtml, templatePage }) => {
     preprint,
     url: new URL('http://example.com/review'),
     user,
+    locale,
   })({ templatePage })
 
   await showHtml(pageHtml)
@@ -41,6 +45,7 @@ test('content looks right when the preprint is not on Sciety', async ({ page, sh
     },
     url: new URL('http://example.com/review'),
     user,
+    locale,
   })({ templatePage })
 
   await showHtml(pageHtml)
@@ -66,6 +71,7 @@ test('content looks right when there are more authors', async ({ page, showHtml,
     preprint,
     url: new URL('http://example.com/review'),
     user,
+    locale,
   })({ templatePage })
 
   await showHtml(pageHtml)

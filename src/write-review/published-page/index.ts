@@ -4,6 +4,7 @@ import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { P, match } from 'ts-pattern'
 import { sendHtml } from '../../html.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { notFound, seeOther, serviceUnavailable } from '../../middleware.js'
 import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { toUrl } from '../../public-url.js'
@@ -19,6 +20,7 @@ export const writeReviewPublished = flow(
       RM.right({ preprint }),
       RM.apSW('user', getUser),
       RM.apSW('review', getPublishedReview),
+      RM.apS('locale', RM.of(DefaultLocale)),
       RM.ichainW(showSuccessMessage),
       RM.orElseW(error =>
         match(error)
@@ -44,13 +46,15 @@ const showSuccessMessage = ({
   review,
   preprint,
   user,
+  locale,
 }: {
   review: PublishedReview
   preprint: PreprintTitle
   user: User
+  locale: SupportedLocale
 }) =>
   pipe(
-    RM.of({ review, preprint, user }),
+    RM.of({ review, preprint, user, locale }),
     RM.apS('url', RM.rightReader(toUrl(reviewMatch.formatter, { id: review.id }))),
     RM.chainReaderKW(publishedPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
