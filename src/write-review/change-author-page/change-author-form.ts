@@ -1,21 +1,24 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
-import { type InvalidE, type MissingE, hasAnError } from '../../form.js'
+import { hasAnError, type InvalidE, type MissingE } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
-import type { SupportedLocale } from '../../locales/index.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewChangeAuthorMatch } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import type { NonEmptyString } from '../../types/string.js'
+import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from '../shared-elements.js'
 
 export function changeAuthorForm({
   author,
   form,
   number,
   preprint,
+  locale,
 }: {
   author: { name: NonEmptyString }
   form: ChangeAuthorForm
@@ -24,67 +27,36 @@ export function changeAuthorForm({
   locale: SupportedLocale
 }) {
   const error = hasAnError(form)
+  const t = translate(locale)
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}Change ${author.name}’s details – PREreview of “${preprint.title}”`,
-    nav: html`<a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}" class="back">Back</a>`,
+    title: pipe(
+      t('change-author-form', 'title')({ name: author.name, preprintTitle: preprint.title.toString() }),
+      errorPrefix(locale, error),
+      plainText,
+    ),
+    nav: backNav(locale, format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })),
     main: html`
       <form
         method="post"
         action="${format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number })}"
         novalidate
       >
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${E.isLeft(form.name)
-                    ? html`
-                        <li>
-                          <a href="#name">
-                            ${match(form.name.left)
-                              .with({ _tag: 'MissingE' }, () => 'Enter their name')
-                              .exhaustive()}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                  ${E.isLeft(form.emailAddress)
-                    ? html`
-                        <li>
-                          <a href="#email-address">
-                            ${match(form.emailAddress.left)
-                              .with({ _tag: 'MissingE' }, () => 'Enter their email address')
-                              .with(
-                                { _tag: 'InvalidE' },
-                                () => 'Enter an email address in the correct format, like name@example.com',
-                              )
-                              .exhaustive()}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <h1>Change ${author.name}’s details</h1>
+        <h1>${t('change-author-form', 'changeAuthorDetails')({ name: author.name })}</h1>
 
         <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
-          <h2><label for="name">Name</label></h2>
+          <h2><label for="name">${t('change-author-form', 'name')()}</label></h2>
 
-          <p id="name-tip" role="note">They will be able to choose their published name.</p>
+          <p id="name-tip" role="note">${t('change-author-form', 'ableToChoseName')()}</p>
 
           ${E.isLeft(form.name)
             ? html`
                 <div class="error-message" id="name-error">
-                  <span class="visually-hidden">Error:</span>
-                  ${match(form.name.left)
-                    .with({ _tag: 'MissingE' }, () => 'Enter their name')
-                    .exhaustive()}
+                  <span class="visually-hidden">${t('change-author-form', 'error')()}:</span>
+                  ${match(form.name.left).with({ _tag: 'MissingE' }, t('change-author-form', 'enterName')).exhaustive()}
                 </div>
               `
             : ''}
@@ -104,20 +76,17 @@ export function changeAuthorForm({
         </div>
 
         <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
-          <h2><label for="email-address">Email address</label></h2>
+          <h2><label for="email-address">${t('change-author-form', 'emailAddress')()}</label></h2>
 
-          <p id="email-address-tip" role="note">We’ll only use this to contact them about this PREreview.</p>
+          <p id="email-address-tip" role="note">${t('change-author-form', 'useOfEmail')()}</p>
 
           ${E.isLeft(form.emailAddress)
             ? html`
                 <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">Error:</span>
+                  <span class="visually-hidden">${t('change-author-form', 'error')()}:</span>
                   ${match(form.emailAddress.left)
-                    .with({ _tag: 'MissingE' }, () => 'Enter their email address')
-                    .with(
-                      { _tag: 'InvalidE' },
-                      () => 'Enter an email address in the correct format, like name@example.com',
-                    )
+                    .with({ _tag: 'MissingE' }, t('change-author-form', 'enterEmail'))
+                    .with({ _tag: 'InvalidE' }, t('change-author-form', 'invalidEmail'))
                     .exhaustive()}
                 </div>
               `
@@ -140,7 +109,7 @@ export function changeAuthorForm({
           />
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number }),
@@ -153,3 +122,29 @@ export interface ChangeAuthorForm {
   readonly name: E.Either<MissingE, NonEmptyString>
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress>
 }
+
+const toErrorItems = (locale: SupportedLocale) => (form: ChangeAuthorForm) => html`
+  ${E.isLeft(form.name)
+    ? html`
+        <li>
+          <a href="#name">
+            ${match(form.name.left)
+              .with({ _tag: 'MissingE' }, translate(locale, 'change-author-form', 'enterName'))
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+  ${E.isLeft(form.emailAddress)
+    ? html`
+        <li>
+          <a href="#email-address">
+            ${match(form.emailAddress.left)
+              .with({ _tag: 'MissingE' }, translate(locale, 'change-author-form', 'enterEmail'))
+              .with({ _tag: 'InvalidE' }, translate(locale, 'change-author-form', 'invalidEmail'))
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+`

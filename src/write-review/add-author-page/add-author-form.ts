@@ -11,7 +11,7 @@ import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import type { NonEmptyString } from '../../types/string.js'
-import { backNav, errorPrefix, errorSummary } from '../shared-elements.js'
+import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from '../shared-elements.js'
 
 export function addAuthorForm({
   form,
@@ -108,7 +108,7 @@ export function addAuthorForm({
           />
         </div>
 
-        <button>${t('add-author-form', 'saveAndContinue')()}</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: format(writeReviewAddAuthorMatch.formatter, { id: preprint.id }),
