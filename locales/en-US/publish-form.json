@@ -95,6 +95,9 @@
   "nowPublish": {
     "message": "Now publish your PREreview"
   },
+  "weWillAssignLicense": {
+    "message": "We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a {licenseLink} license."
+  },
   "publishButton": {
     "message": "Publish PREreview"
   }

@@ -348,8 +348,14 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
           <h2>${t('publish-form', 'nowPublish')()}</h2>
 
           <p>
-            We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a
-            <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0 license</a>.
+            ${rawHtml(
+              t(
+                'publish-form',
+                'weWillAssignLicense',
+              )({
+                licenseLink: '<a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a>',
+              }),
+            )}
           </p>
 
           <button>${t('publish-form', 'publishButton')()}</button>
