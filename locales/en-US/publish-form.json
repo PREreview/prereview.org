@@ -1,0 +1,101 @@
+{
+  "title": {
+    "message": "Publish your PREreview of “{preprintTitle}”"
+  },
+  "checkPrereview": {
+    "message": "Check your PREreview"
+  },
+  "preprintDetails": {
+    "message": "Preprint details"
+  },
+  "preprintTitle": {
+    "message": "Title"
+  },
+  "preprintServer": {
+    "message": "Preprint server"
+  },
+  "authorDetails": {
+    "message": "Author details"
+  },
+  "yourDetails": {
+    "message": "Your details"
+  },
+  "yourPublishedName": {
+    "message": "Your published name"
+  },
+  "publishedName": {
+    "message": "Published name"
+  },
+  "changeName": {
+    "message": "Change <visuallyHidden>name</visuallyHidden>"
+  },
+  "changeInvitedAuthors": {
+    "message": "Change <visuallyHidden>invited authors</visuallyHidden>"
+  },
+  "changeCompetingInterests": {
+    "message": "Change <visuallyHidden>competing interests</visuallyHidden>"
+  },
+  "changePrereview": {
+    "message": "Change <visuallyHidden>PREreview</visuallyHidden>"
+  },
+  "doesIntroductionExplain": {
+    "message": "Does the introduction explain the objective of the research presented in the preprint?"
+  },
+  "changeIfIntroExplains": {
+    "message": "Change <visuallyHidden>if the introduction explains the objective of the research presented in the preprint</visuallyHidden>"
+  },
+  "methodsWellSuited": {
+    "message": "Are the methods well-suited for this research?"
+  },
+  "changeMethodsWellSuited": {
+    "message": "Change <visuallyHidden>if the methods are well-suited for this research</visuallyHidden>"
+  },
+  "conclusionsSupported": {
+    "message": "Are the conclusions supported by the data?"
+  },
+  "changeConclusionsSupported": {
+    "message": "Change <visuallyHidden>if the conclusions are supported by the data</visuallyHidden>"
+  },
+  "dataPresentationWellSuited": {
+    "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
+  },
+  "changeDataPresentationWellSuited": {
+    "message": "Change <visuallyHidden>if the data presentations are well-suited to represent the data?</visuallyHidden>"
+  },
+  "clearDiscussion": {
+    "message": "How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?"
+  },
+  "changeClearDiscussion": {
+    "message": "Change <visuallyHidden>how clearly the authors discuss their findings and next steps</visuallyHidden>"
+  },
+  "advanceKnowledge": {
+    "message": "Is the preprint likely to advance academic knowledge?"
+  },
+  "changeAdvanceKnowledge": {
+    "message": "Change <visuallyHidden>if the preprint is likely to advance academic knowledge</visuallyHidden>"
+  },
+  "benefitFromEditing": {
+    "message": "Would it benefit from language editing?"
+  },
+  "changeBenefitFromEditing": {
+    "message": "Change <visuallyHidden>if it would benefit from language editing</visuallyHidden>"
+  },
+  "wouldRecommend": {
+    "message": "Would you recommend this preprint to others?"
+  },
+  "changeWouldRecommend": {
+    "message": "Change <visuallyHidden>if you would recommend this preprint to others</visuallyHidden>"
+  },
+  "readyForAttention": {
+    "message": "Is it ready for attention from an editor, publisher or broader audience?"
+  },
+  "changeReadyForAttention": {
+    "message": "Change <visuallyHidden>it it is ready for attention from an editor, publisher or broader audience</visuallyHidden>"
+  },
+  "nowPublish": {
+    "message": "Now publish your PREreview"
+  },
+  "publishButton": {
+    "message": "Publish PREreview"
+  }
+}
