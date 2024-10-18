@@ -1,6 +1,7 @@
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import type { EmailAddress } from '../../src/types/email-address.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
@@ -23,6 +24,8 @@ const user = {
   orcid: Orcid('0000-0002-1825-0097'),
   pseudonym: 'Orange Panda' as Pseudonym,
 } satisfies User
+
+const locale = DefaultLocale
 
 test("content looks right when it's freeform", async ({ showPage }) => {
   const response = publishForm(
@@ -62,6 +65,7 @@ test("content looks right when it's freeform", async ({ showPage }) => {
       conduct: 'yes',
     },
     user,
+    locale,
   )
 
   const content = await showPage(response)
@@ -84,6 +88,7 @@ test("content looks right when there's competing interests", async ({ showPage }
       conduct: 'yes',
     },
     user,
+    locale,
   )
 
   const content = await showPage(response)
@@ -109,6 +114,7 @@ test('content looks right when there are other authors', async ({ showPage }) =>
       conduct: 'yes',
     },
     user,
+    locale,
   )
 
   const content = await showPage(response)
@@ -146,6 +152,7 @@ test("content looks right when it's questions", async ({ showPage }) => {
       conduct: 'yes',
     },
     user,
+    locale,
   )
 
   const content = await showPage(response)
@@ -188,6 +195,7 @@ test("content looks right when it's questions with details", async ({ showPage }
       conduct: 'yes',
     },
     user,
+    locale,
   )
 
   const content = await showPage(response)

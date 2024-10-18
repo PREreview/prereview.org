@@ -7,7 +7,7 @@ import rtlDetect from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
-import { DefaultLocale } from '../../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import {
@@ -32,7 +32,8 @@ import { isPseudonym } from '../../types/pseudonym.js'
 import type { User } from '../../user.js'
 import type { CompletedForm } from '../completed-form.js'
 
-export function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User, locale: SupportedLocale) {
   return StreamlinePageResponse({
     title: plainText`Publish your PREreview of “${preprint.title}”`,
     nav: html` <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back">Back</a>`,

@@ -13,6 +13,7 @@ import { P, match } from 'ts-pattern'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../../contact-email-address.js'
 import { detectLanguage } from '../../detect-language.js'
 import { type Html, fixHeadingLevels, html, plainText, sendHtml } from '../../html.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware.js'
 import { type TemplatePageEnv, templatePage } from '../../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
@@ -49,6 +50,7 @@ export const writeReviewPublish = flow(
     pipe(
       RM.right({ preprint }),
       RM.apSW('user', getUser),
+      RM.apS('locale', RM.of(DefaultLocale)),
       RM.bindW(
         'originalForm',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -83,6 +85,7 @@ const decideNextStep = (state: {
   originalForm: Form
   preprint: PreprintTitle
   user: User
+  locale: SupportedLocale
 }) =>
   match(state)
     .returnType<
@@ -157,11 +160,21 @@ const handlePublishForm = ({
     RM.orElseW(() => showFailureMessage(user)),
   )
 
-const showPublishForm = ({ form, preprint, user }: { form: CompletedForm; preprint: PreprintTitle; user: User }) =>
+const showPublishForm = ({
+  form,
+  preprint,
+  user,
+  locale,
+}: {
+  form: CompletedForm
+  preprint: PreprintTitle
+  user: User
+  locale: SupportedLocale
+}) =>
   pipe(
     RM.of({}),
     RM.apS('user', RM.of(user)),
-    RM.apS('response', RM.of(publishForm(preprint, form, user))),
+    RM.apS('response', RM.of(publishForm(preprint, form, user, locale))),
     RM.ichainW(handlePageResponse),
   )
 
