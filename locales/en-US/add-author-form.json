@@ -1,12 +1,6 @@
 {
   "title": {
-    "message": "<error>Error: </error>Add an author – PREreview of “{preprintTitle}”"
-  },
-  "back": {
-    "message": "Back"
-  },
-  "errorSummaryTitle": {
-    "message": "There is a problem"
+    "message": "Add an author – PREreview of “{preprintTitle}”"
   },
   "enterTheirName": {
     "message": "Enter their name"

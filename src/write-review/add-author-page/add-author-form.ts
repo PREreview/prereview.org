@@ -1,6 +1,6 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { identity } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import { hasAnError, type InvalidE, type MissingE } from '../../form.js'
@@ -11,6 +11,7 @@ import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import type { NonEmptyString } from '../../types/string.js'
+import { backNav, errorPrefix, errorSummary } from '../shared-elements.js'
 
 export function addAuthorForm({
   form,
@@ -29,46 +30,15 @@ export function addAuthorForm({
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText(
-      t('add-author-form', 'title')({ error: error ? identity : () => '', preprintTitle: preprint.title.toString() }),
+    title: pipe(
+      t('add-author-form', 'title')({ preprintTitle: preprint.title.toString() }),
+      errorPrefix(locale, error),
+      plainText,
     ),
-    nav: html`<a href="${format(backMatch.formatter, { id: preprint.id })}" class="back"
-      >${t('add-author-form', 'back')()}</a
-    >`,
+    nav: backNav(locale, format(backMatch.formatter, { id: preprint.id })),
     main: html`
       <form method="post" action="${format(writeReviewAddAuthorMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${t('add-author-form', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.name)
-                    ? html`
-                        <li>
-                          <a href="#name">
-                            ${match(form.name.left)
-                              .with({ _tag: 'MissingE' }, t('add-author-form', 'enterTheirName'))
-                              .exhaustive()}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                  ${E.isLeft(form.emailAddress)
-                    ? html`
-                        <li>
-                          <a href="#email-address">
-                            ${match(form.emailAddress.left)
-                              .with({ _tag: 'MissingE' }, t('add-author-form', 'enterTheirEmail'))
-                              .with({ _tag: 'InvalidE' }, t('add-author-form', 'invalidEmail'))
-                              .exhaustive()}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
         <h1>${t('add-author-form', 'addAuthor')()}</h1>
 
@@ -151,3 +121,29 @@ export interface AddAuthorForm {
   readonly name: E.Either<MissingE, NonEmptyString | undefined>
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>
 }
+
+const toErrorItems = (locale: SupportedLocale) => (form: AddAuthorForm) => html`
+  ${E.isLeft(form.name)
+    ? html`
+        <li>
+          <a href="#name">
+            ${match(form.name.left)
+              .with({ _tag: 'MissingE' }, translate(locale)('add-author-form', 'enterTheirName'))
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+  ${E.isLeft(form.emailAddress)
+    ? html`
+        <li>
+          <a href="#email-address">
+            ${match(form.emailAddress.left)
+              .with({ _tag: 'MissingE' }, translate(locale)('add-author-form', 'enterTheirEmail'))
+              .with({ _tag: 'InvalidE' }, translate(locale)('add-author-form', 'invalidEmail'))
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+`
