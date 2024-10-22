@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Data, Effect, Either, Match, pipe } from 'effect'
+import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
 import markdownIt from 'markdown-it'
 import type * as Feedback from '../../Feedback/index.js'
 import { type Html, sanitizeHtml } from '../../html.js'

@@ -1,7 +1,8 @@
 import type { HttpRouter } from '@effect/platform'
-import { Schema } from '@effect/schema'
+
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
+import { Schema } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as O from 'fp-ts/lib/Option.js'
 import { identity, pipe, tuple } from 'fp-ts/lib/function.js'

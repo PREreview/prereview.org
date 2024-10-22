@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Data, Effect, Either, Match, pipe } from 'effect'
+import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
 import type * as Feedback from '../../Feedback/index.js'
 
 export type CodeOfConductForm = EmptyForm | InvalidForm | CompletedForm

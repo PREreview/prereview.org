@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Data, Effect } from 'effect'
+import { Data, Effect, Schema } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'

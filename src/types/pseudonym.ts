@@ -1,6 +1,6 @@
-import { Schema } from '@effect/schema'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
+import { Schema } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'

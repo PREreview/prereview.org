@@ -1,6 +1,5 @@
-import { Schema } from '@effect/schema'
 import { isDoi, type Doi } from 'doi-ts'
-import { pipe } from 'effect'
+import { pipe, Schema } from 'effect'
 import { isOrcid, type Orcid } from 'orcid-id-ts'
 import { rawHtml, type Html } from '../html.js'
 

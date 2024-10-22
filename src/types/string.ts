@@ -1,4 +1,4 @@
-import { Schema } from '@effect/schema'
+import { Schema } from 'effect'
 import type { Eq } from 'fp-ts/lib/Eq.js'
 import type { Ord } from 'fp-ts/lib/Ord.js'
 import { pipe } from 'fp-ts/lib/function.js'

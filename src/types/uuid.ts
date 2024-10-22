@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Context, Effect } from 'effect'
+import { Context, Effect, Schema } from 'effect'
 import type { IO } from 'fp-ts/lib/IO.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import { pipe } from 'fp-ts/lib/function.js'
