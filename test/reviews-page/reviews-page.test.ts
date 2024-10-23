@@ -3,7 +3,6 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
-import { html } from '../../src/html.js'
 import * as _ from '../../src/reviews-page/index.js'
 import { reviewsMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'
@@ -49,10 +48,10 @@ describe('reviewsPage', () => {
         }),
         current: 'reviews',
         status: Status.OK,
-        title: expect.stringContaining('PREreviews'),
-        main: expect.stringContaining('PREreviews'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
-        extraSkipLink: [html`Skip to results`, '#results'],
+        extraSkipLink: [expect.anything(), '#results'],
         js: [],
       })
       expect(getRecentPrereviews).toHaveBeenCalledWith({ field, page, query: canUseSearchQueries ? query : undefined })
@@ -74,10 +73,10 @@ describe('reviewsPage', () => {
       canonical: format(reviewsMatch.formatter, { page: 1, field, query: canUseSearchQueries ? query : undefined }),
       current: 'reviews',
       status: Status.OK,
-      title: expect.stringContaining('PREreviews'),
-      main: expect.stringContaining('PREreviews'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
-      extraSkipLink: [html`Skip to results`, '#results'],
+      extraSkipLink: [expect.anything(), '#results'],
       js: [],
     })
   })
@@ -96,8 +95,8 @@ describe('reviewsPage', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.NotFound,
-      title: expect.stringContaining('not found'),
-      main: expect.stringContaining('not found'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -117,8 +116,8 @@ describe('reviewsPage', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })

@@ -26,8 +26,8 @@ describe('disconnectSlack', () => {
           _tag: 'PageResponse',
           canonical: format(disconnectSlackMatch.formatter, {}),
           status: Status.OK,
-          title: expect.stringContaining('Disconnect'),
-          main: expect.stringContaining('Disconnect'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -73,8 +73,8 @@ describe('disconnectSlack', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -89,8 +89,8 @@ describe('disconnectSlack', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

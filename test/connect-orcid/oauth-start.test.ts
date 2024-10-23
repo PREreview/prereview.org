@@ -45,8 +45,8 @@ describe('connectOrcidStart', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })

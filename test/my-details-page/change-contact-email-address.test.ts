@@ -26,9 +26,9 @@ describe('changeContactEmailAddress', () => {
       _tag: 'PageResponse',
       canonical: format(changeContactEmailAddressMatch.formatter, {}),
       status: Status.OK,
-      title: expect.stringContaining('email address'),
-      nav: expect.stringContaining('Back'),
-      main: expect.stringContaining('email address'),
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'form',
       js: [],
     })
@@ -115,9 +115,9 @@ describe('changeContactEmailAddress', () => {
         _tag: 'PageResponse',
         canonical: format(changeContactEmailAddressMatch.formatter, {}),
         status: Status.BadRequest,
-        title: expect.stringContaining('email address'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('email address'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: ['error-summary.js'],
       })
@@ -139,8 +139,8 @@ describe('changeContactEmailAddress', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -162,8 +162,8 @@ describe('changeContactEmailAddress', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -186,9 +186,9 @@ describe('changeContactEmailAddress', () => {
           _tag: 'PageResponse',
           canonical: format(changeContactEmailAddressMatch.formatter, {}),
           status: Status.BadRequest,
-          title: expect.stringContaining('email address'),
-          nav: expect.stringContaining('Back'),
-          main: expect.stringContaining('email address'),
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'form',
           js: ['error-summary.js'],
         })

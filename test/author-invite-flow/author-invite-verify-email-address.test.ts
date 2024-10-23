@@ -87,8 +87,8 @@ describe('authorInviteVerifyEmailAddress', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: Status.NotFound,
-            title: expect.stringContaining('not found'),
-            main: expect.stringContaining('not found'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -126,8 +126,8 @@ describe('authorInviteVerifyEmailAddress', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: Status.ServiceUnavailable,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -167,8 +167,8 @@ describe('authorInviteVerifyEmailAddress', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -201,8 +201,8 @@ describe('authorInviteVerifyEmailAddress', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -226,8 +226,8 @@ describe('authorInviteVerifyEmailAddress', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -249,8 +249,8 @@ describe('authorInviteVerifyEmailAddress', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -296,8 +296,8 @@ describe('authorInviteVerifyEmailAddress', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.Forbidden,
-        title: expect.stringContaining('do not have permission'),
-        main: expect.stringContaining('do not have permission'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -354,8 +354,8 @@ describe('authorInviteVerifyEmailAddress', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })

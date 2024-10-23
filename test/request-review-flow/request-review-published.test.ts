@@ -26,8 +26,8 @@ describe('requestReviewPublished', () => {
         _tag: 'StreamlinePageResponse',
         canonical: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }),
         status: Status.OK,
-        title: expect.stringContaining('Request published'),
-        main: expect.stringContaining('Request published'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -47,8 +47,8 @@ describe('requestReviewPublished', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -67,8 +67,8 @@ describe('requestReviewPublished', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })

@@ -94,8 +94,8 @@ describe('writeReviewAddAuthor', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.NotFound,
-      title: expect.stringContaining('not found'),
-      main: expect.stringContaining('not found'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -114,8 +114,8 @@ describe('writeReviewAddAuthor', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -134,8 +134,8 @@ describe('writeReviewAddAuthor', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

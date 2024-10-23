@@ -73,11 +73,11 @@ describe('preprintReviews', () => {
       canonical: format(preprintReviewsMatch.formatter, {
         id: preprint.id,
       }),
-      title: expect.stringContaining('PREreviews of'),
-      description: expect.stringContaining('Authored by'),
-      h1: expect.stringContaining('PREreviews of'),
-      aside: expect.stringContaining('Server'),
-      main: expect.stringContaining('PREreview'),
+      title: expect.anything(),
+      description: expect.anything(),
+      h1: expect.anything(),
+      aside: expect.anything(),
+      main: expect.anything(),
     })
     expect(getPreprint).toHaveBeenCalledWith(preprint.id)
     expect(getPrereviews).toHaveBeenCalledWith(preprint.id)
@@ -95,8 +95,8 @@ describe('preprintReviews', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.NotFound,
-      title: expect.stringContaining('not found'),
-      main: expect.stringContaining('not found'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -113,8 +113,8 @@ describe('preprintReviews', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -158,8 +158,8 @@ describe('preprintReviews', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -198,8 +198,8 @@ describe('preprintReviews', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })

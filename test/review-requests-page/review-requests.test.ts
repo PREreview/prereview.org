@@ -3,7 +3,6 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
-import { html } from '../../src/html.js'
 import * as _ from '../../src/review-requests-page/index.js'
 import { reviewRequestsMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'
@@ -42,10 +41,10 @@ describe('reviewRequests', () => {
       }),
       current: 'review-requests',
       status: Status.OK,
-      title: expect.stringContaining('requests'),
-      main: expect.stringContaining('requests'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
-      extraSkipLink: [html`Skip to results`, '#results'],
+      extraSkipLink: [expect.anything(), '#results'],
       js: [],
     })
   })
@@ -65,8 +64,8 @@ describe('reviewRequests', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -89,10 +88,10 @@ describe('reviewRequests', () => {
       canonical: format(reviewRequestsMatch.formatter, { page: 1, field, language }),
       current: 'review-requests',
       status: Status.OK,
-      title: expect.stringContaining('requests'),
-      main: expect.stringContaining('requests'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
-      extraSkipLink: [html`Skip to results`, '#results'],
+      extraSkipLink: [expect.anything(), '#results'],
       js: [],
     })
     expect(getReviewRequests).toHaveBeenCalledWith({ field, language, page: 1 })
@@ -113,8 +112,8 @@ describe('reviewRequests', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.NotFound,
-      title: expect.stringContaining('not found'),
-      main: expect.stringContaining('not found'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })

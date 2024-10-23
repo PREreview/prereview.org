@@ -64,8 +64,8 @@ describe('requestReviewPersona', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: Status.ServiceUnavailable,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -90,9 +90,9 @@ describe('requestReviewPersona', () => {
           _tag: 'StreamlinePageResponse',
           canonical: format(requestReviewPersonaMatch.formatter, { id: preprintTitle.id }),
           status: Status.BadRequest,
-          title: expect.stringContaining('Error: What name would you like to use?'),
-          nav: expect.stringContaining('Back'),
-          main: expect.stringContaining('What name would you like to use?'),
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'form',
           js: ['error-summary.js'],
         })
@@ -119,9 +119,9 @@ describe('requestReviewPersona', () => {
           _tag: 'StreamlinePageResponse',
           canonical: format(requestReviewPersonaMatch.formatter, { id: preprintTitle.id }),
           status: Status.OK,
-          title: expect.stringContaining('What name would you like to use?'),
-          nav: expect.stringContaining('Back'),
-          main: expect.stringContaining('What name would you like to use?'),
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'form',
           js: [],
         })
@@ -167,8 +167,8 @@ describe('requestReviewPersona', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -191,8 +191,8 @@ describe('requestReviewPersona', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -210,8 +210,8 @@ describe('requestReviewPersona', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

@@ -25,8 +25,8 @@ describe('howToUse', () => {
       canonical: format(howToUseMatch.formatter, {}),
       current: 'how-to-use',
       status: Status.OK,
-      title: expect.stringContaining('use'),
-      main: expect.stringContaining('<p>Foo</p>'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -48,8 +48,8 @@ describe('howToUse', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

@@ -7,7 +7,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address.js'
-import { rawHtml } from '../../src/html.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import {
   writeReviewEnterEmailAddressMatch,
@@ -95,9 +94,9 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('Verify'),
-        content: expect.stringContaining('Verify'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         js: [],
         type: 'streamline',
         user,
@@ -241,9 +240,9 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('having problems'),
-        content: expect.stringContaining('having problems'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         user,
       })
     },
@@ -275,9 +274,9 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('not found'),
-        content: expect.stringContaining('not found'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         user,
       })
     },

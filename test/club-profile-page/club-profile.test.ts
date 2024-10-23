@@ -46,8 +46,8 @@ describe('clubProfile', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })

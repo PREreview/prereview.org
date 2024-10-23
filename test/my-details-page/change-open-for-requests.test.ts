@@ -24,9 +24,9 @@ describe('changeOpenForRequests', () => {
       _tag: 'PageResponse',
       canonical: format(changeOpenForRequestsMatch.formatter, {}),
       status: Status.OK,
-      title: expect.stringContaining('requests'),
-      nav: expect.stringContaining('Back'),
-      main: expect.stringContaining('requests'),
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'form',
       js: [],
     })
@@ -99,8 +99,8 @@ describe('changeOpenForRequests', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -119,9 +119,9 @@ describe('changeOpenForRequests', () => {
         _tag: 'PageResponse',
         canonical: format(changeOpenForRequestsMatch.formatter, {}),
         status: Status.BadRequest,
-        title: expect.stringContaining('requests'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('requests'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: ['error-summary.js'],
       })

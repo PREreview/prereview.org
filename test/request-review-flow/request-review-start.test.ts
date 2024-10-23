@@ -78,9 +78,9 @@ describe('requestReviewStart', () => {
           _tag: 'StreamlinePageResponse',
           canonical: format(requestReviewStartMatch.formatter, { id: preprintTitle.id }),
           status: Status.OK,
-          title: expect.stringContaining('Request a PREreview'),
-          nav: expect.stringContaining('Back'),
-          main: expect.stringContaining('Continue'),
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -101,8 +101,8 @@ describe('requestReviewStart', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

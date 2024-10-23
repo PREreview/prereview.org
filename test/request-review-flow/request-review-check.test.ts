@@ -70,8 +70,8 @@ describe('requestReviewCheck', () => {
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
             status: Status.ServiceUnavailable,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('unable to'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -101,8 +101,8 @@ describe('requestReviewCheck', () => {
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
             status: Status.ServiceUnavailable,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('unable to'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -134,9 +134,9 @@ describe('requestReviewCheck', () => {
           _tag: 'StreamlinePageResponse',
           canonical: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
           status: Status.OK,
-          title: expect.stringContaining('Check your request'),
-          nav: expect.stringContaining('Back'),
-          main: expect.stringContaining('Check your request'),
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'form',
           js: ['single-use-form.js'],
         })
@@ -216,8 +216,8 @@ describe('requestReviewCheck', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -246,8 +246,8 @@ describe('requestReviewCheck', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

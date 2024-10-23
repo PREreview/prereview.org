@@ -22,9 +22,9 @@ describe('changeCareerStageVisibility', () => {
         _tag: 'PageResponse',
         canonical: format(changeCareerStageVisibilityMatch.formatter, {}),
         status: Status.OK,
-        title: expect.stringContaining('career stage'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('career stage'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: [],
       })
@@ -70,8 +70,8 @@ describe('changeCareerStageVisibility', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

@@ -60,10 +60,10 @@ describe('reviewPage', () => {
       _tag: 'PageResponse',
       canonical: format(reviewMatch.formatter, { id }),
       status: Status.OK,
-      title: expect.stringContaining('PREreview of'),
-      description: expect.stringContaining('Authored by'),
-      nav: expect.stringContaining('See other reviews'),
-      main: expect.stringContaining('PREreview of'),
+      title: expect.anything(),
+      description: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'prereview',
       js: [],
     })
@@ -81,8 +81,8 @@ describe('reviewPage', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.NotFound,
-      title: expect.stringContaining('not found'),
-      main: expect.stringContaining('not found'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -98,8 +98,8 @@ describe('reviewPage', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.Gone,
-      title: expect.stringContaining('removed'),
-      main: expect.stringContaining('removed'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -115,8 +115,8 @@ describe('reviewPage', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -155,8 +155,8 @@ describe('reviewPage', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })

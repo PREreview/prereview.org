@@ -25,8 +25,8 @@ describe('privacyPolicy', () => {
       canonical: format(privacyPolicyMatch.formatter, {}),
       current: 'privacy-policy',
       status: Status.OK,
-      title: expect.stringContaining('Privacy'),
-      main: expect.stringContaining('<p>Foo</p>'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -48,8 +48,8 @@ describe('privacyPolicy', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

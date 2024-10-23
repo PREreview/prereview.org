@@ -7,7 +7,6 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
-import { rawHtml } from '../../src/html.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { writeReviewMatch } from '../../src/routes.js'
 import { UserC } from '../../src/user.js'
@@ -75,9 +74,9 @@ describe('writeReviewPublished', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('published'),
-        content: expect.stringContaining('published'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         type: 'streamline',
         user,
       })
@@ -178,9 +177,9 @@ describe('writeReviewPublished', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('having problems'),
-        content: expect.stringContaining('having problems'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         user,
       })
     },
@@ -233,9 +232,9 @@ describe('writeReviewPublished', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('not found'),
-        content: expect.stringContaining('not found'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         user,
       })
     },

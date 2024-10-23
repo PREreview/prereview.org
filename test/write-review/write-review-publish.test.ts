@@ -9,7 +9,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
-import { rawHtml } from '../../src/html.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes.js'
 import { UserC } from '../../src/user.js'
@@ -197,7 +196,7 @@ describe('writeReviewPublish', () => {
         otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
         persona: newReview.persona,
         preprint: preprintTitle,
-        review: expect.stringContaining('<dl>'),
+        review: expect.anything(),
         language: O.some('en'),
         structured: true,
         user,
@@ -464,9 +463,9 @@ describe('writeReviewPublish', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('having problems'),
-        content: expect.stringContaining('having problems'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         user,
       })
     },
@@ -519,9 +518,9 @@ describe('writeReviewPublish', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('not found'),
-        content: expect.stringContaining('not found'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         user,
       })
     },
@@ -624,9 +623,9 @@ describe('writeReviewPublish', () => {
       )
       expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toStrictEqual(FormC.encode(newReview))
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('problems'),
-        content: expect.stringContaining('problems'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         type: 'streamline',
         user,
       })

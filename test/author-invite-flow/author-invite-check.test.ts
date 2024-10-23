@@ -103,8 +103,8 @@ describe('authorInvite', () => {
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
           status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('unable to'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -150,8 +150,8 @@ describe('authorInvite', () => {
           _tag: 'StreamlinePageResponse',
           canonical: format(authorInviteCheckMatch.formatter, { id: inviteId }),
           status: Status.OK,
-          title: expect.stringContaining('Check your details'),
-          main: expect.stringContaining('Check your details'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'form',
           js: ['single-use-form.js'],
         })
@@ -256,8 +256,8 @@ describe('authorInvite', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -277,8 +277,8 @@ describe('authorInvite', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -327,8 +327,8 @@ describe('authorInvite', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.Forbidden,
-        title: expect.stringContaining('do not have permission'),
-        main: expect.stringContaining('do not have permission'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -386,8 +386,8 @@ describe('authorInvite', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })

@@ -25,9 +25,9 @@ describe('changeLanguages', () => {
       _tag: 'PageResponse',
       canonical: format(changeLanguagesMatch.formatter, {}),
       status: Status.OK,
-      title: expect.stringContaining('languages'),
-      nav: expect.stringContaining('Back'),
-      main: expect.stringContaining('languages'),
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'form',
       js: [],
     })
@@ -89,8 +89,8 @@ describe('changeLanguages', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })

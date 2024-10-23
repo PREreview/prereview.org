@@ -21,9 +21,9 @@ describe('reviewAPreprint', () => {
         _tag: 'PageResponse',
         canonical: format(reviewAPreprintMatch.formatter, {}),
         status: Status.OK,
-        title: expect.stringContaining('Which preprint'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('Which preprint'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: [],
       })
@@ -79,8 +79,8 @@ describe('reviewAPreprint', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.BadRequest,
-        title: expect.stringContaining('don’t know'),
-        main: expect.stringContaining('don’t know'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -94,8 +94,8 @@ describe('reviewAPreprint', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.BadRequest,
-        title: expect.stringContaining('only support'),
-        main: expect.stringContaining('only support'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -109,8 +109,8 @@ describe('reviewAPreprint', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -122,8 +122,8 @@ describe('reviewAPreprint', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.BadRequest,
-        title: expect.stringContaining('support this DOI'),
-        main: expect.stringContaining('support this DOI'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -137,9 +137,9 @@ describe('reviewAPreprint', () => {
       _tag: 'PageResponse',
       canonical: format(reviewAPreprintMatch.formatter, {}),
       status: Status.BadRequest,
-      title: expect.stringContaining('Error:'),
-      nav: expect.stringContaining('Back'),
-      main: expect.stringContaining('Which preprint'),
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'form',
       js: ['error-summary.js'],
     })

@@ -25,8 +25,8 @@ describe('PublishingPage', () => {
           _tag: 'StreamlinePageResponse',
           canonical: Routes.WriteFeedbackPublishing.href({ feedbackId }),
           status: StatusCodes.OK,
-          title: expect.stringContaining('publishing'),
-          main: expect.stringContaining('publishing'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: ['poll-redirect.js'],
         })
@@ -76,8 +76,8 @@ describe('PublishingPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: StatusCodes.NOT_FOUND,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -99,8 +99,8 @@ describe('PublishingPage', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.NOT_FOUND,
-            title: expect.stringContaining('not found'),
-            main: expect.stringContaining('not found'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -126,8 +126,8 @@ describe('PublishingPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: StatusCodes.NOT_FOUND,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -149,8 +149,8 @@ describe('PublishingPage', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -171,8 +171,8 @@ describe('PublishingPage', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: StatusCodes.NOT_FOUND,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

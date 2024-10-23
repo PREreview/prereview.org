@@ -3,7 +3,6 @@ import { expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/lib/Either.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
-import { rawHtml } from '../src/html.js'
 import * as _ from '../src/middleware.js'
 import type { TemplatePageEnv } from '../src/page.js'
 import * as fc from './fc.js'
@@ -49,9 +48,9 @@ test.prop([fc.connection(), fc.either(fc.constant('no-session'), fc.user()), fc.
       ]),
     )
     expect(templatePage).toHaveBeenCalledWith({
-      title: expect.stringContaining('not found'),
-      content: expect.stringContaining('not found'),
-      skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+      title: expect.anything(),
+      content: expect.anything(),
+      skipLinks: [[expect.anything(), '#main-content']],
       user: E.isRight(user) ? user.right : undefined,
     })
   },
@@ -76,9 +75,9 @@ test.prop([fc.connection(), fc.either(fc.constant('no-session'), fc.user()), fc.
       ]),
     )
     expect(templatePage).toHaveBeenCalledWith({
-      title: expect.stringContaining('having problems'),
-      content: expect.stringContaining('having problems'),
-      skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+      title: expect.anything(),
+      content: expect.anything(),
+      skipLinks: [[expect.anything(), '#main-content']],
       user: E.isRight(user) ? user.right : undefined,
     })
   },

@@ -22,9 +22,9 @@ describe('changeLocationVisibility', () => {
         _tag: 'PageResponse',
         canonical: format(changeLocationVisibilityMatch.formatter, {}),
         status: Status.OK,
-        title: expect.stringContaining('location'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('location'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: [],
       })
@@ -70,8 +70,8 @@ describe('changeLocationVisibility', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

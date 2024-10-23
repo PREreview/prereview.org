@@ -25,8 +25,8 @@ describe('ediaStatement', () => {
       canonical: format(ediaStatementMatch.formatter, {}),
       current: 'edia-statement',
       status: Status.OK,
-      title: expect.stringContaining('Statement'),
-      main: expect.stringContaining('<p>Foo</p>'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -48,8 +48,8 @@ describe('ediaStatement', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

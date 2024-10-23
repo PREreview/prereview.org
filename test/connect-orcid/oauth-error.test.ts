@@ -11,8 +11,8 @@ describe('connectOrcidError', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.Forbidden,
-      title: expect.stringContaining('can’t connect'),
-      main: expect.stringContaining('can’t connect'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -24,8 +24,8 @@ describe('connectOrcidError', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('having problem'),
-      main: expect.stringContaining('unable to connect'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })

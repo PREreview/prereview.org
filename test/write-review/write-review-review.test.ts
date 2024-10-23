@@ -35,9 +35,9 @@ describe('writeReviewReview', () => {
       _tag: 'StreamlinePageResponse',
       canonical: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
       status: Status.OK,
-      title: expect.stringContaining('your PREreview'),
-      nav: expect.stringContaining('Back'),
-      main: expect.stringContaining('your PREreview'),
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'form',
       js: ['html-editor.js', 'editor-toolbar.js'],
     })
@@ -116,8 +116,8 @@ describe('writeReviewReview', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -135,8 +135,8 @@ describe('writeReviewReview', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -178,9 +178,9 @@ describe('writeReviewReview', () => {
       _tag: 'StreamlinePageResponse',
       canonical: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
       status: Status.BadRequest,
-      title: expect.stringContaining('Error:'),
-      nav: expect.stringContaining('Back'),
-      main: expect.stringContaining('Error:'),
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'form',
       js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
     })

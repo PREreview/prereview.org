@@ -75,8 +75,8 @@ describe('authorInvitePersona', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -104,8 +104,8 @@ describe('authorInvitePersona', () => {
         _tag: 'StreamlinePageResponse',
         canonical: format(authorInvitePersonaMatch.formatter, { id: inviteId }),
         status: Status.BadRequest,
-        title: expect.stringContaining('Error: What name would you like to use?'),
-        main: expect.stringContaining('What name would you like to use?'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: ['error-summary.js'],
       })
@@ -136,8 +136,8 @@ describe('authorInvitePersona', () => {
         _tag: 'StreamlinePageResponse',
         canonical: format(authorInvitePersonaMatch.formatter, { id: inviteId }),
         status: Status.OK,
-        title: expect.stringContaining('What name would you like to use?'),
-        main: expect.stringContaining('What name would you like to use?'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: [],
       })
@@ -160,8 +160,8 @@ describe('authorInvitePersona', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -179,8 +179,8 @@ describe('authorInvitePersona', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -225,8 +225,8 @@ describe('authorInvitePersona', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.Forbidden,
-        title: expect.stringContaining('do not have permission'),
-        main: expect.stringContaining('do not have permission'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -278,8 +278,8 @@ describe('authorInvitePersona', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })

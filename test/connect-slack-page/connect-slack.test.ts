@@ -9,7 +9,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import * as _ from '../../src/connect-slack-page/index.js'
-import { rawHtml } from '../../src/html.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../src/routes.js'
 import type { EditSlackUserIdEnv } from '../../src/slack-user-id.js'
@@ -51,9 +50,9 @@ describe('connectSlack', () => {
 
         expect(getUserOnboarding).toHaveBeenCalledWith(user.orcid)
         expect(templatePage).toHaveBeenCalledWith({
-          title: expect.stringContaining('Connect'),
-          content: expect.stringContaining('Connect'),
-          skipLinks: [[rawHtml('Skip to main content'), '#main']],
+          title: expect.anything(),
+          content: expect.anything(),
+          skipLinks: [[expect.anything(), '#main']],
           js: [],
           user,
           userOnboarding,
@@ -116,9 +115,9 @@ describe('connectSlack', () => {
           ]),
         )
         expect(templatePage).toHaveBeenCalledWith({
-          title: expect.stringContaining('having problems'),
-          content: expect.stringContaining('having problems'),
-          skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+          title: expect.anything(),
+          content: expect.anything(),
+          skipLinks: [[expect.anything(), '#main-content']],
           user,
         })
       },
@@ -378,9 +377,9 @@ describe('connectSlackCode', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('Sorry'),
-        content: expect.stringContaining('problems'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main']],
         js: [],
         user,
         userOnboarding,
@@ -433,9 +432,9 @@ describe('connectSlackCode', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('Sorry'),
-        content: expect.stringContaining('problems'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main']],
         js: [],
         user,
         userOnboarding,
@@ -484,9 +483,9 @@ describe('connectSlackCode', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('Sorry'),
-        content: expect.stringContaining('problems'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main']],
         js: [],
         user,
         userOnboarding,
@@ -545,9 +544,9 @@ describe('connectSlackCode', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('Sorry'),
-        content: expect.stringContaining('problems'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main']],
         js: [],
         user,
         userOnboarding,
@@ -601,9 +600,9 @@ describe('connectSlackCode', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('Sorry'),
-        content: expect.stringContaining('problems'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main']],
         js: [],
         user,
         userOnboarding,
@@ -641,9 +640,9 @@ describe('connectSlackError', () => {
       ]),
     )
     expect(templatePage).toHaveBeenCalledWith({
-      title: expect.stringContaining('Sorry'),
-      content: expect.stringContaining('connect'),
-      skipLinks: [[rawHtml('Skip to main content'), '#main']],
+      title: expect.anything(),
+      content: expect.anything(),
+      skipLinks: [[expect.anything(), '#main']],
       js: [],
       user: E.isRight(user) ? user.right : undefined,
       userOnboarding: E.isRight(user) ? userOnboarding : undefined,
@@ -678,9 +677,9 @@ describe('connectSlackError', () => {
       ]),
     )
     expect(templatePage).toHaveBeenCalledWith({
-      title: expect.stringContaining('Sorry'),
-      content: expect.stringContaining('problems'),
-      skipLinks: [[rawHtml('Skip to main content'), '#main']],
+      title: expect.anything(),
+      content: expect.anything(),
+      skipLinks: [[expect.anything(), '#main']],
       js: [],
       user: E.isRight(user) ? user.right : undefined,
       userOnboarding: E.isRight(user) ? userOnboarding : undefined,

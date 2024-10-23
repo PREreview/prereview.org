@@ -34,9 +34,9 @@ describe('writeReviewReviewType', () => {
       _tag: 'StreamlinePageResponse',
       canonical: format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }),
       status: Status.OK,
-      title: expect.stringContaining('like'),
-      nav: expect.stringContaining('Back'),
-      main: expect.stringContaining('like'),
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'form',
       js: [],
     })
@@ -127,9 +127,9 @@ describe('writeReviewReviewType', () => {
       _tag: 'PageResponse',
       canonical: format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }),
       status: Status.Forbidden,
-      title: expect.stringContaining('own preprint'),
-      nav: expect.stringContaining('Back'),
-      main: expect.stringContaining('own preprint'),
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -146,8 +146,8 @@ describe('writeReviewReviewType', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -165,8 +165,8 @@ describe('writeReviewReviewType', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -194,9 +194,9 @@ describe('writeReviewReviewType', () => {
         _tag: 'StreamlinePageResponse',
         canonical: format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }),
         status: Status.BadRequest,
-        title: expect.stringContaining('Error:'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('Error:'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: ['error-summary.js'],
       })

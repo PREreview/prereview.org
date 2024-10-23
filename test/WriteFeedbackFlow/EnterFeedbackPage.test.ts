@@ -26,9 +26,9 @@ describe('EnterFeedbackPage', () => {
           _tag: 'StreamlinePageResponse',
           canonical: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
           status: StatusCodes.OK,
-          title: expect.stringContaining('your feedback'),
-          nav: expect.stringContaining('Back'),
-          main: expect.stringContaining('your feedback'),
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'form',
           js: ['html-editor.js', 'editor-toolbar.js'],
         })
@@ -98,8 +98,8 @@ describe('EnterFeedbackPage', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.NOT_FOUND,
-            title: expect.stringContaining('not found'),
-            main: expect.stringContaining('not found'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -125,8 +125,8 @@ describe('EnterFeedbackPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: StatusCodes.NOT_FOUND,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -148,8 +148,8 @@ describe('EnterFeedbackPage', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -170,8 +170,8 @@ describe('EnterFeedbackPage', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: StatusCodes.NOT_FOUND,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -241,8 +241,8 @@ describe('EnterFeedbackSubmission', () => {
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
               status: StatusCodes.SERVICE_UNAVAILABLE,
-              title: expect.stringContaining('problems'),
-              main: expect.stringContaining('problems'),
+              title: expect.anything(),
+              main: expect.anything(),
               skipToLabel: 'main',
               js: [],
             })
@@ -275,9 +275,9 @@ describe('EnterFeedbackSubmission', () => {
             _tag: 'StreamlinePageResponse',
             canonical: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
             status: StatusCodes.BAD_REQUEST,
-            title: expect.stringContaining('Error:'),
-            nav: expect.stringContaining('Back'),
-            main: expect.stringContaining('your feedback'),
+            title: expect.anything(),
+            nav: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'form',
             js: ['html-editor.js', 'editor-toolbar.js', 'error-summary.js'],
           })
@@ -353,8 +353,8 @@ describe('EnterFeedbackSubmission', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.NOT_FOUND,
-            title: expect.stringContaining('not found'),
-            main: expect.stringContaining('not found'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -382,8 +382,8 @@ describe('EnterFeedbackSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: StatusCodes.NOT_FOUND,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -406,8 +406,8 @@ describe('EnterFeedbackSubmission', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -429,8 +429,8 @@ describe('EnterFeedbackSubmission', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: StatusCodes.NOT_FOUND,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

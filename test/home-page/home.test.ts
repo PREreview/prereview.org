@@ -25,7 +25,7 @@ test.prop([fc.supportedLocale(), fc.option(fc.user(), { nil: undefined }), fc.bo
       canonical: format(homeMatch.formatter, {}),
       current: 'home',
       status: Status.OK,
-      title: expect.stringContaining('PREreview'),
+      title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
       js: [],

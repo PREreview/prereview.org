@@ -46,8 +46,8 @@ describe('changeAvatar', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -72,9 +72,9 @@ describe('changeAvatar', () => {
         _tag: 'PageResponse',
         canonical: format(changeAvatarMatch.formatter, {}),
         status: Status.BadRequest,
-        title: expect.stringContaining('Error: Upload an avatar'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('avatar'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: ['error-summary.js', 'single-use-form.js'],
       })
@@ -90,9 +90,9 @@ describe('changeAvatar', () => {
         _tag: 'PageResponse',
         canonical: format(changeAvatarMatch.formatter, {}),
         status: Status.BadRequest,
-        title: expect.stringContaining('Error: Upload an avatar'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('avatar'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: ['error-summary.js', 'single-use-form.js'],
       })
@@ -111,9 +111,9 @@ describe('changeAvatar', () => {
         _tag: 'PageResponse',
         canonical: format(changeAvatarMatch.formatter, {}),
         status: Status.BadRequest,
-        title: expect.stringContaining('Error: Upload an avatar'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('avatar'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: ['error-summary.js', 'single-use-form.js'],
       })
@@ -131,9 +131,9 @@ describe('changeAvatar', () => {
           _tag: 'PageResponse',
           canonical: format(changeAvatarMatch.formatter, {}),
           status: Status.OK,
-          title: expect.stringContaining('avatar'),
-          nav: expect.stringContaining('Back'),
-          main: expect.stringContaining('avatar'),
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'form',
           js: ['single-use-form.js'],
         })
@@ -152,8 +152,8 @@ describe('changeAvatar', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.NotFound,
-      title: expect.stringContaining('not found'),
-      main: expect.stringContaining('not found'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })

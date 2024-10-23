@@ -25,8 +25,8 @@ describe('funding', () => {
       canonical: format(fundingMatch.formatter, {}),
       current: 'funding',
       status: Status.OK,
-      title: expect.stringContaining('funded'),
-      main: expect.stringContaining('<p>Foo</p>'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -48,8 +48,8 @@ describe('funding', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

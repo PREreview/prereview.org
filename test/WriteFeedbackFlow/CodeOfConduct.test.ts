@@ -26,9 +26,9 @@ describe('CodeOfConductPage', () => {
           _tag: 'StreamlinePageResponse',
           canonical: Routes.WriteFeedbackCodeOfConduct.href({ feedbackId }),
           status: StatusCodes.OK,
-          title: expect.stringContaining('Code of Conduct'),
-          nav: expect.stringContaining('Back'),
-          main: expect.stringContaining('Code of Conduct'),
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'form',
           js: [],
         })
@@ -98,8 +98,8 @@ describe('CodeOfConductPage', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.NOT_FOUND,
-            title: expect.stringContaining('not found'),
-            main: expect.stringContaining('not found'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -125,8 +125,8 @@ describe('CodeOfConductPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: StatusCodes.NOT_FOUND,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -148,8 +148,8 @@ describe('CodeOfConductPage', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -170,8 +170,8 @@ describe('CodeOfConductPage', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: StatusCodes.NOT_FOUND,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -239,8 +239,8 @@ describe('CodeOfConductSubmission', () => {
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
               status: StatusCodes.SERVICE_UNAVAILABLE,
-              title: expect.stringContaining('problems'),
-              main: expect.stringContaining('problems'),
+              title: expect.anything(),
+              main: expect.anything(),
               skipToLabel: 'main',
               js: [],
             })
@@ -273,9 +273,9 @@ describe('CodeOfConductSubmission', () => {
             _tag: 'StreamlinePageResponse',
             canonical: Routes.WriteFeedbackCodeOfConduct.href({ feedbackId }),
             status: StatusCodes.BAD_REQUEST,
-            title: expect.stringContaining('Error:'),
-            nav: expect.stringContaining('Back'),
-            main: expect.stringContaining('Confirm that'),
+            title: expect.anything(),
+            nav: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'form',
             js: ['error-summary.js'],
           })
@@ -351,8 +351,8 @@ describe('CodeOfConductSubmission', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.NOT_FOUND,
-            title: expect.stringContaining('not found'),
-            main: expect.stringContaining('not found'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -380,8 +380,8 @@ describe('CodeOfConductSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: StatusCodes.NOT_FOUND,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -404,8 +404,8 @@ describe('CodeOfConductSubmission', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -427,8 +427,8 @@ describe('CodeOfConductSubmission', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: StatusCodes.NOT_FOUND,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

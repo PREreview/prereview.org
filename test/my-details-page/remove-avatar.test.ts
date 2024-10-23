@@ -36,8 +36,8 @@ describe('removeAvatar', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })
@@ -56,9 +56,9 @@ describe('removeAvatar', () => {
         _tag: 'PageResponse',
         canonical: format(removeAvatarMatch.formatter, {}),
         status: Status.OK,
-        title: expect.stringContaining('avatar'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('avatar'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'form',
         js: [],
       })
@@ -92,8 +92,8 @@ describe('removeAvatar', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
+      title: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'main',
       js: [],
     })

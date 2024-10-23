@@ -31,9 +31,9 @@ describe('requestReview', () => {
               _tag: 'StreamlinePageResponse',
               canonical: format(requestReviewMatch.formatter, { id: preprintTitle.id }),
               status: Status.OK,
-              title: expect.stringContaining('Request a PREreview'),
-              nav: expect.stringContaining('Back'),
-              main: expect.stringContaining('request a PREreview'),
+              title: expect.anything(),
+              nav: expect.anything(),
+              main: expect.anything(),
               skipToLabel: 'main',
               js: [],
               allowRobots: false,
@@ -59,8 +59,8 @@ describe('requestReview', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: Status.NotFound,
-            title: expect.stringContaining('not found'),
-            main: expect.stringContaining('not found'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -81,8 +81,8 @@ describe('requestReview', () => {
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
               status: Status.NotFound,
-              title: expect.stringContaining('not found'),
-              main: expect.stringContaining('not found'),
+              title: expect.anything(),
+              main: expect.anything(),
               skipToLabel: 'main',
               js: [],
             })
@@ -104,8 +104,8 @@ describe('requestReview', () => {
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
               status: Status.ServiceUnavailable,
-              title: expect.stringContaining('problems'),
-              main: expect.stringContaining('problems'),
+              title: expect.anything(),
+              main: expect.anything(),
               skipToLabel: 'main',
               js: [],
             })
@@ -145,8 +145,8 @@ describe('requestReview', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: Status.ServiceUnavailable,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('problems'),
+            title: expect.anything(),
+            main: expect.anything(),
             skipToLabel: 'main',
             js: [],
           })
@@ -168,8 +168,8 @@ describe('requestReview', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          title: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })

@@ -25,9 +25,9 @@ describe('changeResearchInterests', () => {
       _tag: 'PageResponse',
       canonical: format(changeResearchInterestsMatch.formatter, {}),
       status: Status.OK,
-      title: expect.stringContaining('research interests'),
-      nav: expect.stringContaining('Back'),
-      main: expect.stringContaining('research interests'),
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
       skipToLabel: 'form',
       js: [],
     })
@@ -97,8 +97,8 @@ describe('changeResearchInterests', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })

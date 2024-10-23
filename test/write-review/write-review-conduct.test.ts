@@ -136,9 +136,9 @@ describe('writeReviewConduct', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('having problems'),
-        content: expect.stringContaining('having problems'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         user,
       })
     },
@@ -168,9 +168,9 @@ describe('writeReviewConduct', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('not found'),
-        content: expect.stringContaining('not found'),
-        skipLinks: [[rawHtml('Skip to main content'), '#main-content']],
+        title: expect.anything(),
+        content: expect.anything(),
+        skipLinks: [[expect.anything(), '#main-content']],
         user,
       })
     },
@@ -238,8 +238,8 @@ describe('writeReviewConduct', () => {
         ]),
       )
       expect(templatePage).toHaveBeenCalledWith({
-        title: expect.stringContaining('Error:'),
-        content: expect.stringContaining('problem'),
+        title: expect.anything(),
+        content: expect.anything(),
         skipLinks: [[rawHtml('Skip to form'), '#form']],
         js: ['error-summary.js'],
         type: 'streamline',

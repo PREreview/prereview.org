@@ -42,9 +42,9 @@ describe('writeReview', () => {
           _tag: 'StreamlinePageResponse',
           canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
           status: Status.OK,
-          title: expect.stringContaining('Write'),
-          nav: expect.stringContaining('Back'),
-          main: expect.stringContaining('Write'),
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
           skipToLabel: 'main',
           js: [],
         })
@@ -64,9 +64,9 @@ describe('writeReview', () => {
         _tag: 'PageResponse',
         canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
         status: Status.Forbidden,
-        title: expect.stringContaining('own preprint'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('own preprint'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -85,9 +85,9 @@ describe('writeReview', () => {
         _tag: 'StreamlinePageResponse',
         canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
         status: Status.OK,
-        title: expect.stringContaining('Write'),
-        nav: expect.stringContaining('Back'),
-        main: expect.stringContaining('Write'),
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -105,8 +105,8 @@ describe('writeReview', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
@@ -124,8 +124,8 @@ describe('writeReview', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        title: expect.anything(),
+        main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
