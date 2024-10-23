@@ -552,6 +552,33 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+  crowdin:
+    name: 'Update Crowdin'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - deploy
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v4.2.1
+        with:
+          sparse-checkout: |
+            locales/en-US/
+            crowdin.yml
+          sparse-checkout-cone-mode: false
+
+      - name: 'Upload sources to Crowdin'
+        uses: crowdin/github-action@v2.2.0
+        with:
+          upload_sources: true
+          upload_translations: false
+          download_sources: false
+          download_translations: false
+        env:
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_API_TOKEN }}
+
   notify:
     name: 'Notify of failure'
     runs-on: ubuntu-22.04
