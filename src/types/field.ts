@@ -1,4 +1,4 @@
-import { DefaultLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 
 export type FieldId = (typeof fieldIds)[number]
 
@@ -31,7 +31,7 @@ export const fieldIds = [
   '36',
 ] as const
 
-export function getFieldName(id: FieldId, locale = DefaultLocale): string {
+export function getFieldName(id: FieldId, locale: SupportedLocale): string {
   return translate(locale, 'fields', `field${id}`)()
 }
 

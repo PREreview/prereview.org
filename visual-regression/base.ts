@@ -2,6 +2,7 @@ import { type Locator, test as baseTest } from '@playwright/test'
 import path from 'path'
 import { P, match } from 'ts-pattern'
 import type { Html } from '../src/html.js'
+import { DefaultLocale } from '../src/locales/index.js'
 import { type Page, page as templatePage } from '../src/page.js'
 import { PageResponse, type StreamlinePageResponse, type TwoUpPageResponse, toPage } from '../src/response.js'
 
@@ -46,6 +47,7 @@ export const test = baseTest.extend<ShowPage>({
     await use(async function showPage(response, extra = {}) {
       const pageHtml = templatePage(
         toPage({
+          locale: DefaultLocale,
           ...extra,
           response: PageResponse({
             title: response.title,
@@ -63,7 +65,7 @@ export const test = baseTest.extend<ShowPage>({
   },
   showTwoUpPage: async ({ page, showHtml, templatePage }, use) => {
     await use(async response => {
-      const pageHtml = templatePage(toPage({ response }))
+      const pageHtml = templatePage(toPage({ locale: DefaultLocale, response }))
 
       await showHtml(pageHtml)
 

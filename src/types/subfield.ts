@@ -1,4 +1,4 @@
-import { DefaultLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 
 export type SubfieldId = (typeof subfieldIds)[number]
 
@@ -257,7 +257,7 @@ export const subfieldIds = [
   '3616',
 ] as const
 
-export function getSubfieldName(id: SubfieldId, locale = DefaultLocale): string {
+export function getSubfieldName(id: SubfieldId, locale: SupportedLocale): string {
   return translate(locale, 'subfields', `subfield${id}`)()
 }
 

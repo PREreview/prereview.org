@@ -163,13 +163,13 @@ const FlashMessageD = D.literal(
 )
 
 export const toPage = ({
-  locale = DefaultLocale,
+  locale,
   message,
   userOnboarding,
   response,
   user,
 }: {
-  locale?: SupportedLocale
+  locale: SupportedLocale
   message?: D.TypeOf<typeof FlashMessageD>
   userOnboarding?: UserOnboarding
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse
