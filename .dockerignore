@@ -15,6 +15,7 @@
 /.env
 /.env.dist
 /.gitignore
+/crowdin.yml
 /fly.*.toml
 /LICENSE
 /README.md

@@ -1,0 +1,6 @@
+project_id: 729981
+base_path: locales
+
+files:
+  - source: /en-US/*.json
+    translation: /%locale%/%original_file_name%
