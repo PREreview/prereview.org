@@ -18,7 +18,7 @@
     "message": "opens in a new tab"
   },
   "letUsKnowAuthorDetails": {
-    "message": "Please let us know the other authors’ details (names and ORCID&nbsp;iDs), and we’ll add them to the PREreview. Our email address is {mailtoHelp}."
+    "message": "Please let us know the other authors’ details (names and ORCID iDs), and we’ll add them to the PREreview. Our email address is {mailtoHelp}."
   },
   "sentEmailsToAuthos": {
     "message": "We’ve sent emails to the other authors, inviting them to appear."
