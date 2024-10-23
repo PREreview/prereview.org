@@ -602,7 +602,13 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       partnersMatch.parser,
       P.map(() =>
-        pipe(RM.of({}), RM.apS('user', maybeGetUser), RM.apSW('response', RM.of(partners)), RM.ichainW(handleResponse)),
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apS('locale', RM.of(DefaultLocale)),
+          RM.bind('response', ({ locale }) => RM.of(partners(locale))),
+          RM.ichainW(handleResponse),
+        ),
       ),
     ),
     pipe(
