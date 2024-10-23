@@ -1,3 +1,4 @@
+import { HashSet } from 'effect'
 {{#moduleNames}}
 import * as {{@key}} from './{{.}}.js'
 {{/moduleNames}}
@@ -5,6 +6,8 @@ import * as {{@key}} from './{{.}}.js'
 export type SupportedLocale = {{#locales}}| '{{.}}'{{/locales}}
 
 export const DefaultLocale: SupportedLocale = '{{defaultLocale}}'
+
+export const SupportedLocales = HashSet.fromIterable<SupportedLocale>([{{#locales}}'{{.}}', {{/locales}}])
 
 export const isSupportedLocale = (locale: string): locale is SupportedLocale =>
   [{{#locales}}'{{.}}', {{/locales}}].includes(locale)

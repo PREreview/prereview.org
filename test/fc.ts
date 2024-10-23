@@ -3,7 +3,7 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array } from 'effect'
+import { Array, HashSet } from 'effect'
 import type { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import type * as F from 'fetch-fp-ts'
@@ -47,7 +47,7 @@ import * as Feedback from '../src/Feedback/index.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
 import type { Languages } from '../src/languages.js'
-import { DefaultLocale, type SupportedLocale } from '../src/locales/index.js'
+import { type SupportedLocale, SupportedLocales } from '../src/locales/index.js'
 import type { Location } from '../src/location.js'
 import assets from '../src/manifest.json' assert { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.js'
@@ -252,7 +252,7 @@ export const locale = (): fc.Arbitrary<string> =>
     'zh-Hans-CN',
   )
 
-export const supportedLocale = (): fc.Arbitrary<SupportedLocale> => constant(DefaultLocale)
+export const supportedLocale = (): fc.Arbitrary<SupportedLocale> => constantFrom(...HashSet.values(SupportedLocales))
 
 export const pageResponse = ({
   canonical,
