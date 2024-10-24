@@ -38,19 +38,19 @@ start-services: .dev/server.crt .dev/server.key
 format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
 
-lint-ts: node_modules
+lint-ts: node_modules src/manifest.json
 	npx eslint . --cache --cache-location ".cache/eslint/" --max-warnings 0
 
 lint-css: node_modules
 	npx stylelint '**/*.css'
 
-typecheck: node_modules
+typecheck: node_modules src/manifest.json
 	npx tsc --incremental --noEmit --tsBuildInfoFile ".cache/tsc"
 
-test: node_modules
+test: node_modules src/manifest.json
 	npx jest ${TEST}
 
-test-fast: node_modules
+test-fast: node_modules src/manifest.json
 	FAST_CHECK_NUM_RUNS=10 npx jest --onlyChanged
 
 test-integration: test-integration-image
