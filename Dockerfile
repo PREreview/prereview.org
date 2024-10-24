@@ -71,7 +71,7 @@ RUN npx run-s build:assets build:app
 #
 # Stage: Integration test environment
 #
-FROM mcr.microsoft.com/playwright:v1.47.2-jammy AS test-integration
+FROM mcr.microsoft.com/playwright:v1.48.1-jammy AS test-integration
 WORKDIR /app
 
 COPY --from=npm-dev /app/ .

@@ -300,7 +300,7 @@ jobs:
 
       - name: 'Run Playwright'
         id: 'playwright'
-        uses: docker://mcr.microsoft.com/playwright:v1.47.2-jammy
+        uses: docker://mcr.microsoft.com/playwright:v1.48.1-jammy
         with:
           args: env HOME=/root npx playwright test integration --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 
@@ -390,7 +390,7 @@ jobs:
 
       - name: 'Run Playwright'
         id: 'playwright'
-        uses: docker://mcr.microsoft.com/playwright:v1.47.2-jammy
+        uses: docker://mcr.microsoft.com/playwright:v1.48.1-jammy
         with:
           args: env HOME=/root npx playwright test visual-regression --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 
