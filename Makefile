@@ -26,7 +26,7 @@ start-app: .env node_modules start-services src/manifest.json
   npx tsx watch --clear-screen=false --include=src/manifest.json --require dotenv/config src/index.ts
 
 start:
-	find locales assets -type f | grep --invert-match assets/locales | entr -r make start-app
+	watchexec --restart --watch assets --watch locales --ignore assets/locales/ -- make start-app
 
 .dev/server.crt .dev/server.key: SHELL := /usr/bin/env bash
 .dev/server.crt .dev/server.key: .env
