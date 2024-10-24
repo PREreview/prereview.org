@@ -81,11 +81,11 @@ export function addAuthorsForm({
               <div>
                 <h2>${t('add-authors-form', 'authorNumber')({ number: index + 1 })}</h2>
 
-                <a href="${format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}">
-                  ${rawHtml(t('add-authors-form', 'changeAuthorDetails')({ name: author.name, visuallyHidden }))}</a
+                <a href="${format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
+                  >${rawHtml(t('add-authors-form', 'changeAuthorDetails')({ name: author.name, visuallyHidden }))}</a
                 >
-                <a href="${format(writeReviewRemoveAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}">
-                  ${rawHtml(t('add-authors-form', 'removeAuthor')({ name: author.name, visuallyHidden }))}</a
+                <a href="${format(writeReviewRemoveAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
+                  >${rawHtml(t('add-authors-form', 'removeAuthor')({ name: author.name, visuallyHidden }))}</a
                 >
               </div>
 
