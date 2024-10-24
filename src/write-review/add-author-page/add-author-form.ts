@@ -31,7 +31,7 @@ export function addAuthorForm({
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: pipe(
-      t('add-author-form', 'title')({ preprintTitle: preprint.title.toString() }),
+      t('write-review', 'addAuthorTitle')({ preprintTitle: preprint.title.toString() }),
       errorPrefix(locale, error),
       plainText,
     ),
@@ -40,20 +40,18 @@ export function addAuthorForm({
       <form method="post" action="${format(writeReviewAddAuthorMatch.formatter, { id: preprint.id })}" novalidate>
         ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <h1>${t('add-author-form', 'addAuthor')()}</h1>
+        <h1>${t('write-review', 'addAuthor')()}</h1>
 
         <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
-          <h2><label for="name">${t('add-author-form', 'nameInputLabel')()}</label></h2>
+          <h2><label for="name">${t('write-review', 'nameInputLabel')()}</label></h2>
 
-          <p id="name-tip" role="note">${t('add-author-form', 'theyWillChooseTheirName')()}</p>
+          <p id="name-tip" role="note">${t('write-review', 'theyWillChooseTheirName')()}</p>
 
           ${E.isLeft(form.name)
             ? html`
                 <div class="error-message" id="name-error">
                   <span class="visually-hidden">Error:</span>
-                  ${match(form.name.left)
-                    .with({ _tag: 'MissingE' }, t('add-author-form', 'enterTheirName'))
-                    .exhaustive()}
+                  ${match(form.name.left).with({ _tag: 'MissingE' }, t('write-review', 'enterTheirName')).exhaustive()}
                 </div>
               `
             : ''}
@@ -74,17 +72,17 @@ export function addAuthorForm({
         </div>
 
         <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
-          <h2><label for="email-address">${t('add-author-form', 'emailAddress')()}</label></h2>
+          <h2><label for="email-address">${t('write-review', 'emailAddress')()}</label></h2>
 
-          <p id="email-address-tip" role="note">${t('add-author-form', 'useOfEmail')()}</p>
+          <p id="email-address-tip" role="note">${t('write-review', 'useOfEmail')()}</p>
 
           ${E.isLeft(form.emailAddress)
             ? html`
                 <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">${t('add-author-form', 'error')()}:</span>
+                  <span class="visually-hidden">${t('write-review', 'error')()}:</span>
                   ${match(form.emailAddress.left)
-                    .with({ _tag: 'MissingE' }, t('add-author-form', 'enterTheirEmail'))
-                    .with({ _tag: 'InvalidE' }, t('add-author-form', 'invalidEmail'))
+                    .with({ _tag: 'MissingE' }, t('write-review', 'enterTheirEmail'))
+                    .with({ _tag: 'InvalidE' }, t('write-review', 'invalidEmail'))
                     .exhaustive()}
                 </div>
               `
@@ -128,7 +126,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: AddAuthorForm) => html`
         <li>
           <a href="#name">
             ${match(form.name.left)
-              .with({ _tag: 'MissingE' }, translate(locale)('add-author-form', 'enterTheirName'))
+              .with({ _tag: 'MissingE' }, translate(locale)('write-review', 'enterTheirName'))
               .exhaustive()}
           </a>
         </li>
@@ -139,8 +137,8 @@ const toErrorItems = (locale: SupportedLocale) => (form: AddAuthorForm) => html`
         <li>
           <a href="#email-address">
             ${match(form.emailAddress.left)
-              .with({ _tag: 'MissingE' }, translate(locale)('add-author-form', 'enterTheirEmail'))
-              .with({ _tag: 'InvalidE' }, translate(locale)('add-author-form', 'invalidEmail'))
+              .with({ _tag: 'MissingE' }, translate(locale)('write-review', 'enterTheirEmail'))
+              .with({ _tag: 'InvalidE' }, translate(locale)('write-review', 'invalidEmail'))
               .exhaustive()}
           </a>
         </li>

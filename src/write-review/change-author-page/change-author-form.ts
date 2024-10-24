@@ -32,7 +32,7 @@ export function changeAuthorForm({
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: pipe(
-      t('change-author-form', 'title')({ name: author.name, preprintTitle: preprint.title.toString() }),
+      t('write-review', 'changeAuthorTitle')({ name: author.name, preprintTitle: preprint.title.toString() }),
       errorPrefix(locale, error),
       plainText,
     ),
@@ -45,18 +45,18 @@ export function changeAuthorForm({
       >
         ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <h1>${t('change-author-form', 'changeAuthorDetails')({ name: author.name })}</h1>
+        <h1>${t('write-review', 'changeAuthorDetailsHeading')({ name: author.name })}</h1>
 
         <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
-          <h2><label for="name">${t('change-author-form', 'name')()}</label></h2>
+          <h2><label for="name">${t('write-review', 'name')()}</label></h2>
 
-          <p id="name-tip" role="note">${t('change-author-form', 'ableToChoseName')()}</p>
+          <p id="name-tip" role="note">${t('write-review', 'ableToChoseName')()}</p>
 
           ${E.isLeft(form.name)
             ? html`
                 <div class="error-message" id="name-error">
-                  <span class="visually-hidden">${t('change-author-form', 'error')()}:</span>
-                  ${match(form.name.left).with({ _tag: 'MissingE' }, t('change-author-form', 'enterName')).exhaustive()}
+                  <span class="visually-hidden">${t('write-review', 'error')()}:</span>
+                  ${match(form.name.left).with({ _tag: 'MissingE' }, t('write-review', 'enterName')).exhaustive()}
                 </div>
               `
             : ''}
@@ -76,17 +76,17 @@ export function changeAuthorForm({
         </div>
 
         <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
-          <h2><label for="email-address">${t('change-author-form', 'emailAddress')()}</label></h2>
+          <h2><label for="email-address">${t('write-review', 'emailAddress')()}</label></h2>
 
-          <p id="email-address-tip" role="note">${t('change-author-form', 'useOfEmail')()}</p>
+          <p id="email-address-tip" role="note">${t('write-review', 'useOfEmail')()}</p>
 
           ${E.isLeft(form.emailAddress)
             ? html`
                 <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">${t('change-author-form', 'error')()}:</span>
+                  <span class="visually-hidden">${t('write-review', 'error')()}:</span>
                   ${match(form.emailAddress.left)
-                    .with({ _tag: 'MissingE' }, t('change-author-form', 'enterEmail'))
-                    .with({ _tag: 'InvalidE' }, t('change-author-form', 'invalidEmail'))
+                    .with({ _tag: 'MissingE' }, t('write-review', 'enterEmail'))
+                    .with({ _tag: 'InvalidE' }, t('write-review', 'invalidEmail'))
                     .exhaustive()}
                 </div>
               `
@@ -129,7 +129,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: ChangeAuthorForm) => ht
         <li>
           <a href="#name">
             ${match(form.name.left)
-              .with({ _tag: 'MissingE' }, translate(locale, 'change-author-form', 'enterName'))
+              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'enterName'))
               .exhaustive()}
           </a>
         </li>
@@ -140,8 +140,8 @@ const toErrorItems = (locale: SupportedLocale) => (form: ChangeAuthorForm) => ht
         <li>
           <a href="#email-address">
             ${match(form.emailAddress.left)
-              .with({ _tag: 'MissingE' }, translate(locale, 'change-author-form', 'enterEmail'))
-              .with({ _tag: 'InvalidE' }, translate(locale, 'change-author-form', 'invalidEmail'))
+              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'enterEmail'))
+              .with({ _tag: 'InvalidE' }, translate(locale, 'write-review', 'invalidEmail'))
               .exhaustive()}
           </a>
         </li>

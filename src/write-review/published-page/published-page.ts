@@ -22,9 +22,9 @@ export const publishedPage = ({
   locale: SupportedLocale
 }) => {
   const t = translate(locale)
-  const opensInNewTab = t('published-page', 'opensInNewTab')()
+  const opensInNewTab = t('write-review', 'opensInNewTab')()
   const communitySlackLink = html`<a href="https://bit.ly/PREreview-Slack" target="_blank" rel="noopener noreferrer"
-    >${t('published-page', 'communitySlack')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
+    >${t('write-review', 'communitySlack')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
   >`.toString()
   const scietyLink = html`<a href="https://sciety.org/" target="_blank" rel="noopener noreferrer"
     >Sciety<span class="visually-hidden"> (${opensInNewTab})</span></a
@@ -34,24 +34,24 @@ export const publishedPage = ({
   >`.toString()
 
   return templatePage({
-    title: plainText(t('published-page', 'title')()),
+    title: plainText(t('write-review', 'prereviewPublishedTitle')()),
     content: html`
       <main id="main-content">
         <div class="panel">
-          <h1>${t('published-page', 'title')()}</h1>
+          <h1>${t('write-review', 'prereviewPublishedTitle')()}</h1>
 
           <div>
-            ${t('published-page', 'yourDoi')()} <br />
+            ${t('write-review', 'yourDoi')()} <br />
             <strong class="doi" translate="no">${doi}</strong>
           </div>
         </div>
 
-        <h2>${t('published-page', 'whatHappensNext')()}</h2>
+        <h2>${t('write-review', 'whatHappensNext')()}</h2>
 
         <p>
           ${rawHtml(
             t(
-              'published-page',
+              'write-review',
               'whereYouCanSeeYourPrereview',
             )({ communitySlackLink, scietyLink, isScietyPreprint: isScietyPreprint(preprint.id) }),
           )}
@@ -60,16 +60,16 @@ export const publishedPage = ({
         ${form.moreAuthors === 'yes' && form.otherAuthors.length === 0
           ? html`
               <div class="inset">
-                <p>${t('published-page', 'letUsKnowAuthorDetails')({ mailtoHelp })}</p>
+                <p>${t('write-review', 'letUsKnowAuthorDetails')({ mailtoHelp })}</p>
               </div>
             `
           : form.moreAuthors === 'yes' && form.otherAuthors.length > 0
-            ? html`<p>${t('published-page', 'sentEmailsToAuthors')()}</p> `
+            ? html`<p>${t('write-review', 'sentEmailsToAuthors')()}</p> `
             : ''}
 
-        <h2>${t('published-page', 'shareYourReview')()}</h2>
+        <h2>${t('write-review', 'shareYourReview')()}</h2>
 
-        <p>${t('published-page', 'letCommunityKnow')()}</p>
+        <p>${t('write-review', 'letCommunityKnow')()}</p>
 
         <div class="button-group" role="group">
           <a
@@ -82,7 +82,7 @@ export const publishedPage = ({
             target="_blank"
             rel="noopener noreferrer"
             class="twitter"
-            >${t('published-page', 'writeATweet')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
+            >${t('write-review', 'writeATweet')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
           >
           <a
             href="https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({
@@ -91,21 +91,21 @@ export const publishedPage = ({
             target="_blank"
             rel="noopener noreferrer"
             class="linked-in"
-            >${t('published-page', 'shareOnLinkedin')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
+            >${t('write-review', 'shareOnLinkedin')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
           >
           ${isScietyPreprint(preprint.id)
             ? html` <a href="${scietyUrl(preprint.id).href}" target="_blank" rel="noopener noreferrer" class="sciety"
-                >${t('published-page', 'listOnSciety')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
+                >${t('write-review', 'listOnSciety')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
               >`
             : ''}
         </div>
 
-        <h2>${t('published-page', 'howItWent')()}</h2>
+        <h2>${t('write-review', 'howItWent')()}</h2>
 
         <p>
           ${rawHtml(
             t(
-              'published-page',
+              'write-review',
               'scheduleAnInterview',
             )({
               link: (s: string) =>
@@ -122,11 +122,11 @@ export const publishedPage = ({
         </p>
 
         <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="button"
-          >${t('published-page', 'backToPreprint')()}</a
+          >${t('write-review', 'backToPreprint')()}</a
         >
       </main>
     `,
-    skipLinks: [[html`${t('published-page', 'skipToMain')()}`, '#main-content']],
+    skipLinks: [[html`${t('write-review', 'skipToMain')()}`, '#main-content']],
     type: 'streamline',
     user,
   })

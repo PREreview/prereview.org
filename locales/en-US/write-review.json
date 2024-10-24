@@ -1,0 +1,248 @@
+{
+  "addAuthorTitle": {
+    "message": "Add an author – PREreview of “{preprintTitle}”"
+  },
+  "enterTheirName": {
+    "message": "Enter their name"
+  },
+  "enterTheirEmail": {
+    "message": "Enter their email address"
+  },
+  "invalidEmail": {
+    "message": "Enter an email address in the correct format, like name@example.com"
+  },
+  "addAuthor": {
+    "message": "Add an author"
+  },
+  "nameInputLabel": {
+    "message": "Name"
+  },
+  "theyWillChooseTheirName": {
+    "message": "They will be able to choose their published name."
+  },
+  "emailAddress": {
+    "message": "Email address"
+  },
+  "useOfEmail": {
+    "message": "We’ll only use this to contact them about this PREreview."
+  },
+  "saveAndContinue": {
+    "message": "Save and continue"
+  },
+  "addAuthorsTitle": {
+    "message": "<error>Error: </error>You have added {authorCount, number} other {authorCount, plural, one {author} other {authors}} – PREreview of “{preprintTitle}”"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "errorSummaryTitle": {
+    "message": "There is a problem"
+  },
+  "yesIfAnotherAuthor": {
+    "message": "Select yes if you need to add another author"
+  },
+  "addedAuthorCount": {
+    "message": "You have added {authorCount, number} other {authorCount, plural, one {author} other {authors}}"
+  },
+  "authorNumber": {
+    "message": "Author {number, number}"
+  },
+  "changeAuthorDetailsLink": {
+    "message": "Change <visuallyHidden>{name}’s details</visuallyHidden>"
+  },
+  "removeAuthor": {
+    "message": "Remove <visuallyHidden>{name}</visuallyHidden>"
+  },
+  "name": {
+    "message": "Name"
+  },
+  "needToAddAuthor": {
+    "message": "Do you need to add another author?"
+  },
+  "no": {
+    "message": "No"
+  },
+  "yes": {
+    "message": "Yes"
+  },
+  "continueButton": {
+    "message": "Continue"
+  },
+  "changeAuthorTitle": {
+    "message": "Change {name}’s details – PREreview of “{preprintTitle}”"
+  },
+  "enterName": {
+    "message": "Enter their name"
+  },
+  "enterEmail": {
+    "message": "Enter their email address"
+  },
+  "changeAuthorDetailsHeading": {
+    "message": "Change {name}’s details"
+  },
+  "ableToChoseName": {
+    "message": "They will be able to choose their published name."
+  },
+  "error": {
+    "message": "Error"
+  },
+  "errorPrefix": {
+    "message": "Error: "
+  },
+  "backNav": {
+    "message": "Back"
+  },
+  "prereviewPublishedTitle": {
+    "message": "PREreview published"
+  },
+  "yourDoi": {
+    "message": "Your DOI"
+  },
+  "whatHappensNext": {
+    "message": "What happens next"
+  },
+  "whereYouCanSeeYourPrereview": {
+    "message": "You’ll be able to see your PREreview shortly. It’ll also appear on our {communitySlackLink}{isScietyPreprint, boolean, true { and {scietyLink}} false {}}."
+  },
+  "communitySlack": {
+    "message": "Community Slack"
+  },
+  "opensInNewTab": {
+    "message": "opens in a new tab"
+  },
+  "letUsKnowAuthorDetails": {
+    "message": "Please let us know the other authors’ details (names and ORCID iDs), and we’ll add them to the PREreview. Our email address is {mailtoHelp}."
+  },
+  "sentEmailsToAuthors": {
+    "message": "We’ve sent emails to the other authors, inviting them to appear."
+  },
+  "shareYourReview": {
+    "message": "Share your review"
+  },
+  "letCommunityKnow": {
+    "message": "Let the community know that you published your review."
+  },
+  "writeATweet": {
+    "message": "Write a Tweet"
+  },
+  "shareOnLinkedin": {
+    "message": "Share it on LinkedIn"
+  },
+  "listOnSciety": {
+    "message": "List it on Sciety"
+  },
+  "howItWent": {
+    "message": "Let us know how it went"
+  },
+  "scheduleAnInterview": {
+    "message": "<link>Schedule an interview</link> with our product team to discuss your experience on PREreview. We gladly compensate interviewees in appreciation for their help!"
+  },
+  "backToPreprint": {
+    "message": "Back to preprint"
+  },
+  "skipToMain": {
+    "message": "Skip to main content"
+  },
+  "publishTitle": {
+    "message": "Publish your PREreview of “{preprintTitle}”"
+  },
+  "checkPrereview": {
+    "message": "Check your PREreview"
+  },
+  "preprintDetails": {
+    "message": "Preprint details"
+  },
+  "preprintTitle": {
+    "message": "Title"
+  },
+  "preprintServer": {
+    "message": "Preprint server"
+  },
+  "authorDetails": {
+    "message": "Author details"
+  },
+  "yourDetails": {
+    "message": "Your details"
+  },
+  "yourPublishedName": {
+    "message": "Your published name"
+  },
+  "publishedName": {
+    "message": "Published name"
+  },
+  "changeName": {
+    "message": "Change <visuallyHidden>name</visuallyHidden>"
+  },
+  "changeInvitedAuthors": {
+    "message": "Change <visuallyHidden>invited authors</visuallyHidden>"
+  },
+  "changeCompetingInterests": {
+    "message": "Change <visuallyHidden>competing interests</visuallyHidden>"
+  },
+  "changePrereview": {
+    "message": "Change <visuallyHidden>PREreview</visuallyHidden>"
+  },
+  "doesIntroductionExplain": {
+    "message": "Does the introduction explain the objective of the research presented in the preprint?"
+  },
+  "changeIfIntroExplains": {
+    "message": "Change <visuallyHidden>if the introduction explains the objective of the research presented in the preprint</visuallyHidden>"
+  },
+  "methodsWellSuited": {
+    "message": "Are the methods well-suited for this research?"
+  },
+  "changeMethodsWellSuited": {
+    "message": "Change <visuallyHidden>if the methods are well-suited for this research</visuallyHidden>"
+  },
+  "conclusionsSupported": {
+    "message": "Are the conclusions supported by the data?"
+  },
+  "changeConclusionsSupported": {
+    "message": "Change <visuallyHidden>if the conclusions are supported by the data</visuallyHidden>"
+  },
+  "dataPresentationWellSuited": {
+    "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
+  },
+  "changeDataPresentationWellSuited": {
+    "message": "Change <visuallyHidden>if the data presentations are well-suited to represent the data?</visuallyHidden>"
+  },
+  "clearDiscussion": {
+    "message": "How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?"
+  },
+  "changeClearDiscussion": {
+    "message": "Change <visuallyHidden>how clearly the authors discuss their findings and next steps</visuallyHidden>"
+  },
+  "advanceKnowledge": {
+    "message": "Is the preprint likely to advance academic knowledge?"
+  },
+  "changeAdvanceKnowledge": {
+    "message": "Change <visuallyHidden>if the preprint is likely to advance academic knowledge</visuallyHidden>"
+  },
+  "benefitFromEditing": {
+    "message": "Would it benefit from language editing?"
+  },
+  "changeBenefitFromEditing": {
+    "message": "Change <visuallyHidden>if it would benefit from language editing</visuallyHidden>"
+  },
+  "wouldRecommend": {
+    "message": "Would you recommend this preprint to others?"
+  },
+  "changeWouldRecommend": {
+    "message": "Change <visuallyHidden>if you would recommend this preprint to others</visuallyHidden>"
+  },
+  "readyForAttention": {
+    "message": "Is it ready for attention from an editor, publisher or broader audience?"
+  },
+  "changeReadyForAttention": {
+    "message": "Change <visuallyHidden>it it is ready for attention from an editor, publisher or broader audience</visuallyHidden>"
+  },
+  "nowPublish": {
+    "message": "Now publish your PREreview"
+  },
+  "weWillAssignLicense": {
+    "message": "We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a {licenseLink} license."
+  },
+  "publishButton": {
+    "message": "Publish PREreview"
+  }
+}

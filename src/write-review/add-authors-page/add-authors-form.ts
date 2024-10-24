@@ -43,26 +43,26 @@ export function addAuthorsForm({
     status: error ? Status.BadRequest : Status.OK,
     title: plainText(
       t(
-        'add-authors-form',
-        'title',
+        'write-review',
+        'addAuthorsTitle',
       )({ error: error ? identity : () => '', authorCount, preprintTitle: preprint.title.toString() }),
     ),
     nav: html`<a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back"
-      >${t('add-authors-form', 'back')()}</a
+      >${t('write-review', 'back')()}</a
     >`,
     main: html`
       <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}" novalidate>
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${t('add-authors-form', 'errorSummaryTitle')()}</h2>
+                <h2 id="error-summary-title">${t('write-review', 'errorSummaryTitle')()}</h2>
                 <ul>
                   ${E.isLeft(form.anotherAuthor)
                     ? html`
                         <li>
                           <a href="#another-author-no">
                             ${match(form.anotherAuthor.left)
-                              .with({ _tag: 'MissingE' }, t('add-authors-form', 'yesIfAnotherAuthor'))
+                              .with({ _tag: 'MissingE' }, t('write-review', 'yesIfAnotherAuthor'))
                               .exhaustive()}
                           </a>
                         </li>
@@ -73,29 +73,29 @@ export function addAuthorsForm({
             `
           : ''}
 
-        <h1>${t('add-authors-form', 'addedAuthorCount')({ authorCount })}</h1>
+        <h1>${t('write-review', 'addedAuthorCount')({ authorCount })}</h1>
 
         ${authors.map(
           (author, index) => html`
             <div class="summary-card">
               <div>
-                <h2>${t('add-authors-form', 'authorNumber')({ number: index + 1 })}</h2>
+                <h2>${t('write-review', 'authorNumber')({ number: index + 1 })}</h2>
 
                 <a href="${format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
-                  >${rawHtml(t('add-authors-form', 'changeAuthorDetails')({ name: author.name, visuallyHidden }))}</a
+                  >${rawHtml(t('write-review', 'changeAuthorDetailsLink')({ name: author.name, visuallyHidden }))}</a
                 >
                 <a href="${format(writeReviewRemoveAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
-                  >${rawHtml(t('add-authors-form', 'removeAuthor')({ name: author.name, visuallyHidden }))}</a
+                  >${rawHtml(t('write-review', 'removeAuthor')({ name: author.name, visuallyHidden }))}</a
                 >
               </div>
 
               <dl class="summary-list">
                 <div>
-                  <dt>${t('add-authors-form', 'name')()}</dt>
+                  <dt>${t('write-review', 'name')()}</dt>
                   <dd>${author.name}</dd>
                 </div>
                 <div>
-                  <dt>${t('add-authors-form', 'emailAddress')()}</dt>
+                  <dt>${t('write-review', 'emailAddress')()}</dt>
                   <dd>${author.emailAddress}</dd>
                 </div>
               </dl>
@@ -110,14 +110,14 @@ export function addAuthorsForm({
               E.isLeft(form.anotherAuthor) ? 'aria-invalid="true" aria-errormessage="another-author-error"' : '',
             )}
           >
-            <legend><h2>${t('add-authors-form', 'needToAddAuthor')()}</h2></legend>
+            <legend><h2>${t('write-review', 'needToAddAuthor')()}</h2></legend>
 
             ${E.isLeft(form.anotherAuthor)
               ? html`
                   <div class="error-message" id="another-author-error">
-                    <span class="visually-hidden">${t('add-authors-form', 'error')()}</span>
+                    <span class="visually-hidden">${t('write-review', 'error')()}</span>
                     ${match(form.anotherAuthor.left)
-                      .with({ _tag: 'MissingE' }, t('add-authors-form', 'yesIfAnotherAuthor'))
+                      .with({ _tag: 'MissingE' }, t('write-review', 'yesIfAnotherAuthor'))
                       .exhaustive()}
                   </div>
                 `
@@ -134,7 +134,7 @@ export function addAuthorsForm({
                       .with({ right: 'no' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${t('add-authors-form', 'no')()}</span>
+                  <span>${t('write-review', 'no')()}</span>
                 </label>
               </li>
               <li>
@@ -148,14 +148,14 @@ export function addAuthorsForm({
                       .with({ right: 'yes' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${t('add-authors-form', 'yes')()}</span>
+                  <span>${t('write-review', 'yes')()}</span>
                 </label>
               </li>
             </ol>
           </fieldset>
         </div>
 
-        <button>${t('add-authors-form', 'continueButton')()}</button>
+        <button>${t('write-review', 'continueButton')()}</button>
       </form>
     `,
     canonical: format(writeReviewAddAuthorMatch.formatter, { id: preprint.id }),
