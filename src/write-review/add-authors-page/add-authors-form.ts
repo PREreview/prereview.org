@@ -1,6 +1,6 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { identity } from 'fp-ts/lib/function.js'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
@@ -18,6 +18,7 @@ import {
 } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import type { NonEmptyString } from '../../types/string.js'
+import { backNav, errorPrefix, errorSummary } from '../shared-elements.js'
 
 interface AddAuthorsForm {
   readonly anotherAuthor: E.Either<MissingE, 'yes' | 'no' | undefined>
@@ -41,37 +42,15 @@ export function addAuthorsForm({
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText(
-      t(
-        'write-review',
-        'addAuthorsTitle',
-      )({ error: error ? identity : () => '', authorCount, preprintTitle: preprint.title.toString() }),
+    title: pipe(
+      t('write-review', 'addAuthorsTitle')({ authorCount, preprintTitle: preprint.title.toString() }),
+      errorPrefix(locale, error),
+      plainText,
     ),
-    nav: html`<a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back"
-      >${t('write-review', 'back')()}</a
-    >`,
+    nav: backNav(locale, format(writeReviewAuthorsMatch.formatter, { id: preprint.id })),
     main: html`
       <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${t('write-review', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.anotherAuthor)
-                    ? html`
-                        <li>
-                          <a href="#another-author-no">
-                            ${match(form.anotherAuthor.left)
-                              .with({ _tag: 'MissingE' }, t('write-review', 'yesIfAnotherAuthor'))
-                              .exhaustive()}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
         <h1>${t('write-review', 'addedAuthorCount')({ authorCount })}</h1>
 
@@ -163,3 +142,17 @@ export function addAuthorsForm({
     js: ['error-summary.js'],
   })
 }
+
+const toErrorItems = (locale: SupportedLocale) => (form: AddAuthorsForm) => html`
+  ${E.isLeft(form.anotherAuthor)
+    ? html`
+        <li>
+          <a href="#another-author-no">
+            ${match(form.anotherAuthor.left)
+              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'yesIfAnotherAuthor'))
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+`

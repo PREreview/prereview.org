@@ -30,7 +30,7 @@
     "message": "Save and continue"
   },
   "addAuthorsTitle": {
-    "message": "<error>Error: </error>You have added {authorCount, number} other {authorCount, plural, one {author} other {authors}} – PREreview of “{preprintTitle}”"
+    "message": "You have added {authorCount, number} other {authorCount, plural, one {author} other {authors}} – PREreview of “{preprintTitle}”"
   },
   "back": {
     "message": "Back"
