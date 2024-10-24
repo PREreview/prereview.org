@@ -42,6 +42,12 @@
     {
       "files": ["integration/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
+        "import/no-internal-modules": ["error", { "forbid": ["**/assets/**/*"] }]
+      }
+    },
+    {
+      "files": ["test/assets/**/*.ts"],
+      "rules": {
         "import/no-internal-modules": "off"
       }
     }
