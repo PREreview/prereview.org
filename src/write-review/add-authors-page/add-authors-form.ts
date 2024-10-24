@@ -1,11 +1,12 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
+import { identity } from 'fp-ts/lib/function.js'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
-import { type MissingE, hasAnError } from '../../form.js'
+import { hasAnError, type MissingE } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
-import type { SupportedLocale } from '../../locales/index.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import {
@@ -26,6 +27,7 @@ export function addAuthorsForm({
   authors,
   form,
   preprint,
+  locale,
 }: {
   authors: ReadonlyNonEmptyArray<{ name: NonEmptyString; emailAddress: EmailAddress }>
   form: AddAuthorsForm
@@ -33,24 +35,34 @@ export function addAuthorsForm({
   locale: SupportedLocale
 }) {
   const error = hasAnError(form)
+  const t = translate(locale)
+  const visuallyHidden = (s: string) => `<span class="visually-hidden">${s}</span>`
+  const authorCount = authors.length
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}You have added ${authors.length} other author${authors.length !== 1 ? 's' : ''} – PREreview of “${preprint.title}”`,
-    nav: html`<a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back">Back</a>`,
+    title: plainText(
+      t(
+        'add-authors-form',
+        'title',
+      )({ error: error ? identity : () => '', authorCount, preprintTitle: preprint.title.toString() }),
+    ),
+    nav: html`<a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back"
+      >${t('add-authors-form', 'back')()}</a
+    >`,
     main: html`
       <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}" novalidate>
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
+                <h2 id="error-summary-title">${t('add-authors-form', 'errorSummaryTitle')()}</h2>
                 <ul>
                   ${E.isLeft(form.anotherAuthor)
                     ? html`
                         <li>
                           <a href="#another-author-no">
                             ${match(form.anotherAuthor.left)
-                              .with({ _tag: 'MissingE' }, () => 'Select yes if you need to add another author')
+                              .with({ _tag: 'MissingE' }, t('add-authors-form', 'yesIfAnotherAuthor'))
                               .exhaustive()}
                           </a>
                         </li>
@@ -61,29 +73,29 @@ export function addAuthorsForm({
             `
           : ''}
 
-        <h1>You have added ${authors.length} other author${authors.length !== 1 ? 's' : ''}</h1>
+        <h1>${t('add-authors-form', 'addedAuthorCount')({ authorCount })}</h1>
 
         ${authors.map(
           (author, index) => html`
             <div class="summary-card">
               <div>
-                <h2>Author ${index + 1}</h2>
+                <h2>${t('add-authors-form', 'authorNumber')({ number: index + 1 })}</h2>
 
-                <a href="${format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
-                  >Change <span class="visually-hidden">${author.name}’s details</span></a
+                <a href="${format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}">
+                  ${rawHtml(t('add-authors-form', 'changeAuthorDetails')({ name: author.name, visuallyHidden }))}</a
                 >
-                <a href="${format(writeReviewRemoveAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
-                  >Remove <span class="visually-hidden">${author.name}</span></a
+                <a href="${format(writeReviewRemoveAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}">
+                  ${rawHtml(t('add-authors-form', 'removeAuthor')({ name: author.name, visuallyHidden }))}</a
                 >
               </div>
 
               <dl class="summary-list">
                 <div>
-                  <dt>Name</dt>
+                  <dt>${t('add-authors-form', 'name')()}</dt>
                   <dd>${author.name}</dd>
                 </div>
                 <div>
-                  <dt>Email address</dt>
+                  <dt>${t('add-authors-form', 'emailAddress')()}</dt>
                   <dd>${author.emailAddress}</dd>
                 </div>
               </dl>
@@ -98,14 +110,14 @@ export function addAuthorsForm({
               E.isLeft(form.anotherAuthor) ? 'aria-invalid="true" aria-errormessage="another-author-error"' : '',
             )}
           >
-            <legend><h2>Do you need to add another author?</h2></legend>
+            <legend><h2>${t('add-authors-form', 'needToAddAuthor')()}</h2></legend>
 
             ${E.isLeft(form.anotherAuthor)
               ? html`
                   <div class="error-message" id="another-author-error">
-                    <span class="visually-hidden">Error:</span>
+                    <span class="visually-hidden">${t('add-authors-form', 'error')()}</span>
                     ${match(form.anotherAuthor.left)
-                      .with({ _tag: 'MissingE' }, () => 'Select yes if you need to add another author')
+                      .with({ _tag: 'MissingE' }, t('add-authors-form', 'yesIfAnotherAuthor'))
                       .exhaustive()}
                   </div>
                 `
@@ -122,7 +134,7 @@ export function addAuthorsForm({
                       .with({ right: 'no' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>No</span>
+                  <span>${t('add-authors-form', 'no')()}</span>
                 </label>
               </li>
               <li>
@@ -136,14 +148,14 @@ export function addAuthorsForm({
                       .with({ right: 'yes' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>Yes</span>
+                  <span>${t('add-authors-form', 'yes')()}</span>
                 </label>
               </li>
             </ol>
           </fieldset>
         </div>
 
-        <button>Continue</button>
+        <button>${t('add-authors-form', 'continueButton')()}</button>
       </form>
     `,
     canonical: format(writeReviewAddAuthorMatch.formatter, { id: preprint.id }),
