@@ -1,9 +1,12 @@
-.PHONY: check start start-app start-services format lint-css lint-ts typecheck test test-fast test-integration update-snapshots test-integration-image
+.PHONY: check clean start start-app start-services format lint-css lint-ts typecheck test test-fast test-integration update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
 .env:
 	cp .env.dist .env
+
+clean:
+	rm -rf .cache dist integration-results node_modules assets/locales src/locales src/manifest.json .dev/server.crt .dev/server.key
 
 node_modules: package.json package-lock.json
 	npm install --ignore-scripts
