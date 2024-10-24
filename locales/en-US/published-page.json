@@ -20,7 +20,7 @@
   "letUsKnowAuthorDetails": {
     "message": "Please let us know the other authors’ details (names and ORCID iDs), and we’ll add them to the PREreview. Our email address is {mailtoHelp}."
   },
-  "sentEmailsToAuthos": {
+  "sentEmailsToAuthors": {
     "message": "We’ve sent emails to the other authors, inviting them to appear."
   },
   "shareYourReview": {

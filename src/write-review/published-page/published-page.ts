@@ -64,7 +64,7 @@ export const publishedPage = ({
               </div>
             `
           : form.moreAuthors === 'yes' && form.otherAuthors.length > 0
-            ? html`<p>${t('published-page', 'sentEmailsToAuthos')()}</p> `
+            ? html`<p>${t('published-page', 'sentEmailsToAuthors')()}</p> `
             : ''}
 
         <h2>${t('published-page', 'shareYourReview')()}</h2>
