@@ -1,6 +1,7 @@
 app = "prereview-sandbox"
 
 [env]
+CAN_CHOOSE_LOCALE = "true"
 CAN_SEE_GATES_LOGO = "true"
 CAN_WRITE_FEEDBACK = "true"
 COAR_NOTIFY_URL = "https://coar-notify-sandbox.prereview.org/"
