@@ -1,6 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
-import { Effect } from 'effect'
+import { Config, Effect } from 'effect'
 import Keyv from 'keyv'
 import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
@@ -22,6 +22,8 @@ export const ExpressConfigLive = Effect.gen(function* () {
   const env = yield* DeprecatedEnvVars
   const loggerEnv = yield* DeprecatedLoggerEnv
 
+  const canChooseLocale = yield* Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false)
+
   const sendMailEnv = match(env)
     .with({ MAILJET_API_KEY: P.string }, env => ({
       mailjetApi: {
@@ -41,7 +43,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
     allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
     authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
     avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
-    canChooseLocale: false,
+    canChooseLocale,
     canConnectOrcidProfile: () => true,
     canRequestReviews: () => true,
     canSeeGatesLogo: true,
