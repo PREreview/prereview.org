@@ -10,7 +10,7 @@ export class LocalePicker extends HTMLElement {
       }
       const locale = event.target.dataset['locale']
       if (locale !== undefined) {
-        document.cookie = `locale=${locale}`
+        document.cookie = `locale=${locale};path=/;samesite=lax`
         location.reload()
       }
     })
