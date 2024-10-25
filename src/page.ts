@@ -315,7 +315,7 @@ export function page({
                   ${canChooseLocale === true
                     ? html`
                         <div>
-                          <p>Choose your language:</p>
+                          <span>Choose your language:</span>
 
                           <locale-picker>
                             <ul>
