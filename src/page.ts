@@ -339,7 +339,14 @@ export function page({
                                 Array.map(
                                   ([code, name]) => html`
                                     <li>
-                                      <a href="#" lang="${code}" hreflang="${code}" data-locale="${code}">${name}</a>
+                                      <a
+                                        href="#"
+                                        lang="${code}"
+                                        hreflang="${code}"
+                                        data-locale="${code}"
+                                        ${locale === code ? html`aria-current="true"` : ''}
+                                        >${name}</a
+                                      >
                                     </li>
                                   `,
                                 ),
