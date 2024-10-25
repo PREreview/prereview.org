@@ -23,7 +23,7 @@ import { pageNotFound } from './http-error.js'
 import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
-import { DefaultLocale } from './locales/index.js'
+import type { SupportedLocale } from './locales/index.js'
 import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet.js'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
 import { page } from './page.js'
@@ -85,7 +85,7 @@ const withEnv =
   (...a: A) =>
     f(...a)(env)
 
-export const app = (config: ConfigEnv) =>
+export const app = (config: ConfigEnv) => (locale: SupportedLocale) =>
   express()
     .disable('x-powered-by')
     .use((req, res, next) => {
@@ -232,7 +232,7 @@ export const app = (config: ConfigEnv) =>
             getUserOnboarding: withEnv(getUserOnboarding, env),
             getPreprint: withEnv(getPreprint, env),
             getPreprintTitle: withEnv(getPreprintTitle, env),
-            locale: DefaultLocale,
+            locale,
             templatePage: withEnv(page, env),
             getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
             getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
