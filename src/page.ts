@@ -327,6 +327,7 @@ export function page({
                                     new Intl.DisplayNames(supportedLocale, {
                                       type: 'language',
                                       languageDisplay: 'standard',
+                                      style: 'short',
                                     }).of(supportedLocale) ?? supportedLocale,
                                   ),
                                 ),
