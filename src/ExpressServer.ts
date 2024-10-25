@@ -41,6 +41,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
     allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
     authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
     avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
+    canChooseLocale: false,
     canConnectOrcidProfile: () => true,
     canRequestReviews: () => true,
     canSeeGatesLogo: true,

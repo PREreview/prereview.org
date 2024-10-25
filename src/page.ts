@@ -6,6 +6,7 @@ import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as s from 'fp-ts/lib/string.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
+import type { CanChooseLocaleEnv } from './feature-flags.js'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
 import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
 import assets from './manifest.json' assert { type: 'json' }
@@ -89,7 +90,7 @@ export function page({
   js = [],
   user,
   userOnboarding,
-}: Page): R.Reader<EnvironmentLabelEnv & FathomEnv & PublicUrlEnv & { canChooseLocale?: boolean }, Html> {
+}: Page): R.Reader<EnvironmentLabelEnv & FathomEnv & PublicUrlEnv & Partial<CanChooseLocaleEnv>, Html> {
   const scripts = pipe(
     js,
     RA.uniq(stringEq()),

@@ -24,6 +24,10 @@ export interface CanWriteFeedbackEnv {
 export const canWriteFeedback = (user: User) =>
   R.asks(({ canWriteFeedback }: CanWriteFeedbackEnv) => canWriteFeedback(user))
 
+export interface CanChooseLocaleEnv {
+  canChooseLocale: boolean
+}
+
 export interface CanConnectOrcidProfileEnv {
   canConnectOrcidProfile: (user: User) => boolean
 }
