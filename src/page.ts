@@ -318,7 +318,8 @@ export function page({
 
                           <locale-picker>
                             <ul>
-                              <li><a href="#">English</a></li>
+                              <li><a href="#" data-locale="en-US">English</a></li>
+                              <li><a href="#" data-locale="es-419">Spanish</a></li>
                             </ul>
                           </locale-picker>
                         </div>
