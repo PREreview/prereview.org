@@ -89,7 +89,7 @@ export function page({
   js = [],
   user,
   userOnboarding,
-}: Page): R.Reader<EnvironmentLabelEnv & FathomEnv & PublicUrlEnv, Html> {
+}: Page): R.Reader<EnvironmentLabelEnv & FathomEnv & PublicUrlEnv & { canChooseLocale?: boolean }, Html> {
   const scripts = pipe(
     js,
     RA.uniq(stringEq()),
@@ -98,7 +98,7 @@ export function page({
   )
 
   return R.asks(
-    ({ fathomId, environmentLabel, publicUrl }) => html`
+    ({ canChooseLocale, fathomId, environmentLabel, publicUrl }) => html`
       <!doctype html>
       <html lang="${locale}" dir="${rtlDetect.getLangDir(locale)}" prefix="og: https://ogp.me/ns#">
         <head>
@@ -306,6 +306,18 @@ export function page({
                   <div>
                     <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
                   </div>
+
+                  ${canChooseLocale === true
+                    ? html`
+                        <div>
+                          <p>Choose your language:</p>
+
+                          <ul>
+                            <li><a href="#">English</a></li>
+                          </ul>
+                        </div>
+                      `
+                    : ''}
 
                   <div>
                     ${translate(locale, 'footer', 'newsletterText')()}
