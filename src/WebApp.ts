@@ -102,6 +102,8 @@ const getLoggedInUser = HttpMiddleware.make(app =>
   }),
 )
 
+const getLocale = Effect.provideService(Locale, DefaultLocale)
+
 const logStopped = Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logInfo('Server stopped')))
 
 const logDefects = Effect.tapDefect(cause =>
@@ -118,7 +120,7 @@ export const WebApp = pipe(
   addSecurityHeaders,
   addXRobotsTagHeader,
   getLoggedInUser,
-  Effect.provideService(Locale, DefaultLocale),
+  getLocale,
   logDefects,
   HttpServer.serve(flow(HttpMiddleware.logger, annotateLogsWithRequestId)),
   HttpServer.withLogAddress,
