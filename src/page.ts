@@ -119,7 +119,7 @@ export function page({
           ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
           ${canChooseLocale === true
             ? html`<script src="${assets['locale-picker.js'].path}" type="module"></script>`
-            : ''}}
+            : ''}
           ${typeof fathomId === 'string'
             ? html` <script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
             : ''}
