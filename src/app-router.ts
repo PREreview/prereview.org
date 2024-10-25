@@ -95,7 +95,7 @@ import {
   isLegacyCompatiblePrereview,
 } from './legacy-prereview.js'
 import { liveReviews } from './live-reviews.js'
-import { DefaultLocale, type SupportedLocale } from './locales/index.js'
+import type { SupportedLocale } from './locales/index.js'
 import {
   type IsUserBlockedEnv,
   type OrcidOAuthEnv,
@@ -487,7 +487,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apS('locale', RM.of(DefaultLocale)),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.bindW('canUseSearchQueries', ({ user }) => RM.rightReader(canUseSearchQueries(user))),
           RM.bindW('response', ({ canUseSearchQueries, locale }) =>
             RM.fromReaderTask(reviewsPage({ canUseSearchQueries, field, language, locale, page: page ?? 1, query })),
@@ -607,7 +610,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apS('locale', RM.of(DefaultLocale)),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.bind('response', ({ locale }) => RM.of(partners(locale))),
           RM.ichainW(handleResponse),
         ),
@@ -860,7 +866,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         flow(
           RM.of,
           RM.apS('user', maybeGetUser),
-          RM.apS('locale', RM.of(DefaultLocale)),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.bindW('response', RM.fromReaderTaskK(reviewPage)),
           RM.ichainW(handleResponse),
         ),
@@ -1302,7 +1311,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         flow(
           RM.of,
           RM.apS('user', maybeGetUser),
-          RM.apS('locale', RM.of(DefaultLocale)),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.bindW('response', RM.fromReaderTaskK(profile)),
           RM.ichainW(handleResponse),
         ),
@@ -1328,7 +1340,11 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(clubProfile(id, DefaultLocale))),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW('response', ({ locale }) => RM.fromReaderTask(clubProfile(id, locale))),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -1612,7 +1628,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ field, language, page: page ?? 1 }),
           RM.apS('user', maybeGetUser),
-          RM.apS('locale', RM.of(DefaultLocale)),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.bindW('response', RM.fromReaderTaskK(reviewRequests)),
           RM.ichainW(handleResponse),
         ),
@@ -1938,7 +1957,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ id }),
           RM.apS('user', maybeGetUser),
-          RM.apS('locale', RM.of(DefaultLocale)),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.apS('method', RM.fromMiddleware(getMethod)),
           RM.bindW('response', RM.fromReaderTaskK(authorInviteCheck)),
           RM.ichainW(handleResponse),
