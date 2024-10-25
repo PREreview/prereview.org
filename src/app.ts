@@ -23,6 +23,7 @@ import { pageNotFound } from './http-error.js'
 import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
+import { DefaultLocale } from './locales/index.js'
 import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet.js'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
 import { page } from './page.js'
@@ -39,6 +40,7 @@ export type ConfigEnv = Omit<
   | 'getUserOnboarding'
   | 'getPreprint'
   | 'getPreprintTitle'
+  | 'locale'
   | 'templatePage'
   | 'getPreprintIdFromUuid'
   | 'getProfileIdFromUuid'
@@ -230,6 +232,7 @@ export const app = (config: ConfigEnv) =>
             getUserOnboarding: withEnv(getUserOnboarding, env),
             getPreprint: withEnv(getPreprint, env),
             getPreprintTitle: withEnv(getPreprintTitle, env),
+            locale: DefaultLocale,
             templatePage: withEnv(page, env),
             getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
             getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
