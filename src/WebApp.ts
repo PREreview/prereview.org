@@ -104,6 +104,12 @@ const getLoggedInUser = HttpMiddleware.make(app =>
 
 const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
+    const canChooseLocale = yield* Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false)
+
+    if (!canChooseLocale) {
+      return yield* Effect.provideService(app, Locale, DefaultLocale)
+    }
+
     const locale = yield* pipe(
       HttpServerRequest.schemaCookies(Schema.Struct({ locale: Schema.Literal(...SupportedLocales) })),
       Effect.andThen(({ locale }) => locale),
