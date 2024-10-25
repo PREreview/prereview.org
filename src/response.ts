@@ -131,6 +131,7 @@ export const LogInResponse = (args: Omit<LogInResponse, '_tag'>): LogInResponse 
 export function handleResponse(response: {
   response: Response
   user?: User
+  locale?: SupportedLocale
 }): RM.ReaderMiddleware<
   GetUserOnboardingEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv,
   StatusOpen,
@@ -221,9 +222,11 @@ export const toPage = ({
 export const handlePageResponse = ({
   response,
   user,
+  locale = DefaultLocale,
 }: {
   response: PageResponse | StreamlinePageResponse
   user?: User
+  locale?: SupportedLocale
 }): RM.ReaderMiddleware<
   GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv,
   StatusOpen,
@@ -233,7 +236,7 @@ export const handlePageResponse = ({
 > =>
   pipe(
     RM.of({}),
-    RM.apS('locale', RM.of(DefaultLocale)),
+    RM.apS('locale', RM.of(locale)),
     RM.apS('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
     RM.apSW(
@@ -289,9 +292,11 @@ export const handlePageResponse = ({
 const handleTwoUpPageResponse = ({
   response,
   user,
+  locale = DefaultLocale,
 }: {
   response: TwoUpPageResponse
   user?: User
+  locale?: SupportedLocale
 }): RM.ReaderMiddleware<
   GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv,
   StatusOpen,
@@ -301,7 +306,7 @@ const handleTwoUpPageResponse = ({
 > =>
   pipe(
     RM.of({}),
-    RM.apS('locale', RM.of(DefaultLocale)),
+    RM.apS('locale', RM.of(locale)),
     RM.apS('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
     RM.apSW(
