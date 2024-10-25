@@ -1,3 +1,4 @@
+import { Array, String, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { Eq } from 'fp-ts/lib/Eq.js'
 import * as R from 'fp-ts/lib/Reader.js'
@@ -8,7 +9,7 @@ import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import type { CanChooseLocaleEnv } from './feature-flags.js'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
-import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
+import { DefaultLocale, type SupportedLocale, SupportedLocales, translate } from './locales/index.js'
 import assets from './manifest.json' assert { type: 'json' }
 import type { PublicUrlEnv } from './public-url.js'
 import {
@@ -318,8 +319,30 @@ export function page({
 
                           <locale-picker>
                             <ul>
-                              <li><a href="#" data-locale="en-US">English</a></li>
-                              <li><a href="#" data-locale="es-419">Spanish</a></li>
+                              ${pipe(
+                                Array.fromIterable(SupportedLocales),
+                                Array.map(supportedLocale =>
+                                  Tuple.make(
+                                    supportedLocale,
+                                    new Intl.DisplayNames(supportedLocale, {
+                                      type: 'language',
+                                      languageDisplay: 'standard',
+                                    }).of(supportedLocale) ?? supportedLocale,
+                                  ),
+                                ),
+                                Array.sortWith(
+                                  ([, b]) => b,
+                                  (a, b) =>
+                                    String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                                ),
+                                Array.map(
+                                  ([code, name]) => html`
+                                    <li>
+                                      <a href="#" lang="${code}" hreflang="${code}" data-locale="${code}">${name}</a>
+                                    </li>
+                                  `,
+                                ),
+                              )}
                             </ul>
                           </locale-picker>
                         </div>
