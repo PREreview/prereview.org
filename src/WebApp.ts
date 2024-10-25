@@ -102,7 +102,13 @@ const getLoggedInUser = HttpMiddleware.make(app =>
   }),
 )
 
-const getLocale = Effect.provideService(Locale, DefaultLocale)
+const getLocale = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const locale = DefaultLocale
+
+    return yield* Effect.provideService(app, Locale, locale)
+  }),
+)
 
 const logStopped = Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logInfo('Server stopped')))
 
