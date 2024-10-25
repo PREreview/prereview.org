@@ -5,7 +5,7 @@ import { Cause, Config, Effect, flow, Layer, Option, pipe, Schema } from 'effect
 import { Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
-import { DefaultLocale } from './locales/index.js'
+import { DefaultLocale, SupportedLocales } from './locales/index.js'
 import { Router } from './Router.js'
 import * as TemplatePage from './TemplatePage.js'
 import { Uuid } from './types/index.js'
@@ -104,7 +104,11 @@ const getLoggedInUser = HttpMiddleware.make(app =>
 
 const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
-    const locale = DefaultLocale
+    const locale = yield* pipe(
+      HttpServerRequest.schemaCookies(Schema.Struct({ locale: Schema.Literal(...SupportedLocales) })),
+      Effect.andThen(({ locale }) => locale),
+      Effect.orElseSucceed(() => DefaultLocale),
+    )
 
     return yield* Effect.provideService(app, Locale, locale)
   }),
