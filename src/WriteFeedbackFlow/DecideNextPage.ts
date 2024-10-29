@@ -11,6 +11,10 @@ const onInProgressState = pipe(
     () => Routes.WriteFeedbackEnterFeedback,
   ),
   Match.when(
+    state => typeof state.persona === 'undefined',
+    () => Routes.WriteFeedbackChoosePersona,
+  ),
+  Match.when(
     state => typeof state.codeOfConductAgreed === 'undefined',
     () => Routes.WriteFeedbackCodeOfConduct,
   ),
@@ -39,6 +43,13 @@ const onInProgressCommand = pipe(
       feedback: feedback => feedback._tag === 'FeedbackInProgress' && typeof feedback.feedback === 'undefined',
     },
     () => Routes.WriteFeedbackEnterFeedback,
+  ),
+  Match.when(
+    {
+      command: command => command !== 'ChoosePersona',
+      feedback: feedback => feedback._tag === 'FeedbackInProgress' && typeof feedback.persona === 'undefined',
+    },
+    () => Routes.WriteFeedbackChoosePersona,
   ),
   Match.when(
     {

@@ -1338,9 +1338,11 @@ export const feedbackNotStarted = (): fc.Arbitrary<Feedback.FeedbackNotStarted> 
 export const feedbackInProgress = ({
   codeOfConductAgreed,
   feedback,
+  persona,
 }: {
   codeOfConductAgreed?: fc.Arbitrary<Feedback.FeedbackInProgress['codeOfConductAgreed']>
   feedback?: fc.Arbitrary<Feedback.FeedbackInProgress['feedback']>
+  persona?: fc.Arbitrary<Feedback.FeedbackInProgress['persona']>
 } = {}): fc.Arbitrary<Feedback.FeedbackInProgress> =>
   fc
     .record({
@@ -1348,7 +1350,7 @@ export const feedbackInProgress = ({
       prereviewId: fc.integer(),
       feedback: feedback ?? fc.option(html(), { nil: undefined }),
       codeOfConductAgreed: codeOfConductAgreed ?? constantFrom(true, undefined),
-      persona: fc.option(constantFrom('public', 'pseudonym'), { nil: undefined }),
+      persona: persona ?? fc.option(constantFrom('public', 'pseudonym'), { nil: undefined }),
     })
     .map(data => new Feedback.FeedbackInProgress(data))
 

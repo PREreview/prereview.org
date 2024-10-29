@@ -21,7 +21,7 @@ export const CodeOfConductPage = ({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: form._tag === 'InvalidForm' ? plainText`Error: Code of Conduct` : plainText`Code of Conduct`,
     nav: html`
-      <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" class="back"
+      <a href="${Routes.WriteFeedbackChoosePersona.href({ feedbackId })}" class="back"
         >${translate(locale, 'write-feedback-flow', 'back')()}</a
       >
     `,
