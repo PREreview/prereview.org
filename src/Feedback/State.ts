@@ -9,18 +9,21 @@ export class FeedbackInProgress extends Data.TaggedClass('FeedbackInProgress')<{
   authorId: Orcid
   prereviewId: number
   feedback?: Html
+  persona?: 'public'
   codeOfConductAgreed?: true
 }> {}
 
 export class FeedbackReadyForPublishing extends Data.TaggedClass('FeedbackReadyForPublishing')<{
   authorId: Orcid
   feedback: Html
+  persona: 'public'
   prereviewId: number
 }> {}
 
 export class FeedbackBeingPublished extends Data.TaggedClass('FeedbackBeingPublished')<{
   authorId: Orcid
   feedback: Html
+  persona: 'public'
   prereviewId: number
 }> {}
 
@@ -29,6 +32,7 @@ export class FeedbackPublished extends Data.TaggedClass('FeedbackPublished')<{
   doi: Doi
   id: number
   feedback: Html
+  persona: 'public'
   prereviewId: number
 }> {}
 

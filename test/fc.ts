@@ -1335,6 +1335,7 @@ export const feedbackInProgress = ({
       prereviewId: fc.integer(),
       feedback: feedback ?? fc.option(html(), { nil: undefined }),
       codeOfConductAgreed: codeOfConductAgreed ?? constantFrom(true, undefined),
+      persona: fc.option(constant('public'), { nil: undefined }),
     })
     .map(data => new Feedback.FeedbackInProgress(data))
 
@@ -1343,6 +1344,7 @@ export const feedbackReadyForPublishing = (): fc.Arbitrary<Feedback.FeedbackRead
     .record({
       authorId: orcid(),
       feedback: html(),
+      persona: constant('public'),
       prereviewId: fc.integer(),
     })
     .map(data => new Feedback.FeedbackReadyForPublishing(data))
@@ -1352,6 +1354,7 @@ export const feedbackBeingPublished = (): fc.Arbitrary<Feedback.FeedbackBeingPub
     .record({
       authorId: orcid(),
       feedback: html(),
+      persona: constant('public'),
       prereviewId: fc.integer(),
     })
     .map(data => new Feedback.FeedbackBeingPublished(data))
@@ -1363,6 +1366,7 @@ export const feedbackPublished = (): fc.Arbitrary<Feedback.FeedbackPublished> =>
       doi: doi(),
       feedback: html(),
       id: fc.integer(),
+      persona: constant('public'),
       prereviewId: fc.integer(),
     })
     .map(data => new Feedback.FeedbackPublished(data))

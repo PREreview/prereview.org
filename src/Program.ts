@@ -107,22 +107,28 @@ const publishFeedback = Layer.effect(
         )
 
         const author = yield* pipe(
-          Effect.promise(
-            getNameFromOrcid(feedback.authorId)({ orcidApiUrl, orcidApiToken, fetch, ...sleep, ...logger }),
-          ),
-          Effect.andThen(
-            flow(
-              Match.value,
-              Match.when({ _tag: 'Left' }, () => Effect.fail(new Feedback.UnableToPublishFeedback({}))),
-              Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
-              Match.exhaustive,
+          Match.value(feedback.persona),
+          Match.when('public', () =>
+            pipe(
+              Effect.promise(
+                getNameFromOrcid(feedback.authorId)({ orcidApiUrl, orcidApiToken, fetch, ...sleep, ...logger }),
+              ),
+              Effect.andThen(
+                flow(
+                  Match.value,
+                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Feedback.UnableToPublishFeedback({}))),
+                  Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
+                  Match.exhaustive,
+                ),
+              ),
+              Effect.filterOrElse(
+                value => value !== undefined,
+                () => Effect.fail(new Feedback.UnableToPublishFeedback({})),
+              ),
+              Effect.andThen(name => ({ name, orcid: feedback.authorId })),
             ),
           ),
-          Effect.filterOrElse(
-            value => value !== undefined,
-            () => Effect.fail(new Feedback.UnableToPublishFeedback({})),
-          ),
-          Effect.andThen(name => ({ name, orcid: feedback.authorId })),
+          Match.exhaustive,
         )
 
         return yield* pipe(

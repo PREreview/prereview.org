@@ -93,5 +93,5 @@ const checkIsReadyForPublication = (state: State.FeedbackState) => {
     return state
   }
 
-  return new State.FeedbackReadyForPublishing({ ...rest, feedback })
+  return new State.FeedbackReadyForPublishing({ persona: 'public', ...rest, feedback })
 }

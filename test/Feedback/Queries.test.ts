@@ -70,11 +70,13 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       '2b9e777b-f14d-4294-8e27-2b442e496050': new Feedback.FeedbackReadyForPublishing({
         authorId: Orcid('0000-0002-1825-0097'),
         feedback: html`Some text`,
+        persona: 'public',
         prereviewId: 123,
       }),
       'eb8146ea-e643-4ca3-9dc1-2f26013c42b0': new Feedback.FeedbackBeingPublished({
         authorId: Orcid('0000-0002-1825-0097'),
         feedback: html`Some other text`,
+        persona: 'public',
         prereviewId: 123,
       }),
     })
