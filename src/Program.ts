@@ -6,6 +6,7 @@ import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as Feedback from './Feedback/index.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
+import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
 import * as LibsqlEventStore from './LibsqlEventStore.js'
 import { getNameFromOrcid } from './orcid.js'
 import * as Preprint from './preprint.js'
@@ -85,7 +86,7 @@ const getPrereview = Layer.effect(
 const publishFeedback = Layer.effect(
   Feedback.PublishFeedbackWithADoi,
   Effect.gen(function* () {
-    const { orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl, publicUrl } = yield* ExpressConfig
+    const { legacyPrereviewApi, orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl, publicUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
@@ -126,6 +127,20 @@ const publishFeedback = Layer.effect(
                 () => Effect.fail(new Feedback.UnableToPublishFeedback({})),
               ),
               Effect.andThen(name => ({ name, orcid: feedback.authorId })),
+            ),
+          ),
+          Match.when('pseudonym', () =>
+            pipe(
+              Effect.promise(getPseudonymFromLegacyPrereview(feedback.authorId)({ fetch, legacyPrereviewApi })),
+              Effect.andThen(
+                flow(
+                  Match.value,
+                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Feedback.UnableToPublishFeedback({}))),
+                  Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
+                  Match.exhaustive,
+                ),
+              ),
+              Effect.andThen(pseudonym => ({ name: pseudonym })),
             ),
           ),
           Match.exhaustive,

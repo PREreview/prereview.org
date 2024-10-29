@@ -21,6 +21,20 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right using a pseudonym', async ({ showPage }) => {
+  const response = _.CheckPage({
+    feedback,
+    feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    locale: DefaultLocale,
+    persona: 'pseudonym',
+    user,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 const user = {
   name: 'Josiah Carberry',
   orcid: Orcid('0000-0002-1825-0097'),

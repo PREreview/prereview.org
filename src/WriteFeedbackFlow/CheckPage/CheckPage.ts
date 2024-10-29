@@ -17,7 +17,7 @@ export const CheckPage = ({
   feedback: Html
   feedbackId: Uuid.Uuid
   locale: SupportedLocale
-  persona: 'public'
+  persona: 'public' | 'pseudonym'
   user: User
 }) =>
   StreamlinePageResponse({
@@ -44,12 +44,22 @@ export const CheckPage = ({
                     Match.when(
                       'public',
                       () =>
-                        html`<a
+                        html` <a
                           href="${format(Routes.profileMatch.formatter, {
                             profile: { type: 'orcid', value: user.orcid },
                           })}"
                           class="orcid"
                           >${user.name}</a
+                        >`,
+                    ),
+                    Match.when(
+                      'pseudonym',
+                      () =>
+                        html` <a
+                          href="${format(Routes.profileMatch.formatter, {
+                            profile: { type: 'pseudonym', value: user.pseudonym },
+                          })}"
+                          >${user.pseudonym}</a
                         >`,
                     ),
                     Match.exhaustive,
