@@ -1,3 +1,4 @@
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
@@ -10,11 +11,13 @@ export const CheckPage = ({
   feedback,
   feedbackId,
   locale,
+  persona,
   user,
 }: {
   feedback: Html
   feedbackId: Uuid.Uuid
   locale: SupportedLocale
+  persona: 'public'
   user: User
 }) =>
   StreamlinePageResponse({
@@ -36,13 +39,21 @@ export const CheckPage = ({
               <div>
                 <dt>Published name</dt>
                 <dd>
-                  <a
-                    href="${format(Routes.profileMatch.formatter, {
-                      profile: { type: 'orcid', value: user.orcid },
-                    })}"
-                    class="orcid"
-                    >${user.name}</a
-                  >
+                  ${pipe(
+                    Match.value(persona),
+                    Match.when(
+                      'public',
+                      () =>
+                        html`<a
+                          href="${format(Routes.profileMatch.formatter, {
+                            profile: { type: 'orcid', value: user.orcid },
+                          })}"
+                          class="orcid"
+                          >${user.name}</a
+                        >`,
+                    ),
+                    Match.exhaustive,
+                  )}
                 </dd>
               </div>
             </dl>

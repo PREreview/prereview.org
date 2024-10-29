@@ -39,6 +39,7 @@ export const CheckPage = ({
           feedback: feedback.feedback,
           feedbackId,
           locale,
+          persona: feedback.persona,
           user,
         }),
       ),
