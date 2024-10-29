@@ -49,7 +49,7 @@ import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
 import type { Languages } from '../src/languages.js'
 import { type SupportedLocale, SupportedLocales } from '../src/locales/index.js'
 import type { Location } from '../src/location.js'
-import assets from '../src/manifest.json' assert { type: 'json' }
+import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.js'
 import type { Preprint, PreprintTitle } from '../src/preprint.js'
 import { Prereview } from '../src/Prereview.js'

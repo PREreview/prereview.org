@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText } from './html.js'
 import { type SupportedLocale, translate } from './locales/index.js'
-import assets from './manifest.json' assert { type: 'json' }
+import assets from './manifest.json' with { type: 'json' }
 import { PageResponse } from './response.js'
 import { partnersMatch } from './routes.js'
 

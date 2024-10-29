@@ -7,7 +7,7 @@ import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
-import assets from '../manifest.json' assert { type: 'json' }
+import assets from '../manifest.json' with { type: 'json' }
 import { PageResponse } from '../response.js'
 import {
   aboutUsMatch,

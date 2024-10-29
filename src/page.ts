@@ -10,7 +10,7 @@ import { match } from 'ts-pattern'
 import type { CanChooseLocaleEnv } from './feature-flags.js'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
 import { DefaultLocale, type SupportedLocale, SupportedLocales, translate } from './locales/index.js'
-import assets from './manifest.json' assert { type: 'json' }
+import assets from './manifest.json' with { type: 'json' }
 import type { PublicUrlEnv } from './public-url.js'
 import {
   aboutUsMatch,
