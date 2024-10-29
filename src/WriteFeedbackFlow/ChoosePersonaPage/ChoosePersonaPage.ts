@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Either, Function, identity, Match, pipe } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
@@ -21,10 +21,13 @@ export const ChoosePersonaPage = ({
 }) =>
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
-    title:
-      form._tag === 'InvalidForm'
-        ? plainText`Error: What name would you like to use?`
-        : plainText`What name would you like to use?`,
+    title: plainText(
+      translate(
+        locale,
+        'write-feedback-flow',
+        'whatNameTitle',
+      )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
+    ),
     nav: html`
       <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" class="back"
         >${translate(locale, 'write-feedback-flow', 'back')()}</a
@@ -43,7 +46,9 @@ export const ChoosePersonaPage = ({
                           <a href="#persona-public">
                             ${pipe(
                               Match.value(form.persona.left),
-                              Match.tag('Missing', () => html`Select the name that you would like to use`),
+                              Match.tag('Missing', () =>
+                                translate(locale, 'write-feedback-flow', 'errorSelectName')({ error: () => '' }),
+                              ),
                               Match.exhaustive,
                             )}
                           </a>
@@ -66,39 +71,41 @@ export const ChoosePersonaPage = ({
             )}
           >
             <legend>
-              <h1>What name would you like to use?</h1>
+              <h1>${translate(locale, 'write-feedback-flow', 'whatNameTitle')({ error: () => '' })}</h1>
             </legend>
 
-            <p id="persona-tip" role="note">
-              You can choose between the name on your ORCID&nbsp;profile or your PREreview&nbsp;pseudonym.
-            </p>
+            <p id="persona-tip" role="note">${translate(locale, 'write-feedback-flow', 'whichNameTip')()}</p>
 
             <details>
-              <summary><span>What is a PREreview&nbsp;pseudonym?</span></summary>
+              <summary><span>${translate(locale, 'write-feedback-flow', 'whatIsPseudonym')()}</span></summary>
 
               <div>
                 <p>
-                  A <dfn>PREreview&nbsp;pseudonym</dfn> is an alternate name you can use instead of your real&nbsp;name.
-                  It is unique and combines a random color and animal. Your pseudonym is
-                  ‘${rawHtml(user.pseudonym.replace(' ', '&nbsp;'))}.’
+                  ${rawHtml(
+                    translate(
+                      locale,
+                      'write-feedback-flow',
+                      'whatIsPseudonymDefinition',
+                    )({
+                      pseudonym: user.pseudonym.replace(' ', '&nbsp;'),
+                      term: text => html`<dfn>${text}</dfn>`.toString(),
+                    }),
+                  )}
                 </p>
 
-                <p>
-                  Using your pseudonym, you can contribute to open preprint review without fearing retribution or
-                  judgment that may occur when using your real name. However, using a pseudonym retains an element of
-                  accountability.
-                </p>
+                <p>${translate(locale, 'write-feedback-flow', 'whatIsPseudonymAccountability')()}</p>
               </div>
             </details>
 
             ${form._tag === 'InvalidForm' && Either.isLeft(form.persona)
               ? html`
                   <div class="error-message" id="persona-error">
-                    <span class="visually-hidden">Error:</span>
                     ${pipe(
                       Match.value(form.persona.left),
-                      Match.tag('Missing', () => html`Select the name that you would like to use`),
+                      Match.tag('Missing', () => translate(locale, 'write-feedback-flow', 'errorSelectName')),
                       Match.exhaustive,
+                      Function.apply({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
+                      rawHtml,
                     )}
                   </div>
                 `
@@ -121,7 +128,9 @@ export const ChoosePersonaPage = ({
                   />
                   <span>${user.name}</span>
                 </label>
-                <p id="persona-tip-public" role="note">We’ll link your feedback to your ORCID&nbsp;iD.</p>
+                <p id="persona-tip-public" role="note">
+                  ${translate(locale, 'write-feedback-flow', 'linkToOrcidId')()}
+                </p>
               </li>
               <li>
                 <label>
@@ -142,7 +151,7 @@ export const ChoosePersonaPage = ({
                   <span>${user.pseudonym}</span>
                 </label>
                 <p id="persona-tip-pseudonym" role="note">
-                  We’ll only link your feedback to others that also use your pseudonym.
+                  ${translate(locale, 'write-feedback-flow', 'linkToPseudonym')()}
                 </p>
               </li>
             </ol>

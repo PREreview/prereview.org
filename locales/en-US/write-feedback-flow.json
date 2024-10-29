@@ -47,6 +47,30 @@
   "errorEnterFeedback": {
     "message": "<error>Error:</error> Enter your feedback"
   },
+  "whatNameTitle": {
+    "message": "<error>Error:</error> What name would you like to use?"
+  },
+  "errorSelectName": {
+    "message": "<error>Error:</error> Select the name that you would like to use"
+  },
+  "whichNameTip": {
+    "message": "You can choose between the name on your ORCID profile or your PREreview pseudonym."
+  },
+  "whatIsPseudonym": {
+    "message": "What is a PREreview pseudonym?"
+  },
+  "whatIsPseudonymDefinition": {
+    "message": "A <term>PREreview pseudonym</term> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}’."
+  },
+  "whatIsPseudonymAccountability": {
+    "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability."
+  },
+  "linkToOrcidId": {
+    "message": "We’ll link your feedback to your ORCID iD."
+  },
+  "linkToPseudonym": {
+    "message": "We’ll only link your feedback to others that also use your pseudonym."
+  },
   "checkTitle": {
     "message": "Check your feedback"
   },
