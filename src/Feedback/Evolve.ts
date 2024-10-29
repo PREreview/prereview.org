@@ -1,4 +1,4 @@
-import { flow, Function, identity, Match } from 'effect'
+import { flow, Function, identity, Match, pipe } from 'effect'
 import type * as Events from './Events.js'
 import * as State from './State.js'
 
@@ -69,18 +69,18 @@ const onFeedbackWasPublished = (event: Events.FeedbackWasPublished) =>
     Match.exhaustive,
   )
 
+const onEvent = pipe(
+  Match.type<Events.FeedbackEvent>(),
+  Match.tag('FeedbackWasStarted', onFeedbackWasStarted),
+  Match.tag('FeedbackWasEntered', onFeedbackWasEntered),
+  Match.tag('CodeOfConductWasAgreed', onCodeOfConductWasAgreed),
+  Match.tag('FeedbackPublicationWasRequested', onFeedbackPublicationWasRequested),
+  Match.tag('FeedbackWasPublished', onFeedbackWasPublished),
+  Match.exhaustive,
+)
+
 export const EvolveFeedback = (state: State.FeedbackState): ((event: Events.FeedbackEvent) => State.FeedbackState) =>
-  flow(
-    Match.value,
-    Match.tag('FeedbackWasStarted', onFeedbackWasStarted),
-    Match.tag('FeedbackWasEntered', onFeedbackWasEntered),
-    Match.tag('CodeOfConductWasAgreed', onCodeOfConductWasAgreed),
-    Match.tag('FeedbackPublicationWasRequested', onFeedbackPublicationWasRequested),
-    Match.tag('FeedbackWasPublished', onFeedbackWasPublished),
-    Match.exhaustive,
-    Function.apply(state)<State.FeedbackState>,
-    checkIsReadyForPublication,
-  )
+  flow(onEvent, Function.apply(state)<State.FeedbackState>, checkIsReadyForPublication)
 
 const checkIsReadyForPublication = (state: State.FeedbackState) => {
   if (state._tag !== 'FeedbackInProgress') {
