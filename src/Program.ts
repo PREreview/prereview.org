@@ -106,7 +106,7 @@ const publishFeedback = Layer.effect(
           ),
         )
 
-        const name = yield* pipe(
+        const author = yield* pipe(
           Effect.promise(
             getNameFromOrcid(feedback.authorId)({ orcidApiUrl, orcidApiToken, fetch, ...sleep, ...logger }),
           ),
@@ -122,11 +122,12 @@ const publishFeedback = Layer.effect(
             value => value !== undefined,
             () => Effect.fail(new Feedback.UnableToPublishFeedback({})),
           ),
+          Effect.andThen(name => ({ name, orcid: feedback.authorId })),
         )
 
         return yield* pipe(
           Effect.promise(
-            createFeedbackOnZenodo({ ...feedback, author: { name, orcid: feedback.authorId }, prereview })({
+            createFeedbackOnZenodo({ ...feedback, author, prereview })({
               fetch,
               publicUrl,
               zenodoApiKey,
