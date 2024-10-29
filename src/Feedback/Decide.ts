@@ -1,4 +1,4 @@
-import { Array, Either, flow, Function, Match } from 'effect'
+import { Array, Either, flow, Function, Match, pipe } from 'effect'
 import type * as Commands from './Commands.js'
 import * as Errors from './Errors.js'
 import * as Events from './Events.js'
@@ -73,16 +73,17 @@ const onMarkFeedbackAsPublished = (command: Commands.MarkFeedbackAsPublished) =>
     Match.exhaustive,
   )
 
+const onCommand = pipe(
+  Match.type<Commands.FeedbackCommand>(),
+  Match.tag('StartFeedback', onStartFeedback),
+  Match.tag('EnterFeedback', onEnterFeedback),
+  Match.tag('AgreeToCodeOfConduct', onAgreeToCodeOfConduct),
+  Match.tag('PublishFeedback', onPublishFeedback),
+  Match.tag('MarkFeedbackAsPublished', onMarkFeedbackAsPublished),
+  Match.exhaustive,
+)
+
 export const DecideFeedback = (
   state: State.FeedbackState,
 ): ((command: Commands.FeedbackCommand) => Either.Either<ReadonlyArray<Events.FeedbackEvent>, Errors.FeedbackError>) =>
-  flow(
-    Match.value,
-    Match.tag('StartFeedback', onStartFeedback),
-    Match.tag('EnterFeedback', onEnterFeedback),
-    Match.tag('AgreeToCodeOfConduct', onAgreeToCodeOfConduct),
-    Match.tag('PublishFeedback', onPublishFeedback),
-    Match.tag('MarkFeedbackAsPublished', onMarkFeedbackAsPublished),
-    Match.exhaustive,
-    Function.apply(state)<Either.Either<ReadonlyArray<Events.FeedbackEvent>, Errors.FeedbackError>>,
-  )
+  flow(onCommand, Function.apply(state)<Either.Either<ReadonlyArray<Events.FeedbackEvent>, Errors.FeedbackError>>)
