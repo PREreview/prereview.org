@@ -35,6 +35,10 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
+        event: new Feedback.PersonaWasChosen({ persona: 'public' }),
+        resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
+      },
+      {
         event: new Feedback.CodeOfConductWasAgreed(),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
@@ -44,6 +48,10 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
       {
         event: new Feedback.FeedbackWasEntered({ feedback: html`Some other text` }),
+        resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.PersonaWasChosen({ persona: 'public' }),
         resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
       },
       {
@@ -149,6 +157,10 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
       {
         event: new Feedback.FeedbackWasEntered({ feedback: html`Some text` }),
+        resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.PersonaWasChosen({ persona: 'public' }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {

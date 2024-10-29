@@ -102,11 +102,11 @@ const checkIsReadyForPublication = (state: State.FeedbackState) => {
     return state
   }
 
-  const { codeOfConductAgreed, feedback, ...rest } = state
+  const { codeOfConductAgreed, feedback, persona, ...rest } = state
 
-  if (typeof feedback !== 'object' || codeOfConductAgreed !== true) {
+  if (typeof feedback !== 'object' || typeof persona !== 'string' || codeOfConductAgreed !== true) {
     return state
   }
 
-  return new State.FeedbackReadyForPublishing({ persona: 'public', ...rest, feedback })
+  return new State.FeedbackReadyForPublishing({ ...rest, feedback, persona })
 }
