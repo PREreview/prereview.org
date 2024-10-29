@@ -23,6 +23,10 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
         resourceId: '51a9ea9e-a960-4b51-83a5-9901a47690c2' as Uuid.Uuid,
       },
       {
+        event: new Feedback.PersonaWasChosen({ persona: 'pseudonym' }),
+        resourceId: '51a9ea9e-a960-4b51-83a5-9901a47690c2' as Uuid.Uuid,
+      },
+      {
         event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
@@ -65,6 +69,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       '51a9ea9e-a960-4b51-83a5-9901a47690c2': new Feedback.FeedbackInProgress({
         authorId: Orcid('0000-0002-1825-0097'),
         feedback: html`Some text`,
+        persona: 'pseudonym',
         prereviewId: 123,
       }),
       '2b9e777b-f14d-4294-8e27-2b442e496050': new Feedback.FeedbackReadyForPublishing({

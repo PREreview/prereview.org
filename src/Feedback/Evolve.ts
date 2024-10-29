@@ -30,6 +30,20 @@ const onFeedbackWasEntered = (event: Events.FeedbackWasEntered) =>
     Match.exhaustive,
   )
 
+const onPersonaWasChosen = (event: Events.PersonaWasChosen) =>
+  flow(
+    Match.value<State.FeedbackState>,
+    Match.tag('FeedbackNotStarted', identity),
+    Match.tag('FeedbackInProgress', state => new State.FeedbackInProgress({ ...state, persona: event.persona })),
+    Match.tag(
+      'FeedbackReadyForPublishing',
+      state => new State.FeedbackReadyForPublishing({ ...state, persona: event.persona }),
+    ),
+    Match.tag('FeedbackBeingPublished', identity),
+    Match.tag('FeedbackPublished', identity),
+    Match.exhaustive,
+  )
+
 const onCodeOfConductWasAgreed = () =>
   flow(
     Match.value<State.FeedbackState>,
@@ -73,6 +87,7 @@ const onEvent = pipe(
   Match.type<Events.FeedbackEvent>(),
   Match.tag('FeedbackWasStarted', onFeedbackWasStarted),
   Match.tag('FeedbackWasEntered', onFeedbackWasEntered),
+  Match.tag('PersonaWasChosen', onPersonaWasChosen),
   Match.tag('CodeOfConductWasAgreed', onCodeOfConductWasAgreed),
   Match.tag('FeedbackPublicationWasRequested', onFeedbackPublicationWasRequested),
   Match.tag('FeedbackWasPublished', onFeedbackWasPublished),

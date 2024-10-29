@@ -22,6 +22,10 @@ export class FeedbackWasEntered extends Schema.TaggedClass<FeedbackWasEntered>()
   feedback: HtmlSchema,
 }) {}
 
+export class PersonaWasChosen extends Schema.TaggedClass<PersonaWasChosen>()('PersonaWasChosen', {
+  persona: Schema.Literal('public', 'pseudonym'),
+}) {}
+
 export class CodeOfConductWasAgreed extends Schema.TaggedClass<CodeOfConductWasAgreed>()(
   'CodeOfConductWasAgreed',
   {},
@@ -42,6 +46,7 @@ export type FeedbackEvent = typeof FeedbackEvent.Type
 export const FeedbackEvent = Schema.Union(
   FeedbackWasStarted,
   FeedbackWasEntered,
+  PersonaWasChosen,
   CodeOfConductWasAgreed,
   FeedbackPublicationWasRequested,
   FeedbackWasPublished,

@@ -1281,6 +1281,13 @@ export const feedbackWasEntered = (): fc.Arbitrary<Feedback.FeedbackWasEntered> 
     })
     .map(data => new Feedback.FeedbackWasEntered(data))
 
+export const personaWasChosen = (): fc.Arbitrary<Feedback.PersonaWasChosen> =>
+  fc
+    .record({
+      persona: constantFrom('public', 'pseudonym'),
+    })
+    .map(data => new Feedback.PersonaWasChosen(data))
+
 export const feedbackPublicationWasRequested = (): fc.Arbitrary<Feedback.FeedbackPublicationWasRequested> =>
   fc.constant(new Feedback.FeedbackPublicationWasRequested())
 
@@ -1293,7 +1300,13 @@ export const feedbackWasPublished = (): fc.Arbitrary<Feedback.FeedbackWasPublish
     .map(data => new Feedback.FeedbackWasPublished(data))
 
 export const feedbackEvent = (): fc.Arbitrary<Feedback.FeedbackEvent> =>
-  fc.oneof(feedbackWasStarted(), feedbackWasEntered(), feedbackPublicationWasRequested(), feedbackWasPublished())
+  fc.oneof(
+    feedbackWasStarted(),
+    feedbackWasEntered(),
+    personaWasChosen(),
+    feedbackPublicationWasRequested(),
+    feedbackWasPublished(),
+  )
 
 export const feedbackWasAlreadyStarted = (): fc.Arbitrary<Feedback.FeedbackWasAlreadyStarted> =>
   fc.constant(new Feedback.FeedbackWasAlreadyStarted())
