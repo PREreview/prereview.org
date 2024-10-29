@@ -65,6 +65,11 @@ export const CheckPage = ({
                     Match.exhaustive,
                   )}
                 </dd>
+                <dd>
+                  <a href="${Routes.WriteFeedbackChoosePersona.href({ feedbackId })}"
+                    >Change <span class="visually-hidden">name</span></a
+                  >
+                </dd>
               </div>
             </dl>
           </div>
