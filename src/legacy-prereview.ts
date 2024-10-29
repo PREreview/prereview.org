@@ -229,7 +229,7 @@ export const getProfileIdFromLegacyPreviewUuid: (
   ),
 )
 
-const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: string }) =>
+export const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: string }) =>
   pipe(
     RTE.fromReader(legacyPrereviewUrl('users')),
     RTE.chainReaderK(
@@ -246,9 +246,9 @@ const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: stri
     RTE.mapLeft(() => 'unavailable' as const),
   )
 
-export const getPseudonymFromLegacyPrereview = (user: { orcid: Orcid; name: string }) =>
+export const getPseudonymFromLegacyPrereview = (orcid: Orcid) =>
   pipe(
-    RTE.fromReader(legacyPrereviewUrl(`users/${user.orcid}`)),
+    RTE.fromReader(legacyPrereviewUrl(`users/${orcid}`)),
     RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
     RTE.chainW(F.send),
     RTE.local(useStaleCache()),
@@ -258,10 +258,10 @@ export const getPseudonymFromLegacyPrereview = (user: { orcid: Orcid; name: stri
     RTE.chainOptionK(() => 'unknown-pseudonym' as unknown)(
       flow(get('data.personas'), RA.findFirst(get('isAnonymous')), O.map(get('name')), O.filter(isPseudonym)),
     ),
-    RTE.orElse(error =>
+    RTE.mapLeft(error =>
       match(error)
-        .with({ status: Status.NotFound }, () => createUserOnLegacyPrereview(user))
-        .otherwise(() => RTE.left('unavailable' as const)),
+        .with({ status: Status.NotFound }, () => 'not-found' as const)
+        .otherwise(() => 'unavailable' as const),
     ),
   )
 

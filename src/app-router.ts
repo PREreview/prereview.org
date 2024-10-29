@@ -89,6 +89,7 @@ import * as Keyv from './keyv.js'
 import {
   type LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
+  createUserOnLegacyPrereview,
   getPseudonymFromLegacyPrereview,
   getRapidPreviewsFromLegacyPrereview,
   getUsersFromLegacyPrereview,
@@ -676,7 +677,19 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getPseudonym: withEnv(getPseudonymFromLegacyPrereview, env),
+          getPseudonym: withEnv(
+            (user: { orcid: Orcid; name: string }) =>
+              pipe(
+                getPseudonymFromLegacyPrereview(user.orcid),
+                RTE.orElse(error =>
+                  match(error)
+                    .with('not-found', () => createUserOnLegacyPrereview(user))
+                    .with('unavailable', RTE.left)
+                    .exhaustive(),
+                ),
+              ),
+            env,
+          ),
         })),
       ),
     ),
