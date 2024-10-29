@@ -1,7 +1,7 @@
 {
   "private": true,
   "engines": {
-    "node": "20",
+    "node": "22",
     "npm": "9 || 10"
   },
   "type": "module",
@@ -83,7 +83,7 @@
     "@tiptap/extension-superscript": "^2.8.0",
     "@tiptap/extension-typography": "^2.8.0",
     "@tiptap/starter-kit": "^2.8.0",
-    "@tsconfig/node20": "^20.1.4",
+    "@tsconfig/node22": "^22.0.0",
     "@types/cacache": "^17.0.2",
     "@types/connect-slashes": "^0.0.36",
     "@types/cookie": "^0.6.0",
@@ -96,7 +96,7 @@
     "@types/mjml": "^4.7.4",
     "@types/mocha": "^10.0.9",
     "@types/multer": "^1.4.12",
-    "@types/node": "^20.16.13",
+    "@types/node": "^22.8.2",
     "@types/nodemailer": "^6.4.16",
     "@types/rtl-detect": "^1.0.3",
     "@types/sanitize-html": "^2.13.0",
