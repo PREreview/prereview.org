@@ -101,9 +101,6 @@
   "expectedBehaviorEmpathy": {
     "message": "Showing empathy towards other community members."
   },
-  "expectedBehavior": {
-    "message": ""
-  },
   "examplesUnacceptableBehaviors": {
     "message": "Examples of unacceptable behaviors"
   },
