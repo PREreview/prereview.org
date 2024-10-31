@@ -32,7 +32,7 @@ export const CheckPage = ({
 
           <div class="summary-card">
             <div>
-              <h2>Your Details</h2>
+              <h2>Your details</h2>
             </div>
 
             <dl class="summary-list">
