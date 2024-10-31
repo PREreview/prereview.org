@@ -4,12 +4,14 @@ import { MarkFeedbackAsPublished } from './Commands.js'
 import { GetFeedback, HandleFeedbackCommand, PublishFeedbackWithADoi, UnableToHandleCommand } from './Context.js'
 import type { FeedbackPublicationWasRequested } from './Events.js'
 
+type ToDo = unknown
+
 export const OnFeedbackPublicationWasRequested = ({
   feedbackId,
 }: {
   feedbackId: Uuid.Uuid
   event: FeedbackPublicationWasRequested
-}) =>
+}): Effect.Effect<void, ToDo, GetFeedback | HandleFeedbackCommand | PublishFeedbackWithADoi> =>
   Effect.gen(function* () {
     const getFeedback = yield* GetFeedback
     const handleCommand = yield* HandleFeedbackCommand
