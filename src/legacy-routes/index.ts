@@ -438,7 +438,7 @@ function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.
   )
 }
 
-function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Match<{ [_ in K]: A }> {
+function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Match<Record<K, A>> {
   return new P.Match(
     new P.Parser(r => {
       if (typeof r.parts[0] !== 'string') {
@@ -454,4 +454,4 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-const singleton = <K extends string, V>(k: K, v: V): { [_ in K]: V } => ({ [k as any]: v }) as any
+const singleton = <K extends string, V>(k: K, v: V): Record<K, V> => ({ [k as any]: v }) as any
