@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Either, Function, identity, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../../html.js'
@@ -19,7 +19,13 @@ export const CodeOfConductPage = ({
 }) =>
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
-    title: form._tag === 'InvalidForm' ? plainText`Error: Code of Conduct` : plainText`Code of Conduct`,
+    title: plainText(
+      translate(
+        locale,
+        'write-feedback-flow',
+        'codeOfConductTitle',
+      )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
+    ),
     nav: html`
       <a href="${Routes.WriteFeedbackChoosePersona.href({ feedbackId })}" class="back"
         >${translate(locale, 'write-feedback-flow', 'back')()}</a
@@ -38,9 +44,12 @@ export const CodeOfConductPage = ({
                           <a href="#agree-yes">
                             ${pipe(
                               Match.value(form.agree.left),
-                              Match.tag(
-                                'Missing',
-                                () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`,
+                              Match.tag('Missing', () =>
+                                translate(
+                                  locale,
+                                  'write-feedback-flow',
+                                  'errorFollowingCodeOfConduct',
+                                )({ error: () => '' }),
                               ),
                               Match.exhaustive,
                             )}
@@ -64,43 +73,50 @@ export const CodeOfConductPage = ({
             )}
           >
             <legend>
-              <h1>Code of Conduct</h1>
+              <h1>${translate(locale, 'write-feedback-flow', 'codeOfConductTitle')({ error: () => '' })}</h1>
             </legend>
 
             <p id="agree-tip" role="note">
-              As a member of our community, we expect you to abide by the
-              <a href="${format(Routes.codeOfConductMatch.formatter, {})}">PREreview Code&nbsp;of&nbsp;Conduct</a>.
+              ${rawHtml(
+                translate(
+                  locale,
+                  'write-feedback-flow',
+                  'codeOfConductTip',
+                )({
+                  link: text =>
+                    html`<a href="${format(Routes.codeOfConductMatch.formatter, {})}">${text}</a>`.toString(),
+                }),
+              )}
             </p>
 
             <details>
-              <summary><span>Examples of expected behaviors</span></summary>
+              <summary><span>${translate(locale, 'write-feedback-flow', 'examplesExpectedBehaviors')()}</span></summary>
 
               <div>
                 <ul>
-                  <li>Using welcoming and inclusive language.</li>
-                  <li>Providing feedback that is constructive, i.e. useful, to the receiver.</li>
-                  <li>Being respectful of differing viewpoints and experiences.</li>
-                  <li>Gracefully accepting constructive criticism.</li>
-                  <li>Focusing on what is best for the community.</li>
-                  <li>Showing empathy towards other community members.</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorLanguage')()}</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorConstructive')()}</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorRespectful')()}</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorGraceful')()}</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorCommunity')()}</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorEmpathy')()}</li>
                 </ul>
               </div>
             </details>
 
             <details>
-              <summary><span>Examples of unacceptable behaviors</span></summary>
+              <summary>
+                <span>${translate(locale, 'write-feedback-flow', 'examplesUnacceptableBehaviors')()}</span>
+              </summary>
 
               <div>
                 <ul>
-                  <li>Trolling, insulting or derogatory comments, and personal or political attacks.</li>
-                  <li>Providing unconstructive or disruptive feedback on PREreview.</li>
-                  <li>Public or private harassment.</li>
-                  <li>
-                    Publishing others’ confidential information, such as a physical or electronic address, without
-                    explicit permission.
-                  </li>
-                  <li>Use of sexualized language or imagery and unwelcome sexual attention or advances.</li>
-                  <li>Other conduct which could reasonably be considered inappropriate in a professional setting.</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorAttacks')()}</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorUnconstructive')()}</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorHarassment')()}</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorConfidential')()}</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorSexual')()}</li>
+                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorOther')()}</li>
                 </ul>
               </div>
             </details>
@@ -108,11 +124,14 @@ export const CodeOfConductPage = ({
             ${form._tag === 'InvalidForm' && Either.isLeft(form.agree)
               ? html`
                   <div class="error-message" id="agree-error">
-                    <span class="visually-hidden">Error:</span>
                     ${pipe(
                       Match.value(form.agree.left),
-                      Match.tag('Missing', () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`),
+                      Match.tag('Missing', () =>
+                        translate(locale, 'write-feedback-flow', 'errorFollowingCodeOfConduct'),
+                      ),
                       Match.exhaustive,
+                      Function.apply({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
+                      rawHtml,
                     )}
                   </div>
                 `
@@ -130,7 +149,7 @@ export const CodeOfConductPage = ({
                   Match.orElse(() => ''),
                 )}
               />
-              <span>I’m following the Code&nbsp;of&nbsp;Conduct</span>
+              <span>${translate(locale, 'write-feedback-flow', 'followingCodeOfConduct')()} </span>
             </label>
           </fieldset>
         </div>

@@ -71,6 +71,63 @@
   "linkToPseudonym": {
     "message": "We’ll only link your feedback to others that also use your pseudonym."
   },
+  "codeOfConductTitle": {
+    "message": "<error>Error:</error> Code of Conduct"
+  },
+  "errorFollowingCodeOfConduct": {
+    "message": "<error>Error:</error> Confirm that you are following the Code of Conduct"
+  },
+  "codeOfConductTip": {
+    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>."
+  },
+  "examplesExpectedBehaviors": {
+    "message": "Examples of expected behaviors"
+  },
+  "expectedBehaviorLanguage": {
+    "message": "Using welcoming and inclusive language."
+  },
+  "expectedBehaviorConstructive": {
+    "message": "Providing feedback that is constructive, i.e. useful, to the receiver."
+  },
+  "expectedBehaviorRespectful": {
+    "message": "Being respectful of differing viewpoints and experiences."
+  },
+  "expectedBehaviorGraceful": {
+    "message": "Gracefully accepting constructive criticism."
+  },
+  "expectedBehaviorCommunity": {
+    "message": "Focusing on what is best for the community."
+  },
+  "expectedBehaviorEmpathy": {
+    "message": "Showing empathy towards other community members."
+  },
+  "expectedBehavior": {
+    "message": ""
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "Examples of unacceptable behaviors"
+  },
+  "unacceptableBehaviorAttacks": {
+    "message": "Trolling, insulting or derogatory comments, and personal or political attacks."
+  },
+  "unacceptableBehaviorUnconstructive": {
+    "message": "Providing unconstructive or disruptive feedback on PREreview."
+  },
+  "unacceptableBehaviorHarassment": {
+    "message": "Public or private harassment."
+  },
+  "unacceptableBehaviorConfidential": {
+    "message": "Publishing others’ confidential information, such as a physical or electronic address, without explicit permission."
+  },
+  "unacceptableBehaviorSexual": {
+    "message": "Use of sexualized language or imagery and unwelcome sexual attention or advances."
+  },
+  "unacceptableBehaviorOther": {
+    "message": "Other conduct which could reasonably be considered inappropriate in a professional setting."
+  },
+  "followingCodeOfConduct": {
+    "message": "I’m following the Code of Conduct"
+  },
   "checkTitle": {
     "message": "Check your feedback"
   },
