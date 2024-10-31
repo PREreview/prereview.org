@@ -105,9 +105,11 @@ export const CodeOfConductPage = ({
             </details>
 
             <details>
-              <summary>
-                <span>${translate(locale, 'write-feedback-flow', 'examplesUnacceptableBehaviors')()}</span>
-              </summary>
+              ${
+                // eslint-disable-next-line no-comments/disallowComments
+                // prettier-ignore
+                html`<summary><span>${translate(locale, 'write-feedback-flow', 'examplesUnacceptableBehaviors')()}</span></summary>`
+              }
 
               <div>
                 <ul>
