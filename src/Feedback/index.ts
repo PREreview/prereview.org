@@ -102,7 +102,14 @@ export const ReactToFeedbackEvents: Layer.Layer<
       Effect.andThen(
         pipe(
           Match.type<{ feedbackId: Uuid.Uuid; event: FeedbackEvent }>(),
-          Match.when({ event: { _tag: 'FeedbackPublicationWasRequested' } }, OnFeedbackPublicationWasRequested),
+          Match.when({ event: { _tag: 'FeedbackPublicationWasRequested' } }, ({ feedbackId, event }) =>
+            pipe(
+              OnFeedbackPublicationWasRequested({ feedbackId, event }),
+              Effect.tapError(() =>
+                Effect.annotateLogs(Effect.logError('ReactToFeedbackEvents failed'), { feedbackId }),
+              ),
+            ),
+          ),
           Match.orElse(() => Effect.void),
         ),
       ),
