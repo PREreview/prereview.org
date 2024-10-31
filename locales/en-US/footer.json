@@ -1,4 +1,7 @@
 {
+  "chooseLanguage": {
+    "message": "Choose your language:"
+  },
   "newsletterText": {
     "message": "Learn about upcoming events and updates."
   },
