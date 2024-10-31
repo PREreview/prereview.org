@@ -128,6 +128,15 @@
   "checkTitle": {
     "message": "Check your feedback"
   },
+  "checkYourDetailsHeading": {
+    "message": "Your details"
+  },
+  "publishedNameHeading": {
+    "message": "Published name"
+  },
+  "changeName": {
+    "message": "Change <visuallyHidden>name</visuallyHidden>"
+  },
   "checkYourFeedbackHeading": {
     "message": "Your feedback"
   },

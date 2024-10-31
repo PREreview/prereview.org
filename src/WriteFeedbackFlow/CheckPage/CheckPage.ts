@@ -32,12 +32,12 @@ export const CheckPage = ({
 
           <div class="summary-card">
             <div>
-              <h2>Your details</h2>
+              <h2>${translate(locale, 'write-feedback-flow', 'checkYourDetailsHeading')()}</h2>
             </div>
 
             <dl class="summary-list">
               <div>
-                <dt>Published name</dt>
+                <dt>${translate(locale, 'write-feedback-flow', 'publishedNameHeading')()}</dt>
                 <dd>
                   ${pipe(
                     Match.value(persona),
@@ -67,7 +67,13 @@ export const CheckPage = ({
                 </dd>
                 <dd>
                   <a href="${Routes.WriteFeedbackChoosePersona.href({ feedbackId })}"
-                    >Change <span class="visually-hidden">name</span></a
+                    >${rawHtml(
+                      translate(
+                        locale,
+                        'write-feedback-flow',
+                        'changeName',
+                      )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
+                    )}</a
                   >
                 </dd>
               </div>
