@@ -43,7 +43,7 @@ pipe(
   Effect.provideServiceEffect(ExpressConfig, ExpressConfigLive),
   Effect.provide(
     Layer.mergeAll(
-      LibsqlClient.layer({
+      LibsqlClient.layerConfig({
         url: Config.string('LIBSQL_URL'),
         authToken: Config.withDefault(Config.string('LIBSQL_AUTH_TOKEN'), undefined),
       }),

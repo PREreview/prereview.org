@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Array, Config, Effect, Equal, Layer, Logger, LogLevel, TestContext } from 'effect'
+import { Array, Effect, Equal, Layer, Logger, LogLevel, TestContext } from 'effect'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/LibsqlEventStore.js'
 import { Uuid } from '../src/types/index.js'
@@ -223,6 +223,6 @@ const TestLibsqlClient = Layer.unwrapScoped(
     const fs = yield* FileSystem.FileSystem
     const file = yield* fs.makeTempFileScoped()
 
-    return LibsqlClient.layer({ url: Config.succeed(`file:${file}`) })
+    return LibsqlClient.layer({ url: `file:${file}` })
   }),
 ).pipe(Layer.provide(NodeFileSystem.layer))
