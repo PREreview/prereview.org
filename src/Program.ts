@@ -216,7 +216,7 @@ const setUpFetch = Layer.effect(
 )
 
 export const Program = pipe(
-  Layer.mergeAll(WebApp, Feedback.ReactToFeedbackEvents),
+  Layer.mergeAll(WebApp, Feedback.EnsureFeedbackIsPublished),
   Layer.provide(publishFeedback),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),

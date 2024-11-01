@@ -88,7 +88,7 @@ export const makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview: Effect.Effect
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 
-export const ReactToFeedbackEvents: Layer.Layer<
+export const EnsureFeedbackIsPublished: Layer.Layer<
   never,
   never,
   FeedbackEvents | GetFeedback | HandleFeedbackCommand | PublishFeedbackWithADoi
