@@ -1,11 +1,11 @@
-import { Array, Effect, Layer, Match, pipe, PubSub, Queue } from 'effect'
+import { Array, Effect, Layer, Match, Option, pipe, PubSub, Queue } from 'effect'
 import { EventStore } from '../Context.js'
 import type { Uuid } from '../types/index.js'
 import {
   FeedbackEvents,
+  type FeedbackReadmodel,
   type GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
   type GetFeedback,
-  type GetOneFeedbackWaitingToBePublished,
   type HandleFeedbackCommand,
   type PublishFeedbackWithADoi,
   UnableToHandleCommand,
@@ -74,6 +74,32 @@ export const makeGetFeedback: Effect.Effect<typeof GetFeedback.Service, never, E
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 
+export const makeFeedbackReadmodel: Effect.Effect<typeof FeedbackReadmodel.Service, UnableToQuery, EventStore> =
+  Effect.gen(function* () {
+    const eventStore = yield* EventStore
+    return {
+      getOneFeedbackWaitingToBePublished: () => Effect.succeed(Option.none()),
+      getFeedback: feedbackId =>
+        pipe(
+          feedbackId,
+          eventStore.getEvents,
+          Effect.andThen(({ events }) => events),
+          Effect.andThen(
+            Array.reduce(new FeedbackNotStarted() as FeedbackState, (state, event) => EvolveFeedback(state)(event)),
+          ),
+          Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        ),
+      getAllUnpublishedFeedbackByAnAuthorForAPrereview: ({ authorId, prereviewId }) =>
+        pipe(
+          eventStore.getAllEvents,
+          Effect.andThen(events =>
+            Queries.GetAllUnpublishedFeedbackByAnAuthorForAPrereview(events)({ authorId, prereviewId }),
+          ),
+          Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        ),
+    }
+  })
+
 export const makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview: Effect.Effect<
   typeof GetAllUnpublishedFeedbackByAnAuthorForAPrereview.Service,
   never,
@@ -92,7 +118,7 @@ export const makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview: Effect.Effect
 export const EnsureFeedbackIsPublished: Layer.Layer<
   never,
   never,
-  FeedbackEvents | GetFeedback | HandleFeedbackCommand | PublishFeedbackWithADoi | GetOneFeedbackWaitingToBePublished
+  FeedbackEvents | GetFeedback | HandleFeedbackCommand | PublishFeedbackWithADoi | FeedbackReadmodel
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const feedbackEvents = yield* FeedbackEvents

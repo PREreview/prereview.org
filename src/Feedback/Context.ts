@@ -7,6 +7,21 @@ import type { FeedbackError } from './Errors.js'
 import type { FeedbackEvent } from './Events.js'
 import type { FeedbackBeingPublished, FeedbackInProgress, FeedbackReadyForPublishing, FeedbackState } from './State.js'
 
+export class FeedbackReadmodel extends Context.Tag('FeedbackReadmodel')<
+  FeedbackReadmodel,
+  {
+    getOneFeedbackWaitingToBePublished: () => Effect.Effect<Option.Option<FeedbackReadyForPublishing>, UnableToQuery>
+    getFeedback: (feedbackId: Uuid.Uuid) => Effect.Effect<FeedbackState, UnableToQuery>
+    getAllUnpublishedFeedbackByAnAuthorForAPrereview: (params: {
+      readonly authorId: Orcid
+      readonly prereviewId: number
+    }) => Effect.Effect<
+      Record.ReadonlyRecord<Uuid.Uuid, FeedbackInProgress | FeedbackReadyForPublishing | FeedbackBeingPublished>,
+      UnableToQuery
+    >
+  }
+>() {}
+
 export class FeedbackEvents extends Context.Tag('FeedbackEvents')<
   FeedbackEvents,
   PubSub.PubSub<{ readonly feedbackId: Uuid.Uuid; readonly event: FeedbackEvent }>
