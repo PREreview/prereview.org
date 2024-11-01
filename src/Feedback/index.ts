@@ -1,4 +1,4 @@
-import { Array, Effect, Layer, Match, Option, pipe, PubSub, Queue } from 'effect'
+import { Array, Effect, Layer, Match, pipe, PubSub, Queue } from 'effect'
 import { EventStore } from '../Context.js'
 import type { Uuid } from '../types/index.js'
 import {
@@ -78,7 +78,12 @@ export const makeFeedbackReadmodel: Effect.Effect<typeof FeedbackReadmodel.Servi
   Effect.gen(function* () {
     const eventStore = yield* EventStore
     return {
-      getOneFeedbackWaitingToBePublished: () => Effect.succeed(Option.none()),
+      getOneFeedbackWaitingToBePublished: () =>
+        pipe(
+          eventStore.getAllEvents,
+          Effect.map(Queries.GetOneFeedbackWaitingToBePublished),
+          Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        ),
       getFeedback: feedbackId =>
         pipe(
           feedbackId,

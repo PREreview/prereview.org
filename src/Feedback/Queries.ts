@@ -1,12 +1,24 @@
-import { Array, Equal, Option, pipe, Record } from 'effect'
+import { Array, type Effect, Equal, Option, pipe, Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
+import type { FeedbackReadmodel } from './Context.js'
 import type { FeedbackEvent } from './Events.js'
 import { EvolveFeedback } from './Evolve.js'
 import { FeedbackNotStarted, type FeedbackState } from './State.js'
 
+type Events = ReadonlyArray<{
+  readonly event: FeedbackEvent
+  readonly resourceId: Uuid.Uuid
+}>
+
+export const GetOneFeedbackWaitingToBePublished = (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  events: Events,
+): Effect.Effect.Success<ReturnType<(typeof FeedbackReadmodel)['Service']['getOneFeedbackWaitingToBePublished']>> =>
+  Option.none()
+
 export const GetAllUnpublishedFeedbackByAnAuthorForAPrereview =
-  (events: ReadonlyArray<{ readonly event: FeedbackEvent; readonly resourceId: Uuid.Uuid }>) =>
+  (events: Events) =>
   ({ authorId, prereviewId }: { readonly authorId: Orcid; readonly prereviewId: number }) =>
     pipe(
       Array.reduce(
@@ -40,7 +52,7 @@ export const GetAllUnpublishedFeedbackByAnAuthorForAPrereview =
     )
 
 export const HasAuthorUnpublishedFeedbackForAPrereview =
-  (events: ReadonlyArray<{ readonly event: FeedbackEvent; readonly resourceId: Uuid.Uuid }>) =>
+  (events: Events) =>
   ({ authorId, prereviewId }: { readonly authorId: Orcid; readonly prereviewId: number }) =>
     pipe(
       Array.reduce(
