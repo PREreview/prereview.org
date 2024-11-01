@@ -1,6 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Doi } from 'doi-ts'
+import { Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import * as Feedback from '../../src/Feedback/index.js'
 import * as _ from '../../src/Feedback/Queries.js'
@@ -185,4 +186,22 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       }),
     })
   })
+})
+
+describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
+  test.failing('gets id of one piece of unpublished feedback', () => {
+    const feedbackId = 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid
+    const events = [
+      {
+        event: new Feedback.FeedbackPublicationWasRequested(),
+        resourceId: feedbackId,
+      },
+    ]
+    const actual = _.GetOneFeedbackWaitingToBePublished(events)
+    expect(actual).toStrictEqual(Option.some(feedbackId))
+  })
+
+  test.todo('ignores feedback that has been published')
+  test.todo('ignores feedback where publication has not been requested')
+  test.todo('ignores feedback where an attempt to publish is running')
 })

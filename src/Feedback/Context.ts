@@ -10,7 +10,7 @@ import type { FeedbackBeingPublished, FeedbackInProgress, FeedbackReadyForPublis
 export class FeedbackReadmodel extends Context.Tag('FeedbackReadmodel')<
   FeedbackReadmodel,
   {
-    getOneFeedbackWaitingToBePublished: () => Effect.Effect<Option.Option<FeedbackReadyForPublishing>, UnableToQuery>
+    getOneFeedbackWaitingToBePublished: () => Effect.Effect<Option.Option<Uuid.Uuid>, UnableToQuery>
     getFeedback: (feedbackId: Uuid.Uuid) => Effect.Effect<FeedbackState, UnableToQuery>
     getAllUnpublishedFeedbackByAnAuthorForAPrereview: (params: {
       readonly authorId: Orcid
