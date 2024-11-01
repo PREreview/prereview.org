@@ -15,7 +15,7 @@ export const GetOneFeedbackWaitingToBePublished = (
   events: Events,
 ): Effect.Effect.Success<ReturnType<(typeof FeedbackReadmodel)['Service']['getOneFeedbackWaitingToBePublished']>> => {
   const published = []
-  for (const entry of events) {
+  for (const entry of events.toReversed()) {
     if (entry.event._tag === 'FeedbackWasPublished') {
       published.push(entry.resourceId)
       continue
