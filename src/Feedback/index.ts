@@ -5,6 +5,7 @@ import {
   FeedbackEvents,
   type GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
   type GetFeedback,
+  type GetOneFeedbackWaitingToBePublished,
   type HandleFeedbackCommand,
   type PublishFeedbackWithADoi,
   UnableToHandleCommand,
@@ -91,7 +92,7 @@ export const makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview: Effect.Effect
 export const EnsureFeedbackIsPublished: Layer.Layer<
   never,
   never,
-  FeedbackEvents | GetFeedback | HandleFeedbackCommand | PublishFeedbackWithADoi
+  FeedbackEvents | GetFeedback | HandleFeedbackCommand | PublishFeedbackWithADoi | GetOneFeedbackWaitingToBePublished
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const feedbackEvents = yield* FeedbackEvents

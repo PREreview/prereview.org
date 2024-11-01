@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { Context, Data, type Effect, type PubSub, type Record } from 'effect'
+import { Context, Data, type Effect, type Option, type PubSub, type Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { FeedbackCommand } from './Commands.js'
@@ -28,6 +28,11 @@ export class GetAllUnpublishedFeedbackByAnAuthorForAPrereview extends Context.Ta
     Record.ReadonlyRecord<Uuid.Uuid, FeedbackInProgress | FeedbackReadyForPublishing | FeedbackBeingPublished>,
     UnableToQuery
   >
+>() {}
+
+export class GetOneFeedbackWaitingToBePublished extends Context.Tag('GetOneFeedbackWaitingToBePublished ')<
+  GetOneFeedbackWaitingToBePublished,
+  () => Effect.Effect<Option.Option<FeedbackReadyForPublishing>, UnableToQuery>
 >() {}
 
 export class GetFeedback extends Context.Tag('GetFeedback')<
