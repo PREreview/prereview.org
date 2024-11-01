@@ -12,10 +12,20 @@ type Events = ReadonlyArray<{
 }>
 
 export const GetOneFeedbackWaitingToBePublished = (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   events: Events,
-): Effect.Effect.Success<ReturnType<(typeof FeedbackReadmodel)['Service']['getOneFeedbackWaitingToBePublished']>> =>
-  Option.none()
+): Effect.Effect.Success<ReturnType<(typeof FeedbackReadmodel)['Service']['getOneFeedbackWaitingToBePublished']>> => {
+  const published = []
+  for (const entry of events) {
+    if (entry.event._tag === 'FeedbackWasPublished') {
+      published.push(entry.resourceId)
+      continue
+    }
+    if (entry.event._tag === 'FeedbackPublicationWasRequested' && !published.includes(entry.resourceId)) {
+      return Option.some(entry.resourceId)
+    }
+  }
+  return Option.none()
+}
 
 export const GetAllUnpublishedFeedbackByAnAuthorForAPrereview =
   (events: Events) =>

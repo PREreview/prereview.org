@@ -189,7 +189,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
 })
 
 describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
-  test.failing('gets id of one piece of unpublished feedback', () => {
+  test('gets id of one piece of unpublished feedback', () => {
     const feedbackId = 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid
     const events = [
       {
