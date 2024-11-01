@@ -1,4 +1,4 @@
-import { Array, Effect, Layer, pipe, PubSub, Queue } from 'effect'
+import { Array, Effect, Layer, pipe, PubSub, Queue, Schedule } from 'effect'
 import { EventStore } from '../Context.js'
 import {
   FeedbackEvents,
@@ -128,21 +128,23 @@ export const EnsureFeedbackIsPublished: Layer.Layer<
     const readmodel = yield* FeedbackReadmodel
     const dequeue = yield* PubSub.subscribe(feedbackEvents)
 
-    yield* pipe(
-      Queue.take(dequeue),
-      Effect.andThen(() => readmodel.getOneFeedbackWaitingToBePublished()),
-      Effect.flatten,
-      Effect.tapErrorTag('NoSuchElementException', () => Effect.logDebug('No feedback waiting to be published')),
-      Effect.tap(feedbackId => Effect.annotateLogs(Effect.logInfo('Attempting to publish feedback'), { feedbackId })),
-      Effect.andThen(feedbackId =>
-        pipe(
-          feedbackId,
-          OnFeedbackPublicationWasRequested,
-          Effect.tapError(() => Effect.logError('EnsureFeedbackIsPublished failed')),
+    const tryToPublishIfNecessary = () =>
+      pipe(
+        readmodel.getOneFeedbackWaitingToBePublished(),
+        Effect.flatten,
+        Effect.tapErrorTag('NoSuchElementException', () => Effect.logDebug('No feedback waiting to be published')),
+        Effect.tap(feedbackId => Effect.annotateLogs(Effect.logInfo('Attempting to publish feedback'), { feedbackId })),
+        Effect.andThen(feedbackId =>
+          pipe(
+            feedbackId,
+            OnFeedbackPublicationWasRequested,
+            Effect.tapError(() => Effect.logError('EnsureFeedbackIsPublished failed')),
+          ),
         ),
-      ),
-      Effect.catchAll(() => Effect.void),
-      Effect.forever,
-    )
+        Effect.catchAll(() => Effect.void),
+      )
+
+    yield* Effect.repeat(tryToPublishIfNecessary(), Schedule.fixed('5 seconds'))
+    yield* pipe(Queue.take(dequeue), Effect.andThen(tryToPublishIfNecessary), Effect.forever)
   }),
 )
