@@ -1,9 +1,8 @@
-import { Array, Effect, Layer, Match, pipe, PubSub, Queue } from 'effect'
+import { Array, Effect, Layer, pipe, PubSub, Queue } from 'effect'
 import { EventStore } from '../Context.js'
-import type { Uuid } from '../types/index.js'
 import {
   FeedbackEvents,
-  type FeedbackReadmodel,
+  FeedbackReadmodel,
   type GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
   type GetFeedback,
   type HandleFeedbackCommand,
@@ -12,7 +11,6 @@ import {
   UnableToQuery,
 } from './Context.js'
 import { DecideFeedback } from './Decide.js'
-import type { FeedbackEvent } from './Events.js'
 import { EvolveFeedback } from './Evolve.js'
 import * as Queries from './Queries.js'
 import { OnFeedbackPublicationWasRequested } from './React.js'
@@ -127,22 +125,20 @@ export const EnsureFeedbackIsPublished: Layer.Layer<
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const feedbackEvents = yield* FeedbackEvents
+    const readmodel = yield* FeedbackReadmodel
     const dequeue = yield* PubSub.subscribe(feedbackEvents)
 
     yield* pipe(
       Queue.take(dequeue),
-      Effect.andThen(
+      Effect.andThen(() => readmodel.getOneFeedbackWaitingToBePublished()),
+      Effect.flatten,
+      Effect.tapErrorTag('NoSuchElementException', () => Effect.logDebug('No feedback waiting to be published')),
+      Effect.tap(feedbackId => Effect.annotateLogs(Effect.logInfo('Attempting to publish feedback'), { feedbackId })),
+      Effect.andThen(feedbackId =>
         pipe(
-          Match.type<{ feedbackId: Uuid.Uuid; event: FeedbackEvent }>(),
-          Match.when({ event: { _tag: 'FeedbackPublicationWasRequested' } }, ({ feedbackId }) =>
-            pipe(
-              OnFeedbackPublicationWasRequested(feedbackId),
-              Effect.tapError(() =>
-                Effect.annotateLogs(Effect.logError('ReactToFeedbackEvents failed'), { feedbackId }),
-              ),
-            ),
-          ),
-          Match.orElse(() => Effect.void),
+          feedbackId,
+          OnFeedbackPublicationWasRequested,
+          Effect.tapError(() => Effect.logError('EnsureFeedbackIsPublished failed')),
         ),
       ),
       Effect.catchAll(() => Effect.void),

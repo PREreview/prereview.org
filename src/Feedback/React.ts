@@ -14,12 +14,14 @@ export const OnFeedbackPublicationWasRequested = (
     const publishFeedback = yield* PublishFeedbackWithADoi
 
     const feedback = yield* getFeedback(feedbackId)
+    yield* Effect.logDebug('Got Feedback')
 
     if (feedback._tag !== 'FeedbackBeingPublished') {
       return
     }
 
     const [doi, id] = yield* publishFeedback(feedback)
+    yield* Effect.logDebug('Published feedback')
 
     yield* Effect.mapError(
       handleCommand({

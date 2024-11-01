@@ -112,6 +112,7 @@ const publishFeedback = Layer.effect(
             ),
           ),
         )
+        yield* Effect.logDebug('got prereview')
 
         const author = yield* pipe(
           Match.value(feedback.persona),
@@ -151,6 +152,7 @@ const publishFeedback = Layer.effect(
           ),
           Match.exhaustive,
         )
+        yield* Effect.logDebug('got author')
 
         return yield* pipe(
           Effect.promise(
