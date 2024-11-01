@@ -1,8 +1,14 @@
+/* eslint-disable import/no-internal-modules */
 import { FetchHttpClient } from '@effect/platform'
+import type { HttpServer } from '@effect/platform/HttpServer'
+import type { LibsqlClient } from '@effect/sql-libsql/LibsqlClient'
+import type { SqlError } from '@effect/sql/SqlError'
 import { type Array, Effect, flow, Layer, Match, pipe, PubSub, Runtime } from 'effect'
+import type { ConfigError } from 'effect/ConfigError'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
+import type { CanWriteFeedback } from './feature-flags.js'
 import * as Feedback from './Feedback/index.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
@@ -215,7 +221,11 @@ const setUpFetch = Layer.effect(
   }),
 )
 
-export const Program = pipe(
+export const Program: Layer.Layer<
+  never,
+  ConfigError | SqlError,
+  FetchHttpClient.Fetch | ExpressConfig | DeprecatedLoggerEnv | HttpServer | CanWriteFeedback | LibsqlClient
+> = pipe(
   Layer.mergeAll(WebApp, Feedback.EnsureFeedbackIsPublished),
   Layer.provide(publishFeedback),
   Layer.provide(getPrereview),
