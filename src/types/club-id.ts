@@ -11,6 +11,7 @@ export const clubIds = [
   'asapbio-microbiology',
   'asapbio-neurobiology',
   'bimsb-neuroscience',
+  'biobio',
   'biomass-biocatalysis',
   'biophysics-leipzig',
   'bios2',

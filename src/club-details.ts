@@ -136,6 +136,31 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Anna Oliveras', orcid: Orcid('0000-0002-5880-5245') }],
   },
+  biobio: {
+    name: 'Open Science Community BioBío (OSCB)',
+    description: html`
+      <p>
+        Open Science Community Biobío is made up of students and scientists, and is the first community in Chile and
+        Latin America with the aim of promoting open access, collaboration and transparency of science.
+      </p>
+      <p>
+        One of the community's aspects is promoting objective and non-anonymous peer review, which enriches the work of
+        scientists who publish preprints.
+      </p>
+    `,
+    leads: [
+      { name: 'David Ramírez', orcid: Orcid('0000-0003-0002-1189') },
+      { name: 'Carolina Quezada', orcid: Orcid('0000-0002-0260-5754') },
+      { name: 'Jessica Valero-Rojas', orcid: Orcid('0000-0003-3391-256X') },
+      { name: 'Carlos Zamora-Manzur', orcid: Orcid('0000-0001-7755-4077') },
+      { name: 'Myleidi Vera', orcid: Orcid('0000-0002-8469-995X') },
+      { name: 'Kevin J. Cobos', orcid: Orcid('0009-0000-5415-2964') },
+      { name: 'Laura Pacheco', orcid: Orcid('0009-0007-6163-5172') },
+      { name: 'Nicolás Riffo', orcid: Orcid('0000-0003-3433-2014') },
+      { name: 'Diego Abarzúa', orcid: Orcid('0009-0007-7372-851X') },
+    ],
+    joinLink: new URL('https://forms.gle/AJPwDvBzBnCNSC5A7'),
+  },
   'biomass-biocatalysis': {
     name: 'Biomass and Biocatalysis Group',
     description: html`
