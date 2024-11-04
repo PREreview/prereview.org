@@ -123,10 +123,6 @@ import type { UserOnboarding } from '../src/user-onboarding.js'
 import type { User } from '../src/user.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
 
-if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
-  fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })
-}
-
 export type Arbitrary<T> = fc.Arbitrary<T>
 
 export const {
