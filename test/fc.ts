@@ -3,13 +3,11 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, HashSet } from 'effect'
+import { Array, Either, HashSet, Option } from 'effect'
 import type { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import type * as F from 'fetch-fp-ts'
-import * as E from 'fp-ts/lib/Either.js'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
-import * as O from 'fp-ts/lib/Option.js'
 import { not } from 'fp-ts/lib/Predicate.js'
 import type { Refinement } from 'fp-ts/lib/Refinement.js'
 import type * as H from 'hyper-ts'
@@ -153,16 +151,16 @@ export function constantFrom<const T>(...values: Array<T>): Arbitrary<T> {
 export const set = <A>(arb: fc.Arbitrary<A>, constraints?: fc.UniqueArraySharedConstraints): fc.Arbitrary<Set<A>> =>
   fc.uniqueArray(arb, constraints).map(values => new Set(values))
 
-const some = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<O.Option<A>> => arb.map(O.some)
+const some = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> => arb.map(Option.some)
 
-export const maybe = <A>(someArb: fc.Arbitrary<A>): fc.Arbitrary<O.Option<A>> =>
-  fc.oneof(some(someArb), fc.constant(O.none))
+export const maybe = <A>(someArb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> =>
+  fc.oneof(some(someArb), fc.constant(Option.none()))
 
-const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<E.Either<E, never>> => arb.map(E.left)
+const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<Either.Either<never, E>> => arb.map(Either.left)
 
-const right = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<E.Either<never, A>> => arb.map(E.right)
+const right = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A>> => arb.map(Either.right)
 
-export const either = <E, A>(leftArb: fc.Arbitrary<E>, rightArb: fc.Arbitrary<A>): fc.Arbitrary<E.Either<E, A>> =>
+export const either = <E, A>(leftArb: fc.Arbitrary<E>, rightArb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A, E>> =>
   fc.oneof(left(leftArb), right(rightArb))
 
 export const json = (): fc.Arbitrary<Json> => fc.jsonValue() as fc.Arbitrary<Json>
