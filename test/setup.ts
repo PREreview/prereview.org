@@ -5,7 +5,6 @@ import { Equal, Utils } from 'effect'
 expect.addEqualityTesters([effectEquals])
 
 function effectEquals(this: TesterContext, a: unknown, b: unknown, customTesters: Array<Tester>) {
-  console.log(a, b)
   if (!Equal.isEqual(a) || !Equal.isEqual(b)) {
     return undefined
   }
