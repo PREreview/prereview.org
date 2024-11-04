@@ -2,6 +2,7 @@ module.exports = {
   showSeed: true,
   injectGlobals: false,
   testEnvironment: 'node',
+  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
   roots: ['./src/', './test/'],
   transformIgnorePatterns: ['<rootDir>/node_modules/(?!@arendjr/text-clipper/|case-anything|cdigit)'],
   testPathIgnorePatterns: ['./test/assets/'],
