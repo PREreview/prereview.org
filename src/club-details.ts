@@ -408,6 +408,20 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     leads: [{ name: 'Assist. Prof. Dr. Salwan M. Abdulateef', orcid: Orcid('0000-0002-7389-0003') }],
     contact: 'ag.salwan.mahmood@uoanbar.edu.iq' as EmailAddress,
   },
+  oxplants: {
+    name: 'OxPlants Preprint Club',
+    description: html`
+      <p>
+        The Department of Biology at the University of Oxford conducts pioneering research across all areas of biology,
+        driving discoveries that address global scientific challenges.
+      </p>
+      <p>
+        OxPlants Preprint Club brings together DPhil students in plant sciences to discuss innovative preprints,
+        fostering critical thinking and collaborative exploration of new research.
+      </p>
+    `,
+    leads: [{ name: 'Kornelija Aleksejeva', orcid: Orcid('0009-0004-3328-1862') }],
+  },
   prosac: {
     name: 'Proteostasis and Cancer Team INSERM U1242',
     description: html`
