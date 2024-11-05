@@ -25,7 +25,8 @@ describe('OnFeedbackPublicationWasRequested', () => {
         })
       }).pipe(
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.succeed([doi, id])),
+        Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.void),
+        Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -49,21 +50,43 @@ describe('OnFeedbackPublicationWasRequested', () => {
       expect(actual).toStrictEqual(Either.left(new Feedback.UnableToHandleCommand({ cause: error })))
     }).pipe(
       Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-      Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.succeed([doi, id])),
+      Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.void),
+      Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
   )
 
-  test.prop([fc.uuid(), fc.feedbackPublicationWasRequested(), fc.feedbackBeingPublished()])(
+  test.prop([fc.uuid(), fc.feedbackPublicationWasRequested(), fc.feedbackBeingPublished(), fc.integer(), fc.doi()])(
     "when the feedback can't be published",
-    (feedbackId, event, feedback) =>
+    (feedbackId, event, feedback, id, doi) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.OnFeedbackPublicationWasRequested({ feedbackId, event }),
           Effect.provideService(Feedback.PublishFeedbackWithADoi, () =>
             Effect.fail(new Feedback.UnableToPublishFeedback({})),
           ),
+          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.either,
+        )
+
+        expect(actual).toStrictEqual(Either.left(new Feedback.UnableToPublishFeedback({})))
+      }).pipe(
+        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
+  )
+
+  test.prop([fc.uuid(), fc.feedbackPublicationWasRequested(), fc.feedbackBeingPublished()])(
+    "when a DOI can't be assigned",
+    (feedbackId, event, feedback) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(
+          _.OnFeedbackPublicationWasRequested({ feedbackId, event }),
+          Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.fail(new Feedback.UnableToAssignADoi({}))),
+          Effect.provideService(Feedback.PublishFeedbackWithADoi, shouldNotBeCalled),
           Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.either,
         )
@@ -81,6 +104,7 @@ describe('OnFeedbackPublicationWasRequested', () => {
       const actual = yield* pipe(
         _.OnFeedbackPublicationWasRequested({ feedbackId, event }),
         Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
+        Effect.provideService(Feedback.AssignFeedbackADoi, shouldNotBeCalled),
         Effect.provideService(Feedback.PublishFeedbackWithADoi, shouldNotBeCalled),
         Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.either,

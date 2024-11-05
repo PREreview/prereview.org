@@ -43,10 +43,17 @@ export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<
   }) => Effect.Effect<void, UnableToHandleCommand | FeedbackError>
 >() {}
 
+export class AssignFeedbackADoi extends Context.Tag('AssignFeedbackADoi')<
+  AssignFeedbackADoi,
+  (feedback: FeedbackBeingPublished) => Effect.Effect<[Doi, number], UnableToAssignADoi>
+>() {}
+
 export class PublishFeedbackWithADoi extends Context.Tag('PublishFeedbackWithADoi')<
   PublishFeedbackWithADoi,
-  (feedback: FeedbackBeingPublished) => Effect.Effect<[Doi, number], UnableToPublishFeedback>
+  (feedbackId: number) => Effect.Effect<void, UnableToPublishFeedback>
 >() {}
+
+export class UnableToAssignADoi extends Data.TaggedError('UnableToAssignADoi')<{ cause?: Error }> {}
 
 export class UnableToPublishFeedback extends Data.TaggedError('UnableToPublishFeedback')<{ cause?: Error }> {}
 

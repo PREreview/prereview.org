@@ -83,8 +83,8 @@ const getPrereview = Layer.effect(
   }),
 )
 
-const publishFeedback = Layer.effect(
-  Feedback.PublishFeedbackWithADoi,
+const assignFeedbackADoi = Layer.effect(
+  Feedback.AssignFeedbackADoi,
   Effect.gen(function* () {
     const { legacyPrereviewApi, orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl, publicUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
@@ -99,9 +99,9 @@ const publishFeedback = Layer.effect(
           Effect.mapError(
             flow(
               Match.value,
-              Match.tag('PrereviewIsNotFound', error => new Feedback.UnableToPublishFeedback({ cause: error })),
-              Match.tag('PrereviewIsUnavailable', error => new Feedback.UnableToPublishFeedback({ cause: error })),
-              Match.tag('PrereviewWasRemoved', error => new Feedback.UnableToPublishFeedback({ cause: error })),
+              Match.tag('PrereviewIsNotFound', error => new Feedback.UnableToAssignADoi({ cause: error })),
+              Match.tag('PrereviewIsUnavailable', error => new Feedback.UnableToAssignADoi({ cause: error })),
+              Match.tag('PrereviewWasRemoved', error => new Feedback.UnableToAssignADoi({ cause: error })),
               Match.exhaustive,
             ),
           ),
@@ -117,14 +117,14 @@ const publishFeedback = Layer.effect(
               Effect.andThen(
                 flow(
                   Match.value,
-                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Feedback.UnableToPublishFeedback({}))),
+                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Feedback.UnableToAssignADoi({}))),
                   Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
                   Match.exhaustive,
                 ),
               ),
               Effect.filterOrElse(
                 value => value !== undefined,
-                () => Effect.fail(new Feedback.UnableToPublishFeedback({})),
+                () => Effect.fail(new Feedback.UnableToAssignADoi({})),
               ),
               Effect.andThen(name => ({ name, orcid: feedback.authorId })),
             ),
@@ -135,7 +135,7 @@ const publishFeedback = Layer.effect(
               Effect.andThen(
                 flow(
                   Match.value,
-                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Feedback.UnableToPublishFeedback({}))),
+                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Feedback.UnableToAssignADoi({}))),
                   Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
                   Match.exhaustive,
                 ),
@@ -146,7 +146,7 @@ const publishFeedback = Layer.effect(
           Match.exhaustive,
         )
 
-        const [doi, id] = yield* pipe(
+        return yield* pipe(
           Effect.promise(
             createFeedbackOnZenodo({ ...feedback, author, prereview })({
               fetch,
@@ -167,40 +167,48 @@ const publishFeedback = Layer.effect(
           Effect.mapError(
             flow(
               Match.value,
-              Match.when('unavailable', () => new Feedback.UnableToPublishFeedback({})),
+              Match.when('unavailable', () => new Feedback.UnableToAssignADoi({})),
               Match.exhaustive,
             ),
           ),
         )
-
-        yield* pipe(
-          Effect.promise(
-            publishDepositionOnZenodo(id)({
-              fetch,
-              zenodoApiKey,
-              zenodoUrl,
-              ...logger,
-            }),
-          ),
-          Effect.andThen(
-            flow(
-              Match.value,
-              Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
-              Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
-              Match.exhaustive,
-            ),
-          ),
-          Effect.mapError(
-            flow(
-              Match.value,
-              Match.when('unavailable', () => new Feedback.UnableToPublishFeedback({})),
-              Match.exhaustive,
-            ),
-          ),
-        )
-
-        return [doi, id]
       })
+  }),
+)
+
+const publishFeedback = Layer.effect(
+  Feedback.PublishFeedbackWithADoi,
+  Effect.gen(function* () {
+    const { zenodoApiKey, zenodoUrl } = yield* ExpressConfig
+    const fetch = yield* FetchHttpClient.Fetch
+    const logger = yield* DeprecatedLoggerEnv
+
+    return feedback =>
+      pipe(
+        Effect.promise(
+          publishDepositionOnZenodo(feedback)({
+            fetch,
+            zenodoApiKey,
+            zenodoUrl,
+            ...logger,
+          }),
+        ),
+        Effect.andThen(
+          flow(
+            Match.value,
+            Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
+            Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
+            Match.exhaustive,
+          ),
+        ),
+        Effect.mapError(
+          flow(
+            Match.value,
+            Match.when('unavailable', () => new Feedback.UnableToPublishFeedback({})),
+            Match.exhaustive,
+          ),
+        ),
+      )
   }),
 )
 
@@ -246,6 +254,7 @@ const setUpFetch = Layer.effect(
 export const Program = pipe(
   Layer.mergeAll(WebApp, Feedback.ReactToFeedbackEvents),
   Layer.provide(publishFeedback),
+  Layer.provide(assignFeedbackADoi),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
   Layer.provide(Layer.effect(Feedback.HandleFeedbackCommand, Feedback.makeHandleFeedbackCommand)),
