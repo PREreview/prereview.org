@@ -8,7 +8,7 @@ import {
   PublishFeedbackWithADoi,
   UnableToHandleCommand,
 } from './Context.js'
-import type { FeedbackPublicationWasRequested } from './Events.js'
+import type { DoiWasAssigned, FeedbackPublicationWasRequested } from './Events.js'
 
 type ToDo = unknown
 
@@ -17,12 +17,11 @@ export const OnFeedbackPublicationWasRequested = ({
 }: {
   feedbackId: Uuid.Uuid
   event: FeedbackPublicationWasRequested
-}): Effect.Effect<void, ToDo, GetFeedback | HandleFeedbackCommand | AssignFeedbackADoi | PublishFeedbackWithADoi> =>
+}): Effect.Effect<void, ToDo, GetFeedback | HandleFeedbackCommand | AssignFeedbackADoi> =>
   Effect.gen(function* () {
     const getFeedback = yield* GetFeedback
     const handleCommand = yield* HandleFeedbackCommand
     const assignFeedbackADoi = yield* AssignFeedbackADoi
-    const publishFeedback = yield* PublishFeedbackWithADoi
 
     const feedback = yield* getFeedback(feedbackId)
 
@@ -39,8 +38,20 @@ export const OnFeedbackPublicationWasRequested = ({
       }),
       error => (error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error),
     )
+  })
 
-    yield* publishFeedback(id)
+export const OnDoiWasAssigned = ({
+  feedbackId,
+  event,
+}: {
+  feedbackId: Uuid.Uuid
+  event: DoiWasAssigned
+}): Effect.Effect<void, ToDo, HandleFeedbackCommand | PublishFeedbackWithADoi> =>
+  Effect.gen(function* () {
+    const handleCommand = yield* HandleFeedbackCommand
+    const publishFeedback = yield* PublishFeedbackWithADoi
+
+    yield* publishFeedback(event.id)
 
     yield* Effect.mapError(
       handleCommand({

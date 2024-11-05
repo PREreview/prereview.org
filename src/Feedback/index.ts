@@ -15,7 +15,7 @@ import { DecideFeedback } from './Decide.js'
 import type { FeedbackEvent } from './Events.js'
 import { EvolveFeedback } from './Evolve.js'
 import * as Queries from './Queries.js'
-import { OnFeedbackPublicationWasRequested } from './React.js'
+import { OnDoiWasAssigned, OnFeedbackPublicationWasRequested } from './React.js'
 import { FeedbackNotStarted, type FeedbackState } from './State.js'
 
 export * from './Commands.js'
@@ -106,6 +106,14 @@ export const ReactToFeedbackEvents: Layer.Layer<
           Match.when({ event: { _tag: 'FeedbackPublicationWasRequested' } }, ({ feedbackId, event }) =>
             pipe(
               OnFeedbackPublicationWasRequested({ feedbackId, event }),
+              Effect.tapError(() =>
+                Effect.annotateLogs(Effect.logError('ReactToFeedbackEvents failed'), { feedbackId }),
+              ),
+            ),
+          ),
+          Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ feedbackId, event }) =>
+            pipe(
+              OnDoiWasAssigned({ feedbackId, event }),
               Effect.tapError(() =>
                 Effect.annotateLogs(Effect.logError('ReactToFeedbackEvents failed'), { feedbackId }),
               ),

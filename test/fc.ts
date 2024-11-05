@@ -1362,13 +1362,19 @@ export const feedbackReadyForPublishing = (): fc.Arbitrary<Feedback.FeedbackRead
     })
     .map(data => new Feedback.FeedbackReadyForPublishing(data))
 
-export const feedbackBeingPublished = (): fc.Arbitrary<Feedback.FeedbackBeingPublished> =>
+export const feedbackBeingPublished = ({
+  doi: _doi,
+  id: _id,
+}: {
+  doi?: fc.Arbitrary<Feedback.FeedbackBeingPublished['doi']>
+  id?: fc.Arbitrary<Feedback.FeedbackBeingPublished['id']>
+} = {}): fc.Arbitrary<Feedback.FeedbackBeingPublished> =>
   fc
     .record({
       authorId: orcid(),
-      doi: option(doi(), { nil: undefined }),
+      doi: _doi ?? option(doi(), { nil: undefined }),
       feedback: html(),
-      id: option(fc.integer(), { nil: undefined }),
+      id: _id ?? option(fc.integer(), { nil: undefined }),
       persona: constantFrom('public', 'pseudonym'),
       prereviewId: fc.integer(),
     })

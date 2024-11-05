@@ -8,7 +8,7 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('OnFeedbackPublicationWasRequested', () => {
   test.prop([fc.uuid(), fc.feedbackPublicationWasRequested(), fc.feedbackBeingPublished(), fc.integer(), fc.doi()])(
-    'published feedback',
+    'assigns a DOI',
     (feedbackId, event, feedback, id, doi) =>
       Effect.gen(function* () {
         const handleFeedbackCommand = jest.fn<typeof Feedback.HandleFeedbackCommand.Service>(_ => Effect.void)
@@ -23,13 +23,8 @@ describe('OnFeedbackPublicationWasRequested', () => {
           feedbackId,
           command: new Feedback.MarkDoiAsAssigned({ doi, id }),
         })
-        expect(handleFeedbackCommand).toHaveBeenCalledWith({
-          feedbackId,
-          command: new Feedback.MarkFeedbackAsPublished(),
-        })
       }).pipe(
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.void),
         Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -54,36 +49,10 @@ describe('OnFeedbackPublicationWasRequested', () => {
       expect(actual).toStrictEqual(Either.left(new Feedback.UnableToHandleCommand({ cause: error })))
     }).pipe(
       Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-      Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.void),
       Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
-  )
-
-  test.prop([fc.uuid(), fc.feedbackPublicationWasRequested(), fc.feedbackBeingPublished(), fc.integer(), fc.doi()])(
-    "when the feedback can't be published",
-    (feedbackId, event, feedback, id, doi) =>
-      Effect.gen(function* () {
-        const handleFeedbackCommand = jest.fn<typeof Feedback.HandleFeedbackCommand.Service>(_ => Effect.void)
-
-        const actual = yield* pipe(
-          _.OnFeedbackPublicationWasRequested({ feedbackId, event }),
-          Effect.provideService(Feedback.PublishFeedbackWithADoi, () =>
-            Effect.fail(new Feedback.UnableToPublishFeedback({})),
-          ),
-          Effect.provideService(Feedback.HandleFeedbackCommand, handleFeedbackCommand),
-          Effect.either,
-        )
-
-        expect(actual).toStrictEqual(Either.left(new Feedback.UnableToPublishFeedback({})))
-        expect(handleFeedbackCommand).toHaveBeenCalledTimes(1)
-      }).pipe(
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
-      ),
   )
 
   test.prop([fc.uuid(), fc.feedbackPublicationWasRequested(), fc.feedbackBeingPublished()])(
@@ -118,6 +87,62 @@ describe('OnFeedbackPublicationWasRequested', () => {
       )
 
       expect(actual).toStrictEqual(Either.left(new Feedback.UnableToQuery({})))
+    }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+  )
+})
+
+describe('OnDoiWasAssigned', () => {
+  test.prop([fc.uuid(), fc.doiWasAssigned()])('published feedback', (feedbackId, event) =>
+    Effect.gen(function* () {
+      const handleFeedbackCommand = jest.fn<typeof Feedback.HandleFeedbackCommand.Service>(_ => Effect.void)
+
+      yield* Effect.provideService(
+        _.OnDoiWasAssigned({ feedbackId, event }),
+        Feedback.HandleFeedbackCommand,
+        handleFeedbackCommand,
+      )
+
+      expect(handleFeedbackCommand).toHaveBeenCalledWith({
+        feedbackId,
+        command: new Feedback.MarkFeedbackAsPublished(),
+      })
+    }).pipe(
+      Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.void),
+      Effect.provide(TestContext.TestContext),
+      Effect.runPromise,
+    ),
+  )
+
+  test.prop([fc.uuid(), fc.doiWasAssigned(), fc.feedbackError()])(
+    "when the feedback can't be updated",
+    (feedbackId, event, error) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(
+          _.OnDoiWasAssigned({ feedbackId, event }),
+          Effect.provideService(Feedback.HandleFeedbackCommand, () => Effect.fail(error)),
+          Effect.either,
+        )
+
+        expect(actual).toStrictEqual(Either.left(new Feedback.UnableToHandleCommand({ cause: error })))
+      }).pipe(
+        Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.void),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
+  )
+
+  test.prop([fc.uuid(), fc.doiWasAssigned()])("when the feedback can't be published", (feedbackId, event) =>
+    Effect.gen(function* () {
+      const actual = yield* pipe(
+        _.OnDoiWasAssigned({ feedbackId, event }),
+        Effect.provideService(Feedback.PublishFeedbackWithADoi, () =>
+          Effect.fail(new Feedback.UnableToPublishFeedback({})),
+        ),
+        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.either,
+      )
+
+      expect(actual).toStrictEqual(Either.left(new Feedback.UnableToPublishFeedback({})))
     }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
   )
 })
