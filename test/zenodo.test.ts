@@ -4211,6 +4211,7 @@ ${feedback.feedback.toString()}`,
     })()
 
     expect(actual).toStrictEqual(E.right([feedbackDoi, 1]))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([
