@@ -14,7 +14,7 @@ import * as Prereview from './Prereview.js'
 import { Uuid } from './types/index.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import { WebApp } from './WebApp.js'
-import { createFeedbackOnZenodo, getPrereviewFromZenodo } from './zenodo.js'
+import { createFeedbackOnZenodo, getPrereviewFromZenodo, publishDepositionOnZenodo } from './zenodo.js'
 
 const getPrereview = Layer.effect(
   Prereview.GetPrereview,
@@ -146,7 +146,7 @@ const publishFeedback = Layer.effect(
           Match.exhaustive,
         )
 
-        return yield* pipe(
+        const [doi, id] = yield* pipe(
           Effect.promise(
             createFeedbackOnZenodo({ ...feedback, author, prereview })({
               fetch,
@@ -172,6 +172,34 @@ const publishFeedback = Layer.effect(
             ),
           ),
         )
+
+        yield* pipe(
+          Effect.promise(
+            publishDepositionOnZenodo(id)({
+              fetch,
+              zenodoApiKey,
+              zenodoUrl,
+              ...logger,
+            }),
+          ),
+          Effect.andThen(
+            flow(
+              Match.value,
+              Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
+              Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
+              Match.exhaustive,
+            ),
+          ),
+          Effect.mapError(
+            flow(
+              Match.value,
+              Match.when('unavailable', () => new Feedback.UnableToPublishFeedback({})),
+              Match.exhaustive,
+            ),
+          ),
+        )
+
+        return [doi, id]
       })
   }),
 )

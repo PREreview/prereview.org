@@ -4126,22 +4126,6 @@ describe('createFeedbackOnZenodo', () => {
       state: 'unsubmitted',
       submitted: false,
     }
-    const submittedDeposition: SubmittedDeposition = {
-      id: 1,
-      links: {
-        edit: new URL('http://example.com/edit'),
-      },
-      metadata: {
-        creators: [{ name: 'A PREreviewer' }],
-        description: 'Description',
-        doi: feedbackDoi,
-        title: 'Title',
-        upload_type: 'publication',
-        publication_type: 'other',
-      },
-      state: 'done',
-      submitted: true,
-    }
     const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: feedback.prereview.id })}`
     const fetch = fetchMock.sandbox()
     const actual = await _.createFeedbackOnZenodo(feedback)({
@@ -4200,11 +4184,7 @@ ${feedback.feedback.toString()}`,
           {
             status: Status.Created,
           },
-        )
-        .postOnce('http://example.com/publish', {
-          body: SubmittedDepositionC.encode(submittedDeposition),
-          status: Status.Accepted,
-        }),
+        ),
       logger: () => IO.of(undefined),
       publicUrl,
       zenodoApiKey,
@@ -4232,6 +4212,153 @@ ${feedback.feedback.toString()}`,
       fetch: () => response,
       logger: () => IO.of(undefined),
       publicUrl,
+      zenodoApiKey,
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
+describe('publishDepositionOnZenodo', () => {
+  test.prop([fc.integer(), fc.string(), fc.doi()])(
+    'when the deposition can be published',
+    async (id, zenodoApiKey, feedbackDoi) => {
+      const unsubmittedDeposition: UnsubmittedDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          creators: [{ name: 'A PREreviewer' }],
+          description: 'Description',
+          prereserve_doi: {
+            doi: feedbackDoi,
+          },
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'other',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const submittedDeposition: SubmittedDeposition = {
+        id: 1,
+        links: {
+          edit: new URL('http://example.com/edit'),
+        },
+        metadata: {
+          creators: [{ name: 'A PREreviewer' }],
+          description: 'Description',
+          doi: feedbackDoi,
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'other',
+        },
+        state: 'done',
+        submitted: true,
+      }
+      const fetch = fetchMock.sandbox()
+      const actual = await _.publishDepositionOnZenodo(id)({
+        clock: SystemClock,
+        fetch: fetch
+          .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+            body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+            status: Status.OK,
+          })
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
+          }),
+        logger: () => IO.of(undefined),
+        zenodoApiKey,
+      })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
+
+  test.prop([fc.integer(), fc.string(), fc.doi()])(
+    'when the deposition is empty',
+    async (id, zenodoApiKey, feedbackDoi) => {
+      const emptyDeposition: EmptyDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          prereserve_doi: {
+            doi: feedbackDoi,
+          },
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const fetch = fetchMock.sandbox()
+      const actual = await _.publishDepositionOnZenodo(id)({
+        clock: SystemClock,
+        fetch: fetch.getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+          body: EmptyDepositionC.encode(emptyDeposition),
+          status: Status.OK,
+        }),
+        logger: () => IO.of(undefined),
+        zenodoApiKey,
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
+  test.prop([fc.integer(), fc.string(), fc.doi()])(
+    'when the deposition is submitted',
+    async (id, zenodoApiKey, feedbackDoi) => {
+      const submittedDeposition: SubmittedDeposition = {
+        id: 1,
+        links: {
+          edit: new URL('http://example.com/edit'),
+        },
+        metadata: {
+          creators: [{ name: 'A PREreviewer' }],
+          description: 'Description',
+          doi: feedbackDoi,
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'other',
+        },
+        state: 'done',
+        submitted: true,
+      }
+      const fetch = fetchMock.sandbox()
+      const actual = await _.publishDepositionOnZenodo(id)({
+        clock: SystemClock,
+        fetch: fetch.getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+          body: SubmittedDepositionC.encode(submittedDeposition),
+          status: Status.OK,
+        }),
+        logger: () => IO.of(undefined),
+        zenodoApiKey,
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
+
+  test.prop([
+    fc.integer(),
+    fc.string(),
+    fc.oneof(
+      fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
+      fc.error().map(error => Promise.reject(error)),
+    ),
+  ])('Zenodo is unavailable', async (id, zenodoApiKey, response) => {
+    const actual = await _.publishDepositionOnZenodo(id)({
+      clock: SystemClock,
+      fetch: () => response,
+      logger: () => IO.of(undefined),
       zenodoApiKey,
     })()
 

@@ -1844,6 +1844,29 @@ export const willPublishFeedback: Fixtures<
       .putOnce('http://example.com/bucket/feedback.html', {
         status: Status.Created,
       })
+      .getOnce('http://zenodo.test/api/deposit/depositions/112361', {
+        body: UnsubmittedDepositionC.encode({
+          ...record,
+          links: {
+            bucket: new URL('http://example.com/bucket'),
+            publish: new URL('http://example.com/publish'),
+            self: new URL('http://example.com/self'),
+          },
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            license: record.metadata.license.id,
+            prereserve_doi: {
+              doi: record.metadata.doi,
+            },
+            upload_type: 'publication',
+            publication_type: 'other',
+          },
+          state: 'unsubmitted',
+          submitted: false,
+        }),
+        status: Status.OK,
+      })
       .postOnce(
         'http://example.com/publish',
         {

@@ -27,9 +27,11 @@ import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import {
   type DepositMetadata,
+  type Deposition,
   type EmptyDeposition,
   type InProgressDeposition,
   type Record,
+  type UnsubmittedDeposition,
   type ZenodoAuthenticatedEnv,
   type ZenodoEnv,
   createEmptyDeposition,
@@ -508,7 +510,6 @@ export const createFeedbackOnZenodo = (
         content: feedback.feedback.toString(),
       }),
     ),
-    RTE.chainW(publishDeposition),
     RTE.orElseFirstW(
       RTE.fromReaderIOK(
         flow(
@@ -519,14 +520,39 @@ export const createFeedbackOnZenodo = (
               .with({ _tag: P.string }, D.draw)
               .exhaustive(),
           }),
-          L.errorP('Unable to create record on Zenodo'),
+          L.errorP('Unable to create completed deposition on Zenodo'),
         ),
       ),
     ),
     RTE.bimap(
       () => 'unavailable',
-      deposition => [deposition.metadata.doi, deposition.id],
+      deposition => [deposition.metadata.prereserve_doi.doi, deposition.id],
     ),
+  )
+
+export const publishDepositionOnZenodo = (
+  feedbackId: number,
+): RTE.ReaderTaskEither<ZenodoAuthenticatedEnv & L.LoggerEnv, 'unavailable', void> =>
+  pipe(
+    getDeposition(feedbackId),
+    RTE.filterOrElseW(depositionCanBePublished, identity),
+    RTE.chainW(publishDeposition),
+    RTE.orElseFirstW(
+      RTE.fromReaderIOK(
+        flow(
+          error => ({
+            error: match(error)
+              .with(P.instanceOf(Error), error => error.message)
+              .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+              .with({ _tag: P.string }, D.draw)
+              .with({ state: P.string }, deposition => `deposition is ${deposition.state}`)
+              .exhaustive(),
+          }),
+          L.errorP('Unable to publish deposition on Zenodo'),
+        ),
+      ),
+    ),
+    RTE.bimap(() => 'unavailable', constVoid),
   )
 
 export const createRecordOnZenodo: (
@@ -995,6 +1021,9 @@ const getReviewedPreprintId = (record: Record) =>
       ),
     ),
   )
+
+const depositionCanBePublished = (deposition: Deposition): deposition is InProgressDeposition | UnsubmittedDeposition =>
+  'publish' in deposition.links
 
 const UrlD = pipe(
   D.string,
