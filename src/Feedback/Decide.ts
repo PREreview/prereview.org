@@ -73,25 +73,33 @@ const onPublishFeedback = () =>
     Match.exhaustive,
   )
 
-const onMarkFeedbackAsPublished = (command: Commands.MarkFeedbackAsPublished) =>
+const onMarkDoiAsAssigned = (command: Commands.MarkDoiAsAssigned) =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
     Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
     Match.tag('FeedbackReadyForPublishing', () =>
-      Either.right(
-        Array.make(new Events.DoiWasAssigned({ id: command.id, doi: command.doi }), new Events.FeedbackWasPublished()),
-      ),
+      Either.right(Array.of(new Events.DoiWasAssigned({ doi: command.doi, id: command.id }))),
     ),
-    Match.tag('FeedbackBeingPublished', ({ id, doi }) =>
-      typeof id !== 'number' && typeof doi !== 'string'
-        ? Either.right(
-            Array.make(
-              new Events.DoiWasAssigned({ id: command.id, doi: command.doi }),
-              new Events.FeedbackWasPublished(),
-            ),
-          )
+    Match.tag('FeedbackBeingPublished', state =>
+      state.doi === undefined || state.id === undefined
+        ? Either.right(Array.of(new Events.DoiWasAssigned({ doi: command.doi, id: command.id })))
         : Either.left(new Errors.DoiIsAlreadyAssigned()),
+    ),
+    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.exhaustive,
+  )
+
+const onMarkFeedbackAsPublished = () =>
+  flow(
+    Match.value<State.FeedbackState>,
+    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
+    Match.tag('FeedbackReadyForPublishing', () => Either.left(new Errors.DoiIsNotAssigned())),
+    Match.tag('FeedbackBeingPublished', state =>
+      state.doi === undefined || state.id === undefined
+        ? Either.left(new Errors.DoiIsNotAssigned())
+        : Either.right(Array.of(new Events.FeedbackWasPublished())),
     ),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
@@ -104,6 +112,7 @@ const onCommand = pipe(
   Match.tag('ChoosePersona', onChoosePersona),
   Match.tag('AgreeToCodeOfConduct', onAgreeToCodeOfConduct),
   Match.tag('PublishFeedback', onPublishFeedback),
+  Match.tag('MarkDoiAsAssigned', onMarkDoiAsAssigned),
   Match.tag('MarkFeedbackAsPublished', onMarkFeedbackAsPublished),
   Match.exhaustive,
 )

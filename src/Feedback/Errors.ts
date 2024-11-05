@@ -5,6 +5,7 @@ export type FeedbackError =
   | FeedbackHasNotBeenStarted
   | FeedbackIsIncomplete
   | FeedbackIsBeingPublished
+  | DoiIsNotAssigned
   | DoiIsAlreadyAssigned
   | FeedbackWasAlreadyPublished
 
@@ -15,6 +16,8 @@ export class FeedbackHasNotBeenStarted extends Data.TaggedError('FeedbackHasNotB
 export class FeedbackIsIncomplete extends Data.TaggedError('FeedbackIsIncomplete') {}
 
 export class FeedbackIsBeingPublished extends Data.TaggedError('FeedbackIsBeingPublished') {}
+
+export class DoiIsNotAssigned extends Data.TaggedError('DoiIsNotAssigned') {}
 
 export class DoiIsAlreadyAssigned extends Data.TaggedError('DoiIsAlreadyAssigned') {}
 

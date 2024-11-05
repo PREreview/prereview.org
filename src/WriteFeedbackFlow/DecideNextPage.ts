@@ -64,7 +64,7 @@ const onInProgressCommand = pipe(
 
 export const NextPageAfterCommand = pipe(
   Match.type<{
-    command: Exclude<Feedback.FeedbackCommand, Feedback.MarkFeedbackAsPublished>['_tag']
+    command: Exclude<Feedback.FeedbackCommand, Feedback.MarkDoiAsAssigned | Feedback.MarkFeedbackAsPublished>['_tag']
     feedback: Feedback.FeedbackState
   }>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),

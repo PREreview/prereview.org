@@ -20,10 +20,12 @@ export class AgreeToCodeOfConduct extends Data.TaggedClass('AgreeToCodeOfConduct
 
 export class PublishFeedback extends Data.TaggedClass('PublishFeedback') {}
 
-export class MarkFeedbackAsPublished extends Data.TaggedClass('MarkFeedbackAsPublished')<{
+export class MarkDoiAsAssigned extends Data.TaggedClass('MarkDoiAsAssigned')<{
   id: number
   doi: Doi
 }> {}
+
+export class MarkFeedbackAsPublished extends Data.TaggedClass('MarkFeedbackAsPublished') {}
 
 export type FeedbackCommand =
   | StartFeedback
@@ -31,4 +33,5 @@ export type FeedbackCommand =
   | ChoosePersona
   | AgreeToCodeOfConduct
   | PublishFeedback
+  | MarkDoiAsAssigned
   | MarkFeedbackAsPublished

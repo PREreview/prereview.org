@@ -21,7 +21,11 @@ describe('OnFeedbackPublicationWasRequested', () => {
 
         expect(handleFeedbackCommand).toHaveBeenCalledWith({
           feedbackId,
-          command: new Feedback.MarkFeedbackAsPublished({ doi, id }),
+          command: new Feedback.MarkDoiAsAssigned({ doi, id }),
+        })
+        expect(handleFeedbackCommand).toHaveBeenCalledWith({
+          feedbackId,
+          command: new Feedback.MarkFeedbackAsPublished(),
         })
       }).pipe(
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
@@ -61,16 +65,19 @@ describe('OnFeedbackPublicationWasRequested', () => {
     "when the feedback can't be published",
     (feedbackId, event, feedback, id, doi) =>
       Effect.gen(function* () {
+        const handleFeedbackCommand = jest.fn<typeof Feedback.HandleFeedbackCommand.Service>(_ => Effect.void)
+
         const actual = yield* pipe(
           _.OnFeedbackPublicationWasRequested({ feedbackId, event }),
           Effect.provideService(Feedback.PublishFeedbackWithADoi, () =>
             Effect.fail(new Feedback.UnableToPublishFeedback({})),
           ),
-          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Feedback.HandleFeedbackCommand, handleFeedbackCommand),
           Effect.either,
         )
 
         expect(actual).toStrictEqual(Either.left(new Feedback.UnableToPublishFeedback({})))
+        expect(handleFeedbackCommand).toHaveBeenCalledTimes(1)
       }).pipe(
         Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.succeed([doi, id])),

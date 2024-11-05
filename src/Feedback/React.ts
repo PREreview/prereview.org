@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
 import type { Uuid } from '../types/index.js'
-import { MarkFeedbackAsPublished } from './Commands.js'
+import { MarkDoiAsAssigned, MarkFeedbackAsPublished } from './Commands.js'
 import {
   AssignFeedbackADoi,
   GetFeedback,
@@ -32,12 +32,20 @@ export const OnFeedbackPublicationWasRequested = ({
 
     const [doi, id] = yield* assignFeedbackADoi(feedback)
 
+    yield* Effect.mapError(
+      handleCommand({
+        feedbackId,
+        command: new MarkDoiAsAssigned({ doi, id }),
+      }),
+      error => (error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error),
+    )
+
     yield* publishFeedback(id)
 
     yield* Effect.mapError(
       handleCommand({
         feedbackId,
-        command: new MarkFeedbackAsPublished({ id, doi }),
+        command: new MarkFeedbackAsPublished(),
       }),
       error => (error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error),
     )
