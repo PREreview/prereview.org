@@ -1366,7 +1366,9 @@ export const feedbackBeingPublished = (): fc.Arbitrary<Feedback.FeedbackBeingPub
   fc
     .record({
       authorId: orcid(),
+      doi: option(doi(), { nil: undefined }),
       feedback: html(),
+      id: option(fc.integer(), { nil: undefined }),
       persona: constantFrom('public', 'pseudonym'),
       prereviewId: fc.integer(),
     })
