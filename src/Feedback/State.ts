@@ -22,6 +22,8 @@ export class FeedbackReadyForPublishing extends Data.TaggedClass('FeedbackReadyF
 
 export class FeedbackBeingPublished extends Data.TaggedClass('FeedbackBeingPublished')<{
   authorId: Orcid
+  doi?: Doi
+  id?: number
   feedback: Html
   persona: 'public' | 'pseudonym'
   prereviewId: number

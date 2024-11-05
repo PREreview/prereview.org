@@ -66,18 +66,31 @@ const onFeedbackPublicationWasRequested = () =>
     Match.exhaustive,
   )
 
-const onFeedbackWasPublished = (event: Events.FeedbackWasPublished) =>
+const onDoiWasAssigned = (event: Events.DoiWasAssigned) =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', identity),
     Match.tag('FeedbackInProgress', identity),
     Match.tag(
       'FeedbackReadyForPublishing',
-      state => new State.FeedbackPublished({ ...state, id: event.id, doi: event.doi }),
+      state => new State.FeedbackBeingPublished({ ...state, id: event.id, doi: event.doi }),
     ),
     Match.tag(
       'FeedbackBeingPublished',
-      state => new State.FeedbackPublished({ ...state, id: event.id, doi: event.doi }),
+      state => new State.FeedbackBeingPublished({ ...state, id: event.id, doi: event.doi }),
+    ),
+    Match.tag('FeedbackPublished', identity),
+    Match.exhaustive,
+  )
+
+const onFeedbackWasPublished = () =>
+  flow(
+    Match.value<State.FeedbackState>,
+    Match.tag('FeedbackNotStarted', identity),
+    Match.tag('FeedbackInProgress', identity),
+    Match.tag('FeedbackReadyForPublishing', identity),
+    Match.tag('FeedbackBeingPublished', ({ id, doi, ...state }) =>
+      typeof id === 'number' && typeof doi === 'string' ? new State.FeedbackPublished({ ...state, id, doi }) : state,
     ),
     Match.tag('FeedbackPublished', identity),
     Match.exhaustive,
@@ -90,6 +103,7 @@ const onEvent = pipe(
   Match.tag('PersonaWasChosen', onPersonaWasChosen),
   Match.tag('CodeOfConductWasAgreed', onCodeOfConductWasAgreed),
   Match.tag('FeedbackPublicationWasRequested', onFeedbackPublicationWasRequested),
+  Match.tag('DoiWasAssigned', onDoiWasAssigned),
   Match.tag('FeedbackWasPublished', onFeedbackWasPublished),
   Match.exhaustive,
 )

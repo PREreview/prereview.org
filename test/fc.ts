@@ -1285,13 +1285,16 @@ export const personaWasChosen = (): fc.Arbitrary<Feedback.PersonaWasChosen> =>
 export const feedbackPublicationWasRequested = (): fc.Arbitrary<Feedback.FeedbackPublicationWasRequested> =>
   fc.constant(new Feedback.FeedbackPublicationWasRequested())
 
-export const feedbackWasPublished = (): fc.Arbitrary<Feedback.FeedbackWasPublished> =>
+export const doiWasAssigned = (): fc.Arbitrary<Feedback.DoiWasAssigned> =>
   fc
     .record({
       id: fc.integer(),
       doi: doi(),
     })
-    .map(data => new Feedback.FeedbackWasPublished(data))
+    .map(data => new Feedback.DoiWasAssigned(data))
+
+export const feedbackWasPublished = (): fc.Arbitrary<Feedback.FeedbackWasPublished> =>
+  fc.constant(new Feedback.FeedbackWasPublished())
 
 export const feedbackEvent = (): fc.Arbitrary<Feedback.FeedbackEvent> =>
   fc.oneof(
@@ -1299,6 +1302,7 @@ export const feedbackEvent = (): fc.Arbitrary<Feedback.FeedbackEvent> =>
     feedbackWasEntered(),
     personaWasChosen(),
     feedbackPublicationWasRequested(),
+    doiWasAssigned(),
     feedbackWasPublished(),
   )
 

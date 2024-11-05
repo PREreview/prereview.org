@@ -168,7 +168,11 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasPublished({ id: 456, doi: Doi('10.5072/zenodo.456') }),
+        event: new Feedback.DoiWasAssigned({ id: 456, doi: Doi('10.5072/zenodo.456') }),
+        resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.FeedbackWasPublished(),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
     ]

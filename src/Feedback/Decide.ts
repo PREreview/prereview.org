@@ -79,10 +79,19 @@ const onMarkFeedbackAsPublished = (command: Commands.MarkFeedbackAsPublished) =>
     Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
     Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
     Match.tag('FeedbackReadyForPublishing', () =>
-      Either.right(Array.of(new Events.FeedbackWasPublished({ id: command.id, doi: command.doi }))),
+      Either.right(
+        Array.make(new Events.DoiWasAssigned({ id: command.id, doi: command.doi }), new Events.FeedbackWasPublished()),
+      ),
     ),
-    Match.tag('FeedbackBeingPublished', () =>
-      Either.right(Array.of(new Events.FeedbackWasPublished({ id: command.id, doi: command.doi }))),
+    Match.tag('FeedbackBeingPublished', ({ id, doi }) =>
+      typeof id !== 'number' && typeof doi !== 'string'
+        ? Either.right(
+            Array.make(
+              new Events.DoiWasAssigned({ id: command.id, doi: command.doi }),
+              new Events.FeedbackWasPublished(),
+            ),
+          )
+        : Either.left(new Errors.DoiIsAlreadyAssigned()),
     ),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,

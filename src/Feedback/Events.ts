@@ -36,10 +36,12 @@ export class FeedbackPublicationWasRequested extends Schema.TaggedClass<Feedback
   {},
 ) {}
 
-export class FeedbackWasPublished extends Schema.TaggedClass<FeedbackWasPublished>()('FeedbackWasPublished', {
+export class DoiWasAssigned extends Schema.TaggedClass<DoiWasAssigned>()('DoiWasAssigned', {
   id: Schema.Number,
   doi: DoiSchema,
 }) {}
+
+export class FeedbackWasPublished extends Schema.TaggedClass<FeedbackWasPublished>()('FeedbackWasPublished', {}) {}
 
 export type FeedbackEvent = typeof FeedbackEvent.Type
 
@@ -49,5 +51,6 @@ export const FeedbackEvent = Schema.Union(
   PersonaWasChosen,
   CodeOfConductWasAgreed,
   FeedbackPublicationWasRequested,
+  DoiWasAssigned,
   FeedbackWasPublished,
 )

@@ -135,7 +135,7 @@ describe('when ready for publication', () => {
       new _.CodeOfConductWasAgreed(),
     )
       .when(new _.MarkFeedbackAsPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
-      .then(new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
+      .then(new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }), new _.FeedbackWasPublished()))
 })
 
 describe('when being published', () => {
@@ -194,16 +194,32 @@ describe('when being published', () => {
       .when(new _.PublishFeedback())
       .then())
 
-  test('can be marked as published', () =>
-    given(
-      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CodeOfConductWasAgreed(),
-      new _.FeedbackPublicationWasRequested(),
-    )
-      .when(new _.MarkFeedbackAsPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
-      .then(new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
+  describe("when a DOI hasn't been assigned", () => {
+    test('can be marked as published', () =>
+      given(
+        new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+        new _.PersonaWasChosen({ persona: 'public' }),
+        new _.CodeOfConductWasAgreed(),
+        new _.FeedbackPublicationWasRequested(),
+      )
+        .when(new _.MarkFeedbackAsPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
+        .then(new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }), new _.FeedbackWasPublished()))
+  })
+
+  describe('when a DOI has been assigned', () => {
+    test('cannot be marked as published', () =>
+      given(
+        new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+        new _.PersonaWasChosen({ persona: 'public' }),
+        new _.CodeOfConductWasAgreed(),
+        new _.FeedbackPublicationWasRequested(),
+        new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      )
+        .when(new _.MarkFeedbackAsPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
+        .thenError(new _.DoiIsAlreadyAssigned()))
+  })
 })
 
 describe('when published', () => {
@@ -213,7 +229,8 @@ describe('when published', () => {
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CodeOfConductWasAgreed(),
-      new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.FeedbackWasPublished(),
     )
       .when(new _.StartFeedback({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.FeedbackWasAlreadyPublished()))
@@ -224,7 +241,8 @@ describe('when published', () => {
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CodeOfConductWasAgreed(),
-      new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.FeedbackWasPublished(),
     )
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
       .thenError(new _.FeedbackWasAlreadyPublished()))
@@ -235,7 +253,8 @@ describe('when published', () => {
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CodeOfConductWasAgreed(),
-      new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.FeedbackWasPublished(),
     )
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
       .thenError(new _.FeedbackWasAlreadyPublished()))
@@ -246,7 +265,8 @@ describe('when published', () => {
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CodeOfConductWasAgreed(),
-      new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.FeedbackWasPublished(),
     )
       .when(new _.AgreeToCodeOfConduct())
       .thenError(new _.FeedbackWasAlreadyPublished()))
@@ -257,7 +277,8 @@ describe('when published', () => {
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CodeOfConductWasAgreed(),
-      new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.FeedbackWasPublished(),
     )
       .when(new _.PublishFeedback())
       .thenError(new _.FeedbackWasAlreadyPublished()))
@@ -268,7 +289,8 @@ describe('when published', () => {
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CodeOfConductWasAgreed(),
-      new _.FeedbackWasPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.FeedbackWasPublished(),
     )
       .when(new _.MarkFeedbackAsPublished({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
       .thenError(new _.FeedbackWasAlreadyPublished()))
