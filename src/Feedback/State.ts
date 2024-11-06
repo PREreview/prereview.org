@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { Data } from 'effect'
+import { Data, type Option } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Html } from '../html.js'
 
@@ -11,10 +11,12 @@ export class FeedbackInProgress extends Data.TaggedClass('FeedbackInProgress')<{
   feedback?: Html
   persona?: 'public' | 'pseudonym'
   codeOfConductAgreed?: true
+  competingInterests?: Option.Option<Html>
 }> {}
 
 export class FeedbackReadyForPublishing extends Data.TaggedClass('FeedbackReadyForPublishing')<{
   authorId: Orcid
+  competingInterests?: Option.Option<Html>
   feedback: Html
   persona: 'public' | 'pseudonym'
   prereviewId: number
@@ -22,6 +24,7 @@ export class FeedbackReadyForPublishing extends Data.TaggedClass('FeedbackReadyF
 
 export class FeedbackBeingPublished extends Data.TaggedClass('FeedbackBeingPublished')<{
   authorId: Orcid
+  competingInterests?: Option.Option<Html>
   doi?: Doi
   id?: number
   feedback: Html
@@ -31,6 +34,7 @@ export class FeedbackBeingPublished extends Data.TaggedClass('FeedbackBeingPubli
 
 export class FeedbackPublished extends Data.TaggedClass('FeedbackPublished')<{
   authorId: Orcid
+  competingInterests?: Option.Option<Html>
   doi: Doi
   id: number
   feedback: Html

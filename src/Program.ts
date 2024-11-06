@@ -1,11 +1,12 @@
 import { FetchHttpClient } from '@effect/platform'
-import { type Array, Effect, flow, Layer, Match, pipe, PubSub, Runtime } from 'effect'
+import { type Array, Effect, flow, Layer, Match, Option, pipe, PubSub, Runtime } from 'effect'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as Feedback from './Feedback/index.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
+import { html } from './html.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
 import * as LibsqlEventStore from './LibsqlEventStore.js'
 import { getNameFromOrcid } from './orcid.js'
@@ -146,9 +147,28 @@ const assignFeedbackADoi = Layer.effect(
           Match.exhaustive,
         )
 
+        const text = pipe(
+          Match.value(feedback),
+          Match.when(
+            { competingInterests: Option.isOption },
+            feedback =>
+              html`${feedback.feedback}
+
+                <h2>Competing interests</h2>
+
+                <p>
+                  ${Option.getOrElse(
+                    feedback.competingInterests,
+                    () => 'The author declares that they have no competing interests.',
+                  )}
+                </p>`,
+          ),
+          Match.orElse(feedback => feedback.feedback),
+        )
+
         return yield* pipe(
           Effect.promise(
-            createFeedbackOnZenodo({ ...feedback, author, prereview })({
+            createFeedbackOnZenodo({ ...feedback, feedback: text, author, prereview })({
               fetch,
               publicUrl,
               zenodoApiKey,
