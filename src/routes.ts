@@ -50,6 +50,12 @@ export const WriteFeedbackChoosePersona: Route<{ feedbackId: Uuid.Uuid }> = {
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
+export const WriteFeedbackCompetingInterests: Route<{ feedbackId: Uuid.Uuid }> = {
+  path: '/write-feedback/:feedbackId/competing-interests',
+  href: params => `/write-feedback/${params.feedbackId}/competing-interests`,
+  schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
+}
+
 export const WriteFeedbackCodeOfConduct: Route<{ feedbackId: Uuid.Uuid }> = {
   path: '/write-feedback/:feedbackId/code-of-conduct',
   href: params => `/write-feedback/${params.feedbackId}/code-of-conduct`,

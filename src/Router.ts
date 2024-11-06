@@ -100,6 +100,30 @@ export const Router = pipe(
     ),
   ),
   HttpRouter.get(
+    Routes.WriteFeedbackCompetingInterests.path,
+    pipe(
+      HttpRouter.schemaParams(Routes.WriteFeedbackCompetingInterests.schema),
+      Effect.andThen(WriteFeedbackFlow.CompetingInterestsPage),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
+  HttpRouter.post(
+    Routes.WriteFeedbackCompetingInterests.path,
+    pipe(
+      HttpRouter.schemaParams(Routes.WriteFeedbackCompetingInterests.schema),
+      Effect.bind('body', () =>
+        Effect.gen(function* () {
+          const request = yield* HttpServerRequest.HttpServerRequest
+          const form = yield* request.urlParamsBody
+
+          return Record.fromEntries(form)
+        }),
+      ),
+      Effect.andThen(WriteFeedbackFlow.CompetingInterestsSubmission),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
+  HttpRouter.get(
     Routes.WriteFeedbackCodeOfConduct.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteFeedbackCodeOfConduct.schema),

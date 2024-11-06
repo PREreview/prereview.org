@@ -33,7 +33,12 @@ export const NextPageFromState = pipe(
 
 const onInProgressCommand = pipe(
   Match.type<{
-    command: (Feedback.EnterFeedback | Feedback.ChoosePersona | Feedback.AgreeToCodeOfConduct)['_tag']
+    command: (
+      | Feedback.EnterFeedback
+      | Feedback.ChoosePersona
+      | Feedback.DeclareCompetingInterests
+      | Feedback.AgreeToCodeOfConduct
+    )['_tag']
     feedback: Feedback.FeedbackState
   }>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
@@ -64,16 +69,14 @@ const onInProgressCommand = pipe(
 
 export const NextPageAfterCommand = pipe(
   Match.type<{
-    command: Exclude<
-      Feedback.FeedbackCommand,
-      Feedback.DeclareCompetingInterests | Feedback.MarkDoiAsAssigned | Feedback.MarkFeedbackAsPublished
-    >['_tag']
+    command: Exclude<Feedback.FeedbackCommand, Feedback.MarkDoiAsAssigned | Feedback.MarkFeedbackAsPublished>['_tag']
     feedback: Feedback.FeedbackState
   }>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
   Match.when({ command: 'StartFeedback' }, () => Routes.WriteFeedbackEnterFeedback),
   Match.when({ command: 'EnterFeedback' }, onInProgressCommand),
   Match.when({ command: 'ChoosePersona' }, onInProgressCommand),
+  Match.when({ command: 'DeclareCompetingInterests' }, onInProgressCommand),
   Match.when({ command: 'AgreeToCodeOfConduct' }, onInProgressCommand),
   Match.when({ command: 'PublishFeedback' }, () => Routes.WriteFeedbackPublishing),
   Match.exhaustive,
