@@ -34,10 +34,10 @@ export const fromFeedback = pipe(
   Match.exhaustive,
 )
 
-const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.Any, {
+const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.Object, {
   strict: true,
   decode: string => sanitizeHtml(markdownIt({ html: true }).render(string)),
   encode: String,
-})
+}) as Schema.Schema<Html, string>
 
 const FeedbackFieldSchema = Schema.Struct({ feedback: Schema.compose(NonEmptyString.NonEmptyStringSchema, HtmlSchema) })

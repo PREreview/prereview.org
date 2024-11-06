@@ -7,11 +7,11 @@ const DoiSchema: Schema.Schema<Doi, string> = pipe(Schema.String, Schema.filter(
 
 const OrcidSchema: Schema.Schema<Orcid, string> = pipe(Schema.String, Schema.filter(isOrcid))
 
-const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.Any, {
+const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.Object, {
   strict: true,
   decode: rawHtml,
   encode: String,
-})
+}) as Schema.Schema<Html, string>
 
 export class FeedbackWasStarted extends Schema.TaggedClass<FeedbackWasStarted>()('FeedbackWasStarted', {
   prereviewId: Schema.Number,
