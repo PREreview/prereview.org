@@ -26,6 +26,11 @@ export class PersonaWasChosen extends Schema.TaggedClass<PersonaWasChosen>()('Pe
   persona: Schema.Literal('public', 'pseudonym'),
 }) {}
 
+export class CompetingInterestsWereDeclared extends Schema.TaggedClass<CompetingInterestsWereDeclared>()(
+  'CompetingInterestsWereDeclared',
+  { competingInterests: Schema.OptionFromNullOr(HtmlSchema) },
+) {}
+
 export class CodeOfConductWasAgreed extends Schema.TaggedClass<CodeOfConductWasAgreed>()(
   'CodeOfConductWasAgreed',
   {},
@@ -49,6 +54,7 @@ export const FeedbackEvent = Schema.Union(
   FeedbackWasStarted,
   FeedbackWasEntered,
   PersonaWasChosen,
+  CompetingInterestsWereDeclared,
   CodeOfConductWasAgreed,
   FeedbackPublicationWasRequested,
   DoiWasAssigned,

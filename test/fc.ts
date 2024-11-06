@@ -1282,6 +1282,13 @@ export const personaWasChosen = (): fc.Arbitrary<Feedback.PersonaWasChosen> =>
     })
     .map(data => new Feedback.PersonaWasChosen(data))
 
+export const competingInterestsWereDeclared = (): fc.Arbitrary<Feedback.CompetingInterestsWereDeclared> =>
+  fc
+    .record({
+      competingInterests: maybe(html()),
+    })
+    .map(data => new Feedback.CompetingInterestsWereDeclared(data))
+
 export const feedbackPublicationWasRequested = (): fc.Arbitrary<Feedback.FeedbackPublicationWasRequested> =>
   fc.constant(new Feedback.FeedbackPublicationWasRequested())
 
@@ -1301,6 +1308,7 @@ export const feedbackEvent = (): fc.Arbitrary<Feedback.FeedbackEvent> =>
     feedbackWasStarted(),
     feedbackWasEntered(),
     personaWasChosen(),
+    competingInterestsWereDeclared(),
     feedbackPublicationWasRequested(),
     doiWasAssigned(),
     feedbackWasPublished(),
