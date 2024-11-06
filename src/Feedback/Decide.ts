@@ -62,6 +62,25 @@ const onAgreeToCodeOfConduct = () =>
     Match.exhaustive,
   )
 
+const onDeclareCompetingInterests = (command: Commands.DeclareCompetingInterests) =>
+  flow(
+    Match.value<State.FeedbackState>,
+    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('FeedbackInProgress', () =>
+      Either.right(
+        Array.of(new Events.CompetingInterestsWereDeclared({ competingInterests: command.competingInterests })),
+      ),
+    ),
+    Match.tag('FeedbackReadyForPublishing', () =>
+      Either.right(
+        Array.of(new Events.CompetingInterestsWereDeclared({ competingInterests: command.competingInterests })),
+      ),
+    ),
+    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
+    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.exhaustive,
+  )
+
 const onPublishFeedback = () =>
   flow(
     Match.value<State.FeedbackState>,
@@ -111,6 +130,7 @@ const onCommand = pipe(
   Match.tag('EnterFeedback', onEnterFeedback),
   Match.tag('ChoosePersona', onChoosePersona),
   Match.tag('AgreeToCodeOfConduct', onAgreeToCodeOfConduct),
+  Match.tag('DeclareCompetingInterests', onDeclareCompetingInterests),
   Match.tag('PublishFeedback', onPublishFeedback),
   Match.tag('MarkDoiAsAssigned', onMarkDoiAsAssigned),
   Match.tag('MarkFeedbackAsPublished', onMarkFeedbackAsPublished),

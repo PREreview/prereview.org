@@ -1,5 +1,6 @@
 import { describe, test } from '@jest/globals'
 import { Doi } from 'doi-ts'
+import { Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import * as _ from '../../src/Feedback/index.js'
 import { html } from '../../src/html.js'
@@ -19,6 +20,11 @@ describe('when not started', () => {
   test('cannot choose persona', () =>
     given()
       .when(new _.ChoosePersona({ persona: 'public' }))
+      .thenError(new _.FeedbackHasNotBeenStarted()))
+
+  test('cannot declare competing interests', () =>
+    given()
+      .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
       .thenError(new _.FeedbackHasNotBeenStarted()))
 
   test('cannot agree to the code of conduct', () =>
@@ -54,6 +60,11 @@ describe('when in progress', () => {
     given(new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
       .then(new _.PersonaWasChosen({ persona: 'pseudonym' })))
+
+  test('can declare competing interests', () =>
+    given(new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
+      .then(new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() })))
 
   test('can agree to the code of conduct', () =>
     given(new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -114,6 +125,23 @@ describe('when ready for publication', () => {
     )
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
       .then(new _.PersonaWasChosen({ persona: 'pseudonym' })))
+
+  test('can re-declare competing interests', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductWasAgreed(),
+    )
+      .when(
+        new _.DeclareCompetingInterests({ competingInterests: Option.some(html`<p>Some competing interests.</p>`) }),
+      )
+      .then(
+        new _.CompetingInterestsWereDeclared({
+          competingInterests: Option.some(html`<p>Some competing interests.</p>`),
+        }),
+      ))
 
   test('agreeing to the code of conduct does nothing', () =>
     given(
@@ -188,6 +216,17 @@ describe('when being published', () => {
       new _.FeedbackPublicationWasRequested(),
     )
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
+      .thenError(new _.FeedbackIsBeingPublished()))
+
+  test('cannot declare competing interests', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CodeOfConductWasAgreed(),
+      new _.FeedbackPublicationWasRequested(),
+    )
+      .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
       .thenError(new _.FeedbackIsBeingPublished()))
 
   test('cannot agree to the code of conduct', () =>
@@ -298,6 +337,18 @@ describe('when published', () => {
       new _.FeedbackWasPublished(),
     )
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
+      .thenError(new _.FeedbackWasAlreadyPublished()))
+
+  test('cannot declare competing interests', () =>
+    given(
+      new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
+      new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CodeOfConductWasAgreed(),
+      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.FeedbackWasPublished(),
+    )
+      .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
       .thenError(new _.FeedbackWasAlreadyPublished()))
 
   test('cannot re-agree to the code of conduct', () =>

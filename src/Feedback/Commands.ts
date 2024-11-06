@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { Data } from 'effect'
+import { Data, type Option } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Html } from '../html.js'
 
@@ -14,6 +14,10 @@ export class EnterFeedback extends Data.TaggedClass('EnterFeedback')<{
 
 export class ChoosePersona extends Data.TaggedClass('ChoosePersona')<{
   persona: 'public' | 'pseudonym'
+}> {}
+
+export class DeclareCompetingInterests extends Data.TaggedClass('DeclareCompetingInterests')<{
+  competingInterests: Option.Option<Html>
 }> {}
 
 export class AgreeToCodeOfConduct extends Data.TaggedClass('AgreeToCodeOfConduct') {}
@@ -31,6 +35,7 @@ export type FeedbackCommand =
   | StartFeedback
   | EnterFeedback
   | ChoosePersona
+  | DeclareCompetingInterests
   | AgreeToCodeOfConduct
   | PublishFeedback
   | MarkDoiAsAssigned

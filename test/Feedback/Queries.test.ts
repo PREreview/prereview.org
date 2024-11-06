@@ -1,6 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Doi } from 'doi-ts'
+import { Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import * as Feedback from '../../src/Feedback/index.js'
 import * as _ from '../../src/Feedback/Queries.js'
@@ -36,6 +37,12 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
       {
         event: new Feedback.PersonaWasChosen({ persona: 'public' }),
+        resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.CompetingInterestsWereDeclared({
+          competingInterests: Option.some(html`Some competing interests`),
+        }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
@@ -82,6 +89,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       }),
       '2b9e777b-f14d-4294-8e27-2b442e496050': new Feedback.FeedbackReadyForPublishing({
         authorId: Orcid('0000-0002-1825-0097'),
+        competingInterests: Option.some(html`Some competing interests`),
         feedback: html`Some text`,
         persona: 'public',
         prereviewId: 123,
