@@ -4,6 +4,7 @@ import { Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import * as _ from '../../src/Feedback/index.js'
 import { html } from '../../src/html.js'
+import type { NonEmptyString } from '../../src/types/index.js'
 import { CommandHandlerSpecification } from '../CommandHandlerSpecification.js'
 
 describe('when not started', () => {
@@ -135,11 +136,13 @@ describe('when ready for publication', () => {
       new _.CodeOfConductWasAgreed(),
     )
       .when(
-        new _.DeclareCompetingInterests({ competingInterests: Option.some(html`<p>Some competing interests.</p>`) }),
+        new _.DeclareCompetingInterests({
+          competingInterests: Option.some('Some competing interests.' as NonEmptyString.NonEmptyString),
+        }),
       )
       .then(
         new _.CompetingInterestsWereDeclared({
-          competingInterests: Option.some(html`<p>Some competing interests.</p>`),
+          competingInterests: Option.some('Some competing interests.' as NonEmptyString.NonEmptyString),
         }),
       ))
 

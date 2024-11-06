@@ -2,6 +2,7 @@ import type { Doi } from 'doi-ts'
 import { Data, type Option } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Html } from '../html.js'
+import type { NonEmptyString } from '../types/index.js'
 
 export class StartFeedback extends Data.TaggedClass('StartFeedback')<{
   prereviewId: number
@@ -17,7 +18,7 @@ export class ChoosePersona extends Data.TaggedClass('ChoosePersona')<{
 }> {}
 
 export class DeclareCompetingInterests extends Data.TaggedClass('DeclareCompetingInterests')<{
-  competingInterests: Option.Option<Html>
+  competingInterests: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
 export class AgreeToCodeOfConduct extends Data.TaggedClass('AgreeToCodeOfConduct') {}

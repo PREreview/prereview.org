@@ -6,7 +6,7 @@ import { Orcid } from 'orcid-id-ts'
 import * as Feedback from '../../src/Feedback/index.js'
 import * as _ from '../../src/Feedback/Queries.js'
 import { html } from '../../src/html.js'
-import type { Uuid } from '../../src/types/index.js'
+import type { NonEmptyString, Uuid } from '../../src/types/index.js'
 
 describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
   test('gets all unpublished feedback', () => {
@@ -41,7 +41,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
       {
         event: new Feedback.CompetingInterestsWereDeclared({
-          competingInterests: Option.some(html`Some competing interests`),
+          competingInterests: Option.some('Some competing interests' as NonEmptyString.NonEmptyString),
         }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
@@ -89,7 +89,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       }),
       '2b9e777b-f14d-4294-8e27-2b442e496050': new Feedback.FeedbackReadyForPublishing({
         authorId: Orcid('0000-0002-1825-0097'),
-        competingInterests: Option.some(html`Some competing interests`),
+        competingInterests: Option.some('Some competing interests' as NonEmptyString.NonEmptyString),
         feedback: html`Some text`,
         persona: 'public',
         prereviewId: 123,

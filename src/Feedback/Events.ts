@@ -2,6 +2,7 @@ import { isDoi, type Doi } from 'doi-ts'
 import { pipe, Schema } from 'effect'
 import { isOrcid, type Orcid } from 'orcid-id-ts'
 import { rawHtml, type Html } from '../html.js'
+import { NonEmptyString } from '../types/index.js'
 
 const DoiSchema: Schema.Schema<Doi, string> = pipe(Schema.String, Schema.filter(isDoi))
 
@@ -28,7 +29,7 @@ export class PersonaWasChosen extends Schema.TaggedClass<PersonaWasChosen>()('Pe
 
 export class CompetingInterestsWereDeclared extends Schema.TaggedClass<CompetingInterestsWereDeclared>()(
   'CompetingInterestsWereDeclared',
-  { competingInterests: Schema.OptionFromNullOr(HtmlSchema) },
+  { competingInterests: Schema.OptionFromNullOr(NonEmptyString.NonEmptyStringSchema) },
 ) {}
 
 export class CodeOfConductWasAgreed extends Schema.TaggedClass<CodeOfConductWasAgreed>()(

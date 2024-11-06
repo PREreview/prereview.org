@@ -1285,7 +1285,7 @@ export const personaWasChosen = (): fc.Arbitrary<Feedback.PersonaWasChosen> =>
 export const competingInterestsWereDeclared = (): fc.Arbitrary<Feedback.CompetingInterestsWereDeclared> =>
   fc
     .record({
-      competingInterests: maybe(html()),
+      competingInterests: maybe(nonEmptyString()),
     })
     .map(data => new Feedback.CompetingInterestsWereDeclared(data))
 
@@ -1357,7 +1357,7 @@ export const feedbackInProgress = ({
       authorId: orcid(),
       prereviewId: fc.integer(),
       feedback: feedback ?? fc.option(html(), { nil: undefined }),
-      competingInterests: competingInterests ?? fc.option(maybe(html()), { nil: undefined }),
+      competingInterests: competingInterests ?? fc.option(maybe(nonEmptyString()), { nil: undefined }),
       codeOfConductAgreed: codeOfConductAgreed ?? constantFrom(true, undefined),
       persona: persona ?? fc.option(constantFrom('public', 'pseudonym'), { nil: undefined }),
     })
@@ -1367,7 +1367,7 @@ export const feedbackReadyForPublishing = (): fc.Arbitrary<Feedback.FeedbackRead
   fc
     .record({
       authorId: orcid(),
-      competingInterests: fc.option(maybe(html()), { nil: undefined }),
+      competingInterests: fc.option(maybe(nonEmptyString()), { nil: undefined }),
       feedback: html(),
       persona: constantFrom('public', 'pseudonym'),
       prereviewId: fc.integer(),
@@ -1384,7 +1384,7 @@ export const feedbackBeingPublished = ({
   fc
     .record({
       authorId: orcid(),
-      competingInterests: fc.option(maybe(html()), { nil: undefined }),
+      competingInterests: fc.option(maybe(nonEmptyString()), { nil: undefined }),
       doi: _doi ?? option(doi(), { nil: undefined }),
       feedback: html(),
       id: _id ?? option(fc.integer(), { nil: undefined }),
@@ -1397,7 +1397,7 @@ export const feedbackPublished = (): fc.Arbitrary<Feedback.FeedbackPublished> =>
   fc
     .record({
       authorId: orcid(),
-      competingInterests: fc.option(maybe(html()), { nil: undefined }),
+      competingInterests: fc.option(maybe(nonEmptyString()), { nil: undefined }),
       doi: doi(),
       feedback: html(),
       id: fc.integer(),
