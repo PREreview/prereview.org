@@ -1,19 +1,21 @@
-import { Match, pipe } from 'effect'
+import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
-import type { Uuid } from '../../types/index.js'
+import type { NonEmptyString, Uuid } from '../../types/index.js'
 import type { User } from '../../user.js'
 
 export const CheckPage = ({
+  competingInterests,
   feedback,
   feedbackId,
   locale,
   persona,
   user,
 }: {
+  competingInterests?: Option.Option<NonEmptyString.NonEmptyString>
   feedback: Html
   feedbackId: Uuid.Uuid
   locale: SupportedLocale
@@ -77,6 +79,24 @@ export const CheckPage = ({
                   >
                 </dd>
               </div>
+              ${competingInterests
+                ? html`
+                    <div>
+                      <dt>Competing interests</dt>
+                      <dd>
+                        ${Option.getOrElse(
+                          competingInterests,
+                          () => 'The author declares that they have no competing interests.',
+                        )}
+                      </dd>
+                      <dd>
+                        <a href="${Routes.WriteFeedbackCompetingInterests.href({ feedbackId })}"
+                          >Change <span class="visually-hidden">competing interests</span></a
+                        >
+                      </dd>
+                    </div>
+                  `
+                : ''}
             </dl>
           </div>
           <div class="summary-card">

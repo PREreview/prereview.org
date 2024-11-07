@@ -36,6 +36,7 @@ export const CheckPage = ({
       Match.tag('FeedbackInProgress', () => pageNotFound),
       Match.tag('FeedbackReadyForPublishing', feedback =>
         MakeResponse({
+          competingInterests: feedback.competingInterests,
           feedback: feedback.feedback,
           feedbackId,
           locale,

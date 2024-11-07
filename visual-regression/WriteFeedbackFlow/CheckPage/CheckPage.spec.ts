@@ -1,7 +1,8 @@
+import { Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
-import type { Uuid } from '../../../src/types/index.js'
+import type { NonEmptyString, Uuid } from '../../../src/types/index.js'
 import type { Pseudonym } from '../../../src/types/pseudonym.js'
 import type { User } from '../../../src/user.js'
 import * as _ from '../../../src/WriteFeedbackFlow/CheckPage/CheckPage.js'
@@ -27,6 +28,23 @@ test('content looks right using a pseudonym', async ({ showPage }) => {
     feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
     locale: DefaultLocale,
     persona: 'pseudonym',
+    user,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right with competing interests', async ({ showPage }) => {
+  const response = _.CheckPage({
+    competingInterests: Option.some(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' as NonEmptyString.NonEmptyString,
+    ),
+    feedback,
+    feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    locale: DefaultLocale,
+    persona: 'public',
     user,
   })
 
