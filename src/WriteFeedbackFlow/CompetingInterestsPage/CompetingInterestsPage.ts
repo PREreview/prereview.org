@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Either, Function, identity, Match, pipe } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
@@ -18,7 +18,13 @@ export const CompetingInterestsPage = ({
 }) =>
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
-    title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Do you have any competing interests?`,
+    title: plainText(
+      translate(
+        locale,
+        'write-feedback-flow',
+        'competingInterestsTitle',
+      )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
+    ),
     nav: html`
       <a href="${Routes.WriteFeedbackChoosePersona.href({ feedbackId })}" class="back"
         >${translate(locale, 'write-feedback-flow', 'back')()}</a
@@ -37,7 +43,13 @@ export const CompetingInterestsPage = ({
                           <a href="#competing-interests-no">
                             ${pipe(
                               Match.value(form.competingInterests.left),
-                              Match.tag('Missing', () => 'Select yes if you have any competing interests'),
+                              Match.tag('Missing', () =>
+                                translate(
+                                  locale,
+                                  'write-feedback-flow',
+                                  'errorCompetingInterests',
+                                )({ error: () => '' }),
+                              ),
                               Match.exhaustive,
                             )}
                           </a>
@@ -50,7 +62,13 @@ export const CompetingInterestsPage = ({
                           <a href="#competing-interests-details">
                             ${pipe(
                               Match.value(form.competingInterestsDetails.left),
-                              Match.tag('Missing', () => 'Enter details of your competing interests'),
+                              Match.tag('Missing', () =>
+                                translate(
+                                  locale,
+                                  'write-feedback-flow',
+                                  'errorCompetingInterestsDetails',
+                                )({ error: () => '' }),
+                              ),
                               Match.exhaustive,
                             )}
                           </a>
@@ -74,29 +92,30 @@ export const CompetingInterestsPage = ({
               )}
             >
               <legend>
-                <h1>Do you have any competing interests?</h1>
+                <h1>${translate(locale, 'write-feedback-flow', 'competingInterestsTitle')({ error: () => '' })}</h1>
               </legend>
 
               <p id="competing-interests-tip" role="note">
-                A competing interest is anything that could interfere with the objective of the feedback on a PREreview.
+                ${translate(locale, 'write-feedback-flow', 'competingInterestsTip')()}
               </p>
 
               <details>
-                <summary><span>Examples</span></summary>
+                ${
+                  // eslint-disable-next-line no-comments/disallowComments
+                  // prettier-ignore
+                  html`<summary><span>${translate(locale, 'write-feedback-flow', 'examplesCompetingInterests')()}</span></summary>`
+                }
 
                 <div>
                   <ul>
-                    <li>You have a personal relationship with the author of the preprint.</li>
-                    <li>You are a rival or competitor of the author of the preprint.</li>
-                    <li>You have recently worked with the author of the preprint.</li>
-                    <li>You work at the same place the author of the preprint works.</li>
-                    <li>You collaborate with the author of the preprint.</li>
-                    <li>You have published with the author of the preprint in the last five years.</li>
-                    <li>You hold a grant with the author of the preprint or have other financial ties.</li>
-                    <li>
-                      Any of these same criteria hold true between you and another commenter who has already published a
-                      comment on this preprint.
-                    </li>
+                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsRelationship')()}</li>
+                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsCompetitor')()}</li>
+                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsWorkedWith')()}</li>
+                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsWorkPlace')()}</li>
+                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsCollaborate')()}</li>
+                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsPublishedWith')()}</li>
+                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsGrantWith')()}</li>
+                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsCommenter')()}</li>
                   </ul>
                 </div>
               </details>
@@ -104,11 +123,14 @@ export const CompetingInterestsPage = ({
               ${form._tag === 'InvalidForm' && Either.isLeft(form.competingInterests)
                 ? html`
                     <div class="error-message" id="competing-interests-error">
-                      <span class="visually-hidden">Error:</span>
                       ${pipe(
                         Match.value(form.competingInterests.left),
-                        Match.tag('Missing', () => 'Select yes if you have any competing interests'),
+                        Match.tag('Missing', () => translate(locale, 'write-feedback-flow', 'errorCompetingInterests')),
                         Match.exhaustive,
+                        Function.apply({
+                          error: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                        }),
+                        rawHtml,
                       )}
                     </div>
                   `
@@ -128,7 +150,7 @@ export const CompetingInterestsPage = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${translate(locale, 'write-feedback-flow', 'competingInterestsNo')()}</span>
                   </label>
                 </li>
                 <li>
@@ -145,7 +167,7 @@ export const CompetingInterestsPage = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${translate(locale, 'write-feedback-flow', 'competingInterestsYes')()}</span>
                   </label>
                   <div class="conditional" id="competing-interests-details-control">
                     <div
@@ -155,16 +177,23 @@ export const CompetingInterestsPage = ({
                           : '',
                       )}
                     >
-                      <label for="competing-interests-details" class="textarea">What are they?</label>
+                      <label for="competing-interests-details" class="textarea"
+                        >${translate(locale, 'write-feedback-flow', 'competingInterestsDetailsTitle')()}</label
+                      >
 
                       ${form._tag === 'InvalidForm' && Either.isLeft(form.competingInterestsDetails)
                         ? html`
                             <div class="error-message" id="competing-interests-details-error">
-                              <span class="visually-hidden">Error:</span>
                               ${pipe(
                                 Match.value(form.competingInterestsDetails.left),
-                                Match.tag('Missing', () => 'Enter details of your competing interests'),
+                                Match.tag('Missing', () =>
+                                  translate(locale, 'write-feedback-flow', 'errorCompetingInterestsDetails'),
+                                ),
                                 Match.exhaustive,
+                                Function.apply({
+                                  error: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                                }),
+                                rawHtml,
                               )}
                             </div>
                           `

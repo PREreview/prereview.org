@@ -71,6 +71,54 @@
   "linkToPseudonym": {
     "message": "We’ll only link your feedback to others that also use your pseudonym."
   },
+  "competingInterestsTitle": {
+    "message": "<error>Error:</error> Do you have any competing interests?"
+  },
+  "errorCompetingInterests": {
+    "message": "<error>Error:</error> Select yes if you have any competing interests"
+  },
+  "errorCompetingInterestsDetails": {
+    "message": "<error>Error:</error> Enter details of your competing interests"
+  },
+  "competingInterestsTip": {
+    "message": "A competing interest is anything that could interfere with the objective of the feedback on a PREreview."
+  },
+  "examplesCompetingInterests": {
+    "message": "Examples"
+  },
+  "competingInterestsRelationship": {
+    "message": "You have a personal relationship with the author of the preprint."
+  },
+  "competingInterestsCompetitor": {
+    "message": "You are a rival or competitor of the author of the preprint."
+  },
+  "competingInterestsWorkedWith": {
+    "message": "You have recently worked with the author of the preprint."
+  },
+  "competingInterestsWorkPlace": {
+    "message": "You work at the same place the author of the preprint works."
+  },
+  "competingInterestsCollaborate": {
+    "message": "You collaborate with the author of the preprint."
+  },
+  "competingInterestsPublishedWith": {
+    "message": "You have published with the author of the preprint in the last five years."
+  },
+  "competingInterestsGrantWith": {
+    "message": "You hold a grant with the author of the preprint or have other financial ties."
+  },
+  "competingInterestsCommenter": {
+    "message": "Any of these same criteria hold true between you and another commenter who has already published a comment on this preprint."
+  },
+  "competingInterestsNo": {
+    "message": "No"
+  },
+  "competingInterestsYes": {
+    "message": "Yes"
+  },
+  "competingInterestsDetailsTitle": {
+    "message": "What are they?"
+  },
   "codeOfConductTitle": {
     "message": "<error>Error:</error> Code of Conduct"
   },
