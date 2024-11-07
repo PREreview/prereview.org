@@ -11,7 +11,7 @@ describe('NextPageFromState', () => {
     })
 
     test.prop([fc.feedbackInProgress({ feedback: fc.html(), persona: fc.constant(undefined) })])(
-      'no codeOfConductAgreed',
+      'no persona',
       feedback => {
         expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackChoosePersona)
       },
