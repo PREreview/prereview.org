@@ -27,7 +27,7 @@ export const CodeOfConductPage = ({
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
-      <a href="${Routes.WriteFeedbackChoosePersona.href({ feedbackId })}" class="back"
+      <a href="${Routes.WriteFeedbackCompetingInterests.href({ feedbackId })}" class="back"
         >${translate(locale, 'write-feedback-flow', 'back')()}</a
       >
     `,

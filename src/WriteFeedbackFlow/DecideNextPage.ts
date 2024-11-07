@@ -15,6 +15,10 @@ const onInProgressState = pipe(
     () => Routes.WriteFeedbackChoosePersona,
   ),
   Match.when(
+    state => typeof state.competingInterests === 'undefined',
+    () => Routes.WriteFeedbackCompetingInterests,
+  ),
+  Match.when(
     state => typeof state.codeOfConductAgreed === 'undefined',
     () => Routes.WriteFeedbackCodeOfConduct,
   ),
@@ -55,6 +59,14 @@ const onInProgressCommand = pipe(
       feedback: feedback => feedback._tag === 'FeedbackInProgress' && typeof feedback.persona === 'undefined',
     },
     () => Routes.WriteFeedbackChoosePersona,
+  ),
+  Match.when(
+    {
+      command: command => command !== 'DeclareCompetingInterests',
+      feedback: feedback =>
+        feedback._tag === 'FeedbackInProgress' && typeof feedback.competingInterests === 'undefined',
+    },
+    () => Routes.WriteFeedbackCompetingInterests,
   ),
   Match.when(
     {

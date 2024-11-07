@@ -1,6 +1,5 @@
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
-import path from 'path'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import { areLoggedIn, canLogIn, canWriteFeedback, expect, test, willPublishFeedback } from './base.js'
@@ -91,6 +90,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback).extend(willPu
     await page.keyboard.type('.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -191,6 +192,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -289,6 +292,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -380,7 +385,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto(`${path.dirname(page.url())}/competing-interests`)
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
@@ -564,6 +568,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -572,6 +578,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goBack()
 
     await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('No')).toBeChecked()
 
     await page.goBack()
 
@@ -672,6 +682,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -680,6 +692,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('navigation').getByRole('link', { name: 'Back' }).click()
 
     await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
+
+    await page.getByRole('navigation').getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('No')).toBeChecked()
 
     await page.getByRole('navigation').getByRole('link', { name: 'Back' }).click()
 
@@ -958,7 +974,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto(`${path.dirname(page.url())}/competing-interests`)
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -1069,6 +1084,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()

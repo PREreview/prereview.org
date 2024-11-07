@@ -21,6 +21,17 @@ describe('NextPageFromState', () => {
       fc.feedbackInProgress({
         feedback: fc.html(),
         persona: fc.constantFrom('public', 'pseudonym'),
+        competingInterests: fc.constant(undefined),
+      }),
+    ])('no competingInterests', feedback => {
+      expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackCompetingInterests)
+    })
+
+    test.prop([
+      fc.feedbackInProgress({
+        feedback: fc.html(),
+        persona: fc.constantFrom('public', 'pseudonym'),
+        competingInterests: fc.maybe(fc.nonEmptyString()),
         codeOfConductAgreed: fc.constant(undefined),
       }),
     ])('no codeOfConductAgreed', feedback => {
@@ -59,6 +70,18 @@ describe('NextPageAfterCommand', () => {
       test.prop([
         fc.feedbackInProgress({
           persona: fc.constantFrom('public', 'pseudonym'),
+          competingInterests: fc.constant(undefined),
+        }),
+      ])('no competingInterests', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'EnterFeedback', feedback })).toStrictEqual(
+          Routes.WriteFeedbackCompetingInterests,
+        )
+      })
+
+      test.prop([
+        fc.feedbackInProgress({
+          persona: fc.constantFrom('public', 'pseudonym'),
+          competingInterests: fc.maybe(fc.nonEmptyString()),
           codeOfConductAgreed: fc.constant(undefined),
         }),
       ])('no codeOfConductAgreed', feedback => {
@@ -71,6 +94,7 @@ describe('NextPageAfterCommand', () => {
         fc.feedbackInProgress({
           persona: fc.constantFrom('public', 'pseudonym'),
           codeOfConductAgreed: fc.constant(true),
+          competingInterests: fc.maybe(fc.nonEmptyString()),
         }),
       ])('completed', feedback => {
         expect(_.NextPageAfterCommand({ command: 'EnterFeedback', feedback })).toStrictEqual(Routes.WriteFeedbackCheck)
@@ -93,29 +117,94 @@ describe('NextPageAfterCommand', () => {
         )
       })
 
-      test.prop([fc.feedbackInProgress({ feedback: fc.html(), codeOfConductAgreed: fc.constant(undefined) })])(
-        'no codeOfConductAgreed',
+      test.prop([fc.feedbackInProgress({ feedback: fc.html(), competingInterests: fc.constant(undefined) })])(
+        'no competingInterests',
         feedback => {
           expect(_.NextPageAfterCommand({ command: 'ChoosePersona', feedback })).toStrictEqual(
-            Routes.WriteFeedbackCodeOfConduct,
+            Routes.WriteFeedbackCompetingInterests,
           )
         },
       )
 
-      test.prop([fc.feedbackInProgress({ feedback: fc.html(), codeOfConductAgreed: fc.constant(true) })])(
-        'completed',
-        feedback => {
-          expect(_.NextPageAfterCommand({ command: 'ChoosePersona', feedback })).toStrictEqual(
-            Routes.WriteFeedbackCheck,
-          )
-        },
-      )
+      test.prop([
+        fc.feedbackInProgress({
+          feedback: fc.html(),
+          competingInterests: fc.maybe(fc.nonEmptyString()),
+          codeOfConductAgreed: fc.constant(undefined),
+        }),
+      ])('no codeOfConductAgreed', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'ChoosePersona', feedback })).toStrictEqual(
+          Routes.WriteFeedbackCodeOfConduct,
+        )
+      })
+
+      test.prop([
+        fc.feedbackInProgress({
+          feedback: fc.html(),
+          competingInterests: fc.maybe(fc.nonEmptyString()),
+          codeOfConductAgreed: fc.constant(true),
+        }),
+      ])('completed', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'ChoosePersona', feedback })).toStrictEqual(Routes.WriteFeedbackCheck)
+      })
     })
 
     test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'FeedbackInProgress')])(
       'not FeedbackInProgress',
       feedback => {
         expect(_.NextPageAfterCommand({ command: 'ChoosePersona', feedback })).toStrictEqual(Routes.WriteFeedbackCheck)
+      },
+    )
+  })
+
+  describe('DeclareCompetingInterests', () => {
+    describe('FeedbackInProgress', () => {
+      test.prop([fc.feedbackInProgress({ feedback: fc.constant(undefined) })])('no feedback', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'DeclareCompetingInterests', feedback })).toStrictEqual(
+          Routes.WriteFeedbackEnterFeedback,
+        )
+      })
+
+      test.prop([fc.feedbackInProgress({ feedback: fc.html(), persona: fc.constant(undefined) })])(
+        'no persona',
+        feedback => {
+          expect(_.NextPageAfterCommand({ command: 'DeclareCompetingInterests', feedback })).toStrictEqual(
+            Routes.WriteFeedbackChoosePersona,
+          )
+        },
+      )
+
+      test.prop([
+        fc.feedbackInProgress({
+          feedback: fc.html(),
+          persona: fc.constantFrom('public', 'pseudonym'),
+          codeOfConductAgreed: fc.constant(undefined),
+        }),
+      ])('no codeOfConductAgreed', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'DeclareCompetingInterests', feedback })).toStrictEqual(
+          Routes.WriteFeedbackCodeOfConduct,
+        )
+      })
+
+      test.prop([
+        fc.feedbackInProgress({
+          feedback: fc.html(),
+          persona: fc.constantFrom('public', 'pseudonym'),
+          codeOfConductAgreed: fc.constant(true),
+        }),
+      ])('completed', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'DeclareCompetingInterests', feedback })).toStrictEqual(
+          Routes.WriteFeedbackCheck,
+        )
+      })
+    })
+
+    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'FeedbackInProgress')])(
+      'not FeedbackInProgress',
+      feedback => {
+        expect(_.NextPageAfterCommand({ command: 'DeclareCompetingInterests', feedback })).toStrictEqual(
+          Routes.WriteFeedbackCheck,
+        )
       },
     )
   })
@@ -137,14 +226,29 @@ describe('NextPageAfterCommand', () => {
         },
       )
 
-      test.prop([fc.feedbackInProgress({ feedback: fc.html(), persona: fc.constantFrom('public', 'pseudonym') })])(
-        'completed',
-        feedback => {
-          expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
-            Routes.WriteFeedbackCheck,
-          )
-        },
-      )
+      test.prop([
+        fc.feedbackInProgress({
+          feedback: fc.html(),
+          persona: fc.constantFrom('public', 'pseudonym'),
+          competingInterests: fc.constant(undefined),
+        }),
+      ])('no competingInterests', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
+          Routes.WriteFeedbackCompetingInterests,
+        )
+      })
+
+      test.prop([
+        fc.feedbackInProgress({
+          feedback: fc.html(),
+          persona: fc.constantFrom('public', 'pseudonym'),
+          competingInterests: fc.maybe(fc.nonEmptyString()),
+        }),
+      ])('completed', feedback => {
+        expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
+          Routes.WriteFeedbackCheck,
+        )
+      })
     })
 
     test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'FeedbackInProgress')])(
