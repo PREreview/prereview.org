@@ -15,7 +15,7 @@ export const CheckPage = ({
   persona,
   user,
 }: {
-  competingInterests?: Option.Option<NonEmptyString.NonEmptyString>
+  competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   feedback: Html
   feedbackId: Uuid.Uuid
   locale: SupportedLocale
@@ -79,24 +79,20 @@ export const CheckPage = ({
                   >
                 </dd>
               </div>
-              ${competingInterests
-                ? html`
-                    <div>
-                      <dt>Competing interests</dt>
-                      <dd>
-                        ${Option.getOrElse(
-                          competingInterests,
-                          () => 'The author declares that they have no competing interests.',
-                        )}
-                      </dd>
-                      <dd>
-                        <a href="${Routes.WriteFeedbackCompetingInterests.href({ feedbackId })}"
-                          >Change <span class="visually-hidden">competing interests</span></a
-                        >
-                      </dd>
-                    </div>
-                  `
-                : ''}
+              <div>
+                <dt>Competing interests</dt>
+                <dd>
+                  ${Option.getOrElse(
+                    competingInterests,
+                    () => 'The author declares that they have no competing interests.',
+                  )}
+                </dd>
+                <dd>
+                  <a href="${Routes.WriteFeedbackCompetingInterests.href({ feedbackId })}"
+                    >Change <span class="visually-hidden">competing interests</span></a
+                  >
+                </dd>
+              </div>
             </dl>
           </div>
           <div class="summary-card">

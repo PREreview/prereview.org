@@ -10,6 +10,7 @@ import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.CheckPage({
+    competingInterests: Option.none(),
     feedback,
     feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
     locale: DefaultLocale,
@@ -24,6 +25,7 @@ test('content looks right', async ({ showPage }) => {
 
 test('content looks right using a pseudonym', async ({ showPage }) => {
   const response = _.CheckPage({
+    competingInterests: Option.none(),
     feedback,
     feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
     locale: DefaultLocale,
