@@ -84,7 +84,7 @@ export const CheckPage = ({
                 <dd>
                   ${Option.getOrElse(
                     competingInterests,
-                    () => 'The author declares that they have no competing interests.',
+                    () => 'The author of this feedback declares that they have no competing interests.',
                   )}
                 </dd>
                 <dd>

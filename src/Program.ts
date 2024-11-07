@@ -154,7 +154,7 @@ const assignFeedbackADoi = Layer.effect(
           <p>
             ${Option.getOrElse(
               feedback.competingInterests,
-              () => 'The author declares that they have no competing interests.',
+              () => 'The author of this feedback declares that they have no competing interests.',
             )}
           </p>`
 

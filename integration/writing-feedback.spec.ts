@@ -391,7 +391,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText(
-      'Competing interests The author declares that they have no competing interests.',
+      'Competing interests The author of this feedback declares that they have no competing interests.',
     )
 
     await page.getByRole('link', { name: 'Change competing interests' }).click()
