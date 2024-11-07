@@ -137,6 +137,15 @@
   "changeName": {
     "message": "Change <visuallyHidden>name</visuallyHidden>"
   },
+  "competingInterestsHeading": {
+    "message": "Competing interests"
+  },
+  "changeCompetingInterests": {
+    "message": "Change <visuallyHidden>competing interests</visuallyHidden>"
+  },
+  "noCompetingInterests": {
+    "message": "The author of this feedback declares that they have no competing interests."
+  },
   "checkYourFeedbackHeading": {
     "message": "Your feedback"
   },

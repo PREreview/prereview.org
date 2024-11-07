@@ -80,16 +80,21 @@ export const CheckPage = ({
                 </dd>
               </div>
               <div>
-                <dt>Competing interests</dt>
+                <dt>${translate(locale, 'write-feedback-flow', 'competingInterestsHeading')()}</dt>
                 <dd>
-                  ${Option.getOrElse(
-                    competingInterests,
-                    () => 'The author of this feedback declares that they have no competing interests.',
+                  ${Option.getOrElse(competingInterests, () =>
+                    translate(locale, 'write-feedback-flow', 'noCompetingInterests')(),
                   )}
                 </dd>
                 <dd>
                   <a href="${Routes.WriteFeedbackCompetingInterests.href({ feedbackId })}"
-                    >Change <span class="visually-hidden">competing interests</span></a
+                    >${rawHtml(
+                      translate(
+                        locale,
+                        'write-feedback-flow',
+                        'changeCompetingInterests',
+                      )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
+                    )}</a
                   >
                 </dd>
               </div>
