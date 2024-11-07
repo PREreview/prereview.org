@@ -9,6 +9,7 @@ import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import { html } from './html.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
 import * as LibsqlEventStore from './LibsqlEventStore.js'
+import { DefaultLocale, translate } from './locales/index.js'
 import { getNameFromOrcid } from './orcid.js'
 import * as Preprint from './preprint.js'
 import * as Prereview from './Prereview.js'
@@ -149,12 +150,11 @@ const assignFeedbackADoi = Layer.effect(
 
         const text = html`${feedback.feedback}
 
-          <h2>Competing interests</h2>
+          <h2>${translate(DefaultLocale, 'write-feedback-flow', 'competingInterestsHeading')()}</h2>
 
           <p>
-            ${Option.getOrElse(
-              feedback.competingInterests,
-              () => 'The author of this feedback declares that they have no competing interests.',
+            ${Option.getOrElse(feedback.competingInterests, () =>
+              translate(DefaultLocale, 'write-feedback-flow', 'noCompetingInterests')(),
             )}
           </p>`
 
