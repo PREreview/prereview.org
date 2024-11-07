@@ -1,4 +1,4 @@
-import { flow, Function, identity, Match, pipe } from 'effect'
+import { flow, Function, identity, Match, Option, pipe } from 'effect'
 import type * as Events from './Events.js'
 import * as State from './State.js'
 
@@ -134,11 +134,16 @@ const checkIsReadyForPublication = (state: State.FeedbackState) => {
     return state
   }
 
-  const { codeOfConductAgreed, feedback, persona, ...rest } = state
+  const { codeOfConductAgreed, competingInterests, feedback, persona, ...rest } = state
 
-  if (typeof feedback !== 'object' || typeof persona !== 'string' || codeOfConductAgreed !== true) {
+  if (
+    typeof feedback !== 'object' ||
+    typeof persona !== 'string' ||
+    !Option.isOption(competingInterests) ||
+    codeOfConductAgreed !== true
+  ) {
     return state
   }
 
-  return new State.FeedbackReadyForPublishing({ ...rest, feedback, persona })
+  return new State.FeedbackReadyForPublishing({ ...rest, competingInterests, feedback, persona })
 }

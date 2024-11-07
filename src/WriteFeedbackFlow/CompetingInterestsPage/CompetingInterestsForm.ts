@@ -75,7 +75,6 @@ export const fromFeedback = pipe(
   Match.tag('FeedbackReadyForPublishing', ({ competingInterests }) =>
     pipe(
       Match.value(competingInterests),
-      Match.when(undefined, () => new EmptyForm()),
       Match.tag(
         'Some',
         competingInterests =>

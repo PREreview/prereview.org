@@ -102,6 +102,7 @@ describe('when ready for publication', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
       .when(new _.StartFeedback({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -112,6 +113,7 @@ describe('when ready for publication', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
       .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
@@ -122,6 +124,7 @@ describe('when ready for publication', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
@@ -151,6 +154,7 @@ describe('when ready for publication', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
       .when(new _.AgreeToCodeOfConduct())
@@ -161,6 +165,7 @@ describe('when ready for publication', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
       .when(new _.PublishFeedback())
@@ -171,6 +176,7 @@ describe('when ready for publication', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
       .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
@@ -181,6 +187,7 @@ describe('when ready for publication', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
       .when(new _.MarkFeedbackAsPublished())
@@ -193,6 +200,7 @@ describe('when being published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
@@ -204,6 +212,7 @@ describe('when being published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
@@ -215,6 +224,7 @@ describe('when being published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
@@ -226,6 +236,7 @@ describe('when being published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
@@ -237,6 +248,7 @@ describe('when being published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
@@ -248,6 +260,7 @@ describe('when being published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.FeedbackPublicationWasRequested(),
     )
@@ -260,6 +273,7 @@ describe('when being published', () => {
         new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
         new _.PersonaWasChosen({ persona: 'public' }),
+        new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
         new _.FeedbackPublicationWasRequested(),
       )
@@ -271,6 +285,7 @@ describe('when being published', () => {
         new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
         new _.PersonaWasChosen({ persona: 'public' }),
+        new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
         new _.FeedbackPublicationWasRequested(),
       )
@@ -284,6 +299,7 @@ describe('when being published', () => {
         new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
         new _.PersonaWasChosen({ persona: 'public' }),
+        new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
         new _.FeedbackPublicationWasRequested(),
         new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
@@ -296,6 +312,7 @@ describe('when being published', () => {
         new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
         new _.PersonaWasChosen({ persona: 'public' }),
+        new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
         new _.FeedbackPublicationWasRequested(),
         new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
@@ -311,6 +328,7 @@ describe('when published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.FeedbackWasPublished(),
@@ -323,6 +341,7 @@ describe('when published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.FeedbackWasPublished(),
@@ -335,6 +354,7 @@ describe('when published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.FeedbackWasPublished(),
@@ -347,6 +367,7 @@ describe('when published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.FeedbackWasPublished(),
@@ -359,6 +380,7 @@ describe('when published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.FeedbackWasPublished(),
@@ -371,6 +393,7 @@ describe('when published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.FeedbackWasPublished(),
@@ -383,6 +406,7 @@ describe('when published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.FeedbackWasPublished(),
@@ -395,6 +419,7 @@ describe('when published', () => {
       new _.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.FeedbackWasEntered({ feedback: html`<p>Some feedback.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.FeedbackWasPublished(),

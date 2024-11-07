@@ -17,7 +17,7 @@ export class FeedbackInProgress extends Data.TaggedClass('FeedbackInProgress')<{
 
 export class FeedbackReadyForPublishing extends Data.TaggedClass('FeedbackReadyForPublishing')<{
   authorId: Orcid
-  competingInterests?: Option.Option<NonEmptyString.NonEmptyString>
+  competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   feedback: Html
   persona: 'public' | 'pseudonym'
   prereviewId: number
@@ -25,7 +25,7 @@ export class FeedbackReadyForPublishing extends Data.TaggedClass('FeedbackReadyF
 
 export class FeedbackBeingPublished extends Data.TaggedClass('FeedbackBeingPublished')<{
   authorId: Orcid
-  competingInterests?: Option.Option<NonEmptyString.NonEmptyString>
+  competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   doi?: Doi
   id?: number
   feedback: Html
@@ -35,7 +35,7 @@ export class FeedbackBeingPublished extends Data.TaggedClass('FeedbackBeingPubli
 
 export class FeedbackPublished extends Data.TaggedClass('FeedbackPublished')<{
   authorId: Orcid
-  competingInterests?: Option.Option<NonEmptyString.NonEmptyString>
+  competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   doi: Doi
   id: number
   feedback: Html

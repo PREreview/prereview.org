@@ -62,6 +62,10 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
         resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
       },
       {
+        event: new Feedback.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
+        resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
+      },
+      {
         event: new Feedback.CodeOfConductWasAgreed(),
         resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
       },
@@ -96,6 +100,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       }),
       'eb8146ea-e643-4ca3-9dc1-2f26013c42b0': new Feedback.FeedbackBeingPublished({
         authorId: Orcid('0000-0002-1825-0097'),
+        competingInterests: Option.none(),
         feedback: html`Some other text`,
         persona: 'public',
         prereviewId: 123,
@@ -169,6 +174,10 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
       {
         event: new Feedback.PersonaWasChosen({ persona: 'public' }),
+        resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
+      },
+      {
+        event: new Feedback.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {

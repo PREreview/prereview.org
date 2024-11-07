@@ -147,24 +147,16 @@ const assignFeedbackADoi = Layer.effect(
           Match.exhaustive,
         )
 
-        const text = pipe(
-          Match.value(feedback),
-          Match.when(
-            { competingInterests: Option.isOption },
-            feedback =>
-              html`${feedback.feedback}
+        const text = html`${feedback.feedback}
 
-                <h2>Competing interests</h2>
+          <h2>Competing interests</h2>
 
-                <p>
-                  ${Option.getOrElse(
-                    feedback.competingInterests,
-                    () => 'The author declares that they have no competing interests.',
-                  )}
-                </p>`,
-          ),
-          Match.orElse(feedback => feedback.feedback),
-        )
+          <p>
+            ${Option.getOrElse(
+              feedback.competingInterests,
+              () => 'The author declares that they have no competing interests.',
+            )}
+          </p>`
 
         return yield* pipe(
           Effect.promise(

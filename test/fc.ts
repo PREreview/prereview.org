@@ -1367,7 +1367,7 @@ export const feedbackReadyForPublishing = (): fc.Arbitrary<Feedback.FeedbackRead
   fc
     .record({
       authorId: orcid(),
-      competingInterests: fc.option(maybe(nonEmptyString()), { nil: undefined }),
+      competingInterests: maybe(nonEmptyString()),
       feedback: html(),
       persona: constantFrom('public', 'pseudonym'),
       prereviewId: fc.integer(),
@@ -1384,7 +1384,7 @@ export const feedbackBeingPublished = ({
   fc
     .record({
       authorId: orcid(),
-      competingInterests: fc.option(maybe(nonEmptyString()), { nil: undefined }),
+      competingInterests: maybe(nonEmptyString()),
       doi: _doi ?? option(doi(), { nil: undefined }),
       feedback: html(),
       id: _id ?? option(fc.integer(), { nil: undefined }),
@@ -1397,7 +1397,7 @@ export const feedbackPublished = (): fc.Arbitrary<Feedback.FeedbackPublished> =>
   fc
     .record({
       authorId: orcid(),
-      competingInterests: fc.option(maybe(nonEmptyString()), { nil: undefined }),
+      competingInterests: maybe(nonEmptyString()),
       doi: doi(),
       feedback: html(),
       id: fc.integer(),
