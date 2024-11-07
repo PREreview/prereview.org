@@ -956,6 +956,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.waitForLoadState()
     await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.goto(`${path.dirname(page.url())}/competing-interests`)
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
