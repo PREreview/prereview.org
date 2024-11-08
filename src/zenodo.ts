@@ -506,7 +506,7 @@ export const createFeedbackOnZenodo = (
     RTE.chainW(({ deposition, metadata }) => updateDeposition(metadata, deposition)),
     RTE.chainFirstW(
       uploadFile({
-        name: 'feedback.html',
+        name: 'comment.html',
         content: feedback.feedback.toString(),
       }),
     ),
@@ -609,9 +609,9 @@ function createDepositMetadataForFeedback(feedback: FeedbackToPublish) {
         ({
           upload_type: 'publication',
           publication_type: 'other',
-          title: plainText`Feedback on a PREreview of “${feedback.prereview.preprint.title}”`.toString(),
+          title: plainText`Comment on a PREreview of “${feedback.prereview.preprint.title}”`.toString(),
           creators: [feedback.author],
-          description: `<p><strong>This Zenodo record is a permanently preserved version of feedback on a PREreview. You can view the complete PREreview and feedback at <a href="${url.href}">${url.href}</a>.</strong></p>
+          description: `<p><strong>This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at <a href="${url.href}">${url.href}</a>.</strong></p>
 
 ${feedback.feedback.toString()}`,
           communities: [{ identifier: 'prereview-reviews' }],

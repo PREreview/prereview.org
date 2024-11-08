@@ -3070,9 +3070,9 @@ describe('getFeedbackForPrereviewFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/feedback1.html/content'),
+                  self: new URL('http://example.com/comment1.html/content'),
                 },
-                key: 'feedback.html',
+                key: 'comment.html',
                 size: 58,
               },
             ],
@@ -3111,9 +3111,9 @@ describe('getFeedbackForPrereviewFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/feedback2.html/content'),
+                  self: new URL('http://example.com/comment2.html/content'),
                 },
-                key: 'feedback.html',
+                key: 'comment.html',
                 size: 58,
               },
             ],
@@ -3168,8 +3168,8 @@ describe('getFeedbackForPrereviewFromZenodo', () => {
             status: Status.OK,
           },
         )
-        .getOnce('http://example.com/feedback1.html/content', { body: 'Some text' })
-        .getOnce('http://example.com/feedback2.html/content', { body: 'Some other text' }),
+        .getOnce('http://example.com/comment1.html/content', { body: 'Some text' })
+        .getOnce('http://example.com/comment2.html/content', { body: 'Some other text' }),
       clock: SystemClock,
       logger: () => IO.of(undefined),
       sleep: shouldNotBeCalled,
@@ -3210,9 +3210,9 @@ describe('getFeedbackForPrereviewFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/feedback.html/content'),
+                  self: new URL('http://example.com/comment.html/content'),
                 },
-                key: 'feedback.html',
+                key: 'comment.html',
                 size: 58,
               },
             ],
@@ -3275,7 +3275,7 @@ describe('getFeedbackForPrereviewFromZenodo', () => {
             }).toString()}` && cache === 'no-cache',
         { throws: new Error('Network error') },
       )
-      .getOnce('http://example.com/feedback.html/content', { body: 'Some text' })
+      .getOnce('http://example.com/comment.html/content', { body: 'Some text' })
 
     const actual = await _.getFeedbackForPrereviewFromZenodo(id)({
       clock: SystemClock,
@@ -4148,9 +4148,9 @@ describe('createFeedbackOnZenodo', () => {
               metadata: {
                 upload_type: 'publication',
                 publication_type: 'other',
-                title: plainText`Feedback on a PREreview of “${feedback.prereview.preprint.title}”`.toString(),
+                title: plainText`Comment on a PREreview of “${feedback.prereview.preprint.title}”`.toString(),
                 creators: [feedback.author],
-                description: `<p><strong>This Zenodo record is a permanently preserved version of feedback on a PREreview. You can view the complete PREreview and feedback at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
+                description: `<p><strong>This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${feedback.feedback.toString()}`,
                 communities: [{ identifier: 'prereview-reviews' }],
@@ -4177,7 +4177,7 @@ ${feedback.feedback.toString()}`,
         )
         .putOnce(
           {
-            url: 'http://example.com/bucket/feedback.html',
+            url: 'http://example.com/bucket/comment.html',
             headers: { 'Content-Type': 'application/octet-stream' },
             functionMatcher: (_, req) => req.body === feedback.feedback.toString(),
           },

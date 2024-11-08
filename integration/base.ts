@@ -1748,9 +1748,9 @@ export const willPublishFeedback: Fixtures<
       files: [
         {
           links: {
-            self: new URL('http://example.com/feedback.html/content'),
+            self: new URL('http://example.com/comment.html/content'),
           },
-          key: 'feedback.html',
+          key: 'comment.html',
           size: 58,
         },
       ],
@@ -1796,7 +1796,7 @@ export const willPublishFeedback: Fixtures<
           subtype: 'other',
         },
         title:
-          'Feedback on a PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+          'Comment on a PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
       },
     } satisfies ZenodoRecord
 
@@ -1841,7 +1841,7 @@ export const willPublishFeedback: Fixtures<
         }),
         status: Status.OK,
       })
-      .putOnce('http://example.com/bucket/feedback.html', {
+      .putOnce('http://example.com/bucket/comment.html', {
         status: Status.Created,
       })
       .getOnce('http://zenodo.test/api/deposit/depositions/112361', {
