@@ -3,25 +3,25 @@ import * as R from 'fp-ts/lib/Reader.js'
 import { LoggedInUser } from './Context.js'
 import type { User } from './user.js'
 
-export class CanWriteFeedback extends Context.Tag('CanWriteFeedback')<CanWriteFeedback, (user?: User) => boolean>() {}
+export class CanWriteComments extends Context.Tag('CanWriteComments')<CanWriteComments, (user?: User) => boolean>() {}
 
-export class NotAllowedToWriteFeedback extends Data.TaggedError('NotAllowedToWriteFeedback') {}
+export class NotAllowedToWriteComments extends Data.TaggedError('NotAllowedToWriteComments') {}
 
-export const EnsureCanWriteFeedback: Effect.Effect<void, NotAllowedToWriteFeedback> = Effect.gen(function* () {
+export const EnsureCanWriteComments: Effect.Effect<void, NotAllowedToWriteComments> = Effect.gen(function* () {
   const user = yield* Effect.serviceOption(LoggedInUser)
-  const canWriteFeedback = yield* Effect.serviceOption(CanWriteFeedback)
+  const canWriteComments = yield* Effect.serviceOption(CanWriteComments)
 
-  if (Option.isNone(canWriteFeedback) || !canWriteFeedback.value(Option.getOrUndefined(user))) {
-    yield* new NotAllowedToWriteFeedback()
+  if (Option.isNone(canWriteComments) || !canWriteComments.value(Option.getOrUndefined(user))) {
+    yield* new NotAllowedToWriteComments()
   }
 })
 
-export interface CanWriteFeedbackEnv {
-  canWriteFeedback: (user?: User) => boolean
+export interface CanWriteCommentsEnv {
+  canWriteComments: (user?: User) => boolean
 }
 
-export const canWriteFeedback = (user?: User) =>
-  R.asks(({ canWriteFeedback }: CanWriteFeedbackEnv) => canWriteFeedback(user))
+export const canWriteComments = (user?: User) =>
+  R.asks(({ canWriteComments }: CanWriteCommentsEnv) => canWriteComments(user))
 
 export interface CanChooseLocaleEnv {
   canChooseLocale: boolean

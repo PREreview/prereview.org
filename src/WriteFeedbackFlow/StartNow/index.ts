@@ -1,7 +1,7 @@
 import { Array, Effect, Option, Record } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import { Locale } from '../../Context.js'
-import { EnsureCanWriteFeedback } from '../../feature-flags.js'
+import { EnsureCanWriteComments } from '../../feature-flags.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { GetPrereview } from '../../Prereview.js'
 import * as Response from '../../response.js'
@@ -26,7 +26,7 @@ export const StartNow = ({
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
-    yield* EnsureCanWriteFeedback
+    yield* EnsureCanWriteComments
 
     const getPrereview = yield* GetPrereview
 
@@ -68,7 +68,7 @@ export const StartNow = ({
     })
   }).pipe(
     Effect.catchTags({
-      NotAllowedToWriteFeedback: () => Effect.succeed(pageNotFound),
+      NotAllowedToWriteComments: () => Effect.succeed(pageNotFound),
       PrereviewIsNotFound: () => Effect.succeed(pageNotFound),
       PrereviewIsUnavailable: () => Effect.succeed(havingProblemsPage),
       PrereviewWasRemoved: () => Effect.succeed(pageNotFound),

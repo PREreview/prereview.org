@@ -6,15 +6,15 @@ import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
 import { app, type ConfigEnv } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Redis } from './Context.js'
-import { CanWriteFeedback } from './feature-flags.js'
+import { CanWriteComments } from './feature-flags.js'
 
 export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig
   const fetch = yield* FetchHttpClient.Fetch
   const sleep = yield* DeprecatedSleepEnv
-  const canWriteFeedback = yield* CanWriteFeedback
+  const canWriteComments = yield* CanWriteComments
 
-  return app({ canWriteFeedback, fetch, ...sleep, ...config } as unknown as ConfigEnv)
+  return app({ canWriteComments, fetch, ...sleep, ...config } as unknown as ConfigEnv)
 })
 
 export const ExpressConfigLive = Effect.gen(function* () {

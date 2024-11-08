@@ -23,13 +23,13 @@ export const createPage = ({
   locale,
   review,
   feedback,
-  canWriteFeedback,
+  canWriteComments,
 }: {
   id: number
   locale: SupportedLocale
   review: Prereview
   feedback: ReadonlyArray<Feedback>
-  canWriteFeedback: boolean
+  canWriteComments: boolean
 }) =>
   PageResponse({
     title: plainText(
@@ -193,11 +193,11 @@ export const createPage = ({
             ${fixHeadingLevels(2, review.addendum)}
           `
         : ''}
-      ${RA.isNonEmpty(feedback) || canWriteFeedback
+      ${RA.isNonEmpty(feedback) || canWriteComments
         ? html`
             <article aria-labelledby="feedback-title">
               <h2 id="feedback-title">${translate(locale, 'review-page', 'commentsTitle')()}</h2>
-              ${canWriteFeedback
+              ${canWriteComments
                 ? html`<a href="${Routes.WriteFeedback.href({ id })}" class="button"
                     >${translate(locale, 'review-page', 'writeCommentButton')()}</a
                   >`

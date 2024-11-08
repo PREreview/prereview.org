@@ -19,7 +19,7 @@ export class Express extends Context.Tag('Express')<Express, (locale: SupportedL
 
 export class ExpressConfig extends Context.Tag('ExpressConfig')<
   ExpressConfig,
-  Omit<ConfigEnv, 'canWriteFeedback' | 'fetch' | 'sleep'>
+  Omit<ConfigEnv, 'canWriteComments' | 'fetch' | 'sleep'>
 >() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}

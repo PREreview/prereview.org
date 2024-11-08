@@ -15,7 +15,7 @@ test('content looks right', async ({ showPage }) => {
     locale: DefaultLocale,
     review,
     feedback: [],
-    canWriteFeedback: false,
+    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -35,7 +35,7 @@ test('content looks right with anonymous authors', async ({ showPage }) => {
       },
     },
     feedback: [],
-    canWriteFeedback: false,
+    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -49,7 +49,7 @@ test('content looks right when in a club', async ({ showPage }) => {
     locale: DefaultLocale,
     review: { ...review, club: 'hhmi-training-pilot' },
     feedback: [],
-    canWriteFeedback: false,
+    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -63,7 +63,7 @@ test("content looks right when it's requested", async ({ showPage }) => {
     locale: DefaultLocale,
     review: { ...review, requested: true },
     feedback: [],
-    canWriteFeedback: false,
+    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -77,7 +77,7 @@ test("content looks right when it's live", async ({ showPage }) => {
     locale: DefaultLocale,
     review: { ...review, live: true },
     feedback: [],
-    canWriteFeedback: false,
+    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -99,7 +99,7 @@ test('content looks right with an addendum', async ({ showPage }) => {
         </p>`,
     },
     feedback: [],
-    canWriteFeedback: false,
+    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -113,7 +113,7 @@ test('content looks right when it is structured', async ({ showPage }) => {
     locale: DefaultLocale,
     review: structuredReview,
     feedback: [],
-    canWriteFeedback: false,
+    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -127,7 +127,7 @@ test('content looks right when there is feedback', async ({ showPage }) => {
     locale: DefaultLocale,
     review,
     feedback: [feedback1, feedback2],
-    canWriteFeedback: false,
+    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -141,7 +141,7 @@ test('content looks right when feedback can be written', async ({ showPage }) =>
     locale: DefaultLocale,
     review,
     feedback: [],
-    canWriteFeedback: true,
+    canWriteComments: true,
   })
 
   const content = await showPage(response)

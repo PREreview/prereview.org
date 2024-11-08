@@ -46,14 +46,14 @@ describe('reviewPage', () => {
       }),
     ),
     fc.boolean(),
-  ])('when the review can be loaded', async (locale, id, prereview, feedback, canWriteFeedback) => {
+  ])('when the review can be loaded', async (locale, id, prereview, feedback, canWriteComments) => {
     const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
     const getFeedback = jest.fn<_.GetFeedbackEnv['getFeedback']>(_ => TE.right(feedback))
 
     const actual = await _.reviewPage({ id, locale })({
       getPrereview,
       getFeedback,
-      canWriteFeedback: () => canWriteFeedback,
+      canWriteComments: () => canWriteComments,
     })()
 
     expect(actual).toStrictEqual({
@@ -73,11 +73,11 @@ describe('reviewPage', () => {
 
   test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])(
     'when the review is not found',
-    async (locale, id, canWriteFeedback) => {
+    async (locale, id, canWriteComments) => {
       const actual = await _.reviewPage({ id, locale })({
         getPrereview: () => TE.left('not-found'),
         getFeedback: shouldNotBeCalled,
-        canWriteFeedback: () => canWriteFeedback,
+        canWriteComments: () => canWriteComments,
       })()
 
       expect(actual).toStrictEqual({
@@ -93,11 +93,11 @@ describe('reviewPage', () => {
 
   test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])(
     'when the review was removed',
-    async (locale, id, canWriteFeedback) => {
+    async (locale, id, canWriteComments) => {
       const actual = await _.reviewPage({ id, locale })({
         getPrereview: () => TE.left('removed'),
         getFeedback: shouldNotBeCalled,
-        canWriteFeedback: () => canWriteFeedback,
+        canWriteComments: () => canWriteComments,
       })()
 
       expect(actual).toStrictEqual({
@@ -113,11 +113,11 @@ describe('reviewPage', () => {
 
   test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])(
     'when the review cannot be loaded',
-    async (locale, id, canWriteFeedback) => {
+    async (locale, id, canWriteComments) => {
       const actual = await _.reviewPage({ id, locale })({
         getPrereview: () => TE.left('unavailable'),
         getFeedback: shouldNotBeCalled,
-        canWriteFeedback: () => canWriteFeedback,
+        canWriteComments: () => canWriteComments,
       })()
 
       expect(actual).toStrictEqual({
@@ -155,11 +155,11 @@ describe('reviewPage', () => {
       text: fc.html(),
     }),
     fc.boolean(),
-  ])('when the feedback cannot be loaded', async (locale, id, prereview, canWriteFeedback) => {
+  ])('when the feedback cannot be loaded', async (locale, id, prereview, canWriteComments) => {
     const actual = await _.reviewPage({ id, locale })({
       getPrereview: () => TE.right(prereview),
       getFeedback: () => TE.left('unavailable'),
-      canWriteFeedback: () => canWriteFeedback,
+      canWriteComments: () => canWriteComments,
     })()
 
     expect(actual).toStrictEqual({

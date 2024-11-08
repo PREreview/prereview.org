@@ -11,18 +11,18 @@ import { ExpressConfigLive } from './ExpressServer.js'
 import { Program } from './Program.js'
 import { redisLifecycle } from './Redis.js'
 import { verifyCache } from './VerifyCache.js'
-import { CanWriteFeedback } from './feature-flags.js'
+import { CanWriteComments } from './feature-flags.js'
 
 pipe(
   Program,
   Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
   Effect.provideServiceEffect(
-    CanWriteFeedback,
+    CanWriteComments,
     Effect.gen(function* () {
-      const canWriteFeedback = yield* Config.withDefault(Config.boolean('CAN_WRITE_FEEDBACK'), false)
+      const canWriteComments = yield* Config.withDefault(Config.boolean('CAN_WRITE_COMMENTS'), false)
 
-      return () => canWriteFeedback
+      return () => canWriteComments
     }),
   ),
   Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),

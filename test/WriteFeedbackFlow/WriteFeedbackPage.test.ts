@@ -4,7 +4,7 @@ import { Effect, identity, Record, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
-import { CanWriteFeedback } from '../../src/feature-flags.js'
+import { CanWriteComments } from '../../src/feature-flags.js'
 import * as Prereview from '../../src/Prereview.js'
 import * as Routes from '../../src/routes.js'
 import * as _ from '../../src/WriteFeedbackFlow/WriteFeedbackPage/index.js'
@@ -12,7 +12,7 @@ import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('WriteFeedbackPage', () => {
-  describe('when the user can write feedback', () => {
+  describe('when the user can write comments', () => {
     describe('when the data can be loaded', () => {
       describe('when the user is logged in', () => {
         test.prop([fc.integer(), fc.supportedLocale(), fc.user(), fc.prereview()])(
@@ -37,7 +37,7 @@ describe('WriteFeedbackPage', () => {
                 Effect.sync(Record.empty),
               ),
               Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
-              Effect.provideService(CanWriteFeedback, () => true),
+              Effect.provideService(CanWriteComments, () => true),
               Effect.provideService(LoggedInUser, user),
               Effect.provide(TestContext.TestContext),
               Effect.runPromise,
@@ -69,7 +69,7 @@ describe('WriteFeedbackPage', () => {
               Effect.succeed(feedback),
             ),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
-            Effect.provideService(CanWriteFeedback, () => true),
+            Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -97,7 +97,7 @@ describe('WriteFeedbackPage', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
-            Effect.provideService(CanWriteFeedback, () => true),
+            Effect.provideService(CanWriteComments, () => true),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
           ),
@@ -122,7 +122,7 @@ describe('WriteFeedbackPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewWasRemoved())),
-          Effect.provideService(CanWriteFeedback, () => true),
+          Effect.provideService(CanWriteComments, () => true),
           user ? Effect.provideService(LoggedInUser, user) : identity,
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -147,7 +147,7 @@ describe('WriteFeedbackPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsNotFound())),
-          Effect.provideService(CanWriteFeedback, () => true),
+          Effect.provideService(CanWriteComments, () => true),
           user ? Effect.provideService(LoggedInUser, user) : identity,
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -172,7 +172,7 @@ describe('WriteFeedbackPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsUnavailable())),
-          Effect.provideService(CanWriteFeedback, () => true),
+          Effect.provideService(CanWriteComments, () => true),
           user ? Effect.provideService(LoggedInUser, user) : identity,
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -198,7 +198,7 @@ describe('WriteFeedbackPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
         Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
-        Effect.provideService(CanWriteFeedback, () => false),
+        Effect.provideService(CanWriteComments, () => false),
         user ? Effect.provideService(LoggedInUser, user) : identity,
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,

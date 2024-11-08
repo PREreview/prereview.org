@@ -4,7 +4,7 @@ import { Effect, Record, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
-import { CanWriteFeedback } from '../../src/feature-flags.js'
+import { CanWriteComments } from '../../src/feature-flags.js'
 import * as Prereview from '../../src/Prereview.js'
 import * as Routes from '../../src/routes.js'
 import { Uuid } from '../../src/types/index.js'
@@ -15,7 +15,7 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('StartNow', () => {
   describe('when there is a user', () => {
-    describe('when the user can write feedback', () => {
+    describe('when the user can write comments', () => {
       describe("when they haven't started feedback", () => {
         test.prop([fc.integer(), fc.supportedLocale(), fc.user(), fc.prereview(), fc.uuid()])(
           'when the feedback can be created',
@@ -49,7 +49,7 @@ describe('StartNow', () => {
                 Effect.sync(Record.empty),
               ),
               Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
-              Effect.provideService(CanWriteFeedback, () => true),
+              Effect.provideService(CanWriteComments, () => true),
               Effect.provideService(LoggedInUser, user),
               Effect.provide(TestContext.TestContext),
               Effect.runPromise,
@@ -83,7 +83,7 @@ describe('StartNow', () => {
               Effect.sync(Record.empty),
             ),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
-            Effect.provideService(CanWriteFeedback, () => true),
+            Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -123,7 +123,7 @@ describe('StartNow', () => {
             Effect.succeed(feedback),
           ),
           Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
-          Effect.provideService(CanWriteFeedback, () => true),
+          Effect.provideService(CanWriteComments, () => true),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -148,7 +148,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewWasRemoved())),
-          Effect.provideService(CanWriteFeedback, () => true),
+          Effect.provideService(CanWriteComments, () => true),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -177,7 +177,7 @@ describe('StartNow', () => {
               Effect.fail(new Comments.UnableToQuery({})),
             ),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
-            Effect.provideService(CanWriteFeedback, () => true),
+            Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -202,7 +202,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsNotFound())),
-          Effect.provideService(CanWriteFeedback, () => true),
+          Effect.provideService(CanWriteComments, () => true),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -229,7 +229,7 @@ describe('StartNow', () => {
             Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
             Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
             Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsUnavailable())),
-            Effect.provideService(CanWriteFeedback, () => true),
+            Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -257,7 +257,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
-          Effect.provideService(CanWriteFeedback, () => false),
+          Effect.provideService(CanWriteComments, () => false),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,

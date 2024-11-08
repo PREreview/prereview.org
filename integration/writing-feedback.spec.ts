@@ -2,9 +2,9 @@ import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, canWriteFeedback, expect, test, willPublishFeedback } from './base.js'
+import { areLoggedIn, canLogIn, canWriteComments, expect, test, willPublishFeedback } from './base.js'
 
-test.extend(canLogIn).extend(canWriteFeedback).extend(willPublishFeedback)(
+test.extend(canLogIn).extend(canWriteComments).extend(willPublishFeedback)(
   'can write feedback on a PREreview',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
@@ -117,7 +117,7 @@ test.extend(canLogIn).extend(canWriteFeedback).extend(willPublishFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'can change the feedback after previewing',
   async ({ fetch, page }) => {
     const record: Record = {
@@ -217,7 +217,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'can change your name after previewing',
   async ({ fetch, page }) => {
     const record: Record = {
@@ -310,7 +310,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'can change the competing interests after previewing',
   async ({ fetch, page }) => {
     const record: Record = {
@@ -406,7 +406,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'are returned to the next step if you have already started feedback on a PREreview',
   async ({ fetch, page }) => {
     const record: Record = {
@@ -493,7 +493,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'can go back through the form',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
@@ -607,7 +607,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'see existing values when going back a step',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
@@ -717,7 +717,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   "aren't told about ORCID when already logged in",
   async ({ fetch, page }) => {
     const record: Record = {
@@ -798,7 +798,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'have to enter feedback',
   async ({ javaScriptEnabled, fetch, page }) => {
     const record: Record = {
@@ -886,7 +886,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'have to choose a name',
   async ({ javaScriptEnabled, fetch, page }) => {
     const record: Record = {
@@ -980,7 +980,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'have to declare any competing interests',
   async ({ javaScriptEnabled, fetch, page }) => {
     const record: Record = {
@@ -1091,7 +1091,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'have to agree to the Code of Conduct',
   async ({ javaScriptEnabled, fetch, page }) => {
     const record: Record = {

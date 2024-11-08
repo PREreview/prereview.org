@@ -42,7 +42,7 @@ import {
   type CanRequestReviewsEnv,
   type CanUploadAvatarEnv,
   type CanUseSearchQueriesEnv,
-  CanWriteFeedback,
+  CanWriteComments,
 } from '../src/feature-flags.js'
 import { rawHtml } from '../src/html.js'
 import type {
@@ -91,7 +91,7 @@ interface AppFixtures {
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canUploadAvatar: CanUploadAvatarEnv['canUploadAvatar']
   canUseSearchQueries: CanUseSearchQueriesEnv['canUseSearchQueries']
-  canWriteFeedback: typeof CanWriteFeedback.Service
+  canWriteComments: typeof CanWriteComments.Service
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -113,7 +113,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   canUseSearchQueries: async ({}, use) => {
     await use(() => false)
   },
-  canWriteFeedback: async ({}, use) => {
+  canWriteComments: async ({}, use) => {
     await use(() => false)
   },
   careerStageStore: async ({}, use) => {
@@ -1215,7 +1215,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canRequestReviews,
         canUploadAvatar,
         canUseSearchQueries,
-        canWriteFeedback,
+        canWriteComments,
       },
       use,
       testInfo,
@@ -1289,7 +1289,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           zenodoApiKey: '',
           zenodoUrl: new URL('http://zenodo.test/'),
         } as unknown as typeof ExpressConfig.Service),
-        Effect.provideService(CanWriteFeedback, canWriteFeedback),
+        Effect.provideService(CanWriteComments, canWriteComments),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
@@ -1937,12 +1937,12 @@ export const canUseSearchQueries: Fixtures<
   },
 }
 
-export const canWriteFeedback: Fixtures<
+export const canWriteComments: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'canWriteFeedback'>
+  Pick<AppFixtures, 'canWriteComments'>
 > = {
-  canWriteFeedback: async ({}, use) => {
+  canWriteComments: async ({}, use) => {
     await use(() => true)
   },
 }

@@ -2,7 +2,7 @@ import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
-import { type CanWriteFeedbackEnv, canWriteFeedback } from '../feature-flags.js'
+import { type CanWriteCommentsEnv, canWriteComments } from '../feature-flags.js'
 import { pageNotFound } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
 import type { PageResponse } from '../response.js'
@@ -24,13 +24,13 @@ export const reviewPage = ({
   id: number
   locale: SupportedLocale
   user?: User
-}): RT.ReaderTask<CanWriteFeedbackEnv & GetPrereviewEnv & GetFeedbackEnv, PageResponse> =>
+}): RT.ReaderTask<CanWriteCommentsEnv & GetPrereviewEnv & GetFeedbackEnv, PageResponse> =>
   pipe(
     RTE.Do,
     RTE.let('id', () => id),
     RTE.apS('review', getPrereview(id)),
     RTE.bindW('feedback', ({ review }) => getFeedback(review.doi)),
-    RTE.apSW('canWriteFeedback', RTE.fromReader(canWriteFeedback(user))),
+    RTE.apSW('canWriteComments', RTE.fromReader(canWriteComments(user))),
     RTE.let('locale', () => locale),
     RTE.match(
       error =>
