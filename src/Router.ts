@@ -1,8 +1,10 @@
 import { Headers, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Effect, identity, Option, pipe, Record } from 'effect'
+import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { ExpressConfig, Locale, LoggedInUser, Redis } from './Context.js'
 import {
+  type LogInResponse,
   type PageResponse,
   type RedirectResponse,
   type StreamlinePageResponse,
@@ -221,13 +223,27 @@ export const Router = pipe(
 )
 
 function toHttpServerResponse(
-  response: PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse,
-): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage> {
+  response: PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse | LogInResponse,
+): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage | ExpressConfig> {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
       return yield* HttpServerResponse.empty({
         status: response.status,
         headers: Headers.fromInput({ Location: response.location.toString() }),
+      })
+    }
+
+    if (response._tag === 'LogInResponse') {
+      const { publicUrl } = yield* ExpressConfig
+
+      const location = yield* generateAuthorizationRequestUrl({
+        scope: '/authenticate',
+        state: new URL(`${publicUrl.origin}${response.location}`).href,
+      })
+
+      return yield* HttpServerResponse.empty({
+        status: StatusCodes.MOVED_TEMPORARILY,
+        headers: Headers.fromInput({ Location: location.href }),
       })
     }
 
@@ -245,5 +261,35 @@ function toHttpServerResponse(
       ).toString(),
       HttpServerResponse.html,
     )
+  })
+}
+
+function generateAuthorizationRequestUrl({
+  scope,
+  state,
+}: {
+  scope: string
+  state?: string
+}): Effect.Effect<URL, never, ExpressConfig> {
+  return Effect.gen(function* () {
+    const { orcidOauth, publicUrl } = yield* ExpressConfig
+
+    const redirectUri = new URL(
+      `${publicUrl.origin}${format(Routes.orcidCodeMatch.formatter, { code: 'code', state: 'state' })}`,
+    )
+    redirectUri.search = ''
+
+    const query = new URLSearchParams({
+      client_id: orcidOauth.clientId,
+      response_type: 'code',
+      redirect_uri: redirectUri.href,
+      scope,
+    })
+
+    if (typeof state === 'string') {
+      query.set('state', state)
+    }
+
+    return new URL(`${orcidOauth.authorizeUrl}?${query.toString()}`)
   })
 }
