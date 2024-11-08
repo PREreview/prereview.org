@@ -4,12 +4,12 @@ import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { FeedbackCommand } from './Commands.js'
 import type { FeedbackError } from './Errors.js'
-import type { FeedbackEvent } from './Events.js'
+import type { CommentEvent } from './Events.js'
 import type { FeedbackBeingPublished, FeedbackInProgress, FeedbackReadyForPublishing, FeedbackState } from './State.js'
 
 export class FeedbackEvents extends Context.Tag('FeedbackEvents')<
   FeedbackEvents,
-  PubSub.PubSub<{ readonly feedbackId: Uuid.Uuid; readonly event: FeedbackEvent }>
+  PubSub.PubSub<{ readonly feedbackId: Uuid.Uuid; readonly event: CommentEvent }>
 >() {}
 
 export class HasAuthorUnpublishedFeedbackForAPrereview extends Context.Tag('HasAuthorUnpublishedFeedbackForAPrereview')<

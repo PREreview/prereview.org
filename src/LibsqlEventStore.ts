@@ -2,7 +2,7 @@ import type { SqlError } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { Array, DateTime, Effect, flow, ParseResult, pipe, Schema } from 'effect'
 import * as EventStore from './EventStore.js'
-import { FeedbackEvent } from './Feedback/index.js'
+import { CommentEvent } from './Feedback/index.js'
 import { Uuid } from './types/index.js'
 
 export const make: Effect.Effect<
@@ -48,7 +48,7 @@ export const make: Effect.Effect<
           events
           INNER JOIN resources ON resources.id = events.resource_id
         WHERE
-          resources.type = 'Feedback'
+          resources.type = 'Comment'
         ORDER BY
           resource_version ASC,
           event_timestamp ASC
@@ -61,7 +61,7 @@ export const make: Effect.Effect<
     Effect.tapError(error =>
       Effect.annotateLogs(Effect.logError('Unable to get all events'), {
         error,
-        resourceType: 'Feedback',
+        resourceType: 'Comment',
       }),
     ),
     Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
@@ -82,8 +82,10 @@ export const make: Effect.Effect<
             payload
           FROM
             events
+          INNER JOIN resources ON resources.id = events.resource_id
           WHERE
             resource_id = ${encodedResourceId}
+            AND resources.type = 'Comment'
           ORDER BY
             resource_version ASC
         `,
@@ -101,7 +103,7 @@ export const make: Effect.Effect<
         Effect.annotateLogs(Effect.logError('Unable to get events'), {
           error,
           resourceId,
-          resourceType: 'Feedback',
+          resourceType: 'Comment',
         }),
       ),
       Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
@@ -116,7 +118,7 @@ export const make: Effect.Effect<
             Effect.gen(function* () {
               const encoded = yield* Schema.encode(ResourcesTable)({
                 id: resourceId,
-                type: 'Feedback',
+                type: 'Comment',
                 version: lastKnownVersion,
               })
 
@@ -250,7 +252,7 @@ export const make: Effect.Effect<
             Effect.annotateLogs(Effect.logError('Unable to commit events'), {
               error,
               resourceId,
-              resourceType: 'Feedback',
+              resourceType: 'Comment',
             }),
           ),
           Effect.catchTags({
@@ -283,20 +285,20 @@ const EventsTable = Schema.transformOrFail(
       resourceId: Uuid.UuidSchema,
       resourceVersion: Schema.Number,
       eventTimestamp: Schema.DateTimeUtc,
-      event: FeedbackEvent,
+      event: CommentEvent,
     }),
   ),
   {
     strict: true,
     decode: ({ eventType, payload, ...rest }) =>
       Effect.gen(function* () {
-        const event = yield* ParseResult.decodeUnknown(FeedbackEvent)({ _tag: eventType, ...payload })
+        const event = yield* ParseResult.decodeUnknown(CommentEvent)({ _tag: eventType, ...payload })
 
         return { ...rest, event }
       }),
     encode: ({ event, ...rest }) =>
       Effect.gen(function* () {
-        const { _tag, ...payload } = yield* ParseResult.encodeUnknown(FeedbackEvent)(event)
+        const { _tag, ...payload } = yield* ParseResult.encodeUnknown(CommentEvent)(event)
 
         return { ...rest, eventType: _tag, payload }
       }),

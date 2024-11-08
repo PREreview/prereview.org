@@ -28,7 +28,7 @@ it.prop([fc.uuid()])('starts empty', resourceId =>
 )
 
 describe('when the last known version is 0', () => {
-  it.prop([fc.uuid(), fc.nonEmptyArray(fc.feedbackEvent())])('creates a new resource', (resourceId, events) =>
+  it.prop([fc.uuid(), fc.nonEmptyArray(fc.commentEvent())])('creates a new resource', (resourceId, events) =>
     Effect.gen(function* () {
       const eventStore = yield* _.make
 
@@ -50,7 +50,7 @@ describe('when the last known version is 0', () => {
 
 describe('when the last known version is invalid', () => {
   describe('when the resource does not exist', () => {
-    it.prop([fc.uuid(), fc.integer({ min: 1 }), fc.nonEmptyArray(fc.feedbackEvent())])(
+    it.prop([fc.uuid(), fc.integer({ min: 1 }), fc.nonEmptyArray(fc.commentEvent())])(
       'does not create a resource',
       (resourceId, lastKnownVersion, events) =>
         Effect.gen(function* () {
@@ -81,9 +81,9 @@ describe('when the last known version is invalid', () => {
     it.prop([
       fc.uuid(),
       fc
-        .nonEmptyArray(fc.feedbackEvent())
+        .nonEmptyArray(fc.commentEvent())
         .chain(existingEvents => fc.tuple(fc.constant(existingEvents), fc.integer({ min: existingEvents.length + 1 }))),
-      fc.nonEmptyArray(fc.feedbackEvent()),
+      fc.nonEmptyArray(fc.commentEvent()),
     ])('does nothing', (resourceId, [existingEvents, lastKnownVersion], events) =>
       Effect.gen(function* () {
         const eventStore = yield* _.make
@@ -116,7 +116,7 @@ describe('when the last known version is invalid', () => {
 })
 
 describe('when the last known version is up to date', () => {
-  it.prop([fc.uuid(), fc.feedbackEvent(), fc.feedbackEvent()])(
+  it.prop([fc.uuid(), fc.commentEvent(), fc.commentEvent()])(
     'updates an existing resource',
     (resourceId, event1, event2) =>
       Effect.gen(function* () {
@@ -145,13 +145,13 @@ describe('when the last known version is up to date', () => {
 describe('when the last known version is out of date', () => {
   it.prop([
     fc.uuid(),
-    fc.nonEmptyArray(fc.feedbackEvent()).chain(existingEvents =>
+    fc.nonEmptyArray(fc.commentEvent()).chain(existingEvents =>
       fc.tuple(
         fc.constant(existingEvents),
         fc.integer().filter(lastKnownVersion => lastKnownVersion !== existingEvents.length),
       ),
     ),
-    fc.nonEmptyArray(fc.feedbackEvent()),
+    fc.nonEmptyArray(fc.commentEvent()),
   ])('does not replace an event', (resourceId, [existingEvents, lastKnownVersion], events) =>
     Effect.gen(function* () {
       const eventStore = yield* _.make
@@ -184,9 +184,9 @@ describe('when the last known version is out of date', () => {
 
 it.prop([
   fc.tuple(fc.uuid(), fc.uuid()).filter(([a, b]) => !Equal.equals(a, b)),
-  fc.feedbackEvent(),
-  fc.feedbackEvent(),
-  fc.feedbackEvent(),
+  fc.commentEvent(),
+  fc.commentEvent(),
+  fc.commentEvent(),
 ])('isolates resources', ([resourceId1, resourceId2], event1, event2, event3) =>
   Effect.gen(function* () {
     const eventStore = yield* _.make

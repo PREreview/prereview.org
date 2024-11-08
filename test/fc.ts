@@ -1260,20 +1260,20 @@ export const prereview = (): fc.Arbitrary<Prereview> =>
     })
     .map(args => new Prereview(args))
 
-export const feedbackWasStarted = (): fc.Arbitrary<Feedback.FeedbackWasStarted> =>
+export const commentWasStarted = (): fc.Arbitrary<Feedback.CommentWasStarted> =>
   fc
     .record({
       prereviewId: fc.integer(),
       authorId: orcid(),
     })
-    .map(data => new Feedback.FeedbackWasStarted(data))
+    .map(data => new Feedback.CommentWasStarted(data))
 
-export const feedbackWasEntered = (): fc.Arbitrary<Feedback.FeedbackWasEntered> =>
+export const commentWasEntered = (): fc.Arbitrary<Feedback.CommentWasEntered> =>
   fc
     .record({
-      feedback: html(),
+      comment: html(),
     })
-    .map(data => new Feedback.FeedbackWasEntered(data))
+    .map(data => new Feedback.CommentWasEntered(data))
 
 export const personaWasChosen = (): fc.Arbitrary<Feedback.PersonaWasChosen> =>
   fc
@@ -1289,8 +1289,8 @@ export const competingInterestsWereDeclared = (): fc.Arbitrary<Feedback.Competin
     })
     .map(data => new Feedback.CompetingInterestsWereDeclared(data))
 
-export const feedbackPublicationWasRequested = (): fc.Arbitrary<Feedback.FeedbackPublicationWasRequested> =>
-  fc.constant(new Feedback.FeedbackPublicationWasRequested())
+export const commentPublicationWasRequested = (): fc.Arbitrary<Feedback.CommentPublicationWasRequested> =>
+  fc.constant(new Feedback.CommentPublicationWasRequested())
 
 export const doiWasAssigned = (): fc.Arbitrary<Feedback.DoiWasAssigned> =>
   fc
@@ -1300,18 +1300,18 @@ export const doiWasAssigned = (): fc.Arbitrary<Feedback.DoiWasAssigned> =>
     })
     .map(data => new Feedback.DoiWasAssigned(data))
 
-export const feedbackWasPublished = (): fc.Arbitrary<Feedback.FeedbackWasPublished> =>
-  fc.constant(new Feedback.FeedbackWasPublished())
+export const commentWasPublished = (): fc.Arbitrary<Feedback.CommentWasPublished> =>
+  fc.constant(new Feedback.CommentWasPublished())
 
-export const feedbackEvent = (): fc.Arbitrary<Feedback.FeedbackEvent> =>
+export const commentEvent = (): fc.Arbitrary<Feedback.CommentEvent> =>
   fc.oneof(
-    feedbackWasStarted(),
-    feedbackWasEntered(),
+    commentWasStarted(),
+    commentWasEntered(),
     personaWasChosen(),
     competingInterestsWereDeclared(),
-    feedbackPublicationWasRequested(),
+    commentPublicationWasRequested(),
     doiWasAssigned(),
-    feedbackWasPublished(),
+    commentWasPublished(),
   )
 
 export const feedbackWasAlreadyStarted = (): fc.Arbitrary<Feedback.FeedbackWasAlreadyStarted> =>

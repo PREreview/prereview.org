@@ -2,7 +2,7 @@ import { flow, Function, identity, Match, Option, pipe } from 'effect'
 import type * as Events from './Events.js'
 import * as State from './State.js'
 
-const onFeedbackWasStarted = (event: Events.FeedbackWasStarted) =>
+const onCommentWasStarted = (event: Events.CommentWasStarted) =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag(
@@ -16,14 +16,14 @@ const onFeedbackWasStarted = (event: Events.FeedbackWasStarted) =>
     Match.exhaustive,
   )
 
-const onFeedbackWasEntered = (event: Events.FeedbackWasEntered) =>
+const onCommentWasEntered = (event: Events.CommentWasEntered) =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', identity),
-    Match.tag('FeedbackInProgress', state => new State.FeedbackInProgress({ ...state, feedback: event.feedback })),
+    Match.tag('FeedbackInProgress', state => new State.FeedbackInProgress({ ...state, feedback: event.comment })),
     Match.tag(
       'FeedbackReadyForPublishing',
-      state => new State.FeedbackReadyForPublishing({ ...state, feedback: event.feedback }),
+      state => new State.FeedbackReadyForPublishing({ ...state, feedback: event.comment }),
     ),
     Match.tag('FeedbackBeingPublished', identity),
     Match.tag('FeedbackPublished', identity),
@@ -72,7 +72,7 @@ const onCodeOfConductWasAgreed = () =>
     Match.exhaustive,
   )
 
-const onFeedbackPublicationWasRequested = () =>
+const onCommentPublicationWasRequested = () =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', identity),
@@ -100,7 +100,7 @@ const onDoiWasAssigned = (event: Events.DoiWasAssigned) =>
     Match.exhaustive,
   )
 
-const onFeedbackWasPublished = () =>
+const onCommentWasPublished = () =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', identity),
@@ -114,19 +114,19 @@ const onFeedbackWasPublished = () =>
   )
 
 const onEvent = pipe(
-  Match.type<Events.FeedbackEvent>(),
-  Match.tag('FeedbackWasStarted', onFeedbackWasStarted),
-  Match.tag('FeedbackWasEntered', onFeedbackWasEntered),
+  Match.type<Events.CommentEvent>(),
+  Match.tag('CommentWasStarted', onCommentWasStarted),
+  Match.tag('CommentWasEntered', onCommentWasEntered),
   Match.tag('PersonaWasChosen', onPersonaWasChosen),
   Match.tag('CompetingInterestsWereDeclared', onCompetingInterestsWereDeclared),
   Match.tag('CodeOfConductWasAgreed', onCodeOfConductWasAgreed),
-  Match.tag('FeedbackPublicationWasRequested', onFeedbackPublicationWasRequested),
+  Match.tag('CommentPublicationWasRequested', onCommentPublicationWasRequested),
   Match.tag('DoiWasAssigned', onDoiWasAssigned),
-  Match.tag('FeedbackWasPublished', onFeedbackWasPublished),
+  Match.tag('CommentWasPublished', onCommentWasPublished),
   Match.exhaustive,
 )
 
-export const EvolveFeedback = (state: State.FeedbackState): ((event: Events.FeedbackEvent) => State.FeedbackState) =>
+export const EvolveFeedback = (state: State.FeedbackState): ((event: Events.CommentEvent) => State.FeedbackState) =>
   flow(onEvent, Function.apply(state)<State.FeedbackState>, checkIsReadyForPublication)
 
 const checkIsReadyForPublication = (state: State.FeedbackState) => {

@@ -12,15 +12,15 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
   test('gets all unpublished feedback', () => {
     const events = [
       {
-        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        event: new Feedback.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: '358f7fc0-9725-4192-8673-d7c64f398401' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        event: new Feedback.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: '51a9ea9e-a960-4b51-83a5-9901a47690c2' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasEntered({ feedback: html`Some text` }),
+        event: new Feedback.CommentWasEntered({ comment: html`Some text` }),
         resourceId: '51a9ea9e-a960-4b51-83a5-9901a47690c2' as Uuid.Uuid,
       },
       {
@@ -28,11 +28,11 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
         resourceId: '51a9ea9e-a960-4b51-83a5-9901a47690c2' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        event: new Feedback.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasEntered({ feedback: html`Some text` }),
+        event: new Feedback.CommentWasEntered({ comment: html`Some text` }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
@@ -50,11 +50,11 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        event: new Feedback.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasEntered({ feedback: html`Some other text` }),
+        event: new Feedback.CommentWasEntered({ comment: html`Some other text` }),
         resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
       },
       {
@@ -70,7 +70,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
         resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackPublicationWasRequested(),
+        event: new Feedback.CommentPublicationWasRequested(),
         resourceId: 'eb8146ea-e643-4ca3-9dc1-2f26013c42b0' as Uuid.Uuid,
       },
     ]
@@ -111,11 +111,11 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
   test('ignores feedback by other authors', () => {
     const events = [
       {
-        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        event: new Feedback.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: '358f7fc0-9725-4192-8673-d7c64f398401' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-9079-593X') }),
+        event: new Feedback.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-9079-593X') }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
     ]
@@ -136,11 +136,11 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
   test('ignores feedback for other PREreviews', () => {
     const events = [
       {
-        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        event: new Feedback.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: '358f7fc0-9725-4192-8673-d7c64f398401' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasStarted({ prereviewId: 124, authorId: Orcid('0000-0002-1825-0097') }),
+        event: new Feedback.CommentWasStarted({ prereviewId: 124, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
     ]
@@ -161,15 +161,15 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
   test('ignores feedback that has been published', () => {
     const events = [
       {
-        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        event: new Feedback.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: '358f7fc0-9725-4192-8673-d7c64f398401' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+        event: new Feedback.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasEntered({ feedback: html`Some text` }),
+        event: new Feedback.CommentWasEntered({ comment: html`Some text` }),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
@@ -189,7 +189,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
       {
-        event: new Feedback.FeedbackWasPublished(),
+        event: new Feedback.CommentWasPublished(),
         resourceId: '2b9e777b-f14d-4294-8e27-2b442e496050' as Uuid.Uuid,
       },
     ]

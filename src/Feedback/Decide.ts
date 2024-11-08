@@ -9,7 +9,7 @@ const onStartFeedback = (command: Commands.StartFeedback) =>
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', () =>
       Either.right(
-        Array.of(new Events.FeedbackWasStarted({ prereviewId: command.prereviewId, authorId: command.authorId })),
+        Array.of(new Events.CommentWasStarted({ prereviewId: command.prereviewId, authorId: command.authorId })),
       ),
     ),
     Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackWasAlreadyStarted())),
@@ -24,10 +24,10 @@ const onEnterFeedback = (command: Commands.EnterFeedback) =>
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
     Match.tag('FeedbackInProgress', () =>
-      Either.right(Array.of(new Events.FeedbackWasEntered({ feedback: command.feedback }))),
+      Either.right(Array.of(new Events.CommentWasEntered({ comment: command.feedback }))),
     ),
     Match.tag('FeedbackReadyForPublishing', () =>
-      Either.right(Array.of(new Events.FeedbackWasEntered({ feedback: command.feedback }))),
+      Either.right(Array.of(new Events.CommentWasEntered({ comment: command.feedback }))),
     ),
     Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
@@ -86,7 +86,7 @@ const onPublishFeedback = () =>
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
     Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
-    Match.tag('FeedbackReadyForPublishing', () => Either.right(Array.of(new Events.FeedbackPublicationWasRequested()))),
+    Match.tag('FeedbackReadyForPublishing', () => Either.right(Array.of(new Events.CommentPublicationWasRequested()))),
     Match.tag('FeedbackBeingPublished', () => Either.right(Array.empty())),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
@@ -118,7 +118,7 @@ const onMarkFeedbackAsPublished = () =>
     Match.tag('FeedbackBeingPublished', state =>
       state.doi === undefined || state.id === undefined
         ? Either.left(new Errors.DoiIsNotAssigned())
-        : Either.right(Array.of(new Events.FeedbackWasPublished())),
+        : Either.right(Array.of(new Events.CommentWasPublished())),
     ),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
@@ -139,5 +139,5 @@ const onCommand = pipe(
 
 export const DecideFeedback = (
   state: State.FeedbackState,
-): ((command: Commands.FeedbackCommand) => Either.Either<ReadonlyArray<Events.FeedbackEvent>, Errors.FeedbackError>) =>
-  flow(onCommand, Function.apply(state)<Either.Either<ReadonlyArray<Events.FeedbackEvent>, Errors.FeedbackError>>)
+): ((command: Commands.FeedbackCommand) => Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.FeedbackError>) =>
+  flow(onCommand, Function.apply(state)<Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.FeedbackError>>)

@@ -7,7 +7,7 @@ import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('OnFeedbackPublicationWasRequested', () => {
-  test.prop([fc.uuid(), fc.feedbackPublicationWasRequested(), fc.feedbackBeingPublished(), fc.integer(), fc.doi()])(
+  test.prop([fc.uuid(), fc.commentPublicationWasRequested(), fc.feedbackBeingPublished(), fc.integer(), fc.doi()])(
     'assigns a DOI',
     (feedbackId, event, feedback, id, doi) =>
       Effect.gen(function* () {
@@ -33,7 +33,7 @@ describe('OnFeedbackPublicationWasRequested', () => {
 
   test.prop([
     fc.uuid(),
-    fc.feedbackPublicationWasRequested(),
+    fc.commentPublicationWasRequested(),
     fc.feedbackBeingPublished(),
     fc.integer(),
     fc.doi(),
@@ -55,7 +55,7 @@ describe('OnFeedbackPublicationWasRequested', () => {
     ),
   )
 
-  test.prop([fc.uuid(), fc.feedbackPublicationWasRequested(), fc.feedbackBeingPublished()])(
+  test.prop([fc.uuid(), fc.commentPublicationWasRequested(), fc.feedbackBeingPublished()])(
     "when a DOI can't be assigned",
     (feedbackId, event, feedback) =>
       Effect.gen(function* () {
@@ -75,7 +75,7 @@ describe('OnFeedbackPublicationWasRequested', () => {
       ),
   )
 
-  test.prop([fc.uuid(), fc.feedbackPublicationWasRequested()])("when the feedback can't be read", (feedbackId, event) =>
+  test.prop([fc.uuid(), fc.commentPublicationWasRequested()])("when the feedback can't be read", (feedbackId, event) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.OnFeedbackPublicationWasRequested({ feedbackId, event }),

@@ -14,13 +14,13 @@ const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, 
   encode: String,
 }) as Schema.Schema<Html, string>
 
-export class FeedbackWasStarted extends Schema.TaggedClass<FeedbackWasStarted>()('FeedbackWasStarted', {
+export class CommentWasStarted extends Schema.TaggedClass<CommentWasStarted>()('CommentWasStarted', {
   prereviewId: Schema.Number,
   authorId: OrcidSchema,
 }) {}
 
-export class FeedbackWasEntered extends Schema.TaggedClass<FeedbackWasEntered>()('FeedbackWasEntered', {
-  feedback: HtmlSchema,
+export class CommentWasEntered extends Schema.TaggedClass<CommentWasEntered>()('CommentWasEntered', {
+  comment: HtmlSchema,
 }) {}
 
 export class PersonaWasChosen extends Schema.TaggedClass<PersonaWasChosen>()('PersonaWasChosen', {
@@ -37,8 +37,8 @@ export class CodeOfConductWasAgreed extends Schema.TaggedClass<CodeOfConductWasA
   {},
 ) {}
 
-export class FeedbackPublicationWasRequested extends Schema.TaggedClass<FeedbackPublicationWasRequested>()(
-  'FeedbackPublicationWasRequested',
+export class CommentPublicationWasRequested extends Schema.TaggedClass<CommentPublicationWasRequested>()(
+  'CommentPublicationWasRequested',
   {},
 ) {}
 
@@ -47,17 +47,17 @@ export class DoiWasAssigned extends Schema.TaggedClass<DoiWasAssigned>()('DoiWas
   doi: DoiSchema,
 }) {}
 
-export class FeedbackWasPublished extends Schema.TaggedClass<FeedbackWasPublished>()('FeedbackWasPublished', {}) {}
+export class CommentWasPublished extends Schema.TaggedClass<CommentWasPublished>()('CommentWasPublished', {}) {}
 
-export type FeedbackEvent = typeof FeedbackEvent.Type
+export type CommentEvent = typeof CommentEvent.Type
 
-export const FeedbackEvent = Schema.Union(
-  FeedbackWasStarted,
-  FeedbackWasEntered,
+export const CommentEvent = Schema.Union(
+  CommentWasStarted,
+  CommentWasEntered,
   PersonaWasChosen,
   CompetingInterestsWereDeclared,
   CodeOfConductWasAgreed,
-  FeedbackPublicationWasRequested,
+  CommentPublicationWasRequested,
   DoiWasAssigned,
-  FeedbackWasPublished,
+  CommentWasPublished,
 )

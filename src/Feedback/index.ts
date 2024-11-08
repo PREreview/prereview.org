@@ -12,7 +12,7 @@ import {
   UnableToQuery,
 } from './Context.js'
 import { DecideFeedback } from './Decide.js'
-import type { FeedbackEvent } from './Events.js'
+import type { CommentEvent } from './Events.js'
 import { EvolveFeedback } from './Evolve.js'
 import * as Queries from './Queries.js'
 import { OnDoiWasAssigned, OnFeedbackPublicationWasRequested } from './React.js'
@@ -102,8 +102,8 @@ export const ReactToFeedbackEvents: Layer.Layer<
       Queue.take(dequeue),
       Effect.andThen(
         pipe(
-          Match.type<{ feedbackId: Uuid.Uuid; event: FeedbackEvent }>(),
-          Match.when({ event: { _tag: 'FeedbackPublicationWasRequested' } }, ({ feedbackId, event }) =>
+          Match.type<{ feedbackId: Uuid.Uuid; event: CommentEvent }>(),
+          Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ feedbackId, event }) =>
             pipe(
               OnFeedbackPublicationWasRequested({ feedbackId, event }),
               Effect.tapError(() =>
