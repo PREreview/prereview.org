@@ -12,7 +12,7 @@ import type { CommentPublicationWasRequested, DoiWasAssigned } from './Events.js
 
 type ToDo = unknown
 
-export const OnFeedbackPublicationWasRequested = ({
+export const OnCommentPublicationWasRequested = ({
   feedbackId,
 }: {
   feedbackId: Uuid.Uuid

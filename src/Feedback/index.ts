@@ -15,7 +15,7 @@ import { DecideComment } from './Decide.js'
 import type { CommentEvent } from './Events.js'
 import { EvolveComment } from './Evolve.js'
 import * as Queries from './Queries.js'
-import { OnDoiWasAssigned, OnFeedbackPublicationWasRequested } from './React.js'
+import { OnCommentPublicationWasRequested, OnDoiWasAssigned } from './React.js'
 import { CommentNotStarted, type CommentState } from './State.js'
 
 export * from './Commands.js'
@@ -105,7 +105,7 @@ export const ReactToFeedbackEvents: Layer.Layer<
           Match.type<{ feedbackId: Uuid.Uuid; event: CommentEvent }>(),
           Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ feedbackId, event }) =>
             pipe(
-              OnFeedbackPublicationWasRequested({ feedbackId, event }),
+              OnCommentPublicationWasRequested({ feedbackId, event }),
               Effect.tapError(() =>
                 Effect.annotateLogs(Effect.logError('ReactToFeedbackEvents failed'), { feedbackId }),
               ),
