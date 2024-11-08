@@ -622,7 +622,7 @@ test('can find and view feedback to a review', async ({ fetch, page }) => {
     .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al.' })
     .click()
 
-  await expect(page.getByRole('article', { name: 'Feedback', exact: true })).toContainText('some feedback text')
+  await expect(page.getByRole('article', { name: 'Comments', exact: true })).toContainText('some feedback text')
 })
 
 test("can find and view a review that's part of a club", async ({ fetch, page }) => {

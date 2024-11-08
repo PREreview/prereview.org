@@ -196,16 +196,16 @@ export const createPage = ({
       ${RA.isNonEmpty(feedback) || canWriteFeedback
         ? html`
             <article aria-labelledby="feedback-title">
-              <h2 id="feedback-title">${translate(locale, 'review-page', 'feedbackTitle')()}</h2>
+              <h2 id="feedback-title">${translate(locale, 'review-page', 'commentsTitle')()}</h2>
               ${canWriteFeedback
                 ? html`<a href="${Routes.WriteFeedback.href({ id })}" class="button"
-                    >${translate(locale, 'review-page', 'writeFeedbackButton')()}</a
+                    >${translate(locale, 'review-page', 'writeCommentButton')()}</a
                   >`
                 : ''}
               ${pipe(
                 feedback,
                 RA.match(
-                  () => html`<p>${translate(locale, 'review-page', 'noFeedback')()}</p>`,
+                  () => html`<p>${translate(locale, 'review-page', 'noComments')()}</p>`,
                   feedback =>
                     html`<ol class="cards">
                       ${pipe(
@@ -219,7 +219,7 @@ export const createPage = ({
                                     ${translate(
                                       locale,
                                       'review-page',
-                                      'feedbackItemTitle',
+                                      'commentItemTitle',
                                     )({
                                       author: pipe(RNEA.head(item.authors.named), get('name')),
                                       authors: item.authors.named.length,
@@ -231,7 +231,7 @@ export const createPage = ({
                                       translate(
                                         locale,
                                         'review-page',
-                                        'feedbackItemAuthors',
+                                        'commentItemAuthors',
                                       )({
                                         authors: pipe(
                                           item.authors.named,

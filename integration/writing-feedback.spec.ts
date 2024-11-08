@@ -75,7 +75,7 @@ test.extend(canLogIn).extend(canWriteFeedback).extend(willPublishFeedback)(
       )
 
     await page.goto('/reviews/1061864')
-    await page.getByRole('link', { name: 'Write feedback' }).click()
+    await page.getByRole('link', { name: 'Write a comment' }).click()
 
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
 
@@ -482,7 +482,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.goto('/reviews/1061864')
-    await page.getByRole('link', { name: 'Write feedback' }).click()
+    await page.getByRole('link', { name: 'Write a comment' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write feedback')
     await expect(page.getByRole('main')).toContainText('carry on')
