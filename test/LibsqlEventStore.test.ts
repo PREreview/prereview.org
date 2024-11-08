@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Array, Effect, Equal, Layer, Logger, LogLevel, TestContext } from 'effect'
+import { Array, Effect, Equal, Layer, Logger, LogLevel, TestClock, TestContext } from 'effect'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/LibsqlEventStore.js'
 import { Uuid } from '../src/types/index.js'
@@ -192,7 +192,9 @@ it.prop([
     const eventStore = yield* _.make
 
     yield* eventStore.commitEvents(resourceId1, 0)(event1)
+    yield* TestClock.adjust('1 second')
     yield* eventStore.commitEvents(resourceId2, 0)(event2)
+    yield* TestClock.adjust('1 second')
     yield* eventStore.commitEvents(resourceId2, 1)(event3)
 
     const actual1 = yield* eventStore.getEvents(resourceId1)
