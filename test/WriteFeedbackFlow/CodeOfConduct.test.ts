@@ -227,7 +227,7 @@ describe('CodeOfConductSubmission', () => {
             .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
             .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
           fc.supportedLocale(),
-          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.feedbackError()),
+          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.commentError()),
         ])("when the agreement can't be saved", (feedbackId, [feedback, user], locale, error) =>
           Effect.gen(function* () {
             const actual = yield* _.CodeOfConductSubmission({ body: { agree: 'yes' }, feedbackId })

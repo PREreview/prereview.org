@@ -37,7 +37,7 @@ describe('OnFeedbackPublicationWasRequested', () => {
     fc.commentBeingPublished(),
     fc.integer(),
     fc.doi(),
-    fc.feedbackError(),
+    fc.commentError(),
   ])("when the feedback can't be updated", (feedbackId, event, feedback, id, doi, error) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
@@ -113,7 +113,7 @@ describe('OnDoiWasAssigned', () => {
     ),
   )
 
-  test.prop([fc.uuid(), fc.doiWasAssigned(), fc.feedbackError()])(
+  test.prop([fc.uuid(), fc.doiWasAssigned(), fc.commentError()])(
     "when the feedback can't be updated",
     (feedbackId, event, error) =>
       Effect.gen(function* () {

@@ -1,24 +1,24 @@
 import { Data } from 'effect'
 
-export type FeedbackError =
-  | FeedbackWasAlreadyStarted
-  | FeedbackHasNotBeenStarted
-  | FeedbackIsIncomplete
-  | FeedbackIsBeingPublished
+export type CommentError =
+  | CommentWasAlreadyStarted
+  | CommentHasNotBeenStarted
+  | CommentIsIncomplete
+  | CommentIsBeingPublished
   | DoiIsNotAssigned
   | DoiIsAlreadyAssigned
-  | FeedbackWasAlreadyPublished
+  | CommentWasAlreadyPublished
 
-export class FeedbackWasAlreadyStarted extends Data.TaggedError('FeedbackWasAlreadyStarted') {}
+export class CommentWasAlreadyStarted extends Data.TaggedError('CommentWasAlreadyStarted') {}
 
-export class FeedbackHasNotBeenStarted extends Data.TaggedError('FeedbackHasNotBeenStarted') {}
+export class CommentHasNotBeenStarted extends Data.TaggedError('CommentHasNotBeenStarted') {}
 
-export class FeedbackIsIncomplete extends Data.TaggedError('FeedbackIsIncomplete') {}
+export class CommentIsIncomplete extends Data.TaggedError('CommentIsIncomplete') {}
 
-export class FeedbackIsBeingPublished extends Data.TaggedError('FeedbackIsBeingPublished') {}
+export class CommentIsBeingPublished extends Data.TaggedError('CommentIsBeingPublished') {}
 
 export class DoiIsNotAssigned extends Data.TaggedError('DoiIsNotAssigned') {}
 
 export class DoiIsAlreadyAssigned extends Data.TaggedError('DoiIsAlreadyAssigned') {}
 
-export class FeedbackWasAlreadyPublished extends Data.TaggedError('FeedbackWasAlreadyPublished') {}
+export class CommentWasAlreadyPublished extends Data.TaggedError('CommentWasAlreadyPublished') {}

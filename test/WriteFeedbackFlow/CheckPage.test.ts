@@ -247,7 +247,7 @@ describe('CheckPageSubmission', () => {
         fc
           .commentReadyForPublishing()
           .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-        fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.feedbackError()),
+        fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.commentError()),
       ])("when the feedback can't be published", (feedbackId, [feedback, user], error) =>
         Effect.gen(function* () {
           const actual = yield* _.CheckPageSubmission({ feedbackId })

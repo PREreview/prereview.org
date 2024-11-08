@@ -16,41 +16,41 @@ describe('when not started', () => {
   test('cannot enter feedback', () =>
     given()
       .when(new _.EnterComment({ comment: html`<p>Some feedback.</p>` }))
-      .thenError(new _.FeedbackHasNotBeenStarted()))
+      .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot choose persona', () =>
     given()
       .when(new _.ChoosePersona({ persona: 'public' }))
-      .thenError(new _.FeedbackHasNotBeenStarted()))
+      .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot declare competing interests', () =>
     given()
       .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
-      .thenError(new _.FeedbackHasNotBeenStarted()))
+      .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot agree to the code of conduct', () =>
-    given().when(new _.AgreeToCodeOfConduct()).thenError(new _.FeedbackHasNotBeenStarted()))
+    given().when(new _.AgreeToCodeOfConduct()).thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot request publication', () =>
-    given().when(new _.PublishComment()).thenError(new _.FeedbackHasNotBeenStarted()))
+    given().when(new _.PublishComment()).thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot request publication', () =>
-    given().when(new _.PublishComment()).thenError(new _.FeedbackHasNotBeenStarted()))
+    given().when(new _.PublishComment()).thenError(new _.CommentHasNotBeenStarted()))
 
   test('DOI cannot be marked as assigned', () =>
     given()
       .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
-      .thenError(new _.FeedbackHasNotBeenStarted()))
+      .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot be marked as published', () =>
-    given().when(new _.MarkCommentAsPublished()).thenError(new _.FeedbackHasNotBeenStarted()))
+    given().when(new _.MarkCommentAsPublished()).thenError(new _.CommentHasNotBeenStarted()))
 })
 
 describe('when in progress', () => {
   test('cannot be started again', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .thenError(new _.FeedbackWasAlreadyStarted()))
+      .thenError(new _.CommentWasAlreadyStarted()))
 
   test('can enter feedback', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -83,17 +83,17 @@ describe('when in progress', () => {
   test('cannot request publication', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .when(new _.PublishComment())
-      .thenError(new _.FeedbackIsIncomplete()))
+      .thenError(new _.CommentIsIncomplete()))
 
   test('DOI cannot be marked as assigned', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
-      .thenError(new _.FeedbackHasNotBeenStarted()))
+      .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot be marked as published', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .when(new _.MarkCommentAsPublished())
-      .thenError(new _.FeedbackIsIncomplete()))
+      .thenError(new _.CommentIsIncomplete()))
 })
 
 describe('when ready for publication', () => {
@@ -106,7 +106,7 @@ describe('when ready for publication', () => {
       new _.CodeOfConductWasAgreed(),
     )
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .thenError(new _.FeedbackWasAlreadyStarted()))
+      .thenError(new _.CommentWasAlreadyStarted()))
 
   test('can re-enter feedback', () =>
     given(
@@ -205,7 +205,7 @@ describe('when being published', () => {
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .thenError(new _.FeedbackIsBeingPublished()))
+      .thenError(new _.CommentIsBeingPublished()))
 
   test('cannot re-enter feedback', () =>
     given(
@@ -217,7 +217,7 @@ describe('when being published', () => {
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.EnterComment({ comment: html`<p>Some different feedback.</p>` }))
-      .thenError(new _.FeedbackIsBeingPublished()))
+      .thenError(new _.CommentIsBeingPublished()))
 
   test('cannot choose a new persona', () =>
     given(
@@ -229,7 +229,7 @@ describe('when being published', () => {
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
-      .thenError(new _.FeedbackIsBeingPublished()))
+      .thenError(new _.CommentIsBeingPublished()))
 
   test('cannot declare competing interests', () =>
     given(
@@ -241,7 +241,7 @@ describe('when being published', () => {
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
-      .thenError(new _.FeedbackIsBeingPublished()))
+      .thenError(new _.CommentIsBeingPublished()))
 
   test('cannot agree to the code of conduct', () =>
     given(
@@ -253,7 +253,7 @@ describe('when being published', () => {
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.AgreeToCodeOfConduct())
-      .thenError(new _.FeedbackIsBeingPublished()))
+      .thenError(new _.CommentIsBeingPublished()))
 
   test('re-requesting publication does nothing', () =>
     given(
@@ -334,7 +334,7 @@ describe('when published', () => {
       new _.CommentWasPublished(),
     )
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .thenError(new _.FeedbackWasAlreadyPublished()))
+      .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot re-enter feedback', () =>
     given(
@@ -347,7 +347,7 @@ describe('when published', () => {
       new _.CommentWasPublished(),
     )
       .when(new _.EnterComment({ comment: html`<p>Some different feedback.</p>` }))
-      .thenError(new _.FeedbackWasAlreadyPublished()))
+      .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot choose a new persona', () =>
     given(
@@ -360,7 +360,7 @@ describe('when published', () => {
       new _.CommentWasPublished(),
     )
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
-      .thenError(new _.FeedbackWasAlreadyPublished()))
+      .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot declare competing interests', () =>
     given(
@@ -373,7 +373,7 @@ describe('when published', () => {
       new _.CommentWasPublished(),
     )
       .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
-      .thenError(new _.FeedbackWasAlreadyPublished()))
+      .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot re-agree to the code of conduct', () =>
     given(
@@ -386,7 +386,7 @@ describe('when published', () => {
       new _.CommentWasPublished(),
     )
       .when(new _.AgreeToCodeOfConduct())
-      .thenError(new _.FeedbackWasAlreadyPublished()))
+      .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot be re-request publication', () =>
     given(
@@ -399,7 +399,7 @@ describe('when published', () => {
       new _.CommentWasPublished(),
     )
       .when(new _.PublishComment())
-      .thenError(new _.FeedbackWasAlreadyPublished()))
+      .thenError(new _.CommentWasAlreadyPublished()))
 
   test('DOI cannot be re-assigned', () =>
     given(
@@ -412,7 +412,7 @@ describe('when published', () => {
       new _.CommentWasPublished(),
     )
       .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
-      .thenError(new _.FeedbackWasAlreadyPublished()))
+      .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot be re-marked as published', () =>
     given(
@@ -425,7 +425,7 @@ describe('when published', () => {
       new _.CommentWasPublished(),
     )
       .when(new _.MarkCommentAsPublished())
-      .thenError(new _.FeedbackWasAlreadyPublished()))
+      .thenError(new _.CommentWasAlreadyPublished()))
 })
 
 const given = CommandHandlerSpecification.for({

@@ -229,7 +229,7 @@ describe('EnterFeedbackSubmission', () => {
             .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
           fc.supportedLocale(),
           fc.record({ feedback: fc.nonEmptyString() }),
-          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.feedbackError()),
+          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.commentError()),
         ])("when the feedback can't be entered", (feedbackId, [feedback, user], locale, body, error) =>
           Effect.gen(function* () {
             const actual = yield* _.EnterFeedbackSubmission({ body, feedbackId })

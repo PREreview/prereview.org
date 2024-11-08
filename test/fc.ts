@@ -1314,28 +1314,28 @@ export const commentEvent = (): fc.Arbitrary<Feedback.CommentEvent> =>
     commentWasPublished(),
   )
 
-export const feedbackWasAlreadyStarted = (): fc.Arbitrary<Feedback.FeedbackWasAlreadyStarted> =>
-  fc.constant(new Feedback.FeedbackWasAlreadyStarted())
+export const commentWasAlreadyStarted = (): fc.Arbitrary<Feedback.CommentWasAlreadyStarted> =>
+  fc.constant(new Feedback.CommentWasAlreadyStarted())
 
-export const feedbackHasNotBeenStarted = (): fc.Arbitrary<Feedback.FeedbackHasNotBeenStarted> =>
-  fc.constant(new Feedback.FeedbackHasNotBeenStarted())
+export const commentHasNotBeenStarted = (): fc.Arbitrary<Feedback.CommentHasNotBeenStarted> =>
+  fc.constant(new Feedback.CommentHasNotBeenStarted())
 
-export const feedbackIsIncomplete = (): fc.Arbitrary<Feedback.FeedbackIsIncomplete> =>
-  fc.constant(new Feedback.FeedbackIsIncomplete())
+export const commentIsIncomplete = (): fc.Arbitrary<Feedback.CommentIsIncomplete> =>
+  fc.constant(new Feedback.CommentIsIncomplete())
 
-export const feedbackIsBeingPublished = (): fc.Arbitrary<Feedback.FeedbackIsBeingPublished> =>
-  fc.constant(new Feedback.FeedbackIsBeingPublished())
+export const commentIsBeingPublished = (): fc.Arbitrary<Feedback.CommentIsBeingPublished> =>
+  fc.constant(new Feedback.CommentIsBeingPublished())
 
-export const feedbackWasAlreadyPublished = (): fc.Arbitrary<Feedback.FeedbackWasAlreadyPublished> =>
-  fc.constant(new Feedback.FeedbackWasAlreadyPublished())
+export const commentWasAlreadyPublished = (): fc.Arbitrary<Feedback.CommentWasAlreadyPublished> =>
+  fc.constant(new Feedback.CommentWasAlreadyPublished())
 
-export const feedbackError = (): fc.Arbitrary<Feedback.FeedbackError> =>
+export const commentError = (): fc.Arbitrary<Feedback.CommentError> =>
   fc.oneof(
-    feedbackWasAlreadyStarted(),
-    feedbackHasNotBeenStarted(),
-    feedbackIsIncomplete(),
-    feedbackIsBeingPublished(),
-    feedbackWasAlreadyPublished(),
+    commentWasAlreadyStarted(),
+    commentHasNotBeenStarted(),
+    commentIsIncomplete(),
+    commentIsBeingPublished(),
+    commentWasAlreadyPublished(),
   )
 
 export const commentNotStarted = (): fc.Arbitrary<Feedback.CommentNotStarted> =>

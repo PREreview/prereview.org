@@ -238,7 +238,7 @@ describe('CompetingInterestsSubmission', () => {
             fc.record({ competingInterests: fc.constant('no'), competingInterestsDetails: fc.string() }),
             fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.nonEmptyString() }),
           ),
-          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.feedbackError()),
+          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.commentError()),
         ])("when the competing interests can't be declared", (feedbackId, [feedback, user], locale, body, error) =>
           Effect.gen(function* () {
             const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })

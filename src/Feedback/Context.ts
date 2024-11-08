@@ -3,7 +3,7 @@ import { Context, Data, type Effect, type PubSub, type Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { CommentCommand } from './Commands.js'
-import type { FeedbackError } from './Errors.js'
+import type { CommentError } from './Errors.js'
 import type { CommentEvent } from './Events.js'
 import type { CommentBeingPublished, CommentInProgress, CommentReadyForPublishing, CommentState } from './State.js'
 
@@ -40,7 +40,7 @@ export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<
   (params: {
     readonly feedbackId: Uuid.Uuid
     readonly command: CommentCommand
-  }) => Effect.Effect<void, UnableToHandleCommand | FeedbackError>
+  }) => Effect.Effect<void, UnableToHandleCommand | CommentError>
 >() {}
 
 export class AssignFeedbackADoi extends Context.Tag('AssignFeedbackADoi')<

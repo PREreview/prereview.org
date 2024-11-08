@@ -229,7 +229,7 @@ describe('ChoosePersonaSubmission', () => {
             .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
           fc.supportedLocale(),
           fc.record({ persona: fc.constantFrom('public', 'pseudonym') }),
-          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.feedbackError()),
+          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.commentError()),
         ])("when the persona can't be chosen", (feedbackId, [feedback, user], locale, body, error) =>
           Effect.gen(function* () {
             const actual = yield* _.ChoosePersonaSubmission({ body, feedbackId })

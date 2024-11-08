@@ -62,7 +62,7 @@ describe('StartNow', () => {
           fc.user(),
           fc.prereview(),
           fc.uuid(),
-          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.feedbackError()),
+          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.commentError()),
         ])("when the feedback can't be created", (id, locale, user, prereview, feedbackId, error) =>
           Effect.gen(function* () {
             const actual = yield* _.StartNow({ id })
