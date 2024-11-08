@@ -24,7 +24,7 @@ export const PublishedPage = ({
 
     const feedback = yield* getFeedback(feedbackId)
 
-    if (feedback._tag !== 'FeedbackPublished' || !Equal.equals(user.orcid, feedback.authorId)) {
+    if (feedback._tag !== 'CommentPublished' || !Equal.equals(user.orcid, feedback.authorId)) {
       return pageNotFound
     }
 

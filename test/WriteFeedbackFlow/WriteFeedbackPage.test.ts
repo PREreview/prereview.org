@@ -51,7 +51,7 @@ describe('WriteFeedbackPage', () => {
           fc.prereview(),
           fc.dictionary(
             fc.uuid(),
-            fc.oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing(), fc.feedbackBeingPublished()),
+            fc.oneof(fc.commentInProgress(), fc.commentReadyForPublishing(), fc.commentBeingPublished()),
             { minKeys: 1 },
           ),
         ])('when they have started feedback', (id, locale, user, prereview, feedback) =>

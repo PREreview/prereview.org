@@ -3,7 +3,7 @@ import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { CommentEvent } from './Events.js'
 import { EvolveFeedback } from './Evolve.js'
-import { FeedbackNotStarted, type FeedbackState } from './State.js'
+import { CommentNotStarted, type CommentState } from './State.js'
 
 export const GetAllUnpublishedFeedbackByAnAuthorForAPrereview =
   (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
@@ -28,14 +28,12 @@ export const GetAllUnpublishedFeedbackByAnAuthorForAPrereview =
             }),
           ),
       ),
-      Record.map(
-        Array.reduce(new FeedbackNotStarted() as FeedbackState, (state, event) => EvolveFeedback(state)(event)),
-      ),
+      Record.map(Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveFeedback(state)(event))),
       Record.filter(
         state =>
-          state._tag === 'FeedbackInProgress' ||
-          state._tag === 'FeedbackReadyForPublishing' ||
-          state._tag === 'FeedbackBeingPublished',
+          state._tag === 'CommentInProgress' ||
+          state._tag === 'CommentReadyForPublishing' ||
+          state._tag === 'CommentBeingPublished',
       ),
     )
 
@@ -62,13 +60,11 @@ export const HasAuthorUnpublishedFeedbackForAPrereview =
             }),
           ),
       ),
-      Record.map(
-        Array.reduce(new FeedbackNotStarted() as FeedbackState, (state, event) => EvolveFeedback(state)(event)),
-      ),
+      Record.map(Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveFeedback(state)(event))),
       Record.some(
         state =>
-          state._tag === 'FeedbackInProgress' ||
-          state._tag === 'FeedbackReadyForPublishing' ||
-          state._tag === 'FeedbackBeingPublished',
+          state._tag === 'CommentInProgress' ||
+          state._tag === 'CommentReadyForPublishing' ||
+          state._tag === 'CommentBeingPublished',
       ),
     )

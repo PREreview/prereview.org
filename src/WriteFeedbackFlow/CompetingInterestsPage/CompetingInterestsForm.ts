@@ -58,8 +58,8 @@ export const fromBody = (body: unknown) =>
   )
 
 export const fromFeedback = pipe(
-  Match.type<Feedback.FeedbackInProgress | Feedback.FeedbackReadyForPublishing>(),
-  Match.tag('FeedbackInProgress', ({ competingInterests }) =>
+  Match.type<Feedback.CommentInProgress | Feedback.CommentReadyForPublishing>(),
+  Match.tag('CommentInProgress', ({ competingInterests }) =>
     pipe(
       Match.value(competingInterests),
       Match.when(undefined, () => new EmptyForm()),
@@ -72,7 +72,7 @@ export const fromFeedback = pipe(
       Match.exhaustive,
     ),
   ),
-  Match.tag('FeedbackReadyForPublishing', ({ competingInterests }) =>
+  Match.tag('CommentReadyForPublishing', ({ competingInterests }) =>
     pipe(
       Match.value(competingInterests),
       Match.tag(

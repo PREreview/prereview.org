@@ -15,7 +15,7 @@ describe('ChoosePersonaPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())
+        .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])('when the feedback is in progress', (feedbackId, [feedback, user], locale) =>
@@ -44,7 +44,7 @@ describe('ChoosePersonaPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackPublished()
+        .commentPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])('when the feedback has been published', (feedbackId, [feedback, user], locale) =>
@@ -68,7 +68,7 @@ describe('ChoosePersonaPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackBeingPublished()
+        .commentBeingPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])('when the feedback is being published', (feedbackId, [feedback, user], locale) =>
@@ -89,7 +89,7 @@ describe('ChoosePersonaPage', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user(), fc.supportedLocale()])(
+    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user(), fc.supportedLocale()])(
       "when the feedback hasn't been started",
       (feedbackId, feedback, user, locale) =>
         Effect.gen(function* () {
@@ -116,7 +116,7 @@ describe('ChoosePersonaPage', () => {
       fc.uuid(),
       fc
         .tuple(fc.feedbackState(), fc.user())
-        .filter(([state, user]) => state._tag !== 'FeedbackNotStarted' && !Equal.equals(state.authorId, user.orcid)),
+        .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
       fc.supportedLocale(),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
@@ -187,7 +187,7 @@ describe('ChoosePersonaSubmission', () => {
         test.prop([
           fc.uuid(),
           fc
-            .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())
+            .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
             .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
           fc.supportedLocale(),
           fc.record({ persona: fc.constantFrom('public', 'pseudonym') }),
@@ -225,7 +225,7 @@ describe('ChoosePersonaSubmission', () => {
         test.prop([
           fc.uuid(),
           fc
-            .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())
+            .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
             .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
           fc.supportedLocale(),
           fc.record({ persona: fc.constantFrom('public', 'pseudonym') }),
@@ -256,7 +256,7 @@ describe('ChoosePersonaSubmission', () => {
       test.prop([
         fc.uuid(),
         fc
-          .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())
+          .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
           .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
         fc.supportedLocale(),
         fc.oneof(
@@ -294,7 +294,7 @@ describe('ChoosePersonaSubmission', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackPublished()
+        .commentPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
       fc.anything(),
@@ -320,7 +320,7 @@ describe('ChoosePersonaSubmission', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackBeingPublished()
+        .commentBeingPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
       fc.anything(),
@@ -343,7 +343,7 @@ describe('ChoosePersonaSubmission', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user(), fc.supportedLocale(), fc.anything()])(
+    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user(), fc.supportedLocale(), fc.anything()])(
       "when the feedback hasn't been started",
       (feedbackId, feedback, user, locale, body) =>
         Effect.gen(function* () {
@@ -371,7 +371,7 @@ describe('ChoosePersonaSubmission', () => {
       fc.uuid(),
       fc
         .tuple(fc.feedbackState(), fc.user())
-        .filter(([state, user]) => state._tag !== 'FeedbackNotStarted' && !Equal.equals(state.authorId, user.orcid)),
+        .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
       fc.supportedLocale(),
       fc.anything(),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale, body) =>

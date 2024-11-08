@@ -1338,81 +1338,81 @@ export const feedbackError = (): fc.Arbitrary<Feedback.FeedbackError> =>
     feedbackWasAlreadyPublished(),
   )
 
-export const feedbackNotStarted = (): fc.Arbitrary<Feedback.FeedbackNotStarted> =>
-  constant(new Feedback.FeedbackNotStarted())
+export const commentNotStarted = (): fc.Arbitrary<Feedback.CommentNotStarted> =>
+  constant(new Feedback.CommentNotStarted())
 
-export const feedbackInProgress = ({
+export const commentInProgress = ({
   codeOfConductAgreed,
   competingInterests,
-  feedback,
+  comment,
   persona,
 }: {
-  codeOfConductAgreed?: fc.Arbitrary<Feedback.FeedbackInProgress['codeOfConductAgreed']>
-  competingInterests?: fc.Arbitrary<Feedback.FeedbackInProgress['competingInterests']>
-  feedback?: fc.Arbitrary<Feedback.FeedbackInProgress['feedback']>
-  persona?: fc.Arbitrary<Feedback.FeedbackInProgress['persona']>
-} = {}): fc.Arbitrary<Feedback.FeedbackInProgress> =>
+  codeOfConductAgreed?: fc.Arbitrary<Feedback.CommentInProgress['codeOfConductAgreed']>
+  competingInterests?: fc.Arbitrary<Feedback.CommentInProgress['competingInterests']>
+  comment?: fc.Arbitrary<Feedback.CommentInProgress['comment']>
+  persona?: fc.Arbitrary<Feedback.CommentInProgress['persona']>
+} = {}): fc.Arbitrary<Feedback.CommentInProgress> =>
   fc
     .record({
       authorId: orcid(),
       prereviewId: fc.integer(),
-      feedback: feedback ?? fc.option(html(), { nil: undefined }),
+      comment: comment ?? fc.option(html(), { nil: undefined }),
       competingInterests: competingInterests ?? fc.option(maybe(nonEmptyString()), { nil: undefined }),
       codeOfConductAgreed: codeOfConductAgreed ?? constantFrom(true, undefined),
       persona: persona ?? fc.option(constantFrom('public', 'pseudonym'), { nil: undefined }),
     })
-    .map(data => new Feedback.FeedbackInProgress(data))
+    .map(data => new Feedback.CommentInProgress(data))
 
-export const feedbackReadyForPublishing = (): fc.Arbitrary<Feedback.FeedbackReadyForPublishing> =>
+export const commentReadyForPublishing = (): fc.Arbitrary<Feedback.CommentReadyForPublishing> =>
   fc
     .record({
       authorId: orcid(),
       competingInterests: maybe(nonEmptyString()),
-      feedback: html(),
+      comment: html(),
       persona: constantFrom('public', 'pseudonym'),
       prereviewId: fc.integer(),
     })
-    .map(data => new Feedback.FeedbackReadyForPublishing(data))
+    .map(data => new Feedback.CommentReadyForPublishing(data))
 
-export const feedbackBeingPublished = ({
+export const commentBeingPublished = ({
   doi: _doi,
   id: _id,
 }: {
-  doi?: fc.Arbitrary<Feedback.FeedbackBeingPublished['doi']>
-  id?: fc.Arbitrary<Feedback.FeedbackBeingPublished['id']>
-} = {}): fc.Arbitrary<Feedback.FeedbackBeingPublished> =>
+  doi?: fc.Arbitrary<Feedback.CommentBeingPublished['doi']>
+  id?: fc.Arbitrary<Feedback.CommentBeingPublished['id']>
+} = {}): fc.Arbitrary<Feedback.CommentBeingPublished> =>
   fc
     .record({
       authorId: orcid(),
       competingInterests: maybe(nonEmptyString()),
       doi: _doi ?? option(doi(), { nil: undefined }),
-      feedback: html(),
+      comment: html(),
       id: _id ?? option(fc.integer(), { nil: undefined }),
       persona: constantFrom('public', 'pseudonym'),
       prereviewId: fc.integer(),
     })
-    .map(data => new Feedback.FeedbackBeingPublished(data))
+    .map(data => new Feedback.CommentBeingPublished(data))
 
-export const feedbackPublished = (): fc.Arbitrary<Feedback.FeedbackPublished> =>
+export const commentPublished = (): fc.Arbitrary<Feedback.CommentPublished> =>
   fc
     .record({
       authorId: orcid(),
       competingInterests: maybe(nonEmptyString()),
       doi: doi(),
-      feedback: html(),
+      comment: html(),
       id: fc.integer(),
       persona: constantFrom('public', 'pseudonym'),
       prereviewId: fc.integer(),
     })
-    .map(data => new Feedback.FeedbackPublished(data))
+    .map(data => new Feedback.CommentPublished(data))
 
-export const feedbackState = (): fc.Arbitrary<Feedback.FeedbackState> =>
+export const feedbackState = (): fc.Arbitrary<Feedback.CommentState> =>
   fc.oneof(
-    feedbackNotStarted(),
-    feedbackInProgress(),
-    feedbackReadyForPublishing(),
-    feedbackBeingPublished(),
-    feedbackPublished(),
+    commentNotStarted(),
+    commentInProgress(),
+    commentReadyForPublishing(),
+    commentBeingPublished(),
+    commentPublished(),
   )
 
 // https://github.com/gcanti/fp-ts/issues/1680

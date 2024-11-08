@@ -25,7 +25,7 @@ export const OnFeedbackPublicationWasRequested = ({
 
     const feedback = yield* getFeedback(feedbackId)
 
-    if (feedback._tag !== 'FeedbackBeingPublished') {
+    if (feedback._tag !== 'CommentBeingPublished') {
       return
     }
 

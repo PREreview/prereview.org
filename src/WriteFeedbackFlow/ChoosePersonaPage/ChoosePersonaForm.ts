@@ -23,9 +23,9 @@ export const fromBody = (body: unknown) =>
   }).pipe(Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ persona: Either.left(new Missing()) }))))
 
 export const fromFeedback = pipe(
-  Match.type<Feedback.FeedbackInProgress | Feedback.FeedbackReadyForPublishing>(),
-  Match.tag('FeedbackInProgress', ({ persona }) => (persona ? new CompletedForm({ persona }) : new EmptyForm())),
-  Match.tag('FeedbackReadyForPublishing', ({ persona }) => new CompletedForm({ persona })),
+  Match.type<Feedback.CommentInProgress | Feedback.CommentReadyForPublishing>(),
+  Match.tag('CommentInProgress', ({ persona }) => (persona ? new CompletedForm({ persona }) : new EmptyForm())),
+  Match.tag('CommentReadyForPublishing', ({ persona }) => new CompletedForm({ persona })),
   Match.exhaustive,
 )
 

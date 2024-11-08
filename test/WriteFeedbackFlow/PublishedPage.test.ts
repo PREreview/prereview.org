@@ -14,7 +14,7 @@ describe('PublishedPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackPublished()
+        .commentPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])('when the feedback is published', (feedbackId, [feedback, user], locale) =>
@@ -42,7 +42,7 @@ describe('PublishedPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing(), fc.feedbackBeingPublished())
+        .oneof(fc.commentInProgress(), fc.commentReadyForPublishing(), fc.commentBeingPublished())
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])("when the feedback hasn't been published", (feedbackId, [feedback, user], locale) =>
@@ -66,7 +66,7 @@ describe('PublishedPage', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user(), fc.supportedLocale()])(
+    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user(), fc.supportedLocale()])(
       "when the feedback hasn't been started",
       (feedbackId, feedback, user, locale) =>
         Effect.gen(function* () {
@@ -91,7 +91,7 @@ describe('PublishedPage', () => {
 
     test.prop([
       fc.uuid(),
-      fc.tuple(fc.feedbackPublished(), fc.user()).filter(([state, user]) => !Equal.equals(state.authorId, user.orcid)),
+      fc.tuple(fc.commentPublished(), fc.user()).filter(([state, user]) => !Equal.equals(state.authorId, user.orcid)),
       fc.supportedLocale(),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {

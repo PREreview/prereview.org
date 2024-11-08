@@ -7,7 +7,7 @@ import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('OnFeedbackPublicationWasRequested', () => {
-  test.prop([fc.uuid(), fc.commentPublicationWasRequested(), fc.feedbackBeingPublished(), fc.integer(), fc.doi()])(
+  test.prop([fc.uuid(), fc.commentPublicationWasRequested(), fc.commentBeingPublished(), fc.integer(), fc.doi()])(
     'assigns a DOI',
     (feedbackId, event, feedback, id, doi) =>
       Effect.gen(function* () {
@@ -34,7 +34,7 @@ describe('OnFeedbackPublicationWasRequested', () => {
   test.prop([
     fc.uuid(),
     fc.commentPublicationWasRequested(),
-    fc.feedbackBeingPublished(),
+    fc.commentBeingPublished(),
     fc.integer(),
     fc.doi(),
     fc.feedbackError(),
@@ -55,7 +55,7 @@ describe('OnFeedbackPublicationWasRequested', () => {
     ),
   )
 
-  test.prop([fc.uuid(), fc.commentPublicationWasRequested(), fc.feedbackBeingPublished()])(
+  test.prop([fc.uuid(), fc.commentPublicationWasRequested(), fc.commentBeingPublished()])(
     "when a DOI can't be assigned",
     (feedbackId, event, feedback) =>
       Effect.gen(function* () {

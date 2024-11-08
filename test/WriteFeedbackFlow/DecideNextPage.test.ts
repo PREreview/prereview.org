@@ -5,12 +5,12 @@ import * as Routes from '../../src/routes.js'
 import * as fc from '../fc.js'
 
 describe('NextPageFromState', () => {
-  describe('FeedbackInProgress', () => {
-    test.prop([fc.feedbackInProgress({ feedback: fc.constant(undefined) })])('no feedback', feedback => {
+  describe('CommentInProgress', () => {
+    test.prop([fc.commentInProgress({ comment: fc.constant(undefined) })])('no comment', feedback => {
       expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackEnterFeedback)
     })
 
-    test.prop([fc.feedbackInProgress({ feedback: fc.html(), persona: fc.constant(undefined) })])(
+    test.prop([fc.commentInProgress({ comment: fc.html(), persona: fc.constant(undefined) })])(
       'no persona',
       feedback => {
         expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackChoosePersona)
@@ -18,8 +18,8 @@ describe('NextPageFromState', () => {
     )
 
     test.prop([
-      fc.feedbackInProgress({
-        feedback: fc.html(),
+      fc.commentInProgress({
+        comment: fc.html(),
         persona: fc.constantFrom('public', 'pseudonym'),
         competingInterests: fc.constant(undefined),
       }),
@@ -28,8 +28,8 @@ describe('NextPageFromState', () => {
     })
 
     test.prop([
-      fc.feedbackInProgress({
-        feedback: fc.html(),
+      fc.commentInProgress({
+        comment: fc.html(),
         persona: fc.constantFrom('public', 'pseudonym'),
         competingInterests: fc.maybe(fc.nonEmptyString()),
         codeOfConductAgreed: fc.constant(undefined),
@@ -39,15 +39,15 @@ describe('NextPageFromState', () => {
     })
   })
 
-  test.prop([fc.feedbackReadyForPublishing()])('FeedbackReadyForPublishing', feedback => {
+  test.prop([fc.commentReadyForPublishing()])('CommentReadyForPublishing', feedback => {
     expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackCheck)
   })
 
-  test.prop([fc.feedbackBeingPublished()])('FeedbackBeingPublished', feedback => {
+  test.prop([fc.commentBeingPublished()])('CommentBeingPublished', feedback => {
     expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackPublishing)
   })
 
-  test.prop([fc.feedbackPublished()])('FeedbackPublished', feedback => {
+  test.prop([fc.commentPublished()])('CommentPublished', feedback => {
     expect(_.NextPageFromState(feedback)).toStrictEqual(Routes.WriteFeedbackPublished)
   })
 })
@@ -60,15 +60,15 @@ describe('NextPageAfterCommand', () => {
   })
 
   describe('EnterComment', () => {
-    describe('FeedbackInProgress', () => {
-      test.prop([fc.feedbackInProgress({ persona: fc.constant(undefined) })])('no persona', feedback => {
+    describe('CommentInProgress', () => {
+      test.prop([fc.commentInProgress({ persona: fc.constant(undefined) })])('no persona', feedback => {
         expect(_.NextPageAfterCommand({ command: 'EnterComment', feedback })).toStrictEqual(
           Routes.WriteFeedbackChoosePersona,
         )
       })
 
       test.prop([
-        fc.feedbackInProgress({
+        fc.commentInProgress({
           persona: fc.constantFrom('public', 'pseudonym'),
           competingInterests: fc.constant(undefined),
         }),
@@ -79,7 +79,7 @@ describe('NextPageAfterCommand', () => {
       })
 
       test.prop([
-        fc.feedbackInProgress({
+        fc.commentInProgress({
           persona: fc.constantFrom('public', 'pseudonym'),
           competingInterests: fc.maybe(fc.nonEmptyString()),
           codeOfConductAgreed: fc.constant(undefined),
@@ -91,7 +91,7 @@ describe('NextPageAfterCommand', () => {
       })
 
       test.prop([
-        fc.feedbackInProgress({
+        fc.commentInProgress({
           persona: fc.constantFrom('public', 'pseudonym'),
           codeOfConductAgreed: fc.constant(true),
           competingInterests: fc.maybe(fc.nonEmptyString()),
@@ -101,8 +101,8 @@ describe('NextPageAfterCommand', () => {
       })
     })
 
-    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'FeedbackInProgress')])(
-      'not FeedbackInProgress',
+    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'CommentInProgress')])(
+      'not CommentInProgress',
       feedback => {
         expect(_.NextPageAfterCommand({ command: 'EnterComment', feedback })).toStrictEqual(Routes.WriteFeedbackCheck)
       },
@@ -110,14 +110,14 @@ describe('NextPageAfterCommand', () => {
   })
 
   describe('ChoosePersona', () => {
-    describe('FeedbackInProgress', () => {
-      test.prop([fc.feedbackInProgress({ feedback: fc.constant(undefined) })])('no feedback', feedback => {
+    describe('CommentInProgress', () => {
+      test.prop([fc.commentInProgress({ comment: fc.constant(undefined) })])('no comment', feedback => {
         expect(_.NextPageAfterCommand({ command: 'ChoosePersona', feedback })).toStrictEqual(
           Routes.WriteFeedbackEnterFeedback,
         )
       })
 
-      test.prop([fc.feedbackInProgress({ feedback: fc.html(), competingInterests: fc.constant(undefined) })])(
+      test.prop([fc.commentInProgress({ comment: fc.html(), competingInterests: fc.constant(undefined) })])(
         'no competingInterests',
         feedback => {
           expect(_.NextPageAfterCommand({ command: 'ChoosePersona', feedback })).toStrictEqual(
@@ -127,8 +127,8 @@ describe('NextPageAfterCommand', () => {
       )
 
       test.prop([
-        fc.feedbackInProgress({
-          feedback: fc.html(),
+        fc.commentInProgress({
+          comment: fc.html(),
           competingInterests: fc.maybe(fc.nonEmptyString()),
           codeOfConductAgreed: fc.constant(undefined),
         }),
@@ -139,8 +139,8 @@ describe('NextPageAfterCommand', () => {
       })
 
       test.prop([
-        fc.feedbackInProgress({
-          feedback: fc.html(),
+        fc.commentInProgress({
+          comment: fc.html(),
           competingInterests: fc.maybe(fc.nonEmptyString()),
           codeOfConductAgreed: fc.constant(true),
         }),
@@ -149,8 +149,8 @@ describe('NextPageAfterCommand', () => {
       })
     })
 
-    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'FeedbackInProgress')])(
-      'not FeedbackInProgress',
+    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'CommentInProgress')])(
+      'not CommentInProgress',
       feedback => {
         expect(_.NextPageAfterCommand({ command: 'ChoosePersona', feedback })).toStrictEqual(Routes.WriteFeedbackCheck)
       },
@@ -158,14 +158,14 @@ describe('NextPageAfterCommand', () => {
   })
 
   describe('DeclareCompetingInterests', () => {
-    describe('FeedbackInProgress', () => {
-      test.prop([fc.feedbackInProgress({ feedback: fc.constant(undefined) })])('no feedback', feedback => {
+    describe('CommentInProgress', () => {
+      test.prop([fc.commentInProgress({ comment: fc.constant(undefined) })])('no comment', feedback => {
         expect(_.NextPageAfterCommand({ command: 'DeclareCompetingInterests', feedback })).toStrictEqual(
           Routes.WriteFeedbackEnterFeedback,
         )
       })
 
-      test.prop([fc.feedbackInProgress({ feedback: fc.html(), persona: fc.constant(undefined) })])(
+      test.prop([fc.commentInProgress({ comment: fc.html(), persona: fc.constant(undefined) })])(
         'no persona',
         feedback => {
           expect(_.NextPageAfterCommand({ command: 'DeclareCompetingInterests', feedback })).toStrictEqual(
@@ -175,8 +175,8 @@ describe('NextPageAfterCommand', () => {
       )
 
       test.prop([
-        fc.feedbackInProgress({
-          feedback: fc.html(),
+        fc.commentInProgress({
+          comment: fc.html(),
           persona: fc.constantFrom('public', 'pseudonym'),
           codeOfConductAgreed: fc.constant(undefined),
         }),
@@ -187,8 +187,8 @@ describe('NextPageAfterCommand', () => {
       })
 
       test.prop([
-        fc.feedbackInProgress({
-          feedback: fc.html(),
+        fc.commentInProgress({
+          comment: fc.html(),
           persona: fc.constantFrom('public', 'pseudonym'),
           codeOfConductAgreed: fc.constant(true),
         }),
@@ -199,8 +199,8 @@ describe('NextPageAfterCommand', () => {
       })
     })
 
-    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'FeedbackInProgress')])(
-      'not FeedbackInProgress',
+    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'CommentInProgress')])(
+      'not CommentInProgress',
       feedback => {
         expect(_.NextPageAfterCommand({ command: 'DeclareCompetingInterests', feedback })).toStrictEqual(
           Routes.WriteFeedbackCheck,
@@ -210,14 +210,14 @@ describe('NextPageAfterCommand', () => {
   })
 
   describe('AgreeToCodeOfConduct', () => {
-    describe('FeedbackInProgress', () => {
-      test.prop([fc.feedbackInProgress({ feedback: fc.constant(undefined) })])('no feedback', feedback => {
+    describe('CommentInProgress', () => {
+      test.prop([fc.commentInProgress({ comment: fc.constant(undefined) })])('no comment', feedback => {
         expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
           Routes.WriteFeedbackEnterFeedback,
         )
       })
 
-      test.prop([fc.feedbackInProgress({ feedback: fc.html(), persona: fc.constant(undefined) })])(
+      test.prop([fc.commentInProgress({ comment: fc.html(), persona: fc.constant(undefined) })])(
         'no persona',
         feedback => {
           expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
@@ -227,8 +227,8 @@ describe('NextPageAfterCommand', () => {
       )
 
       test.prop([
-        fc.feedbackInProgress({
-          feedback: fc.html(),
+        fc.commentInProgress({
+          comment: fc.html(),
           persona: fc.constantFrom('public', 'pseudonym'),
           competingInterests: fc.constant(undefined),
         }),
@@ -239,8 +239,8 @@ describe('NextPageAfterCommand', () => {
       })
 
       test.prop([
-        fc.feedbackInProgress({
-          feedback: fc.html(),
+        fc.commentInProgress({
+          comment: fc.html(),
           persona: fc.constantFrom('public', 'pseudonym'),
           competingInterests: fc.maybe(fc.nonEmptyString()),
         }),
@@ -251,8 +251,8 @@ describe('NextPageAfterCommand', () => {
       })
     })
 
-    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'FeedbackInProgress')])(
-      'not FeedbackInProgress',
+    test.prop([fc.feedbackState().filter(feedback => feedback._tag !== 'CommentInProgress')])(
+      'not CommentInProgress',
       feedback => {
         expect(_.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback })).toStrictEqual(
           Routes.WriteFeedbackCheck,

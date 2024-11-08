@@ -54,7 +54,7 @@ export const StartNow = ({
           return Response.RedirectResponse({
             location: DecideNextPage.NextPageAfterCommand({
               command: 'StartComment',
-              feedback: new Feedback.FeedbackNotStarted(),
+              feedback: new Feedback.CommentNotStarted(),
             }).href({ feedbackId }),
           })
         }),

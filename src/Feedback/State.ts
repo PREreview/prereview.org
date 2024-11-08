@@ -4,48 +4,48 @@ import type { Orcid } from 'orcid-id-ts'
 import type { Html } from '../html.js'
 import type { NonEmptyString } from '../types/index.js'
 
-export class FeedbackNotStarted extends Data.TaggedClass('FeedbackNotStarted') {}
+export class CommentNotStarted extends Data.TaggedClass('CommentNotStarted') {}
 
-export class FeedbackInProgress extends Data.TaggedClass('FeedbackInProgress')<{
+export class CommentInProgress extends Data.TaggedClass('CommentInProgress')<{
   authorId: Orcid
   prereviewId: number
-  feedback?: Html
+  comment?: Html
   persona?: 'public' | 'pseudonym'
   codeOfConductAgreed?: true
   competingInterests?: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export class FeedbackReadyForPublishing extends Data.TaggedClass('FeedbackReadyForPublishing')<{
+export class CommentReadyForPublishing extends Data.TaggedClass('CommentReadyForPublishing')<{
   authorId: Orcid
   competingInterests: Option.Option<NonEmptyString.NonEmptyString>
-  feedback: Html
+  comment: Html
   persona: 'public' | 'pseudonym'
   prereviewId: number
 }> {}
 
-export class FeedbackBeingPublished extends Data.TaggedClass('FeedbackBeingPublished')<{
+export class CommentBeingPublished extends Data.TaggedClass('CommentBeingPublished')<{
   authorId: Orcid
   competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   doi?: Doi
   id?: number
-  feedback: Html
+  comment: Html
   persona: 'public' | 'pseudonym'
   prereviewId: number
 }> {}
 
-export class FeedbackPublished extends Data.TaggedClass('FeedbackPublished')<{
+export class CommentPublished extends Data.TaggedClass('CommentPublished')<{
   authorId: Orcid
   competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   doi: Doi
   id: number
-  feedback: Html
+  comment: Html
   persona: 'public' | 'pseudonym'
   prereviewId: number
 }> {}
 
-export type FeedbackState =
-  | FeedbackNotStarted
-  | FeedbackInProgress
-  | FeedbackReadyForPublishing
-  | FeedbackBeingPublished
-  | FeedbackPublished
+export type CommentState =
+  | CommentNotStarted
+  | CommentInProgress
+  | CommentReadyForPublishing
+  | CommentBeingPublished
+  | CommentPublished

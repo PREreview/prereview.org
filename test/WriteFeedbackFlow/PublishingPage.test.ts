@@ -14,7 +14,7 @@ describe('PublishingPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackBeingPublished()
+        .commentBeingPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])('when the feedback is being published', (feedbackId, [feedback, user], locale) =>
@@ -42,7 +42,7 @@ describe('PublishingPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackPublished()
+        .commentPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])('when the feedback is published', (feedbackId, [feedback, user], locale) =>
@@ -66,7 +66,7 @@ describe('PublishingPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing())
+        .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])("when the feedback publication hasn't been requested", (feedbackId, [feedback, user], locale) =>
@@ -90,7 +90,7 @@ describe('PublishingPage', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user(), fc.supportedLocale()])(
+    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user(), fc.supportedLocale()])(
       "when the feedback hasn't been started",
       (feedbackId, feedback, user, locale) =>
         Effect.gen(function* () {
@@ -116,7 +116,7 @@ describe('PublishingPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .tuple(fc.feedbackBeingPublished(), fc.user())
+        .tuple(fc.commentBeingPublished(), fc.user())
         .filter(([state, user]) => !Equal.equals(state.authorId, user.orcid)),
       fc.supportedLocale(),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale) =>

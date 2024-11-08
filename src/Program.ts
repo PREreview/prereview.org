@@ -148,7 +148,7 @@ const assignFeedbackADoi = Layer.effect(
           Match.exhaustive,
         )
 
-        const text = html`${feedback.feedback}
+        const text = html`${feedback.comment}
 
           <h2>${translate(DefaultLocale, 'write-comment-flow', 'competingInterestsHeading')()}</h2>
 

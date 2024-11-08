@@ -26,7 +26,7 @@ export const EnterFeedbackPage = ({
 
     const feedback = yield* getFeedback(feedbackId)
 
-    if (feedback._tag !== 'FeedbackNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
+    if (feedback._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
       return pageNotFound
     }
 
@@ -34,8 +34,8 @@ export const EnterFeedbackPage = ({
 
     return pipe(
       Match.value(feedback),
-      Match.tag('FeedbackNotStarted', () => pageNotFound),
-      Match.tag('FeedbackInProgress', feedback =>
+      Match.tag('CommentNotStarted', () => pageNotFound),
+      Match.tag('CommentInProgress', feedback =>
         MakeResponse({
           feedbackId,
           form: EnterFeedbackForm.fromFeedback(feedback),
@@ -43,7 +43,7 @@ export const EnterFeedbackPage = ({
           prereviewId: feedback.prereviewId,
         }),
       ),
-      Match.tag('FeedbackReadyForPublishing', feedback =>
+      Match.tag('CommentReadyForPublishing', feedback =>
         MakeResponse({
           feedbackId,
           form: EnterFeedbackForm.fromFeedback(feedback),
@@ -51,10 +51,10 @@ export const EnterFeedbackPage = ({
           prereviewId: feedback.prereviewId,
         }),
       ),
-      Match.tag('FeedbackBeingPublished', () =>
+      Match.tag('CommentBeingPublished', () =>
         Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) }),
       ),
-      Match.tag('FeedbackPublished', () =>
+      Match.tag('CommentPublished', () =>
         Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) }),
       ),
       Match.exhaustive,
@@ -85,7 +85,7 @@ export const EnterFeedbackSubmission = ({
 
     const feedback = yield* getFeedback(feedbackId)
 
-    if (feedback._tag !== 'FeedbackNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
+    if (feedback._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
       return pageNotFound
     }
 
@@ -93,8 +93,8 @@ export const EnterFeedbackSubmission = ({
 
     return yield* pipe(
       Match.value(feedback),
-      Match.tag('FeedbackNotStarted', () => Effect.succeed(pageNotFound)),
-      Match.tag('FeedbackInProgress', 'FeedbackReadyForPublishing', feedback =>
+      Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
+      Match.tag('CommentInProgress', 'CommentReadyForPublishing', feedback =>
         Effect.gen(function* () {
           const form = yield* EnterFeedbackForm.fromBody(body)
 
@@ -136,10 +136,10 @@ export const EnterFeedbackSubmission = ({
           )
         }),
       ),
-      Match.tag('FeedbackBeingPublished', () =>
+      Match.tag('CommentBeingPublished', () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })),
       ),
-      Match.tag('FeedbackPublished', () =>
+      Match.tag('CommentPublished', () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })),
       ),
       Match.exhaustive,

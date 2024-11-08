@@ -6,121 +6,121 @@ import type * as State from './State.js'
 
 const onStartComment = (command: Commands.StartComment) =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', () =>
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', () =>
       Either.right(
         Array.of(new Events.CommentWasStarted({ prereviewId: command.prereviewId, authorId: command.authorId })),
       ),
     ),
-    Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackWasAlreadyStarted())),
-    Match.tag('FeedbackReadyForPublishing', () => Either.left(new Errors.FeedbackWasAlreadyStarted())),
-    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.tag('CommentInProgress', () => Either.left(new Errors.FeedbackWasAlreadyStarted())),
+    Match.tag('CommentReadyForPublishing', () => Either.left(new Errors.FeedbackWasAlreadyStarted())),
+    Match.tag('CommentBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
+    Match.tag('CommentPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
 const onEnterComment = (command: Commands.EnterComment) =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
-    Match.tag('FeedbackInProgress', () =>
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('CommentInProgress', () =>
       Either.right(Array.of(new Events.CommentWasEntered({ comment: command.comment }))),
     ),
-    Match.tag('FeedbackReadyForPublishing', () =>
+    Match.tag('CommentReadyForPublishing', () =>
       Either.right(Array.of(new Events.CommentWasEntered({ comment: command.comment }))),
     ),
-    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.tag('CommentBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
+    Match.tag('CommentPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
 const onChoosePersona = (command: Commands.ChoosePersona) =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
-    Match.tag('FeedbackInProgress', () =>
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('CommentInProgress', () =>
       Either.right(Array.of(new Events.PersonaWasChosen({ persona: command.persona }))),
     ),
-    Match.tag('FeedbackReadyForPublishing', () =>
+    Match.tag('CommentReadyForPublishing', () =>
       Either.right(Array.of(new Events.PersonaWasChosen({ persona: command.persona }))),
     ),
-    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.tag('CommentBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
+    Match.tag('CommentPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
 const onAgreeToCodeOfConduct = () =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
-    Match.tag('FeedbackInProgress', state =>
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('CommentInProgress', state =>
       Either.right(!state.codeOfConductAgreed ? Array.of(new Events.CodeOfConductWasAgreed()) : Array.empty()),
     ),
-    Match.tag('FeedbackReadyForPublishing', () => Either.right(Array.empty())),
-    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.tag('CommentReadyForPublishing', () => Either.right(Array.empty())),
+    Match.tag('CommentBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
+    Match.tag('CommentPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
 const onDeclareCompetingInterests = (command: Commands.DeclareCompetingInterests) =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
-    Match.tag('FeedbackInProgress', () =>
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('CommentInProgress', () =>
       Either.right(
         Array.of(new Events.CompetingInterestsWereDeclared({ competingInterests: command.competingInterests })),
       ),
     ),
-    Match.tag('FeedbackReadyForPublishing', () =>
+    Match.tag('CommentReadyForPublishing', () =>
       Either.right(
         Array.of(new Events.CompetingInterestsWereDeclared({ competingInterests: command.competingInterests })),
       ),
     ),
-    Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.tag('CommentBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
+    Match.tag('CommentPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
 const onPublishComment = () =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
-    Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
-    Match.tag('FeedbackReadyForPublishing', () => Either.right(Array.of(new Events.CommentPublicationWasRequested()))),
-    Match.tag('FeedbackBeingPublished', () => Either.right(Array.empty())),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('CommentInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
+    Match.tag('CommentReadyForPublishing', () => Either.right(Array.of(new Events.CommentPublicationWasRequested()))),
+    Match.tag('CommentBeingPublished', () => Either.right(Array.empty())),
+    Match.tag('CommentPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
 const onMarkDoiAsAssigned = (command: Commands.MarkDoiAsAssigned) =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
-    Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
-    Match.tag('FeedbackReadyForPublishing', () =>
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('CommentInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
+    Match.tag('CommentReadyForPublishing', () =>
       Either.right(Array.of(new Events.DoiWasAssigned({ doi: command.doi, id: command.id }))),
     ),
-    Match.tag('FeedbackBeingPublished', state =>
+    Match.tag('CommentBeingPublished', state =>
       state.doi === undefined || state.id === undefined
         ? Either.right(Array.of(new Events.DoiWasAssigned({ doi: command.doi, id: command.id })))
         : Either.left(new Errors.DoiIsAlreadyAssigned()),
     ),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.tag('CommentPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
 const onMarkCommentAsPublished = () =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
-    Match.tag('FeedbackInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
-    Match.tag('FeedbackReadyForPublishing', () => Either.left(new Errors.DoiIsNotAssigned())),
-    Match.tag('FeedbackBeingPublished', state =>
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
+    Match.tag('CommentInProgress', () => Either.left(new Errors.FeedbackIsIncomplete())),
+    Match.tag('CommentReadyForPublishing', () => Either.left(new Errors.DoiIsNotAssigned())),
+    Match.tag('CommentBeingPublished', state =>
       state.doi === undefined || state.id === undefined
         ? Either.left(new Errors.DoiIsNotAssigned())
         : Either.right(Array.of(new Events.CommentWasPublished())),
     ),
-    Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
+    Match.tag('CommentPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
     Match.exhaustive,
   )
 
@@ -138,6 +138,6 @@ const onCommand = pipe(
 )
 
 export const DecideFeedback = (
-  state: State.FeedbackState,
+  state: State.CommentState,
 ): ((command: Commands.CommentCommand) => Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.FeedbackError>) =>
   flow(onCommand, Function.apply(state)<Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.FeedbackError>>)

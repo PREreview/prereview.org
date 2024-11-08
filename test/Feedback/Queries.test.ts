@@ -81,27 +81,27 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
     })
 
     expect(actual).toStrictEqual({
-      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress({
+      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.CommentInProgress({
         authorId: Orcid('0000-0002-1825-0097'),
         prereviewId: 123,
       }),
-      '51a9ea9e-a960-4b51-83a5-9901a47690c2': new Feedback.FeedbackInProgress({
+      '51a9ea9e-a960-4b51-83a5-9901a47690c2': new Feedback.CommentInProgress({
         authorId: Orcid('0000-0002-1825-0097'),
-        feedback: html`Some text`,
+        comment: html`Some text`,
         persona: 'pseudonym',
         prereviewId: 123,
       }),
-      '2b9e777b-f14d-4294-8e27-2b442e496050': new Feedback.FeedbackReadyForPublishing({
+      '2b9e777b-f14d-4294-8e27-2b442e496050': new Feedback.CommentReadyForPublishing({
         authorId: Orcid('0000-0002-1825-0097'),
         competingInterests: Option.some('Some competing interests' as NonEmptyString.NonEmptyString),
-        feedback: html`Some text`,
+        comment: html`Some text`,
         persona: 'public',
         prereviewId: 123,
       }),
-      'eb8146ea-e643-4ca3-9dc1-2f26013c42b0': new Feedback.FeedbackBeingPublished({
+      'eb8146ea-e643-4ca3-9dc1-2f26013c42b0': new Feedback.CommentBeingPublished({
         authorId: Orcid('0000-0002-1825-0097'),
         competingInterests: Option.none(),
-        feedback: html`Some other text`,
+        comment: html`Some other text`,
         persona: 'public',
         prereviewId: 123,
       }),
@@ -126,7 +126,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
     })
 
     expect(actual).toStrictEqual({
-      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress({
+      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.CommentInProgress({
         authorId: Orcid('0000-0002-1825-0097'),
         prereviewId: 123,
       }),
@@ -151,7 +151,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
     })
 
     expect(actual).toStrictEqual({
-      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress({
+      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.CommentInProgress({
         authorId: Orcid('0000-0002-1825-0097'),
         prereviewId: 123,
       }),
@@ -200,7 +200,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
     })
 
     expect(actual).toStrictEqual({
-      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.FeedbackInProgress({
+      '358f7fc0-9725-4192-8673-d7c64f398401': new Feedback.CommentInProgress({
         authorId: Orcid('0000-0002-1825-0097'),
         prereviewId: 123,
       }),

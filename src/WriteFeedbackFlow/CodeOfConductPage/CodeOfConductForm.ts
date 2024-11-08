@@ -21,11 +21,11 @@ export const fromBody = (body: unknown) =>
   }).pipe(Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ agree: Either.left(new Missing()) }))))
 
 export const fromFeedback = pipe(
-  Match.type<Feedback.FeedbackInProgress | Feedback.FeedbackReadyForPublishing>(),
-  Match.tag('FeedbackInProgress', ({ codeOfConductAgreed }) =>
+  Match.type<Feedback.CommentInProgress | Feedback.CommentReadyForPublishing>(),
+  Match.tag('CommentInProgress', ({ codeOfConductAgreed }) =>
     codeOfConductAgreed ? new CompletedForm() : new EmptyForm(),
   ),
-  Match.tag('FeedbackReadyForPublishing', () => new CompletedForm()),
+  Match.tag('CommentReadyForPublishing', () => new CompletedForm()),
   Match.exhaustive,
 )
 

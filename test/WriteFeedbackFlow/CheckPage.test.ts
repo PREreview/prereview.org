@@ -14,7 +14,7 @@ describe('CheckPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackReadyForPublishing()
+        .commentReadyForPublishing()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])('when the feedback is ready for publishing', (feedbackId, [feedback, user], locale) =>
@@ -43,7 +43,7 @@ describe('CheckPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackPublished()
+        .commentPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])('when the feedback has been published', (feedbackId, [feedback, user], locale) =>
@@ -67,7 +67,7 @@ describe('CheckPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackBeingPublished()
+        .commentBeingPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])('when the feedback is being published', (feedbackId, [feedback, user], locale) =>
@@ -91,7 +91,7 @@ describe('CheckPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackInProgress()
+        .commentInProgress()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       fc.supportedLocale(),
     ])("when the feedback isn't complete", (feedbackId, [feedback, user], locale) =>
@@ -115,7 +115,7 @@ describe('CheckPage', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user(), fc.supportedLocale()])(
+    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user(), fc.supportedLocale()])(
       "when the feedback hasn't been started",
       (feedbackId, feedback, user, locale) =>
         Effect.gen(function* () {
@@ -142,7 +142,7 @@ describe('CheckPage', () => {
       fc.uuid(),
       fc
         .tuple(fc.feedbackState(), fc.user())
-        .filter(([state, user]) => state._tag !== 'FeedbackNotStarted' && !Equal.equals(state.authorId, user.orcid)),
+        .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
       fc.supportedLocale(),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
@@ -212,7 +212,7 @@ describe('CheckPageSubmission', () => {
       test.prop([
         fc.uuid(),
         fc
-          .feedbackReadyForPublishing()
+          .commentReadyForPublishing()
           .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       ])('when the feedback can be published', (feedbackId, [feedback, user]) =>
         Effect.gen(function* () {
@@ -245,7 +245,7 @@ describe('CheckPageSubmission', () => {
       test.prop([
         fc.uuid(),
         fc
-          .feedbackReadyForPublishing()
+          .commentReadyForPublishing()
           .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
         fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.feedbackError()),
       ])("when the feedback can't be published", (feedbackId, [feedback, user], error) =>
@@ -273,7 +273,7 @@ describe('CheckPageSubmission', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackPublished()
+        .commentPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
     ])('when the feedback has been published', (feedbackId, [feedback, user]) =>
       Effect.gen(function* () {
@@ -296,7 +296,7 @@ describe('CheckPageSubmission', () => {
     test.prop([
       fc.uuid(),
       fc
-        .feedbackBeingPublished()
+        .commentBeingPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
     ])('when the feedback is being published', (feedbackId, [feedback, user]) =>
       Effect.gen(function* () {
@@ -316,7 +316,7 @@ describe('CheckPageSubmission', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.feedbackInProgress(), fc.user()])(
+    test.prop([fc.uuid(), fc.commentInProgress(), fc.user()])(
       'when the feedback is incomplete',
       (feedbackId, feedback, user) =>
         Effect.gen(function* () {
@@ -339,7 +339,7 @@ describe('CheckPageSubmission', () => {
         ),
     )
 
-    test.prop([fc.uuid(), fc.feedbackNotStarted(), fc.user()])(
+    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user()])(
       "when the feedback hasn't been started",
       (feedbackId, feedback, user) =>
         Effect.gen(function* () {
@@ -366,7 +366,7 @@ describe('CheckPageSubmission', () => {
       fc.uuid(),
       fc
         .tuple(fc.feedbackState(), fc.user())
-        .filter(([state, user]) => state._tag !== 'FeedbackNotStarted' && !Equal.equals(state.authorId, user.orcid)),
+        .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user]) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPageSubmission({ feedbackId })

@@ -4,112 +4,112 @@ import * as State from './State.js'
 
 const onCommentWasStarted = (event: Events.CommentWasStarted) =>
   flow(
-    Match.value<State.FeedbackState>,
+    Match.value<State.CommentState>,
     Match.tag(
-      'FeedbackNotStarted',
-      () => new State.FeedbackInProgress({ authorId: event.authorId, prereviewId: event.prereviewId }),
+      'CommentNotStarted',
+      () => new State.CommentInProgress({ authorId: event.authorId, prereviewId: event.prereviewId }),
     ),
-    Match.tag('FeedbackInProgress', identity),
-    Match.tag('FeedbackReadyForPublishing', identity),
-    Match.tag('FeedbackBeingPublished', identity),
-    Match.tag('FeedbackPublished', identity),
+    Match.tag('CommentInProgress', identity),
+    Match.tag('CommentReadyForPublishing', identity),
+    Match.tag('CommentBeingPublished', identity),
+    Match.tag('CommentPublished', identity),
     Match.exhaustive,
   )
 
 const onCommentWasEntered = (event: Events.CommentWasEntered) =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', identity),
-    Match.tag('FeedbackInProgress', state => new State.FeedbackInProgress({ ...state, feedback: event.comment })),
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentInProgress', state => new State.CommentInProgress({ ...state, comment: event.comment })),
     Match.tag(
-      'FeedbackReadyForPublishing',
-      state => new State.FeedbackReadyForPublishing({ ...state, feedback: event.comment }),
+      'CommentReadyForPublishing',
+      state => new State.CommentReadyForPublishing({ ...state, comment: event.comment }),
     ),
-    Match.tag('FeedbackBeingPublished', identity),
-    Match.tag('FeedbackPublished', identity),
+    Match.tag('CommentBeingPublished', identity),
+    Match.tag('CommentPublished', identity),
     Match.exhaustive,
   )
 
 const onPersonaWasChosen = (event: Events.PersonaWasChosen) =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', identity),
-    Match.tag('FeedbackInProgress', state => new State.FeedbackInProgress({ ...state, persona: event.persona })),
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentInProgress', state => new State.CommentInProgress({ ...state, persona: event.persona })),
     Match.tag(
-      'FeedbackReadyForPublishing',
-      state => new State.FeedbackReadyForPublishing({ ...state, persona: event.persona }),
+      'CommentReadyForPublishing',
+      state => new State.CommentReadyForPublishing({ ...state, persona: event.persona }),
     ),
-    Match.tag('FeedbackBeingPublished', identity),
-    Match.tag('FeedbackPublished', identity),
+    Match.tag('CommentBeingPublished', identity),
+    Match.tag('CommentPublished', identity),
     Match.exhaustive,
   )
 
 const onCompetingInterestsWereDeclared = (event: Events.CompetingInterestsWereDeclared) =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', identity),
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', identity),
     Match.tag(
-      'FeedbackInProgress',
-      state => new State.FeedbackInProgress({ ...state, competingInterests: event.competingInterests }),
+      'CommentInProgress',
+      state => new State.CommentInProgress({ ...state, competingInterests: event.competingInterests }),
     ),
     Match.tag(
-      'FeedbackReadyForPublishing',
-      state => new State.FeedbackReadyForPublishing({ ...state, competingInterests: event.competingInterests }),
+      'CommentReadyForPublishing',
+      state => new State.CommentReadyForPublishing({ ...state, competingInterests: event.competingInterests }),
     ),
-    Match.tag('FeedbackBeingPublished', identity),
-    Match.tag('FeedbackPublished', identity),
+    Match.tag('CommentBeingPublished', identity),
+    Match.tag('CommentPublished', identity),
     Match.exhaustive,
   )
 
 const onCodeOfConductWasAgreed = () =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', identity),
-    Match.tag('FeedbackInProgress', state => new State.FeedbackInProgress({ ...state, codeOfConductAgreed: true })),
-    Match.tag('FeedbackReadyForPublishing', identity),
-    Match.tag('FeedbackBeingPublished', identity),
-    Match.tag('FeedbackPublished', identity),
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentInProgress', state => new State.CommentInProgress({ ...state, codeOfConductAgreed: true })),
+    Match.tag('CommentReadyForPublishing', identity),
+    Match.tag('CommentBeingPublished', identity),
+    Match.tag('CommentPublished', identity),
     Match.exhaustive,
   )
 
 const onCommentPublicationWasRequested = () =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', identity),
-    Match.tag('FeedbackInProgress', identity),
-    Match.tag('FeedbackReadyForPublishing', state => new State.FeedbackBeingPublished(state)),
-    Match.tag('FeedbackBeingPublished', identity),
-    Match.tag('FeedbackPublished', identity),
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentInProgress', identity),
+    Match.tag('CommentReadyForPublishing', state => new State.CommentBeingPublished(state)),
+    Match.tag('CommentBeingPublished', identity),
+    Match.tag('CommentPublished', identity),
     Match.exhaustive,
   )
 
 const onDoiWasAssigned = (event: Events.DoiWasAssigned) =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', identity),
-    Match.tag('FeedbackInProgress', identity),
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentInProgress', identity),
     Match.tag(
-      'FeedbackReadyForPublishing',
-      state => new State.FeedbackBeingPublished({ ...state, id: event.id, doi: event.doi }),
+      'CommentReadyForPublishing',
+      state => new State.CommentBeingPublished({ ...state, id: event.id, doi: event.doi }),
     ),
     Match.tag(
-      'FeedbackBeingPublished',
-      state => new State.FeedbackBeingPublished({ ...state, id: event.id, doi: event.doi }),
+      'CommentBeingPublished',
+      state => new State.CommentBeingPublished({ ...state, id: event.id, doi: event.doi }),
     ),
-    Match.tag('FeedbackPublished', identity),
+    Match.tag('CommentPublished', identity),
     Match.exhaustive,
   )
 
 const onCommentWasPublished = () =>
   flow(
-    Match.value<State.FeedbackState>,
-    Match.tag('FeedbackNotStarted', identity),
-    Match.tag('FeedbackInProgress', identity),
-    Match.tag('FeedbackReadyForPublishing', identity),
-    Match.tag('FeedbackBeingPublished', ({ id, doi, ...state }) =>
-      typeof id === 'number' && typeof doi === 'string' ? new State.FeedbackPublished({ ...state, id, doi }) : state,
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentInProgress', identity),
+    Match.tag('CommentReadyForPublishing', identity),
+    Match.tag('CommentBeingPublished', ({ id, doi, ...state }) =>
+      typeof id === 'number' && typeof doi === 'string' ? new State.CommentPublished({ ...state, id, doi }) : state,
     ),
-    Match.tag('FeedbackPublished', identity),
+    Match.tag('CommentPublished', identity),
     Match.exhaustive,
   )
 
@@ -126,18 +126,18 @@ const onEvent = pipe(
   Match.exhaustive,
 )
 
-export const EvolveFeedback = (state: State.FeedbackState): ((event: Events.CommentEvent) => State.FeedbackState) =>
-  flow(onEvent, Function.apply(state)<State.FeedbackState>, checkIsReadyForPublication)
+export const EvolveFeedback = (state: State.CommentState): ((event: Events.CommentEvent) => State.CommentState) =>
+  flow(onEvent, Function.apply(state)<State.CommentState>, checkIsReadyForPublication)
 
-const checkIsReadyForPublication = (state: State.FeedbackState) => {
-  if (state._tag !== 'FeedbackInProgress') {
+const checkIsReadyForPublication = (state: State.CommentState) => {
+  if (state._tag !== 'CommentInProgress') {
     return state
   }
 
-  const { codeOfConductAgreed, competingInterests, feedback, persona, ...rest } = state
+  const { codeOfConductAgreed, competingInterests, comment, persona, ...rest } = state
 
   if (
-    typeof feedback !== 'object' ||
+    typeof comment !== 'object' ||
     typeof persona !== 'string' ||
     !Option.isOption(competingInterests) ||
     codeOfConductAgreed !== true
@@ -145,5 +145,5 @@ const checkIsReadyForPublication = (state: State.FeedbackState) => {
     return state
   }
 
-  return new State.FeedbackReadyForPublishing({ ...rest, competingInterests, feedback, persona })
+  return new State.CommentReadyForPublishing({ ...rest, competingInterests, comment, persona })
 }

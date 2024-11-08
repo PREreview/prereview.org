@@ -16,7 +16,7 @@ import type { CommentEvent } from './Events.js'
 import { EvolveFeedback } from './Evolve.js'
 import * as Queries from './Queries.js'
 import { OnDoiWasAssigned, OnFeedbackPublicationWasRequested } from './React.js'
-import { FeedbackNotStarted, type FeedbackState } from './State.js'
+import { CommentNotStarted, type CommentState } from './State.js'
 
 export * from './Commands.js'
 export * from './Context.js'
@@ -38,7 +38,7 @@ export const makeHandleFeedbackCommand: Effect.Effect<
     Effect.gen(function* () {
       const { events, latestVersion } = yield* eventStore.getEvents(feedbackId)
 
-      const state = Array.reduce(events, new FeedbackNotStarted() as FeedbackState, (state, event) =>
+      const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
         EvolveFeedback(state)(event),
       )
 
@@ -68,7 +68,7 @@ export const makeGetFeedback: Effect.Effect<typeof GetFeedback.Service, never, E
     Effect.gen(function* () {
       const { events } = yield* eventStore.getEvents(feedbackId)
 
-      return Array.reduce(events, new FeedbackNotStarted() as FeedbackState, (state, event) =>
+      return Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
         EvolveFeedback(state)(event),
       )
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))

@@ -34,7 +34,7 @@ describe('StartNow', () => {
                 status: StatusCodes.SEE_OTHER,
                 location: DecideNextPage.NextPageAfterCommand({
                   command: 'StartComment',
-                  feedback: new Feedback.FeedbackNotStarted(),
+                  feedback: new Feedback.CommentNotStarted(),
                 }).href({ feedbackId }),
               })
 
@@ -98,7 +98,7 @@ describe('StartNow', () => {
         fc.prereview(),
         fc.dictionary(
           fc.uuid(),
-          fc.oneof(fc.feedbackInProgress(), fc.feedbackReadyForPublishing(), fc.feedbackBeingPublished()),
+          fc.oneof(fc.commentInProgress(), fc.commentReadyForPublishing(), fc.commentBeingPublished()),
           { minKeys: 1 },
         ),
       ])('when they have started feedback', (id, locale, user, prereview, feedback) =>

@@ -25,13 +25,13 @@ export const PublishingPage = ({
     const feedback = yield* getFeedback(feedbackId)
 
     if (
-      (feedback._tag !== 'FeedbackBeingPublished' && feedback._tag !== 'FeedbackPublished') ||
+      (feedback._tag !== 'CommentBeingPublished' && feedback._tag !== 'CommentPublished') ||
       !Equal.equals(user.orcid, feedback.authorId)
     ) {
       return pageNotFound
     }
 
-    if (feedback._tag === 'FeedbackPublished') {
+    if (feedback._tag === 'CommentPublished') {
       return Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })
     }
 

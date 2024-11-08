@@ -5,7 +5,7 @@ import type { Uuid } from '../types/index.js'
 import type { CommentCommand } from './Commands.js'
 import type { FeedbackError } from './Errors.js'
 import type { CommentEvent } from './Events.js'
-import type { FeedbackBeingPublished, FeedbackInProgress, FeedbackReadyForPublishing, FeedbackState } from './State.js'
+import type { CommentBeingPublished, CommentInProgress, CommentReadyForPublishing, CommentState } from './State.js'
 
 export class FeedbackEvents extends Context.Tag('FeedbackEvents')<
   FeedbackEvents,
@@ -25,14 +25,14 @@ export class GetAllUnpublishedFeedbackByAnAuthorForAPrereview extends Context.Ta
     readonly authorId: Orcid
     readonly prereviewId: number
   }) => Effect.Effect<
-    Record.ReadonlyRecord<Uuid.Uuid, FeedbackInProgress | FeedbackReadyForPublishing | FeedbackBeingPublished>,
+    Record.ReadonlyRecord<Uuid.Uuid, CommentInProgress | CommentReadyForPublishing | CommentBeingPublished>,
     UnableToQuery
   >
 >() {}
 
 export class GetFeedback extends Context.Tag('GetFeedback')<
   GetFeedback,
-  (feedbackId: Uuid.Uuid) => Effect.Effect<FeedbackState, UnableToQuery>
+  (feedbackId: Uuid.Uuid) => Effect.Effect<CommentState, UnableToQuery>
 >() {}
 
 export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<
@@ -45,7 +45,7 @@ export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<
 
 export class AssignFeedbackADoi extends Context.Tag('AssignFeedbackADoi')<
   AssignFeedbackADoi,
-  (feedback: FeedbackBeingPublished) => Effect.Effect<[Doi, number], UnableToAssignADoi>
+  (feedback: CommentBeingPublished) => Effect.Effect<[Doi, number], UnableToAssignADoi>
 >() {}
 
 export class PublishFeedbackWithADoi extends Context.Tag('PublishFeedbackWithADoi')<

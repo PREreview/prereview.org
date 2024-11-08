@@ -4,10 +4,10 @@ import * as Routes from '../routes.js'
 import type { Uuid } from '../types/index.js'
 
 const onInProgressState = pipe(
-  Match.type<Feedback.FeedbackInProgress>(),
+  Match.type<Feedback.CommentInProgress>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
   Match.when(
-    state => typeof state.feedback === 'undefined',
+    state => typeof state.comment === 'undefined',
     () => Routes.WriteFeedbackEnterFeedback,
   ),
   Match.when(
@@ -26,12 +26,12 @@ const onInProgressState = pipe(
 )
 
 export const NextPageFromState = pipe(
-  Match.type<Exclude<Feedback.FeedbackState, Feedback.FeedbackNotStarted>>(),
+  Match.type<Exclude<Feedback.CommentState, Feedback.CommentNotStarted>>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
-  Match.tag('FeedbackInProgress', onInProgressState),
-  Match.tag('FeedbackReadyForPublishing', () => Routes.WriteFeedbackCheck),
-  Match.tag('FeedbackBeingPublished', () => Routes.WriteFeedbackPublishing),
-  Match.tag('FeedbackPublished', () => Routes.WriteFeedbackPublished),
+  Match.tag('CommentInProgress', onInProgressState),
+  Match.tag('CommentReadyForPublishing', () => Routes.WriteFeedbackCheck),
+  Match.tag('CommentBeingPublished', () => Routes.WriteFeedbackPublishing),
+  Match.tag('CommentPublished', () => Routes.WriteFeedbackPublished),
   Match.exhaustive,
 )
 
@@ -43,28 +43,27 @@ const onInProgressCommand = pipe(
       | Feedback.DeclareCompetingInterests
       | Feedback.AgreeToCodeOfConduct
     )['_tag']
-    feedback: Feedback.FeedbackState
+    feedback: Feedback.CommentState
   }>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
   Match.when(
     {
       command: command => command !== 'EnterComment',
-      feedback: feedback => feedback._tag === 'FeedbackInProgress' && typeof feedback.feedback === 'undefined',
+      feedback: feedback => feedback._tag === 'CommentInProgress' && typeof feedback.comment === 'undefined',
     },
     () => Routes.WriteFeedbackEnterFeedback,
   ),
   Match.when(
     {
       command: command => command !== 'ChoosePersona',
-      feedback: feedback => feedback._tag === 'FeedbackInProgress' && typeof feedback.persona === 'undefined',
+      feedback: feedback => feedback._tag === 'CommentInProgress' && typeof feedback.persona === 'undefined',
     },
     () => Routes.WriteFeedbackChoosePersona,
   ),
   Match.when(
     {
       command: command => command !== 'DeclareCompetingInterests',
-      feedback: feedback =>
-        feedback._tag === 'FeedbackInProgress' && typeof feedback.competingInterests === 'undefined',
+      feedback: feedback => feedback._tag === 'CommentInProgress' && typeof feedback.competingInterests === 'undefined',
     },
     () => Routes.WriteFeedbackCompetingInterests,
   ),
@@ -72,7 +71,7 @@ const onInProgressCommand = pipe(
     {
       command: command => command !== 'AgreeToCodeOfConduct',
       feedback: feedback =>
-        feedback._tag === 'FeedbackInProgress' && typeof feedback.codeOfConductAgreed === 'undefined',
+        feedback._tag === 'CommentInProgress' && typeof feedback.codeOfConductAgreed === 'undefined',
     },
     () => Routes.WriteFeedbackCodeOfConduct,
   ),
@@ -82,7 +81,7 @@ const onInProgressCommand = pipe(
 export const NextPageAfterCommand = pipe(
   Match.type<{
     command: Exclude<Feedback.CommentCommand, Feedback.MarkDoiAsAssigned | Feedback.MarkCommentAsPublished>['_tag']
-    feedback: Feedback.FeedbackState
+    feedback: Feedback.CommentState
   }>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
   Match.when({ command: 'StartComment' }, () => Routes.WriteFeedbackEnterFeedback),
