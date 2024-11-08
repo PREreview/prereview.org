@@ -12,20 +12,6 @@ import { Program } from './Program.js'
 import { redisLifecycle } from './Redis.js'
 import { verifyCache } from './VerifyCache.js'
 import { CanWriteFeedback } from './feature-flags.js'
-import type { User } from './user.js'
-
-const isPrereviewTeam = (user?: User) =>
-  user
-    ? [
-        '0000-0001-8511-8689',
-        '0000-0002-1472-1824',
-        '0000-0002-3708-3546',
-        '0000-0002-6109-0367',
-        '0000-0002-6750-9341',
-        '0000-0003-4921-6155',
-        '0000-0002-5753-2556',
-      ].includes(user.orcid)
-    : false
 
 pipe(
   Program,
@@ -36,7 +22,7 @@ pipe(
     Effect.gen(function* () {
       const canWriteFeedback = yield* Config.withDefault(Config.boolean('CAN_WRITE_FEEDBACK'), false)
 
-      return user => canWriteFeedback && isPrereviewTeam(user)
+      return () => canWriteFeedback
     }),
   ),
   Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
