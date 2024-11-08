@@ -115,7 +115,7 @@ describe('CodeOfConductPage', () => {
     test.prop([
       fc.uuid(),
       fc
-        .tuple(fc.feedbackState(), fc.user())
+        .tuple(fc.commentState(), fc.user())
         .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
       fc.supportedLocale(),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale) =>
@@ -365,7 +365,7 @@ describe('CodeOfConductSubmission', () => {
     test.prop([
       fc.uuid(),
       fc
-        .tuple(fc.feedbackState(), fc.user())
+        .tuple(fc.commentState(), fc.user())
         .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
       fc.supportedLocale(),
       fc.anything(),

@@ -1406,7 +1406,7 @@ export const commentPublished = (): fc.Arbitrary<Feedback.CommentPublished> =>
     })
     .map(data => new Feedback.CommentPublished(data))
 
-export const feedbackState = (): fc.Arbitrary<Feedback.CommentState> =>
+export const commentState = (): fc.Arbitrary<Feedback.CommentState> =>
   fc.oneof(
     commentNotStarted(),
     commentInProgress(),
