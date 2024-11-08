@@ -23,23 +23,23 @@ export const CheckPage = ({
   user: User
 }) =>
   StreamlinePageResponse({
-    title: plainText(translate(locale, 'write-feedback-flow', 'checkTitle')()),
+    title: plainText(translate(locale, 'write-comment-flow', 'checkTitle')()),
     nav: html` <a href="${Routes.WriteFeedbackCodeOfConduct.href({ feedbackId })}" class="back"
-      >${translate(locale, 'write-feedback-flow', 'back')()}</a
+      >${translate(locale, 'write-comment-flow', 'back')()}</a
     >`,
     main: html`
       <single-use-form>
         <form method="post" action="${Routes.WriteFeedbackCheck.href({ feedbackId })}" novalidate>
-          <h1>${translate(locale, 'write-feedback-flow', 'checkTitle')()}</h1>
+          <h1>${translate(locale, 'write-comment-flow', 'checkTitle')()}</h1>
 
           <div class="summary-card">
             <div>
-              <h2>${translate(locale, 'write-feedback-flow', 'checkYourDetailsHeading')()}</h2>
+              <h2>${translate(locale, 'write-comment-flow', 'checkYourDetailsHeading')()}</h2>
             </div>
 
             <dl class="summary-list">
               <div>
-                <dt>${translate(locale, 'write-feedback-flow', 'publishedNameHeading')()}</dt>
+                <dt>${translate(locale, 'write-comment-flow', 'publishedNameHeading')()}</dt>
                 <dd>
                   ${pipe(
                     Match.value(persona),
@@ -72,7 +72,7 @@ export const CheckPage = ({
                     >${rawHtml(
                       translate(
                         locale,
-                        'write-feedback-flow',
+                        'write-comment-flow',
                         'changeName',
                       )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
                     )}</a
@@ -80,10 +80,10 @@ export const CheckPage = ({
                 </dd>
               </div>
               <div>
-                <dt>${translate(locale, 'write-feedback-flow', 'competingInterestsHeading')()}</dt>
+                <dt>${translate(locale, 'write-comment-flow', 'competingInterestsHeading')()}</dt>
                 <dd>
                   ${Option.getOrElse(competingInterests, () =>
-                    translate(locale, 'write-feedback-flow', 'noCompetingInterests')(),
+                    translate(locale, 'write-comment-flow', 'noCompetingInterests')(),
                   )}
                 </dd>
                 <dd>
@@ -91,7 +91,7 @@ export const CheckPage = ({
                     >${rawHtml(
                       translate(
                         locale,
-                        'write-feedback-flow',
+                        'write-comment-flow',
                         'changeCompetingInterests',
                       )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
                     )}</a
@@ -102,14 +102,14 @@ export const CheckPage = ({
           </div>
           <div class="summary-card">
             <div>
-              <h2 id="feedback-label">${translate(locale, 'write-feedback-flow', 'checkYourFeedbackHeading')()}</h2>
+              <h2 id="feedback-label">${translate(locale, 'write-comment-flow', 'checkYourCommentHeading')()}</h2>
 
               <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}"
                 >${rawHtml(
                   translate(
                     locale,
-                    'write-feedback-flow',
-                    'changeFeedback',
+                    'write-comment-flow',
+                    'changeComment',
                   )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
                 )}</a
               >
@@ -118,13 +118,13 @@ export const CheckPage = ({
             <div aria-labelledby="feedback-label" role="region" tabindex="0">${fixHeadingLevels(2, feedback)}</div>
           </div>
 
-          <h2>${translate(locale, 'write-feedback-flow', 'nowPublishHeading')()}</h2>
+          <h2>${translate(locale, 'write-comment-flow', 'nowPublishHeading')()}</h2>
 
           <p>
             ${rawHtml(
               translate(
                 locale,
-                'write-feedback-flow',
+                'write-comment-flow',
                 'nowPublishMessage',
               )({
                 license: text => html`<a href="https://creativecommons.org/licenses/by/4.0/">${text}</a>`.toString(),
@@ -132,7 +132,7 @@ export const CheckPage = ({
             )}
           </p>
 
-          <button>${translate(locale, 'write-feedback-flow', 'publishButton')()}</button>
+          <button>${translate(locale, 'write-comment-flow', 'publishButton')()}</button>
         </form>
       </single-use-form>
     `,

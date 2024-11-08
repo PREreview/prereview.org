@@ -22,13 +22,13 @@ export const CodeOfConductPage = ({
     title: plainText(
       translate(
         locale,
-        'write-feedback-flow',
+        'write-comment-flow',
         'codeOfConductTitle',
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
       <a href="${Routes.WriteFeedbackCompetingInterests.href({ feedbackId })}" class="back"
-        >${translate(locale, 'write-feedback-flow', 'back')()}</a
+        >${translate(locale, 'write-comment-flow', 'back')()}</a
       >
     `,
     main: html`
@@ -36,7 +36,7 @@ export const CodeOfConductPage = ({
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'write-feedback-flow', 'errorSummaryHeading')()}</h2>
+                <h2 id="error-summary-title">${translate(locale, 'write-comment-flow', 'errorSummaryHeading')()}</h2>
                 <ul>
                   ${Either.isLeft(form.agree)
                     ? html`
@@ -47,7 +47,7 @@ export const CodeOfConductPage = ({
                               Match.tag('Missing', () =>
                                 translate(
                                   locale,
-                                  'write-feedback-flow',
+                                  'write-comment-flow',
                                   'errorFollowingCodeOfConduct',
                                 )({ error: () => '' }),
                               ),
@@ -73,14 +73,14 @@ export const CodeOfConductPage = ({
             )}
           >
             <legend>
-              <h1>${translate(locale, 'write-feedback-flow', 'codeOfConductTitle')({ error: () => '' })}</h1>
+              <h1>${translate(locale, 'write-comment-flow', 'codeOfConductTitle')({ error: () => '' })}</h1>
             </legend>
 
             <p id="agree-tip" role="note">
               ${rawHtml(
                 translate(
                   locale,
-                  'write-feedback-flow',
+                  'write-comment-flow',
                   'codeOfConductTip',
                 )({
                   link: text =>
@@ -90,16 +90,16 @@ export const CodeOfConductPage = ({
             </p>
 
             <details>
-              <summary><span>${translate(locale, 'write-feedback-flow', 'examplesExpectedBehaviors')()}</span></summary>
+              <summary><span>${translate(locale, 'write-comment-flow', 'examplesExpectedBehaviors')()}</span></summary>
 
               <div>
                 <ul>
-                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorLanguage')()}</li>
-                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorConstructive')()}</li>
-                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorRespectful')()}</li>
-                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorGraceful')()}</li>
-                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorCommunity')()}</li>
-                  <li>${translate(locale, 'write-feedback-flow', 'expectedBehaviorEmpathy')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'expectedBehaviorLanguage')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'expectedBehaviorConstructive')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'expectedBehaviorRespectful')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'expectedBehaviorGraceful')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'expectedBehaviorCommunity')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'expectedBehaviorEmpathy')()}</li>
                 </ul>
               </div>
             </details>
@@ -108,17 +108,17 @@ export const CodeOfConductPage = ({
               ${
                 // eslint-disable-next-line no-comments/disallowComments
                 // prettier-ignore
-                html`<summary><span>${translate(locale, 'write-feedback-flow', 'examplesUnacceptableBehaviors')()}</span></summary>`
+                html`<summary><span>${translate(locale, 'write-comment-flow', 'examplesUnacceptableBehaviors')()}</span></summary>`
               }
 
               <div>
                 <ul>
-                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorAttacks')()}</li>
-                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorUnconstructive')()}</li>
-                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorHarassment')()}</li>
-                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorConfidential')()}</li>
-                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorSexual')()}</li>
-                  <li>${translate(locale, 'write-feedback-flow', 'unacceptableBehaviorOther')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'unacceptableBehaviorAttacks')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'unacceptableBehaviorUnconstructive')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'unacceptableBehaviorHarassment')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'unacceptableBehaviorConfidential')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'unacceptableBehaviorSexual')()}</li>
+                  <li>${translate(locale, 'write-comment-flow', 'unacceptableBehaviorOther')()}</li>
                 </ul>
               </div>
             </details>
@@ -129,7 +129,7 @@ export const CodeOfConductPage = ({
                     ${pipe(
                       Match.value(form.agree.left),
                       Match.tag('Missing', () =>
-                        translate(locale, 'write-feedback-flow', 'errorFollowingCodeOfConduct'),
+                        translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct'),
                       ),
                       Match.exhaustive,
                       Function.apply({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
@@ -151,12 +151,12 @@ export const CodeOfConductPage = ({
                   Match.orElse(() => ''),
                 )}
               />
-              <span>${translate(locale, 'write-feedback-flow', 'followingCodeOfConduct')()} </span>
+              <span>${translate(locale, 'write-comment-flow', 'followingCodeOfConduct')()} </span>
             </label>
           </fieldset>
         </div>
 
-        <button>${translate(locale, 'write-feedback-flow', 'saveContinueButton')()}</button>
+        <button>${translate(locale, 'write-comment-flow', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

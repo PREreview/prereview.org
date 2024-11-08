@@ -82,7 +82,7 @@ test.extend(canLogIn).extend(canWriteFeedback).extend(willPublishFeedback)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
 
-    await page.getByLabel('Write your feedback').click()
+    await page.getByLabel('Write your comment').click()
     await page.keyboard.type('# Some title')
     await page.keyboard.press('Enter')
     await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
@@ -97,9 +97,9 @@ test.extend(canLogIn).extend(canWriteFeedback).extend(willPublishFeedback)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('button', { name: 'Publish feedback' }).click()
+    await page.getByRole('button', { name: 'Publish comment' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your feedback')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your comment')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('link', { name: 'Continue' })).not.toBeVisible()
@@ -109,11 +109,11 @@ test.extend(canLogIn).extend(canWriteFeedback).extend(willPublishFeedback)(
       await expect(async () => {
         await page.getByRole('link', { name: 'Reload page' }).click()
 
-        await expect(page.getByRole('heading', { level: 1 })).not.toHaveText('We’re publishing your feedback')
+        await expect(page.getByRole('heading', { level: 1 })).not.toHaveText('We’re comment your comment')
       }).toPass()
     }
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Feedback published')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Comment published')
   },
 )
 
@@ -190,7 +190,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
-    await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -199,19 +199,19 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('region', { name: 'Your feedback' })).toContainText(
+    await expect(page.getByRole('region', { name: 'Your comment' })).toContainText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
 
-    await page.getByRole('link', { name: 'Change feedback' }).click()
+    await page.getByRole('link', { name: 'Change comment' }).click()
     await page.waitForLoadState()
 
     await page
-      .getByLabel('Write your feedback')
+      .getByLabel('Write your comment')
       .fill('Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('region', { name: 'Your feedback' })).toContainText(
+    await expect(page.getByRole('region', { name: 'Your comment' })).toContainText(
       'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
     )
   },
@@ -290,7 +290,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
-    await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -383,7 +383,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
-    await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -393,7 +393,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText(
-      'Competing interests The author of this feedback declares that they have no competing interests.',
+      'Competing interests The author of this comment declares that they have no competing interests.',
     )
 
     await page.getByRole('link', { name: 'Change competing interests' }).click()
@@ -479,12 +479,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
-    await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.goto('/reviews/1061864')
     await page.getByRole('link', { name: 'Write a comment' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write feedback')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a comment')
     await expect(page.getByRole('main')).toContainText('carry on')
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -566,7 +566,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
-    await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -575,7 +575,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your feedback')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your comment')
 
     await page.goBack()
 
@@ -592,11 +592,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goBack()
 
     if (javaScriptEnabled) {
-      await expect(page.getByLabel('Write your feedback')).toHaveText(
+      await expect(page.getByLabel('Write your comment')).toHaveText(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       )
     } else {
-      await expect(page.getByLabel('Write your feedback')).toHaveValue(
+      await expect(page.getByLabel('Write your comment')).toHaveValue(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       )
     }
@@ -680,7 +680,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
-    await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -689,7 +689,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your feedback')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your comment')
 
     await page.getByRole('navigation').getByRole('link', { name: 'Back' }).click()
 
@@ -706,11 +706,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.getByRole('navigation').getByRole('link', { name: 'Back' }).click()
 
     if (javaScriptEnabled) {
-      await expect(page.getByLabel('Write your feedback')).toHaveText(
+      await expect(page.getByLabel('Write your comment')).toHaveText(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       )
     } else {
-      await expect(page.getByLabel('Write your feedback')).toHaveValue(
+      await expect(page.getByLabel('Write your comment')).toHaveValue(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       )
     }
@@ -789,12 +789,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
 
     await page.goto('/reviews/1061864/write-feedback')
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write feedback')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a comment')
     await expect(page.getByRole('main')).not.toContainText('ORCID')
 
     await page.getByRole('button', { name: 'Start now' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write your feedback')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write your comment')
   },
 )
 
@@ -878,11 +878,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     } else {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
-    await expect(page.getByLabel('Write your feedback')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page.getByLabel('Write your comment')).toHaveAttribute('aria-invalid', 'true')
 
-    await page.getByRole('link', { name: 'Enter your feedback' }).click()
+    await page.getByRole('link', { name: 'Enter your comment' }).click()
 
-    await expect(page.getByLabel('Write your feedback')).toBeFocused()
+    await expect(page.getByLabel('Write your comment')).toBeFocused()
   },
 )
 
@@ -959,7 +959,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
-    await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1053,7 +1053,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
-    await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1164,7 +1164,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
     await page.goto('/reviews/1061864/write-feedback')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
-    await page.getByLabel('Write your feedback').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()

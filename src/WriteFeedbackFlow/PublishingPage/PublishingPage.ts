@@ -6,26 +6,26 @@ import type { Uuid } from '../../types/index.js'
 
 export const PublishingPage = ({ feedbackId, locale }: { feedbackId: Uuid.Uuid; locale: SupportedLocale }) =>
   StreamlinePageResponse({
-    title: plainText(translate(locale, 'write-feedback-flow', 'publishingTitle')()),
+    title: plainText(translate(locale, 'write-comment-flow', 'publishingTitle')()),
     main: html`
-      <h1>${translate(locale, 'write-feedback-flow', 'publishingTitle')()}</h1>
+      <h1>${translate(locale, 'write-comment-flow', 'publishingTitle')()}</h1>
 
       <poll-redirect>
         <div>
-          <p>${translate(locale, 'write-feedback-flow', 'publishingSeeShortlyMessage')()}</p>
+          <p>${translate(locale, 'write-comment-flow', 'publishingSeeShortlyMessage')()}</p>
 
           <a href="${Routes.WriteFeedbackPublishing.href({ feedbackId })}" class="button"
-            >${translate(locale, 'write-feedback-flow', 'reloadPageButton')()}</a
+            >${translate(locale, 'write-comment-flow', 'reloadPageButton')()}</a
           >
         </div>
 
         <div hidden class="loading">
-          <p>${translate(locale, 'write-feedback-flow', 'publishingSeeShortlyMessage')()}</p>
+          <p>${translate(locale, 'write-comment-flow', 'publishingSeeShortlyMessage')()}</p>
         </div>
 
         <div hidden>
           <a href="${Routes.WriteFeedbackPublished.href({ feedbackId })}" class="button"
-            >${translate(locale, 'write-feedback-flow', 'continueButton')()}</a
+            >${translate(locale, 'write-comment-flow', 'continueButton')()}</a
           >
         </div>
       </poll-redirect>

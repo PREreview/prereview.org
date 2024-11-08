@@ -20,14 +20,14 @@ export const WriteFeedbackPage = ({
   user?: User
 }) =>
   StreamlinePageResponse({
-    title: plainText(translate(locale, 'write-feedback-flow', 'writeFeedbackTitle')()),
+    title: plainText(translate(locale, 'write-comment-flow', 'writeCommentTitle')()),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"
-        >${translate(locale, 'write-feedback-flow', 'backToPrereview')()}</a
+        >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,
     main: html`
-      <h1>${translate(locale, 'write-feedback-flow', 'writeFeedbackTitle')()}</h1>
+      <h1>${translate(locale, 'write-comment-flow', 'writeCommentTitle')()}</h1>
 
       <article class="preview" tabindex="0" aria-labelledby="prereview-title">
         <header>
@@ -142,7 +142,7 @@ export const WriteFeedbackPage = ({
         ${rawHtml(
           translate(
             locale,
-            'write-feedback-flow',
+            'write-comment-flow',
             'youCanWrite',
           )({
             preprint: html`<cite
@@ -157,19 +157,19 @@ export const WriteFeedbackPage = ({
       ${user
         ? ''
         : html`
-            <h2>${translate(locale, 'write-feedback-flow', 'beforeStartHeading')()}</h2>
+            <h2>${translate(locale, 'write-comment-flow', 'beforeStartHeading')()}</h2>
 
-            <p>${translate(locale, 'write-feedback-flow', 'orcidLogIn')()}</p>
+            <p>${translate(locale, 'write-comment-flow', 'orcidLogIn')()}</p>
 
             <details>
-              <summary><span>${translate(locale, 'write-feedback-flow', 'whatIsOrcidHeading')()}</span></summary>
+              <summary><span>${translate(locale, 'write-comment-flow', 'whatIsOrcidHeading')()}</span></summary>
 
               <div>
                 <p>
                   ${rawHtml(
                     translate(
                       locale,
-                      'write-feedback-flow',
+                      'write-comment-flow',
                       'whatIsOrcid',
                     )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString() }),
                   )}
@@ -179,7 +179,7 @@ export const WriteFeedbackPage = ({
           `}
 
       <a href="${Routes.WriteFeedbackStartNow.href({ id: prereview.id })}" role="button" draggable="false"
-        >${translate(locale, 'write-feedback-flow', 'startNowButton')()}</a
+        >${translate(locale, 'write-comment-flow', 'startNowButton')()}</a
       >
     `,
     canonical: Routes.WriteFeedback.href({ id: prereview.id }),

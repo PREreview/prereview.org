@@ -1,6 +1,6 @@
 {
-  "writeFeedbackTitle": {
-    "message": "Write feedback"
+  "writeCommentTitle": {
+    "message": "Write a comment"
   },
   "back": {
     "message": "Back"
@@ -9,7 +9,7 @@
     "message": "Back to PREreview"
   },
   "youCanWrite": {
-    "message": "You can write feedback on this PREreview of {preprint}."
+    "message": "You can write a comment on this PREreview of {preprint}."
   },
   "beforeStartHeading": {
     "message": "Before you start"
@@ -36,16 +36,16 @@
     "message": "Reload page"
   },
   "carryOnMessage": {
-    "message": "As you’ve already started feedback on this PREreview of {preprint}, we’ll take you to the next step so you can carry on."
+    "message": "As you’ve already started a comment on this PREreview of {preprint}, we’ll take you to the next step so you can carry on."
   },
-  "enterYourFeedbackTitle": {
-    "message": "<error>Error:</error> Write your feedback"
+  "enterYourCommentTitle": {
+    "message": "<error>Error:</error> Write your comment"
   },
   "errorSummaryHeading": {
     "message": "There is a problem"
   },
-  "errorEnterFeedback": {
-    "message": "<error>Error:</error> Enter your feedback"
+  "errorEnterComment": {
+    "message": "<error>Error:</error> Enter your comment"
   },
   "whatNameTitle": {
     "message": "<error>Error:</error> What name would you like to use?"
@@ -66,10 +66,10 @@
     "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability."
   },
   "linkToOrcidId": {
-    "message": "We’ll link your feedback to your ORCID iD."
+    "message": "We’ll link your comment to your ORCID iD."
   },
   "linkToPseudonym": {
-    "message": "We’ll only link your feedback to others that also use your pseudonym."
+    "message": "We’ll only link your comment to others that also use your pseudonym."
   },
   "competingInterestsTitle": {
     "message": "<error>Error:</error> Do you have any competing interests?"
@@ -81,7 +81,7 @@
     "message": "<error>Error:</error> Enter details of your competing interests"
   },
   "competingInterestsTip": {
-    "message": "A competing interest is anything that could interfere with the objective of the feedback on a PREreview."
+    "message": "A competing interest is anything that could interfere with the objective of the comment on a PREreview."
   },
   "examplesCompetingInterests": {
     "message": "Examples"
@@ -174,7 +174,7 @@
     "message": "I’m following the Code of Conduct"
   },
   "checkTitle": {
-    "message": "Check your feedback"
+    "message": "Check your comment"
   },
   "checkYourDetailsHeading": {
     "message": "Your details"
@@ -192,31 +192,31 @@
     "message": "Change <visuallyHidden>competing interests</visuallyHidden>"
   },
   "noCompetingInterests": {
-    "message": "The author of this feedback declares that they have no competing interests."
+    "message": "The author of this comment declares that they have no competing interests."
   },
-  "checkYourFeedbackHeading": {
-    "message": "Your feedback"
+  "checkYourCommentHeading": {
+    "message": "Your comment"
   },
-  "changeFeedback": {
-    "message": "Change <visuallyHidden>feedback</visuallyHidden>"
+  "changeComment": {
+    "message": "Change <visuallyHidden>comment</visuallyHidden>"
   },
   "nowPublishHeading": {
-    "message": "Now publish your feedback"
+    "message": "Now publish your comment"
   },
   "nowPublishMessage": {
-    "message": "We will assign your feedback a DOI (a permanent identifier) and make it publicly available under a <license>CC BY 4.0 license</license>."
+    "message": "We will assign your comment a DOI (a permanent identifier) and make it publicly available under a <license>CC BY 4.0 license</license>."
   },
   "publishButton": {
-    "message": "Publish feedback"
+    "message": "Publish comment"
   },
   "publishingTitle": {
-    "message": "We’re publishing your feedback"
+    "message": "We’re publishing your comment"
   },
   "publishingSeeShortlyMessage": {
-    "message": "You’ll be able to see your feedback shortly."
+    "message": "You’ll be able to see your comment shortly."
   },
   "publishedTitle": {
-    "message": "Feedback published"
+    "message": "Comment published"
   },
   "publishedYourDoi": {
     "message": "Your DOI {doi}"
@@ -225,6 +225,6 @@
     "message": "What happens next"
   },
   "publishedSeeShortlyMessage": {
-    "message": "You’ll be able to see your feedback shortly."
+    "message": "You’ll be able to see your comment shortly."
   }
 }

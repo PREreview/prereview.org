@@ -24,13 +24,13 @@ export const ChoosePersonaPage = ({
     title: plainText(
       translate(
         locale,
-        'write-feedback-flow',
+        'write-comment-flow',
         'whatNameTitle',
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
       <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" class="back"
-        >${translate(locale, 'write-feedback-flow', 'back')()}</a
+        >${translate(locale, 'write-comment-flow', 'back')()}</a
       >
     `,
     main: html`
@@ -38,7 +38,7 @@ export const ChoosePersonaPage = ({
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'write-feedback-flow', 'errorSummaryHeading')()}</h2>
+                <h2 id="error-summary-title">${translate(locale, 'write-comment-flow', 'errorSummaryHeading')()}</h2>
                 <ul>
                   ${Either.isLeft(form.persona)
                     ? html`
@@ -47,7 +47,7 @@ export const ChoosePersonaPage = ({
                             ${pipe(
                               Match.value(form.persona.left),
                               Match.tag('Missing', () =>
-                                translate(locale, 'write-feedback-flow', 'errorSelectName')({ error: () => '' }),
+                                translate(locale, 'write-comment-flow', 'errorSelectName')({ error: () => '' }),
                               ),
                               Match.exhaustive,
                             )}
@@ -71,20 +71,20 @@ export const ChoosePersonaPage = ({
             )}
           >
             <legend>
-              <h1>${translate(locale, 'write-feedback-flow', 'whatNameTitle')({ error: () => '' })}</h1>
+              <h1>${translate(locale, 'write-comment-flow', 'whatNameTitle')({ error: () => '' })}</h1>
             </legend>
 
-            <p id="persona-tip" role="note">${translate(locale, 'write-feedback-flow', 'whichNameTip')()}</p>
+            <p id="persona-tip" role="note">${translate(locale, 'write-comment-flow', 'whichNameTip')()}</p>
 
             <details>
-              <summary><span>${translate(locale, 'write-feedback-flow', 'whatIsPseudonym')()}</span></summary>
+              <summary><span>${translate(locale, 'write-comment-flow', 'whatIsPseudonym')()}</span></summary>
 
               <div>
                 <p>
                   ${rawHtml(
                     translate(
                       locale,
-                      'write-feedback-flow',
+                      'write-comment-flow',
                       'whatIsPseudonymDefinition',
                     )({
                       pseudonym: user.pseudonym.replace(' ', '&nbsp;'),
@@ -93,7 +93,7 @@ export const ChoosePersonaPage = ({
                   )}
                 </p>
 
-                <p>${translate(locale, 'write-feedback-flow', 'whatIsPseudonymAccountability')()}</p>
+                <p>${translate(locale, 'write-comment-flow', 'whatIsPseudonymAccountability')()}</p>
               </div>
             </details>
 
@@ -102,7 +102,7 @@ export const ChoosePersonaPage = ({
                   <div class="error-message" id="persona-error">
                     ${pipe(
                       Match.value(form.persona.left),
-                      Match.tag('Missing', () => translate(locale, 'write-feedback-flow', 'errorSelectName')),
+                      Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorSelectName')),
                       Match.exhaustive,
                       Function.apply({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
                       rawHtml,
@@ -128,9 +128,7 @@ export const ChoosePersonaPage = ({
                   />
                   <span>${user.name}</span>
                 </label>
-                <p id="persona-tip-public" role="note">
-                  ${translate(locale, 'write-feedback-flow', 'linkToOrcidId')()}
-                </p>
+                <p id="persona-tip-public" role="note">${translate(locale, 'write-comment-flow', 'linkToOrcidId')()}</p>
               </li>
               <li>
                 <label>
@@ -151,14 +149,14 @@ export const ChoosePersonaPage = ({
                   <span>${user.pseudonym}</span>
                 </label>
                 <p id="persona-tip-pseudonym" role="note">
-                  ${translate(locale, 'write-feedback-flow', 'linkToPseudonym')()}
+                  ${translate(locale, 'write-comment-flow', 'linkToPseudonym')()}
                 </p>
               </li>
             </ol>
           </fieldset>
         </div>
 
-        <button>${translate(locale, 'write-feedback-flow', 'saveContinueButton')()}</button>
+        <button>${translate(locale, 'write-comment-flow', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

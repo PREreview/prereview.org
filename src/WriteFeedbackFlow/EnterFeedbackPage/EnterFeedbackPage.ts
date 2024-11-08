@@ -26,13 +26,13 @@ export const EnterFeedbackPage = ({
     title: plainText(
       translate(
         locale,
-        'write-feedback-flow',
-        'enterYourFeedbackTitle',
+        'write-comment-flow',
+        'enterYourCommentTitle',
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereviewId })}" class="back"
-        >${translate(locale, 'write-feedback-flow', 'backToPrereview')()}</a
+        >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,
     main: html`
@@ -40,7 +40,7 @@ export const EnterFeedbackPage = ({
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'write-feedback-flow', 'errorSummaryHeading')()}</h2>
+                <h2 id="error-summary-title">${translate(locale, 'write-comment-flow', 'errorSummaryHeading')()}</h2>
                 <ul>
                   ${Either.isLeft(form.feedback)
                     ? html`
@@ -49,7 +49,7 @@ export const EnterFeedbackPage = ({
                             ${pipe(
                               Match.value(form.feedback.left),
                               Match.tag('Missing', () =>
-                                translate(locale, 'write-feedback-flow', 'errorEnterFeedback')({ error: () => '' }),
+                                translate(locale, 'write-comment-flow', 'errorEnterComment')({ error: () => '' }),
                               ),
                               Match.exhaustive,
                             )}
@@ -65,7 +65,7 @@ export const EnterFeedbackPage = ({
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
           <h1>
             <label id="feedback-label" for="feedback"
-              >${translate(locale, 'write-feedback-flow', 'enterYourFeedbackTitle')({ error: () => '' })}</label
+              >${translate(locale, 'write-comment-flow', 'enterYourCommentTitle')({ error: () => '' })}</label
             >
           </h1>
 
@@ -74,7 +74,7 @@ export const EnterFeedbackPage = ({
                 <div class="error-message" id="feedback-error">
                   ${pipe(
                     Match.value(form.feedback.left),
-                    Match.tag('Missing', () => translate(locale, 'write-feedback-flow', 'errorEnterFeedback')),
+                    Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterComment')),
                     Match.exhaustive,
                     Function.apply({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
                     rawHtml,
@@ -115,7 +115,7 @@ ${Turndown.turndown(form.feedback.toString())}</textarea
           </html-editor>
         </div>
 
-        <button>${translate(locale, 'write-feedback-flow', 'saveContinueButton')()}</button>
+        <button>${translate(locale, 'write-comment-flow', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

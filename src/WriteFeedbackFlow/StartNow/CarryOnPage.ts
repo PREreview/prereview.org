@@ -19,20 +19,20 @@ export const CarryOnPage = ({
   locale: SupportedLocale
 }) =>
   StreamlinePageResponse({
-    title: plainText(translate(locale, 'write-feedback-flow', 'writeFeedbackTitle')()),
+    title: plainText(translate(locale, 'write-comment-flow', 'writeCommentTitle')()),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"
-        >${translate(locale, 'write-feedback-flow', 'backToPrereview')()}</a
+        >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,
     main: html`
-      <h1>${translate(locale, 'write-feedback-flow', 'writeFeedbackTitle')()}</h1>
+      <h1>${translate(locale, 'write-comment-flow', 'writeCommentTitle')()}</h1>
 
       <p>
         ${rawHtml(
           translate(
             locale,
-            'write-feedback-flow',
+            'write-comment-flow',
             'carryOnMessage',
           )({
             preprint: html`<cite
@@ -45,7 +45,7 @@ export const CarryOnPage = ({
       </p>
 
       <a href="${nextPage.href({ feedbackId })}" role="button" draggable="false"
-        >${translate(locale, 'write-feedback-flow', 'continueButton')()}</a
+        >${translate(locale, 'write-comment-flow', 'continueButton')()}</a
       >
     `,
     canonical: Routes.WriteFeedbackStartNow.href({ id: prereview.id }),

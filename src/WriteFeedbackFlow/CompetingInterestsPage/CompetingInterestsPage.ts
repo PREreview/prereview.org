@@ -21,13 +21,13 @@ export const CompetingInterestsPage = ({
     title: plainText(
       translate(
         locale,
-        'write-feedback-flow',
+        'write-comment-flow',
         'competingInterestsTitle',
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
       <a href="${Routes.WriteFeedbackChoosePersona.href({ feedbackId })}" class="back"
-        >${translate(locale, 'write-feedback-flow', 'back')()}</a
+        >${translate(locale, 'write-comment-flow', 'back')()}</a
       >
     `,
     main: html`
@@ -35,7 +35,7 @@ export const CompetingInterestsPage = ({
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'write-feedback-flow', 'errorSummaryHeading')()}</h2>
+                <h2 id="error-summary-title">${translate(locale, 'write-comment-flow', 'errorSummaryHeading')()}</h2>
                 <ul>
                   ${Either.isLeft(form.competingInterests)
                     ? html`
@@ -44,11 +44,7 @@ export const CompetingInterestsPage = ({
                             ${pipe(
                               Match.value(form.competingInterests.left),
                               Match.tag('Missing', () =>
-                                translate(
-                                  locale,
-                                  'write-feedback-flow',
-                                  'errorCompetingInterests',
-                                )({ error: () => '' }),
+                                translate(locale, 'write-comment-flow', 'errorCompetingInterests')({ error: () => '' }),
                               ),
                               Match.exhaustive,
                             )}
@@ -65,7 +61,7 @@ export const CompetingInterestsPage = ({
                               Match.tag('Missing', () =>
                                 translate(
                                   locale,
-                                  'write-feedback-flow',
+                                  'write-comment-flow',
                                   'errorCompetingInterestsDetails',
                                 )({ error: () => '' }),
                               ),
@@ -92,30 +88,30 @@ export const CompetingInterestsPage = ({
               )}
             >
               <legend>
-                <h1>${translate(locale, 'write-feedback-flow', 'competingInterestsTitle')({ error: () => '' })}</h1>
+                <h1>${translate(locale, 'write-comment-flow', 'competingInterestsTitle')({ error: () => '' })}</h1>
               </legend>
 
               <p id="competing-interests-tip" role="note">
-                ${translate(locale, 'write-feedback-flow', 'competingInterestsTip')()}
+                ${translate(locale, 'write-comment-flow', 'competingInterestsTip')()}
               </p>
 
               <details>
                 ${
                   // eslint-disable-next-line no-comments/disallowComments
                   // prettier-ignore
-                  html`<summary><span>${translate(locale, 'write-feedback-flow', 'examplesCompetingInterests')()}</span></summary>`
+                  html`<summary><span>${translate(locale, 'write-comment-flow', 'examplesCompetingInterests')()}</span></summary>`
                 }
 
                 <div>
                   <ul>
-                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsRelationship')()}</li>
-                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsCompetitor')()}</li>
-                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsWorkedWith')()}</li>
-                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsWorkPlace')()}</li>
-                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsCollaborate')()}</li>
-                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsPublishedWith')()}</li>
-                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsGrantWith')()}</li>
-                    <li>${translate(locale, 'write-feedback-flow', 'competingInterestsCommenter')()}</li>
+                    <li>${translate(locale, 'write-comment-flow', 'competingInterestsRelationship')()}</li>
+                    <li>${translate(locale, 'write-comment-flow', 'competingInterestsCompetitor')()}</li>
+                    <li>${translate(locale, 'write-comment-flow', 'competingInterestsWorkedWith')()}</li>
+                    <li>${translate(locale, 'write-comment-flow', 'competingInterestsWorkPlace')()}</li>
+                    <li>${translate(locale, 'write-comment-flow', 'competingInterestsCollaborate')()}</li>
+                    <li>${translate(locale, 'write-comment-flow', 'competingInterestsPublishedWith')()}</li>
+                    <li>${translate(locale, 'write-comment-flow', 'competingInterestsGrantWith')()}</li>
+                    <li>${translate(locale, 'write-comment-flow', 'competingInterestsCommenter')()}</li>
                   </ul>
                 </div>
               </details>
@@ -125,7 +121,7 @@ export const CompetingInterestsPage = ({
                     <div class="error-message" id="competing-interests-error">
                       ${pipe(
                         Match.value(form.competingInterests.left),
-                        Match.tag('Missing', () => translate(locale, 'write-feedback-flow', 'errorCompetingInterests')),
+                        Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorCompetingInterests')),
                         Match.exhaustive,
                         Function.apply({
                           error: text => html`<span class="visually-hidden">${text}</span>`.toString(),
@@ -150,7 +146,7 @@ export const CompetingInterestsPage = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${translate(locale, 'write-feedback-flow', 'competingInterestsNo')()}</span>
+                    <span>${translate(locale, 'write-comment-flow', 'competingInterestsNo')()}</span>
                   </label>
                 </li>
                 <li>
@@ -167,7 +163,7 @@ export const CompetingInterestsPage = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${translate(locale, 'write-feedback-flow', 'competingInterestsYes')()}</span>
+                    <span>${translate(locale, 'write-comment-flow', 'competingInterestsYes')()}</span>
                   </label>
                   <div class="conditional" id="competing-interests-details-control">
                     <div
@@ -178,7 +174,7 @@ export const CompetingInterestsPage = ({
                       )}
                     >
                       <label for="competing-interests-details" class="textarea"
-                        >${translate(locale, 'write-feedback-flow', 'competingInterestsDetailsTitle')()}</label
+                        >${translate(locale, 'write-comment-flow', 'competingInterestsDetailsTitle')()}</label
                       >
 
                       ${form._tag === 'InvalidForm' && Either.isLeft(form.competingInterestsDetails)
@@ -187,7 +183,7 @@ export const CompetingInterestsPage = ({
                               ${pipe(
                                 Match.value(form.competingInterestsDetails.left),
                                 Match.tag('Missing', () =>
-                                  translate(locale, 'write-feedback-flow', 'errorCompetingInterestsDetails'),
+                                  translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails'),
                                 ),
                                 Match.exhaustive,
                                 Function.apply({
@@ -223,7 +219,7 @@ ${pipe(
           </conditional-inputs>
         </div>
 
-        <button>${translate(locale, 'write-feedback-flow', 'saveContinueButton')()}</button>
+        <button>${translate(locale, 'write-comment-flow', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

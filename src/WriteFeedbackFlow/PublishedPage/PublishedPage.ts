@@ -18,28 +18,28 @@ export const PublishedPage = ({
   prereviewId: number
 }) =>
   StreamlinePageResponse({
-    title: plainText(translate(locale, 'write-feedback-flow', 'publishedTitle')()),
+    title: plainText(translate(locale, 'write-comment-flow', 'publishedTitle')()),
     main: html`
       <div class="panel">
-        <h1>${translate(locale, 'write-feedback-flow', 'publishedTitle')()}</h1>
+        <h1>${translate(locale, 'write-comment-flow', 'publishedTitle')()}</h1>
 
         <div>
           ${rawHtml(
             translate(
               locale,
-              'write-feedback-flow',
+              'write-comment-flow',
               'publishedYourDoi',
             )({ doi: html`<div><strong class="doi" translate="no">${doi}</strong></div>`.toString() }),
           )}
         </div>
       </div>
 
-      <h2>${translate(locale, 'write-feedback-flow', 'publishedHappensNextHeading')()}</h2>
+      <h2>${translate(locale, 'write-comment-flow', 'publishedHappensNextHeading')()}</h2>
 
-      <p>${translate(locale, 'write-feedback-flow', 'publishedSeeShortlyMessage')()}</p>
+      <p>${translate(locale, 'write-comment-flow', 'publishedSeeShortlyMessage')()}</p>
 
       <a href="${format(Routes.reviewMatch.formatter, { id: prereviewId })}" class="button"
-        >${translate(locale, 'write-feedback-flow', 'backToPrereview')()}</a
+        >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,
     canonical: Routes.WriteFeedbackPublished.href({ feedbackId }),

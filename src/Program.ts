@@ -150,11 +150,11 @@ const assignFeedbackADoi = Layer.effect(
 
         const text = html`${feedback.feedback}
 
-          <h2>${translate(DefaultLocale, 'write-feedback-flow', 'competingInterestsHeading')()}</h2>
+          <h2>${translate(DefaultLocale, 'write-comment-flow', 'competingInterestsHeading')()}</h2>
 
           <p>
             ${Option.getOrElse(feedback.competingInterests, () =>
-              translate(DefaultLocale, 'write-feedback-flow', 'noCompetingInterests')(),
+              translate(DefaultLocale, 'write-comment-flow', 'noCompetingInterests')(),
             )}
           </p>`
 
