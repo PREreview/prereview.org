@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Record, TestContext } from 'effect'
+import { Effect, identity, Record, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale, LoggedInUser } from '../../src/Context.js'
 import { CanWriteFeedback } from '../../src/feature-flags.js'
@@ -12,9 +12,9 @@ import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('WriteFeedbackPage', () => {
-  describe('when there is a user', () => {
-    describe('when the user can write feedback', () => {
-      describe('when the data can be loaded', () => {
+  describe('when the user can write feedback', () => {
+    describe('when the data can be loaded', () => {
+      describe('when the user is logged in', () => {
         test.prop([fc.integer(), fc.supportedLocale(), fc.user(), fc.prereview()])(
           "when they haven't started feedback",
           (id, locale, user, prereview) =>
@@ -77,7 +77,36 @@ describe('WriteFeedbackPage', () => {
         )
       })
 
-      test.prop([fc.integer(), fc.supportedLocale(), fc.user()])('when the PREreview was removed', (id, locale, user) =>
+      test.prop([fc.integer(), fc.supportedLocale(), fc.prereview()])(
+        "when the user isn't logged in",
+        (id, locale, prereview) =>
+          Effect.gen(function* () {
+            const actual = yield* _.WriteFeedbackPage({ id })
+
+            expect(actual).toStrictEqual({
+              _tag: 'StreamlinePageResponse',
+              canonical: Routes.WriteFeedback.href({ id: prereview.id }),
+              status: StatusCodes.OK,
+              title: expect.anything(),
+              nav: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(
+            Effect.provideService(Locale, locale),
+            Effect.provideService(Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+            Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
+            Effect.provideService(CanWriteFeedback, () => true),
+            Effect.provide(TestContext.TestContext),
+            Effect.runPromise,
+          ),
+      )
+    })
+
+    test.prop([fc.integer(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })])(
+      'when the PREreview was removed',
+      (id, locale, user) =>
         Effect.gen(function* () {
           const actual = yield* _.WriteFeedbackPage({ id })
 
@@ -94,13 +123,15 @@ describe('WriteFeedbackPage', () => {
           Effect.provideService(Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewWasRemoved())),
           Effect.provideService(CanWriteFeedback, () => true),
-          Effect.provideService(LoggedInUser, user),
+          user ? Effect.provideService(LoggedInUser, user) : identity,
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
         ),
-      )
+    )
 
-      test.prop([fc.integer(), fc.supportedLocale(), fc.user()])("when the PREreview isn't found", (id, locale, user) =>
+    test.prop([fc.integer(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })])(
+      "when the PREreview isn't found",
+      (id, locale, user) =>
         Effect.gen(function* () {
           const actual = yield* _.WriteFeedbackPage({ id })
 
@@ -117,47 +148,21 @@ describe('WriteFeedbackPage', () => {
           Effect.provideService(Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsNotFound())),
           Effect.provideService(CanWriteFeedback, () => true),
-          Effect.provideService(LoggedInUser, user),
+          user ? Effect.provideService(LoggedInUser, user) : identity,
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
         ),
-      )
+    )
 
-      test.prop([fc.integer(), fc.supportedLocale(), fc.user()])(
-        "when the PREreview can't be loaded",
-        (id, locale, user) =>
-          Effect.gen(function* () {
-            const actual = yield* _.WriteFeedbackPage({ id })
-
-            expect(actual).toStrictEqual({
-              _tag: 'PageResponse',
-              status: StatusCodes.SERVICE_UNAVAILABLE,
-              title: expect.anything(),
-              main: expect.anything(),
-              skipToLabel: 'main',
-              js: [],
-            })
-          }).pipe(
-            Effect.provideService(Locale, locale),
-            Effect.provideService(Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
-            Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsUnavailable())),
-            Effect.provideService(CanWriteFeedback, () => true),
-            Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
-          ),
-      )
-    })
-
-    test.prop([fc.integer(), fc.supportedLocale(), fc.user()])(
-      'when the user cannot write feedback',
+    test.prop([fc.integer(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })])(
+      "when the PREreview can't be loaded",
       (id, locale, user) =>
         Effect.gen(function* () {
           const actual = yield* _.WriteFeedbackPage({ id })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.SERVICE_UNAVAILABLE,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -166,29 +171,37 @@ describe('WriteFeedbackPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
-          Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
-          Effect.provideService(CanWriteFeedback, () => false),
-          Effect.provideService(LoggedInUser, user),
+          Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsUnavailable())),
+          Effect.provideService(CanWriteFeedback, () => true),
+          user ? Effect.provideService(LoggedInUser, user) : identity,
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
         ),
     )
   })
 
-  test.prop([fc.integer(), fc.supportedLocale()])("when there isn't a user", (id, locale) =>
-    Effect.gen(function* () {
-      const actual = yield* _.WriteFeedbackPage({ id })
+  test.prop([fc.integer(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })])(
+    'when the user cannot write feedback',
+    (id, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.WriteFeedbackPage({ id })
 
-      expect(actual).toStrictEqual({
-        _tag: 'LogInResponse',
-        location: Routes.WriteFeedback.href({ id }),
-      })
-    }).pipe(
-      Effect.provideService(Locale, locale),
-      Effect.provideService(Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
-      Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
-    ),
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NOT_FOUND,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provideService(Locale, locale),
+        Effect.provideService(Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+        Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
+        Effect.provideService(CanWriteFeedback, () => false),
+        user ? Effect.provideService(LoggedInUser, user) : identity,
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
   )
 })
