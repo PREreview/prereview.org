@@ -35,6 +35,8 @@ export const PublishedPage = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.LogInResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
+        ),
     }),
   )

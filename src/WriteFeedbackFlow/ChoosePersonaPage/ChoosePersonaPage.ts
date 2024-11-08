@@ -29,12 +29,12 @@ export const ChoosePersonaPage = ({
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
-      <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" class="back"
+      <a href="${Routes.WriteCommentEnterComment.href({ commentId: feedbackId })}" class="back"
         >${translate(locale, 'write-comment-flow', 'back')()}</a
       >
     `,
     main: html`
-      <form method="post" action="${Routes.WriteFeedbackChoosePersona.href({ feedbackId })}" novalidate>
+      <form method="post" action="${Routes.WriteCommentChoosePersona.href({ commentId: feedbackId })}" novalidate>
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
@@ -160,6 +160,6 @@ export const ChoosePersonaPage = ({
       </form>
     `,
     skipToLabel: 'form',
-    canonical: Routes.WriteFeedbackChoosePersona.href({ feedbackId }),
+    canonical: Routes.WriteCommentChoosePersona.href({ commentId: feedbackId }),
     js: form._tag === 'InvalidForm' ? ['error-summary.js'] : [],
   })

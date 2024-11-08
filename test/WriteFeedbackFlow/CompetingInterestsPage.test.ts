@@ -24,7 +24,7 @@ describe('CompetingInterestsPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: Routes.WriteFeedbackCompetingInterests.href({ feedbackId }),
+          canonical: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
           status: StatusCodes.OK,
           title: expect.anything(),
           nav: expect.anything(),
@@ -54,7 +54,7 @@ describe('CompetingInterestsPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+          location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -78,7 +78,7 @@ describe('CompetingInterestsPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+          location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -169,7 +169,7 @@ describe('CompetingInterestsPage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteFeedbackCompetingInterests.href({ feedbackId }),
+        location: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -208,7 +208,7 @@ describe('CompetingInterestsSubmission', () => {
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
               location: DecideNextPage.NextPageAfterCommand({ command: 'DeclareCompetingInterests', feedback }).href({
-                feedbackId,
+                commentId: feedbackId,
               }),
             })
 
@@ -290,7 +290,7 @@ describe('CompetingInterestsSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
-            canonical: Routes.WriteFeedbackCompetingInterests.href({ feedbackId }),
+            canonical: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
             status: StatusCodes.BAD_REQUEST,
             title: expect.anything(),
             nav: expect.anything(),
@@ -323,7 +323,7 @@ describe('CompetingInterestsSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+          location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -349,7 +349,7 @@ describe('CompetingInterestsSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+          location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -445,7 +445,7 @@ describe('CompetingInterestsSubmission', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteFeedbackCompetingInterests.href({ feedbackId }),
+        location: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

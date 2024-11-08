@@ -178,11 +178,11 @@ export const WriteFeedbackPage = ({
             </details>
           `}
 
-      <a href="${Routes.WriteFeedbackStartNow.href({ id: prereview.id })}" role="button" draggable="false"
+      <a href="${Routes.WriteCommentStartNow.href({ id: prereview.id })}" role="button" draggable="false"
         >${translate(locale, 'write-comment-flow', 'startNowButton')()}</a
       >
     `,
-    canonical: Routes.WriteFeedback.href({ id: prereview.id }),
+    canonical: Routes.WriteComment.href({ id: prereview.id }),
   })
 
 function formatList(

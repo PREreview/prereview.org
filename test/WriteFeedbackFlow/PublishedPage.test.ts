@@ -23,7 +23,7 @@ describe('PublishedPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: Routes.WriteFeedbackPublished.href({ feedbackId }),
+          canonical: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
           status: StatusCodes.OK,
           title: expect.anything(),
           main: expect.anything(),
@@ -144,7 +144,7 @@ describe('PublishedPage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+        location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

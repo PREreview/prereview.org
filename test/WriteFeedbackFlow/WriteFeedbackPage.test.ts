@@ -23,7 +23,7 @@ describe('WriteFeedbackPage', () => {
 
               expect(actual).toStrictEqual({
                 _tag: 'StreamlinePageResponse',
-                canonical: Routes.WriteFeedback.href({ id: prereview.id }),
+                canonical: Routes.WriteComment.href({ id: prereview.id }),
                 status: StatusCodes.OK,
                 title: expect.anything(),
                 nav: expect.anything(),
@@ -61,7 +61,7 @@ describe('WriteFeedbackPage', () => {
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
-              location: Routes.WriteFeedbackStartNow.href({ id: prereview.id }),
+              location: Routes.WriteCommentStartNow.href({ id: prereview.id }),
             })
           }).pipe(
             Effect.provideService(Locale, locale),
@@ -85,7 +85,7 @@ describe('WriteFeedbackPage', () => {
 
             expect(actual).toStrictEqual({
               _tag: 'StreamlinePageResponse',
-              canonical: Routes.WriteFeedback.href({ id: prereview.id }),
+              canonical: Routes.WriteComment.href({ id: prereview.id }),
               status: StatusCodes.OK,
               title: expect.anything(),
               nav: expect.anything(),

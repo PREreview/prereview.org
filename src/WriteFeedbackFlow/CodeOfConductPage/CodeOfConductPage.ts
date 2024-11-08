@@ -27,12 +27,12 @@ export const CodeOfConductPage = ({
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
-      <a href="${Routes.WriteFeedbackCompetingInterests.href({ feedbackId })}" class="back"
+      <a href="${Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId })}" class="back"
         >${translate(locale, 'write-comment-flow', 'back')()}</a
       >
     `,
     main: html`
-      <form method="post" action="${Routes.WriteFeedbackCodeOfConduct.href({ feedbackId })}" novalidate>
+      <form method="post" action="${Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId })}" novalidate>
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
@@ -160,6 +160,6 @@ export const CodeOfConductPage = ({
       </form>
     `,
     skipToLabel: 'form',
-    canonical: Routes.WriteFeedbackCodeOfConduct.href({ feedbackId }),
+    canonical: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }),
     js: form._tag === 'InvalidForm' ? ['error-summary.js'] : [],
   })

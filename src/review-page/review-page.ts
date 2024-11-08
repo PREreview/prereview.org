@@ -198,7 +198,7 @@ export const createPage = ({
             <article aria-labelledby="feedback-title">
               <h2 id="feedback-title">${translate(locale, 'review-page', 'commentsTitle')()}</h2>
               ${canWriteComments
-                ? html`<a href="${Routes.WriteFeedback.href({ id })}" class="button"
+                ? html`<a href="${Routes.WriteComment.href({ id })}" class="button"
                     >${translate(locale, 'review-page', 'writeCommentButton')()}</a
                   >`
                 : ''}

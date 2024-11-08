@@ -42,5 +42,5 @@ export const PublishedPage = ({
         >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,
-    canonical: Routes.WriteFeedbackPublished.href({ feedbackId }),
+    canonical: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
   })

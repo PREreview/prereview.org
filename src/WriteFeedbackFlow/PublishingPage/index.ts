@@ -32,7 +32,7 @@ export const PublishingPage = ({
     }
 
     if (feedback._tag === 'CommentPublished') {
-      return Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })
+      return Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) })
     }
 
     const locale = yield* Locale
@@ -42,6 +42,8 @@ export const PublishingPage = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.LogInResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
+        ),
     }),
   )

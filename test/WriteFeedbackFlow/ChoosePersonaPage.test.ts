@@ -24,7 +24,7 @@ describe('ChoosePersonaPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: Routes.WriteFeedbackChoosePersona.href({ feedbackId }),
+          canonical: Routes.WriteCommentChoosePersona.href({ commentId: feedbackId }),
           status: StatusCodes.OK,
           title: expect.anything(),
           nav: expect.anything(),
@@ -54,7 +54,7 @@ describe('ChoosePersonaPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+          location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -78,7 +78,7 @@ describe('ChoosePersonaPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+          location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -169,7 +169,7 @@ describe('ChoosePersonaPage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteFeedbackChoosePersona.href({ feedbackId }),
+        location: Routes.WriteCommentChoosePersona.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -205,7 +205,7 @@ describe('ChoosePersonaSubmission', () => {
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
               location: DecideNextPage.NextPageAfterCommand({ command: 'ChoosePersona', feedback }).href({
-                feedbackId,
+                commentId: feedbackId,
               }),
             })
 
@@ -272,7 +272,7 @@ describe('ChoosePersonaSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
-            canonical: Routes.WriteFeedbackChoosePersona.href({ feedbackId }),
+            canonical: Routes.WriteCommentChoosePersona.href({ commentId: feedbackId }),
             status: StatusCodes.BAD_REQUEST,
             title: expect.anything(),
             nav: expect.anything(),
@@ -305,7 +305,7 @@ describe('ChoosePersonaSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+          location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -331,7 +331,7 @@ describe('ChoosePersonaSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+          location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -427,7 +427,7 @@ describe('ChoosePersonaSubmission', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteFeedbackChoosePersona.href({ feedbackId }),
+        location: Routes.WriteCommentChoosePersona.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

@@ -50,10 +50,10 @@ export const CodeOfConductPage = ({
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
       ),
       Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
       ),
       Match.exhaustive,
     )
@@ -61,7 +61,9 @@ export const CodeOfConductPage = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackCodeOfConduct.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.LogInResponse({ location: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }) }),
+        ),
     }),
   )
 
@@ -115,7 +117,7 @@ export const CodeOfConductSubmission = ({
 
                 return Response.RedirectResponse({
                   location: DecideNextPage.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback }).href({
-                    feedbackId,
+                    commentId: feedbackId,
                   }),
                 })
               }),
@@ -134,10 +136,14 @@ export const CodeOfConductSubmission = ({
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
+        ),
       ),
       Match.tag('CommentPublished', () =>
-        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
+        ),
       ),
       Match.exhaustive,
     )
@@ -146,6 +152,8 @@ export const CodeOfConductSubmission = ({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackCodeOfConduct.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.LogInResponse({ location: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }) }),
+        ),
     }),
   )

@@ -36,7 +36,7 @@ export const EnterFeedbackPage = ({
       >
     `,
     main: html`
-      <form method="post" action="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}" novalidate>
+      <form method="post" action="${Routes.WriteCommentEnterComment.href({ commentId: feedbackId })}" novalidate>
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
@@ -119,7 +119,7 @@ ${Turndown.turndown(form.feedback.toString())}</textarea
       </form>
     `,
     skipToLabel: 'form',
-    canonical: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
+    canonical: Routes.WriteCommentEnterComment.href({ commentId: feedbackId }),
     js:
       form._tag === 'InvalidForm'
         ? ['html-editor.js', 'editor-toolbar.js', 'error-summary.js']

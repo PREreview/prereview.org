@@ -14,7 +14,7 @@ export const CarryOnPage = ({
   locale,
 }: {
   feedbackId: Uuid.Uuid
-  nextPage: Routes.Route<{ feedbackId: Uuid.Uuid }>
+  nextPage: Routes.Route<{ commentId: Uuid.Uuid }>
   prereview: Prereview
   locale: SupportedLocale
 }) =>
@@ -44,9 +44,9 @@ export const CarryOnPage = ({
         )}
       </p>
 
-      <a href="${nextPage.href({ feedbackId })}" role="button" draggable="false"
+      <a href="${nextPage.href({ commentId: feedbackId })}" role="button" draggable="false"
         >${translate(locale, 'write-comment-flow', 'continueButton')()}</a
       >
     `,
-    canonical: Routes.WriteFeedbackStartNow.href({ id: prereview.id }),
+    canonical: Routes.WriteCommentStartNow.href({ id: prereview.id }),
   })

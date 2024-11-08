@@ -23,7 +23,7 @@ describe('CheckPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: Routes.WriteFeedbackCheck.href({ feedbackId }),
+          canonical: Routes.WriteCommentCheck.href({ commentId: feedbackId }),
           status: StatusCodes.OK,
           title: expect.anything(),
           nav: expect.anything(),
@@ -53,7 +53,7 @@ describe('CheckPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+          location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -77,7 +77,7 @@ describe('CheckPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+          location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -195,7 +195,7 @@ describe('CheckPage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteFeedbackCheck.href({ feedbackId }),
+        location: Routes.WriteCommentCheck.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -227,7 +227,7 @@ describe('CheckPageSubmission', () => {
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
             status: StatusCodes.SEE_OTHER,
-            location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+            location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
           })
 
           expect(handleFeedbackCommand).toHaveBeenCalledWith({
@@ -282,7 +282,7 @@ describe('CheckPageSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+          location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
@@ -305,7 +305,7 @@ describe('CheckPageSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+          location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
@@ -416,7 +416,7 @@ describe('CheckPageSubmission', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteFeedbackCheck.href({ feedbackId }),
+        location: Routes.WriteCommentCheck.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),

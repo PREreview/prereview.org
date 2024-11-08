@@ -38,33 +38,34 @@ const logRequest = HttpMiddleware.make(app =>
 export const Router = pipe(
   HttpRouter.empty,
   HttpRouter.get(
-    Routes.WriteFeedback.path,
+    Routes.WriteComment.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedback.schema),
+      HttpRouter.schemaParams(Routes.WriteComment.schema),
       Effect.andThen(WriteFeedbackFlow.WriteFeedbackPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.get(
-    Routes.WriteFeedbackStartNow.path,
+    Routes.WriteCommentStartNow.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackStartNow.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentStartNow.schema),
       Effect.andThen(WriteFeedbackFlow.StartNow),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.get(
-    Routes.WriteFeedbackEnterFeedback.path,
+    Routes.WriteCommentEnterComment.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackEnterFeedback.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentEnterComment.schema),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.EnterFeedbackPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.post(
-    Routes.WriteFeedbackEnterFeedback.path,
+    Routes.WriteCommentEnterComment.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackEnterFeedback.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentEnterComment.schema),
       Effect.bind('body', () =>
         Effect.gen(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
@@ -73,22 +74,24 @@ export const Router = pipe(
           return Record.fromEntries(form)
         }),
       ),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.EnterFeedbackSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.get(
-    Routes.WriteFeedbackChoosePersona.path,
+    Routes.WriteCommentChoosePersona.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackChoosePersona.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentChoosePersona.schema),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.ChoosePersonaPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.post(
-    Routes.WriteFeedbackChoosePersona.path,
+    Routes.WriteCommentChoosePersona.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackChoosePersona.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentChoosePersona.schema),
       Effect.bind('body', () =>
         Effect.gen(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
@@ -97,22 +100,24 @@ export const Router = pipe(
           return Record.fromEntries(form)
         }),
       ),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.ChoosePersonaSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.get(
-    Routes.WriteFeedbackCompetingInterests.path,
+    Routes.WriteCommentCompetingInterests.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackCompetingInterests.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentCompetingInterests.schema),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.CompetingInterestsPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.post(
-    Routes.WriteFeedbackCompetingInterests.path,
+    Routes.WriteCommentCompetingInterests.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackCompetingInterests.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentCompetingInterests.schema),
       Effect.bind('body', () =>
         Effect.gen(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
@@ -121,22 +126,24 @@ export const Router = pipe(
           return Record.fromEntries(form)
         }),
       ),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.CompetingInterestsSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.get(
-    Routes.WriteFeedbackCodeOfConduct.path,
+    Routes.WriteCommentCodeOfConduct.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackCodeOfConduct.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentCodeOfConduct.schema),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.CodeOfConductPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.post(
-    Routes.WriteFeedbackCodeOfConduct.path,
+    Routes.WriteCommentCodeOfConduct.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackCodeOfConduct.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentCodeOfConduct.schema),
       Effect.bind('body', () =>
         Effect.gen(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
@@ -145,38 +152,43 @@ export const Router = pipe(
           return Record.fromEntries(form)
         }),
       ),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.CodeOfConductSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.get(
-    Routes.WriteFeedbackCheck.path,
+    Routes.WriteCommentCheck.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackCheck.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentCheck.schema),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.CheckPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.post(
-    Routes.WriteFeedbackCheck.path,
+    Routes.WriteCommentCheck.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackCheck.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentCheck.schema),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.CheckPageSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.get(
-    Routes.WriteFeedbackPublishing.path,
+    Routes.WriteCommentPublishing.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackPublishing.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentPublishing.schema),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.PublishingPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
   HttpRouter.get(
-    Routes.WriteFeedbackPublished.path,
+    Routes.WriteCommentPublished.path,
     pipe(
-      HttpRouter.schemaParams(Routes.WriteFeedbackPublished.schema),
+      HttpRouter.schemaParams(Routes.WriteCommentPublished.schema),
+      Effect.let('feedbackId', ({ commentId }) => commentId),
       Effect.andThen(WriteFeedbackFlow.PublishedPage),
       Effect.andThen(toHttpServerResponse),
     ),

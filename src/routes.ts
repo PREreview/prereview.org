@@ -26,58 +26,58 @@ export interface Route<A extends { readonly [K in keyof A]: unknown }> {
   schema: Schema.Schema<A, { readonly [K in keyof A]: string }>
 }
 
-export const WriteFeedback: Route<{ id: number }> = {
+export const WriteComment: Route<{ id: number }> = {
   path: '/reviews/:id/write-a-comment',
   href: params => `/reviews/${params.id}/write-a-comment`,
   schema: Schema.Struct({ id: Schema.NumberFromString }),
 }
 
-export const WriteFeedbackStartNow: Route<{ id: number }> = {
+export const WriteCommentStartNow: Route<{ id: number }> = {
   path: '/reviews/:id/write-a-comment/start-now',
   href: params => `/reviews/${params.id}/write-a-comment/start-now`,
   schema: Schema.Struct({ id: Schema.NumberFromString }),
 }
 
-export const WriteFeedbackEnterFeedback: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/write-your-comment',
-  href: params => `/write-a-comment/${params.feedbackId}/write-your-comment`,
-  schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
+export const WriteCommentEnterComment: Route<{ commentId: Uuid.Uuid }> = {
+  path: '/write-a-comment/:commentId/write-your-comment',
+  href: params => `/write-a-comment/${params.commentId}/write-your-comment`,
+  schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
 }
 
-export const WriteFeedbackChoosePersona: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/choose-name',
-  href: params => `/write-a-comment/${params.feedbackId}/choose-name`,
-  schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
+export const WriteCommentChoosePersona: Route<{ commentId: Uuid.Uuid }> = {
+  path: '/write-a-comment/:commentId/choose-name',
+  href: params => `/write-a-comment/${params.commentId}/choose-name`,
+  schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
 }
 
-export const WriteFeedbackCompetingInterests: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/competing-interests',
-  href: params => `/write-a-comment/${params.feedbackId}/competing-interests`,
-  schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
+export const WriteCommentCompetingInterests: Route<{ commentId: Uuid.Uuid }> = {
+  path: '/write-a-comment/:commentId/competing-interests',
+  href: params => `/write-a-comment/${params.commentId}/competing-interests`,
+  schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
 }
 
-export const WriteFeedbackCodeOfConduct: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/code-of-conduct',
-  href: params => `/write-a-comment/${params.feedbackId}/code-of-conduct`,
-  schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
+export const WriteCommentCodeOfConduct: Route<{ commentId: Uuid.Uuid }> = {
+  path: '/write-a-comment/:commentId/code-of-conduct',
+  href: params => `/write-a-comment/${params.commentId}/code-of-conduct`,
+  schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
 }
 
-export const WriteFeedbackCheck: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/check-your-comment',
-  href: params => `/write-a-comment/${params.feedbackId}/check-your-comment`,
-  schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
+export const WriteCommentCheck: Route<{ commentId: Uuid.Uuid }> = {
+  path: '/write-a-comment/:commentId/check-your-comment',
+  href: params => `/write-a-comment/${params.commentId}/check-your-comment`,
+  schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
 }
 
-export const WriteFeedbackPublishing: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/comment-being-published',
-  href: params => `/write-a-comment/${params.feedbackId}/comment-being-published`,
-  schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
+export const WriteCommentPublishing: Route<{ commentId: Uuid.Uuid }> = {
+  path: '/write-a-comment/:commentId/comment-being-published',
+  href: params => `/write-a-comment/${params.commentId}/comment-being-published`,
+  schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
 }
 
-export const WriteFeedbackPublished: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/comment-published',
-  href: params => `/write-a-comment/${params.feedbackId}/comment-published`,
-  schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
+export const WriteCommentPublished: Route<{ commentId: Uuid.Uuid }> = {
+  path: '/write-a-comment/:commentId/comment-published',
+  href: params => `/write-a-comment/${params.commentId}/comment-published`,
+  schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
 }
 
 const IntegerFromStringC = C.make(

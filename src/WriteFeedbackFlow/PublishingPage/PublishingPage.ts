@@ -14,7 +14,7 @@ export const PublishingPage = ({ feedbackId, locale }: { feedbackId: Uuid.Uuid; 
         <div>
           <p>${translate(locale, 'write-comment-flow', 'publishingSeeShortlyMessage')()}</p>
 
-          <a href="${Routes.WriteFeedbackPublishing.href({ feedbackId })}" class="button"
+          <a href="${Routes.WriteCommentPublishing.href({ commentId: feedbackId })}" class="button"
             >${translate(locale, 'write-comment-flow', 'reloadPageButton')()}</a
           >
         </div>
@@ -24,12 +24,12 @@ export const PublishingPage = ({ feedbackId, locale }: { feedbackId: Uuid.Uuid; 
         </div>
 
         <div hidden>
-          <a href="${Routes.WriteFeedbackPublished.href({ feedbackId })}" class="button"
+          <a href="${Routes.WriteCommentPublished.href({ commentId: feedbackId })}" class="button"
             >${translate(locale, 'write-comment-flow', 'continueButton')()}</a
           >
         </div>
       </poll-redirect>
     `,
-    canonical: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+    canonical: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
     js: ['poll-redirect.js'],
   })

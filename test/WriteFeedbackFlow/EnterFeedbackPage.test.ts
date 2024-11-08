@@ -24,7 +24,7 @@ describe('EnterFeedbackPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
+          canonical: Routes.WriteCommentEnterComment.href({ commentId: feedbackId }),
           status: StatusCodes.OK,
           title: expect.anything(),
           nav: expect.anything(),
@@ -54,7 +54,7 @@ describe('EnterFeedbackPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+          location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -78,7 +78,7 @@ describe('EnterFeedbackPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+          location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -169,7 +169,7 @@ describe('EnterFeedbackPage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
+        location: Routes.WriteCommentEnterComment.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -205,7 +205,7 @@ describe('EnterFeedbackSubmission', () => {
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
               location: DecideNextPage.NextPageAfterCommand({ command: 'EnterComment', feedback }).href({
-                feedbackId,
+                commentId: feedbackId,
               }),
             })
 
@@ -269,7 +269,7 @@ describe('EnterFeedbackSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
-            canonical: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
+            canonical: Routes.WriteCommentEnterComment.href({ commentId: feedbackId }),
             status: StatusCodes.BAD_REQUEST,
             title: expect.anything(),
             nav: expect.anything(),
@@ -302,7 +302,7 @@ describe('EnterFeedbackSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublished.href({ feedbackId }),
+          location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -328,7 +328,7 @@ describe('EnterFeedbackSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
+          location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -424,7 +424,7 @@ describe('EnterFeedbackSubmission', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
+        location: Routes.WriteCommentEnterComment.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

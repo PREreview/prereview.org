@@ -35,7 +35,7 @@ describe('StartNow', () => {
                 location: DecideNextPage.NextPageAfterCommand({
                   command: 'StartComment',
                   feedback: new Comments.CommentNotStarted(),
-                }).href({ feedbackId }),
+                }).href({ commentId: feedbackId }),
               })
 
               expect(handleFeedbackCommand).toHaveBeenCalledWith({
@@ -107,7 +107,7 @@ describe('StartNow', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
-            canonical: Routes.WriteFeedbackStartNow.href({ id: prereview.id }),
+            canonical: Routes.WriteCommentStartNow.href({ id: prereview.id }),
             status: StatusCodes.OK,
             title: expect.anything(),
             nav: expect.anything(),
@@ -271,7 +271,7 @@ describe('StartNow', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteFeedbackStartNow.href({ id }),
+        location: Routes.WriteCommentStartNow.href({ id }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

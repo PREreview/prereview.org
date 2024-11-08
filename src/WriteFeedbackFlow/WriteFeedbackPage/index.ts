@@ -35,7 +35,7 @@ export const WriteFeedbackPage = ({
           const unpublishedFeedback = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
 
           if (!Record.isEmptyRecord(unpublishedFeedback)) {
-            return Response.RedirectResponse({ location: Routes.WriteFeedbackStartNow.href({ id: prereview.id }) })
+            return Response.RedirectResponse({ location: Routes.WriteCommentStartNow.href({ id: prereview.id }) })
           }
 
           return MakeResponse({ prereview, locale, user })

@@ -26,12 +26,12 @@ export const CompetingInterestsPage = ({
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
-      <a href="${Routes.WriteFeedbackChoosePersona.href({ feedbackId })}" class="back"
+      <a href="${Routes.WriteCommentChoosePersona.href({ commentId: feedbackId })}" class="back"
         >${translate(locale, 'write-comment-flow', 'back')()}</a
       >
     `,
     main: html`
-      <form method="post" action="${Routes.WriteFeedbackCompetingInterests.href({ feedbackId })}" novalidate>
+      <form method="post" action="${Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId })}" novalidate>
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
@@ -223,6 +223,6 @@ ${pipe(
       </form>
     `,
     skipToLabel: 'form',
-    canonical: Routes.WriteFeedbackCompetingInterests.href({ feedbackId }),
+    canonical: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
     js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
   })

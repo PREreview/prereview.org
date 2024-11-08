@@ -24,12 +24,12 @@ export const CheckPage = ({
 }) =>
   StreamlinePageResponse({
     title: plainText(translate(locale, 'write-comment-flow', 'checkTitle')()),
-    nav: html` <a href="${Routes.WriteFeedbackCodeOfConduct.href({ feedbackId })}" class="back"
+    nav: html` <a href="${Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId })}" class="back"
       >${translate(locale, 'write-comment-flow', 'back')()}</a
     >`,
     main: html`
       <single-use-form>
-        <form method="post" action="${Routes.WriteFeedbackCheck.href({ feedbackId })}" novalidate>
+        <form method="post" action="${Routes.WriteCommentCheck.href({ commentId: feedbackId })}" novalidate>
           <h1>${translate(locale, 'write-comment-flow', 'checkTitle')()}</h1>
 
           <div class="summary-card">
@@ -68,7 +68,7 @@ export const CheckPage = ({
                   )}
                 </dd>
                 <dd>
-                  <a href="${Routes.WriteFeedbackChoosePersona.href({ feedbackId })}"
+                  <a href="${Routes.WriteCommentChoosePersona.href({ commentId: feedbackId })}"
                     >${rawHtml(
                       translate(
                         locale,
@@ -87,7 +87,7 @@ export const CheckPage = ({
                   )}
                 </dd>
                 <dd>
-                  <a href="${Routes.WriteFeedbackCompetingInterests.href({ feedbackId })}"
+                  <a href="${Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId })}"
                     >${rawHtml(
                       translate(
                         locale,
@@ -104,7 +104,7 @@ export const CheckPage = ({
             <div>
               <h2 id="feedback-label">${translate(locale, 'write-comment-flow', 'checkYourCommentHeading')()}</h2>
 
-              <a href="${Routes.WriteFeedbackEnterFeedback.href({ feedbackId })}"
+              <a href="${Routes.WriteCommentEnterComment.href({ commentId: feedbackId })}"
                 >${rawHtml(
                   translate(
                     locale,
@@ -136,7 +136,7 @@ export const CheckPage = ({
         </form>
       </single-use-form>
     `,
-    canonical: Routes.WriteFeedbackCheck.href({ feedbackId }),
+    canonical: Routes.WriteCommentCheck.href({ commentId: feedbackId }),
     skipToLabel: 'form',
     js: ['single-use-form.js'],
   })

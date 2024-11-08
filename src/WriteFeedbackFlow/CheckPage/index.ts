@@ -45,10 +45,10 @@ export const CheckPage = ({
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
       ),
       Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
       ),
       Match.exhaustive,
     )
@@ -56,7 +56,7 @@ export const CheckPage = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackCheck.href({ feedbackId }) })),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId: feedbackId }) })),
     }),
   )
 
@@ -99,14 +99,18 @@ export const CheckPageSubmission = ({
             ),
           )
 
-          return Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })
+          return Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) })
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
+        ),
       ),
       Match.tag('CommentPublished', () =>
-        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
+        ),
       ),
       Match.exhaustive,
     )
@@ -115,6 +119,6 @@ export const CheckPageSubmission = ({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackCheck.href({ feedbackId }) })),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId: feedbackId }) })),
     }),
   )

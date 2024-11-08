@@ -55,7 +55,7 @@ export const StartNow = ({
             location: DecideNextPage.NextPageAfterCommand({
               command: 'StartComment',
               feedback: new Comments.CommentNotStarted(),
-            }).href({ feedbackId }),
+            }).href({ commentId: feedbackId }),
           })
         }),
       onSome: ([feedbackId, feedback]) =>
@@ -73,7 +73,7 @@ export const StartNow = ({
       PrereviewIsUnavailable: () => Effect.succeed(havingProblemsPage),
       PrereviewWasRemoved: () => Effect.succeed(pageNotFound),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackStartNow.href({ id }) })),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentStartNow.href({ id }) })),
     }),
     Effect.orElseSucceed(() => havingProblemsPage),
   )

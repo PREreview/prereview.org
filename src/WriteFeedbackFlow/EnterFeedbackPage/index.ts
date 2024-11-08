@@ -52,10 +52,10 @@ export const EnterFeedbackPage = ({
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
       ),
       Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
       ),
       Match.exhaustive,
     )
@@ -63,7 +63,9 @@ export const EnterFeedbackPage = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.LogInResponse({ location: Routes.WriteCommentEnterComment.href({ commentId: feedbackId }) }),
+        ),
     }),
   )
 
@@ -117,7 +119,7 @@ export const EnterFeedbackSubmission = ({
 
                 return Response.RedirectResponse({
                   location: DecideNextPage.NextPageAfterCommand({ command: 'EnterComment', feedback }).href({
-                    feedbackId,
+                    commentId: feedbackId,
                   }),
                 })
               }),
@@ -137,10 +139,14 @@ export const EnterFeedbackSubmission = ({
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
+        ),
       ),
       Match.tag('CommentPublished', () =>
-        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
+        ),
       ),
       Match.exhaustive,
     )
@@ -149,6 +155,8 @@ export const EnterFeedbackSubmission = ({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }) })),
+        Effect.succeed(
+          Response.LogInResponse({ location: Routes.WriteCommentEnterComment.href({ commentId: feedbackId }) }),
+        ),
     }),
   )
