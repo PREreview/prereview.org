@@ -37,7 +37,7 @@ export const PublishingPage = ({
 
     const locale = yield* Locale
 
-    return MakeResponse({ feedbackId: feedbackId, locale })
+    return MakeResponse({ feedbackId, locale })
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),

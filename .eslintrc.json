@@ -103,6 +103,7 @@
     "import/no-named-as-default": "off",
     "import/no-named-as-default-member": "off",
     "no-comments/disallowComments": ["error", { "allow": ["eslint", "https://", "Do", "Unfortunately", "Refs"] }],
+    "object-shorthand": "error",
     "quotes": ["error", "single", { "avoidEscape": true }],
     "wc/no-child-traversal-in-connectedcallback": "off"
   },

@@ -492,7 +492,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               published: new Temporal.PlainDate(2022, 7, 4),
               fields: [],
               subfields: [],
-              preprint: preprint,
+              preprint,
             },
           ],
           totalPages: 1,
@@ -1972,7 +1972,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             published: new Temporal.PlainDate(2022, 7, 4),
             fields: [],
             subfields: [],
-            preprint: preprint,
+            preprint,
           },
         ]),
       )
@@ -2420,7 +2420,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
             published: new Temporal.PlainDate(2022, 7, 4),
             fields: [],
             subfields: [],
-            preprint: preprint,
+            preprint,
           },
         ]),
       )
@@ -2968,7 +2968,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
             fields: [],
             subfields: [],
             published: new Temporal.PlainDate(2022, 7, 4),
-            preprint: preprint,
+            preprint,
           },
         ]),
       )
