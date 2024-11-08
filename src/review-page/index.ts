@@ -30,7 +30,7 @@ export const reviewPage = ({
     RTE.let('id', () => id),
     RTE.apS('review', getPrereview(id)),
     RTE.bindW('feedback', ({ review }) => getFeedback(review.doi)),
-    RTE.apSW('canWriteFeedback', user ? RTE.fromReader(canWriteFeedback(user)) : RTE.of(false)),
+    RTE.apSW('canWriteFeedback', RTE.fromReader(canWriteFeedback(user))),
     RTE.let('locale', () => locale),
     RTE.match(
       error =>

@@ -4,7 +4,7 @@ import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import { areLoggedIn, canLogIn, canWriteFeedback, expect, test, willPublishFeedback } from './base.js'
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback).extend(willPublishFeedback)(
+test.extend(canLogIn).extend(canWriteFeedback).extend(willPublishFeedback)(
   'can write feedback on a PREreview',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {

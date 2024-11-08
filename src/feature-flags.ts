@@ -1,27 +1,26 @@
 import { Context, Data, Effect, Option } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
-import { EnsureUserIsLoggedIn, type User, type UserIsNotLoggedIn } from './user.js'
+import { LoggedInUser } from './Context.js'
+import type { User } from './user.js'
 
-export class CanWriteFeedback extends Context.Tag('CanWriteFeedback')<CanWriteFeedback, (user: User) => boolean>() {}
+export class CanWriteFeedback extends Context.Tag('CanWriteFeedback')<CanWriteFeedback, (user?: User) => boolean>() {}
 
 export class NotAllowedToWriteFeedback extends Data.TaggedError('NotAllowedToWriteFeedback') {}
 
-export const EnsureCanWriteFeedback: Effect.Effect<void, NotAllowedToWriteFeedback | UserIsNotLoggedIn> = Effect.gen(
-  function* () {
-    const user = yield* EnsureUserIsLoggedIn
-    const canWriteFeedback = yield* Effect.serviceOption(CanWriteFeedback)
+export const EnsureCanWriteFeedback: Effect.Effect<void, NotAllowedToWriteFeedback> = Effect.gen(function* () {
+  const user = yield* Effect.serviceOption(LoggedInUser)
+  const canWriteFeedback = yield* Effect.serviceOption(CanWriteFeedback)
 
-    if (Option.isNone(canWriteFeedback) || !canWriteFeedback.value(user)) {
-      yield* new NotAllowedToWriteFeedback()
-    }
-  },
-)
+  if (Option.isNone(canWriteFeedback) || !canWriteFeedback.value(Option.getOrUndefined(user))) {
+    yield* new NotAllowedToWriteFeedback()
+  }
+})
 
 export interface CanWriteFeedbackEnv {
-  canWriteFeedback: (user: User) => boolean
+  canWriteFeedback: (user?: User) => boolean
 }
 
-export const canWriteFeedback = (user: User) =>
+export const canWriteFeedback = (user?: User) =>
   R.asks(({ canWriteFeedback }: CanWriteFeedbackEnv) => canWriteFeedback(user))
 
 export interface CanChooseLocaleEnv {
