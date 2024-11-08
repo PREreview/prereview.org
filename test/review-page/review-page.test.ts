@@ -71,56 +71,65 @@ describe('reviewPage', () => {
     expect(getFeedback).toHaveBeenCalledWith(prereview.doi)
   })
 
-  test.prop([fc.supportedLocale(), fc.integer()])('when the review is not found', async (locale, id) => {
-    const actual = await _.reviewPage({ id, locale })({
-      getPrereview: () => TE.left('not-found'),
-      getFeedback: shouldNotBeCalled,
-      canWriteFeedback: shouldNotBeCalled,
-    })()
+  test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])(
+    'when the review is not found',
+    async (locale, id, canWriteFeedback) => {
+      const actual = await _.reviewPage({ id, locale })({
+        getPrereview: () => TE.left('not-found'),
+        getFeedback: shouldNotBeCalled,
+        canWriteFeedback: () => canWriteFeedback,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.NotFound,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
-  test.prop([fc.supportedLocale(), fc.integer()])('when the review was removed', async (locale, id) => {
-    const actual = await _.reviewPage({ id, locale })({
-      getPrereview: () => TE.left('removed'),
-      getFeedback: shouldNotBeCalled,
-      canWriteFeedback: shouldNotBeCalled,
-    })()
+  test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])(
+    'when the review was removed',
+    async (locale, id, canWriteFeedback) => {
+      const actual = await _.reviewPage({ id, locale })({
+        getPrereview: () => TE.left('removed'),
+        getFeedback: shouldNotBeCalled,
+        canWriteFeedback: () => canWriteFeedback,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.Gone,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.Gone,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
-  test.prop([fc.supportedLocale(), fc.integer()])('when the review cannot be loaded', async (locale, id) => {
-    const actual = await _.reviewPage({ id, locale })({
-      getPrereview: () => TE.left('unavailable'),
-      getFeedback: shouldNotBeCalled,
-      canWriteFeedback: shouldNotBeCalled,
-    })()
+  test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])(
+    'when the review cannot be loaded',
+    async (locale, id, canWriteFeedback) => {
+      const actual = await _.reviewPage({ id, locale })({
+        getPrereview: () => TE.left('unavailable'),
+        getFeedback: shouldNotBeCalled,
+        canWriteFeedback: () => canWriteFeedback,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
   test.prop([
     fc.supportedLocale(),
@@ -145,11 +154,12 @@ describe('reviewPage', () => {
       structured: fc.boolean(),
       text: fc.html(),
     }),
-  ])('when the feedback cannot be loaded', async (locale, id, prereview) => {
+    fc.boolean(),
+  ])('when the feedback cannot be loaded', async (locale, id, prereview, canWriteFeedback) => {
     const actual = await _.reviewPage({ id, locale })({
       getPrereview: () => TE.right(prereview),
       getFeedback: () => TE.left('unavailable'),
-      canWriteFeedback: shouldNotBeCalled,
+      canWriteFeedback: () => canWriteFeedback,
     })()
 
     expect(actual).toStrictEqual({
