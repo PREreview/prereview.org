@@ -2,8 +2,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Equal, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
+import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
-import * as Feedback from '../../src/Feedback/index.js'
 import * as Routes from '../../src/routes.js'
 import * as _ from '../../src/WriteFeedbackFlow/CodeOfConductPage/index.js'
 import * as DecideNextPage from '../../src/WriteFeedbackFlow/DecideNextPage.js'
@@ -34,7 +34,7 @@ describe('CodeOfConductPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -58,7 +58,7 @@ describe('CodeOfConductPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -82,7 +82,7 @@ describe('CodeOfConductPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -105,7 +105,7 @@ describe('CodeOfConductPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -132,7 +132,7 @@ describe('CodeOfConductPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -155,7 +155,7 @@ describe('CodeOfConductPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
+          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -173,7 +173,7 @@ describe('CodeOfConductPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Feedback.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -192,11 +192,11 @@ describe('CodeOfConductSubmission', () => {
           fc.supportedLocale(),
         ])('when the feedback can be entered', (feedbackId, [feedback, user], locale) =>
           Effect.gen(function* () {
-            const handleFeedbackCommand = jest.fn<typeof Feedback.HandleFeedbackCommand.Service>(_ => Effect.void)
+            const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
             const actual = yield* Effect.provideService(
               _.CodeOfConductSubmission({ body: { agree: 'yes' }, feedbackId }),
-              Feedback.HandleFeedbackCommand,
+              Comments.HandleFeedbackCommand,
               handleFeedbackCommand,
             )
 
@@ -210,11 +210,11 @@ describe('CodeOfConductSubmission', () => {
 
             expect(handleFeedbackCommand).toHaveBeenCalledWith({
               feedbackId,
-              command: new Feedback.AgreeToCodeOfConduct(),
+              command: new Comments.AgreeToCodeOfConduct(),
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+            Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -227,7 +227,7 @@ describe('CodeOfConductSubmission', () => {
             .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
             .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
           fc.supportedLocale(),
-          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.commentError()),
+          fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
         ])("when the agreement can't be saved", (feedbackId, [feedback, user], locale, error) =>
           Effect.gen(function* () {
             const actual = yield* _.CodeOfConductSubmission({ body: { agree: 'yes' }, feedbackId })
@@ -242,8 +242,8 @@ describe('CodeOfConductSubmission', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-            Effect.provideService(Feedback.HandleFeedbackCommand, () => Effect.fail(error)),
+            Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+            Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -277,8 +277,8 @@ describe('CodeOfConductSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -304,8 +304,8 @@ describe('CodeOfConductSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -330,8 +330,8 @@ describe('CodeOfConductSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -354,8 +354,8 @@ describe('CodeOfConductSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -383,8 +383,8 @@ describe('CodeOfConductSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -407,8 +407,8 @@ describe('CodeOfConductSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
-          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -426,8 +426,8 @@ describe('CodeOfConductSubmission', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Feedback.GetFeedback, shouldNotBeCalled),
-      Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),

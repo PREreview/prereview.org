@@ -1,6 +1,6 @@
 import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
 import markdownIt from 'markdown-it'
-import type * as Feedback from '../../Feedback/index.js'
+import type * as Comments from '../../Comments/index.js'
 import { type Html, sanitizeHtml } from '../../html.js'
 import { NonEmptyString } from '../../types/index.js'
 
@@ -28,7 +28,7 @@ export const fromBody = (body: unknown) =>
   )
 
 export const fromFeedback = pipe(
-  Match.type<Feedback.CommentInProgress | Feedback.CommentReadyForPublishing>(),
+  Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),
   Match.tag('CommentInProgress', ({ comment: feedback }) =>
     feedback ? new CompletedForm({ feedback }) : new EmptyForm(),
   ),

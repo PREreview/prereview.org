@@ -1,7 +1,7 @@
 import { Effect, Option, Record } from 'effect'
+import * as Comments from '../../Comments/index.js'
 import { Locale, LoggedInUser } from '../../Context.js'
 import { EnsureCanWriteFeedback } from '../../feature-flags.js'
-import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { GetPrereview } from '../../Prereview.js'
 import * as Response from '../../response.js'
@@ -15,7 +15,7 @@ export const WriteFeedbackPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
   never,
-  Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview | GetPrereview | Locale
+  Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview | GetPrereview | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* Effect.serviceOption(LoggedInUser)
@@ -30,7 +30,7 @@ export const WriteFeedbackPage = ({
       onNone: () => Effect.succeed(MakeResponse({ prereview, locale })),
       onSome: user =>
         Effect.gen(function* () {
-          const query = yield* Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
+          const query = yield* Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
 
           const unpublishedFeedback = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
 

@@ -32,6 +32,7 @@ import type {
   OpenAuthorInvite,
 } from '../src/author-invite.js'
 import type { CareerStage } from '../src/career-stage.js'
+import * as Comments from '../src/Comments/index.js'
 import type { OrcidOAuthEnv } from '../src/connect-orcid/index.js'
 import type {
   ContactEmailAddress,
@@ -41,7 +42,6 @@ import type {
 import type { CrossrefPreprintId } from '../src/crossref.js'
 import type { DatacitePreprintId } from '../src/datacite.js'
 import type { Email } from '../src/email.js'
-import * as Feedback from '../src/Feedback/index.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
 import type { Languages } from '../src/languages.js'
@@ -1260,50 +1260,50 @@ export const prereview = (): fc.Arbitrary<Prereview> =>
     })
     .map(args => new Prereview(args))
 
-export const commentWasStarted = (): fc.Arbitrary<Feedback.CommentWasStarted> =>
+export const commentWasStarted = (): fc.Arbitrary<Comments.CommentWasStarted> =>
   fc
     .record({
       prereviewId: fc.integer(),
       authorId: orcid(),
     })
-    .map(data => new Feedback.CommentWasStarted(data))
+    .map(data => new Comments.CommentWasStarted(data))
 
-export const commentWasEntered = (): fc.Arbitrary<Feedback.CommentWasEntered> =>
+export const commentWasEntered = (): fc.Arbitrary<Comments.CommentWasEntered> =>
   fc
     .record({
       comment: html(),
     })
-    .map(data => new Feedback.CommentWasEntered(data))
+    .map(data => new Comments.CommentWasEntered(data))
 
-export const personaWasChosen = (): fc.Arbitrary<Feedback.PersonaWasChosen> =>
+export const personaWasChosen = (): fc.Arbitrary<Comments.PersonaWasChosen> =>
   fc
     .record({
       persona: constantFrom('public', 'pseudonym'),
     })
-    .map(data => new Feedback.PersonaWasChosen(data))
+    .map(data => new Comments.PersonaWasChosen(data))
 
-export const competingInterestsWereDeclared = (): fc.Arbitrary<Feedback.CompetingInterestsWereDeclared> =>
+export const competingInterestsWereDeclared = (): fc.Arbitrary<Comments.CompetingInterestsWereDeclared> =>
   fc
     .record({
       competingInterests: maybe(nonEmptyString()),
     })
-    .map(data => new Feedback.CompetingInterestsWereDeclared(data))
+    .map(data => new Comments.CompetingInterestsWereDeclared(data))
 
-export const commentPublicationWasRequested = (): fc.Arbitrary<Feedback.CommentPublicationWasRequested> =>
-  fc.constant(new Feedback.CommentPublicationWasRequested())
+export const commentPublicationWasRequested = (): fc.Arbitrary<Comments.CommentPublicationWasRequested> =>
+  fc.constant(new Comments.CommentPublicationWasRequested())
 
-export const doiWasAssigned = (): fc.Arbitrary<Feedback.DoiWasAssigned> =>
+export const doiWasAssigned = (): fc.Arbitrary<Comments.DoiWasAssigned> =>
   fc
     .record({
       id: fc.integer(),
       doi: doi(),
     })
-    .map(data => new Feedback.DoiWasAssigned(data))
+    .map(data => new Comments.DoiWasAssigned(data))
 
-export const commentWasPublished = (): fc.Arbitrary<Feedback.CommentWasPublished> =>
-  fc.constant(new Feedback.CommentWasPublished())
+export const commentWasPublished = (): fc.Arbitrary<Comments.CommentWasPublished> =>
+  fc.constant(new Comments.CommentWasPublished())
 
-export const commentEvent = (): fc.Arbitrary<Feedback.CommentEvent> =>
+export const commentEvent = (): fc.Arbitrary<Comments.CommentEvent> =>
   fc.oneof(
     commentWasStarted(),
     commentWasEntered(),
@@ -1314,22 +1314,22 @@ export const commentEvent = (): fc.Arbitrary<Feedback.CommentEvent> =>
     commentWasPublished(),
   )
 
-export const commentWasAlreadyStarted = (): fc.Arbitrary<Feedback.CommentWasAlreadyStarted> =>
-  fc.constant(new Feedback.CommentWasAlreadyStarted())
+export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>
+  fc.constant(new Comments.CommentWasAlreadyStarted())
 
-export const commentHasNotBeenStarted = (): fc.Arbitrary<Feedback.CommentHasNotBeenStarted> =>
-  fc.constant(new Feedback.CommentHasNotBeenStarted())
+export const commentHasNotBeenStarted = (): fc.Arbitrary<Comments.CommentHasNotBeenStarted> =>
+  fc.constant(new Comments.CommentHasNotBeenStarted())
 
-export const commentIsIncomplete = (): fc.Arbitrary<Feedback.CommentIsIncomplete> =>
-  fc.constant(new Feedback.CommentIsIncomplete())
+export const commentIsIncomplete = (): fc.Arbitrary<Comments.CommentIsIncomplete> =>
+  fc.constant(new Comments.CommentIsIncomplete())
 
-export const commentIsBeingPublished = (): fc.Arbitrary<Feedback.CommentIsBeingPublished> =>
-  fc.constant(new Feedback.CommentIsBeingPublished())
+export const commentIsBeingPublished = (): fc.Arbitrary<Comments.CommentIsBeingPublished> =>
+  fc.constant(new Comments.CommentIsBeingPublished())
 
-export const commentWasAlreadyPublished = (): fc.Arbitrary<Feedback.CommentWasAlreadyPublished> =>
-  fc.constant(new Feedback.CommentWasAlreadyPublished())
+export const commentWasAlreadyPublished = (): fc.Arbitrary<Comments.CommentWasAlreadyPublished> =>
+  fc.constant(new Comments.CommentWasAlreadyPublished())
 
-export const commentError = (): fc.Arbitrary<Feedback.CommentError> =>
+export const commentError = (): fc.Arbitrary<Comments.CommentError> =>
   fc.oneof(
     commentWasAlreadyStarted(),
     commentHasNotBeenStarted(),
@@ -1338,8 +1338,8 @@ export const commentError = (): fc.Arbitrary<Feedback.CommentError> =>
     commentWasAlreadyPublished(),
   )
 
-export const commentNotStarted = (): fc.Arbitrary<Feedback.CommentNotStarted> =>
-  constant(new Feedback.CommentNotStarted())
+export const commentNotStarted = (): fc.Arbitrary<Comments.CommentNotStarted> =>
+  constant(new Comments.CommentNotStarted())
 
 export const commentInProgress = ({
   codeOfConductAgreed,
@@ -1347,11 +1347,11 @@ export const commentInProgress = ({
   comment,
   persona,
 }: {
-  codeOfConductAgreed?: fc.Arbitrary<Feedback.CommentInProgress['codeOfConductAgreed']>
-  competingInterests?: fc.Arbitrary<Feedback.CommentInProgress['competingInterests']>
-  comment?: fc.Arbitrary<Feedback.CommentInProgress['comment']>
-  persona?: fc.Arbitrary<Feedback.CommentInProgress['persona']>
-} = {}): fc.Arbitrary<Feedback.CommentInProgress> =>
+  codeOfConductAgreed?: fc.Arbitrary<Comments.CommentInProgress['codeOfConductAgreed']>
+  competingInterests?: fc.Arbitrary<Comments.CommentInProgress['competingInterests']>
+  comment?: fc.Arbitrary<Comments.CommentInProgress['comment']>
+  persona?: fc.Arbitrary<Comments.CommentInProgress['persona']>
+} = {}): fc.Arbitrary<Comments.CommentInProgress> =>
   fc
     .record({
       authorId: orcid(),
@@ -1361,9 +1361,9 @@ export const commentInProgress = ({
       codeOfConductAgreed: codeOfConductAgreed ?? constantFrom(true, undefined),
       persona: persona ?? fc.option(constantFrom('public', 'pseudonym'), { nil: undefined }),
     })
-    .map(data => new Feedback.CommentInProgress(data))
+    .map(data => new Comments.CommentInProgress(data))
 
-export const commentReadyForPublishing = (): fc.Arbitrary<Feedback.CommentReadyForPublishing> =>
+export const commentReadyForPublishing = (): fc.Arbitrary<Comments.CommentReadyForPublishing> =>
   fc
     .record({
       authorId: orcid(),
@@ -1372,15 +1372,15 @@ export const commentReadyForPublishing = (): fc.Arbitrary<Feedback.CommentReadyF
       persona: constantFrom('public', 'pseudonym'),
       prereviewId: fc.integer(),
     })
-    .map(data => new Feedback.CommentReadyForPublishing(data))
+    .map(data => new Comments.CommentReadyForPublishing(data))
 
 export const commentBeingPublished = ({
   doi: _doi,
   id: _id,
 }: {
-  doi?: fc.Arbitrary<Feedback.CommentBeingPublished['doi']>
-  id?: fc.Arbitrary<Feedback.CommentBeingPublished['id']>
-} = {}): fc.Arbitrary<Feedback.CommentBeingPublished> =>
+  doi?: fc.Arbitrary<Comments.CommentBeingPublished['doi']>
+  id?: fc.Arbitrary<Comments.CommentBeingPublished['id']>
+} = {}): fc.Arbitrary<Comments.CommentBeingPublished> =>
   fc
     .record({
       authorId: orcid(),
@@ -1391,9 +1391,9 @@ export const commentBeingPublished = ({
       persona: constantFrom('public', 'pseudonym'),
       prereviewId: fc.integer(),
     })
-    .map(data => new Feedback.CommentBeingPublished(data))
+    .map(data => new Comments.CommentBeingPublished(data))
 
-export const commentPublished = (): fc.Arbitrary<Feedback.CommentPublished> =>
+export const commentPublished = (): fc.Arbitrary<Comments.CommentPublished> =>
   fc
     .record({
       authorId: orcid(),
@@ -1404,9 +1404,9 @@ export const commentPublished = (): fc.Arbitrary<Feedback.CommentPublished> =>
       persona: constantFrom('public', 'pseudonym'),
       prereviewId: fc.integer(),
     })
-    .map(data => new Feedback.CommentPublished(data))
+    .map(data => new Comments.CommentPublished(data))
 
-export const commentState = (): fc.Arbitrary<Feedback.CommentState> =>
+export const commentState = (): fc.Arbitrary<Comments.CommentState> =>
   fc.oneof(
     commentNotStarted(),
     commentInProgress(),

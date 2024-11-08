@@ -1,10 +1,10 @@
 import { Match, pipe } from 'effect'
-import type * as Feedback from '../Feedback/index.js'
+import type * as Comments from '../Comments/index.js'
 import * as Routes from '../routes.js'
 import type { Uuid } from '../types/index.js'
 
 const onInProgressState = pipe(
-  Match.type<Feedback.CommentInProgress>(),
+  Match.type<Comments.CommentInProgress>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
   Match.when(
     state => typeof state.comment === 'undefined',
@@ -26,7 +26,7 @@ const onInProgressState = pipe(
 )
 
 export const NextPageFromState = pipe(
-  Match.type<Exclude<Feedback.CommentState, Feedback.CommentNotStarted>>(),
+  Match.type<Exclude<Comments.CommentState, Comments.CommentNotStarted>>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
   Match.tag('CommentInProgress', onInProgressState),
   Match.tag('CommentReadyForPublishing', () => Routes.WriteFeedbackCheck),
@@ -38,12 +38,12 @@ export const NextPageFromState = pipe(
 const onInProgressCommand = pipe(
   Match.type<{
     command: (
-      | Feedback.EnterComment
-      | Feedback.ChoosePersona
-      | Feedback.DeclareCompetingInterests
-      | Feedback.AgreeToCodeOfConduct
+      | Comments.EnterComment
+      | Comments.ChoosePersona
+      | Comments.DeclareCompetingInterests
+      | Comments.AgreeToCodeOfConduct
     )['_tag']
-    feedback: Feedback.CommentState
+    feedback: Comments.CommentState
   }>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
   Match.when(
@@ -80,8 +80,8 @@ const onInProgressCommand = pipe(
 
 export const NextPageAfterCommand = pipe(
   Match.type<{
-    command: Exclude<Feedback.CommentCommand, Feedback.MarkDoiAsAssigned | Feedback.MarkCommentAsPublished>['_tag']
-    feedback: Feedback.CommentState
+    command: Exclude<Comments.CommentCommand, Comments.MarkDoiAsAssigned | Comments.MarkCommentAsPublished>['_tag']
+    feedback: Comments.CommentState
   }>(),
   Match.withReturnType<Routes.Route<{ feedbackId: Uuid.Uuid }>>(),
   Match.when({ command: 'StartComment' }, () => Routes.WriteFeedbackEnterFeedback),

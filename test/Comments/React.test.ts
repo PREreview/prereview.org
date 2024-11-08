@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Either, pipe, TestContext } from 'effect'
-import * as Feedback from '../../src/Feedback/index.js'
-import * as _ from '../../src/Feedback/React.js'
+import * as Comments from '../../src/Comments/index.js'
+import * as _ from '../../src/Comments/React.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -11,21 +11,21 @@ describe('OnCommentPublicationWasRequested', () => {
     'assigns a DOI',
     (feedbackId, event, feedback, id, doi) =>
       Effect.gen(function* () {
-        const handleFeedbackCommand = jest.fn<typeof Feedback.HandleFeedbackCommand.Service>(_ => Effect.void)
+        const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
         yield* Effect.provideService(
           _.OnCommentPublicationWasRequested({ feedbackId, event }),
-          Feedback.HandleFeedbackCommand,
+          Comments.HandleFeedbackCommand,
           handleFeedbackCommand,
         )
 
         expect(handleFeedbackCommand).toHaveBeenCalledWith({
           feedbackId,
-          command: new Feedback.MarkDoiAsAssigned({ doi, id }),
+          command: new Comments.MarkDoiAsAssigned({ doi, id }),
         })
       }).pipe(
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -42,14 +42,14 @@ describe('OnCommentPublicationWasRequested', () => {
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.OnCommentPublicationWasRequested({ feedbackId, event }),
-        Effect.provideService(Feedback.HandleFeedbackCommand, () => Effect.fail(error)),
+        Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
         Effect.either,
       )
 
-      expect(actual).toStrictEqual(Either.left(new Feedback.UnableToHandleCommand({ cause: error })))
+      expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
     }).pipe(
-      Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-      Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
+      Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+      Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -61,15 +61,15 @@ describe('OnCommentPublicationWasRequested', () => {
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.OnCommentPublicationWasRequested({ feedbackId, event }),
-          Effect.provideService(Feedback.AssignFeedbackADoi, () => Effect.fail(new Feedback.UnableToAssignADoi({}))),
-          Effect.provideService(Feedback.PublishFeedbackWithADoi, shouldNotBeCalled),
-          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
+          Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
+          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.either,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Feedback.UnableToPublishFeedback({})))
+        expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishFeedback({})))
       }).pipe(
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -79,14 +79,14 @@ describe('OnCommentPublicationWasRequested', () => {
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.OnCommentPublicationWasRequested({ feedbackId, event }),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
-        Effect.provideService(Feedback.AssignFeedbackADoi, shouldNotBeCalled),
-        Effect.provideService(Feedback.PublishFeedbackWithADoi, shouldNotBeCalled),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+        Effect.provideService(Comments.AssignFeedbackADoi, shouldNotBeCalled),
+        Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.either,
       )
 
-      expect(actual).toStrictEqual(Either.left(new Feedback.UnableToQuery({})))
+      expect(actual).toStrictEqual(Either.left(new Comments.UnableToQuery({})))
     }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
   )
 })
@@ -94,20 +94,20 @@ describe('OnCommentPublicationWasRequested', () => {
 describe('OnDoiWasAssigned', () => {
   test.prop([fc.uuid(), fc.doiWasAssigned()])('published feedback', (feedbackId, event) =>
     Effect.gen(function* () {
-      const handleFeedbackCommand = jest.fn<typeof Feedback.HandleFeedbackCommand.Service>(_ => Effect.void)
+      const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
       yield* Effect.provideService(
         _.OnDoiWasAssigned({ feedbackId, event }),
-        Feedback.HandleFeedbackCommand,
+        Comments.HandleFeedbackCommand,
         handleFeedbackCommand,
       )
 
       expect(handleFeedbackCommand).toHaveBeenCalledWith({
         feedbackId,
-        command: new Feedback.MarkCommentAsPublished(),
+        command: new Comments.MarkCommentAsPublished(),
       })
     }).pipe(
-      Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.void),
+      Effect.provideService(Comments.PublishFeedbackWithADoi, () => Effect.void),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -119,13 +119,13 @@ describe('OnDoiWasAssigned', () => {
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.OnDoiWasAssigned({ feedbackId, event }),
-          Effect.provideService(Feedback.HandleFeedbackCommand, () => Effect.fail(error)),
+          Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
           Effect.either,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Feedback.UnableToHandleCommand({ cause: error })))
+        expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
       }).pipe(
-        Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.void),
+        Effect.provideService(Comments.PublishFeedbackWithADoi, () => Effect.void),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -135,14 +135,14 @@ describe('OnDoiWasAssigned', () => {
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.OnDoiWasAssigned({ feedbackId, event }),
-        Effect.provideService(Feedback.PublishFeedbackWithADoi, () =>
-          Effect.fail(new Feedback.UnableToPublishFeedback({})),
+        Effect.provideService(Comments.PublishFeedbackWithADoi, () =>
+          Effect.fail(new Comments.UnableToPublishFeedback({})),
         ),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.either,
       )
 
-      expect(actual).toStrictEqual(Either.left(new Feedback.UnableToPublishFeedback({})))
+      expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishFeedback({})))
     }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
   )
 })

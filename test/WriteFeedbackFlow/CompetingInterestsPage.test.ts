@@ -2,8 +2,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Equal, Option, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
+import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
-import * as Feedback from '../../src/Feedback/index.js'
 import * as Routes from '../../src/routes.js'
 import * as _ from '../../src/WriteFeedbackFlow/CompetingInterestsPage/index.js'
 import * as DecideNextPage from '../../src/WriteFeedbackFlow/DecideNextPage.js'
@@ -34,7 +34,7 @@ describe('CompetingInterestsPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -58,7 +58,7 @@ describe('CompetingInterestsPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -82,7 +82,7 @@ describe('CompetingInterestsPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -105,7 +105,7 @@ describe('CompetingInterestsPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -132,7 +132,7 @@ describe('CompetingInterestsPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -155,7 +155,7 @@ describe('CompetingInterestsPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
+          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -173,7 +173,7 @@ describe('CompetingInterestsPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Feedback.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -196,11 +196,11 @@ describe('CompetingInterestsSubmission', () => {
           ),
         ])('when the competing interests can be declared', (feedbackId, [feedback, user], locale, body) =>
           Effect.gen(function* () {
-            const handleFeedbackCommand = jest.fn<typeof Feedback.HandleFeedbackCommand.Service>(_ => Effect.void)
+            const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
             const actual = yield* Effect.provideService(
               _.CompetingInterestsSubmission({ body, feedbackId }),
-              Feedback.HandleFeedbackCommand,
+              Comments.HandleFeedbackCommand,
               handleFeedbackCommand,
             )
 
@@ -214,14 +214,14 @@ describe('CompetingInterestsSubmission', () => {
 
             expect(handleFeedbackCommand).toHaveBeenCalledWith({
               feedbackId,
-              command: new Feedback.DeclareCompetingInterests({
+              command: new Comments.DeclareCompetingInterests({
                 competingInterests:
                   body.competingInterests === 'yes' ? Option.some(body.competingInterestsDetails) : Option.none(),
               }),
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+            Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -238,7 +238,7 @@ describe('CompetingInterestsSubmission', () => {
             fc.record({ competingInterests: fc.constant('no'), competingInterestsDetails: fc.string() }),
             fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.nonEmptyString() }),
           ),
-          fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.commentError()),
+          fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
         ])("when the competing interests can't be declared", (feedbackId, [feedback, user], locale, body, error) =>
           Effect.gen(function* () {
             const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
@@ -253,8 +253,8 @@ describe('CompetingInterestsSubmission', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-            Effect.provideService(Feedback.HandleFeedbackCommand, () => Effect.fail(error)),
+            Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+            Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -300,8 +300,8 @@ describe('CompetingInterestsSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -327,8 +327,8 @@ describe('CompetingInterestsSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -353,8 +353,8 @@ describe('CompetingInterestsSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -377,8 +377,8 @@ describe('CompetingInterestsSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -406,8 +406,8 @@ describe('CompetingInterestsSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -430,8 +430,8 @@ describe('CompetingInterestsSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
-          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -449,8 +449,8 @@ describe('CompetingInterestsSubmission', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Feedback.GetFeedback, shouldNotBeCalled),
-      Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),

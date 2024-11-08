@@ -1,7 +1,7 @@
 import { Array, Effect, Option, Record } from 'effect'
+import * as Comments from '../../Comments/index.js'
 import { Locale } from '../../Context.js'
 import { EnsureCanWriteFeedback } from '../../feature-flags.js'
-import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { GetPrereview } from '../../Prereview.js'
 import * as Response from '../../response.js'
@@ -20,8 +20,8 @@ export const StartNow = ({
   never,
   | Uuid.GenerateUuid
   | GetPrereview
-  | Feedback.HandleFeedbackCommand
-  | Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
+  | Comments.HandleFeedbackCommand
+  | Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
   | Locale
 > =>
   Effect.gen(function* () {
@@ -32,7 +32,7 @@ export const StartNow = ({
 
     const prereview = yield* getPrereview(id)
 
-    const query = yield* Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
+    const query = yield* Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
 
     const unpublishedFeedback = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
 
@@ -44,17 +44,17 @@ export const StartNow = ({
           const generateUuid = yield* Uuid.GenerateUuid
           const feedbackId = yield* generateUuid
 
-          const handleCommand = yield* Feedback.HandleFeedbackCommand
+          const handleCommand = yield* Comments.HandleFeedbackCommand
 
           yield* handleCommand({
             feedbackId,
-            command: new Feedback.StartComment({ authorId: user.orcid, prereviewId: prereview.id }),
+            command: new Comments.StartComment({ authorId: user.orcid, prereviewId: prereview.id }),
           })
 
           return Response.RedirectResponse({
             location: DecideNextPage.NextPageAfterCommand({
               command: 'StartComment',
-              feedback: new Feedback.CommentNotStarted(),
+              feedback: new Comments.CommentNotStarted(),
             }).href({ feedbackId }),
           })
         }),

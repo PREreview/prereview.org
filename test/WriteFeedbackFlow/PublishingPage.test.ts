@@ -2,8 +2,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Equal, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
+import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
-import * as Feedback from '../../src/Feedback/index.js'
 import * as Routes from '../../src/routes.js'
 import * as _ from '../../src/WriteFeedbackFlow/PublishingPage/index.js'
 import * as fc from '../fc.js'
@@ -32,7 +32,7 @@ describe('PublishingPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -56,7 +56,8 @@ describe('PublishingPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -83,7 +84,7 @@ describe('PublishingPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -106,7 +107,7 @@ describe('PublishingPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -133,7 +134,7 @@ describe('PublishingPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -156,7 +157,7 @@ describe('PublishingPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
+          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -174,7 +175,7 @@ describe('PublishingPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Feedback.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),

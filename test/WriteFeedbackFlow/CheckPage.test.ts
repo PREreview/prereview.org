@@ -2,8 +2,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Equal, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
+import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
-import * as Feedback from '../../src/Feedback/index.js'
 import * as Routes from '../../src/routes.js'
 import * as _ from '../../src/WriteFeedbackFlow/CheckPage/index.js'
 import * as fc from '../fc.js'
@@ -33,7 +33,7 @@ describe('CheckPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -57,7 +57,7 @@ describe('CheckPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -81,7 +81,7 @@ describe('CheckPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -108,7 +108,7 @@ describe('CheckPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -131,7 +131,7 @@ describe('CheckPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -158,7 +158,7 @@ describe('CheckPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -181,7 +181,7 @@ describe('CheckPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
+          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -199,7 +199,7 @@ describe('CheckPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Feedback.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -216,11 +216,11 @@ describe('CheckPageSubmission', () => {
           .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
       ])('when the feedback can be published', (feedbackId, [feedback, user]) =>
         Effect.gen(function* () {
-          const handleFeedbackCommand = jest.fn<typeof Feedback.HandleFeedbackCommand.Service>(_ => Effect.void)
+          const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
           const actual = yield* Effect.provideService(
             _.CheckPageSubmission({ feedbackId }),
-            Feedback.HandleFeedbackCommand,
+            Comments.HandleFeedbackCommand,
             handleFeedbackCommand,
           )
 
@@ -232,10 +232,10 @@ describe('CheckPageSubmission', () => {
 
           expect(handleFeedbackCommand).toHaveBeenCalledWith({
             feedbackId,
-            command: new Feedback.PublishComment(),
+            command: new Comments.PublishComment(),
           })
         }).pipe(
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -247,7 +247,7 @@ describe('CheckPageSubmission', () => {
         fc
           .commentReadyForPublishing()
           .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-        fc.oneof(fc.constant(new Feedback.UnableToHandleCommand({})), fc.commentError()),
+        fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
       ])("when the feedback can't be published", (feedbackId, [feedback, user], error) =>
         Effect.gen(function* () {
           const actual = yield* _.CheckPageSubmission({ feedbackId })
@@ -261,8 +261,8 @@ describe('CheckPageSubmission', () => {
             js: [],
           })
         }).pipe(
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-          Effect.provideService(Feedback.HandleFeedbackCommand, () => Effect.fail(error)),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -285,8 +285,8 @@ describe('CheckPageSubmission', () => {
           location: Routes.WriteFeedbackPublished.href({ feedbackId }),
         })
       }).pipe(
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -308,8 +308,8 @@ describe('CheckPageSubmission', () => {
           location: Routes.WriteFeedbackPublishing.href({ feedbackId }),
         })
       }).pipe(
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -331,8 +331,8 @@ describe('CheckPageSubmission', () => {
             js: [],
           })
         }).pipe(
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -354,8 +354,8 @@ describe('CheckPageSubmission', () => {
             js: [],
           })
         }).pipe(
-          Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-          Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -380,8 +380,8 @@ describe('CheckPageSubmission', () => {
           js: [],
         })
       }).pipe(
-        Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -401,8 +401,8 @@ describe('CheckPageSubmission', () => {
           js: [],
         })
       }).pipe(
-        Effect.provideService(Feedback.GetFeedback, () => Effect.fail(new Feedback.UnableToQuery({}))),
-        Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -419,8 +419,8 @@ describe('CheckPageSubmission', () => {
         location: Routes.WriteFeedbackCheck.href({ feedbackId }),
       })
     }).pipe(
-      Effect.provideService(Feedback.GetFeedback, shouldNotBeCalled),
-      Effect.provideService(Feedback.HandleFeedbackCommand, shouldNotBeCalled),
+      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),

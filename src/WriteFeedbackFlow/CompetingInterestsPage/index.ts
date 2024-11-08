@@ -1,6 +1,6 @@
 import { Effect, Equal, Match, Option, pipe } from 'effect'
+import * as Comments from '../../Comments/index.js'
 import { Locale } from '../../Context.js'
-import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
@@ -17,12 +17,12 @@ export const CompetingInterestsPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Feedback.GetFeedback | Locale
+  Comments.GetFeedback | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
-    const getFeedback = yield* Feedback.GetFeedback
+    const getFeedback = yield* Comments.GetFeedback
 
     const feedback = yield* getFeedback(feedbackId)
 
@@ -76,12 +76,12 @@ export const CompetingInterestsSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Feedback.GetFeedback | Feedback.HandleFeedbackCommand | Locale
+  Comments.GetFeedback | Comments.HandleFeedbackCommand | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
-    const getFeedback = yield* Feedback.GetFeedback
+    const getFeedback = yield* Comments.GetFeedback
 
     const feedback = yield* getFeedback(feedbackId)
 
@@ -102,18 +102,18 @@ export const CompetingInterestsSubmission = ({
             Match.value(form),
             Match.tag('CompletedFormYes', form =>
               Effect.gen(function* () {
-                const handleCommand = yield* Feedback.HandleFeedbackCommand
+                const handleCommand = yield* Comments.HandleFeedbackCommand
 
                 yield* pipe(
                   handleCommand({
                     feedbackId,
-                    command: new Feedback.DeclareCompetingInterests({
+                    command: new Comments.DeclareCompetingInterests({
                       competingInterests: Option.some(form.competingInterestsDetails),
                     }),
                   }),
                   Effect.catchIf(
                     cause => cause._tag !== 'UnableToHandleCommand',
-                    cause => new Feedback.UnableToHandleCommand({ cause }),
+                    cause => new Comments.UnableToHandleCommand({ cause }),
                   ),
                 )
 
@@ -129,18 +129,18 @@ export const CompetingInterestsSubmission = ({
             ),
             Match.tag('CompletedFormNo', () =>
               Effect.gen(function* () {
-                const handleCommand = yield* Feedback.HandleFeedbackCommand
+                const handleCommand = yield* Comments.HandleFeedbackCommand
 
                 yield* pipe(
                   handleCommand({
                     feedbackId,
-                    command: new Feedback.DeclareCompetingInterests({
+                    command: new Comments.DeclareCompetingInterests({
                       competingInterests: Option.none(),
                     }),
                   }),
                   Effect.catchIf(
                     cause => cause._tag !== 'UnableToHandleCommand',
-                    cause => new Feedback.UnableToHandleCommand({ cause }),
+                    cause => new Comments.UnableToHandleCommand({ cause }),
                   ),
                 )
 

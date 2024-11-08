@@ -1,9 +1,9 @@
 import { FetchHttpClient } from '@effect/platform'
 import { type Array, Effect, flow, Layer, Match, Option, pipe, PubSub, Runtime } from 'effect'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
+import * as Comments from './Comments/index.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
-import * as Feedback from './Feedback/index.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import { html } from './html.js'
@@ -86,7 +86,7 @@ const getPrereview = Layer.effect(
 )
 
 const assignFeedbackADoi = Layer.effect(
-  Feedback.AssignFeedbackADoi,
+  Comments.AssignFeedbackADoi,
   Effect.gen(function* () {
     const { legacyPrereviewApi, orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl, publicUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
@@ -101,9 +101,9 @@ const assignFeedbackADoi = Layer.effect(
           Effect.mapError(
             flow(
               Match.value,
-              Match.tag('PrereviewIsNotFound', error => new Feedback.UnableToAssignADoi({ cause: error })),
-              Match.tag('PrereviewIsUnavailable', error => new Feedback.UnableToAssignADoi({ cause: error })),
-              Match.tag('PrereviewWasRemoved', error => new Feedback.UnableToAssignADoi({ cause: error })),
+              Match.tag('PrereviewIsNotFound', error => new Comments.UnableToAssignADoi({ cause: error })),
+              Match.tag('PrereviewIsUnavailable', error => new Comments.UnableToAssignADoi({ cause: error })),
+              Match.tag('PrereviewWasRemoved', error => new Comments.UnableToAssignADoi({ cause: error })),
               Match.exhaustive,
             ),
           ),
@@ -119,14 +119,14 @@ const assignFeedbackADoi = Layer.effect(
               Effect.andThen(
                 flow(
                   Match.value,
-                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Feedback.UnableToAssignADoi({}))),
+                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
                   Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
                   Match.exhaustive,
                 ),
               ),
               Effect.filterOrElse(
                 value => value !== undefined,
-                () => Effect.fail(new Feedback.UnableToAssignADoi({})),
+                () => Effect.fail(new Comments.UnableToAssignADoi({})),
               ),
               Effect.andThen(name => ({ name, orcid: feedback.authorId })),
             ),
@@ -137,7 +137,7 @@ const assignFeedbackADoi = Layer.effect(
               Effect.andThen(
                 flow(
                   Match.value,
-                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Feedback.UnableToAssignADoi({}))),
+                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
                   Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
                   Match.exhaustive,
                 ),
@@ -179,7 +179,7 @@ const assignFeedbackADoi = Layer.effect(
           Effect.mapError(
             flow(
               Match.value,
-              Match.when('unavailable', () => new Feedback.UnableToAssignADoi({})),
+              Match.when('unavailable', () => new Comments.UnableToAssignADoi({})),
               Match.exhaustive,
             ),
           ),
@@ -189,7 +189,7 @@ const assignFeedbackADoi = Layer.effect(
 )
 
 const publishFeedback = Layer.effect(
-  Feedback.PublishFeedbackWithADoi,
+  Comments.PublishFeedbackWithADoi,
   Effect.gen(function* () {
     const { zenodoApiKey, zenodoUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
@@ -216,7 +216,7 @@ const publishFeedback = Layer.effect(
         Effect.mapError(
           flow(
             Match.value,
-            Match.when('unavailable', () => new Feedback.UnableToPublishFeedback({})),
+            Match.when('unavailable', () => new Comments.UnableToPublishFeedback({})),
             Match.exhaustive,
           ),
         ),
@@ -264,25 +264,25 @@ const setUpFetch = Layer.effect(
 )
 
 export const Program = pipe(
-  Layer.mergeAll(WebApp, Feedback.ReactToFeedbackEvents),
+  Layer.mergeAll(WebApp, Comments.ReactToFeedbackEvents),
   Layer.provide(publishFeedback),
   Layer.provide(assignFeedbackADoi),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
-  Layer.provide(Layer.effect(Feedback.HandleFeedbackCommand, Feedback.makeHandleFeedbackCommand)),
+  Layer.provide(Layer.effect(Comments.HandleFeedbackCommand, Comments.makeHandleFeedbackCommand)),
   Layer.provide(
     Layer.effect(
-      Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
-      Feedback.makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview,
+      Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
+      Comments.makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview,
     ),
   ),
-  Layer.provide(Layer.effect(Feedback.GetFeedback, Feedback.makeGetFeedback)),
+  Layer.provide(Layer.effect(Comments.GetFeedback, Comments.makeGetFeedback)),
   Layer.provide(
     Layer.scoped(
-      Feedback.FeedbackEvents,
+      Comments.FeedbackEvents,
       Effect.acquireRelease(
         pipe(
-          PubSub.unbounded() satisfies Effect.Effect<typeof Feedback.FeedbackEvents.Service>,
+          PubSub.unbounded() satisfies Effect.Effect<typeof Comments.FeedbackEvents.Service>,
           Effect.tap(Effect.logDebug('Feedback events started')),
         ),
         flow(PubSub.shutdown, Effect.tap(Effect.logDebug('Feedback events stopped'))),

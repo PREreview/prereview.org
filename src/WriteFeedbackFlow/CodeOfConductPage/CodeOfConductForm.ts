@@ -1,5 +1,5 @@
 import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
-import type * as Feedback from '../../Feedback/index.js'
+import type * as Comments from '../../Comments/index.js'
 
 export type CodeOfConductForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -21,7 +21,7 @@ export const fromBody = (body: unknown) =>
   }).pipe(Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ agree: Either.left(new Missing()) }))))
 
 export const fromFeedback = pipe(
-  Match.type<Feedback.CommentInProgress | Feedback.CommentReadyForPublishing>(),
+  Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),
   Match.tag('CommentInProgress', ({ codeOfConductAgreed }) =>
     codeOfConductAgreed ? new CompletedForm() : new EmptyForm(),
   ),

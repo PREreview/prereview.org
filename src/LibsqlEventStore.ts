@@ -1,8 +1,8 @@
 import type { SqlError } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { Array, DateTime, Effect, flow, ParseResult, pipe, Schema } from 'effect'
+import { CommentEvent } from './Comments/index.js'
 import * as EventStore from './EventStore.js'
-import { CommentEvent } from './Feedback/index.js'
 import { Uuid } from './types/index.js'
 
 export const make: Effect.Effect<

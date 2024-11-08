@@ -1,6 +1,6 @@
 import { Data, type Effect } from 'effect'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import type { CommentEvent } from './Feedback/index.js'
+import type { CommentEvent } from './Comments/index.js'
 import type { Uuid } from './types/index.js'
 
 export class FailedToGetEvents extends Data.TaggedError('FailedToGetEvents')<{ cause?: Error }> {}

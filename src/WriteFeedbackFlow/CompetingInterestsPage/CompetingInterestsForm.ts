@@ -1,5 +1,5 @@
 import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
-import type * as Feedback from '../../Feedback/index.js'
+import type * as Comments from '../../Comments/index.js'
 import { NonEmptyString } from '../../types/index.js'
 
 export type CompetingInterestsForm = EmptyForm | InvalidForm | CompletedForm
@@ -58,7 +58,7 @@ export const fromBody = (body: unknown) =>
   )
 
 export const fromFeedback = pipe(
-  Match.type<Feedback.CommentInProgress | Feedback.CommentReadyForPublishing>(),
+  Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),
   Match.tag('CommentInProgress', ({ competingInterests }) =>
     pipe(
       Match.value(competingInterests),
