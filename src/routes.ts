@@ -39,8 +39,8 @@ export const WriteFeedbackStartNow: Route<{ id: number }> = {
 }
 
 export const WriteFeedbackEnterFeedback: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/write-your-feedback',
-  href: params => `/write-a-comment/${params.feedbackId}/write-your-feedback`,
+  path: '/write-a-comment/:feedbackId/write-your-comment',
+  href: params => `/write-a-comment/${params.feedbackId}/write-your-comment`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
@@ -63,20 +63,20 @@ export const WriteFeedbackCodeOfConduct: Route<{ feedbackId: Uuid.Uuid }> = {
 }
 
 export const WriteFeedbackCheck: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/check-your-feedback',
-  href: params => `/write-a-comment/${params.feedbackId}/check-your-feedback`,
+  path: '/write-a-comment/:feedbackId/check-your-comment',
+  href: params => `/write-a-comment/${params.feedbackId}/check-your-comment`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
 export const WriteFeedbackPublishing: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/feedback-being-published',
-  href: params => `/write-a-comment/${params.feedbackId}/feedback-being-published`,
+  path: '/write-a-comment/:feedbackId/comment-being-published',
+  href: params => `/write-a-comment/${params.feedbackId}/comment-being-published`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
 export const WriteFeedbackPublished: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-a-comment/:feedbackId/feedback-published',
-  href: params => `/write-a-comment/${params.feedbackId}/feedback-published`,
+  path: '/write-a-comment/:feedbackId/comment-published',
+  href: params => `/write-a-comment/${params.feedbackId}/comment-published`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
