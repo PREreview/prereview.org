@@ -27,56 +27,56 @@ export interface Route<A extends { readonly [K in keyof A]: unknown }> {
 }
 
 export const WriteFeedback: Route<{ id: number }> = {
-  path: '/reviews/:id/write-feedback',
-  href: params => `/reviews/${params.id}/write-feedback`,
+  path: '/reviews/:id/write-a-comment',
+  href: params => `/reviews/${params.id}/write-a-comment`,
   schema: Schema.Struct({ id: Schema.NumberFromString }),
 }
 
 export const WriteFeedbackStartNow: Route<{ id: number }> = {
-  path: '/reviews/:id/write-feedback/start-now',
-  href: params => `/reviews/${params.id}/write-feedback/start-now`,
+  path: '/reviews/:id/write-a-comment/start-now',
+  href: params => `/reviews/${params.id}/write-a-comment/start-now`,
   schema: Schema.Struct({ id: Schema.NumberFromString }),
 }
 
 export const WriteFeedbackEnterFeedback: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-feedback/:feedbackId/write-your-feedback',
-  href: params => `/write-feedback/${params.feedbackId}/write-your-feedback`,
+  path: '/write-a-comment/:feedbackId/write-your-feedback',
+  href: params => `/write-a-comment/${params.feedbackId}/write-your-feedback`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
 export const WriteFeedbackChoosePersona: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-feedback/:feedbackId/choose-name',
-  href: params => `/write-feedback/${params.feedbackId}/choose-name`,
+  path: '/write-a-comment/:feedbackId/choose-name',
+  href: params => `/write-a-comment/${params.feedbackId}/choose-name`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
 export const WriteFeedbackCompetingInterests: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-feedback/:feedbackId/competing-interests',
-  href: params => `/write-feedback/${params.feedbackId}/competing-interests`,
+  path: '/write-a-comment/:feedbackId/competing-interests',
+  href: params => `/write-a-comment/${params.feedbackId}/competing-interests`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
 export const WriteFeedbackCodeOfConduct: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-feedback/:feedbackId/code-of-conduct',
-  href: params => `/write-feedback/${params.feedbackId}/code-of-conduct`,
+  path: '/write-a-comment/:feedbackId/code-of-conduct',
+  href: params => `/write-a-comment/${params.feedbackId}/code-of-conduct`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
 export const WriteFeedbackCheck: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-feedback/:feedbackId/check-your-feedback',
-  href: params => `/write-feedback/${params.feedbackId}/check-your-feedback`,
+  path: '/write-a-comment/:feedbackId/check-your-feedback',
+  href: params => `/write-a-comment/${params.feedbackId}/check-your-feedback`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
 export const WriteFeedbackPublishing: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-feedback/:feedbackId/feedback-being-published',
-  href: params => `/write-feedback/${params.feedbackId}/feedback-being-published`,
+  path: '/write-a-comment/:feedbackId/feedback-being-published',
+  href: params => `/write-a-comment/${params.feedbackId}/feedback-being-published`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 
 export const WriteFeedbackPublished: Route<{ feedbackId: Uuid.Uuid }> = {
-  path: '/write-feedback/:feedbackId/feedback-published',
-  href: params => `/write-feedback/${params.feedbackId}/feedback-published`,
+  path: '/write-a-comment/:feedbackId/feedback-published',
+  href: params => `/write-a-comment/${params.feedbackId}/feedback-published`,
   schema: Schema.Struct({ feedbackId: Uuid.UuidSchema }),
 }
 

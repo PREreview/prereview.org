@@ -187,7 +187,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -287,7 +287,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -380,7 +380,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -476,7 +476,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -563,7 +563,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -677,7 +677,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -787,7 +787,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a comment')
     await expect(page.getByRole('main')).not.toContainText('ORCID')
@@ -868,7 +868,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -956,7 +956,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1050,7 +1050,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1161,7 +1161,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteFeedback)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-feedback')
+    await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
