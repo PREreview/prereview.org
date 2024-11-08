@@ -4,13 +4,13 @@ import type { Orcid } from 'orcid-id-ts'
 import type { Html } from '../html.js'
 import type { NonEmptyString } from '../types/index.js'
 
-export class StartFeedback extends Data.TaggedClass('StartFeedback')<{
+export class StartComment extends Data.TaggedClass('StartComment')<{
   prereviewId: number
   authorId: Orcid
 }> {}
 
-export class EnterFeedback extends Data.TaggedClass('EnterFeedback')<{
-  feedback: Html
+export class EnterComment extends Data.TaggedClass('EnterComment')<{
+  comment: Html
 }> {}
 
 export class ChoosePersona extends Data.TaggedClass('ChoosePersona')<{
@@ -23,21 +23,21 @@ export class DeclareCompetingInterests extends Data.TaggedClass('DeclareCompetin
 
 export class AgreeToCodeOfConduct extends Data.TaggedClass('AgreeToCodeOfConduct') {}
 
-export class PublishFeedback extends Data.TaggedClass('PublishFeedback') {}
+export class PublishComment extends Data.TaggedClass('PublishComment') {}
 
 export class MarkDoiAsAssigned extends Data.TaggedClass('MarkDoiAsAssigned')<{
   id: number
   doi: Doi
 }> {}
 
-export class MarkFeedbackAsPublished extends Data.TaggedClass('MarkFeedbackAsPublished') {}
+export class MarkCommentAsPublished extends Data.TaggedClass('MarkCommentAsPublished') {}
 
-export type FeedbackCommand =
-  | StartFeedback
-  | EnterFeedback
+export type CommentCommand =
+  | StartComment
+  | EnterComment
   | ChoosePersona
   | DeclareCompetingInterests
   | AgreeToCodeOfConduct
-  | PublishFeedback
+  | PublishComment
   | MarkDoiAsAssigned
-  | MarkFeedbackAsPublished
+  | MarkCommentAsPublished

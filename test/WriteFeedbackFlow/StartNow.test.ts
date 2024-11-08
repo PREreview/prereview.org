@@ -33,14 +33,14 @@ describe('StartNow', () => {
                 _tag: 'RedirectResponse',
                 status: StatusCodes.SEE_OTHER,
                 location: DecideNextPage.NextPageAfterCommand({
-                  command: 'StartFeedback',
+                  command: 'StartComment',
                   feedback: new Feedback.FeedbackNotStarted(),
                 }).href({ feedbackId }),
               })
 
               expect(handleFeedbackCommand).toHaveBeenCalledWith({
                 feedbackId: expect.anything(),
-                command: new Feedback.StartFeedback({ prereviewId: prereview.id, authorId: user.orcid }),
+                command: new Feedback.StartComment({ prereviewId: prereview.id, authorId: user.orcid }),
               })
             }).pipe(
               Effect.provideService(Locale, locale),

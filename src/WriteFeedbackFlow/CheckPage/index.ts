@@ -91,7 +91,7 @@ export const CheckPageSubmission = ({
           yield* pipe(
             handleCommand({
               feedbackId,
-              command: new Feedback.PublishFeedback(),
+              command: new Feedback.PublishComment(),
             }),
             Effect.catchIf(
               cause => cause._tag !== 'UnableToHandleCommand',

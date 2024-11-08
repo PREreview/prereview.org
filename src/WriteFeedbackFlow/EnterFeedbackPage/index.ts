@@ -107,7 +107,7 @@ export const EnterFeedbackSubmission = ({
                 yield* pipe(
                   handleCommand({
                     feedbackId,
-                    command: new Feedback.EnterFeedback({ feedback: form.feedback }),
+                    command: new Feedback.EnterComment({ comment: form.feedback }),
                   }),
                   Effect.catchIf(
                     cause => cause._tag !== 'UnableToHandleCommand',
@@ -116,7 +116,7 @@ export const EnterFeedbackSubmission = ({
                 )
 
                 return Response.RedirectResponse({
-                  location: DecideNextPage.NextPageAfterCommand({ command: 'EnterFeedback', feedback }).href({
+                  location: DecideNextPage.NextPageAfterCommand({ command: 'EnterComment', feedback }).href({
                     feedbackId,
                   }),
                 })

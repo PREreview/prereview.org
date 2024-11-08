@@ -4,7 +4,7 @@ import * as Errors from './Errors.js'
 import * as Events from './Events.js'
 import type * as State from './State.js'
 
-const onStartFeedback = (command: Commands.StartFeedback) =>
+const onStartComment = (command: Commands.StartComment) =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', () =>
@@ -19,15 +19,15 @@ const onStartFeedback = (command: Commands.StartFeedback) =>
     Match.exhaustive,
   )
 
-const onEnterFeedback = (command: Commands.EnterFeedback) =>
+const onEnterComment = (command: Commands.EnterComment) =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
     Match.tag('FeedbackInProgress', () =>
-      Either.right(Array.of(new Events.CommentWasEntered({ comment: command.feedback }))),
+      Either.right(Array.of(new Events.CommentWasEntered({ comment: command.comment }))),
     ),
     Match.tag('FeedbackReadyForPublishing', () =>
-      Either.right(Array.of(new Events.CommentWasEntered({ comment: command.feedback }))),
+      Either.right(Array.of(new Events.CommentWasEntered({ comment: command.comment }))),
     ),
     Match.tag('FeedbackBeingPublished', () => Either.left(new Errors.FeedbackIsBeingPublished())),
     Match.tag('FeedbackPublished', () => Either.left(new Errors.FeedbackWasAlreadyPublished())),
@@ -81,7 +81,7 @@ const onDeclareCompetingInterests = (command: Commands.DeclareCompetingInterests
     Match.exhaustive,
   )
 
-const onPublishFeedback = () =>
+const onPublishComment = () =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
@@ -109,7 +109,7 @@ const onMarkDoiAsAssigned = (command: Commands.MarkDoiAsAssigned) =>
     Match.exhaustive,
   )
 
-const onMarkFeedbackAsPublished = () =>
+const onMarkCommentAsPublished = () =>
   flow(
     Match.value<State.FeedbackState>,
     Match.tag('FeedbackNotStarted', () => Either.left(new Errors.FeedbackHasNotBeenStarted())),
@@ -125,19 +125,19 @@ const onMarkFeedbackAsPublished = () =>
   )
 
 const onCommand = pipe(
-  Match.type<Commands.FeedbackCommand>(),
-  Match.tag('StartFeedback', onStartFeedback),
-  Match.tag('EnterFeedback', onEnterFeedback),
+  Match.type<Commands.CommentCommand>(),
+  Match.tag('StartComment', onStartComment),
+  Match.tag('EnterComment', onEnterComment),
   Match.tag('ChoosePersona', onChoosePersona),
   Match.tag('AgreeToCodeOfConduct', onAgreeToCodeOfConduct),
   Match.tag('DeclareCompetingInterests', onDeclareCompetingInterests),
-  Match.tag('PublishFeedback', onPublishFeedback),
+  Match.tag('PublishComment', onPublishComment),
   Match.tag('MarkDoiAsAssigned', onMarkDoiAsAssigned),
-  Match.tag('MarkFeedbackAsPublished', onMarkFeedbackAsPublished),
+  Match.tag('MarkCommentAsPublished', onMarkCommentAsPublished),
   Match.exhaustive,
 )
 
 export const DecideFeedback = (
   state: State.FeedbackState,
-): ((command: Commands.FeedbackCommand) => Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.FeedbackError>) =>
+): ((command: Commands.CommentCommand) => Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.FeedbackError>) =>
   flow(onCommand, Function.apply(state)<Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.FeedbackError>>)

@@ -204,14 +204,14 @@ describe('EnterFeedbackSubmission', () => {
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
-              location: DecideNextPage.NextPageAfterCommand({ command: 'EnterFeedback', feedback }).href({
+              location: DecideNextPage.NextPageAfterCommand({ command: 'EnterComment', feedback }).href({
                 feedbackId,
               }),
             })
 
             expect(handleFeedbackCommand).toHaveBeenCalledWith({
               feedbackId,
-              command: new Feedback.EnterFeedback({ feedback: body.feedback }),
+              command: new Feedback.EnterComment({ comment: body.feedback }),
             })
           }).pipe(
             Effect.provideService(Locale, locale),

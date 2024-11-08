@@ -104,7 +104,7 @@ describe('OnDoiWasAssigned', () => {
 
       expect(handleFeedbackCommand).toHaveBeenCalledWith({
         feedbackId,
-        command: new Feedback.MarkFeedbackAsPublished(),
+        command: new Feedback.MarkCommentAsPublished(),
       })
     }).pipe(
       Effect.provideService(Feedback.PublishFeedbackWithADoi, () => Effect.void),

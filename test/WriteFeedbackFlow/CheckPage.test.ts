@@ -232,7 +232,7 @@ describe('CheckPageSubmission', () => {
 
           expect(handleFeedbackCommand).toHaveBeenCalledWith({
             feedbackId,
-            command: new Feedback.PublishFeedback(),
+            command: new Feedback.PublishComment(),
           })
         }).pipe(
           Effect.provideService(Feedback.GetFeedback, () => Effect.succeed(feedback)),

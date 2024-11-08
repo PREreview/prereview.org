@@ -48,12 +48,12 @@ export const StartNow = ({
 
           yield* handleCommand({
             feedbackId,
-            command: new Feedback.StartFeedback({ authorId: user.orcid, prereviewId: prereview.id }),
+            command: new Feedback.StartComment({ authorId: user.orcid, prereviewId: prereview.id }),
           })
 
           return Response.RedirectResponse({
             location: DecideNextPage.NextPageAfterCommand({
-              command: 'StartFeedback',
+              command: 'StartComment',
               feedback: new Feedback.FeedbackNotStarted(),
             }).href({ feedbackId }),
           })

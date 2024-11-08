@@ -10,12 +10,12 @@ import { CommandHandlerSpecification } from '../CommandHandlerSpecification.js'
 describe('when not started', () => {
   test('can be started', () =>
     given()
-      .when(new _.StartFeedback({ prereviewId: 89935, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.StartComment({ prereviewId: 89935, authorId: Orcid('0000-0002-1825-0097') }))
       .then(new _.CommentWasStarted({ prereviewId: 89935, authorId: Orcid('0000-0002-1825-0097') })))
 
   test('cannot enter feedback', () =>
     given()
-      .when(new _.EnterFeedback({ feedback: html`<p>Some feedback.</p>` }))
+      .when(new _.EnterComment({ comment: html`<p>Some feedback.</p>` }))
       .thenError(new _.FeedbackHasNotBeenStarted()))
 
   test('cannot choose persona', () =>
@@ -32,10 +32,10 @@ describe('when not started', () => {
     given().when(new _.AgreeToCodeOfConduct()).thenError(new _.FeedbackHasNotBeenStarted()))
 
   test('cannot request publication', () =>
-    given().when(new _.PublishFeedback()).thenError(new _.FeedbackHasNotBeenStarted()))
+    given().when(new _.PublishComment()).thenError(new _.FeedbackHasNotBeenStarted()))
 
   test('cannot request publication', () =>
-    given().when(new _.PublishFeedback()).thenError(new _.FeedbackHasNotBeenStarted()))
+    given().when(new _.PublishComment()).thenError(new _.FeedbackHasNotBeenStarted()))
 
   test('DOI cannot be marked as assigned', () =>
     given()
@@ -43,18 +43,18 @@ describe('when not started', () => {
       .thenError(new _.FeedbackHasNotBeenStarted()))
 
   test('cannot be marked as published', () =>
-    given().when(new _.MarkFeedbackAsPublished()).thenError(new _.FeedbackHasNotBeenStarted()))
+    given().when(new _.MarkCommentAsPublished()).thenError(new _.FeedbackHasNotBeenStarted()))
 })
 
 describe('when in progress', () => {
   test('cannot be started again', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .when(new _.StartFeedback({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.FeedbackWasAlreadyStarted()))
 
   test('can enter feedback', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .when(new _.EnterFeedback({ feedback: html`<p>Some feedback.</p>` }))
+      .when(new _.EnterComment({ comment: html`<p>Some feedback.</p>` }))
       .then(new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` })))
 
   test('can choose persona', () =>
@@ -82,7 +82,7 @@ describe('when in progress', () => {
 
   test('cannot request publication', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .when(new _.PublishFeedback())
+      .when(new _.PublishComment())
       .thenError(new _.FeedbackIsIncomplete()))
 
   test('DOI cannot be marked as assigned', () =>
@@ -92,7 +92,7 @@ describe('when in progress', () => {
 
   test('cannot be marked as published', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .when(new _.MarkFeedbackAsPublished())
+      .when(new _.MarkCommentAsPublished())
       .thenError(new _.FeedbackIsIncomplete()))
 })
 
@@ -105,7 +105,7 @@ describe('when ready for publication', () => {
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
-      .when(new _.StartFeedback({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.FeedbackWasAlreadyStarted()))
 
   test('can re-enter feedback', () =>
@@ -116,7 +116,7 @@ describe('when ready for publication', () => {
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
-      .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
+      .when(new _.EnterComment({ comment: html`<p>Some different feedback.</p>` }))
       .then(new _.CommentWasEntered({ comment: html`<p>Some different feedback.</p>` })))
 
   test('can choose persona', () =>
@@ -168,7 +168,7 @@ describe('when ready for publication', () => {
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
-      .when(new _.PublishFeedback())
+      .when(new _.PublishComment())
       .then(new _.CommentPublicationWasRequested()))
 
   test('DOI can be marked as assigned', () =>
@@ -190,7 +190,7 @@ describe('when ready for publication', () => {
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
-      .when(new _.MarkFeedbackAsPublished())
+      .when(new _.MarkCommentAsPublished())
       .thenError(new _.DoiIsNotAssigned()))
 })
 
@@ -204,7 +204,7 @@ describe('when being published', () => {
       new _.CodeOfConductWasAgreed(),
       new _.CommentPublicationWasRequested(),
     )
-      .when(new _.StartFeedback({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.FeedbackIsBeingPublished()))
 
   test('cannot re-enter feedback', () =>
@@ -216,7 +216,7 @@ describe('when being published', () => {
       new _.CodeOfConductWasAgreed(),
       new _.CommentPublicationWasRequested(),
     )
-      .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
+      .when(new _.EnterComment({ comment: html`<p>Some different feedback.</p>` }))
       .thenError(new _.FeedbackIsBeingPublished()))
 
   test('cannot choose a new persona', () =>
@@ -264,7 +264,7 @@ describe('when being published', () => {
       new _.CodeOfConductWasAgreed(),
       new _.CommentPublicationWasRequested(),
     )
-      .when(new _.PublishFeedback())
+      .when(new _.PublishComment())
       .then())
 
   describe("when a DOI hasn't been assigned", () => {
@@ -289,7 +289,7 @@ describe('when being published', () => {
         new _.CodeOfConductWasAgreed(),
         new _.CommentPublicationWasRequested(),
       )
-        .when(new _.MarkFeedbackAsPublished())
+        .when(new _.MarkCommentAsPublished())
         .thenError(new _.DoiIsNotAssigned()))
   })
 
@@ -317,7 +317,7 @@ describe('when being published', () => {
         new _.CommentPublicationWasRequested(),
         new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       )
-        .when(new _.MarkFeedbackAsPublished())
+        .when(new _.MarkCommentAsPublished())
         .then(new _.CommentWasPublished()))
   })
 })
@@ -333,7 +333,7 @@ describe('when published', () => {
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.StartFeedback({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.FeedbackWasAlreadyPublished()))
 
   test('cannot re-enter feedback', () =>
@@ -346,7 +346,7 @@ describe('when published', () => {
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.EnterFeedback({ feedback: html`<p>Some different feedback.</p>` }))
+      .when(new _.EnterComment({ comment: html`<p>Some different feedback.</p>` }))
       .thenError(new _.FeedbackWasAlreadyPublished()))
 
   test('cannot choose a new persona', () =>
@@ -398,7 +398,7 @@ describe('when published', () => {
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.PublishFeedback())
+      .when(new _.PublishComment())
       .thenError(new _.FeedbackWasAlreadyPublished()))
 
   test('DOI cannot be re-assigned', () =>
@@ -424,7 +424,7 @@ describe('when published', () => {
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.MarkFeedbackAsPublished())
+      .when(new _.MarkCommentAsPublished())
       .thenError(new _.FeedbackWasAlreadyPublished()))
 })
 
