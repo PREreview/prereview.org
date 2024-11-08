@@ -46,6 +46,9 @@ export const make: Effect.Effect<
           payload
         FROM
           events
+          INNER JOIN resources ON resources.id = events.resource_id
+        WHERE
+          resources.type = 'Feedback'
         ORDER BY
           resource_version ASC,
           event_timestamp ASC
