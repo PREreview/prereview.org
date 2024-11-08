@@ -429,7 +429,7 @@ describe('when published', () => {
 })
 
 const given = CommandHandlerSpecification.for({
-  decide: _.DecideFeedback,
-  evolve: _.EvolveFeedback,
+  decide: _.DecideComment,
+  evolve: _.EvolveComment,
   initialState: new _.CommentNotStarted(),
 })

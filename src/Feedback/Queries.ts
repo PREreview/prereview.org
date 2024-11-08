@@ -2,7 +2,7 @@ import { Array, Equal, Option, pipe, Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { CommentEvent } from './Events.js'
-import { EvolveFeedback } from './Evolve.js'
+import { EvolveComment } from './Evolve.js'
 import { CommentNotStarted, type CommentState } from './State.js'
 
 export const GetAllUnpublishedFeedbackByAnAuthorForAPrereview =
@@ -28,7 +28,7 @@ export const GetAllUnpublishedFeedbackByAnAuthorForAPrereview =
             }),
           ),
       ),
-      Record.map(Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveFeedback(state)(event))),
+      Record.map(Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(state)(event))),
       Record.filter(
         state =>
           state._tag === 'CommentInProgress' ||
@@ -60,7 +60,7 @@ export const HasAuthorUnpublishedFeedbackForAPrereview =
             }),
           ),
       ),
-      Record.map(Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveFeedback(state)(event))),
+      Record.map(Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(state)(event))),
       Record.some(
         state =>
           state._tag === 'CommentInProgress' ||

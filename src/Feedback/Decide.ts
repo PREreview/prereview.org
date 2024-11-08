@@ -137,7 +137,7 @@ const onCommand = pipe(
   Match.exhaustive,
 )
 
-export const DecideFeedback = (
+export const DecideComment = (
   state: State.CommentState,
 ): ((command: Commands.CommentCommand) => Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.CommentError>) =>
   flow(onCommand, Function.apply(state)<Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.CommentError>>)
