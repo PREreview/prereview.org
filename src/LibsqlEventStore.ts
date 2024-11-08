@@ -47,7 +47,8 @@ export const make: Effect.Effect<
         FROM
           events
         ORDER BY
-          resource_version ASC
+          resource_version ASC,
+          event_timestamp ASC
       `,
       Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable))),
     )
