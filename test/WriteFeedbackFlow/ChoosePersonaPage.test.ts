@@ -168,12 +168,8 @@ describe('ChoosePersonaPage', () => {
       const actual = yield* _.ChoosePersonaPage({ feedbackId })
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'LogInResponse',
+        location: Routes.WriteFeedbackChoosePersona.href({ feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -430,12 +426,8 @@ describe('ChoosePersonaSubmission', () => {
       const actual = yield* _.ChoosePersonaSubmission({ body, feedbackId })
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'LogInResponse',
+        location: Routes.WriteFeedbackChoosePersona.href({ feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

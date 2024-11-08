@@ -14,7 +14,7 @@ export const WriteFeedbackPage = ({
 }: {
   id: number
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Feedback.GetAllUnpublishedFeedbackByAnAuthorForAPrereview | GetPrereview | Locale
 > =>
@@ -43,6 +43,6 @@ export const WriteFeedbackPage = ({
       PrereviewIsUnavailable: () => Effect.succeed(havingProblemsPage),
       PrereviewWasRemoved: () => Effect.succeed(pageNotFound),
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () => Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedback.href({ id }) })),
     }),
   )

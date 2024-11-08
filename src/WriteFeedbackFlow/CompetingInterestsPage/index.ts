@@ -15,7 +15,7 @@ export const CompetingInterestsPage = ({
 }: {
   feedbackId: Uuid.Uuid
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Feedback.GetFeedback | Locale
 > =>
@@ -60,7 +60,10 @@ export const CompetingInterestsPage = ({
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(
+          Response.LogInResponse({ location: Routes.WriteFeedbackCompetingInterests.href({ feedbackId }) }),
+        ),
     }),
   )
 
@@ -71,7 +74,7 @@ export const CompetingInterestsSubmission = ({
   body: unknown
   feedbackId: Uuid.Uuid
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Feedback.GetFeedback | Feedback.HandleFeedbackCommand | Locale
 > =>
@@ -176,6 +179,9 @@ export const CompetingInterestsSubmission = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(
+          Response.LogInResponse({ location: Routes.WriteFeedbackCompetingInterests.href({ feedbackId }) }),
+        ),
     }),
   )

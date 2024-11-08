@@ -2,7 +2,8 @@ import { Effect, Equal } from 'effect'
 import { Locale } from '../../Context.js'
 import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import type * as Response from '../../response.js'
+import * as Response from '../../response.js'
+import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
 import { PublishedPage as MakeResponse } from './PublishedPage.js'
@@ -11,7 +12,11 @@ export const PublishedPage = ({
   feedbackId,
 }: {
   feedbackId: Uuid.Uuid
-}): Effect.Effect<Response.PageResponse | Response.StreamlinePageResponse, never, Feedback.GetFeedback | Locale> =>
+}): Effect.Effect<
+  Response.PageResponse | Response.StreamlinePageResponse | Response.LogInResponse,
+  never,
+  Feedback.GetFeedback | Locale
+> =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
@@ -29,6 +34,7 @@ export const PublishedPage = ({
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackPublished.href({ feedbackId }) })),
     }),
   )

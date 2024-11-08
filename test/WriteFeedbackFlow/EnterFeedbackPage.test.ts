@@ -168,12 +168,8 @@ describe('EnterFeedbackPage', () => {
       const actual = yield* _.EnterFeedbackPage({ feedbackId })
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'LogInResponse',
+        location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -427,12 +423,8 @@ describe('EnterFeedbackSubmission', () => {
       const actual = yield* _.EnterFeedbackSubmission({ body, feedbackId })
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'LogInResponse',
+        location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

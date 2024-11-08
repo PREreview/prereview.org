@@ -15,7 +15,7 @@ export const EnterFeedbackPage = ({
 }: {
   feedbackId: Uuid.Uuid
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Feedback.GetFeedback | Locale
 > =>
@@ -62,7 +62,8 @@ export const EnterFeedbackPage = ({
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }) })),
     }),
   )
 
@@ -73,7 +74,7 @@ export const EnterFeedbackSubmission = ({
   body: unknown
   feedbackId: Uuid.Uuid
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Feedback.GetFeedback | Feedback.HandleFeedbackCommand | Locale
 > =>
@@ -147,6 +148,7 @@ export const EnterFeedbackSubmission = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackEnterFeedback.href({ feedbackId }) })),
     }),
   )

@@ -15,7 +15,7 @@ export const CodeOfConductPage = ({
 }: {
   feedbackId: Uuid.Uuid
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Feedback.GetFeedback | Locale
 > =>
@@ -60,7 +60,8 @@ export const CodeOfConductPage = ({
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackCodeOfConduct.href({ feedbackId }) })),
     }),
   )
 
@@ -71,7 +72,7 @@ export const CodeOfConductSubmission = ({
   body: unknown
   feedbackId: Uuid.Uuid
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Feedback.GetFeedback | Feedback.HandleFeedbackCommand | Locale
 > =>
@@ -144,6 +145,7 @@ export const CodeOfConductSubmission = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackCodeOfConduct.href({ feedbackId }) })),
     }),
   )

@@ -168,12 +168,8 @@ describe('CompetingInterestsPage', () => {
       const actual = yield* _.CompetingInterestsPage({ feedbackId })
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'LogInResponse',
+        location: Routes.WriteFeedbackCompetingInterests.href({ feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -448,12 +444,8 @@ describe('CompetingInterestsSubmission', () => {
       const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'LogInResponse',
+        location: Routes.WriteFeedbackCompetingInterests.href({ feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

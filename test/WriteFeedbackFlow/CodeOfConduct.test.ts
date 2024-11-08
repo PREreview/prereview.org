@@ -168,12 +168,8 @@ describe('CodeOfConductPage', () => {
       const actual = yield* _.CodeOfConductPage({ feedbackId })
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'LogInResponse',
+        location: Routes.WriteFeedbackCodeOfConduct.href({ feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -425,12 +421,8 @@ describe('CodeOfConductSubmission', () => {
       const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'LogInResponse',
+        location: Routes.WriteFeedbackCodeOfConduct.href({ feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

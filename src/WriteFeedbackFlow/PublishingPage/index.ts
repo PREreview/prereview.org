@@ -13,7 +13,7 @@ export const PublishingPage = ({
 }: {
   feedbackId: Uuid.Uuid
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Feedback.GetFeedback | Locale
 > =>
@@ -41,6 +41,7 @@ export const PublishingPage = ({
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackPublishing.href({ feedbackId }) })),
     }),
   )

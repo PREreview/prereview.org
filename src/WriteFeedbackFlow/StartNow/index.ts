@@ -5,6 +5,7 @@ import * as Feedback from '../../Feedback/index.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { GetPrereview } from '../../Prereview.js'
 import * as Response from '../../response.js'
+import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
 import * as DecideNextPage from '../DecideNextPage.js'
@@ -15,7 +16,7 @@ export const StartNow = ({
 }: {
   id: number
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   | Uuid.GenerateUuid
   | GetPrereview
@@ -71,7 +72,8 @@ export const StartNow = ({
       PrereviewIsNotFound: () => Effect.succeed(pageNotFound),
       PrereviewIsUnavailable: () => Effect.succeed(havingProblemsPage),
       PrereviewWasRemoved: () => Effect.succeed(pageNotFound),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackStartNow.href({ id }) })),
     }),
     Effect.orElseSucceed(() => havingProblemsPage),
   )

@@ -13,7 +13,7 @@ export const CheckPage = ({
 }: {
   feedbackId: Uuid.Uuid
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Feedback.GetFeedback | Locale
 > =>
@@ -55,7 +55,8 @@ export const CheckPage = ({
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackCheck.href({ feedbackId }) })),
     }),
   )
 
@@ -64,7 +65,7 @@ export const CheckPageSubmission = ({
 }: {
   feedbackId: Uuid.Uuid
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Feedback.GetFeedback | Feedback.HandleFeedbackCommand
 > =>
@@ -113,6 +114,7 @@ export const CheckPageSubmission = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
-      UserIsNotLoggedIn: () => Effect.succeed(pageNotFound),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteFeedbackCheck.href({ feedbackId }) })),
     }),
   )
