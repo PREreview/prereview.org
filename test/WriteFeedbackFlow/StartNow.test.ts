@@ -16,10 +16,10 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 describe('StartNow', () => {
   describe('when there is a user', () => {
     describe('when the user can write comments', () => {
-      describe("when they haven't started feedback", () => {
+      describe("when they haven't started a comment", () => {
         test.prop([fc.integer(), fc.supportedLocale(), fc.user(), fc.prereview(), fc.uuid()])(
-          'when the feedback can be created',
-          (id, locale, user, prereview, feedbackId) =>
+          'when the comment can be created',
+          (id, locale, user, prereview, commentId) =>
             Effect.gen(function* () {
               const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
@@ -35,7 +35,7 @@ describe('StartNow', () => {
                 location: DecideNextPage.NextPageAfterCommand({
                   command: 'StartComment',
                   comment: new Comments.CommentNotStarted(),
-                }).href({ commentId: feedbackId }),
+                }).href({ commentId }),
               })
 
               expect(handleFeedbackCommand).toHaveBeenCalledWith({
@@ -44,7 +44,7 @@ describe('StartNow', () => {
               })
             }).pipe(
               Effect.provideService(Locale, locale),
-              Effect.provideService(Uuid.GenerateUuid, Effect.succeed(feedbackId)),
+              Effect.provideService(Uuid.GenerateUuid, Effect.succeed(commentId)),
               Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, () =>
                 Effect.sync(Record.empty),
               ),
@@ -63,7 +63,7 @@ describe('StartNow', () => {
           fc.prereview(),
           fc.uuid(),
           fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
-        ])("when the feedback can't be created", (id, locale, user, prereview, feedbackId, error) =>
+        ])("when the comment can't be created", (id, locale, user, prereview, commentId, error) =>
           Effect.gen(function* () {
             const actual = yield* _.StartNow({ id })
 
@@ -77,7 +77,7 @@ describe('StartNow', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Uuid.GenerateUuid, Effect.succeed(feedbackId)),
+            Effect.provideService(Uuid.GenerateUuid, Effect.succeed(commentId)),
             Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
             Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, () =>
               Effect.sync(Record.empty),
@@ -101,7 +101,7 @@ describe('StartNow', () => {
           fc.oneof(fc.commentInProgress(), fc.commentReadyForPublishing(), fc.commentBeingPublished()),
           { minKeys: 1 },
         ),
-      ])('when they have started feedback', (id, locale, user, prereview, feedback) =>
+      ])('when they have started a comment', (id, locale, user, prereview, comment) =>
         Effect.gen(function* () {
           const actual = yield* _.StartNow({ id })
 
@@ -120,7 +120,7 @@ describe('StartNow', () => {
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, () =>
-            Effect.succeed(feedback),
+            Effect.succeed(comment),
           ),
           Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
           Effect.provideService(CanWriteComments, () => true),
@@ -156,7 +156,7 @@ describe('StartNow', () => {
       )
 
       test.prop([fc.integer(), fc.supportedLocale(), fc.user(), fc.prereview()])(
-        "when the feedback can't be loaded",
+        "when the comment can't be loaded",
         (id, locale, user, prereview) =>
           Effect.gen(function* () {
             const actual = yield* _.StartNow({ id })
@@ -238,7 +238,7 @@ describe('StartNow', () => {
     })
 
     test.prop([fc.integer(), fc.supportedLocale(), fc.user()])(
-      'when the user cannot write feedback',
+      'when the user cannot write a comment',
       (id, locale, user) =>
         Effect.gen(function* () {
           const actual = yield* _.StartNow({ id })

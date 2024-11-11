@@ -34,20 +34,20 @@ export const StartNow = ({
 
     const query = yield* Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
 
-    const unpublishedFeedback = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
+    const unpublishedComments = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
 
-    const existingFeedback = Array.head(Record.toEntries(unpublishedFeedback))
+    const existingComment = Array.head(Record.toEntries(unpublishedComments))
 
-    return yield* Option.match(existingFeedback, {
+    return yield* Option.match(existingComment, {
       onNone: () =>
         Effect.gen(function* () {
           const generateUuid = yield* Uuid.GenerateUuid
-          const feedbackId = yield* generateUuid
+          const commentId = yield* generateUuid
 
           const handleCommand = yield* Comments.HandleFeedbackCommand
 
           yield* handleCommand({
-            feedbackId,
+            feedbackId: commentId,
             command: new Comments.StartComment({ authorId: user.orcid, prereviewId: prereview.id }),
           })
 
@@ -55,15 +55,15 @@ export const StartNow = ({
             location: DecideNextPage.NextPageAfterCommand({
               command: 'StartComment',
               comment: new Comments.CommentNotStarted(),
-            }).href({ commentId: feedbackId }),
+            }).href({ commentId }),
           })
         }),
-      onSome: ([feedbackId, feedback]) =>
+      onSome: ([commentId, comment]) =>
         Effect.gen(function* () {
           const locale = yield* Locale
-          const nextPage = DecideNextPage.NextPageFromState(feedback)
+          const nextPage = DecideNextPage.NextPageFromState(comment)
 
-          return CarryOnPage({ feedbackId, nextPage, prereview, locale })
+          return CarryOnPage({ commentId, nextPage, prereview, locale })
         }),
     })
   }).pipe(
