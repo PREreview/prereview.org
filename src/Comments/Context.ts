@@ -30,7 +30,7 @@ export class GetAllUnpublishedCommentsByAnAuthorForAPrereview extends Context.Ta
   >
 >() {}
 
-export class GetComment extends Context.Tag('GetFeedback')<
+export class GetComment extends Context.Tag('GetComment')<
   GetComment,
   (commentId: Uuid.Uuid) => Effect.Effect<CommentState, UnableToQuery>
 >() {}
@@ -45,7 +45,7 @@ export class HandleCommentCommand extends Context.Tag('HandleCommentCommand')<
 
 export class AssignCommentADoi extends Context.Tag('AssignCommentADoi')<
   AssignCommentADoi,
-  (feedback: CommentBeingPublished) => Effect.Effect<[Doi, number], UnableToAssignADoi>
+  (comment: CommentBeingPublished) => Effect.Effect<[Doi, number], UnableToAssignADoi>
 >() {}
 
 export class PublishFeedbackWithADoi extends Context.Tag('PublishFeedbackWithADoi')<
