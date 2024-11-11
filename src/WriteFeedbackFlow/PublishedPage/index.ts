@@ -15,22 +15,22 @@ export const PublishedPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.LogInResponse,
   never,
-  Comments.GetFeedback | Locale
+  Comments.GetComment | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
-    const getFeedback = yield* Comments.GetFeedback
+    const getComment = yield* Comments.GetComment
 
-    const feedback = yield* getFeedback(feedbackId)
+    const comment = yield* getComment(feedbackId)
 
-    if (feedback._tag !== 'CommentPublished' || !Equal.equals(user.orcid, feedback.authorId)) {
+    if (comment._tag !== 'CommentPublished' || !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
 
     const locale = yield* Locale
 
-    return MakeResponse({ doi: feedback.doi, feedbackId, locale, prereviewId: feedback.prereviewId })
+    return MakeResponse({ doi: comment.doi, feedbackId, locale, prereviewId: comment.prereviewId })
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),

@@ -30,9 +30,9 @@ export class GetAllUnpublishedFeedbackByAnAuthorForAPrereview extends Context.Ta
   >
 >() {}
 
-export class GetFeedback extends Context.Tag('GetFeedback')<
-  GetFeedback,
-  (feedbackId: Uuid.Uuid) => Effect.Effect<CommentState, UnableToQuery>
+export class GetComment extends Context.Tag('GetFeedback')<
+  GetComment,
+  (commentId: Uuid.Uuid) => Effect.Effect<CommentState, UnableToQuery>
 >() {}
 
 export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<

@@ -24,7 +24,7 @@ describe('OnCommentPublicationWasRequested', () => {
           command: new Comments.MarkDoiAsAssigned({ doi, id }),
         })
       }).pipe(
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -48,7 +48,7 @@ describe('OnCommentPublicationWasRequested', () => {
 
       expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
     }).pipe(
-      Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+      Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
       Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
@@ -69,7 +69,7 @@ describe('OnCommentPublicationWasRequested', () => {
 
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishFeedback({})))
       }).pipe(
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -79,7 +79,7 @@ describe('OnCommentPublicationWasRequested', () => {
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.OnCommentPublicationWasRequested({ feedbackId, event }),
-        Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+        Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
         Effect.provideService(Comments.AssignFeedbackADoi, shouldNotBeCalled),
         Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),

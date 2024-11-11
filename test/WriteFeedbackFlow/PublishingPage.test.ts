@@ -32,7 +32,7 @@ describe('PublishingPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -57,7 +57,7 @@ describe('PublishingPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
 
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -84,7 +84,7 @@ describe('PublishingPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -107,7 +107,7 @@ describe('PublishingPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -134,7 +134,7 @@ describe('PublishingPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -157,7 +157,7 @@ describe('PublishingPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -175,7 +175,7 @@ describe('PublishingPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),

@@ -15,9 +15,9 @@ describe('CheckPage', () => {
       fc.uuid(),
       fc
         .commentReadyForPublishing()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback is ready for publishing', (feedbackId, [feedback, user], locale) =>
+    ])('when the feedback is ready for publishing', (feedbackId, [comment, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPage({ feedbackId })
 
@@ -33,7 +33,7 @@ describe('CheckPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -44,9 +44,9 @@ describe('CheckPage', () => {
       fc.uuid(),
       fc
         .commentPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback has been published', (feedbackId, [feedback, user], locale) =>
+    ])('when the feedback has been published', (feedbackId, [comment, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPage({ feedbackId })
 
@@ -57,7 +57,7 @@ describe('CheckPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -68,9 +68,9 @@ describe('CheckPage', () => {
       fc.uuid(),
       fc
         .commentBeingPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback is being published', (feedbackId, [feedback, user], locale) =>
+    ])('when the feedback is being published', (feedbackId, [comment, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPage({ feedbackId })
 
@@ -81,7 +81,7 @@ describe('CheckPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -92,9 +92,9 @@ describe('CheckPage', () => {
       fc.uuid(),
       fc
         .commentInProgress()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])("when the feedback isn't complete", (feedbackId, [feedback, user], locale) =>
+    ])("when the feedback isn't complete", (feedbackId, [comment, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPage({ feedbackId })
 
@@ -108,7 +108,7 @@ describe('CheckPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -131,7 +131,7 @@ describe('CheckPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -158,7 +158,7 @@ describe('CheckPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -181,7 +181,7 @@ describe('CheckPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -199,7 +199,7 @@ describe('CheckPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -213,8 +213,8 @@ describe('CheckPageSubmission', () => {
         fc.uuid(),
         fc
           .commentReadyForPublishing()
-          .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-      ])('when the feedback can be published', (feedbackId, [feedback, user]) =>
+          .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+      ])('when the feedback can be published', (feedbackId, [comment, user]) =>
         Effect.gen(function* () {
           const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
@@ -235,7 +235,7 @@ describe('CheckPageSubmission', () => {
             command: new Comments.PublishComment(),
           })
         }).pipe(
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -246,9 +246,9 @@ describe('CheckPageSubmission', () => {
         fc.uuid(),
         fc
           .commentReadyForPublishing()
-          .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+          .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
         fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
-      ])("when the feedback can't be published", (feedbackId, [feedback, user], error) =>
+      ])("when the feedback can't be published", (feedbackId, [comment, user], error) =>
         Effect.gen(function* () {
           const actual = yield* _.CheckPageSubmission({ feedbackId })
 
@@ -261,7 +261,7 @@ describe('CheckPageSubmission', () => {
             js: [],
           })
         }).pipe(
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -274,8 +274,8 @@ describe('CheckPageSubmission', () => {
       fc.uuid(),
       fc
         .commentPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-    ])('when the feedback has been published', (feedbackId, [feedback, user]) =>
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+    ])('when the feedback has been published', (feedbackId, [comment, user]) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPageSubmission({ feedbackId })
 
@@ -285,7 +285,7 @@ describe('CheckPageSubmission', () => {
           location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
         })
       }).pipe(
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -308,7 +308,7 @@ describe('CheckPageSubmission', () => {
           location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
         })
       }).pipe(
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -331,7 +331,7 @@ describe('CheckPageSubmission', () => {
             js: [],
           })
         }).pipe(
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -354,7 +354,7 @@ describe('CheckPageSubmission', () => {
             js: [],
           })
         }).pipe(
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -380,7 +380,7 @@ describe('CheckPageSubmission', () => {
           js: [],
         })
       }).pipe(
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -401,7 +401,7 @@ describe('CheckPageSubmission', () => {
           js: [],
         })
       }).pipe(
-        Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+        Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -419,7 +419,7 @@ describe('CheckPageSubmission', () => {
         location: Routes.WriteCommentCheck.href({ commentId: feedbackId }),
       })
     }).pipe(
-      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,

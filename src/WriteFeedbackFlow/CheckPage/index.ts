@@ -15,32 +15,32 @@ export const CheckPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetFeedback | Locale
+  Comments.GetComment | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
-    const getFeedback = yield* Comments.GetFeedback
+    const getComment = yield* Comments.GetComment
 
-    const feedback = yield* getFeedback(feedbackId)
+    const comment = yield* getComment(feedbackId)
 
-    if (feedback._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
+    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
 
     const locale = yield* Locale
 
     return pipe(
-      Match.value(feedback),
+      Match.value(comment),
       Match.tag('CommentNotStarted', () => pageNotFound),
       Match.tag('CommentInProgress', () => pageNotFound),
-      Match.tag('CommentReadyForPublishing', feedback =>
+      Match.tag('CommentReadyForPublishing', comment =>
         MakeResponse({
-          competingInterests: feedback.competingInterests,
-          feedback: feedback.comment,
+          competingInterests: comment.competingInterests,
+          feedback: comment.comment,
           feedbackId,
           locale,
-          persona: feedback.persona,
+          persona: comment.persona,
           user,
         }),
       ),
@@ -67,14 +67,14 @@ export const CheckPageSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetFeedback | Comments.HandleFeedbackCommand
+  Comments.GetComment | Comments.HandleFeedbackCommand
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
-    const getFeedback = yield* Comments.GetFeedback
+    const getComment = yield* Comments.GetComment
 
-    const feedback = yield* getFeedback(feedbackId)
+    const feedback = yield* getComment(feedbackId)
 
     if (feedback._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
       return pageNotFound

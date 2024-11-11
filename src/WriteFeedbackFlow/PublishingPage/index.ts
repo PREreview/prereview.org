@@ -15,23 +15,23 @@ export const PublishingPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetFeedback | Locale
+  Comments.GetComment | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
-    const getFeedback = yield* Comments.GetFeedback
+    const getComment = yield* Comments.GetComment
 
-    const feedback = yield* getFeedback(feedbackId)
+    const comment = yield* getComment(feedbackId)
 
     if (
-      (feedback._tag !== 'CommentBeingPublished' && feedback._tag !== 'CommentPublished') ||
-      !Equal.equals(user.orcid, feedback.authorId)
+      (comment._tag !== 'CommentBeingPublished' && comment._tag !== 'CommentPublished') ||
+      !Equal.equals(user.orcid, comment.authorId)
     ) {
       return pageNotFound
     }
 
-    if (feedback._tag === 'CommentPublished') {
+    if (comment._tag === 'CommentPublished') {
       return Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) })
     }
 

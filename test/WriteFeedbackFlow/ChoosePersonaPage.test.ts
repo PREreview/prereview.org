@@ -16,9 +16,9 @@ describe('ChoosePersonaPage', () => {
       fc.uuid(),
       fc
         .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback is in progress', (feedbackId, [feedback, user], locale) =>
+    ])('when the feedback is in progress', (feedbackId, [comment, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.ChoosePersonaPage({ feedbackId })
 
@@ -34,7 +34,7 @@ describe('ChoosePersonaPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -45,9 +45,9 @@ describe('ChoosePersonaPage', () => {
       fc.uuid(),
       fc
         .commentPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback has been published', (feedbackId, [feedback, user], locale) =>
+    ])('when the feedback has been published', (feedbackId, [comment, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.ChoosePersonaPage({ feedbackId })
 
@@ -58,7 +58,7 @@ describe('ChoosePersonaPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -69,9 +69,9 @@ describe('ChoosePersonaPage', () => {
       fc.uuid(),
       fc
         .commentBeingPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback is being published', (feedbackId, [feedback, user], locale) =>
+    ])('when the feedback is being published', (feedbackId, [comment, user], locale) =>
       Effect.gen(function* () {
         const actual = yield* _.ChoosePersonaPage({ feedbackId })
 
@@ -82,7 +82,7 @@ describe('ChoosePersonaPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -105,7 +105,7 @@ describe('ChoosePersonaPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -132,7 +132,7 @@ describe('ChoosePersonaPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -155,7 +155,7 @@ describe('ChoosePersonaPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -173,7 +173,7 @@ describe('ChoosePersonaPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -188,10 +188,10 @@ describe('ChoosePersonaSubmission', () => {
           fc.uuid(),
           fc
             .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
-            .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+            .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
           fc.supportedLocale(),
           fc.record({ persona: fc.constantFrom('public', 'pseudonym') }),
-        ])('when the feedback can be entered', (feedbackId, [feedback, user], locale, body) =>
+        ])('when the feedback can be entered', (feedbackId, [comment, user], locale, body) =>
           Effect.gen(function* () {
             const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
@@ -204,7 +204,7 @@ describe('ChoosePersonaSubmission', () => {
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
-              location: DecideNextPage.NextPageAfterCommand({ command: 'ChoosePersona', comment: feedback }).href({
+              location: DecideNextPage.NextPageAfterCommand({ command: 'ChoosePersona', comment }).href({
                 commentId: feedbackId,
               }),
             })
@@ -215,7 +215,7 @@ describe('ChoosePersonaSubmission', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -244,7 +244,7 @@ describe('ChoosePersonaSubmission', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
             Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
@@ -282,7 +282,7 @@ describe('ChoosePersonaSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -309,7 +309,7 @@ describe('ChoosePersonaSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -335,7 +335,7 @@ describe('ChoosePersonaSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -359,7 +359,7 @@ describe('ChoosePersonaSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -388,7 +388,7 @@ describe('ChoosePersonaSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -412,7 +412,7 @@ describe('ChoosePersonaSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -431,7 +431,7 @@ describe('ChoosePersonaSubmission', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,

@@ -34,7 +34,7 @@ describe('CodeOfConductPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -58,7 +58,7 @@ describe('CodeOfConductPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -82,7 +82,7 @@ describe('CodeOfConductPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -105,7 +105,7 @@ describe('CodeOfConductPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -132,7 +132,7 @@ describe('CodeOfConductPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -155,7 +155,7 @@ describe('CodeOfConductPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -173,7 +173,7 @@ describe('CodeOfConductPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -217,7 +217,7 @@ describe('CodeOfConductSubmission', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -245,7 +245,7 @@ describe('CodeOfConductSubmission', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
             Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
@@ -280,7 +280,7 @@ describe('CodeOfConductSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -307,7 +307,7 @@ describe('CodeOfConductSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -333,7 +333,7 @@ describe('CodeOfConductSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -357,7 +357,7 @@ describe('CodeOfConductSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -386,7 +386,7 @@ describe('CodeOfConductSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetFeedback, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -410,7 +410,7 @@ describe('CodeOfConductSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetFeedback, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -429,7 +429,7 @@ describe('CodeOfConductSubmission', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Comments.GetFeedback, shouldNotBeCalled),
+      Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
