@@ -11,8 +11,8 @@ import { expect, test } from '../../base.js'
 test('content looks right', async ({ showPage }) => {
   const response = _.CheckPage({
     competingInterests: Option.none(),
-    feedback,
-    feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    comment,
+    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
     locale: DefaultLocale,
     persona: 'public',
     user,
@@ -26,8 +26,8 @@ test('content looks right', async ({ showPage }) => {
 test('content looks right using a pseudonym', async ({ showPage }) => {
   const response = _.CheckPage({
     competingInterests: Option.none(),
-    feedback,
-    feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    comment,
+    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
     locale: DefaultLocale,
     persona: 'pseudonym',
     user,
@@ -43,8 +43,8 @@ test('content looks right with competing interests', async ({ showPage }) => {
     competingInterests: Option.some(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' as NonEmptyString.NonEmptyString,
     ),
-    feedback,
-    feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    comment,
+    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
     locale: DefaultLocale,
     persona: 'public',
     user,
@@ -61,7 +61,7 @@ const user = {
   pseudonym: 'Orange Panda' as Pseudonym,
 } satisfies User
 
-const feedback = html`
+const comment = html`
   <h1>Lorem ipsum</h1>
   <p>Dolor sit amet, consectetur <strong>adipiscing</strong> <em>elit</em>.</p>
   <ul>

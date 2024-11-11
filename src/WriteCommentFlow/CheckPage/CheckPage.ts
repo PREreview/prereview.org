@@ -9,27 +9,27 @@ import type { User } from '../../user.js'
 
 export const CheckPage = ({
   competingInterests,
-  feedback,
-  feedbackId,
+  comment,
+  commentId,
   locale,
   persona,
   user,
 }: {
   competingInterests: Option.Option<NonEmptyString.NonEmptyString>
-  feedback: Html
-  feedbackId: Uuid.Uuid
+  comment: Html
+  commentId: Uuid.Uuid
   locale: SupportedLocale
   persona: 'public' | 'pseudonym'
   user: User
 }) =>
   StreamlinePageResponse({
     title: plainText(translate(locale, 'write-comment-flow', 'checkTitle')()),
-    nav: html` <a href="${Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId })}" class="back"
+    nav: html` <a href="${Routes.WriteCommentCodeOfConduct.href({ commentId })}" class="back"
       >${translate(locale, 'write-comment-flow', 'back')()}</a
     >`,
     main: html`
       <single-use-form>
-        <form method="post" action="${Routes.WriteCommentCheck.href({ commentId: feedbackId })}" novalidate>
+        <form method="post" action="${Routes.WriteCommentCheck.href({ commentId })}" novalidate>
           <h1>${translate(locale, 'write-comment-flow', 'checkTitle')()}</h1>
 
           <div class="summary-card">
@@ -68,7 +68,7 @@ export const CheckPage = ({
                   )}
                 </dd>
                 <dd>
-                  <a href="${Routes.WriteCommentChoosePersona.href({ commentId: feedbackId })}"
+                  <a href="${Routes.WriteCommentChoosePersona.href({ commentId })}"
                     >${rawHtml(
                       translate(
                         locale,
@@ -87,7 +87,7 @@ export const CheckPage = ({
                   )}
                 </dd>
                 <dd>
-                  <a href="${Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId })}"
+                  <a href="${Routes.WriteCommentCompetingInterests.href({ commentId })}"
                     >${rawHtml(
                       translate(
                         locale,
@@ -102,9 +102,9 @@ export const CheckPage = ({
           </div>
           <div class="summary-card">
             <div>
-              <h2 id="feedback-label">${translate(locale, 'write-comment-flow', 'checkYourCommentHeading')()}</h2>
+              <h2 id="comment-label">${translate(locale, 'write-comment-flow', 'checkYourCommentHeading')()}</h2>
 
-              <a href="${Routes.WriteCommentEnterComment.href({ commentId: feedbackId })}"
+              <a href="${Routes.WriteCommentEnterComment.href({ commentId })}"
                 >${rawHtml(
                   translate(
                     locale,
@@ -115,7 +115,7 @@ export const CheckPage = ({
               >
             </div>
 
-            <div aria-labelledby="feedback-label" role="region" tabindex="0">${fixHeadingLevels(2, feedback)}</div>
+            <div aria-labelledby="comment-label" role="region" tabindex="0">${fixHeadingLevels(2, comment)}</div>
           </div>
 
           <h2>${translate(locale, 'write-comment-flow', 'nowPublishHeading')()}</h2>
@@ -136,7 +136,7 @@ export const CheckPage = ({
         </form>
       </single-use-form>
     `,
-    canonical: Routes.WriteCommentCheck.href({ commentId: feedbackId }),
+    canonical: Routes.WriteCommentCheck.href({ commentId }),
     skipToLabel: 'form',
     js: ['single-use-form.js'],
   })

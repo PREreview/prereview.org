@@ -9,9 +9,9 @@ import { EnsureUserIsLoggedIn } from '../../user.js'
 import { CheckPage as MakeResponse } from './CheckPage.js'
 
 export const CheckPage = ({
-  feedbackId,
+  commentId,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
@@ -22,7 +22,7 @@ export const CheckPage = ({
 
     const getComment = yield* Comments.GetComment
 
-    const comment = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
@@ -37,18 +37,18 @@ export const CheckPage = ({
       Match.tag('CommentReadyForPublishing', comment =>
         MakeResponse({
           competingInterests: comment.competingInterests,
-          feedback: comment.comment,
-          feedbackId,
+          comment: comment.comment,
+          commentId,
           locale,
           persona: comment.persona,
           user,
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
       ),
       Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
       ),
       Match.exhaustive,
     )
@@ -56,14 +56,14 @@ export const CheckPage = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId: feedbackId }) })),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
     }),
   )
 
 export const CheckPageSubmission = ({
-  feedbackId,
+  commentId,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
@@ -74,14 +74,14 @@ export const CheckPageSubmission = ({
 
     const getComment = yield* Comments.GetComment
 
-    const feedback = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
-    if (feedback._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
+    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
 
     return yield* pipe(
-      Match.value(feedback),
+      Match.value(comment),
       Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
       Match.tag('CommentInProgress', () => Effect.succeed(pageNotFound)),
       Match.tag('CommentReadyForPublishing', () =>
@@ -90,7 +90,7 @@ export const CheckPageSubmission = ({
 
           yield* pipe(
             handleCommand({
-              commentId: feedbackId,
+              commentId,
               command: new Comments.PublishComment(),
             }),
             Effect.catchIf(
@@ -99,18 +99,14 @@ export const CheckPageSubmission = ({
             ),
           )
 
-          return Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) })
+          return Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
       ),
       Match.tag('CommentPublished', () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
       ),
       Match.exhaustive,
     )
@@ -119,6 +115,6 @@ export const CheckPageSubmission = ({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId: feedbackId }) })),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
     }),
   )
