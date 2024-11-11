@@ -5,7 +5,7 @@ import type { CommentEvent } from './Events.js'
 import { EvolveComment } from './Evolve.js'
 import { CommentNotStarted, type CommentState } from './State.js'
 
-export const GetAllUnpublishedFeedbackByAnAuthorForAPrereview =
+export const GetAllUnpublishedCommentsByAnAuthorForAPrereview =
   (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
   ({ authorId, prereviewId }: { readonly authorId: Orcid; readonly prereviewId: number }) =>
     pipe(
@@ -37,7 +37,7 @@ export const GetAllUnpublishedFeedbackByAnAuthorForAPrereview =
       ),
     )
 
-export const HasAuthorUnpublishedFeedbackForAPrereview =
+export const HasAuthorUnpublishedCommentsForAPrereview =
   (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
   ({ authorId, prereviewId }: { readonly authorId: Orcid; readonly prereviewId: number }) =>
     pipe(

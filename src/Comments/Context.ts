@@ -12,15 +12,15 @@ export class CommentEvents extends Context.Tag('CommentEvents')<
   PubSub.PubSub<{ readonly commentId: Uuid.Uuid; readonly event: CommentEvent }>
 >() {}
 
-export class HasAuthorUnpublishedFeedbackForAPrereview extends Context.Tag('HasAuthorUnpublishedFeedbackForAPrereview')<
-  HasAuthorUnpublishedFeedbackForAPrereview,
+export class HasAuthorUnpublishedCommentsForAPrereview extends Context.Tag('HasAuthorUnpublishedCommentsForAPrereview')<
+  HasAuthorUnpublishedCommentsForAPrereview,
   (params: { readonly authorId: Orcid; readonly prereviewId: number }) => Effect.Effect<boolean, UnableToQuery>
 >() {}
 
-export class GetAllUnpublishedFeedbackByAnAuthorForAPrereview extends Context.Tag(
-  'GetAllUnpublishedFeedbackByAnAuthorForAPrereview',
+export class GetAllUnpublishedCommentsByAnAuthorForAPrereview extends Context.Tag(
+  'GetAllUnpublishedCommentsByAnAuthorForAPrereview',
 )<
-  GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
+  GetAllUnpublishedCommentsByAnAuthorForAPrereview,
   (params: {
     readonly authorId: Orcid
     readonly prereviewId: number

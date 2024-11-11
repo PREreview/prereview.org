@@ -15,7 +15,7 @@ export const WriteCommentPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
   never,
-  Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview | GetPrereview | Locale
+  Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview | GetPrereview | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* Effect.serviceOption(LoggedInUser)
@@ -30,7 +30,7 @@ export const WriteCommentPage = ({
       onNone: () => Effect.succeed(MakeResponse({ prereview, locale })),
       onSome: user =>
         Effect.gen(function* () {
-          const query = yield* Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
+          const query = yield* Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview
 
           const unpublishedComments = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
 

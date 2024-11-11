@@ -4,7 +4,7 @@ import type { Uuid } from '../types/index.js'
 import {
   type AssignFeedbackADoi,
   CommentEvents,
-  type GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
+  type GetAllUnpublishedCommentsByAnAuthorForAPrereview,
   type GetComment,
   type HandleFeedbackCommand,
   type PublishFeedbackWithADoi,
@@ -74,8 +74,8 @@ export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, Eve
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 
-export const makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview: Effect.Effect<
-  typeof GetAllUnpublishedFeedbackByAnAuthorForAPrereview.Service,
+export const makeGetAllUnpublishedCommentsByAnAuthorForAPrereview: Effect.Effect<
+  typeof GetAllUnpublishedCommentsByAnAuthorForAPrereview.Service,
   never,
   EventStore
 > = Effect.gen(function* () {
@@ -85,7 +85,7 @@ export const makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview: Effect.Effect
     Effect.gen(function* () {
       const events = yield* eventStore.getAllEvents
 
-      return Queries.GetAllUnpublishedFeedbackByAnAuthorForAPrereview(events)({ authorId, prereviewId })
+      return Queries.GetAllUnpublishedCommentsByAnAuthorForAPrereview(events)({ authorId, prereviewId })
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 

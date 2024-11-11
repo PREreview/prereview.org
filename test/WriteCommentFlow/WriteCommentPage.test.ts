@@ -33,7 +33,7 @@ describe('WriteCommentPage', () => {
               })
             }).pipe(
               Effect.provideService(Locale, locale),
-              Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, () =>
+              Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
                 Effect.sync(Record.empty),
               ),
               Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
@@ -65,7 +65,7 @@ describe('WriteCommentPage', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, () =>
+            Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
               Effect.succeed(comment),
             ),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
@@ -95,7 +95,7 @@ describe('WriteCommentPage', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+            Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
             Effect.provideService(CanWriteComments, () => true),
             Effect.provide(TestContext.TestContext),
@@ -120,7 +120,7 @@ describe('WriteCommentPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+          Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewWasRemoved())),
           Effect.provideService(CanWriteComments, () => true),
           user ? Effect.provideService(LoggedInUser, user) : identity,
@@ -145,7 +145,7 @@ describe('WriteCommentPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+          Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsNotFound())),
           Effect.provideService(CanWriteComments, () => true),
           user ? Effect.provideService(LoggedInUser, user) : identity,
@@ -170,7 +170,7 @@ describe('WriteCommentPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+          Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsUnavailable())),
           Effect.provideService(CanWriteComments, () => true),
           user ? Effect.provideService(LoggedInUser, user) : identity,
@@ -196,7 +196,7 @@ describe('WriteCommentPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+        Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
         Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
         Effect.provideService(CanWriteComments, () => false),
         user ? Effect.provideService(LoggedInUser, user) : identity,

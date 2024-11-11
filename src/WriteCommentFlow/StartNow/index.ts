@@ -21,7 +21,7 @@ export const StartNow = ({
   | Uuid.GenerateUuid
   | GetPrereview
   | Comments.HandleFeedbackCommand
-  | Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
+  | Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview
   | Locale
 > =>
   Effect.gen(function* () {
@@ -32,7 +32,7 @@ export const StartNow = ({
 
     const prereview = yield* getPrereview(id)
 
-    const query = yield* Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
+    const query = yield* Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview
 
     const unpublishedComments = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
 

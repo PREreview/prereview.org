@@ -8,8 +8,8 @@ import * as Comments from '../../src/Comments/index.js'
 import { html } from '../../src/html.js'
 import type { NonEmptyString, Uuid } from '../../src/types/index.js'
 
-describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
-  test('gets all unpublished feedback', () => {
+describe('GetAllUnpublishedCommentsByAnAuthorForAPrereview', () => {
+  test('gets all unpublished comments', () => {
     const events = [
       {
         event: new Comments.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
@@ -75,7 +75,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
     ]
 
-    const actual = _.GetAllUnpublishedFeedbackByAnAuthorForAPrereview(events)({
+    const actual = _.GetAllUnpublishedCommentsByAnAuthorForAPrereview(events)({
       prereviewId: 123,
       authorId: Orcid('0000-0002-1825-0097'),
     })
@@ -108,7 +108,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
     })
   })
 
-  test('ignores feedback by other authors', () => {
+  test('ignores comments by other authors', () => {
     const events = [
       {
         event: new Comments.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
@@ -120,7 +120,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
     ]
 
-    const actual = _.GetAllUnpublishedFeedbackByAnAuthorForAPrereview(events)({
+    const actual = _.GetAllUnpublishedCommentsByAnAuthorForAPrereview(events)({
       prereviewId: 123,
       authorId: Orcid('0000-0002-1825-0097'),
     })
@@ -133,7 +133,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
     })
   })
 
-  test('ignores feedback for other PREreviews', () => {
+  test('ignores comments for other PREreviews', () => {
     const events = [
       {
         event: new Comments.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
@@ -145,7 +145,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
     ]
 
-    const actual = _.GetAllUnpublishedFeedbackByAnAuthorForAPrereview(events)({
+    const actual = _.GetAllUnpublishedCommentsByAnAuthorForAPrereview(events)({
       prereviewId: 123,
       authorId: Orcid('0000-0002-1825-0097'),
     })
@@ -158,7 +158,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
     })
   })
 
-  test('ignores feedback that has been published', () => {
+  test('ignores comments that has been published', () => {
     const events = [
       {
         event: new Comments.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
@@ -194,7 +194,7 @@ describe('GetAllUnpublishedFeedbackByAnAuthorForAPrereview', () => {
       },
     ]
 
-    const actual = _.GetAllUnpublishedFeedbackByAnAuthorForAPrereview(events)({
+    const actual = _.GetAllUnpublishedCommentsByAnAuthorForAPrereview(events)({
       prereviewId: 123,
       authorId: Orcid('0000-0002-1825-0097'),
     })

@@ -272,8 +272,8 @@ export const Program = pipe(
   Layer.provide(Layer.effect(Comments.HandleFeedbackCommand, Comments.makeHandleFeedbackCommand)),
   Layer.provide(
     Layer.effect(
-      Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
-      Comments.makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview,
+      Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview,
+      Comments.makeGetAllUnpublishedCommentsByAnAuthorForAPrereview,
     ),
   ),
   Layer.provide(Layer.effect(Comments.GetComment, Comments.makeGetComment)),

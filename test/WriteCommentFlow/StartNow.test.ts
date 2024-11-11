@@ -45,7 +45,7 @@ describe('StartNow', () => {
             }).pipe(
               Effect.provideService(Locale, locale),
               Effect.provideService(Uuid.GenerateUuid, Effect.succeed(commentId)),
-              Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, () =>
+              Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
                 Effect.sync(Record.empty),
               ),
               Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
@@ -79,7 +79,7 @@ describe('StartNow', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(Uuid.GenerateUuid, Effect.succeed(commentId)),
             Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
-            Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, () =>
+            Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
               Effect.sync(Record.empty),
             ),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
@@ -119,7 +119,7 @@ describe('StartNow', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
-          Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, () =>
+          Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
             Effect.succeed(comment),
           ),
           Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
@@ -146,7 +146,7 @@ describe('StartNow', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
-          Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+          Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewWasRemoved())),
           Effect.provideService(CanWriteComments, () => true),
           Effect.provideService(LoggedInUser, user),
@@ -173,7 +173,7 @@ describe('StartNow', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
             Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
-            Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, () =>
+            Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
               Effect.fail(new Comments.UnableToQuery({})),
             ),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
@@ -200,7 +200,7 @@ describe('StartNow', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
-          Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+          Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsNotFound())),
           Effect.provideService(CanWriteComments, () => true),
           Effect.provideService(LoggedInUser, user),
@@ -227,7 +227,7 @@ describe('StartNow', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
             Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
-            Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+            Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
             Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsUnavailable())),
             Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
@@ -255,7 +255,7 @@ describe('StartNow', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
-          Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+          Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
           Effect.provideService(CanWriteComments, () => false),
           Effect.provideService(LoggedInUser, user),
@@ -277,7 +277,7 @@ describe('StartNow', () => {
       Effect.provideService(Locale, locale),
       Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
       Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
-      Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, shouldNotBeCalled),
+      Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
       Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
