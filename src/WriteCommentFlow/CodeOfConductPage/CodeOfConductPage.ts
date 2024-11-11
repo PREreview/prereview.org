@@ -9,11 +9,11 @@ import type { Uuid } from '../../types/index.js'
 import type * as CodeOfConductForm from './CodeOfConductForm.js'
 
 export const CodeOfConductPage = ({
-  feedbackId,
+  commentId,
   form,
   locale,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
   form: CodeOfConductForm.CodeOfConductForm
   locale: SupportedLocale
 }) =>
@@ -27,12 +27,12 @@ export const CodeOfConductPage = ({
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
-      <a href="${Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId })}" class="back"
+      <a href="${Routes.WriteCommentCompetingInterests.href({ commentId })}" class="back"
         >${translate(locale, 'write-comment-flow', 'back')()}</a
       >
     `,
     main: html`
-      <form method="post" action="${Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId })}" novalidate>
+      <form method="post" action="${Routes.WriteCommentCodeOfConduct.href({ commentId })}" novalidate>
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
@@ -160,6 +160,6 @@ export const CodeOfConductPage = ({
       </form>
     `,
     skipToLabel: 'form',
-    canonical: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }),
+    canonical: Routes.WriteCommentCodeOfConduct.href({ commentId }),
     js: form._tag === 'InvalidForm' ? ['error-summary.js'] : [],
   })

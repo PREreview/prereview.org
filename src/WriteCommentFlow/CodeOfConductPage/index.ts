@@ -11,9 +11,9 @@ import * as CodeOfConductForm from './CodeOfConductForm.js'
 import { CodeOfConductPage as MakeResponse } from './CodeOfConductPage.js'
 
 export const CodeOfConductPage = ({
-  feedbackId,
+  commentId,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
@@ -24,7 +24,7 @@ export const CodeOfConductPage = ({
 
     const getComment = yield* Comments.GetComment
 
-    const comment = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
@@ -37,23 +37,23 @@ export const CodeOfConductPage = ({
       Match.tag('CommentNotStarted', () => pageNotFound),
       Match.tag('CommentInProgress', comment =>
         MakeResponse({
-          feedbackId,
-          form: CodeOfConductForm.fromFeedback(comment),
+          commentId,
+          form: CodeOfConductForm.fromComment(comment),
           locale,
         }),
       ),
       Match.tag('CommentReadyForPublishing', comment =>
         MakeResponse({
-          feedbackId,
-          form: CodeOfConductForm.fromFeedback(comment),
+          commentId,
+          form: CodeOfConductForm.fromComment(comment),
           locale,
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
       ),
       Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
       ),
       Match.exhaustive,
     )
@@ -61,18 +61,16 @@ export const CodeOfConductPage = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(
-          Response.LogInResponse({ location: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCodeOfConduct.href({ commentId }) })),
     }),
   )
 
 export const CodeOfConductSubmission = ({
   body,
-  feedbackId,
+  commentId,
 }: {
   body: unknown
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
@@ -83,7 +81,7 @@ export const CodeOfConductSubmission = ({
 
     const getComment = yield* Comments.GetComment
 
-    const comment = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
@@ -106,7 +104,7 @@ export const CodeOfConductSubmission = ({
 
                 yield* pipe(
                   handleCommand({
-                    commentId: feedbackId,
+                    commentId,
                     command: new Comments.AgreeToCodeOfConduct(),
                   }),
                   Effect.catchIf(
@@ -117,7 +115,7 @@ export const CodeOfConductSubmission = ({
 
                 return Response.RedirectResponse({
                   location: DecideNextPage.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', comment }).href({
-                    commentId: feedbackId,
+                    commentId,
                   }),
                 })
               }),
@@ -125,7 +123,7 @@ export const CodeOfConductSubmission = ({
             Match.tag('InvalidForm', form =>
               Effect.succeed(
                 MakeResponse({
-                  feedbackId,
+                  commentId,
                   form,
                   locale,
                 }),
@@ -136,14 +134,10 @@ export const CodeOfConductSubmission = ({
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
       ),
       Match.tag('CommentPublished', () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
       ),
       Match.exhaustive,
     )
@@ -152,8 +146,6 @@ export const CodeOfConductSubmission = ({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(
-          Response.LogInResponse({ location: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCodeOfConduct.href({ commentId }) })),
     }),
   )

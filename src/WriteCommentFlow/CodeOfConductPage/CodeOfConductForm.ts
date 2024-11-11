@@ -20,7 +20,7 @@ export const fromBody = (body: unknown) =>
     return new CompletedForm()
   }).pipe(Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ agree: Either.left(new Missing()) }))))
 
-export const fromFeedback = pipe(
+export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),
   Match.tag('CommentInProgress', ({ codeOfConductAgreed }) =>
     codeOfConductAgreed ? new CompletedForm() : new EmptyForm(),
