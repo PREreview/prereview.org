@@ -13,9 +13,9 @@ describe('when not started', () => {
       .when(new _.StartComment({ prereviewId: 89935, authorId: Orcid('0000-0002-1825-0097') }))
       .then(new _.CommentWasStarted({ prereviewId: 89935, authorId: Orcid('0000-0002-1825-0097') })))
 
-  test('cannot enter feedback', () =>
+  test('cannot enter the comment', () =>
     given()
-      .when(new _.EnterComment({ comment: html`<p>Some feedback.</p>` }))
+      .when(new _.EnterComment({ comment: html`<p>Some comment.</p>` }))
       .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot choose persona', () =>
@@ -52,10 +52,10 @@ describe('when in progress', () => {
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentWasAlreadyStarted()))
 
-  test('can enter feedback', () =>
+  test('can enter the comment', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .when(new _.EnterComment({ comment: html`<p>Some feedback.</p>` }))
-      .then(new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` })))
+      .when(new _.EnterComment({ comment: html`<p>Some comment.</p>` }))
+      .then(new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` })))
 
   test('can choose persona', () =>
     given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -100,7 +100,7 @@ describe('when ready for publication', () => {
   test('cannot be started again', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -108,21 +108,21 @@ describe('when ready for publication', () => {
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentWasAlreadyStarted()))
 
-  test('can re-enter feedback', () =>
+  test('can re-enter the comment', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
     )
-      .when(new _.EnterComment({ comment: html`<p>Some different feedback.</p>` }))
-      .then(new _.CommentWasEntered({ comment: html`<p>Some different feedback.</p>` })))
+      .when(new _.EnterComment({ comment: html`<p>Some different comment.</p>` }))
+      .then(new _.CommentWasEntered({ comment: html`<p>Some different comment.</p>` })))
 
   test('can choose persona', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -133,7 +133,7 @@ describe('when ready for publication', () => {
   test('can re-declare competing interests', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -152,7 +152,7 @@ describe('when ready for publication', () => {
   test('agreeing to the code of conduct does nothing', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -163,7 +163,7 @@ describe('when ready for publication', () => {
   test('can request publication', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -174,7 +174,7 @@ describe('when ready for publication', () => {
   test('DOI can be marked as assigned', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -185,7 +185,7 @@ describe('when ready for publication', () => {
   test('cannot be marked as published', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -198,7 +198,7 @@ describe('when being published', () => {
   test('cannot be started again', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -207,22 +207,22 @@ describe('when being published', () => {
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentIsBeingPublished()))
 
-  test('cannot re-enter feedback', () =>
+  test('cannot re-enter the comment', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.CommentPublicationWasRequested(),
     )
-      .when(new _.EnterComment({ comment: html`<p>Some different feedback.</p>` }))
+      .when(new _.EnterComment({ comment: html`<p>Some different comment.</p>` }))
       .thenError(new _.CommentIsBeingPublished()))
 
   test('cannot choose a new persona', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -234,7 +234,7 @@ describe('when being published', () => {
   test('cannot declare competing interests', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -246,7 +246,7 @@ describe('when being published', () => {
   test('cannot agree to the code of conduct', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -258,7 +258,7 @@ describe('when being published', () => {
   test('re-requesting publication does nothing', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -271,7 +271,7 @@ describe('when being published', () => {
     test('DOI can be marked as assigned', () =>
       given(
         new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-        new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+        new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
         new _.PersonaWasChosen({ persona: 'public' }),
         new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
@@ -283,7 +283,7 @@ describe('when being published', () => {
     test('cannot be marked as published', () =>
       given(
         new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-        new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+        new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
         new _.PersonaWasChosen({ persona: 'public' }),
         new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
@@ -297,7 +297,7 @@ describe('when being published', () => {
     test('DOI cannot be re-assigned', () =>
       given(
         new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-        new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+        new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
         new _.PersonaWasChosen({ persona: 'public' }),
         new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
@@ -310,7 +310,7 @@ describe('when being published', () => {
     test('can be marked as published', () =>
       given(
         new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-        new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+        new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
         new _.PersonaWasChosen({ persona: 'public' }),
         new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
@@ -326,7 +326,7 @@ describe('when published', () => {
   test('cannot be started again', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -336,23 +336,23 @@ describe('when published', () => {
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
-  test('cannot re-enter feedback', () =>
+  test('cannot re-enter the comment', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.EnterComment({ comment: html`<p>Some different feedback.</p>` }))
+      .when(new _.EnterComment({ comment: html`<p>Some different comment.</p>` }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot choose a new persona', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -365,7 +365,7 @@ describe('when published', () => {
   test('cannot declare competing interests', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -378,7 +378,7 @@ describe('when published', () => {
   test('cannot re-agree to the code of conduct', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -391,7 +391,7 @@ describe('when published', () => {
   test('cannot be re-request publication', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -404,7 +404,7 @@ describe('when published', () => {
   test('DOI cannot be re-assigned', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
@@ -417,7 +417,7 @@ describe('when published', () => {
   test('cannot be re-marked as published', () =>
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some feedback.</p>` }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
