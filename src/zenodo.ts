@@ -531,10 +531,10 @@ export const createCommentOnZenodo = (
   )
 
 export const publishDepositionOnZenodo = (
-  feedbackId: number,
+  depositionId: number,
 ): RTE.ReaderTaskEither<ZenodoAuthenticatedEnv & L.LoggerEnv, 'unavailable', void> =>
   pipe(
-    getDeposition(feedbackId),
+    getDeposition(depositionId),
     RTE.filterOrElseW(depositionCanBePublished, identity),
     RTE.chainW(publishDeposition),
     RTE.orElseFirstW(

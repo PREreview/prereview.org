@@ -4222,7 +4222,7 @@ ${comment.comment.toString()}`,
 describe('publishDepositionOnZenodo', () => {
   test.prop([fc.integer(), fc.string(), fc.doi()])(
     'when the deposition can be published',
-    async (id, zenodoApiKey, feedbackDoi) => {
+    async (id, zenodoApiKey, depositionDoi) => {
       const unsubmittedDeposition: UnsubmittedDeposition = {
         id: 1,
         links: {
@@ -4234,7 +4234,7 @@ describe('publishDepositionOnZenodo', () => {
           creators: [{ name: 'A PREreviewer' }],
           description: 'Description',
           prereserve_doi: {
-            doi: feedbackDoi,
+            doi: depositionDoi,
           },
           title: 'Title',
           upload_type: 'publication',
@@ -4251,7 +4251,7 @@ describe('publishDepositionOnZenodo', () => {
         metadata: {
           creators: [{ name: 'A PREreviewer' }],
           description: 'Description',
-          doi: feedbackDoi,
+          doi: depositionDoi,
           title: 'Title',
           upload_type: 'publication',
           publication_type: 'other',
@@ -4282,7 +4282,7 @@ describe('publishDepositionOnZenodo', () => {
 
   test.prop([fc.integer(), fc.string(), fc.doi()])(
     'when the deposition is empty',
-    async (id, zenodoApiKey, feedbackDoi) => {
+    async (id, zenodoApiKey, depositionDoi) => {
       const emptyDeposition: EmptyDeposition = {
         id: 1,
         links: {
@@ -4291,7 +4291,7 @@ describe('publishDepositionOnZenodo', () => {
         },
         metadata: {
           prereserve_doi: {
-            doi: feedbackDoi,
+            doi: depositionDoi,
           },
         },
         state: 'unsubmitted',
@@ -4314,7 +4314,7 @@ describe('publishDepositionOnZenodo', () => {
   )
   test.prop([fc.integer(), fc.string(), fc.doi()])(
     'when the deposition is submitted',
-    async (id, zenodoApiKey, feedbackDoi) => {
+    async (id, zenodoApiKey, depositionDoi) => {
       const submittedDeposition: SubmittedDeposition = {
         id: 1,
         links: {
@@ -4323,7 +4323,7 @@ describe('publishDepositionOnZenodo', () => {
         metadata: {
           creators: [{ name: 'A PREreviewer' }],
           description: 'Description',
-          doi: feedbackDoi,
+          doi: depositionDoi,
           title: 'Title',
           upload_type: 'publication',
           publication_type: 'other',
