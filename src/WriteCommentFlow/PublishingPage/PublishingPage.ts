@@ -4,7 +4,7 @@ import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 
-export const PublishingPage = ({ feedbackId, locale }: { feedbackId: Uuid.Uuid; locale: SupportedLocale }) =>
+export const PublishingPage = ({ commentId, locale }: { commentId: Uuid.Uuid; locale: SupportedLocale }) =>
   StreamlinePageResponse({
     title: plainText(translate(locale, 'write-comment-flow', 'publishingTitle')()),
     main: html`
@@ -14,7 +14,7 @@ export const PublishingPage = ({ feedbackId, locale }: { feedbackId: Uuid.Uuid; 
         <div>
           <p>${translate(locale, 'write-comment-flow', 'publishingSeeShortlyMessage')()}</p>
 
-          <a href="${Routes.WriteCommentPublishing.href({ commentId: feedbackId })}" class="button"
+          <a href="${Routes.WriteCommentPublishing.href({ commentId })}" class="button"
             >${translate(locale, 'write-comment-flow', 'reloadPageButton')()}</a
           >
         </div>
@@ -24,12 +24,12 @@ export const PublishingPage = ({ feedbackId, locale }: { feedbackId: Uuid.Uuid; 
         </div>
 
         <div hidden>
-          <a href="${Routes.WriteCommentPublished.href({ commentId: feedbackId })}" class="button"
+          <a href="${Routes.WriteCommentPublished.href({ commentId })}" class="button"
             >${translate(locale, 'write-comment-flow', 'continueButton')()}</a
           >
         </div>
       </poll-redirect>
     `,
-    canonical: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
+    canonical: Routes.WriteCommentPublishing.href({ commentId }),
     js: ['poll-redirect.js'],
   })
