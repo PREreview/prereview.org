@@ -4,35 +4,31 @@ import type * as Comments from '../../Comments/index.js'
 import { type Html, sanitizeHtml } from '../../html.js'
 import { NonEmptyString } from '../../types/index.js'
 
-export type EnterFeedbackForm = EmptyForm | InvalidForm | CompletedForm
+export type EnterCommentForm = EmptyForm | InvalidForm | CompletedForm
 
 export class Missing extends Data.TaggedError('Missing') {}
 
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  feedback: Either.Either<never, Missing>
+  comment: Either.Either<never, Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
-  feedback: Html
+  comment: Html
 }> {}
 
 export const fromBody = (body: unknown) =>
   Effect.gen(function* () {
-    const { feedback } = yield* Schema.decodeUnknown(FeedbackFieldSchema)(body)
+    const { comment } = yield* Schema.decodeUnknown(CommentFieldSchema)(body)
 
-    return new CompletedForm({ feedback })
-  }).pipe(
-    Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ feedback: Either.left(new Missing()) }))),
-  )
+    return new CompletedForm({ comment })
+  }).pipe(Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ comment: Either.left(new Missing()) }))))
 
-export const fromFeedback = pipe(
+export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),
-  Match.tag('CommentInProgress', ({ comment: feedback }) =>
-    feedback ? new CompletedForm({ feedback }) : new EmptyForm(),
-  ),
-  Match.tag('CommentReadyForPublishing', ({ comment: feedback }) => new CompletedForm({ feedback })),
+  Match.tag('CommentInProgress', ({ comment }) => (comment ? new CompletedForm({ comment }) : new EmptyForm())),
+  Match.tag('CommentReadyForPublishing', ({ comment }) => new CompletedForm({ comment })),
   Match.exhaustive,
 )
 
@@ -42,4 +38,4 @@ const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, 
   encode: String,
 }) as Schema.Schema<Html, string>
 
-const FeedbackFieldSchema = Schema.Struct({ feedback: Schema.compose(NonEmptyString.NonEmptyStringSchema, HtmlSchema) })
+const CommentFieldSchema = Schema.Struct({ comment: Schema.compose(NonEmptyString.NonEmptyStringSchema, HtmlSchema) })

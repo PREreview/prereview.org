@@ -7,17 +7,17 @@ import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
-import type * as EnterFeedbackForm from './EnterFeedbackForm.js'
+import type * as EnterCommentForm from './EnterCommentForm.js'
 import { Turndown } from './Turndown.js'
 
-export const EnterFeedbackPage = ({
-  feedbackId,
+export const EnterCommentPage = ({
+  commentId,
   form,
   locale,
   prereviewId,
 }: {
-  feedbackId: Uuid.Uuid
-  form: EnterFeedbackForm.EnterFeedbackForm
+  commentId: Uuid.Uuid
+  form: EnterCommentForm.EnterCommentForm
   locale: SupportedLocale
   prereviewId: number
 }) =>
@@ -36,18 +36,18 @@ export const EnterFeedbackPage = ({
       >
     `,
     main: html`
-      <form method="post" action="${Routes.WriteCommentEnterComment.href({ commentId: feedbackId })}" novalidate>
+      <form method="post" action="${Routes.WriteCommentEnterComment.href({ commentId })}" novalidate>
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
                 <h2 id="error-summary-title">${translate(locale, 'write-comment-flow', 'errorSummaryHeading')()}</h2>
                 <ul>
-                  ${Either.isLeft(form.feedback)
+                  ${Either.isLeft(form.comment)
                     ? html`
                         <li>
-                          <a href="#feedback">
+                          <a href="#comment">
                             ${pipe(
-                              Match.value(form.feedback.left),
+                              Match.value(form.comment.left),
                               Match.tag('Missing', () =>
                                 translate(locale, 'write-comment-flow', 'errorEnterComment')({ error: () => '' }),
                               ),
@@ -64,16 +64,16 @@ export const EnterFeedbackPage = ({
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
           <h1>
-            <label id="feedback-label" for="feedback"
+            <label id="comment-label" for="comment"
               >${translate(locale, 'write-comment-flow', 'enterYourCommentTitle')({ error: () => '' })}</label
             >
           </h1>
 
-          ${form._tag === 'InvalidForm' && Either.isLeft(form.feedback)
+          ${form._tag === 'InvalidForm' && Either.isLeft(form.comment)
             ? html`
-                <div class="error-message" id="feedback-error">
+                <div class="error-message" id="comment-error">
                   ${pipe(
-                    Match.value(form.feedback.left),
+                    Match.value(form.comment.left),
                     Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterComment')),
                     Match.exhaustive,
                     Function.apply({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
@@ -86,16 +86,16 @@ export const EnterFeedbackPage = ({
           <html-editor>
             ${pipe(
               Match.value(form),
-              Match.tag('EmptyForm', () => html`<textarea id="feedback" name="feedback" rows="20"></textarea>`),
+              Match.tag('EmptyForm', () => html`<textarea id="comment" name="comment" rows="20"></textarea>`),
               Match.tag('InvalidForm', form =>
-                Either.match(form.feedback, {
+                Either.match(form.comment, {
                   onLeft: () => html`
                     <textarea
-                      id="feedback"
-                      name="feedback"
+                      id="comment"
+                      name="comment"
                       rows="20"
                       aria-invalid="true"
-                      aria-errormessage="feedback-error"
+                      aria-errormessage="comment-error"
                     ></textarea>
                   `,
                   onRight: absurd<Html>,
@@ -104,10 +104,10 @@ export const EnterFeedbackPage = ({
               Match.tag(
                 'CompletedForm',
                 form => html`
-                  <textarea id="feedback" name="feedback" rows="20">
-${Turndown.turndown(form.feedback.toString())}</textarea
+                  <textarea id="comment" name="comment" rows="20">
+${Turndown.turndown(form.comment.toString())}</textarea
                   >
-                  <textarea hidden disabled>${form.feedback}</textarea>
+                  <textarea hidden disabled>${form.comment}</textarea>
                 `,
               ),
               Match.exhaustive,
@@ -119,7 +119,7 @@ ${Turndown.turndown(form.feedback.toString())}</textarea
       </form>
     `,
     skipToLabel: 'form',
-    canonical: Routes.WriteCommentEnterComment.href({ commentId: feedbackId }),
+    canonical: Routes.WriteCommentEnterComment.href({ commentId }),
     js:
       form._tag === 'InvalidForm'
         ? ['html-editor.js', 'editor-toolbar.js', 'error-summary.js']

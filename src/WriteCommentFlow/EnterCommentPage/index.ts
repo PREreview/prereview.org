@@ -7,13 +7,13 @@ import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
 import * as DecideNextPage from '../DecideNextPage.js'
-import * as EnterFeedbackForm from './EnterFeedbackForm.js'
-import { EnterFeedbackPage as MakeResponse } from './EnterFeedbackPage.js'
+import * as EnterCommentForm from './EnterCommentForm.js'
+import { EnterCommentPage as MakeResponse } from './EnterCommentPage.js'
 
-export const EnterFeedbackPage = ({
-  feedbackId,
+export const EnterCommentPage = ({
+  commentId,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
@@ -24,7 +24,7 @@ export const EnterFeedbackPage = ({
 
     const getComment = yield* Comments.GetComment
 
-    const comment = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
@@ -37,25 +37,25 @@ export const EnterFeedbackPage = ({
       Match.tag('CommentNotStarted', () => pageNotFound),
       Match.tag('CommentInProgress', comment =>
         MakeResponse({
-          feedbackId,
-          form: EnterFeedbackForm.fromFeedback(comment),
+          commentId,
+          form: EnterCommentForm.fromComment(comment),
           locale,
           prereviewId: comment.prereviewId,
         }),
       ),
       Match.tag('CommentReadyForPublishing', comment =>
         MakeResponse({
-          feedbackId,
-          form: EnterFeedbackForm.fromFeedback(comment),
+          commentId,
+          form: EnterCommentForm.fromComment(comment),
           locale,
           prereviewId: comment.prereviewId,
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
       ),
       Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
       ),
       Match.exhaustive,
     )
@@ -63,18 +63,16 @@ export const EnterFeedbackPage = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(
-          Response.LogInResponse({ location: Routes.WriteCommentEnterComment.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterComment.href({ commentId }) })),
     }),
   )
 
-export const EnterFeedbackSubmission = ({
+export const EnterCommentSubmission = ({
   body,
-  feedbackId,
+  commentId,
 }: {
   body: unknown
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
@@ -85,7 +83,7 @@ export const EnterFeedbackSubmission = ({
 
     const getComment = yield* Comments.GetComment
 
-    const comment = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
@@ -98,7 +96,7 @@ export const EnterFeedbackSubmission = ({
       Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
       Match.tag('CommentInProgress', 'CommentReadyForPublishing', comment =>
         Effect.gen(function* () {
-          const form = yield* EnterFeedbackForm.fromBody(body)
+          const form = yield* EnterCommentForm.fromBody(body)
 
           return yield* pipe(
             Match.value(form),
@@ -108,8 +106,8 @@ export const EnterFeedbackSubmission = ({
 
                 yield* pipe(
                   handleCommand({
-                    feedbackId,
-                    command: new Comments.EnterComment({ comment: form.feedback }),
+                    feedbackId: commentId,
+                    command: new Comments.EnterComment({ comment: form.comment }),
                   }),
                   Effect.catchIf(
                     cause => cause._tag !== 'UnableToHandleCommand',
@@ -119,7 +117,7 @@ export const EnterFeedbackSubmission = ({
 
                 return Response.RedirectResponse({
                   location: DecideNextPage.NextPageAfterCommand({ command: 'EnterComment', comment }).href({
-                    commentId: feedbackId,
+                    commentId,
                   }),
                 })
               }),
@@ -127,7 +125,7 @@ export const EnterFeedbackSubmission = ({
             Match.tag('InvalidForm', form =>
               Effect.succeed(
                 MakeResponse({
-                  feedbackId,
+                  commentId,
                   form,
                   locale,
                   prereviewId: comment.prereviewId,
@@ -139,14 +137,10 @@ export const EnterFeedbackSubmission = ({
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
       ),
       Match.tag('CommentPublished', () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
       ),
       Match.exhaustive,
     )
@@ -155,8 +149,6 @@ export const EnterFeedbackSubmission = ({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(
-          Response.LogInResponse({ location: Routes.WriteCommentEnterComment.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterComment.href({ commentId }) })),
     }),
   )

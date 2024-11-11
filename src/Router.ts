@@ -58,7 +58,7 @@ export const Router = pipe(
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentEnterComment.schema),
       Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.EnterFeedbackPage),
+      Effect.andThen(WriteFeedbackFlow.EnterCommentPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -75,7 +75,7 @@ export const Router = pipe(
         }),
       ),
       Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.EnterFeedbackSubmission),
+      Effect.andThen(WriteFeedbackFlow.EnterCommentSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),

@@ -2,14 +2,14 @@ import { Either } from 'effect'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import type { Uuid } from '../../../src/types/index.js'
-import * as EnterFeedbackForm from '../../../src/WriteCommentFlow/EnterFeedbackPage/EnterFeedbackForm.js'
-import * as _ from '../../../src/WriteCommentFlow/EnterFeedbackPage/EnterFeedbackPage.js'
+import * as EnterCommentForm from '../../../src/WriteCommentFlow/EnterCommentPage/EnterCommentForm.js'
+import * as _ from '../../../src/WriteCommentFlow/EnterCommentPage/EnterCommentPage.js'
 import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {
-  const response = _.EnterFeedbackPage({
-    feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
-    form: new EnterFeedbackForm.EmptyForm(),
+  const response = _.EnterCommentPage({
+    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    form: new EnterCommentForm.EmptyForm(),
     locale: DefaultLocale,
     prereviewId: 10779310,
   })
@@ -19,10 +19,10 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-test('content looks right when there is feedback', async ({ showPage }) => {
-  const response = _.EnterFeedbackPage({
-    feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
-    form: new EnterFeedbackForm.CompletedForm({ feedback }),
+test('content looks right when there is a comment', async ({ showPage }) => {
+  const response = _.EnterCommentPage({
+    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    form: new EnterCommentForm.CompletedForm({ comment }),
     locale: DefaultLocale,
     prereviewId: 10779310,
   })
@@ -32,10 +32,10 @@ test('content looks right when there is feedback', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-test('content looks right when the feedback is missing', async ({ showPage }) => {
-  const response = _.EnterFeedbackPage({
-    feedbackId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
-    form: new EnterFeedbackForm.InvalidForm({ feedback: Either.left(new EnterFeedbackForm.Missing()) }),
+test('content looks right when the comment is missing', async ({ showPage }) => {
+  const response = _.EnterCommentPage({
+    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    form: new EnterCommentForm.InvalidForm({ comment: Either.left(new EnterCommentForm.Missing()) }),
     locale: DefaultLocale,
     prereviewId: 10779310,
   })
@@ -45,7 +45,7 @@ test('content looks right when the feedback is missing', async ({ showPage }) =>
   await expect(content).toHaveScreenshot()
 })
 
-const feedback = html`
+const comment = html`
   <h1>Lorem ipsum</h1>
   <p>Dolor sit amet, consectetur <strong>adipiscing</strong> <em>elit</em>.</p>
   <ul>
