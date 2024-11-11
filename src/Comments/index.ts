@@ -2,7 +2,7 @@ import { Array, Effect, Layer, Match, pipe, PubSub, Queue } from 'effect'
 import { EventStore } from '../Context.js'
 import type { Uuid } from '../types/index.js'
 import {
-  type AssignFeedbackADoi,
+  type AssignCommentADoi,
   CommentEvents,
   type GetAllUnpublishedCommentsByAnAuthorForAPrereview,
   type GetComment,
@@ -92,7 +92,7 @@ export const makeGetAllUnpublishedCommentsByAnAuthorForAPrereview: Effect.Effect
 export const ReactToCommentEvents: Layer.Layer<
   never,
   never,
-  CommentEvents | GetComment | HandleCommentCommand | AssignFeedbackADoi | PublishFeedbackWithADoi
+  CommentEvents | GetComment | HandleCommentCommand | AssignCommentADoi | PublishFeedbackWithADoi
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const commentEvents = yield* CommentEvents

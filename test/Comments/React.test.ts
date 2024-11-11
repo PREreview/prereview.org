@@ -25,7 +25,7 @@ describe('OnCommentPublicationWasRequested', () => {
         })
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
+        Effect.provideService(Comments.AssignCommentADoi, () => Effect.succeed([doi, id])),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -49,7 +49,7 @@ describe('OnCommentPublicationWasRequested', () => {
       expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
     }).pipe(
       Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-      Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
+      Effect.provideService(Comments.AssignCommentADoi, () => Effect.succeed([doi, id])),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -61,7 +61,7 @@ describe('OnCommentPublicationWasRequested', () => {
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.OnCommentPublicationWasRequested({ commentId, event }),
-          Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
+          Effect.provideService(Comments.AssignCommentADoi, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
           Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.either,
@@ -80,7 +80,7 @@ describe('OnCommentPublicationWasRequested', () => {
       const actual = yield* pipe(
         _.OnCommentPublicationWasRequested({ commentId, event }),
         Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
-        Effect.provideService(Comments.AssignFeedbackADoi, shouldNotBeCalled),
+        Effect.provideService(Comments.AssignCommentADoi, shouldNotBeCalled),
         Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.either,

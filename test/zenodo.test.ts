@@ -4085,13 +4085,13 @@ describe('createFeedbackOnZenodo', () => {
   test.prop([
     fc.record({
       author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
-      feedback: fc.html(),
+      comment: fc.html(),
       prereview: fc.prereview(),
     }),
     fc.string(),
     fc.origin(),
     fc.doi(),
-  ])('when the feedback can be created', async (feedback, zenodoApiKey, publicUrl, feedbackDoi) => {
+  ])('when the comment can be created', async (comment, zenodoApiKey, publicUrl, commentDoi) => {
     const emptyDeposition: EmptyDeposition = {
       id: 1,
       links: {
@@ -4100,7 +4100,7 @@ describe('createFeedbackOnZenodo', () => {
       },
       metadata: {
         prereserve_doi: {
-          doi: feedbackDoi,
+          doi: commentDoi,
         },
       },
       state: 'unsubmitted',
@@ -4117,7 +4117,7 @@ describe('createFeedbackOnZenodo', () => {
         creators: [{ name: 'A PREreviewer' }],
         description: 'Description',
         prereserve_doi: {
-          doi: feedbackDoi,
+          doi: commentDoi,
         },
         title: 'Title',
         upload_type: 'publication',
@@ -4126,9 +4126,9 @@ describe('createFeedbackOnZenodo', () => {
       state: 'unsubmitted',
       submitted: false,
     }
-    const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: feedback.prereview.id })}`
+    const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: comment.prereview.id })}`
     const fetch = fetchMock.sandbox()
-    const actual = await _.createFeedbackOnZenodo(feedback)({
+    const actual = await _.createCommentOnZenodo(comment)({
       clock: SystemClock,
       fetch: fetch
         .postOnce(
@@ -4148,20 +4148,20 @@ describe('createFeedbackOnZenodo', () => {
               metadata: {
                 upload_type: 'publication',
                 publication_type: 'other',
-                title: plainText`Comment on a PREreview of “${feedback.prereview.preprint.title}”`.toString(),
-                creators: [feedback.author],
+                title: plainText`Comment on a PREreview of “${comment.prereview.preprint.title}”`.toString(),
+                creators: [comment.author],
                 description: `<p><strong>This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
-${feedback.feedback.toString()}`,
+${comment.comment.toString()}`,
                 communities: [{ identifier: 'prereview-reviews' }],
                 related_identifiers: [
                   {
-                    ..._.toExternalIdentifier(feedback.prereview.preprint.id),
+                    ..._.toExternalIdentifier(comment.prereview.preprint.id),
                     relation: 'references',
                     resource_type: 'publication-preprint',
                   },
                   {
-                    identifier: feedback.prereview.doi,
+                    identifier: comment.prereview.doi,
                     relation: 'references',
                     resource_type: 'publication-peerreview',
                     scheme: 'doi',
@@ -4179,7 +4179,7 @@ ${feedback.feedback.toString()}`,
           {
             url: 'http://example.com/bucket/comment.html',
             headers: { 'Content-Type': 'application/octet-stream' },
-            functionMatcher: (_, req) => req.body === feedback.feedback.toString(),
+            functionMatcher: (_, req) => req.body === comment.comment.toString(),
           },
           {
             status: Status.Created,
@@ -4190,14 +4190,14 @@ ${feedback.feedback.toString()}`,
       zenodoApiKey,
     })()
 
-    expect(actual).toStrictEqual(E.right([feedbackDoi, 1]))
+    expect(actual).toStrictEqual(E.right([commentDoi, 1]))
     expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([
     fc.record({
       author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
-      feedback: fc.html(),
+      comment: fc.html(),
       prereview: fc.prereview(),
     }),
     fc.string(),
@@ -4206,8 +4206,8 @@ ${feedback.feedback.toString()}`,
       fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),
     ),
-  ])('Zenodo is unavailable', async (feedback, zenodoApiKey, publicUrl, response) => {
-    const actual = await _.createFeedbackOnZenodo(feedback)({
+  ])('Zenodo is unavailable', async (comment, zenodoApiKey, publicUrl, response) => {
+    const actual = await _.createCommentOnZenodo(comment)({
       clock: SystemClock,
       fetch: () => response,
       logger: () => IO.of(undefined),

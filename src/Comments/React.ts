@@ -2,7 +2,7 @@ import { Effect } from 'effect'
 import type { Uuid } from '../types/index.js'
 import { MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.js'
 import {
-  AssignFeedbackADoi,
+  AssignCommentADoi,
   GetComment,
   HandleCommentCommand,
   PublishFeedbackWithADoi,
@@ -17,11 +17,11 @@ export const OnCommentPublicationWasRequested = ({
 }: {
   commentId: Uuid.Uuid
   event: CommentPublicationWasRequested
-}): Effect.Effect<void, ToDo, GetComment | HandleCommentCommand | AssignFeedbackADoi> =>
+}): Effect.Effect<void, ToDo, GetComment | HandleCommentCommand | AssignCommentADoi> =>
   Effect.gen(function* () {
     const getComment = yield* GetComment
     const handleCommand = yield* HandleCommentCommand
-    const assignFeedbackADoi = yield* AssignFeedbackADoi
+    const assignCommentADoi = yield* AssignCommentADoi
 
     const comment = yield* getComment(commentId)
 
@@ -29,7 +29,7 @@ export const OnCommentPublicationWasRequested = ({
       return
     }
 
-    const [doi, id] = yield* assignFeedbackADoi(comment)
+    const [doi, id] = yield* assignCommentADoi(comment)
 
     yield* Effect.mapError(
       handleCommand({

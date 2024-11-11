@@ -43,8 +43,8 @@ export class HandleCommentCommand extends Context.Tag('HandleCommentCommand')<
   }) => Effect.Effect<void, UnableToHandleCommand | CommentError>
 >() {}
 
-export class AssignFeedbackADoi extends Context.Tag('AssignFeedbackADoi')<
-  AssignFeedbackADoi,
+export class AssignCommentADoi extends Context.Tag('AssignCommentADoi')<
+  AssignCommentADoi,
   (feedback: CommentBeingPublished) => Effect.Effect<[Doi, number], UnableToAssignADoi>
 >() {}
 

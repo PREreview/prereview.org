@@ -483,9 +483,9 @@ export const addAuthorToRecordOnZenodo = (
     RTE.bimap(() => 'unavailable', constVoid),
   )
 
-interface FeedbackToPublish {
+interface CommentToPublish {
   author: { name: NonEmptyString; orcid?: Orcid }
-  feedback: Html
+  comment: Html
   prereview: {
     doi: Doi
     id: number
@@ -496,18 +496,18 @@ interface FeedbackToPublish {
   }
 }
 
-export const createFeedbackOnZenodo = (
-  feedback: FeedbackToPublish,
+export const createCommentOnZenodo = (
+  comment: CommentToPublish,
 ): RTE.ReaderTaskEither<PublicUrlEnv & ZenodoAuthenticatedEnv & L.LoggerEnv, 'unavailable', [Doi, number]> =>
   pipe(
     RTE.Do,
     RTE.apSW('deposition', createEmptyDeposition()),
-    RTE.apSW('metadata', RTE.fromReader(createDepositMetadataForFeedback(feedback))),
+    RTE.apSW('metadata', RTE.fromReader(createDepositMetadataForComment(comment))),
     RTE.chainW(({ deposition, metadata }) => updateDeposition(metadata, deposition)),
     RTE.chainFirstW(
       uploadFile({
         name: 'comment.html',
-        content: feedback.feedback.toString(),
+        content: comment.comment.toString(),
       }),
     ),
     RTE.orElseFirstW(
@@ -601,28 +601,28 @@ export const createRecordOnZenodo: (
     ),
   )
 
-function createDepositMetadataForFeedback(feedback: FeedbackToPublish) {
+function createDepositMetadataForComment(comment: CommentToPublish) {
   return pipe(
-    toUrl(reviewMatch.formatter, { id: feedback.prereview.id }),
+    toUrl(reviewMatch.formatter, { id: comment.prereview.id }),
     R.map(
       url =>
         ({
           upload_type: 'publication',
           publication_type: 'other',
-          title: plainText`Comment on a PREreview of “${feedback.prereview.preprint.title}”`.toString(),
-          creators: [feedback.author],
+          title: plainText`Comment on a PREreview of “${comment.prereview.preprint.title}”`.toString(),
+          creators: [comment.author],
           description: `<p><strong>This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at <a href="${url.href}">${url.href}</a>.</strong></p>
 
-${feedback.feedback.toString()}`,
+${comment.comment.toString()}`,
           communities: [{ identifier: 'prereview-reviews' }],
           related_identifiers: [
             {
-              ...toExternalIdentifier(feedback.prereview.preprint.id),
+              ...toExternalIdentifier(comment.prereview.preprint.id),
               relation: 'references',
               resource_type: 'publication-preprint',
             },
             {
-              identifier: feedback.prereview.doi,
+              identifier: comment.prereview.doi,
               relation: 'references',
               resource_type: 'publication-peerreview',
               scheme: 'doi',

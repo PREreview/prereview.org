@@ -16,7 +16,7 @@ import * as Prereview from './Prereview.js'
 import { Uuid } from './types/index.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import { WebApp } from './WebApp.js'
-import { createFeedbackOnZenodo, getPrereviewFromZenodo, publishDepositionOnZenodo } from './zenodo.js'
+import { createCommentOnZenodo, getPrereviewFromZenodo, publishDepositionOnZenodo } from './zenodo.js'
 
 const getPrereview = Layer.effect(
   Prereview.GetPrereview,
@@ -85,8 +85,8 @@ const getPrereview = Layer.effect(
   }),
 )
 
-const assignFeedbackADoi = Layer.effect(
-  Comments.AssignFeedbackADoi,
+const assignCommentADoi = Layer.effect(
+  Comments.AssignCommentADoi,
   Effect.gen(function* () {
     const { legacyPrereviewApi, orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl, publicUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
@@ -94,10 +94,10 @@ const assignFeedbackADoi = Layer.effect(
     const getPrereview = yield* Prereview.GetPrereview
     const sleep = yield* DeprecatedSleepEnv
 
-    return feedback =>
+    return comment =>
       Effect.gen(function* () {
         const prereview = yield* pipe(
-          getPrereview(feedback.prereviewId),
+          getPrereview(comment.prereviewId),
           Effect.mapError(
             flow(
               Match.value,
@@ -110,11 +110,11 @@ const assignFeedbackADoi = Layer.effect(
         )
 
         const author = yield* pipe(
-          Match.value(feedback.persona),
+          Match.value(comment.persona),
           Match.when('public', () =>
             pipe(
               Effect.promise(
-                getNameFromOrcid(feedback.authorId)({ orcidApiUrl, orcidApiToken, fetch, ...sleep, ...logger }),
+                getNameFromOrcid(comment.authorId)({ orcidApiUrl, orcidApiToken, fetch, ...sleep, ...logger }),
               ),
               Effect.andThen(
                 flow(
@@ -128,12 +128,12 @@ const assignFeedbackADoi = Layer.effect(
                 value => value !== undefined,
                 () => Effect.fail(new Comments.UnableToAssignADoi({})),
               ),
-              Effect.andThen(name => ({ name, orcid: feedback.authorId })),
+              Effect.andThen(name => ({ name, orcid: comment.authorId })),
             ),
           ),
           Match.when('pseudonym', () =>
             pipe(
-              Effect.promise(getPseudonymFromLegacyPrereview(feedback.authorId)({ fetch, legacyPrereviewApi })),
+              Effect.promise(getPseudonymFromLegacyPrereview(comment.authorId)({ fetch, legacyPrereviewApi })),
               Effect.andThen(
                 flow(
                   Match.value,
@@ -148,19 +148,19 @@ const assignFeedbackADoi = Layer.effect(
           Match.exhaustive,
         )
 
-        const text = html`${feedback.comment}
+        const text = html`${comment.comment}
 
           <h2>${translate(DefaultLocale, 'write-comment-flow', 'competingInterestsHeading')()}</h2>
 
           <p>
-            ${Option.getOrElse(feedback.competingInterests, () =>
+            ${Option.getOrElse(comment.competingInterests, () =>
               translate(DefaultLocale, 'write-comment-flow', 'noCompetingInterests')(),
             )}
           </p>`
 
         return yield* pipe(
           Effect.promise(
-            createFeedbackOnZenodo({ ...feedback, feedback: text, author, prereview })({
+            createCommentOnZenodo({ ...comment, comment: text, author, prereview })({
               fetch,
               publicUrl,
               zenodoApiKey,
@@ -266,7 +266,7 @@ const setUpFetch = Layer.effect(
 export const Program = pipe(
   Layer.mergeAll(WebApp, Comments.ReactToCommentEvents),
   Layer.provide(publishFeedback),
-  Layer.provide(assignFeedbackADoi),
+  Layer.provide(assignCommentADoi),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
   Layer.provide(Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand)),
