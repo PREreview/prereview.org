@@ -9,9 +9,9 @@ import { EnsureUserIsLoggedIn } from '../../user.js'
 import { PublishedPage as MakeResponse } from './PublishedPage.js'
 
 export const PublishedPage = ({
-  feedbackId,
+  commentId,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.LogInResponse,
   never,
@@ -22,7 +22,7 @@ export const PublishedPage = ({
 
     const getComment = yield* Comments.GetComment
 
-    const comment = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentPublished' || !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
@@ -30,13 +30,11 @@ export const PublishedPage = ({
 
     const locale = yield* Locale
 
-    return MakeResponse({ doi: comment.doi, feedbackId, locale, prereviewId: comment.prereviewId })
+    return MakeResponse({ doi: comment.doi, commentId, locale, prereviewId: comment.prereviewId })
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(
-          Response.LogInResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
     }),
   )

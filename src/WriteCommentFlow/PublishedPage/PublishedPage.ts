@@ -7,12 +7,12 @@ import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 
 export const PublishedPage = ({
-  feedbackId,
+  commentId,
   doi,
   locale,
   prereviewId,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
   doi: Doi.Doi
   locale: SupportedLocale
   prereviewId: number
@@ -42,5 +42,5 @@ export const PublishedPage = ({
         >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,
-    canonical: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
+    canonical: Routes.WriteCommentPublished.href({ commentId }),
   })
