@@ -3058,8 +3058,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
   )
 })
 
-describe('getFeedbackForPrereviewFromZenodo', () => {
-  test.prop([fc.doi()])('when the feedback can be loaded', async id => {
+describe('getCommentsForPrereviewFromZenodo', () => {
+  test.prop([fc.doi()])('when the comments can be loaded', async id => {
     const records: Records = {
       hits: {
         total: 2,
@@ -3199,7 +3199,7 @@ describe('getFeedbackForPrereviewFromZenodo', () => {
     )
   })
 
-  test.prop([fc.doi()])('revalidates if the feedback are stale', async id => {
+  test.prop([fc.doi()])('revalidates if the comments are stale', async id => {
     const records: Records = {
       hits: {
         total: 1,
@@ -3306,7 +3306,7 @@ describe('getFeedbackForPrereviewFromZenodo', () => {
       min: 400,
       max: 599,
     }),
-  ])('when the feedback cannot be loaded', async (id, status) => {
+  ])('when the comments cannot be loaded', async (id, status) => {
     const fetch = fetchMock.sandbox().getOnce(
       {
         url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
@@ -4081,7 +4081,7 @@ describe('addAuthorToRecordOnZenodo', () => {
   })
 })
 
-describe('createFeedbackOnZenodo', () => {
+describe('createCommentOnZenodo', () => {
   test.prop([
     fc.record({
       author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
