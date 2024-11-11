@@ -1,8 +1,8 @@
 import { Either } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import type { Uuid } from '../../../src/types/index.js'
-import * as CodeOfConductForm from '../../../src/WriteFeedbackFlow/CodeOfConductPage/CodeOfConductForm.js'
-import * as _ from '../../../src/WriteFeedbackFlow/CodeOfConductPage/CodeOfConductPage.js'
+import * as CodeOfConductForm from '../../../src/WriteCommentFlow/CodeOfConductPage/CodeOfConductForm.js'
+import * as _ from '../../../src/WriteCommentFlow/CodeOfConductPage/CodeOfConductPage.js'
 import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {

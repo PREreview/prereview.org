@@ -13,7 +13,7 @@ import {
 } from './response.js'
 import * as Routes from './routes.js'
 import { TemplatePage } from './TemplatePage.js'
-import * as WriteFeedbackFlow from './WriteFeedbackFlow/index.js'
+import * as WriteFeedbackFlow from './WriteCommentFlow/index.js'
 
 const logRequest = HttpMiddleware.make(app =>
   Effect.gen(function* () {

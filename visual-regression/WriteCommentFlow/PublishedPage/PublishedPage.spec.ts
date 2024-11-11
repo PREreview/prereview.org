@@ -1,7 +1,7 @@
 import * as Doi from 'doi-ts'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import type { Uuid } from '../../../src/types/index.js'
-import * as _ from '../../../src/WriteFeedbackFlow/PublishedPage/PublishedPage.js'
+import * as _ from '../../../src/WriteCommentFlow/PublishedPage/PublishedPage.js'
 import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {

@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
-import * as _ from '../../src/WriteFeedbackFlow/PublishedPage/index.js'
+import * as _ from '../../src/WriteCommentFlow/PublishedPage/index.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 

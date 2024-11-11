@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import * as _ from '../../src/WriteFeedbackFlow/DecideNextPage.js'
+import * as _ from '../../src/WriteCommentFlow/DecideNextPage.js'
 import * as Routes from '../../src/routes.js'
 import * as fc from '../fc.js'
 

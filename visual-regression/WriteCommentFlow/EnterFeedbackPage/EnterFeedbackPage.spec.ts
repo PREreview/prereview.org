@@ -2,8 +2,8 @@ import { Either } from 'effect'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import type { Uuid } from '../../../src/types/index.js'
-import * as EnterFeedbackForm from '../../../src/WriteFeedbackFlow/EnterFeedbackPage/EnterFeedbackForm.js'
-import * as _ from '../../../src/WriteFeedbackFlow/EnterFeedbackPage/EnterFeedbackPage.js'
+import * as EnterFeedbackForm from '../../../src/WriteCommentFlow/EnterFeedbackPage/EnterFeedbackForm.js'
+import * as _ from '../../../src/WriteCommentFlow/EnterFeedbackPage/EnterFeedbackPage.js'
 import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {

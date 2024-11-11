@@ -6,7 +6,7 @@ import { DefaultLocale } from '../../../src/locales/index.js'
 import * as Prereview from '../../../src/Prereview.js'
 import type { Pseudonym } from '../../../src/types/pseudonym.js'
 import type { User } from '../../../src/user.js'
-import * as _ from '../../../src/WriteFeedbackFlow/WriteCommentPage/WriteCommentPage.js'
+import * as _ from '../../../src/WriteCommentFlow/WriteCommentPage/WriteCommentPage.js'
 import { expect, test } from '../../base.js'
 
 import PlainDate = Temporal.PlainDate

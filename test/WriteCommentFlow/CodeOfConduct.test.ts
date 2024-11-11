@@ -1,16 +1,16 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Equal, Option, TestContext } from 'effect'
+import { Effect, Equal, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
-import * as _ from '../../src/WriteFeedbackFlow/CompetingInterestsPage/index.js'
-import * as DecideNextPage from '../../src/WriteFeedbackFlow/DecideNextPage.js'
+import * as _ from '../../src/WriteCommentFlow/CodeOfConductPage/index.js'
+import * as DecideNextPage from '../../src/WriteCommentFlow/DecideNextPage.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
-describe('CompetingInterestsPage', () => {
+describe('CodeOfConductPage', () => {
   describe('when there is a user', () => {
     test.prop([
       fc.uuid(),
@@ -20,17 +20,17 @@ describe('CompetingInterestsPage', () => {
       fc.supportedLocale(),
     ])('when the feedback is in progress', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsPage({ feedbackId })
+        const actual = yield* _.CodeOfConductPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
+          canonical: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }),
           status: StatusCodes.OK,
           title: expect.anything(),
           nav: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
-          js: ['conditional-inputs.js'],
+          js: [],
         })
       }).pipe(
         Effect.provideService(Locale, locale),
@@ -49,7 +49,7 @@ describe('CompetingInterestsPage', () => {
       fc.supportedLocale(),
     ])('when the feedback has been published', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsPage({ feedbackId })
+        const actual = yield* _.CodeOfConductPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -73,7 +73,7 @@ describe('CompetingInterestsPage', () => {
       fc.supportedLocale(),
     ])('when the feedback is being published', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsPage({ feedbackId })
+        const actual = yield* _.CodeOfConductPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -93,7 +93,7 @@ describe('CompetingInterestsPage', () => {
       "when the feedback hasn't been started",
       (feedbackId, feedback, user, locale) =>
         Effect.gen(function* () {
-          const actual = yield* _.CompetingInterestsPage({ feedbackId })
+          const actual = yield* _.CodeOfConductPage({ feedbackId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -120,7 +120,7 @@ describe('CompetingInterestsPage', () => {
       fc.supportedLocale(),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsPage({ feedbackId })
+        const actual = yield* _.CodeOfConductPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -143,7 +143,7 @@ describe('CompetingInterestsPage', () => {
       "when the feedback can't be loaded",
       (feedbackId, user, locale) =>
         Effect.gen(function* () {
-          const actual = yield* _.CompetingInterestsPage({ feedbackId })
+          const actual = yield* _.CodeOfConductPage({ feedbackId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -165,11 +165,11 @@ describe('CompetingInterestsPage', () => {
 
   test.prop([fc.uuid(), fc.supportedLocale()])("when there isn't a user", (feedbackId, locale) =>
     Effect.gen(function* () {
-      const actual = yield* _.CompetingInterestsPage({ feedbackId })
+      const actual = yield* _.CodeOfConductPage({ feedbackId })
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
+        location: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -180,26 +180,22 @@ describe('CompetingInterestsPage', () => {
   )
 })
 
-describe('CompetingInterestsSubmission', () => {
+describe('CodeOfConductSubmission', () => {
   describe('when there is a user', () => {
     describe('when the feedback is in progress', () => {
-      describe('when the form is valid', () => {
+      describe('when there is agreement', () => {
         test.prop([
           fc.uuid(),
           fc
             .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
             .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
           fc.supportedLocale(),
-          fc.oneof(
-            fc.record({ competingInterests: fc.constant('no'), competingInterestsDetails: fc.string() }),
-            fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.nonEmptyString() }),
-          ),
-        ])('when the competing interests can be declared', (feedbackId, [feedback, user], locale, body) =>
+        ])('when the feedback can be entered', (feedbackId, [feedback, user], locale) =>
           Effect.gen(function* () {
             const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
             const actual = yield* Effect.provideService(
-              _.CompetingInterestsSubmission({ body, feedbackId }),
+              _.CodeOfConductSubmission({ body: { agree: 'yes' }, feedbackId }),
               Comments.HandleFeedbackCommand,
               handleFeedbackCommand,
             )
@@ -208,7 +204,7 @@ describe('CompetingInterestsSubmission', () => {
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
               location: DecideNextPage.NextPageAfterCommand({
-                command: 'DeclareCompetingInterests',
+                command: 'AgreeToCodeOfConduct',
                 comment: feedback,
               }).href({
                 commentId: feedbackId,
@@ -217,10 +213,7 @@ describe('CompetingInterestsSubmission', () => {
 
             expect(handleFeedbackCommand).toHaveBeenCalledWith({
               feedbackId,
-              command: new Comments.DeclareCompetingInterests({
-                competingInterests:
-                  body.competingInterests === 'yes' ? Option.some(body.competingInterestsDetails) : Option.none(),
-              }),
+              command: new Comments.AgreeToCodeOfConduct(),
             })
           }).pipe(
             Effect.provideService(Locale, locale),
@@ -237,14 +230,10 @@ describe('CompetingInterestsSubmission', () => {
             .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
             .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
           fc.supportedLocale(),
-          fc.oneof(
-            fc.record({ competingInterests: fc.constant('no'), competingInterestsDetails: fc.string() }),
-            fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.nonEmptyString() }),
-          ),
           fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
-        ])("when the competing interests can't be declared", (feedbackId, [feedback, user], locale, body, error) =>
+        ])("when the agreement can't be saved", (feedbackId, [feedback, user], locale, error) =>
           Effect.gen(function* () {
-            const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+            const actual = yield* _.CodeOfConductSubmission({ body: { agree: 'yes' }, feedbackId })
 
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
@@ -272,34 +261,22 @@ describe('CompetingInterestsSubmission', () => {
           .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
         fc.supportedLocale(),
         fc.oneof(
-          fc.record(
-            {
-              competingInterests: fc.string().filter(competingInterests => !['no', 'yes'].includes(competingInterests)),
-              competingInterestsDetails: fc.anything(),
-            },
-            { withDeletedKeys: true },
-          ),
-          fc.record(
-            { competingInterests: fc.constant('yes'), competingInterestsDetails: fc.constant('') },
-            { withDeletedKeys: true },
-          ),
-          fc
-            .anything()
-            .filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'competingInterests'))),
+          fc.record({ agree: fc.string().filter(string => string !== 'yes') }, { withDeletedKeys: true }),
+          fc.anything().filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'agree'))),
         ),
-      ])('when the form is invalid', (feedbackId, [feedback, user], locale, body) =>
+      ])("when there isn't agreement", (feedbackId, [feedback, user], locale, body) =>
         Effect.gen(function* () {
-          const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+          const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
 
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
-            canonical: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
+            canonical: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }),
             status: StatusCodes.BAD_REQUEST,
             title: expect.anything(),
             nav: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'form',
-            js: ['conditional-inputs.js', 'error-summary.js'],
+            js: ['error-summary.js'],
           })
         }).pipe(
           Effect.provideService(Locale, locale),
@@ -321,7 +298,7 @@ describe('CompetingInterestsSubmission', () => {
       fc.anything(),
     ])('when the feedback has been published', (feedbackId, [feedback, user], locale, body) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+        const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -347,7 +324,7 @@ describe('CompetingInterestsSubmission', () => {
       fc.anything(),
     ])('when the feedback is being published', (feedbackId, [feedback, user], locale, body) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+        const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -368,7 +345,7 @@ describe('CompetingInterestsSubmission', () => {
       "when the feedback hasn't been started",
       (feedbackId, feedback, user, locale, body) =>
         Effect.gen(function* () {
-          const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+          const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -397,7 +374,7 @@ describe('CompetingInterestsSubmission', () => {
       fc.anything(),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale, body) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+        const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -421,7 +398,7 @@ describe('CompetingInterestsSubmission', () => {
       "when the feedback can't be loaded",
       (feedbackId, user, locale, body) =>
         Effect.gen(function* () {
-          const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+          const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -444,11 +421,11 @@ describe('CompetingInterestsSubmission', () => {
 
   test.prop([fc.uuid(), fc.supportedLocale(), fc.anything()])("when there isn't a user", (feedbackId, locale, body) =>
     Effect.gen(function* () {
-      const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+      const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
+        location: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

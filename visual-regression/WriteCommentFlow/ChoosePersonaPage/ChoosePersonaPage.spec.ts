@@ -4,8 +4,8 @@ import { DefaultLocale } from '../../../src/locales/index.js'
 import type { Uuid } from '../../../src/types/index.js'
 import type { Pseudonym } from '../../../src/types/pseudonym.js'
 import type { User } from '../../../src/user.js'
-import * as ChoosePersonaForm from '../../../src/WriteFeedbackFlow/ChoosePersonaPage/ChoosePersonaForm.js'
-import * as _ from '../../../src/WriteFeedbackFlow/ChoosePersonaPage/ChoosePersonaPage.js'
+import * as ChoosePersonaForm from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaForm.js'
+import * as _ from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaPage.js'
 import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {

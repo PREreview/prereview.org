@@ -1,6 +1,6 @@
 import { DefaultLocale } from '../../../src/locales/index.js'
 import type { Uuid } from '../../../src/types/index.js'
-import * as _ from '../../../src/WriteFeedbackFlow/PublishingPage/PublishingPage.js'
+import * as _ from '../../../src/WriteCommentFlow/PublishingPage/PublishingPage.js'
 import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {

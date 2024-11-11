@@ -5,36 +5,35 @@ import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
-import * as _ from '../../src/WriteFeedbackFlow/CodeOfConductPage/index.js'
-import * as DecideNextPage from '../../src/WriteFeedbackFlow/DecideNextPage.js'
+import * as _ from '../../src/WriteCommentFlow/CheckPage/index.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
-describe('CodeOfConductPage', () => {
+describe('CheckPage', () => {
   describe('when there is a user', () => {
     test.prop([
       fc.uuid(),
       fc
-        .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .commentReadyForPublishing()
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback is in progress', (feedbackId, [feedback, user], locale) =>
+    ])('when the feedback is ready for publishing', (feedbackId, [comment, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CodeOfConductPage({ feedbackId })
+        const actual = yield* _.CheckPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }),
+          canonical: Routes.WriteCommentCheck.href({ commentId: feedbackId }),
           status: StatusCodes.OK,
           title: expect.anything(),
           nav: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
-          js: [],
+          js: ['single-use-form.js'],
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -45,11 +44,11 @@ describe('CodeOfConductPage', () => {
       fc.uuid(),
       fc
         .commentPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback has been published', (feedbackId, [feedback, user], locale) =>
+    ])('when the feedback has been published', (feedbackId, [comment, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CodeOfConductPage({ feedbackId })
+        const actual = yield* _.CheckPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -58,7 +57,7 @@ describe('CodeOfConductPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -69,11 +68,11 @@ describe('CodeOfConductPage', () => {
       fc.uuid(),
       fc
         .commentBeingPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback is being published', (feedbackId, [feedback, user], locale) =>
+    ])('when the feedback is being published', (feedbackId, [comment, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CodeOfConductPage({ feedbackId })
+        const actual = yield* _.CheckPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -82,7 +81,34 @@ describe('CodeOfConductPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(LoggedInUser, user),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
+    )
+
+    test.prop([
+      fc.uuid(),
+      fc
+        .commentInProgress()
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+      fc.supportedLocale(),
+    ])("when the feedback isn't complete", (feedbackId, [comment, user], locale) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CheckPage({ feedbackId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NOT_FOUND,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provideService(Locale, locale),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -93,7 +119,7 @@ describe('CodeOfConductPage', () => {
       "when the feedback hasn't been started",
       (feedbackId, feedback, user, locale) =>
         Effect.gen(function* () {
-          const actual = yield* _.CodeOfConductPage({ feedbackId })
+          const actual = yield* _.CheckPage({ feedbackId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -120,7 +146,7 @@ describe('CodeOfConductPage', () => {
       fc.supportedLocale(),
     ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CodeOfConductPage({ feedbackId })
+        const actual = yield* _.CheckPage({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -143,7 +169,7 @@ describe('CodeOfConductPage', () => {
       "when the feedback can't be loaded",
       (feedbackId, user, locale) =>
         Effect.gen(function* () {
-          const actual = yield* _.CodeOfConductPage({ feedbackId })
+          const actual = yield* _.CheckPage({ feedbackId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -165,11 +191,11 @@ describe('CodeOfConductPage', () => {
 
   test.prop([fc.uuid(), fc.supportedLocale()])("when there isn't a user", (feedbackId, locale) =>
     Effect.gen(function* () {
-      const actual = yield* _.CodeOfConductPage({ feedbackId })
+      const actual = yield* _.CheckPage({ feedbackId })
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }),
+        location: Routes.WriteCommentCheck.href({ commentId: feedbackId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -180,108 +206,63 @@ describe('CodeOfConductPage', () => {
   )
 })
 
-describe('CodeOfConductSubmission', () => {
+describe('CheckPageSubmission', () => {
   describe('when there is a user', () => {
-    describe('when the feedback is in progress', () => {
-      describe('when there is agreement', () => {
-        test.prop([
-          fc.uuid(),
-          fc
-            .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
-            .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-          fc.supportedLocale(),
-        ])('when the feedback can be entered', (feedbackId, [feedback, user], locale) =>
-          Effect.gen(function* () {
-            const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
+    describe('when the feedback is ready for publishing', () => {
+      test.prop([
+        fc.uuid(),
+        fc
+          .commentReadyForPublishing()
+          .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+      ])('when the feedback can be published', (feedbackId, [comment, user]) =>
+        Effect.gen(function* () {
+          const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
-            const actual = yield* Effect.provideService(
-              _.CodeOfConductSubmission({ body: { agree: 'yes' }, feedbackId }),
-              Comments.HandleFeedbackCommand,
-              handleFeedbackCommand,
-            )
+          const actual = yield* Effect.provideService(
+            _.CheckPageSubmission({ feedbackId }),
+            Comments.HandleFeedbackCommand,
+            handleFeedbackCommand,
+          )
 
-            expect(actual).toStrictEqual({
-              _tag: 'RedirectResponse',
-              status: StatusCodes.SEE_OTHER,
-              location: DecideNextPage.NextPageAfterCommand({
-                command: 'AgreeToCodeOfConduct',
-                comment: feedback,
-              }).href({
-                commentId: feedbackId,
-              }),
-            })
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SEE_OTHER,
+            location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
+          })
 
-            expect(handleFeedbackCommand).toHaveBeenCalledWith({
-              feedbackId,
-              command: new Comments.AgreeToCodeOfConduct(),
-            })
-          }).pipe(
-            Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
-            Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
-          ),
-        )
-
-        test.prop([
-          fc.uuid(),
-          fc
-            .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
-            .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-          fc.supportedLocale(),
-          fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
-        ])("when the agreement can't be saved", (feedbackId, [feedback, user], locale, error) =>
-          Effect.gen(function* () {
-            const actual = yield* _.CodeOfConductSubmission({ body: { agree: 'yes' }, feedbackId })
-
-            expect(actual).toStrictEqual({
-              _tag: 'PageResponse',
-              status: StatusCodes.SERVICE_UNAVAILABLE,
-              title: expect.anything(),
-              main: expect.anything(),
-              skipToLabel: 'main',
-              js: [],
-            })
-          }).pipe(
-            Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
-            Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
-            Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
-          ),
-        )
-      })
+          expect(handleFeedbackCommand).toHaveBeenCalledWith({
+            feedbackId,
+            command: new Comments.PublishComment(),
+          })
+        }).pipe(
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
+      )
 
       test.prop([
         fc.uuid(),
         fc
-          .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
-          .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-        fc.supportedLocale(),
-        fc.oneof(
-          fc.record({ agree: fc.string().filter(string => string !== 'yes') }, { withDeletedKeys: true }),
-          fc.anything().filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'agree'))),
-        ),
-      ])("when there isn't agreement", (feedbackId, [feedback, user], locale, body) =>
+          .commentReadyForPublishing()
+          .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+        fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
+      ])("when the feedback can't be published", (feedbackId, [comment, user], error) =>
         Effect.gen(function* () {
-          const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
+          const actual = yield* _.CheckPageSubmission({ feedbackId })
 
           expect(actual).toStrictEqual({
-            _tag: 'StreamlinePageResponse',
-            canonical: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }),
-            status: StatusCodes.BAD_REQUEST,
+            _tag: 'PageResponse',
+            status: StatusCodes.SERVICE_UNAVAILABLE,
             title: expect.anything(),
-            nav: expect.anything(),
             main: expect.anything(),
-            skipToLabel: 'form',
-            js: ['error-summary.js'],
+            skipToLabel: 'main',
+            js: [],
           })
         }).pipe(
-          Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
-          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -293,12 +274,10 @@ describe('CodeOfConductSubmission', () => {
       fc.uuid(),
       fc
         .commentPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-      fc.supportedLocale(),
-      fc.anything(),
-    ])('when the feedback has been published', (feedbackId, [feedback, user], locale, body) =>
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+    ])('when the feedback has been published', (feedbackId, [comment, user]) =>
       Effect.gen(function* () {
-        const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
+        const actual = yield* _.CheckPageSubmission({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -306,8 +285,7 @@ describe('CodeOfConductSubmission', () => {
           location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
         })
       }).pipe(
-        Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -320,11 +298,9 @@ describe('CodeOfConductSubmission', () => {
       fc
         .commentBeingPublished()
         .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
-      fc.supportedLocale(),
-      fc.anything(),
-    ])('when the feedback is being published', (feedbackId, [feedback, user], locale, body) =>
+    ])('when the feedback is being published', (feedbackId, [feedback, user]) =>
       Effect.gen(function* () {
-        const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
+        const actual = yield* _.CheckPageSubmission({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -332,7 +308,6 @@ describe('CodeOfConductSubmission', () => {
           location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
         })
       }).pipe(
-        Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
@@ -341,11 +316,11 @@ describe('CodeOfConductSubmission', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user(), fc.supportedLocale(), fc.anything()])(
-      "when the feedback hasn't been started",
-      (feedbackId, feedback, user, locale, body) =>
+    test.prop([fc.uuid(), fc.commentInProgress(), fc.user()])(
+      'when the feedback is incomplete',
+      (feedbackId, feedback, user) =>
         Effect.gen(function* () {
-          const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
+          const actual = yield* _.CheckPageSubmission({ feedbackId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -356,7 +331,29 @@ describe('CodeOfConductSubmission', () => {
             js: [],
           })
         }).pipe(
-          Effect.provideService(Locale, locale),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
+    )
+
+    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user()])(
+      "when the feedback hasn't been started",
+      (feedbackId, feedback, user) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckPageSubmission({ feedbackId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.NOT_FOUND,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
           Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
@@ -370,11 +367,9 @@ describe('CodeOfConductSubmission', () => {
       fc
         .tuple(fc.commentState(), fc.user())
         .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
-      fc.supportedLocale(),
-      fc.anything(),
-    ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale, body) =>
+    ])('when the feedback is by a different author', (feedbackId, [feedback, user]) =>
       Effect.gen(function* () {
-        const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
+        const actual = yield* _.CheckPageSubmission({ feedbackId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -385,7 +380,6 @@ describe('CodeOfConductSubmission', () => {
           js: [],
         })
       }).pipe(
-        Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
         Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
@@ -394,41 +388,37 @@ describe('CodeOfConductSubmission', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.anything()])(
-      "when the feedback can't be loaded",
-      (feedbackId, user, locale, body) =>
-        Effect.gen(function* () {
-          const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
+    test.prop([fc.uuid(), fc.user()])("when the feedback can't be loaded", (feedbackId, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CheckPageSubmission({ feedbackId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
-          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
-          Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
-        ),
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.SERVICE_UNAVAILABLE,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
+        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(LoggedInUser, user),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
     )
   })
 
-  test.prop([fc.uuid(), fc.supportedLocale(), fc.anything()])("when there isn't a user", (feedbackId, locale, body) =>
+  test.prop([fc.uuid()])("when there isn't a user", feedbackId =>
     Effect.gen(function* () {
-      const actual = yield* _.CodeOfConductSubmission({ body, feedbackId })
+      const actual = yield* _.CheckPageSubmission({ feedbackId })
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteCommentCodeOfConduct.href({ commentId: feedbackId }),
+        location: Routes.WriteCommentCheck.href({ commentId: feedbackId }),
       })
     }).pipe(
-      Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),

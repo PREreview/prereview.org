@@ -6,7 +6,7 @@ import { DefaultLocale } from '../../../src/locales/index.js'
 import * as Prereview from '../../../src/Prereview.js'
 import * as Routes from '../../../src/routes.js'
 import type { Uuid } from '../../../src/types/index.js'
-import * as _ from '../../../src/WriteFeedbackFlow/StartNow/CarryOnPage.js'
+import * as _ from '../../../src/WriteCommentFlow/StartNow/CarryOnPage.js'
 import { expect, test } from '../../base.js'
 
 import PlainDate = Temporal.PlainDate

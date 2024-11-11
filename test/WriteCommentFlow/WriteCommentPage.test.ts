@@ -7,7 +7,7 @@ import { Locale, LoggedInUser } from '../../src/Context.js'
 import { CanWriteComments } from '../../src/feature-flags.js'
 import * as Prereview from '../../src/Prereview.js'
 import * as Routes from '../../src/routes.js'
-import * as _ from '../../src/WriteFeedbackFlow/WriteCommentPage/index.js'
+import * as _ from '../../src/WriteCommentFlow/WriteCommentPage/index.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 

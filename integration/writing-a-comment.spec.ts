@@ -5,7 +5,7 @@ import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import { areLoggedIn, canLogIn, canWriteComments, expect, test, willPublishFeedback } from './base.js'
 
 test.extend(canLogIn).extend(canWriteComments).extend(willPublishFeedback)(
-  'can write feedback on a PREreview',
+  'can write a comment on a PREreview',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
       conceptdoi: Doi('10.5072/zenodo.1061863'),
@@ -67,7 +67,7 @@ test.extend(canLogIn).extend(canWriteComments).extend(willPublishFeedback)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -118,7 +118,7 @@ test.extend(canLogIn).extend(canWriteComments).extend(willPublishFeedback)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
-  'can change the feedback after previewing',
+  'can change the comment after previewing',
   async ({ fetch, page }) => {
     const record: Record = {
       conceptdoi: Doi('10.5072/zenodo.1061863'),
@@ -180,7 +180,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -280,7 +280,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -373,7 +373,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -407,7 +407,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
-  'are returned to the next step if you have already started feedback on a PREreview',
+  'are returned to the next step if you have already started a comment on a PREreview',
   async ({ fetch, page }) => {
     const record: Record = {
       conceptdoi: Doi('10.5072/zenodo.1061863'),
@@ -469,7 +469,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -556,7 +556,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -670,7 +670,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -780,7 +780,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -799,7 +799,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
-  'have to enter feedback',
+  'have to enter a comment',
   async ({ javaScriptEnabled, fetch, page }) => {
     const record: Record = {
       conceptdoi: Doi('10.5072/zenodo.1061863'),
@@ -861,7 +861,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -949,7 +949,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -1043,7 +1043,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },
@@ -1154,7 +1154,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
       })
       .get(
         {
-          name: 'existing-feedback',
+          name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
           query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
         },

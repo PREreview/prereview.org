@@ -5,7 +5,7 @@ import { DefaultLocale } from '../../../src/locales/index.js'
 import type { NonEmptyString, Uuid } from '../../../src/types/index.js'
 import type { Pseudonym } from '../../../src/types/pseudonym.js'
 import type { User } from '../../../src/user.js'
-import * as _ from '../../../src/WriteFeedbackFlow/CheckPage/CheckPage.js'
+import * as _ from '../../../src/WriteCommentFlow/CheckPage/CheckPage.js'
 import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {
