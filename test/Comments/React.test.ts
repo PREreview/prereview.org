@@ -9,22 +9,22 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 describe('OnCommentPublicationWasRequested', () => {
   test.prop([fc.uuid(), fc.commentPublicationWasRequested(), fc.commentBeingPublished(), fc.integer(), fc.doi()])(
     'assigns a DOI',
-    (feedbackId, event, feedback, id, doi) =>
+    (commentId, event, comment, id, doi) =>
       Effect.gen(function* () {
         const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
         yield* Effect.provideService(
-          _.OnCommentPublicationWasRequested({ feedbackId, event }),
+          _.OnCommentPublicationWasRequested({ commentId, event }),
           Comments.HandleFeedbackCommand,
           handleFeedbackCommand,
         )
 
         expect(handleFeedbackCommand).toHaveBeenCalledWith({
-          feedbackId,
+          feedbackId: commentId,
           command: new Comments.MarkDoiAsAssigned({ doi, id }),
         })
       }).pipe(
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -38,17 +38,17 @@ describe('OnCommentPublicationWasRequested', () => {
     fc.integer(),
     fc.doi(),
     fc.commentError(),
-  ])("when the feedback can't be updated", (feedbackId, event, feedback, id, doi, error) =>
+  ])("when the comment can't be updated", (commentId, event, comment, id, doi, error) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
-        _.OnCommentPublicationWasRequested({ feedbackId, event }),
+        _.OnCommentPublicationWasRequested({ commentId, event }),
         Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
         Effect.either,
       )
 
       expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
     }).pipe(
-      Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+      Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
       Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.succeed([doi, id])),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
@@ -57,10 +57,10 @@ describe('OnCommentPublicationWasRequested', () => {
 
   test.prop([fc.uuid(), fc.commentPublicationWasRequested(), fc.commentBeingPublished()])(
     "when a DOI can't be assigned",
-    (feedbackId, event, feedback) =>
+    (commentId, event, comment) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
-          _.OnCommentPublicationWasRequested({ feedbackId, event }),
+          _.OnCommentPublicationWasRequested({ commentId, event }),
           Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
           Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
           Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
@@ -69,16 +69,16 @@ describe('OnCommentPublicationWasRequested', () => {
 
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishFeedback({})))
       }).pipe(
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
   )
 
-  test.prop([fc.uuid(), fc.commentPublicationWasRequested()])("when the feedback can't be read", (feedbackId, event) =>
+  test.prop([fc.uuid(), fc.commentPublicationWasRequested()])("when the comment can't be read", (commentId, event) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
-        _.OnCommentPublicationWasRequested({ feedbackId, event }),
+        _.OnCommentPublicationWasRequested({ commentId, event }),
         Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
         Effect.provideService(Comments.AssignFeedbackADoi, shouldNotBeCalled),
         Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
@@ -92,18 +92,18 @@ describe('OnCommentPublicationWasRequested', () => {
 })
 
 describe('OnDoiWasAssigned', () => {
-  test.prop([fc.uuid(), fc.doiWasAssigned()])('published feedback', (feedbackId, event) =>
+  test.prop([fc.uuid(), fc.doiWasAssigned()])('published comment', (commentId, event) =>
     Effect.gen(function* () {
       const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
 
       yield* Effect.provideService(
-        _.OnDoiWasAssigned({ feedbackId, event }),
+        _.OnDoiWasAssigned({ commentId, event }),
         Comments.HandleFeedbackCommand,
         handleFeedbackCommand,
       )
 
       expect(handleFeedbackCommand).toHaveBeenCalledWith({
-        feedbackId,
+        feedbackId: commentId,
         command: new Comments.MarkCommentAsPublished(),
       })
     }).pipe(
@@ -114,11 +114,11 @@ describe('OnDoiWasAssigned', () => {
   )
 
   test.prop([fc.uuid(), fc.doiWasAssigned(), fc.commentError()])(
-    "when the feedback can't be updated",
-    (feedbackId, event, error) =>
+    "when the comment can't be updated",
+    (commentId, event, error) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
-          _.OnDoiWasAssigned({ feedbackId, event }),
+          _.OnDoiWasAssigned({ commentId, event }),
           Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
           Effect.either,
         )
@@ -131,10 +131,10 @@ describe('OnDoiWasAssigned', () => {
       ),
   )
 
-  test.prop([fc.uuid(), fc.doiWasAssigned()])("when the feedback can't be published", (feedbackId, event) =>
+  test.prop([fc.uuid(), fc.doiWasAssigned()])("when the comment can't be published", (commentId, event) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
-        _.OnDoiWasAssigned({ feedbackId, event }),
+        _.OnDoiWasAssigned({ commentId, event }),
         Effect.provideService(Comments.PublishFeedbackWithADoi, () =>
           Effect.fail(new Comments.UnableToPublishFeedback({})),
         ),

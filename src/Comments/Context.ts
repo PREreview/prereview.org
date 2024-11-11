@@ -7,9 +7,9 @@ import type { CommentError } from './Errors.js'
 import type { CommentEvent } from './Events.js'
 import type { CommentBeingPublished, CommentInProgress, CommentReadyForPublishing, CommentState } from './State.js'
 
-export class FeedbackEvents extends Context.Tag('FeedbackEvents')<
-  FeedbackEvents,
-  PubSub.PubSub<{ readonly feedbackId: Uuid.Uuid; readonly event: CommentEvent }>
+export class CommentEvents extends Context.Tag('CommentEvents')<
+  CommentEvents,
+  PubSub.PubSub<{ readonly commentId: Uuid.Uuid; readonly event: CommentEvent }>
 >() {}
 
 export class HasAuthorUnpublishedFeedbackForAPrereview extends Context.Tag('HasAuthorUnpublishedFeedbackForAPrereview')<

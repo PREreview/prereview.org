@@ -264,7 +264,7 @@ const setUpFetch = Layer.effect(
 )
 
 export const Program = pipe(
-  Layer.mergeAll(WebApp, Comments.ReactToFeedbackEvents),
+  Layer.mergeAll(WebApp, Comments.ReactToCommentEvents),
   Layer.provide(publishFeedback),
   Layer.provide(assignFeedbackADoi),
   Layer.provide(getPrereview),
@@ -279,13 +279,13 @@ export const Program = pipe(
   Layer.provide(Layer.effect(Comments.GetComment, Comments.makeGetComment)),
   Layer.provide(
     Layer.scoped(
-      Comments.FeedbackEvents,
+      Comments.CommentEvents,
       Effect.acquireRelease(
         pipe(
-          PubSub.unbounded() satisfies Effect.Effect<typeof Comments.FeedbackEvents.Service>,
-          Effect.tap(Effect.logDebug('Feedback events started')),
+          PubSub.unbounded() satisfies Effect.Effect<typeof Comments.CommentEvents.Service>,
+          Effect.tap(Effect.logDebug('Comment events started')),
         ),
-        flow(PubSub.shutdown, Effect.tap(Effect.logDebug('Feedback events stopped'))),
+        flow(PubSub.shutdown, Effect.tap(Effect.logDebug('Comment events stopped'))),
       ),
     ),
   ),

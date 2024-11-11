@@ -3,7 +3,7 @@ import { EventStore } from '../Context.js'
 import type { Uuid } from '../types/index.js'
 import {
   type AssignFeedbackADoi,
-  FeedbackEvents,
+  CommentEvents,
   type GetAllUnpublishedFeedbackByAnAuthorForAPrereview,
   type GetComment,
   type HandleFeedbackCommand,
@@ -29,10 +29,10 @@ export * from './State.js'
 export const makeHandleFeedbackCommand: Effect.Effect<
   typeof HandleFeedbackCommand.Service,
   never,
-  EventStore | FeedbackEvents
+  EventStore | CommentEvents
 > = Effect.gen(function* () {
   const eventStore = yield* EventStore
-  const feedbackEvents = yield* FeedbackEvents
+  const commentEvents = yield* CommentEvents
 
   return ({ feedbackId, command }) =>
     Effect.gen(function* () {
@@ -50,7 +50,7 @@ export const makeHandleFeedbackCommand: Effect.Effect<
             onNonEmpty: events => eventStore.commitEvents(feedbackId, latestVersion)(...events),
           }),
         ),
-        Effect.andThen(Effect.forEach(event => PubSub.publish(feedbackEvents, { feedbackId, event }))),
+        Effect.andThen(Effect.forEach(event => PubSub.publish(commentEvents, { commentId: feedbackId, event }))),
       )
     }).pipe(
       Effect.catchTags({
@@ -89,34 +89,30 @@ export const makeGetAllUnpublishedFeedbackByAnAuthorForAPrereview: Effect.Effect
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 
-export const ReactToFeedbackEvents: Layer.Layer<
+export const ReactToCommentEvents: Layer.Layer<
   never,
   never,
-  FeedbackEvents | GetComment | HandleFeedbackCommand | AssignFeedbackADoi | PublishFeedbackWithADoi
+  CommentEvents | GetComment | HandleFeedbackCommand | AssignFeedbackADoi | PublishFeedbackWithADoi
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
-    const feedbackEvents = yield* FeedbackEvents
-    const dequeue = yield* PubSub.subscribe(feedbackEvents)
+    const commentEvents = yield* CommentEvents
+    const dequeue = yield* PubSub.subscribe(commentEvents)
 
     yield* pipe(
       Queue.take(dequeue),
       Effect.andThen(
         pipe(
-          Match.type<{ feedbackId: Uuid.Uuid; event: CommentEvent }>(),
-          Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ feedbackId, event }) =>
+          Match.type<{ commentId: Uuid.Uuid; event: CommentEvent }>(),
+          Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId, event }) =>
             pipe(
-              OnCommentPublicationWasRequested({ feedbackId, event }),
-              Effect.tapError(() =>
-                Effect.annotateLogs(Effect.logError('ReactToFeedbackEvents failed'), { feedbackId }),
-              ),
+              OnCommentPublicationWasRequested({ commentId, event }),
+              Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
             ),
           ),
-          Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ feedbackId, event }) =>
+          Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ commentId, event }) =>
             pipe(
-              OnDoiWasAssigned({ feedbackId, event }),
-              Effect.tapError(() =>
-                Effect.annotateLogs(Effect.logError('ReactToFeedbackEvents failed'), { feedbackId }),
-              ),
+              OnDoiWasAssigned({ commentId, event }),
+              Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
             ),
           ),
           Match.orElse(() => Effect.void),
