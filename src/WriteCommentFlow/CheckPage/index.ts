@@ -67,7 +67,7 @@ export const CheckPageSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Comments.HandleFeedbackCommand
+  Comments.GetComment | Comments.HandleCommentCommand
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -86,11 +86,11 @@ export const CheckPageSubmission = ({
       Match.tag('CommentInProgress', () => Effect.succeed(pageNotFound)),
       Match.tag('CommentReadyForPublishing', () =>
         Effect.gen(function* () {
-          const handleCommand = yield* Comments.HandleFeedbackCommand
+          const handleCommand = yield* Comments.HandleCommentCommand
 
           yield* pipe(
             handleCommand({
-              feedbackId,
+              commentId: feedbackId,
               command: new Comments.PublishComment(),
             }),
             Effect.catchIf(

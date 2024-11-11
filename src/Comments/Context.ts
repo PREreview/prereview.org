@@ -35,10 +35,10 @@ export class GetComment extends Context.Tag('GetFeedback')<
   (commentId: Uuid.Uuid) => Effect.Effect<CommentState, UnableToQuery>
 >() {}
 
-export class HandleFeedbackCommand extends Context.Tag('HandleFeedbackCommand')<
-  HandleFeedbackCommand,
+export class HandleCommentCommand extends Context.Tag('HandleCommentCommand')<
+  HandleCommentCommand,
   (params: {
-    readonly feedbackId: Uuid.Uuid
+    readonly commentId: Uuid.Uuid
     readonly command: CommentCommand
   }) => Effect.Effect<void, UnableToHandleCommand | CommentError>
 >() {}

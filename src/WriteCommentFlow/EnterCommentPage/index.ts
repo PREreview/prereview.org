@@ -76,7 +76,7 @@ export const EnterCommentSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Comments.HandleFeedbackCommand | Locale
+  Comments.GetComment | Comments.HandleCommentCommand | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -102,11 +102,11 @@ export const EnterCommentSubmission = ({
             Match.value(form),
             Match.tag('CompletedForm', form =>
               Effect.gen(function* () {
-                const handleCommand = yield* Comments.HandleFeedbackCommand
+                const handleCommand = yield* Comments.HandleCommentCommand
 
                 yield* pipe(
                   handleCommand({
-                    feedbackId: commentId,
+                    commentId,
                     command: new Comments.EnterComment({ comment: form.comment }),
                   }),
                   Effect.catchIf(

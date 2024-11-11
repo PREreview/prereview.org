@@ -4,7 +4,7 @@ import { MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.js'
 import {
   AssignFeedbackADoi,
   GetComment,
-  HandleFeedbackCommand,
+  HandleCommentCommand,
   PublishFeedbackWithADoi,
   UnableToHandleCommand,
 } from './Context.js'
@@ -17,10 +17,10 @@ export const OnCommentPublicationWasRequested = ({
 }: {
   commentId: Uuid.Uuid
   event: CommentPublicationWasRequested
-}): Effect.Effect<void, ToDo, GetComment | HandleFeedbackCommand | AssignFeedbackADoi> =>
+}): Effect.Effect<void, ToDo, GetComment | HandleCommentCommand | AssignFeedbackADoi> =>
   Effect.gen(function* () {
     const getComment = yield* GetComment
-    const handleCommand = yield* HandleFeedbackCommand
+    const handleCommand = yield* HandleCommentCommand
     const assignFeedbackADoi = yield* AssignFeedbackADoi
 
     const comment = yield* getComment(commentId)
@@ -33,7 +33,7 @@ export const OnCommentPublicationWasRequested = ({
 
     yield* Effect.mapError(
       handleCommand({
-        feedbackId: commentId,
+        commentId,
         command: new MarkDoiAsAssigned({ doi, id }),
       }),
       error => (error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error),
@@ -46,16 +46,16 @@ export const OnDoiWasAssigned = ({
 }: {
   commentId: Uuid.Uuid
   event: DoiWasAssigned
-}): Effect.Effect<void, ToDo, HandleFeedbackCommand | PublishFeedbackWithADoi> =>
+}): Effect.Effect<void, ToDo, HandleCommentCommand | PublishFeedbackWithADoi> =>
   Effect.gen(function* () {
-    const handleCommand = yield* HandleFeedbackCommand
+    const handleCommand = yield* HandleCommentCommand
     const publishFeedback = yield* PublishFeedbackWithADoi
 
     yield* publishFeedback(event.id)
 
     yield* Effect.mapError(
       handleCommand({
-        feedbackId: commentId,
+        commentId,
         command: new MarkCommentAsPublished(),
       }),
       error => (error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error),

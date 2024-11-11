@@ -11,16 +11,16 @@ describe('OnCommentPublicationWasRequested', () => {
     'assigns a DOI',
     (commentId, event, comment, id, doi) =>
       Effect.gen(function* () {
-        const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
+        const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
         yield* Effect.provideService(
           _.OnCommentPublicationWasRequested({ commentId, event }),
-          Comments.HandleFeedbackCommand,
-          handleFeedbackCommand,
+          Comments.HandleCommentCommand,
+          handleCommentCommand,
         )
 
-        expect(handleFeedbackCommand).toHaveBeenCalledWith({
-          feedbackId: commentId,
+        expect(handleCommentCommand).toHaveBeenCalledWith({
+          commentId,
           command: new Comments.MarkDoiAsAssigned({ doi, id }),
         })
       }).pipe(
@@ -42,7 +42,7 @@ describe('OnCommentPublicationWasRequested', () => {
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.OnCommentPublicationWasRequested({ commentId, event }),
-        Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
+        Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
         Effect.either,
       )
 
@@ -63,7 +63,7 @@ describe('OnCommentPublicationWasRequested', () => {
           _.OnCommentPublicationWasRequested({ commentId, event }),
           Effect.provideService(Comments.AssignFeedbackADoi, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
           Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
-          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.either,
         )
 
@@ -82,7 +82,7 @@ describe('OnCommentPublicationWasRequested', () => {
         Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
         Effect.provideService(Comments.AssignFeedbackADoi, shouldNotBeCalled),
         Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
-        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.either,
       )
 
@@ -94,16 +94,16 @@ describe('OnCommentPublicationWasRequested', () => {
 describe('OnDoiWasAssigned', () => {
   test.prop([fc.uuid(), fc.doiWasAssigned()])('published comment', (commentId, event) =>
     Effect.gen(function* () {
-      const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
+      const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
       yield* Effect.provideService(
         _.OnDoiWasAssigned({ commentId, event }),
-        Comments.HandleFeedbackCommand,
-        handleFeedbackCommand,
+        Comments.HandleCommentCommand,
+        handleCommentCommand,
       )
 
-      expect(handleFeedbackCommand).toHaveBeenCalledWith({
-        feedbackId: commentId,
+      expect(handleCommentCommand).toHaveBeenCalledWith({
+        commentId,
         command: new Comments.MarkCommentAsPublished(),
       })
     }).pipe(
@@ -119,7 +119,7 @@ describe('OnDoiWasAssigned', () => {
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.OnDoiWasAssigned({ commentId, event }),
-          Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
+          Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
           Effect.either,
         )
 
@@ -138,7 +138,7 @@ describe('OnDoiWasAssigned', () => {
         Effect.provideService(Comments.PublishFeedbackWithADoi, () =>
           Effect.fail(new Comments.UnableToPublishFeedback({})),
         ),
-        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.either,
       )
 

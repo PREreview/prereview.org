@@ -6,7 +6,7 @@ import {
   CommentEvents,
   type GetAllUnpublishedCommentsByAnAuthorForAPrereview,
   type GetComment,
-  type HandleFeedbackCommand,
+  type HandleCommentCommand,
   type PublishFeedbackWithADoi,
   UnableToHandleCommand,
   UnableToQuery,
@@ -26,15 +26,15 @@ export * from './Events.js'
 export * from './Evolve.js'
 export * from './State.js'
 
-export const makeHandleFeedbackCommand: Effect.Effect<
-  typeof HandleFeedbackCommand.Service,
+export const makeHandleCommentCommand: Effect.Effect<
+  typeof HandleCommentCommand.Service,
   never,
   EventStore | CommentEvents
 > = Effect.gen(function* () {
   const eventStore = yield* EventStore
   const commentEvents = yield* CommentEvents
 
-  return ({ feedbackId, command }) =>
+  return ({ commentId: feedbackId, command }) =>
     Effect.gen(function* () {
       const { events, latestVersion } = yield* eventStore.getEvents(feedbackId)
 
@@ -92,7 +92,7 @@ export const makeGetAllUnpublishedCommentsByAnAuthorForAPrereview: Effect.Effect
 export const ReactToCommentEvents: Layer.Layer<
   never,
   never,
-  CommentEvents | GetComment | HandleFeedbackCommand | AssignFeedbackADoi | PublishFeedbackWithADoi
+  CommentEvents | GetComment | HandleCommentCommand | AssignFeedbackADoi | PublishFeedbackWithADoi
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const commentEvents = yield* CommentEvents

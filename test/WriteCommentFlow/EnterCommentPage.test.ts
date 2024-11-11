@@ -193,12 +193,12 @@ describe('EnterCommentSubmission', () => {
           fc.record({ comment: fc.html() }),
         ])('when the comment can be entered', (commentId, [comment, user], locale, body) =>
           Effect.gen(function* () {
-            const handleFeedbackCommand = jest.fn<typeof Comments.HandleFeedbackCommand.Service>(_ => Effect.void)
+            const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
             const actual = yield* Effect.provideService(
               _.EnterCommentSubmission({ body: { comment: body.comment.toString() }, commentId }),
-              Comments.HandleFeedbackCommand,
-              handleFeedbackCommand,
+              Comments.HandleCommentCommand,
+              handleCommentCommand,
             )
 
             expect(actual).toStrictEqual({
@@ -209,8 +209,8 @@ describe('EnterCommentSubmission', () => {
               }),
             })
 
-            expect(handleFeedbackCommand).toHaveBeenCalledWith({
-              feedbackId: commentId,
+            expect(handleCommentCommand).toHaveBeenCalledWith({
+              commentId,
               command: new Comments.EnterComment({ comment: body.comment }),
             })
           }).pipe(
@@ -245,7 +245,7 @@ describe('EnterCommentSubmission', () => {
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-            Effect.provideService(Comments.HandleFeedbackCommand, () => Effect.fail(error)),
+            Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -280,7 +280,7 @@ describe('EnterCommentSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -307,7 +307,7 @@ describe('EnterCommentSubmission', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -333,7 +333,7 @@ describe('EnterCommentSubmission', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -357,7 +357,7 @@ describe('EnterCommentSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -386,7 +386,7 @@ describe('EnterCommentSubmission', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -410,7 +410,7 @@ describe('EnterCommentSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
-          Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -429,7 +429,7 @@ describe('EnterCommentSubmission', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
-      Effect.provideService(Comments.HandleFeedbackCommand, shouldNotBeCalled),
+      Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),

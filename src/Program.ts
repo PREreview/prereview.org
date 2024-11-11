@@ -269,7 +269,7 @@ export const Program = pipe(
   Layer.provide(assignFeedbackADoi),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
-  Layer.provide(Layer.effect(Comments.HandleFeedbackCommand, Comments.makeHandleFeedbackCommand)),
+  Layer.provide(Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand)),
   Layer.provide(
     Layer.effect(
       Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview,

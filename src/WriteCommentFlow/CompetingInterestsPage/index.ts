@@ -76,7 +76,7 @@ export const CompetingInterestsSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Comments.HandleFeedbackCommand | Locale
+  Comments.GetComment | Comments.HandleCommentCommand | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -102,11 +102,11 @@ export const CompetingInterestsSubmission = ({
             Match.value(form),
             Match.tag('CompletedFormYes', form =>
               Effect.gen(function* () {
-                const handleCommand = yield* Comments.HandleFeedbackCommand
+                const handleCommand = yield* Comments.HandleCommentCommand
 
                 yield* pipe(
                   handleCommand({
-                    feedbackId,
+                    commentId: feedbackId,
                     command: new Comments.DeclareCompetingInterests({
                       competingInterests: Option.some(form.competingInterestsDetails),
                     }),
@@ -129,11 +129,11 @@ export const CompetingInterestsSubmission = ({
             ),
             Match.tag('CompletedFormNo', () =>
               Effect.gen(function* () {
-                const handleCommand = yield* Comments.HandleFeedbackCommand
+                const handleCommand = yield* Comments.HandleCommentCommand
 
                 yield* pipe(
                   handleCommand({
-                    feedbackId,
+                    commentId: feedbackId,
                     command: new Comments.DeclareCompetingInterests({
                       competingInterests: Option.none(),
                     }),

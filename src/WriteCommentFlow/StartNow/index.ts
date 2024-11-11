@@ -20,7 +20,7 @@ export const StartNow = ({
   never,
   | Uuid.GenerateUuid
   | GetPrereview
-  | Comments.HandleFeedbackCommand
+  | Comments.HandleCommentCommand
   | Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview
   | Locale
 > =>
@@ -44,10 +44,10 @@ export const StartNow = ({
           const generateUuid = yield* Uuid.GenerateUuid
           const commentId = yield* generateUuid
 
-          const handleCommand = yield* Comments.HandleFeedbackCommand
+          const handleCommand = yield* Comments.HandleCommentCommand
 
           yield* handleCommand({
-            feedbackId: commentId,
+            commentId,
             command: new Comments.StartComment({ authorId: user.orcid, prereviewId: prereview.id }),
           })
 
