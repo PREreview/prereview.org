@@ -1736,7 +1736,7 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
   },
 }
 
-export const willPublishFeedback: Fixtures<
+export const willPublishAComment: Fixtures<
   Pick<AppFixtures, 'fetch'>,
   Record<never, never>,
   Pick<AppFixtures, 'fetch'>

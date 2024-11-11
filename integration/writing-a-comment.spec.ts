@@ -2,9 +2,9 @@ import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, canWriteComments, expect, test, willPublishFeedback } from './base.js'
+import { areLoggedIn, canLogIn, canWriteComments, expect, test, willPublishAComment } from './base.js'
 
-test.extend(canLogIn).extend(canWriteComments).extend(willPublishFeedback)(
+test.extend(canLogIn).extend(canWriteComments).extend(willPublishAComment)(
   'can write a comment on a PREreview',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
