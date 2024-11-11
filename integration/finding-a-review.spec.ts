@@ -612,7 +612,7 @@ test('can find and view comments to a review', async ({ fetch, page }) => {
         }),
       },
     )
-    .get('http://example.com/comments.html/content', {
+    .get('http://example.com/comment.html/content', {
       body: '<h1>Some title in the comment</h1><p>... some comment text ...</p>',
     })
 
