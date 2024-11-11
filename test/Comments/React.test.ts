@@ -62,12 +62,12 @@ describe('OnCommentPublicationWasRequested', () => {
         const actual = yield* pipe(
           _.OnCommentPublicationWasRequested({ commentId, event }),
           Effect.provideService(Comments.AssignCommentADoi, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
-          Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
+          Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.either,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishFeedback({})))
+        expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provide(TestContext.TestContext),
@@ -81,7 +81,7 @@ describe('OnCommentPublicationWasRequested', () => {
         _.OnCommentPublicationWasRequested({ commentId, event }),
         Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
         Effect.provideService(Comments.AssignCommentADoi, shouldNotBeCalled),
-        Effect.provideService(Comments.PublishFeedbackWithADoi, shouldNotBeCalled),
+        Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.either,
       )
@@ -107,7 +107,7 @@ describe('OnDoiWasAssigned', () => {
         command: new Comments.MarkCommentAsPublished(),
       })
     }).pipe(
-      Effect.provideService(Comments.PublishFeedbackWithADoi, () => Effect.void),
+      Effect.provideService(Comments.PublishCommentWithADoi, () => Effect.void),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -125,7 +125,7 @@ describe('OnDoiWasAssigned', () => {
 
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
       }).pipe(
-        Effect.provideService(Comments.PublishFeedbackWithADoi, () => Effect.void),
+        Effect.provideService(Comments.PublishCommentWithADoi, () => Effect.void),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -135,14 +135,14 @@ describe('OnDoiWasAssigned', () => {
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.OnDoiWasAssigned({ commentId, event }),
-        Effect.provideService(Comments.PublishFeedbackWithADoi, () =>
-          Effect.fail(new Comments.UnableToPublishFeedback({})),
+        Effect.provideService(Comments.PublishCommentWithADoi, () =>
+          Effect.fail(new Comments.UnableToPublishComment({})),
         ),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.either,
       )
 
-      expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishFeedback({})))
+      expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
     }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
   )
 })

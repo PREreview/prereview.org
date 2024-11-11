@@ -48,14 +48,14 @@ export class AssignCommentADoi extends Context.Tag('AssignCommentADoi')<
   (comment: CommentBeingPublished) => Effect.Effect<[Doi, number], UnableToAssignADoi>
 >() {}
 
-export class PublishFeedbackWithADoi extends Context.Tag('PublishFeedbackWithADoi')<
-  PublishFeedbackWithADoi,
-  (feedbackId: number) => Effect.Effect<void, UnableToPublishFeedback>
+export class PublishCommentWithADoi extends Context.Tag('PublishCommentWithADoi')<
+  PublishCommentWithADoi,
+  (commentId: number) => Effect.Effect<void, UnableToPublishComment>
 >() {}
 
 export class UnableToAssignADoi extends Data.TaggedError('UnableToAssignADoi')<{ cause?: Error }> {}
 
-export class UnableToPublishFeedback extends Data.TaggedError('UnableToPublishFeedback')<{ cause?: Error }> {}
+export class UnableToPublishComment extends Data.TaggedError('UnableToPublishComment')<{ cause?: Error }> {}
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: Error }> {}
 

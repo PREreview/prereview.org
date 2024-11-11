@@ -7,7 +7,7 @@ import {
   type GetAllUnpublishedCommentsByAnAuthorForAPrereview,
   type GetComment,
   type HandleCommentCommand,
-  type PublishFeedbackWithADoi,
+  type PublishCommentWithADoi,
   UnableToHandleCommand,
   UnableToQuery,
 } from './Context.js'
@@ -92,7 +92,7 @@ export const makeGetAllUnpublishedCommentsByAnAuthorForAPrereview: Effect.Effect
 export const ReactToCommentEvents: Layer.Layer<
   never,
   never,
-  CommentEvents | GetComment | HandleCommentCommand | AssignCommentADoi | PublishFeedbackWithADoi
+  CommentEvents | GetComment | HandleCommentCommand | AssignCommentADoi | PublishCommentWithADoi
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const commentEvents = yield* CommentEvents

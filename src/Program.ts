@@ -188,17 +188,17 @@ const assignCommentADoi = Layer.effect(
   }),
 )
 
-const publishFeedback = Layer.effect(
-  Comments.PublishFeedbackWithADoi,
+const publishComment = Layer.effect(
+  Comments.PublishCommentWithADoi,
   Effect.gen(function* () {
     const { zenodoApiKey, zenodoUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
 
-    return feedback =>
+    return comment =>
       pipe(
         Effect.promise(
-          publishDepositionOnZenodo(feedback)({
+          publishDepositionOnZenodo(comment)({
             fetch,
             zenodoApiKey,
             zenodoUrl,
@@ -216,7 +216,7 @@ const publishFeedback = Layer.effect(
         Effect.mapError(
           flow(
             Match.value,
-            Match.when('unavailable', () => new Comments.UnableToPublishFeedback({})),
+            Match.when('unavailable', () => new Comments.UnableToPublishComment({})),
             Match.exhaustive,
           ),
         ),
@@ -265,7 +265,7 @@ const setUpFetch = Layer.effect(
 
 export const Program = pipe(
   Layer.mergeAll(WebApp, Comments.ReactToCommentEvents),
-  Layer.provide(publishFeedback),
+  Layer.provide(publishComment),
   Layer.provide(assignCommentADoi),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
