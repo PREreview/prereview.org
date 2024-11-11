@@ -11,9 +11,9 @@ import * as CompetingInterestsForm from './CompetingInterestsForm.js'
 import { CompetingInterestsPage as MakeResponse } from './CompetingInterestsPage.js'
 
 export const CompetingInterestsPage = ({
-  feedbackId,
+  commentId,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
@@ -24,7 +24,7 @@ export const CompetingInterestsPage = ({
 
     const getComment = yield* Comments.GetComment
 
-    const comment = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
@@ -37,23 +37,23 @@ export const CompetingInterestsPage = ({
       Match.tag('CommentNotStarted', () => pageNotFound),
       Match.tag('CommentInProgress', comment =>
         MakeResponse({
-          feedbackId,
-          form: CompetingInterestsForm.fromFeedback(comment),
+          commentId,
+          form: CompetingInterestsForm.fromComment(comment),
           locale,
         }),
       ),
       Match.tag('CommentReadyForPublishing', comment =>
         MakeResponse({
-          feedbackId,
-          form: CompetingInterestsForm.fromFeedback(comment),
+          commentId,
+          form: CompetingInterestsForm.fromComment(comment),
           locale,
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
       ),
       Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
       ),
       Match.exhaustive,
     )
@@ -61,18 +61,16 @@ export const CompetingInterestsPage = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(
-          Response.LogInResponse({ location: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCompetingInterests.href({ commentId }) })),
     }),
   )
 
 export const CompetingInterestsSubmission = ({
   body,
-  feedbackId,
+  commentId,
 }: {
   body: unknown
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
@@ -83,7 +81,7 @@ export const CompetingInterestsSubmission = ({
 
     const getComment = yield* Comments.GetComment
 
-    const comment = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
@@ -106,7 +104,7 @@ export const CompetingInterestsSubmission = ({
 
                 yield* pipe(
                   handleCommand({
-                    commentId: feedbackId,
+                    commentId,
                     command: new Comments.DeclareCompetingInterests({
                       competingInterests: Option.some(form.competingInterestsDetails),
                     }),
@@ -122,7 +120,7 @@ export const CompetingInterestsSubmission = ({
                     command: 'DeclareCompetingInterests',
                     comment,
                   }).href({
-                    commentId: feedbackId,
+                    commentId,
                   }),
                 })
               }),
@@ -133,7 +131,7 @@ export const CompetingInterestsSubmission = ({
 
                 yield* pipe(
                   handleCommand({
-                    commentId: feedbackId,
+                    commentId,
                     command: new Comments.DeclareCompetingInterests({
                       competingInterests: Option.none(),
                     }),
@@ -149,7 +147,7 @@ export const CompetingInterestsSubmission = ({
                     command: 'DeclareCompetingInterests',
                     comment,
                   }).href({
-                    commentId: feedbackId,
+                    commentId,
                   }),
                 })
               }),
@@ -157,7 +155,7 @@ export const CompetingInterestsSubmission = ({
             Match.tag('InvalidForm', form =>
               Effect.succeed(
                 MakeResponse({
-                  feedbackId,
+                  commentId,
                   form,
                   locale,
                 }),
@@ -168,14 +166,10 @@ export const CompetingInterestsSubmission = ({
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
       ),
       Match.tag('CommentPublished', () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
       ),
       Match.exhaustive,
     )
@@ -184,8 +178,6 @@ export const CompetingInterestsSubmission = ({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(
-          Response.LogInResponse({ location: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCompetingInterests.href({ commentId }) })),
     }),
   )

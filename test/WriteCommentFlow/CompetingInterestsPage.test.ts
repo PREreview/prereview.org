@@ -16,15 +16,15 @@ describe('CompetingInterestsPage', () => {
       fc.uuid(),
       fc
         .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback is in progress', (feedbackId, [feedback, user], locale) =>
+    ])('when the comment is in progress', (commentId, [comment, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsPage({ feedbackId })
+        const actual = yield* _.CompetingInterestsPage({ commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
+          canonical: Routes.WriteCommentCompetingInterests.href({ commentId }),
           status: StatusCodes.OK,
           title: expect.anything(),
           nav: expect.anything(),
@@ -34,7 +34,7 @@ describe('CompetingInterestsPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -45,20 +45,20 @@ describe('CompetingInterestsPage', () => {
       fc.uuid(),
       fc
         .commentPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback has been published', (feedbackId, [feedback, user], locale) =>
+    ])('when the comment has been published', (commentId, [comment, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsPage({ feedbackId })
+        const actual = yield* _.CompetingInterestsPage({ commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
+          location: Routes.WriteCommentPublished.href({ commentId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -69,20 +69,20 @@ describe('CompetingInterestsPage', () => {
       fc.uuid(),
       fc
         .commentBeingPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
-    ])('when the feedback is being published', (feedbackId, [feedback, user], locale) =>
+    ])('when the comment is being published', (commentId, [comment, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsPage({ feedbackId })
+        const actual = yield* _.CompetingInterestsPage({ commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
+          location: Routes.WriteCommentPublishing.href({ commentId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -90,10 +90,10 @@ describe('CompetingInterestsPage', () => {
     )
 
     test.prop([fc.uuid(), fc.commentNotStarted(), fc.user(), fc.supportedLocale()])(
-      "when the feedback hasn't been started",
-      (feedbackId, feedback, user, locale) =>
+      "when the comment hasn't been started",
+      (commentId, comment, user, locale) =>
         Effect.gen(function* () {
-          const actual = yield* _.CompetingInterestsPage({ feedbackId })
+          const actual = yield* _.CompetingInterestsPage({ commentId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -105,7 +105,7 @@ describe('CompetingInterestsPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -118,9 +118,9 @@ describe('CompetingInterestsPage', () => {
         .tuple(fc.commentState(), fc.user())
         .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
       fc.supportedLocale(),
-    ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale) =>
+    ])('when the comment is by a different author', (commentId, [comment, user], locale) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsPage({ feedbackId })
+        const actual = yield* _.CompetingInterestsPage({ commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -132,7 +132,7 @@ describe('CompetingInterestsPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -140,10 +140,10 @@ describe('CompetingInterestsPage', () => {
     )
 
     test.prop([fc.uuid(), fc.user(), fc.supportedLocale()])(
-      "when the feedback can't be loaded",
-      (feedbackId, user, locale) =>
+      "when the comment can't be loaded",
+      (commentId, user, locale) =>
         Effect.gen(function* () {
-          const actual = yield* _.CompetingInterestsPage({ feedbackId })
+          const actual = yield* _.CompetingInterestsPage({ commentId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -163,13 +163,13 @@ describe('CompetingInterestsPage', () => {
     )
   })
 
-  test.prop([fc.uuid(), fc.supportedLocale()])("when there isn't a user", (feedbackId, locale) =>
+  test.prop([fc.uuid(), fc.supportedLocale()])("when there isn't a user", (commentId, locale) =>
     Effect.gen(function* () {
-      const actual = yield* _.CompetingInterestsPage({ feedbackId })
+      const actual = yield* _.CompetingInterestsPage({ commentId })
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
+        location: Routes.WriteCommentCompetingInterests.href({ commentId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),
@@ -182,24 +182,24 @@ describe('CompetingInterestsPage', () => {
 
 describe('CompetingInterestsSubmission', () => {
   describe('when there is a user', () => {
-    describe('when the feedback is in progress', () => {
+    describe('when the comment is in progress', () => {
       describe('when the form is valid', () => {
         test.prop([
           fc.uuid(),
           fc
             .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
-            .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+            .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
           fc.supportedLocale(),
           fc.oneof(
             fc.record({ competingInterests: fc.constant('no'), competingInterestsDetails: fc.string() }),
             fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.nonEmptyString() }),
           ),
-        ])('when the competing interests can be declared', (feedbackId, [feedback, user], locale, body) =>
+        ])('when the competing interests can be declared', (commentId, [comment, user], locale, body) =>
           Effect.gen(function* () {
             const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
             const actual = yield* Effect.provideService(
-              _.CompetingInterestsSubmission({ body, feedbackId }),
+              _.CompetingInterestsSubmission({ body, commentId }),
               Comments.HandleCommentCommand,
               handleCommentCommand,
             )
@@ -209,14 +209,14 @@ describe('CompetingInterestsSubmission', () => {
               status: StatusCodes.SEE_OTHER,
               location: DecideNextPage.NextPageAfterCommand({
                 command: 'DeclareCompetingInterests',
-                comment: feedback,
+                comment,
               }).href({
-                commentId: feedbackId,
+                commentId,
               }),
             })
 
             expect(handleCommentCommand).toHaveBeenCalledWith({
-              commentId: feedbackId,
+              commentId,
               command: new Comments.DeclareCompetingInterests({
                 competingInterests:
                   body.competingInterests === 'yes' ? Option.some(body.competingInterestsDetails) : Option.none(),
@@ -224,7 +224,7 @@ describe('CompetingInterestsSubmission', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -235,16 +235,16 @@ describe('CompetingInterestsSubmission', () => {
           fc.uuid(),
           fc
             .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
-            .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+            .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
           fc.supportedLocale(),
           fc.oneof(
             fc.record({ competingInterests: fc.constant('no'), competingInterestsDetails: fc.string() }),
             fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.nonEmptyString() }),
           ),
           fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
-        ])("when the competing interests can't be declared", (feedbackId, [feedback, user], locale, body, error) =>
+        ])("when the competing interests can't be declared", (commentId, [comment, user], locale, body, error) =>
           Effect.gen(function* () {
-            const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+            const actual = yield* _.CompetingInterestsSubmission({ body, commentId })
 
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
@@ -256,7 +256,7 @@ describe('CompetingInterestsSubmission', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
             Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
@@ -269,7 +269,7 @@ describe('CompetingInterestsSubmission', () => {
         fc.uuid(),
         fc
           .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
-          .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+          .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
         fc.supportedLocale(),
         fc.oneof(
           fc.record(
@@ -287,13 +287,13 @@ describe('CompetingInterestsSubmission', () => {
             .anything()
             .filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'competingInterests'))),
         ),
-      ])('when the form is invalid', (feedbackId, [feedback, user], locale, body) =>
+      ])('when the form is invalid', (commentId, [comment, user], locale, body) =>
         Effect.gen(function* () {
-          const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+          const actual = yield* _.CompetingInterestsSubmission({ body, commentId })
 
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
-            canonical: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
+            canonical: Routes.WriteCommentCompetingInterests.href({ commentId }),
             status: StatusCodes.BAD_REQUEST,
             title: expect.anything(),
             nav: expect.anything(),
@@ -303,7 +303,7 @@ describe('CompetingInterestsSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -316,21 +316,21 @@ describe('CompetingInterestsSubmission', () => {
       fc.uuid(),
       fc
         .commentPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
       fc.anything(),
-    ])('when the feedback has been published', (feedbackId, [feedback, user], locale, body) =>
+    ])('when the comment has been published', (commentId, [comment, user], locale, body) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+        const actual = yield* _.CompetingInterestsSubmission({ body, commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteCommentPublished.href({ commentId: feedbackId }),
+          location: Routes.WriteCommentPublished.href({ commentId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -342,21 +342,21 @@ describe('CompetingInterestsSubmission', () => {
       fc.uuid(),
       fc
         .commentBeingPublished()
-        .chain(feedback => fc.tuple(fc.constant(feedback), fc.user({ orcid: fc.constant(feedback.authorId) }))),
+        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       fc.supportedLocale(),
       fc.anything(),
-    ])('when the feedback is being published', (feedbackId, [feedback, user], locale, body) =>
+    ])('when the comment is being published', (commentId, [comment, user], locale, body) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+        const actual = yield* _.CompetingInterestsSubmission({ body, commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SEE_OTHER,
-          location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }),
+          location: Routes.WriteCommentPublishing.href({ commentId }),
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -365,10 +365,10 @@ describe('CompetingInterestsSubmission', () => {
     )
 
     test.prop([fc.uuid(), fc.commentNotStarted(), fc.user(), fc.supportedLocale(), fc.anything()])(
-      "when the feedback hasn't been started",
-      (feedbackId, feedback, user, locale, body) =>
+      "when the comment hasn't been started",
+      (commentId, comment, user, locale, body) =>
         Effect.gen(function* () {
-          const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+          const actual = yield* _.CompetingInterestsSubmission({ body, commentId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -380,7 +380,7 @@ describe('CompetingInterestsSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -395,9 +395,9 @@ describe('CompetingInterestsSubmission', () => {
         .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
       fc.supportedLocale(),
       fc.anything(),
-    ])('when the feedback is by a different author', (feedbackId, [feedback, user], locale, body) =>
+    ])('when the comment is by a different author', (commentId, [comment, user], locale, body) =>
       Effect.gen(function* () {
-        const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+        const actual = yield* _.CompetingInterestsSubmission({ body, commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -409,7 +409,7 @@ describe('CompetingInterestsSubmission', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(feedback)),
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -418,10 +418,10 @@ describe('CompetingInterestsSubmission', () => {
     )
 
     test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.anything()])(
-      "when the feedback can't be loaded",
-      (feedbackId, user, locale, body) =>
+      "when the comment can't be loaded",
+      (commentId, user, locale, body) =>
         Effect.gen(function* () {
-          const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+          const actual = yield* _.CompetingInterestsSubmission({ body, commentId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -442,13 +442,13 @@ describe('CompetingInterestsSubmission', () => {
     )
   })
 
-  test.prop([fc.uuid(), fc.supportedLocale(), fc.anything()])("when there isn't a user", (feedbackId, locale, body) =>
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.anything()])("when there isn't a user", (commentId, locale, body) =>
     Effect.gen(function* () {
-      const actual = yield* _.CompetingInterestsSubmission({ body, feedbackId })
+      const actual = yield* _.CompetingInterestsSubmission({ body, commentId })
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
+        location: Routes.WriteCommentCompetingInterests.href({ commentId }),
       })
     }).pipe(
       Effect.provideService(Locale, locale),

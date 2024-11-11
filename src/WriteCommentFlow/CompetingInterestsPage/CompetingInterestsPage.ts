@@ -8,11 +8,11 @@ import type { Uuid } from '../../types/index.js'
 import type * as CompetingInterestsForm from './CompetingInterestsForm.js'
 
 export const CompetingInterestsPage = ({
-  feedbackId,
+  commentId,
   form,
   locale,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
   form: CompetingInterestsForm.CompetingInterestsForm
   locale: SupportedLocale
 }) =>
@@ -26,12 +26,12 @@ export const CompetingInterestsPage = ({
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
-      <a href="${Routes.WriteCommentChoosePersona.href({ commentId: feedbackId })}" class="back"
+      <a href="${Routes.WriteCommentChoosePersona.href({ commentId })}" class="back"
         >${translate(locale, 'write-comment-flow', 'back')()}</a
       >
     `,
     main: html`
-      <form method="post" action="${Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId })}" novalidate>
+      <form method="post" action="${Routes.WriteCommentCompetingInterests.href({ commentId })}" novalidate>
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
@@ -223,6 +223,6 @@ ${pipe(
       </form>
     `,
     skipToLabel: 'form',
-    canonical: Routes.WriteCommentCompetingInterests.href({ commentId: feedbackId }),
+    canonical: Routes.WriteCommentCompetingInterests.href({ commentId }),
     js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
   })

@@ -57,7 +57,7 @@ export const fromBody = (body: unknown) =>
     ),
   )
 
-export const fromFeedback = pipe(
+export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),
   Match.tag('CommentInProgress', ({ competingInterests }) =>
     pipe(
