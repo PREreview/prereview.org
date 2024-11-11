@@ -13,7 +13,7 @@ import {
 } from './response.js'
 import * as Routes from './routes.js'
 import { TemplatePage } from './TemplatePage.js'
-import * as WriteFeedbackFlow from './WriteCommentFlow/index.js'
+import * as WriteCommentFlow from './WriteCommentFlow/index.js'
 
 const logRequest = HttpMiddleware.make(app =>
   Effect.gen(function* () {
@@ -41,7 +41,7 @@ export const Router = pipe(
     Routes.WriteComment.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteComment.schema),
-      Effect.andThen(WriteFeedbackFlow.WriteCommentPage),
+      Effect.andThen(WriteCommentFlow.WriteCommentPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -49,7 +49,7 @@ export const Router = pipe(
     Routes.WriteCommentStartNow.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentStartNow.schema),
-      Effect.andThen(WriteFeedbackFlow.StartNow),
+      Effect.andThen(WriteCommentFlow.StartNow),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -57,8 +57,7 @@ export const Router = pipe(
     Routes.WriteCommentEnterComment.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentEnterComment.schema),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.EnterCommentPage),
+      Effect.andThen(WriteCommentFlow.EnterCommentPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -74,8 +73,7 @@ export const Router = pipe(
           return Record.fromEntries(form)
         }),
       ),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.EnterCommentSubmission),
+      Effect.andThen(WriteCommentFlow.EnterCommentSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -83,8 +81,7 @@ export const Router = pipe(
     Routes.WriteCommentChoosePersona.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentChoosePersona.schema),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.ChoosePersonaPage),
+      Effect.andThen(WriteCommentFlow.ChoosePersonaPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -100,8 +97,7 @@ export const Router = pipe(
           return Record.fromEntries(form)
         }),
       ),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.ChoosePersonaSubmission),
+      Effect.andThen(WriteCommentFlow.ChoosePersonaSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -109,8 +105,7 @@ export const Router = pipe(
     Routes.WriteCommentCompetingInterests.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentCompetingInterests.schema),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.CompetingInterestsPage),
+      Effect.andThen(WriteCommentFlow.CompetingInterestsPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -126,8 +121,7 @@ export const Router = pipe(
           return Record.fromEntries(form)
         }),
       ),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.CompetingInterestsSubmission),
+      Effect.andThen(WriteCommentFlow.CompetingInterestsSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -135,8 +129,7 @@ export const Router = pipe(
     Routes.WriteCommentCodeOfConduct.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentCodeOfConduct.schema),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.CodeOfConductPage),
+      Effect.andThen(WriteCommentFlow.CodeOfConductPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -152,8 +145,7 @@ export const Router = pipe(
           return Record.fromEntries(form)
         }),
       ),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.CodeOfConductSubmission),
+      Effect.andThen(WriteCommentFlow.CodeOfConductSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -161,8 +153,7 @@ export const Router = pipe(
     Routes.WriteCommentCheck.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentCheck.schema),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.CheckPage),
+      Effect.andThen(WriteCommentFlow.CheckPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -170,8 +161,7 @@ export const Router = pipe(
     Routes.WriteCommentCheck.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentCheck.schema),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.CheckPageSubmission),
+      Effect.andThen(WriteCommentFlow.CheckPageSubmission),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -179,8 +169,7 @@ export const Router = pipe(
     Routes.WriteCommentPublishing.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentPublishing.schema),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.PublishingPage),
+      Effect.andThen(WriteCommentFlow.PublishingPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
@@ -188,8 +177,7 @@ export const Router = pipe(
     Routes.WriteCommentPublished.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentPublished.schema),
-      Effect.let('feedbackId', ({ commentId }) => commentId),
-      Effect.andThen(WriteFeedbackFlow.PublishedPage),
+      Effect.andThen(WriteCommentFlow.PublishedPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),
