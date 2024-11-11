@@ -83,9 +83,9 @@ export const ChoosePersonaSubmission = ({
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
-    const getFeedback = yield* Comments.GetComment
+    const getComment = yield* Comments.GetComment
 
-    const feedback = yield* getFeedback(feedbackId)
+    const feedback = yield* getComment(feedbackId)
 
     if (feedback._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
       return pageNotFound
