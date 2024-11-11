@@ -22,7 +22,7 @@ export const fromBody = (body: unknown) =>
     return new CompletedForm({ persona })
   }).pipe(Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ persona: Either.left(new Missing()) }))))
 
-export const fromFeedback = pipe(
+export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),
   Match.tag('CommentInProgress', ({ persona }) => (persona ? new CompletedForm({ persona }) : new EmptyForm())),
   Match.tag('CommentReadyForPublishing', ({ persona }) => new CompletedForm({ persona })),

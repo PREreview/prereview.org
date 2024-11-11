@@ -11,9 +11,9 @@ import * as ChoosePersonaForm from './ChoosePersonaForm.js'
 import { ChoosePersonaPage as MakeResponse } from './ChoosePersonaPage.js'
 
 export const ChoosePersonaPage = ({
-  feedbackId,
+  commentId,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
@@ -24,7 +24,7 @@ export const ChoosePersonaPage = ({
 
     const getComment = yield* Comments.GetComment
 
-    const comment = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
@@ -37,25 +37,25 @@ export const ChoosePersonaPage = ({
       Match.tag('CommentNotStarted', () => pageNotFound),
       Match.tag('CommentInProgress', comment =>
         MakeResponse({
-          feedbackId,
-          form: ChoosePersonaForm.fromFeedback(comment),
+          commentId,
+          form: ChoosePersonaForm.fromComment(comment),
           locale,
           user,
         }),
       ),
       Match.tag('CommentReadyForPublishing', comment =>
         MakeResponse({
-          feedbackId,
-          form: ChoosePersonaForm.fromFeedback(comment),
+          commentId,
+          form: ChoosePersonaForm.fromComment(comment),
           locale,
           user,
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
       ),
       Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
       ),
       Match.exhaustive,
     )
@@ -63,18 +63,16 @@ export const ChoosePersonaPage = ({
     Effect.catchTags({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(
-          Response.LogInResponse({ location: Routes.WriteCommentChoosePersona.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentChoosePersona.href({ commentId }) })),
     }),
   )
 
 export const ChoosePersonaSubmission = ({
   body,
-  feedbackId,
+  commentId,
 }: {
   body: unknown
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
@@ -85,16 +83,16 @@ export const ChoosePersonaSubmission = ({
 
     const getComment = yield* Comments.GetComment
 
-    const feedback = yield* getComment(feedbackId)
+    const comment = yield* getComment(commentId)
 
-    if (feedback._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, feedback.authorId)) {
+    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
 
     const locale = yield* Locale
 
     return yield* pipe(
-      Match.value(feedback),
+      Match.value(comment),
       Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
       Match.tag('CommentInProgress', 'CommentReadyForPublishing', () =>
         Effect.gen(function* () {
@@ -108,7 +106,7 @@ export const ChoosePersonaSubmission = ({
 
                 yield* pipe(
                   handleCommand({
-                    commentId: feedbackId,
+                    commentId,
                     command: new Comments.ChoosePersona({ persona: form.persona }),
                   }),
                   Effect.catchIf(
@@ -118,8 +116,8 @@ export const ChoosePersonaSubmission = ({
                 )
 
                 return Response.RedirectResponse({
-                  location: DecideNextPage.NextPageAfterCommand({ command: 'ChoosePersona', comment: feedback }).href({
-                    commentId: feedbackId,
+                  location: DecideNextPage.NextPageAfterCommand({ command: 'ChoosePersona', comment }).href({
+                    commentId,
                   }),
                 })
               }),
@@ -127,7 +125,7 @@ export const ChoosePersonaSubmission = ({
             Match.tag('InvalidForm', form =>
               Effect.succeed(
                 MakeResponse({
-                  feedbackId,
+                  commentId,
                   form,
                   locale,
                   user,
@@ -139,14 +137,10 @@ export const ChoosePersonaSubmission = ({
         }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
       ),
       Match.tag('CommentPublished', () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
       ),
       Match.exhaustive,
     )
@@ -155,8 +149,6 @@ export const ChoosePersonaSubmission = ({
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
-        Effect.succeed(
-          Response.LogInResponse({ location: Routes.WriteCommentChoosePersona.href({ commentId: feedbackId }) }),
-        ),
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentChoosePersona.href({ commentId }) })),
     }),
   )

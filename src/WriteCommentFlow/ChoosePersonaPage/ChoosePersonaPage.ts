@@ -9,12 +9,12 @@ import type { User } from '../../user.js'
 import type * as ChoosePersonaForm from './ChoosePersonaForm.js'
 
 export const ChoosePersonaPage = ({
-  feedbackId,
+  commentId,
   form,
   locale,
   user,
 }: {
-  feedbackId: Uuid.Uuid
+  commentId: Uuid.Uuid
   form: ChoosePersonaForm.ChoosePersonaForm
   locale: SupportedLocale
   user: User
@@ -29,12 +29,12 @@ export const ChoosePersonaPage = ({
       )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
     ),
     nav: html`
-      <a href="${Routes.WriteCommentEnterComment.href({ commentId: feedbackId })}" class="back"
+      <a href="${Routes.WriteCommentEnterComment.href({ commentId })}" class="back"
         >${translate(locale, 'write-comment-flow', 'back')()}</a
       >
     `,
     main: html`
-      <form method="post" action="${Routes.WriteCommentChoosePersona.href({ commentId: feedbackId })}" novalidate>
+      <form method="post" action="${Routes.WriteCommentChoosePersona.href({ commentId })}" novalidate>
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
@@ -160,6 +160,6 @@ export const ChoosePersonaPage = ({
       </form>
     `,
     skipToLabel: 'form',
-    canonical: Routes.WriteCommentChoosePersona.href({ commentId: feedbackId }),
+    canonical: Routes.WriteCommentChoosePersona.href({ commentId }),
     js: form._tag === 'InvalidForm' ? ['error-summary.js'] : [],
   })
