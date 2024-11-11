@@ -34,7 +34,7 @@ describe('StartNow', () => {
                 status: StatusCodes.SEE_OTHER,
                 location: DecideNextPage.NextPageAfterCommand({
                   command: 'StartComment',
-                  feedback: new Comments.CommentNotStarted(),
+                  comment: new Comments.CommentNotStarted(),
                 }).href({ commentId: feedbackId }),
               })
 

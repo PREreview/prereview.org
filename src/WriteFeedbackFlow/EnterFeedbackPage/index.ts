@@ -118,7 +118,7 @@ export const EnterFeedbackSubmission = ({
                 )
 
                 return Response.RedirectResponse({
-                  location: DecideNextPage.NextPageAfterCommand({ command: 'EnterComment', feedback }).href({
+                  location: DecideNextPage.NextPageAfterCommand({ command: 'EnterComment', comment: feedback }).href({
                     commentId: feedbackId,
                   }),
                 })

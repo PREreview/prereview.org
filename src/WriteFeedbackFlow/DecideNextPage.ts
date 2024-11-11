@@ -43,35 +43,34 @@ const onInProgressCommand = pipe(
       | Comments.DeclareCompetingInterests
       | Comments.AgreeToCodeOfConduct
     )['_tag']
-    feedback: Comments.CommentState
+    comment: Comments.CommentState
   }>(),
   Match.withReturnType<Routes.Route<{ commentId: Uuid.Uuid }>>(),
   Match.when(
     {
       command: command => command !== 'EnterComment',
-      feedback: feedback => feedback._tag === 'CommentInProgress' && typeof feedback.comment === 'undefined',
+      comment: comment => comment._tag === 'CommentInProgress' && typeof comment.comment === 'undefined',
     },
     () => Routes.WriteCommentEnterComment,
   ),
   Match.when(
     {
       command: command => command !== 'ChoosePersona',
-      feedback: feedback => feedback._tag === 'CommentInProgress' && typeof feedback.persona === 'undefined',
+      comment: comment => comment._tag === 'CommentInProgress' && typeof comment.persona === 'undefined',
     },
     () => Routes.WriteCommentChoosePersona,
   ),
   Match.when(
     {
       command: command => command !== 'DeclareCompetingInterests',
-      feedback: feedback => feedback._tag === 'CommentInProgress' && typeof feedback.competingInterests === 'undefined',
+      comment: comment => comment._tag === 'CommentInProgress' && typeof comment.competingInterests === 'undefined',
     },
     () => Routes.WriteCommentCompetingInterests,
   ),
   Match.when(
     {
       command: command => command !== 'AgreeToCodeOfConduct',
-      feedback: feedback =>
-        feedback._tag === 'CommentInProgress' && typeof feedback.codeOfConductAgreed === 'undefined',
+      comment: comment => comment._tag === 'CommentInProgress' && typeof comment.codeOfConductAgreed === 'undefined',
     },
     () => Routes.WriteCommentCodeOfConduct,
   ),
@@ -81,7 +80,7 @@ const onInProgressCommand = pipe(
 export const NextPageAfterCommand = pipe(
   Match.type<{
     command: Exclude<Comments.CommentCommand, Comments.MarkDoiAsAssigned | Comments.MarkCommentAsPublished>['_tag']
-    feedback: Comments.CommentState
+    comment: Comments.CommentState
   }>(),
   Match.withReturnType<Routes.Route<{ commentId: Uuid.Uuid }>>(),
   Match.when({ command: 'StartComment' }, () => Routes.WriteCommentEnterComment),

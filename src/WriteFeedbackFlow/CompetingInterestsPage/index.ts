@@ -120,7 +120,7 @@ export const CompetingInterestsSubmission = ({
                 return Response.RedirectResponse({
                   location: DecideNextPage.NextPageAfterCommand({
                     command: 'DeclareCompetingInterests',
-                    feedback,
+                    comment: feedback,
                   }).href({
                     commentId: feedbackId,
                   }),
@@ -147,7 +147,7 @@ export const CompetingInterestsSubmission = ({
                 return Response.RedirectResponse({
                   location: DecideNextPage.NextPageAfterCommand({
                     command: 'DeclareCompetingInterests',
-                    feedback,
+                    comment: feedback,
                   }).href({
                     commentId: feedbackId,
                   }),

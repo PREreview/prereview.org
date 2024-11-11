@@ -207,7 +207,10 @@ describe('CompetingInterestsSubmission', () => {
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
-              location: DecideNextPage.NextPageAfterCommand({ command: 'DeclareCompetingInterests', feedback }).href({
+              location: DecideNextPage.NextPageAfterCommand({
+                command: 'DeclareCompetingInterests',
+                comment: feedback,
+              }).href({
                 commentId: feedbackId,
               }),
             })

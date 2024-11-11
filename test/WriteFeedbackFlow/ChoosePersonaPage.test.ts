@@ -204,7 +204,7 @@ describe('ChoosePersonaSubmission', () => {
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
-              location: DecideNextPage.NextPageAfterCommand({ command: 'ChoosePersona', feedback }).href({
+              location: DecideNextPage.NextPageAfterCommand({ command: 'ChoosePersona', comment: feedback }).href({
                 commentId: feedbackId,
               }),
             })

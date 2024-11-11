@@ -116,7 +116,10 @@ export const CodeOfConductSubmission = ({
                 )
 
                 return Response.RedirectResponse({
-                  location: DecideNextPage.NextPageAfterCommand({ command: 'AgreeToCodeOfConduct', feedback }).href({
+                  location: DecideNextPage.NextPageAfterCommand({
+                    command: 'AgreeToCodeOfConduct',
+                    comment: feedback,
+                  }).href({
                     commentId: feedbackId,
                   }),
                 })

@@ -118,7 +118,7 @@ export const ChoosePersonaSubmission = ({
                 )
 
                 return Response.RedirectResponse({
-                  location: DecideNextPage.NextPageAfterCommand({ command: 'ChoosePersona', feedback }).href({
+                  location: DecideNextPage.NextPageAfterCommand({ command: 'ChoosePersona', comment: feedback }).href({
                     commentId: feedbackId,
                   }),
                 })
