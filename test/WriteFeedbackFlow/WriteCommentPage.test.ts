@@ -7,19 +7,19 @@ import { Locale, LoggedInUser } from '../../src/Context.js'
 import { CanWriteComments } from '../../src/feature-flags.js'
 import * as Prereview from '../../src/Prereview.js'
 import * as Routes from '../../src/routes.js'
-import * as _ from '../../src/WriteFeedbackFlow/WriteFeedbackPage/index.js'
+import * as _ from '../../src/WriteFeedbackFlow/WriteCommentPage/index.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
-describe('WriteFeedbackPage', () => {
+describe('WriteCommentPage', () => {
   describe('when the user can write comments', () => {
     describe('when the data can be loaded', () => {
       describe('when the user is logged in', () => {
         test.prop([fc.integer(), fc.supportedLocale(), fc.user(), fc.prereview()])(
-          "when they haven't started feedback",
+          "when they haven't started a comment",
           (id, locale, user, prereview) =>
             Effect.gen(function* () {
-              const actual = yield* _.WriteFeedbackPage({ id })
+              const actual = yield* _.WriteCommentPage({ id })
 
               expect(actual).toStrictEqual({
                 _tag: 'StreamlinePageResponse',
@@ -54,9 +54,9 @@ describe('WriteFeedbackPage', () => {
             fc.oneof(fc.commentInProgress(), fc.commentReadyForPublishing(), fc.commentBeingPublished()),
             { minKeys: 1 },
           ),
-        ])('when they have started feedback', (id, locale, user, prereview, feedback) =>
+        ])('when they have started a comment', (id, locale, user, prereview, comment) =>
           Effect.gen(function* () {
-            const actual = yield* _.WriteFeedbackPage({ id })
+            const actual = yield* _.WriteCommentPage({ id })
 
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
@@ -66,7 +66,7 @@ describe('WriteFeedbackPage', () => {
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview, () =>
-              Effect.succeed(feedback),
+              Effect.succeed(comment),
             ),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
             Effect.provideService(CanWriteComments, () => true),
@@ -81,7 +81,7 @@ describe('WriteFeedbackPage', () => {
         "when the user isn't logged in",
         (id, locale, prereview) =>
           Effect.gen(function* () {
-            const actual = yield* _.WriteFeedbackPage({ id })
+            const actual = yield* _.WriteCommentPage({ id })
 
             expect(actual).toStrictEqual({
               _tag: 'StreamlinePageResponse',
@@ -108,7 +108,7 @@ describe('WriteFeedbackPage', () => {
       'when the PREreview was removed',
       (id, locale, user) =>
         Effect.gen(function* () {
-          const actual = yield* _.WriteFeedbackPage({ id })
+          const actual = yield* _.WriteCommentPage({ id })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -133,7 +133,7 @@ describe('WriteFeedbackPage', () => {
       "when the PREreview isn't found",
       (id, locale, user) =>
         Effect.gen(function* () {
-          const actual = yield* _.WriteFeedbackPage({ id })
+          const actual = yield* _.WriteCommentPage({ id })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -158,7 +158,7 @@ describe('WriteFeedbackPage', () => {
       "when the PREreview can't be loaded",
       (id, locale, user) =>
         Effect.gen(function* () {
-          const actual = yield* _.WriteFeedbackPage({ id })
+          const actual = yield* _.WriteCommentPage({ id })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -181,10 +181,10 @@ describe('WriteFeedbackPage', () => {
   })
 
   test.prop([fc.integer(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })])(
-    'when the user cannot write feedback',
+    'when the user cannot write comment',
     (id, locale, user) =>
       Effect.gen(function* () {
-        const actual = yield* _.WriteFeedbackPage({ id })
+        const actual = yield* _.WriteCommentPage({ id })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',

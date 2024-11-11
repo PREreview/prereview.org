@@ -6,13 +6,13 @@ import { DefaultLocale } from '../../../src/locales/index.js'
 import * as Prereview from '../../../src/Prereview.js'
 import type { Pseudonym } from '../../../src/types/pseudonym.js'
 import type { User } from '../../../src/user.js'
-import * as _ from '../../../src/WriteFeedbackFlow/WriteFeedbackPage/WriteFeedbackPage.js'
+import * as _ from '../../../src/WriteFeedbackFlow/WriteCommentPage/WriteCommentPage.js'
 import { expect, test } from '../../base.js'
 
 import PlainDate = Temporal.PlainDate
 
 test('content looks right', async ({ showPage }) => {
-  const response = _.WriteFeedbackPage({ prereview, locale: DefaultLocale })
+  const response = _.WriteCommentPage({ prereview, locale: DefaultLocale })
 
   const content = await showPage(response)
 
@@ -20,7 +20,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when logged in', async ({ showPage }) => {
-  const response = _.WriteFeedbackPage({ prereview, locale: DefaultLocale, user })
+  const response = _.WriteCommentPage({ prereview, locale: DefaultLocale, user })
 
   const content = await showPage(response)
 

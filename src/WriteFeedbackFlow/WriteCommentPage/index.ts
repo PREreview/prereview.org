@@ -6,9 +6,9 @@ import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { GetPrereview } from '../../Prereview.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
-import { WriteFeedbackPage as MakeResponse } from './WriteFeedbackPage.js'
+import { WriteCommentPage as MakeResponse } from './WriteCommentPage.js'
 
-export const WriteFeedbackPage = ({
+export const WriteCommentPage = ({
   id,
 }: {
   id: number
@@ -32,9 +32,9 @@ export const WriteFeedbackPage = ({
         Effect.gen(function* () {
           const query = yield* Comments.GetAllUnpublishedFeedbackByAnAuthorForAPrereview
 
-          const unpublishedFeedback = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
+          const unpublishedComments = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
 
-          if (!Record.isEmptyRecord(unpublishedFeedback)) {
+          if (!Record.isEmptyRecord(unpublishedComments)) {
             return Response.RedirectResponse({ location: Routes.WriteCommentStartNow.href({ id: prereview.id }) })
           }
 

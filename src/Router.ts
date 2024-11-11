@@ -41,7 +41,7 @@ export const Router = pipe(
     Routes.WriteComment.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteComment.schema),
-      Effect.andThen(WriteFeedbackFlow.WriteFeedbackPage),
+      Effect.andThen(WriteFeedbackFlow.WriteCommentPage),
       Effect.andThen(toHttpServerResponse),
     ),
   ),

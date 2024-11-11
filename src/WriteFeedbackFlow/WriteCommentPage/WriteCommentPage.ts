@@ -10,7 +10,7 @@ import * as Routes from '../../routes.js'
 import { renderDate } from '../../time.js'
 import type { User } from '../../user.js'
 
-export const WriteFeedbackPage = ({
+export const WriteCommentPage = ({
   prereview,
   locale,
   user,
