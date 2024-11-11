@@ -34,9 +34,9 @@ export const makeHandleCommentCommand: Effect.Effect<
   const eventStore = yield* EventStore
   const commentEvents = yield* CommentEvents
 
-  return ({ commentId: feedbackId, command }) =>
+  return ({ commentId, command }) =>
     Effect.gen(function* () {
-      const { events, latestVersion } = yield* eventStore.getEvents(feedbackId)
+      const { events, latestVersion } = yield* eventStore.getEvents(commentId)
 
       const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
         EvolveComment(state)(event),
@@ -47,10 +47,10 @@ export const makeHandleCommentCommand: Effect.Effect<
         Effect.tap(
           Array.match({
             onEmpty: () => Effect.void,
-            onNonEmpty: events => eventStore.commitEvents(feedbackId, latestVersion)(...events),
+            onNonEmpty: events => eventStore.commitEvents(commentId, latestVersion)(...events),
           }),
         ),
-        Effect.andThen(Effect.forEach(event => PubSub.publish(commentEvents, { commentId: feedbackId, event }))),
+        Effect.andThen(Effect.forEach(event => PubSub.publish(commentEvents, { commentId, event }))),
       )
     }).pipe(
       Effect.catchTags({
