@@ -46,13 +46,13 @@ describe('reviewPage', () => {
       }),
     ),
     fc.boolean(),
-  ])('when the review can be loaded', async (locale, id, prereview, feedback, canWriteComments) => {
+  ])('when the review can be loaded', async (locale, id, prereview, comments, canWriteComments) => {
     const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-    const getFeedback = jest.fn<_.GetFeedbackEnv['getFeedback']>(_ => TE.right(feedback))
+    const getComments = jest.fn<_.GetCommentsEnv['getComments']>(_ => TE.right(comments))
 
     const actual = await _.reviewPage({ id, locale })({
       getPrereview,
-      getFeedback,
+      getComments,
       canWriteComments: () => canWriteComments,
     })()
 
@@ -68,7 +68,7 @@ describe('reviewPage', () => {
       js: [],
     })
     expect(getPrereview).toHaveBeenCalledWith(id)
-    expect(getFeedback).toHaveBeenCalledWith(prereview.doi)
+    expect(getComments).toHaveBeenCalledWith(prereview.doi)
   })
 
   test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])(
@@ -76,7 +76,7 @@ describe('reviewPage', () => {
     async (locale, id, canWriteComments) => {
       const actual = await _.reviewPage({ id, locale })({
         getPrereview: () => TE.left('not-found'),
-        getFeedback: shouldNotBeCalled,
+        getComments: shouldNotBeCalled,
         canWriteComments: () => canWriteComments,
       })()
 
@@ -96,7 +96,7 @@ describe('reviewPage', () => {
     async (locale, id, canWriteComments) => {
       const actual = await _.reviewPage({ id, locale })({
         getPrereview: () => TE.left('removed'),
-        getFeedback: shouldNotBeCalled,
+        getComments: shouldNotBeCalled,
         canWriteComments: () => canWriteComments,
       })()
 
@@ -116,7 +116,7 @@ describe('reviewPage', () => {
     async (locale, id, canWriteComments) => {
       const actual = await _.reviewPage({ id, locale })({
         getPrereview: () => TE.left('unavailable'),
-        getFeedback: shouldNotBeCalled,
+        getComments: shouldNotBeCalled,
         canWriteComments: () => canWriteComments,
       })()
 
@@ -155,10 +155,10 @@ describe('reviewPage', () => {
       text: fc.html(),
     }),
     fc.boolean(),
-  ])('when the feedback cannot be loaded', async (locale, id, prereview, canWriteComments) => {
+  ])('when the comments cannot be loaded', async (locale, id, prereview, canWriteComments) => {
     const actual = await _.reviewPage({ id, locale })({
       getPrereview: () => TE.right(prereview),
-      getFeedback: () => TE.left('unavailable'),
+      getComments: () => TE.left('unavailable'),
       canWriteComments: () => canWriteComments,
     })()
 

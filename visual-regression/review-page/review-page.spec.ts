@@ -3,7 +3,7 @@ import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import type { Feedback, Prereview } from '../../src/review-page/index.js'
+import type { Comment, Prereview } from '../../src/review-page/index.js'
 import { createPage } from '../../src/review-page/review-page.js'
 import { expect, test } from '../base.js'
 
@@ -14,7 +14,7 @@ test('content looks right', async ({ showPage }) => {
     id: 1234,
     locale: DefaultLocale,
     review,
-    feedback: [],
+    comments: [],
     canWriteComments: false,
   })
 
@@ -34,7 +34,7 @@ test('content looks right with anonymous authors', async ({ showPage }) => {
         anonymous: 3,
       },
     },
-    feedback: [],
+    comments: [],
     canWriteComments: false,
   })
 
@@ -48,7 +48,7 @@ test('content looks right when in a club', async ({ showPage }) => {
     id: 1234,
     locale: DefaultLocale,
     review: { ...review, club: 'hhmi-training-pilot' },
-    feedback: [],
+    comments: [],
     canWriteComments: false,
   })
 
@@ -62,7 +62,7 @@ test("content looks right when it's requested", async ({ showPage }) => {
     id: 1234,
     locale: DefaultLocale,
     review: { ...review, requested: true },
-    feedback: [],
+    comments: [],
     canWriteComments: false,
   })
 
@@ -76,7 +76,7 @@ test("content looks right when it's live", async ({ showPage }) => {
     id: 1234,
     locale: DefaultLocale,
     review: { ...review, live: true },
-    feedback: [],
+    comments: [],
     canWriteComments: false,
   })
 
@@ -98,7 +98,7 @@ test('content looks right with an addendum', async ({ showPage }) => {
           from Resurrect Bio Ltd.
         </p>`,
     },
-    feedback: [],
+    comments: [],
     canWriteComments: false,
   })
 
@@ -112,7 +112,7 @@ test('content looks right when it is structured', async ({ showPage }) => {
     id: 1234,
     locale: DefaultLocale,
     review: structuredReview,
-    feedback: [],
+    comments: [],
     canWriteComments: false,
   })
 
@@ -121,12 +121,12 @@ test('content looks right when it is structured', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-test('content looks right when there is feedback', async ({ showPage }) => {
+test('content looks right when there are comments', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
     locale: DefaultLocale,
     review,
-    feedback: [feedback1, feedback2],
+    comments: [comment1, comment2],
     canWriteComments: false,
   })
 
@@ -135,12 +135,12 @@ test('content looks right when there is feedback', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-test('content looks right when feedback can be written', async ({ showPage }) => {
+test('content looks right when comments can be written', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
     locale: DefaultLocale,
     review,
-    feedback: [],
+    comments: [],
     canWriteComments: true,
   })
 
@@ -301,7 +301,7 @@ const structuredReview = {
     <p>The author declares that they have no competing interests.</p>`,
 } satisfies Prereview
 
-const feedback1 = {
+const comment1 = {
   authors: {
     named: [{ name: 'Josiah Carberry', orcid: Orcid('0000-0002-1825-0097') }, { name: 'Orange Panda' }],
   },
@@ -311,9 +311,9 @@ const feedback1 = {
   id: 10779310,
   published: PlainDate.from('2024-03-09'),
   text: html`<p>This is a comment.</p>`,
-} satisfies Feedback
+} satisfies Comment
 
-const feedback2 = {
+const comment2 = {
   authors: {
     named: [{ name: 'Arne Saknussemm' }],
   },
@@ -323,4 +323,4 @@ const feedback2 = {
   id: 10779310,
   published: PlainDate.from('2024-04-15'),
   text: html`<p>Þetta er athugasemd.</p>`,
-} satisfies Feedback
+} satisfies Comment

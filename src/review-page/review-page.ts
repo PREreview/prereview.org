@@ -15,20 +15,20 @@ import * as Routes from '../routes.js'
 import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import { isPseudonym } from '../types/pseudonym.js'
-import type { Feedback } from './feedback.js'
+import type { Comment } from './comments.js'
 import type { Prereview } from './prereview.js'
 
 export const createPage = ({
   id,
   locale,
   review,
-  feedback,
+  comments,
   canWriteComments,
 }: {
   id: number
   locale: SupportedLocale
   review: Prereview
-  feedback: ReadonlyArray<Feedback>
+  comments: ReadonlyArray<Comment>
   canWriteComments: boolean
 }) =>
   PageResponse({
@@ -193,29 +193,29 @@ export const createPage = ({
             ${fixHeadingLevels(2, review.addendum)}
           `
         : ''}
-      ${RA.isNonEmpty(feedback) || canWriteComments
+      ${RA.isNonEmpty(comments) || canWriteComments
         ? html`
-            <article aria-labelledby="feedback-title">
-              <h2 id="feedback-title">${translate(locale, 'review-page', 'commentsTitle')()}</h2>
+            <article aria-labelledby="comments-title">
+              <h2 id="comments-title">${translate(locale, 'review-page', 'commentsTitle')()}</h2>
               ${canWriteComments
                 ? html`<a href="${Routes.WriteComment.href({ id })}" class="button"
                     >${translate(locale, 'review-page', 'writeCommentButton')()}</a
                   >`
                 : ''}
               ${pipe(
-                feedback,
+                comments,
                 RA.match(
                   () => html`<p>${translate(locale, 'review-page', 'noComments')()}</p>`,
-                  feedback =>
+                  comments =>
                     html`<ol class="cards">
                       ${pipe(
-                        feedback,
+                        comments,
                         RNEA.map(
                           item => html`
                             <li>
-                              <article aria-labelledby="feedback-${item.id}-title">
+                              <article aria-labelledby="comment-${item.id}-title">
                                 <header>
-                                  <h3 class="visually-hidden" id="feedback-${item.id}-title">
+                                  <h3 class="visually-hidden" id="comment-${item.id}-title">
                                     ${translate(
                                       locale,
                                       'review-page',

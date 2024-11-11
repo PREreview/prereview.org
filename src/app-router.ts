@@ -310,7 +310,7 @@ import {
   type WasPrereviewRemovedEnv,
   addAuthorToRecordOnZenodo,
   createRecordOnZenodo,
-  getFeedbackForPrereviewFromZenodo,
+  getCommentsForPrereviewFromZenodo,
   getPrereviewFromZenodo,
   getPrereviewsForClubFromZenodo,
   getPrereviewsForPreprintFromZenodo,
@@ -892,8 +892,8 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          getComments: withEnv(getCommentsForPrereviewFromZenodo, env),
           getPrereview: withEnv(getPrereviewFromZenodo, env),
-          getFeedback: withEnv(getFeedbackForPrereviewFromZenodo, env),
         })),
       ),
     ),

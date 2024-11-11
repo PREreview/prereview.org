@@ -163,7 +163,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ 
     })
     .getOnce(
       {
-        name: 'feedback',
+        name: 'comments',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
         query: { q: 'related.identifier:"10.5281/zenodo.7747129"' },
       },
@@ -363,7 +363,7 @@ test('can find and view a review', async ({ fetch, page }) => {
     })
     .getOnce(
       {
-        name: 'feedback',
+        name: 'comments',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
         query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
       },
@@ -470,7 +470,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
     })
     .getOnce(
       {
-        name: 'feedback',
+        name: 'comments',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
         query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
       },
@@ -488,7 +488,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
   )
 })
 
-test('can find and view feedback to a review', async ({ fetch, page }) => {
+test('can find and view comments to a review', async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: Doi('10.5072/zenodo.1061863'),
     conceptrecid: 1061863,
@@ -557,7 +557,7 @@ test('can find and view feedback to a review', async ({ fetch, page }) => {
     })
     .getOnce(
       {
-        name: 'feedback',
+        name: 'comments',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
         query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
       },
@@ -572,9 +572,9 @@ test('can find and view feedback to a review', async ({ fetch, page }) => {
                 files: [
                   {
                     links: {
-                      self: new URL('http://example.com/feedback.html/content'),
+                      self: new URL('http://example.com/comment.html/content'),
                     },
-                    key: 'review.html',
+                    key: 'comment.html',
                     size: 58,
                   },
                 ],
@@ -612,8 +612,8 @@ test('can find and view feedback to a review', async ({ fetch, page }) => {
         }),
       },
     )
-    .get('http://example.com/feedback.html/content', {
-      body: '<h1>Some title in the feedback</h1><p>... some feedback text ...</p>',
+    .get('http://example.com/comments.html/content', {
+      body: '<h1>Some title in the comment</h1><p>... some comment text ...</p>',
     })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
@@ -622,7 +622,7 @@ test('can find and view feedback to a review', async ({ fetch, page }) => {
     .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al.' })
     .click()
 
-  await expect(page.getByRole('article', { name: 'Comments', exact: true })).toContainText('some feedback text')
+  await expect(page.getByRole('article', { name: 'Comments', exact: true })).toContainText('some comment text')
 })
 
 test("can find and view a review that's part of a club", async ({ fetch, page }) => {
@@ -695,7 +695,7 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
     })
     .getOnce(
       {
-        name: 'feedback',
+        name: 'comments',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
         query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
       },
@@ -772,7 +772,7 @@ test('can view a recent review', async ({ fetch, page }) => {
     })
     .getOnce(
       {
-        name: 'feedback',
+        name: 'comments',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
         query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
       },
@@ -852,7 +852,7 @@ test("can view a recent review that's part of a club", async ({ fetch, page }) =
     })
     .getOnce(
       {
-        name: 'feedback',
+        name: 'comments',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
         query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
       },
@@ -933,7 +933,7 @@ test('can view an older review', async ({ fetch, page }) => {
     })
     .getOnce(
       {
-        name: 'feedback',
+        name: 'comments',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
         query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
       },
@@ -1029,7 +1029,7 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
     })
     .getOnce(
       {
-        name: 'feedback',
+        name: 'comments',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
         query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
       },

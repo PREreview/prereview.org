@@ -3150,7 +3150,7 @@ describe('getFeedbackForPrereviewFromZenodo', () => {
       },
     }
 
-    const actual = await _.getFeedbackForPrereviewFromZenodo(id)({
+    const actual = await _.getCommentsForPrereviewFromZenodo(id)({
       fetch: fetchMock
         .sandbox()
         .getOnce(
@@ -3277,7 +3277,7 @@ describe('getFeedbackForPrereviewFromZenodo', () => {
       )
       .getOnce('http://example.com/comment.html/content', { body: 'Some text' })
 
-    const actual = await _.getFeedbackForPrereviewFromZenodo(id)({
+    const actual = await _.getCommentsForPrereviewFromZenodo(id)({
       clock: SystemClock,
       fetch,
       logger: () => IO.of(undefined),
@@ -3320,7 +3320,7 @@ describe('getFeedbackForPrereviewFromZenodo', () => {
       { status },
     )
 
-    const actual = await _.getFeedbackForPrereviewFromZenodo(id)({
+    const actual = await _.getCommentsForPrereviewFromZenodo(id)({
       clock: SystemClock,
       fetch,
       logger: () => IO.of(undefined),

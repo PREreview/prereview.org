@@ -58,7 +58,7 @@ import {
   getPreprintTitle,
 } from './preprint.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
-import type { Prereview, Feedback as PrereviewFeedback } from './review-page/index.js'
+import type { Prereview, Comment as PrereviewComment } from './review-page/index.js'
 import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.js'
 import type { RecentPrereviews } from './reviews-page/index.js'
 import { reviewMatch } from './routes.js'
@@ -411,7 +411,7 @@ export const getPrereviewsForPreprintFromZenodo = flow(
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
-export const getFeedbackForPrereviewFromZenodo = flow(
+export const getCommentsForPrereviewFromZenodo = flow(
   (id: Doi) =>
     new URLSearchParams({
       q: `related.identifier:"${id}"`,
@@ -423,7 +423,7 @@ export const getFeedbackForPrereviewFromZenodo = flow(
   RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
-  RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToPrereviewFeedback))),
+  RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToPrereviewComment))),
   RTE.orElseFirstW(
     RTE.fromReaderIOK(
       flow(
@@ -435,7 +435,7 @@ export const getFeedbackForPrereviewFromZenodo = flow(
             .with('unknown-license', 'text-unavailable', identity)
             .exhaustive(),
         }),
-        L.errorP('Unable to get feedback for PREreview from Zenodo'),
+        L.errorP('Unable to get comments for PREreview from Zenodo'),
       ),
     ),
   ),
@@ -770,16 +770,16 @@ function recordToPrereview(
   )
 }
 
-function recordToPrereviewFeedback(
+function recordToPrereviewComment(
   record: Record,
 ): RTE.ReaderTaskEither<
   F.FetchEnv & L.LoggerEnv,
   HttpError<404> | 'text-unavailable' | 'unknown-license',
-  PrereviewFeedback
+  PrereviewComment
 > {
   return pipe(
     RTE.Do,
-    RTE.apSW('feedbackTextUrl', RTE.fromOption(() => new httpErrors.NotFound())(getReviewUrl(record))),
+    RTE.apSW('commentTextUrl', RTE.fromOption(() => new httpErrors.NotFound())(getReviewUrl(record))),
     RTE.apSW(
       'license',
       RTE.fromEither(
@@ -789,7 +789,7 @@ function recordToPrereviewFeedback(
         ),
       ),
     ),
-    RTE.chainW(({ license, feedbackTextUrl }) =>
+    RTE.chainW(({ license, commentTextUrl }) =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right({ named: getAuthors(record).named }),
         doi: RTE.right(record.metadata.doi),
@@ -805,7 +805,7 @@ function recordToPrereviewFeedback(
         published: RTE.right(
           toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),
-        text: getReviewText(feedbackTextUrl),
+        text: getReviewText(commentTextUrl),
       }),
     ),
   )
