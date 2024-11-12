@@ -299,9 +299,11 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       <p>
         PREreview reports can be used in lieu of a formal invited peer review to revise and publish a preprint in a
         JMIRx journal or another <a href="https://planp.science/">Plan P</a>–compatible journal. To learn more about the
-        JMIRx project, see our help article “What is JMIRx?” To self-nominate a preprint for JMIRx or PREreview live
-        review, please use the <a href="https://med.jmirx.org/landing">JMIRx submission form</a> and choose “PREreview”
-        as your peer review option.
+        JMIRx project, see our help article
+        <a href="https://support.jmir.org/hc/en-us/articles/360034752692-What-is-JMIRx">What is JMIRx?</a> To
+        self-nominate a preprint for JMIRx or PREreview live review, please use the
+        <a href="https://med.jmirx.org/landing">JMIRx submission form</a> and choose “PREreview” as your peer review
+        option.
       </p>
     `,
     leads: [
