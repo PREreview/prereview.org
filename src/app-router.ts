@@ -514,7 +514,13 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(aboutUs)),
+          RM.apSW(
+            'response',
+            pipe(
+              RM.asks((env: RouterEnv) => env.locale),
+              RM.chainReaderTaskKW(aboutUs),
+            ),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
