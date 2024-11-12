@@ -569,7 +569,16 @@ jobs:
             crowdin.yml
           sparse-checkout-cone-mode: false
 
+      - name: 'Check if sources have changed'
+        uses: dorny/paths-filter@v3.0.2
+        id: changes
+        with:
+          filters: |
+            sources:
+              - 'locales/en-US/**'
+
       - name: 'Upload sources to Crowdin'
+        if: steps.changes.outputs.sources == 'true'
         uses: crowdin/github-action@v2.3.0
         with:
           upload_sources: true
