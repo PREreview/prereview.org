@@ -2,6 +2,7 @@ app = "prereview"
 
 [env]
 ALLOW_SITE_CRAWLERS = "true"
+CAN_WRITE_COMMENTS = "true"
 COAR_NOTIFY_URL = "https://coar-notify.prereview.org/"
 FATHOM_SITE_ID = "FEAJEBBA"
 LEGACY_PREREVIEW_UPDATE = "true"
