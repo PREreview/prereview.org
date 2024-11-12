@@ -1,6 +1,8 @@
 import { FetchHttpClient } from '@effect/platform'
+import { LibsqlMigrator } from '@effect/sql-libsql'
 import { type Array, Effect, flow, Layer, Match, Option, pipe, PubSub, Runtime } from 'effect'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
+import { fileURLToPath } from 'url'
 import * as Comments from './Comments/index.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
@@ -263,6 +265,11 @@ const setUpFetch = Layer.effect(
   }),
 )
 
+const MigratorLive = LibsqlMigrator.layer({
+  loader: LibsqlMigrator.fromFileSystem(fileURLToPath(new URL('migrations', import.meta.url))),
+  schemaDirectory: 'src/migrations',
+})
+
 export const Program = pipe(
   Layer.mergeAll(WebApp, Comments.ReactToCommentEvents),
   Layer.provide(publishComment),
@@ -293,6 +300,7 @@ export const Program = pipe(
   Layer.provide(setUpFetch),
   Layer.provide(Layer.effect(Uuid.GenerateUuid, Uuid.make)),
   Layer.provide(Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv)),
+  Layer.provide(MigratorLive),
 )
 
 function fixArrayType<A>(array: ReadonlyNonEmptyArray<A>): Array.NonEmptyReadonlyArray<A> {
