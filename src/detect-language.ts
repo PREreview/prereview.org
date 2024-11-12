@@ -1,11 +1,16 @@
-import * as O from 'fp-ts/lib/Option.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
+import * as O from 'fp-ts/lib/Option.js'
+import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import iso6391, { type LanguageCode } from 'iso-639-1'
-import { detect } from 'tinyld/heavy'
+import { get } from 'spectacles-ts'
+import { detect, detectAll } from 'tinyld/heavy'
 import { type Html, plainText } from './html.js'
 
 export function detectLanguage(html: Html): O.Option<LanguageCode> {
-  return pipe(detect(plainText(html).toString()), O.fromPredicate(iso6391Validate))
+  return pipe(
+    detectAll(plainText(html).toString()),
+    RA.findFirstMap(flow(get('lang'), O.fromPredicate(iso6391Validate))),
+  )
 }
 
 export function detectLanguageFrom<L extends LanguageCode>(
