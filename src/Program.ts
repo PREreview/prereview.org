@@ -1,12 +1,12 @@
 import { FetchHttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
-import { type Array, Effect, flow, Layer, Match, Option, pipe, PubSub, Runtime } from 'effect'
-import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
+import { Effect, flow, Layer, Match, Option, pipe, PubSub, Runtime } from 'effect'
 import { fileURLToPath } from 'url'
 import * as Comments from './Comments/index.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import { collapseRequests, logFetch } from './fetch.js'
+import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import { html } from './html.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
@@ -44,45 +44,33 @@ const getPrereview = Layer.effect(
 
     return id =>
       pipe(
-        Effect.promise(
-          getPrereviewFromZenodo(id)({
-            fetch,
-            getPreprint,
-            ...sleep,
-            wasPrereviewRemoved,
-            zenodoApiKey,
-            zenodoUrl,
-            ...logger,
-          }),
-        ),
-        Effect.andThen(
-          flow(
-            Match.value,
-            Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
-            Match.when({ _tag: 'Right' }, response =>
-              Effect.succeed(
-                new Prereview.Prereview({
-                  ...response.right,
-                  authors: {
-                    ...response.right.authors,
-                    named: fixArrayType(response.right.authors.named),
-                  },
-                  id,
-                }),
-              ),
-            ),
-            Match.exhaustive,
-          ),
-        ),
-        Effect.mapError(
-          flow(
+        FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {
+          fetch,
+          getPreprint,
+          ...sleep,
+          wasPrereviewRemoved,
+          zenodoApiKey,
+          zenodoUrl,
+          ...logger,
+        }),
+        Effect.mapBoth({
+          onFailure: flow(
             Match.value,
             Match.when('not-found', () => new Prereview.PrereviewIsNotFound()),
             Match.when('removed', () => new Prereview.PrereviewWasRemoved()),
             Match.when('unavailable', () => new Prereview.PrereviewIsUnavailable()),
             Match.exhaustive,
           ),
-        ),
+          onSuccess: response =>
+            new Prereview.Prereview({
+              ...response,
+              authors: {
+                ...response.authors,
+                named: FptsToEffect.array(response.authors.named),
+              },
+              id,
+            }),
+        }),
       )
   }),
 )
@@ -95,6 +83,18 @@ const assignCommentADoi = Layer.effect(
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
     const sleep = yield* DeprecatedSleepEnv
+
+    const env = {
+      fetch,
+      legacyPrereviewApi,
+      orcidApiUrl,
+      orcidApiToken,
+      publicUrl,
+      zenodoApiKey,
+      zenodoUrl,
+      ...sleep,
+      ...logger,
+    }
 
     return comment =>
       Effect.gen(function* () {
@@ -115,36 +115,21 @@ const assignCommentADoi = Layer.effect(
           Match.value(comment.persona),
           Match.when('public', () =>
             pipe(
-              Effect.promise(
-                getNameFromOrcid(comment.authorId)({ orcidApiUrl, orcidApiToken, fetch, ...sleep, ...logger }),
-              ),
-              Effect.andThen(
-                flow(
-                  Match.value,
-                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
-                  Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
-                  Match.exhaustive,
-                ),
-              ),
-              Effect.filterOrElse(
-                value => value !== undefined,
-                () => Effect.fail(new Comments.UnableToAssignADoi({})),
-              ),
-              Effect.andThen(name => ({ name, orcid: comment.authorId })),
+              FptsToEffect.readerTaskEither(getNameFromOrcid(comment.authorId), env),
+              Effect.filterOrFail(name => name !== undefined),
+              Effect.mapBoth({
+                onFailure: () => new Comments.UnableToAssignADoi({}),
+                onSuccess: name => ({ name, orcid: comment.authorId }),
+              }),
             ),
           ),
           Match.when('pseudonym', () =>
             pipe(
-              Effect.promise(getPseudonymFromLegacyPrereview(comment.authorId)({ fetch, legacyPrereviewApi })),
-              Effect.andThen(
-                flow(
-                  Match.value,
-                  Match.when({ _tag: 'Left' }, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
-                  Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
-                  Match.exhaustive,
-                ),
-              ),
-              Effect.andThen(pseudonym => ({ name: pseudonym })),
+              FptsToEffect.readerTaskEither(getPseudonymFromLegacyPrereview(comment.authorId), env),
+              Effect.mapBoth({
+                onFailure: () => new Comments.UnableToAssignADoi({}),
+                onSuccess: pseudonym => ({ name: pseudonym }),
+              }),
             ),
           ),
           Match.exhaustive,
@@ -161,23 +146,7 @@ const assignCommentADoi = Layer.effect(
           </p>`
 
         return yield* pipe(
-          Effect.promise(
-            createCommentOnZenodo({ ...comment, comment: text, author, prereview })({
-              fetch,
-              publicUrl,
-              zenodoApiKey,
-              zenodoUrl,
-              ...logger,
-            }),
-          ),
-          Effect.andThen(
-            flow(
-              Match.value,
-              Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
-              Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
-              Match.exhaustive,
-            ),
-          ),
+          FptsToEffect.readerTaskEither(createCommentOnZenodo({ ...comment, comment: text, author, prereview }), env),
           Effect.mapError(
             flow(
               Match.value,
@@ -199,22 +168,12 @@ const publishComment = Layer.effect(
 
     return comment =>
       pipe(
-        Effect.promise(
-          publishDepositionOnZenodo(comment)({
-            fetch,
-            zenodoApiKey,
-            zenodoUrl,
-            ...logger,
-          }),
-        ),
-        Effect.andThen(
-          flow(
-            Match.value,
-            Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
-            Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
-            Match.exhaustive,
-          ),
-        ),
+        FptsToEffect.readerTaskEither(publishDepositionOnZenodo(comment), {
+          fetch,
+          zenodoApiKey,
+          zenodoUrl,
+          ...logger,
+        }),
         Effect.mapError(
           flow(
             Match.value,
@@ -234,15 +193,7 @@ const getPreprint = Layer.effect(
 
     return id =>
       pipe(
-        Effect.promise(getPreprintUtil(id)({ fetch, ...sleep })),
-        Effect.andThen(
-          flow(
-            Match.value,
-            Match.when({ _tag: 'Left' }, response => Effect.fail(response.left)),
-            Match.when({ _tag: 'Right' }, response => Effect.succeed(response.right)),
-            Match.exhaustive,
-          ),
-        ),
+        FptsToEffect.readerTaskEither(getPreprintUtil(id), { fetch, ...sleep }),
         Effect.mapError(
           flow(
             Match.value,
@@ -302,7 +253,3 @@ export const Program = pipe(
   Layer.provide(Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv)),
   Layer.provide(MigratorLive),
 )
-
-function fixArrayType<A>(array: ReadonlyNonEmptyArray<A>): Array.NonEmptyReadonlyArray<A> {
-  return array as Array.NonEmptyReadonlyArray<A>
-}
