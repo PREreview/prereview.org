@@ -13,7 +13,6 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { toRequestHandler } from 'hyper-ts/lib/express.js'
 import type { Redis } from 'ioredis'
 import * as L from 'logger-fp-ts'
-import * as l from 'logging-ts/lib/IO.js'
 import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
 import { type RouterEnv, routes } from './app-router.js'
@@ -41,6 +40,7 @@ export type ConfigEnv = Omit<
   | 'getPreprint'
   | 'getPreprintTitle'
   | 'locale'
+  | 'logger'
   | 'templatePage'
   | 'getPreprintIdFromUuid'
   | 'getProfileIdFromUuid'
@@ -54,7 +54,7 @@ export type ConfigEnv = Omit<
 
 const sendEmail = (email: Email) =>
   RTE.asksReaderTaskEitherW(
-    (env: ConfigEnv) => () =>
+    (env: ConfigEnv & L.LoggerEnv) => () =>
       match(env)
         .with({ mailjetApi: p._ }, sendEmailWithMailjet(email))
         .with({ nodemailer: p._ }, sendEmailWithNodemailer(email))
@@ -85,7 +85,7 @@ const withEnv =
 
 export const app =
   (config: ConfigEnv) =>
-  ({ locale, user }: { locale: SupportedLocale; user?: User }) =>
+  ({ locale, logger, user }: { locale: SupportedLocale; logger: L.Logger; user?: User }) =>
     express()
       .disable('x-powered-by')
       .use((req, res, next) => {
@@ -96,7 +96,6 @@ export const app =
           url: req.url,
           path: url.pathname,
           query: Object.fromEntries(url.searchParams),
-          requestId: req.header('Fly-Request-Id') ?? null,
         }
 
         const startTime = Date.now()
@@ -108,7 +107,7 @@ export const app =
             userAgent: req.header('User-Agent') as Json,
           },
           L.infoP('Received HTTP request'),
-        )(config)()
+        )({ ...config, logger })()
 
         res.once('finish', () => {
           pipe(
@@ -118,7 +117,7 @@ export const app =
               time: Date.now() - startTime,
             },
             L.infoP('Sent HTTP response'),
-          )(config)()
+          )({ ...config, logger })()
         })
 
         res.once('close', () => {
@@ -133,7 +132,7 @@ export const app =
               time: Date.now() - startTime,
             },
             L.warnP('HTTP response may not have been completely sent'),
-          )(config)()
+          )({ ...config, logger })()
         })
 
         if (!config.allowSiteCrawlers) {
@@ -184,28 +183,27 @@ export const app =
             changeOrigin: true,
             pathFilter: '/api/v2/',
             on: {
-              proxyReq: (proxyReq, req) => {
+              proxyReq: proxyReq => {
                 const payload = {
                   url: `${proxyReq.protocol}//${proxyReq.host}${proxyReq.path}`,
                   method: proxyReq.method,
-                  requestId: req.headers['fly-request-id'] ?? null,
                 }
 
-                L.debugP('Sending proxy HTTP request')(payload)(config)()
+                L.debugP('Sending proxy HTTP request')(payload)({ ...config, logger })()
 
                 proxyReq.once('response', response => {
                   L.debugP('Received proxy HTTP response')({
                     ...payload,
                     status: response.statusCode as Json,
                     headers: response.headers as Json,
-                  })(config)()
+                  })({ ...config, logger })()
                 })
 
                 proxyReq.once('error', error => {
                   L.warnP('Did not receive a proxy HTTP response')({
                     ...payload,
                     error: error.message,
-                  })(config)()
+                  })({ ...config, logger })()
                 })
               },
             },
@@ -224,7 +222,7 @@ export const app =
         asyncHandler((req, res, next) => {
           return pipe(
             appMiddleware,
-            R.local((env: ConfigEnv): RouterEnv & LegacyEnv => ({
+            R.local((env: ConfigEnv & L.LoggerEnv): RouterEnv & LegacyEnv => ({
               ...env,
               doesPreprintExist: withEnv(doesPreprintExist, env),
               generateUuid: uuid.v4(),
@@ -240,18 +238,10 @@ export const app =
               resolvePreprintId: withEnv(resolvePreprintId, env),
               sendEmail: withEnv(sendEmail, env),
             })),
-            R.local(
-              (appEnv: ConfigEnv): ConfigEnv => ({
-                ...appEnv,
-                logger: pipe(
-                  appEnv.logger,
-                  l.contramap(entry => ({
-                    ...entry,
-                    payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
-                  })),
-                ),
-              }),
-            ),
+            R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv => ({
+              ...appEnv,
+              logger,
+            })),
             apply(config),
             toRequestHandler,
           )(req, res, next)
