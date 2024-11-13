@@ -32,7 +32,7 @@ export const home = ({
     RT.apSW('canRequestReviews', RT.fromReader(canRequestReviews(user))),
     RT.apSW('canSeeGatesLogo', RT.fromReader(canSeeGatesLogo)),
     RT.apSW('recentReviewRequests', getRecentReviewRequests()),
-    RT.let('statistics', () => ({ prereviews: 1000, servers: 24, users: 2975 })),
+    RT.let('statistics', () => ({ prereviews: 1025, servers: 24, users: 3015 })),
     RT.let('locale', () => locale),
     RT.map(createPage),
   )
