@@ -1,4 +1,3 @@
-import slashes from 'connect-slashes'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
@@ -199,7 +198,6 @@ export const app =
           }),
         ),
       )
-      .use(slashes(false))
       .use(express.urlencoded({ extended: true }))
       .use((req, res, next) => {
         res.set('Cache-Control', 'no-cache, private')

@@ -1,6 +1,7 @@
 import {
   FileSystem,
   Headers,
+  HttpMethod,
   HttpMiddleware,
   HttpServer,
   HttpServerRequest,
@@ -10,6 +11,7 @@ import {
 import cspBuilder from 'content-security-policy-builder'
 import cookieSignature from 'cookie-signature'
 import { Cause, Config, Effect, flow, Layer, Option, pipe, Schema } from 'effect'
+import { StatusCodes } from 'http-status-codes'
 import { Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
@@ -18,6 +20,21 @@ import { Router } from './Router.js'
 import * as TemplatePage from './TemplatePage.js'
 import { Uuid } from './types/index.js'
 import { UserSchema } from './user.js'
+
+const removeTrailingSlashes = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const request = yield* HttpServerRequest.HttpServerRequest
+
+    if (HttpMethod.hasBody(request.method) || '/' !== request.url[request.url.length - 1] || '/' === request.url) {
+      return yield* app
+    }
+
+    return yield* HttpServerResponse.empty({
+      headers: Headers.fromInput({ Location: request.url.slice(0, request.url.length - 1) }),
+      status: StatusCodes.MOVED_PERMANENTLY,
+    })
+  }),
+)
 
 const serveStaticFiles = HttpMiddleware.make(app =>
   Effect.gen(function* () {
@@ -176,6 +193,7 @@ export const WebApp = pipe(
   Router,
   Effect.catchTag('RouteNotFound', () => ExpressHttpApp),
   serveStaticFiles,
+  removeTrailingSlashes,
   addSecurityHeaders,
   addXRobotsTagHeader,
   getLoggedInUser,
