@@ -1,4 +1,12 @@
-import { Headers, HttpMiddleware, HttpServer, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import {
+  FileSystem,
+  Headers,
+  HttpMiddleware,
+  HttpServer,
+  HttpServerRequest,
+  HttpServerResponse,
+  Path,
+} from '@effect/platform'
 import cspBuilder from 'content-security-policy-builder'
 import cookieSignature from 'cookie-signature'
 import { Cause, Config, Effect, flow, Layer, Option, pipe, Schema } from 'effect'
@@ -10,6 +18,40 @@ import { Router } from './Router.js'
 import * as TemplatePage from './TemplatePage.js'
 import { Uuid } from './types/index.js'
 import { UserSchema } from './user.js'
+
+const serveStaticFiles = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const request = yield* HttpServerRequest.HttpServerRequest
+
+    const path = yield* Path.Path
+
+    const filePath = path.resolve(import.meta.dirname, '..', 'dist', 'assets', request.url.slice(1))
+
+    if (!(yield* isFile(filePath))) {
+      return yield* app
+    }
+
+    const response = yield* HttpServerResponse.file(filePath, {})
+
+    if (!/\.[a-z0-9]{8,}\.[A-z0-9]+(?:\.map)?$/.exec(filePath)) {
+      return yield* response
+    }
+
+    return yield* HttpServerResponse.setHeader(
+      response,
+      'Cache-Control',
+      `public, max-age=${60 * 60 * 24 * 365}, immutable`,
+    )
+  }),
+)
+
+const isFile = (path: string) =>
+  pipe(
+    FileSystem.FileSystem,
+    Effect.andThen(fs => fs.stat(path)),
+    Effect.map(stat => stat.type === 'File'),
+    Effect.catchAll(() => Effect.succeed(false)),
+  )
 
 const addSecurityHeaders = HttpMiddleware.make(app =>
   Effect.gen(function* () {
@@ -133,6 +175,7 @@ const logDefects = Effect.tapDefect(cause =>
 export const WebApp = pipe(
   Router,
   Effect.catchTag('RouteNotFound', () => ExpressHttpApp),
+  serveStaticFiles,
   addSecurityHeaders,
   addXRobotsTagHeader,
   getLoggedInUser,
