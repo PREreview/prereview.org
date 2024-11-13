@@ -18,6 +18,7 @@ export const clubIds = [
   'cara',
   'etymos-analytica',
   'hhmi-training-pilot',
+  'iib-mar-del-plata',
   'intersectional-feminist',
   'jmir-publications',
   'language-club',

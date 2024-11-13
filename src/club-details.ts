@@ -258,6 +258,25 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Michele Avissar-Whiting', orcid: Orcid('0000-0003-0030-3135') },
     ],
   },
+  'iib-mar-del-plata': {
+    name: 'IIB-Mar del Plata Argentina',
+    description: html`
+      <div lang="es-AR" dir="ltr">
+        <p>
+          Docentes, investigadores y estudiantes de doctorado especializados en bioquímica y biología molecular de
+          plantas y microorganismos.
+        </p>
+        <p>
+          Nuestro club revisa preprints con la meta de apoyar el movimiento de ciencia abierta, difundir sus valores y
+          entrenar a investigadores jóvenes en la revisión constructiva de artículos científicos.
+        </p>
+      </div>
+    `,
+    leads: [
+      { name: 'Ana María Laxalt', orcid: Orcid('0000-0002-8225-2441') },
+      { name: 'Juan Martín D’Ambrosio', orcid: Orcid('0000-0003-2834-1838') },
+    ],
+  },
   'intersectional-feminist': {
     name: 'Intersectional Feminist Club',
     description: html`
