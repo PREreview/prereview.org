@@ -1,8 +1,8 @@
 import { type HttpApp, HttpMiddleware, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServerRequest } from '@effect/platform-node'
-import { Effect } from 'effect'
+import { Effect, Option } from 'effect'
 import express, { type ErrorRequestHandler } from 'express'
-import { Express, Locale } from './Context.js'
+import { Express, Locale, LoggedInUser } from './Context.js'
 
 export const ExpressHttpApp: HttpApp.Default<never, Express | HttpServerRequest.HttpServerRequest | Locale> =
   Effect.gen(function* () {
@@ -12,12 +12,13 @@ export const ExpressHttpApp: HttpApp.Default<never, Express | HttpServerRequest.
     const nodeRequest = NodeHttpServerRequest.toIncomingMessage(request)
     const nodeResponse = NodeHttpServerRequest.toServerResponse(request)
     const locale = yield* Locale
+    const user = yield* Effect.serviceOption(LoggedInUser)
 
     return yield* Effect.async<HttpServerResponse.HttpServerResponse>(resume => {
       nodeResponse.once('close', () => resume(Effect.succeed(HttpServerResponse.empty())))
 
       express()
-        .use(expressApp(locale))
+        .use(expressApp({ locale, user: Option.getOrUndefined(user) }))
         .use(((error, req, res, next) => {
           if (error instanceof Error && 'code' in error && error.code === 'ERR_HTTP_HEADERS_SENT') {
             return next()
