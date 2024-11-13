@@ -326,7 +326,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       </p>
     `,
     leads: [
-      { name: 'Shaochen (Shawn) Huang', orcid: Orcid('0000-0001-6570-0372') },
+      { name: 'Surya Nedunchezhiyan', orcid: Orcid('0009-0008-3322-2327') },
       { name: 'Tiffany I. Leung', orcid: Orcid('0000-0002-6007-4023') },
     ],
     contact: 'ed-support@jmir.org' as EmailAddress,
