@@ -515,6 +515,20 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Viduthalai Rasheedkhan Regina', orcid: Orcid('0000-0001-5457-8965') }],
   },
+  'surrey-microbiology': {
+    name: 'University of Surrey Microbiology Journal Club',
+    description: html`
+      <p>
+        The University of Surrey, based in Guildford UK, is a global community of ideas and people, dedicated to
+        life-changing education and research.
+      </p>
+      <p>
+        The Microbiology Journal Club, comprising staff and PGR students from the Department of Microbial Sciences,
+        meets monthly to discuss a chosen research article.
+      </p>
+    `,
+    leads: [{ name: 'Kathleen Dunbar', orcid: Orcid('0009-0009-5970-9296') }],
+  },
   'tsl-preprint-club': {
     name: 'TSL Preprint Club',
     description: html`
