@@ -47,53 +47,43 @@ describe('when not started', () => {
 })
 
 describe('when in progress', () => {
+  const started = new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') })
   test('cannot be started again', () =>
-    given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+    given(started)
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentWasAlreadyStarted()))
 
   test('can enter the comment', () =>
-    given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+    given(started)
       .when(new _.EnterComment({ comment: html`<p>Some comment.</p>` }))
       .then(new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` })))
 
   test('can choose persona', () =>
-    given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+    given(started)
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
       .then(new _.PersonaWasChosen({ persona: 'pseudonym' })))
 
   test('can declare competing interests', () =>
-    given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+    given(started)
       .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
       .then(new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() })))
 
   test('can agree to the code of conduct', () =>
-    given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .when(new _.AgreeToCodeOfConduct())
-      .then(new _.CodeOfConductWasAgreed()))
+    given(started).when(new _.AgreeToCodeOfConduct()).then(new _.CodeOfConductWasAgreed()))
 
   test('re-agreeing to the code of conduct does nothing', () =>
-    given(
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CodeOfConductWasAgreed(),
-    )
-      .when(new _.AgreeToCodeOfConduct())
-      .then())
+    given(started, new _.CodeOfConductWasAgreed()).when(new _.AgreeToCodeOfConduct()).then())
 
   test('cannot request publication', () =>
-    given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .when(new _.PublishComment())
-      .thenError(new _.CommentIsIncomplete()))
+    given(started).when(new _.PublishComment()).thenError(new _.CommentIsIncomplete()))
 
   test('DOI cannot be marked as assigned', () =>
-    given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+    given(started)
       .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
       .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot be marked as published', () =>
-    given(new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
-      .when(new _.MarkCommentAsPublished())
-      .thenError(new _.CommentIsIncomplete()))
+    given(started).when(new _.MarkCommentAsPublished()).thenError(new _.CommentIsIncomplete()))
 })
 
 describe('when ready for publication', () => {
