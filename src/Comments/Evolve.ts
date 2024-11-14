@@ -127,11 +127,12 @@ const onEvent = pipe(
 )
 
 export const EvolveComment =
-  () =>
+  (requireVerifiedEmailAddress = false) =>
   (state: State.CommentState): ((event: Events.CommentEvent) => State.CommentState) =>
-    flow(onEvent, Function.apply(state)<State.CommentState>, checkIsReadyForPublication())
+    flow(onEvent, Function.apply(state)<State.CommentState>, checkIsReadyForPublication(requireVerifiedEmailAddress))
 
-const checkIsReadyForPublication = () => (state: State.CommentState) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const checkIsReadyForPublication = (requireVerifiedEmailAddress: boolean) => (state: State.CommentState) => {
   if (state._tag !== 'CommentInProgress') {
     return state
   }
