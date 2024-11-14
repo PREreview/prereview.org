@@ -70,6 +70,30 @@ const isFile = (path: string) =>
     Effect.catchAll(() => Effect.succeed(false)),
   )
 
+const logRequest = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const request = yield* HttpServerRequest.HttpServerRequest
+    const { publicUrl } = yield* ExpressConfig
+
+    const url = new URL(request.url, publicUrl)
+
+    if (url.pathname === '/health') {
+      return yield* app
+    }
+
+    yield* Effect.annotateLogs(Effect.logInfo('Received HTTP request'), {
+      'http.method': request.method,
+      'http.url': request.url,
+      'http.path': url.pathname,
+      'http.query': Object.fromEntries(url.searchParams),
+      'http.referrer': Option.getOrUndefined(Headers.get(request.headers, 'Referer')),
+      'http.userAgent': Option.getOrUndefined(Headers.get(request.headers, 'User-Agent')),
+    })
+
+    return yield* app
+  }),
+)
+
 const addSecurityHeaders = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const publicUrl = yield* Config.mapAttempt(Config.string('PUBLIC_URL'), url => new URL(url))
@@ -198,6 +222,7 @@ export const WebApp = pipe(
   addXRobotsTagHeader,
   getLoggedInUser,
   getLocale,
+  logRequest,
   logDefects,
   HttpServer.serve(flow(HttpMiddleware.logger, annotateLogsWithRequestId)),
   HttpServer.withLogAddress,

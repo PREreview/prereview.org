@@ -99,15 +99,6 @@ export const app =
 
         const startTime = Date.now()
 
-        pipe(
-          {
-            ...details,
-            referrer: req.header('Referer') as Json,
-            userAgent: req.header('User-Agent') as Json,
-          },
-          L.infoP('Received HTTP request'),
-        )({ ...config, logger })()
-
         res.once('finish', () => {
           pipe(
             {
