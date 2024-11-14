@@ -88,43 +88,6 @@ export const app =
     express()
       .disable('x-powered-by')
       .use((req, res, next) => {
-        const url = new URL(req.url, config.publicUrl)
-
-        const details = {
-          method: req.method,
-          url: req.url,
-          path: url.pathname,
-          query: Object.fromEntries(url.searchParams),
-        }
-
-        const startTime = Date.now()
-
-        res.once('finish', () => {
-          pipe(
-            {
-              ...details,
-              status: res.statusCode,
-              time: Date.now() - startTime,
-            },
-            L.infoP('Sent HTTP response'),
-          )({ ...config, logger })()
-        })
-
-        res.once('close', () => {
-          if (res.writableFinished) {
-            return
-          }
-
-          pipe(
-            {
-              ...details,
-              status: res.statusCode,
-              time: Date.now() - startTime,
-            },
-            L.warnP('HTTP response may not have been completely sent'),
-          )({ ...config, logger })()
-        })
-
         if (!config.allowSiteCrawlers) {
           res.header('X-Robots-Tag', 'none, noarchive')
         }

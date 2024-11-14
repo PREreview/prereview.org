@@ -1,4 +1,4 @@
-import { type HttpApp, HttpMiddleware, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { type HttpApp, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServerRequest } from '@effect/platform-node'
 import { Effect, HashMap, Option, pipe } from 'effect'
 import express, { type ErrorRequestHandler } from 'express'
@@ -30,7 +30,13 @@ export const ExpressHttpApp: HttpApp.Default<
   )
 
   return yield* Effect.async<HttpServerResponse.HttpServerResponse>(resume => {
-    nodeResponse.once('close', () => resume(Effect.succeed(HttpServerResponse.empty())))
+    nodeResponse.once('close', () =>
+      resume(
+        Effect.succeed(
+          HttpServerResponse.empty({ status: nodeResponse.writableFinished ? nodeResponse.statusCode : 499 }),
+        ),
+      ),
+    )
 
     express()
       .use(expressApp({ locale, logger, user: Option.getOrUndefined(user) }))
@@ -41,5 +47,5 @@ export const ExpressHttpApp: HttpApp.Default<
 
         next(error)
       }) satisfies ErrorRequestHandler)(nodeRequest, nodeResponse)
-  }).pipe(HttpMiddleware.withLoggerDisabled)
+  })
 })
