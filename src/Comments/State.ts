@@ -13,6 +13,7 @@ export class CommentInProgress extends Data.TaggedClass('CommentInProgress')<{
   persona?: 'public' | 'pseudonym'
   codeOfConductAgreed?: true
   competingInterests?: Option.Option<NonEmptyString.NonEmptyString>
+  verifiedEmailAddressExists?: true
 }> {}
 
 export class CommentReadyForPublishing extends Data.TaggedClass('CommentReadyForPublishing')<{

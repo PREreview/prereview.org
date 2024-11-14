@@ -90,7 +90,7 @@ describe('when in progress', () => {
     given(started).when(new _.PublishComment()).thenError(new _.CommentIsIncomplete()))
 
   describe('when a verified email address is required', () => {
-    test.failing('cannot request publication', () =>
+    test('cannot request publication', () =>
       givenWhenAVerifiedEmailAddressIsRequired(
         started,
         new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
@@ -99,8 +99,7 @@ describe('when in progress', () => {
         new _.CodeOfConductWasAgreed(),
       )
         .when(new _.PublishComment())
-        .thenError(new _.CommentIsIncomplete()),
-    )
+        .thenError(new _.CommentIsIncomplete()))
   })
 
   test('DOI cannot be marked as assigned', () =>
@@ -114,6 +113,7 @@ describe('when in progress', () => {
 
 describe.each([
   [
+    'feature flag turned off',
     given,
     [
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
@@ -124,6 +124,7 @@ describe.each([
     ],
   ],
   [
+    'feature flag turned on',
     givenWhenAVerifiedEmailAddressIsRequired,
     [
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
@@ -134,7 +135,7 @@ describe.each([
       new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
     ],
   ],
-])('when ready for publication', (given, minimumEventsToBeReady) => {
+])('when ready for publication (%s)', (_name, given, minimumEventsToBeReady) => {
   test('cannot be started again', () =>
     given(...minimumEventsToBeReady)
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))

@@ -72,6 +72,20 @@ const onCodeOfConductWasAgreed = () =>
     Match.exhaustive,
   )
 
+const onExistenceOfVerifiedEmailAddressWasConfirmed = () =>
+  flow(
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', identity),
+    Match.tag(
+      'CommentInProgress',
+      state => new State.CommentInProgress({ ...state, verifiedEmailAddressExists: true }),
+    ),
+    Match.tag('CommentReadyForPublishing', identity),
+    Match.tag('CommentBeingPublished', identity),
+    Match.tag('CommentPublished', identity),
+    Match.exhaustive,
+  )
+
 const onCommentPublicationWasRequested = () =>
   flow(
     Match.value<State.CommentState>,
@@ -120,7 +134,7 @@ const onEvent = pipe(
   Match.tag('PersonaWasChosen', onPersonaWasChosen),
   Match.tag('CompetingInterestsWereDeclared', onCompetingInterestsWereDeclared),
   Match.tag('CodeOfConductWasAgreed', onCodeOfConductWasAgreed),
-  Match.tag('ExistenceOfVerifiedEmailAddressWasConfirmed', () => identity),
+  Match.tag('ExistenceOfVerifiedEmailAddressWasConfirmed', onExistenceOfVerifiedEmailAddressWasConfirmed),
   Match.tag('CommentPublicationWasRequested', onCommentPublicationWasRequested),
   Match.tag('DoiWasAssigned', onDoiWasAssigned),
   Match.tag('CommentWasPublished', onCommentWasPublished),
@@ -138,13 +152,14 @@ const checkIsReadyForPublication = (requireVerifiedEmailAddress: boolean) => (st
     return state
   }
 
-  const { codeOfConductAgreed, competingInterests, comment, persona, ...rest } = state
+  const { codeOfConductAgreed, competingInterests, comment, persona, verifiedEmailAddressExists, ...rest } = state
 
   if (
     typeof comment !== 'object' ||
     typeof persona !== 'string' ||
     !Option.isOption(competingInterests) ||
-    codeOfConductAgreed !== true
+    codeOfConductAgreed !== true ||
+    (requireVerifiedEmailAddress && verifiedEmailAddressExists !== true)
   ) {
     return state
   }
