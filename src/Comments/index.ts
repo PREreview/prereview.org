@@ -63,15 +63,20 @@ export const makeHandleCommentCommand: Effect.Effect<
     )
 })
 
-export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, EventStore> = Effect.gen(function* () {
+export const makeGetComment: Effect.Effect<
+  typeof GetComment.Service,
+  never,
+  EventStore | RequiresAVerifiedEmailAddress
+> = Effect.gen(function* () {
   const eventStore = yield* EventStore
+  const requiresAVerifiedEmailAddress = yield* RequiresAVerifiedEmailAddress
 
   return commentId =>
     Effect.gen(function* () {
       const { events } = yield* eventStore.getEvents(commentId)
 
       return Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
-        EvolveComment()(state)(event),
+        EvolveComment(requiresAVerifiedEmailAddress)(state)(event),
       )
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })

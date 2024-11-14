@@ -29,7 +29,7 @@ export const GetAllUnpublishedCommentsByAnAuthorForAPrereview =
           ),
       ),
       Record.map(
-        Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment()(state)(event)),
+        Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(false)(state)(event)),
       ),
       Record.filter(
         state =>
@@ -63,7 +63,7 @@ export const HasAuthorUnpublishedCommentsForAPrereview =
           ),
       ),
       Record.map(
-        Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment()(state)(event)),
+        Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(false)(state)(event)),
       ),
       Record.some(
         state =>

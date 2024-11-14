@@ -127,7 +127,7 @@ const onEvent = pipe(
 )
 
 export const EvolveComment =
-  (requireVerifiedEmailAddress = false) =>
+  (requireVerifiedEmailAddress: boolean) =>
   (state: State.CommentState): ((event: Events.CommentEvent) => State.CommentState) =>
     flow(onEvent, Function.apply(state)<State.CommentState>, checkIsReadyForPublication(requireVerifiedEmailAddress))
 
