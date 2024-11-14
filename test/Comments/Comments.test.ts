@@ -7,6 +7,18 @@ import { html } from '../../src/html.js'
 import type { NonEmptyString } from '../../src/types/index.js'
 import { CommandHandlerSpecification } from '../CommandHandlerSpecification.js'
 
+const given = CommandHandlerSpecification.for({
+  decide: _.DecideComment,
+  evolve: _.EvolveComment(false),
+  initialState: new _.CommentNotStarted(),
+})
+
+const givenWhenAVerifiedEmailAddressIsRequired = CommandHandlerSpecification.for({
+  decide: _.DecideComment,
+  evolve: _.EvolveComment(true),
+  initialState: new _.CommentNotStarted(),
+})
+
 describe('when not started', () => {
   test('can be started', () =>
     given()
@@ -78,12 +90,6 @@ describe('when in progress', () => {
     given(started).when(new _.PublishComment()).thenError(new _.CommentIsIncomplete()))
 
   describe('when a verified email address is required', () => {
-    const givenWhenAVerifiedEmailAddressIsRequired = CommandHandlerSpecification.for({
-      decide: _.DecideComment,
-      evolve: _.EvolveComment(true),
-      initialState: new _.CommentNotStarted(),
-    })
-
     test.failing('cannot request publication', () =>
       givenWhenAVerifiedEmailAddressIsRequired(
         started,
@@ -106,15 +112,29 @@ describe('when in progress', () => {
     given(started).when(new _.MarkCommentAsPublished()).thenError(new _.CommentIsIncomplete()))
 })
 
-describe('when ready for publication', () => {
-  const minimumEventsToBeReady = [
-    new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-    new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-    new _.PersonaWasChosen({ persona: 'public' }),
-    new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-    new _.CodeOfConductWasAgreed(),
-  ]
-
+describe.each([
+  [
+    given,
+    [
+      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
+      new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductWasAgreed(),
+    ],
+  ],
+  [
+    givenWhenAVerifiedEmailAddressIsRequired,
+    [
+      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
+      new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
+    ],
+  ],
+])('when ready for publication', (given, minimumEventsToBeReady) => {
   test('cannot be started again', () =>
     given(...minimumEventsToBeReady)
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -396,10 +416,4 @@ describe('when published', () => {
     )
       .when(new _.MarkCommentAsPublished())
       .thenError(new _.CommentWasAlreadyPublished()))
-})
-
-const given = CommandHandlerSpecification.for({
-  decide: _.DecideComment,
-  evolve: _.EvolveComment(false),
-  initialState: new _.CommentNotStarted(),
 })
