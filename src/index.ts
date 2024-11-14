@@ -11,12 +11,16 @@ import { ExpressConfigLive } from './ExpressServer.js'
 import { Program } from './Program.js'
 import { redisLifecycle } from './Redis.js'
 import { verifyCache } from './VerifyCache.js'
-import { CanWriteComments } from './feature-flags.js'
+import { CanWriteComments, RequiresAVerifiedEmailAddress } from './feature-flags.js'
 
 pipe(
   Program,
   Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
+  Effect.provideServiceEffect(
+    RequiresAVerifiedEmailAddress,
+    Config.withDefault(Config.boolean('REQUIRES_A_VERIFIED_EMAIL_ADDRESS'), false),
+  ),
   Effect.provideServiceEffect(
     CanWriteComments,
     Effect.gen(function* () {

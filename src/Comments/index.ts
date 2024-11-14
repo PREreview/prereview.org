@@ -1,5 +1,6 @@
 import { Array, Effect, Layer, Match, pipe, PubSub, Queue } from 'effect'
 import { EventStore } from '../Context.js'
+import { RequiresAVerifiedEmailAddress } from '../feature-flags.js'
 import type { Uuid } from '../types/index.js'
 import {
   type AssignCommentADoi,
@@ -29,17 +30,18 @@ export * from './State.js'
 export const makeHandleCommentCommand: Effect.Effect<
   typeof HandleCommentCommand.Service,
   never,
-  EventStore | CommentEvents
+  EventStore | CommentEvents | RequiresAVerifiedEmailAddress
 > = Effect.gen(function* () {
   const eventStore = yield* EventStore
   const commentEvents = yield* CommentEvents
+  const requiresAVerifiedEmailAddress = yield* RequiresAVerifiedEmailAddress
 
   return ({ commentId, command }) =>
     Effect.gen(function* () {
       const { events, latestVersion } = yield* eventStore.getEvents(commentId)
 
       const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
-        EvolveComment()(state)(event),
+        EvolveComment(requiresAVerifiedEmailAddress)(state)(event),
       )
 
       yield* pipe(

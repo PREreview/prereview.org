@@ -43,6 +43,7 @@ import {
   type CanUploadAvatarEnv,
   type CanUseSearchQueriesEnv,
   CanWriteComments,
+  RequiresAVerifiedEmailAddress,
 } from '../src/feature-flags.js'
 import { rawHtml } from '../src/html.js'
 import type {
@@ -1289,6 +1290,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           zenodoApiKey: '',
           zenodoUrl: new URL('http://zenodo.test/'),
         } as unknown as typeof ExpressConfig.Service),
+        Effect.provideService(RequiresAVerifiedEmailAddress, false),
         Effect.provideService(CanWriteComments, canWriteComments),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),

@@ -3,6 +3,11 @@ import * as R from 'fp-ts/lib/Reader.js'
 import { LoggedInUser } from './Context.js'
 import type { User } from './user.js'
 
+export class RequiresAVerifiedEmailAddress extends Context.Tag('RequiresAVerifiedEmailAddress')<
+  RequiresAVerifiedEmailAddress,
+  boolean
+>() {}
+
 export class CanWriteComments extends Context.Tag('CanWriteComments')<CanWriteComments, (user?: User) => boolean>() {}
 
 export class NotAllowedToWriteComments extends Data.TaggedError('NotAllowedToWriteComments') {}
