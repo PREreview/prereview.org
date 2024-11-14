@@ -97,47 +97,31 @@ describe('when in progress', () => {
 })
 
 describe('when ready for publication', () => {
+  const minimumEventsToBeReady = [
+    new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+    new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
+    new _.PersonaWasChosen({ persona: 'public' }),
+    new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
+    new _.CodeOfConductWasAgreed(),
+  ]
+
   test('cannot be started again', () =>
-    given(
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-    )
+    given(...minimumEventsToBeReady)
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentWasAlreadyStarted()))
 
   test('can re-enter the comment', () =>
-    given(
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-    )
+    given(...minimumEventsToBeReady)
       .when(new _.EnterComment({ comment: html`<p>Some different comment.</p>` }))
       .then(new _.CommentWasEntered({ comment: html`<p>Some different comment.</p>` })))
 
   test('can choose persona', () =>
-    given(
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-    )
+    given(...minimumEventsToBeReady)
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
       .then(new _.PersonaWasChosen({ persona: 'pseudonym' })))
 
   test('can re-declare competing interests', () =>
-    given(
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-    )
+    given(...minimumEventsToBeReady)
       .when(
         new _.DeclareCompetingInterests({
           competingInterests: Option.some('Some competing interests.' as NonEmptyString.NonEmptyString),
@@ -150,46 +134,22 @@ describe('when ready for publication', () => {
       ))
 
   test('agreeing to the code of conduct does nothing', () =>
-    given(
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-    )
+    given(...minimumEventsToBeReady)
       .when(new _.AgreeToCodeOfConduct())
       .then())
 
   test('can request publication', () =>
-    given(
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-    )
+    given(...minimumEventsToBeReady)
       .when(new _.PublishComment())
       .then(new _.CommentPublicationWasRequested()))
 
   test('DOI can be marked as assigned', () =>
-    given(
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-    )
+    given(...minimumEventsToBeReady)
       .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
       .then(new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
 
   test('cannot be marked as published', () =>
-    given(
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-    )
+    given(...minimumEventsToBeReady)
       .when(new _.MarkCommentAsPublished())
       .thenError(new _.DoiIsNotAssigned()))
 })
