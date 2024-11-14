@@ -1289,6 +1289,10 @@ export const competingInterestsWereDeclared = (): fc.Arbitrary<Comments.Competin
     })
     .map(data => new Comments.CompetingInterestsWereDeclared(data))
 
+export const existenceOfVerifiedEmailAddressWasConfirmed =
+  (): fc.Arbitrary<Comments.ExistenceOfVerifiedEmailAddressWasConfirmed> =>
+    fc.constant(new Comments.ExistenceOfVerifiedEmailAddressWasConfirmed())
+
 export const commentPublicationWasRequested = (): fc.Arbitrary<Comments.CommentPublicationWasRequested> =>
   fc.constant(new Comments.CommentPublicationWasRequested())
 
@@ -1309,6 +1313,7 @@ export const commentEvent = (): fc.Arbitrary<Comments.CommentEvent> =>
     commentWasEntered(),
     personaWasChosen(),
     competingInterestsWereDeclared(),
+    existenceOfVerifiedEmailAddressWasConfirmed(),
     commentPublicationWasRequested(),
     doiWasAssigned(),
     commentWasPublished(),

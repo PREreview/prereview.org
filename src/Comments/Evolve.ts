@@ -120,6 +120,7 @@ const onEvent = pipe(
   Match.tag('PersonaWasChosen', onPersonaWasChosen),
   Match.tag('CompetingInterestsWereDeclared', onCompetingInterestsWereDeclared),
   Match.tag('CodeOfConductWasAgreed', onCodeOfConductWasAgreed),
+  Match.tag('ExistenceOfVerifiedEmailAddressWasConfirmed', () => identity),
   Match.tag('CommentPublicationWasRequested', onCommentPublicationWasRequested),
   Match.tag('DoiWasAssigned', onDoiWasAssigned),
   Match.tag('CommentWasPublished', onCommentWasPublished),

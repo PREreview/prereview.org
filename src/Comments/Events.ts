@@ -37,6 +37,11 @@ export class CodeOfConductWasAgreed extends Schema.TaggedClass<CodeOfConductWasA
   {},
 ) {}
 
+export class ExistenceOfVerifiedEmailAddressWasConfirmed extends Schema.TaggedClass<ExistenceOfVerifiedEmailAddressWasConfirmed>()(
+  'ExistenceOfVerifiedEmailAddressWasConfirmed',
+  {},
+) {}
+
 export class CommentPublicationWasRequested extends Schema.TaggedClass<CommentPublicationWasRequested>()(
   'CommentPublicationWasRequested',
   {},
@@ -57,6 +62,7 @@ export const CommentEvent = Schema.Union(
   PersonaWasChosen,
   CompetingInterestsWereDeclared,
   CodeOfConductWasAgreed,
+  ExistenceOfVerifiedEmailAddressWasConfirmed,
   CommentPublicationWasRequested,
   DoiWasAssigned,
   CommentWasPublished,
