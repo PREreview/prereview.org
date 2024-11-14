@@ -77,6 +77,26 @@ describe('when in progress', () => {
   test('cannot request publication', () =>
     given(started).when(new _.PublishComment()).thenError(new _.CommentIsIncomplete()))
 
+  describe('when a verified email address is required', () => {
+    const givenWhenAVerifiedEmailAddressIsRequired = CommandHandlerSpecification.for({
+      decide: _.DecideComment,
+      evolve: _.EvolveComment(true),
+      initialState: new _.CommentNotStarted(),
+    })
+
+    test.failing('cannot request publication', () =>
+      givenWhenAVerifiedEmailAddressIsRequired(
+        started,
+        new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
+        new _.PersonaWasChosen({ persona: 'public' }),
+        new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
+        new _.CodeOfConductWasAgreed(),
+      )
+        .when(new _.PublishComment())
+        .thenError(new _.CommentIsIncomplete()),
+    )
+  })
+
   test('DOI cannot be marked as assigned', () =>
     given(started)
       .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
