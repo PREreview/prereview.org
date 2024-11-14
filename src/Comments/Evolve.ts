@@ -126,10 +126,12 @@ const onEvent = pipe(
   Match.exhaustive,
 )
 
-export const EvolveComment = (state: State.CommentState): ((event: Events.CommentEvent) => State.CommentState) =>
-  flow(onEvent, Function.apply(state)<State.CommentState>, checkIsReadyForPublication)
+export const EvolveComment =
+  () =>
+  (state: State.CommentState): ((event: Events.CommentEvent) => State.CommentState) =>
+    flow(onEvent, Function.apply(state)<State.CommentState>, checkIsReadyForPublication())
 
-const checkIsReadyForPublication = (state: State.CommentState) => {
+const checkIsReadyForPublication = () => (state: State.CommentState) => {
   if (state._tag !== 'CommentInProgress') {
     return state
   }

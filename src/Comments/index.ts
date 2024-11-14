@@ -39,7 +39,7 @@ export const makeHandleCommentCommand: Effect.Effect<
       const { events, latestVersion } = yield* eventStore.getEvents(commentId)
 
       const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
-        EvolveComment(state)(event),
+        EvolveComment()(state)(event),
       )
 
       yield* pipe(
@@ -69,7 +69,7 @@ export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, Eve
       const { events } = yield* eventStore.getEvents(commentId)
 
       return Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
-        EvolveComment(state)(event),
+        EvolveComment()(state)(event),
       )
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })

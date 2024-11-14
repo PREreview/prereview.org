@@ -28,7 +28,9 @@ export const GetAllUnpublishedCommentsByAnAuthorForAPrereview =
             }),
           ),
       ),
-      Record.map(Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(state)(event))),
+      Record.map(
+        Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment()(state)(event)),
+      ),
       Record.filter(
         state =>
           state._tag === 'CommentInProgress' ||
@@ -60,7 +62,9 @@ export const HasAuthorUnpublishedCommentsForAPrereview =
             }),
           ),
       ),
-      Record.map(Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(state)(event))),
+      Record.map(
+        Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment()(state)(event)),
+      ),
       Record.some(
         state =>
           state._tag === 'CommentInProgress' ||
