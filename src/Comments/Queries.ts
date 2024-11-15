@@ -1,6 +1,7 @@
 import { Array, Equal, Option, pipe, Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
+import type { CommentCommand } from './Commands.js'
 import type { CommentEvent } from './Events.js'
 import { EvolveComment } from './Evolve.js'
 import { CommentNotStarted, type CommentState } from './State.js'
@@ -39,7 +40,7 @@ export const GetAllUnpublishedCommentsByAnAuthorForAPrereview =
       ),
     )
 
-export const GetUnpublishedCommentId: (
+export const GetNextExpectedCommandForUser: (
   events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
 ) => ({
   authorId,
@@ -47,4 +48,4 @@ export const GetUnpublishedCommentId: (
 }: {
   readonly authorId: Orcid
   readonly prereviewId: number
-}) => Option.Option<Uuid.Uuid> = () => () => Option.none()
+}) => Exclude<CommentCommand['_tag'], 'MarkDoiAsAssigned' | 'MarkCommentAsPublished'> = () => () => 'StartComment'

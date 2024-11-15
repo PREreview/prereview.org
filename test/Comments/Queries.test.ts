@@ -209,13 +209,13 @@ describe('GetAllUnpublishedCommentsByAnAuthorForAPrereview', () => {
   })
 })
 
-describe('GetUnpublishedCommentId', () => {
+describe('GetNextExpectedCommandForUser', () => {
   test.todo('returns at most one unpublished comment')
 
   test.prop([fc.orcid(), fc.integer()])('when there are no comments returns None', (authorId, prereviewId) => {
-    const actual = _.GetUnpublishedCommentId([])({ authorId, prereviewId })
+    const actual = _.GetNextExpectedCommandForUser([])({ authorId, prereviewId })
 
-    expect(actual).toStrictEqual(Option.none())
+    expect(actual).toStrictEqual('StartComment')
   })
 
   test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
@@ -227,9 +227,9 @@ describe('GetUnpublishedCommentId', () => {
           resourceId,
         },
       ]
-      const actual = _.GetUnpublishedCommentId(events)({ authorId, prereviewId })
+      const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
-      expect(actual).toStrictEqual(Option.none())
+      expect(actual).toStrictEqual('StartComment')
     },
   )
 
@@ -242,9 +242,9 @@ describe('GetUnpublishedCommentId', () => {
           resourceId,
         },
       ]
-      const actual = _.GetUnpublishedCommentId(events)({ authorId, prereviewId })
+      const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
-      expect(actual).toStrictEqual(Option.none())
+      expect(actual).toStrictEqual('StartComment')
     },
   )
 
@@ -257,9 +257,9 @@ describe('GetUnpublishedCommentId', () => {
           resourceId,
         },
       ]
-      const actual = _.GetUnpublishedCommentId(events)({ authorId, prereviewId })
+      const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
-      expect(actual).toStrictEqual(Option.none())
+      expect(actual).toStrictEqual('StartComment')
     },
   )
 })

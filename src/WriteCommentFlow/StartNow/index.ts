@@ -22,7 +22,7 @@ export const StartNow = ({
   | GetPrereview
   | Comments.HandleCommentCommand
   | Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview
-  | Comments.GetUnpublishedCommentId
+  | Comments.GetNextExpectedCommandForUser
   | Locale
 > =>
   Effect.gen(function* () {
@@ -34,10 +34,10 @@ export const StartNow = ({
     const prereview = yield* getPrereview(id)
 
     const query = yield* Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview
-    const getUnpublishedCommentId = yield* Comments.GetUnpublishedCommentId
+    const getNextExpectedCommandForUser = yield* Comments.GetNextExpectedCommandForUser
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const unpublishedCommentId = yield* getUnpublishedCommentId({ authorId: user.orcid, prereviewId: prereview.id })
+    const nextCommand = yield* getNextExpectedCommandForUser({ authorId: user.orcid, prereviewId: prereview.id })
 
     const unpublishedComments = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
 

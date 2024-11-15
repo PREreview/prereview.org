@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { Context, Data, type Effect, type Option, type PubSub, type Record } from 'effect'
+import { Context, Data, type Effect, type PubSub, type Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { CommentCommand } from './Commands.js'
@@ -30,12 +30,12 @@ export class GetAllUnpublishedCommentsByAnAuthorForAPrereview extends Context.Ta
   >
 >() {}
 
-export class GetUnpublishedCommentId extends Context.Tag('GetUnpublishedCommentId ')<
-  GetUnpublishedCommentId,
+export class GetNextExpectedCommandForUser extends Context.Tag('GetNextExpectedCommandForUser')<
+  GetNextExpectedCommandForUser,
   (params: {
     readonly authorId: Orcid
     readonly prereviewId: number
-  }) => Effect.Effect<Option.Option<Uuid.Uuid>, UnableToQuery>
+  }) => Effect.Effect<Exclude<CommentCommand['_tag'], 'MarkDoiAsAssigned' | 'MarkCommentAsPublished'>, UnableToQuery>
 >() {}
 
 export class GetComment extends Context.Tag('GetComment')<
