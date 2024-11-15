@@ -38,37 +38,3 @@ export const GetAllUnpublishedCommentsByAnAuthorForAPrereview =
           state._tag === 'CommentBeingPublished',
       ),
     )
-
-export const HasAuthorUnpublishedCommentsForAPrereview =
-  (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
-  ({ authorId, prereviewId }: { readonly authorId: Orcid; readonly prereviewId: number }) =>
-    pipe(
-      Array.reduce(
-        events,
-        {} as Record.ReadonlyRecord<Uuid.Uuid, ReadonlyArray<CommentEvent>>,
-        (candidates, { event, resourceId }) =>
-          pipe(
-            Record.modifyOption(candidates, resourceId, Array.append(event)),
-            Option.getOrElse(() => {
-              if (
-                event._tag === 'CommentWasStarted' &&
-                Equal.equals(event.authorId, authorId) &&
-                Equal.equals(event.prereviewId, prereviewId)
-              ) {
-                return Record.set(candidates, resourceId, Array.of(event))
-              }
-
-              return candidates
-            }),
-          ),
-      ),
-      Record.map(
-        Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(false)(state)(event)),
-      ),
-      Record.some(
-        state =>
-          state._tag === 'CommentInProgress' ||
-          state._tag === 'CommentReadyForPublishing' ||
-          state._tag === 'CommentBeingPublished',
-      ),
-    )
