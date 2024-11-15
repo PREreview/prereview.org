@@ -40,12 +40,32 @@ export const GetAllUnpublishedCommentsByAnAuthorForAPrereview =
       ),
     )
 
-export const GetNextExpectedCommandForUser: (
-  events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
-) => ({
-  authorId,
-  prereviewId,
-}: {
-  readonly authorId: Orcid
-  readonly prereviewId: number
-}) => Exclude<CommentCommand['_tag'], 'MarkDoiAsAssigned' | 'MarkCommentAsPublished'> = () => () => 'StartComment'
+export const GetNextExpectedCommandForUser =
+  (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
+  ({
+    authorId,
+    prereviewId,
+  }: {
+    readonly authorId: Orcid
+    readonly prereviewId: number
+  }): Exclude<CommentCommand['_tag'], 'MarkDoiAsAssigned' | 'MarkCommentAsPublished'> => {
+    const pertinentCommentIds = pipe(
+      events,
+      Array.filter(
+        event =>
+          event.event._tag === 'CommentWasStarted' &&
+          Equal.equals(event.event.authorId, authorId) &&
+          Equal.equals(event.event.prereviewId, prereviewId),
+      ),
+      Array.map(({ resourceId }) => resourceId),
+    )
+    return pipe(
+      events,
+      Array.filter(({ resourceId }) => pertinentCommentIds.includes(resourceId)),
+      Array.last,
+      Option.match({
+        onNone: () => 'StartComment',
+        onSome: () => 'EnterComment',
+      }),
+    )
+  }

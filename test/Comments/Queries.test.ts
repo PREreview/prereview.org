@@ -216,7 +216,7 @@ describe('GetNextExpectedCommandForUser', () => {
   const commentWasStarted = new Comments.CommentWasStarted({ authorId, prereviewId })
 
   describe('when at least one comment needs further user input', () => {
-    test.failing.each([['EnterComment', [commentWasStarted]]])('returns %s', (expected, events) => {
+    test.each([['EnterComment', [commentWasStarted]]])('returns %s', (expected, events) => {
       const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
         authorId,
         prereviewId,
