@@ -38,3 +38,13 @@ export const GetAllUnpublishedCommentsByAnAuthorForAPrereview =
           state._tag === 'CommentBeingPublished',
       ),
     )
+
+export const GetUnpublishedCommentId: (
+  events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
+) => ({
+  authorId,
+  prereviewId,
+}: {
+  readonly authorId: Orcid
+  readonly prereviewId: number
+}) => Option.Option<Uuid.Uuid> = () => () => Option.none()

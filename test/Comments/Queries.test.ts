@@ -7,6 +7,7 @@ import * as _ from '../../src/Comments/Queries.js'
 import * as Comments from '../../src/Comments/index.js'
 import { html } from '../../src/html.js'
 import type { NonEmptyString, Uuid } from '../../src/types/index.js'
+import * as fc from '../fc.js'
 
 describe('GetAllUnpublishedCommentsByAnAuthorForAPrereview', () => {
   test('gets all unpublished comments', () => {
@@ -211,7 +212,11 @@ describe('GetAllUnpublishedCommentsByAnAuthorForAPrereview', () => {
 describe('GetUnpublishedCommentId', () => {
   test.todo('returns at most one unpublished comment')
 
-  test.todo('when there are no comments returns None')
+  test.prop([fc.orcid(), fc.integer()])('when there are no comments returns None', (authorId, prereviewId) => {
+    const actual = _.GetUnpublishedCommentId([])({ authorId, prereviewId })
+
+    expect(actual).toStrictEqual(Option.none())
+  })
 
   test.todo('ignores comments by other authors')
 
