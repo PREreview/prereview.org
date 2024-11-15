@@ -228,6 +228,7 @@ export const Program = pipe(
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
   Layer.provide(Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand)),
+  Layer.provide(Layer.succeed(Comments.GetUnpublishedCommentId, () => Effect.succeedNone)),
   Layer.provide(
     Layer.effect(
       Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview,
