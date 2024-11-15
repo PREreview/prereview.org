@@ -207,3 +207,15 @@ describe('GetAllUnpublishedCommentsByAnAuthorForAPrereview', () => {
     })
   })
 })
+
+describe('GetUnpublishedCommentId', () => {
+  test.todo('returns at most one unpublished comment')
+
+  test.todo('when there are no comments returns None')
+
+  test.todo('ignores comments by other authors')
+
+  test.todo('ignores comments for other PREreviews')
+
+  test.todo('ignores comments that have been published')
+})
