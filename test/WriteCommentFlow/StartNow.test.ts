@@ -39,7 +39,7 @@ describe('StartNow', () => {
               })
 
               expect(handleCommentCommand).toHaveBeenCalledWith({
-                commentId: expect.anything(),
+                commentId,
                 command: new Comments.StartComment({ prereviewId: prereview.id, authorId: user.orcid }),
               })
             }).pipe(
