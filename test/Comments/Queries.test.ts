@@ -210,16 +210,18 @@ describe('GetAllUnpublishedCommentsByAnAuthorForAPrereview', () => {
 })
 
 describe('GetNextExpectedCommandForUser', () => {
-  test.todo('returns at most one unpublished comment')
+  describe('when at least one comment needs further user input', () => {
+    test.todo('returns %s')
+  })
 
-  test.prop([fc.orcid(), fc.integer()])('when there are no comments returns None', (authorId, prereviewId) => {
+  test.prop([fc.orcid(), fc.integer()])('when there are no comments, starts a new comment', (authorId, prereviewId) => {
     const actual = _.GetNextExpectedCommandForUser([])({ authorId, prereviewId })
 
     expect(actual).toStrictEqual('StartComment')
   })
 
   test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
-    'ignores comments by other authors',
+    'when in progress comments are by other authors, starts a new comment',
     (authorId, prereviewId, resourceId) => {
       const events = [
         {
@@ -234,7 +236,7 @@ describe('GetNextExpectedCommandForUser', () => {
   )
 
   test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
-    'ignores comments for other PREreviews',
+    'when in progress comments are for other PREreviews, starts a new comment',
     (authorId, prereviewId, resourceId) => {
       const events = [
         {
@@ -249,7 +251,7 @@ describe('GetNextExpectedCommandForUser', () => {
   )
 
   test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
-    'ignores comments for which no further user input is needed',
+    'when no user input is needed for a comment, starts a new comment',
     (authorId, prereviewId, resourceId) => {
       const events = [
         {
