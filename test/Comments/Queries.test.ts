@@ -214,9 +214,41 @@ describe('GetNextExpectedCommandForUser', () => {
   const prereviewId = 123
   const resourceId = '358f7fc0-9725-4192-8673-d7c64f398401' as Uuid.Uuid
   const commentWasStarted = new Comments.CommentWasStarted({ authorId, prereviewId })
+  const commentWasEntered = new Comments.CommentWasEntered({ comment: html`Some comment` })
+  const personaWasChosen = new Comments.PersonaWasChosen({ persona: 'public' })
+  const competingInterestsWereDeclared = new Comments.CompetingInterestsWereDeclared({
+    competingInterests: Option.none(),
+  })
+  const codeOfConductWasAgreed = new Comments.CodeOfConductWasAgreed({ competingInterests: Option.none() })
 
   describe('when at least one comment needs further user input', () => {
     test.each([['EnterComment', [commentWasStarted]]])('returns %s', (expected, events) => {
+      const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
+        authorId,
+        prereviewId,
+      })
+
+      expect(actual).toStrictEqual(expected)
+    })
+
+    test.failing.each([
+      ['ChoosePersona', [commentWasStarted, commentWasEntered]],
+      ['DeclareCompetingInterests', [commentWasStarted, commentWasEntered, personaWasChosen]],
+      [
+        'AgreeToCodeOfConduct',
+        [commentWasStarted, commentWasEntered, personaWasChosen, competingInterestsWereDeclared],
+      ],
+      [
+        'PublishComment',
+        [
+          commentWasStarted,
+          commentWasEntered,
+          personaWasChosen,
+          competingInterestsWereDeclared,
+          codeOfConductWasAgreed,
+        ],
+      ],
+    ])('returns %s', (expected, events) => {
       const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
         authorId,
         prereviewId,
