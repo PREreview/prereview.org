@@ -218,9 +218,48 @@ describe('GetUnpublishedCommentId', () => {
     expect(actual).toStrictEqual(Option.none())
   })
 
-  test.todo('ignores comments by other authors')
+  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
+    'ignores comments by other authors',
+    (authorId, prereviewId, resourceId) => {
+      const events = [
+        {
+          event: new Comments.CommentWasStarted({ prereviewId, authorId: Orcid('0000-0002-1825-0097') }),
+          resourceId,
+        },
+      ]
+      const actual = _.GetUnpublishedCommentId(events)({ authorId, prereviewId })
 
-  test.todo('ignores comments for other PREreviews')
+      expect(actual).toStrictEqual(Option.none())
+    },
+  )
 
-  test.todo('ignores comments that have been published')
+  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
+    'ignores comments for other PREreviews',
+    (authorId, prereviewId, resourceId) => {
+      const events = [
+        {
+          event: new Comments.CommentWasStarted({ prereviewId: 123, authorId }),
+          resourceId,
+        },
+      ]
+      const actual = _.GetUnpublishedCommentId(events)({ authorId, prereviewId })
+
+      expect(actual).toStrictEqual(Option.none())
+    },
+  )
+
+  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
+    'ignores comments for which no further user input is needed',
+    (authorId, prereviewId, resourceId) => {
+      const events = [
+        {
+          event: new Comments.CommentPublicationWasRequested({ prereviewId, authorId }),
+          resourceId,
+        },
+      ]
+      const actual = _.GetUnpublishedCommentId(events)({ authorId, prereviewId })
+
+      expect(actual).toStrictEqual(Option.none())
+    },
+  )
 })
