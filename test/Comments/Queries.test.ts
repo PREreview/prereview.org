@@ -256,6 +256,43 @@ describe('GetNextExpectedCommandForUser', () => {
 
       expect(actual).toStrictEqual(expected)
     })
+
+    test.failing('when last answer was changed', () => {
+      const events = [commentWasStarted, commentWasEntered, commentWasEntered]
+      const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
+        authorId,
+        prereviewId,
+      })
+
+      expect(actual).toStrictEqual('ChoosePersona')
+    })
+
+    test.failing('when a previous answer was changed', () => {
+      const events = [commentWasStarted, commentWasEntered, personaWasChosen, commentWasEntered]
+      const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
+        authorId,
+        prereviewId,
+      })
+
+      expect(actual).toStrictEqual('DeclareCompetingInterests')
+    })
+
+    test.failing('when a previous answer was changed, after all answers were given', () => {
+      const events = [
+        commentWasStarted,
+        commentWasEntered,
+        personaWasChosen,
+        competingInterestsWereDeclared,
+        codeOfConductWasAgreed,
+        personaWasChosen,
+      ]
+      const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
+        authorId,
+        prereviewId,
+      })
+
+      expect(actual).toStrictEqual('PublishComment')
+    })
   })
 
   test.prop([fc.orcid(), fc.integer()])('when there are no comments, starts a new comment', (authorId, prereviewId) => {
