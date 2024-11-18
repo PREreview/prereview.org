@@ -9,6 +9,7 @@ import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
 import * as DecideNextPage from '../DecideNextPage.js'
+import { RouteForCommand } from '../Routes.js'
 import { CarryOnPage } from './CarryOnPage.js'
 
 export const StartNow = ({
@@ -60,18 +61,13 @@ export const StartNow = ({
       Match.orElse(nextCommand =>
         Effect.gen(function* () {
           const locale = yield* Locale
-          const nextPage = pipe(
-            Match.value(nextCommand),
-            Match.tag('ExpectedToEnterAComment', () => Routes.WriteCommentEnterComment),
-            Match.tag('ExpectedToChooseAPersona', () => Routes.WriteCommentChoosePersona),
-            Match.tag('ExpectedToDeclareCompetingInterests', () => Routes.WriteCommentCompetingInterests),
-            Match.tag('ExpectedToAgreeToCodeOfConduct', () => Routes.WriteCommentCodeOfConduct),
-            Match.tag('ExpectedToVerifyEmailAddress', () => Routes.WriteCommentEnterEmailAddress),
-            Match.tag('ExpectedToPublishComment', () => Routes.WriteCommentCheck),
-            Match.exhaustive,
-          )
 
-          return CarryOnPage({ commentId: nextCommand.commentId, nextPage, prereview, locale })
+          return CarryOnPage({
+            commentId: nextCommand.commentId,
+            nextPage: RouteForCommand(nextCommand),
+            prereview,
+            locale,
+          })
         }),
       ),
     )
