@@ -1,4 +1,4 @@
-import { Array, Effect, Option, Record } from 'effect'
+import { Effect, Match, pipe } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import { Locale } from '../../Context.js'
 import { EnsureCanWriteComments } from '../../feature-flags.js'
@@ -18,12 +18,7 @@ export const StartNow = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  | Uuid.GenerateUuid
-  | GetPrereview
-  | Comments.HandleCommentCommand
-  | Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview
-  | Comments.GetNextExpectedCommandForUser
-  | Locale
+  Uuid.GenerateUuid | GetPrereview | Comments.HandleCommentCommand | Comments.GetNextExpectedCommandForUser | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -33,18 +28,16 @@ export const StartNow = ({
 
     const prereview = yield* getPrereview(id)
 
-    const query = yield* Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview
     const getNextExpectedCommandForUser = yield* Comments.GetNextExpectedCommandForUser
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const nextCommand = yield* getNextExpectedCommandForUser({ authorId: user.orcid, prereviewId: prereview.id })
+    const nextCommand = yield* getNextExpectedCommandForUser({
+      authorId: user.orcid,
+      prereviewId: prereview.id,
+    })
 
-    const unpublishedComments = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
-
-    const existingComment = Array.head(Record.toEntries(unpublishedComments))
-
-    return yield* Option.match(existingComment, {
-      onNone: () =>
+    return yield* pipe(
+      Match.value(nextCommand),
+      Match.tag('ExpectedToStartAComment', () =>
         Effect.gen(function* () {
           const generateUuid = yield* Uuid.GenerateUuid
           const commentId = yield* generateUuid
@@ -63,14 +56,24 @@ export const StartNow = ({
             }).href({ commentId }),
           })
         }),
-      onSome: ([commentId, comment]) =>
+      ),
+      Match.orElse(nextCommand =>
         Effect.gen(function* () {
           const locale = yield* Locale
-          const nextPage = DecideNextPage.NextPageFromState(comment)
+          const nextPage = pipe(
+            Match.value(nextCommand),
+            Match.tag('ExpectedToEnterAComment', () => Routes.WriteCommentEnterComment),
+            Match.tag('ExpectedToChooseAPersona', () => Routes.WriteCommentChoosePersona),
+            Match.tag('ExpectedToDeclareCompetingInterests', () => Routes.WriteCommentCompetingInterests),
+            Match.tag('ExpectedToAgreeToCodeOfConduct', () => Routes.WriteCommentCodeOfConduct),
+            Match.tag('ExpectedToPublishComment', () => Routes.WriteCommentCheck),
+            Match.exhaustive,
+          )
 
-          return CarryOnPage({ commentId, nextPage, prereview, locale })
+          return CarryOnPage({ commentId: nextCommand.commentId, nextPage, prereview, locale })
         }),
-    })
+      ),
+    )
   }).pipe(
     Effect.catchTags({
       NotAllowedToWriteComments: () => Effect.succeed(pageNotFound),
