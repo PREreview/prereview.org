@@ -222,16 +222,8 @@ describe('GetNextExpectedCommandForUser', () => {
   const codeOfConductWasAgreed = new Comments.CodeOfConductWasAgreed({ competingInterests: Option.none() })
 
   describe('when at least one comment needs further user input', () => {
-    test.each([['EnterComment', [commentWasStarted]]])('returns %s', (expected, events) => {
-      const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
-        authorId,
-        prereviewId,
-      })
-
-      expect(actual).toStrictEqual(expected)
-    })
-
-    test.failing.each([
+    test.each([
+      ['EnterComment', [commentWasStarted]],
       ['ChoosePersona', [commentWasStarted, commentWasEntered]],
       ['DeclareCompetingInterests', [commentWasStarted, commentWasEntered, personaWasChosen]],
       [
@@ -257,7 +249,7 @@ describe('GetNextExpectedCommandForUser', () => {
       expect(actual).toStrictEqual(expected)
     })
 
-    test.failing('when last answer was changed', () => {
+    test('when last answer was changed', () => {
       const events = [commentWasStarted, commentWasEntered, commentWasEntered]
       const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
         authorId,
@@ -267,7 +259,7 @@ describe('GetNextExpectedCommandForUser', () => {
       expect(actual).toStrictEqual('ChoosePersona')
     })
 
-    test.failing('when a previous answer was changed', () => {
+    test('when a previous answer was changed', () => {
       const events = [commentWasStarted, commentWasEntered, personaWasChosen, commentWasEntered]
       const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
         authorId,
@@ -277,7 +269,7 @@ describe('GetNextExpectedCommandForUser', () => {
       expect(actual).toStrictEqual('DeclareCompetingInterests')
     })
 
-    test.failing('when a previous answer was changed, after all answers were given', () => {
+    test('when a previous answer was changed, after all answers were given', () => {
       const events = [
         commentWasStarted,
         commentWasEntered,

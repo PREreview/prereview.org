@@ -49,23 +49,54 @@ export const GetNextExpectedCommandForUser =
     readonly authorId: Orcid
     readonly prereviewId: number
   }): Exclude<CommentCommand['_tag'], 'MarkDoiAsAssigned' | 'MarkCommentAsPublished'> => {
-    const pertinentCommentIds = pipe(
-      events,
-      Array.filter(
-        event =>
-          event.event._tag === 'CommentWasStarted' &&
-          Equal.equals(event.event.authorId, authorId) &&
-          Equal.equals(event.event.prereviewId, prereviewId),
+    const [commentId, comment] = pipe(
+      Array.reduce(
+        events,
+        {} as Record.ReadonlyRecord<Uuid.Uuid, ReadonlyArray<CommentEvent>>,
+        (candidates, { event, resourceId }) =>
+          pipe(
+            Record.modifyOption(candidates, resourceId, Array.append(event)),
+            Option.getOrElse(() => {
+              if (
+                event._tag === 'CommentWasStarted' &&
+                Equal.equals(event.authorId, authorId) &&
+                Equal.equals(event.prereviewId, prereviewId)
+              ) {
+                return Record.set(candidates, resourceId, Array.of(event))
+              }
+
+              return candidates
+            }),
+          ),
       ),
-      Array.map(({ resourceId }) => resourceId),
+      Record.map(
+        Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(false)(state)(event)),
+      ),
+      Record.filter(state => state._tag === 'CommentInProgress' || state._tag === 'CommentReadyForPublishing'),
+      Record.toEntries,
+      Array.head,
+      Option.getOrElse(() => [] as const),
     )
-    return pipe(
-      events,
-      Array.filter(({ resourceId }) => pertinentCommentIds.includes(resourceId)),
-      Array.last,
-      Option.match({
-        onNone: () => 'StartComment',
-        onSome: () => 'EnterComment',
-      }),
-    )
+
+    if (!comment || !commentId) {
+      return 'StartComment'
+    }
+
+    if (!comment.comment) {
+      return 'EnterComment'
+    }
+
+    if (!comment.persona) {
+      return 'ChoosePersona'
+    }
+
+    if (!comment.competingInterests) {
+      return 'DeclareCompetingInterests'
+    }
+
+    if (comment._tag === 'CommentInProgress' && !comment.codeOfConductAgreed) {
+      return 'AgreeToCodeOfConduct'
+    }
+
+    return 'PublishComment'
   }
