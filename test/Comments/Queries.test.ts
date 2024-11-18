@@ -223,15 +223,15 @@ describe('GetNextExpectedCommandForUser', () => {
 
   describe('when at least one comment needs further user input', () => {
     test.each([
-      ['EnterComment', [commentWasStarted]],
-      ['ChoosePersona', [commentWasStarted, commentWasEntered]],
-      ['DeclareCompetingInterests', [commentWasStarted, commentWasEntered, personaWasChosen]],
+      ['ExpectedToEnterAComment', [commentWasStarted]],
+      ['ExpectedToChooseAPersona', [commentWasStarted, commentWasEntered]],
+      ['ExpectedToDeclareCompetingInterests', [commentWasStarted, commentWasEntered, personaWasChosen]],
       [
-        'AgreeToCodeOfConduct',
+        'ExpectedToAgreeToCodeOfConduct',
         [commentWasStarted, commentWasEntered, personaWasChosen, competingInterestsWereDeclared],
       ],
       [
-        'PublishComment',
+        'ExpectedToPublishComment',
         [
           commentWasStarted,
           commentWasEntered,
@@ -246,7 +246,7 @@ describe('GetNextExpectedCommandForUser', () => {
         prereviewId,
       })
 
-      expect(actual).toStrictEqual(expected)
+      expect(actual).toMatchObject({ _tag: expected, commentId: resourceId })
     })
 
     test('when last answer was changed', () => {
@@ -256,7 +256,7 @@ describe('GetNextExpectedCommandForUser', () => {
         prereviewId,
       })
 
-      expect(actual).toStrictEqual('ChoosePersona')
+      expect(actual).toStrictEqual(new Comments.ExpectedToChooseAPersona({ commentId: resourceId }))
     })
 
     test('when a previous answer was changed', () => {
@@ -266,7 +266,7 @@ describe('GetNextExpectedCommandForUser', () => {
         prereviewId,
       })
 
-      expect(actual).toStrictEqual('DeclareCompetingInterests')
+      expect(actual).toStrictEqual(new Comments.ExpectedToDeclareCompetingInterests({ commentId: resourceId }))
     })
 
     test('when a previous answer was changed, after all answers were given', () => {
@@ -283,14 +283,14 @@ describe('GetNextExpectedCommandForUser', () => {
         prereviewId,
       })
 
-      expect(actual).toStrictEqual('PublishComment')
+      expect(actual).toStrictEqual(new Comments.ExpectedToPublishComment({ commentId: resourceId }))
     })
   })
 
   test.prop([fc.orcid(), fc.integer()])('when there are no comments, starts a new comment', (authorId, prereviewId) => {
     const actual = _.GetNextExpectedCommandForUser([])({ authorId, prereviewId })
 
-    expect(actual).toStrictEqual('StartComment')
+    expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
   })
 
   test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
@@ -304,7 +304,7 @@ describe('GetNextExpectedCommandForUser', () => {
       ]
       const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
-      expect(actual).toStrictEqual('StartComment')
+      expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
     },
   )
 
@@ -319,7 +319,7 @@ describe('GetNextExpectedCommandForUser', () => {
       ]
       const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
-      expect(actual).toStrictEqual('StartComment')
+      expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
     },
   )
 
@@ -334,7 +334,7 @@ describe('GetNextExpectedCommandForUser', () => {
       ]
       const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
-      expect(actual).toStrictEqual('StartComment')
+      expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
     },
   )
 })

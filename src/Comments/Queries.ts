@@ -1,9 +1,9 @@
 import { Array, Equal, Option, pipe, Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
-import type { CommentCommand } from './Commands.js'
 import type { CommentEvent } from './Events.js'
 import { EvolveComment } from './Evolve.js'
+import * as ExpectedCommand from './ExpectedCommand.js'
 import { CommentNotStarted, type CommentState } from './State.js'
 
 export const GetAllUnpublishedCommentsByAnAuthorForAPrereview =
@@ -48,7 +48,7 @@ export const GetNextExpectedCommandForUser =
   }: {
     readonly authorId: Orcid
     readonly prereviewId: number
-  }): Exclude<CommentCommand['_tag'], 'MarkDoiAsAssigned' | 'MarkCommentAsPublished'> => {
+  }): ExpectedCommand.ExpectedCommandForUser => {
     const [commentId, comment] = pipe(
       Array.reduce(
         events,
@@ -79,24 +79,24 @@ export const GetNextExpectedCommandForUser =
     )
 
     if (!comment || !commentId) {
-      return 'StartComment'
+      return new ExpectedCommand.ExpectedToStartAComment()
     }
 
     if (!comment.comment) {
-      return 'EnterComment'
+      return new ExpectedCommand.ExpectedToEnterAComment({ commentId })
     }
 
     if (!comment.persona) {
-      return 'ChoosePersona'
+      return new ExpectedCommand.ExpectedToChooseAPersona({ commentId })
     }
 
     if (!comment.competingInterests) {
-      return 'DeclareCompetingInterests'
+      return new ExpectedCommand.ExpectedToDeclareCompetingInterests({ commentId })
     }
 
     if (comment._tag === 'CommentInProgress' && !comment.codeOfConductAgreed) {
-      return 'AgreeToCodeOfConduct'
+      return new ExpectedCommand.ExpectedToAgreeToCodeOfConduct({ commentId })
     }
 
-    return 'PublishComment'
+    return new ExpectedCommand.ExpectedToPublishComment({ commentId })
   }

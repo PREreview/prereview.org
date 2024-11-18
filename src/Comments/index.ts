@@ -25,6 +25,7 @@ export * from './Decide.js'
 export * from './Errors.js'
 export * from './Events.js'
 export * from './Evolve.js'
+export * from './ExpectedCommand.js'
 export * from './State.js'
 
 export const makeHandleCommentCommand: Effect.Effect<
