@@ -62,6 +62,12 @@ export const WriteCommentCodeOfConduct: Route<{ commentId: Uuid.Uuid }> = {
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
 }
 
+export const WriteCommentEnterEmailAddress: Route<{ commentId: Uuid.Uuid }> = {
+  path: '/write-a-comment/:commentId/enter-email-address',
+  href: params => `/write-a-comment/${params.commentId}/enter-email-address`,
+  schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
+}
+
 export const WriteCommentCheck: Route<{ commentId: Uuid.Uuid }> = {
   path: '/write-a-comment/:commentId/check-your-comment',
   href: params => `/write-a-comment/${params.commentId}/check-your-comment`,
