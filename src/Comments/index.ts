@@ -7,6 +7,7 @@ import {
   CommentEvents,
   type GetComment,
   type GetNextExpectedCommandForUser,
+  type GetNextExpectedCommandForUserOnAComment,
   type HandleCommentCommand,
   type PublishCommentWithADoi,
   UnableToHandleCommand,
@@ -95,6 +96,22 @@ export const makeGetNextExpectedCommandForUser: Effect.Effect<
       const events = yield* eventStore.getAllEvents
 
       return Queries.GetNextExpectedCommandForUser(requiresAVerifiedEmailAddress)(events)({ authorId, prereviewId })
+    }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
+})
+
+export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
+  typeof GetNextExpectedCommandForUserOnAComment.Service,
+  never,
+  EventStore | RequiresAVerifiedEmailAddress
+> = Effect.gen(function* () {
+  const eventStore = yield* EventStore
+  const requiresAVerifiedEmailAddress = yield* RequiresAVerifiedEmailAddress
+
+  return commentId =>
+    Effect.gen(function* () {
+      const events = yield* eventStore.getAllEvents
+
+      return Queries.GetNextExpectedCommandForUserOnAComment(requiresAVerifiedEmailAddress)(events)(commentId)
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 

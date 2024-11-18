@@ -12,6 +12,16 @@ export class CommentEvents extends Context.Tag('CommentEvents')<
   PubSub.PubSub<{ readonly commentId: Uuid.Uuid; readonly event: CommentEvent }>
 >() {}
 
+export class GetNextExpectedCommandForUserOnAComment extends Context.Tag('GetNextExpectedCommandForUserOnAComment')<
+  GetNextExpectedCommandForUserOnAComment,
+  (
+    ...params: Parameters<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUserOnAComment>>>
+  ) => Effect.Effect<
+    ReturnType<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUserOnAComment>>>,
+    UnableToQuery
+  >
+>() {}
+
 export class GetNextExpectedCommandForUser extends Context.Tag('GetNextExpectedCommandForUser')<
   GetNextExpectedCommandForUser,
   (
