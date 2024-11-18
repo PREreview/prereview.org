@@ -82,12 +82,46 @@ const withEnv =
   (...a: A) =>
     f(...a)(env)
 
-export const app =
-  (config: ConfigEnv) =>
-  ({ locale, logger, user }: { locale: SupportedLocale; logger: L.Logger; user?: User }) =>
-    express()
+export const app = (config: ConfigEnv) => {
+  const proxy = createProxyMiddleware<Express.Request, Express.Response>({
+    target: config.legacyPrereviewApi.url,
+    changeOrigin: true,
+    pathFilter: '/api/v2/',
+    on: {
+      proxyReq: (proxyReq, req) => {
+        const logger = req.logger
+
+        const payload = {
+          url: `${proxyReq.protocol}//${proxyReq.host}${proxyReq.path}`,
+          method: proxyReq.method,
+        }
+
+        L.debugP('Sending proxy HTTP request')(payload)({ ...config, logger })()
+
+        proxyReq.once('response', response => {
+          L.debugP('Received proxy HTTP response')({
+            ...payload,
+            status: response.statusCode as Json,
+            headers: response.headers as Json,
+          })({ ...config, logger })()
+        })
+
+        proxyReq.once('error', error => {
+          L.warnP('Did not receive a proxy HTTP response')({
+            ...payload,
+            error: error.message,
+          })({ ...config, logger })()
+        })
+      },
+    },
+  })
+
+  return ({ locale, logger, user }: { locale: SupportedLocale; logger: L.Logger; user?: User }) => {
+    return express()
       .disable('x-powered-by')
       .use((req, res, next) => {
+        req.logger = logger
+
         if (!config.allowSiteCrawlers) {
           res.header('X-Robots-Tag', 'none, noarchive')
         }
@@ -118,40 +152,7 @@ export const app =
           strictTransportSecurity: config.publicUrl.protocol === 'https:',
         }),
       )
-      .use(
-        asyncHandler(
-          createProxyMiddleware({
-            target: config.legacyPrereviewApi.url,
-            changeOrigin: true,
-            pathFilter: '/api/v2/',
-            on: {
-              proxyReq: proxyReq => {
-                const payload = {
-                  url: `${proxyReq.protocol}//${proxyReq.host}${proxyReq.path}`,
-                  method: proxyReq.method,
-                }
-
-                L.debugP('Sending proxy HTTP request')(payload)({ ...config, logger })()
-
-                proxyReq.once('response', response => {
-                  L.debugP('Received proxy HTTP response')({
-                    ...payload,
-                    status: response.statusCode as Json,
-                    headers: response.headers as Json,
-                  })({ ...config, logger })()
-                })
-
-                proxyReq.once('error', error => {
-                  L.warnP('Did not receive a proxy HTTP response')({
-                    ...payload,
-                    error: error.message,
-                  })({ ...config, logger })()
-                })
-              },
-            },
-          }),
-        ),
-      )
+      .use(asyncHandler(proxy))
       .use(express.urlencoded({ extended: true }))
       .use((req, res, next) => {
         res.set('Cache-Control', 'no-cache, private')
@@ -188,3 +189,14 @@ export const app =
           )(req, res, next)
         }),
       )
+  }
+}
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Express {
+    export interface Request {
+      logger: L.Logger
+    }
+  }
+}
