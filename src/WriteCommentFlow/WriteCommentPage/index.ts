@@ -1,4 +1,4 @@
-import { Effect, Option, Record } from 'effect'
+import { Effect, Option } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import { Locale, LoggedInUser } from '../../Context.js'
 import { EnsureCanWriteComments } from '../../feature-flags.js'
@@ -15,7 +15,7 @@ export const WriteCommentPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
   never,
-  Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview | GetPrereview | Locale
+  Comments.GetNextExpectedCommandForUser | GetPrereview | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* Effect.serviceOption(LoggedInUser)
@@ -30,11 +30,11 @@ export const WriteCommentPage = ({
       onNone: () => Effect.succeed(MakeResponse({ prereview, locale })),
       onSome: user =>
         Effect.gen(function* () {
-          const query = yield* Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview
+          const getNextExpectedCommandForUser = yield* Comments.GetNextExpectedCommandForUser
 
-          const unpublishedComments = yield* query({ authorId: user.orcid, prereviewId: prereview.id })
+          const nextCommand = yield* getNextExpectedCommandForUser({ authorId: user.orcid, prereviewId: prereview.id })
 
-          if (!Record.isEmptyRecord(unpublishedComments)) {
+          if (nextCommand._tag !== 'ExpectedToStartAComment') {
             return Response.RedirectResponse({ location: Routes.WriteCommentStartNow.href({ id: prereview.id }) })
           }
 

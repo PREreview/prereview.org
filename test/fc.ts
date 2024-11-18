@@ -1420,6 +1420,34 @@ export const commentState = (): fc.Arbitrary<Comments.CommentState> =>
     commentPublished(),
   )
 
+export const expectedToStartAComment = (): fc.Arbitrary<Comments.ExpectedToStartAComment> =>
+  fc.constant(new Comments.ExpectedToStartAComment())
+
+export const expectedToEnterAComment = (): fc.Arbitrary<Comments.ExpectedToEnterAComment> =>
+  fc.record({ commentId: uuid() }).map(data => new Comments.ExpectedToEnterAComment(data))
+
+export const expectedToChooseAPersona = (): fc.Arbitrary<Comments.ExpectedToChooseAPersona> =>
+  fc.record({ commentId: uuid() }).map(data => new Comments.ExpectedToChooseAPersona(data))
+
+export const expectedToDeclareCompetingInterests = (): fc.Arbitrary<Comments.ExpectedToDeclareCompetingInterests> =>
+  fc.record({ commentId: uuid() }).map(data => new Comments.ExpectedToDeclareCompetingInterests(data))
+
+export const expectedToAgreeToCodeOfConduct = (): fc.Arbitrary<Comments.ExpectedToAgreeToCodeOfConduct> =>
+  fc.record({ commentId: uuid() }).map(data => new Comments.ExpectedToAgreeToCodeOfConduct(data))
+
+export const expectedToPublishComment = (): fc.Arbitrary<Comments.ExpectedToPublishComment> =>
+  fc.record({ commentId: uuid() }).map(data => new Comments.ExpectedToPublishComment(data))
+
+export const expectedCommandForUser = (): fc.Arbitrary<Comments.ExpectedCommandForUser> =>
+  fc.oneof(
+    expectedToStartAComment(),
+    expectedToEnterAComment(),
+    expectedToChooseAPersona(),
+    expectedToDeclareCompetingInterests(),
+    expectedToAgreeToCodeOfConduct(),
+    expectedToPublishComment(),
+  )
+
 // https://github.com/gcanti/fp-ts/issues/1680
 type EndsWith<Full extends string, End extends string> = string extends Full
   ? string extends End

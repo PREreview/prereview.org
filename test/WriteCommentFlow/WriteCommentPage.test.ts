@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, identity, Record, TestContext } from 'effect'
+import { Effect, identity, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
@@ -15,9 +15,9 @@ describe('WriteCommentPage', () => {
   describe('when the user can write comments', () => {
     describe('when the data can be loaded', () => {
       describe('when the user is logged in', () => {
-        test.prop([fc.integer(), fc.supportedLocale(), fc.user(), fc.prereview()])(
+        test.prop([fc.integer(), fc.supportedLocale(), fc.user(), fc.prereview(), fc.expectedToStartAComment()])(
           "when they haven't started a comment",
-          (id, locale, user, prereview) =>
+          (id, locale, user, prereview, expectedCommand) =>
             Effect.gen(function* () {
               const actual = yield* _.WriteCommentPage({ id })
 
@@ -33,9 +33,7 @@ describe('WriteCommentPage', () => {
               })
             }).pipe(
               Effect.provideService(Locale, locale),
-              Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
-                Effect.sync(Record.empty),
-              ),
+              Effect.provideService(Comments.GetNextExpectedCommandForUser, () => Effect.succeed(expectedCommand)),
               Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
               Effect.provideService(CanWriteComments, () => true),
               Effect.provideService(LoggedInUser, user),
@@ -49,12 +47,8 @@ describe('WriteCommentPage', () => {
           fc.supportedLocale(),
           fc.user(),
           fc.prereview(),
-          fc.dictionary(
-            fc.uuid(),
-            fc.oneof(fc.commentInProgress(), fc.commentReadyForPublishing(), fc.commentBeingPublished()),
-            { minKeys: 1 },
-          ),
-        ])('when they have started a comment', (id, locale, user, prereview, comment) =>
+          fc.expectedCommandForUser().filter(expectedCommand => expectedCommand._tag !== 'ExpectedToStartAComment'),
+        ])('when they have started a comment', (id, locale, user, prereview, expectedCommand) =>
           Effect.gen(function* () {
             const actual = yield* _.WriteCommentPage({ id })
 
@@ -65,9 +59,7 @@ describe('WriteCommentPage', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
-              Effect.succeed(comment),
-            ),
+            Effect.provideService(Comments.GetNextExpectedCommandForUser, () => Effect.succeed(expectedCommand)),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
             Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
@@ -95,7 +87,7 @@ describe('WriteCommentPage', () => {
             })
           }).pipe(
             Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
+            Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
             Effect.provideService(CanWriteComments, () => true),
             Effect.provide(TestContext.TestContext),
@@ -120,7 +112,7 @@ describe('WriteCommentPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewWasRemoved())),
           Effect.provideService(CanWriteComments, () => true),
           user ? Effect.provideService(LoggedInUser, user) : identity,
@@ -145,7 +137,7 @@ describe('WriteCommentPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsNotFound())),
           Effect.provideService(CanWriteComments, () => true),
           user ? Effect.provideService(LoggedInUser, user) : identity,
@@ -170,7 +162,7 @@ describe('WriteCommentPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsUnavailable())),
           Effect.provideService(CanWriteComments, () => true),
           user ? Effect.provideService(LoggedInUser, user) : identity,
@@ -196,7 +188,7 @@ describe('WriteCommentPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
+        Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
         Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
         Effect.provideService(CanWriteComments, () => false),
         user ? Effect.provideService(LoggedInUser, user) : identity,
