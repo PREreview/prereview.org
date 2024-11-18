@@ -23,6 +23,10 @@ export class DeclareCompetingInterests extends Data.TaggedClass('DeclareCompetin
 
 export class AgreeToCodeOfConduct extends Data.TaggedClass('AgreeToCodeOfConduct') {}
 
+export class ConfirmExistenceOfVerifiedEmailAddress extends Data.TaggedClass(
+  'ConfirmExistenceOfVerifiedEmailAddress',
+) {}
+
 export class PublishComment extends Data.TaggedClass('PublishComment') {}
 
 export class MarkDoiAsAssigned extends Data.TaggedClass('MarkDoiAsAssigned')<{
@@ -38,6 +42,7 @@ export type CommentCommand =
   | ChoosePersona
   | DeclareCompetingInterests
   | AgreeToCodeOfConduct
+  | ConfirmExistenceOfVerifiedEmailAddress
   | PublishComment
   | MarkDoiAsAssigned
   | MarkCommentAsPublished

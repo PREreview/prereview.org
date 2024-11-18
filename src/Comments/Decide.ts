@@ -81,6 +81,23 @@ const onDeclareCompetingInterests = (command: Commands.DeclareCompetingInterests
     Match.exhaustive,
   )
 
+const onConfirmExistenceOfVerifiedEmailAddress = () =>
+  flow(
+    Match.value<State.CommentState>,
+    Match.tag('CommentNotStarted', () => Either.left(new Errors.CommentHasNotBeenStarted())),
+    Match.tag('CommentInProgress', state =>
+      Either.right(
+        !state.verifiedEmailAddressExists
+          ? Array.of(new Events.ExistenceOfVerifiedEmailAddressWasConfirmed())
+          : Array.empty(),
+      ),
+    ),
+    Match.tag('CommentReadyForPublishing', () => Either.right(Array.empty())),
+    Match.tag('CommentBeingPublished', () => Either.left(new Errors.CommentIsBeingPublished())),
+    Match.tag('CommentPublished', () => Either.left(new Errors.CommentWasAlreadyPublished())),
+    Match.exhaustive,
+  )
+
 const onPublishComment = () =>
   flow(
     Match.value<State.CommentState>,
@@ -131,6 +148,7 @@ const onCommand = pipe(
   Match.tag('ChoosePersona', onChoosePersona),
   Match.tag('AgreeToCodeOfConduct', onAgreeToCodeOfConduct),
   Match.tag('DeclareCompetingInterests', onDeclareCompetingInterests),
+  Match.tag('ConfirmExistenceOfVerifiedEmailAddress', onConfirmExistenceOfVerifiedEmailAddress),
   Match.tag('PublishComment', onPublishComment),
   Match.tag('MarkDoiAsAssigned', onMarkDoiAsAssigned),
   Match.tag('MarkCommentAsPublished', onMarkCommentAsPublished),

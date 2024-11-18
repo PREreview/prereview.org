@@ -43,6 +43,9 @@ describe('when not started', () => {
   test('cannot agree to the code of conduct', () =>
     given().when(new _.AgreeToCodeOfConduct()).thenError(new _.CommentHasNotBeenStarted()))
 
+  test('cannot confirm the existence of a verified email address', () =>
+    given().when(new _.ConfirmExistenceOfVerifiedEmailAddress()).thenError(new _.CommentHasNotBeenStarted()))
+
   test('cannot request publication', () =>
     given().when(new _.PublishComment()).thenError(new _.CommentHasNotBeenStarted()))
 
@@ -85,6 +88,16 @@ describe('when in progress', () => {
 
   test('re-agreeing to the code of conduct does nothing', () =>
     given(started, new _.CodeOfConductWasAgreed()).when(new _.AgreeToCodeOfConduct()).thenNothing())
+
+  test('can confirm the existence of a verified email address', () =>
+    given(started)
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
+      .then(new _.ExistenceOfVerifiedEmailAddressWasConfirmed()))
+
+  test('re-confirming the existence of a verified email address does nothing', () =>
+    given(started, new _.ExistenceOfVerifiedEmailAddressWasConfirmed())
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
+      .thenNothing())
 
   test('cannot request publication', () =>
     given(started).when(new _.PublishComment()).thenError(new _.CommentIsIncomplete()))
@@ -169,6 +182,11 @@ describe.each([
       .when(new _.AgreeToCodeOfConduct())
       .thenNothing())
 
+  test('re-confirming the existence of a verified email address does nothing', () =>
+    given(...minimumEventsToBeReady)
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
+      .thenNothing())
+
   test('can request publication', () =>
     given(...minimumEventsToBeReady)
       .when(new _.PublishComment())
@@ -244,6 +262,18 @@ describe('when being published', () => {
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.AgreeToCodeOfConduct())
+      .thenError(new _.CommentIsBeingPublished()))
+
+  test('cannot confirm the existence of a verified email address', () =>
+    given(
+      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
+      new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductWasAgreed(),
+      new _.CommentPublicationWasRequested(),
+    )
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
       .thenError(new _.CommentIsBeingPublished()))
 
   test('re-requesting publication does nothing', () =>
@@ -377,6 +407,19 @@ describe('when published', () => {
       new _.CommentWasPublished(),
     )
       .when(new _.AgreeToCodeOfConduct())
+      .thenError(new _.CommentWasAlreadyPublished()))
+
+  test('cannot confirm the existence of a verified email address', () =>
+    given(
+      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
+      new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductWasAgreed(),
+      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.CommentWasPublished(),
+    )
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
       .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot be re-request publication', () =>

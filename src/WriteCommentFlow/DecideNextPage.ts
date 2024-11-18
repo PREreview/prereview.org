@@ -47,7 +47,10 @@ const onInProgressCommand = pipe(
 
 export const NextPageAfterCommand = pipe(
   Match.type<{
-    command: Exclude<Comments.CommentCommand, Comments.MarkDoiAsAssigned | Comments.MarkCommentAsPublished>['_tag']
+    command: Exclude<
+      Comments.CommentCommand,
+      Comments.ConfirmExistenceOfVerifiedEmailAddress | Comments.MarkDoiAsAssigned | Comments.MarkCommentAsPublished
+    >['_tag']
     comment: Comments.CommentState
   }>(),
   Match.withReturnType<Routes.Route<{ commentId: Uuid.Uuid }>>(),
