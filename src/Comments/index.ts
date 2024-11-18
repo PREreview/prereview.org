@@ -5,7 +5,6 @@ import type { Uuid } from '../types/index.js'
 import {
   type AssignCommentADoi,
   CommentEvents,
-  type GetAllUnpublishedCommentsByAnAuthorForAPrereview,
   type GetComment,
   type GetNextExpectedCommandForUser,
   type HandleCommentCommand,
@@ -80,21 +79,6 @@ export const makeGetComment: Effect.Effect<
       return Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
         EvolveComment(requiresAVerifiedEmailAddress)(state)(event),
       )
-    }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
-})
-
-export const makeGetAllUnpublishedCommentsByAnAuthorForAPrereview: Effect.Effect<
-  typeof GetAllUnpublishedCommentsByAnAuthorForAPrereview.Service,
-  never,
-  EventStore
-> = Effect.gen(function* () {
-  const eventStore = yield* EventStore
-
-  return ({ authorId, prereviewId }) =>
-    Effect.gen(function* () {
-      const events = yield* eventStore.getAllEvents
-
-      return Queries.GetAllUnpublishedCommentsByAnAuthorForAPrereview(events)({ authorId, prereviewId })
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 

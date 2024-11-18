@@ -1,12 +1,12 @@
 import type { Doi } from 'doi-ts'
-import { Context, Data, type Effect, type PubSub, type Record } from 'effect'
+import { Context, Data, type Effect, type PubSub } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { CommentCommand } from './Commands.js'
 import type { CommentError } from './Errors.js'
 import type { CommentEvent } from './Events.js'
 import type * as Queries from './Queries.js'
-import type { CommentBeingPublished, CommentInProgress, CommentReadyForPublishing, CommentState } from './State.js'
+import type { CommentBeingPublished, CommentState } from './State.js'
 
 export class CommentEvents extends Context.Tag('CommentEvents')<
   CommentEvents,
@@ -16,19 +16,6 @@ export class CommentEvents extends Context.Tag('CommentEvents')<
 export class HasAuthorUnpublishedCommentsForAPrereview extends Context.Tag('HasAuthorUnpublishedCommentsForAPrereview')<
   HasAuthorUnpublishedCommentsForAPrereview,
   (params: { readonly authorId: Orcid; readonly prereviewId: number }) => Effect.Effect<boolean, UnableToQuery>
->() {}
-
-export class GetAllUnpublishedCommentsByAnAuthorForAPrereview extends Context.Tag(
-  'GetAllUnpublishedCommentsByAnAuthorForAPrereview',
-)<
-  GetAllUnpublishedCommentsByAnAuthorForAPrereview,
-  (params: {
-    readonly authorId: Orcid
-    readonly prereviewId: number
-  }) => Effect.Effect<
-    Record.ReadonlyRecord<Uuid.Uuid, CommentInProgress | CommentReadyForPublishing | CommentBeingPublished>,
-    UnableToQuery
-  >
 >() {}
 
 export class GetNextExpectedCommandForUser extends Context.Tag('GetNextExpectedCommandForUser')<

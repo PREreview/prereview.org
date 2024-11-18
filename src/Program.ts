@@ -229,12 +229,6 @@ export const Program = pipe(
   Layer.provide(getPreprint),
   Layer.provide(Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand)),
   Layer.provide(Layer.effect(Comments.GetNextExpectedCommandForUser, Comments.makeGetNextExpectedCommandForUser)),
-  Layer.provide(
-    Layer.effect(
-      Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview,
-      Comments.makeGetAllUnpublishedCommentsByAnAuthorForAPrereview,
-    ),
-  ),
   Layer.provide(Layer.effect(Comments.GetComment, Comments.makeGetComment)),
   Layer.provide(
     Layer.scoped(
