@@ -84,7 +84,7 @@ describe('when in progress', () => {
     given(started).when(new _.AgreeToCodeOfConduct()).then(new _.CodeOfConductWasAgreed()))
 
   test('re-agreeing to the code of conduct does nothing', () =>
-    given(started, new _.CodeOfConductWasAgreed()).when(new _.AgreeToCodeOfConduct()).then())
+    given(started, new _.CodeOfConductWasAgreed()).when(new _.AgreeToCodeOfConduct()).thenNothing())
 
   test('cannot request publication', () =>
     given(started).when(new _.PublishComment()).thenError(new _.CommentIsIncomplete()))
@@ -167,7 +167,7 @@ describe.each([
   test('agreeing to the code of conduct does nothing', () =>
     given(...minimumEventsToBeReady)
       .when(new _.AgreeToCodeOfConduct())
-      .then())
+      .thenNothing())
 
   test('can request publication', () =>
     given(...minimumEventsToBeReady)
@@ -256,7 +256,7 @@ describe('when being published', () => {
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.PublishComment())
-      .then())
+      .thenNothing())
 
   describe("when a DOI hasn't been assigned", () => {
     test('DOI can be marked as assigned', () =>

@@ -3,7 +3,8 @@ import { Array, Either } from 'effect'
 
 export type CommandHandlerSpecfication<Command, Event, Error> = (...givenEvents: ReadonlyArray<Event>) => {
   when: (command: Command) => {
-    then: (...expectedEvents: ReadonlyArray<Event>) => void
+    then: (...expectedEvents: Array.NonEmptyReadonlyArray<Event>) => void
+    thenNothing: () => void
     thenError: (expectedError: Error) => void
   }
 }
@@ -29,6 +30,9 @@ export const CommandHandlerSpecification = {
           return {
             then: (...expectedEvents) => {
               expect(result).toStrictEqual(Either.right(expectedEvents))
+            },
+            thenNothing: () => {
+              expect(result).toStrictEqual(Either.right([]))
             },
             thenError: expectedError => {
               expect(result).toStrictEqual(Either.left(expectedError))
