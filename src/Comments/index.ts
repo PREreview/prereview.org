@@ -85,15 +85,16 @@ export const makeGetComment: Effect.Effect<
 export const makeGetNextExpectedCommandForUser: Effect.Effect<
   typeof GetNextExpectedCommandForUser.Service,
   never,
-  EventStore
+  EventStore | RequiresAVerifiedEmailAddress
 > = Effect.gen(function* () {
   const eventStore = yield* EventStore
+  const requiresAVerifiedEmailAddress = yield* RequiresAVerifiedEmailAddress
 
   return ({ authorId, prereviewId }) =>
     Effect.gen(function* () {
       const events = yield* eventStore.getAllEvents
 
-      return Queries.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
+      return Queries.GetNextExpectedCommandForUser(requiresAVerifiedEmailAddress)(events)({ authorId, prereviewId })
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 

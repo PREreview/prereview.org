@@ -1435,6 +1435,10 @@ export const expectedToDeclareCompetingInterests = (): fc.Arbitrary<Comments.Exp
 export const expectedToAgreeToCodeOfConduct = (): fc.Arbitrary<Comments.ExpectedToAgreeToCodeOfConduct> =>
   fc.record({ commentId: uuid() }).map(data => new Comments.ExpectedToAgreeToCodeOfConduct(data))
 
+export const expectedToConfirmExistenceOfVerifiedEmailAddress =
+  (): fc.Arbitrary<Comments.ExpectedToVerifyEmailAddress> =>
+    fc.record({ commentId: uuid() }).map(data => new Comments.ExpectedToVerifyEmailAddress(data))
+
 export const expectedToPublishComment = (): fc.Arbitrary<Comments.ExpectedToPublishComment> =>
   fc.record({ commentId: uuid() }).map(data => new Comments.ExpectedToPublishComment(data))
 
@@ -1445,6 +1449,7 @@ export const expectedCommandForUser = (): fc.Arbitrary<Comments.ExpectedCommandF
     expectedToChooseAPersona(),
     expectedToDeclareCompetingInterests(),
     expectedToAgreeToCodeOfConduct(),
+    expectedToConfirmExistenceOfVerifiedEmailAddress(),
     expectedToPublishComment(),
   )
 

@@ -66,6 +66,7 @@ export const StartNow = ({
             Match.tag('ExpectedToChooseAPersona', () => Routes.WriteCommentChoosePersona),
             Match.tag('ExpectedToDeclareCompetingInterests', () => Routes.WriteCommentCompetingInterests),
             Match.tag('ExpectedToAgreeToCodeOfConduct', () => Routes.WriteCommentCodeOfConduct),
+            Match.tag('ExpectedToVerifyEmailAddress', () => Routes.WriteCommentEnterEmailAddress),
             Match.tag('ExpectedToPublishComment', () => Routes.WriteCommentCheck),
             Match.exhaustive,
           )

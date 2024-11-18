@@ -7,6 +7,7 @@ import * as ExpectedCommand from './ExpectedCommand.js'
 import { CommentNotStarted, type CommentState } from './State.js'
 
 export const GetNextExpectedCommandForUser =
+  (requireVerifiedEmailAddress: boolean) =>
   (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
   ({
     authorId,
@@ -36,7 +37,9 @@ export const GetNextExpectedCommandForUser =
           ),
       ),
       Record.map(
-        Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(false)(state)(event)),
+        Array.reduce(new CommentNotStarted() as CommentState, (state, event) =>
+          EvolveComment(requireVerifiedEmailAddress)(state)(event),
+        ),
       ),
       Record.filter(state => state._tag === 'CommentInProgress' || state._tag === 'CommentReadyForPublishing'),
       Record.toEntries,
@@ -62,6 +65,10 @@ export const GetNextExpectedCommandForUser =
 
     if (comment._tag === 'CommentInProgress' && !comment.codeOfConductAgreed) {
       return new ExpectedCommand.ExpectedToAgreeToCodeOfConduct({ commentId })
+    }
+
+    if (requireVerifiedEmailAddress && comment._tag === 'CommentInProgress' && !comment.verifiedEmailAddressExists) {
+      return new ExpectedCommand.ExpectedToVerifyEmailAddress({ commentId })
     }
 
     return new ExpectedCommand.ExpectedToPublishComment({ commentId })

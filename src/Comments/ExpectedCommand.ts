@@ -15,6 +15,10 @@ export class ExpectedToAgreeToCodeOfConduct extends Data.TaggedClass('ExpectedTo
   commentId: Uuid.Uuid
 }> {}
 
+export class ExpectedToVerifyEmailAddress extends Data.TaggedClass('ExpectedToVerifyEmailAddress')<{
+  commentId: Uuid.Uuid
+}> {}
+
 export class ExpectedToPublishComment extends Data.TaggedClass('ExpectedToPublishComment')<{ commentId: Uuid.Uuid }> {}
 
 export type ExpectedCommandForUser =
@@ -23,4 +27,5 @@ export type ExpectedCommandForUser =
   | ExpectedToChooseAPersona
   | ExpectedToDeclareCompetingInterests
   | ExpectedToAgreeToCodeOfConduct
+  | ExpectedToVerifyEmailAddress
   | ExpectedToPublishComment
