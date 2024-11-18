@@ -7,6 +7,7 @@ import {
   CommentEvents,
   type GetAllUnpublishedCommentsByAnAuthorForAPrereview,
   type GetComment,
+  type GetNextExpectedCommandForUser,
   type HandleCommentCommand,
   type PublishCommentWithADoi,
   UnableToHandleCommand,
@@ -94,6 +95,21 @@ export const makeGetAllUnpublishedCommentsByAnAuthorForAPrereview: Effect.Effect
       const events = yield* eventStore.getAllEvents
 
       return Queries.GetAllUnpublishedCommentsByAnAuthorForAPrereview(events)({ authorId, prereviewId })
+    }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
+})
+
+export const makeGetNextExpectedCommandForUser: Effect.Effect<
+  typeof GetNextExpectedCommandForUser.Service,
+  never,
+  EventStore
+> = Effect.gen(function* () {
+  const eventStore = yield* EventStore
+
+  return ({ authorId, prereviewId }) =>
+    Effect.gen(function* () {
+      const events = yield* eventStore.getAllEvents
+
+      return Queries.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 
