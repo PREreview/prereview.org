@@ -4,54 +4,6 @@ import * as _ from '../../src/WriteCommentFlow/DecideNextPage.js'
 import * as Routes from '../../src/routes.js'
 import * as fc from '../fc.js'
 
-describe('NextPageFromState', () => {
-  describe('CommentInProgress', () => {
-    test.prop([fc.commentInProgress({ comment: fc.constant(undefined) })])('no comment', comment => {
-      expect(_.NextPageFromState(comment)).toStrictEqual(Routes.WriteCommentEnterComment)
-    })
-
-    test.prop([fc.commentInProgress({ comment: fc.html(), persona: fc.constant(undefined) })])(
-      'no persona',
-      comment => {
-        expect(_.NextPageFromState(comment)).toStrictEqual(Routes.WriteCommentChoosePersona)
-      },
-    )
-
-    test.prop([
-      fc.commentInProgress({
-        comment: fc.html(),
-        persona: fc.constantFrom('public', 'pseudonym'),
-        competingInterests: fc.constant(undefined),
-      }),
-    ])('no competingInterests', comment => {
-      expect(_.NextPageFromState(comment)).toStrictEqual(Routes.WriteCommentCompetingInterests)
-    })
-
-    test.prop([
-      fc.commentInProgress({
-        comment: fc.html(),
-        persona: fc.constantFrom('public', 'pseudonym'),
-        competingInterests: fc.maybe(fc.nonEmptyString()),
-        codeOfConductAgreed: fc.constant(undefined),
-      }),
-    ])('no codeOfConductAgreed', comment => {
-      expect(_.NextPageFromState(comment)).toStrictEqual(Routes.WriteCommentCodeOfConduct)
-    })
-  })
-
-  test.prop([fc.commentReadyForPublishing()])('CommentReadyForPublishing', comment => {
-    expect(_.NextPageFromState(comment)).toStrictEqual(Routes.WriteCommentCheck)
-  })
-
-  test.prop([fc.commentBeingPublished()])('CommentBeingPublished', comment => {
-    expect(_.NextPageFromState(comment)).toStrictEqual(Routes.WriteCommentPublishing)
-  })
-
-  test.prop([fc.commentPublished()])('CommentPublished', comment => {
-    expect(_.NextPageFromState(comment)).toStrictEqual(Routes.WriteCommentPublished)
-  })
-})
-
 describe('NextPageAfterCommand', () => {
   test.prop([fc.commentState()])('StartComment', comment => {
     expect(_.NextPageAfterCommand({ command: 'StartComment', comment })).toStrictEqual(Routes.WriteCommentEnterComment)
