@@ -1,6 +1,7 @@
-import { Array, Equal, Option, pipe, Record } from 'effect'
+import { Array, Either, Equal, Option, pipe, Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
+import * as Errors from './Errors.js'
 import type { CommentEvent } from './Events.js'
 import { EvolveComment } from './Evolve.js'
 import * as ExpectedCommand from './ExpectedCommand.js'
@@ -72,4 +73,52 @@ export const GetNextExpectedCommandForUser =
     }
 
     return new ExpectedCommand.ExpectedToPublishComment({ commentId })
+  }
+
+export const GetNextExpectedCommandForUserOnAComment =
+  (requireVerifiedEmailAddress: boolean) =>
+  (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
+  (
+    commentId: Uuid.Uuid,
+  ): Either.Either<
+    Exclude<ExpectedCommand.ExpectedCommandForUser, ExpectedCommand.ExpectedToStartAComment>,
+    Errors.CommentHasNotBeenStarted | Errors.CommentIsBeingPublished | Errors.CommentWasAlreadyPublished
+  > => {
+    const comment = Array.reduce(events, new CommentNotStarted() as CommentState, (state, { event, resourceId }) =>
+      resourceId === commentId ? EvolveComment(requireVerifiedEmailAddress)(state)(event) : state,
+    )
+
+    if (comment._tag === 'CommentNotStarted') {
+      return Either.left(new Errors.CommentHasNotBeenStarted())
+    }
+
+    if (comment._tag === 'CommentBeingPublished') {
+      return Either.left(new Errors.CommentIsBeingPublished())
+    }
+
+    if (comment._tag === 'CommentPublished') {
+      return Either.left(new Errors.CommentWasAlreadyPublished())
+    }
+
+    if (!comment.comment) {
+      return Either.right(new ExpectedCommand.ExpectedToEnterAComment({ commentId }))
+    }
+
+    if (!comment.persona) {
+      return Either.right(new ExpectedCommand.ExpectedToChooseAPersona({ commentId }))
+    }
+
+    if (!comment.competingInterests) {
+      return Either.right(new ExpectedCommand.ExpectedToDeclareCompetingInterests({ commentId }))
+    }
+
+    if (comment._tag === 'CommentInProgress' && !comment.codeOfConductAgreed) {
+      return Either.right(new ExpectedCommand.ExpectedToAgreeToCodeOfConduct({ commentId }))
+    }
+
+    if (requireVerifiedEmailAddress && comment._tag === 'CommentInProgress' && !comment.verifiedEmailAddressExists) {
+      return Either.right(new ExpectedCommand.ExpectedToVerifyEmailAddress({ commentId }))
+    }
+
+    return Either.right(new ExpectedCommand.ExpectedToPublishComment({ commentId }))
   }
