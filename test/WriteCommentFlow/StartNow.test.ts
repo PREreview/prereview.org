@@ -48,7 +48,9 @@ describe('StartNow', () => {
               Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
                 Effect.sync(Record.empty),
               ),
-              Effect.provideService(Comments.GetNextExpectedCommandForUser, () => Effect.succeed('StartComment')),
+              Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
+                Effect.succeed(new Comments.ExpectedToStartAComment()),
+              ),
               Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
               Effect.provideService(CanWriteComments, () => true),
               Effect.provideService(LoggedInUser, user),
@@ -83,7 +85,9 @@ describe('StartNow', () => {
             Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
               Effect.sync(Record.empty),
             ),
-            Effect.provideService(Comments.GetNextExpectedCommandForUser, () => Effect.succeed('StartComment')),
+            Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
+              Effect.succeed(new Comments.ExpectedToStartAComment()),
+            ),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
             Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
@@ -124,7 +128,9 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
             Effect.succeed(comment),
           ),
-          Effect.provideService(Comments.GetNextExpectedCommandForUser, () => Effect.succeed('StartComment')),
+          Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
+            Effect.succeed(new Comments.ExpectedToStartAComment()),
+          ),
           Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
           Effect.provideService(CanWriteComments, () => true),
           Effect.provideService(LoggedInUser, user),
@@ -150,7 +156,9 @@ describe('StartNow', () => {
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, shouldNotBeCalled),
-          Effect.provideService(Comments.GetNextExpectedCommandForUser, () => Effect.succeed('StartComment')),
+          Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
+            Effect.succeed(new Comments.ExpectedToStartAComment()),
+          ),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewWasRemoved())),
           Effect.provideService(CanWriteComments, () => true),
           Effect.provideService(LoggedInUser, user),
@@ -180,7 +188,9 @@ describe('StartNow', () => {
             Effect.provideService(Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview, () =>
               Effect.fail(new Comments.UnableToQuery({})),
             ),
-            Effect.provideService(Comments.GetNextExpectedCommandForUser, () => Effect.succeed('StartComment')),
+            Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
+              Effect.succeed(new Comments.ExpectedToStartAComment()),
+            ),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
             Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),

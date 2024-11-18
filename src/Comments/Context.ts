@@ -5,6 +5,7 @@ import type { Uuid } from '../types/index.js'
 import type { CommentCommand } from './Commands.js'
 import type { CommentError } from './Errors.js'
 import type { CommentEvent } from './Events.js'
+import type * as Queries from './Queries.js'
 import type { CommentBeingPublished, CommentInProgress, CommentReadyForPublishing, CommentState } from './State.js'
 
 export class CommentEvents extends Context.Tag('CommentEvents')<
@@ -32,10 +33,9 @@ export class GetAllUnpublishedCommentsByAnAuthorForAPrereview extends Context.Ta
 
 export class GetNextExpectedCommandForUser extends Context.Tag('GetNextExpectedCommandForUser')<
   GetNextExpectedCommandForUser,
-  (params: {
-    readonly authorId: Orcid
-    readonly prereviewId: number
-  }) => Effect.Effect<Exclude<CommentCommand['_tag'], 'MarkDoiAsAssigned' | 'MarkCommentAsPublished'>, UnableToQuery>
+  (
+    ...params: Parameters<ReturnType<typeof Queries.GetNextExpectedCommandForUser>>
+  ) => Effect.Effect<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUser>>, UnableToQuery>
 >() {}
 
 export class GetComment extends Context.Tag('GetComment')<

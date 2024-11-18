@@ -228,7 +228,9 @@ export const Program = pipe(
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
   Layer.provide(Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand)),
-  Layer.provide(Layer.succeed(Comments.GetNextExpectedCommandForUser, () => Effect.succeed('StartComment'))),
+  Layer.provide(
+    Layer.succeed(Comments.GetNextExpectedCommandForUser, () => Effect.succeed(new Comments.ExpectedToStartAComment())),
+  ),
   Layer.provide(
     Layer.effect(
       Comments.GetAllUnpublishedCommentsByAnAuthorForAPrereview,
