@@ -12,7 +12,7 @@ import type { CommentPublicationWasRequested, DoiWasAssigned } from './Events.js
 
 type ToDo = unknown
 
-export const OnCommentPublicationWasRequested = ({
+export const AssignCommentADoiWhenPublicationWasRequested = ({
   commentId,
 }: {
   commentId: Uuid.Uuid
@@ -40,7 +40,7 @@ export const OnCommentPublicationWasRequested = ({
     )
   })
 
-export const OnDoiWasAssigned = ({
+export const PublishCommentWhenDoiWasAssigned = ({
   commentId,
   event,
 }: {

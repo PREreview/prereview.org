@@ -17,7 +17,7 @@ import { DecideComment } from './Decide.js'
 import type { CommentEvent } from './Events.js'
 import { EvolveComment } from './Evolve.js'
 import * as Queries from './Queries.js'
-import { OnCommentPublicationWasRequested, OnDoiWasAssigned } from './React.js'
+import * as React from './React.js'
 import { CommentNotStarted, type CommentState } from './State.js'
 
 export * from './Commands.js'
@@ -131,13 +131,13 @@ export const ReactToCommentEvents: Layer.Layer<
           Match.type<{ commentId: Uuid.Uuid; event: CommentEvent }>(),
           Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId, event }) =>
             pipe(
-              OnCommentPublicationWasRequested({ commentId, event }),
+              React.AssignCommentADoiWhenPublicationWasRequested({ commentId, event }),
               Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
             ),
           ),
           Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ commentId, event }) =>
             pipe(
-              OnDoiWasAssigned({ commentId, event }),
+              React.PublishCommentWhenDoiWasAssigned({ commentId, event }),
               Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
             ),
           ),
