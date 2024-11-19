@@ -66,7 +66,7 @@ COPY assets/ assets/
 COPY --from=build-intlc /app/assets/locales/ assets/locales/
 COPY --from=build-intlc /app/src/locales/ src/locales/
 
-RUN npx run-s build:assets build:app
+RUN npm run build:assets && npm run build:app
 
 #
 # Stage: Integration test environment
