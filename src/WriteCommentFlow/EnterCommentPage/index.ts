@@ -6,7 +6,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
-import * as DecideNextPage from '../DecideNextPage.js'
+import { RouteForCommand } from '../Routes.js'
 import * as EnterCommentForm from './EnterCommentForm.js'
 import { EnterCommentPage as MakeResponse } from './EnterCommentPage.js'
 
@@ -76,7 +76,7 @@ export const EnterCommentSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Comments.HandleCommentCommand | Locale
+  Comments.GetComment | Comments.HandleCommentCommand | Comments.GetNextExpectedCommandForUserOnAComment | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -115,11 +115,10 @@ export const EnterCommentSubmission = ({
                   ),
                 )
 
-                return Response.RedirectResponse({
-                  location: DecideNextPage.NextPageAfterCommand({ command: 'EnterComment', comment }).href({
-                    commentId,
-                  }),
-                })
+                const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
+                const nextCommand = yield* Effect.flatten(getNextExpectedCommandForUserOnAComment(commentId))
+
+                return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
               }),
             ),
             Match.tag('InvalidForm', form =>
@@ -146,6 +145,9 @@ export const EnterCommentSubmission = ({
     )
   }).pipe(
     Effect.catchTags({
+      CommentHasNotBeenStarted: () => Effect.succeed(havingProblemsPage),
+      CommentIsBeingPublished: () => Effect.succeed(havingProblemsPage),
+      CommentWasAlreadyPublished: () => Effect.succeed(havingProblemsPage),
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>

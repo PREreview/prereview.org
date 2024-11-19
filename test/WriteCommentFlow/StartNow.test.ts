@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, TestContext } from 'effect'
+import { Effect, Either, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
@@ -8,7 +8,7 @@ import { CanWriteComments } from '../../src/feature-flags.js'
 import * as Prereview from '../../src/Prereview.js'
 import * as Routes from '../../src/routes.js'
 import { Uuid } from '../../src/types/index.js'
-import * as DecideNextPage from '../../src/WriteCommentFlow/DecideNextPage.js'
+import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
 import * as _ from '../../src/WriteCommentFlow/StartNow/index.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
@@ -17,43 +17,51 @@ describe('StartNow', () => {
   describe('when there is a user', () => {
     describe('when the user can write comments', () => {
       describe("when they haven't started a comment", () => {
-        test.prop([fc.integer(), fc.supportedLocale(), fc.user(), fc.prereview(), fc.uuid()])(
-          'when the comment can be created',
-          (id, locale, user, prereview, commentId) =>
-            Effect.gen(function* () {
-              const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+        test.prop([
+          fc.integer(),
+          fc.supportedLocale(),
+          fc.user(),
+          fc.prereview(),
+          fc.uuid(),
+          fc.expectedCommandForUser().filter(nextCommand => nextCommand._tag !== 'ExpectedToStartAComment'),
+        ])('when the comment can be created', (id, locale, user, prereview, commentId, nextCommand) =>
+          Effect.gen(function* () {
+            const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+            const getNextExpectedCommandForUserOnAComment = jest.fn<
+              typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
+            >(_ => Effect.succeed(Either.right(nextCommand)))
 
-              const actual = yield* Effect.provideService(
-                _.StartNow({ id }),
-                Comments.HandleCommentCommand,
-                handleCommentCommand,
-              )
-
-              expect(actual).toStrictEqual({
-                _tag: 'RedirectResponse',
-                status: StatusCodes.SEE_OTHER,
-                location: DecideNextPage.NextPageAfterCommand({
-                  command: 'StartComment',
-                  comment: new Comments.CommentNotStarted(),
-                }).href({ commentId }),
-              })
-
-              expect(handleCommentCommand).toHaveBeenCalledWith({
-                commentId,
-                command: new Comments.StartComment({ prereviewId: prereview.id, authorId: user.orcid }),
-              })
-            }).pipe(
-              Effect.provideService(Locale, locale),
-              Effect.provideService(Uuid.GenerateUuid, Effect.succeed(commentId)),
-              Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
-                Effect.succeed(new Comments.ExpectedToStartAComment()),
+            const actual = yield* _.StartNow({ id }).pipe(
+              Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),
+              Effect.provideService(
+                Comments.GetNextExpectedCommandForUserOnAComment,
+                getNextExpectedCommandForUserOnAComment,
               ),
-              Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
-              Effect.provideService(CanWriteComments, () => true),
-              Effect.provideService(LoggedInUser, user),
-              Effect.provide(TestContext.TestContext),
-              Effect.runPromise,
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'RedirectResponse',
+              status: StatusCodes.SEE_OTHER,
+              location: RouteForCommand(nextCommand).href({ commentId }),
+            })
+
+            expect(handleCommentCommand).toHaveBeenCalledWith({
+              commentId,
+              command: new Comments.StartComment({ prereviewId: prereview.id, authorId: user.orcid }),
+            })
+            expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
+          }).pipe(
+            Effect.provideService(Locale, locale),
+            Effect.provideService(Uuid.GenerateUuid, Effect.succeed(commentId)),
+            Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
+              Effect.succeed(new Comments.ExpectedToStartAComment()),
             ),
+            Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
+            Effect.provideService(CanWriteComments, () => true),
+            Effect.provideService(LoggedInUser, user),
+            Effect.provide(TestContext.TestContext),
+            Effect.runPromise,
+          ),
         )
 
         test.prop([
@@ -82,6 +90,7 @@ describe('StartNow', () => {
             Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
               Effect.succeed(new Comments.ExpectedToStartAComment()),
             ),
+            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
             Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
@@ -114,6 +123,7 @@ describe('StartNow', () => {
             Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
               Effect.succeed(new Comments.ExpectedToEnterAComment({ commentId })),
             ),
+            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
             Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
@@ -139,6 +149,7 @@ describe('StartNow', () => {
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewWasRemoved())),
           Effect.provideService(CanWriteComments, () => true),
           Effect.provideService(LoggedInUser, user),
@@ -168,6 +179,7 @@ describe('StartNow', () => {
             Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
               Effect.fail(new Comments.UnableToQuery({})),
             ),
+            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
             Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
@@ -193,6 +205,7 @@ describe('StartNow', () => {
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsNotFound())),
           Effect.provideService(CanWriteComments, () => true),
           Effect.provideService(LoggedInUser, user),
@@ -220,6 +233,7 @@ describe('StartNow', () => {
             Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
             Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
             Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
+            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsUnavailable())),
             Effect.provideService(CanWriteComments, () => true),
             Effect.provideService(LoggedInUser, user),
@@ -248,6 +262,7 @@ describe('StartNow', () => {
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
           Effect.provideService(CanWriteComments, () => false),
           Effect.provideService(LoggedInUser, user),
@@ -270,6 +285,7 @@ describe('StartNow', () => {
       Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
+      Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
       Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,

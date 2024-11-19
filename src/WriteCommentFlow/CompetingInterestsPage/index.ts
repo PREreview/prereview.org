@@ -6,7 +6,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
-import * as DecideNextPage from '../DecideNextPage.js'
+import { RouteForCommand } from '../Routes.js'
 import * as CompetingInterestsForm from './CompetingInterestsForm.js'
 import { CompetingInterestsPage as MakeResponse } from './CompetingInterestsPage.js'
 
@@ -74,7 +74,7 @@ export const CompetingInterestsSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Comments.HandleCommentCommand | Locale
+  Comments.GetComment | Comments.HandleCommentCommand | Comments.GetNextExpectedCommandForUserOnAComment | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -115,14 +115,10 @@ export const CompetingInterestsSubmission = ({
                   ),
                 )
 
-                return Response.RedirectResponse({
-                  location: DecideNextPage.NextPageAfterCommand({
-                    command: 'DeclareCompetingInterests',
-                    comment,
-                  }).href({
-                    commentId,
-                  }),
-                })
+                const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
+                const nextCommand = yield* Effect.flatten(getNextExpectedCommandForUserOnAComment(commentId))
+
+                return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
               }),
             ),
             Match.tag('CompletedFormNo', () =>
@@ -142,14 +138,10 @@ export const CompetingInterestsSubmission = ({
                   ),
                 )
 
-                return Response.RedirectResponse({
-                  location: DecideNextPage.NextPageAfterCommand({
-                    command: 'DeclareCompetingInterests',
-                    comment,
-                  }).href({
-                    commentId,
-                  }),
-                })
+                const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
+                const nextCommand = yield* Effect.flatten(getNextExpectedCommandForUserOnAComment(commentId))
+
+                return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
               }),
             ),
             Match.tag('InvalidForm', form =>
@@ -175,6 +167,9 @@ export const CompetingInterestsSubmission = ({
     )
   }).pipe(
     Effect.catchTags({
+      CommentHasNotBeenStarted: () => Effect.succeed(havingProblemsPage),
+      CommentIsBeingPublished: () => Effect.succeed(havingProblemsPage),
+      CommentWasAlreadyPublished: () => Effect.succeed(havingProblemsPage),
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>

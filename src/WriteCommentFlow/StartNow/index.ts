@@ -8,7 +8,6 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
-import * as DecideNextPage from '../DecideNextPage.js'
 import { RouteForCommand } from '../Routes.js'
 import { CarryOnPage } from './CarryOnPage.js'
 
@@ -19,7 +18,12 @@ export const StartNow = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Uuid.GenerateUuid | GetPrereview | Comments.HandleCommentCommand | Comments.GetNextExpectedCommandForUser | Locale
+  | Uuid.GenerateUuid
+  | GetPrereview
+  | Comments.HandleCommentCommand
+  | Comments.GetNextExpectedCommandForUser
+  | Comments.GetNextExpectedCommandForUserOnAComment
+  | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -44,18 +48,16 @@ export const StartNow = ({
           const commentId = yield* generateUuid
 
           const handleCommand = yield* Comments.HandleCommentCommand
+          const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
 
           yield* handleCommand({
             commentId,
             command: new Comments.StartComment({ authorId: user.orcid, prereviewId: prereview.id }),
           })
 
-          return Response.RedirectResponse({
-            location: DecideNextPage.NextPageAfterCommand({
-              command: 'StartComment',
-              comment: new Comments.CommentNotStarted(),
-            }).href({ commentId }),
-          })
+          const nextCommand = yield* Effect.flatten(getNextExpectedCommandForUserOnAComment(commentId))
+
+          return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
         }),
       ),
       Match.orElse(nextCommand =>

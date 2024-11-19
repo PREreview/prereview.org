@@ -1,12 +1,12 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Equal, Option, TestContext } from 'effect'
+import { Effect, Either, Equal, Option, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
 import * as _ from '../../src/WriteCommentFlow/CompetingInterestsPage/index.js'
-import * as DecideNextPage from '../../src/WriteCommentFlow/DecideNextPage.js'
+import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -194,25 +194,26 @@ describe('CompetingInterestsSubmission', () => {
             fc.record({ competingInterests: fc.constant('no'), competingInterestsDetails: fc.string() }),
             fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.nonEmptyString() }),
           ),
-        ])('when the competing interests can be declared', (commentId, [comment, user], locale, body) =>
+          fc.expectedCommandForUser().filter(nextCommand => nextCommand._tag !== 'ExpectedToStartAComment'),
+        ])('when the competing interests can be declared', (commentId, [comment, user], locale, body, nextCommand) =>
           Effect.gen(function* () {
             const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+            const getNextExpectedCommandForUserOnAComment = jest.fn<
+              typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
+            >(_ => Effect.succeed(Either.right(nextCommand)))
 
-            const actual = yield* Effect.provideService(
-              _.CompetingInterestsSubmission({ body, commentId }),
-              Comments.HandleCommentCommand,
-              handleCommentCommand,
+            const actual = yield* _.CompetingInterestsSubmission({ body, commentId }).pipe(
+              Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),
+              Effect.provideService(
+                Comments.GetNextExpectedCommandForUserOnAComment,
+                getNextExpectedCommandForUserOnAComment,
+              ),
             )
 
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
-              location: DecideNextPage.NextPageAfterCommand({
-                command: 'DeclareCompetingInterests',
-                comment,
-              }).href({
-                commentId,
-              }),
+              location: RouteForCommand(nextCommand).href({ commentId }),
             })
 
             expect(handleCommentCommand).toHaveBeenCalledWith({
@@ -222,6 +223,7 @@ describe('CompetingInterestsSubmission', () => {
                   body.competingInterests === 'yes' ? Option.some(body.competingInterestsDetails) : Option.none(),
               }),
             })
+            expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
@@ -258,6 +260,7 @@ describe('CompetingInterestsSubmission', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
             Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
+            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -305,6 +308,7 @@ describe('CompetingInterestsSubmission', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -332,6 +336,7 @@ describe('CompetingInterestsSubmission', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -358,6 +363,7 @@ describe('CompetingInterestsSubmission', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -382,6 +388,7 @@ describe('CompetingInterestsSubmission', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -411,6 +418,7 @@ describe('CompetingInterestsSubmission', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -435,6 +443,7 @@ describe('CompetingInterestsSubmission', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -454,6 +463,7 @@ describe('CompetingInterestsSubmission', () => {
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+      Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),

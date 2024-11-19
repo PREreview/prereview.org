@@ -1,12 +1,12 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Equal, TestContext } from 'effect'
+import { Effect, Either, Equal, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
 import * as _ from '../../src/WriteCommentFlow/CodeOfConductPage/index.js'
-import * as DecideNextPage from '../../src/WriteCommentFlow/DecideNextPage.js'
+import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -190,31 +190,33 @@ describe('CodeOfConductSubmission', () => {
             .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
             .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
           fc.supportedLocale(),
-        ])('when the comment can be entered', (commentId, [comment, user], locale) =>
+          fc.expectedCommandForUser().filter(nextCommand => nextCommand._tag !== 'ExpectedToStartAComment'),
+        ])('when the comment can be entered', (commentId, [comment, user], locale, nextCommand) =>
           Effect.gen(function* () {
             const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+            const getNextExpectedCommandForUserOnAComment = jest.fn<
+              typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
+            >(_ => Effect.succeed(Either.right(nextCommand)))
 
-            const actual = yield* Effect.provideService(
-              _.CodeOfConductSubmission({ body: { agree: 'yes' }, commentId }),
-              Comments.HandleCommentCommand,
-              handleCommentCommand,
+            const actual = yield* _.CodeOfConductSubmission({ body: { agree: 'yes' }, commentId }).pipe(
+              Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),
+              Effect.provideService(
+                Comments.GetNextExpectedCommandForUserOnAComment,
+                getNextExpectedCommandForUserOnAComment,
+              ),
             )
 
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
               status: StatusCodes.SEE_OTHER,
-              location: DecideNextPage.NextPageAfterCommand({
-                command: 'AgreeToCodeOfConduct',
-                comment,
-              }).href({
-                commentId,
-              }),
+              location: RouteForCommand(nextCommand).href({ commentId }),
             })
 
             expect(handleCommentCommand).toHaveBeenCalledWith({
               commentId,
               command: new Comments.AgreeToCodeOfConduct(),
             })
+            expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
@@ -247,6 +249,7 @@ describe('CodeOfConductSubmission', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
             Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
+            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
             Effect.runPromise,
@@ -282,6 +285,7 @@ describe('CodeOfConductSubmission', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -309,6 +313,7 @@ describe('CodeOfConductSubmission', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -335,6 +340,7 @@ describe('CodeOfConductSubmission', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -359,6 +365,7 @@ describe('CodeOfConductSubmission', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -388,6 +395,7 @@ describe('CodeOfConductSubmission', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+        Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -412,6 +420,7 @@ describe('CodeOfConductSubmission', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -431,6 +440,7 @@ describe('CodeOfConductSubmission', () => {
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+      Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
