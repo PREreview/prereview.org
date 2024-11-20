@@ -4,7 +4,12 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { getContactEmailAddress, isUnverified, saveContactEmailAddress } from '../contact-email-address.js'
+import {
+  getContactEmailAddress,
+  isUnverified,
+  saveContactEmailAddress,
+  VerifiedContactEmailAddress,
+} from '../contact-email-address.js'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
 import { FlashMessageResponse, LogInResponse } from '../response.js'
 import { myDetailsMatch, verifyContactEmailAddressMatch } from '../routes.js'
@@ -28,10 +33,7 @@ export const verifyContactEmailAddress = ({ verify, user }: { verify: Uuid; user
       ),
     ),
     RTE.chainW(({ user, contactEmailAddress }) =>
-      saveContactEmailAddress(user.orcid, {
-        type: 'verified',
-        value: contactEmailAddress.value,
-      }),
+      saveContactEmailAddress(user.orcid, new VerifiedContactEmailAddress({ value: contactEmailAddress.value })),
     ),
     RTE.matchW(
       error =>

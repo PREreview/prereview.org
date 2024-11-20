@@ -6,9 +6,10 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
-import type {
-  SaveContactEmailAddressEnv,
-  VerifyContactEmailAddressForReviewEnv,
+import {
+  UnverifiedContactEmailAddress,
+  type SaveContactEmailAddressEnv,
+  type VerifyContactEmailAddressForReviewEnv,
 } from '../../src/contact-email-address.js'
 import { rawHtml } from '../../src/html.js'
 import type { TemplatePageEnv } from '../../src/page.js'
@@ -168,18 +169,13 @@ describe('writeReviewEnterEmailAddress', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
-        type: 'unverified',
-        value: emailAddress,
-        verificationToken,
-      })
+      expect(saveContactEmailAddress).toHaveBeenCalledWith(
+        user.orcid,
+        new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
+      )
       expect(verifyContactEmailAddressForReview).toHaveBeenCalledWith(
         user,
-        {
-          type: 'unverified',
-          value: emailAddress,
-          verificationToken,
-        },
+        new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
         preprintTitle.id,
       )
     },

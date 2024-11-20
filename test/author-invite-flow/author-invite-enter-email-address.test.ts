@@ -6,10 +6,12 @@ import { Status } from 'hyper-ts'
 import { Eq as eqOrcid } from 'orcid-id-ts'
 import * as _ from '../../src/author-invite-flow/enter-email-address-page/index.js'
 import type { GetAuthorInviteEnv } from '../../src/author-invite.js'
-import type {
-  GetContactEmailAddressEnv,
-  SaveContactEmailAddressEnv,
-  VerifyContactEmailAddressForInvitedAuthorEnv,
+import {
+  UnverifiedContactEmailAddress,
+  VerifiedContactEmailAddress,
+  type GetContactEmailAddressEnv,
+  type SaveContactEmailAddressEnv,
+  type VerifyContactEmailAddressForInvitedAuthorEnv,
 } from '../../src/contact-email-address.js'
 import {
   authorInviteCheckMatch,
@@ -69,10 +71,10 @@ describe('authorInviteEnterEmailAddress', () => {
         expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
         expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
         expect(getPrereview).toHaveBeenCalledWith(invite.review)
-        expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
-          type: 'verified',
-          value: invite.emailAddress,
-        })
+        expect(saveContactEmailAddress).toHaveBeenCalledWith(
+          user.orcid,
+          new VerifiedContactEmailAddress({ value: invite.emailAddress }),
+        )
       })
 
       test.prop([
@@ -126,14 +128,13 @@ describe('authorInviteEnterEmailAddress', () => {
           expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
           expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
           expect(getPrereview).toHaveBeenCalledWith(invite.review)
-          expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
-            type: 'unverified',
-            value: otherEmailAddress,
-            verificationToken: uuid,
-          })
+          expect(saveContactEmailAddress).toHaveBeenCalledWith(
+            user.orcid,
+            new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
+          )
           expect(verifyContactEmailAddressForInvitedAuthor).toHaveBeenCalledWith({
             user,
-            emailAddress: { type: 'unverified', value: otherEmailAddress, verificationToken: uuid },
+            emailAddress: new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
             authorInvite: inviteId,
           })
         },
@@ -185,14 +186,13 @@ describe('authorInviteEnterEmailAddress', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
-            type: 'unverified',
-            value: otherEmailAddress,
-            verificationToken: uuid,
-          })
+          expect(saveContactEmailAddress).toHaveBeenCalledWith(
+            user.orcid,
+            new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
+          )
           expect(verifyContactEmailAddressForInvitedAuthor).toHaveBeenCalledWith({
             user,
-            emailAddress: { type: 'unverified', value: otherEmailAddress, verificationToken: uuid },
+            emailAddress: new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
             authorInvite: inviteId,
           })
         },

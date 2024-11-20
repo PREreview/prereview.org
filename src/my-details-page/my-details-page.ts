@@ -226,9 +226,9 @@ export function createPage({
                 <dt>Email address</dt>
                 <dd>
                   ${contactEmailAddress.value}
-                  ${match(contactEmailAddress.type)
-                    .with('verified', () => '')
-                    .with('unverified', () => html`<small>Unverified</small>`)
+                  ${match(contactEmailAddress._tag)
+                    .with('VerifiedContactEmailAddress', () => '')
+                    .with('UnverifiedContactEmailAddress', () => html`<small>Unverified</small>`)
                     .exhaustive()}
                 </dd>
                 <dd>

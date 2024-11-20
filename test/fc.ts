@@ -34,8 +34,8 @@ import type {
 import type { CareerStage } from '../src/career-stage.js'
 import * as Comments from '../src/Comments/index.js'
 import type { OrcidOAuthEnv } from '../src/connect-orcid/index.js'
-import type {
-  ContactEmailAddress,
+import {
+  type ContactEmailAddress,
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.js'
@@ -383,17 +383,19 @@ export const contactEmailAddress = (): fc.Arbitrary<ContactEmailAddress> =>
   fc.oneof(unverifiedContactEmailAddress(), verifiedContactEmailAddress())
 
 export const unverifiedContactEmailAddress = (): fc.Arbitrary<UnverifiedContactEmailAddress> =>
-  fc.record({
-    type: constant('unverified'),
-    value: emailAddress(),
-    verificationToken: uuid(),
-  })
+  fc
+    .record({
+      value: emailAddress(),
+      verificationToken: uuid(),
+    })
+    .map(data => new UnverifiedContactEmailAddress(data))
 
 export const verifiedContactEmailAddress = (): fc.Arbitrary<VerifiedContactEmailAddress> =>
-  fc.record({
-    type: constant('verified'),
-    value: emailAddress(),
-  })
+  fc
+    .record({
+      value: emailAddress(),
+    })
+    .map(data => new VerifiedContactEmailAddress(data))
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
 

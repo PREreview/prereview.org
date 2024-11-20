@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
+import { VerifiedContactEmailAddress } from '../../src/contact-email-address.js'
 import * as _ from '../../src/my-details-page/verify-contact-email-address.js'
 import { myDetailsMatch, verifyContactEmailAddressMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'
@@ -26,10 +27,10 @@ describe('verifyContactEmailAddress', () => {
         message: 'contact-email-verified',
       })
       expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
-      expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
-        type: 'verified',
-        value: contactEmailAddress.value,
-      })
+      expect(saveContactEmailAddress).toHaveBeenCalledWith(
+        user.orcid,
+        new VerifiedContactEmailAddress({ value: contactEmailAddress.value }),
+      )
     },
   )
 

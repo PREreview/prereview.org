@@ -42,11 +42,14 @@ export const writeReviewNeedToVerifyEmailAddress = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
-          .with({ contactEmailAddress: { type: 'verified' } }, state =>
+          .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>
             RM.fromMiddleware(redirectToNextForm(preprint.id)(state.form)),
           )
-          .with({ contactEmailAddress: { type: 'unverified' }, method: 'POST' }, resendVerificationEmail)
-          .with({ contactEmailAddress: { type: 'unverified' } }, showNeedToVerifyEmailAddressMessage)
+          .with(
+            { contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' }, method: 'POST' },
+            resendVerificationEmail,
+          )
+          .with({ contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' } }, showNeedToVerifyEmailAddressMessage)
           .with({ contactEmailAddress: undefined }, () =>
             RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id }))),
           )

@@ -80,10 +80,10 @@ export const authorInviteNeedToVerifyEmailAddress = ({
           .exhaustive(),
       state =>
         match(state)
-          .with({ contactEmailAddress: { type: 'verified' } }, () =>
+          .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, () =>
             RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }),
           )
-          .with({ contactEmailAddress: { type: 'unverified' } }, needToVerifyEmailAddressPage)
+          .with({ contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' } }, needToVerifyEmailAddressPage)
           .with({ contactEmailAddress: undefined }, () =>
             RedirectResponse({ location: format(authorInviteEnterEmailAddressMatch.formatter, { id }) }),
           )

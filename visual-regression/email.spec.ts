@@ -1,6 +1,7 @@
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
+import { UnverifiedContactEmailAddress } from '../src/contact-email-address.js'
 import { createAuthorInviteEmail, createContactEmailAddressVerificationEmailForInvitedAuthor } from '../src/email.js'
 import { html } from '../src/html.js'
 import type { EmailAddress } from '../src/types/email-address.js'
@@ -15,11 +16,10 @@ test('email-verification HTML for an invited author looks right', async ({ page 
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
-    emailAddress: {
-      type: 'unverified',
+    emailAddress: new UnverifiedContactEmailAddress({
       value: 'jcarberry@example.com' as EmailAddress,
       verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
-    },
+    }),
     authorInvite: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
   })({ publicUrl: new URL('http://example.com') })
 
@@ -35,11 +35,10 @@ test('email-verification text for an invited author looks right', async ({ page 
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
-    emailAddress: {
-      type: 'unverified',
+    emailAddress: new UnverifiedContactEmailAddress({
       value: 'jcarberry@example.com' as EmailAddress,
       verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
-    },
+    }),
     authorInvite: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
   })({ publicUrl: new URL('http://example.com') })
 

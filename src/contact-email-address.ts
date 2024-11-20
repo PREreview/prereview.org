@@ -1,7 +1,8 @@
+import { Data, Match } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { Refinement } from 'fp-ts/lib/Refinement.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { flow } from 'fp-ts/lib/function.js'
+import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
@@ -13,16 +14,14 @@ import type { User } from './user.js'
 
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
 
-export interface VerifiedContactEmailAddress {
-  readonly type: 'verified'
-  readonly value: EmailAddress
-}
+export class VerifiedContactEmailAddress extends Data.TaggedClass('VerifiedContactEmailAddress')<{
+  value: EmailAddress
+}> {}
 
-export interface UnverifiedContactEmailAddress {
-  readonly type: 'unverified'
-  readonly value: EmailAddress
-  readonly verificationToken: Uuid
-}
+export class UnverifiedContactEmailAddress extends Data.TaggedClass('UnverifiedContactEmailAddress')<{
+  value: EmailAddress
+  verificationToken: Uuid
+}> {}
 
 export interface GetContactEmailAddressEnv {
   getContactEmailAddress: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', ContactEmailAddress>
@@ -58,17 +57,44 @@ export interface VerifyContactEmailAddressForInvitedAuthorEnv {
   }) => TE.TaskEither<'unavailable', void>
 }
 
-export const ContactEmailAddressC = C.sum('type')({
-  verified: C.struct({
-    type: C.literal('verified'),
-    value: EmailAddressC,
+export const ContactEmailAddressC = pipe(
+  C.sum('type')({
+    verified: pipe(
+      C.struct({
+        type: C.literal('verified'),
+        value: EmailAddressC,
+      }),
+    ),
+    unverified: pipe(
+      C.struct({
+        type: C.literal('unverified'),
+        value: EmailAddressC,
+        verificationToken: UuidC,
+      }),
+    ),
   }),
-  unverified: C.struct({
-    type: C.literal('unverified'),
-    value: EmailAddressC,
-    verificationToken: UuidC,
-  }),
-}) satisfies C.Codec<unknown, unknown, ContactEmailAddress>
+  C.imap(
+    flow(
+      Match.value,
+      Match.when({ type: 'verified' }, ({ value }) => new VerifiedContactEmailAddress({ value })),
+      Match.when(
+        { type: 'unverified' },
+        ({ value, verificationToken }) => new UnverifiedContactEmailAddress({ value, verificationToken }),
+      ),
+      Match.exhaustive,
+    ),
+    flow(
+      Match.value,
+      Match.tag('VerifiedContactEmailAddress', ({ value }) => ({ type: 'verified' as const, value })),
+      Match.tag('UnverifiedContactEmailAddress', ({ value, verificationToken }) => ({
+        type: 'unverified' as const,
+        value,
+        verificationToken,
+      })),
+      Match.exhaustive,
+    ),
+  ),
+) satisfies C.Codec<unknown, unknown, ContactEmailAddress>
 
 export const getContactEmailAddress = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(
@@ -125,4 +151,4 @@ export const verifyContactEmailAddressForInvitedAuthor = (verify: {
 
 export const isUnverified: Refinement<ContactEmailAddress, UnverifiedContactEmailAddress> = (
   emailAddress: ContactEmailAddress,
-): emailAddress is UnverifiedContactEmailAddress => emailAddress.type === 'unverified'
+): emailAddress is UnverifiedContactEmailAddress => emailAddress._tag === 'UnverifiedContactEmailAddress'

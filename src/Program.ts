@@ -88,7 +88,7 @@ const doesUserHaveAVerifiedEmailAddress = Layer.effect(
           contactEmailAddressStore,
           ...logger,
         }),
-        Effect.map(contactEmailAddress => contactEmailAddress.type === 'verified'),
+        Effect.map(contactEmailAddress => contactEmailAddress._tag === 'VerifiedContactEmailAddress'),
         Effect.catchIf(
           error => error === 'not-found',
           () => Effect.succeed(false),

@@ -4,7 +4,12 @@ import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { getContactEmailAddress, isUnverified, saveContactEmailAddress } from '../contact-email-address.js'
+import {
+  VerifiedContactEmailAddress,
+  getContactEmailAddress,
+  isUnverified,
+  saveContactEmailAddress,
+} from '../contact-email-address.js'
 import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in/index.js'
 import { notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import type { TemplatePageEnv } from '../page.js'
@@ -38,10 +43,7 @@ export const writeReviewVerifyEmailAddress = (id: IndeterminatePreprintId, verif
           ),
         ),
         RM.chainFirstReaderTaskEitherKW(({ user, contactEmailAddress }) =>
-          saveContactEmailAddress(user.orcid, {
-            type: 'verified',
-            value: contactEmailAddress.value,
-          }),
+          saveContactEmailAddress(user.orcid, new VerifiedContactEmailAddress({ value: contactEmailAddress.value })),
         ),
         RM.ichainMiddlewareKW(({ preprint, form }) => redirectToNextForm(preprint.id, 'contact-email-verified')(form)),
         RM.orElseW(error =>

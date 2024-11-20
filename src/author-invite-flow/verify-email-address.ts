@@ -10,6 +10,7 @@ import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
 import {
   type GetContactEmailAddressEnv,
   type SaveContactEmailAddressEnv,
+  VerifiedContactEmailAddress,
   getContactEmailAddress,
   isUnverified,
   saveContactEmailAddress,
@@ -82,10 +83,7 @@ export const authorInviteVerifyEmailAddress = ({
       ),
     ),
     RTE.chainFirstW(({ contactEmailAddress, user }) =>
-      saveContactEmailAddress(user.orcid, {
-        type: 'verified',
-        value: contactEmailAddress.value,
-      }),
+      saveContactEmailAddress(user.orcid, new VerifiedContactEmailAddress({ value: contactEmailAddress.value })),
     ),
     RTE.matchW(
       error =>

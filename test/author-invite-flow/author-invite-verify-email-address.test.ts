@@ -6,7 +6,11 @@ import { Status } from 'hyper-ts'
 import { Eq as eqOrcid } from 'orcid-id-ts'
 import * as _ from '../../src/author-invite-flow/verify-email-address.js'
 import type { GetAuthorInviteEnv } from '../../src/author-invite.js'
-import type { GetContactEmailAddressEnv, SaveContactEmailAddressEnv } from '../../src/contact-email-address.js'
+import {
+  VerifiedContactEmailAddress,
+  type GetContactEmailAddressEnv,
+  type SaveContactEmailAddressEnv,
+} from '../../src/contact-email-address.js'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -53,10 +57,10 @@ describe('authorInviteVerifyEmailAddress', () => {
             location: format(authorInviteCheckMatch.formatter, { id: inviteId }),
             message: 'contact-email-verified',
           })
-          expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
-            type: 'verified',
-            value: contactEmailAddress.value,
-          })
+          expect(saveContactEmailAddress).toHaveBeenCalledWith(
+            user.orcid,
+            new VerifiedContactEmailAddress({ value: contactEmailAddress.value }),
+          )
         },
       )
 
@@ -131,10 +135,10 @@ describe('authorInviteVerifyEmailAddress', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
-            type: 'verified',
-            value: contactEmailAddress.value,
-          })
+          expect(saveContactEmailAddress).toHaveBeenCalledWith(
+            user.orcid,
+            new VerifiedContactEmailAddress({ value: contactEmailAddress.value }),
+          )
         },
       )
     })

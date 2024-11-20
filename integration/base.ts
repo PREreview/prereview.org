@@ -33,7 +33,11 @@ import {
 } from 'zenodo-ts'
 import type { ConfigEnv } from '../src/app.js'
 import { AuthorInviteC } from '../src/author-invite.js'
-import { ContactEmailAddressC } from '../src/contact-email-address.js'
+import {
+  ContactEmailAddressC,
+  UnverifiedContactEmailAddress,
+  VerifiedContactEmailAddress,
+} from '../src/contact-email-address.js'
 import { DeprecatedLoggerEnv, ExpressConfig } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
@@ -1957,11 +1961,12 @@ export const hasAnUnverifiedEmailAddress: Fixtures<
   contactEmailAddressStore: async ({ contactEmailAddressStore }, use) => {
     await contactEmailAddressStore.set(
       '0000-0002-1825-0097',
-      ContactEmailAddressC.encode({
-        type: 'unverified',
-        value: 'jcarberry@example.com' as EmailAddress,
-        verificationToken: 'ff0d6f8e-7dca-4a26-b68b-93f2d2bc3c2a' as Uuid,
-      }),
+      ContactEmailAddressC.encode(
+        new UnverifiedContactEmailAddress({
+          value: 'jcarberry@example.com' as EmailAddress,
+          verificationToken: 'ff0d6f8e-7dca-4a26-b68b-93f2d2bc3c2a' as Uuid,
+        }),
+      ),
     )
 
     await use(contactEmailAddressStore)
@@ -1976,10 +1981,7 @@ export const hasAVerifiedEmailAddress: Fixtures<
   contactEmailAddressStore: async ({ contactEmailAddressStore }, use) => {
     await contactEmailAddressStore.set(
       '0000-0002-1825-0097',
-      ContactEmailAddressC.encode({
-        type: 'verified',
-        value: 'jcarberry@example.com' as EmailAddress,
-      }),
+      ContactEmailAddressC.encode(new VerifiedContactEmailAddress({ value: 'jcarberry@example.com' as EmailAddress })),
     )
 
     await use(contactEmailAddressStore)

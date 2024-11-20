@@ -124,7 +124,7 @@ export const authorInviteCheck = ({
               PageResponse | RedirectResponse | StreamlinePageResponse
             >
           >()
-          .with({ contactEmailAddress: P.optional({ type: 'unverified' }) }, () =>
+          .with({ contactEmailAddress: P.optional({ _tag: 'UnverifiedContactEmailAddress' }) }, () =>
             RT.of(RedirectResponse({ location: format(authorInviteEnterEmailAddressMatch.formatter, { id }) })),
           )
           .with({ method: 'POST' }, handlePublishForm)

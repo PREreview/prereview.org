@@ -9,7 +9,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
-  type UnverifiedContactEmailAddress,
+  UnverifiedContactEmailAddress,
   maybeGetContactEmailAddress,
   saveContactEmailAddress,
   verifyContactEmailAddressForReview,
@@ -47,14 +47,17 @@ export const writeReviewEnterEmailAddress = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
-          .with({ contactEmailAddress: { type: 'verified' } }, state =>
+          .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>
             RM.fromMiddleware(redirectToNextForm(preprint.id)(state.form)),
           )
           .with(
-            { contactEmailAddress: P.union({ type: 'unverified' }, undefined), method: 'POST' },
+            { contactEmailAddress: P.union({ _tag: 'UnverifiedContactEmailAddress' }, undefined), method: 'POST' },
             handleEnterEmailAddressForm,
           )
-          .with({ contactEmailAddress: P.union({ type: 'unverified' }, undefined) }, showEnterEmailAddressForm)
+          .with(
+            { contactEmailAddress: P.union({ _tag: 'UnverifiedContactEmailAddress' }, undefined) },
+            showEnterEmailAddressForm,
+          )
           .exhaustive(),
       ),
       RM.orElseW(error =>
@@ -117,14 +120,7 @@ const handleEnterEmailAddressForm = ({ preprint, user }: { preprint: PreprintTit
     RM.ichainW(emailAddress =>
       pipe(
         RM.fromReaderIO(generateUuid),
-        RM.map(
-          verificationToken =>
-            ({
-              type: 'unverified',
-              value: emailAddress,
-              verificationToken,
-            }) satisfies UnverifiedContactEmailAddress,
-        ),
+        RM.map(verificationToken => new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken })),
         RM.chainFirstReaderTaskEitherKW(contactEmailAddress =>
           saveContactEmailAddress(user.orcid, contactEmailAddress),
         ),

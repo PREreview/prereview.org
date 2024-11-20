@@ -16,6 +16,8 @@ import {
   type ContactEmailAddress,
   type GetContactEmailAddressEnv,
   type SaveContactEmailAddressEnv,
+  UnverifiedContactEmailAddress,
+  VerifiedContactEmailAddress,
   type VerifyContactEmailAddressForInvitedAuthorEnv,
   maybeGetContactEmailAddress,
   saveContactEmailAddress,
@@ -109,11 +111,11 @@ export const authorInviteEnterEmailAddress = ({
         ),
       state =>
         match(state)
-          .with({ contactEmailAddress: { type: 'verified' } }, () =>
+          .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, () =>
             RT.of(RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) })),
           )
           .with({ method: 'POST' }, handleEnterEmailAddressForm)
-          .with({ contactEmailAddress: { type: 'unverified' } }, ({ contactEmailAddress, invite }) =>
+          .with({ contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' } }, ({ contactEmailAddress, invite }) =>
             RT.of(
               enterEmailAddressForm({
                 form: { useInvitedAddress: E.right('no'), otherEmailAddress: E.right(contactEmailAddress.value) },
@@ -176,15 +178,13 @@ const handleEnterEmailAddressForm = ({
     RTE.chainReaderIOK(fields =>
       match(fields)
         .returnType<RIO.ReaderIO<GenerateUuidEnv, ContactEmailAddress>>()
-        .with({ useInvitedAddress: 'yes' }, () => RIO.of({ type: 'verified', value: invite.emailAddress }))
+        .with({ useInvitedAddress: 'yes' }, () =>
+          RIO.of(new VerifiedContactEmailAddress({ value: invite.emailAddress })),
+        )
         .with({ useInvitedAddress: 'no', otherEmailAddress: P.select(P.string) }, emailAddress =>
           pipe(
             generateUuid,
-            RIO.map(verificationToken => ({
-              type: 'unverified',
-              value: emailAddress,
-              verificationToken,
-            })),
+            RIO.map(verificationToken => new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken })),
           ),
         )
         .run(),
@@ -192,8 +192,8 @@ const handleEnterEmailAddressForm = ({
     RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
     RTE.chainFirstW(contactEmailAddress =>
       match(contactEmailAddress)
-        .with({ type: 'verified' }, () => RTE.of(undefined))
-        .with({ type: 'unverified' }, contactEmailAddress =>
+        .with({ _tag: 'VerifiedContactEmailAddress' }, () => RTE.of(undefined))
+        .with({ _tag: 'UnverifiedContactEmailAddress' }, contactEmailAddress =>
           verifyContactEmailAddressForInvitedAuthor({
             user,
             emailAddress: contactEmailAddress,
@@ -216,10 +216,10 @@ const handleEnterEmailAddressForm = ({
           .exhaustive(),
       contactEmailAddress =>
         match(contactEmailAddress)
-          .with({ type: 'verified' }, () =>
+          .with({ _tag: 'VerifiedContactEmailAddress' }, () =>
             RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
           )
-          .with({ type: 'unverified' }, () =>
+          .with({ _tag: 'UnverifiedContactEmailAddress' }, () =>
             RedirectResponse({
               location: format(authorInviteNeedToVerifyEmailAddressMatch.formatter, { id: inviteId }),
             }),

@@ -11,7 +11,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
   type SaveContactEmailAddressEnv,
-  type UnverifiedContactEmailAddress,
+  UnverifiedContactEmailAddress,
   type VerifyContactEmailAddressEnv,
   getContactEmailAddress,
   saveContactEmailAddress,
@@ -87,11 +87,10 @@ const handleChangeContactEmailAddressForm = ({ body, user }: { body: unknown; us
               RTE.rightReaderIO(generateUuid),
               RTE.map(
                 verificationToken =>
-                  ({
-                    type: 'unverified',
+                  new UnverifiedContactEmailAddress({
                     value: emailAddress,
                     verificationToken,
-                  }) satisfies UnverifiedContactEmailAddress,
+                  }),
               ),
               RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
               RTE.chainFirstW(contactEmailAddress => verifyContactEmailAddress(user, contactEmailAddress)),
