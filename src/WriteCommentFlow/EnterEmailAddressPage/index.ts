@@ -48,3 +48,46 @@ export const EnterEmailAddressPage = ({
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterEmailAddress.href({ commentId }) })),
     }),
   )
+
+export const EnterEmailAddressSubmission = ({
+  commentId,
+}: {
+  commentId: Uuid.Uuid
+}): Effect.Effect<
+  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
+  never,
+  Comments.GetComment
+> =>
+  Effect.gen(function* () {
+    const user = yield* EnsureUserIsLoggedIn
+
+    const getComment = yield* Comments.GetComment
+
+    const comment = yield* getComment(commentId)
+
+    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+      return pageNotFound
+    }
+
+    return yield* pipe(
+      Match.value(comment),
+      Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
+      Match.tag('CommentInProgress', () => Effect.succeed(havingProblemsPage)),
+      Match.tag('CommentReadyForPublishing', () =>
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
+      ),
+      Match.tag('CommentBeingPublished', () =>
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
+      ),
+      Match.tag('CommentPublished', () =>
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
+      ),
+      Match.exhaustive,
+    )
+  }).pipe(
+    Effect.catchTags({
+      UnableToQuery: () => Effect.succeed(havingProblemsPage),
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterEmailAddress.href({ commentId }) })),
+    }),
+  )

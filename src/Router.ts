@@ -137,6 +137,14 @@ export const Router = pipe(
       Effect.andThen(toHttpServerResponse),
     ),
   ),
+  HttpRouter.post(
+    Routes.WriteCommentEnterEmailAddress.path,
+    pipe(
+      HttpRouter.schemaParams(Routes.WriteCommentEnterEmailAddress.schema),
+      Effect.andThen(WriteCommentFlow.EnterEmailAddressPage),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
   HttpRouter.get(
     Routes.WriteCommentCheck.path,
     pipe(
