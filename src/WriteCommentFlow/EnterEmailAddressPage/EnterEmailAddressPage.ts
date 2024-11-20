@@ -105,9 +105,6 @@ export const EnterEmailAddressPage = ({
       </form>
     `,
     skipToLabel: 'form',
-    canonical: Routes.WriteCommentEnterComment.href({ commentId }),
-    js:
-      form._tag === 'InvalidForm'
-        ? ['html-editor.js', 'editor-toolbar.js', 'error-summary.js']
-        : ['html-editor.js', 'editor-toolbar.js'],
+    canonical: Routes.WriteCommentEnterEmailAddress.href({ commentId }),
+    js: form._tag === 'InvalidForm' ? ['error-summary.js'] : [],
   })
