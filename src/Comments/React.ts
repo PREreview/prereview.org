@@ -1,8 +1,9 @@
 import { Effect } from 'effect'
 import type { Uuid } from '../types/index.js'
-import { MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.js'
+import { ConfirmExistenceOfVerifiedEmailAddress, MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.js'
 import {
   AssignCommentADoi,
+  DoesUserHaveAVerifiedEmailAddress,
   GetComment,
   HandleCommentCommand,
   PublishCommentWithADoi,
@@ -11,6 +12,35 @@ import {
 import type { CommentPublicationWasRequested, DoiWasAssigned } from './Events.js'
 
 type ToDo = unknown
+
+export const CheckIfUserHasAVerifiedEmailAddress = (
+  commentId: Uuid.Uuid,
+): Effect.Effect<void, ToDo, GetComment | DoesUserHaveAVerifiedEmailAddress | HandleCommentCommand> =>
+  Effect.gen(function* () {
+    const getComment = yield* GetComment
+    const handleCommand = yield* HandleCommentCommand
+    const doesUserHaveAVerifiedEmailAddress = yield* DoesUserHaveAVerifiedEmailAddress
+
+    const comment = yield* getComment(commentId)
+
+    if (comment._tag !== 'CommentInProgress' || comment.verifiedEmailAddressExists) {
+      return
+    }
+
+    const userHasAVerifiedEmailAddress = yield* doesUserHaveAVerifiedEmailAddress(comment.authorId)
+
+    if (!userHasAVerifiedEmailAddress) {
+      return
+    }
+
+    yield* Effect.mapError(
+      handleCommand({
+        commentId,
+        command: new ConfirmExistenceOfVerifiedEmailAddress(),
+      }),
+      error => (error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error),
+    )
+  })
 
 export const AssignCommentADoiWhenPublicationWasRequested = ({
   commentId,

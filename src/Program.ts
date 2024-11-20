@@ -9,6 +9,7 @@ import { collapseRequests, logFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import { html } from './html.js'
+import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
 import * as LibsqlEventStore from './LibsqlEventStore.js'
 import { DefaultLocale, translate } from './locales/index.js'
@@ -71,6 +72,28 @@ const getPrereview = Layer.effect(
               id,
             }),
         }),
+      )
+  }),
+)
+
+const doesUserHaveAVerifiedEmailAddress = Layer.effect(
+  Comments.DoesUserHaveAVerifiedEmailAddress,
+  Effect.gen(function* () {
+    const { contactEmailAddressStore } = yield* ExpressConfig
+    const logger = yield* DeprecatedLoggerEnv
+
+    return orcid =>
+      pipe(
+        FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(orcid), {
+          contactEmailAddressStore,
+          ...logger,
+        }),
+        Effect.map(contactEmailAddress => contactEmailAddress.type === 'verified'),
+        Effect.catchIf(
+          error => error === 'not-found',
+          () => Effect.succeed(false),
+        ),
+        Effect.orElseFail(() => new Comments.UnableToQuery({})),
       )
   }),
 )
@@ -227,6 +250,7 @@ export const Program = pipe(
   Layer.provide(assignCommentADoi),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
+  Layer.provide(doesUserHaveAVerifiedEmailAddress),
   Layer.provide(Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand)),
   Layer.provide(Layer.effect(Comments.GetNextExpectedCommandForUser, Comments.makeGetNextExpectedCommandForUser)),
   Layer.provide(

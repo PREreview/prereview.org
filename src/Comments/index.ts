@@ -5,6 +5,7 @@ import type { Uuid } from '../types/index.js'
 import {
   type AssignCommentADoi,
   CommentEvents,
+  type DoesUserHaveAVerifiedEmailAddress,
   type GetComment,
   type GetNextExpectedCommandForUser,
   type GetNextExpectedCommandForUserOnAComment,
@@ -118,7 +119,12 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
 export const ReactToCommentEvents: Layer.Layer<
   never,
   never,
-  CommentEvents | GetComment | HandleCommentCommand | AssignCommentADoi | PublishCommentWithADoi
+  | CommentEvents
+  | GetComment
+  | HandleCommentCommand
+  | DoesUserHaveAVerifiedEmailAddress
+  | AssignCommentADoi
+  | PublishCommentWithADoi
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const commentEvents = yield* CommentEvents
@@ -129,6 +135,12 @@ export const ReactToCommentEvents: Layer.Layer<
       Effect.andThen(
         pipe(
           Match.type<{ commentId: Uuid.Uuid; event: CommentEvent }>(),
+          Match.when({ event: { _tag: 'CommentWasStarted' } }, ({ commentId }) =>
+            pipe(
+              React.CheckIfUserHasAVerifiedEmailAddress(commentId),
+              Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
+            ),
+          ),
           Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId, event }) =>
             pipe(
               React.AssignCommentADoiWhenPublicationWasRequested({ commentId, event }),

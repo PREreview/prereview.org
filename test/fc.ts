@@ -1351,11 +1351,13 @@ export const commentInProgress = ({
   competingInterests,
   comment,
   persona,
+  verifiedEmailAddressExists,
 }: {
   codeOfConductAgreed?: fc.Arbitrary<Comments.CommentInProgress['codeOfConductAgreed']>
   competingInterests?: fc.Arbitrary<Comments.CommentInProgress['competingInterests']>
   comment?: fc.Arbitrary<Comments.CommentInProgress['comment']>
   persona?: fc.Arbitrary<Comments.CommentInProgress['persona']>
+  verifiedEmailAddressExists?: fc.Arbitrary<Comments.CommentInProgress['verifiedEmailAddressExists']>
 } = {}): fc.Arbitrary<Comments.CommentInProgress> =>
   fc
     .record({
@@ -1365,6 +1367,7 @@ export const commentInProgress = ({
       competingInterests: competingInterests ?? fc.option(maybe(nonEmptyString()), { nil: undefined }),
       codeOfConductAgreed: codeOfConductAgreed ?? constantFrom(true, undefined),
       persona: persona ?? fc.option(constantFrom('public', 'pseudonym'), { nil: undefined }),
+      verifiedEmailAddressExists: verifiedEmailAddressExists ?? constantFrom(true, undefined),
     })
     .map(data => new Comments.CommentInProgress(data))
 

@@ -1,5 +1,6 @@
 import type { Doi } from 'doi-ts'
 import { Context, Data, type Effect, type PubSub } from 'effect'
+import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { CommentCommand } from './Commands.js'
 import type { CommentError } from './Errors.js'
@@ -45,6 +46,11 @@ export class HandleCommentCommand extends Context.Tag('HandleCommentCommand')<
 export class AssignCommentADoi extends Context.Tag('AssignCommentADoi')<
   AssignCommentADoi,
   (comment: CommentBeingPublished) => Effect.Effect<[Doi, number], UnableToAssignADoi>
+>() {}
+
+export class DoesUserHaveAVerifiedEmailAddress extends Context.Tag('DoesUserHaveAVerifiedEmailAddress')<
+  DoesUserHaveAVerifiedEmailAddress,
+  (orcid: Orcid) => Effect.Effect<boolean, UnableToQuery>
 >() {}
 
 export class PublishCommentWithADoi extends Context.Tag('PublishCommentWithADoi')<
