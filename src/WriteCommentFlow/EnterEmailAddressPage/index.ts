@@ -52,7 +52,20 @@ export const EnterEmailAddressPage = ({
 
           return yield* pipe(
             getContactEmailAddress(comment.authorId),
-            Effect.andThen(() => havingProblemsPage),
+            Effect.andThen(
+              pipe(
+                Match.type<ContactEmailAddress.ContactEmailAddress>(),
+                Match.tag('VerifiedContactEmailAddress', () => havingProblemsPage),
+                Match.tag('UnverifiedContactEmailAddress', contactEmailAddress =>
+                  MakeResponse({
+                    commentId,
+                    form: new EnterEmailAddressForm.CompletedForm({ emailAddress: contactEmailAddress.value }),
+                    locale,
+                  }),
+                ),
+                Match.exhaustive,
+              ),
+            ),
             Effect.catchTag('ContactEmailAddressIsNotFound', () =>
               Effect.succeed(
                 MakeResponse({

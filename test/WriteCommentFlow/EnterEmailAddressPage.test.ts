@@ -59,11 +59,13 @@ describe('EnterEmailAddressPage', () => {
             const actual = yield* _.EnterEmailAddressPage({ commentId })
 
             expect(actual).toStrictEqual({
-              _tag: 'PageResponse',
-              status: StatusCodes.SERVICE_UNAVAILABLE,
+              _tag: 'StreamlinePageResponse',
+              canonical: Routes.WriteCommentEnterEmailAddress.href({ commentId }),
+              status: StatusCodes.OK,
               title: expect.anything(),
+              nav: expect.anything(),
               main: expect.anything(),
-              skipToLabel: 'main',
+              skipToLabel: 'form',
               js: [],
             })
           }).pipe(
