@@ -3,6 +3,7 @@ import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub, Runtime } from 'effect'
 import { fileURLToPath } from 'url'
 import * as Comments from './Comments/index.js'
+import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import { collapseRequests, logFetch } from './fetch.js'
@@ -94,6 +95,30 @@ const doesUserHaveAVerifiedEmailAddress = Layer.effect(
           () => Effect.succeed(false),
         ),
         Effect.orElseFail(() => new Comments.UnableToQuery({})),
+      )
+  }),
+)
+
+const getContactEmailAddress = Layer.effect(
+  ContactEmailAddress.GetContactEmailAddress,
+  Effect.gen(function* () {
+    const { contactEmailAddressStore } = yield* ExpressConfig
+    const logger = yield* DeprecatedLoggerEnv
+
+    return orcid =>
+      pipe(
+        FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(orcid), {
+          contactEmailAddressStore,
+          ...logger,
+        }),
+        Effect.mapError(
+          flow(
+            Match.value,
+            Match.when('not-found', () => new ContactEmailAddress.ContactEmailAddressIsNotFound()),
+            Match.when('unavailable', () => new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
+            Match.exhaustive,
+          ),
+        ),
       )
   }),
 )
@@ -251,6 +276,7 @@ export const Program = pipe(
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
   Layer.provide(doesUserHaveAVerifiedEmailAddress),
+  Layer.provide(getContactEmailAddress),
   Layer.provide(Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand)),
   Layer.provide(Layer.effect(Comments.GetNextExpectedCommandForUser, Comments.makeGetNextExpectedCommandForUser)),
   Layer.provide(

@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { Effect, Either, Equal, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
+import * as ContactEmailAddress from '../../src/contact-email-address.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
 import * as _ from '../../src/WriteCommentFlow/EnterEmailAddressPage/index.js'
@@ -13,33 +14,135 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 describe('EnterEmailAddressPage', () => {
   describe('when there is a user', () => {
     describe('when the comment is in progress', () => {
-      test.prop([
-        fc.uuid(),
-        fc
-          .commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })
-          .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-        fc.supportedLocale(),
-      ])("when there isn't a verified email address", (commentId, [comment, user], locale) =>
-        Effect.gen(function* () {
-          const actual = yield* _.EnterEmailAddressPage({ commentId })
+      describe("when there isn't a confirmed verified email address", () => {
+        test.prop([
+          fc.uuid(),
+          fc
+            .commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })
+            .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+          fc.supportedLocale(),
+          fc.verifiedContactEmailAddress(),
+        ])('when there is a verified email address', (commentId, [comment, user], locale, contactEmailAddress) =>
+          Effect.gen(function* () {
+            const actual = yield* _.EnterEmailAddressPage({ commentId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
-        ),
-      )
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.SERVICE_UNAVAILABLE,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(
+            Effect.provideService(Locale, locale),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+            Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
+              Effect.succeed(contactEmailAddress),
+            ),
+            Effect.provideService(LoggedInUser, user),
+            Effect.provide(TestContext.TestContext),
+            Effect.runPromise,
+          ),
+        )
+
+        test.prop([
+          fc.uuid(),
+          fc
+            .commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })
+            .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+          fc.supportedLocale(),
+          fc.unverifiedContactEmailAddress(),
+        ])('when there is an unverified email address', (commentId, [comment, user], locale, contactEmailAddress) =>
+          Effect.gen(function* () {
+            const actual = yield* _.EnterEmailAddressPage({ commentId })
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.SERVICE_UNAVAILABLE,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(
+            Effect.provideService(Locale, locale),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+            Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
+              Effect.succeed(contactEmailAddress),
+            ),
+            Effect.provideService(LoggedInUser, user),
+            Effect.provide(TestContext.TestContext),
+            Effect.runPromise,
+          ),
+        )
+
+        test.prop([
+          fc.uuid(),
+          fc
+            .commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })
+            .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+          fc.supportedLocale(),
+        ])("when there isn't an email address", (commentId, [comment, user], locale) =>
+          Effect.gen(function* () {
+            const actual = yield* _.EnterEmailAddressPage({ commentId })
+
+            expect(actual).toStrictEqual({
+              _tag: 'StreamlinePageResponse',
+              canonical: Routes.WriteCommentEnterEmailAddress.href({ commentId }),
+              status: StatusCodes.OK,
+              title: expect.anything(),
+              nav: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'form',
+              js: [],
+            })
+          }).pipe(
+            Effect.provideService(Locale, locale),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+            Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
+              Effect.fail(new ContactEmailAddress.ContactEmailAddressIsNotFound()),
+            ),
+            Effect.provideService(LoggedInUser, user),
+            Effect.provide(TestContext.TestContext),
+            Effect.runPromise,
+          ),
+        )
+
+        test.prop([
+          fc.uuid(),
+          fc
+            .commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })
+            .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+          fc.supportedLocale(),
+        ])("when there the email address can't be checked", (commentId, [comment, user], locale) =>
+          Effect.gen(function* () {
+            const actual = yield* _.EnterEmailAddressPage({ commentId })
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.SERVICE_UNAVAILABLE,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(
+            Effect.provideService(Locale, locale),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+            Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
+              Effect.fail(new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
+            ),
+            Effect.provideService(LoggedInUser, user),
+            Effect.provide(TestContext.TestContext),
+            Effect.runPromise,
+          ),
+        )
+      })
 
       test.prop([
         fc.uuid(),
@@ -48,7 +151,7 @@ describe('EnterEmailAddressPage', () => {
           .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
         fc.supportedLocale(),
         fc.expectedCommandForUser().filter(nextCommand => nextCommand._tag !== 'ExpectedToStartAComment'),
-      ])('when there is a verified email address', (commentId, [comment, user], locale, nextCommand) =>
+      ])('when there is a confirmed verified email address', (commentId, [comment, user], locale, nextCommand) =>
         Effect.gen(function* () {
           const getNextExpectedCommandForUserOnAComment = jest.fn<
             typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
@@ -68,6 +171,7 @@ describe('EnterEmailAddressPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -94,6 +198,7 @@ describe('EnterEmailAddressPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+        Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -119,6 +224,7 @@ describe('EnterEmailAddressPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+        Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -144,6 +250,7 @@ describe('EnterEmailAddressPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+        Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -168,6 +275,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -196,6 +304,7 @@ describe('EnterEmailAddressPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+        Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -220,6 +329,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -239,6 +349,7 @@ describe('EnterEmailAddressPage', () => {
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+      Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),

@@ -1,4 +1,4 @@
-import { Data, Match } from 'effect'
+import { Context, Data, type Effect, Match } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { Refinement } from 'fp-ts/lib/Refinement.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
@@ -11,6 +11,15 @@ import { type EmailAddress, EmailAddressC } from './types/email-address.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import { UuidC } from './types/uuid.js'
 import type { User } from './user.js'
+
+export class ContactEmailAddressIsNotFound extends Data.TaggedError('ContactEmailAddressIsNotFound') {}
+
+export class ContactEmailAddressIsUnavailable extends Data.TaggedError('ContactEmailAddressIsUnavailable') {}
+
+export class GetContactEmailAddress extends Context.Tag('GetContactEmailAddress')<
+  GetContactEmailAddress,
+  (orcid: Orcid) => Effect.Effect<ContactEmailAddress, ContactEmailAddressIsNotFound | ContactEmailAddressIsUnavailable>
+>() {}
 
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
 

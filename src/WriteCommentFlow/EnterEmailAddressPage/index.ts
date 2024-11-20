@@ -1,11 +1,15 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../Comments/index.js'
+import * as ContactEmailAddress from '../../contact-email-address.js'
+import { Locale } from '../../Context.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
 import { RouteForCommand } from '../Routes.js'
+import * as EnterEmailAddressForm from './EnterEmailAddressForm.js'
+import { EnterEmailAddressPage as MakeResponse } from './EnterEmailAddressPage.js'
 
 export const EnterEmailAddressPage = ({
   commentId,
@@ -14,7 +18,10 @@ export const EnterEmailAddressPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Comments.GetNextExpectedCommandForUserOnAComment
+  | Comments.GetComment
+  | Comments.GetNextExpectedCommandForUserOnAComment
+  | ContactEmailAddress.GetContactEmailAddress
+  | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -26,6 +33,8 @@ export const EnterEmailAddressPage = ({
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
+
+    const locale = yield* Locale
 
     return yield* pipe(
       Match.value(comment),
@@ -39,7 +48,21 @@ export const EnterEmailAddressPage = ({
             return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
           }
 
-          return havingProblemsPage
+          const getContactEmailAddress = yield* ContactEmailAddress.GetContactEmailAddress
+
+          return yield* pipe(
+            getContactEmailAddress(comment.authorId),
+            Effect.andThen(() => havingProblemsPage),
+            Effect.catchTag('ContactEmailAddressIsNotFound', () =>
+              Effect.succeed(
+                MakeResponse({
+                  commentId,
+                  form: new EnterEmailAddressForm.EmptyForm(),
+                  locale,
+                }),
+              ),
+            ),
+          )
         }),
       ),
       Match.tag('CommentReadyForPublishing', () =>
@@ -58,6 +81,7 @@ export const EnterEmailAddressPage = ({
       CommentHasNotBeenStarted: () => Effect.succeed(havingProblemsPage),
       CommentIsBeingPublished: () => Effect.succeed(havingProblemsPage),
       CommentWasAlreadyPublished: () => Effect.succeed(havingProblemsPage),
+      ContactEmailAddressIsUnavailable: () => Effect.succeed(havingProblemsPage),
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterEmailAddress.href({ commentId }) })),

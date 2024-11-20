@@ -97,6 +97,7 @@ interface AppFixtures {
   canUploadAvatar: CanUploadAvatarEnv['canUploadAvatar']
   canUseSearchQueries: CanUseSearchQueriesEnv['canUseSearchQueries']
   canWriteComments: typeof CanWriteComments.Service
+  requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -1189,6 +1190,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
+  requiresAVerifiedEmailAddress: async ({}, use) => {
+    await use(false)
+  },
   researchInterestsStore: async ({}, use) => {
     await use(new Keyv())
   },
@@ -1221,6 +1225,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canUploadAvatar,
         canUseSearchQueries,
         canWriteComments,
+        requiresAVerifiedEmailAddress,
       },
       use,
       testInfo,
@@ -1294,7 +1299,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           zenodoApiKey: '',
           zenodoUrl: new URL('http://zenodo.test/'),
         } as unknown as typeof ExpressConfig.Service),
-        Effect.provideService(RequiresAVerifiedEmailAddress, false),
+        Effect.provideService(RequiresAVerifiedEmailAddress, requiresAVerifiedEmailAddress),
         Effect.provideService(CanWriteComments, canWriteComments),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),
@@ -1950,6 +1955,16 @@ export const canWriteComments: Fixtures<
 > = {
   canWriteComments: async ({}, use) => {
     await use(() => true)
+  },
+}
+
+export const requiresAVerifiedEmailAddress: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'requiresAVerifiedEmailAddress'>
+> = {
+  requiresAVerifiedEmailAddress: async ({}, use) => {
+    await use(true)
   },
 }
 
