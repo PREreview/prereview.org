@@ -22,29 +22,45 @@ describe('EnterEmailAddressPage', () => {
             .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
           fc.supportedLocale(),
           fc.verifiedContactEmailAddress(),
-        ])('when there is a verified email address', (commentId, [comment, user], locale, contactEmailAddress) =>
-          Effect.gen(function* () {
-            const actual = yield* _.EnterEmailAddressPage({ commentId })
+          fc.expectedCommandForUser().filter(nextCommand => nextCommand._tag !== 'ExpectedToStartAComment'),
+        ])(
+          'when there is a verified email address',
+          (commentId, [comment, user], locale, contactEmailAddress, nextCommand) =>
+            Effect.gen(function* () {
+              const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+              const getNextExpectedCommandForUserOnAComment = jest.fn<
+                typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
+              >(_ => Effect.succeed(Either.right(nextCommand)))
 
-            expect(actual).toStrictEqual({
-              _tag: 'PageResponse',
-              status: StatusCodes.SERVICE_UNAVAILABLE,
-              title: expect.anything(),
-              main: expect.anything(),
-              skipToLabel: 'main',
-              js: [],
-            })
-          }).pipe(
-            Effect.provideService(Locale, locale),
-            Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-            Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-            Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
-              Effect.succeed(contactEmailAddress),
+              const actual = yield* _.EnterEmailAddressPage({ commentId }).pipe(
+                Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),
+                Effect.provideService(
+                  Comments.GetNextExpectedCommandForUserOnAComment,
+                  getNextExpectedCommandForUserOnAComment,
+                ),
+              )
+
+              expect(actual).toStrictEqual({
+                _tag: 'RedirectResponse',
+                status: StatusCodes.SEE_OTHER,
+                location: RouteForCommand(nextCommand).href({ commentId }),
+              })
+
+              expect(handleCommentCommand).toHaveBeenCalledWith({
+                commentId,
+                command: new Comments.ConfirmExistenceOfVerifiedEmailAddress(),
+              })
+              expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
+            }).pipe(
+              Effect.provideService(Locale, locale),
+              Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+              Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
+                Effect.succeed(contactEmailAddress),
+              ),
+              Effect.provideService(LoggedInUser, user),
+              Effect.provide(TestContext.TestContext),
+              Effect.runPromise,
             ),
-            Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
-          ),
         )
 
         test.prop([
@@ -71,6 +87,7 @@ describe('EnterEmailAddressPage', () => {
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+            Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
               Effect.succeed(contactEmailAddress),
@@ -104,6 +121,7 @@ describe('EnterEmailAddressPage', () => {
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+            Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
               Effect.fail(new ContactEmailAddress.ContactEmailAddressIsNotFound()),
@@ -135,6 +153,7 @@ describe('EnterEmailAddressPage', () => {
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+            Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
               Effect.fail(new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
@@ -173,6 +192,7 @@ describe('EnterEmailAddressPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -199,6 +219,7 @@ describe('EnterEmailAddressPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
@@ -225,6 +246,7 @@ describe('EnterEmailAddressPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
@@ -251,6 +273,7 @@ describe('EnterEmailAddressPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
@@ -276,6 +299,7 @@ describe('EnterEmailAddressPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
@@ -305,6 +329,7 @@ describe('EnterEmailAddressPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
@@ -330,6 +355,7 @@ describe('EnterEmailAddressPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
@@ -350,6 +376,7 @@ describe('EnterEmailAddressPage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
+      Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
       Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),

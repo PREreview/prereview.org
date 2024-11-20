@@ -20,6 +20,7 @@ export const EnterEmailAddressPage = ({
   never,
   | Comments.GetComment
   | Comments.GetNextExpectedCommandForUserOnAComment
+  | Comments.HandleCommentCommand
   | ContactEmailAddress.GetContactEmailAddress
   | Locale
 > =>
@@ -55,13 +56,36 @@ export const EnterEmailAddressPage = ({
             Effect.andThen(
               pipe(
                 Match.type<ContactEmailAddress.ContactEmailAddress>(),
-                Match.tag('VerifiedContactEmailAddress', () => havingProblemsPage),
-                Match.tag('UnverifiedContactEmailAddress', contactEmailAddress =>
-                  MakeResponse({
-                    commentId,
-                    form: new EnterEmailAddressForm.CompletedForm({ emailAddress: contactEmailAddress.value }),
-                    locale,
+                Match.tag('VerifiedContactEmailAddress', () =>
+                  Effect.gen(function* () {
+                    const handleCommand = yield* Comments.HandleCommentCommand
+
+                    yield* pipe(
+                      handleCommand({
+                        commentId,
+                        command: new Comments.ConfirmExistenceOfVerifiedEmailAddress(),
+                      }),
+                      Effect.catchIf(
+                        cause => cause._tag !== 'UnableToHandleCommand',
+                        cause => new Comments.UnableToHandleCommand({ cause }),
+                      ),
+                    )
+
+                    const getNextExpectedCommandForUserOnAComment =
+                      yield* Comments.GetNextExpectedCommandForUserOnAComment
+                    const nextCommand = yield* Effect.flatten(getNextExpectedCommandForUserOnAComment(commentId))
+
+                    return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
                   }),
+                ),
+                Match.tag('UnverifiedContactEmailAddress', contactEmailAddress =>
+                  Effect.succeed(
+                    MakeResponse({
+                      commentId,
+                      form: new EnterEmailAddressForm.CompletedForm({ emailAddress: contactEmailAddress.value }),
+                      locale,
+                    }),
+                  ),
                 ),
                 Match.exhaustive,
               ),
@@ -95,6 +119,7 @@ export const EnterEmailAddressPage = ({
       CommentIsBeingPublished: () => Effect.succeed(havingProblemsPage),
       CommentWasAlreadyPublished: () => Effect.succeed(havingProblemsPage),
       ContactEmailAddressIsUnavailable: () => Effect.succeed(havingProblemsPage),
+      UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterEmailAddress.href({ commentId }) })),
