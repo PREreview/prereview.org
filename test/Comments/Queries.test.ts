@@ -308,3 +308,13 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
     },
   )
 })
+
+describe('GetACommentInNeedOfADoi', () => {
+  test.todo('finds a comment in need of a DOI')
+
+  test.todo('finds the oldest comment in need of a DOI when multiple comments need a DOI')
+
+  test.todo('ignores comments that already have a DOI')
+
+  test.todo('ignores comments for which publication has not been requested')
+})
