@@ -124,6 +124,20 @@ export const GetNextExpectedCommandForUserOnAComment =
   }
 
 export const GetACommentInNeedOfADoi = (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
-): Option.Option<Uuid.Uuid> => Option.none()
+): Option.Option<Uuid.Uuid> => {
+  const hasADoi = new Set()
+
+  for (const { event, resourceId } of events.toReversed()) {
+    if (event._tag === 'DoiWasAssigned') {
+      hasADoi.add(resourceId)
+      continue
+    }
+
+    if (event._tag === 'CommentPublicationWasRequested' && !hasADoi.has(resourceId)) {
+      return Option.some(resourceId)
+    }
+  }
+
+  return Option.none()
+}
