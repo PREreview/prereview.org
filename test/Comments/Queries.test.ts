@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Doi } from 'doi-ts'
 import { Array, Either, Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import * as _ from '../../src/Comments/Queries.js'
@@ -320,12 +321,28 @@ describe('GetACommentInNeedOfADoi', () => {
     competingInterests: Option.none(),
   })
   const codeOfConductWasAgreed = new Comments.CodeOfConductWasAgreed({ competingInterests: Option.none() })
+  const commentPublicationWasRequested = new Comments.CommentPublicationWasRequested()
+  const doiWasAssigned = new Comments.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') })
 
   test.todo('finds a comment in need of a DOI')
 
   test.todo('finds the oldest comment in need of a DOI when multiple comments need a DOI')
 
-  test.todo('ignores comments that already have a DOI')
+  test('ignores comments that already have a DOI', () => {
+    const events = [
+      commentWasStarted,
+      commentWasEntered,
+      personaWasChosen,
+      competingInterestsWereDeclared,
+      codeOfConductWasAgreed,
+      commentPublicationWasRequested,
+      doiWasAssigned,
+    ]
+
+    const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
+
+    expect(actual).toStrictEqual(Option.none())
+  })
 
   test('ignores comments for which publication has not been requested', () => {
     const events = [
