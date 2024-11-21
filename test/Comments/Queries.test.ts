@@ -332,7 +332,13 @@ describe('GetACommentInNeedOfADoi', () => {
     codeOfConductWasAgreed,
   ]
 
-  test.todo('finds a comment in need of a DOI')
+  test.failing('finds a comment in need of a DOI', () => {
+    const events = [...eventsNeededToRequestPublication, commentPublicationWasRequested]
+
+    const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
+
+    expect(actual).toStrictEqual(Option.some(resourceId))
+  })
 
   test.todo('finds the oldest comment in need of a DOI when multiple comments need a DOI')
 
