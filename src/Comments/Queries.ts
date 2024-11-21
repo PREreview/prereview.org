@@ -122,3 +122,8 @@ export const GetNextExpectedCommandForUserOnAComment =
 
     return Either.right(new ExpectedCommand.ExpectedToPublishComment({ commentId }))
   }
+
+export const GetACommentInNeedOfADoi = (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
+): Option.Option<Uuid.Uuid> => Option.none()

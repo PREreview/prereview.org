@@ -310,11 +310,34 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
 })
 
 describe('GetACommentInNeedOfADoi', () => {
+  const authorId = Orcid('0000-0002-1825-0097')
+  const prereviewId = 123
+  const resourceId = '358f7fc0-9725-4192-8673-d7c64f398401' as Uuid.Uuid
+  const commentWasStarted = new Comments.CommentWasStarted({ authorId, prereviewId })
+  const commentWasEntered = new Comments.CommentWasEntered({ comment: html`Some comment` })
+  const personaWasChosen = new Comments.PersonaWasChosen({ persona: 'public' })
+  const competingInterestsWereDeclared = new Comments.CompetingInterestsWereDeclared({
+    competingInterests: Option.none(),
+  })
+  const codeOfConductWasAgreed = new Comments.CodeOfConductWasAgreed({ competingInterests: Option.none() })
+
   test.todo('finds a comment in need of a DOI')
 
   test.todo('finds the oldest comment in need of a DOI when multiple comments need a DOI')
 
   test.todo('ignores comments that already have a DOI')
 
-  test.todo('ignores comments for which publication has not been requested')
+  test('ignores comments for which publication has not been requested', () => {
+    const events = [
+      commentWasStarted,
+      commentWasEntered,
+      personaWasChosen,
+      competingInterestsWereDeclared,
+      codeOfConductWasAgreed,
+    ]
+
+    const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
+
+    expect(actual).toStrictEqual(Option.none())
+  })
 })
