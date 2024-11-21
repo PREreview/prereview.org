@@ -324,20 +324,20 @@ describe('GetACommentInNeedOfADoi', () => {
   const commentPublicationWasRequested = new Comments.CommentPublicationWasRequested()
   const doiWasAssigned = new Comments.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') })
 
+  const eventsNeededToRequestPublication = [
+    commentWasStarted,
+    commentWasEntered,
+    personaWasChosen,
+    competingInterestsWereDeclared,
+    codeOfConductWasAgreed,
+  ]
+
   test.todo('finds a comment in need of a DOI')
 
   test.todo('finds the oldest comment in need of a DOI when multiple comments need a DOI')
 
   test('ignores comments that already have a DOI', () => {
-    const events = [
-      commentWasStarted,
-      commentWasEntered,
-      personaWasChosen,
-      competingInterestsWereDeclared,
-      codeOfConductWasAgreed,
-      commentPublicationWasRequested,
-      doiWasAssigned,
-    ]
+    const events = [...eventsNeededToRequestPublication, commentPublicationWasRequested, doiWasAssigned]
 
     const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
 
@@ -345,15 +345,9 @@ describe('GetACommentInNeedOfADoi', () => {
   })
 
   test('ignores comments for which publication has not been requested', () => {
-    const events = [
-      commentWasStarted,
-      commentWasEntered,
-      personaWasChosen,
-      competingInterestsWereDeclared,
-      codeOfConductWasAgreed,
-    ]
-
-    const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
+    const actual = _.GetACommentInNeedOfADoi(
+      Array.map(eventsNeededToRequestPublication, event => ({ event, resourceId })),
+    )
 
     expect(actual).toStrictEqual(Option.none())
   })
