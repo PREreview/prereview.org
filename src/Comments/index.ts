@@ -141,9 +141,9 @@ export const ReactToCommentEvents: Layer.Layer<
               Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
             ),
           ),
-          Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId, event }) =>
+          Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId }) =>
             pipe(
-              React.AssignCommentADoiWhenPublicationWasRequested({ commentId, event }),
+              React.AssignCommentADoiWhenPublicationWasRequested(commentId),
               Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
             ),
           ),

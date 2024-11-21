@@ -105,14 +105,14 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
 })
 
 describe('AssignCommentADoiWhenPublicationWasRequested', () => {
-  test.prop([fc.uuid(), fc.commentPublicationWasRequested(), fc.commentBeingPublished(), fc.integer(), fc.doi()])(
+  test.prop([fc.uuid(), fc.commentBeingPublished(), fc.integer(), fc.doi()])(
     'assigns a DOI',
-    (commentId, event, comment, id, doi) =>
+    (commentId, comment, id, doi) =>
       Effect.gen(function* () {
         const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
         yield* Effect.provideService(
-          _.AssignCommentADoiWhenPublicationWasRequested({ commentId, event }),
+          _.AssignCommentADoiWhenPublicationWasRequested(commentId),
           Comments.HandleCommentCommand,
           handleCommentCommand,
         )
@@ -129,54 +129,47 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
       ),
   )
 
-  test.prop([
-    fc.uuid(),
-    fc.commentPublicationWasRequested(),
-    fc.commentBeingPublished(),
-    fc.integer(),
-    fc.doi(),
-    fc.commentError(),
-  ])("when the comment can't be updated", (commentId, event, comment, id, doi, error) =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(
-        _.AssignCommentADoiWhenPublicationWasRequested({ commentId, event }),
-        Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
-        Effect.either,
-      )
-
-      expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
-    }).pipe(
-      Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-      Effect.provideService(Comments.AssignCommentADoi, () => Effect.succeed([doi, id])),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
-    ),
-  )
-
-  test.prop([fc.uuid(), fc.commentPublicationWasRequested(), fc.commentBeingPublished()])(
-    "when a DOI can't be assigned",
-    (commentId, event, comment) =>
+  test.prop([fc.uuid(), fc.commentBeingPublished(), fc.integer(), fc.doi(), fc.commentError()])(
+    "when the comment can't be updated",
+    (commentId, comment, id, doi, error) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
-          _.AssignCommentADoiWhenPublicationWasRequested({ commentId, event }),
-          Effect.provideService(Comments.AssignCommentADoi, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
-          Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
-          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+          _.AssignCommentADoiWhenPublicationWasRequested(commentId),
+          Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
           Effect.either,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
+        expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(Comments.AssignCommentADoi, () => Effect.succeed([doi, id])),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
   )
 
-  test.prop([fc.uuid(), fc.commentPublicationWasRequested()])("when the comment can't be read", (commentId, event) =>
+  test.prop([fc.uuid(), fc.commentBeingPublished()])("when a DOI can't be assigned", (commentId, comment) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
-        _.AssignCommentADoiWhenPublicationWasRequested({ commentId, event }),
+        _.AssignCommentADoiWhenPublicationWasRequested(commentId),
+        Effect.provideService(Comments.AssignCommentADoi, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
+        Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
+        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+        Effect.either,
+      )
+
+      expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
+    }).pipe(
+      Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+      Effect.provide(TestContext.TestContext),
+      Effect.runPromise,
+    ),
+  )
+
+  test.prop([fc.uuid()])("when the comment can't be read", commentId =>
+    Effect.gen(function* () {
+      const actual = yield* pipe(
+        _.AssignCommentADoiWhenPublicationWasRequested(commentId),
         Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
         Effect.provideService(Comments.AssignCommentADoi, shouldNotBeCalled),
         Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),

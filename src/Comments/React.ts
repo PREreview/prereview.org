@@ -9,7 +9,7 @@ import {
   PublishCommentWithADoi,
   UnableToHandleCommand,
 } from './Context.js'
-import type { CommentPublicationWasRequested, DoiWasAssigned } from './Events.js'
+import type { DoiWasAssigned } from './Events.js'
 
 type ToDo = unknown
 
@@ -42,12 +42,9 @@ export const CheckIfUserHasAVerifiedEmailAddress = (
     )
   })
 
-export const AssignCommentADoiWhenPublicationWasRequested = ({
-  commentId,
-}: {
-  commentId: Uuid.Uuid
-  event: CommentPublicationWasRequested
-}): Effect.Effect<void, ToDo, GetComment | HandleCommentCommand | AssignCommentADoi> =>
+export const AssignCommentADoiWhenPublicationWasRequested = (
+  commentId: Uuid.Uuid,
+): Effect.Effect<void, ToDo, GetComment | HandleCommentCommand | AssignCommentADoi> =>
   Effect.gen(function* () {
     const getComment = yield* GetComment
     const handleCommand = yield* HandleCommentCommand
