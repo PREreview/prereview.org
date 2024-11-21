@@ -120,6 +120,7 @@ export const ReactToCommentEvents: Layer.Layer<
   never,
   never,
   | CommentEvents
+  | EventStore
   | GetComment
   | HandleCommentCommand
   | DoesUserHaveAVerifiedEmailAddress
@@ -128,6 +129,7 @@ export const ReactToCommentEvents: Layer.Layer<
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const commentEvents = yield* CommentEvents
+    const eventStore = yield* EventStore
     const dequeue = yield* PubSub.subscribe(commentEvents)
 
     yield* pipe(
@@ -143,7 +145,9 @@ export const ReactToCommentEvents: Layer.Layer<
           ),
           Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId }) =>
             pipe(
-              React.AssignCommentADoiWhenPublicationWasRequested(commentId),
+              eventStore.getAllEvents,
+              Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
+              Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
               Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
             ),
           ),
