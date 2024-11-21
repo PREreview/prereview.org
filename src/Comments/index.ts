@@ -1,4 +1,4 @@
-import { Array, Effect, Layer, Match, pipe, PubSub, Queue } from 'effect'
+import { Array, Effect, flow, Layer, Match, pipe, PubSub, Queue, Schedule } from 'effect'
 import { EventStore } from '../Context.js'
 import { RequiresAVerifiedEmailAddress } from '../feature-flags.js'
 import type { Uuid } from '../types/index.js'
@@ -132,36 +132,61 @@ export const ReactToCommentEvents: Layer.Layer<
     const eventStore = yield* EventStore
     const dequeue = yield* PubSub.subscribe(commentEvents)
 
-    yield* pipe(
-      Queue.take(dequeue),
-      Effect.andThen(
-        pipe(
-          Match.type<{ commentId: Uuid.Uuid; event: CommentEvent }>(),
-          Match.when({ event: { _tag: 'CommentWasStarted' } }, ({ commentId }) =>
-            pipe(
-              React.CheckIfUserHasAVerifiedEmailAddress(commentId),
-              Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
+    yield* Effect.all(
+      [
+        Effect.repeat(
+          pipe(
+            eventStore.getAllEvents,
+            Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
+            Effect.andThen(
+              flow(
+                React.AssignCommentADoiWhenPublicationWasRequested,
+                Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), {})),
+              ),
             ),
+            Effect.catchAll(() => Effect.void),
           ),
-          Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId }) =>
-            pipe(
-              eventStore.getAllEvents,
-              Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
-              Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
-              Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
-            ),
-          ),
-          Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ commentId, event }) =>
-            pipe(
-              React.PublishCommentWhenDoiWasAssigned({ commentId, event }),
-              Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId })),
-            ),
-          ),
-          Match.orElse(() => Effect.void),
+          Schedule.fixed('1 minute'),
         ),
-      ),
-      Effect.catchAll(() => Effect.void),
-      Effect.forever,
+        pipe(
+          Queue.take(dequeue),
+          Effect.andThen(
+            pipe(
+              Match.type<{ commentId: Uuid.Uuid; event: CommentEvent }>(),
+              Match.when({ event: { _tag: 'CommentWasStarted' } }, ({ commentId }) =>
+                pipe(
+                  React.CheckIfUserHasAVerifiedEmailAddress(commentId),
+                  Effect.tapError(() =>
+                    Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId }),
+                  ),
+                ),
+              ),
+              Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId }) =>
+                pipe(
+                  eventStore.getAllEvents,
+                  Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
+                  Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
+                  Effect.tapError(() =>
+                    Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId }),
+                  ),
+                ),
+              ),
+              Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ commentId, event }) =>
+                pipe(
+                  React.PublishCommentWhenDoiWasAssigned({ commentId, event }),
+                  Effect.tapError(() =>
+                    Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId }),
+                  ),
+                ),
+              ),
+              Match.orElse(() => Effect.void),
+            ),
+          ),
+          Effect.catchAll(() => Effect.void),
+          Effect.forever,
+        ),
+      ],
+      { concurrency: 'unbounded' },
     )
   }),
 )
