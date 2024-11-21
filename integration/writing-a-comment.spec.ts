@@ -114,15 +114,15 @@ test.extend(canLogIn).extend(canWriteComments).extend(willPublishAComment)(
       await expect(page.getByRole('link', { name: 'Continue' })).not.toBeVisible()
 
       await page.getByRole('link', { name: 'Continue' }).click()
+
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText('Comment published')
     } else {
       await expect(async () => {
         await page.getByRole('link', { name: 'Reload page' }).click()
 
-        await expect(page.getByRole('heading', { level: 1 })).not.toHaveText('We’re comment your comment')
+        await expect(page.getByRole('heading', { level: 1 })).toHaveText('Comment published')
       }).toPass()
     }
-
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Comment published')
   },
 )
 
