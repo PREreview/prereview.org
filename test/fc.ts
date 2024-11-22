@@ -1458,6 +1458,15 @@ export const expectedCommandForUser = (): fc.Arbitrary<Comments.ExpectedCommandF
     expectedToPublishComment(),
   )
 
+export const inputForCommentZenodoRecord = (): fc.Arbitrary<Comments.InputForCommentZenodoRecord> =>
+  fc.record({
+    authorId: orcid(),
+    competingInterests: maybe(nonEmptyString()),
+    comment: html(),
+    persona: constantFrom('public', 'pseudonym'),
+    prereviewId: fc.integer(),
+  })
+
 // https://github.com/gcanti/fp-ts/issues/1680
 type EndsWith<Full extends string, End extends string> = string extends Full
   ? string extends End

@@ -49,7 +49,7 @@ export class CreateRecordOnZenodoForComment extends Context.Tag('CreateRecordOnZ
   (comment: InputForCommentZenodoRecord) => Effect.Effect<[Doi, number], UnableToAssignADoi>
 >() {}
 
-interface InputForCommentZenodoRecord {
+export interface InputForCommentZenodoRecord {
   readonly authorId: Orcid
   readonly competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   readonly comment: Html

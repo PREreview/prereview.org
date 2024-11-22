@@ -6,6 +6,7 @@ import {
   DoesUserHaveAVerifiedEmailAddress,
   GetComment,
   HandleCommentCommand,
+  type InputForCommentZenodoRecord,
   PublishCommentWithADoi,
   UnableToHandleCommand,
 } from './Context.js'
@@ -42,9 +43,12 @@ export const CheckIfUserHasAVerifiedEmailAddress = (
     )
   })
 
-export const AssignCommentADoiWhenPublicationWasRequested = (
-  commentId: Uuid.Uuid,
-): Effect.Effect<void, ToDo, GetComment | HandleCommentCommand | CreateRecordOnZenodoForComment> =>
+export const AssignCommentADoiWhenPublicationWasRequested = ({
+  commentId,
+}: {
+  commentId: Uuid.Uuid
+  inputForCommentZenodoRecord: InputForCommentZenodoRecord
+}): Effect.Effect<void, ToDo, GetComment | HandleCommentCommand | CreateRecordOnZenodoForComment> =>
   Effect.gen(function* () {
     const getComment = yield* GetComment
     const handleCommand = yield* HandleCommentCommand

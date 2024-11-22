@@ -1,6 +1,8 @@
 import { Array, Either, Equal, Option, pipe, Record } from 'effect'
-import type { Orcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
+import { html } from '../html.js'
 import type { Uuid } from '../types/index.js'
+import type { InputForCommentZenodoRecord } from './Context.js'
 import * as Errors from './Errors.js'
 import type { CommentEvent } from './Events.js'
 import { EvolveComment } from './Evolve.js'
@@ -125,8 +127,18 @@ export const GetNextExpectedCommandForUserOnAComment =
 
 export const GetACommentInNeedOfADoi = (
   events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
-): Option.Option<Uuid.Uuid> => {
+): Option.Option<{
+  commentId: Uuid.Uuid
+  inputForCommentZenodoRecord: InputForCommentZenodoRecord
+}> => {
   const hasADoi = new Set()
+  const stubbedData: InputForCommentZenodoRecord = {
+    authorId: Orcid('0000-0002-1825-0097'),
+    competingInterests: Option.none(),
+    comment: html``,
+    persona: 'public',
+    prereviewId: 0,
+  }
 
   for (const { event, resourceId } of events.toReversed()) {
     if (event._tag === 'DoiWasAssigned') {
@@ -135,7 +147,7 @@ export const GetACommentInNeedOfADoi = (
     }
 
     if (event._tag === 'CommentPublicationWasRequested' && !hasADoi.has(resourceId)) {
-      return Option.some(resourceId)
+      return Option.some({ commentId: resourceId, inputForCommentZenodoRecord: stubbedData })
     }
   }
 

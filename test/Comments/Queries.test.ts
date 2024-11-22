@@ -335,9 +335,17 @@ describe('GetACommentInNeedOfADoi', () => {
   test('finds a comment in need of a DOI', () => {
     const events = [...eventsNeededToRequestPublication, commentPublicationWasRequested]
 
+    const stubbedData: Comments.InputForCommentZenodoRecord = {
+      authorId: Orcid('0000-0002-1825-0097'),
+      competingInterests: Option.none(),
+      comment: html``,
+      persona: 'public',
+      prereviewId: 0,
+    }
+
     const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
 
-    expect(actual).toStrictEqual(Option.some(resourceId))
+    expect(actual).toStrictEqual(Option.some({ commentId: resourceId, inputForCommentZenodoRecord: stubbedData }))
   })
 
   test.todo('finds the oldest comment in need of a DOI when multiple comments need a DOI')

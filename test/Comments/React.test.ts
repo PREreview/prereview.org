@@ -105,14 +105,17 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
 })
 
 describe('AssignCommentADoiWhenPublicationWasRequested', () => {
-  test.prop([fc.uuid(), fc.commentBeingPublished(), fc.integer(), fc.doi()])(
+  test.prop([fc.uuid(), fc.inputForCommentZenodoRecord(), fc.commentBeingPublished(), fc.integer(), fc.doi()])(
     'assigns a DOI',
-    (commentId, comment, id, doi) =>
+    (commentId, inputForCommentZenodoRecord, comment, id, doi) =>
       Effect.gen(function* () {
         const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
         yield* Effect.provideService(
-          _.AssignCommentADoiWhenPublicationWasRequested(commentId),
+          _.AssignCommentADoiWhenPublicationWasRequested({
+            commentId,
+            inputForCommentZenodoRecord,
+          }),
           Comments.HandleCommentCommand,
           handleCommentCommand,
         )
@@ -129,58 +132,67 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
       ),
   )
 
-  test.prop([fc.uuid(), fc.commentBeingPublished(), fc.integer(), fc.doi(), fc.commentError()])(
-    "when the comment can't be updated",
-    (commentId, comment, id, doi, error) =>
-      Effect.gen(function* () {
-        const actual = yield* pipe(
-          _.AssignCommentADoiWhenPublicationWasRequested(commentId),
-          Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
-          Effect.either,
-        )
-
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
-      }).pipe(
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
-      ),
-  )
-
-  test.prop([fc.uuid(), fc.commentBeingPublished()])("when a DOI can't be assigned", (commentId, comment) =>
+  test.prop([
+    fc.uuid(),
+    fc.inputForCommentZenodoRecord(),
+    fc.commentBeingPublished(),
+    fc.integer(),
+    fc.doi(),
+    fc.commentError(),
+  ])("when the comment can't be updated", (commentId, inputForCommentZenodoRecord, comment, id, doi, error) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
-        _.AssignCommentADoiWhenPublicationWasRequested(commentId),
-        Effect.provideService(Comments.CreateRecordOnZenodoForComment, () =>
-          Effect.fail(new Comments.UnableToAssignADoi({})),
-        ),
-        Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
-        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+        _.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),
+        Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
         Effect.either,
       )
 
-      expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
+      expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
     }).pipe(
       Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+      Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
   )
 
-  test.prop([fc.uuid()])("when the comment can't be read", commentId =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(
-        _.AssignCommentADoiWhenPublicationWasRequested(commentId),
-        Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
-        Effect.provideService(Comments.CreateRecordOnZenodoForComment, shouldNotBeCalled),
-        Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
-        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
-        Effect.either,
-      )
+  test.prop([fc.uuid(), fc.inputForCommentZenodoRecord(), fc.commentBeingPublished()])(
+    "when a DOI can't be assigned",
+    (commentId, inputForCommentZenodoRecord, comment) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(
+          _.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),
+          Effect.provideService(Comments.CreateRecordOnZenodoForComment, () =>
+            Effect.fail(new Comments.UnableToAssignADoi({})),
+          ),
+          Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
+          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+          Effect.either,
+        )
 
-      expect(actual).toStrictEqual(Either.left(new Comments.UnableToQuery({})))
-    }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+        expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
+      }).pipe(
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provide(TestContext.TestContext),
+        Effect.runPromise,
+      ),
+  )
+
+  test.prop([fc.uuid(), fc.inputForCommentZenodoRecord()])(
+    "when the comment can't be read",
+    (commentId, inputForCommentZenodoRecord) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(
+          _.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),
+          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.CreateRecordOnZenodoForComment, shouldNotBeCalled),
+          Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
+          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+          Effect.either,
+        )
+
+        expect(actual).toStrictEqual(Either.left(new Comments.UnableToQuery({})))
+      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
   )
 })
 
