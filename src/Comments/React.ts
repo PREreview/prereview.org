@@ -1,4 +1,4 @@
-import { Effect } from 'effect'
+import { Effect, pipe } from 'effect'
 import type { Uuid } from '../types/index.js'
 import { ConfirmExistenceOfVerifiedEmailAddress, MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.js'
 import {
@@ -8,8 +8,10 @@ import {
   HandleCommentCommand,
   type InputForCommentZenodoRecord,
   PublishCommentWithADoi,
+  type UnableToAssignADoi,
   UnableToHandleCommand,
 } from './Context.js'
+import type { CommentError } from './Errors.js'
 import type { DoiWasAssigned } from './Events.js'
 
 type ToDo = unknown
@@ -49,19 +51,24 @@ export const AssignCommentADoiWhenPublicationWasRequested = ({
 }: {
   commentId: Uuid.Uuid
   inputForCommentZenodoRecord: InputForCommentZenodoRecord
-}): Effect.Effect<void, ToDo, HandleCommentCommand | CreateRecordOnZenodoForComment> =>
+}): Effect.Effect<
+  void,
+  UnableToHandleCommand | CommentError | UnableToAssignADoi,
+  HandleCommentCommand | CreateRecordOnZenodoForComment
+> =>
   Effect.gen(function* () {
     const handleCommand = yield* HandleCommentCommand
     const createRecordOnZenodoForComment = yield* CreateRecordOnZenodoForComment
 
-    const [doi, id] = yield* createRecordOnZenodoForComment(inputForCommentZenodoRecord)
-
-    yield* Effect.mapError(
-      handleCommand({
-        commentId,
-        command: new MarkDoiAsAssigned({ doi, id }),
-      }),
-      error => (error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error),
+    yield* pipe(
+      inputForCommentZenodoRecord,
+      createRecordOnZenodoForComment,
+      Effect.andThen(([doi, id]) =>
+        handleCommand({
+          commentId,
+          command: new MarkDoiAsAssigned({ doi, id }),
+        }),
+      ),
     )
   })
 

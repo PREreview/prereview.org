@@ -1,4 +1,4 @@
-import { Array, Effect, flow, Layer, Match, pipe, PubSub, Queue, Schedule } from 'effect'
+import { Array, Effect, Layer, Match, pipe, PubSub, Queue, Schedule } from 'effect'
 import { EventStore } from '../Context.js'
 import { RequiresAVerifiedEmailAddress } from '../feature-flags.js'
 import type { Uuid } from '../types/index.js'
@@ -139,13 +139,11 @@ export const ReactToCommentEvents: Layer.Layer<
             eventStore.getAllEvents,
             Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
             Effect.flatten,
-            Effect.andThen(
-              flow(
-                React.AssignCommentADoiWhenPublicationWasRequested,
-                Effect.tapError(() => Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), {})),
-              ),
+            Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
+            Effect.catchTag('NoSuchElementException', () => Effect.void),
+            Effect.catchAll(error =>
+              Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), { error }),
             ),
-            Effect.catchAll(() => Effect.void),
           ),
           Schedule.fixed('1 minute'),
         ),
