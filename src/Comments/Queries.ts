@@ -1,4 +1,4 @@
-import { Array, Either, Equal, Option, pipe, Record } from 'effect'
+import { Array, Data, Either, Equal, Option, pipe, Record } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { InputForCommentZenodoRecord } from './Context.js'
@@ -161,12 +161,17 @@ const buildInputForCommentZenodoRecord = (
   return Option.all({ authorId, prereviewId, persona, comment, competingInterests })
 }
 
+class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents') {}
+
 export const GetACommentInNeedOfADoi = (
   events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
-): Option.Option<{
-  commentId: Uuid.Uuid
-  inputForCommentZenodoRecord: InputForCommentZenodoRecord
-}> => {
+): Either.Either<
+  Option.Option<{
+    commentId: Uuid.Uuid
+    inputForCommentZenodoRecord: InputForCommentZenodoRecord
+  }>,
+  UnexpectedSequenceOfEvents
+> => {
   const hasADoi = new Set()
 
   for (const { event, resourceId } of events.toReversed()) {
@@ -176,12 +181,21 @@ export const GetACommentInNeedOfADoi = (
     }
 
     if (event._tag === 'CommentPublicationWasRequested' && !hasADoi.has(resourceId)) {
-      return Option.all({
-        commentId: Option.some(resourceId),
-        inputForCommentZenodoRecord: buildInputForCommentZenodoRecord(events, resourceId),
-      })
+      return pipe(
+        buildInputForCommentZenodoRecord(events, resourceId),
+        Option.match({
+          onNone: () => Either.left(new UnexpectedSequenceOfEvents()),
+          onSome: inputForCommentZenodoRecord =>
+            Either.right(
+              Option.some({
+                commentId: resourceId,
+                inputForCommentZenodoRecord,
+              }),
+            ),
+        }),
+      )
     }
   }
 
-  return Option.none()
+  return Either.right(Option.none())
 }

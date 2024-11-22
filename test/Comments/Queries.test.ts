@@ -346,7 +346,9 @@ describe('GetACommentInNeedOfADoi', () => {
     const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
 
     expect(actual).toStrictEqual(
-      Option.some({ commentId: resourceId, inputForCommentZenodoRecord: expectedInputForCommentZenodoRecord }),
+      Either.right(
+        Option.some({ commentId: resourceId, inputForCommentZenodoRecord: expectedInputForCommentZenodoRecord }),
+      ),
     )
   })
 
@@ -357,7 +359,7 @@ describe('GetACommentInNeedOfADoi', () => {
 
     const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
 
-    expect(actual).toStrictEqual(Option.none())
+    expect(actual).toStrictEqual(Either.right(Option.none()))
   })
 
   test('ignores comments for which publication has not been requested', () => {
@@ -365,6 +367,6 @@ describe('GetACommentInNeedOfADoi', () => {
       Array.map(eventsNeededToRequestPublication, event => ({ event, resourceId })),
     )
 
-    expect(actual).toStrictEqual(Option.none())
+    expect(actual).toStrictEqual(Either.right(Option.none()))
   })
 })

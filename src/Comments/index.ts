@@ -138,6 +138,7 @@ export const ReactToCommentEvents: Layer.Layer<
           pipe(
             eventStore.getAllEvents,
             Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
+            Effect.flatten,
             Effect.andThen(
               flow(
                 React.AssignCommentADoiWhenPublicationWasRequested,
@@ -165,6 +166,7 @@ export const ReactToCommentEvents: Layer.Layer<
                 pipe(
                   eventStore.getAllEvents,
                   Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
+                  Effect.flatten,
                   Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
                   Effect.tapError(() =>
                     Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId }),
