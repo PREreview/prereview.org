@@ -162,15 +162,16 @@ const buildInputForCommentZenodoRecord = (
 }
 
 class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents') {}
+export class NoCommentsInNeedOfADoi extends Data.TaggedClass('NoCommentsInNeedOfADoi') {}
 
 export const GetACommentInNeedOfADoi = (
   events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
 ): Either.Either<
-  Option.Option<{
+  {
     commentId: Uuid.Uuid
     inputForCommentZenodoRecord: InputForCommentZenodoRecord
-  }>,
-  UnexpectedSequenceOfEvents
+  },
+  UnexpectedSequenceOfEvents | NoCommentsInNeedOfADoi
 > => {
   const hasADoi = new Set()
 
@@ -183,19 +184,14 @@ export const GetACommentInNeedOfADoi = (
     if (event._tag === 'CommentPublicationWasRequested' && !hasADoi.has(resourceId)) {
       return pipe(
         buildInputForCommentZenodoRecord(events, resourceId),
-        Option.match({
-          onNone: () => Either.left(new UnexpectedSequenceOfEvents()),
-          onSome: inputForCommentZenodoRecord =>
-            Either.right(
-              Option.some({
-                commentId: resourceId,
-                inputForCommentZenodoRecord,
-              }),
-            ),
-        }),
+        Either.fromOption(() => new UnexpectedSequenceOfEvents()),
+        Either.map(inputForCommentZenodoRecord => ({
+          commentId: resourceId,
+          inputForCommentZenodoRecord,
+        })),
       )
     }
   }
 
-  return Either.right(Option.none())
+  return Either.left(new NoCommentsInNeedOfADoi())
 }

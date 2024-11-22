@@ -138,9 +138,8 @@ export const ReactToCommentEvents: Layer.Layer<
           pipe(
             eventStore.getAllEvents,
             Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
-            Effect.flatten,
             Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
-            Effect.catchTag('NoSuchElementException', () => Effect.void),
+            Effect.catchTag('NoCommentsInNeedOfADoi', () => Effect.void),
             Effect.catchAll(error =>
               Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), { error }),
             ),
@@ -164,7 +163,6 @@ export const ReactToCommentEvents: Layer.Layer<
                 pipe(
                   eventStore.getAllEvents,
                   Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
-                  Effect.flatten,
                   Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
                   Effect.tapError(() =>
                     Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId }),
