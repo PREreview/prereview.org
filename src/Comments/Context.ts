@@ -1,12 +1,13 @@
 import type { Doi } from 'doi-ts'
-import { Context, Data, type Effect, type PubSub } from 'effect'
+import { Context, Data, type Effect, type Option, type PubSub } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
-import type { Uuid } from '../types/index.js'
+import type { Html } from '../html.js'
+import type { NonEmptyString, Uuid } from '../types/index.js'
 import type { CommentCommand } from './Commands.js'
 import type { CommentError } from './Errors.js'
 import type { CommentEvent } from './Events.js'
 import type * as Queries from './Queries.js'
-import type { CommentBeingPublished, CommentState } from './State.js'
+import type { CommentState } from './State.js'
 
 export class CommentEvents extends Context.Tag('CommentEvents')<
   CommentEvents,
@@ -45,8 +46,16 @@ export class HandleCommentCommand extends Context.Tag('HandleCommentCommand')<
 
 export class CreateRecordOnZenodoForComment extends Context.Tag('CreateRecordOnZenodoForComment')<
   CreateRecordOnZenodoForComment,
-  (comment: CommentBeingPublished) => Effect.Effect<[Doi, number], UnableToAssignADoi>
+  (comment: InputForCommentZenodoRecord) => Effect.Effect<[Doi, number], UnableToAssignADoi>
 >() {}
+
+interface InputForCommentZenodoRecord {
+  readonly authorId: Orcid
+  readonly competingInterests: Option.Option<NonEmptyString.NonEmptyString>
+  readonly comment: Html
+  readonly persona: 'public' | 'pseudonym'
+  readonly prereviewId: number
+}
 
 export class DoesUserHaveAVerifiedEmailAddress extends Context.Tag('DoesUserHaveAVerifiedEmailAddress')<
   DoesUserHaveAVerifiedEmailAddress,
