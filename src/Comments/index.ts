@@ -132,19 +132,14 @@ export const ReactToCommentEvents: Layer.Layer<
     const eventStore = yield* EventStore
     const dequeue = yield* PubSub.subscribe(commentEvents)
 
-    yield* Effect.fork(
-      Effect.repeat(
-        pipe(
-          eventStore.getAllEvents,
-          Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
-          Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
-          Effect.catchTag('NoCommentsInNeedOfADoi', () => Effect.void),
-          Effect.catchAll(error =>
-            Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), { error }),
-          ),
-        ),
-        Schedule.fixed('1 minute'),
-      ),
+    yield* pipe(
+      eventStore.getAllEvents,
+      Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
+      Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
+      Effect.catchTag('NoCommentsInNeedOfADoi', () => Effect.void),
+      Effect.catchAll(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), { error })),
+      Effect.repeat(Schedule.fixed('1 minute')),
+      Effect.fork,
     )
 
     yield* pipe(
