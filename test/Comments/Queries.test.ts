@@ -332,7 +332,7 @@ describe('GetACommentInNeedOfADoi', () => {
     codeOfConductWasAgreed,
   ]
 
-  test.failing('finds a comment in need of a DOI', () => {
+  test('finds a comment in need of a DOI', () => {
     const events = [...eventsNeededToRequestPublication, commentPublicationWasRequested]
 
     const expectedInputForCommentZenodoRecord: Comments.InputForCommentZenodoRecord = {

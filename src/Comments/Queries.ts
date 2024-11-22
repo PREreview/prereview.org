@@ -1,6 +1,5 @@
 import { Array, Either, Equal, Option, pipe, Record } from 'effect'
-import { Orcid } from 'orcid-id-ts'
-import { html } from '../html.js'
+import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { InputForCommentZenodoRecord } from './Context.js'
 import * as Errors from './Errors.js'
@@ -125,6 +124,43 @@ export const GetNextExpectedCommandForUserOnAComment =
     return Either.right(new ExpectedCommand.ExpectedToPublishComment({ commentId }))
   }
 
+const buildInputForCommentZenodoRecord = (
+  events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
+  commentId: Uuid.Uuid,
+) => {
+  const pertinentEvents = pipe(
+    events,
+    Array.filter(({ resourceId }) => resourceId === commentId),
+    Array.map(({ event }) => event),
+  )
+  const authorId = pipe(
+    pertinentEvents,
+    Array.findLast(event => event._tag === 'CommentWasStarted'),
+    Option.map(event => event.authorId),
+  )
+  const prereviewId = pipe(
+    pertinentEvents,
+    Array.findLast(event => event._tag === 'CommentWasStarted'),
+    Option.map(event => event.prereviewId),
+  )
+  const persona = pipe(
+    pertinentEvents,
+    Array.findLast(event => event._tag === 'PersonaWasChosen'),
+    Option.map(event => event.persona),
+  )
+  const comment = pipe(
+    pertinentEvents,
+    Array.findLast(event => event._tag === 'CommentWasEntered'),
+    Option.map(event => event.comment),
+  )
+  const competingInterests = pipe(
+    pertinentEvents,
+    Array.findLast(event => event._tag === 'CompetingInterestsWereDeclared'),
+    Option.map(event => event.competingInterests),
+  )
+  return Option.all({ authorId, prereviewId, persona, comment, competingInterests })
+}
+
 export const GetACommentInNeedOfADoi = (
   events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
 ): Option.Option<{
@@ -132,13 +168,6 @@ export const GetACommentInNeedOfADoi = (
   inputForCommentZenodoRecord: InputForCommentZenodoRecord
 }> => {
   const hasADoi = new Set()
-  const stubbedData: InputForCommentZenodoRecord = {
-    authorId: Orcid('0000-0002-1825-0097'),
-    competingInterests: Option.none(),
-    comment: html``,
-    persona: 'public',
-    prereviewId: 0,
-  }
 
   for (const { event, resourceId } of events.toReversed()) {
     if (event._tag === 'DoiWasAssigned') {
@@ -147,7 +176,10 @@ export const GetACommentInNeedOfADoi = (
     }
 
     if (event._tag === 'CommentPublicationWasRequested' && !hasADoi.has(resourceId)) {
-      return Option.some({ commentId: resourceId, inputForCommentZenodoRecord: stubbedData })
+      return Option.all({
+        commentId: Option.some(resourceId),
+        inputForCommentZenodoRecord: buildInputForCommentZenodoRecord(events, resourceId),
+      })
     }
   }
 
