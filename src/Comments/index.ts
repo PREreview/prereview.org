@@ -148,39 +148,28 @@ export const ReactToCommentEvents: Layer.Layer<
         ),
         pipe(
           Queue.take(dequeue),
+          Effect.tap(({ commentId }) => Effect.annotateLogsScoped({ commentId })),
           Effect.andThen(
             pipe(
               Match.type<{ commentId: Uuid.Uuid; event: CommentEvent }>(),
               Match.when({ event: { _tag: 'CommentWasStarted' } }, ({ commentId }) =>
-                pipe(
-                  React.CheckIfUserHasAVerifiedEmailAddress(commentId),
-                  Effect.tapError(() =>
-                    Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId }),
-                  ),
-                ),
+                React.CheckIfUserHasAVerifiedEmailAddress(commentId),
               ),
-              Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId }) =>
+              Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, () =>
                 pipe(
                   eventStore.getAllEvents,
                   Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
                   Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
-                  Effect.tapError(() =>
-                    Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId }),
-                  ),
                 ),
               ),
               Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ commentId, event }) =>
-                pipe(
-                  React.PublishCommentWhenDoiWasAssigned({ commentId, event }),
-                  Effect.tapError(() =>
-                    Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { commentId }),
-                  ),
-                ),
+                React.PublishCommentWhenDoiWasAssigned({ commentId, event }),
               ),
               Match.orElse(() => Effect.void),
             ),
           ),
-          Effect.catchAll(() => Effect.void),
+          Effect.catchAll(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { error })),
+          Effect.scoped,
           Effect.forever,
         ),
       ],
