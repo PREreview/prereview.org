@@ -132,48 +132,46 @@ export const ReactToCommentEvents: Layer.Layer<
     const eventStore = yield* EventStore
     const dequeue = yield* PubSub.subscribe(commentEvents)
 
-    yield* Effect.all(
-      [
-        Effect.repeat(
-          pipe(
-            eventStore.getAllEvents,
-            Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
-            Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
-            Effect.catchTag('NoCommentsInNeedOfADoi', () => Effect.void),
-            Effect.catchAll(error =>
-              Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), { error }),
-            ),
-          ),
-          Schedule.fixed('1 minute'),
-        ),
+    yield* Effect.fork(
+      Effect.repeat(
         pipe(
-          Queue.take(dequeue),
-          Effect.tap(({ commentId }) => Effect.annotateLogsScoped({ commentId })),
-          Effect.andThen(
+          eventStore.getAllEvents,
+          Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
+          Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
+          Effect.catchTag('NoCommentsInNeedOfADoi', () => Effect.void),
+          Effect.catchAll(error =>
+            Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), { error }),
+          ),
+        ),
+        Schedule.fixed('1 minute'),
+      ),
+    )
+
+    yield* pipe(
+      Queue.take(dequeue),
+      Effect.tap(({ commentId }) => Effect.annotateLogsScoped({ commentId })),
+      Effect.andThen(
+        pipe(
+          Match.type<{ commentId: Uuid.Uuid; event: CommentEvent }>(),
+          Match.when({ event: { _tag: 'CommentWasStarted' } }, ({ commentId }) =>
+            React.CheckIfUserHasAVerifiedEmailAddress(commentId),
+          ),
+          Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, () =>
             pipe(
-              Match.type<{ commentId: Uuid.Uuid; event: CommentEvent }>(),
-              Match.when({ event: { _tag: 'CommentWasStarted' } }, ({ commentId }) =>
-                React.CheckIfUserHasAVerifiedEmailAddress(commentId),
-              ),
-              Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, () =>
-                pipe(
-                  eventStore.getAllEvents,
-                  Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
-                  Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
-                ),
-              ),
-              Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ commentId, event }) =>
-                React.PublishCommentWhenDoiWasAssigned({ commentId, event }),
-              ),
-              Match.orElse(() => Effect.void),
+              eventStore.getAllEvents,
+              Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
+              Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
             ),
           ),
-          Effect.catchAll(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { error })),
-          Effect.scoped,
-          Effect.forever,
+          Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ commentId, event }) =>
+            React.PublishCommentWhenDoiWasAssigned({ commentId, event }),
+          ),
+          Match.orElse(() => Effect.void),
         ),
-      ],
-      { concurrency: 'unbounded' },
+      ),
+      Effect.catchAll(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { error })),
+      Effect.scoped,
+      Effect.forever,
     )
   }),
 )
