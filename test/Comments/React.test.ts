@@ -123,7 +123,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
         })
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(Comments.AssignCommentADoi, () => Effect.succeed([doi, id])),
+        Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -142,7 +142,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(Comments.AssignCommentADoi, () => Effect.succeed([doi, id])),
+        Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -152,7 +152,9 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.AssignCommentADoiWhenPublicationWasRequested(commentId),
-        Effect.provideService(Comments.AssignCommentADoi, () => Effect.fail(new Comments.UnableToAssignADoi({}))),
+        Effect.provideService(Comments.CreateRecordOnZenodoForComment, () =>
+          Effect.fail(new Comments.UnableToAssignADoi({})),
+        ),
         Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.either,
@@ -171,7 +173,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
       const actual = yield* pipe(
         _.AssignCommentADoiWhenPublicationWasRequested(commentId),
         Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
-        Effect.provideService(Comments.AssignCommentADoi, shouldNotBeCalled),
+        Effect.provideService(Comments.CreateRecordOnZenodoForComment, shouldNotBeCalled),
         Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.either,

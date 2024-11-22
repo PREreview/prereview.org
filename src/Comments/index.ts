@@ -3,8 +3,8 @@ import { EventStore } from '../Context.js'
 import { RequiresAVerifiedEmailAddress } from '../feature-flags.js'
 import type { Uuid } from '../types/index.js'
 import {
-  type AssignCommentADoi,
   CommentEvents,
+  type CreateRecordOnZenodoForComment,
   type DoesUserHaveAVerifiedEmailAddress,
   type GetComment,
   type GetNextExpectedCommandForUser,
@@ -124,7 +124,7 @@ export const ReactToCommentEvents: Layer.Layer<
   | GetComment
   | HandleCommentCommand
   | DoesUserHaveAVerifiedEmailAddress
-  | AssignCommentADoi
+  | CreateRecordOnZenodoForComment
   | PublishCommentWithADoi
 > = Layer.scopedDiscard(
   Effect.gen(function* () {

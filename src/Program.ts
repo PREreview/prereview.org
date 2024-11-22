@@ -123,8 +123,8 @@ const getContactEmailAddress = Layer.effect(
   }),
 )
 
-const assignCommentADoi = Layer.effect(
-  Comments.AssignCommentADoi,
+const createRecordOnZenodoForComment = Layer.effect(
+  Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
     const { legacyPrereviewApi, orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl, publicUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
@@ -272,7 +272,7 @@ const MigratorLive = LibsqlMigrator.layer({
 export const Program = pipe(
   Layer.mergeAll(WebApp, Comments.ReactToCommentEvents),
   Layer.provide(publishComment),
-  Layer.provide(assignCommentADoi),
+  Layer.provide(createRecordOnZenodoForComment),
   Layer.provide(getPrereview),
   Layer.provide(getPreprint),
   Layer.provide(doesUserHaveAVerifiedEmailAddress),

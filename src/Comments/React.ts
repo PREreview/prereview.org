@@ -2,7 +2,7 @@ import { Effect } from 'effect'
 import type { Uuid } from '../types/index.js'
 import { ConfirmExistenceOfVerifiedEmailAddress, MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.js'
 import {
-  AssignCommentADoi,
+  CreateRecordOnZenodoForComment,
   DoesUserHaveAVerifiedEmailAddress,
   GetComment,
   HandleCommentCommand,
@@ -44,11 +44,11 @@ export const CheckIfUserHasAVerifiedEmailAddress = (
 
 export const AssignCommentADoiWhenPublicationWasRequested = (
   commentId: Uuid.Uuid,
-): Effect.Effect<void, ToDo, GetComment | HandleCommentCommand | AssignCommentADoi> =>
+): Effect.Effect<void, ToDo, GetComment | HandleCommentCommand | CreateRecordOnZenodoForComment> =>
   Effect.gen(function* () {
     const getComment = yield* GetComment
     const handleCommand = yield* HandleCommentCommand
-    const assignCommentADoi = yield* AssignCommentADoi
+    const createRecordOnZenodoForComment = yield* CreateRecordOnZenodoForComment
 
     const comment = yield* getComment(commentId)
 
@@ -56,7 +56,7 @@ export const AssignCommentADoiWhenPublicationWasRequested = (
       return
     }
 
-    const [doi, id] = yield* assignCommentADoi(comment)
+    const [doi, id] = yield* createRecordOnZenodoForComment(comment)
 
     yield* Effect.mapError(
       handleCommand({

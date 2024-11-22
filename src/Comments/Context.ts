@@ -43,8 +43,8 @@ export class HandleCommentCommand extends Context.Tag('HandleCommentCommand')<
   }) => Effect.Effect<void, UnableToHandleCommand | CommentError>
 >() {}
 
-export class AssignCommentADoi extends Context.Tag('AssignCommentADoi')<
-  AssignCommentADoi,
+export class CreateRecordOnZenodoForComment extends Context.Tag('CreateRecordOnZenodoForComment')<
+  CreateRecordOnZenodoForComment,
   (comment: CommentBeingPublished) => Effect.Effect<[Doi, number], UnableToAssignADoi>
 >() {}
 
