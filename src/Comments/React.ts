@@ -45,22 +45,16 @@ export const CheckIfUserHasAVerifiedEmailAddress = (
 
 export const AssignCommentADoiWhenPublicationWasRequested = ({
   commentId,
+  inputForCommentZenodoRecord,
 }: {
   commentId: Uuid.Uuid
   inputForCommentZenodoRecord: InputForCommentZenodoRecord
-}): Effect.Effect<void, ToDo, GetComment | HandleCommentCommand | CreateRecordOnZenodoForComment> =>
+}): Effect.Effect<void, ToDo, HandleCommentCommand | CreateRecordOnZenodoForComment> =>
   Effect.gen(function* () {
-    const getComment = yield* GetComment
     const handleCommand = yield* HandleCommentCommand
     const createRecordOnZenodoForComment = yield* CreateRecordOnZenodoForComment
 
-    const comment = yield* getComment(commentId)
-
-    if (comment._tag !== 'CommentBeingPublished') {
-      return
-    }
-
-    const [doi, id] = yield* createRecordOnZenodoForComment(comment)
+    const [doi, id] = yield* createRecordOnZenodoForComment(inputForCommentZenodoRecord)
 
     yield* Effect.mapError(
       handleCommand({
