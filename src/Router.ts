@@ -15,7 +15,7 @@ import * as Routes from './routes.js'
 import { TemplatePage } from './TemplatePage.js'
 import * as WriteCommentFlow from './WriteCommentFlow/index.js'
 
-export const Router = pipe(
+const WriteCommentFlowRouter = pipe(
   HttpRouter.empty,
   HttpRouter.get(
     Routes.WriteComment.path,
@@ -154,6 +154,14 @@ export const Router = pipe(
     ),
   ),
   HttpRouter.get(
+    Routes.WriteCommentVerifyEmailAddress.path,
+    pipe(
+      HttpRouter.schemaParams(Routes.WriteCommentVerifyEmailAddress.schema),
+      Effect.andThen(WriteCommentFlow.VerifyEmailAddress),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
+  HttpRouter.get(
     Routes.WriteCommentCheck.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentCheck.schema),
@@ -185,6 +193,11 @@ export const Router = pipe(
       Effect.andThen(toHttpServerResponse),
     ),
   ),
+)
+
+export const Router = pipe(
+  HttpRouter.empty,
+  HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
     HttpMiddleware.make(
       Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
