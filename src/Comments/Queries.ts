@@ -161,7 +161,7 @@ const buildInputForCommentZenodoRecord = (
   return Option.all({ authorId, prereviewId, persona, comment, competingInterests })
 }
 
-class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents') {}
+export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents') {}
 export class NoCommentsInNeedOfADoi extends Data.TaggedClass('NoCommentsInNeedOfADoi') {}
 
 export const GetACommentInNeedOfADoi = (

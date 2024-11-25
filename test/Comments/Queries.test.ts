@@ -350,7 +350,18 @@ describe('GetACommentInNeedOfADoi', () => {
     )
   })
 
-  test.todo("returns an UnexpectedSequenceOfEvents when details aren't complete")
+  test.each([
+    ['no CommentWasStarted', [commentWasEntered, personaWasChosen, competingInterestsWereDeclared]],
+    ['no CommentWasEntered', [commentWasStarted, personaWasChosen, competingInterestsWereDeclared]],
+    ['no PersonaWasChosen', [commentWasStarted, commentWasEntered, competingInterestsWereDeclared]],
+    ['no CompetingInterestsWereDeclared', [commentWasStarted, commentWasEntered, personaWasChosen]],
+  ])('returns an UnexpectedSequenceOfEvents when %s', (_name, events) => {
+    const actual = _.GetACommentInNeedOfADoi(
+      Array.map([...events, commentPublicationWasRequested], event => ({ event, resourceId })),
+    )
+
+    expect(actual).toStrictEqual(Either.left(new _.UnexpectedSequenceOfEvents()))
+  })
 
   test.todo('finds the oldest comment in need of a DOI when multiple comments need a DOI')
 
