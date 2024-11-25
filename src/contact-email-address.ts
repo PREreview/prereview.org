@@ -21,6 +21,11 @@ export class GetContactEmailAddress extends Context.Tag('GetContactEmailAddress'
   (orcid: Orcid) => Effect.Effect<ContactEmailAddress, ContactEmailAddressIsNotFound | ContactEmailAddressIsUnavailable>
 >() {}
 
+export class SaveContactEmailAddress extends Context.Tag('SaveContactEmailAddress')<
+  SaveContactEmailAddress,
+  (orcid: Orcid, ContactEmailAddress: ContactEmailAddress) => Effect.Effect<void, ContactEmailAddressIsUnavailable>
+>() {}
+
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
 
 export class VerifiedContactEmailAddress extends Data.TaggedClass('VerifiedContactEmailAddress')<{

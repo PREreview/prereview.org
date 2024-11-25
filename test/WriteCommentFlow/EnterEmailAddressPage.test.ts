@@ -6,6 +6,7 @@ import * as Comments from '../../src/Comments/index.js'
 import * as ContactEmailAddress from '../../src/contact-email-address.js'
 import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
+import { Uuid } from '../../src/types/index.js'
 import * as _ from '../../src/WriteCommentFlow/EnterEmailAddressPage/index.js'
 import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
 import * as fc from '../fc.js'
@@ -388,33 +389,51 @@ describe('EnterEmailAddressPage', () => {
 describe('EnterEmailAddressSubmission', () => {
   describe('when there is a user', () => {
     describe('when the comment is in progress', () => {
-      test.prop([
-        fc.uuid(),
-        fc
-          .commentInProgress()
-          .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-        fc.supportedLocale(),
-        fc.record({ emailAddress: fc.emailAddress() }),
-      ])('when there is an email address', (commentId, [comment, user], locale, body) =>
-        Effect.gen(function* () {
-          const actual = yield* _.EnterEmailAddressSubmission({ body, commentId })
+      describe('when there is an email address', () => {
+        test.prop([
+          fc.uuid(),
+          fc
+            .commentInProgress()
+            .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+          fc.supportedLocale(),
+          fc.record({ emailAddress: fc.emailAddress() }),
+          fc.uuid(),
+        ])('when there is an email address', (commentId, [comment, user], locale, body, uuid) =>
+          Effect.gen(function* () {
+            const saveContactEmailAddress = jest.fn<typeof ContactEmailAddress.SaveContactEmailAddress.Service>(
+              _ => Effect.void,
+            )
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
-        ),
-      )
+            const actual = yield* _.EnterEmailAddressSubmission({ body, commentId }).pipe(
+              Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, saveContactEmailAddress),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.SERVICE_UNAVAILABLE,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+            expect(saveContactEmailAddress).toHaveBeenCalledWith(
+              user.orcid,
+              new ContactEmailAddress.UnverifiedContactEmailAddress({
+                value: body.emailAddress,
+                verificationToken: uuid,
+              }),
+            )
+          }).pipe(
+            Effect.provideService(Locale, locale),
+            Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+            Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+            Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
+            Effect.provideService(LoggedInUser, user),
+            Effect.provide(TestContext.TestContext),
+            Effect.runPromise,
+          ),
+        )
+      })
 
       test.prop([
         fc.uuid(),
@@ -445,6 +464,8 @@ describe('EnterEmailAddressSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+          Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -471,6 +492,8 @@ describe('EnterEmailAddressSubmission', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -496,6 +519,8 @@ describe('EnterEmailAddressSubmission', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -521,6 +546,8 @@ describe('EnterEmailAddressSubmission', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -544,6 +571,8 @@ describe('EnterEmailAddressSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+          Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -572,6 +601,8 @@ describe('EnterEmailAddressSubmission', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -595,6 +626,8 @@ describe('EnterEmailAddressSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+          Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
           Effect.runPromise,
@@ -613,6 +646,8 @@ describe('EnterEmailAddressSubmission', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
+      Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+      Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),

@@ -5,7 +5,7 @@ import { Locale } from '../../Context.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
-import type { Uuid } from '../../types/index.js'
+import { Uuid } from '../../types/index.js'
 import { EnsureUserIsLoggedIn } from '../../user.js'
 import { RouteForCommand } from '../Routes.js'
 import * as EnterEmailAddressForm from './EnterEmailAddressForm.js'
@@ -135,7 +135,7 @@ export const EnterEmailAddressSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Locale
+  Comments.GetComment | ContactEmailAddress.SaveContactEmailAddress | Uuid.GenerateUuid | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -161,6 +161,17 @@ export const EnterEmailAddressSubmission = ({
             return MakeResponse({ commentId, form, locale })
           }
 
+          const generateUuid = yield* Uuid.GenerateUuid
+          const saveContactEmailAddress = yield* ContactEmailAddress.SaveContactEmailAddress
+
+          const verificationToken = yield* generateUuid
+          const contactEmailAddress = new ContactEmailAddress.UnverifiedContactEmailAddress({
+            value: form.emailAddress,
+            verificationToken,
+          })
+
+          yield* saveContactEmailAddress(user.orcid, contactEmailAddress)
+
           return havingProblemsPage
         }),
       ),
@@ -177,6 +188,7 @@ export const EnterEmailAddressSubmission = ({
     )
   }).pipe(
     Effect.catchTags({
+      ContactEmailAddressIsUnavailable: () => Effect.succeed(havingProblemsPage),
       UnableToQuery: () => Effect.succeed(havingProblemsPage),
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterEmailAddress.href({ commentId }) })),

@@ -123,6 +123,29 @@ const getContactEmailAddress = Layer.effect(
   }),
 )
 
+const saveContactEmailAddress = Layer.effect(
+  ContactEmailAddress.SaveContactEmailAddress,
+  Effect.gen(function* () {
+    const { contactEmailAddressStore } = yield* ExpressConfig
+    const logger = yield* DeprecatedLoggerEnv
+
+    return (orcid, contactEmailAddress) =>
+      pipe(
+        FptsToEffect.readerTaskEither(Keyv.saveContactEmailAddress(orcid, contactEmailAddress), {
+          contactEmailAddressStore,
+          ...logger,
+        }),
+        Effect.mapError(
+          flow(
+            Match.value,
+            Match.when('unavailable', () => new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
+            Match.exhaustive,
+          ),
+        ),
+      )
+  }),
+)
+
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
@@ -277,6 +300,7 @@ export const Program = pipe(
   Layer.provide(getPreprint),
   Layer.provide(doesUserHaveAVerifiedEmailAddress),
   Layer.provide(getContactEmailAddress),
+  Layer.provide(saveContactEmailAddress),
   Layer.provide(Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand)),
   Layer.provide(Layer.effect(Comments.GetNextExpectedCommandForUser, Comments.makeGetNextExpectedCommandForUser)),
   Layer.provide(
