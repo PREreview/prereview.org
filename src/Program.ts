@@ -208,7 +208,7 @@ const createRecordOnZenodoForComment = Layer.effect(
 )
 
 const publishComment = Layer.effect(
-  Comments.PublishCommentWithADoi,
+  Comments.PublishCommentOnZenodo,
   Effect.gen(function* () {
     const { zenodoApiKey, zenodoUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch

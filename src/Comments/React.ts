@@ -7,7 +7,7 @@ import {
   GetComment,
   HandleCommentCommand,
   type InputForCommentZenodoRecord,
-  PublishCommentWithADoi,
+  PublishCommentOnZenodo,
   type UnableToAssignADoi,
   UnableToHandleCommand,
 } from './Context.js'
@@ -78,12 +78,12 @@ export const PublishCommentWhenDoiWasAssigned = ({
 }: {
   commentId: Uuid.Uuid
   event: DoiWasAssigned
-}): Effect.Effect<void, ToDo, HandleCommentCommand | PublishCommentWithADoi> =>
+}): Effect.Effect<void, ToDo, HandleCommentCommand | PublishCommentOnZenodo> =>
   Effect.gen(function* () {
     const handleCommand = yield* HandleCommentCommand
-    const publishComment = yield* PublishCommentWithADoi
+    const publishCommentOnZenodo = yield* PublishCommentOnZenodo
 
-    yield* publishComment(event.id)
+    yield* publishCommentOnZenodo(event.id)
 
     yield* Effect.mapError(
       handleCommand({

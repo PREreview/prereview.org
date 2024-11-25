@@ -158,7 +158,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
           Effect.provideService(Comments.CreateRecordOnZenodoForComment, () =>
             Effect.fail(new Comments.UnableToAssignADoi({})),
           ),
-          Effect.provideService(Comments.PublishCommentWithADoi, shouldNotBeCalled),
+          Effect.provideService(Comments.PublishCommentOnZenodo, shouldNotBeCalled),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.either,
         )
@@ -184,7 +184,7 @@ describe('PublishCommentWhenDoiWasAssigned', () => {
         command: new Comments.MarkCommentAsPublished(),
       })
     }).pipe(
-      Effect.provideService(Comments.PublishCommentWithADoi, () => Effect.void),
+      Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,
     ),
@@ -202,7 +202,7 @@ describe('PublishCommentWhenDoiWasAssigned', () => {
 
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
       }).pipe(
-        Effect.provideService(Comments.PublishCommentWithADoi, () => Effect.void),
+        Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -212,7 +212,7 @@ describe('PublishCommentWhenDoiWasAssigned', () => {
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.PublishCommentWhenDoiWasAssigned({ commentId, event }),
-        Effect.provideService(Comments.PublishCommentWithADoi, () =>
+        Effect.provideService(Comments.PublishCommentOnZenodo, () =>
           Effect.fail(new Comments.UnableToPublishComment({})),
         ),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),

@@ -10,7 +10,7 @@ import {
   type GetNextExpectedCommandForUser,
   type GetNextExpectedCommandForUserOnAComment,
   type HandleCommentCommand,
-  type PublishCommentWithADoi,
+  type PublishCommentOnZenodo,
   UnableToHandleCommand,
   UnableToQuery,
 } from './Context.js'
@@ -125,7 +125,7 @@ export const ReactToCommentEvents: Layer.Layer<
   | HandleCommentCommand
   | DoesUserHaveAVerifiedEmailAddress
   | CreateRecordOnZenodoForComment
-  | PublishCommentWithADoi
+  | PublishCommentOnZenodo
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const commentEvents = yield* CommentEvents

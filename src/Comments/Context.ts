@@ -62,8 +62,8 @@ export class DoesUserHaveAVerifiedEmailAddress extends Context.Tag('DoesUserHave
   (orcid: Orcid) => Effect.Effect<boolean, UnableToQuery>
 >() {}
 
-export class PublishCommentWithADoi extends Context.Tag('PublishCommentWithADoi')<
-  PublishCommentWithADoi,
+export class PublishCommentOnZenodo extends Context.Tag('PublishCommentOnZenodo')<
+  PublishCommentOnZenodo,
   (commentId: number) => Effect.Effect<void, UnableToPublishComment>
 >() {}
 
