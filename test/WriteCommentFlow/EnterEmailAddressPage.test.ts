@@ -426,7 +426,6 @@ describe('EnterEmailAddressSubmission', () => {
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-            Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
             Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
             Effect.provideService(LoggedInUser, user),
             Effect.provide(TestContext.TestContext),
