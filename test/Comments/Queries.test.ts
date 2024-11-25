@@ -363,7 +363,36 @@ describe('GetACommentInNeedOfADoi', () => {
     expect(actual).toStrictEqual(Either.left(new _.UnexpectedSequenceOfEvents()))
   })
 
-  test.todo('finds the oldest comment in need of a DOI when multiple comments need a DOI')
+  test.prop([
+    fc.nonEmptyArray(fc.uuid().filter(otherResourceId => resourceId !== otherResourceId)).map(resourceIds =>
+      Array.flatMap(resourceIds, resourceId =>
+        Array.map([...eventsNeededToRequestPublication, commentPublicationWasRequested], event => ({
+          event,
+          resourceId,
+        })),
+      ),
+    ),
+  ])('finds the newest comment in need of a DOI when multiple comments need a DOI', otherEvents => {
+    const expectedInputForCommentZenodoRecord: Comments.InputForCommentZenodoRecord = {
+      authorId: commentWasStarted.authorId,
+      prereviewId: commentWasStarted.prereviewId,
+      comment: commentWasEntered.comment,
+      persona: personaWasChosen.persona,
+      competingInterests: competingInterestsWereDeclared.competingInterests,
+    }
+
+    const actual = _.GetACommentInNeedOfADoi(
+      Array.flatten([
+        Array.map(eventsNeededToRequestPublication, event => ({ event, resourceId })),
+        otherEvents,
+        Array.of({ event: commentPublicationWasRequested, resourceId }),
+      ]),
+    )
+
+    expect(actual).toStrictEqual(
+      Either.right({ commentId: resourceId, inputForCommentZenodoRecord: expectedInputForCommentZenodoRecord }),
+    )
+  })
 
   test('ignores comments that already have a DOI', () => {
     const events = [...eventsNeededToRequestPublication, commentPublicationWasRequested, doiWasAssigned]
