@@ -1,5 +1,5 @@
-import { Data, type Either } from 'effect'
-import type { EmailAddress } from '../../types/index.js'
+import { Data, Effect, Either, Schema } from 'effect'
+import { EmailAddress, NonEmptyString } from '../../types/index.js'
 
 export type EnterEmailAddressForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -16,3 +16,26 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   emailAddress: EmailAddress.EmailAddress
 }> {}
+
+export const fromBody = (body: unknown) =>
+  Effect.gen(function* () {
+    const base = yield* Effect.mapError(
+      Schema.decodeUnknown(EmailAddressBaseFieldSchema)(body),
+      () => new InvalidForm({ emailAddress: Either.left(new Missing()) }),
+    )
+
+    const { emailAddress } = yield* Effect.mapError(
+      Schema.decodeUnknown(EmailAddressFieldSchema)(body),
+      () => new InvalidForm({ emailAddress: Either.left(new Invalid({ value: base.emailAddress })) }),
+    )
+
+    return new CompletedForm({ emailAddress })
+  }).pipe(Effect.merge)
+
+const EmailAddressBaseFieldSchema = Schema.Struct({
+  emailAddress: NonEmptyString.NonEmptyStringSchema,
+})
+
+const EmailAddressFieldSchema = Schema.Struct({
+  emailAddress: EmailAddress.EmailAddressSchema,
+})

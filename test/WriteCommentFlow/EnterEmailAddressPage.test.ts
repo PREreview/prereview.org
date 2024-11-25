@@ -387,41 +387,81 @@ describe('EnterEmailAddressPage', () => {
 
 describe('EnterEmailAddressSubmission', () => {
   describe('when there is a user', () => {
-    test.prop([
-      fc.uuid(),
-      fc
-        .commentInProgress()
-        .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-    ])('when the comment is in progress', (commentId, [comment, user]) =>
-      Effect.gen(function* () {
-        const actual = yield* _.EnterEmailAddressSubmission({
-          commentId,
-        })
+    describe('when the comment is in progress', () => {
+      test.prop([
+        fc.uuid(),
+        fc
+          .commentInProgress()
+          .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+        fc.supportedLocale(),
+        fc.record({ emailAddress: fc.emailAddress() }),
+      ])('when there is an email address', (commentId, [comment, user], locale, body) =>
+        Effect.gen(function* () {
+          const actual = yield* _.EnterEmailAddressSubmission({ body, commentId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
-      ),
-    )
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.SERVICE_UNAVAILABLE,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provideService(Locale, locale),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
+      )
+
+      test.prop([
+        fc.uuid(),
+        fc
+          .commentInProgress()
+          .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+        fc.supportedLocale(),
+        fc.oneof(
+          fc.record({ emailAddress: fc.string().filter(string => !string.includes('@')) }, { withDeletedKeys: true }),
+          fc
+            .anything()
+            .filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'emailAddress'))),
+        ),
+      ])("when there isn't an email address", (commentId, [comment, user], locale, body) =>
+        Effect.gen(function* () {
+          const actual = yield* _.EnterEmailAddressSubmission({ body, commentId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'StreamlinePageResponse',
+            canonical: Routes.WriteCommentEnterEmailAddress.href({ commentId }),
+            status: StatusCodes.BAD_REQUEST,
+            title: expect.anything(),
+            nav: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'form',
+            js: ['error-summary.js'],
+          })
+        }).pipe(
+          Effect.provideService(Locale, locale),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
+      )
+    })
 
     test.prop([
       fc.uuid(),
       fc
         .commentReadyForPublishing()
         .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-    ])('when the comment is ready for publishing', (commentId, [comment, user]) =>
+      fc.supportedLocale(),
+      fc.anything(),
+    ])('when the comment is ready for publishing', (commentId, [comment, user], locale, body) =>
       Effect.gen(function* () {
-        const actual = yield* _.EnterEmailAddressSubmission({ commentId })
+        const actual = yield* _.EnterEmailAddressSubmission({ body, commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -429,6 +469,7 @@ describe('EnterEmailAddressSubmission', () => {
           location: Routes.WriteCommentCheck.href({ commentId }),
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -441,9 +482,11 @@ describe('EnterEmailAddressSubmission', () => {
       fc
         .commentPublished()
         .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-    ])('when the comment has been published', (commentId, [comment, user]) =>
+      fc.supportedLocale(),
+      fc.anything(),
+    ])('when the comment has been published', (commentId, [comment, user], locale, body) =>
       Effect.gen(function* () {
-        const actual = yield* _.EnterEmailAddressSubmission({ commentId })
+        const actual = yield* _.EnterEmailAddressSubmission({ body, commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -451,6 +494,7 @@ describe('EnterEmailAddressSubmission', () => {
           location: Routes.WriteCommentPublished.href({ commentId }),
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -463,9 +507,11 @@ describe('EnterEmailAddressSubmission', () => {
       fc
         .commentBeingPublished()
         .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-    ])('when the comment is being published', (commentId, [comment, user]) =>
+      fc.supportedLocale(),
+      fc.anything(),
+    ])('when the comment is being published', (commentId, [comment, user], locale, body) =>
       Effect.gen(function* () {
-        const actual = yield* _.EnterEmailAddressSubmission({ commentId })
+        const actual = yield* _.EnterEmailAddressSubmission({ body, commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -473,6 +519,7 @@ describe('EnterEmailAddressSubmission', () => {
           location: Routes.WriteCommentPublishing.href({ commentId }),
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -480,11 +527,11 @@ describe('EnterEmailAddressSubmission', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user()])(
+    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user(), fc.supportedLocale(), fc.anything()])(
       "when the comment hasn't been started",
-      (commentId, comment, user) =>
+      (commentId, comment, user, locale, body) =>
         Effect.gen(function* () {
-          const actual = yield* _.EnterEmailAddressSubmission({ commentId })
+          const actual = yield* _.EnterEmailAddressSubmission({ body, commentId })
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -495,6 +542,7 @@ describe('EnterEmailAddressSubmission', () => {
             js: [],
           })
         }).pipe(
+          Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -507,9 +555,11 @@ describe('EnterEmailAddressSubmission', () => {
       fc
         .tuple(fc.commentState(), fc.user())
         .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
-    ])('when the comment is by a different author', (commentId, [comment, user]) =>
+      fc.supportedLocale(),
+      fc.anything(),
+    ])('when the comment is by a different author', (commentId, [comment, user], locale, body) =>
       Effect.gen(function* () {
-        const actual = yield* _.EnterEmailAddressSubmission({ commentId })
+        const actual = yield* _.EnterEmailAddressSubmission({ body, commentId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -520,6 +570,7 @@ describe('EnterEmailAddressSubmission', () => {
           js: [],
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -527,36 +578,40 @@ describe('EnterEmailAddressSubmission', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.user()])("when the comment can't be loaded", (commentId, user) =>
-      Effect.gen(function* () {
-        const actual = yield* _.EnterEmailAddressSubmission({ commentId })
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.anything()])(
+      "when the comment can't be loaded",
+      (commentId, user, locale, body) =>
+        Effect.gen(function* () {
+          const actual = yield* _.EnterEmailAddressSubmission({ body, commentId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
-        Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
-      ),
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.SERVICE_UNAVAILABLE,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provideService(Locale, locale),
+          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
     )
   })
 
-  test.prop([fc.uuid()])("when there isn't a user", commentId =>
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.anything()])("when there isn't a user", (commentId, locale, body) =>
     Effect.gen(function* () {
-      const actual = yield* _.EnterEmailAddressSubmission({ commentId })
+      const actual = yield* _.EnterEmailAddressSubmission({ body, commentId })
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
         location: Routes.WriteCommentEnterEmailAddress.href({ commentId }),
       })
     }).pipe(
+      Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,

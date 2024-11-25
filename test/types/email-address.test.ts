@@ -1,5 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Either, Schema } from 'effect'
+import { ArrayFormatter } from 'effect/ParseResult'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../../src/types/email-address.js'
 import * as fc from '../fc.js'
@@ -30,6 +32,37 @@ describe('EmailAddressC', () => {
 
   test.prop([fc.emailAddress()])('encode', string => {
     const actual = _.EmailAddressC.encode(string)
+
+    expect(actual).toStrictEqual(string)
+  })
+})
+
+describe('EmailAddressSchema', () => {
+  describe('decode', () => {
+    test.prop([fc.emailAddress()])('with an email address', string => {
+      const actual = Schema.decodeSync(_.EmailAddressSchema)(string)
+
+      expect(actual).toStrictEqual(string)
+    })
+
+    test.prop([fc.string().filter(string => !string.includes('.') || !string.includes('@') || /\s/g.test(string))])(
+      'with a non-email address',
+      string => {
+        const actual = Either.mapLeft(Schema.decodeEither(_.EmailAddressSchema)(string), ArrayFormatter.formatErrorSync)
+
+        expect(actual).toStrictEqual(Either.left([expect.objectContaining({ message: 'not an email address' })]))
+      },
+    )
+
+    test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
+      const actual = Schema.decodeUnknownEither(_.EmailAddressSchema)(value)
+
+      expect(actual).toStrictEqual(Either.left(expect.anything()))
+    })
+  })
+
+  test.prop([fc.emailAddress()])('encode', string => {
+    const actual = Schema.encodeSync(_.EmailAddressSchema)(string)
 
     expect(actual).toStrictEqual(string)
   })

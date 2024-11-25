@@ -141,6 +141,14 @@ export const Router = pipe(
     Routes.WriteCommentEnterEmailAddress.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentEnterEmailAddress.schema),
+      Effect.bind('body', () =>
+        Effect.gen(function* () {
+          const request = yield* HttpServerRequest.HttpServerRequest
+          const form = yield* request.urlParamsBody
+
+          return Record.fromEntries(form)
+        }),
+      ),
       Effect.andThen(WriteCommentFlow.EnterEmailAddressSubmission),
       Effect.andThen(toHttpServerResponse),
     ),

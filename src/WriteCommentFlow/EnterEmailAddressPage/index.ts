@@ -127,13 +127,15 @@ export const EnterEmailAddressPage = ({
   )
 
 export const EnterEmailAddressSubmission = ({
+  body,
   commentId,
 }: {
+  body: unknown
   commentId: Uuid.Uuid
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment
+  Comments.GetComment | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -146,10 +148,22 @@ export const EnterEmailAddressSubmission = ({
       return pageNotFound
     }
 
+    const locale = yield* Locale
+
     return yield* pipe(
       Match.value(comment),
       Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
-      Match.tag('CommentInProgress', () => Effect.succeed(havingProblemsPage)),
+      Match.tag('CommentInProgress', () =>
+        Effect.gen(function* () {
+          const form = yield* EnterEmailAddressForm.fromBody(body)
+
+          if (form._tag === 'InvalidForm') {
+            return MakeResponse({ commentId, form, locale })
+          }
+
+          return havingProblemsPage
+        }),
+      ),
       Match.tag('CommentReadyForPublishing', () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
       ),
