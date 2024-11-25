@@ -350,6 +350,8 @@ describe('GetACommentInNeedOfADoi', () => {
     )
   })
 
+  test.todo("returns an UnexpectedSequenceOfEvents when details aren't complete")
+
   test.todo('finds the oldest comment in need of a DOI when multiple comments need a DOI')
 
   test('ignores comments that already have a DOI', () => {
