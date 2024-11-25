@@ -1,6 +1,6 @@
-import { Either, Match, pipe } from 'effect'
+import { Either, Function, identity, Match, pipe } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import { html, plainText } from '../../html.js'
+import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
@@ -18,7 +18,13 @@ export const EnterEmailAddressPage = ({
 }) =>
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
-    title: form._tag === 'InvalidForm' ? plainText`Error: Contact details` : plainText`Contact details`,
+    title: plainText(
+      translate(
+        locale,
+        'write-comment-flow',
+        'contactDetailsTitle',
+      )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
+    ),
     nav: html`
       <a href="${Routes.WriteCommentCodeOfConduct.href({ commentId })}" class="back"
         >${translate(locale, 'write-comment-flow', 'back')()}</a
@@ -37,10 +43,15 @@ export const EnterEmailAddressPage = ({
                           <a href="#email-address">
                             ${pipe(
                               Match.value(form.emailAddress.left),
-                              Match.tag('Missing', () => html`Enter your email address`),
-                              Match.tag(
-                                'Invalid',
-                                () => html`Enter an email address in the correct format, like name@example.com`,
+                              Match.tag('Missing', () =>
+                                translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')({ error: () => '' }),
+                              ),
+                              Match.tag('Invalid', () =>
+                                translate(
+                                  locale,
+                                  'write-comment-flow',
+                                  'errorEnterValidEmailAddress',
+                                )({ error: () => '' }),
                               ),
                               Match.exhaustive,
                             )}
@@ -53,27 +64,29 @@ export const EnterEmailAddressPage = ({
             `
           : ''}
 
-        <h1>Contact details</h1>
+        <h1>${translate(locale, 'write-comment-flow', 'contactDetailsTitle')({ error: () => '' })}</h1>
 
-        <p>We’re ready to publish your comment, but we need to confirm your email address first.</p>
+        <p>${translate(locale, 'write-comment-flow', 'needToConfirmEmailAddress')()}</p>
 
-        <p>We’ll only use this to contact you about your account and what you publish.</p>
+        <p>${translate(locale, 'write-comment-flow', 'emailAddressUse')()}</p>
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
-          <h2><label for="email-address">What is your email address?</label></h2>
+          <h2>
+            <label for="email-address"
+              >${translate(locale, 'write-comment-flow', 'whatIsYourEmailAddressTitle')()}</label
+            >
+          </h2>
 
           ${form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
             ? html`
                 <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">Error:</span>
                   ${pipe(
                     Match.value(form.emailAddress.left),
-                    Match.tag('Missing', () => html`Enter your email address`),
-                    Match.tag(
-                      'Invalid',
-                      () => html`Enter an email address in the correct format, like name@example.com`,
-                    ),
+                    Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')),
+                    Match.tag('Invalid', () => translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')),
                     Match.exhaustive,
+                    Function.apply({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
+                    rawHtml,
                   )}
                 </div>
               `

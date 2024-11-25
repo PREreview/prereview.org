@@ -173,6 +173,24 @@
   "followingCodeOfConduct": {
     "message": "I’m following the Code of Conduct"
   },
+  "contactDetailsTitle": {
+    "message": "<error>Error:</error> Contact details"
+  },
+  "errorEnterEmailAddress": {
+    "message": "<error>Error:</error> Enter your email address"
+  },
+  "errorEnterValidEmailAddress": {
+    "message": "<error>Error:</error> Enter an email address in the correct format, like name@example.com"
+  },
+  "needToConfirmEmailAddress": {
+    "message": "We’re ready to publish your comment, but we need to confirm your email address first."
+  },
+  "emailAddressUse": {
+    "message": "We’ll only use this to contact you about your account and what you publish."
+  },
+  "whatIsYourEmailAddressTitle": {
+    "message": "What is your email address?"
+  },
   "checkTitle": {
     "message": "Check your comment"
   },
