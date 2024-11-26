@@ -8,6 +8,8 @@ export const verifyCache = Effect.gen(function* () {
     return yield* Effect.void
   }
 
+  const delay = yield* Config.withDefault(Config.duration('VERIFY_CACHE_DELAY'), '0 seconds')
+
   yield* pipe(
     Effect.logDebug('Verifying cache'),
     Effect.andThen(Effect.tryPromise(() => cacache.verify('data/cache', { concurrency: 5 }))),
@@ -19,5 +21,6 @@ export const verifyCache = Effect.gen(function* () {
       ),
     ),
     Effect.orElse(() => Effect.void),
+    Effect.delay(delay),
   )
 })
