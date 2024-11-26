@@ -4,7 +4,7 @@ import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { ExpressConfig, FlashMessage, Locale, LoggedInUser, Redis } from './Context.js'
 import {
-  FlashMessageResponse,
+  type FlashMessageResponse,
   type LogInResponse,
   type PageResponse,
   type RedirectResponse,
