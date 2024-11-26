@@ -164,19 +164,7 @@ export const FlashMessageSchema = Schema.Literal(
   'avatar-removed',
 )
 
-const FlashMessageD = D.literal(
-  'logged-out',
-  'logged-in',
-  'blocked',
-  'verify-contact-email',
-  'contact-email-verified',
-  'orcid-connected',
-  'orcid-disconnected',
-  'slack-connected',
-  'slack-disconnected',
-  'avatar-changed',
-  'avatar-removed',
-)
+const FlashMessageD = D.literal(...FlashMessageSchema.literals)
 
 export const toPage = ({
   locale,
