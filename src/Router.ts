@@ -1,9 +1,10 @@
-import { Headers, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { Cookies, Headers, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Effect, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { ExpressConfig, FlashMessage, Locale, LoggedInUser, Redis } from './Context.js'
 import {
+  FlashMessageResponse,
   type LogInResponse,
   type PageResponse,
   type RedirectResponse,
@@ -239,13 +240,29 @@ export const Router = pipe(
 )
 
 function toHttpServerResponse(
-  response: PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse | LogInResponse,
+  response:
+    | PageResponse
+    | StreamlinePageResponse
+    | TwoUpPageResponse
+    | RedirectResponse
+    | LogInResponse
+    | FlashMessageResponse,
 ): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage | ExpressConfig> {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
       return yield* HttpServerResponse.empty({
         status: response.status,
         headers: Headers.fromInput({ Location: response.location.toString() }),
+      })
+    }
+
+    if (response._tag === 'FlashMessageResponse') {
+      return yield* HttpServerResponse.empty({
+        status: StatusCodes.SEE_OTHER,
+        headers: Headers.fromInput({ Location: response.location.toString() }),
+        cookies: Cookies.fromIterable([
+          Cookies.unsafeMakeCookie('flash-message', response.message, { httpOnly: true, path: '/' }),
+        ]),
       })
     }
 
