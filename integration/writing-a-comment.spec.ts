@@ -729,7 +729,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requiresAVerifiedEmailAddress)(
   'have to give your email address',
-  async ({ contactEmailAddressStore, fetch, page }) => {
+  async ({ contactEmailAddressStore, javaScriptEnabled, fetch, page }) => {
     const record: Record = {
       conceptdoi: Doi('10.5072/zenodo.1061863'),
       conceptrecid: 1061863,
@@ -819,8 +819,16 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requir
       .then(value => value.verificationToken as string) // eslint-disable-line @typescript-eslint/no-unsafe-member-access
 
     await page.goto(`${path.dirname(page.url())}/verify-email-address?token=${token}`)
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+    }
+    await expect(page.getByRole('alert', { name: 'Success' })).toContainText('verified')
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your comment')
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
   },
 )
 
@@ -831,7 +839,7 @@ test
   .extend(canWriteComments)
   .extend(requiresAVerifiedEmailAddress)(
   'have to verify your email address',
-  async ({ contactEmailAddressStore, fetch, page }) => {
+  async ({ contactEmailAddressStore, javaScriptEnabled, fetch, page }) => {
     const record: Record = {
       conceptdoi: Doi('10.5072/zenodo.1061863'),
       conceptrecid: 1061863,
@@ -923,6 +931,16 @@ test
     await page.goto(`${path.dirname(page.url())}/verify-email-address?token=${token}`)
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your comment')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+    }
+    await expect(page.getByRole('alert', { name: 'Success' })).toContainText('verified')
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
   },
 )
 

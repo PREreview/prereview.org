@@ -44,9 +44,9 @@ describe('VerifyEmailAddressPage', () => {
           )
 
           expect(actual).toStrictEqual({
-            _tag: 'RedirectResponse',
-            status: StatusCodes.SEE_OTHER,
+            _tag: 'FlashMessageResponse',
             location: RouteForCommand(nextCommand).href({ commentId }),
+            message: 'contact-email-verified',
           })
 
           expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)

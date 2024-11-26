@@ -15,7 +15,7 @@ export const VerifyEmailAddress = ({
   commentId: Uuid.Uuid
   token: Uuid.Uuid
 }): Effect.Effect<
-  Response.PageResponse | Response.RedirectResponse | Response.LogInResponse,
+  Response.PageResponse | Response.FlashMessageResponse | Response.LogInResponse,
   never,
   | Comments.GetNextExpectedCommandForUserOnAComment
   | ContactEmailAddress.GetContactEmailAddress
@@ -42,7 +42,10 @@ export const VerifyEmailAddress = ({
     const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
     const nextCommand = yield* Effect.flatten(getNextExpectedCommandForUserOnAComment(commentId))
 
-    return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
+    return Response.FlashMessageResponse({
+      location: RouteForCommand(nextCommand).href({ commentId }),
+      message: 'contact-email-verified',
+    })
   }).pipe(
     Effect.catchTags({
       CommentHasNotBeenStarted: () => Effect.succeed(havingProblemsPage),
