@@ -12,10 +12,11 @@ import cspBuilder from 'content-security-policy-builder'
 import cookieSignature from 'cookie-signature'
 import { Cause, Config, Effect, flow, Layer, Option, pipe, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import { Express, ExpressConfig, Locale, LoggedInUser } from './Context.js'
+import { Express, ExpressConfig, FlashMessage, Locale, LoggedInUser } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
 import { DefaultLocale, SupportedLocales } from './locales/index.js'
+import { FlashMessageSchema } from './response.js'
 import { Router } from './Router.js'
 import * as TemplatePage from './TemplatePage.js'
 import { Uuid } from './types/index.js'
@@ -163,6 +164,16 @@ const annotateLogsWithRequestId = HttpMiddleware.make(app =>
   ),
 )
 
+const getFlashMessage = HttpMiddleware.make(app =>
+  pipe(
+    HttpServerRequest.schemaCookies(Schema.Struct({ 'flash-message': FlashMessageSchema })),
+    Effect.matchEffect({
+      onFailure: () => app,
+      onSuccess: cookies => Effect.provideService(app, FlashMessage, cookies['flash-message']),
+    }),
+  ),
+)
+
 const getLoggedInUser = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const { secret, sessionCookie, sessionStore } = yield* ExpressConfig
@@ -220,6 +231,7 @@ export const WebApp = pipe(
   removeTrailingSlashes,
   addSecurityHeaders,
   addXRobotsTagHeader,
+  getFlashMessage,
   getLoggedInUser,
   getLocale,
   logRequest,

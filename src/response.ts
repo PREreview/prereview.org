@@ -1,4 +1,5 @@
 import cookie from 'cookie'
+import { Schema } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
@@ -148,6 +149,20 @@ export function handleResponse(response: {
     .with({ response: { _tag: 'LogInResponse' } }, handleLogInResponse)
     .exhaustive()
 }
+
+export const FlashMessageSchema = Schema.Literal(
+  'logged-out',
+  'logged-in',
+  'blocked',
+  'verify-contact-email',
+  'contact-email-verified',
+  'orcid-connected',
+  'orcid-disconnected',
+  'slack-connected',
+  'slack-disconnected',
+  'avatar-changed',
+  'avatar-removed',
+)
 
 const FlashMessageD = D.literal(
   'logged-out',

@@ -2,7 +2,7 @@ import { Headers, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerRespo
 import { Effect, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { ExpressConfig, Locale, LoggedInUser, Redis } from './Context.js'
+import { ExpressConfig, FlashMessage, Locale, LoggedInUser, Redis } from './Context.js'
 import {
   type LogInResponse,
   type PageResponse,
@@ -266,16 +266,23 @@ function toHttpServerResponse(
     const locale = yield* Locale
     const templatePage = yield* TemplatePage
     const user = yield* Effect.serviceOption(LoggedInUser)
+    const message = yield* Effect.serviceOption(FlashMessage)
 
     return yield* pipe(
       templatePage(
         toPage({
           locale,
+          message: Option.getOrUndefined(message),
           response,
           user: Option.getOrUndefined(user),
         }),
       ).toString(),
       HttpServerResponse.html,
+      Option.match(message, {
+        onNone: () => identity,
+        onSome: () =>
+          HttpServerResponse.unsafeSetCookie('flash-message', '', { expires: new Date(1), httpOnly: true, path: '/' }),
+      }),
     )
   })
 }
