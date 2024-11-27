@@ -36,13 +36,13 @@
     "message": "Statistics"
   },
   "statisticsReviews": {
-    "message": "<data>{number, number}</data> PREreviews"
+    "message": "{number, plural, one {<data>{number, number}</data> PREreview} other {<data>{number, number}</data> PREreviews}}"
   },
   "statisticsServers": {
-    "message": "<data>{number, number}</data> preprint servers"
+    "message": "{number, plural, one {<data>{number, number}</data> preprint server} other {<data>{number, number}</data> preprint servers}}"
   },
   "statisticsUsers": {
-    "message": "<data>{number, number}</data> PREreviewers"
+    "message": "{number, plural, one {<data>{number, number}</data> PREreviewer} other {<data>{number, number}</data> PREreviewers}}"
   },
   "reviewsTitle": {
     "message": "Recent PREreviews"
