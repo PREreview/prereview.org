@@ -13,7 +13,7 @@ export const notAPreprintPage = PageResponse({
     <p>
       We support preprints from AfricArXiv, Arcadia&nbsp;Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote,
       EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv,
-      PsychArchives, Research&nbsp;Square, SciELO, ScienceOpen, SocArXiv, TechRxiv and Zenodo.
+      PsychArchives, Research&nbsp;Square, SciELO, ScienceOpen, SocArXiv, TechRxiv, VeriXiv and Zenodo.
     </p>
 
     <p>If this is a preprint, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
