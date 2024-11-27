@@ -12,6 +12,7 @@ import { DefaultLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteDeclineMatch, clubProfileMatch, profileMatch } from '../../routes.js'
 import { renderDate } from '../../time.js'
+import { ProfileId } from '../../types/index.js'
 import { isPseudonym } from '../../types/pseudonym.js'
 import type { Prereview } from './index.js'
 
@@ -108,15 +109,13 @@ export const declinePage = ({ inviteId, review }: { inviteId: Uuid; review: Prer
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
       >${name}</a
     >`
   }
 
   if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: name } })}"
-      >${name}</a
-    >`
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
   }
 
   return name

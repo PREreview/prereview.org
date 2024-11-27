@@ -8,7 +8,7 @@ import { DefaultLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { myPrereviewsMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
-import { OrcidProfileIdForUser, PseudonymProfileIdForUser } from '../types/profile-id.js'
+import { ProfileId } from '../types/index.js'
 import { getSubfieldName } from '../types/subfield.js'
 import type { User } from '../user.js'
 import type { Prereview } from './prereviews.js'
@@ -36,11 +36,13 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
         <p>Only you can see this page. You have two profile pages that everyone can see:</p>
 
         <div class="forward-group">
-          <a href="${format(profileMatch.formatter, { profile: OrcidProfileIdForUser(user) })}" class="forward"
+          <a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(user.orcid) })}" class="forward"
             >View public profile</a
           >
 
-          <a href="${format(profileMatch.formatter, { profile: PseudonymProfileIdForUser(user) })}" class="forward"
+          <a
+            href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(user.pseudonym) })}"
+            class="forward"
             >View pseudonym profile</a
           >
         </div>

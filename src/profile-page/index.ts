@@ -13,8 +13,8 @@ export type Env = EnvFor<ReturnType<typeof profile>>
 
 export const profile = ({ locale, profile: profileId }: { profile: ProfileId; locale: SupportedLocale }) =>
   match(profileId)
-    .with({ type: 'orcid' }, profileForOrcid(locale))
-    .with({ type: 'pseudonym' }, profileForPseudonym(locale))
+    .with({ _tag: 'OrcidProfileId' }, profileForOrcid(locale))
+    .with({ _tag: 'PseudonymProfileId' }, profileForPseudonym(locale))
     .exhaustive()
 
 const profileForOrcid = (locale: SupportedLocale) =>

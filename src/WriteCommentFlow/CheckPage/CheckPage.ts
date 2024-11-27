@@ -4,7 +4,7 @@ import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../htm
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
-import type { NonEmptyString, Uuid } from '../../types/index.js'
+import { type NonEmptyString, ProfileId, type Uuid } from '../../types/index.js'
 import type { User } from '../../user.js'
 
 export const CheckPage = ({
@@ -48,7 +48,7 @@ export const CheckPage = ({
                       () =>
                         html` <a
                           href="${format(Routes.profileMatch.formatter, {
-                            profile: { type: 'orcid', value: user.orcid },
+                            profile: ProfileId.forOrcid(user.orcid),
                           })}"
                           class="orcid"
                           >${user.name}</a
@@ -59,7 +59,7 @@ export const CheckPage = ({
                       () =>
                         html` <a
                           href="${format(Routes.profileMatch.formatter, {
-                            profile: { type: 'pseudonym', value: user.pseudonym },
+                            profile: ProfileId.forPseudonym(user.pseudonym),
                           })}"
                           >${user.pseudonym}</a
                         >`,

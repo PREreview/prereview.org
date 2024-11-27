@@ -5,8 +5,8 @@ import { pipe } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
 import type { ReviewRequestPreprintId } from '../review-request.js'
 import { profileMatch } from '../routes.js'
-import type { ProfileId } from '../types/profile-id.js'
-import { type GenerateUuidEnv, generateUuid } from '../types/uuid.js'
+import { ProfileId } from '../types/index.js'
+import { generateUuid, type GenerateUuidEnv } from '../types/uuid.js'
 import type { User } from '../user.js'
 import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-payload.js'
 
@@ -44,9 +44,9 @@ export const constructCoarPayload = ({
       actor: {
         id: `https://prereview.org${format(profileMatch.formatter, {
           profile: match(persona)
-            .returnType<ProfileId>()
-            .with('public', () => ({ type: 'orcid', value: user.orcid }))
-            .with('pseudonym', () => ({ type: 'pseudonym', value: user.pseudonym }))
+            .returnType<ProfileId.ProfileId>()
+            .with('public', () => ProfileId.forOrcid(user.orcid))
+            .with('pseudonym', () => ProfileId.forPseudonym(user.pseudonym))
             .exhaustive(),
         })}`,
         type: 'Person',

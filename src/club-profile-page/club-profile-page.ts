@@ -12,6 +12,7 @@ import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import type { ClubId } from '../types/club-id.js'
+import { ProfileId } from '../types/index.js'
 import { getSubfieldName } from '../types/subfield.js'
 import type { Prereviews } from './prereviews.js'
 
@@ -57,7 +58,7 @@ export function createPage({
             RNEA.map(
               lead =>
                 html`<a
-                  href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: lead.orcid } })}"
+                  href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(lead.orcid) })}"
                   class="orcid"
                   >${lead.name}</a
                 >`,

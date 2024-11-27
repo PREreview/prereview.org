@@ -32,6 +32,7 @@ import {
   removeAvatarMatch,
 } from '../routes.js'
 import type { SlackUser } from '../slack-user.js'
+import { ProfileId } from '../types/index.js'
 import type { UserOnboarding } from '../user-onboarding.js'
 import type { User } from '../user.js'
 
@@ -82,12 +83,12 @@ export function createPage({
         <p>Only you can see this page. You have two profile pages that everyone can see:</p>
 
         <div class="forward-group">
-          <a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: user.orcid } })}" class="forward"
+          <a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(user.orcid) })}" class="forward"
             >View public profile</a
           >
 
           <a
-            href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: user.pseudonym } })}"
+            href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(user.pseudonym) })}"
             class="forward"
             >View pseudonym profile</a
           >

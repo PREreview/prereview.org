@@ -13,9 +13,8 @@ import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import { ClubIdC } from './types/club-id.js'
 import { isFieldId } from './types/field.js'
-import { Uuid } from './types/index.js'
+import { ProfileId, Uuid } from './types/index.js'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './types/preprint-id.js'
-import type { OrcidProfileId, PseudonymProfileId } from './types/profile-id.js'
 import { PseudonymC } from './types/pseudonym.js'
 import { NonEmptyStringC } from './types/string.js'
 import { UuidC } from './types/uuid.js'
@@ -127,10 +126,7 @@ const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
 const OrcidProfileIdC = pipe(
   OrcidC,
-  C.imap(
-    orcid => ({ type: 'orcid', value: orcid }) satisfies OrcidProfileId,
-    profile => profile.value,
-  ),
+  C.imap(ProfileId.forOrcid, profile => profile.value),
 )
 
 const SlugC = C.make(
@@ -147,10 +143,7 @@ const PseudonymSlugC = pipe(SlugC, C.imap(capitalCase, identity), C.compose(Pseu
 
 const PseudonymProfileIdC = pipe(
   PseudonymSlugC,
-  C.imap(
-    pseudonym => ({ type: 'pseudonym', value: pseudonym }) satisfies PseudonymProfileId,
-    profile => profile.value,
-  ),
+  C.imap(ProfileId.forPseudonym, profile => profile.value),
 )
 
 // Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
@@ -158,8 +151,8 @@ const PseudonymProfileIdC = pipe(
 const ProfileIdC = C.make(D.union(OrcidProfileIdC, PseudonymProfileIdC), {
   encode: id =>
     match(id)
-      .with({ type: 'orcid' }, OrcidProfileIdC.encode)
-      .with({ type: 'pseudonym' }, PseudonymProfileIdC.encode)
+      .with({ _tag: 'OrcidProfileId' }, OrcidProfileIdC.encode)
+      .with({ _tag: 'PseudonymProfileId' }, PseudonymProfileIdC.encode)
       .exhaustive(),
 })
 

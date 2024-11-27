@@ -8,7 +8,7 @@ import { type Html, html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { clubProfileMatch, profileMatch } from '../routes.js'
-import type { ProfileId } from '../types/profile-id.js'
+import { ProfileId } from '../types/index.js'
 import type { OrcidProfile } from './orcid-profile.js'
 import type { PseudonymProfile } from './pseudonym-profile.js'
 import { renderListOfPrereviews } from './render-list-of-prereviews.js'
@@ -27,9 +27,9 @@ export function createPage(profile: OrcidProfile | PseudonymProfile, locale: Sup
       .exhaustive(),
     canonical: format(profileMatch.formatter, {
       profile: match(profile)
-        .returnType<ProfileId>()
-        .with({ type: 'orcid', orcid: P.select(P.string) }, value => ({ type: 'orcid', value }))
-        .with({ type: 'pseudonym', name: P.select(P.string) }, value => ({ type: 'pseudonym', value }))
+        .returnType<ProfileId.ProfileId>()
+        .with({ type: 'orcid', orcid: P.select(P.string) }, ProfileId.forOrcid)
+        .with({ type: 'pseudonym', name: P.select(P.string) }, ProfileId.forPseudonym)
         .exhaustive(),
     }),
   })

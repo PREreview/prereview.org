@@ -17,8 +17,8 @@ import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
 import { type SleepEnv, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { ProfileId } from './types/index.js'
 import { type IndeterminatePreprintId, type PreprintId, parsePreprintDoi } from './types/preprint-id.js'
-import type { OrcidProfileId, ProfileId, PseudonymProfileId } from './types/profile-id.js'
 import { PseudonymC, isPseudonym } from './types/pseudonym.js'
 import { UuidC } from './types/uuid.js'
 import type { NewPrereview } from './write-review/index.js'
@@ -194,7 +194,7 @@ export const getPreprintIdFromLegacyPreviewUuid: (
 
 export const getProfileIdFromLegacyPreviewUuid: (
   uuid: Uuid,
-) => RTE.ReaderTaskEither<LegacyPrereviewApiEnv & F.FetchEnv, 'not-found' | 'unavailable', ProfileId> = flow(
+) => RTE.ReaderTaskEither<LegacyPrereviewApiEnv & F.FetchEnv, 'not-found' | 'unavailable', ProfileId.ProfileId> = flow(
   RTE.fromReaderK((uuid: Uuid) => legacyPrereviewUrl(`personas/${uuid}`)),
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
@@ -209,22 +209,8 @@ export const getProfileIdFromLegacyPreviewUuid: (
         .otherwise(() => 'unavailable' as const),
     ({ data: [data] }) =>
       match(data)
-        .with(
-          { isAnonymous: false, orcid: P.select() },
-          orcid =>
-            ({
-              type: 'orcid',
-              value: orcid,
-            }) satisfies OrcidProfileId,
-        )
-        .with(
-          { isAnonymous: true, name: P.select() },
-          pseudonym =>
-            ({
-              type: 'pseudonym',
-              value: pseudonym,
-            }) satisfies PseudonymProfileId,
-        )
+        .with({ isAnonymous: false, orcid: P.select() }, ProfileId.forOrcid)
+        .with({ isAnonymous: true, name: P.select() }, ProfileId.forPseudonym)
         .exhaustive(),
   ),
 )

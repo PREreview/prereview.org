@@ -77,6 +77,7 @@ import {
 import { type ClubId, clubIds } from '../src/types/club-id.js'
 import type { EmailAddress } from '../src/types/email-address.js'
 import { type FieldId, fieldIds } from '../src/types/field.js'
+import { ProfileId } from '../src/types/index.js'
 import {
   type AfricarxivFigsharePreprintId,
   type AfricarxivOsfPreprintId,
@@ -114,7 +115,6 @@ import {
   type ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/types/preprint-id.js'
-import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/types/profile-id.js'
 import type { Pseudonym } from '../src/types/pseudonym.js'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/string.js'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.js'
@@ -1040,19 +1040,12 @@ export const clubId = (): fc.Arbitrary<ClubId> => constantFrom(...clubIds)
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
   fc.tuple(constantFrom(...colors), constantFrom(...animals)).map(parts => capitalCase(parts.join(' ')) as Pseudonym)
 
-export const profileId = (): fc.Arbitrary<ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())
+export const profileId = (): fc.Arbitrary<ProfileId.ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())
 
-export const orcidProfileId = (): fc.Arbitrary<OrcidProfileId> =>
-  fc.record({
-    type: constant('orcid'),
-    value: orcid(),
-  })
+export const orcidProfileId = (): fc.Arbitrary<ProfileId.OrcidProfileId> => orcid().map(ProfileId.forOrcid)
 
-export const pseudonymProfileId = (): fc.Arbitrary<PseudonymProfileId> =>
-  fc.record({
-    type: constant('pseudonym'),
-    value: pseudonym(),
-  })
+export const pseudonymProfileId = (): fc.Arbitrary<ProfileId.PseudonymProfileId> =>
+  pseudonym().map(ProfileId.forPseudonym)
 
 export const year = (): fc.Arbitrary<number> => fc.integer({ min: -271820, max: 275759 })
 

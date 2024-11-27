@@ -28,6 +28,7 @@ import {
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
 } from '../../routes.js'
+import { ProfileId } from '../../types/index.js'
 import { isPseudonym } from '../../types/pseudonym.js'
 import type { User } from '../../user.js'
 import type { CompletedForm } from '../completed-form.js'
@@ -370,15 +371,13 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
 
 export function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
       >${name}</a
     >`
   }
 
   if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: name } })}"
-      >${name}</a
-    >`
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
   }
 
   return name

@@ -18,6 +18,7 @@ import { TwoUpPageResponse } from '../response.js'
 import { isReviewRequestPreprintId } from '../review-request.js'
 import { preprintReviewsMatch, profileMatch, requestReviewMatch, reviewMatch, writeReviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
+import { ProfileId } from '../types/index.js'
 import { isPseudonym } from '../types/pseudonym.js'
 import type { Prereview } from './prereviews.js'
 import type { RapidPrereview } from './rapid-prereviews.js'
@@ -323,15 +324,13 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
       >${name}</a
     >`
   }
 
   if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: name } })}"
-      >${name}</a
-    >`
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
   }
 
   return name

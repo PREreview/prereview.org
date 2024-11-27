@@ -277,11 +277,11 @@ export const getPrereviewsForProfileFromZenodo = flow(
     new URLSearchParams({
       q: match(profile)
         .with(
-          { type: 'orcid', value: P.select() },
+          { _tag: 'OrcidProfileId', value: P.select() },
           orcid => `metadata.creators.person_or_org.identifiers.identifier:${orcid}`,
         )
         .with(
-          { type: 'pseudonym', value: P.select() },
+          { _tag: 'PseudonymProfileId', value: P.select() },
           pseudonym => `metadata.creators.person_or_org.name:"${pseudonym}"`,
         )
         .exhaustive(),

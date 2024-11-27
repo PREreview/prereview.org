@@ -1,29 +1,17 @@
+import { Data } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
-import type { User } from '../user.js'
 import type { Pseudonym } from './pseudonym.js'
 
 export type ProfileId = OrcidProfileId | PseudonymProfileId
 
-export interface OrcidProfileId {
-  readonly type: 'orcid'
-  readonly value: Orcid
-}
+export class OrcidProfileId extends Data.TaggedClass('OrcidProfileId')<{
+  value: Orcid
+}> {}
 
-export interface PseudonymProfileId {
-  readonly type: 'pseudonym'
-  readonly value: Pseudonym
-}
+export class PseudonymProfileId extends Data.TaggedClass('PseudonymProfileId')<{
+  value: Pseudonym
+}> {}
 
-export const OrcidProfileId = (value: Orcid): OrcidProfileId => ({
-  type: 'orcid',
-  value,
-})
+export const forOrcid = (orcid: Orcid) => new OrcidProfileId({ value: orcid })
 
-export const PseudonymProfileId = (value: Pseudonym): PseudonymProfileId => ({
-  type: 'pseudonym',
-  value,
-})
-
-export const OrcidProfileIdForUser = (user: User): OrcidProfileId => OrcidProfileId(user.orcid)
-
-export const PseudonymProfileIdForUser = (user: User): PseudonymProfileId => PseudonymProfileId(user.pseudonym)
+export const forPseudonym = (pseudonym: Pseudonym) => new PseudonymProfileId({ value: pseudonym })
