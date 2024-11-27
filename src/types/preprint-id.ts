@@ -1,10 +1,9 @@
 import { type Doi, Eq as eqDoi, hasRegistrant, isDoi, parse } from 'doi-ts'
+import { Either, Option, Predicate, flow } from 'effect'
 import * as Eq from 'fp-ts/lib/Eq.js'
-import * as O from 'fp-ts/lib/Option.js'
-import { type Refinement, compose } from 'fp-ts/lib/Refinement.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
+import * as FptsToEffect from '../FptsToEffect.js'
 
 export type PreprintId =
   | AfricarxivPreprintId
@@ -209,43 +208,41 @@ export const eqPreprintId: Eq.Eq<IndeterminatePreprintId> = Eq.fromEquals((a, b)
   return eqDoi.equals(a.value, b.value as typeof a.value)
 })
 
-export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> = hasRegistrant(
-  '1101',
-  '1590',
-  '5281',
-  '6084',
-  '12688',
-  '14293',
-  '17605',
-  '21203',
-  '26434',
-  '20944',
-  '22541',
-  '23668',
-  '31219',
-  '31222',
-  '31223',
-  '31224',
-  '31234',
-  '31235',
-  '31730',
-  '32942',
-  '35542',
-  '36227',
-  '48550',
-  '57844',
-  '60763',
-  '62329',
-)
+export const isPreprintDoi: Predicate.Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> =
+  hasRegistrant(
+    '1101',
+    '1590',
+    '5281',
+    '6084',
+    '12688',
+    '14293',
+    '17605',
+    '21203',
+    '26434',
+    '20944',
+    '22541',
+    '23668',
+    '31219',
+    '31222',
+    '31223',
+    '31224',
+    '31234',
+    '31235',
+    '31730',
+    '32942',
+    '35542',
+    '36227',
+    '48550',
+    '57844',
+    '60763',
+    '62329',
+  )
 
 export const PreprintDoiD: D.Decoder<unknown, Extract<IndeterminatePreprintId, { value: Doi }>['value']> =
-  D.fromRefinement(pipe(isDoi, compose(isPreprintDoi)), 'DOI')
+  D.fromRefinement(Predicate.compose(isDoi, isPreprintDoi), 'DOI')
 
-export const parsePreprintDoi: (input: string) => O.Option<Extract<IndeterminatePreprintId, { value: Doi }>> = flow(
-  parse,
-  O.filter(isPreprintDoi),
-  O.map(fromPreprintDoi),
-)
+export const parsePreprintDoi: (input: string) => Option.Option<Extract<IndeterminatePreprintId, { value: Doi }>> =
+  flow(parse, FptsToEffect.option, Option.filter(isPreprintDoi), Option.map(fromPreprintDoi))
 
 export function fromPreprintDoi(
   doi: Extract<IndeterminatePreprintId, { value: Doi }>['value'],
@@ -283,7 +280,7 @@ export function fromPreprintDoi(
     .exhaustive()
 }
 
-export function fromUrl(url: URL): O.Option<IndeterminatePreprintId> {
+export function fromUrl(url: URL): Option.Option<IndeterminatePreprintId> {
   return match([url.hostname.replace('www.', ''), url.pathname.slice(1)])
     .with([P.union('doi.org', 'dx.doi.org'), P.select()], extractFromDoiPath)
     .with(['africarxiv.figshare.com', P.select()], extractFromFigsharePath('africarxiv'))
@@ -302,114 +299,114 @@ export function fromUrl(url: URL): O.Option<IndeterminatePreprintId> {
     .with(['scienceopen.com', 'hosted-document'], () => extractFromScienceOpenQueryString(url.searchParams))
     .with(['techrxiv.org', P.select()], extractFromTechrxivPath)
     .with(['zenodo.org', P.select()], extractFromZenodoPath)
-    .otherwise(() => O.none)
+    .otherwise(() => Option.none())
 }
 
 const extractFromDoiPath = flow(decodeURIComponent, parsePreprintDoi)
 
 const extractFromArxivPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i.exec(s)?.[1]),
-  O.chain(flow(suffix => `10.48550/arXiv.${suffix}`, parsePreprintDoi)),
+  Option.liftNullable(s => /\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i.exec(s)?.[1]),
+  Option.andThen(flow(suffix => `10.48550/arXiv.${suffix}`, parsePreprintDoi)),
 )
 
 const extractFromAuthoreaPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /^doi\/full\/(.+?)$/i.exec(s)?.[1]),
-  O.filter(pipe(isDoi, compose(hasRegistrant('22541')))),
-  O.map(doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId),
+  Option.liftNullable(s => /^doi\/full\/(.+?)$/i.exec(s)?.[1]),
+  Option.filter(Predicate.compose(isDoi, hasRegistrant('22541'))),
+  Option.andThen(doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId),
 )
 
 const extractFromBiorxivMedrxivPath = (type: 'biorxiv' | 'medrxiv') =>
   flow(
     decodeURIComponent,
-    O.fromNullableK(s => /(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i.exec(s)?.[1]),
-    O.map(suffix => `10.1101/${suffix}`),
-    O.filter(pipe(isDoi, compose(hasRegistrant('1101')))),
-    O.map(doi => ({ type, value: doi }) satisfies BiorxivPreprintId | MedrxivPreprintId),
+    Option.liftNullable(s => /(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i.exec(s)?.[1]),
+    Option.andThen(suffix => `10.1101/${suffix}`),
+    Option.filter(Predicate.compose(isDoi, hasRegistrant('1101'))),
+    Option.andThen(doi => ({ type, value: doi }) satisfies BiorxivPreprintId | MedrxivPreprintId),
   )
 
 const extractFromEdarxivPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
-  O.chain(flow(id => `10.35542/osf.io/${id}`, parsePreprintDoi)),
+  Option.liftNullable(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.35542/osf.io/${id}`, parsePreprintDoi)),
 )
 
 const extractFromEngrxivPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /^preprint\/[^/]+\/([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
-  O.chain(flow(id => `10.31224/${id}`, parsePreprintDoi)),
+  Option.liftNullable(s => /^preprint\/[^/]+\/([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.31224/${id}`, parsePreprintDoi)),
 )
 
 const extractFromFigsharePath = (type: 'africarxiv') =>
   flow(
     decodeURIComponent,
-    O.fromNullableK(s => /^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i.exec(s)?.[1]),
-    O.map(id => `10.6084/m9.figshare.${id}.v1`),
-    O.filter(pipe(isDoi, compose(hasRegistrant('6084')))),
-    O.map(doi => ({ type, value: doi }) satisfies AfricarxivFigsharePreprintId),
+    Option.liftNullable(s => /^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i.exec(s)?.[1]),
+    Option.andThen(id => `10.6084/m9.figshare.${id}.v1`),
+    Option.filter(Predicate.compose(isDoi, hasRegistrant('6084'))),
+    Option.andThen(doi => ({ type, value: doi }) satisfies AfricarxivFigsharePreprintId),
   )
 
 const extractFromOsfPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s =>
+  Option.liftNullable(s =>
     /^(?:preprints\/(?:(africarxiv|metaarxiv|socarxiv)\/)?)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s),
   ),
-  O.map(([, prefix, id]) =>
+  Option.andThen(([, prefix, id]) =>
     match(prefix)
       .with('africarxiv', () => `10.31730/osf.io/${id}`)
       .with('metaarxiv', () => `10.31222/osf.io/${id}`)
       .with('socarxiv', () => `10.31235/osf.io/${id}`)
       .otherwise(() => `10.31219/osf.io/${id}`),
   ),
-  O.chain(parsePreprintDoi),
+  Option.andThen(parsePreprintDoi),
 )
 
 const extractFromPhilsciPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
-  O.chainEitherK(flow(id => parseInt(id, 10), D.number.decode)),
-  O.map(id => ({ type: 'philsci', value: id }) satisfies PhilsciPreprintId),
+  Option.liftNullable(s => /^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
+  Option.flatMap(flow(id => parseInt(id, 10), D.number.decode, FptsToEffect.either, Either.getRight)),
+  Option.andThen(id => ({ type: 'philsci', value: id }) satisfies PhilsciPreprintId),
 )
 
 const extractFromPreprintsorgPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /^manuscript\/([a-z0-9.]+)\/(v[1-9][0-9]*)(?:$|\/)/i.exec(s)),
-  O.chain(flow(([, id, version]) => `10.20944/preprints${id}.${version}`, parsePreprintDoi)),
+  Option.liftNullable(s => /^manuscript\/([a-z0-9.]+)\/(v[1-9][0-9]*)(?:$|\/)/i.exec(s)),
+  Option.andThen(flow(([, id, version]) => `10.20944/preprints${id}.${version}`, parsePreprintDoi)),
 )
 
 const extractFromPsyarxivPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
-  O.chain(flow(id => `10.31234/osf.io/${id}`, parsePreprintDoi)),
+  Option.liftNullable(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.31234/osf.io/${id}`, parsePreprintDoi)),
 )
 
 const extractFromResearchSquarePath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /\/(rs-[1-9][0-9]*\/v[1-9][0-9]*)(?:[./]|$)/.exec(s)?.[1]),
-  O.chain(flow(id => `10.21203/rs.3.${id}`, parsePreprintDoi)),
+  Option.liftNullable(s => /\/(rs-[1-9][0-9]*\/v[1-9][0-9]*)(?:[./]|$)/.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.21203/rs.3.${id}`, parsePreprintDoi)),
 )
 
 const extractFromScieloPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
-  O.chain(flow(id => `10.1590/SciELOPreprints.${id}`, parsePreprintDoi)),
+  Option.liftNullable(s => /^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.1590/SciELOPreprints.${id}`, parsePreprintDoi)),
 )
 
 const extractFromScienceOpenQueryString = flow(
-  O.fromNullableK((query: URLSearchParams) => query.get('doi')),
-  O.chain(parsePreprintDoi),
+  Option.liftNullable((query: URLSearchParams) => query.get('doi')),
+  Option.andThen(parsePreprintDoi),
 )
 
 const extractFromTechrxivPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /^doi\/(?:full|pdf|xml)\/(.+?)$/i.exec(s)?.[1]),
-  O.filter(pipe(isDoi, compose(hasRegistrant('36227')))),
-  O.map(doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId),
+  Option.liftNullable(s => /^doi\/(?:full|pdf|xml)\/(.+?)$/i.exec(s)?.[1]),
+  Option.filter(Predicate.compose(isDoi, hasRegistrant('36227'))),
+  Option.andThen(doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId),
 )
 
 const extractFromZenodoPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => /^record\/([1-9][0-9]*)(?:$|\/)/.exec(s)?.[1]),
-  O.chain(flow(id => `10.5281/zenodo.${id}`, parsePreprintDoi)),
+  Option.liftNullable(s => /^record\/([1-9][0-9]*)(?:$|\/)/.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.5281/zenodo.${id}`, parsePreprintDoi)),
 )
