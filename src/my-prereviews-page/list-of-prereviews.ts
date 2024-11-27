@@ -103,6 +103,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
                       .with('science-open', () => 'ScienceOpen Preprints')
                       .with('socarxiv', () => 'SocArXiv')
                       .with('techrxiv', () => 'TechRxiv')
+                      .with('verixiv', () => 'VeriXiv')
                       .with('zenodo', () => 'Zenodo')
                       .exhaustive()}
                   </dd>

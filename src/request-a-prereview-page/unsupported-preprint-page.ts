@@ -39,6 +39,7 @@ export const unsupportedPreprintPage = (preprint: PreprintId) =>
           .with('science-open', () => 'ScienceOpen')
           .with('socarxiv', () => 'SocArXiv')
           .with('techrxiv', () => 'TechRxiv')
+          .with('verixiv', () => 'VeriXiv')
           .with('zenodo', () => 'Zenodo')
           .exhaustive()}
         preprint yet.

@@ -40,6 +40,7 @@ export function createUnknownPreprintWithDoiPage(preprint: Extract<Indeterminate
           .with('science-open', () => 'a ScienceOpen')
           .with('socarxiv', () => 'a SocArXiv')
           .with('techrxiv', () => 'a TechRxiv')
+          .with('verixiv', () => 'a VeriXiv')
           .with('zenodo', () => 'a Zenodo')
           .with('zenodo-africarxiv', () => 'a Zenodo or AfricArXiv')
           .exhaustive()}

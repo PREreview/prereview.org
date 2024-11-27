@@ -11,6 +11,7 @@ import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id.js
 export const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
     .with({ type: 'philsci' }, getPreprintFromPhilsci)
+    .with({ type: 'verixiv' }, () => RTE.left('unavailable' as const))
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
     .exhaustive()
