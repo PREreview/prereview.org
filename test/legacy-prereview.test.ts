@@ -130,14 +130,14 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
       fc.orcidProfileId().map(profile => [
         {
           isAnonymous: false,
-          orcid: profile.value,
+          orcid: profile.orcid,
         },
         profile,
       ]),
       fc.pseudonymProfileId().map(profile => [
         {
           isAnonymous: true,
-          name: profile.value,
+          name: profile.pseudonym,
         },
         profile,
       ]),

@@ -14,7 +14,7 @@ export function getPseudonymProfile(profileId: PseudonymProfileId) {
   return pipe(
     RTE.Do,
     RTE.let('type', () => 'pseudonym' as const),
-    RTE.let('name', () => profileId.value),
+    RTE.let('name', () => profileId.pseudonym),
     RTE.apS('prereviews', getPrereviews(profileId)),
   ) satisfies RTE.ReaderTaskEither<any, any, PseudonymProfile> // eslint-disable-line @typescript-eslint/no-explicit-any
 }

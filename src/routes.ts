@@ -126,7 +126,7 @@ const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
 const OrcidProfileIdC = pipe(
   OrcidC,
-  C.imap(ProfileId.forOrcid, profile => profile.value),
+  C.imap(ProfileId.forOrcid, profile => profile.orcid),
 )
 
 const SlugC = C.make(
@@ -143,7 +143,7 @@ const PseudonymSlugC = pipe(SlugC, C.imap(capitalCase, identity), C.compose(Pseu
 
 const PseudonymProfileIdC = pipe(
   PseudonymSlugC,
-  C.imap(ProfileId.forPseudonym, profile => profile.value),
+  C.imap(ProfileId.forPseudonym, profile => profile.pseudonym),
 )
 
 // Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.

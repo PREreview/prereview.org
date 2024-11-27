@@ -5,13 +5,13 @@ import type { Pseudonym } from './pseudonym.js'
 export type ProfileId = OrcidProfileId | PseudonymProfileId
 
 export class OrcidProfileId extends Data.TaggedClass('OrcidProfileId')<{
-  value: Orcid
+  orcid: Orcid
 }> {}
 
 export class PseudonymProfileId extends Data.TaggedClass('PseudonymProfileId')<{
-  value: Pseudonym
+  pseudonym: Pseudonym
 }> {}
 
-export const forOrcid = (orcid: Orcid) => new OrcidProfileId({ value: orcid })
+export const forOrcid = (orcid: Orcid) => new OrcidProfileId({ orcid })
 
-export const forPseudonym = (pseudonym: Pseudonym) => new PseudonymProfileId({ value: pseudonym })
+export const forPseudonym = (pseudonym: Pseudonym) => new PseudonymProfileId({ pseudonym })

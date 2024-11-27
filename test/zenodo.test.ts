@@ -1508,7 +1508,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             {
               url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
               query: {
-                q: `metadata.creators.person_or_org.identifiers.identifier:${profile.value}`,
+                q: `metadata.creators.person_or_org.identifiers.identifier:${profile.orcid}`,
                 size: '100',
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',
@@ -1705,7 +1705,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             {
               url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
               query: {
-                q: `metadata.creators.person_or_org.name:"${profile.value}"`,
+                q: `metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
                 size: '100',
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',

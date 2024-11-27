@@ -73,20 +73,20 @@ describe('profile', () => {
           _tag: 'PageResponse',
           canonical: format(profileMatch.formatter, { profile }),
           status: Status.OK,
-          title: expect.stringContaining(name ? plainText(name).toString() : profile.value),
-          main: expect.stringContaining(profile.value),
+          title: expect.stringContaining(name ? plainText(name).toString() : profile.orcid),
+          main: expect.stringContaining(profile.orcid),
           skipToLabel: 'main',
           js: [],
         })
-        expect(getAvatar).toHaveBeenCalledWith(profile.value)
-        expect(getCareerStage).toHaveBeenCalledWith(profile.value)
-        expect(getLanguages).toHaveBeenCalledWith(profile.value)
-        expect(getLocation).toHaveBeenCalledWith(profile.value)
-        expect(getName).toHaveBeenCalledWith(profile.value)
+        expect(getAvatar).toHaveBeenCalledWith(profile.orcid)
+        expect(getCareerStage).toHaveBeenCalledWith(profile.orcid)
+        expect(getLanguages).toHaveBeenCalledWith(profile.orcid)
+        expect(getLocation).toHaveBeenCalledWith(profile.orcid)
+        expect(getName).toHaveBeenCalledWith(profile.orcid)
         expect(getPrereviews).toHaveBeenCalledWith(profile)
-        expect(getResearchInterests).toHaveBeenCalledWith(profile.value)
-        expect(getSlackUser).toHaveBeenCalledWith(profile.value)
-        expect(isOpenForRequests).toHaveBeenCalledWith(profile.value)
+        expect(getResearchInterests).toHaveBeenCalledWith(profile.orcid)
+        expect(getSlackUser).toHaveBeenCalledWith(profile.orcid)
+        expect(isOpenForRequests).toHaveBeenCalledWith(profile.orcid)
       },
     )
 
@@ -195,8 +195,8 @@ describe('profile', () => {
         _tag: 'PageResponse',
         canonical: format(profileMatch.formatter, { profile }),
         status: Status.OK,
-        title: expect.stringContaining(name ? plainText(name).toString() : profile.value),
-        main: expect.stringContaining(profile.value),
+        title: expect.stringContaining(name ? plainText(name).toString() : profile.orcid),
+        main: expect.stringContaining(profile.orcid),
         skipToLabel: 'main',
         js: [],
       })
@@ -495,8 +495,8 @@ describe('profile', () => {
         _tag: 'PageResponse',
         canonical: format(profileMatch.formatter, { profile }),
         status: Status.OK,
-        title: expect.stringContaining(profile.value),
-        main: expect.stringContaining(profile.value),
+        title: expect.stringContaining(profile.pseudonym),
+        main: expect.stringContaining(profile.pseudonym),
         skipToLabel: 'main',
         js: [],
       })
