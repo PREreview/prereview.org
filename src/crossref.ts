@@ -35,6 +35,7 @@ import type {
   ScienceOpenPreprintId,
   SocarxivPreprintId,
   TechrxivPreprintId,
+  VerixivPreprintId,
 } from './types/preprint-id.js'
 
 export type CrossrefPreprintId =
@@ -57,10 +58,12 @@ export type CrossrefPreprintId =
   | ScienceOpenPreprintId
   | SocarxivPreprintId
   | TechrxivPreprintId
+  | VerixivPreprintId
 
 export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']> = hasRegistrant(
   '1101',
   '1590',
+  '12688',
   '14293',
   '20944',
   '21203',
@@ -148,6 +151,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'science-open', text: P.select() }, detectLanguage)
               .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
               .with({ type: 'techrxiv' }, () => O.some('en' as const))
+              .with({ type: 'verixiv' }, () => O.some('en' as const))
               .exhaustive(),
           ),
         ),
@@ -187,6 +191,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'science-open', text: P.select() }, detectLanguage)
               .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
               .with({ type: 'techrxiv' }, () => O.some('en' as const))
+              .with({ type: 'verixiv' }, () => O.some('en' as const))
               .exhaustive(),
           ),
         ),
@@ -460,5 +465,12 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Institute of Electrical and Electronics Engineers (IEEE)'),
     }),
     D.map(work => ({ type: 'techrxiv', value: work.DOI }) satisfies TechrxivPreprintId),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('12688'), 'DOI'),
+      'group-title': D.literal('Gates Foundation'),
+    }),
+    D.map(work => ({ type: 'verixiv', value: work.DOI }) satisfies VerixivPreprintId),
   ),
 )

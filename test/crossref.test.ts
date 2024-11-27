@@ -2532,6 +2532,181 @@ describe('getPreprintFromCrossref', () => {
       )
     })
 
+    test.prop([fc.verixivPreprintId(), fc.plainDate()])('from VeriXiv', async (id, posted) => {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
+        body: {
+          status: 'ok',
+          'message-type': 'work',
+          'message-version': '1.0.0',
+          message: {
+            indexed: {
+              'date-parts': [[2024, 10, 22]],
+              'date-time': '2024-10-22T04:13:53Z',
+              timestamp: 1729570433307,
+              version: '3.28.0',
+            },
+            posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+            'group-title': 'Gates Foundation',
+            'reference-count': 32,
+            publisher: 'F1000 Research Ltd',
+            license: [
+              {
+                start: { 'date-parts': [[2024, 8, 29]], 'date-time': '2024-08-29T00:00:00Z', timestamp: 1724889600000 },
+                'content-version': 'tdm',
+                'delay-in-days': 0,
+                URL: 'http://creativecommons.org/licenses/by/4.0/',
+              },
+              {
+                start: { 'date-parts': [[2024, 8, 29]], 'date-time': '2024-08-29T00:00:00Z', timestamp: 1724889600000 },
+                'content-version': 'tdm',
+                'delay-in-days': 0,
+                URL: 'http://creativecommons.org/licenses/by/4.0/',
+              },
+            ],
+            funder: [
+              {
+                DOI: '10.13039/100000865',
+                name: 'Bill and Melinda Gates Foundation',
+                'doi-asserted-by': 'publisher',
+                award: ['INV-022192'],
+                id: [{ id: '10.13039/100000865', 'id-type': 'DOI', 'asserted-by': 'publisher' }],
+              },
+              { name: 'Jean Clayton Fund - Liverpool School of Tropical Medicine', award: ['JC0621CR02'] },
+              {
+                DOI: '10.13039/100000865',
+                name: 'Bill and Melinda Gates Foundation',
+                'doi-asserted-by': 'publisher',
+                award: ['INV-022192'],
+                id: [{ id: '10.13039/100000865', 'id-type': 'DOI', 'asserted-by': 'publisher' }],
+              },
+              { name: 'Jean Clayton Fund - Liverpool School of Tropical Medicine', award: ['JC0621CR02'] },
+            ],
+            'content-domain': { domain: ['verixiv.org'], 'crossmark-restriction': false },
+            'short-container-title': [],
+            DOI: id.value,
+            type: 'posted-content',
+            created: { 'date-parts': [[2024, 8, 29]], 'date-time': '2024-08-29T13:20:09Z', timestamp: 1724937609000 },
+            'update-policy': 'http://dx.doi.org/10.12688/verixiv.crossmark-policy',
+            source: 'Crossref',
+            'is-referenced-by-count': 0,
+            title: ['Design and validation of a low-cost sugar-feeder for resource-poor insectaries'],
+            prefix: '10.12688',
+            author: [
+              {
+                ORCID: 'http://orcid.org/0000-0002-0323-8896',
+                'authenticated-orcid': false,
+                given: 'Zachary Thomas',
+                family: 'Stavrou\u2013Dowd',
+                sequence: 'first',
+                affiliation: [],
+              },
+              { given: 'Clair', family: 'Rose', sequence: 'additional', affiliation: [] },
+              {
+                ORCID: 'http://orcid.org/0000-0002-2576-7959',
+                'authenticated-orcid': false,
+                given: '\u00c1lvaro',
+                family: 'Acosta-Serrano',
+                sequence: 'additional',
+                affiliation: [],
+              },
+              {
+                ORCID: 'http://orcid.org/0000-0001-8821-6479',
+                'authenticated-orcid': false,
+                given: 'Lee Rafuse',
+                family: 'Haines',
+                sequence: 'additional',
+                affiliation: [],
+              },
+            ],
+            member: '2560',
+            'container-title': [],
+            'original-title': [],
+            link: [
+              {
+                URL: 'https://verixiv.org/articles/1-7/v1/xml',
+                'content-type': 'application/xml',
+                'content-version': 'vor',
+                'intended-application': 'text-mining',
+              },
+              {
+                URL: 'https://verixiv.org/articles/1-7/v1/pdf',
+                'content-type': 'application/pdf',
+                'content-version': 'vor',
+                'intended-application': 'text-mining',
+              },
+              {
+                URL: 'https://verixiv.org/articles/1-7/v1/iparadigms',
+                'content-type': 'unspecified',
+                'content-version': 'vor',
+                'intended-application': 'similarity-checking',
+              },
+            ],
+            deposited: {
+              'date-parts': [[2024, 10, 21]],
+              'date-time': '2024-10-21T14:55:16Z',
+              timestamp: 1729522516000,
+            },
+            score: 1,
+            resource: { primary: { URL: 'https://verixiv.org/articles/1-7/v1' } },
+            subtitle: [],
+            'short-title': [],
+            issued: { 'date-parts': [[2024, 8, 29]] },
+            'references-count': 32,
+            URL: 'http://dx.doi.org/10.12688/verixiv.54.1',
+            relation: {},
+            subject: [],
+            published: { 'date-parts': [[2024, 8, 29]] },
+            assertion: [
+              {
+                value: 'Awaiting Peer Review',
+                URL: 'https://verixiv.org/articles/1-7/v1#article-reports',
+                order: 0,
+                name: 'referee-status',
+                label: 'Referee status',
+                group: { name: 'current-referee-status', label: 'Current Referee Status' },
+              },
+              {
+                value:
+                  'This work was funded by the Bill and Melinda Gates Foundation under grant number INV-022192 to \u00c1lvaro Acosta-Serrano, and partially supported by the LSTM Jean Clayton Fund (Ref. JC0621CR02). The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.',
+                order: 0,
+                name: 'grant-information',
+                label: 'Grant Information',
+              },
+              {
+                value:
+                  'This is an open access article distributed under the terms of the Creative Commons Attribution Licence, which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.',
+                order: 0,
+                name: 'copyright-info',
+                label: 'Copyright',
+              },
+            ],
+            subtype: 'preprint',
+          },
+        },
+      })
+
+      const actual = await _.getPreprintFromCrossref(id)({ fetch, sleep: () => Promise.resolve() })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          abstract: undefined,
+          authors: [
+            { name: 'Zachary Thomas Stavrou–Dowd', orcid: '0000-0002-0323-8896' },
+            { name: 'Clair Rose', orcid: undefined },
+            { name: 'Álvaro Acosta-Serrano', orcid: '0000-0002-2576-7959' },
+            { name: 'Lee Rafuse Haines', orcid: '0000-0001-8821-6479' },
+          ],
+          id,
+          posted,
+          title: {
+            language: 'en',
+            text: rawHtml('Design and validation of a low-cost sugar-feeder for resource-poor insectaries'),
+          },
+          url: new URL('https://verixiv.org/articles/1-7/v1'),
+        }),
+      )
+    })
+
     test.prop([fc.scieloPreprintId(), fc.plainDate()])('when the response is stale', async (id, posted) => {
       const fetch = fetchMock
         .sandbox()
