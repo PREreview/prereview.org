@@ -149,11 +149,7 @@ const PseudonymProfileIdC = pipe(
 // Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
 // Refs https://github.com/gcanti/io-ts/issues/625#issuecomment-1007478009
 const ProfileIdC = C.make(D.union(OrcidProfileIdC, PseudonymProfileIdC), {
-  encode: id =>
-    match(id)
-      .with({ _tag: 'OrcidProfileId' }, OrcidProfileIdC.encode)
-      .with({ _tag: 'PseudonymProfileId' }, PseudonymProfileIdC.encode)
-      .exhaustive(),
+  encode: ProfileId.match({ onOrcid: OrcidProfileIdC.encode, onPseudonym: PseudonymProfileIdC.encode }),
 })
 
 const PreprintDoiC = C.make(

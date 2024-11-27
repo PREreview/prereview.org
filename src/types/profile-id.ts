@@ -1,4 +1,4 @@
-import { Data } from 'effect'
+import { Data, Function } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
 import type { Pseudonym } from './pseudonym.js'
 
@@ -15,3 +15,29 @@ export class PseudonymProfileId extends Data.TaggedClass('PseudonymProfileId')<{
 export const forOrcid = (orcid: Orcid) => new OrcidProfileId({ orcid })
 
 export const forPseudonym = (pseudonym: Pseudonym) => new PseudonymProfileId({ pseudonym })
+
+export const match: {
+  <A, B>(options: {
+    readonly onOrcid: (orcid: OrcidProfileId) => A
+    readonly onPseudonym: (pseudonym: PseudonymProfileId) => B
+  }): (self: ProfileId) => A | B
+  <A, B>(
+    self: ProfileId,
+    options: {
+      readonly onOrcid: (orcid: OrcidProfileId) => A
+      readonly onPseudonym: (pseudonym: PseudonymProfileId) => B
+    },
+  ): A | B
+} = Function.dual(
+  2,
+  <A, B>(
+    self: ProfileId,
+    {
+      onOrcid,
+      onPseudonym,
+    }: {
+      readonly onOrcid: (orcid: OrcidProfileId) => A
+      readonly onPseudonym: (pseudonym: PseudonymProfileId) => B
+    },
+  ): A | B => (self._tag === 'OrcidProfileId' ? onOrcid(self) : onPseudonym(self)),
+)

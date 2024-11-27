@@ -65,6 +65,7 @@ import { reviewMatch } from './routes.js'
 import type { Prereview as ScietyPrereview } from './sciety-list/index.js'
 import type { ClubId } from './types/club-id.js'
 import { type FieldId, isFieldId } from './types/field.js'
+import { ProfileId } from './types/index.js'
 import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639.js'
 import {
   type IndeterminatePreprintId,
@@ -73,7 +74,6 @@ import {
   fromPreprintDoi,
   fromUrl,
 } from './types/preprint-id.js'
-import type { ProfileId } from './types/profile-id.js'
 import type { NonEmptyString } from './types/string.js'
 import { isSubfieldId } from './types/subfield.js'
 import type { User } from './user.js'
@@ -273,18 +273,12 @@ export const getPrereviewFromZenodo = (id: number) =>
   )
 
 export const getPrereviewsForProfileFromZenodo = flow(
-  (profile: ProfileId) =>
+  (profile: ProfileId.ProfileId) =>
     new URLSearchParams({
-      q: match(profile)
-        .with(
-          { _tag: 'OrcidProfileId', orcid: P.select() },
-          orcid => `metadata.creators.person_or_org.identifiers.identifier:${orcid}`,
-        )
-        .with(
-          { _tag: 'PseudonymProfileId', pseudonym: P.select() },
-          pseudonym => `metadata.creators.person_or_org.name:"${pseudonym}"`,
-        )
-        .exhaustive(),
+      q: ProfileId.match(profile, {
+        onOrcid: profile => `metadata.creators.person_or_org.identifiers.identifier:${profile.orcid}`,
+        onPseudonym: profile => `metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
+      }),
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',

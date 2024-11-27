@@ -1,21 +1,22 @@
+import type { Types } from 'effect'
 import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { flow } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
-import type { ProfileId } from '../types/profile-id.js'
+import { ProfileId } from '../types/index.js'
 import { createPage } from './create-page.js'
 import { getOrcidProfile } from './orcid-profile.js'
 import { getPseudonymProfile } from './pseudonym-profile.js'
 
 export type Env = EnvFor<ReturnType<typeof profile>>
 
-export const profile = ({ locale, profile: profileId }: { profile: ProfileId; locale: SupportedLocale }) =>
-  match(profileId)
-    .with({ _tag: 'OrcidProfileId' }, profileForOrcid(locale))
-    .with({ _tag: 'PseudonymProfileId' }, profileForPseudonym(locale))
-    .exhaustive()
+export const profile = ({ locale, profile: profileId }: { profile: ProfileId.ProfileId; locale: SupportedLocale }) =>
+  ProfileId.match(profileId, {
+    onOrcid: profileForOrcid(locale),
+    onPseudonym: profileForPseudonym(locale),
+  })
 
 const profileForOrcid = (locale: SupportedLocale) =>
   flow(
@@ -42,4 +43,4 @@ const profileForPseudonym = (locale: SupportedLocale) =>
     ),
   )
 
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never
+type EnvFor<T> = Types.UnionToIntersection<T extends Reader<infer R, unknown> ? R : never>
