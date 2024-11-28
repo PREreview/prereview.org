@@ -148,6 +148,7 @@ export const createPage = ({
                           <dt>${translate(locale, 'requests-list', 'requestServer')()}</dt>
                           <dd>
                             ${match(request.preprint.id.type)
+                              .with('advance', () => 'Advance')
                               .with('africarxiv', () => 'AfricArXiv Preprints')
                               .with('arcadia-science', () => 'Arcadia Science')
                               .with('arxiv', () => 'arXiv')
@@ -312,6 +313,7 @@ export const createPage = ({
                           <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
                           <dd>
                             ${match(prereview.preprint.id.type)
+                              .with('advance', () => 'Advance')
                               .with('africarxiv', () => 'AfricArXiv Preprints')
                               .with('arcadia-science', () => 'Arcadia Science')
                               .with('arxiv', () => 'arXiv')

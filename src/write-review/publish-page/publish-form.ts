@@ -67,6 +67,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                 <dt>${t('write-review', 'preprintServer')()}</dt>
                 <dd>
                   ${match(preprint.id.type)
+                    .with('advance', () => 'Advance')
                     .with('africarxiv', () => 'AfricArXiv Preprints')
                     .with('arcadia-science', () => 'Arcadia Science')
                     .with('arxiv', () => 'arXiv')

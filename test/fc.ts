@@ -79,6 +79,7 @@ import type { EmailAddress } from '../src/types/email-address.js'
 import { type FieldId, fieldIds } from '../src/types/field.js'
 import { ProfileId } from '../src/types/index.js'
 import {
+  type AdvancePreprintId,
   type AfricarxivFigsharePreprintId,
   type AfricarxivOsfPreprintId,
   type AfricarxivPreprintId,
@@ -468,6 +469,12 @@ export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']>
 export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value']> =>
   datacitePreprintId().map(id => id.value)
 
+export const advancePreprintId = (): fc.Arbitrary<AdvancePreprintId> =>
+  fc.record({
+    type: constant('advance'),
+    value: doi(constant('31124')),
+  })
+
 export const africarxivPreprintId = (): fc.Arbitrary<AfricarxivPreprintId> =>
   fc.oneof(
     africarxivFigsharePreprintId(),
@@ -831,6 +838,7 @@ export const preprintId = (): fc.Arbitrary<PreprintId> => fc.oneof(philsciPrepri
 
 export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>> =>
   fc.oneof(
+    advancePreprintId(),
     africarxivPreprintId(),
     arcadiaSciencePreprintId(),
     arxivPreprintId(),
@@ -927,6 +935,7 @@ export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId>
 
 export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, ReviewRequestPreprintId>> =>
   fc.oneof(
+    advancePreprintId(),
     africarxivFigsharePreprintId(),
     africarxivOsfPreprintId(),
     africarxivZenodoPreprintId(),

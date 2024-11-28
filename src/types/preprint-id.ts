@@ -6,6 +6,7 @@ import { P, match } from 'ts-pattern'
 import * as FptsToEffect from '../FptsToEffect.js'
 
 export type PreprintId =
+  | AdvancePreprintId
   | AfricarxivPreprintId
   | ArcadiaSciencePreprintId
   | ArxivPreprintId
@@ -34,6 +35,11 @@ export type PreprintId =
   | ZenodoPreprintId
 
 export type IndeterminatePreprintId = PreprintId | BiorxivOrMedrxivPreprintId | ZenodoOrAfricarxivPreprintId
+
+export interface AdvancePreprintId {
+  readonly type: 'advance'
+  readonly value: Doi<'31124'>
+}
 
 export type AfricarxivPreprintId =
   | AfricarxivFigsharePreprintId
@@ -222,6 +228,7 @@ export const isPreprintDoi: Predicate.Refinement<Doi, Extract<IndeterminatePrepr
     '20944',
     '22541',
     '23668',
+    '31124',
     '31219',
     '31222',
     '31223',
@@ -263,6 +270,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('23668'), doi => ({ type: 'psycharchives', value: doi }) satisfies PsychArchivesPreprintId)
     .when(hasRegistrant('26434'), doi => ({ type: 'chemrxiv', value: doi }) satisfies ChemrxivPreprintId)
     .when(hasRegistrant('20944'), doi => ({ type: 'preprints.org', value: doi }) satisfies PreprintsorgPreprintId)
+    .when(hasRegistrant('31124'), doi => ({ type: 'advance', value: doi }) satisfies AdvancePreprintId)
     .when(hasRegistrant('31219'), doi => ({ type: 'osf-preprints', value: doi }) satisfies OsfPreprintsPreprintId)
     .when(hasRegistrant('31222'), doi => ({ type: 'metaarxiv', value: doi }) satisfies MetaarxivPreprintId)
     .when(hasRegistrant('31223'), doi => ({ type: 'eartharxiv', value: doi }) satisfies EartharxivPreprintId)

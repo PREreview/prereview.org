@@ -81,6 +81,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
                   <dt>Preprint server</dt>
                   <dd>
                     ${match(prereview.preprint.id.type)
+                      .with('advance', () => 'Advance')
                       .with('africarxiv', () => 'AfricArXiv Preprints')
                       .with('arcadia-science', () => 'Arcadia Science')
                       .with('arxiv', () => 'arXiv')
