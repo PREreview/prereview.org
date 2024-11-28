@@ -874,6 +874,7 @@ export const indeterminatePreprintIdWithDoi = (): fc.Arbitrary<Extract<Indetermi
 
 export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(
+    advancePreprintId(),
     africarxivOsfPreprintId(),
     authoreaPreprintId(),
     biorxivPreprintId(),
