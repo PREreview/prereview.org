@@ -304,6 +304,11 @@ describe('fromUrl', () => {
       [[new URL('https://edarxiv.org/wc6r7/download'), Doi('10.35542/osf.io/wc6r7')]], // download
       [[new URL('https://edarxiv.org/preprints/wc6r7/download'), Doi('10.35542/osf.io/wc6r7')]], // download
       [[new URL('https://edarxiv.org/wc6r7/download?format=pdf'), Doi('10.35542/osf.io/wc6r7')]], // download pdf
+      [[new URL('https://www.osf.io/preprints/edarxiv/wc6r7'), Doi('10.35542/osf.io/wc6r7')]], // www.
+      [[new URL('http://osf.io/preprints/edarxiv/wc6r7'), Doi('10.35542/osf.io/wc6r7')]], // http
+      [[new URL('https://osf.io/preprints/edarxiv/wc6r7/'), Doi('10.35542/osf.io/wc6r7')]], // trailing slash
+      [[new URL('https://osf.io/preprints/edarxiv/wc6r7'), Doi('10.35542/osf.io/wc6r7')]], // with preprints
+      [[new URL('https://osf.io/preprints/edarxiv/wc6r7/download'), Doi('10.35542/osf.io/wc6r7')]], // download
     ],
   })('with an edarxiv.org URL', ([url, doi]) => {
     expect(_.fromUrl(url)).toStrictEqual(Option.some({ type: 'edarxiv', value: doi }))
@@ -474,6 +479,11 @@ describe('fromUrl', () => {
       [[new URL('https://psyarxiv.com/k9mn3/download'), Doi('10.31234/osf.io/k9mn3')]], // download
       [[new URL('https://psyarxiv.com/preprints/k9mn3/download'), Doi('10.31234/osf.io/k9mn3')]], // download
       [[new URL('https://psyarxiv.com/k9mn3/download?format=pdf'), Doi('10.31234/osf.io/k9mn3')]], // download pdf
+      [[new URL('https://www.osf.io/preprints/psyarxiv/k9mn3'), Doi('10.31234/osf.io/k9mn3')]], // www.
+      [[new URL('http://osf.io/preprints/psyarxiv/k9mn3'), Doi('10.31234/osf.io/k9mn3')]], // http
+      [[new URL('https://osf.io/preprints/psyarxiv/k9mn3/'), Doi('10.31234/osf.io/k9mn3')]], // trailing slash
+      [[new URL('https://osf.io/preprints/psyarxiv/k9mn3'), Doi('10.31234/osf.io/k9mn3')]], // with preprints
+      [[new URL('https://osf.io/preprints/psyarxiv/k9mn3/download'), Doi('10.31234/osf.io/k9mn3')]], // download
     ],
   })('with an psyarxiv.com URL', ([url, doi]) => {
     expect(_.fromUrl(url)).toStrictEqual(Option.some({ type: 'psyarxiv', value: doi }))

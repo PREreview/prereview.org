@@ -350,12 +350,14 @@ const extractFromFigsharePath = (type: 'africarxiv') =>
 const extractFromOsfPath = flow(
   decodeURIComponent,
   Option.liftNullable(s =>
-    /^(?:preprints\/(?:(africarxiv|metaarxiv|socarxiv)\/)?)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s),
+    /^(?:preprints\/(?:(africarxiv|edarxiv|metaarxiv|psyarxiv|socarxiv)\/)?)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s),
   ),
   Option.andThen(([, prefix, id]) =>
     match(prefix)
       .with('africarxiv', () => `10.31730/osf.io/${id}`)
+      .with('edarxiv', () => `10.35542/osf.io/${id}`)
       .with('metaarxiv', () => `10.31222/osf.io/${id}`)
+      .with('psyarxiv', () => `10.31234/osf.io/${id}`)
       .with('socarxiv', () => `10.31235/osf.io/${id}`)
       .otherwise(() => `10.31219/osf.io/${id}`),
   ),

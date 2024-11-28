@@ -611,9 +611,12 @@ export const edarxivPreprintId = (): fc.Arbitrary<EdarxivPreprintId> =>
 
 export const edarxivPreprintUrl = (): fc.Arbitrary<[URL, EdarxivPreprintId]> =>
   fc
-    .string({ unit: alphanumeric(), minLength: 1 })
-    .map(id => [
-      new URL(`https://edarxiv.org/${id}`),
+    .tuple(
+      fc.string({ unit: alphanumeric(), minLength: 1 }),
+      fc.constantFrom('https://edarxiv.org', 'https://osf.io/preprints/edarxiv'),
+    )
+    .map(([id, baseUrl]) => [
+      new URL(`${baseUrl}/${id}`),
       { type: 'edarxiv', value: `10.35542/osf.io/${id}` as Doi<'35542'> },
     ])
 
@@ -714,9 +717,12 @@ export const psyarxivPreprintId = (): fc.Arbitrary<PsyarxivPreprintId> =>
 
 export const psyarxivPreprintUrl = (): fc.Arbitrary<[URL, PsyarxivPreprintId]> =>
   fc
-    .string({ unit: alphanumeric(), minLength: 1 })
-    .map(id => [
-      new URL(`https://psyarxiv.com/${id}`),
+    .tuple(
+      fc.string({ unit: alphanumeric(), minLength: 1 }),
+      fc.constantFrom('https://psyarxiv.com', 'https://osf.io/preprints/psyarxiv'),
+    )
+    .map(([id, baseUrl]) => [
+      new URL(`${baseUrl}/${id}`),
       { type: 'psyarxiv', value: `10.31234/osf.io/${id}` as Doi<'31234'> },
     ])
 
