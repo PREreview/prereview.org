@@ -11,9 +11,9 @@ export const unsupportedDoiPage = PageResponse({
     <h1>Sorry, we don’t support this DOI</h1>
 
     <p>
-      We support preprints from AfricArXiv, Arcadia&nbsp;Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote,
-      EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv,
-      PsychArchives, Research&nbsp;Square, SciELO, ScienceOpen, SocArXiv, TechRxiv, VeriXiv and Zenodo.
+      We support preprints from Advance, AfricArXiv, Arcadia&nbsp;Science, arXiv, Authorea, bioRxiv, ChemRxiv,
+      Curvenote, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org,
+      PsyArXiv, PsychArchives, Research&nbsp;Square, SciELO, ScienceOpen, SocArXiv, TechRxiv, VeriXiv and Zenodo.
     </p>
 
     <p>
