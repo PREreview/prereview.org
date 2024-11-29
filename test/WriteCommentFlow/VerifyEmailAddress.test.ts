@@ -4,7 +4,7 @@ import { Effect, Either, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import * as ContactEmailAddress from '../../src/contact-email-address.js'
-import { LoggedInUser } from '../../src/Context.js'
+import { Locale, LoggedInUser } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
 import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
 import * as _ from '../../src/WriteCommentFlow/VerifyEmailAddress/index.js'
@@ -16,10 +16,11 @@ describe('VerifyEmailAddressPage', () => {
     describe('when the email address needs to be verified', () => {
       test.prop([
         fc.uuid(),
+        fc.supportedLocale(),
         fc.user(),
         fc.unverifiedContactEmailAddress(),
         fc.expectedCommandForUser().filter(nextCommand => nextCommand._tag !== 'ExpectedToStartAComment'),
-      ])('when the email address can be verified', (commentId, user, contactEmailAddress, nextCommand) =>
+      ])('when the email address can be verified', (commentId, locale, user, contactEmailAddress, nextCommand) =>
         Effect.gen(function* () {
           const getNextExpectedCommandForUserOnAComment = jest.fn<
             typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
@@ -55,16 +56,22 @@ describe('VerifyEmailAddressPage', () => {
             user.orcid,
             new ContactEmailAddress.VerifiedContactEmailAddress({ value: contactEmailAddress.value }),
           )
-        }).pipe(Effect.provideService(LoggedInUser, user), Effect.provide(TestContext.TestContext), Effect.runPromise),
+        }).pipe(
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
       )
 
       test.prop([
         fc.uuid(),
+        fc.supportedLocale(),
         fc.user(),
         fc
           .tuple(fc.unverifiedContactEmailAddress(), fc.uuid())
           .filter(([contactEmailAddress, token]) => contactEmailAddress.verificationToken !== token),
-      ])("when the token doesn't match", (commentId, user, [contactEmailAddress, token]) =>
+      ])("when the token doesn't match", (commentId, locale, user, [contactEmailAddress, token]) =>
         Effect.gen(function* () {
           const actual = yield* _.VerifyEmailAddress({
             commentId,
@@ -80,6 +87,7 @@ describe('VerifyEmailAddressPage', () => {
             js: [],
           })
         }).pipe(
+          Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () => Effect.succeed(contactEmailAddress)),
@@ -89,9 +97,9 @@ describe('VerifyEmailAddressPage', () => {
         ),
       )
 
-      test.prop([fc.uuid(), fc.user(), fc.unverifiedContactEmailAddress()])(
+      test.prop([fc.uuid(), fc.supportedLocale(), fc.user(), fc.unverifiedContactEmailAddress()])(
         "when the email address can't be verified",
-        (commentId, user, contactEmailAddress) =>
+        (commentId, locale, user, contactEmailAddress) =>
           Effect.gen(function* () {
             const actual = yield* _.VerifyEmailAddress({
               commentId,
@@ -111,6 +119,7 @@ describe('VerifyEmailAddressPage', () => {
               js: [],
             })
           }).pipe(
+            Effect.provideService(Locale, locale),
             Effect.provideService(LoggedInUser, user),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
@@ -122,9 +131,9 @@ describe('VerifyEmailAddressPage', () => {
       )
     })
 
-    test.prop([fc.uuid(), fc.user(), fc.verifiedContactEmailAddress(), fc.uuid()])(
+    test.prop([fc.uuid(), fc.supportedLocale(), fc.user(), fc.verifiedContactEmailAddress(), fc.uuid()])(
       'when the email address is already verified',
-      (commentId, user, contactEmailAddress, token) =>
+      (commentId, locale, user, contactEmailAddress, token) =>
         Effect.gen(function* () {
           const actual = yield* _.VerifyEmailAddress({ commentId, token })
 
@@ -137,6 +146,7 @@ describe('VerifyEmailAddressPage', () => {
             js: [],
           })
         }).pipe(
+          Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () => Effect.succeed(contactEmailAddress)),
@@ -146,33 +156,36 @@ describe('VerifyEmailAddressPage', () => {
         ),
     )
 
-    test.prop([fc.uuid(), fc.user(), fc.uuid()])('when there is no email address', (commentId, user, token) =>
-      Effect.gen(function* () {
-        const actual = yield* _.VerifyEmailAddress({ commentId, token }).pipe(
-          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
-            Effect.fail(new ContactEmailAddress.ContactEmailAddressIsNotFound()),
-          ),
-        )
+    test.prop([fc.uuid(), fc.supportedLocale(), fc.user(), fc.uuid()])(
+      'when there is no email address',
+      (commentId, locale, user, token) =>
+        Effect.gen(function* () {
+          const actual = yield* _.VerifyEmailAddress({ commentId, token }).pipe(
+            Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
+              Effect.fail(new ContactEmailAddress.ContactEmailAddressIsNotFound()),
+            ),
+          )
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provideService(LoggedInUser, user),
-        Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-        Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
-      ),
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.NOT_FOUND,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+          Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
     )
   })
 
-  test.prop([fc.uuid(), fc.uuid()])("when there isn't a user", (commentId, token) =>
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.uuid()])("when there isn't a user", (commentId, locale, token) =>
     Effect.gen(function* () {
       const actual = yield* _.VerifyEmailAddress({ commentId, token })
 
@@ -181,6 +194,7 @@ describe('VerifyEmailAddressPage', () => {
         location: Routes.WriteCommentEnterEmailAddress.href({ commentId }),
       })
     }).pipe(
+      Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
       Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
       Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
