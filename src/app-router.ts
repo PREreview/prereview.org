@@ -22,6 +22,8 @@ import multer, { MulterError } from 'multer'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
+import type { Locale } from './Context.js'
+import type { EffectEnv } from './EffectToFpts.js'
 import { aboutUs } from './about-us.js'
 import {
   authorInvite,
@@ -351,6 +353,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   CanUseSearchQueriesEnv &
   CanWriteCommentsEnv &
   DoesPreprintExistEnv &
+  EffectEnv<Locale> &
   ResolvePreprintIdEnv &
   GetPreprintIdEnv &
   EnvironmentLabelEnv &

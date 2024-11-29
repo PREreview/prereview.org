@@ -14,10 +14,11 @@ import type { Redis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
+import * as EffectToFpts from './EffectToFpts.js'
+import { PageNotFound } from './PageNotFound/index.js'
 import { type RouterEnv, routes } from './app-router.js'
 import type { Email } from './email.js'
 import { doesPreprintExist, getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
-import { pageNotFound } from './http-error.js'
 import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
@@ -43,6 +44,7 @@ export type ConfigEnv = Omit<
   | 'templatePage'
   | 'getPreprintIdFromUuid'
   | 'getProfileIdFromUuid'
+  | 'runtime'
   | 'sendEmail'
 > &
   (MailjetApiEnv | NodemailerEnv) & {
@@ -73,7 +75,7 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
             'locale',
             RM.asks((env: RouterEnv) => env.locale),
           ),
-          RM.apSW('response', RM.of(pageNotFound)),
+          RM.apSW('response', EffectToFpts.toReaderMiddleware(PageNotFound)),
           RM.ichainW(handleResponse),
         ),
       )
@@ -120,7 +122,17 @@ export const app = (config: ConfigEnv) => {
     },
   })
 
-  return ({ locale, logger, user }: { locale: SupportedLocale; logger: L.Logger; user?: User }) => {
+  return ({
+    locale,
+    logger,
+    runtime,
+    user,
+  }: {
+    locale: SupportedLocale
+    logger: L.Logger
+    runtime: RouterEnv['runtime']
+    user?: User
+  }) => {
     return express()
       .disable('x-powered-by')
       .use((req, res, next) => {
@@ -168,7 +180,7 @@ export const app = (config: ConfigEnv) => {
         asyncHandler((req, res, next) => {
           return pipe(
             appMiddleware,
-            R.local((env: ConfigEnv & L.LoggerEnv): RouterEnv & LegacyEnv => ({
+            R.local((env: ConfigEnv & L.LoggerEnv & { runtime: RouterEnv['runtime'] }): RouterEnv & LegacyEnv => ({
               ...env,
               doesPreprintExist: withEnv(doesPreprintExist, env),
               generateUuid: uuid.v4(),
@@ -184,9 +196,10 @@ export const app = (config: ConfigEnv) => {
               resolvePreprintId: withEnv(resolvePreprintId, env),
               sendEmail: withEnv(sendEmail, env),
             })),
-            R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv => ({
+            R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: RouterEnv['runtime'] } => ({
               ...appEnv,
               logger,
+              runtime,
             })),
             apply(config),
             toRequestHandler,

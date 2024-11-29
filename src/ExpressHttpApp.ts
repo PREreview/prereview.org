@@ -14,6 +14,7 @@ export const ExpressHttpApp: HttpApp.Default<
   const expressApp = yield* Express
   const loggerEnv = yield* DeprecatedLoggerEnv
   const request = yield* HttpServerRequest.HttpServerRequest
+  const runtime = yield* Effect.runtime<Locale>()
 
   const nodeRequest = NodeHttpServerRequest.toIncomingMessage(request)
   const nodeResponse = NodeHttpServerRequest.toServerResponse(request)
@@ -39,7 +40,7 @@ export const ExpressHttpApp: HttpApp.Default<
     )
 
     express()
-      .use(expressApp({ locale, logger, user: Option.getOrUndefined(user) }))
+      .use(expressApp({ locale, logger, runtime, user: Option.getOrUndefined(user) }))
       .use(((error, req, res, next) => {
         if (error instanceof Error && 'code' in error && error.code === 'ERR_HTTP_HEADERS_SENT') {
           return next()
