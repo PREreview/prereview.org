@@ -65,8 +65,11 @@ function problemsPage(user?: User) {
   })
 }
 
+/** @deprecated */
 export const pageNotFound = Effect.runSync(Effect.provideService(PageNotFound, Locale, DefaultLocale))
 
+/** @deprecated */
 export const havingProblemsPage = Effect.runSync(Effect.provideService(HavingProblemsPage, Locale, DefaultLocale))
 
+/** @deprecated */
 export const noPermissionPage = Effect.runSync(Effect.provideService(NoPermissionPage, Locale, DefaultLocale))

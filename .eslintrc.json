@@ -60,6 +60,7 @@
     "@typescript-eslint/consistent-type-exports": ["error", { "fixMixedExportsWithInlineTypeSpecifier": true }],
     "@typescript-eslint/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
     "@typescript-eslint/no-confusing-void-expression": "off",
+    "@typescript-eslint/no-deprecated": "off",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/prefer-nullish-coalescing": ["error", { "ignoreConditionalTests": true }],
     "@typescript-eslint/restrict-template-expressions": ["error", { "allowNumber": true }],
@@ -102,7 +103,10 @@
     ],
     "import/no-named-as-default": "off",
     "import/no-named-as-default-member": "off",
-    "no-comments/disallowComments": ["error", { "allow": ["eslint", "https://", "Do", "Unfortunately", "Refs"] }],
+    "no-comments/disallowComments": [
+      "error",
+      { "allow": ["\\* @deprecated", "eslint", "https://", "Do", "Unfortunately", "Refs"] }
+    ],
     "object-shorthand": "error",
     "quotes": ["error", "single", { "avoidEscape": true }],
     "wc/no-child-traversal-in-connectedcallback": "off"
