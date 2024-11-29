@@ -31,7 +31,7 @@ export const EnterEmailAddressPage = ({
 
     const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+    if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
 
@@ -39,7 +39,6 @@ export const EnterEmailAddressPage = ({
 
     return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
       Match.tag('CommentInProgress', comment =>
         Effect.gen(function* () {
           if (comment.verifiedEmailAddressExists) {
@@ -144,7 +143,7 @@ export const EnterEmailAddressSubmission = ({
 
     const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+    if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
 
@@ -152,7 +151,6 @@ export const EnterEmailAddressSubmission = ({
 
     return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
       Match.tag('CommentInProgress', () =>
         Effect.gen(function* () {
           const form = yield* EnterEmailAddressForm.fromBody(body)

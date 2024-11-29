@@ -26,7 +26,7 @@ export const CodeOfConductPage = ({
 
     const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+    if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
 
@@ -34,7 +34,6 @@ export const CodeOfConductPage = ({
 
     return pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => pageNotFound),
       Match.tag('CommentInProgress', comment =>
         MakeResponse({
           commentId,
@@ -83,7 +82,7 @@ export const CodeOfConductSubmission = ({
 
     const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+    if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
 
@@ -91,7 +90,6 @@ export const CodeOfConductSubmission = ({
 
     return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
       Match.tag('CommentInProgress', 'CommentReadyForPublishing', () =>
         Effect.gen(function* () {
           const form = yield* CodeOfConductForm.fromBody(body)

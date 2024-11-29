@@ -27,40 +27,35 @@ export const ChoosePersonaPage = ({
 
     const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+    if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return yield* PageNotFound
     }
 
     const locale = yield* Locale
 
-    return yield* pipe(
+    return pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => PageNotFound),
       Match.tag('CommentInProgress', comment =>
-        Effect.succeed(
-          MakeResponse({
-            commentId,
-            form: ChoosePersonaForm.fromComment(comment),
-            locale,
-            user,
-          }),
-        ),
+        MakeResponse({
+          commentId,
+          form: ChoosePersonaForm.fromComment(comment),
+          locale,
+          user,
+        }),
       ),
       Match.tag('CommentReadyForPublishing', comment =>
-        Effect.succeed(
-          MakeResponse({
-            commentId,
-            form: ChoosePersonaForm.fromComment(comment),
-            locale,
-            user,
-          }),
-        ),
+        MakeResponse({
+          commentId,
+          form: ChoosePersonaForm.fromComment(comment),
+          locale,
+          user,
+        }),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
       ),
       Match.tag('CommentPublished', () =>
-        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
+        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
       ),
       Match.exhaustive,
     )
@@ -90,7 +85,7 @@ export const ChoosePersonaSubmission = ({
 
     const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+    if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return yield* PageNotFound
     }
 
@@ -98,7 +93,6 @@ export const ChoosePersonaSubmission = ({
 
     return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => PageNotFound),
       Match.tag('CommentInProgress', 'CommentReadyForPublishing', () =>
         Effect.gen(function* () {
           const form = yield* ChoosePersonaForm.fromBody(body)

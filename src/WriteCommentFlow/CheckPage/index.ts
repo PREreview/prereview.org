@@ -25,7 +25,7 @@ export const CheckPage = ({
 
     const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+    if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return yield* PageNotFound
     }
 
@@ -33,7 +33,6 @@ export const CheckPage = ({
 
     return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => PageNotFound),
       Match.tag('CommentInProgress', () => PageNotFound),
       Match.tag('CommentReadyForPublishing', comment =>
         Effect.succeed(
@@ -79,13 +78,12 @@ export const CheckPageSubmission = ({
 
     const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+    if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return yield* PageNotFound
     }
 
     return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => PageNotFound),
       Match.tag('CommentInProgress', () => PageNotFound),
       Match.tag('CommentReadyForPublishing', () =>
         Effect.gen(function* () {

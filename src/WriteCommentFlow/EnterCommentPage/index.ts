@@ -26,7 +26,7 @@ export const EnterCommentPage = ({
 
     const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+    if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
 
@@ -34,7 +34,6 @@ export const EnterCommentPage = ({
 
     return pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => pageNotFound),
       Match.tag('CommentInProgress', comment =>
         MakeResponse({
           commentId,
@@ -85,7 +84,7 @@ export const EnterCommentSubmission = ({
 
     const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
+    if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return pageNotFound
     }
 
@@ -93,7 +92,6 @@ export const EnterCommentSubmission = ({
 
     return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
       Match.tag('CommentInProgress', 'CommentReadyForPublishing', comment =>
         Effect.gen(function* () {
           const form = yield* EnterCommentForm.fromBody(body)
