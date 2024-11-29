@@ -8,9 +8,9 @@ import { Locale } from './Context.js'
 import { HavingProblemsPage } from './HavingProblemsPage/index.js'
 import { html, plainText, sendHtml } from './html.js'
 import { DefaultLocale } from './locales/index.js'
+import { NoPermissionPage } from './NoPermissionPage/index.js'
 import { templatePage } from './page.js'
 import { PageNotFound } from './PageNotFound/index.js'
-import { PageResponse } from './response.js'
 import { type User, maybeGetUser } from './user.js'
 
 export function handleError(error: HttpError<typeof Status.NotFound | typeof Status.ServiceUnavailable>) {
@@ -69,12 +69,4 @@ export const pageNotFound = Effect.runSync(Effect.provideService(PageNotFound, L
 
 export const havingProblemsPage = Effect.runSync(Effect.provideService(HavingProblemsPage, Locale, DefaultLocale))
 
-export const noPermissionPage = PageResponse({
-  status: Status.Forbidden,
-  title: plainText`You do not have permission to view this page`,
-  main: html`
-    <h1>You do not have permission to view this page</h1>
-
-    <p>If you think you should have access, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
-  `,
-})
+export const noPermissionPage = Effect.runSync(NoPermissionPage)
