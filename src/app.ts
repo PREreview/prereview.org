@@ -69,6 +69,10 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.apSW('response', RM.of(pageNotFound)),
           RM.ichainW(handleResponse),
         ),
