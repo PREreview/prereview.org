@@ -1,21 +1,27 @@
 import { StatusCodes } from 'http-status-codes'
-import { html, plainText } from '../html.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 
-export const createPageNotFound = (): PageResponse =>
+export const createPageNotFound = (locale: SupportedLocale): PageResponse =>
   PageResponse({
     status: StatusCodes.NOT_FOUND,
-    title: plainText`Page not found`,
+    title: plainText(translate(locale, 'page-not-found', 'pageNotFoundTitle')()),
     main: html`
-      <h1>Page not found</h1>
+      <h1>${translate(locale, 'page-not-found', 'pageNotFoundTitle')()}</h1>
 
-      <p>If you typed the web address, check it is correct.</p>
+      <p>${translate(locale, 'page-not-found', 'checkCorrect')()}</p>
 
-      <p>If you pasted the web address, check you copied the entire address.</p>
+      <p>${translate(locale, 'page-not-found', 'checkEntire')()}</p>
 
       <p>
-        If the web address is correct or you selected a link or button, please
-        <a href="mailto:help@prereview.org">get in touch</a>.
+        ${rawHtml(
+          translate(
+            locale,
+            'page-not-found',
+            'contactUs',
+          )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
+        )}
       </p>
     `,
   })

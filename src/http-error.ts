@@ -4,7 +4,9 @@ import type { HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { match } from 'ts-pattern'
+import { Locale } from './Context.js'
 import { html, plainText, sendHtml } from './html.js'
+import { DefaultLocale } from './locales/index.js'
 import { templatePage } from './page.js'
 import { PageNotFound } from './PageNotFound/index.js'
 import { PageResponse } from './response.js'
@@ -62,7 +64,7 @@ function problemsPage(user?: User) {
   })
 }
 
-export const pageNotFound = Effect.runSync(PageNotFound)
+export const pageNotFound = Effect.runSync(Effect.provideService(PageNotFound, Locale, DefaultLocale))
 
 export const havingProblemsPage = PageResponse({
   status: Status.ServiceUnavailable,
