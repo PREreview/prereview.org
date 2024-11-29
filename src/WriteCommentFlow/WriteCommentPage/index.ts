@@ -2,7 +2,8 @@ import { Effect, Option } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import { Locale, LoggedInUser } from '../../Context.js'
 import { EnsureCanWriteComments } from '../../feature-flags.js'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
+import { PageNotFound } from '../../PageNotFound/index.js'
 import { GetPrereview } from '../../Prereview.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
@@ -43,10 +44,10 @@ export const WriteCommentPage = ({
     })
   }).pipe(
     Effect.catchTags({
-      NotAllowedToWriteComments: () => Effect.succeed(pageNotFound),
-      PrereviewIsNotFound: () => Effect.succeed(pageNotFound),
-      PrereviewIsUnavailable: () => Effect.succeed(havingProblemsPage),
-      PrereviewWasRemoved: () => Effect.succeed(pageNotFound),
-      UnableToQuery: () => Effect.succeed(havingProblemsPage),
+      NotAllowedToWriteComments: () => PageNotFound,
+      PrereviewIsNotFound: () => PageNotFound,
+      PrereviewIsUnavailable: () => HavingProblemsPage,
+      PrereviewWasRemoved: () => PageNotFound,
+      UnableToQuery: () => HavingProblemsPage,
     }),
   )

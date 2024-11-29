@@ -2,7 +2,8 @@ import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import * as ContactEmailAddress from '../../contact-email-address.js'
 import { Locale } from '../../Context.js'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
+import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
@@ -32,7 +33,7 @@ export const EnterEmailAddressPage = ({
     const comment = yield* getComment(commentId)
 
     if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
-      return pageNotFound
+      return yield* PageNotFound
     }
 
     const locale = yield* Locale
@@ -114,12 +115,12 @@ export const EnterEmailAddressPage = ({
     )
   }).pipe(
     Effect.catchTags({
-      CommentHasNotBeenStarted: () => Effect.succeed(havingProblemsPage),
-      CommentIsBeingPublished: () => Effect.succeed(havingProblemsPage),
-      CommentWasAlreadyPublished: () => Effect.succeed(havingProblemsPage),
-      ContactEmailAddressIsUnavailable: () => Effect.succeed(havingProblemsPage),
-      UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
-      UnableToQuery: () => Effect.succeed(havingProblemsPage),
+      CommentHasNotBeenStarted: () => HavingProblemsPage,
+      CommentIsBeingPublished: () => HavingProblemsPage,
+      CommentWasAlreadyPublished: () => HavingProblemsPage,
+      ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+      UnableToHandleCommand: () => HavingProblemsPage,
+      UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterEmailAddress.href({ commentId }) })),
     }),
@@ -144,7 +145,7 @@ export const EnterEmailAddressSubmission = ({
     const comment = yield* getComment(commentId)
 
     if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
-      return pageNotFound
+      return yield* PageNotFound
     }
 
     const locale = yield* Locale
@@ -170,7 +171,7 @@ export const EnterEmailAddressSubmission = ({
 
           yield* saveContactEmailAddress(user.orcid, contactEmailAddress)
 
-          return havingProblemsPage
+          return yield* HavingProblemsPage
         }),
       ),
       Match.tag('CommentReadyForPublishing', () =>
@@ -186,8 +187,8 @@ export const EnterEmailAddressSubmission = ({
     )
   }).pipe(
     Effect.catchTags({
-      ContactEmailAddressIsUnavailable: () => Effect.succeed(havingProblemsPage),
-      UnableToQuery: () => Effect.succeed(havingProblemsPage),
+      ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+      UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterEmailAddress.href({ commentId }) })),
     }),

@@ -1,7 +1,8 @@
 import { Effect, Equal } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import { Locale } from '../../Context.js'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
+import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
@@ -25,7 +26,7 @@ export const PublishedPage = ({
     const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentPublished' || !Equal.equals(user.orcid, comment.authorId)) {
-      return pageNotFound
+      return yield* PageNotFound
     }
 
     const locale = yield* Locale
@@ -33,7 +34,7 @@ export const PublishedPage = ({
     return MakeResponse({ doi: comment.doi, commentId, locale, prereviewId: comment.prereviewId })
   }).pipe(
     Effect.catchTags({
-      UnableToQuery: () => Effect.succeed(havingProblemsPage),
+      UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
     }),

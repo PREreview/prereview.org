@@ -2,7 +2,8 @@ import { Effect, Match, pipe } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import { Locale } from '../../Context.js'
 import { EnsureCanWriteComments } from '../../feature-flags.js'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
+import { PageNotFound } from '../../PageNotFound/index.js'
 import { GetPrereview } from '../../Prereview.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
@@ -75,12 +76,12 @@ export const StartNow = ({
     )
   }).pipe(
     Effect.catchTags({
-      NotAllowedToWriteComments: () => Effect.succeed(pageNotFound),
-      PrereviewIsNotFound: () => Effect.succeed(pageNotFound),
-      PrereviewIsUnavailable: () => Effect.succeed(havingProblemsPage),
-      PrereviewWasRemoved: () => Effect.succeed(pageNotFound),
+      NotAllowedToWriteComments: () => PageNotFound,
+      PrereviewIsNotFound: () => PageNotFound,
+      PrereviewIsUnavailable: () => HavingProblemsPage,
+      PrereviewWasRemoved: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentStartNow.href({ id }) })),
     }),
-    Effect.orElseSucceed(() => havingProblemsPage),
+    Effect.orElse(() => HavingProblemsPage),
   )

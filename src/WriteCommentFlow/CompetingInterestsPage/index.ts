@@ -1,7 +1,8 @@
 import { Effect, Equal, Match, Option, pipe } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import { Locale } from '../../Context.js'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
+import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
@@ -27,7 +28,7 @@ export const CompetingInterestsPage = ({
     const comment = yield* getComment(commentId)
 
     if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
-      return pageNotFound
+      return yield* PageNotFound
     }
 
     const locale = yield* Locale
@@ -58,7 +59,7 @@ export const CompetingInterestsPage = ({
     )
   }).pipe(
     Effect.catchTags({
-      UnableToQuery: () => Effect.succeed(havingProblemsPage),
+      UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCompetingInterests.href({ commentId }) })),
     }),
@@ -83,7 +84,7 @@ export const CompetingInterestsSubmission = ({
     const comment = yield* getComment(commentId)
 
     if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
-      return pageNotFound
+      return yield* PageNotFound
     }
 
     const locale = yield* Locale
@@ -165,11 +166,11 @@ export const CompetingInterestsSubmission = ({
     )
   }).pipe(
     Effect.catchTags({
-      CommentHasNotBeenStarted: () => Effect.succeed(havingProblemsPage),
-      CommentIsBeingPublished: () => Effect.succeed(havingProblemsPage),
-      CommentWasAlreadyPublished: () => Effect.succeed(havingProblemsPage),
-      UnableToQuery: () => Effect.succeed(havingProblemsPage),
-      UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
+      CommentHasNotBeenStarted: () => HavingProblemsPage,
+      CommentIsBeingPublished: () => HavingProblemsPage,
+      CommentWasAlreadyPublished: () => HavingProblemsPage,
+      UnableToQuery: () => HavingProblemsPage,
+      UnableToHandleCommand: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCompetingInterests.href({ commentId }) })),
     }),
