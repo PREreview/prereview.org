@@ -18,21 +18,7 @@ import { movedPermanently, notFound, serviceUnavailable } from '../middleware.js
 import type { TemplatePageEnv } from '../page.js'
 import type { PublicUrlEnv } from '../public-url.js'
 import { handlePageResponse } from '../response.js'
-import {
-  aboutUsMatch,
-  clubsMatch,
-  codeOfConductMatch,
-  ediaStatementMatch,
-  homeMatch,
-  liveReviewsMatch,
-  logInMatch,
-  logOutMatch,
-  preprintReviewsMatch,
-  profileMatch,
-  resourcesMatch,
-  reviewAPreprintMatch,
-  writeReviewReviewTypeMatch,
-} from '../routes.js'
+import { preprintReviewsMatch, profileMatch, writeReviewReviewTypeMatch } from '../routes.js'
 import {
   type ArxivPreprintId,
   type IndeterminatePreprintId,
@@ -139,21 +125,6 @@ const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
 const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
-      pipe(P.lit('10.5281'), P.then(P.str('suffix')), P.then(P.end)).parser,
-      P.map(
-        RM.fromMiddlewareK(({ suffix }) =>
-          movedPermanently(
-            P.format(preprintReviewsMatch.formatter, {
-              id: {
-                type: 'zenodo-africarxiv',
-                value: `10.5281/${suffix}` as Doi<'5281'>,
-              },
-            }),
-          ),
-        ),
-      ),
-    ),
-    pipe(
       pipe(P.lit('about'), P.then(type('personaUuid', UuidC)), P.then(P.end)).parser,
       P.map(({ personaUuid }) => redirectToProfile(personaUuid)),
     ),
@@ -172,19 +143,6 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('api'), P.then(P.lit('openapi.json')), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('blog'), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently('https://content.prereview.org/'))),
-    ),
-
-    pipe(
-      pipe(P.lit('coc'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(codeOfConductMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('communities'), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(clubsMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('communities'), P.then(P.str('communityName')), P.then(query(C.partial({}))), P.then(P.end)).parser,
@@ -207,56 +165,12 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(() => showRemovedPermanentlyMessage),
     ),
     pipe(
-      pipe(P.lit('docs'), P.then(P.lit('about')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(aboutUsMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('docs'), P.then(P.lit('codeofconduct')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(codeOfConductMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('docs'), P.then(P.lit('code_of_conduct')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(codeOfConductMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('docs'), P.then(P.lit('resources')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(resourcesMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('edi-statement'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(ediaStatementMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('edia'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(ediaStatementMatch.formatter, {})))),
-    ),
-    pipe(
       pipe(P.lit('events'), P.then(type('eventUuid', UuidC)), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
       pipe(P.lit('extension'), P.then(P.end)).parser,
       P.map(() => showRemovedPermanentlyMessage),
-    ),
-    pipe(
-      pipe(P.lit('find-a-preprint'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(reviewAPreprintMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('inst'), P.then(P.str('instId')), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(({ instId }) => movedPermanently(`https://www.authorea.com/inst/${instId}`))),
-    ),
-    pipe(
-      pipe(P.lit('login'), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(logInMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('logout'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(logOutMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('preprint-journal-clubs'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(liveReviewsMatch.formatter, {})))),
     ),
     pipe(
       pipe(
@@ -295,20 +209,8 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(({ preprintUuid }) => redirectToPreprintReviews(preprintUuid)),
     ),
     pipe(
-      pipe(P.lit('prereview.org'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(homeMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('PREreview.org'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(homeMatch.formatter, {})))),
-    ),
-    pipe(
       pipe(P.lit('prereviewers'), P.then(query(C.record(C.string))), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('reviews'), P.then(P.lit('new')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(reviewAPreprintMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('settings'), P.then(P.lit('api')), P.then(P.end)).parser,
@@ -319,53 +221,8 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
-      pipe(P.lit('signup'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(logInMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(
-        P.lit('users'),
-        P.then(P.str('userId')),
-        P.then(P.lit('articles')),
-        P.then(P.str('articleId')),
-        P.then(P.end),
-      ).parser,
-      P.map(
-        RM.fromMiddlewareK(({ userId, articleId }) =>
-          movedPermanently(encodeURI(`https://www.authorea.com/users/${userId}/articles/${articleId}`)),
-        ),
-      ),
-    ),
-    pipe(
-      pipe(P.lit('users'), P.then(P.str('userId')), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(({ userId }) => movedPermanently(`https://www.authorea.com/users/${userId}`))),
-    ),
-    pipe(
-      pipe(
-        P.lit('users'),
-        P.then(P.str('userId')),
-        P.then(P.lit('articles')),
-        P.then(P.str('articleId')),
-        P.then(P.str('_show_article')),
-        P.then(P.end),
-      ).parser,
-      P.map(
-        RM.fromMiddlewareK(({ userId, articleId }) =>
-          movedPermanently(encodeURI(`https://www.authorea.com/users/${userId}/articles/${articleId}`)),
-        ),
-      ),
-    ),
-    pipe(
       pipe(P.lit('validate'), P.then(type('preprintUuid', UuidC)), P.then(P.end)).parser,
       P.map(({ preprintUuid }) => redirectToPreprintReviews(preprintUuid)),
-    ),
-    pipe(
-      pipe(P.lit(')'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(homeMatch.formatter, {})))),
-    ),
-    pipe(
-      pipe(P.lit('),'), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently(P.format(homeMatch.formatter, {})))),
     ),
   ],
   concatAll(P.getParserMonoid()),
