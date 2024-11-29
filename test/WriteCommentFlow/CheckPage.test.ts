@@ -211,10 +211,11 @@ describe('CheckPageSubmission', () => {
     describe('when the comment is ready for publishing', () => {
       test.prop([
         fc.uuid(),
+        fc.supportedLocale(),
         fc
           .commentReadyForPublishing()
           .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-      ])('when the comment can be published', (commentId, [comment, user]) =>
+      ])('when the comment can be published', (commentId, locale, [comment, user]) =>
         Effect.gen(function* () {
           const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
@@ -235,6 +236,7 @@ describe('CheckPageSubmission', () => {
             command: new Comments.PublishComment(),
           })
         }).pipe(
+          Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -244,11 +246,12 @@ describe('CheckPageSubmission', () => {
 
       test.prop([
         fc.uuid(),
+        fc.supportedLocale(),
         fc
           .commentReadyForPublishing()
           .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
         fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
-      ])("when the comment can't be published", (commentId, [comment, user], error) =>
+      ])("when the comment can't be published", (commentId, locale, [comment, user], error) =>
         Effect.gen(function* () {
           const actual = yield* _.CheckPageSubmission({ commentId })
 
@@ -261,6 +264,7 @@ describe('CheckPageSubmission', () => {
             js: [],
           })
         }).pipe(
+          Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
           Effect.provideService(LoggedInUser, user),
@@ -272,10 +276,11 @@ describe('CheckPageSubmission', () => {
 
     test.prop([
       fc.uuid(),
+      fc.supportedLocale(),
       fc
         .commentPublished()
         .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-    ])('when the comment has been published', (commentId, [comment, user]) =>
+    ])('when the comment has been published', (commentId, locale, [comment, user]) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPageSubmission({ commentId })
 
@@ -285,6 +290,7 @@ describe('CheckPageSubmission', () => {
           location: Routes.WriteCommentPublished.href({ commentId }),
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
@@ -295,10 +301,11 @@ describe('CheckPageSubmission', () => {
 
     test.prop([
       fc.uuid(),
+      fc.supportedLocale(),
       fc
         .commentBeingPublished()
         .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-    ])('when the comment is being published', (commentId, [comment, user]) =>
+    ])('when the comment is being published', (commentId, locale, [comment, user]) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPageSubmission({ commentId })
 
@@ -308,6 +315,7 @@ describe('CheckPageSubmission', () => {
           location: Routes.WriteCommentPublishing.href({ commentId }),
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
@@ -316,9 +324,9 @@ describe('CheckPageSubmission', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.commentInProgress(), fc.user()])(
+    test.prop([fc.uuid(), fc.supportedLocale(), fc.commentInProgress(), fc.user()])(
       'when the comment is incomplete',
-      (commentId, comment, user) =>
+      (commentId, locale, comment, user) =>
         Effect.gen(function* () {
           const actual = yield* _.CheckPageSubmission({ commentId })
 
@@ -331,6 +339,7 @@ describe('CheckPageSubmission', () => {
             js: [],
           })
         }).pipe(
+          Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
@@ -339,9 +348,9 @@ describe('CheckPageSubmission', () => {
         ),
     )
 
-    test.prop([fc.uuid(), fc.commentNotStarted(), fc.user()])(
+    test.prop([fc.uuid(), fc.supportedLocale(), fc.commentNotStarted(), fc.user()])(
       "when the comment hasn't been started",
-      (commentId, comment, user) =>
+      (commentId, locale, comment, user) =>
         Effect.gen(function* () {
           const actual = yield* _.CheckPageSubmission({ commentId })
 
@@ -354,6 +363,7 @@ describe('CheckPageSubmission', () => {
             js: [],
           })
         }).pipe(
+          Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
@@ -364,10 +374,11 @@ describe('CheckPageSubmission', () => {
 
     test.prop([
       fc.uuid(),
+      fc.supportedLocale(),
       fc
         .tuple(fc.commentState(), fc.user())
         .filter(([state, user]) => state._tag !== 'CommentNotStarted' && !Equal.equals(state.authorId, user.orcid)),
-    ])('when the comment is by a different author', (commentId, [comment, user]) =>
+    ])('when the comment is by a different author', (commentId, locale, [comment, user]) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckPageSubmission({ commentId })
 
@@ -380,6 +391,7 @@ describe('CheckPageSubmission', () => {
           js: [],
         })
       }).pipe(
+        Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
@@ -388,29 +400,32 @@ describe('CheckPageSubmission', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.user()])("when the comment can't be loaded", (commentId, user) =>
-      Effect.gen(function* () {
-        const actual = yield* _.CheckPageSubmission({ commentId })
+    test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+      "when the comment can't be loaded",
+      (commentId, locale, user) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckPageSubmission({ commentId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
-        Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
-        Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
-      ),
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.SERVICE_UNAVAILABLE,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provideService(Locale, locale),
+          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provide(TestContext.TestContext),
+          Effect.runPromise,
+        ),
     )
   })
 
-  test.prop([fc.uuid()])("when there isn't a user", commentId =>
+  test.prop([fc.uuid(), fc.supportedLocale()])("when there isn't a user", (commentId, locale) =>
     Effect.gen(function* () {
       const actual = yield* _.CheckPageSubmission({ commentId })
 
@@ -419,6 +434,7 @@ describe('CheckPageSubmission', () => {
         location: Routes.WriteCommentCheck.href({ commentId }),
       })
     }).pipe(
+      Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provide(TestContext.TestContext),

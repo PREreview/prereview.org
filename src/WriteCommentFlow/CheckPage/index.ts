@@ -1,7 +1,8 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import { Locale } from '../../Context.js'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
+import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
@@ -25,36 +26,38 @@ export const CheckPage = ({
     const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
-      return pageNotFound
+      return yield* PageNotFound
     }
 
     const locale = yield* Locale
 
-    return pipe(
+    return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => pageNotFound),
-      Match.tag('CommentInProgress', () => pageNotFound),
+      Match.tag('CommentNotStarted', () => PageNotFound),
+      Match.tag('CommentInProgress', () => PageNotFound),
       Match.tag('CommentReadyForPublishing', comment =>
-        MakeResponse({
-          competingInterests: comment.competingInterests,
-          comment: comment.comment,
-          commentId,
-          locale,
-          persona: comment.persona,
-          user,
-        }),
+        Effect.succeed(
+          MakeResponse({
+            competingInterests: comment.competingInterests,
+            comment: comment.comment,
+            commentId,
+            locale,
+            persona: comment.persona,
+            user,
+          }),
+        ),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
       ),
       Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
       ),
       Match.exhaustive,
     )
   }).pipe(
     Effect.catchTags({
-      UnableToQuery: () => Effect.succeed(havingProblemsPage),
+      UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
     }),
@@ -67,7 +70,7 @@ export const CheckPageSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Comments.HandleCommentCommand
+  Comments.GetComment | Comments.HandleCommentCommand | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -77,13 +80,13 @@ export const CheckPageSubmission = ({
     const comment = yield* getComment(commentId)
 
     if (comment._tag !== 'CommentNotStarted' && !Equal.equals(user.orcid, comment.authorId)) {
-      return pageNotFound
+      return yield* PageNotFound
     }
 
     return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentNotStarted', () => Effect.succeed(pageNotFound)),
-      Match.tag('CommentInProgress', () => Effect.succeed(pageNotFound)),
+      Match.tag('CommentNotStarted', () => PageNotFound),
+      Match.tag('CommentInProgress', () => PageNotFound),
       Match.tag('CommentReadyForPublishing', () =>
         Effect.gen(function* () {
           const handleCommand = yield* Comments.HandleCommentCommand
@@ -112,8 +115,8 @@ export const CheckPageSubmission = ({
     )
   }).pipe(
     Effect.catchTags({
-      UnableToQuery: () => Effect.succeed(havingProblemsPage),
-      UnableToHandleCommand: () => Effect.succeed(havingProblemsPage),
+      UnableToQuery: () => HavingProblemsPage,
+      UnableToHandleCommand: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
     }),
