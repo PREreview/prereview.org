@@ -9,6 +9,7 @@ import { ExpressConnection } from 'hyper-ts/lib/express.js'
 import { createRequest, createResponse } from 'node-mocks-http'
 import { rawHtml } from '../../src/html.js'
 import * as _ from '../../src/legacy-routes/index.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { preprintReviewsMatch, profileMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'
@@ -92,6 +93,7 @@ describe('legacyRoutes', () => {
         getProfileIdFromUuid: shouldNotBeCalled,
         getUser: shouldNotBeCalled,
         getUserOnboarding: shouldNotBeCalled,
+        locale: DefaultLocale,
         publicUrl: new URL('http://example.com'),
         templatePage: shouldNotBeCalled,
       }),
@@ -110,9 +112,10 @@ describe('legacyRoutes', () => {
   describe("with an '/about/{uuid}' path", () => {
     test.prop([
       fc.uuid().chain(uuid => fc.tuple(fc.constant(uuid), fc.connection({ path: fc.constant(`/about/${uuid}`) }))),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.profileId(),
-    ])('when the profile ID is found', async ([uuid, connection], user, profile) => {
+    ])('when the profile ID is found', async ([uuid, connection], locale, user, profile) => {
       const getProfileIdFromUuid = jest.fn<_.GetProfileIdFromUuidEnv['getProfileIdFromUuid']>(_ => TE.right(profile))
 
       const actual = await runMiddleware(
@@ -121,6 +124,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage: shouldNotBeCalled,
         }),
@@ -143,9 +147,10 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/about/${uuid}`) })),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.html(),
-    ])('when the profile ID is not found', async (connection, user, page) => {
+    ])('when the profile ID is not found', async (connection, locale, user, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -154,6 +159,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage,
         }),
@@ -178,9 +184,10 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/about/${uuid}`) })),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.html(),
-    ])('when the profile ID is unavailable', async (connection, user, page) => {
+    ])('when the profile ID is unavailable', async (connection, locale, user, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -189,6 +196,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: () => TE.left('unavailable'),
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage,
         }),
@@ -215,9 +223,10 @@ describe('legacyRoutes', () => {
   describe("with a '/preprints/{uuid}' path", () => {
     test.prop([
       fc.uuid().chain(uuid => fc.tuple(fc.constant(uuid), fc.connection({ path: fc.constant(`/preprints/${uuid}`) }))),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.indeterminatePreprintId(),
-    ])('when the ID is found', async ([uuid, connection], user, id) => {
+    ])('when the ID is found', async ([uuid, connection], locale, user, id) => {
       const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
 
       const actual = await runMiddleware(
@@ -226,6 +235,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage: shouldNotBeCalled,
         }),
@@ -248,9 +258,10 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/preprints/${uuid}`) })),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.html(),
-    ])('when the ID is not found', async (connection, user, page) => {
+    ])('when the ID is not found', async (connection, locale, user, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -259,6 +270,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage,
         }),
@@ -283,9 +295,10 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/preprints/${uuid}`) })),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.html(),
-    ])('when the ID is unavailable', async (connection, user, page) => {
+    ])('when the ID is unavailable', async (connection, locale, user, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -294,6 +307,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage,
         }),
@@ -327,9 +341,10 @@ describe('legacyRoutes', () => {
             fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) }),
           ),
         ),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.indeterminatePreprintId(),
-    ])('when the ID is found', async ([uuid, connection], user, id) => {
+    ])('when the ID is found', async ([uuid, connection], locale, user, id) => {
       const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
 
       const actual = await runMiddleware(
@@ -338,6 +353,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage: shouldNotBeCalled,
         }),
@@ -362,9 +378,10 @@ describe('legacyRoutes', () => {
       fc
         .tuple(fc.uuid(), fc.uuid())
         .chain(([uuid1, uuid2]) => fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) })),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.html(),
-    ])('when the ID is not found', async (connection, user, page) => {
+    ])('when the ID is not found', async (connection, locale, user, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -373,6 +390,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage,
         }),
@@ -399,9 +417,10 @@ describe('legacyRoutes', () => {
       fc
         .tuple(fc.uuid(), fc.uuid())
         .chain(([uuid1, uuid2]) => fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) })),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.html(),
-    ])('when the ID is unavailable', async (connection, user, page) => {
+    ])('when the ID is unavailable', async (connection, locale, user, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -410,6 +429,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage,
         }),
@@ -436,9 +456,10 @@ describe('legacyRoutes', () => {
   describe("with a '/validate/{uuid}' path", () => {
     test.prop([
       fc.uuid().chain(uuid => fc.tuple(fc.constant(uuid), fc.connection({ path: fc.constant(`/validate/${uuid}`) }))),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.indeterminatePreprintId(),
-    ])('when the ID is found', async ([uuid, connection], user, id) => {
+    ])('when the ID is found', async ([uuid, connection], locale, user, id) => {
       const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
 
       const actual = await runMiddleware(
@@ -447,6 +468,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage: shouldNotBeCalled,
         }),
@@ -469,9 +491,10 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/validate/${uuid}`) })),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.html(),
-    ])('when the ID is not found', async (connection, user, page) => {
+    ])('when the ID is not found', async (connection, locale, user, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -480,6 +503,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage,
         }),
@@ -504,9 +528,10 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/validate/${uuid}`) })),
+      fc.supportedLocale(),
       fc.either(fc.constant('no-session'), fc.user()),
       fc.html(),
-    ])('when the ID is unavailable', async (connection, user, page) => {
+    ])('when the ID is unavailable', async (connection, locale, user, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -515,6 +540,7 @@ describe('legacyRoutes', () => {
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           templatePage,
         }),
@@ -568,6 +594,7 @@ describe('legacyRoutes', () => {
         getProfileIdFromUuid: shouldNotBeCalled,
         getUser: () => M.left('no-session'),
         getUserOnboarding: shouldNotBeCalled,
+        locale: DefaultLocale,
         publicUrl: new URL('http://example.com'),
         templatePage: () => rawHtml('page-content'),
       }),
@@ -600,6 +627,7 @@ describe('legacyRoutes', () => {
         getProfileIdFromUuid: shouldNotBeCalled,
         getUser: () => M.left('no-session'),
         getUserOnboarding: shouldNotBeCalled,
+        locale: DefaultLocale,
         publicUrl: new URL('http://example.com'),
         templatePage: () => rawHtml('page-content'),
       }),

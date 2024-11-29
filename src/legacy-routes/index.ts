@@ -13,7 +13,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { match, P as p } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { movedPermanently, notFound, serviceUnavailable } from '../middleware.js'
 import type { TemplatePageEnv } from '../page.js'
 import type { PublicUrlEnv } from '../public-url.js'
@@ -52,7 +52,7 @@ export type LegacyEnv = GetPreprintIdFromUuidEnv &
   GetUserEnv &
   GetUserOnboardingEnv &
   PublicUrlEnv &
-  TemplatePageEnv
+  TemplatePageEnv & { locale: SupportedLocale }
 
 export interface GetPreprintIdFromUuidEnv {
   getPreprintIdFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', IndeterminatePreprintId>
@@ -395,6 +395,10 @@ export const legacyRoutes = pipe(
 const showRemovedPermanentlyMessage = pipe(
   RM.of({}),
   RM.apS('user', maybeGetUser),
+  RM.apSW(
+    'locale',
+    RM.asks((env: LegacyEnv) => env.locale),
+  ),
   RM.apSW('response', RM.of(removedPermanentlyPage(DefaultLocale))),
   RM.ichainW(handlePageResponse),
 )
@@ -402,6 +406,10 @@ const showRemovedPermanentlyMessage = pipe(
 const showRemovedForNowMessage = pipe(
   RM.of({}),
   RM.apS('user', maybeGetUser),
+  RM.apSW(
+    'locale',
+    RM.asks((env: LegacyEnv) => env.locale),
+  ),
   RM.apSW('response', RM.of(removedForNowPage(DefaultLocale))),
   RM.ichainW(handlePageResponse),
 )
