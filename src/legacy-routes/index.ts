@@ -139,21 +139,6 @@ const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
 const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
-      pipe(P.lit('10.1101'), P.then(P.str('suffix')), P.then(P.end)).parser,
-      P.map(
-        RM.fromMiddlewareK(({ suffix }) =>
-          movedPermanently(
-            P.format(preprintReviewsMatch.formatter, {
-              id: {
-                type: 'biorxiv-medrxiv',
-                value: `10.1101/${suffix}` as Doi<'1101'>,
-              },
-            }),
-          ),
-        ),
-      ),
-    ),
-    pipe(
       pipe(P.lit('10.5281'), P.then(P.str('suffix')), P.then(P.end)).parser,
       P.map(
         RM.fromMiddlewareK(({ suffix }) =>

@@ -3,6 +3,7 @@ import {
   Headers,
   HttpMethod,
   HttpMiddleware,
+  HttpRouter,
   HttpServer,
   HttpServerRequest,
   HttpServerResponse,
@@ -15,6 +16,7 @@ import { StatusCodes } from 'http-status-codes'
 import { Express, ExpressConfig, FlashMessage, Locale, LoggedInUser } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
+import { LegacyRouter } from './LegacyRouter.js'
 import { DefaultLocale, SupportedLocales } from './locales/index.js'
 import { FlashMessageSchema } from './response.js'
 import { Router } from './Router.js'
@@ -226,6 +228,7 @@ const logDefects = Effect.tapDefect(cause =>
 
 export const WebApp = pipe(
   Router,
+  HttpRouter.concat(LegacyRouter),
   Effect.catchTag('RouteNotFound', () => ExpressHttpApp),
   serveStaticFiles,
   removeTrailingSlashes,
