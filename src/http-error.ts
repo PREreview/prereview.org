@@ -67,7 +67,7 @@ function problemsPage(user?: User) {
 
 export const pageNotFound = Effect.runSync(Effect.provideService(PageNotFound, Locale, DefaultLocale))
 
-export const havingProblemsPage = Effect.runSync(HavingProblemsPage)
+export const havingProblemsPage = Effect.runSync(Effect.provideService(HavingProblemsPage, Locale, DefaultLocale))
 
 export const noPermissionPage = PageResponse({
   status: Status.Forbidden,
