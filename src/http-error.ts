@@ -1,3 +1,4 @@
+import { Effect } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import type { HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
@@ -5,6 +6,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from './html.js'
 import { templatePage } from './page.js'
+import { PageNotFound } from './PageNotFound/index.js'
 import { PageResponse } from './response.js'
 import { type User, maybeGetUser } from './user.js'
 
@@ -60,22 +62,7 @@ function problemsPage(user?: User) {
   })
 }
 
-export const pageNotFound = PageResponse({
-  status: Status.NotFound,
-  title: plainText`Page not found`,
-  main: html`
-    <h1>Page not found</h1>
-
-    <p>If you typed the web address, check it is correct.</p>
-
-    <p>If you pasted the web address, check you copied the entire address.</p>
-
-    <p>
-      If the web address is correct or you selected a link or button, please
-      <a href="mailto:help@prereview.org">get in touch</a>.
-    </p>
-  `,
-})
+export const pageNotFound = Effect.runSync(PageNotFound)
 
 export const havingProblemsPage = PageResponse({
   status: Status.ServiceUnavailable,
