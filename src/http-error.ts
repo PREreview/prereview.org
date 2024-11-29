@@ -5,6 +5,7 @@ import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { match } from 'ts-pattern'
 import { Locale } from './Context.js'
+import { HavingProblemsPage } from './HavingProblemsPage/index.js'
 import { html, plainText, sendHtml } from './html.js'
 import { DefaultLocale } from './locales/index.js'
 import { templatePage } from './page.js'
@@ -66,15 +67,7 @@ function problemsPage(user?: User) {
 
 export const pageNotFound = Effect.runSync(Effect.provideService(PageNotFound, Locale, DefaultLocale))
 
-export const havingProblemsPage = PageResponse({
-  status: Status.ServiceUnavailable,
-  title: plainText`Sorry, we’re having problems`,
-  main: html`
-    <h1>Sorry, we’re having problems</h1>
-
-    <p>Please try again later.</p>
-  `,
-})
+export const havingProblemsPage = Effect.runSync(HavingProblemsPage)
 
 export const noPermissionPage = PageResponse({
   status: Status.Forbidden,
