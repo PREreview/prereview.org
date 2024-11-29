@@ -69,4 +69,4 @@ export const pageNotFound = Effect.runSync(Effect.provideService(PageNotFound, L
 
 export const havingProblemsPage = Effect.runSync(Effect.provideService(HavingProblemsPage, Locale, DefaultLocale))
 
-export const noPermissionPage = Effect.runSync(NoPermissionPage)
+export const noPermissionPage = Effect.runSync(Effect.provideService(NoPermissionPage, Locale, DefaultLocale))
