@@ -71,6 +71,15 @@ export interface VerifyContactEmailAddressForInvitedAuthorEnv {
   }) => TE.TaskEither<'unavailable', void>
 }
 
+export class VerifyContactEmailAddressForComment extends Context.Tag('VerifyContactEmailAddressForComment')<
+  VerifyContactEmailAddressForComment,
+  (
+    user: User,
+    emailAddress: UnverifiedContactEmailAddress,
+    comment: Uuid,
+  ) => Effect.Effect<void, ContactEmailAddressIsUnavailable>
+>() {}
+
 export const ContactEmailAddressC = pipe(
   C.sum('type')({
     verified: pipe(

@@ -1,6 +1,10 @@
 import { Doi } from 'doi-ts'
+import type fetchMock from 'fetch-mock'
+import * as E from 'fp-ts/lib/Either.js'
+import { pipe } from 'fp-ts/lib/function.js'
+import * as J from 'fp-ts/lib/Json.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import { Orcid } from 'orcid-id-ts'
-import path from 'path'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import {
@@ -729,7 +733,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requiresAVerifiedEmailAddress)(
   'have to give your email address',
-  async ({ contactEmailAddressStore, javaScriptEnabled, fetch, page }) => {
+  async ({ javaScriptEnabled, fetch, page }) => {
     const record: Record = {
       conceptdoi: Doi('10.5072/zenodo.1061863'),
       conceptrecid: 1061863,
@@ -811,14 +815,17 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requir
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
+    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const token = await contactEmailAddressStore
-      .get('0000-0002-1825-0097')
-      .then(value => value.verificationToken as string) // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+    await page.setContent(getLastMailjetEmailBody(fetch))
 
-    await page.goto(`${path.dirname(page.url())}/verify-email-address?token=${token}`)
+    const opener = page.waitForEvent('popup')
+    await page.getByRole('link', { name: 'Verify email address' }).click()
+    page = await opener
+
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
     } else {
@@ -839,7 +846,7 @@ test
   .extend(canWriteComments)
   .extend(requiresAVerifiedEmailAddress)(
   'have to verify your email address',
-  async ({ contactEmailAddressStore, javaScriptEnabled, fetch, page }) => {
+  async ({ javaScriptEnabled, fetch, page }) => {
     const record: Record = {
       conceptdoi: Doi('10.5072/zenodo.1061863'),
       conceptrecid: 1061863,
@@ -922,13 +929,18 @@ test
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
     await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
 
+    fetch.postOnce(
+      { name: 'resent-verification', url: 'https://api.mailjet.com/v3.1/send' },
+      { body: { Messages: [{ Status: 'success' }] } },
+    )
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const token = await contactEmailAddressStore
-      .get('0000-0002-1825-0097')
-      .then(value => value.verificationToken as string) // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+    await page.setContent(getLastMailjetEmailBody(fetch))
 
-    await page.goto(`${path.dirname(page.url())}/verify-email-address?token=${token}`)
+    const opener = page.waitForEvent('popup')
+    await page.getByRole('link', { name: 'Verify email address' }).click()
+    page = await opener
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your comment')
     if (javaScriptEnabled) {
@@ -1525,4 +1537,30 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requir
 
     await expect(page.getByLabel('What is your email address?')).toBeFocused()
   },
+)
+
+const getLastMailjetEmailBody = (fetch: fetchMock.FetchMockSandbox) => {
+  return pipe(
+    MailjetEmailD.decode(String(fetch.lastOptions('https://api.mailjet.com/v3.1/send')?.body)),
+    E.match(
+      () => {
+        throw new Error('No email found')
+      },
+      email => email.HtmlPart,
+    ),
+  )
+}
+
+const JsonD = {
+  decode: (s: string) =>
+    pipe(
+      J.parse(s),
+      E.mapLeft(() => D.error(s, 'JSON')),
+    ),
+}
+
+const MailjetEmailD = pipe(
+  JsonD,
+  D.compose(D.struct({ Messages: D.tuple(D.struct({ HtmlPart: D.string })) })),
+  D.map(body => body.Messages[0]),
 )

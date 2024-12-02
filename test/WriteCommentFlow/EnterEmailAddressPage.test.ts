@@ -403,9 +403,16 @@ describe('EnterEmailAddressSubmission', () => {
             const saveContactEmailAddress = jest.fn<typeof ContactEmailAddress.SaveContactEmailAddress.Service>(
               _ => Effect.void,
             )
+            const verifyContactEmailAddressForComment = jest.fn<
+              typeof ContactEmailAddress.VerifyContactEmailAddressForComment.Service
+            >(_ => Effect.void)
 
             const actual = yield* _.EnterEmailAddressSubmission({ body, commentId }).pipe(
               Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, saveContactEmailAddress),
+              Effect.provideService(
+                ContactEmailAddress.VerifyContactEmailAddressForComment,
+                verifyContactEmailAddressForComment,
+              ),
             )
 
             expect(actual).toStrictEqual({
@@ -422,6 +429,14 @@ describe('EnterEmailAddressSubmission', () => {
                 value: body.emailAddress,
                 verificationToken: uuid,
               }),
+            )
+            expect(verifyContactEmailAddressForComment).toHaveBeenCalledWith(
+              user,
+              new ContactEmailAddress.UnverifiedContactEmailAddress({
+                value: body.emailAddress,
+                verificationToken: uuid,
+              }),
+              commentId,
             )
           }).pipe(
             Effect.provideService(Locale, locale),
@@ -464,6 +479,7 @@ describe('EnterEmailAddressSubmission', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+          Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -492,6 +508,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+        Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
         Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -519,6 +536,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+        Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
         Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -546,6 +564,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+        Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
         Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -571,6 +590,7 @@ describe('EnterEmailAddressSubmission', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+          Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -601,6 +621,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+        Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
         Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
         Effect.provide(TestContext.TestContext),
@@ -626,6 +647,7 @@ describe('EnterEmailAddressSubmission', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+          Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(LoggedInUser, user),
           Effect.provide(TestContext.TestContext),
@@ -646,6 +668,7 @@ describe('EnterEmailAddressSubmission', () => {
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
+      Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
       Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
       Effect.provide(TestContext.TestContext),
       Effect.runPromise,

@@ -135,7 +135,11 @@ export const EnterEmailAddressSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | ContactEmailAddress.SaveContactEmailAddress | Uuid.GenerateUuid | Locale
+  | Comments.GetComment
+  | ContactEmailAddress.SaveContactEmailAddress
+  | ContactEmailAddress.VerifyContactEmailAddressForComment
+  | Uuid.GenerateUuid
+  | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -162,6 +166,7 @@ export const EnterEmailAddressSubmission = ({
 
           const generateUuid = yield* Uuid.GenerateUuid
           const saveContactEmailAddress = yield* ContactEmailAddress.SaveContactEmailAddress
+          const verifyContactEmailAddressForComment = yield* ContactEmailAddress.VerifyContactEmailAddressForComment
 
           const verificationToken = yield* generateUuid
           const contactEmailAddress = new ContactEmailAddress.UnverifiedContactEmailAddress({
@@ -170,6 +175,7 @@ export const EnterEmailAddressSubmission = ({
           })
 
           yield* saveContactEmailAddress(user.orcid, contactEmailAddress)
+          yield* verifyContactEmailAddressForComment(user, contactEmailAddress, commentId)
 
           return yield* HavingProblemsPage
         }),
