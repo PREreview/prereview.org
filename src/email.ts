@@ -7,6 +7,7 @@ import type { UnverifiedContactEmailAddress } from './contact-email-address.js'
 import { type Html, html, mjmlToHtml, plainText } from './html.js'
 import type { PreprintTitle } from './preprint.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
+import * as Routes from './routes.js'
 import {
   authorInviteDeclineMatch,
   authorInviteMatch,
@@ -112,6 +113,42 @@ export const createContactEmailAddressVerificationEmailForInvitedAuthor = ({
 }): R.Reader<PublicUrlEnv, Email> =>
   pipe(
     toUrl(authorInviteVerifyEmailAddressMatch.formatter, { id: authorInvite, verify: emailAddress.verificationToken }),
+    R.map(
+      verificationUrl =>
+        ({
+          from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
+          to: { address: emailAddress.value, name: user.name },
+          subject: 'Verify your email address on PREreview',
+          text: `Hi ${user.name},\n\nPlease verify your email address on PREreview by going to ${verificationUrl.href}`,
+          html: mjmlToHtml(html`
+            <mjml>
+              <mj-head>${mjmlStyle}</mj-head>
+              <mj-body>
+                <mj-section>
+                  <mj-column>
+                    <mj-text>Hi ${user.name},</mj-text>
+                    <mj-text>Please verify your email address on PREreview:</mj-text>
+                    <mj-button href="${verificationUrl.href}">Verify email address</mj-button>
+                  </mj-column>
+                </mj-section>
+              </mj-body>
+            </mjml>
+          `),
+        }) satisfies Email,
+    ),
+  )
+
+export const createContactEmailAddressVerificationEmailForComment = ({
+  user,
+  emailAddress,
+  comment,
+}: {
+  user: User
+  emailAddress: UnverifiedContactEmailAddress
+  comment: Uuid
+}): R.Reader<PublicUrlEnv, Email> =>
+  pipe(
+    toUrl(Routes.WriteCommentVerifyEmailAddress, { commentId: comment, token: emailAddress.verificationToken }),
     R.map(
       verificationUrl =>
         ({

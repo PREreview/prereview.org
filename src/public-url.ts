@@ -2,13 +2,16 @@ import { type Formatter, format } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import { constant, pipe } from 'fp-ts/lib/function.js'
+import type { Route } from './routes.js'
 
 export interface PublicUrlEnv {
   publicUrl: URL
 }
 
-export function toUrl<A>(formatter: Formatter<A>, a: A) {
-  return R.asks(({ publicUrl }: PublicUrlEnv) => pipe(new URL(format(formatter, a), publicUrl)))
+export function toUrl<A>(formatter: Formatter<A> | Route<A>, a: A) {
+  return R.asks(({ publicUrl }: PublicUrlEnv) =>
+    pipe(new URL('href' in formatter ? formatter.href(a) : format(formatter, a), publicUrl)),
+  )
 }
 
 export function ifHasSameOrigin(url: URL) {
