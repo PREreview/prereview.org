@@ -67,6 +67,12 @@ export const WriteCommentEnterEmailAddress: Route<{ commentId: Uuid.Uuid }> = {
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
 }
 
+export const WriteCommentNeedToVerifyEmailAddress: Route<{ commentId: Uuid.Uuid }> = {
+  path: '/write-a-comment/:commentId/need-to-verify-email-address',
+  href: params => `/write-a-comment/${params.commentId}/need-to-verify-email-address`,
+  schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
+}
+
 export const WriteCommentVerifyEmailAddress: Route<{ commentId: Uuid.Uuid; token: Uuid.Uuid }> = {
   path: '/write-a-comment/:commentId/verify-email-address',
   href: params => `/write-a-comment/${params.commentId}/verify-email-address?token=${params.token}`,

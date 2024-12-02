@@ -155,6 +155,14 @@ const WriteCommentFlowRouter = pipe(
     ),
   ),
   HttpRouter.get(
+    Routes.WriteCommentNeedToVerifyEmailAddress.path,
+    pipe(
+      HttpRouter.schemaParams(Routes.WriteCommentNeedToVerifyEmailAddress.schema),
+      Effect.andThen(WriteCommentFlow.NeedToVerifyEmailAddressPage),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
+  HttpRouter.get(
     Routes.WriteCommentVerifyEmailAddress.path,
     pipe(
       HttpRouter.schemaParams(Routes.WriteCommentVerifyEmailAddress.schema),

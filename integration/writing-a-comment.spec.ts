@@ -820,6 +820,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requir
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
+
     await page.setContent(getLastMailjetEmailBody(fetch))
 
     const opener = page.waitForEvent('popup')
@@ -935,6 +937,8 @@ test
     )
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 
     await page.setContent(getLastMailjetEmailBody(fetch))
 
