@@ -79,19 +79,10 @@ const EnvD = pipe(
     SLACK_CLIENT_ID: D.string,
     SLACK_CLIENT_SECRET: D.string,
     SLACK_UPDATE: withDefault(BooleanD, false),
+    SMTP_URI: UrlD,
     ZENODO_API_KEY: D.string,
     ZENODO_URL: UrlD,
   }),
-  D.intersect(
-    D.union(
-      D.struct({
-        MAILJET_API_KEY: D.string,
-        MAILJET_API_SECRET: D.string,
-        MAILJET_API_SANDBOX: withDefault(BooleanD, true),
-      }),
-      D.struct({ SMTP_URI: UrlD }),
-    ),
-  ),
   D.intersect(
     D.partial({
       ENVIRONMENT_LABEL: D.literal('dev', 'sandbox'),

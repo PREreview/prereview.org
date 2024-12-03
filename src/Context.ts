@@ -6,8 +6,6 @@ import type { EnvVars } from './env.js'
 import type { EventStore as EventStoreService } from './EventStore.js'
 import type { SleepEnv } from './fetch.js'
 import type { SupportedLocale } from './locales/index.js'
-import type { MailjetApiEnv } from './mailjet.js'
-import type { NodemailerEnv } from './nodemailer.js'
 import type { FlashMessageSchema } from './response.js'
 import type { User } from './user.js'
 
@@ -21,7 +19,7 @@ export class Express extends Context.Tag('Express')<Express, ReturnType<typeof a
 
 export class ExpressConfig extends Context.Tag('ExpressConfig')<
   ExpressConfig,
-  Omit<ConfigEnv, 'canWriteComments' | 'fetch' | 'sleep'> & (MailjetApiEnv | NodemailerEnv)
+  Omit<ConfigEnv, 'canWriteComments' | 'fetch' | 'sleep'>
 >() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}

@@ -3,7 +3,6 @@ import KeyvRedis from '@keyv/redis'
 import { Config, Effect } from 'effect'
 import Keyv from 'keyv'
 import nodemailer from 'nodemailer'
-import { P, match } from 'ts-pattern'
 import { app, type ConfigEnv } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Redis } from './Context.js'
 import { CanWriteComments } from './feature-flags.js'
@@ -24,18 +23,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
 
   const canChooseLocale = yield* Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false)
 
-  const sendMailEnv = match(env)
-    .with({ MAILJET_API_KEY: P.string }, env => ({
-      mailjetApi: {
-        key: env.MAILJET_API_KEY,
-        secret: env.MAILJET_API_SECRET,
-        sandbox: env.MAILJET_API_SANDBOX,
-      },
-    }))
-    .with({ SMTP_URI: P.instanceOf(URL) }, env => ({
-      nodemailer: nodemailer.createTransport(env.SMTP_URI.href),
-    }))
-    .exhaustive()
   const createKeyvStore = () => new KeyvRedis(redis).on('error', () => undefined)
 
   return {
@@ -78,7 +65,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
     },
     languagesStore: new Keyv({ emitErrors: false, namespace: 'languages', store: createKeyvStore() }),
     locationStore: new Keyv({ emitErrors: false, namespace: 'location', store: createKeyvStore() }),
-    ...sendMailEnv,
+    nodemailer: nodemailer.createTransport(env.SMTP_URI.href),
     orcidApiUrl: env.ORCID_API_URL,
     orcidApiToken: env.ORCID_API_READ_PUBLIC_TOKEN,
     orcidOauth: {

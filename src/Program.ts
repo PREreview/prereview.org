@@ -6,7 +6,7 @@ import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
-import { createContactEmailAddressVerificationEmailForComment, type Email } from './email.js'
+import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
@@ -15,7 +15,6 @@ import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
 import * as LibsqlEventStore from './LibsqlEventStore.js'
 import { DefaultLocale, translate } from './locales/index.js'
-import { sendEmailWithMailjet } from './mailjet.js'
 import { sendEmailWithNodemailer } from './nodemailer.js'
 import { getNameFromOrcid } from './orcid.js'
 import * as Preprint from './preprint.js'
@@ -153,22 +152,9 @@ const verifyContactEmailAddressForComment = Layer.effect(
   ContactEmailAddress.VerifyContactEmailAddressForComment,
   Effect.gen(function* () {
     const config = yield* ExpressConfig
-    const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
 
     const { publicUrl } = config
-
-    const sendEmail = (email: Email) =>
-      pipe(
-        Match.value(config),
-        Match.when({ mailjetApi: Match.any }, config =>
-          FptsToEffect.readerTaskEither(sendEmailWithMailjet(email), { ...config, ...logger, fetch }),
-        ),
-        Match.when({ nodemailer: Match.any }, config =>
-          FptsToEffect.readerTaskEither(sendEmailWithNodemailer(email), { ...config, ...logger, fetch }),
-        ),
-        Match.exhaustive,
-      )
 
     return (user, contactEmailAddress, comment) =>
       pipe(
@@ -176,7 +162,9 @@ const verifyContactEmailAddressForComment = Layer.effect(
           createContactEmailAddressVerificationEmailForComment({ user, emailAddress: contactEmailAddress, comment }),
           { publicUrl },
         ),
-        Effect.andThen(sendEmail),
+        Effect.andThen(email =>
+          FptsToEffect.readerTaskEither(sendEmailWithNodemailer(email), { ...config, ...logger }),
+        ),
         Effect.mapError(
           flow(
             Match.value,

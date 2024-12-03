@@ -2,7 +2,6 @@ import express from 'express'
 import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { apply, pipe } from 'fp-ts/lib/function.js'
 import helmet from 'helmet'
 import { createProxyMiddleware } from 'http-proxy-middleware'
@@ -12,18 +11,16 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { toRequestHandler } from 'hyper-ts/lib/express.js'
 import type { Redis } from 'ioredis'
 import * as L from 'logger-fp-ts'
-import { match, P as p } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
 import * as EffectToFpts from './EffectToFpts.js'
 import { PageNotFound } from './PageNotFound/index.js'
 import { type RouterEnv, routes } from './app-router.js'
-import type { Email } from './email.js'
 import { doesPreprintExist, getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
 import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
 import type { SupportedLocale } from './locales/index.js'
-import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet.js'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
 import { page } from './page.js'
 import { handleResponse } from './response.js'
@@ -47,20 +44,11 @@ export type ConfigEnv = Omit<
   | 'runtime'
   | 'sendEmail'
 > &
-  (MailjetApiEnv | NodemailerEnv) & {
+  NodemailerEnv & {
     allowSiteCrawlers: boolean
   } & {
     redis?: Redis
   }
-
-const sendEmail = (email: Email) =>
-  RTE.asksReaderTaskEitherW(
-    (env: ConfigEnv & L.LoggerEnv) => () =>
-      match(env)
-        .with({ mailjetApi: p._ }, sendEmailWithMailjet(email))
-        .with({ nodemailer: p._ }, sendEmailWithNodemailer(email))
-        .exhaustive(),
-  )
 
 const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, ResponseEnded, never, void> = pipe(
   routes,
@@ -194,7 +182,7 @@ export const app = (config: ConfigEnv) => {
               getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
               getPreprintId: withEnv(getPreprintId, env),
               resolvePreprintId: withEnv(resolvePreprintId, env),
-              sendEmail: withEnv(sendEmail, env),
+              sendEmail: withEnv(sendEmailWithNodemailer, env),
             })),
             R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: RouterEnv['runtime'] } => ({
               ...appEnv,
