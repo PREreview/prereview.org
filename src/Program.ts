@@ -1,11 +1,12 @@
 import { FetchHttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
-import { Effect, flow, Layer, Match, Option, pipe, PubSub, Runtime } from 'effect'
+import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig, Nodemailer } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
+import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
@@ -20,7 +21,6 @@ import { getNameFromOrcid } from './orcid.js'
 import * as Preprint from './preprint.js'
 import * as Prereview from './Prereview.js'
 import { Uuid } from './types/index.js'
-import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import { WebApp } from './WebApp.js'
 import { createCommentOnZenodo, getPrereviewFromZenodo, publishDepositionOnZenodo } from './zenodo.js'
 
@@ -31,20 +31,17 @@ const getPrereview = Layer.effect(
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPreprintService = yield* Preprint.GetPreprint
-    const runtime = yield* Effect.runtime()
     const sleep = yield* DeprecatedSleepEnv
 
-    const getPreprint = (id: IndeterminatePreprintId) => () =>
-      Runtime.runPromise(runtime)(
-        pipe(
-          getPreprintService(id),
-          Effect.catchTags({
-            PreprintIsNotFound: () => Effect.fail('not-found' as const),
-            PreprintIsUnavailable: () => Effect.fail('unavailable' as const),
-          }),
-          Effect.either,
-        ),
-      )
+    const getPreprint = yield* EffectToFpts.makeTaskEitherK(
+      flow(
+        getPreprintService,
+        Effect.catchTags({
+          PreprintIsNotFound: () => Effect.fail('not-found' as const),
+          PreprintIsUnavailable: () => Effect.fail('unavailable' as const),
+        }),
+      ),
+    )
 
     return id =>
       pipe(
