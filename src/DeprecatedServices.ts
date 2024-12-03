@@ -21,7 +21,7 @@ export const makeDeprecatedSleepEnv = Effect.gen(function* () {
   const runtime = yield* Effect.runtime()
 
   return {
-    sleep: (duration: number) => Runtime.runPromise(runtime)(Effect.sleep(`${duration} millis`)),
+    sleep: (duration: number) => () => Runtime.runPromise(runtime)(Effect.sleep(`${duration} millis`)),
   } satisfies typeof DeprecatedSleepEnv.Service
 })
 

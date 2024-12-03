@@ -4,6 +4,7 @@ import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
+import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/orcid.js'
@@ -136,7 +137,7 @@ describe('getNameFromOrcid', () => {
       fetch,
       logger: () => IO.of(undefined),
       orcidApiUrl: url,
-      sleep: () => Promise.resolve(),
+      sleep: () => T.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.right('Daniela Saderi'))

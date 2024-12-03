@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
+import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import * as _ from '../src/ghost.js'
 import { rawHtml } from '../src/html.js'
@@ -135,7 +136,7 @@ describe('getPage', () => {
     const actual = await _.getPage(id)({
       fetch,
       ghostApi: { key },
-      sleep: () => Promise.resolve(),
+      sleep: () => T.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.right(html))

@@ -1,10 +1,11 @@
 import type * as F from 'fetch-fp-ts'
-import type { Json } from 'fp-ts/lib/Json.js'
 import { constVoid } from 'fp-ts/lib/function.js'
+import type { Json } from 'fp-ts/lib/Json.js'
+import type * as T from 'fp-ts/lib/Task.js'
 import * as L from 'logger-fp-ts'
 
 export interface SleepEnv {
-  readonly sleep: (duration: number) => Promise<void>
+  readonly sleep: (duration: number) => T.Task<void>
 }
 
 export function useStaleCache<E extends F.FetchEnv>(): (env: E) => E {
@@ -31,7 +32,7 @@ export function revalidateIfStale<E extends F.FetchEnv & SleepEnv>(): (env: E) =
         openRequests.add(url)
 
         void env
-          .sleep(Math.min(200 * openRequests.size, 30_000))
+          .sleep(Math.min(200 * openRequests.size, 30_000))()
           .then(() => env.fetch(url, { ...init, cache: 'no-cache' }))
           .then(response => response.text())
           .catch(constVoid)

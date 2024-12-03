@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
+import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import { rawHtml } from '../src/html.js'
 import * as _ from '../src/philsci.js'
@@ -197,7 +198,7 @@ describe('getPreprintFromPhilsci', () => {
         { throws: new Error('Network error') },
       )
 
-    const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: () => Promise.resolve() })()
+    const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: () => T.of(undefined) })()
 
     expect(actual).toStrictEqual(
       E.right(

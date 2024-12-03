@@ -3,6 +3,7 @@ import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
+import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import { rawHtml } from '../src/html.js'
 import * as _ from '../src/legacy-prereview.js'
@@ -569,7 +570,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           url,
           update,
         },
-        sleep: () => Promise.resolve(),
+        sleep: () => T.of(undefined),
       })()
 
       expect(actual).toStrictEqual(

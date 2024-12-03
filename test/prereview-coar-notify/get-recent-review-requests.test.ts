@@ -4,6 +4,7 @@ import { SystemClock } from 'clock-ts'
 import type { Fetch } from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
+import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/prereview-coar-notify/get-recent-review-requests.js'
 import { RecentReviewRequestsC } from '../../src/prereview-coar-notify/get-recent-review-requests.js'
@@ -40,7 +41,7 @@ describe('getRecentReviewRequests', () => {
       fetch,
       clock: SystemClock,
       logger: () => IO.of(undefined),
-      sleep: () => Promise.resolve(),
+      sleep: () => T.of(undefined),
     })()
 
     expect(result).toStrictEqual(E.right(requests))
@@ -78,7 +79,7 @@ describe('getRecentReviewRequests', () => {
       fetch,
       clock: SystemClock,
       logger: () => IO.of(undefined),
-      sleep: () => Promise.resolve(),
+      sleep: () => T.of(undefined),
     })()
 
     expect(result).toStrictEqual(E.right(requests))
@@ -99,7 +100,7 @@ describe('getRecentReviewRequests', () => {
         fetch: () => Promise.reject(reason),
         clock: SystemClock,
         logger: () => IO.of(undefined),
-        sleep: () => Promise.resolve(),
+        sleep: () => T.of(undefined),
       })()
 
       expect(result).toStrictEqual(E.left('unavailable'))
@@ -112,7 +113,7 @@ describe('getRecentReviewRequests', () => {
           fetch: () => Promise.resolve(response),
           clock: SystemClock,
           logger: () => IO.of(undefined),
-          sleep: () => Promise.resolve(),
+          sleep: () => T.of(undefined),
         })()
 
         expect(result).toStrictEqual(E.left('unavailable'))

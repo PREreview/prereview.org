@@ -333,7 +333,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         fetch,
         getPreprintTitle: () => TE.right(preprint),
         logger: () => IO.of(undefined),
-        sleep: () => Promise.resolve(),
+        sleep: () => T.of(undefined),
       })()
 
       expect(actual).toStrictEqual(
@@ -872,7 +872,7 @@ describe('getPrereviewFromZenodo', () => {
       fetch,
       getPreprint: () => TE.right(preprint),
       logger: () => IO.of(undefined),
-      sleep: () => Promise.resolve(),
+      sleep: () => T.of(undefined),
       wasPrereviewRemoved: () => false,
     })()
 
@@ -1826,7 +1826,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         fetch,
         getPreprintTitle: () => TE.right(preprint),
         logger: () => IO.of(undefined),
-        sleep: () => Promise.resolve(),
+        sleep: () => T.of(undefined),
       })()
 
       expect(actual).toStrictEqual(
@@ -2275,7 +2275,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
       fetch,
       getPreprintTitle: () => TE.right(preprint),
       logger: () => IO.of(undefined),
-      sleep: () => Promise.resolve(),
+      sleep: () => T.of(undefined),
     })()
 
     expect(actual).toStrictEqual(
@@ -2777,7 +2777,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
       fetch,
       getPreprintTitle: () => TE.right(preprint),
       logger: () => IO.of(undefined),
-      sleep: () => Promise.resolve(),
+      sleep: () => T.of(undefined),
     })()
 
     expect(actual).toStrictEqual(
@@ -3281,7 +3281,7 @@ describe('getCommentsForPrereviewFromZenodo', () => {
       clock: SystemClock,
       fetch,
       logger: () => IO.of(undefined),
-      sleep: () => Promise.resolve(),
+      sleep: () => T.of(undefined),
     })()
 
     expect(actual).toStrictEqual(
@@ -3501,7 +3501,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
       clock: SystemClock,
       fetch,
       logger: () => IO.of(undefined),
-      sleep: () => Promise.resolve(),
+      sleep: () => T.of(undefined),
     })()
 
     expect(actual).toStrictEqual(

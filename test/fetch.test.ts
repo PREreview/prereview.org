@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as IO from 'fp-ts/lib/IO.js'
+import * as T from 'fp-ts/lib/Task.js'
 import * as _ from '../src/fetch.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
@@ -31,7 +32,7 @@ describe('revalidateIfStale', () => {
         { name: 'revalidate', method, url: url.href, functionMatcher: (_, req) => req.cache === 'no-cache' },
         fetchResponse2,
       )
-    const sleep = jest.fn<_.SleepEnv['sleep']>(_ => Promise.resolve())
+    const sleep = jest.fn<_.SleepEnv['sleep']>(_ => T.of(undefined))
 
     const env = _.revalidateIfStale()({ fetch, sleep })
 
@@ -69,7 +70,7 @@ describe('revalidateIfStale', () => {
         { name: 'revalidate', method, url: url.href, functionMatcher: (_, req) => req.cache === 'no-cache' },
         fetchResponse2,
       )
-    const sleep = jest.fn<_.SleepEnv['sleep']>(_ => Promise.resolve())
+    const sleep = jest.fn<_.SleepEnv['sleep']>(_ => T.of(undefined))
 
     const env = _.revalidateIfStale()({ fetch, sleep })
 
@@ -112,7 +113,7 @@ describe('revalidateIfStale', () => {
         { name: 'revalidate', method, url: url.href, functionMatcher: (_, req) => req.cache === 'no-cache' },
         { throws: error },
       )
-    const env = _.revalidateIfStale()({ fetch, sleep: () => Promise.resolve() })
+    const env = _.revalidateIfStale()({ fetch, sleep: () => T.of(undefined) })
 
     const response = await env.fetch(url.href, { headers, method })
 
