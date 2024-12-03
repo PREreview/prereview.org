@@ -22,7 +22,7 @@ export class Nodemailer extends Context.Tag('Nodemailer')<Nodemailer, Transporte
 
 export class ExpressConfig extends Context.Tag('ExpressConfig')<
   ExpressConfig,
-  Omit<ConfigEnv, 'canWriteComments' | 'fetch' | 'nodemailer' | 'sleep'>
+  Omit<ConfigEnv, 'canWriteComments' | 'clock' | 'fetch' | 'nodemailer' | 'sleep'>
 >() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}

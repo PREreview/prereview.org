@@ -1268,7 +1268,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           canUploadAvatar,
           canUseSearchQueries,
           cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
-          clock: SystemClock,
           formStore,
           canSeeGatesLogo: false,
           careerStageStore,

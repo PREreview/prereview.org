@@ -16,11 +16,12 @@ import { CanWriteComments } from './feature-flags.js'
 export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig
   const fetch = yield* FetchHttpClient.Fetch
+  const { clock } = yield* DeprecatedLoggerEnv
   const sleep = yield* DeprecatedSleepEnv
   const canWriteComments = yield* CanWriteComments
   const nodemailer = yield* Nodemailer
 
-  return app({ canWriteComments, fetch, nodemailer, ...sleep, ...config })
+  return app({ canWriteComments, clock, fetch, nodemailer, ...sleep, ...config })
 })
 
 export const ExpressConfigLive = Effect.gen(function* () {
