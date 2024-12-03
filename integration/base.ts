@@ -17,6 +17,7 @@ import http from 'http'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
+import nodemailer from 'nodemailer'
 import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import { Orcid } from 'orcid-id-ts'
 import type { BrowserContextOptions } from 'playwright-core'
@@ -62,6 +63,7 @@ import type {
 } from '../src/keyv.js'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview.js'
 import type { IsUserBlockedEnv } from '../src/log-in/index.js'
+import type { NodemailerEnv } from '../src/nodemailer.js'
 import { Program } from '../src/Program.js'
 import type { EmailAddress } from '../src/types/email-address.js'
 import type { NonEmptyString } from '../src/types/string.js'
@@ -98,6 +100,8 @@ interface AppFixtures {
   canUseSearchQueries: CanUseSearchQueriesEnv['canUseSearchQueries']
   canWriteComments: typeof CanWriteComments.Service
   requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
+  nodemailer: NodemailerEnv['nodemailer']
+  emails: Array<nodemailer.SendMailOptions>
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -1173,6 +1177,25 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await fs.writeFile(testInfo.outputPath('server.log'), logs.map(L.ShowLogEntry.show).join('\n'))
   },
+  emails: async ({}, use, testInfo) => {
+    const emails: Array<nodemailer.SendMailOptions> = []
+
+    await use(emails)
+
+    await fs.writeFile(testInfo.outputPath('emails.json'), JSON.stringify(emails, undefined, 2))
+  },
+  nodemailer: async ({ emails }, use) => {
+    await use(
+      nodemailer.createTransport<unknown>({
+        name: 'test',
+        version: '0.1.0',
+        send: (mail, callback) => {
+          emails.push(mail.data)
+          callback(null, undefined)
+        },
+      }),
+    )
+  },
   oauthServer: async ({}, use) => {
     const server = new OAuth2Server()
     server.service.on('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
@@ -1226,6 +1249,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canUseSearchQueries,
         canWriteComments,
         requiresAVerifiedEmailAddress,
+        nodemailer,
       },
       use,
       testInfo,
@@ -1264,11 +1288,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           },
           locationStore,
           logger,
-          mailjetApi: {
-            key: 'key',
-            secret: 'secret',
-            sandbox: false,
-          },
+          nodemailer,
           orcidApiUrl: new URL('http://api.orcid.test/'),
           orcidOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),

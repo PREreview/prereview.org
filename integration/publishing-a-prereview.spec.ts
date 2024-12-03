@@ -1,10 +1,6 @@
 import { Doi } from 'doi-ts'
-import type fetchMock from 'fetch-mock'
-import * as E from 'fp-ts/lib/Either.js'
-import * as J from 'fp-ts/lib/Json.js'
-import { constVoid, pipe } from 'fp-ts/lib/function.js'
+import { constVoid } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
-import * as D from 'io-ts/lib/Decoder.js'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
@@ -561,7 +557,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview with more authors',
-  async ({ fetch, page }) => {
+  async ({ emails, fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -631,8 +627,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 
     await expect(page.getByRole('main')).toContainText('Invited author Axel Lidenbrock')
 
-    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
-
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
@@ -699,7 +693,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
       })
 
-    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.setContent(String(emails[0]?.html))
 
     const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Be listed as an author' }).click()
@@ -1642,7 +1636,7 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ oauthSer
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to give your email address',
-  async ({ fetch, javaScriptEnabled, page }) => {
+  async ({ emails, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -1663,14 +1657,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
-
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 
-    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.setContent(String(emails[0]?.html))
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -1694,7 +1686,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
   'have to verify your email address',
-  async ({ fetch, page }) => {
+  async ({ emails, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -1713,18 +1705,13 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
 
     await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
 
-    fetch.postOnce(
-      { name: 'resent-verification', url: 'https://api.mailjet.com/v3.1/send' },
-      { body: { Messages: [{ Status: 'success' }] } },
-    )
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.setContent(String(emails[0]?.html))
 
     const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Verify email address' }).click()
@@ -1736,7 +1723,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can resend the verification email',
-  async ({ fetch, javaScriptEnabled, page }) => {
+  async ({ emails, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -1753,18 +1740,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
-    fetch.postOnce(
-      { name: 'original-verification', url: 'https://api.mailjet.com/v3.1/send' },
-      { body: { Messages: [{ Status: 'success' }] } },
-    )
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 
-    fetch.postOnce(
-      { name: 'resent-verification', url: 'https://api.mailjet.com/v3.1/send' },
-      { body: { Messages: [{ Status: 'success' }] } },
-    )
     await page.getByRole('button', { name: 'Resend email' }).click()
 
     if (javaScriptEnabled) {
@@ -1780,7 +1759,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await expect(page.getByRole('alert', { name: 'Important' })).toBeHidden()
 
-    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.setContent(String(emails[1]?.html))
 
     const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Verify email address' }).click()
@@ -2901,30 +2880,4 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
   },
-)
-
-const getLastMailjetEmailBody = (fetch: fetchMock.FetchMockSandbox) => {
-  return pipe(
-    MailjetEmailD.decode(String(fetch.lastOptions('https://api.mailjet.com/v3.1/send')?.body)),
-    E.match(
-      () => {
-        throw new Error('No email found')
-      },
-      email => email.HtmlPart,
-    ),
-  )
-}
-
-const JsonD = {
-  decode: (s: string) =>
-    pipe(
-      J.parse(s),
-      E.mapLeft(() => D.error(s, 'JSON')),
-    ),
-}
-
-const MailjetEmailD = pipe(
-  JsonD,
-  D.compose(D.struct({ Messages: D.tuple(D.struct({ HtmlPart: D.string })) })),
-  D.map(body => body.Messages[0]),
 )
