@@ -5,7 +5,8 @@ import { Config, Effect, Layer, Logger, LogLevel } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
 import fetch from 'make-fetch-happen'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, Redis } from './Context.js'
+import nodemailer from 'nodemailer'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, Nodemailer, Redis } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
 import { Program } from './Program.js'
@@ -41,6 +42,7 @@ pipe(
       Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
     ),
   ),
+  Effect.provideServiceEffect(Nodemailer, Effect.andThen(Config.string('SMTP_URI'), nodemailer.createTransport)),
   Effect.provideServiceEffect(Redis, redisLifecycle),
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,

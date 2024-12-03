@@ -1,6 +1,7 @@
 import { Context } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
 import type { LoggerEnv } from 'logger-fp-ts'
+import type { Transporter } from 'nodemailer'
 import type { app, ConfigEnv } from './app.js'
 import type { EnvVars } from './env.js'
 import type { EventStore as EventStoreService } from './EventStore.js'
@@ -17,9 +18,11 @@ export class DeprecatedSleepEnv extends Context.Tag('DeprecatedSleepEnv')<Deprec
 
 export class Express extends Context.Tag('Express')<Express, ReturnType<typeof app>>() {}
 
+export class Nodemailer extends Context.Tag('Nodemailer')<Nodemailer, Transporter<unknown>>() {}
+
 export class ExpressConfig extends Context.Tag('ExpressConfig')<
   ExpressConfig,
-  Omit<ConfigEnv, 'canWriteComments' | 'fetch' | 'sleep'>
+  Omit<ConfigEnv, 'canWriteComments' | 'fetch' | 'nodemailer' | 'sleep'>
 >() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}

@@ -2,9 +2,15 @@ import { FetchHttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
 import { Config, Effect } from 'effect'
 import Keyv from 'keyv'
-import nodemailer from 'nodemailer'
-import { app, type ConfigEnv } from './app.js'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Redis } from './Context.js'
+import { app } from './app.js'
+import {
+  DeprecatedEnvVars,
+  DeprecatedLoggerEnv,
+  DeprecatedSleepEnv,
+  ExpressConfig,
+  Nodemailer,
+  Redis,
+} from './Context.js'
 import { CanWriteComments } from './feature-flags.js'
 
 export const expressServer = Effect.gen(function* () {
@@ -12,8 +18,9 @@ export const expressServer = Effect.gen(function* () {
   const fetch = yield* FetchHttpClient.Fetch
   const sleep = yield* DeprecatedSleepEnv
   const canWriteComments = yield* CanWriteComments
+  const nodemailer = yield* Nodemailer
 
-  return app({ canWriteComments, fetch, ...sleep, ...config } as unknown as ConfigEnv)
+  return app({ canWriteComments, fetch, nodemailer, ...sleep, ...config })
 })
 
 export const ExpressConfigLive = Effect.gen(function* () {
@@ -65,7 +72,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     },
     languagesStore: new Keyv({ emitErrors: false, namespace: 'languages', store: createKeyvStore() }),
     locationStore: new Keyv({ emitErrors: false, namespace: 'location', store: createKeyvStore() }),
-    nodemailer: nodemailer.createTransport(env.SMTP_URI.href),
     orcidApiUrl: env.ORCID_API_URL,
     orcidApiToken: env.ORCID_API_READ_PUBLIC_TOKEN,
     orcidOauth: {

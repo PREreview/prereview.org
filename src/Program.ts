@@ -4,7 +4,7 @@ import { Effect, flow, Layer, Match, Option, pipe, PubSub, Runtime } from 'effec
 import { fileURLToPath } from 'url'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
-import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig } from './Context.js'
+import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig, Nodemailer } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import { collapseRequests, logFetch } from './fetch.js'
@@ -151,10 +151,9 @@ const saveContactEmailAddress = Layer.effect(
 const verifyContactEmailAddressForComment = Layer.effect(
   ContactEmailAddress.VerifyContactEmailAddressForComment,
   Effect.gen(function* () {
-    const config = yield* ExpressConfig
+    const { publicUrl } = yield* ExpressConfig
     const logger = yield* DeprecatedLoggerEnv
-
-    const { publicUrl } = config
+    const nodemailer = yield* Nodemailer
 
     return (user, contactEmailAddress, comment) =>
       pipe(
@@ -163,7 +162,7 @@ const verifyContactEmailAddressForComment = Layer.effect(
           { publicUrl },
         ),
         Effect.andThen(email =>
-          FptsToEffect.readerTaskEither(sendEmailWithNodemailer(email), { ...config, ...logger }),
+          FptsToEffect.readerTaskEither(sendEmailWithNodemailer(email), { nodemailer, ...logger }),
         ),
         Effect.mapError(
           flow(

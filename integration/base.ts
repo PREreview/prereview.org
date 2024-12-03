@@ -39,7 +39,7 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.js'
-import { DeprecatedLoggerEnv, ExpressConfig } from '../src/Context.js'
+import { DeprecatedLoggerEnv, ExpressConfig, Nodemailer } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import {
@@ -1288,7 +1288,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             update: updatesLegacyPrereview,
           },
           locationStore,
-          nodemailer,
           orcidApiUrl: new URL('http://api.orcid.test/'),
           orcidOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
@@ -1321,6 +1320,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         }),
         Effect.provideService(RequiresAVerifiedEmailAddress, requiresAVerifiedEmailAddress),
         Effect.provideService(CanWriteComments, canWriteComments),
+        Effect.provideService(Nodemailer, nodemailer),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
