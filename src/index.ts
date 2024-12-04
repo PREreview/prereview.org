@@ -10,7 +10,7 @@ import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig } from './Context
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
 import { Program } from './Program.js'
-import { Redis, redisLifecycle } from './Redis.js'
+import * as Redis from './Redis.js'
 import { verifyCache } from './VerifyCache.js'
 import { CanWriteComments, RequiresAVerifiedEmailAddress } from './feature-flags.js'
 import { Nodemailer } from './nodemailer.js'
@@ -45,7 +45,7 @@ pipe(
     ),
   ),
   Effect.provideServiceEffect(Nodemailer, Effect.andThen(Config.string('SMTP_URI'), nodemailer.createTransport)),
-  Effect.provideServiceEffect(Redis, redisLifecycle),
+  Effect.provide(Redis.layer),
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,
     Effect.gen(function* () {
