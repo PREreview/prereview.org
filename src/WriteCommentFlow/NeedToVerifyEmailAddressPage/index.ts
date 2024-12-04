@@ -1,7 +1,7 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import * as ContactEmailAddress from '../../contact-email-address.js'
-import type { Locale } from '../../Context.js'
+import { Locale } from '../../Context.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Response from '../../response.js'
@@ -34,6 +34,8 @@ export const NeedToVerifyEmailAddressPage = ({
     if (comment._tag === 'CommentNotStarted' || !Equal.equals(user.orcid, comment.authorId)) {
       return yield* PageNotFound
     }
+
+    const locale = yield* Locale
 
     return yield* pipe(
       Match.value(comment),
@@ -76,7 +78,7 @@ export const NeedToVerifyEmailAddressPage = ({
                   }),
                 ),
                 Match.tag('UnverifiedContactEmailAddress', contactEmailAddress =>
-                  Effect.succeed(MakeResponse({ commentId, emailAddress: contactEmailAddress.value })),
+                  Effect.succeed(MakeResponse({ commentId, emailAddress: contactEmailAddress.value, locale })),
                 ),
                 Match.exhaustive,
               ),
