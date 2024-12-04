@@ -1,4 +1,4 @@
-import { Config, type ConfigError, Context, Effect, Layer } from 'effect'
+import { Config, Context, Effect, Layer } from 'effect'
 import { toError } from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -22,13 +22,8 @@ export const layer: (options: Parameters<typeof make>[0]) => Layer.Layer<Nodemai
   Layer.effect(Nodemailer),
 )
 
-export const layerConfig: (
-  options: Config.Config.Wrap<Parameters<typeof make>[0]>,
-) => Layer.Layer<Nodemailer, ConfigError.ConfigError> = flow(
-  Config.unwrap,
-  Effect.andThen(make),
-  Layer.effect(Nodemailer),
-)
+export const layerConfig = (options: Config.Config.Wrap<Parameters<typeof layer>[0]>) =>
+  Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layer))
 
 const emailToNodemailerEmail: E.Encoder<SendMailOptions, Email> = {
   encode: email => ({
