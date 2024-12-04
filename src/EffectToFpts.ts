@@ -1,4 +1,6 @@
 import { Effect, pipe, Runtime } from 'effect'
+import type * as IO from 'fp-ts/lib/IO.js'
+import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
@@ -33,6 +35,12 @@ export const toReaderTask = <A, R>(effect: Effect.Effect<A>): RT.ReaderTask<Effe
     ),
   )
 
+export const toReaderIO = <A, R>(effect: Effect.Effect<A>): RIO.ReaderIO<EffectEnv<R>, A> =>
+  pipe(
+    RIO.ask<EffectEnv<R>>(),
+    RIO.map(({ runtime }) => Runtime.runSync(runtime)(effect)),
+  )
+
 export const makeTaskEitherK = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => Effect.Effect<B, E>,
 ): Effect.Effect<(...a: A) => TE.TaskEither<E, B>> =>
@@ -49,4 +57,11 @@ export const makeTaskK = <A extends ReadonlyArray<unknown>, B>(
     const runtime = yield* Effect.runtime()
 
     return (...a) => toReaderTask<B, never>(f(...a))({ runtime })
+  })
+
+export const makeIO = <A>(effect: Effect.Effect<A>): Effect.Effect<IO.IO<A>> =>
+  Effect.gen(function* () {
+    const runtime = yield* Effect.runtime()
+
+    return toReaderIO<A, never>(effect)({ runtime })
   })
