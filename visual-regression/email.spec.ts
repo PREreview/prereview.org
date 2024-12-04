@@ -26,7 +26,7 @@ test('email-verification HTML for an invited author looks right', async ({ page 
       verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
     }),
     authorInvite: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
-  })({ publicUrl: new URL('http://example.com') })
+  })({ publicUrl: new URL('http://example.com'), locale: DefaultLocale })
 
   await page.setContent(email.html.toString())
 
@@ -45,7 +45,7 @@ test('email-verification text for an invited author looks right', async ({ page 
       verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
     }),
     authorInvite: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
-  })({ publicUrl: new URL('http://example.com') })
+  })({ publicUrl: new URL('http://example.com'), locale: DefaultLocale })
 
   await page.setContent(`<pre>${email.text}</pre>`)
 

@@ -6,9 +6,9 @@ import * as _ from '../src/email.js'
 import * as fc from './fc.js'
 
 describe('sendContactEmailAddressVerificationEmail', () => {
-  test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress()])(
+  test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress(), fc.supportedLocale()])(
     'when the email can be sent',
-    async (publicUrl, user, emailAddress) => {
+    async (publicUrl, user, emailAddress, locale) => {
       const sendEmail = jest.fn<_.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
 
       const actual = await _.sendContactEmailAddressVerificationEmail(
@@ -16,6 +16,7 @@ describe('sendContactEmailAddressVerificationEmail', () => {
         emailAddress,
       )({
         sendEmail,
+        locale,
         publicUrl,
       })()
 
@@ -30,14 +31,15 @@ describe('sendContactEmailAddressVerificationEmail', () => {
     },
   )
 
-  test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress()])(
+  test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress(), fc.supportedLocale()])(
     "when the email can't be sent",
-    async (publicUrl, user, emailAddress) => {
+    async (publicUrl, user, emailAddress, locale) => {
       const actual = await _.sendContactEmailAddressVerificationEmail(
         user,
         emailAddress,
       )({
         publicUrl,
+        locale,
         sendEmail: () => TE.left('unavailable'),
       })()
 
@@ -47,46 +49,54 @@ describe('sendContactEmailAddressVerificationEmail', () => {
 })
 
 describe('sendContactEmailAddressVerificationEmailForReview', () => {
-  test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress(), fc.indeterminatePreprintId()])(
-    'when the email can be sent',
-    async (publicUrl, user, emailAddress, preprint) => {
-      const sendEmail = jest.fn<_.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
+  test.prop([
+    fc.origin(),
+    fc.user(),
+    fc.unverifiedContactEmailAddress(),
+    fc.indeterminatePreprintId(),
+    fc.supportedLocale(),
+  ])('when the email can be sent', async (publicUrl, user, emailAddress, preprint, locale) => {
+    const sendEmail = jest.fn<_.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
 
-      const actual = await _.sendContactEmailAddressVerificationEmailForReview(
-        user,
-        emailAddress,
-        preprint,
-      )({
-        sendEmail,
-        publicUrl,
-      })()
+    const actual = await _.sendContactEmailAddressVerificationEmailForReview(
+      user,
+      emailAddress,
+      preprint,
+    )({
+      sendEmail,
+      locale,
+      publicUrl,
+    })()
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(sendEmail).toHaveBeenCalledWith(
-        expect.objectContaining({
-          from: { address: 'help@prereview.org', name: 'PREreview' },
-          to: { address: emailAddress.value, name: user.name },
-          subject: 'Verify your email address on PREreview',
-        }),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(sendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        from: { address: 'help@prereview.org', name: 'PREreview' },
+        to: { address: emailAddress.value, name: user.name },
+        subject: 'Verify your email address on PREreview',
+      }),
+    )
+  })
 
-  test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress(), fc.indeterminatePreprintId()])(
-    "when the email can't be sent",
-    async (publicUrl, user, emailAddress, preprint) => {
-      const actual = await _.sendContactEmailAddressVerificationEmailForReview(
-        user,
-        emailAddress,
-        preprint,
-      )({
-        publicUrl,
-        sendEmail: () => TE.left('unavailable'),
-      })()
+  test.prop([
+    fc.origin(),
+    fc.user(),
+    fc.unverifiedContactEmailAddress(),
+    fc.indeterminatePreprintId(),
+    fc.supportedLocale(),
+  ])("when the email can't be sent", async (publicUrl, user, emailAddress, preprint, locale) => {
+    const actual = await _.sendContactEmailAddressVerificationEmailForReview(
+      user,
+      emailAddress,
+      preprint,
+    )({
+      publicUrl,
+      locale,
+      sendEmail: () => TE.left('unavailable'),
+    })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
-  )
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
 })
 
 test.prop([
