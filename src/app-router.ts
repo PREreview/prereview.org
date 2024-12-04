@@ -73,7 +73,6 @@ import {
   sendEmail,
 } from './email.js'
 import {
-  type CanChooseLocaleEnv,
   type CanConnectOrcidProfileEnv,
   type CanRequestReviewsEnv,
   type CanSeeGatesLogoEnv,
@@ -345,7 +344,6 @@ const withEnv =
     f(...a)(env)
 
 export type RouterEnv = Keyv.AvatarStoreEnv &
-  CanChooseLocaleEnv &
   CanConnectOrcidProfileEnv &
   CanRequestReviewsEnv &
   CanSeeGatesLogoEnv &

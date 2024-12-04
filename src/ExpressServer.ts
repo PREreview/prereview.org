@@ -1,6 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
-import { Config, Effect } from 'effect'
+import { Effect } from 'effect'
 import Keyv from 'keyv'
 import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig } from './Context.js'
@@ -31,8 +31,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
   const env = yield* DeprecatedEnvVars
   const loggerEnv = yield* DeprecatedLoggerEnv
 
-  const canChooseLocale = yield* Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false)
-
   const createKeyvStore = () => new KeyvRedis(redis).on('error', () => undefined)
 
   return {
@@ -40,7 +38,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
     authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
     avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
-    canChooseLocale,
     canConnectOrcidProfile: () => true,
     canRequestReviews: () => true,
     canSeeGatesLogo: true,

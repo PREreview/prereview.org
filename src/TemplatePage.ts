@@ -11,9 +11,11 @@ export const make = Effect.gen(function* () {
   const publicUrl = yield* PublicUrl
   const fathomId = yield* Config.option(Config.string('FATHOM_SITE_ID'))
   const environmentLabel = yield* Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL'))
+  const canChooseLocale = yield* Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false)
 
   return (page: Page) =>
     templatePage(page)({
+      canChooseLocale,
       environmentLabel: Option.getOrUndefined(environmentLabel),
       fathomId: Option.getOrUndefined(fathomId),
       publicUrl,

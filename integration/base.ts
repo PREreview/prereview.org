@@ -1263,7 +1263,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           allowSiteCrawlers: true,
           authorInviteStore,
           avatarStore: new Keyv(),
-          canChooseLocale: false,
           canConnectOrcidProfile,
           canRequestReviews,
           canUploadAvatar,
