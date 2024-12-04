@@ -22,7 +22,8 @@ export const make = Effect.gen(function* () {
   const { fathomId, environmentLabel } = yield* TemplatePageOptions
 
   return (page: Page) =>
-    templatePage(page)({
+    templatePage({
+      page,
       canChooseLocale,
       environmentLabel: Option.getOrUndefined(environmentLabel),
       fathomId: Option.getOrUndefined(fathomId),
