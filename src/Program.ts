@@ -4,7 +4,7 @@ import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
-import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig, Nodemailer } from './Context.js'
+import { DeprecatedLoggerEnv, DeprecatedSleepEnv, EventStore, ExpressConfig, Nodemailer, PublicUrl } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
@@ -148,7 +148,7 @@ const saveContactEmailAddress = Layer.effect(
 const verifyContactEmailAddressForComment = Layer.effect(
   ContactEmailAddress.VerifyContactEmailAddressForComment,
   Effect.gen(function* () {
-    const { publicUrl } = yield* ExpressConfig
+    const publicUrl = yield* PublicUrl
     const logger = yield* DeprecatedLoggerEnv
     const nodemailer = yield* Nodemailer
 
@@ -175,11 +175,12 @@ const verifyContactEmailAddressForComment = Layer.effect(
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
-    const { legacyPrereviewApi, orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl, publicUrl } = yield* ExpressConfig
+    const { legacyPrereviewApi, orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
     const sleep = yield* DeprecatedSleepEnv
+    const publicUrl = yield* PublicUrl
 
     const env = {
       fetch,

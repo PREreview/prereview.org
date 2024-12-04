@@ -2,7 +2,7 @@ import { Cookies, Headers, HttpMiddleware, HttpRouter, HttpServerRequest, HttpSe
 import { Effect, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { ExpressConfig, FlashMessage, Locale, LoggedInUser, Redis } from './Context.js'
+import { ExpressConfig, FlashMessage, Locale, LoggedInUser, PublicUrl, Redis } from './Context.js'
 import {
   type FlashMessageResponse,
   type LogInResponse,
@@ -255,7 +255,7 @@ function toHttpServerResponse(
     | RedirectResponse
     | LogInResponse
     | FlashMessageResponse,
-): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage | ExpressConfig> {
+): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage | ExpressConfig | PublicUrl> {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
       return yield* HttpServerResponse.empty({
@@ -275,7 +275,7 @@ function toHttpServerResponse(
     }
 
     if (response._tag === 'LogInResponse') {
-      const { publicUrl } = yield* ExpressConfig
+      const publicUrl = yield* PublicUrl
 
       const location = yield* generateAuthorizationRequestUrl({
         scope: '/authenticate',
@@ -318,9 +318,10 @@ function generateAuthorizationRequestUrl({
 }: {
   scope: string
   state?: string
-}): Effect.Effect<URL, never, ExpressConfig> {
+}): Effect.Effect<URL, never, ExpressConfig | PublicUrl> {
   return Effect.gen(function* () {
-    const { orcidOauth, publicUrl } = yield* ExpressConfig
+    const { orcidOauth } = yield* ExpressConfig
+    const publicUrl = yield* PublicUrl
 
     const redirectUri = new URL(
       `${publicUrl.origin}${format(Routes.orcidCodeMatch.formatter, { code: 'code', state: 'state' })}`,

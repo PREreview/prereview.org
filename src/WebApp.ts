@@ -13,7 +13,7 @@ import cspBuilder from 'content-security-policy-builder'
 import cookieSignature from 'cookie-signature'
 import { Cause, Config, Effect, flow, Layer, Option, pipe, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import { Express, ExpressConfig, FlashMessage, Locale, LoggedInUser } from './Context.js'
+import { Express, ExpressConfig, FlashMessage, Locale, LoggedInUser, PublicUrl } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
 import { LegacyRouter } from './LegacyRouter.js'
@@ -76,7 +76,7 @@ const isFile = (path: string) =>
 const logRequest = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const request = yield* HttpServerRequest.HttpServerRequest
-    const { publicUrl } = yield* ExpressConfig
+    const publicUrl = yield* PublicUrl
 
     const url = new URL(request.url, publicUrl)
 

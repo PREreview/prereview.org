@@ -9,6 +9,7 @@ import {
   DeprecatedSleepEnv,
   ExpressConfig,
   Nodemailer,
+  PublicUrl,
   Redis,
 } from './Context.js'
 import { CanWriteComments } from './feature-flags.js'
@@ -20,8 +21,9 @@ export const expressServer = Effect.gen(function* () {
   const sleep = yield* DeprecatedSleepEnv
   const canWriteComments = yield* CanWriteComments
   const nodemailer = yield* Nodemailer
+  const publicUrl = yield* PublicUrl
 
-  return app({ canWriteComments, clock, fetch, nodemailer, ...sleep, ...config })
+  return app({ canWriteComments, clock, fetch, nodemailer, publicUrl, ...sleep, ...config })
 })
 
 export const ExpressConfigLive = Effect.gen(function* () {
@@ -83,7 +85,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
       tokenUrl: new URL(`${env.ORCID_URL.origin}/oauth/token`),
     },
     orcidTokenStore: new Keyv({ emitErrors: false, namespace: 'orcid-token', store: createKeyvStore() }),
-    publicUrl: env.PUBLIC_URL,
     redis,
     researchInterestsStore: new Keyv({ emitErrors: false, namespace: 'research-interests', store: createKeyvStore() }),
     reviewRequestStore: new Keyv({ emitErrors: false, namespace: 'review-request', store: createKeyvStore() }),

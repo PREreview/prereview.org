@@ -6,7 +6,7 @@ import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
 import fetch from 'make-fetch-happen'
 import nodemailer from 'nodemailer'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, Nodemailer, Redis } from './Context.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, Nodemailer, PublicUrl, Redis } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
 import { Program } from './Program.js'
@@ -47,15 +47,19 @@ pipe(
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,
     Effect.gen(function* () {
-      const env = yield* DeprecatedEnvVars
+      const publicUrl = yield* PublicUrl
 
       return fetch.defaults({
         cachePath: 'data/cache',
         headers: {
-          'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
+          'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
         },
       }) as unknown as typeof globalThis.fetch
     }),
+  ),
+  Effect.provideServiceEffect(
+    PublicUrl,
+    Config.mapAttempt(Config.string('PUBLIC_URL'), url => new URL(url)),
   ),
   Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.provide(Logger.replaceEffect(Logger.defaultLogger, DeprecatedLogger)),

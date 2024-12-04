@@ -22,7 +22,7 @@ export class Nodemailer extends Context.Tag('Nodemailer')<Nodemailer, Transporte
 
 export class ExpressConfig extends Context.Tag('ExpressConfig')<
   ExpressConfig,
-  Omit<ConfigEnv, 'canWriteComments' | 'clock' | 'fetch' | 'nodemailer' | 'sleep'>
+  Omit<ConfigEnv, 'canWriteComments' | 'clock' | 'fetch' | 'nodemailer' | 'publicUrl' | 'sleep'>
 >() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}
@@ -34,3 +34,5 @@ export class Redis extends Context.Tag('Redis')<Redis, IoRedis>() {}
 export class EventStore extends Context.Tag('EventStore')<EventStore, EventStoreService>() {}
 
 export class FlashMessage extends Context.Tag('CurrentFlashMessage')<FlashMessage, typeof FlashMessageSchema.Type>() {}
+
+export class PublicUrl extends Context.Tag('PublicUrl')<PublicUrl, URL>() {}
