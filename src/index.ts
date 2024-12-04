@@ -5,7 +5,6 @@ import { Config, Effect, Layer, Logger, LogLevel } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
 import fetch from 'make-fetch-happen'
-import nodemailer from 'nodemailer'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
@@ -13,7 +12,7 @@ import { Program } from './Program.js'
 import * as Redis from './Redis.js'
 import { verifyCache } from './VerifyCache.js'
 import { CanWriteComments, RequiresAVerifiedEmailAddress } from './feature-flags.js'
-import { Nodemailer } from './nodemailer.js'
+import * as Nodemailer from './nodemailer.js'
 import { PublicUrl } from './public-url.js'
 
 pipe(
@@ -44,7 +43,7 @@ pipe(
       Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
     ),
   ),
-  Effect.provideServiceEffect(Nodemailer, Effect.andThen(Config.string('SMTP_URI'), nodemailer.createTransport)),
+  Effect.provide(Nodemailer.layerConfig(Config.mapAttempt(Config.string('SMTP_URI'), url => new URL(url)))),
   Effect.provide(Redis.layer),
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,

@@ -1,11 +1,11 @@
-import { Context } from 'effect'
+import { Config, type ConfigError, Context, Effect, Layer } from 'effect'
 import { toError } from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import type * as E from 'io-ts/lib/Encoder.js'
 import * as L from 'logger-fp-ts'
-import type { SendMailOptions, Transporter } from 'nodemailer'
+import { createTransport, type SendMailOptions, type Transporter } from 'nodemailer'
 import type { Email } from './email.js'
 
 export interface NodemailerEnv {
@@ -13,6 +13,22 @@ export interface NodemailerEnv {
 }
 
 export class Nodemailer extends Context.Tag('Nodemailer')<Nodemailer, Transporter<unknown>>() {}
+
+export const make = (options: URL | Transporter<unknown>): Effect.Effect<Transporter<unknown>> =>
+  options instanceof URL ? Effect.sync(() => createTransport(options.href)) : Effect.succeed(options)
+
+export const layer: (options: Parameters<typeof make>[0]) => Layer.Layer<Nodemailer> = flow(
+  make,
+  Layer.effect(Nodemailer),
+)
+
+export const layerConfig: (
+  options: Config.Config.Wrap<Parameters<typeof make>[0]>,
+) => Layer.Layer<Nodemailer, ConfigError.ConfigError> = flow(
+  Config.unwrap,
+  Effect.andThen(make),
+  Layer.effect(Nodemailer),
+)
 
 const emailToNodemailerEmail: E.Encoder<SendMailOptions, Email> = {
   encode: email => ({

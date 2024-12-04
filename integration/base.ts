@@ -63,7 +63,7 @@ import type {
 } from '../src/keyv.js'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview.js'
 import type { IsUserBlockedEnv } from '../src/log-in/index.js'
-import { Nodemailer, type NodemailerEnv } from '../src/nodemailer.js'
+import * as Nodemailer from '../src/nodemailer.js'
 import { Program } from '../src/Program.js'
 import { PublicUrl } from '../src/public-url.js'
 import type { EmailAddress } from '../src/types/email-address.js'
@@ -101,7 +101,7 @@ interface AppFixtures {
   canUseSearchQueries: CanUseSearchQueriesEnv['canUseSearchQueries']
   canWriteComments: typeof CanWriteComments.Service
   requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
-  nodemailer: NodemailerEnv['nodemailer']
+  nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
 }
 
@@ -1319,7 +1319,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         }),
         Effect.provideService(RequiresAVerifiedEmailAddress, requiresAVerifiedEmailAddress),
         Effect.provideService(CanWriteComments, canWriteComments),
-        Effect.provideService(Nodemailer, nodemailer),
+        Effect.provide(Nodemailer.layer(nodemailer)),
         Effect.provideService(PublicUrl, new URL(`http://localhost:${port}`)),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),
