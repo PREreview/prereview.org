@@ -21,7 +21,6 @@ import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid }
 import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
 import type { SupportedLocale } from './locales/index.js'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
-import { page } from './page.js'
 import { handleResponse } from './response.js'
 import { maybeGetUser, type User } from './user.js'
 
@@ -36,7 +35,6 @@ export type ConfigEnv = Omit<
   | 'getPreprintTitle'
   | 'locale'
   | 'logger'
-  | 'templatePage'
   | 'getPreprintIdFromUuid'
   | 'getProfileIdFromUuid'
   | 'runtime'
@@ -174,7 +172,6 @@ export const app = (config: ConfigEnv) => {
               getPreprint: withEnv(getPreprint, env),
               getPreprintTitle: withEnv(getPreprintTitle, env),
               locale,
-              templatePage: withEnv(page, env),
               getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
               getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
               getPreprintId: withEnv(getPreprintId, env),
