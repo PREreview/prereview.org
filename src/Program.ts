@@ -361,7 +361,7 @@ export const Program = pipe(
   ),
   Layer.provide(LibsqlEventStore.layer),
   Layer.provide(setUpFetch),
-  Layer.provide(Layer.effect(Uuid.GenerateUuid, Uuid.make)),
+  Layer.provide(Uuid.layer),
   Layer.provide(Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv)),
   Layer.provide(MigratorLive),
 )

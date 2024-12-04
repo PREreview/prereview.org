@@ -1,4 +1,4 @@
-import { Context, Effect, Schema } from 'effect'
+import { Context, Effect, Layer, Schema } from 'effect'
 import type { IO } from 'fp-ts/lib/IO.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import { pipe } from 'fp-ts/lib/function.js'
@@ -12,6 +12,8 @@ export type { Uuid } from 'uuid-ts'
 export class GenerateUuid extends Context.Tag('GenerateUuid')<GenerateUuid, Effect.Effect<Uuid>>() {}
 
 export const make: Effect.Effect<typeof GenerateUuid.Service> = Effect.succeed(FptsToEffect.io(v4()))
+
+export const layer: Layer.Layer<GenerateUuid> = Layer.effect(GenerateUuid, make)
 
 export const UuidSchema: Schema.Schema<Uuid, string> = pipe(
   Schema.String,
