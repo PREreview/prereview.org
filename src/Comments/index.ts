@@ -1,5 +1,5 @@
 import { Array, Effect, Layer, Match, pipe, PubSub, Queue, Schedule } from 'effect'
-import { EventStore } from '../Context.js'
+import { EventStore } from '../EventStore.js'
 import { RequiresAVerifiedEmailAddress } from '../feature-flags.js'
 import type { Uuid } from '../types/index.js'
 import {

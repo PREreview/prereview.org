@@ -1,12 +1,13 @@
 import { Effect, Option } from 'effect'
 import * as Comments from '../../Comments/index.js'
-import { Locale, LoggedInUser } from '../../Context.js'
+import { Locale } from '../../Context.js'
 import { EnsureCanWriteComments } from '../../feature-flags.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
 import { GetPrereview } from '../../Prereview.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
+import { LoggedInUser } from '../../user.js'
 import { WriteCommentPage as MakeResponse } from './WriteCommentPage.js'
 
 export const WriteCommentPage = ({

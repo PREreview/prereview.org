@@ -5,7 +5,8 @@ import express, { type ErrorRequestHandler } from 'express'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import type { LogEntry } from 'logger-fp-ts'
 import * as L from 'logging-ts/lib/IO.js'
-import { DeprecatedLoggerEnv, Express, Locale, LoggedInUser } from './Context.js'
+import { DeprecatedLoggerEnv, Express, Locale } from './Context.js'
+import { LoggedInUser } from './user.js'
 
 export const ExpressHttpApp: HttpApp.Default<
   never,

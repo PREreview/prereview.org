@@ -3,16 +3,11 @@ import KeyvRedis from '@keyv/redis'
 import { Config, Effect } from 'effect'
 import Keyv from 'keyv'
 import { app } from './app.js'
-import {
-  DeprecatedEnvVars,
-  DeprecatedLoggerEnv,
-  DeprecatedSleepEnv,
-  ExpressConfig,
-  Nodemailer,
-  PublicUrl,
-  Redis,
-} from './Context.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig } from './Context.js'
 import { CanWriteComments } from './feature-flags.js'
+import { Nodemailer } from './nodemailer.js'
+import { PublicUrl } from './public-url.js'
+import { Redis } from './Redis.js'
 
 export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig

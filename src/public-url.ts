@@ -1,3 +1,4 @@
+import { Context } from 'effect'
 import { type Formatter, format } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
@@ -7,6 +8,8 @@ import type { Route } from './routes.js'
 export interface PublicUrlEnv {
   publicUrl: URL
 }
+
+export class PublicUrl extends Context.Tag('PublicUrl')<PublicUrl, URL>() {}
 
 export function toUrl<A>(formatter: Formatter<A> | Route<A>, a: A) {
   return R.asks(({ publicUrl }: PublicUrlEnv) =>

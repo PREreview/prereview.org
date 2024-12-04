@@ -1,4 +1,4 @@
-import { Data, Effect, Schema } from 'effect'
+import { Context, Data, Effect, Schema } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
@@ -9,10 +9,11 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
-import { LoggedInUser } from './Context.js'
 import { Pseudonym } from './types/index.js'
 
 export type User = C.TypeOf<typeof UserC>
+
+export class LoggedInUser extends Context.Tag('User')<LoggedInUser, User>() {}
 
 export interface GetUserEnv {
   getUser: () => M.Middleware<StatusOpen, StatusOpen, 'no-session' | Error, User>

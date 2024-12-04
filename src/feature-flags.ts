@@ -1,7 +1,6 @@
 import { Context, Data, Effect, Option } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
-import { LoggedInUser } from './Context.js'
-import type { User } from './user.js'
+import { LoggedInUser, type User } from './user.js'
 
 export class RequiresAVerifiedEmailAddress extends Context.Tag('RequiresAVerifiedEmailAddress')<
   RequiresAVerifiedEmailAddress,

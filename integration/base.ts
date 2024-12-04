@@ -39,7 +39,7 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.js'
-import { DeprecatedLoggerEnv, ExpressConfig, Nodemailer, PublicUrl } from '../src/Context.js'
+import { DeprecatedLoggerEnv, ExpressConfig } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import {
@@ -63,8 +63,9 @@ import type {
 } from '../src/keyv.js'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview.js'
 import type { IsUserBlockedEnv } from '../src/log-in/index.js'
-import type { NodemailerEnv } from '../src/nodemailer.js'
+import { Nodemailer, type NodemailerEnv } from '../src/nodemailer.js'
 import { Program } from '../src/Program.js'
+import { PublicUrl } from '../src/public-url.js'
 import type { EmailAddress } from '../src/types/email-address.js'
 import type { NonEmptyString } from '../src/types/string.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'

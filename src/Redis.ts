@@ -1,4 +1,4 @@
-import { Effect, Inspectable, pipe, Runtime } from 'effect'
+import { Context, Effect, Inspectable, pipe, Runtime } from 'effect'
 import { Redis as IoRedis } from 'ioredis'
 import { DeprecatedEnvVars } from './Context.js'
 
@@ -34,3 +34,5 @@ const teardownRedis = (redis: IoRedis) =>
   )
 
 export const redisLifecycle = Effect.acquireRelease(makeRedis, teardownRedis)
+
+export const Redis = Context.GenericTag<IoRedis>('Redis')

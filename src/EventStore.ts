@@ -1,4 +1,4 @@
-import { type Array, Data, type Effect } from 'effect'
+import { type Array, Context, Data, type Effect } from 'effect'
 import type { CommentEvent } from './Comments/index.js'
 import type { Uuid } from './types/index.js'
 
@@ -28,3 +28,5 @@ export interface EventStore {
     ...event: Array.NonEmptyReadonlyArray<CommentEvent>
   ) => Effect.Effect<number, ResourceHasChanged | FailedToCommitEvent>
 }
+
+export const EventStore = Context.GenericTag<EventStore>('EventStore')

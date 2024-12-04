@@ -4,18 +4,11 @@ import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
-import {
-  DeprecatedLoggerEnv,
-  DeprecatedSleepEnv,
-  EventStore,
-  ExpressConfig,
-  Locale,
-  Nodemailer,
-  PublicUrl,
-} from './Context.js'
+import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from './Context.js'
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
+import { EventStore } from './EventStore.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
@@ -24,10 +17,11 @@ import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
 import * as LibsqlEventStore from './LibsqlEventStore.js'
 import { DefaultLocale, translate } from './locales/index.js'
-import { sendEmailWithNodemailer } from './nodemailer.js'
+import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
 import { getNameFromOrcid } from './orcid.js'
 import * as Preprint from './preprint.js'
 import * as Prereview from './Prereview.js'
+import { PublicUrl } from './public-url.js'
 import { Uuid } from './types/index.js'
 import { WebApp } from './WebApp.js'
 import { createCommentOnZenodo, getPrereviewFromZenodo, publishDepositionOnZenodo } from './zenodo.js'

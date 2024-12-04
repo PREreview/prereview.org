@@ -1,3 +1,4 @@
+import { Context } from 'effect'
 import { toError } from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -10,6 +11,8 @@ import type { Email } from './email.js'
 export interface NodemailerEnv {
   nodemailer: Transporter<unknown>
 }
+
+export class Nodemailer extends Context.Tag('Nodemailer')<Nodemailer, Transporter<unknown>>() {}
 
 const emailToNodemailerEmail: E.Encoder<SendMailOptions, Email> = {
   encode: email => ({

@@ -2,7 +2,9 @@ import { Cookies, Headers, HttpMiddleware, HttpRouter, HttpServerRequest, HttpSe
 import { Effect, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { ExpressConfig, FlashMessage, Locale, LoggedInUser, PublicUrl, Redis } from './Context.js'
+import { ExpressConfig, FlashMessage, Locale } from './Context.js'
+import { PublicUrl } from './public-url.js'
+import { Redis } from './Redis.js'
 import {
   type FlashMessageResponse,
   type LogInResponse,
@@ -14,6 +16,7 @@ import {
 } from './response.js'
 import * as Routes from './routes.js'
 import { TemplatePage } from './TemplatePage.js'
+import { LoggedInUser } from './user.js'
 import * as WriteCommentFlow from './WriteCommentFlow/index.js'
 
 const WriteCommentFlowRouter = pipe(
