@@ -2,9 +2,11 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { pipe } from 'fp-ts/lib/function.js'
+import rtlDetect from 'rtl-detect'
 import type { Uuid } from 'uuid-ts'
 import type { UnverifiedContactEmailAddress } from './contact-email-address.js'
 import { type Html, html, mjmlToHtml, plainText } from './html.js'
+import { type SupportedLocale, translate } from './locales/index.js'
 import type { PreprintTitle } from './preprint.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import * as Routes from './routes.js'
@@ -142,10 +144,12 @@ export const createContactEmailAddressVerificationEmailForComment = ({
   user,
   emailAddress,
   comment,
+  locale,
 }: {
   user: User
   emailAddress: UnverifiedContactEmailAddress
   comment: Uuid
+  locale: SupportedLocale
 }): R.Reader<PublicUrlEnv, Email> =>
   pipe(
     toUrl(Routes.WriteCommentVerifyEmailAddress, { commentId: comment, token: emailAddress.verificationToken }),
@@ -154,17 +158,19 @@ export const createContactEmailAddressVerificationEmailForComment = ({
         ({
           from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
           to: { address: emailAddress.value, name: user.name },
-          subject: 'Verify your email address on PREreview',
-          text: `Hi ${user.name},\n\nPlease verify your email address on PREreview by going to ${verificationUrl.href}`,
+          subject: translate(locale, 'email', 'verifyEmailAddressTitle')(),
+          text: `${translate(locale, 'email', 'hiName')({ name: user.name })}\n\n${translate(locale, 'email', 'verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`,
           html: mjmlToHtml(html`
-            <mjml>
+            <mjml lang="${locale}" dir="${rtlDetect.getLangDir(locale)}">
               <mj-head>${mjmlStyle}</mj-head>
               <mj-body>
                 <mj-section>
                   <mj-column>
-                    <mj-text>Hi ${user.name},</mj-text>
-                    <mj-text>Please verify your email address on PREreview:</mj-text>
-                    <mj-button href="${verificationUrl.href}">Verify email address</mj-button>
+                    <mj-text>${translate(locale, 'email', 'hiName')({ name: user.name })}</mj-text>
+                    <mj-text>${translate(locale, 'email', 'verifyEmailAddressWithButton')()}</mj-text>
+                    <mj-button href="${verificationUrl.href}"
+                      >${translate(locale, 'email', 'verifyEmailAddressButton')()}</mj-button
+                    >
                   </mj-column>
                 </mj-section>
               </mj-body>

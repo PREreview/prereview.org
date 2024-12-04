@@ -8,6 +8,7 @@ import {
   createContactEmailAddressVerificationEmailForInvitedAuthor,
 } from '../src/email.js'
 import { html } from '../src/html.js'
+import { DefaultLocale } from '../src/locales/index.js'
 import type { EmailAddress } from '../src/types/email-address.js'
 import type { Pseudonym } from '../src/types/pseudonym.js'
 import type { NonEmptyString } from '../src/types/string.js'
@@ -63,6 +64,7 @@ test('email-verification HTML for a comment looks right', async ({ page }) => {
       verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
     }),
     comment: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
+    locale: DefaultLocale,
   })({ publicUrl: new URL('http://example.com') })
 
   await page.setContent(email.html.toString())
@@ -82,6 +84,7 @@ test('email-verification text for a comment looks right', async ({ page }) => {
       verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
     }),
     comment: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
+    locale: DefaultLocale,
   })({ publicUrl: new URL('http://example.com') })
 
   await page.setContent(`<pre>${email.text}</pre>`)

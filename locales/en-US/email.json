@@ -1,0 +1,17 @@
+{
+  "verifyEmailAddressTitle": {
+    "message": "Verify your email address on PREreview"
+  },
+  "hiName": {
+    "message": "Hi {name},"
+  },
+  "verifyEmailAddressWithButton": {
+    "message": "Please verify your email address on PREreview:"
+  },
+  "verifyEmailAddressGoingTo": {
+    "message": "Please verify your email address on PREreview by going to {link}"
+  },
+  "verifyEmailAddressButton": {
+    "message": "Verify email address"
+  }
+}

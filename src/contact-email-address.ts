@@ -7,6 +7,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
+import type { Locale } from './Context.js'
 import { type EmailAddress, EmailAddressC } from './types/email-address.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import { UuidC } from './types/uuid.js'
@@ -77,7 +78,7 @@ export class VerifyContactEmailAddressForComment extends Context.Tag('VerifyCont
     user: User,
     emailAddress: UnverifiedContactEmailAddress,
     comment: Uuid,
-  ) => Effect.Effect<void, ContactEmailAddressIsUnavailable>
+  ) => Effect.Effect<void, ContactEmailAddressIsUnavailable, Locale>
 >() {}
 
 export const ContactEmailAddressC = pipe(
