@@ -128,7 +128,7 @@ import {
 import { myPrereviews } from './my-prereviews-page/index.js'
 import { getCategoriesFromOpenAlex } from './openalex/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
-import type { EnvironmentLabelEnv, FathomEnv, TemplatePageEnv } from './page.js'
+import type { TemplatePageEnv } from './page.js'
 import { partners } from './partners.js'
 import { people } from './people.js'
 import { preprintReviews } from './preprint-reviews-page/index.js'
@@ -354,7 +354,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   EffectEnv<Locale> &
   ResolvePreprintIdEnv &
   GetPreprintIdEnv &
-  EnvironmentLabelEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
   GetPreprintTitleEnv &
@@ -365,7 +364,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   CloudinaryApiEnv &
   ConnectOrcidOAuthEnv &
   Keyv.ContactEmailAddressStoreEnv &
-  FathomEnv &
   FormStoreEnv &
   GhostApiEnv &
   Keyv.IsOpenForRequestsStoreEnv &

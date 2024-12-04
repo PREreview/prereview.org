@@ -51,8 +51,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
       namespace: 'contact-email-address',
       store: createKeyvStore(),
     }),
-    environmentLabel: env.ENVIRONMENT_LABEL,
-    fathomId: env.FATHOM_SITE_ID,
     formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
     careerStageStore: new Keyv({ emitErrors: false, namespace: 'career-stage', store: createKeyvStore() }),
     ghostApi: {

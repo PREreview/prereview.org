@@ -8,13 +8,14 @@ import fetch from 'make-fetch-happen'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
-import * as FptsToEffect from './FptsToEffect.js'
-import { Program } from './Program.js'
-import * as Redis from './Redis.js'
-import { verifyCache } from './VerifyCache.js'
 import * as FeatureFlags from './feature-flags.js'
+import * as FptsToEffect from './FptsToEffect.js'
 import * as Nodemailer from './nodemailer.js'
+import { Program } from './Program.js'
 import { PublicUrl } from './public-url.js'
+import * as Redis from './Redis.js'
+import * as TemplatePage from './TemplatePage.js'
+import { verifyCache } from './VerifyCache.js'
 
 pipe(
   Program,
@@ -52,6 +53,12 @@ pipe(
           'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
         },
       }) as unknown as typeof globalThis.fetch
+    }),
+  ),
+  Effect.provide(
+    TemplatePage.optionsLayerConfig({
+      fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
+      environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
     }),
   ),
   Effect.provideServiceEffect(

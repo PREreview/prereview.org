@@ -245,5 +245,5 @@ export const WebApp = pipe(
   HttpServer.withLogAddress,
   Layer.provide(logStopped),
   Layer.provide(Layer.effect(Express, expressServer)),
-  Layer.provide(Layer.effect(TemplatePage.TemplatePage, TemplatePage.make)),
+  Layer.provide(TemplatePage.layer),
 )

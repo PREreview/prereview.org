@@ -82,8 +82,6 @@ const EnvD = pipe(
   }),
   D.intersect(
     D.partial({
-      ENVIRONMENT_LABEL: D.literal('dev', 'sandbox'),
-      FATHOM_SITE_ID: D.string,
       LOG_FORMAT: D.literal('json'),
       ORCID_API_READ_PUBLIC_TOKEN: D.string,
     }),

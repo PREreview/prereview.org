@@ -10,7 +10,7 @@ import {
 } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { Effect, Logger as EffectLogger, Fiber, Layer, pipe } from 'effect'
+import { Effect, Logger as EffectLogger, Fiber, Layer, Option, pipe } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
@@ -67,6 +67,7 @@ import type { IsUserBlockedEnv } from '../src/log-in/index.js'
 import * as Nodemailer from '../src/nodemailer.js'
 import { Program } from '../src/Program.js'
 import { PublicUrl } from '../src/public-url.js'
+import * as TemplatePage from '../src/TemplatePage.js'
 import type { EmailAddress } from '../src/types/email-address.js'
 import type { NonEmptyString } from '../src/types/string.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
@@ -1321,6 +1322,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provideService(PublicUrl, new URL(`http://localhost:${port}`)),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),
+        Effect.provide(TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() })),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
         Effect.orDie,
