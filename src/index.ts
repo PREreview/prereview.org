@@ -8,6 +8,7 @@ import fetch from 'make-fetch-happen'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
+import * as FptsToEffect from './FptsToEffect.js'
 import { Program } from './Program.js'
 import * as Redis from './Redis.js'
 import { verifyCache } from './VerifyCache.js'
@@ -65,7 +66,7 @@ pipe(
   Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.provide(Logger.replaceEffect(Logger.defaultLogger, DeprecatedLogger)),
   Effect.provideServiceEffect(DeprecatedLoggerEnv, makeDeprecatedLoggerEnv),
-  Effect.provideServiceEffect(DeprecatedEnvVars, Effect.sync(makeDeprecatedEnvVars)),
+  Effect.provideServiceEffect(DeprecatedEnvVars, FptsToEffect.io(makeDeprecatedEnvVars)),
   Effect.scoped,
   NodeRuntime.runMain({ disablePrettyLogger: true }),
 )
