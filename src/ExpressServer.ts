@@ -4,10 +4,12 @@ import { Config, Effect } from 'effect'
 import Keyv from 'keyv'
 import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig } from './Context.js'
+import * as EffectToFpts from './EffectToFpts.js'
 import { CanWriteComments } from './feature-flags.js'
 import { Nodemailer } from './nodemailer.js'
 import { PublicUrl } from './public-url.js'
 import { Redis } from './Redis.js'
+import { GenerateUuid } from './types/uuid.js'
 
 export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig
@@ -17,8 +19,9 @@ export const expressServer = Effect.gen(function* () {
   const canWriteComments = yield* CanWriteComments
   const nodemailer = yield* Nodemailer
   const publicUrl = yield* PublicUrl
+  const generateUuid = yield* Effect.andThen(GenerateUuid, EffectToFpts.makeIO)
 
-  return app({ canWriteComments, clock, fetch, nodemailer, publicUrl, ...sleep, ...config })
+  return app({ canWriteComments, clock, fetch, generateUuid, nodemailer, publicUrl, ...sleep, ...config })
 })
 
 export const ExpressConfigLive = Effect.gen(function* () {

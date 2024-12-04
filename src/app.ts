@@ -12,7 +12,6 @@ import { toRequestHandler } from 'hyper-ts/lib/express.js'
 import type { Redis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import * as uuid from 'uuid-ts'
 import * as EffectToFpts from './EffectToFpts.js'
 import { PageNotFound } from './PageNotFound/index.js'
 import { type RouterEnv, routes } from './app-router.js'
@@ -31,7 +30,6 @@ export type ConfigEnv = Omit<
   | 'doesPreprintExist'
   | 'resolvePreprintId'
   | 'getPreprintId'
-  | 'generateUuid'
   | 'getUser'
   | 'getUserOnboarding'
   | 'getPreprint'
@@ -171,7 +169,6 @@ export const app = (config: ConfigEnv) => {
             R.local((env: ConfigEnv & L.LoggerEnv & { runtime: RouterEnv['runtime'] }): RouterEnv & LegacyEnv => ({
               ...env,
               doesPreprintExist: withEnv(doesPreprintExist, env),
-              generateUuid: uuid.v4(),
               getUser: () => (user ? M.of(user) : M.left('no-session')),
               getUserOnboarding: withEnv(getUserOnboarding, env),
               getPreprint: withEnv(getPreprint, env),

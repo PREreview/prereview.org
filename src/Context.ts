@@ -16,7 +16,7 @@ export class Express extends Context.Tag('Express')<Express, ReturnType<typeof a
 
 export class ExpressConfig extends Context.Tag('ExpressConfig')<
   ExpressConfig,
-  Omit<ConfigEnv, 'canWriteComments' | 'clock' | 'fetch' | 'nodemailer' | 'publicUrl' | 'sleep'>
+  Omit<ConfigEnv, 'canWriteComments' | 'clock' | 'fetch' | 'generateUuid' | 'nodemailer' | 'publicUrl' | 'sleep'>
 >() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}
