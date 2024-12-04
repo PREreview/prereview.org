@@ -100,7 +100,7 @@ const logRequest = HttpMiddleware.make(app =>
 
 const addSecurityHeaders = HttpMiddleware.make(app =>
   Effect.gen(function* () {
-    const publicUrl = yield* Config.mapAttempt(Config.string('PUBLIC_URL'), url => new URL(url))
+    const publicUrl = yield* PublicUrl
     const response = yield* app
 
     return HttpServerResponse.setHeaders(response, {

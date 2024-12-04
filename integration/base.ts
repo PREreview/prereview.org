@@ -10,7 +10,7 @@ import {
 } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { ConfigProvider, Effect, Logger as EffectLogger, Fiber, Layer, pipe } from 'effect'
+import { Effect, Logger as EffectLogger, Fiber, Layer, pipe } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
@@ -1325,11 +1325,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
-        Effect.provide(
-          Layer.setConfigProvider(
-            ConfigProvider.fromMap(new Map([['PUBLIC_URL', new URL(`http://localhost:${port}`).href]])),
-          ),
-        ),
         Effect.orDie,
       )
 
