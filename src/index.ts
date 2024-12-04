@@ -22,6 +22,7 @@ pipe(
   Layer.launch,
   Effect.provide(
     FeatureFlags.layerConfig({
+      canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
       canWriteComments: Config.map(Config.withDefault(Config.boolean('CAN_WRITE_COMMENTS'), false), Function.constant),
       requiresAVerifiedEmailAddress: Config.withDefault(Config.boolean('REQUIRES_A_VERIFIED_EMAIL_ADDRESS'), false),
     }),

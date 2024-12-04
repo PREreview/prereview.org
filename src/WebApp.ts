@@ -16,6 +16,7 @@ import { StatusCodes } from 'http-status-codes'
 import { Express, ExpressConfig, FlashMessage, Locale } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
+import { CanChooseLocale } from './feature-flags.js'
 import { LegacyRouter } from './LegacyRouter.js'
 import { DefaultLocale, SupportedLocales } from './locales/index.js'
 import { PublicUrl } from './public-url.js'
@@ -201,7 +202,7 @@ const getLoggedInUser = HttpMiddleware.make(app =>
 
 const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
-    const canChooseLocale = yield* Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false)
+    const canChooseLocale = yield* CanChooseLocale
 
     if (!canChooseLocale) {
       return yield* Effect.provideService(app, Locale, DefaultLocale)

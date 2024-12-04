@@ -1,4 +1,4 @@
-import { Config, type ConfigError, Context, Data, Effect, Layer, Option, pipe } from 'effect'
+import { Config, type ConfigError, Context, Data, Effect, Layer, Option } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import { LoggedInUser, type User } from './user.js'
 
@@ -8,6 +8,8 @@ export class RequiresAVerifiedEmailAddress extends Context.Tag('RequiresAVerifie
 >() {}
 
 export class CanWriteComments extends Context.Tag('CanWriteComments')<CanWriteComments, (user?: User) => boolean>() {}
+
+export class CanChooseLocale extends Context.Tag('CanChooseLocale')<CanChooseLocale, boolean>() {}
 
 export class NotAllowedToWriteComments extends Data.TaggedError('NotAllowedToWriteComments') {}
 
@@ -66,12 +68,14 @@ export const canUseSearchQueries = (user?: User) =>
   R.asks(({ canUseSearchQueries }: CanUseSearchQueriesEnv) => canUseSearchQueries(user))
 
 export const layer = (options: {
+  canChooseLocale: typeof CanChooseLocale.Service
   canWriteComments: typeof CanWriteComments.Service
   requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
-}): Layer.Layer<CanWriteComments | RequiresAVerifiedEmailAddress, ConfigError.ConfigError> =>
+}): Layer.Layer<CanChooseLocale | CanWriteComments | RequiresAVerifiedEmailAddress, ConfigError.ConfigError> =>
   Layer.succeedContext(
-    pipe(
-      Context.make(CanWriteComments, options.canWriteComments),
+    Context.empty().pipe(
+      Context.add(CanChooseLocale, options.canChooseLocale),
+      Context.add(CanWriteComments, options.canWriteComments),
       Context.add(RequiresAVerifiedEmailAddress, options.requiresAVerifiedEmailAddress),
     ),
   )
