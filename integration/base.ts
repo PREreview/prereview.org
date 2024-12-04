@@ -42,14 +42,15 @@ import {
 import { DeprecatedLoggerEnv, ExpressConfig } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
-import {
-  type CanConnectOrcidProfileEnv,
-  type CanRequestReviewsEnv,
-  type CanUploadAvatarEnv,
-  type CanUseSearchQueriesEnv,
+import type {
+  CanConnectOrcidProfileEnv,
+  CanRequestReviewsEnv,
+  CanUploadAvatarEnv,
+  CanUseSearchQueriesEnv,
   CanWriteComments,
   RequiresAVerifiedEmailAddress,
 } from '../src/feature-flags.js'
+import * as FeatureFlags from '../src/feature-flags.js'
 import { rawHtml } from '../src/html.js'
 import type {
   AuthorInviteStoreEnv,
@@ -69,7 +70,6 @@ import { PublicUrl } from '../src/public-url.js'
 import type { EmailAddress } from '../src/types/email-address.js'
 import type { NonEmptyString } from '../src/types/string.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
-
 import Logger = L.Logger
 import LogEntry = L.LogEntry
 
@@ -1316,8 +1316,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           zenodoApiKey: '',
           zenodoUrl: new URL('http://zenodo.test/'),
         }),
-        Effect.provideService(RequiresAVerifiedEmailAddress, requiresAVerifiedEmailAddress),
-        Effect.provideService(CanWriteComments, canWriteComments),
+        Effect.provide(FeatureFlags.layer({ canWriteComments, requiresAVerifiedEmailAddress })),
         Effect.provide(Nodemailer.layer(nodemailer)),
         Effect.provideService(PublicUrl, new URL(`http://localhost:${port}`)),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),

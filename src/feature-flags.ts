@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Option } from 'effect'
+import { Config, type ConfigError, Context, Data, Effect, Layer, Option, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import { LoggedInUser, type User } from './user.js'
 
@@ -64,3 +64,17 @@ export interface CanUseSearchQueriesEnv {
 
 export const canUseSearchQueries = (user?: User) =>
   R.asks(({ canUseSearchQueries }: CanUseSearchQueriesEnv) => canUseSearchQueries(user))
+
+export const layer = (options: {
+  canWriteComments: typeof CanWriteComments.Service
+  requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
+}): Layer.Layer<CanWriteComments | RequiresAVerifiedEmailAddress, ConfigError.ConfigError> =>
+  Layer.succeedContext(
+    pipe(
+      Context.make(CanWriteComments, options.canWriteComments),
+      Context.add(RequiresAVerifiedEmailAddress, options.requiresAVerifiedEmailAddress),
+    ),
+  )
+
+export const layerConfig = (options: Config.Config.Wrap<Parameters<typeof layer>[0]>) =>
+  Layer.unwrapEffect(Effect.map(Config.unwrap(options), layer))

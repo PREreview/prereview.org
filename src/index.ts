@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Config, Effect, Layer, Logger, LogLevel } from 'effect'
+import { Config, Effect, Function, Layer, Logger, LogLevel } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
 import fetch from 'make-fetch-happen'
@@ -12,7 +12,7 @@ import * as FptsToEffect from './FptsToEffect.js'
 import { Program } from './Program.js'
 import * as Redis from './Redis.js'
 import { verifyCache } from './VerifyCache.js'
-import { CanWriteComments, RequiresAVerifiedEmailAddress } from './feature-flags.js'
+import * as FeatureFlags from './feature-flags.js'
 import * as Nodemailer from './nodemailer.js'
 import { PublicUrl } from './public-url.js'
 
@@ -20,16 +20,10 @@ pipe(
   Program,
   Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
-  Effect.provideServiceEffect(
-    RequiresAVerifiedEmailAddress,
-    Config.withDefault(Config.boolean('REQUIRES_A_VERIFIED_EMAIL_ADDRESS'), false),
-  ),
-  Effect.provideServiceEffect(
-    CanWriteComments,
-    Effect.gen(function* () {
-      const canWriteComments = yield* Config.withDefault(Config.boolean('CAN_WRITE_COMMENTS'), false)
-
-      return () => canWriteComments
+  Effect.provide(
+    FeatureFlags.layerConfig({
+      canWriteComments: Config.map(Config.withDefault(Config.boolean('CAN_WRITE_COMMENTS'), false), Function.constant),
+      requiresAVerifiedEmailAddress: Config.withDefault(Config.boolean('REQUIRES_A_VERIFIED_EMAIL_ADDRESS'), false),
     }),
   ),
   Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
