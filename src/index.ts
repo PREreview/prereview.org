@@ -45,7 +45,7 @@ pipe(
     ),
   ),
   Effect.provide(Nodemailer.layerConfig(Config.mapAttempt(Config.string('SMTP_URI'), url => new URL(url)))),
-  Effect.provide(Redis.layer),
+  Effect.provide(Redis.layerConfig(Config.mapAttempt(Config.string('REDIS_URI'), url => new URL(url)))),
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,
     Effect.gen(function* () {

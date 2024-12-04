@@ -70,7 +70,6 @@ const EnvD = pipe(
     ORCID_CLIENT_SECRET: D.string,
     ORCID_URL: withDefault(UrlD, new URL('https://orcid.org/')),
     ORCID_API_URL: withDefault(UrlD, new URL('https://pub.orcid.org/')),
-    REDIS_URI: UrlD,
     REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
     SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, v4()() as unknown as NonEmptyString),
     SECRET: D.string,
