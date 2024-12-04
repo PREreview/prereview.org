@@ -1,6 +1,6 @@
 import type { SqlError } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Array, DateTime, Effect, flow, ParseResult, pipe, Schema } from 'effect'
+import { Array, DateTime, Effect, flow, Layer, ParseResult, pipe, Schema } from 'effect'
 import { CommentEvent } from './Comments/index.js'
 import * as EventStore from './EventStore.js'
 import { Uuid } from './types/index.js'
@@ -263,6 +263,8 @@ export const make: Effect.Effect<
 
   return { getAllEvents, getEvents, commitEvents }
 })
+
+export const layer = Layer.effect(EventStore.EventStore, make)
 
 const ResourcesTable = Schema.Struct({
   id: Uuid.UuidSchema,

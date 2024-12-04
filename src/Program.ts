@@ -8,7 +8,6 @@ import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from '
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
-import { EventStore } from './EventStore.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
@@ -360,7 +359,7 @@ export const Program = pipe(
       ),
     ),
   ),
-  Layer.provide(Layer.effect(EventStore, LibsqlEventStore.make)),
+  Layer.provide(LibsqlEventStore.layer),
   Layer.provide(setUpFetch),
   Layer.provide(Layer.effect(Uuid.GenerateUuid, Uuid.make)),
   Layer.provide(Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv)),
