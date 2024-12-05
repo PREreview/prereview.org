@@ -1,20 +1,23 @@
 import cspBuilder from 'content-security-policy-builder'
 import type { HelmetOptions } from 'helmet'
 
+const imgSrc = [
+  "'self'",
+  'data:',
+  'avatars.slack-edge.com',
+  'cdn.usefathom.com',
+  'content.prereview.org',
+  'res.cloudinary.com',
+  'secure.gravatar.com',
+  '*.wp.com',
+]
+const crossOriginEmbedderPolicy = 'credentialless'
+
 export const securityHeaders = (protocol: URL['protocol']) => ({
   'Content-Security-Policy': cspBuilder({
     directives: {
       'script-src': ["'self'", 'cdn.usefathom.com'],
-      'img-src': [
-        "'self'",
-        'data:',
-        'avatars.slack-edge.com',
-        'cdn.usefathom.com',
-        'content.prereview.org',
-        'res.cloudinary.com',
-        'secure.gravatar.com',
-        '*.wp.com',
-      ],
+      'img-src': imgSrc,
       'upgrade-insecure-requests': protocol === 'https:',
       'default-src': "'self'",
       'base-uri': "'self'",
@@ -26,7 +29,7 @@ export const securityHeaders = (protocol: URL['protocol']) => ({
       'style-src': ["'self'", 'https:', "'unsafe-inline'"],
     },
   }),
-  'Cross-Origin-Embedder-Policy': 'credentialless',
+  'Cross-Origin-Embedder-Policy': crossOriginEmbedderPolicy,
   'Cross-Origin-Opener-Policy': 'same-origin',
   'Cross-Origin-Resource-Policy': 'same-origin',
   'Origin-Agent-Cluster': '?1',
@@ -45,21 +48,12 @@ export const helmetOptions = (protocol: URL['protocol']) =>
     contentSecurityPolicy: {
       directives: {
         'script-src': ["'self'", 'cdn.usefathom.com'],
-        'img-src': [
-          "'self'",
-          'data:',
-          'avatars.slack-edge.com',
-          'cdn.usefathom.com',
-          'content.prereview.org',
-          'res.cloudinary.com',
-          'secure.gravatar.com',
-          '*.wp.com',
-        ],
+        'img-src': imgSrc,
         upgradeInsecureRequests: protocol === 'https:' ? [] : null,
       },
     },
     crossOriginEmbedderPolicy: {
-      policy: 'credentialless',
+      policy: crossOriginEmbedderPolicy,
     },
     strictTransportSecurity: protocol === 'https:',
   }) satisfies Readonly<HelmetOptions>
