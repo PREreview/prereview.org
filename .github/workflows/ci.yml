@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - "main"
+      - 'main'
   pull_request:
 
 permissions:
@@ -18,26 +18,26 @@ env:
 
 jobs:
   build-assets:
-    name: "Build assets"
+    name: 'Build assets'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs:
       - build-locales
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
 
-      - name: "Set up Node.js"
+      - name: 'Set up Node.js'
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
-      - name: "Install dependencies"
+      - name: 'Install dependencies'
         run: npm ci --engine-strict --ignore-scripts
 
-      - name: "Set up assets cache"
+      - name: 'Set up assets cache'
         uses: actions/cache@v4.1.2
         if: ${{ !env.ACT }}
         with:
@@ -45,78 +45,78 @@ jobs:
           key: webpack-${{ github.head_ref || github.ref_name }}
           restore-keys: webpack-
 
-      - name: "Download assets locales"
+      - name: 'Download assets locales'
         uses: actions/download-artifact@v4.1.8
         with:
           name: locales-assets
           path: assets/locales
 
-      - name: "Build assets"
+      - name: 'Build assets'
         run: npm run build:assets
 
-      - name: "Upload assets"
+      - name: 'Upload assets'
         uses: actions/upload-artifact@v4.4.3
         with:
           name: assets
           path: dist/assets
 
-      - name: "Upload manifest"
+      - name: 'Upload manifest'
         uses: actions/upload-artifact@v4.4.3
         with:
           name: manifest
           path: src/manifest.json
 
   build-locales:
-    name: "Build locales"
+    name: 'Build locales'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
 
-      - name: "Set up intlc"
+      - name: 'Set up intlc'
         uses: unsplash/setup-intlc@v1.0.0
         with:
           version: 0.8.3
 
-      - name: "Set up mo"
+      - name: 'Set up mo'
         uses: shrink/actions-docker-extract@v3.0.1
         with:
           image: ghcr.io/tests-always-included/mo:3.0.5
           path: /usr/local/bin/mo
           destination: /usr/local/bin
 
-      - name: "Build locales"
+      - name: 'Build locales'
         run: scripts/intlc.sh
 
-      - name: "Upload locales"
+      - name: 'Upload locales'
         uses: actions/upload-artifact@v4.4.3
         with:
           name: locales
           path: src/locales
 
-      - name: "Upload assets locales"
+      - name: 'Upload assets locales'
         uses: actions/upload-artifact@v4.4.3
         with:
           name: locales-assets
           path: assets/locales
 
   build-image:
-    name: "Build image"
+    name: 'Build image'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     outputs:
       image: ${{ steps.build.outputs.imageid }}
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
 
-      - name: "Set up Docker Build"
+      - name: 'Set up Docker Build'
         uses: docker/setup-buildx-action@v3.7.1
 
-      - name: "Build image"
+      - name: 'Build image'
         id: build
         uses: docker/build-push-action@v6.10.0
         with:
@@ -125,56 +125,56 @@ jobs:
           cache-from: type=gha,ignore-error=true
           cache-to: type=gha,mode=max,ignore-error=true
 
-      - name: "Upload build"
+      - name: 'Upload build'
         uses: actions/upload-artifact@v4.4.3
         with:
           name: image
           path: /tmp/image.tar
 
   format:
-    name: "Format"
+    name: 'Format'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
 
-      - name: "Set up Node.js"
+      - name: 'Set up Node.js'
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
-      - name: "Install dependencies"
+      - name: 'Install dependencies'
         run: npm ci --engine-strict --ignore-scripts
 
-      - name: "Run formatter"
+      - name: 'Run formatter'
         run: npm run format
 
   lint-css:
-    name: "Lint CSS"
+    name: 'Lint CSS'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
 
-      - name: "Set up Node.js"
+      - name: 'Set up Node.js'
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
-      - name: "Install dependencies"
+      - name: 'Install dependencies'
         run: npm ci --engine-strict --ignore-scripts
 
-      - name: "Run the linter"
+      - name: 'Run the linter'
         run: npm run lint:css
 
   lint-ts:
-    name: "Lint TypeScript"
+    name: 'Lint TypeScript'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs:
@@ -182,41 +182,41 @@ jobs:
       - build-locales
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
 
-      - name: "Set up Node.js"
+      - name: 'Set up Node.js'
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
-      - name: "Install dependencies"
+      - name: 'Install dependencies'
         run: npm ci --engine-strict --ignore-scripts
 
-      - name: "Download assets manifest"
+      - name: 'Download assets manifest'
         uses: actions/download-artifact@v4.1.8
         with:
           name: manifest
           path: src
 
-      - name: "Download locales"
+      - name: 'Download locales'
         uses: actions/download-artifact@v4.1.8
         with:
           name: locales
           path: src/locales
 
-      - name: "Download assets locales"
+      - name: 'Download assets locales'
         uses: actions/download-artifact@v4.1.8
         with:
           name: locales-assets
           path: assets/locales
 
-      - name: "Run the linter"
+      - name: 'Run the linter'
         run: npm run lint:ts
 
   test:
-    name: "Test (${{ matrix.shard }}/${{ strategy.job-total }})"
+    name: 'Test (${{ matrix.shard }}/${{ strategy.job-total }})'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs:
@@ -228,35 +228,35 @@ jobs:
         shard: [1, 2]
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
 
-      - name: "Set up Node.js"
+      - name: 'Set up Node.js'
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
-      - name: "Install dependencies"
+      - name: 'Install dependencies'
         run: npm ci --engine-strict --ignore-scripts
 
-      - name: "Download assets manifest"
+      - name: 'Download assets manifest'
         uses: actions/download-artifact@v4.1.8
         with:
           name: manifest
           path: src
 
-      - name: "Download locales"
+      - name: 'Download locales'
         uses: actions/download-artifact@v4.1.8
         with:
           name: locales
           path: src/locales
 
-      - name: "Run the tests"
+      - name: 'Run the tests'
         run: npm run test -- --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
   test-integration:
-    name: "Integration test (${{ matrix.shard }}/${{ strategy.job-total }})"
+    name: 'Integration test (${{ matrix.shard }}/${{ strategy.job-total }})'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs:
@@ -268,43 +268,43 @@ jobs:
         shard: [1, 2, 3, 4, 5]
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: nschloe/action-cached-lfs-checkout@v1.2.2
 
-      - name: "Set up Node.js"
+      - name: 'Set up Node.js'
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
-      - name: "Install dependencies"
+      - name: 'Install dependencies'
         run: npm ci --engine-strict --ignore-scripts
 
-      - name: "Download assets"
+      - name: 'Download assets'
         uses: actions/download-artifact@v4.1.8
         with:
           name: assets
           path: dist/assets
 
-      - name: "Download assets manifest"
+      - name: 'Download assets manifest'
         uses: actions/download-artifact@v4.1.8
         with:
           name: manifest
           path: src
 
-      - name: "Download locales"
+      - name: 'Download locales'
         uses: actions/download-artifact@v4.1.8
         with:
           name: locales
           path: src/locales
 
-      - name: "Run Playwright"
-        id: "playwright"
+      - name: 'Run Playwright'
+        id: 'playwright'
         uses: docker://mcr.microsoft.com/playwright:v1.47.2-jammy
         with:
           args: env HOME=/root npx playwright test integration --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 
-      - name: "Store results"
+      - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
         uses: actions/upload-artifact@v4.4.3
         with:
@@ -312,7 +312,7 @@ jobs:
           path: integration-results
 
   test-smoke:
-    name: "Smoke test"
+    name: 'Smoke test'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs:
@@ -330,23 +330,23 @@ jobs:
           - 6379:6379
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
 
-      - name: "Download image"
+      - name: 'Download image'
         uses: actions/download-artifact@v4.1.8
         with:
           name: image
           path: /tmp
 
-      - name: "Load image"
+      - name: 'Load image'
         run: docker load --input /tmp/image.tar
 
-      - name: "Run smoke test"
+      - name: 'Run smoke test'
         run: scripts/smoke-test.sh ${{ needs.build-image.outputs.image }}
 
   test-visual-regression:
-    name: "Visual regression test (${{ matrix.shard }}/${{ strategy.job-total }})"
+    name: 'Visual regression test (${{ matrix.shard }}/${{ strategy.job-total }})'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs:
@@ -358,43 +358,43 @@ jobs:
         shard: [1, 2, 3, 4, 5]
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: nschloe/action-cached-lfs-checkout@v1.2.2
 
-      - name: "Set up Node.js"
+      - name: 'Set up Node.js'
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
-      - name: "Install dependencies"
+      - name: 'Install dependencies'
         run: npm ci --engine-strict --ignore-scripts
 
-      - name: "Download assets"
+      - name: 'Download assets'
         uses: actions/download-artifact@v4.1.8
         with:
           name: assets
           path: dist/assets
 
-      - name: "Download assets manifest"
+      - name: 'Download assets manifest'
         uses: actions/download-artifact@v4.1.8
         with:
           name: manifest
           path: src
 
-      - name: "Download locales"
+      - name: 'Download locales'
         uses: actions/download-artifact@v4.1.8
         with:
           name: locales
           path: src/locales
 
-      - name: "Run Playwright"
-        id: "playwright"
+      - name: 'Run Playwright'
+        id: 'playwright'
         uses: docker://mcr.microsoft.com/playwright:v1.47.2-jammy
         with:
           args: env HOME=/root npx playwright test visual-regression --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 
-      - name: "Store results"
+      - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
         uses: actions/upload-artifact@v4.4.3
         with:
@@ -402,42 +402,42 @@ jobs:
           path: integration-results
 
   test-web:
-    name: "Web Tests"
+    name: 'Web Tests'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs:
       - build-locales
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
 
-      - name: "Set up Node.js"
+      - name: 'Set up Node.js'
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
-      - name: "Install dependencies"
+      - name: 'Install dependencies'
         run: npm ci --engine-strict --ignore-scripts
 
-      - name: "Install browser dependencies"
+      - name: 'Install browser dependencies'
         run: npx playwright install-deps
 
-      - name: "Install browsers"
+      - name: 'Install browsers'
         run: npx playwright install
 
-      - name: "Download assets locales"
+      - name: 'Download assets locales'
         uses: actions/download-artifact@v4.1.8
         with:
           name: locales-assets
           path: assets/locales
 
-      - name: "Run the tests"
+      - name: 'Run the tests'
         run: npx web-test-runner
 
   typecheck:
-    name: "Typecheck"
+    name: 'Typecheck'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs:
@@ -445,41 +445,41 @@ jobs:
       - build-locales
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
 
-      - name: "Set up Node.js"
+      - name: 'Set up Node.js'
         uses: actions/setup-node@v4.1.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
-      - name: "Install dependencies"
+      - name: 'Install dependencies'
         run: npm ci --engine-strict --ignore-scripts
 
-      - name: "Download assets manifest"
+      - name: 'Download assets manifest'
         uses: actions/download-artifact@v4.1.8
         with:
           name: manifest
           path: src
 
-      - name: "Download locales"
+      - name: 'Download locales'
         uses: actions/download-artifact@v4.1.8
         with:
           name: locales
           path: src/locales
 
-      - name: "Download assets locales"
+      - name: 'Download assets locales'
         uses: actions/download-artifact@v4.1.8
         with:
           name: locales-assets
           path: assets/locales
 
-      - name: "Run typechecker"
+      - name: 'Run typechecker'
         run: npm run typecheck
 
   push:
-    name: "Push image"
+    name: 'Push image'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     if: github.ref == 'refs/heads/main'
@@ -498,35 +498,35 @@ jobs:
       - typecheck
 
     steps:
-      - name: "Set up flyctl"
+      - name: 'Set up flyctl'
         uses: superfly/flyctl-actions/setup-flyctl@1.5
 
-      - name: "Log in to the registry"
+      - name: 'Log in to the registry'
         run: flyctl auth docker
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: "Download image"
+      - name: 'Download image'
         uses: actions/download-artifact@v4.1.8
         with:
           name: image
           path: /tmp
 
-      - name: "Load image"
+      - name: 'Load image'
         run: docker load --input /tmp/image.tar
 
-      - name: "Generate image name"
+      - name: 'Generate image name'
         id: image
         run: echo "image=registry.fly.io/prereview:${{ github.sha }}" >> $GITHUB_OUTPUT
 
-      - name: "Tag image"
+      - name: 'Tag image'
         run: docker tag ${{ needs.build-image.outputs.image }} ${{ steps.image.outputs.image }}
 
-      - name: "Push image"
+      - name: 'Push image'
         run: docker push ${{ steps.image.outputs.image }}
 
   deploy:
-    name: "Deploy (${{ matrix.instance }})"
+    name: 'Deploy (${{ matrix.instance }})'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     if: github.ref == 'refs/heads/main'
@@ -535,25 +535,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: ["prod", "sandbox", "translate"]
+        instance: ['prod', 'sandbox', 'translate']
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
         with:
           sparse-checkout: fly.${{ matrix.instance }}.toml
           sparse-checkout-cone-mode: false
 
-      - name: "Set up flyctl"
+      - name: 'Set up flyctl'
         uses: superfly/flyctl-actions/setup-flyctl@1.5
 
-      - name: "Deploy app"
+      - name: 'Deploy app'
         run: flyctl deploy --config fly.${{ matrix.instance }}.toml --image ${{ needs.push.outputs.image }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
   crowdin:
-    name: "Update Crowdin"
+    name: 'Update Crowdin'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     if: github.ref == 'refs/heads/main'
@@ -561,7 +561,7 @@ jobs:
       - deploy
 
     steps:
-      - name: "Checkout code"
+      - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
         with:
           sparse-checkout: |
@@ -569,7 +569,7 @@ jobs:
             crowdin.yml
           sparse-checkout-cone-mode: false
 
-      - name: "Check if sources have changed"
+      - name: 'Check if sources have changed'
         uses: dorny/paths-filter@v3.0.2
         id: changes
         with:
@@ -577,7 +577,7 @@ jobs:
             sources:
               - 'locales/en-US/**'
 
-      - name: "Upload sources to Crowdin"
+      - name: 'Upload sources to Crowdin'
         if: steps.changes.outputs.sources == 'true'
         uses: crowdin/github-action@v2.4.0
         with:
@@ -589,7 +589,7 @@ jobs:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_API_TOKEN }}
 
   notify:
-    name: "Notify of failure"
+    name: 'Notify of failure'
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs:
