@@ -112,11 +112,13 @@ export const app = (config: ConfigEnv) => {
     logger,
     runtime,
     user,
+    useCrowdinInContext,
   }: {
     locale: SupportedLocale
     logger: L.Logger
     runtime: RouterEnv['runtime']
     user?: User
+    useCrowdinInContext: boolean
   }) => {
     return express()
       .disable('x-powered-by')
@@ -129,7 +131,7 @@ export const app = (config: ConfigEnv) => {
 
         next()
       })
-      .use(helmet(helmetOptions(config.publicUrl.protocol)))
+      .use(helmet(helmetOptions(config.publicUrl.protocol, useCrowdinInContext)))
       .use(asyncHandler(proxy))
       .use(express.urlencoded({ extended: true }))
       .use((req, res, next) => {

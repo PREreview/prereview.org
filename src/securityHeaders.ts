@@ -5,7 +5,7 @@ export const crowdin = {
   scriptSrc: ['cdn.crowdin.com', "'unsafe-inline'", "'unsafe-eval'"],
   imgSrc: ['*.crowdin.com'],
   frameSrc: ['crowdin.com', 'accounts.crowdin.com'],
-  crossOriginEmbedderPolicy: 'unsafe-none',
+  crossOriginEmbedderPolicy: 'unsafe-none' as const,
 }
 
 const scriptSrc = ["'self'", 'cdn.usefathom.com']
@@ -52,17 +52,17 @@ export const securityHeaders = (protocol: URL['protocol'], useCrowdinInContext: 
   'X-XSS-Protection': '0',
 })
 
-export const helmetOptions = (protocol: URL['protocol']) =>
+export const helmetOptions = (protocol: URL['protocol'], useCrowdinInContext: boolean) =>
   ({
     contentSecurityPolicy: {
       directives: {
-        'script-src': scriptSrc,
-        'img-src': imgSrc,
+        'script-src': useCrowdinInContext ? scriptSrc.concat(crowdin.scriptSrc) : scriptSrc,
+        'img-src': useCrowdinInContext ? imgSrc.concat(crowdin.imgSrc) : imgSrc,
         upgradeInsecureRequests: protocol === 'https:' ? [] : null,
       },
     },
     crossOriginEmbedderPolicy: {
-      policy: crossOriginEmbedderPolicy,
+      policy: useCrowdinInContext ? crowdin.crossOriginEmbedderPolicy : crossOriginEmbedderPolicy,
     },
     strictTransportSecurity: protocol === 'https:',
   }) satisfies Readonly<HelmetOptions>
