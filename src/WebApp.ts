@@ -203,6 +203,11 @@ const getLoggedInUser = HttpMiddleware.make(app =>
 const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const canChooseLocale = yield* CanChooseLocale
+    const useCrowdinInContext = yield* Config.boolean('USE_CROWDIN_IN_CONTEXT').pipe(Config.withDefault(false))
+
+    if (useCrowdinInContext) {
+      return yield* Effect.provideService(app, Locale, 'lol-US')
+    }
 
     if (!canChooseLocale) {
       return yield* Effect.provideService(app, Locale, DefaultLocale)
