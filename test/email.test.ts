@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as _ from '../src/email.js'
+import { translate } from '../src/locales/index.js'
 import * as fc from './fc.js'
 
 describe('sendContactEmailAddressVerificationEmail', () => {
@@ -25,7 +26,7 @@ describe('sendContactEmailAddressVerificationEmail', () => {
         expect.objectContaining({
           from: { address: 'help@prereview.org', name: 'PREreview' },
           to: { address: emailAddress.value, name: user.name },
-          subject: 'Verify your email address on PREreview',
+          subject: translate(locale)('email', 'verifyEmailAddressTitle')(),
         }),
       )
     },
@@ -73,7 +74,7 @@ describe('sendContactEmailAddressVerificationEmailForReview', () => {
       expect.objectContaining({
         from: { address: 'help@prereview.org', name: 'PREreview' },
         to: { address: emailAddress.value, name: user.name },
-        subject: 'Verify your email address on PREreview',
+        subject: translate(locale)('email', 'verifyEmailAddressTitle')(),
       }),
     )
   })
