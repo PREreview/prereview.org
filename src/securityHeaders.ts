@@ -1,6 +1,15 @@
 import cspBuilder from 'content-security-policy-builder'
 import type { HelmetOptions } from 'helmet'
 
+export const crowdin = {
+  scriptSrc: ['cdn.crowdin.com', "'unsafe-inline'", "'unsafe-eval'"],
+  imgSrc: ['*.crowdin.com'],
+  frameSrc: ['crowdin.com', 'accounts.crowdin.com'],
+  crossOriginEmbedderPolicy: 'unsafe-none',
+}
+
+const scriptSrc = ["'self'", 'cdn.usefathom.com']
+
 const imgSrc = [
   "'self'",
   'data:',
@@ -13,11 +22,11 @@ const imgSrc = [
 ]
 const crossOriginEmbedderPolicy = 'credentialless'
 
-export const securityHeaders = (protocol: URL['protocol']) => ({
+export const securityHeaders = (protocol: URL['protocol'], useCrowdinInContext: boolean) => ({
   'Content-Security-Policy': cspBuilder({
     directives: {
-      'script-src': ["'self'", 'cdn.usefathom.com'],
-      'img-src': imgSrc,
+      'script-src': useCrowdinInContext ? scriptSrc.concat(crowdin.scriptSrc) : scriptSrc,
+      'img-src': useCrowdinInContext ? imgSrc.concat(crowdin.imgSrc) : imgSrc,
       'upgrade-insecure-requests': protocol === 'https:',
       'default-src': "'self'",
       'base-uri': "'self'",
@@ -29,7 +38,7 @@ export const securityHeaders = (protocol: URL['protocol']) => ({
       'style-src': ["'self'", 'https:', "'unsafe-inline'"],
     },
   }),
-  'Cross-Origin-Embedder-Policy': crossOriginEmbedderPolicy,
+  'Cross-Origin-Embedder-Policy': useCrowdinInContext ? crowdin.crossOriginEmbedderPolicy : crossOriginEmbedderPolicy,
   'Cross-Origin-Opener-Policy': 'same-origin',
   'Cross-Origin-Resource-Policy': 'same-origin',
   'Origin-Agent-Cluster': '?1',
@@ -47,7 +56,7 @@ export const helmetOptions = (protocol: URL['protocol']) =>
   ({
     contentSecurityPolicy: {
       directives: {
-        'script-src': ["'self'", 'cdn.usefathom.com'],
+        'script-src': scriptSrc,
         'img-src': imgSrc,
         upgradeInsecureRequests: protocol === 'https:' ? [] : null,
       },

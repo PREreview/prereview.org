@@ -103,8 +103,9 @@ const addSecurityHeaders = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const publicUrl = yield* PublicUrl
     const response = yield* app
+    const useCrowdinInContext = yield* Config.boolean('USE_CROWDIN_IN_CONTEXT').pipe(Config.withDefault(false))
 
-    return HttpServerResponse.setHeaders(response, securityHeaders(publicUrl.protocol))
+    return HttpServerResponse.setHeaders(response, securityHeaders(publicUrl.protocol, useCrowdinInContext))
   }),
 )
 
