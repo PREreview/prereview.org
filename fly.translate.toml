@@ -1,0 +1,35 @@
+app = "prereview-translate"
+
+[env]
+CAN_CHOOSE_LOCALE = "true"
+CAN_SEE_GATES_LOGO = "true"
+CAN_WRITE_COMMENTS = "true"
+COAR_NOTIFY_URL = "https://coar-notify-sandbox.prereview.org/"
+ENVIRONMENT_LABEL = "sandbox"
+LEGACY_PREREVIEW_URL = "https://prereview2.azurewebsites.net/"
+LOG_FORMAT = "json"
+ORCID_API_URL = "https://api.orcid.org/"
+PUBLIC_URL = "https://sandbox.prereview.org/"
+REQUIRES_A_VERIFIED_EMAIL_ADDRESS = "true"
+VERIFY_CACHE = "false"
+ZENODO_URL = "https://sandbox.zenodo.org/"
+
+[http_service]
+internal_port = 3000
+force_https = true
+auto_stop_machines = "stop"
+auto_start_machines = true
+min_machines_running = 0
+
+[http_service.concurrency]
+type = "requests"
+hard_limit = 30
+soft_limit = 20
+
+[[http_service.checks]]
+grace_period = "15s"
+interval = "5s"
+method = "get"
+path = "/health"
+protocol = "http"
+timeout = "1s"
