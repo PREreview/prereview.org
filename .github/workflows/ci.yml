@@ -35,7 +35,7 @@ jobs:
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --ignore-scripts
+        run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Set up assets cache'
         uses: actions/cache@v4.1.2
@@ -147,7 +147,7 @@ jobs:
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --ignore-scripts
+        run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Run formatter'
         run: npm run format
@@ -168,7 +168,7 @@ jobs:
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --ignore-scripts
+        run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Run the linter'
         run: npm run lint:css
@@ -192,7 +192,7 @@ jobs:
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --ignore-scripts
+        run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets manifest'
         uses: actions/download-artifact@v4.1.8
@@ -238,7 +238,7 @@ jobs:
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --ignore-scripts
+        run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets manifest'
         uses: actions/download-artifact@v4.1.8
@@ -278,7 +278,7 @@ jobs:
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --ignore-scripts
+        run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets'
         uses: actions/download-artifact@v4.1.8
@@ -368,7 +368,7 @@ jobs:
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --ignore-scripts
+        run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets'
         uses: actions/download-artifact@v4.1.8
@@ -419,7 +419,7 @@ jobs:
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --ignore-scripts
+        run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Install browser dependencies'
         run: npx playwright install-deps
@@ -455,7 +455,7 @@ jobs:
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --ignore-scripts
+        run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets manifest'
         uses: actions/download-artifact@v4.1.8

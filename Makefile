@@ -9,7 +9,7 @@ clean:
 	rm -rf .cache dist integration-results node_modules assets/locales src/locales src/manifest.json .dev/server.crt .dev/server.key
 
 node_modules: package.json package-lock.json
-	npm install --ignore-scripts
+	npm install --engine-strict --ignore-scripts
 	touch node_modules
 
 check: format lint-ts lint-css typecheck test-fast

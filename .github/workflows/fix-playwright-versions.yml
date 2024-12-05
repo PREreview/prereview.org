@@ -27,7 +27,7 @@ jobs:
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --ignore-scripts
+        run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Fix Playwright versions'
         run: scripts/fix-playwright-versions.sh

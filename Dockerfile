@@ -30,14 +30,14 @@ RUN chmod +x /usr/local/bin/intlc
 FROM npm AS npm-dev
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
-RUN npm ci --ignore-scripts
+RUN npm ci --engine-strict --ignore-scripts
 
 #
 # Stage: Production NPM install
 #
 FROM npm AS npm-prod
 
-RUN npm ci --ignore-scripts --production
+RUN npm ci --engine-strict --ignore-scripts --production
 
 #
 # Stage: Intlc build
