@@ -22,6 +22,7 @@ import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
 import type { SupportedLocale } from './locales/index.js'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
 import { handleResponse } from './response.js'
+import { helmetOptions } from './securityHeaders.js'
 import { maybeGetUser, type User } from './user.js'
 
 export type ConfigEnv = Omit<
@@ -128,30 +129,7 @@ export const app = (config: ConfigEnv) => {
 
         next()
       })
-      .use(
-        helmet({
-          contentSecurityPolicy: {
-            directives: {
-              'script-src': ["'self'", 'cdn.usefathom.com'],
-              'img-src': [
-                "'self'",
-                'data:',
-                'avatars.slack-edge.com',
-                'cdn.usefathom.com',
-                'content.prereview.org',
-                'res.cloudinary.com',
-                'secure.gravatar.com',
-                '*.wp.com',
-              ],
-              upgradeInsecureRequests: config.publicUrl.protocol === 'https:' ? [] : null,
-            },
-          },
-          crossOriginEmbedderPolicy: {
-            policy: 'credentialless',
-          },
-          strictTransportSecurity: config.publicUrl.protocol === 'https:',
-        }),
-      )
+      .use(helmet(helmetOptions(config.publicUrl.protocol)))
       .use(asyncHandler(proxy))
       .use(express.urlencoded({ extended: true }))
       .use((req, res, next) => {

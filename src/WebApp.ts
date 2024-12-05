@@ -9,7 +9,6 @@ import {
   HttpServerResponse,
   Path,
 } from '@effect/platform'
-import cspBuilder from 'content-security-policy-builder'
 import cookieSignature from 'cookie-signature'
 import { Cause, Config, Effect, flow, Layer, Option, pipe, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
@@ -22,6 +21,7 @@ import { DefaultLocale, SupportedLocales } from './locales/index.js'
 import { PublicUrl } from './public-url.js'
 import { FlashMessageSchema } from './response.js'
 import { Router } from './Router.js'
+import { securityHeaders } from './securityHeaders.js'
 import * as TemplatePage from './TemplatePage.js'
 import { Uuid } from './types/index.js'
 import { LoggedInUser, UserSchema } from './user.js'
@@ -104,44 +104,7 @@ const addSecurityHeaders = HttpMiddleware.make(app =>
     const publicUrl = yield* PublicUrl
     const response = yield* app
 
-    return HttpServerResponse.setHeaders(response, {
-      'Content-Security-Policy': cspBuilder({
-        directives: {
-          'script-src': ["'self'", 'cdn.usefathom.com'],
-          'img-src': [
-            "'self'",
-            'data:',
-            'avatars.slack-edge.com',
-            'cdn.usefathom.com',
-            'content.prereview.org',
-            'res.cloudinary.com',
-            'secure.gravatar.com',
-            '*.wp.com',
-          ],
-          'upgrade-insecure-requests': publicUrl.protocol === 'https:',
-          'default-src': "'self'",
-          'base-uri': "'self'",
-          'font-src': ["'self'", 'https:', 'data:'],
-          'form-action': "'self'",
-          'frame-ancestors': "'self'",
-          'object-src': "'none'",
-          'script-src-attr': "'none'",
-          'style-src': ["'self'", 'https:', "'unsafe-inline'"],
-        },
-      }),
-      'Cross-Origin-Embedder-Policy': 'credentialless',
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Resource-Policy': 'same-origin',
-      'Origin-Agent-Cluster': '?1',
-      'Referrer-Policy': 'no-referrer',
-      'Strict-Transport-Security': publicUrl.protocol === 'https:' ? 'max-age=15552000; includeSubDomains' : undefined,
-      'X-Content-Type-Options': 'nosniff',
-      'X-DNS-Prefetch-Control': 'off',
-      'X-Download-Options': 'noopen',
-      'X-Frame-Options': 'SAMEORIGIN',
-      'X-Permitted-Cross-Domain-Policies': 'none',
-      'X-XSS-Protection': '0',
-    })
+    return HttpServerResponse.setHeaders(response, securityHeaders(publicUrl.protocol))
   }),
 )
 
