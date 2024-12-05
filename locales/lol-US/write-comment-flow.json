@@ -1,0 +1,257 @@
+{
+  "writeCommentTitle": {
+    "message": "crwdns4172:0crwdne4172:0"
+  },
+  "back": {
+    "message": "crwdns4174:0crwdne4174:0"
+  },
+  "backToPrereview": {
+    "message": "crwdns4176:0crwdne4176:0"
+  },
+  "youCanWrite": {
+    "message": "crwdns4178:0{preprint}crwdne4178:0"
+  },
+  "beforeStartHeading": {
+    "message": "crwdns4180:0crwdne4180:0"
+  },
+  "orcidLogIn": {
+    "message": "crwdns4182:0crwdne4182:0"
+  },
+  "whatIsOrcidHeading": {
+    "message": "crwdns4184:0crwdne4184:0"
+  },
+  "whatIsOrcid": {
+    "message": "crwdns4186:0crwdne4186:0"
+  },
+  "startNowButton": {
+    "message": "crwdns4188:0crwdne4188:0"
+  },
+  "continueButton": {
+    "message": "crwdns4190:0crwdne4190:0"
+  },
+  "saveContinueButton": {
+    "message": "crwdns4192:0crwdne4192:0"
+  },
+  "reloadPageButton": {
+    "message": "crwdns4194:0crwdne4194:0"
+  },
+  "carryOnMessage": {
+    "message": "crwdns4196:0{preprint}crwdne4196:0"
+  },
+  "enterYourCommentTitle": {
+    "message": "crwdns4198:0crwdne4198:0"
+  },
+  "errorSummaryHeading": {
+    "message": "crwdns4200:0crwdne4200:0"
+  },
+  "errorEnterComment": {
+    "message": "crwdns4202:0crwdne4202:0"
+  },
+  "whatNameTitle": {
+    "message": "crwdns4204:0crwdne4204:0"
+  },
+  "errorSelectName": {
+    "message": "crwdns4206:0crwdne4206:0"
+  },
+  "whichNameTip": {
+    "message": "crwdns4208:0crwdne4208:0"
+  },
+  "whatIsPseudonym": {
+    "message": "crwdns4210:0crwdne4210:0"
+  },
+  "whatIsPseudonymDefinition": {
+    "message": "crwdns4212:0{pseudonym}crwdne4212:0"
+  },
+  "whatIsPseudonymAccountability": {
+    "message": "crwdns4214:0crwdne4214:0"
+  },
+  "linkToOrcidId": {
+    "message": "crwdns4216:0crwdne4216:0"
+  },
+  "linkToPseudonym": {
+    "message": "crwdns4218:0crwdne4218:0"
+  },
+  "competingInterestsTitle": {
+    "message": "crwdns4220:0crwdne4220:0"
+  },
+  "errorCompetingInterests": {
+    "message": "crwdns4222:0crwdne4222:0"
+  },
+  "errorCompetingInterestsDetails": {
+    "message": "crwdns4224:0crwdne4224:0"
+  },
+  "competingInterestsTip": {
+    "message": "crwdns4226:0crwdne4226:0"
+  },
+  "examplesCompetingInterests": {
+    "message": "crwdns4228:0crwdne4228:0"
+  },
+  "competingInterestsRelationship": {
+    "message": "crwdns4230:0crwdne4230:0"
+  },
+  "competingInterestsCompetitor": {
+    "message": "crwdns4232:0crwdne4232:0"
+  },
+  "competingInterestsWorkedWith": {
+    "message": "crwdns4234:0crwdne4234:0"
+  },
+  "competingInterestsWorkPlace": {
+    "message": "crwdns4236:0crwdne4236:0"
+  },
+  "competingInterestsCollaborate": {
+    "message": "crwdns4238:0crwdne4238:0"
+  },
+  "competingInterestsPublishedWith": {
+    "message": "crwdns4240:0crwdne4240:0"
+  },
+  "competingInterestsGrantWith": {
+    "message": "crwdns4242:0crwdne4242:0"
+  },
+  "competingInterestsCommenter": {
+    "message": "crwdns4244:0crwdne4244:0"
+  },
+  "competingInterestsNo": {
+    "message": "crwdns4246:0crwdne4246:0"
+  },
+  "competingInterestsYes": {
+    "message": "crwdns4248:0crwdne4248:0"
+  },
+  "competingInterestsDetailsTitle": {
+    "message": "crwdns4250:0crwdne4250:0"
+  },
+  "codeOfConductTitle": {
+    "message": "crwdns4252:0crwdne4252:0"
+  },
+  "errorFollowingCodeOfConduct": {
+    "message": "crwdns4254:0crwdne4254:0"
+  },
+  "codeOfConductTip": {
+    "message": "crwdns4256:0crwdne4256:0"
+  },
+  "examplesExpectedBehaviors": {
+    "message": "crwdns4258:0crwdne4258:0"
+  },
+  "expectedBehaviorLanguage": {
+    "message": "crwdns4260:0crwdne4260:0"
+  },
+  "expectedBehaviorConstructive": {
+    "message": "crwdns4262:0crwdne4262:0"
+  },
+  "expectedBehaviorRespectful": {
+    "message": "crwdns4264:0crwdne4264:0"
+  },
+  "expectedBehaviorGraceful": {
+    "message": "crwdns4266:0crwdne4266:0"
+  },
+  "expectedBehaviorCommunity": {
+    "message": "crwdns4268:0crwdne4268:0"
+  },
+  "expectedBehaviorEmpathy": {
+    "message": "crwdns4270:0crwdne4270:0"
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "crwdns4272:0crwdne4272:0"
+  },
+  "unacceptableBehaviorAttacks": {
+    "message": "crwdns4274:0crwdne4274:0"
+  },
+  "unacceptableBehaviorUnconstructive": {
+    "message": "crwdns4276:0crwdne4276:0"
+  },
+  "unacceptableBehaviorHarassment": {
+    "message": "crwdns4278:0crwdne4278:0"
+  },
+  "unacceptableBehaviorConfidential": {
+    "message": "crwdns4280:0crwdne4280:0"
+  },
+  "unacceptableBehaviorSexual": {
+    "message": "crwdns4282:0crwdne4282:0"
+  },
+  "unacceptableBehaviorOther": {
+    "message": "crwdns4284:0crwdne4284:0"
+  },
+  "followingCodeOfConduct": {
+    "message": "crwdns4286:0crwdne4286:0"
+  },
+  "contactDetailsTitle": {
+    "message": "crwdns4326:0crwdne4326:0"
+  },
+  "errorEnterEmailAddress": {
+    "message": "crwdns4328:0crwdne4328:0"
+  },
+  "errorEnterValidEmailAddress": {
+    "message": "crwdns4330:0crwdne4330:0"
+  },
+  "needToConfirmEmailAddress": {
+    "message": "crwdns4332:0crwdne4332:0"
+  },
+  "emailAddressUse": {
+    "message": "crwdns4334:0crwdne4334:0"
+  },
+  "whatIsYourEmailAddressTitle": {
+    "message": "crwdns4336:0crwdne4336:0"
+  },
+  "verifyEmailAddressTitle": {
+    "message": "crwdns4360:0crwdne4360:0"
+  },
+  "howToVerifyEmailAddress": {
+    "message": "crwdns4362:0{emailAddress}crwdne4362:0"
+  },
+  "onceEmailAddressVerified": {
+    "message": "crwdns4364:0crwdne4364:0"
+  },
+  "checkTitle": {
+    "message": "crwdns4288:0crwdne4288:0"
+  },
+  "checkYourDetailsHeading": {
+    "message": "crwdns4290:0crwdne4290:0"
+  },
+  "publishedNameHeading": {
+    "message": "crwdns4292:0crwdne4292:0"
+  },
+  "changeName": {
+    "message": "crwdns4294:0crwdne4294:0"
+  },
+  "competingInterestsHeading": {
+    "message": "crwdns4296:0crwdne4296:0"
+  },
+  "changeCompetingInterests": {
+    "message": "crwdns4298:0crwdne4298:0"
+  },
+  "noCompetingInterests": {
+    "message": "crwdns4300:0crwdne4300:0"
+  },
+  "checkYourCommentHeading": {
+    "message": "crwdns4302:0crwdne4302:0"
+  },
+  "changeComment": {
+    "message": "crwdns4304:0crwdne4304:0"
+  },
+  "nowPublishHeading": {
+    "message": "crwdns4306:0crwdne4306:0"
+  },
+  "nowPublishMessage": {
+    "message": "crwdns4308:0crwdne4308:0"
+  },
+  "publishButton": {
+    "message": "crwdns4310:0crwdne4310:0"
+  },
+  "publishingTitle": {
+    "message": "crwdns4312:0crwdne4312:0"
+  },
+  "publishingSeeShortlyMessage": {
+    "message": "crwdns4314:0crwdne4314:0"
+  },
+  "publishedTitle": {
+    "message": "crwdns4316:0crwdne4316:0"
+  },
+  "publishedYourDoi": {
+    "message": "crwdns4318:0{doi}crwdne4318:0"
+  },
+  "publishedHappensNextHeading": {
+    "message": "crwdns4320:0crwdne4320:0"
+  },
+  "publishedSeeShortlyMessage": {
+    "message": "crwdns4322:0crwdne4322:0"
+  }
+}

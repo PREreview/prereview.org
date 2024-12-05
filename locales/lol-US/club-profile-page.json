@@ -1,0 +1,23 @@
+{
+  "clubLeads": {
+    "message": "crwdns1668:0crwdne1668:0"
+  },
+  "contactClub": {
+    "message": "crwdns1670:0crwdne1670:0"
+  },
+  "joinClub": {
+    "message": "crwdns1672:0crwdne1672:0"
+  },
+  "prereviews": {
+    "message": "crwdns1674:0crwdne1674:0"
+  },
+  "noResults": {
+    "message": "crwdns1676:0{name}crwdne1676:0"
+  },
+  "appearHere": {
+    "message": "crwdns1678:0crwdne1678:0"
+  },
+  "card": {
+    "message": "crwdns1680:0{names}crwdnd1680:0{title}crwdne1680:0"
+  }
+}

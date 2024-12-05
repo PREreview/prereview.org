@@ -1,0 +1,17 @@
+{
+  "verifyEmailAddressTitle": {
+    "message": "crwdns4366:0crwdne4366:0"
+  },
+  "hiName": {
+    "message": "crwdns4368:0{name}crwdne4368:0"
+  },
+  "verifyEmailAddressWithButton": {
+    "message": "crwdns4370:0crwdne4370:0"
+  },
+  "verifyEmailAddressGoingTo": {
+    "message": "crwdns4372:0{link}crwdne4372:0"
+  },
+  "verifyEmailAddressButton": {
+    "message": "crwdns4374:0crwdne4374:0"
+  }
+}

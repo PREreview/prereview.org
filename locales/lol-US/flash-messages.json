@@ -1,0 +1,44 @@
+{
+  "titleSuccess": {
+    "message": "crwdns1744:0crwdne1744:0"
+  },
+  "titleImportant": {
+    "message": "crwdns1746:0crwdne1746:0"
+  },
+  "titleAccessDenied": {
+    "message": "crwdns1748:0crwdne1748:0"
+  },
+  "messageLogInBlocked": {
+    "message": "crwdns1750:0crwdne1750:0"
+  },
+  "messageLoggedOut": {
+    "message": "crwdns1752:0crwdne1752:0"
+  },
+  "messageLoggedIn": {
+    "message": "crwdns1754:0crwdne1754:0"
+  },
+  "messageVerifyEmail": {
+    "message": "crwdns1756:0crwdne1756:0"
+  },
+  "messageEmailVerified": {
+    "message": "crwdns1758:0crwdne1758:0"
+  },
+  "messageOrcidConnected": {
+    "message": "crwdns1760:0crwdne1760:0"
+  },
+  "messageOrcidDisconnected": {
+    "message": "crwdns1762:0crwdne1762:0"
+  },
+  "messageSlackConnected": {
+    "message": "crwdns1764:0crwdne1764:0"
+  },
+  "messageSlackDisconnected": {
+    "message": "crwdns1766:0crwdne1766:0"
+  },
+  "messageAvatarChanged": {
+    "message": "crwdns1768:0crwdne1768:0"
+  },
+  "messageAvatarRemoved": {
+    "message": "crwdns1770:0crwdne1770:0"
+  }
+}

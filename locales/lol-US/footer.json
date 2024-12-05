@@ -1,0 +1,62 @@
+{
+  "chooseLanguage": {
+    "message": "crwdns4080:0crwdne4080:0"
+  },
+  "newsletterText": {
+    "message": "crwdns1772:0crwdne1772:0"
+  },
+  "newsletterLink": {
+    "message": "crwdns1774:0crwdne1774:0"
+  },
+  "slackText": {
+    "message": "crwdns1776:0crwdne1776:0"
+  },
+  "slackLink": {
+    "message": "crwdns1778:0crwdne1778:0"
+  },
+  "menuDonate": {
+    "message": "crwdns1780:0crwdne1780:0"
+  },
+  "menuPeople": {
+    "message": "crwdns1782:0crwdne1782:0"
+  },
+  "menuFunding": {
+    "message": "crwdns1784:0crwdne1784:0"
+  },
+  "menuCodeOfConduct": {
+    "message": "crwdns1786:0crwdne1786:0"
+  },
+  "menuEdiaStatement": {
+    "message": "crwdns1788:0crwdne1788:0"
+  },
+  "menuPrivacyPolicy": {
+    "message": "crwdns1790:0crwdne1790:0"
+  },
+  "menuBlog": {
+    "message": "crwdns1792:0crwdne1792:0"
+  },
+  "menuHowToUse": {
+    "message": "crwdns1794:0crwdne1794:0"
+  },
+  "contactEmail": {
+    "message": "crwdns1796:0{address}crwdne1796:0"
+  },
+  "contactTwitter": {
+    "message": "crwdns1798:0{handle}crwdne1798:0"
+  },
+  "contactMastodon": {
+    "message": "crwdns1800:0{handle}crwdne1800:0"
+  },
+  "contactLinkedIn": {
+    "message": "crwdns1802:0{handle}crwdne1802:0"
+  },
+  "contactGitHub": {
+    "message": "crwdns1804:0{handle}crwdne1804:0"
+  },
+  "zenodo": {
+    "message": "crwdns1806:0crwdne1806:0"
+  },
+  "copyright": {
+    "message": "crwdns1808:0crwdne1808:0"
+  }
+}
