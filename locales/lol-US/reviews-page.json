@@ -1,0 +1,47 @@
+{
+  "title": {
+    "message": "crwdns2130:0crwdne2130:0"
+  },
+  "titleWithDetails": {
+    "message": "crwdns2132:0{details}crwdne2132:0"
+  },
+  "pageNumber": {
+    "message": "crwdns2134:0page={page}crwdne2134:0"
+  },
+  "skipResults": {
+    "message": "crwdns2136:0crwdne2136:0"
+  },
+  "filterTitle": {
+    "message": "crwdns2138:0crwdne2138:0"
+  },
+  "filterTitleAuthorLabel": {
+    "message": "crwdns2140:0crwdne2140:0"
+  },
+  "filterLanguageLabel": {
+    "message": "crwdns2142:0crwdne2142:0"
+  },
+  "filterLanguageAny": {
+    "message": "crwdns2144:0crwdne2144:0"
+  },
+  "filterFieldLabel": {
+    "message": "crwdns2146:0crwdne2146:0"
+  },
+  "filterFieldAny": {
+    "message": "crwdns2148:0crwdne2148:0"
+  },
+  "filterButton": {
+    "message": "crwdns2150:0crwdne2150:0"
+  },
+  "pagerNewer": {
+    "message": "crwdns2152:0crwdne2152:0"
+  },
+  "pagerOlder": {
+    "message": "crwdns2154:0crwdne2154:0"
+  },
+  "noResults": {
+    "message": "crwdns2156:0crwdne2156:0"
+  },
+  "appearHere": {
+    "message": "crwdns2158:0crwdne2158:0"
+  }
+}

@@ -132,22 +132,30 @@ export const app = (config: ConfigEnv) => {
         helmet({
           contentSecurityPolicy: {
             directives: {
-              'script-src': ["'self'", 'cdn.usefathom.com'],
+              'script-src': [
+                "'self'",
+                'cdn.usefathom.com',
+                'cdn.crowdin.com',
+                "'nonce-8IBTHwOdqNKAWeKl7plt8g=='",
+                "'unsafe-eval'",
+              ],
               'img-src': [
                 "'self'",
                 'data:',
                 'avatars.slack-edge.com',
                 'cdn.usefathom.com',
+                '*.crowdin.com',
                 'content.prereview.org',
                 'res.cloudinary.com',
                 'secure.gravatar.com',
                 '*.wp.com',
               ],
+              'frame-src': ['crowdin.com', 'accounts.crowdin.com'],
               upgradeInsecureRequests: config.publicUrl.protocol === 'https:' ? [] : null,
             },
           },
           crossOriginEmbedderPolicy: {
-            policy: 'credentialless',
+            policy: 'unsafe-none',
           },
           strictTransportSecurity: config.publicUrl.protocol === 'https:',
         }),

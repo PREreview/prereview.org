@@ -1,0 +1,56 @@
+{
+  "reviewTitle": {
+    "message": "crwdns2056:0{preprint}crwdne2056:0"
+  },
+  "structuredReviewTitle": {
+    "message": "crwdns2058:0{preprint}crwdne2058:0"
+  },
+  "requestedPrereview": {
+    "message": "crwdns2060:0crwdne2060:0"
+  },
+  "liveReview": {
+    "message": "crwdns2062:0crwdne2062:0"
+  },
+  "otherReviewsLink": {
+    "message": "crwdns2064:0crwdne2064:0"
+  },
+  "readPreprintLink": {
+    "message": "crwdns2066:0crwdne2066:0"
+  },
+  "reviewAuthors": {
+    "message": "crwdns2068:0{authors}crwdne2068:0"
+  },
+  "clubReviewAuthors": {
+    "message": "crwdns2070:0{authors}crwdnd2070:0{club}crwdne2070:0"
+  },
+  "otherAuthors": {
+    "message": "crwdns2072:0otherAuthors={otherAuthors}crwdnd2072:0otherAuthors={otherAuthors}crwdnd2072:0otherAuthors={otherAuthors}crwdne2072:0"
+  },
+  "published": {
+    "message": "crwdns2074:0crwdne2074:0"
+  },
+  "license": {
+    "message": "crwdns2076:0crwdne2076:0"
+  },
+  "licenseCcBy40": {
+    "message": "crwdns2078:0crwdne2078:0"
+  },
+  "addendumTitle": {
+    "message": "crwdns2080:0crwdne2080:0"
+  },
+  "commentsTitle": {
+    "message": "crwdns4162:0crwdne4162:0"
+  },
+  "noComments": {
+    "message": "crwdns4164:0crwdne4164:0"
+  },
+  "commentItemTitle": {
+    "message": "crwdns4166:0authors={authors}crwdnd4166:0author={author}crwdnd4166:0author={author}crwdne4166:0"
+  },
+  "commentItemAuthors": {
+    "message": "crwdns4168:0{authors}crwdne4168:0"
+  },
+  "writeCommentButton": {
+    "message": "crwdns4170:0crwdne4170:0"
+  }
+}

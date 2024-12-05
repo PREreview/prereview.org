@@ -1,0 +1,41 @@
+{
+  "loading": {
+    "message": "crwdns1876:0crwdne1876:0"
+  },
+  "bold": {
+    "message": "crwdns1878:0crwdne1878:0"
+  },
+  "italic": {
+    "message": "crwdns1880:0crwdne1880:0"
+  },
+  "subscript": {
+    "message": "crwdns1882:0crwdne1882:0"
+  },
+  "superscript": {
+    "message": "crwdns1884:0crwdne1884:0"
+  },
+  "link": {
+    "message": "crwdns1886:0crwdne1886:0"
+  },
+  "headingLevel1": {
+    "message": "crwdns1888:0crwdne1888:0"
+  },
+  "headingLevel2": {
+    "message": "crwdns1890:0crwdne1890:0"
+  },
+  "headingLevel3": {
+    "message": "crwdns1892:0crwdne1892:0"
+  },
+  "bulletedList": {
+    "message": "crwdns1894:0crwdne1894:0"
+  },
+  "numberedList": {
+    "message": "crwdns1896:0crwdne1896:0"
+  },
+  "formatting": {
+    "message": "crwdns1898:0crwdne1898:0"
+  },
+  "enterAUrl": {
+    "message": "crwdns1900:0crwdne1900:0"
+  }
+}

@@ -1,18 +1,20 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts typecheck test test-fast test-integration update-snapshots test-integration-image
+.PHONY: check start start-app start-services format lint-css lint-ts typecheck test test-fast test-integration update-locales update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
 .env:
 	cp .env.dist .env
 
-clean:
-	rm -rf .cache dist integration-results node_modules assets/locales src/locales src/manifest.json .dev/server.crt .dev/server.key
-
 node_modules: package.json package-lock.json
 	npm install --engine-strict --ignore-scripts
 	touch node_modules
 
 check: format lint-ts lint-css typecheck test-fast
+
+update-locales: .env node_modules
+	npx dotenvx run --quiet -- crowdin download
+	grep --files-with-matches --recursive --null "^{}" locales | xargs -0 rm
+	find locales -empty -type d -delete
 
 src/locales: $(shell find locales -type f)
 	echo 'building locales'
@@ -29,7 +31,7 @@ start-app: .env node_modules start-services src/manifest.json
   npx tsx watch --clear-screen=false --include=src/manifest.json --require dotenv/config src/index.ts
 
 start:
-	watchexec --restart --watch assets --watch locales --ignore assets/locales/ -- make start-app
+	find locales assets -type f | grep --invert-match assets/locales | entr -r make start-app
 
 .dev/server.crt .dev/server.key: SHELL := /usr/bin/env bash
 .dev/server.crt .dev/server.key: .env
@@ -41,19 +43,19 @@ start-services: .dev/server.crt .dev/server.key
 format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
 
-lint-ts: node_modules src/manifest.json
+lint-ts: node_modules
 	npx eslint . --cache --cache-location ".cache/eslint/" --max-warnings 0
 
 lint-css: node_modules
 	npx stylelint '**/*.css'
 
-typecheck: node_modules src/manifest.json
+typecheck: node_modules
 	npx tsc --incremental --noEmit --tsBuildInfoFile ".cache/tsc"
 
-test: node_modules src/manifest.json
+test: node_modules
 	npx jest ${TEST}
 
-test-fast: node_modules src/manifest.json
+test-fast: node_modules
 	FAST_CHECK_NUM_RUNS=10 npx jest --onlyChanged
 
 test-integration: test-integration-image

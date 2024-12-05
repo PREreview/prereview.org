@@ -70,6 +70,7 @@
     "@babel/preset-typescript": "^7.26.0",
     "@csstools/postcss-global-data": "^3.0.0",
     "@csstools/stylelint-no-at-nest-rule": "^1.0.0",
+    "@dotenvx/dotenvx": "^1.25.1",
     "@fast-check/jest": "^2.0.3",
     "@ibm/plex": "^6.4.1",
     "@open-wc/testing": "^4.0.0",

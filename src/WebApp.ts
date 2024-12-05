@@ -16,7 +16,6 @@ import { StatusCodes } from 'http-status-codes'
 import { Express, ExpressConfig, FlashMessage, Locale } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
-import { CanChooseLocale } from './feature-flags.js'
 import { LegacyRouter } from './LegacyRouter.js'
 import { DefaultLocale, SupportedLocales } from './locales/index.js'
 import { PublicUrl } from './public-url.js'
@@ -107,12 +106,19 @@ const addSecurityHeaders = HttpMiddleware.make(app =>
     return HttpServerResponse.setHeaders(response, {
       'Content-Security-Policy': cspBuilder({
         directives: {
-          'script-src': ["'self'", 'cdn.usefathom.com'],
+          'script-src': [
+            "'self'",
+            'cdn.usefathom.com',
+            'cdn.crowdin.com',
+            "'nonce-8IBTHwOdqNKAWeKl7plt8g=='",
+            "'unsafe-eval'",
+          ],
           'img-src': [
             "'self'",
             'data:',
             'avatars.slack-edge.com',
             'cdn.usefathom.com',
+            '*.crowdin.com',
             'content.prereview.org',
             'res.cloudinary.com',
             'secure.gravatar.com',
@@ -123,13 +129,14 @@ const addSecurityHeaders = HttpMiddleware.make(app =>
           'base-uri': "'self'",
           'font-src': ["'self'", 'https:', 'data:'],
           'form-action': "'self'",
+          'frame-src': ['crowdin.com', 'accounts.crowdin.com'],
           'frame-ancestors': "'self'",
           'object-src': "'none'",
           'script-src-attr': "'none'",
           'style-src': ["'self'", 'https:', "'unsafe-inline'"],
         },
       }),
-      'Cross-Origin-Embedder-Policy': 'credentialless',
+      'Cross-Origin-Embedder-Policy': 'unsafe-none',
       'Cross-Origin-Opener-Policy': 'same-origin',
       'Cross-Origin-Resource-Policy': 'same-origin',
       'Origin-Agent-Cluster': '?1',
@@ -202,6 +209,7 @@ const getLoggedInUser = HttpMiddleware.make(app =>
 
 const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
+    return yield* Effect.provideService(app, Locale, 'lol-US')
     const canChooseLocale = yield* CanChooseLocale
 
     if (!canChooseLocale) {

@@ -112,6 +112,12 @@ export const page = ({
 
         <link href="${assets['style.css']}" rel="stylesheet" />
 
+        <script nonce="8IBTHwOdqNKAWeKl7plt8g==" type="text/javascript">
+          var _jipt = []
+          _jipt.push(['project', 'prereview'])
+        </script>
+        <script type="text/javascript" src="https://cdn.crowdin.com/jipt/jipt.js"></script>
+
         ${scripts.flatMap(
           flow(
             file => assets[file].preload as ReadonlyArray<string>,

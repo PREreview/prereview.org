@@ -1,0 +1,248 @@
+{
+  "addAuthorTitle": {
+    "message": "crwdns3898:0{preprintTitle}crwdne3898:0"
+  },
+  "enterTheirName": {
+    "message": "crwdns3900:0crwdne3900:0"
+  },
+  "enterTheirEmail": {
+    "message": "crwdns3902:0crwdne3902:0"
+  },
+  "invalidEmail": {
+    "message": "crwdns3904:0crwdne3904:0"
+  },
+  "addAuthor": {
+    "message": "crwdns3906:0crwdne3906:0"
+  },
+  "nameInputLabel": {
+    "message": "crwdns3908:0crwdne3908:0"
+  },
+  "theyWillChooseTheirName": {
+    "message": "crwdns3910:0crwdne3910:0"
+  },
+  "emailAddress": {
+    "message": "crwdns3912:0crwdne3912:0"
+  },
+  "useOfEmail": {
+    "message": "crwdns3914:0crwdne3914:0"
+  },
+  "saveAndContinue": {
+    "message": "crwdns3916:0crwdne3916:0"
+  },
+  "addAuthorsTitle": {
+    "message": "crwdns4062:0authorCount={authorCount}crwdnd4062:0authorCount={authorCount}crwdnd4062:0preprintTitle={preprintTitle}crwdne4062:0"
+  },
+  "back": {
+    "message": "crwdns3920:0crwdne3920:0"
+  },
+  "errorSummaryTitle": {
+    "message": "crwdns3922:0crwdne3922:0"
+  },
+  "yesIfAnotherAuthor": {
+    "message": "crwdns3924:0crwdne3924:0"
+  },
+  "addedAuthorCount": {
+    "message": "crwdns3926:0authorCount={authorCount}crwdnd3926:0authorCount={authorCount}crwdne3926:0"
+  },
+  "authorNumber": {
+    "message": "crwdns3928:0number={number}crwdne3928:0"
+  },
+  "changeAuthorDetailsLink": {
+    "message": "crwdns3930:0{name}crwdne3930:0"
+  },
+  "removeAuthor": {
+    "message": "crwdns3932:0{name}crwdne3932:0"
+  },
+  "name": {
+    "message": "crwdns3934:0crwdne3934:0"
+  },
+  "needToAddAuthor": {
+    "message": "crwdns3936:0crwdne3936:0"
+  },
+  "no": {
+    "message": "crwdns3938:0crwdne3938:0"
+  },
+  "yes": {
+    "message": "crwdns3940:0crwdne3940:0"
+  },
+  "continueButton": {
+    "message": "crwdns3942:0crwdne3942:0"
+  },
+  "changeAuthorTitle": {
+    "message": "crwdns3944:0{name}crwdnd3944:0{preprintTitle}crwdne3944:0"
+  },
+  "enterName": {
+    "message": "crwdns3946:0crwdne3946:0"
+  },
+  "enterEmail": {
+    "message": "crwdns3948:0crwdne3948:0"
+  },
+  "changeAuthorDetailsHeading": {
+    "message": "crwdns3950:0{name}crwdne3950:0"
+  },
+  "ableToChoseName": {
+    "message": "crwdns3952:0crwdne3952:0"
+  },
+  "error": {
+    "message": "crwdns3954:0crwdne3954:0"
+  },
+  "errorPrefix": {
+    "message": "crwdns3956:0crwdne3956:0"
+  },
+  "backNav": {
+    "message": "crwdns3958:0crwdne3958:0"
+  },
+  "prereviewPublishedTitle": {
+    "message": "crwdns3960:0crwdne3960:0"
+  },
+  "yourDoi": {
+    "message": "crwdns3962:0crwdne3962:0"
+  },
+  "whatHappensNext": {
+    "message": "crwdns3964:0crwdne3964:0"
+  },
+  "whereYouCanSeeYourPrereview": {
+    "message": "crwdns3966:0{communitySlackLink}crwdnd3966:0{scietyLink}crwdne3966:0"
+  },
+  "communitySlack": {
+    "message": "crwdns3968:0crwdne3968:0"
+  },
+  "opensInNewTab": {
+    "message": "crwdns3970:0crwdne3970:0"
+  },
+  "letUsKnowAuthorDetails": {
+    "message": "crwdns3972:0{mailtoHelp}crwdne3972:0"
+  },
+  "sentEmailsToAuthors": {
+    "message": "crwdns3974:0crwdne3974:0"
+  },
+  "shareYourReview": {
+    "message": "crwdns3976:0crwdne3976:0"
+  },
+  "letCommunityKnow": {
+    "message": "crwdns3978:0crwdne3978:0"
+  },
+  "writeATweet": {
+    "message": "crwdns3980:0crwdne3980:0"
+  },
+  "shareOnLinkedin": {
+    "message": "crwdns3982:0crwdne3982:0"
+  },
+  "listOnSciety": {
+    "message": "crwdns3984:0crwdne3984:0"
+  },
+  "howItWent": {
+    "message": "crwdns3986:0crwdne3986:0"
+  },
+  "scheduleAnInterview": {
+    "message": "crwdns3988:0crwdne3988:0"
+  },
+  "backToPreprint": {
+    "message": "crwdns3990:0crwdne3990:0"
+  },
+  "skipToMain": {
+    "message": "crwdns3992:0crwdne3992:0"
+  },
+  "publishTitle": {
+    "message": "crwdns3994:0{preprintTitle}crwdne3994:0"
+  },
+  "checkPrereview": {
+    "message": "crwdns3996:0crwdne3996:0"
+  },
+  "preprintDetails": {
+    "message": "crwdns3998:0crwdne3998:0"
+  },
+  "preprintTitle": {
+    "message": "crwdns4000:0crwdne4000:0"
+  },
+  "preprintServer": {
+    "message": "crwdns4002:0crwdne4002:0"
+  },
+  "authorDetails": {
+    "message": "crwdns4004:0crwdne4004:0"
+  },
+  "yourDetails": {
+    "message": "crwdns4006:0crwdne4006:0"
+  },
+  "yourPublishedName": {
+    "message": "crwdns4008:0crwdne4008:0"
+  },
+  "publishedName": {
+    "message": "crwdns4010:0crwdne4010:0"
+  },
+  "changeName": {
+    "message": "crwdns4012:0crwdne4012:0"
+  },
+  "changeInvitedAuthors": {
+    "message": "crwdns4014:0crwdne4014:0"
+  },
+  "changeCompetingInterests": {
+    "message": "crwdns4016:0crwdne4016:0"
+  },
+  "changePrereview": {
+    "message": "crwdns4018:0crwdne4018:0"
+  },
+  "doesIntroductionExplain": {
+    "message": "crwdns4020:0crwdne4020:0"
+  },
+  "changeIfIntroExplains": {
+    "message": "crwdns4022:0crwdne4022:0"
+  },
+  "methodsWellSuited": {
+    "message": "crwdns4024:0crwdne4024:0"
+  },
+  "changeMethodsWellSuited": {
+    "message": "crwdns4026:0crwdne4026:0"
+  },
+  "conclusionsSupported": {
+    "message": "crwdns4028:0crwdne4028:0"
+  },
+  "changeConclusionsSupported": {
+    "message": "crwdns4030:0crwdne4030:0"
+  },
+  "dataPresentationWellSuited": {
+    "message": "crwdns4032:0crwdne4032:0"
+  },
+  "changeDataPresentationWellSuited": {
+    "message": "crwdns4034:0crwdne4034:0"
+  },
+  "clearDiscussion": {
+    "message": "crwdns4036:0crwdne4036:0"
+  },
+  "changeClearDiscussion": {
+    "message": "crwdns4038:0crwdne4038:0"
+  },
+  "advanceKnowledge": {
+    "message": "crwdns4040:0crwdne4040:0"
+  },
+  "changeAdvanceKnowledge": {
+    "message": "crwdns4042:0crwdne4042:0"
+  },
+  "benefitFromEditing": {
+    "message": "crwdns4044:0crwdne4044:0"
+  },
+  "changeBenefitFromEditing": {
+    "message": "crwdns4046:0crwdne4046:0"
+  },
+  "wouldRecommend": {
+    "message": "crwdns4048:0crwdne4048:0"
+  },
+  "changeWouldRecommend": {
+    "message": "crwdns4050:0crwdne4050:0"
+  },
+  "readyForAttention": {
+    "message": "crwdns4052:0crwdne4052:0"
+  },
+  "changeReadyForAttention": {
+    "message": "crwdns4054:0crwdne4054:0"
+  },
+  "nowPublish": {
+    "message": "crwdns4056:0crwdne4056:0"
+  },
+  "weWillAssignLicense": {
+    "message": "crwdns4058:0{licenseLink}crwdne4058:0"
+  },
+  "publishButton": {
+    "message": "crwdns4060:0crwdne4060:0"
+  }
+}
