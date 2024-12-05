@@ -87,12 +87,14 @@ export const page = ({
   fathomId,
   publicUrl,
   canChooseLocale,
+  useCrowdinInContext,
 }: {
   page: Page
   environmentLabel?: 'dev' | 'sandbox'
   fathomId?: string
   publicUrl: URL
   canChooseLocale?: boolean
+  useCrowdinInContext: boolean
 }): Html => {
   const scripts = pipe(
     js,
@@ -112,6 +114,15 @@ export const page = ({
 
         <link href="${assets['style.css']}" rel="stylesheet" />
 
+        ${useCrowdinInContext
+          ? html`
+              <script type="text/javascript">
+                var _jipt = []
+                _jipt.push(['project', 'prereview'])
+              </script>
+              <script type="text/javascript" src="https://cdn.crowdin.com/jipt/jipt.js"></script>
+            `
+          : ''}
         ${scripts.flatMap(
           flow(
             file => assets[file].preload as ReadonlyArray<string>,

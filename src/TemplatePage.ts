@@ -19,12 +19,14 @@ export class TemplatePageOptions extends Context.Tag('TemplatePageOptions')<
 export const make = Effect.gen(function* () {
   const publicUrl = yield* PublicUrl
   const canChooseLocale = yield* CanChooseLocale
+  const useCrowdinInContext = yield* Config.boolean('USE_CROWDIN_IN_CONTEXT').pipe(Config.withDefault(false))
   const { fathomId, environmentLabel } = yield* TemplatePageOptions
 
   return (page: Page) =>
     templatePage({
       page,
       canChooseLocale,
+      useCrowdinInContext,
       environmentLabel: Option.getOrUndefined(environmentLabel),
       fathomId: Option.getOrUndefined(fathomId),
       publicUrl,
