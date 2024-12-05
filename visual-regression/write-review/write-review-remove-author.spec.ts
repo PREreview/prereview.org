@@ -2,6 +2,7 @@ import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import { missingE } from '../../src/form.js'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import type { NonEmptyString } from '../../src/types/string.js'
 import { removeAuthorForm } from '../../src/write-review/remove-author-page/remove-author-form.js'
@@ -16,12 +17,15 @@ const preprint = {
   language: 'en',
 } satisfies PreprintTitle
 
+const locale = DefaultLocale
+
 test('content looks right', async ({ showPage }) => {
   const response = removeAuthorForm({
     author: { name: 'Josiah Carberry' as NonEmptyString },
     form: { removeAuthor: E.right(undefined) },
     number: 1,
     preprint,
+    locale,
   })
 
   const content = await showPage(response)
@@ -35,6 +39,7 @@ test('content looks right when fields are missing', async ({ showPage }) => {
     form: { removeAuthor: E.left(missingE()) },
     number: 1,
     preprint,
+    locale,
   })
 
   const content = await showPage(response)

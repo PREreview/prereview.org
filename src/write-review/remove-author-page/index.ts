@@ -10,6 +10,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes.js'
@@ -50,6 +51,7 @@ export const writeReviewRemoveAuthor = ({
           RTE.let('method', () => method),
           RTE.let('body', () => body),
           RTE.let('number', () => number),
+          RTE.apS('locale', RTE.of(DefaultLocale)),
           RTE.bindW(
             'form',
             flow(
@@ -99,6 +101,7 @@ const handleRemoveAuthorForm = ({
   number,
   preprint,
   user,
+  locale,
 }: {
   author: { name: NonEmptyString }
   body: unknown
@@ -106,6 +109,7 @@ const handleRemoveAuthorForm = ({
   number: number
   preprint: PreprintTitle
   user: User
+  locale: SupportedLocale
 }) =>
   pipe(
     RTE.Do,
@@ -137,7 +141,7 @@ const handleRemoveAuthorForm = ({
       error =>
         match(error)
           .with('form-unavailable', () => havingProblemsPage)
-          .with({ removeAuthor: P.any }, error => removeAuthorForm({ author, form: error, number, preprint }))
+          .with({ removeAuthor: P.any }, error => removeAuthorForm({ author, form: error, number, preprint, locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
     ),

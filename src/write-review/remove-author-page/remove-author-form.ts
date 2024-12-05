@@ -4,6 +4,7 @@ import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { type MissingE, hasAnError } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewRemoveAuthorMatch } from '../../routes.js'
@@ -19,6 +20,7 @@ export function removeAuthorForm({
   form: RemoveAuthorForm
   number: number
   preprint: PreprintTitle
+  locale: SupportedLocale
 }) {
   const error = hasAnError(form)
 
