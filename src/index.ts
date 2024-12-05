@@ -40,8 +40,8 @@ pipe(
       Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
     ),
   ),
-  Effect.provide(Nodemailer.layerConfig(Config.mapAttempt(Config.string('SMTP_URI'), url => new URL(url)))),
-  Effect.provide(Redis.layerConfig(Config.mapAttempt(Config.string('REDIS_URI'), url => new URL(url)))),
+  Effect.provide(Nodemailer.layerConfig(Config.url('SMTP_URI'))),
+  Effect.provide(Redis.layerConfig(Config.url('REDIS_URI'))),
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,
     Effect.gen(function* () {
@@ -61,10 +61,7 @@ pipe(
       environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
     }),
   ),
-  Effect.provideServiceEffect(
-    PublicUrl,
-    Config.mapAttempt(Config.string('PUBLIC_URL'), url => new URL(url)),
-  ),
+  Effect.provideServiceEffect(PublicUrl, Config.url('PUBLIC_URL')),
   Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.provide(Logger.replaceEffect(Logger.defaultLogger, DeprecatedLogger)),
   Effect.provideServiceEffect(DeprecatedLoggerEnv, makeDeprecatedLoggerEnv),
