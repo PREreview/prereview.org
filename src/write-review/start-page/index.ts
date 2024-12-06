@@ -4,6 +4,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale } from '../../locales/index.js'
 import { type GetPreprintEnv, getPreprint } from '../../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../routes.js'
@@ -42,6 +43,7 @@ export const writeReviewStart = ({
             pipe(RTE.fromNullable('no-session' as const)(user), RTE.chainEitherKW(ensureUserIsNotAnAuthor(preprint))),
           ),
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
+          RTE.apS('locale', RTE.of(DefaultLocale)),
           RTE.matchW(
             error =>
               match(error)
@@ -54,8 +56,12 @@ export const writeReviewStart = ({
                 )
                 .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage)
                 .exhaustive(),
-            ({ form }) =>
-              carryOnPage({ id: preprint.id, language: preprint.title.language, title: preprint.title.text }, form),
+            ({ form, locale }) =>
+              carryOnPage(
+                { id: preprint.id, language: preprint.title.language, title: preprint.title.text },
+                form,
+                locale,
+              ),
           ),
         ),
     ),

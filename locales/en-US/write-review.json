@@ -253,5 +253,14 @@
   },
   "sureYouWantToRemove": {
     "message": "Are you sure you want to remove {authorName}?"
+  },
+  "writeAPrereview": {
+    "message": "Write a PREreview"
+  },
+  "continueWord": {
+    "message": "Continue"
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "As you’ve already started a PREreview of <cite>{preprintTitle}</cite>, we’ll take you to the next step so you can carry&nbsp;on."
   }
 }

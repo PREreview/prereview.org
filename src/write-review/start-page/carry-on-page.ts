@@ -1,29 +1,40 @@
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { html, plainText } from '../../html.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { preprintReviewsMatch, writeReviewStartMatch } from '../../routes.js'
-import { type Form, nextFormMatch } from '../form.js'
+import { nextFormMatch, type Form } from '../form.js'
 
-export const carryOnPage = (preprint: PreprintTitle, form: Form) =>
-  StreamlinePageResponse({
-    title: plainText`Write a PREreview`,
+const cite = (lang: PreprintTitle['language']) => (text: string) =>
+  `<cite lang="${lang}" dir="${rtlDetect.getLangDir(lang)}">${text}</cite>`
+
+export const carryOnPage = (preprint: PreprintTitle, form: Form, locale: SupportedLocale) => {
+  const t = translate(locale)
+  return StreamlinePageResponse({
+    title: plainText`${t('write-review', 'writeAPrereview')()}`,
     nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
+        >${t('write-review', 'backToPreprint')()}</a
+      >
     `,
     main: html`
-      <h1>Write a PREreview</h1>
+      <h1>${t('write-review', 'writeAPrereview')()}</h1>
 
       <p>
-        As you’ve already started a PREreview of
-        <cite lang="${preprint.language}" dir="${rtlDetect.getLangDir(preprint.language)}">${preprint.title}</cite>,
-        we’ll take you to the next step so you can carry&nbsp;on.
+        ${rawHtml(
+          t(
+            'write-review',
+            'asYouHaveAlreadyStarted',
+          )({ preprintTitle: preprint.title.toString(), cite: cite(preprint.language) }),
+        )}
       </p>
 
       <a href="${format(nextFormMatch(form).formatter, { id: preprint.id })}" role="button" draggable="false"
-        >Continue</a
+        >${t('write-review', 'continueWord')()}</a
       >
     `,
     canonical: format(writeReviewStartMatch.formatter, { id: preprint.id }),
   })
+}
