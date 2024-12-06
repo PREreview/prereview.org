@@ -8,6 +8,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -26,6 +27,7 @@ export const writeReviewConduct = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
+      RM.apS('locale', RM.of(DefaultLocale)),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -55,21 +57,32 @@ export const writeReviewConduct = flow(
 )
 
 const showCodeOfConductForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    codeOfConductForm(preprint, { conduct: E.right(form.conduct) }, user),
+  RM.fromReaderK(
+    ({ form, preprint, user, locale }: { form: Form; preprint: PreprintTitle; user: User; locale: SupportedLocale }) =>
+      codeOfConductForm(preprint, { conduct: E.right(form.conduct) }, user, locale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showCodeOfConductErrorForm = (preprint: PreprintTitle, user: User) =>
+const showCodeOfConductErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
   flow(
-    RM.fromReaderK((form: CodeOfConductForm) => codeOfConductForm(preprint, form, user)),
+    RM.fromReaderK((form: CodeOfConductForm) => codeOfConductForm(preprint, form, user, locale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleCodeOfConductForm = ({
+  form,
+  preprint,
+  user,
+  locale,
+}: {
+  form: Form
+  preprint: PreprintTitle
+  user: User
+  locale: SupportedLocale
+}) =>
   pipe(
     RM.decodeBody(body => E.right({ conduct: pipe(ConductFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
@@ -85,7 +98,7 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ conduct: P.any }, showCodeOfConductErrorForm(preprint, user))
+        .with({ conduct: P.any }, showCodeOfConductErrorForm(preprint, user, locale))
         .exhaustive(),
     ),
   )
@@ -101,7 +114,8 @@ interface CodeOfConductForm {
   readonly conduct: E.Either<MissingE, 'yes' | undefined>
 }
 
-function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, user: User) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, user: User, locale: SupportedLocale) {
   const error = hasAnError(form)
 
   return templatePage({
