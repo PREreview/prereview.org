@@ -9,6 +9,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -28,6 +29,7 @@ export const writeReviewCompetingInterests = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
+      RM.apS('locale', RM.of(DefaultLocale)),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -57,29 +59,46 @@ export const writeReviewCompetingInterests = flow(
 )
 
 const showCompetingInterestsForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    competingInterestsForm(
-      preprint,
-      {
-        competingInterests: E.right(form.competingInterests),
-        competingInterestsDetails: E.right(form.competingInterestsDetails),
-      },
-      user,
-      form.moreAuthors,
-    ),
+  RM.fromReaderK(
+    ({ form, preprint, user, locale }: { form: Form; preprint: PreprintTitle; user: User; locale: SupportedLocale }) =>
+      competingInterestsForm(
+        preprint,
+        {
+          competingInterests: E.right(form.competingInterests),
+          competingInterestsDetails: E.right(form.competingInterestsDetails),
+        },
+        user,
+        locale,
+        form.moreAuthors,
+      ),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showCompetingInterestsErrorForm = (preprint: PreprintTitle, user: User, moreAuthors: Form['moreAuthors']) =>
+const showCompetingInterestsErrorForm = (
+  preprint: PreprintTitle,
+  user: User,
+  moreAuthors: Form['moreAuthors'],
+  locale: SupportedLocale,
+) =>
   flow(
-    RM.fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form, user, moreAuthors)),
+    RM.fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form, user, locale, moreAuthors)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleCompetingInterestsForm = ({
+  form,
+  preprint,
+  user,
+  locale,
+}: {
+  form: Form
+  preprint: PreprintTitle
+  user: User
+  locale: SupportedLocale
+}) =>
   pipe(
     RM.decodeBody(E.right),
     RM.map(body =>
@@ -107,7 +126,7 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, user, form.moreAuthors))
+        .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, user, form.moreAuthors, locale))
         .exhaustive(),
     ),
   )
@@ -131,6 +150,8 @@ function competingInterestsForm(
   preprint: PreprintTitle,
   form: CompetingInterestsForm,
   user: User,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  locale: SupportedLocale,
   moreAuthors?: 'yes' | 'yes-private' | 'no',
 ) {
   const error = hasAnError(form)
