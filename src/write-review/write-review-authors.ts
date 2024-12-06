@@ -9,6 +9,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -27,6 +28,7 @@ export const writeReviewAuthors = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
+      RM.apS('locale', RM.of(DefaultLocale)),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -54,28 +56,40 @@ export const writeReviewAuthors = flow(
 )
 
 const showAuthorsForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    authorsForm(
-      preprint,
-      {
-        moreAuthors: E.right(form.moreAuthors),
-        moreAuthorsApproved: E.right(form.moreAuthorsApproved),
-      },
-      user,
-    ),
+  RM.fromReaderK(
+    ({ form, preprint, user, locale }: { form: Form; preprint: PreprintTitle; user: User; locale: SupportedLocale }) =>
+      authorsForm(
+        preprint,
+        {
+          moreAuthors: E.right(form.moreAuthors),
+          moreAuthorsApproved: E.right(form.moreAuthorsApproved),
+        },
+        user,
+        locale,
+      ),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showAuthorsErrorForm = (preprint: PreprintTitle, user: User) =>
+const showAuthorsErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
   flow(
-    RM.fromReaderK((form: AuthorsForm) => authorsForm(preprint, form, user)),
+    RM.fromReaderK((form: AuthorsForm) => authorsForm(preprint, form, user, locale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleAuthorsForm = ({
+  form,
+  preprint,
+  user,
+  locale,
+}: {
+  form: Form
+  preprint: PreprintTitle
+  user: User
+  locale: SupportedLocale
+}) =>
   pipe(
     RM.decodeBody(body =>
       pipe(
@@ -111,7 +125,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ moreAuthors: P.any }, showAuthorsErrorForm(preprint, user))
+        .with({ moreAuthors: P.any }, showAuthorsErrorForm(preprint, user, locale))
         .exhaustive(),
     ),
   )
@@ -135,7 +149,8 @@ interface AuthorsForm {
   readonly moreAuthorsApproved: E.Either<MissingE, 'yes' | undefined>
 }
 
-function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, locale: SupportedLocale) {
   const error = hasAnError(form)
 
   return templatePage({
