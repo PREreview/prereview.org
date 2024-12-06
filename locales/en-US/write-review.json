@@ -244,5 +244,14 @@
   },
   "publishButton": {
     "message": "Publish PREreview"
+  },
+  "removeAuthorTitle": {
+    "message": "Are you sure you want to remove {authorName}? – PREreview of “{preprintTitle}”"
+  },
+  "selectYesToRemove": {
+    "message": "Select yes if you want to remove {authorName}"
+  },
+  "sureYouWantToRemove": {
+    "message": "Are you sure you want to remove {authorName}?"
   }
 }
