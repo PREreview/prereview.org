@@ -308,28 +308,85 @@
   "examples": {
     "message": "Examples"
   },
-  "exampleAuthorOfPreprint": {
+  "conflictAuthorOfPreprint": {
     "message": "You are the author of the preprint"
   },
-  "examplePersonalRelationship": {
+  "conflictPersonalRelationship": {
     "message": "You have a personal relationship with the author."
   },
-  "exampleRivalOfAuthor": {
+  "conflictRivalOfAuthor": {
     "message": "You are a rival or competitor of the author."
   },
-  "exampleRecentlyWorkedTogether": {
+  "conflictRecentlyWorkedTogether": {
     "message": "You have recently worked with the author."
   },
-  "exampleCollaborateWithAuthor": {
+  "conflictCollaborateWithAuthor": {
     "message": "You collaborate with the author."
   },
-  "examplePublishedTogether": {
+  "conflictPublishedTogether": {
     "message": "You have published with the author in the last five years."
   },
-  "exampleHoldGrandTogether": {
+  "conflictHoldGrantTogether": {
     "message": "You hold a grant with the author."
   },
   "whatAreThey": {
     "message": "What are they?"
+  },
+  "codeOfConductTitle": {
+    "message": "Code of Conduct – PREreview of “{preprintTitle}”"
+  },
+  "confirmCodeOfConduct": {
+    "message": "Confirm that you are following the Code&nbsp;of&nbsp;Conduct"
+  },
+  "codeOfConduct": {
+    "message": "Code of Conduct"
+  },
+  "expectYouToAbideByCodeOfConduct": {
+    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code&nbsp;of&nbsp;Conduct</link>."
+  },
+  "examplesOfExpectedBehaviour": {
+    "message": "Examples of expected behaviors"
+  },
+  "expectedBehaviourLanguage": {
+    "message": "Using welcoming and inclusive language."
+  },
+  "expectedBehaviourFeedback": {
+    "message": "Providing feedback that is constructive, i.e. useful, to the receiver."
+  },
+  "expectedBehaviourRespect": {
+    "message": "Being respectful of differing viewpoints and experiences."
+  },
+  "expectedBehaviourGracefulAcceptance": {
+    "message": "Gracefully accepting constructive criticism."
+  },
+  "expectedBehaviourBestOfCommunity": {
+    "message": "Focusing on what is best for the community."
+  },
+  "expectedBehaviourEmpathy": {
+    "message": "Showing empathy towards other community members."
+  },
+  "examplesOfUnacceptableBehaviour": {
+    "message": "Examples of unacceptable behaviors"
+  },
+  "unacceptableBehaviourTrollingEtc": {
+    "message": "Trolling, insulting or derogatory comments, and personal or political attacks."
+  },
+  "unacceptableBehaviourUnconstructive": {
+    "message": "Providing unconstructive or disruptive feedback on PREreview."
+  },
+  "unacceptableBehaviourHarassment": {
+    "message": "Public or private harassment."
+  },
+  "unacceptableBehaviourPublishingConfidentialInformation": {
+    "message": "Publishing others’ confidential information, such as a physical or electronic address, without explicit permission."
+  },
+  "unacceptableBehaviourSexualisedLanguage": {
+    "message": "Use of sexualized language or imagery and unwelcome sexual attention or advances."
+  },
+  "unacceptableBehaviourInappropriate": {
+    "message": "Other conduct which could reasonably be considered inappropriate in a professional setting."
+  },
+  "iAmFollowingCodeOfConduct": {
+    "message": "I’m following the Code&nbsp;of&nbsp;Conduct"
   }
 }

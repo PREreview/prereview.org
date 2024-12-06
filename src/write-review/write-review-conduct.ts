@@ -8,7 +8,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -20,6 +20,7 @@ import {
 } from '../routes.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from './shared-elements.js'
 
 export const writeReviewConduct = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -113,43 +114,25 @@ const ConductFieldD = pipe(
 interface CodeOfConductForm {
   readonly conduct: E.Either<MissingE, 'yes' | undefined>
 }
+const codeOfConductLink = (text: string) =>
+  `<a href="${format(codeOfConductMatch.formatter, {})}">${text}</a>`.toString()
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, user: User, locale: SupportedLocale) {
   const error = hasAnError(form)
+  const t = translate(locale)
 
   return templatePage({
-    title: plainText`${error ? 'Error: ' : ''}Code of Conduct – PREreview of “${preprint.title}”`,
+    title: pipe(
+      t('write-review', 'codeOfConductTitle')({ preprintTitle: preprint.title.toString() }),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
-      <nav>
-        <a href="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}" class="back">Back</a>
-      </nav>
+      <nav>${backNav(locale, format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id }))}</nav>
 
       <main id="form">
         <form method="post" action="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" novalidate>
-          ${error
-            ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
-                  <ul>
-                    ${E.isLeft(form.conduct)
-                      ? html`
-                          <li>
-                            <a href="#conduct-yes">
-                              ${match(form.conduct.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`,
-                                )
-                                .exhaustive()}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
-              `
-            : ''}
+          ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
           <div ${rawHtml(E.isLeft(form.conduct) ? 'class="error"' : '')}>
             <fieldset
@@ -158,43 +141,39 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
               ${rawHtml(E.isLeft(form.conduct) ? 'aria-invalid="true" aria-errormessage="conduct-error"' : '')}
             >
               <legend>
-                <h1>Code of Conduct</h1>
+                <h1>${t('write-review', 'codeOfConduct')()}</h1>
               </legend>
 
               <p id="conduct-tip" role="note">
-                As a member of our community, we expect you to abide by the
-                <a href="${format(codeOfConductMatch.formatter, {})}">PREreview Code&nbsp;of&nbsp;Conduct</a>.
+                ${rawHtml(t('write-review', 'expectYouToAbideByCodeOfConduct')({ link: codeOfConductLink }))}
               </p>
 
               <details>
-                <summary><span>Examples of expected behaviors</span></summary>
+                <summary><span>${t('write-review', 'examplesOfExpectedBehaviour')()}</span></summary>
 
                 <div>
                   <ul>
-                    <li>Using welcoming and inclusive language.</li>
-                    <li>Providing feedback that is constructive, i.e. useful, to the receiver.</li>
-                    <li>Being respectful of differing viewpoints and experiences.</li>
-                    <li>Gracefully accepting constructive criticism.</li>
-                    <li>Focusing on what is best for the community.</li>
-                    <li>Showing empathy towards other community members.</li>
+                    <li>${t('write-review', 'expectedBehaviourLanguage')()}</li>
+                    <li>${t('write-review', 'expectedBehaviourFeedback')()}</li>
+                    <li>${t('write-review', 'expectedBehaviourRespect')()}</li>
+                    <li>${t('write-review', 'expectedBehaviourGracefulAcceptance')()}</li>
+                    <li>${t('write-review', 'expectedBehaviourBestOfCommunity')()}</li>
+                    <li>${t('write-review', 'expectedBehaviourEmpathy')()}</li>
                   </ul>
                 </div>
               </details>
 
               <details>
-                <summary><span>Examples of unacceptable behaviors</span></summary>
+                <summary><span>${t('write-review', 'examplesOfUnacceptableBehaviour')()}</span></summary>
 
                 <div>
                   <ul>
-                    <li>Trolling, insulting or derogatory comments, and personal or political attacks.</li>
-                    <li>Providing unconstructive or disruptive feedback on PREreview.</li>
-                    <li>Public or private harassment.</li>
-                    <li>
-                      Publishing others’ confidential information, such as a physical or electronic address, without
-                      explicit permission.
-                    </li>
-                    <li>Use of sexualized language or imagery and unwelcome sexual attention or advances.</li>
-                    <li>Other conduct which could reasonably be considered inappropriate in a professional setting.</li>
+                    <li>${t('write-review', 'unacceptableBehaviourTrollingEtc')()}</li>
+                    <li>${t('write-review', 'unacceptableBehaviourUnconstructive')()}</li>
+                    <li>${t('write-review', 'unacceptableBehaviourHarassment')()}</li>
+                    <li>${t('write-review', 'unacceptableBehaviourPublishingConfidentialInformation')()}</li>
+                    <li>${t('write-review', 'unacceptableBehaviourSexualisedLanguage')()}</li>
+                    <li>${t('write-review', 'unacceptableBehaviourInappropriate')()}</li>
                   </ul>
                 </div>
               </details>
@@ -202,12 +181,9 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
               ${E.isLeft(form.conduct)
                 ? html`
                     <div class="error-message" id="conduct-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${t('write-review', 'error')()}</span>
                       ${match(form.conduct.left)
-                        .with(
-                          { _tag: 'MissingE' },
-                          () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`,
-                        )
+                        .with({ _tag: 'MissingE' }, t('write-review', 'confirmCodeOfConduct'))
                         .exhaustive()}
                     </div>
                   `
@@ -223,12 +199,12 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
                     .with({ right: 'yes' }, () => 'checked')
                     .otherwise(() => '')}
                 />
-                <span>I’m following the Code&nbsp;of&nbsp;Conduct</span>
+                <span>${rawHtml(t('write-review', 'iAmFollowingCodeOfConduct')())}</span>
               </label>
             </fieldset>
           </div>
 
-          <button>Save and continue</button>
+          ${saveAndContinueButton(locale)}
         </form>
       </main>
     `,
@@ -238,3 +214,17 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
     user,
   })
 }
+
+const toErrorItems = (locale: SupportedLocale) => (form: CodeOfConductForm) => html`
+  ${E.isLeft(form.conduct)
+    ? html`
+        <li>
+          <a href="#conduct-yes">
+            ${match(form.conduct.left)
+              .with({ _tag: 'MissingE' }, () => rawHtml(translate(locale, 'write-review', 'confirmCodeOfConduct')()))
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+`

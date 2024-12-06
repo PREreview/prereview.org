@@ -198,13 +198,13 @@ function competingInterestsForm(
 
                   <div>
                     <ul>
-                      <li>${t('write-review', 'exampleAuthorOfPreprint')()}</li>
-                      <li>${t('write-review', 'examplePersonalRelationship')()}</li>
-                      <li>${t('write-review', 'exampleRivalOfAuthor')()}</li>
-                      <li>${t('write-review', 'exampleRecentlyWorkedTogether')()}</li>
-                      <li>${t('write-review', 'exampleCollaborateWithAuthor')()}</li>
-                      <li>${t('write-review', 'examplePublishedTogether')()}</li>
-                      <li>${t('write-review', 'exampleHoldGrandTogether')()}</li>
+                      <li>${t('write-review', 'conflictAuthorOfPreprint')()}</li>
+                      <li>${t('write-review', 'conflictPersonalRelationship')()}</li>
+                      <li>${t('write-review', 'conflictRivalOfAuthor')()}</li>
+                      <li>${t('write-review', 'conflictRecentlyWorkedTogether')()}</li>
+                      <li>${t('write-review', 'conflictCollaborateWithAuthor')()}</li>
+                      <li>${t('write-review', 'conflictPublishedTogether')()}</li>
+                      <li>${t('write-review', 'conflictHoldGrantTogether')()}</li>
                     </ul>
                   </div>
                 </details>
