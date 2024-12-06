@@ -9,7 +9,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -21,6 +21,7 @@ import {
 } from '../routes.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from './shared-elements.js'
 
 export const writeReviewAuthors = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -149,58 +150,22 @@ interface AuthorsForm {
   readonly moreAuthorsApproved: E.Either<MissingE, 'yes' | undefined>
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, locale: SupportedLocale) {
   const error = hasAnError(form)
+  const t = translate(locale)
 
   return templatePage({
-    title: plainText`${error ? 'Error: ' : ''}Did you review this preprint with anyone else? – PREreview of “${
-      preprint.title
-    }”`,
+    title: pipe(
+      t('write-review', 'authorsTitle')({ preprintTitle: preprint.title.toString() }),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
-      <nav>
-        <a href="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}" class="back">Back</a>
-      </nav>
+      <nav>${backNav(locale, format(writeReviewPersonaMatch.formatter, { id: preprint.id }))}</nav>
 
       <main id="form">
         <form method="post" action="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" novalidate>
-          ${error
-            ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
-                  <ul>
-                    ${E.isLeft(form.moreAuthors)
-                      ? html`
-                          <li>
-                            <a href="#more-authors-no">
-                              ${match(form.moreAuthors.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => 'Select yes if you reviewed the preprint with someone else',
-                                )
-                                .exhaustive()}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                    ${E.isLeft(form.moreAuthorsApproved)
-                      ? html`
-                          <li>
-                            <a href="#more-authors-approved-yes">
-                              ${match(form.moreAuthorsApproved.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => 'Confirm that the other authors have read and approved the PREreview',
-                                )
-                                .exhaustive()}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
-              `
-            : ''}
+          ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
           <div ${rawHtml(E.isLeft(form.moreAuthors) ? 'class="error"' : '')}>
             <conditional-inputs>
@@ -212,19 +177,17 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, loc
                 )}
               >
                 <legend>
-                  <h1>Did you review this preprint with anyone&nbsp;else?</h1>
+                  <h1>${rawHtml(t('write-review', 'didYouReviewWithAnyoneElse')())}</h1>
                 </legend>
 
-                <p id="more-authors-tip" role="note">
-                  This can include people who contributed to the discussion or wrote the review.
-                </p>
+                <p id="more-authors-tip" role="note">${t('write-review', 'thisCanIncludePeopleWho')()}</p>
 
                 ${E.isLeft(form.moreAuthors)
                   ? html`
                       <div class="error-message" id="more-authors-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.moreAuthors.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select yes if you reviewed the preprint with someone else')
+                          .with({ _tag: 'MissingE' }, t('write-review', 'selectYesIfYouReviewedWithSomeoneElse'))
                           .exhaustive()}
                       </div>
                     `
@@ -242,7 +205,7 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, loc
                           .with({ right: 'no' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>No, I reviewed it alone</span>
+                      <span>${t('write-review', 'noIReviewedAlone')()}</span>
                     </label>
                   </li>
                   <li>
@@ -255,7 +218,7 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, loc
                           .with({ right: 'yes-private' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Yes, but they don’t want to be listed as authors</span>
+                      <span>${t('write-review', 'yesButDoNotWantToBeListed')()}</span>
                     </label>
                   </li>
                   <li>
@@ -269,7 +232,7 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, loc
                           .with({ right: 'yes' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Yes, and some or all want to be listed as authors</span>
+                      <span>${t('write-review', 'yesAndWantToBeListed')()}</span>
                     </label>
                     <div class="conditional" id="more-authors-yes-control">
                       <div ${rawHtml(E.isLeft(form.moreAuthorsApproved) ? 'class="error"' : '')}>
@@ -280,7 +243,7 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, loc
                                 ${match(form.moreAuthorsApproved.left)
                                   .with(
                                     { _tag: 'MissingE' },
-                                    () => 'Confirm that the other authors have read and approved the PREreview',
+                                    t('write-review', 'confirmOtherAuthorsHaveReadAndApproved'),
                                   )
                                   .exhaustive()}
                               </div>
@@ -302,7 +265,7 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, loc
                               )
                               .exhaustive()}
                           />
-                          <span>They have read and approved the PREreview</span>
+                          <span>${t('write-review', 'theyHaveReadAndApproved')()}</span>
                         </label>
                       </div>
                     </div>
@@ -312,7 +275,7 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, loc
             </conditional-inputs>
           </div>
 
-          <button>Save and continue</button>
+          ${saveAndContinueButton(locale)}
         </form>
       </main>
     `,
@@ -322,3 +285,28 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, loc
     user,
   })
 }
+
+const toErrorItems = (locale: SupportedLocale) => (form: AuthorsForm) => html`
+  ${E.isLeft(form.moreAuthors)
+    ? html`
+        <li>
+          <a href="#more-authors-no">
+            ${match(form.moreAuthors.left)
+              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'selectYesIfYouReviewedWithSomeoneElse'))
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+  ${E.isLeft(form.moreAuthorsApproved)
+    ? html`
+        <li>
+          <a href="#more-authors-approved-yes">
+            ${match(form.moreAuthorsApproved.left)
+              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'confirmOtherAuthorsHaveReadAndApproved'))
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+`

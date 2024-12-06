@@ -262,5 +262,32 @@
   },
   "asYouHaveAlreadyStarted": {
     "message": "As you’ve already started a PREreview of <cite>{preprintTitle}</cite>, we’ll take you to the next step so you can carry&nbsp;on."
+  },
+  "authorsTitle": {
+    "message": "Did you review this preprint with anyone else? – PREreview of “{preprintTitle}”"
+  },
+  "selectYesIfYouReviewedWithSomeoneElse": {
+    "message": "Select yes if you reviewed the preprint with someone else"
+  },
+  "confirmOtherAuthorsHaveReadAndApproved": {
+    "message": "Confirm that the other authors have read and approved the PREreview"
+  },
+  "didYouReviewWithAnyoneElse": {
+    "message": "Did you review this preprint with anyone&nbsp;else?"
+  },
+  "thisCanIncludePeopleWho": {
+    "message": "This can include people who contributed to the discussion or wrote the review."
+  },
+  "noIReviewedAlone": {
+    "message": "No, I reviewed it alone"
+  },
+  "yesButDoNotWantToBeListed": {
+    "message": "Yes, but they don’t want to be listed as authors"
+  },
+  "yesAndWantToBeListed": {
+    "message": "Yes, and some or all want to be listed as authors"
+  },
+  "theyHaveReadAndApproved": {
+    "message": "They have read and approved the PREreview"
   }
 }
