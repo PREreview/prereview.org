@@ -289,5 +289,47 @@
   },
   "theyHaveReadAndApproved": {
     "message": "They have read and approved the PREreview"
+  },
+  "competingInterestsTitle": {
+    "message": "Do you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests? – PREreview of “{preprintTitle}”"
+  },
+  "selectYesIfCompetingInterest": {
+    "message": "Select yes if you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests"
+  },
+  "competingInterestDetails": {
+    "message": "Enter details of {otherAuthors, boolean, true {the} false {your}} competing interests"
+  },
+  "doYouHaveCompetingInterests": {
+    "message": "Do you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests?"
+  },
+  "whatIsCompetingInterest": {
+    "message": "A competing interest is anything that could interfere with the objective of a PREreview."
+  },
+  "examples": {
+    "message": "Examples"
+  },
+  "exampleAuthorOfPreprint": {
+    "message": "You are the author of the preprint"
+  },
+  "examplePersonalRelationship": {
+    "message": "You have a personal relationship with the author."
+  },
+  "exampleRivalOfAuthor": {
+    "message": "You are a rival or competitor of the author."
+  },
+  "exampleRecentlyWorkedTogether": {
+    "message": "You have recently worked with the author."
+  },
+  "exampleCollaborateWithAuthor": {
+    "message": "You collaborate with the author."
+  },
+  "examplePublishedTogether": {
+    "message": "You have published with the author in the last five years."
+  },
+  "exampleHoldGrandTogether": {
+    "message": "You hold a grant with the author."
+  },
+  "whatAreThey": {
+    "message": "What are they?"
   }
 }

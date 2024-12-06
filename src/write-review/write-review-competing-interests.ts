@@ -9,7 +9,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -22,6 +22,7 @@ import {
 import { type NonEmptyString, NonEmptyStringC } from '../types/string.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from './shared-elements.js'
 
 export const writeReviewCompetingInterests = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -150,22 +151,22 @@ function competingInterestsForm(
   preprint: PreprintTitle,
   form: CompetingInterestsForm,
   user: User,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   locale: SupportedLocale,
   moreAuthors?: 'yes' | 'yes-private' | 'no',
 ) {
   const error = hasAnError(form)
   const otherAuthors = moreAuthors !== 'no'
   const backMatch = moreAuthors === 'yes' ? writeReviewAddAuthorsMatch : writeReviewAuthorsMatch
+  const t = translate(locale)
 
   return templatePage({
-    title: plainText`${error ? 'Error: ' : ''}Do you${
-      otherAuthors ? ', or any of the other authors,' : ''
-    } have any competing interests? – PREreview of “${preprint.title}”`,
+    title: pipe(
+      t('write-review', 'competingInterestsTitle')({ otherAuthors, preprintTitle: preprint.title.toString() }),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
-      <nav>
-        <a href="${format(backMatch.formatter, { id: preprint.id })}" class="back">Back</a>
-      </nav>
+      <nav>${backNav(locale, format(backMatch.formatter, { id: preprint.id }))}</nav>
 
       <main id="form">
         <form
@@ -173,46 +174,7 @@ function competingInterestsForm(
           action="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}"
           novalidate
         >
-          ${error
-            ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
-                  <ul>
-                    ${E.isLeft(form.competingInterests)
-                      ? html`
-                          <li>
-                            <a href="#competing-interests-no">
-                              ${match(form.competingInterests.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () =>
-                                    `Select yes if you${
-                                      otherAuthors ? ', or any of the other authors,' : ''
-                                    } have any competing interests`,
-                                )
-                                .exhaustive()}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                    ${E.isLeft(form.competingInterestsDetails)
-                      ? html`
-                          <li>
-                            <a href="#competing-interests-details">
-                              ${match(form.competingInterestsDetails.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => `Enter details of ${otherAuthors ? 'the' : 'your'} competing interests`,
-                                )
-                                .exhaustive()}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
-              `
-            : ''}
+          ${error ? pipe(form, toErrorItems(locale, otherAuthors), errorSummary(locale)) : ''}
 
           <div ${rawHtml(E.isLeft(form.competingInterests) ? 'class="error"' : '')}>
             <conditional-inputs>
@@ -226,25 +188,23 @@ function competingInterestsForm(
                 )}
               >
                 <legend>
-                  <h1>Do you${otherAuthors ? ', or any of the other authors,' : ''} have any competing interests?</h1>
+                  <h1>${t('write-review', 'doYouHaveCompetingInterests')({ otherAuthors })}</h1>
                 </legend>
 
-                <p id="competing-interests-tip" role="note">
-                  A competing interest is anything that could interfere with the objective of a PREreview.
-                </p>
+                <p id="competing-interests-tip" role="note">${t('write-review', 'whatIsCompetingInterest')()}</p>
 
                 <details>
-                  <summary><span>Examples</span></summary>
+                  <summary><span>${t('write-review', 'examples')()}</span></summary>
 
                   <div>
                     <ul>
-                      <li>You are the author of the preprint.</li>
-                      <li>You have a personal relationship with the author.</li>
-                      <li>You are a rival or competitor of the author.</li>
-                      <li>You have recently worked with the author.</li>
-                      <li>You collaborate with the author.</li>
-                      <li>You have published with the author in the last five years.</li>
-                      <li>You hold a grant with the author.</li>
+                      <li>${t('write-review', 'exampleAuthorOfPreprint')()}</li>
+                      <li>${t('write-review', 'examplePersonalRelationship')()}</li>
+                      <li>${t('write-review', 'exampleRivalOfAuthor')()}</li>
+                      <li>${t('write-review', 'exampleRecentlyWorkedTogether')()}</li>
+                      <li>${t('write-review', 'exampleCollaborateWithAuthor')()}</li>
+                      <li>${t('write-review', 'examplePublishedTogether')()}</li>
+                      <li>${t('write-review', 'exampleHoldGrandTogether')()}</li>
                     </ul>
                   </div>
                 </details>
@@ -254,12 +214,8 @@ function competingInterestsForm(
                       <div class="error-message" id="competing-interests-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.competingInterests.left)
-                          .with(
-                            { _tag: 'MissingE' },
-                            () =>
-                              `Select yes if you${
-                                otherAuthors ? ', or any of the other authors,' : ''
-                              } have any competing interests`,
+                          .with({ _tag: 'MissingE' }, () =>
+                            t('write-review', 'selectYesIfCompetingInterest')({ otherAuthors }),
                           )
                           .exhaustive()}
                       </div>
@@ -278,7 +234,7 @@ function competingInterestsForm(
                           .with({ right: 'no' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>No</span>
+                      <span>${t('write-review', 'no')()}</span>
                     </label>
                   </li>
                   <li>
@@ -296,16 +252,17 @@ function competingInterestsForm(
                     </label>
                     <div class="conditional" id="competing-interests-details-control">
                       <div ${rawHtml(E.isLeft(form.competingInterestsDetails) ? 'class="error"' : '')}>
-                        <label for="competing-interests-details" class="textarea">What are they?</label>
+                        <label for="competing-interests-details" class="textarea"
+                          >${t('write-review', 'whatAreThey')()}</label
+                        >
 
                         ${E.isLeft(form.competingInterestsDetails)
                           ? html`
                               <div class="error-message" id="competing-interests-details-error">
                                 <span class="visually-hidden">Error:</span>
                                 ${match(form.competingInterestsDetails.left)
-                                  .with(
-                                    { _tag: 'MissingE' },
-                                    () => `Enter details of ${otherAuthors ? 'the' : 'your'} competing interests`,
+                                  .with({ _tag: 'MissingE' }, () =>
+                                    t('write-review', 'competingInterestDetails')({ otherAuthors }),
                                   )
                                   .exhaustive()}
                               </div>
@@ -334,7 +291,7 @@ ${match(form.competingInterestsDetails)
             </conditional-inputs>
           </div>
 
-          <button>Save and continue</button>
+          ${saveAndContinueButton(locale)}
         </form>
       </main>
     `,
@@ -344,3 +301,32 @@ ${match(form.competingInterestsDetails)
     user,
   })
 }
+
+const toErrorItems = (locale: SupportedLocale, otherAuthors: boolean) => (form: CompetingInterestsForm) => html`
+  ${E.isLeft(form.competingInterests)
+    ? html`
+        <li>
+          <a href="#competing-interests-no">
+            ${match(form.competingInterests.left)
+              .with({ _tag: 'MissingE' }, () =>
+                translate(locale, 'write-review', 'selectYesIfCompetingInterest')({ otherAuthors }),
+              )
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+  ${E.isLeft(form.competingInterestsDetails)
+    ? html`
+        <li>
+          <a href="#competing-interests-details">
+            ${match(form.competingInterestsDetails.left)
+              .with({ _tag: 'MissingE' }, () =>
+                translate(locale, 'write-review', 'competingInterestDetails')({ otherAuthors }),
+              )
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+`
