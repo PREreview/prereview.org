@@ -261,7 +261,7 @@
     "message": "Continue"
   },
   "asYouHaveAlreadyStarted": {
-    "message": "As you’ve already started a PREreview of <cite>{preprintTitle}</cite>, we’ll take you to the next step so you can carry&nbsp;on."
+    "message": "As you’ve already started a PREreview of <cite>{preprintTitle}</cite>, we’ll take you to the next step so you can carry on."
   },
   "authorsTitle": {
     "message": "Did you review this preprint with anyone else? – PREreview of “{preprintTitle}”"
@@ -273,7 +273,7 @@
     "message": "Confirm that the other authors have read and approved the PREreview"
   },
   "didYouReviewWithAnyoneElse": {
-    "message": "Did you review this preprint with anyone&nbsp;else?"
+    "message": "Did you review this preprint with anyone else?"
   },
   "thisCanIncludePeopleWho": {
     "message": "This can include people who contributed to the discussion or wrote the review."
@@ -336,13 +336,13 @@
     "message": "Code of Conduct – PREreview of “{preprintTitle}”"
   },
   "confirmCodeOfConduct": {
-    "message": "Confirm that you are following the Code&nbsp;of&nbsp;Conduct"
+    "message": "Confirm that you are following the Code of Conduct"
   },
   "codeOfConduct": {
     "message": "Code of Conduct"
   },
   "expectYouToAbideByCodeOfConduct": {
-    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code&nbsp;of&nbsp;Conduct</link>."
+    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>."
   },
   "examplesOfExpectedBehaviour": {
     "message": "Examples of expected behaviors"
@@ -387,6 +387,6 @@
     "message": "Other conduct which could reasonably be considered inappropriate in a professional setting."
   },
   "iAmFollowingCodeOfConduct": {
-    "message": "I’m following the Code&nbsp;of&nbsp;Conduct"
+    "message": "I’m following the Code of Conduct"
   }
 }

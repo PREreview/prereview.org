@@ -183,7 +183,7 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
                     <div class="error-message" id="conduct-error">
                       <span class="visually-hidden">${t('write-review', 'error')()}</span>
                       ${match(form.conduct.left)
-                        .with({ _tag: 'MissingE' }, () => rawHtml(t('write-review', 'confirmCodeOfConduct')()))
+                        .with({ _tag: 'MissingE' }, t('write-review', 'confirmCodeOfConduct'))
                         .exhaustive()}
                     </div>
                   `
@@ -199,7 +199,7 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
                     .with({ right: 'yes' }, () => 'checked')
                     .otherwise(() => '')}
                 />
-                <span>${rawHtml(t('write-review', 'iAmFollowingCodeOfConduct')())}</span>
+                <span>${t('write-review', 'iAmFollowingCodeOfConduct')()}</span>
               </label>
             </fieldset>
           </div>
@@ -221,7 +221,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: CodeOfConductForm) => h
         <li>
           <a href="#conduct-yes">
             ${match(form.conduct.left)
-              .with({ _tag: 'MissingE' }, () => rawHtml(translate(locale, 'write-review', 'confirmCodeOfConduct')()))
+              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'confirmCodeOfConduct'))
               .exhaustive()}
           </a>
         </li>
