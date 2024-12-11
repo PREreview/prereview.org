@@ -36,7 +36,7 @@ You will also have a `.env` file. This file contains environment variables contr
 
 ## Operations
 
-Once it passes CI, we deploy every commit on the `main` branch to [prereview.org] and [sandbox.prereview.org], which [Fly.io] hosts.
+Once it passes CI, we deploy every commit on the `main` branch to [prereview.org], [sandbox.prereview.org] and [translate.prereview.org], which [Fly.io] hosts.
 
 [bash]: https://www.gnu.org/software/bash/
 [docker]: https://www.docker.com/
@@ -50,4 +50,5 @@ Once it passes CI, we deploy every commit on the `main` branch to [prereview.org
 [node.js]: https://nodejs.org/
 [prereview.org]: https://prereview.org/
 [sandbox.prereview.org]: https://sandbox.prereview.org/
+[translate.prereview.org]: https://translate.prereview.org/
 [watchexec]: https://watchexec.github.io/
