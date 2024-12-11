@@ -15,7 +15,6 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
-import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { timeoutRequest } from '../fetch.js'
 import { setFlashMessage } from '../flash-message.js'
@@ -102,13 +101,15 @@ function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R
 
 export const authenticate = flow(
   (code: string, state: string) => RM.of({ code, state }),
-  RM.bind('referer', RM.fromReaderK(flow(get('state'), getReferer))),
+  RM.bind(
+    'referer',
+    RM.fromReaderK(({ state }) => getReferer(state)),
+  ),
   RM.bindW(
     'user',
     RM.fromReaderTaskEitherK(
       flow(
-        get('code'),
-        exchangeAuthorizationCode(OrcidUserC),
+        ({ code }) => exchangeAuthorizationCode(OrcidUserC)(code),
         R.local(addRedirectUri<FetchEnv & OrcidOAuthEnv & PublicUrlEnv>()),
         RTE.local(timeoutRequest(2000)),
         RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
@@ -125,11 +126,14 @@ export const authenticate = flow(
   RM.bindW(
     'pseudonym',
     RM.fromReaderTaskEitherK(
-      flow(get('user'), getPseudonym, RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to get pseudonym')))),
+      flow(
+        ({ user }) => getPseudonym(user),
+        RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to get pseudonym'))),
+      ),
     ),
   ),
   flow(
-    RM.ichainFirstW(flow(get('referer'), RM.redirect)),
+    RM.ichainFirstW(({ referer }) => RM.redirect(referer)),
     RM.ichainFirstW(
       flow(
         ({ user, pseudonym }) => ({ ...user, pseudonym }),
