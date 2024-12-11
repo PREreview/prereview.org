@@ -5,7 +5,6 @@ import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import { Eq as stringEq } from 'fp-ts/lib/string.js'
 import { Orcid, Eq as eqOrcid } from 'orcid-id-ts'
-import { get } from 'spectacles-ts'
 import { type Html, html } from './html.js'
 import type { ClubId } from './types/club-id.js'
 import type { EmailAddress } from './types/email-address.js'
@@ -20,18 +19,20 @@ export interface Club {
 
 export const getClubDetails = (id: ClubId) => clubs[id]
 
-export const getClubName = flow(getClubDetails, get('name'))
+export const getClubName = (id: ClubId) => clubs[id].name
 
 export const getClubByName = (name: string): O.Option<ClubId> =>
-  pipe(RR.keys(clubs), RA.findFirst(flow(getClubDetails, club => stringEq.equals(club.name, name))))
+  pipe(
+    RR.keys(clubs),
+    RA.findFirst(id => stringEq.equals(clubs[id].name, name)),
+  )
 
 export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
   pipe(
     RR.keys(clubs),
     RA.filter(
       flow(
-        getClubDetails,
-        get('leads'),
+        id => clubs[id].leads,
         RA.some(lead => eqOrcid.equals(lead.orcid, orcid)),
       ),
     ),
