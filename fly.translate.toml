@@ -15,6 +15,10 @@ USE_CROWDIN_IN_CONTEXT = "true"
 VERIFY_CACHE = "false"
 ZENODO_URL = "https://sandbox.zenodo.org/"
 
+[mounts]
+source = "prereview_translate_data"
+destination = "/app/data"
+
 [http_service]
 internal_port = 3000
 force_https = true
