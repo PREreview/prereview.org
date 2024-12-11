@@ -1,4 +1,4 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts typecheck test test-fast test-integration update-incontext-locale update-snapshots test-integration-image
+.PHONY: check clean start start-app start-services format lint-css lint-ts typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -52,6 +52,10 @@ lint-css: node_modules
 
 typecheck: node_modules src/manifest.json
 	npx tsc --incremental --noEmit --tsBuildInfoFile ".cache/tsc"
+
+typecheck-analyze: node_modules src/manifest.json
+	npx tsc --incremental false --noEmit --generateTrace ".cache/tsc-trace"
+	npx analyze-trace .cache/tsc-trace ${TEST}
 
 test: node_modules src/manifest.json
 	npx jest ${TEST}
