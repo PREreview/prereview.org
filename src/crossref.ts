@@ -9,10 +9,11 @@ import { flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
+import type { LanguageCode } from 'iso-639-1'
 import { P, isMatching, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language.js'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
-import { sanitizeHtml } from './html.js'
+import { type Html, sanitizeHtml } from './html.js'
 import { transformJatsToHtml } from './jats.js'
 import type { Preprint } from './preprint.js'
 import type {
@@ -134,30 +135,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
         E.bindTo('text'),
         E.bindW(
           'language',
-          E.fromOptionK(() => 'unknown language' as const)(({ text }) =>
-            match({ type, text })
-              .with({ type: 'advance' }, () => O.some('en' as const))
-              .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
-              .with({ type: 'authorea', text: P.select() }, detectLanguage)
-              .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
-              .with({ type: 'chemrxiv' }, () => O.some('en' as const))
-              .with({ type: 'curvenote' }, () => O.some('en' as const))
-              .with({ type: 'eartharxiv' }, () => O.some('en' as const))
-              .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
-              .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
-              .with({ type: 'engrxiv' }, () => O.some('en' as const))
-              .with({ type: 'metaarxiv' }, () => O.some('en' as const))
-              .with({ type: 'osf-preprints', text: P.select() }, detectLanguage)
-              .with({ type: 'preprints.org' }, () => O.some('en' as const))
-              .with({ type: 'psyarxiv' }, () => O.some('en' as const))
-              .with({ type: 'research-square' }, () => O.some('en' as const))
-              .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
-              .with({ type: 'science-open', text: P.select() }, detectLanguage)
-              .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
-              .with({ type: 'techrxiv' }, () => O.some('en' as const))
-              .with({ type: 'verixiv' }, () => O.some('en' as const))
-              .exhaustive(),
-          ),
+          E.fromOptionK(() => 'unknown language' as const)(({ text }) => detectLanguageForServer({ type, text })),
         ),
         E.orElseW(error =>
           match(error)
@@ -176,28 +154,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
         E.bind(
           'language',
           E.fromOptionK(() => 'unknown language')(({ text }) =>
-            match({ type: preprint.id.type, text })
-              .with({ type: 'advance' }, () => O.some('en' as const))
-              .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
-              .with({ type: 'authorea', text: P.select() }, detectLanguage)
-              .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
-              .with({ type: 'chemrxiv' }, () => O.some('en' as const))
-              .with({ type: 'curvenote' }, () => O.some('en' as const))
-              .with({ type: 'eartharxiv' }, () => O.some('en' as const))
-              .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
-              .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
-              .with({ type: 'engrxiv' }, () => O.some('en' as const))
-              .with({ type: 'metaarxiv' }, () => O.some('en' as const))
-              .with({ type: 'osf-preprints', text: P.select() }, detectLanguage)
-              .with({ type: 'preprints.org' }, () => O.some('en' as const))
-              .with({ type: 'psyarxiv' }, () => O.some('en' as const))
-              .with({ type: 'research-square' }, () => O.some('en' as const))
-              .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
-              .with({ type: 'science-open', text: P.select() }, detectLanguage)
-              .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
-              .with({ type: 'techrxiv' }, () => O.some('en' as const))
-              .with({ type: 'verixiv' }, () => O.some('en' as const))
-              .exhaustive(),
+            detectLanguageForServer({ type: preprint.id.type, text }),
           ),
         ),
       ),
@@ -225,6 +182,36 @@ const findPublishedDate = (work: Work) =>
     O.fromNullable(work.published),
     O.getOrElse(() => work.created),
   )
+
+const detectLanguageForServer = ({
+  type,
+  text,
+}: {
+  type: CrossrefPreprintId['type']
+  text: Html
+}): O.Option<LanguageCode> =>
+  match({ type, text })
+    .with({ type: 'advance' }, () => O.some('en' as const))
+    .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
+    .with({ type: 'authorea', text: P.select() }, detectLanguage)
+    .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+    .with({ type: 'chemrxiv' }, () => O.some('en' as const))
+    .with({ type: 'curvenote' }, () => O.some('en' as const))
+    .with({ type: 'eartharxiv' }, () => O.some('en' as const))
+    .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
+    .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
+    .with({ type: 'engrxiv' }, () => O.some('en' as const))
+    .with({ type: 'metaarxiv' }, () => O.some('en' as const))
+    .with({ type: 'osf-preprints', text: P.select() }, detectLanguage)
+    .with({ type: 'preprints.org' }, () => O.some('en' as const))
+    .with({ type: 'psyarxiv' }, () => O.some('en' as const))
+    .with({ type: 'research-square' }, () => O.some('en' as const))
+    .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
+    .with({ type: 'science-open', text: P.select() }, detectLanguage)
+    .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
+    .with({ type: 'techrxiv' }, () => O.some('en' as const))
+    .with({ type: 'verixiv' }, () => O.some('en' as const))
+    .exhaustive()
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
   pipe(
