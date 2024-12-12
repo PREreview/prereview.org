@@ -1,7 +1,7 @@
 import cspBuilder from 'content-security-policy-builder'
 import type { HelmetOptions } from 'helmet'
 
-export const crowdin = {
+const crowdin = {
   scriptSrc: ['cdn.crowdin.com', "'unsafe-inline'", "'unsafe-eval'"],
   imgSrc: ['*.crowdin.com'],
   frameSrc: ['crowdin.com', 'accounts.crowdin.com'],
