@@ -1,5 +1,5 @@
 import cspBuilder from 'content-security-policy-builder'
-import { Record, String } from 'effect'
+import { Duration, Record, String } from 'effect'
 
 const crowdin = {
   scriptSrc: ['cdn.crowdin.com', "'unsafe-inline'", "'unsafe-eval'"],
@@ -48,7 +48,8 @@ export const securityHeaders = (protocol: URL['protocol'], useCrowdinInContext: 
       'Cross-Origin-Resource-Policy': 'same-origin',
       'Origin-Agent-Cluster': '?1',
       'Referrer-Policy': 'no-referrer',
-      'Strict-Transport-Security': protocol === 'https:' ? 'max-age=15552000; includeSubDomains' : undefined,
+      'Strict-Transport-Security':
+        protocol === 'https:' ? `max-age=${Duration.toSeconds('180 days')}; includeSubDomains` : undefined,
       'X-Content-Type-Options': 'nosniff',
       'X-DNS-Prefetch-Control': 'off',
       'X-Download-Options': 'noopen',
