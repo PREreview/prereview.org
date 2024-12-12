@@ -1,0 +1,50 @@
+name: Update locales
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-locales:
+    name: 'Update locales'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ secrets.PREREVIEW_BOT_TOKEN }}
+          sparse-checkout: |
+            locales/
+            crowdin.yml
+          sparse-checkout-cone-mode: false
+
+      - name: 'Download translations from Crowdin'
+        uses: crowdin/github-action@v2.4.0
+        with:
+          upload_sources: false
+          upload_translations: false
+          download_sources: false
+          download_translations: true
+          export_only_approved: true
+          push_translations: false
+        env:
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_API_TOKEN }}
+
+      - name: 'Remove empty files'
+        run: grep --files-with-matches --recursive --null "^{}" locales | xargs --no-run-if-empty -0 rm
+
+      - name: 'Remove empty locales'
+        run: find locales -empty -type d -delete
+
+      - name: 'Commit changes'
+        uses: stefanzweifel/git-auto-commit-action@v5.0.1
+        if: ${{ !env.ACT }}
+        with:
+          commit_message: 'Update locales'
+          commit_user_name: 'prereview-bot'
+          commit_user_email: 'engineering@prereview.org'
+          commit_author: 'prereview-bot <engineering@prereview.org>'
