@@ -3,7 +3,6 @@ import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import { apply, pipe } from 'fp-ts/lib/function.js'
-import helmet from 'helmet'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
@@ -22,7 +21,7 @@ import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
 import type { SupportedLocale } from './locales/index.js'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
 import { handleResponse } from './response.js'
-import { helmetOptions } from './securityHeaders.js'
+import { securityHeaders } from './securityHeaders.js'
 import { maybeGetUser, type User } from './user.js'
 
 export type ConfigEnv = Omit<
@@ -121,7 +120,6 @@ export const app = (config: ConfigEnv) => {
     useCrowdinInContext: boolean
   }) => {
     return express()
-      .disable('x-powered-by')
       .use((req, res, next) => {
         req.logger = logger
 
@@ -131,7 +129,12 @@ export const app = (config: ConfigEnv) => {
 
         next()
       })
-      .use(helmet(helmetOptions(config.publicUrl.protocol, useCrowdinInContext)))
+      .use((req, res, next) => {
+        res.setHeaders(new Headers(securityHeaders(config.publicUrl.protocol, useCrowdinInContext)))
+        res.removeHeader('X-Powered-By')
+
+        next()
+      })
       .use(asyncHandler(proxy))
       .use(express.urlencoded({ extended: true }))
       .use((req, res, next) => {
