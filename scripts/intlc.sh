@@ -4,6 +4,7 @@ set -e
 . "$(which mo)"
 
 defaultLocale="en-US"
+crowdinInContextLocale="lol-US"
 modules=$(find "locales/$defaultLocale" -name "*.json" -exec basename "{}" .json \;)
 assetsModules=("collapsible-menu" "html-editor" "single-use-form")
 mapfile -t srcModules < <(printf "%s\n" "${modules[@]}" "${assetsModules[@]}" "${assetsModules[@]}" | sort | uniq -u)

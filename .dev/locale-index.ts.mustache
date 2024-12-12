@@ -7,9 +7,11 @@ export type SupportedLocale = {{#locales}}| '{{.}}'{{/locales}}
 
 export const DefaultLocale: SupportedLocale = '{{defaultLocale}}'
 
+export const CrowdinInContextLocale: SupportedLocale = '{{crowdinInContextLocale}}'
+
 export const SupportedLocales = HashSet.fromIterable<SupportedLocale>([{{#locales}}'{{.}}', {{/locales}}])
 
-export const UserSelectableLocales = HashSet.fromIterable<SupportedLocale>([{{#locales}}'{{.}}', {{/locales}}]).pipe(HashSet.remove('lol-US'))
+export const UserSelectableLocales = HashSet.fromIterable<SupportedLocale>([{{#locales}}'{{.}}', {{/locales}}]).pipe(HashSet.remove('{{crowdinInContextLocale}}'))
 
 export const isSupportedLocale = (locale: string): locale is SupportedLocale =>
   [{{#locales}}'{{.}}', {{/locales}}].includes(locale)

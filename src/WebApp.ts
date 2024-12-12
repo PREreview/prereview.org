@@ -17,7 +17,7 @@ import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
 import { CanChooseLocale, UseCrowdinInContext } from './feature-flags.js'
 import { LegacyRouter } from './LegacyRouter.js'
-import { DefaultLocale, SupportedLocales } from './locales/index.js'
+import { CrowdinInContextLocale, DefaultLocale, SupportedLocales } from './locales/index.js'
 import { PublicUrl } from './public-url.js'
 import { FlashMessageSchema } from './response.js'
 import { Router } from './Router.js'
@@ -170,7 +170,7 @@ const getLocale = HttpMiddleware.make(app =>
     const useCrowdinInContext = yield* UseCrowdinInContext
 
     if (useCrowdinInContext) {
-      return yield* Effect.provideService(app, Locale, 'lol-US')
+      return yield* Effect.provideService(app, Locale, CrowdinInContextLocale)
     }
 
     if (!canChooseLocale) {
