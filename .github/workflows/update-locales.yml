@@ -37,12 +37,6 @@ jobs:
       - name: 'Restore file ownership'
         run: sudo chown -R $USER:$USER locales
 
-      - run: ls -la locales/pt-BR
-
-      - run: id
-
-      - run: tree -pug locales
-
       - name: 'Remove empty files'
         run: grep --files-with-matches --recursive --null "^{}" locales | xargs --no-run-if-empty -0 rm
 
