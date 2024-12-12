@@ -2440,20 +2440,24 @@ skip-link {
     position: relative;
     font-style: inherit;
 
-    &::after {
-      content: '';
-      position: absolute;
-      block-size: var(--space-xs);
-      background-color: var(--color-primary);
-      mask-image: url('underline.svg');
-      mask-repeat: no-repeat;
-      mask-size: 100% 100%;
-      inset-block-start: 84%;
-      inset-inline: 0;
+    @media (forced-colors: none) {
+      text-shadow:
+        -1px -1px 0 var(--color-background),
+        1px -1px 0 var(--color-background),
+        -1px 1px 0 var(--color-background),
+        1px 1px 0 var(--color-background);
 
-      @media (forced-colors: active) {
-        forced-color-adjust: none;
-        background-color: CanvasText;
+      &::after {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        block-size: var(--space-xs);
+        background-color: var(--color-primary);
+        mask-image: url('underline.svg');
+        mask-repeat: no-repeat;
+        mask-size: 100% 100%;
+        inset-block-start: 84%;
+        inset-inline: 0;
       }
     }
   }
