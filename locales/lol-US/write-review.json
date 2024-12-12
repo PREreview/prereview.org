@@ -244,5 +244,149 @@
   },
   "publishButton": {
     "message": "crwdns4060:0crwdne4060:0"
+  },
+  "removeAuthorTitle": {
+    "message": "crwdns4376:0{authorName}crwdnd4376:0{preprintTitle}crwdne4376:0"
+  },
+  "selectYesToRemove": {
+    "message": "crwdns4378:0{authorName}crwdne4378:0"
+  },
+  "sureYouWantToRemove": {
+    "message": "crwdns4380:0{authorName}crwdne4380:0"
+  },
+  "writeAPrereview": {
+    "message": "crwdns4382:0crwdne4382:0"
+  },
+  "continueWord": {
+    "message": "crwdns4384:0crwdne4384:0"
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "crwdns4434:0{preprintTitle}crwdne4434:0"
+  },
+  "authorsTitle": {
+    "message": "crwdns4388:0{preprintTitle}crwdne4388:0"
+  },
+  "selectYesIfYouReviewedWithSomeoneElse": {
+    "message": "crwdns4390:0crwdne4390:0"
+  },
+  "confirmOtherAuthorsHaveReadAndApproved": {
+    "message": "crwdns4392:0crwdne4392:0"
+  },
+  "didYouReviewWithAnyoneElse": {
+    "message": "crwdns4436:0crwdne4436:0"
+  },
+  "thisCanIncludePeopleWho": {
+    "message": "crwdns4396:0crwdne4396:0"
+  },
+  "noIReviewedAlone": {
+    "message": "crwdns4398:0crwdne4398:0"
+  },
+  "yesButDoNotWantToBeListed": {
+    "message": "crwdns4400:0crwdne4400:0"
+  },
+  "yesAndWantToBeListed": {
+    "message": "crwdns4402:0crwdne4402:0"
+  },
+  "theyHaveReadAndApproved": {
+    "message": "crwdns4404:0crwdne4404:0"
+  },
+  "competingInterestsTitle": {
+    "message": "crwdns4406:0{preprintTitle}crwdne4406:0"
+  },
+  "selectYesIfCompetingInterest": {
+    "message": "crwdns4408:0crwdne4408:0"
+  },
+  "competingInterestDetails": {
+    "message": "crwdns4410:0{the}crwdnd4410:0{your}crwdne4410:0"
+  },
+  "doYouHaveCompetingInterests": {
+    "message": "crwdns4412:0crwdne4412:0"
+  },
+  "whatIsCompetingInterest": {
+    "message": "crwdns4414:0crwdne4414:0"
+  },
+  "examples": {
+    "message": "crwdns4416:0crwdne4416:0"
+  },
+  "conflictAuthorOfPreprint": {
+    "message": "crwdns4438:0crwdne4438:0"
+  },
+  "conflictPersonalRelationship": {
+    "message": "crwdns4440:0crwdne4440:0"
+  },
+  "conflictRivalOfAuthor": {
+    "message": "crwdns4442:0crwdne4442:0"
+  },
+  "conflictRecentlyWorkedTogether": {
+    "message": "crwdns4444:0crwdne4444:0"
+  },
+  "conflictCollaborateWithAuthor": {
+    "message": "crwdns4446:0crwdne4446:0"
+  },
+  "conflictPublishedTogether": {
+    "message": "crwdns4448:0crwdne4448:0"
+  },
+  "conflictHoldGrantTogether": {
+    "message": "crwdns4450:0crwdne4450:0"
+  },
+  "whatAreThey": {
+    "message": "crwdns4432:0crwdne4432:0"
+  },
+  "codeOfConductTitle": {
+    "message": "crwdns4452:0{preprintTitle}crwdne4452:0"
+  },
+  "confirmCodeOfConduct": {
+    "message": "crwdns4454:0crwdne4454:0"
+  },
+  "codeOfConduct": {
+    "message": "crwdns4456:0crwdne4456:0"
+  },
+  "expectYouToAbideByCodeOfConduct": {
+    "message": "crwdns4458:0crwdne4458:0"
+  },
+  "examplesOfExpectedBehaviour": {
+    "message": "crwdns4460:0crwdne4460:0"
+  },
+  "expectedBehaviourLanguage": {
+    "message": "crwdns4462:0crwdne4462:0"
+  },
+  "expectedBehaviourFeedback": {
+    "message": "crwdns4464:0crwdne4464:0"
+  },
+  "expectedBehaviourRespect": {
+    "message": "crwdns4466:0crwdne4466:0"
+  },
+  "expectedBehaviourGracefulAcceptance": {
+    "message": "crwdns4468:0crwdne4468:0"
+  },
+  "expectedBehaviourBestOfCommunity": {
+    "message": "crwdns4470:0crwdne4470:0"
+  },
+  "expectedBehaviourEmpathy": {
+    "message": "crwdns4472:0crwdne4472:0"
+  },
+  "examplesOfUnacceptableBehaviour": {
+    "message": "crwdns4474:0crwdne4474:0"
+  },
+  "unacceptableBehaviourTrollingEtc": {
+    "message": "crwdns4476:0crwdne4476:0"
+  },
+  "unacceptableBehaviourUnconstructive": {
+    "message": "crwdns4478:0crwdne4478:0"
+  },
+  "unacceptableBehaviourHarassment": {
+    "message": "crwdns4480:0crwdne4480:0"
+  },
+  "unacceptableBehaviourPublishingConfidentialInformation": {
+    "message": "crwdns4482:0crwdne4482:0"
+  },
+  "unacceptableBehaviourSexualisedLanguage": {
+    "message": "crwdns4484:0crwdne4484:0"
+  },
+  "unacceptableBehaviourInappropriate": {
+    "message": "crwdns4486:0crwdne4486:0"
+  },
+  "iAmFollowingCodeOfConduct": {
+    "message": "crwdns4488:0crwdne4488:0"
   }
 }
