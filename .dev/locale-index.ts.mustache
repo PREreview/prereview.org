@@ -33,12 +33,18 @@ type Translations = {
 
 export const translate: {
   (locale: SupportedLocale): <M extends Module, K extends Key<M>>(module: M, key: K) => Translations[M][K] 
+  <M extends Module>(locale: SupportedLocale, module: M): <K extends Key<M>>(key: K) => Translations[M][K]
   <M extends Module, K extends Key<M>>(locale: SupportedLocale, module: M, key: K): Translations[M][K] 
 } =
   (locale: SupportedLocale, module?: string, key?: string) => {
     if(!module) {
       // @ts-ignore
       return (module: string | number, key: any) => modules[module](locale)(key)
+    }
+
+    if(!key) {
+      // @ts-ignore
+      return (key: string) => modules[module](locale)(key)
     }
 
     // @ts-ignore
