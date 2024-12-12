@@ -455,6 +455,22 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     leads: [{ name: 'Assist. Prof. Dr. Salwan M. Abdulateef', orcid: Orcid('0000-0002-7389-0003') }],
     contact: 'ag.salwan.mahmood@uoanbar.edu.iq' as EmailAddress,
   },
+  'open-science-community-uruguay': {
+    name: 'Open Science Community Uruguay (OSCU)',
+    description: html`
+      <p>
+        The founding members of this club are part of the Cellular and Molecular Neurophysiology Department of the
+        Instituto de Investigaciones Biológicas Clemente Estable, Montevideo, Uruguay.
+      </p>
+      <p>We aim to implement a small open peer review community as a way to support open science.</p>
+    `,
+    leads: [
+      { name: 'María Constanza Silvera', orcid: Orcid('0009-0006-1396-0432') },
+      { name: 'Daniel Prieto', orcid: Orcid('0000-0001-8356-1708') },
+      { name: 'Mateo Vidal Panario', orcid: Orcid('0009-0009-3980-7163') },
+    ],
+    contact: 'csilvera@fcien.edu.uy' as EmailAddress,
+  },
   oxplants: {
     name: 'OxPlants Preprint Club',
     description: html`

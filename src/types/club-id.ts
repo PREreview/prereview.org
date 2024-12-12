@@ -27,6 +27,7 @@ export const clubIds = [
   'nsa-utd',
   'open-box-science',
   'open-science-community-iraqi',
+  'open-science-community-uruguay',
   'oxplants',
   'prosac',
   'reviewing-dental-articles-club',
