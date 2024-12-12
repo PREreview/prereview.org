@@ -1,16 +1,17 @@
 import { type HttpApp, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServerRequest } from '@effect/platform-node'
-import { Config, type ConfigError, Effect, HashMap, Option, pipe } from 'effect'
+import { type ConfigError, Effect, HashMap, Option, pipe } from 'effect'
 import express, { type ErrorRequestHandler } from 'express'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import type { LogEntry } from 'logger-fp-ts'
 import * as L from 'logging-ts/lib/IO.js'
 import { DeprecatedLoggerEnv, Express, Locale } from './Context.js'
+import { UseCrowdinInContext } from './feature-flags.js'
 import { LoggedInUser } from './user.js'
 
 export const ExpressHttpApp: HttpApp.Default<
   ConfigError.ConfigError,
-  DeprecatedLoggerEnv | Express | HttpServerRequest.HttpServerRequest | Locale
+  DeprecatedLoggerEnv | Express | HttpServerRequest.HttpServerRequest | Locale | UseCrowdinInContext
 > = Effect.gen(function* () {
   const expressApp = yield* Express
   const loggerEnv = yield* DeprecatedLoggerEnv
@@ -20,7 +21,7 @@ export const ExpressHttpApp: HttpApp.Default<
   const nodeRequest = NodeHttpServerRequest.toIncomingMessage(request)
   const nodeResponse = NodeHttpServerRequest.toServerResponse(request)
   const locale = yield* Locale
-  const useCrowdinInContext = yield* Config.boolean('USE_CROWDIN_IN_CONTEXT').pipe(Config.withDefault(false))
+  const useCrowdinInContext = yield* UseCrowdinInContext
   const user = yield* Effect.serviceOption(LoggedInUser)
   const logAnnotations = yield* Effect.logAnnotations
 

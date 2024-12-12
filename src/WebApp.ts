@@ -15,7 +15,7 @@ import { StatusCodes } from 'http-status-codes'
 import { Express, ExpressConfig, FlashMessage, Locale } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
-import { CanChooseLocale } from './feature-flags.js'
+import { CanChooseLocale, UseCrowdinInContext } from './feature-flags.js'
 import { LegacyRouter } from './LegacyRouter.js'
 import { DefaultLocale, SupportedLocales } from './locales/index.js'
 import { PublicUrl } from './public-url.js'
@@ -103,7 +103,7 @@ const addSecurityHeaders = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const publicUrl = yield* PublicUrl
     const response = yield* app
-    const useCrowdinInContext = yield* Config.boolean('USE_CROWDIN_IN_CONTEXT').pipe(Config.withDefault(false))
+    const useCrowdinInContext = yield* UseCrowdinInContext
 
     return HttpServerResponse.setHeaders(response, securityHeaders(publicUrl.protocol, useCrowdinInContext))
   }),
@@ -167,7 +167,7 @@ const getLoggedInUser = HttpMiddleware.make(app =>
 const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const canChooseLocale = yield* CanChooseLocale
-    const useCrowdinInContext = yield* Config.boolean('USE_CROWDIN_IN_CONTEXT').pipe(Config.withDefault(false))
+    const useCrowdinInContext = yield* UseCrowdinInContext
 
     if (useCrowdinInContext) {
       return yield* Effect.provideService(app, Locale, 'lol-US')

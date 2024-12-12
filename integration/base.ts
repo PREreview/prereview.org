@@ -1317,7 +1317,14 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           zenodoApiKey: '',
           zenodoUrl: new URL('http://zenodo.test/'),
         }),
-        Effect.provide(FeatureFlags.layer({ canChooseLocale: false, canWriteComments, requiresAVerifiedEmailAddress })),
+        Effect.provide(
+          FeatureFlags.layer({
+            canChooseLocale: false,
+            canWriteComments,
+            requiresAVerifiedEmailAddress,
+            useCrowdinInContext: false,
+          }),
+        ),
         Effect.provide(Nodemailer.layer(nodemailer)),
         Effect.provideService(PublicUrl, new URL(`http://localhost:${port}`)),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),

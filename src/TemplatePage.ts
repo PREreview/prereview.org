@@ -1,5 +1,5 @@
 import { Config, Context, Effect, Layer, Option } from 'effect'
-import { CanChooseLocale } from './feature-flags.js'
+import { CanChooseLocale, UseCrowdinInContext } from './feature-flags.js'
 import type { Html } from './html.js'
 import { type Page, page as templatePage } from './page.js'
 import { PublicUrl } from './public-url.js'
@@ -19,7 +19,7 @@ export class TemplatePageOptions extends Context.Tag('TemplatePageOptions')<
 export const make = Effect.gen(function* () {
   const publicUrl = yield* PublicUrl
   const canChooseLocale = yield* CanChooseLocale
-  const useCrowdinInContext = yield* Config.boolean('USE_CROWDIN_IN_CONTEXT').pipe(Config.withDefault(false))
+  const useCrowdinInContext = yield* UseCrowdinInContext
   const { fathomId, environmentLabel } = yield* TemplatePageOptions
 
   return (page: Page) =>

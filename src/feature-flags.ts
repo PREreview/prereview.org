@@ -11,6 +11,8 @@ export class CanWriteComments extends Context.Tag('CanWriteComments')<CanWriteCo
 
 export class CanChooseLocale extends Context.Tag('CanChooseLocale')<CanChooseLocale, boolean>() {}
 
+export class UseCrowdinInContext extends Context.Tag('UseCrowdinInContext')<UseCrowdinInContext, boolean>() {}
+
 export class NotAllowedToWriteComments extends Data.TaggedError('NotAllowedToWriteComments') {}
 
 export const EnsureCanWriteComments: Effect.Effect<void, NotAllowedToWriteComments> = Effect.gen(function* () {
@@ -71,12 +73,17 @@ export const layer = (options: {
   canChooseLocale: typeof CanChooseLocale.Service
   canWriteComments: typeof CanWriteComments.Service
   requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
-}): Layer.Layer<CanChooseLocale | CanWriteComments | RequiresAVerifiedEmailAddress, ConfigError.ConfigError> =>
+  useCrowdinInContext: typeof UseCrowdinInContext.Service
+}): Layer.Layer<
+  CanChooseLocale | CanWriteComments | RequiresAVerifiedEmailAddress | UseCrowdinInContext,
+  ConfigError.ConfigError
+> =>
   Layer.succeedContext(
     Context.empty().pipe(
       Context.add(CanChooseLocale, options.canChooseLocale),
       Context.add(CanWriteComments, options.canWriteComments),
       Context.add(RequiresAVerifiedEmailAddress, options.requiresAVerifiedEmailAddress),
+      Context.add(UseCrowdinInContext, options.useCrowdinInContext),
     ),
   )
 

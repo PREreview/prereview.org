@@ -26,6 +26,7 @@ pipe(
       canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
       canWriteComments: Config.map(Config.withDefault(Config.boolean('CAN_WRITE_COMMENTS'), false), Function.constant),
       requiresAVerifiedEmailAddress: Config.withDefault(Config.boolean('REQUIRES_A_VERIFIED_EMAIL_ADDRESS'), false),
+      useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
     }),
   ),
   Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
