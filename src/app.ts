@@ -42,7 +42,7 @@ export type ConfigEnv = Omit<
 > &
   NodemailerEnv & {
     allowSiteCrawlers: boolean
-  } & {
+    useCrowdinInContext: boolean
     redis?: Redis
   }
 
@@ -111,13 +111,11 @@ export const app = (config: ConfigEnv) => {
     logger,
     runtime,
     user,
-    useCrowdinInContext,
   }: {
     locale: SupportedLocale
     logger: L.Logger
     runtime: RouterEnv['runtime']
     user?: User
-    useCrowdinInContext: boolean
   }) => {
     return express()
       .use((req, res, next) => {
@@ -130,7 +128,7 @@ export const app = (config: ConfigEnv) => {
         next()
       })
       .use((req, res, next) => {
-        res.setHeaders(new Headers(securityHeaders(config.publicUrl.protocol, useCrowdinInContext)))
+        res.setHeaders(new Headers(securityHeaders(config.publicUrl.protocol, config.useCrowdinInContext)))
         res.removeHeader('X-Powered-By')
 
         next()

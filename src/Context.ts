@@ -18,7 +18,15 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
   ExpressConfig,
   Omit<
     ConfigEnv,
-    'canWriteComments' | 'clock' | 'fetch' | 'generateUuid' | 'nodemailer' | 'publicUrl' | 'sleep' | 'templatePage'
+    | 'canWriteComments'
+    | 'clock'
+    | 'fetch'
+    | 'generateUuid'
+    | 'nodemailer'
+    | 'publicUrl'
+    | 'sleep'
+    | 'templatePage'
+    | 'useCrowdinInContext'
   >
 >() {}
 

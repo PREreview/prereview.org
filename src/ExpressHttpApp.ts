@@ -6,12 +6,11 @@ import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import type { LogEntry } from 'logger-fp-ts'
 import * as L from 'logging-ts/lib/IO.js'
 import { DeprecatedLoggerEnv, Express, Locale } from './Context.js'
-import { UseCrowdinInContext } from './feature-flags.js'
 import { LoggedInUser } from './user.js'
 
 export const ExpressHttpApp: HttpApp.Default<
   ConfigError.ConfigError,
-  DeprecatedLoggerEnv | Express | HttpServerRequest.HttpServerRequest | Locale | UseCrowdinInContext
+  DeprecatedLoggerEnv | Express | HttpServerRequest.HttpServerRequest | Locale
 > = Effect.gen(function* () {
   const expressApp = yield* Express
   const loggerEnv = yield* DeprecatedLoggerEnv
@@ -21,7 +20,6 @@ export const ExpressHttpApp: HttpApp.Default<
   const nodeRequest = NodeHttpServerRequest.toIncomingMessage(request)
   const nodeResponse = NodeHttpServerRequest.toServerResponse(request)
   const locale = yield* Locale
-  const useCrowdinInContext = yield* UseCrowdinInContext
   const user = yield* Effect.serviceOption(LoggedInUser)
   const logAnnotations = yield* Effect.logAnnotations
 
@@ -43,7 +41,7 @@ export const ExpressHttpApp: HttpApp.Default<
     )
 
     express()
-      .use(expressApp({ locale, logger, runtime, user: Option.getOrUndefined(user), useCrowdinInContext }))
+      .use(expressApp({ locale, logger, runtime, user: Option.getOrUndefined(user) }))
       .use(((error, req, res, next) => {
         if (error instanceof Error && 'code' in error && error.code === 'ERR_HTTP_HEADERS_SENT') {
           return next()
