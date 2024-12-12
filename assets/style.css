@@ -2448,7 +2448,7 @@ skip-link {
       mask-image: url('underline.svg');
       mask-repeat: no-repeat;
       mask-size: 100% 100%;
-      inset-block-start: 82%;
+      inset-block-start: 84%;
       inset-inline: 0;
 
       @media (forced-colors: active) {
