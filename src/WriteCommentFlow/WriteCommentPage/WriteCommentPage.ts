@@ -18,23 +18,24 @@ export const WriteCommentPage = ({
   prereview: Prereview
   locale: SupportedLocale
   user?: User
-}) =>
-  StreamlinePageResponse({
-    title: plainText(translate(locale, 'write-comment-flow', 'writeCommentTitle')()),
+}) => {
+  const t = translate(locale)
+
+  return StreamlinePageResponse({
+    title: plainText(t('write-comment-flow', 'writeCommentTitle')()),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"
-        >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
+        >${t('write-comment-flow', 'backToPrereview')()}</a
       >
     `,
     main: html`
-      <h1>${translate(locale, 'write-comment-flow', 'writeCommentTitle')()}</h1>
+      <h1>${t('write-comment-flow', 'writeCommentTitle')()}</h1>
 
       <article class="preview" tabindex="0" aria-labelledby="prereview-title">
         <header>
           <h2 id="prereview-title">
             ${rawHtml(
-              translate(
-                locale,
+              t(
                 'review-page',
                 prereview.structured ? 'structuredReviewTitle' : 'reviewTitle',
               )({
@@ -50,8 +51,7 @@ export const WriteCommentPage = ({
           <div class="byline">
             ${rawHtml(
               prereview.club
-                ? translate(
-                    locale,
+                ? t(
                     'review-page',
                     'clubReviewAuthors',
                   )({
@@ -59,13 +59,7 @@ export const WriteCommentPage = ({
                       Array.map(prereview.authors.named, author => author.name),
                       Array.appendAll(
                         prereview.authors.anonymous > 0
-                          ? [
-                              translate(
-                                locale,
-                                'review-page',
-                                'otherAuthors',
-                              )({ otherAuthors: prereview.authors.anonymous }),
-                            ]
+                          ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
                           : [],
                       ),
                       formatList(locale),
@@ -73,8 +67,7 @@ export const WriteCommentPage = ({
                     club: getClubName(prereview.club),
                     hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
                   })
-                : translate(
-                    locale,
+                : t(
                     'review-page',
                     'reviewAuthors',
                   )({
@@ -82,13 +75,7 @@ export const WriteCommentPage = ({
                       Array.map(prereview.authors.named, author => author.name),
                       Array.appendAll(
                         prereview.authors.anonymous > 0
-                          ? [
-                              translate(
-                                locale,
-                                'review-page',
-                                'otherAuthors',
-                              )({ otherAuthors: prereview.authors.anonymous }),
-                            ]
+                          ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
                           : [],
                       ),
                       formatList(locale),
@@ -100,7 +87,7 @@ export const WriteCommentPage = ({
 
           <dl>
             <div>
-              <dt>${translate(locale, 'review-page', 'published')()}</dt>
+              <dt>${t('review-page', 'published')()}</dt>
               <dd>${renderDate(locale)(prereview.published)}</dd>
             </div>
             <div>
@@ -108,7 +95,7 @@ export const WriteCommentPage = ({
               <dd class="doi" translate="no">${prereview.doi}</dd>
             </div>
             <div>
-              <dt>${translate(locale, 'review-page', 'license')()}</dt>
+              <dt>${t('review-page', 'license')()}</dt>
               <dd>
                 ${pipe(
                   Match.value(prereview.license),
@@ -116,7 +103,7 @@ export const WriteCommentPage = ({
                     'CC-BY-4.0',
                     () => html`
                       <dfn>
-                        <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
+                        <abbr title="${t('review-page', 'licenseCcBy40')()}"
                           ><span translate="no">CC BY 4.0</span></abbr
                         >
                       </dfn>
@@ -140,8 +127,7 @@ export const WriteCommentPage = ({
 
       <p>
         ${rawHtml(
-          translate(
-            locale,
+          t(
             'write-comment-flow',
             'youCanWrite',
           )({
@@ -157,18 +143,17 @@ export const WriteCommentPage = ({
       ${user
         ? ''
         : html`
-            <h2>${translate(locale, 'write-comment-flow', 'beforeStartHeading')()}</h2>
+            <h2>${t('write-comment-flow', 'beforeStartHeading')()}</h2>
 
-            <p>${translate(locale, 'write-comment-flow', 'orcidLogIn')()}</p>
+            <p>${t('write-comment-flow', 'orcidLogIn')()}</p>
 
             <details>
-              <summary><span>${translate(locale, 'write-comment-flow', 'whatIsOrcidHeading')()}</span></summary>
+              <summary><span>${t('write-comment-flow', 'whatIsOrcidHeading')()}</span></summary>
 
               <div>
                 <p>
                   ${rawHtml(
-                    translate(
-                      locale,
+                    t(
                       'write-comment-flow',
                       'whatIsOrcid',
                     )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString() }),
@@ -179,11 +164,12 @@ export const WriteCommentPage = ({
           `}
 
       <a href="${Routes.WriteCommentStartNow.href({ id: prereview.id })}" role="button" draggable="false"
-        >${translate(locale, 'write-comment-flow', 'startNowButton')()}</a
+        >${t('write-comment-flow', 'startNowButton')()}</a
       >
     `,
     canonical: Routes.WriteComment.href({ id: prereview.id }),
   })
+}
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
