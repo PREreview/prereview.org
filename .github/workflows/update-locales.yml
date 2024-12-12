@@ -34,6 +34,9 @@ jobs:
         env:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_API_TOKEN }}
 
+      - name: 'Restore file ownership'
+        run: sudo chown -R $USER:$USER locales
+
       - run: ls -la locales/pt-BR
 
       - run: id
