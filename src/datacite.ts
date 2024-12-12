@@ -9,6 +9,7 @@ import type { Refinement } from 'fp-ts/lib/Refinement.js'
 import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
+import type { LanguageCode } from 'iso-639-1'
 import { parse } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language.js'
@@ -120,6 +121,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           'language',
           E.fromOptionK(() => 'unknown language' as const)(({ text }) =>
             match({ type, text })
+              .returnType<O.Option<LanguageCode>>()
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arcadia-science' }, () => O.some('en' as const))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
@@ -146,6 +148,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           'language',
           E.fromOptionK(() => 'unknown language')(({ text }) =>
             match({ type, text })
+              .returnType<O.Option<LanguageCode>>()
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arcadia-science' }, () => O.some('en' as const))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
