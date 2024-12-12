@@ -1,10 +1,6 @@
-import { Array, String, Tuple } from 'effect'
+import { Array, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { Eq } from 'fp-ts/lib/Eq.js'
 import * as R from 'fp-ts/lib/Reader.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
-import * as s from 'fp-ts/lib/string.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
@@ -97,10 +93,9 @@ export const page = ({
   useCrowdinInContext: boolean
 }): Html => {
   const scripts = pipe(
-    js,
-    RA.uniq(stringEq()),
-    RA.concatW(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
-    RA.concatW(type !== 'streamline' ? ['collapsible-menu.js' as const] : []),
+    Array.dedupe(js),
+    Array.appendAll(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
+    Array.appendAll(type !== 'streamline' ? ['collapsible-menu.js' as const] : []),
   )
 
   return html`
@@ -123,10 +118,10 @@ export const page = ({
               <script type="text/javascript" src="https://cdn.crowdin.com/jipt/jipt.js"></script>
             `
           : ''}
-        ${scripts.flatMap(
-          flow(
-            file => assets[file].preload as ReadonlyArray<string>,
-            RA.map(preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
+        ${scripts.flatMap(file =>
+          Array.map(
+            assets[file].preload,
+            preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`,
           ),
         )}
         ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
@@ -529,10 +524,6 @@ export const page = ({
       </body>
     </html>
   `
-}
-
-function stringEq<A>(): Eq<A> {
-  return s.Eq as Eq<A>
 }
 
 type Assets<A extends string> = EndsWith<keyof typeof assets, A>
