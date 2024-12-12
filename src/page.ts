@@ -4,7 +4,7 @@ import * as R from 'fp-ts/lib/Reader.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
-import { DefaultLocale, type SupportedLocale, SupportedLocales, translate } from './locales/index.js'
+import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from './locales/index.js'
 import assets from './manifest.json' with { type: 'json' }
 import {
   aboutUsMatch,
@@ -314,7 +314,7 @@ export const page = ({
                         <locale-picker>
                           <ul>
                             ${pipe(
-                              Array.fromIterable(SupportedLocales),
+                              Array.fromIterable(UserSelectableLocales),
                               Array.map(supportedLocale =>
                                 Tuple.make(
                                   supportedLocale,
