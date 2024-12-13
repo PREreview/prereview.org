@@ -1,6 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Effect } from 'effect'
-import { format } from 'fp-ts-routing'
 import { DeprecatedSleepEnv, Locale } from '../Context.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { getPage, GhostApi } from '../ghost.js'
@@ -8,7 +7,7 @@ import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { type Html, fixHeadingLevels, html, plainText } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
-import { aboutUsMatch } from '../routes.js'
+import * as Routes from '../routes.js'
 
 export const AboutUsPage = Effect.gen(function* () {
   const locale = yield* Locale
@@ -35,7 +34,7 @@ function createPage({ content, locale }: { content: Html; locale: SupportedLocal
 
       ${fixHeadingLevels(1, content)}
     `,
-    canonical: format(aboutUsMatch.formatter, {}),
+    canonical: Routes.AboutUs,
     current: 'about-us',
   })
 }

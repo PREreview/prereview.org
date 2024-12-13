@@ -3,12 +3,11 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, pipe, TestContext } from 'effect'
 import fetchMock from 'fetch-mock'
-import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/AboutUsPage/index.js'
 import { DeprecatedSleepEnv, Locale } from '../../src/Context.js'
 import { GhostApi } from '../../src/ghost.js'
-import { aboutUsMatch } from '../../src/routes.js'
+import * as Routes from '../../src/routes.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -32,7 +31,7 @@ describe('AboutUsPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          canonical: format(aboutUsMatch.formatter, {}),
+          canonical: Routes.AboutUs,
           current: 'about-us',
           status: Status.OK,
           title: expect.anything(),

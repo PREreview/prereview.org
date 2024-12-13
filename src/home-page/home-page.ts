@@ -9,8 +9,8 @@ import { type Html, html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import assets from '../manifest.json' with { type: 'json' }
 import { PageResponse } from '../response.js'
+import * as Routes from '../routes.js'
 import {
-  aboutUsMatch,
   homeMatch,
   requestAPrereviewMatch,
   reviewAPreprintMatch,
@@ -78,9 +78,7 @@ export const createPage = ({
 
           <p>${translate(locale, 'home-page', 'overviewBetterWayText')()}</p>
 
-          <a href="${format(aboutUsMatch.formatter, {})}" class="forward"
-            >${translate(locale, 'home-page', 'overviewBetterWayLink')()}</a
-          >
+          <a href="${Routes.AboutUs}" class="forward">${translate(locale, 'home-page', 'overviewBetterWayLink')()}</a>
         </section>
       </div>
 

@@ -42,7 +42,7 @@ export const LegacyRouter = HttpRouter.empty
     HttpRouter.all('/blog', movedPermanently('https://content.prereview.org/')),
     HttpRouter.all('/coc', movedPermanently(format(Routes.codeOfConductMatch.formatter, {}))),
     HttpRouter.all('/communities', movedPermanently(format(Routes.clubsMatch.formatter, {}))),
-    HttpRouter.all('/docs/about', movedPermanently(format(Routes.aboutUsMatch.formatter, {}))),
+    HttpRouter.all('/docs/about', movedPermanently(Routes.AboutUs)),
     HttpRouter.all('/docs/codeofconduct', movedPermanently(format(Routes.codeOfConductMatch.formatter, {}))),
     HttpRouter.all('/docs/code_of_conduct', movedPermanently(format(Routes.codeOfConductMatch.formatter, {}))),
     HttpRouter.all('/docs/resources', movedPermanently(format(Routes.resourcesMatch.formatter, {}))),

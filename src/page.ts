@@ -6,8 +6,8 @@ import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
 import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from './locales/index.js'
 import assets from './manifest.json' with { type: 'json' }
+import * as Routes from './routes.js'
 import {
-  aboutUsMatch,
   clubsMatch,
   codeOfConductMatch,
   ediaStatementMatch,
@@ -169,9 +169,7 @@ export const page = ({
                               <a href="https://content.prereview.org/">${translate(locale, 'header', 'menuBlog')()}</a>
                             </li>
                             <li>
-                              <a
-                                href="${format(aboutUsMatch.formatter, {})}"
-                                ${current === 'about-us' ? html`aria-current="page"` : ''}
+                              <a href="${Routes.AboutUs}" ${current === 'about-us' ? html`aria-current="page"` : ''}
                                 >${translate(locale, 'header', 'menuAboutUs')()}</a
                               >
                             </li>
