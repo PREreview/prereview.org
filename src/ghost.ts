@@ -1,6 +1,5 @@
+import { Schema } from 'effect'
 import * as F from 'fetch-fp-ts'
-import * as E from 'fp-ts/lib/Either.js'
-import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { flow, identity, pipe } from 'fp-ts/lib/function.js'
@@ -17,30 +16,20 @@ export interface GhostApiEnv {
   }
 }
 
-const JsonD = {
-  decode: (s: string) =>
-    pipe(
-      J.parse(s),
-      E.mapLeft(() => D.error(s, 'JSON')),
+const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.Object, {
+  strict: true,
+  decode: string => sanitizeHtml(string, true),
+  encode: String,
+}) as Schema.Schema<Html, string>
+
+const GhostPageSchema = Schema.parseJson(
+  Schema.Struct({
+    pages: Schema.Tuple(
+      Schema.Struct({
+        html: HtmlSchema,
+      }),
     ),
-}
-
-const HtmlD = pipe(
-  D.string,
-  D.map(string => sanitizeHtml(string, true)),
-)
-
-const GhostPageD = pipe(
-  JsonD,
-  D.compose(
-    D.struct({
-      pages: D.tuple(
-        D.struct({
-          html: HtmlD,
-        }),
-      ),
-    }),
-  ),
+  }),
 )
 
 export const getPage = (
@@ -53,7 +42,8 @@ export const getPage = (
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
     RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-    RTE.chainTaskEitherKW(F.decode(GhostPageD)),
+    RTE.chainTaskEitherKW(F.getText(() => D.error(undefined, 'string'))),
+    RTE.chainEitherKW(Schema.decodeEither(GhostPageSchema)),
     RTE.bimap(
       error =>
         match(error)
