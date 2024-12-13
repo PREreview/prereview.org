@@ -43,25 +43,28 @@ const GhostPageD = pipe(
   ),
 )
 
-export const getPage: (
+export const getPage = (
   id: string,
-) => RTE.ReaderTaskEither<GhostApiEnv & F.FetchEnv & SleepEnv, 'not-found' | 'unavailable', Html> = flow(
-  RTE.fromReaderK(id => ghostUrl(`pages/${id}`)),
-  RTE.chainW(flow(F.Request('GET'), F.send)),
-  RTE.local(revalidateIfStale<F.FetchEnv & GhostApiEnv & SleepEnv>()),
-  RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(2000)),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-  RTE.chainTaskEitherKW(F.decode(GhostPageD)),
-  RTE.bimap(
-    error =>
-      match(error)
-        .with({ status: Status.NotFound }, () => 'not-found' as const)
-        .otherwise(() => 'unavailable' as const),
-    response =>
-      rawHtml(response.pages[0].html.toString().replaceAll(/href="https?:\/\/prereview\.org\/?(.*?)"/g, 'href="/$1"')),
-  ),
-)
+): RTE.ReaderTaskEither<GhostApiEnv & F.FetchEnv & SleepEnv, 'not-found' | 'unavailable', Html> =>
+  pipe(
+    RTE.fromReader(ghostUrl(`pages/${id}`)),
+    RTE.chainW(flow(F.Request('GET'), F.send)),
+    RTE.local(revalidateIfStale<F.FetchEnv & GhostApiEnv & SleepEnv>()),
+    RTE.local(useStaleCache()),
+    RTE.local(timeoutRequest(2000)),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.chainTaskEitherKW(F.decode(GhostPageD)),
+    RTE.bimap(
+      error =>
+        match(error)
+          .with({ status: Status.NotFound }, () => 'not-found' as const)
+          .otherwise(() => 'unavailable' as const),
+      response =>
+        rawHtml(
+          response.pages[0].html.toString().replaceAll(/href="https?:\/\/prereview\.org\/?(.*?)"/g, 'href="/$1"'),
+        ),
+    ),
+  )
 
 const ghostUrl = (path: string) =>
   R.asks(
