@@ -1,5 +1,3 @@
-import type { HttpRouter } from '@effect/platform'
-
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
 import { Schema } from 'effect'
@@ -20,8 +18,8 @@ import { NonEmptyStringC } from './types/string.js'
 import { UuidC } from './types/uuid.js'
 
 export interface Route<A extends { readonly [K in keyof A]: unknown }> {
-  path: HttpRouter.PathInput
-  href: (a: A) => string
+  path: `/${string}`
+  href: (a: A) => `/${string}`
   schema: Schema.Schema<A, { readonly [K in keyof A]: string }>
 }
 
