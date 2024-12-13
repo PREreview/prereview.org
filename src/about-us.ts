@@ -1,20 +1,29 @@
+import { FetchHttpClient } from '@effect/platform'
+import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
-import { getPage } from './ghost.js'
+import { DeprecatedSleepEnv, Locale } from './Context.js'
+import * as FptsToEffect from './FptsToEffect.js'
+import { getPage, GhostApi } from './ghost.js'
+import { HavingProblemsPage } from './HavingProblemsPage/index.js'
 import { type Html, fixHeadingLevels, html, plainText } from './html.js'
-import { havingProblemsPage } from './http-error.js'
 import { type SupportedLocale, translate } from './locales/index.js'
 import { PageResponse } from './response.js'
 import { aboutUsMatch } from './routes.js'
 
-export const aboutUs = (locale: SupportedLocale) =>
-  pipe(
-    RTE.Do,
-    RTE.apS('content', getPage('6154aa157741400e8722bb14')),
-    RTE.let('locale', () => locale),
-    RTE.matchW(() => havingProblemsPage, createPage),
-  )
+export const aboutUs = Effect.gen(function* () {
+  const locale = yield* Locale
+  const fetch = yield* FetchHttpClient.Fetch
+  const ghostApi = yield* GhostApi
+  const sleep = yield* DeprecatedSleepEnv
+
+  const content = yield* FptsToEffect.readerTaskEither(getPage('6154aa157741400e8722bb14'), {
+    fetch,
+    ghostApi,
+    ...sleep,
+  })
+
+  return createPage({ content, locale })
+}).pipe(Effect.catchAll(() => HavingProblemsPage))
 
 function createPage({ content, locale }: { content: Html; locale: SupportedLocale }) {
   const t = translate(locale)
