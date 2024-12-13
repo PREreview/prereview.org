@@ -8,7 +8,7 @@ import { pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
-import { type SleepEnv, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { type SleepEnv, revalidateIfStale, useStaleCache } from './fetch.js'
 import { type Html, rawHtml, sanitizeHtml } from './html.js'
 
 export interface GhostApiEnv {
@@ -40,6 +40,7 @@ export const getPage = (
         pipe(
           id,
           getPageWithEffect,
+          Effect.timeoutFail({ duration: '2 seconds', onTimeout: () => 'unavailable' as const }),
           Effect.match({
             onFailure: E.left,
             onSuccess: E.right,
@@ -52,7 +53,6 @@ export const getPage = (
     ),
     RTE.local(revalidateIfStale<F.FetchEnv & GhostApiEnv & SleepEnv>()),
     RTE.local(useStaleCache()),
-    RTE.local(timeoutRequest(2000)),
   )
 
 class GhostApi extends Context.Tag('GhostApi')<GhostApi, { key: string }>() {}
