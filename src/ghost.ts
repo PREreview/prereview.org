@@ -1,5 +1,5 @@
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform'
-import { Context, Effect, Schema } from 'effect'
+import { Context, Effect, identity, Schema } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -39,6 +39,7 @@ export const getPage = (
         pipe(
           id,
           getPageWithEffect,
+          Effect.either,
           Effect.provideService(GhostApi, env.ghostApi),
           Effect.provide(FetchHttpClient.layer),
           Effect.provideService(FetchHttpClient.Fetch, env.fetch as unknown as typeof globalThis.fetch),
@@ -67,13 +68,10 @@ const getPageWithEffect = (id: string) =>
     const client = yield* HttpClient.HttpClient
     const ghostApi = yield* GhostApi
 
-    const response = yield* client.get(
-      new URL(`https://content.prereview.org/ghost/api/content/pages/${id}?key=${ghostApi.key}`),
+    return yield* pipe(
+      client.get(new URL(`https://content.prereview.org/ghost/api/content/pages/${id}?key=${ghostApi.key}`)),
+      Effect.filterOrFail(response => response.status === 200, identity),
+      Effect.andThen(HttpClientResponse.schemaBodyJson(GhostPageSchema)),
+      Effect.scoped,
     )
-
-    if (response.status !== 200) {
-      return yield* Effect.fail(response)
-    }
-
-    return yield* HttpClientResponse.schemaBodyJson(GhostPageSchema)(response)
-  }).pipe(Effect.scoped, Effect.either)
+  })
