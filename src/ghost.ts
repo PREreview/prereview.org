@@ -39,7 +39,7 @@ export const getPage = (
         pipe(
           id,
           getPageWithEffect,
-          Effect.timeoutFail({ duration: '2 seconds', onTimeout: () => 'unavailable' as const }),
+          Effect.timeoutFail({ duration: '2 seconds', onTimeout: () => new GhostPageUnavailable() }),
           Effect.map(E.right),
           Effect.catchTag('GhostPageNotFound', () => Effect.succeed(E.left('not-found' as const))),
           Effect.catchTag('GhostPageUnavailable', () => Effect.succeed(E.left('unavailable' as const))),
