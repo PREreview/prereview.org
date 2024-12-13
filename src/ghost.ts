@@ -1,4 +1,6 @@
-import { Schema } from 'effect'
+import { HttpClient } from '@effect/platform'
+import { NodeHttpClient } from '@effect/platform-node'
+import { Context, Effect, Schema } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -37,6 +39,16 @@ export const getPage = (
 ): RTE.ReaderTaskEither<GhostApiEnv & F.FetchEnv & SleepEnv, 'not-found' | 'unavailable', Html> =>
   pipe(
     RTE.fromReader(ghostUrl(`pages/${id}`)),
+    RTE.chainFirstTaskEitherK(
+      () => () =>
+        pipe(
+          id,
+          getPageWithEffect,
+          Effect.provideService(GhostApi, { key: 'foo' }),
+          Effect.provide(NodeHttpClient.layer),
+          Effect.runPromise,
+        ),
+    ),
     RTE.chainW(flow(F.Request('GET'), F.send)),
     RTE.local(revalidateIfStale<F.FetchEnv & GhostApiEnv & SleepEnv>()),
     RTE.local(useStaleCache()),
@@ -55,6 +67,16 @@ export const getPage = (
         ),
     ),
   )
+
+class GhostApi extends Context.Tag('GhostApi')<GhostApi, { key: string }>() {}
+
+const getPageWithEffect = (id: string) =>
+  Effect.gen(function* () {
+    const client = yield* HttpClient.HttpClient
+    const ghostApi = yield* GhostApi
+
+    yield* client.get(new URL(`https://content.prereview.org/ghost/api/content/pages/${id}?key=${ghostApi.key}`))
+  }).pipe(Effect.scoped, Effect.either)
 
 const ghostUrl = (path: string) =>
   R.asks(
