@@ -1,12 +1,11 @@
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform'
-import { Context, Effect, identity, Schema } from 'effect'
+import { Context, Effect, flow, identity, Match, Schema } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { pipe } from 'fp-ts/lib/function.js'
-import { Status } from 'hyper-ts'
-import { match } from 'ts-pattern'
+import { StatusCodes } from 'http-status-codes'
 import { URL } from 'url'
 import { type SleepEnv, revalidateIfStale, useStaleCache } from './fetch.js'
 import { type Html, rawHtml, sanitizeHtml } from './html.js'
@@ -71,10 +70,12 @@ const getPageWithEffect = (id: string) =>
       Effect.andThen(html =>
         rawHtml(html.toString().replaceAll(/href="https?:\/\/prereview\.org\/?(.*?)"/g, 'href="/$1"')),
       ),
-      Effect.mapError(error =>
-        match(error)
-          .with({ status: Status.NotFound }, () => 'not-found' as const)
-          .otherwise(() => 'unavailable' as const),
+      Effect.mapError(
+        flow(
+          Match.value,
+          Match.when({ status: StatusCodes.NOT_FOUND }, () => 'not-found' as const),
+          Match.orElse(() => 'unavailable' as const),
+        ),
       ),
     )
   })
