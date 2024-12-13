@@ -210,7 +210,7 @@ const WriteCommentFlowRouter = pipe(
 
 export const Router = pipe(
   HttpRouter.empty,
-  HttpRouter.get(Routes.AboutUs.path, pipe(AboutUsPage, Effect.andThen(toHttpServerResponse))),
+  HttpRouter.get(Routes.AboutUs, pipe(AboutUsPage, Effect.andThen(toHttpServerResponse))),
   HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
     HttpMiddleware.make(

@@ -25,11 +25,7 @@ export interface Route<A extends { readonly [K in keyof A]: unknown }> {
   schema: Schema.Schema<A, { readonly [K in keyof A]: string }>
 }
 
-export const AboutUs: Route<object> = {
-  path: '/about',
-  href: () => '/about',
-  schema: Schema.Struct({}),
-}
+export const AboutUs = '/about'
 
 export const WriteComment: Route<{ id: number }> = {
   path: '/reviews/:id/write-a-comment',
