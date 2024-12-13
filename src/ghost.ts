@@ -38,17 +38,17 @@ export const getPage = (
   id: string,
 ): RTE.ReaderTaskEither<GhostApiEnv & F.FetchEnv & SleepEnv, 'not-found' | 'unavailable', Html> =>
   pipe(
-    RTE.fromReader(ghostUrl(`pages/${id}`)),
-    RTE.chainFirstTaskEitherK(
-      () => () =>
+    R.asks(
+      (env: GhostApiEnv) => () =>
         pipe(
           id,
           getPageWithEffect,
-          Effect.provideService(GhostApi, { key: 'foo' }),
+          Effect.provideService(GhostApi, env.ghostApi),
           Effect.provide(NodeHttpClient.layer),
           Effect.runPromise,
         ),
     ),
+    RTE.chainReaderK(() => ghostUrl(`pages/${id}`)),
     RTE.chainW(flow(F.Request('GET'), F.send)),
     RTE.local(revalidateIfStale<F.FetchEnv & GhostApiEnv & SleepEnv>()),
     RTE.local(useStaleCache()),
