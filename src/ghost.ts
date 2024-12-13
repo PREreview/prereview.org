@@ -1,6 +1,7 @@
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform'
 import { Context, Effect, identity, Schema } from 'effect'
 import type * as F from 'fetch-fp-ts'
+import * as E from 'fp-ts/lib/Either.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { pipe } from 'fp-ts/lib/function.js'
@@ -39,7 +40,10 @@ export const getPage = (
         pipe(
           id,
           getPageWithEffect,
-          Effect.either,
+          Effect.match({
+            onFailure: E.left,
+            onSuccess: E.right,
+          }),
           Effect.provideService(GhostApi, env.ghostApi),
           Effect.provide(FetchHttpClient.layer),
           Effect.provideService(FetchHttpClient.Fetch, env.fetch as unknown as typeof globalThis.fetch),
@@ -49,16 +53,6 @@ export const getPage = (
     RTE.local(revalidateIfStale<F.FetchEnv & GhostApiEnv & SleepEnv>()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
-    RTE.bimap(
-      error =>
-        match(error)
-          .with({ status: Status.NotFound }, () => 'not-found' as const)
-          .otherwise(() => 'unavailable' as const),
-      response =>
-        rawHtml(
-          response.pages[0].html.toString().replaceAll(/href="https?:\/\/prereview\.org\/?(.*?)"/g, 'href="/$1"'),
-        ),
-    ),
   )
 
 class GhostApi extends Context.Tag('GhostApi')<GhostApi, { key: string }>() {}
@@ -73,5 +67,14 @@ const getPageWithEffect = (id: string) =>
       Effect.filterOrFail(response => response.status === 200, identity),
       Effect.andThen(HttpClientResponse.schemaBodyJson(GhostPageSchema)),
       Effect.scoped,
+      Effect.andThen(response => response.pages[0].html),
+      Effect.andThen(html =>
+        rawHtml(html.toString().replaceAll(/href="https?:\/\/prereview\.org\/?(.*?)"/g, 'href="/$1"')),
+      ),
+      Effect.mapError(error =>
+        match(error)
+          .with({ status: Status.NotFound }, () => 'not-found' as const)
+          .otherwise(() => 'unavailable' as const),
+      ),
     )
   })
