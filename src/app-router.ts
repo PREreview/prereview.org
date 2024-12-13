@@ -24,7 +24,6 @@ import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
-import { aboutUs } from './about-us.js'
 import {
   authorInvite,
   authorInviteCheck,
@@ -166,7 +165,6 @@ import { reviewRequests } from './review-requests-page/index.js'
 import { reviewsData } from './reviews-data/index.js'
 import { reviewsPage } from './reviews-page/index.js'
 import {
-  aboutUsMatch,
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
@@ -505,21 +503,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getRecentPrereviews: withEnv(getRecentPrereviewsFromZenodo, env),
         })),
-      ),
-    ),
-    pipe(
-      aboutUsMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', ({ locale }) => RM.fromReaderTask(aboutUs(locale))),
-          RM.ichainW(handleResponse),
-        ),
       ),
     ),
     pipe(

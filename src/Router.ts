@@ -1,8 +1,18 @@
-import { Cookies, Headers, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import {
+  Cookies,
+  FetchHttpClient,
+  Headers,
+  HttpMiddleware,
+  HttpRouter,
+  HttpServerRequest,
+  HttpServerResponse,
+} from '@effect/platform'
 import { Effect, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { ExpressConfig, FlashMessage, Locale } from './Context.js'
+import { aboutUs } from './about-us.js'
+import { DeprecatedSleepEnv, ExpressConfig, FlashMessage, Locale } from './Context.js'
+import * as FptsToEffect from './FptsToEffect.js'
 import { PublicUrl } from './public-url.js'
 import { Redis } from './Redis.js'
 import {
@@ -209,6 +219,20 @@ const WriteCommentFlowRouter = pipe(
 
 export const Router = pipe(
   HttpRouter.empty,
+  HttpRouter.get(
+    Routes.AboutUs.path,
+    pipe(
+      Effect.gen(function* () {
+        const locale = yield* Locale
+        const fetch = yield* FetchHttpClient.Fetch
+        const { ghostApi } = yield* ExpressConfig
+        const sleep = yield* DeprecatedSleepEnv
+
+        return yield* FptsToEffect.readerTask(aboutUs(locale), { fetch, ghostApi, ...sleep })
+      }),
+      Effect.andThen(toHttpServerResponse),
+    ),
+  ),
   HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
     HttpMiddleware.make(

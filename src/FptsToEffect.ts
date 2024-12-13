@@ -3,6 +3,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import type * as IO from 'fp-ts/lib/IO.js'
 import * as O from 'fp-ts/lib/Option.js'
 import type { Reader } from 'fp-ts/lib/Reader.js'
+import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as T from 'fp-ts/lib/Task.js'
@@ -22,6 +23,11 @@ export const taskEither: <E, A>(value: TE.TaskEither<E, A>) => Effect.Effect<A, 
 
 export const reader: <R, A>(value: Reader<R, A>, env: R) => Effect.Effect<A> = (value, env) =>
   Effect.sync(() => value(env))
+
+export const readerTask: <R, A>(value: RT.ReaderTask<R, A>, env: R) => Effect.Effect<A> = flow(
+  reader,
+  Effect.andThen(task),
+)
 
 export const readerTaskEither: <R, E, A>(value: RTE.ReaderTaskEither<R, E, A>, env: R) => Effect.Effect<A, E> = flow(
   reader,
