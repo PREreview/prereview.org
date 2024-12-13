@@ -1,5 +1,5 @@
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform'
-import { Context, Effect, flow, identity, Match, Schema } from 'effect'
+import { Context, Data, Effect, flow, identity, Match, Schema } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as R from 'fp-ts/lib/Reader.js'
@@ -40,10 +40,9 @@ export const getPage = (
           id,
           getPageWithEffect,
           Effect.timeoutFail({ duration: '2 seconds', onTimeout: () => 'unavailable' as const }),
-          Effect.match({
-            onFailure: E.left,
-            onSuccess: E.right,
-          }),
+          Effect.map(E.right),
+          Effect.catchTag('GhostPageNotFound', () => Effect.succeed(E.left('not-found' as const))),
+          Effect.catchTag('GhostPageUnavailable', () => Effect.succeed(E.left('unavailable' as const))),
           Effect.provideService(GhostApi, env.ghostApi),
           Effect.provide(FetchHttpClient.layer),
           Effect.provideService(FetchHttpClient.Fetch, env.fetch as unknown as typeof globalThis.fetch),
@@ -55,6 +54,10 @@ export const getPage = (
   )
 
 export class GhostApi extends Context.Tag('GhostApi')<GhostApi, { key: string }>() {}
+
+class GhostPageNotFound extends Data.TaggedError('GhostPageNotFound') {}
+
+class GhostPageUnavailable extends Data.TaggedError('GhostPageUnavailable') {}
 
 const getPageWithEffect = (id: string) =>
   Effect.gen(function* () {
@@ -73,8 +76,8 @@ const getPageWithEffect = (id: string) =>
       Effect.mapError(
         flow(
           Match.value,
-          Match.when({ status: StatusCodes.NOT_FOUND }, () => 'not-found' as const),
-          Match.orElse(() => 'unavailable' as const),
+          Match.when({ status: StatusCodes.NOT_FOUND }, () => new GhostPageNotFound()),
+          Match.orElse(() => new GhostPageUnavailable()),
         ),
       ),
     )
