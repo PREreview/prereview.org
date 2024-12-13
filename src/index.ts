@@ -10,6 +10,7 @@ import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from
 import { ExpressConfigLive } from './ExpressServer.js'
 import * as FeatureFlags from './feature-flags.js'
 import * as FptsToEffect from './FptsToEffect.js'
+import { GhostApi } from './ghost.js'
 import * as Nodemailer from './nodemailer.js'
 import { Program } from './Program.js'
 import { PublicUrl } from './public-url.js'
@@ -41,6 +42,7 @@ pipe(
       Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
     ),
   ),
+  Effect.provideServiceEffect(GhostApi, Config.all({ key: Config.string('GHOST_API_KEY') })),
   Effect.provide(Nodemailer.layerConfig(Config.url('SMTP_URI'))),
   Effect.provide(Redis.layerConfig(Config.url('REDIS_URI'))),
   Effect.provideServiceEffect(

@@ -51,6 +51,7 @@ import type {
   RequiresAVerifiedEmailAddress,
 } from '../src/feature-flags.js'
 import * as FeatureFlags from '../src/feature-flags.js'
+import { GhostApi } from '../src/ghost.js'
 import { rawHtml } from '../src/html.js'
 import type {
   AuthorInviteStoreEnv,
@@ -1275,9 +1276,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           coarNotifyToken: 'token',
           coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
           contactEmailAddressStore,
-          ghostApi: {
-            key: 'key',
-          },
           isOpenForRequestsStore,
           isUserBlocked,
           languagesStore,
@@ -1325,6 +1323,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             useCrowdinInContext: false,
           }),
         ),
+        Effect.provideService(GhostApi, { key: 'key' }),
         Effect.provide(Nodemailer.layer(nodemailer)),
         Effect.provideService(PublicUrl, new URL(`http://localhost:${port}`)),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),

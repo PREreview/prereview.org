@@ -55,7 +55,7 @@ export const getPage = (
     RTE.local(useStaleCache()),
   )
 
-class GhostApi extends Context.Tag('GhostApi')<GhostApi, { key: string }>() {}
+export class GhostApi extends Context.Tag('GhostApi')<GhostApi, { key: string }>() {}
 
 const getPageWithEffect = (id: string) =>
   Effect.gen(function* () {

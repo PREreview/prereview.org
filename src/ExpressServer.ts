@@ -6,6 +6,7 @@ import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { CanWriteComments, UseCrowdinInContext } from './feature-flags.js'
+import { GhostApi } from './ghost.js'
 import { Nodemailer } from './nodemailer.js'
 import { PublicUrl } from './public-url.js'
 import { Redis } from './Redis.js'
@@ -23,12 +24,14 @@ export const expressServer = Effect.gen(function* () {
   const generateUuid = yield* Effect.andThen(GenerateUuid, EffectToFpts.makeIO)
   const templatePage = yield* TemplatePage
   const useCrowdinInContext = yield* UseCrowdinInContext
+  const ghostApi = yield* GhostApi
 
   return app({
     canWriteComments,
     clock,
     fetch,
     generateUuid,
+    ghostApi,
     nodemailer,
     publicUrl,
     ...sleep,
@@ -65,9 +68,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     }),
     formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
     careerStageStore: new Keyv({ emitErrors: false, namespace: 'career-stage', store: createKeyvStore() }),
-    ghostApi: {
-      key: env.GHOST_API_KEY,
-    },
     isOpenForRequestsStore: new Keyv({
       emitErrors: false,
       namespace: 'is-open-for-requests',

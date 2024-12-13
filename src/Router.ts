@@ -13,6 +13,7 @@ import { StatusCodes } from 'http-status-codes'
 import { aboutUs } from './about-us.js'
 import { DeprecatedSleepEnv, ExpressConfig, FlashMessage, Locale } from './Context.js'
 import * as FptsToEffect from './FptsToEffect.js'
+import { GhostApi } from './ghost.js'
 import { PublicUrl } from './public-url.js'
 import { Redis } from './Redis.js'
 import {
@@ -225,7 +226,7 @@ export const Router = pipe(
       Effect.gen(function* () {
         const locale = yield* Locale
         const fetch = yield* FetchHttpClient.Fetch
-        const { ghostApi } = yield* ExpressConfig
+        const ghostApi = yield* GhostApi
         const sleep = yield* DeprecatedSleepEnv
 
         return yield* FptsToEffect.readerTask(aboutUs(locale), { fetch, ghostApi, ...sleep })

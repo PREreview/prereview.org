@@ -61,7 +61,6 @@ const EnvD = pipe(
     COAR_NOTIFY_URL: UrlD,
     CLOUDINARY_API_KEY: D.string,
     CLOUDINARY_API_SECRET: D.string,
-    GHOST_API_KEY: D.string,
     LEGACY_PREREVIEW_API_APP: D.string,
     LEGACY_PREREVIEW_API_KEY: D.string,
     LEGACY_PREREVIEW_URL: UrlD,
