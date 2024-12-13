@@ -1,12 +1,10 @@
-import { HttpClient } from '@effect/platform'
-import { NodeHttpClient } from '@effect/platform-node'
+import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform'
 import { Context, Effect, Schema } from 'effect'
-import * as F from 'fetch-fp-ts'
+import type * as F from 'fetch-fp-ts'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, identity, pipe } from 'fp-ts/lib/function.js'
+import { pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
-import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
 import { type SleepEnv, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
@@ -24,38 +22,32 @@ const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, 
   encode: String,
 }) as Schema.Schema<Html, string>
 
-const GhostPageSchema = Schema.parseJson(
-  Schema.Struct({
-    pages: Schema.Tuple(
-      Schema.Struct({
-        html: HtmlSchema,
-      }),
-    ),
-  }),
-)
+const GhostPageSchema = Schema.Struct({
+  pages: Schema.Tuple(
+    Schema.Struct({
+      html: HtmlSchema,
+    }),
+  ),
+})
 
 export const getPage = (
   id: string,
 ): RTE.ReaderTaskEither<GhostApiEnv & F.FetchEnv & SleepEnv, 'not-found' | 'unavailable', Html> =>
   pipe(
     R.asks(
-      (env: GhostApiEnv) => () =>
+      (env: GhostApiEnv & F.FetchEnv) => () =>
         pipe(
           id,
           getPageWithEffect,
           Effect.provideService(GhostApi, env.ghostApi),
-          Effect.provide(NodeHttpClient.layer),
+          Effect.provide(FetchHttpClient.layer),
+          Effect.provideService(FetchHttpClient.Fetch, env.fetch as unknown as typeof globalThis.fetch),
           Effect.runPromise,
         ),
     ),
-    RTE.chainReaderK(() => ghostUrl(`pages/${id}`)),
-    RTE.chainW(flow(F.Request('GET'), F.send)),
     RTE.local(revalidateIfStale<F.FetchEnv & GhostApiEnv & SleepEnv>()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-    RTE.chainTaskEitherKW(F.getText(() => D.error(undefined, 'string'))),
-    RTE.chainEitherKW(Schema.decodeEither(GhostPageSchema)),
     RTE.bimap(
       error =>
         match(error)
@@ -75,11 +67,13 @@ const getPageWithEffect = (id: string) =>
     const client = yield* HttpClient.HttpClient
     const ghostApi = yield* GhostApi
 
-    yield* client.get(new URL(`https://content.prereview.org/ghost/api/content/pages/${id}?key=${ghostApi.key}`))
-  }).pipe(Effect.scoped, Effect.either)
+    const response = yield* client.get(
+      new URL(`https://content.prereview.org/ghost/api/content/pages/${id}?key=${ghostApi.key}`),
+    )
 
-const ghostUrl = (path: string) =>
-  R.asks(
-    ({ ghostApi }: GhostApiEnv) =>
-      new URL(`https://content.prereview.org/ghost/api/content/${path}?key=${ghostApi.key}`),
-  )
+    if (response.status !== 200) {
+      return yield* Effect.fail(response)
+    }
+
+    return yield* HttpClientResponse.schemaBodyJson(GhostPageSchema)(response)
+  }).pipe(Effect.scoped, Effect.either)
