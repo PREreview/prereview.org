@@ -7,7 +7,7 @@ import {
   HttpServerRequest,
   HttpServerResponse,
 } from '@effect/platform'
-import { Effect, identity, Option, pipe, Record } from 'effect'
+import { Effect, flow, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from './AboutUsPage/index.js'
@@ -28,7 +28,24 @@ import { TemplatePage } from './TemplatePage.js'
 import { LoggedInUser } from './user.js'
 import * as WriteCommentFlow from './WriteCommentFlow/index.js'
 
-const MakeRoute = <E, R>(
+const MakeRoute = <A, E, R>(
+  method: HttpMethod.HttpMethod,
+  route: Routes.Route<A>,
+  handler: (
+    a: A,
+  ) => Effect.Effect<
+    PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse | LogInResponse | FlashMessageResponse,
+    E,
+    R
+  >,
+) =>
+  HttpRouter.makeRoute(
+    method,
+    route.path,
+    pipe(HttpRouter.schemaParams(route.schema), Effect.andThen(handler), Effect.andThen(toHttpServerResponse)),
+  )
+
+const MakeStaticRoute = <E, R>(
   method: HttpMethod.HttpMethod,
   path: `/${string}`,
   handler: Effect.Effect<
@@ -39,29 +56,14 @@ const MakeRoute = <E, R>(
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, toHttpServerResponse))
 
 const WriteCommentFlowRouter = HttpRouter.fromIterable([
-  MakeRoute(
-    'GET',
-    Routes.WriteComment.path,
-    pipe(HttpRouter.schemaParams(Routes.WriteComment.schema), Effect.andThen(WriteCommentFlow.WriteCommentPage)),
-  ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentStartNow.path,
-    pipe(HttpRouter.schemaParams(Routes.WriteCommentStartNow.schema), Effect.andThen(WriteCommentFlow.StartNow)),
-  ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentEnterComment.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentEnterComment.schema),
-      Effect.andThen(WriteCommentFlow.EnterCommentPage),
-    ),
-  ),
+  MakeRoute('GET', Routes.WriteComment, WriteCommentFlow.WriteCommentPage),
+  MakeRoute('GET', Routes.WriteCommentStartNow, WriteCommentFlow.StartNow),
+  MakeRoute('GET', Routes.WriteCommentEnterComment, WriteCommentFlow.EnterCommentPage),
   MakeRoute(
     'POST',
-    Routes.WriteCommentEnterComment.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentEnterComment.schema),
+    Routes.WriteCommentEnterComment,
+    flow(
+      Effect.succeed,
       Effect.bind('body', () =>
         Effect.gen(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
@@ -73,19 +75,12 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(WriteCommentFlow.EnterCommentSubmission),
     ),
   ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentChoosePersona.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentChoosePersona.schema),
-      Effect.andThen(WriteCommentFlow.ChoosePersonaPage),
-    ),
-  ),
+  MakeRoute('GET', Routes.WriteCommentChoosePersona, WriteCommentFlow.ChoosePersonaPage),
   MakeRoute(
     'POST',
-    Routes.WriteCommentChoosePersona.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentChoosePersona.schema),
+    Routes.WriteCommentChoosePersona,
+    flow(
+      Effect.succeed,
       Effect.bind('body', () =>
         Effect.gen(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
@@ -97,19 +92,12 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(WriteCommentFlow.ChoosePersonaSubmission),
     ),
   ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentCompetingInterests.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentCompetingInterests.schema),
-      Effect.andThen(WriteCommentFlow.CompetingInterestsPage),
-    ),
-  ),
+  MakeRoute('GET', Routes.WriteCommentCompetingInterests, WriteCommentFlow.CompetingInterestsPage),
   MakeRoute(
     'POST',
-    Routes.WriteCommentCompetingInterests.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentCompetingInterests.schema),
+    Routes.WriteCommentCompetingInterests,
+    flow(
+      Effect.succeed,
       Effect.bind('body', () =>
         Effect.gen(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
@@ -121,19 +109,12 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(WriteCommentFlow.CompetingInterestsSubmission),
     ),
   ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentCodeOfConduct.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentCodeOfConduct.schema),
-      Effect.andThen(WriteCommentFlow.CodeOfConductPage),
-    ),
-  ),
+  MakeRoute('GET', Routes.WriteCommentCodeOfConduct, WriteCommentFlow.CodeOfConductPage),
   MakeRoute(
     'POST',
-    Routes.WriteCommentCodeOfConduct.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentCodeOfConduct.schema),
+    Routes.WriteCommentCodeOfConduct,
+    flow(
+      Effect.succeed,
       Effect.bind('body', () =>
         Effect.gen(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
@@ -145,19 +126,12 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(WriteCommentFlow.CodeOfConductSubmission),
     ),
   ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentEnterEmailAddress.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentEnterEmailAddress.schema),
-      Effect.andThen(WriteCommentFlow.EnterEmailAddressPage),
-    ),
-  ),
+  MakeRoute('GET', Routes.WriteCommentEnterEmailAddress, WriteCommentFlow.EnterEmailAddressPage),
   MakeRoute(
     'POST',
-    Routes.WriteCommentEnterEmailAddress.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentEnterEmailAddress.schema),
+    Routes.WriteCommentEnterEmailAddress,
+    flow(
+      Effect.succeed,
       Effect.bind('body', () =>
         Effect.gen(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
@@ -169,52 +143,16 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(WriteCommentFlow.EnterEmailAddressSubmission),
     ),
   ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentNeedToVerifyEmailAddress.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentNeedToVerifyEmailAddress.schema),
-      Effect.andThen(WriteCommentFlow.NeedToVerifyEmailAddressPage),
-    ),
-  ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentVerifyEmailAddress.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentVerifyEmailAddress.schema),
-      Effect.andThen(WriteCommentFlow.VerifyEmailAddress),
-    ),
-  ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentCheck.path,
-    pipe(HttpRouter.schemaParams(Routes.WriteCommentCheck.schema), Effect.andThen(WriteCommentFlow.CheckPage)),
-  ),
-  MakeRoute(
-    'POST',
-    Routes.WriteCommentCheck.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentCheck.schema),
-      Effect.andThen(WriteCommentFlow.CheckPageSubmission),
-    ),
-  ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentPublishing.path,
-    pipe(
-      HttpRouter.schemaParams(Routes.WriteCommentPublishing.schema),
-      Effect.andThen(WriteCommentFlow.PublishingPage),
-    ),
-  ),
-  MakeRoute(
-    'GET',
-    Routes.WriteCommentPublished.path,
-    pipe(HttpRouter.schemaParams(Routes.WriteCommentPublished.schema), Effect.andThen(WriteCommentFlow.PublishedPage)),
-  ),
+  MakeRoute('GET', Routes.WriteCommentNeedToVerifyEmailAddress, WriteCommentFlow.NeedToVerifyEmailAddressPage),
+  MakeRoute('GET', Routes.WriteCommentVerifyEmailAddress, WriteCommentFlow.VerifyEmailAddress),
+  MakeRoute('GET', Routes.WriteCommentCheck, WriteCommentFlow.CheckPage),
+  MakeRoute('POST', Routes.WriteCommentCheck, WriteCommentFlow.CheckPageSubmission),
+  MakeRoute('GET', Routes.WriteCommentPublishing, WriteCommentFlow.PublishingPage),
+  MakeRoute('GET', Routes.WriteCommentPublished, WriteCommentFlow.PublishedPage),
 ])
 
 export const Router = pipe(
-  HttpRouter.fromIterable([MakeRoute('GET', Routes.AboutUs, AboutUsPage)]),
+  HttpRouter.fromIterable([MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage)]),
   HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
     HttpMiddleware.make(
