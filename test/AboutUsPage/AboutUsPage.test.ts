@@ -5,14 +5,14 @@ import { Effect, pipe, TestContext } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import * as _ from '../src/about-us.js'
-import { DeprecatedSleepEnv, Locale } from '../src/Context.js'
-import { GhostApi } from '../src/ghost.js'
-import { aboutUsMatch } from '../src/routes.js'
-import * as fc from './fc.js'
-import { shouldNotBeCalled } from './should-not-be-called.js'
+import * as _ from '../../src/AboutUsPage/index.js'
+import { DeprecatedSleepEnv, Locale } from '../../src/Context.js'
+import { GhostApi } from '../../src/ghost.js'
+import { aboutUsMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
-describe('aboutUs', () => {
+describe('AboutUsPage', () => {
   test.prop([fc.supportedLocale(), fc.string({ unit: fc.alphanumeric(), minLength: 1 })])(
     'when the page can be loaded',
     (locale, key) =>
@@ -26,7 +26,7 @@ describe('aboutUs', () => {
         )
 
         const actual = yield* pipe(
-          _.aboutUs,
+          _.AboutUsPage,
           Effect.provideService(FetchHttpClient.Fetch, fetch as typeof FetchHttpClient.Fetch.Service),
         )
 
@@ -62,7 +62,7 @@ describe('aboutUs', () => {
         )
 
         const actual = yield* pipe(
-          _.aboutUs,
+          _.AboutUsPage,
           Effect.provideService(FetchHttpClient.Fetch, fetch as typeof FetchHttpClient.Fetch.Service),
         )
 

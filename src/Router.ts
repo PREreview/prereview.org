@@ -2,7 +2,7 @@ import { Cookies, Headers, HttpMiddleware, HttpRouter, HttpServerRequest, HttpSe
 import { Effect, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { aboutUs } from './about-us.js'
+import { AboutUsPage } from './AboutUsPage/index.js'
 import { ExpressConfig, FlashMessage, Locale } from './Context.js'
 import { PublicUrl } from './public-url.js'
 import { Redis } from './Redis.js'
@@ -210,7 +210,7 @@ const WriteCommentFlowRouter = pipe(
 
 export const Router = pipe(
   HttpRouter.empty,
-  HttpRouter.get(Routes.AboutUs.path, pipe(aboutUs, Effect.andThen(toHttpServerResponse))),
+  HttpRouter.get(Routes.AboutUs.path, pipe(AboutUsPage, Effect.andThen(toHttpServerResponse))),
   HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
     HttpMiddleware.make(

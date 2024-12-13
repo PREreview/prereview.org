@@ -1,16 +1,16 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
-import { DeprecatedSleepEnv, Locale } from './Context.js'
-import * as FptsToEffect from './FptsToEffect.js'
-import { getPage, GhostApi } from './ghost.js'
-import { HavingProblemsPage } from './HavingProblemsPage/index.js'
-import { type Html, fixHeadingLevels, html, plainText } from './html.js'
-import { type SupportedLocale, translate } from './locales/index.js'
-import { PageResponse } from './response.js'
-import { aboutUsMatch } from './routes.js'
+import { DeprecatedSleepEnv, Locale } from '../Context.js'
+import * as FptsToEffect from '../FptsToEffect.js'
+import { getPage, GhostApi } from '../ghost.js'
+import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
+import { type Html, fixHeadingLevels, html, plainText } from '../html.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
+import { PageResponse } from '../response.js'
+import { aboutUsMatch } from '../routes.js'
 
-export const aboutUs = Effect.gen(function* () {
+export const AboutUsPage = Effect.gen(function* () {
   const locale = yield* Locale
   const fetch = yield* FetchHttpClient.Fetch
   const ghostApi = yield* GhostApi
