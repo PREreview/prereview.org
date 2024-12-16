@@ -42,6 +42,7 @@
     {
       "files": ["integration/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
+        "@typescript-eslint/no-base-to-string": "off",
         "import/no-internal-modules": ["error", { "forbid": ["**/assets/**/*"] }]
       }
     },
