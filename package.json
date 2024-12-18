@@ -125,7 +125,7 @@
     "fetch-mock": "^11.1.5",
     "fp-ts-contrib": "^0.1.29",
     "glob": "^11.0.0",
-    "image-minimizer-webpack-plugin": "^4.1.1",
+    "image-minimizer-webpack-plugin": "^4.1.2",
     "imagemin": "^9.0.0",
     "imagemin-svgo": "^11.0.1",
     "iso-639-3": "^2.2.0",
