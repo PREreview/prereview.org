@@ -6,7 +6,6 @@ import { Status } from 'hyper-ts'
 import * as _ from '../src/live-reviews.js'
 import { liveReviewsMatch } from '../src/routes.js'
 import * as fc from './fc.js'
-import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('liveReviews', () => {
   test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('when the page can be loaded', async key => {
@@ -18,7 +17,7 @@ describe('liveReviews', () => {
       { body: { pages: [{ html: '<p>Foo<script>bar</script></p>' }] } },
     )
 
-    const actual = await _.liveReviews({ fetch, ghostApi: { key }, sleep: shouldNotBeCalled })()
+    const actual = await _.liveReviews({ fetch, ghostApi: { key } })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -43,7 +42,7 @@ describe('liveReviews', () => {
         response,
       )
 
-      const actual = await _.liveReviews({ fetch, ghostApi: { key }, sleep: shouldNotBeCalled })()
+      const actual = await _.liveReviews({ fetch, ghostApi: { key } })()
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',

@@ -3,11 +3,10 @@ import { Context, Data, Effect, flow, identity, Match, Schema } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as R from 'fp-ts/lib/Reader.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import { StatusCodes } from 'http-status-codes'
 import { URL } from 'url'
-import { type SleepEnv, revalidateIfStale, useStaleCache } from './fetch.js'
 import { type Html, rawHtml, sanitizeHtml } from './html.js'
 
 export interface GhostApiEnv {
@@ -32,7 +31,7 @@ const GhostPageSchema = Schema.Struct({
 
 export const getPage = (
   id: string,
-): RTE.ReaderTaskEither<GhostApiEnv & F.FetchEnv & SleepEnv, 'not-found' | 'unavailable', Html> =>
+): RTE.ReaderTaskEither<GhostApiEnv & F.FetchEnv, 'not-found' | 'unavailable', Html> =>
   pipe(
     R.asks(
       (env: GhostApiEnv & F.FetchEnv) => () =>
@@ -49,8 +48,6 @@ export const getPage = (
           Effect.runPromise,
         ),
     ),
-    RTE.local(revalidateIfStale<F.FetchEnv & GhostApiEnv & SleepEnv>()),
-    RTE.local(useStaleCache()),
   )
 
 export class GhostApi extends Context.Tag('GhostApi')<GhostApi, { key: string }>() {}

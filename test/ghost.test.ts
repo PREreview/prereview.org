@@ -2,12 +2,10 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
-import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import * as _ from '../src/ghost.js'
 import { rawHtml } from '../src/html.js'
 import * as fc from './fc.js'
-import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('getPage', () => {
   test.prop([
@@ -23,7 +21,6 @@ describe('getPage', () => {
           { body: { pages: [{ html: html.toString() }] } },
         ),
       ghostApi: { key },
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.right(html))
@@ -47,7 +44,6 @@ describe('getPage', () => {
         },
       ),
       ghostApi: { key },
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(
@@ -77,7 +73,6 @@ describe('getPage', () => {
         },
       ),
       ghostApi: { key },
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(
@@ -107,40 +102,9 @@ describe('getPage', () => {
         },
       ),
       ghostApi: { key },
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.right(rawHtml('<a href="https://donorbox.org/prereview" class="button">Donate</a>')))
-  })
-
-  test.prop([
-    fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
-    fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
-    fc.sanitisedHtml(),
-  ])("revalidates the page if it's stale", async (id, key, html) => {
-    const fetch = fetchMock
-      .sandbox()
-      .getOnce(
-        (requestUrl, { cache }) =>
-          requestUrl === `https://content.prereview.org/ghost/api/content/pages/${id}?key=${key}` &&
-          cache === 'force-cache',
-        { body: { pages: [{ html: html.toString() }] }, headers: { 'X-Local-Cache-Status': 'stale' } },
-      )
-      .getOnce(
-        (requestUrl, { cache }) =>
-          requestUrl === `https://content.prereview.org/ghost/api/content/pages/${id}?key=${key}` &&
-          cache === 'no-cache',
-        { throws: new Error('Network error') },
-      )
-
-    const actual = await _.getPage(id)({
-      fetch,
-      ghostApi: { key },
-      sleep: () => T.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(html))
-    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([
@@ -155,7 +119,6 @@ describe('getPage', () => {
     const actual = await _.getPage(id)({
       fetch,
       ghostApi: { key },
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -173,7 +136,6 @@ describe('getPage', () => {
     const actual = await _.getPage(id)({
       fetch,
       ghostApi: { key },
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
@@ -191,7 +153,6 @@ describe('getPage', () => {
     const actual = await _.getPage(id)({
       fetch,
       ghostApi: { key },
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -206,7 +167,6 @@ describe('getPage', () => {
     const actual = await _.getPage(id)({
       fetch: () => Promise.reject(error),
       ghostApi: { key },
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))

@@ -6,7 +6,6 @@ import { Status } from 'hyper-ts'
 import * as _ from '../src/people.js'
 import { peopleMatch } from '../src/routes.js'
 import * as fc from './fc.js'
-import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('people', () => {
   test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('when the page can be loaded', async key => {
@@ -18,7 +17,7 @@ describe('people', () => {
       { body: { pages: [{ html: '<p>Foo<script>bar</script></p>' }] } },
     )
 
-    const actual = await _.people({ fetch, ghostApi: { key }, sleep: shouldNotBeCalled })()
+    const actual = await _.people({ fetch, ghostApi: { key } })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -43,7 +42,7 @@ describe('people', () => {
         response,
       )
 
-      const actual = await _.people({ fetch, ghostApi: { key }, sleep: shouldNotBeCalled })()
+      const actual = await _.people({ fetch, ghostApi: { key } })()
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
