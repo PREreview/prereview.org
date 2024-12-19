@@ -90,7 +90,7 @@ export function sanitizeHtml(html: string, trusted = false): Html {
       ...(trusted ? ['img', 'table', 'colgroup', 'col', 'thead', 'tbody', 'tr', 'th', 'td'] : []),
     ],
     allowedAttributes: {
-      '*': ['dir', 'displaystyle', 'lang', 'mathvariant'],
+      '*': ['dir', 'displaystyle', 'lang', 'mathvariant', ...(trusted ? ['id'] : [])],
       a: ['href'],
       annotation: ['encoding'],
       col: ['span'],

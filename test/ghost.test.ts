@@ -110,6 +110,29 @@ describe('getPage', () => {
   test.prop([
     fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+  ])('when the page contains a heading with an ID', async (id, key) => {
+    const actual = await _.getPage(id)({
+      fetch: fetchMock.sandbox().getOnce(
+        { url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } },
+        {
+          body: {
+            pages: [
+              {
+                html: '<h2 id="some-heading">Some heading</h2>',
+              },
+            ],
+          },
+        },
+      ),
+      ghostApi: { key },
+    })()
+
+    expect(actual).toStrictEqual(E.right(rawHtml('<h2 id="some-heading">Some heading</h2>')))
+  })
+
+  test.prop([
+    fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+    fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     fc.fetchResponse({ status: fc.constant(Status.OK) }),
   ])('when the response cannot be decoded', async (id, key, response) => {
     const fetch = fetchMock
