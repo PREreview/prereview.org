@@ -1,4 +1,5 @@
 app = "prereview-translate"
+primary_region = "iad"
 
 [env]
 CAN_CHOOSE_LOCALE = "true"

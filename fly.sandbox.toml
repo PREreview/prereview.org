@@ -1,4 +1,5 @@
 app = "prereview-sandbox"
+primary_region = "iad"
 
 [env]
 CAN_CHOOSE_LOCALE = "true"

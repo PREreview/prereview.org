@@ -1,4 +1,5 @@
 app = "prereview"
+primary_region = "iad"
 
 [env]
 ALLOW_SITE_CRAWLERS = "true"
