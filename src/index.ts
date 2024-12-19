@@ -4,7 +4,7 @@ import { LibsqlClient } from '@effect/sql-libsql'
 import { Config, Effect, Function, Layer, Logger, LogLevel } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
-import { fetch } from 'undici'
+import { cacheStores, fetch, getGlobalDispatcher, interceptors, setGlobalDispatcher } from 'undici'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
@@ -48,6 +48,16 @@ pipe(
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,
     Effect.gen(function* () {
+      const dispatcher = getGlobalDispatcher().compose(
+        interceptors.cache({
+          store: new cacheStores.SqliteCacheStore({ location: 'data/http-cache.db' }),
+          cacheByDefault: 3600,
+          type: 'private',
+        }),
+      )
+
+      setGlobalDispatcher(dispatcher)
+
       return fetch as unknown as typeof globalThis.fetch
     }),
   ),
