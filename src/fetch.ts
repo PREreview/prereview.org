@@ -9,7 +9,11 @@ export interface SleepEnv {
 }
 
 export function useStaleCache<E extends F.FetchEnv>(): (env: E) => E {
-  return env => ({ ...env, fetch: (url, init) => env.fetch(url, { cache: 'force-cache', ...init }) })
+  return env => ({
+    ...env,
+    fetch: (url, init) =>
+      env.fetch(url, { ...init, headers: { ...init.headers, 'cache-control': 'max-stale=1000000000' } }),
+  })
 }
 
 export function reloadCache<E extends F.FetchEnv>(): (env: E) => E {
@@ -92,6 +96,7 @@ export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(): (env: E) => E {
         url,
         method: init.method,
         cache: init.cache as Json,
+        headers: { ...init.headers },
       })(env)()
 
       const startTime = Date.now()
