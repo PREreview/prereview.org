@@ -1,6 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Effect } from 'effect'
-import { DeprecatedSleepEnv, Locale } from '../Context.js'
+import { Locale } from '../Context.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { getPage, GhostApi } from '../ghost.js'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
@@ -13,12 +13,10 @@ export const AboutUsPage = Effect.gen(function* () {
   const locale = yield* Locale
   const fetch = yield* FetchHttpClient.Fetch
   const ghostApi = yield* GhostApi
-  const sleep = yield* DeprecatedSleepEnv
 
   const content = yield* FptsToEffect.readerTaskEither(getPage('6154aa157741400e8722bb14'), {
     fetch,
     ghostApi,
-    ...sleep,
   })
 
   return createPage({ content, locale })

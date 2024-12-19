@@ -5,11 +5,10 @@ import { Effect, pipe, TestContext } from 'effect'
 import fetchMock from 'fetch-mock'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/AboutUsPage/index.js'
-import { DeprecatedSleepEnv, Locale } from '../../src/Context.js'
+import { Locale } from '../../src/Context.js'
 import { GhostApi } from '../../src/ghost.js'
 import * as Routes from '../../src/routes.js'
 import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('AboutUsPage', () => {
   test.prop([fc.supportedLocale(), fc.string({ unit: fc.alphanumeric(), minLength: 1 })])(
@@ -41,7 +40,6 @@ describe('AboutUsPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(DeprecatedSleepEnv, { sleep: shouldNotBeCalled }),
         Effect.provideService(GhostApi, { key }),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
@@ -76,7 +74,6 @@ describe('AboutUsPage', () => {
         expect(fetch.done()).toBeTruthy()
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(DeprecatedSleepEnv, { sleep: shouldNotBeCalled }),
         Effect.provideService(GhostApi, { key }),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
