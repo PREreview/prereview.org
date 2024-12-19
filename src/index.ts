@@ -4,7 +4,7 @@ import { LibsqlClient } from '@effect/sql-libsql'
 import { Config, Effect, Function, Layer, Logger, LogLevel } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
-import fetch from 'make-fetch-happen'
+import { fetch } from 'undici'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
@@ -48,14 +48,7 @@ pipe(
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,
     Effect.gen(function* () {
-      const publicUrl = yield* PublicUrl
-
-      return fetch.defaults({
-        cachePath: 'data/cache',
-        headers: {
-          'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
-        },
-      }) as unknown as typeof globalThis.fetch
+      return fetch as unknown as typeof globalThis.fetch
     }),
   ),
   Effect.provide(
