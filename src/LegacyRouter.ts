@@ -1,4 +1,4 @@
-import { Headers, HttpRouter, HttpServerResponse } from '@effect/platform'
+import { HttpRouter, HttpServerResponse } from '@effect/platform'
 import type { Doi } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
@@ -91,8 +91,5 @@ export const LegacyRouter = HttpRouter.fromIterable([
 ])
 
 function movedPermanently(location: string) {
-  return HttpServerResponse.empty({
-    status: StatusCodes.MOVED_PERMANENTLY,
-    headers: Headers.fromInput({ location }),
-  })
+  return HttpServerResponse.redirect(location, { status: StatusCodes.MOVED_PERMANENTLY })
 }

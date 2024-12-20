@@ -1,4 +1,4 @@
-import { Headers, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, TestContext } from 'effect'
@@ -67,12 +67,7 @@ describe('LegacyRouter', () => {
 
       const response = yield* Effect.provideService(_.LegacyRouter, HttpServerRequest.HttpServerRequest, request)
 
-      expect(response).toStrictEqual(
-        HttpServerResponse.empty({
-          status: StatusCodes.MOVED_PERMANENTLY,
-          headers: Headers.fromInput({ location: expected }),
-        }),
-      )
+      expect(response).toStrictEqual(HttpServerResponse.redirect(expected, { status: StatusCodes.MOVED_PERMANENTLY }))
     }).pipe(Effect.provide(TestContext.TestContext), Effect.runSync),
   )
 })

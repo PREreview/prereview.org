@@ -1,6 +1,5 @@
 import {
   Cookies,
-  Headers,
   type HttpMethod,
   HttpMiddleware,
   HttpRouter,
@@ -205,16 +204,12 @@ function toHttpServerResponse(
 ): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage | ExpressConfig | PublicUrl> {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
-      return yield* HttpServerResponse.empty({
-        status: response.status,
-        headers: Headers.fromInput({ Location: response.location.toString() }),
-      })
+      return yield* HttpServerResponse.redirect(response.location, { status: response.status })
     }
 
     if (response._tag === 'FlashMessageResponse') {
-      return yield* HttpServerResponse.empty({
+      return yield* HttpServerResponse.redirect(response.location, {
         status: StatusCodes.SEE_OTHER,
-        headers: Headers.fromInput({ Location: response.location.toString() }),
         cookies: Cookies.fromIterable([
           Cookies.unsafeMakeCookie('flash-message', response.message, { httpOnly: true, path: '/' }),
         ]),
@@ -229,10 +224,7 @@ function toHttpServerResponse(
         state: new URL(`${publicUrl.origin}${response.location}`).href,
       })
 
-      return yield* HttpServerResponse.empty({
-        status: StatusCodes.MOVED_TEMPORARILY,
-        headers: Headers.fromInput({ Location: location.href }),
-      })
+      return yield* HttpServerResponse.redirect(location, { status: StatusCodes.MOVED_TEMPORARILY })
     }
 
     const locale = yield* Locale

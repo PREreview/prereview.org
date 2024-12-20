@@ -34,8 +34,7 @@ const removeTrailingSlashes = HttpMiddleware.make(app =>
       return yield* app
     }
 
-    return yield* HttpServerResponse.empty({
-      headers: Headers.fromInput({ Location: request.url.slice(0, request.url.length - 1) }),
+    return yield* HttpServerResponse.redirect(request.url.slice(0, request.url.length - 1), {
       status: StatusCodes.MOVED_PERMANENTLY,
     })
   }),
