@@ -1,6 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
-import { Effect, Redacted } from 'effect'
+import { Duration, Effect, Redacted } from 'effect'
 import Keyv from 'keyv'
 import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, SessionSecret } from './Context.js'
@@ -102,7 +102,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
       emitErrors: false,
       namespace: 'sessions',
       store: createKeyvStore(),
-      ttl: 1000 * 60 * 60 * 24 * 30,
+      ttl: Duration.toMillis('30 days'),
     }),
     slackOauth: {
       authorizeUrl: new URL('https://slack.com/oauth/v2/authorize'),

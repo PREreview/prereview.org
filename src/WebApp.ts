@@ -10,7 +10,7 @@ import {
   Path,
 } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
-import { Cause, Config, Effect, flow, Layer, Option, pipe, Redacted, Schema } from 'effect'
+import { Cause, Config, Duration, Effect, flow, Layer, Option, pipe, Redacted, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Express, ExpressConfig, FlashMessage, Locale, SessionSecret } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
@@ -61,7 +61,7 @@ const serveStaticFiles = HttpMiddleware.make(app =>
     return yield* HttpServerResponse.setHeader(
       response,
       'Cache-Control',
-      `public, max-age=${60 * 60 * 24 * 365}, immutable`,
+      `public, max-age=${Duration.toSeconds('365 days')}, immutable`,
     )
   }),
 )
