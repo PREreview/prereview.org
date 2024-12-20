@@ -1271,7 +1271,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           canUseSearchQueries,
           cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
           formStore,
-          canSeeGatesLogo: false,
           careerStageStore,
           coarNotifyToken: 'token',
           coarNotifyUrl: new URL('http://coar-notify.prereview.test'),

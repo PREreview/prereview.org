@@ -74,7 +74,6 @@ import {
 import {
   type CanConnectOrcidProfileEnv,
   type CanRequestReviewsEnv,
-  type CanSeeGatesLogoEnv,
   type CanUploadAvatarEnv,
   type CanUseSearchQueriesEnv,
   type CanWriteCommentsEnv,
@@ -344,7 +343,6 @@ const withEnv =
 export type RouterEnv = Keyv.AvatarStoreEnv &
   CanConnectOrcidProfileEnv &
   CanRequestReviewsEnv &
-  CanSeeGatesLogoEnv &
   CanUploadAvatarEnv &
   CanUseSearchQueriesEnv &
   CanWriteCommentsEnv &

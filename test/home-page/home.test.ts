@@ -8,15 +8,14 @@ import * as _ from '../../src/home-page/index.js'
 import { homeMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'
 
-test.prop([fc.supportedLocale(), fc.option(fc.user(), { nil: undefined }), fc.boolean(), fc.boolean()])(
+test.prop([fc.supportedLocale(), fc.option(fc.user(), { nil: undefined }), fc.boolean()])(
   'home',
-  async (locale, user, canUserRequestReviews, canSeeGatesLogo) => {
+  async (locale, user, canUserRequestReviews) => {
     const canRequestReviews = jest.fn<CanRequestReviewsEnv['canRequestReviews']>(_ => canUserRequestReviews)
 
     const actual = await _.home({ locale, user })({
       getRecentPrereviews: () => T.of([]),
       canRequestReviews,
-      canSeeGatesLogo,
       getRecentReviewRequests: () => T.of([]),
     })()
 

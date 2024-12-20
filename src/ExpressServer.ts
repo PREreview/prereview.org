@@ -55,7 +55,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
     canConnectOrcidProfile: () => true,
     canRequestReviews: () => true,
-    canSeeGatesLogo: true,
     canUploadAvatar: () => true,
     canUseSearchQueries: () => true,
     cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },

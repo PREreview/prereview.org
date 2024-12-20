@@ -1,11 +1,6 @@
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import { pipe } from 'fp-ts/lib/function.js'
-import {
-  type CanRequestReviewsEnv,
-  type CanSeeGatesLogoEnv,
-  canRequestReviews,
-  canSeeGatesLogo,
-} from '../feature-flags.js'
+import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags.js'
 import type { SupportedLocale } from '../locales/index.js'
 import type { PageResponse } from '../response.js'
 import type { User } from '../user.js'
@@ -22,15 +17,11 @@ export const home = ({
 }: {
   locale: SupportedLocale
   user?: User
-}): RT.ReaderTask<
-  CanRequestReviewsEnv & GetRecentPrereviewsEnv & GetRecentReviewRequestsEnv & CanSeeGatesLogoEnv,
-  PageResponse
-> =>
+}): RT.ReaderTask<CanRequestReviewsEnv & GetRecentPrereviewsEnv & GetRecentReviewRequestsEnv, PageResponse> =>
   pipe(
     RT.Do,
     RT.apS('recentPrereviews', getRecentPrereviews()),
     RT.apSW('canRequestReviews', RT.fromReader(canRequestReviews(user))),
-    RT.apSW('canSeeGatesLogo', RT.fromReader(canSeeGatesLogo)),
     RT.apSW('recentReviewRequests', getRecentReviewRequests()),
     RT.let('statistics', () => ({ prereviews: 1040, servers: 26, users: 3040 })),
     RT.let('locale', () => locale),

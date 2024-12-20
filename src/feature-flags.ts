@@ -56,12 +56,6 @@ export interface CanRequestReviewsEnv {
 export const canRequestReviews = (user?: User) =>
   R.asks(({ canRequestReviews }: CanRequestReviewsEnv) => canRequestReviews(user))
 
-export interface CanSeeGatesLogoEnv {
-  canSeeGatesLogo: boolean
-}
-
-export const canSeeGatesLogo = R.asks(({ canSeeGatesLogo }: CanSeeGatesLogoEnv) => canSeeGatesLogo)
-
 export interface CanUseSearchQueriesEnv {
   canUseSearchQueries: (user?: User) => boolean
 }
