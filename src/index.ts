@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Config, Effect, Function, Layer, Logger, LogLevel } from 'effect'
+import { Config, Effect, Function, Layer, Logger, LogLevel, Schema } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
 import fetch from 'make-fetch-happen'
@@ -35,7 +35,10 @@ pipe(
   Effect.provide(
     Layer.mergeAll(
       LibsqlClient.layerConfig({
-        url: Config.string('LIBSQL_URL'),
+        url: Schema.Config(
+          'LIBSQL_URL',
+          Schema.Union(Schema.TemplateLiteral('file:', Schema.String), Schema.Literal(':memory:'), Schema.URL),
+        ),
         authToken: Config.withDefault(Config.redacted('LIBSQL_AUTH_TOKEN'), undefined),
       }),
       Layer.effectDiscard(Effect.logDebug('Database connected')),
