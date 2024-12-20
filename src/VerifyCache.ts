@@ -13,13 +13,14 @@ export const verifyCache = Effect.gen(function* () {
   yield* pipe(
     Effect.logDebug('Verifying cache'),
     Effect.andThen(Effect.tryPromise(() => cacache.verify('data/cache', { concurrency: 5 }))),
-    Effect.tap(stats => pipe(Effect.logDebug('Cache verified'), Effect.annotateLogs('stats', stats))),
-    Effect.tapError(({ error }) =>
-      pipe(
-        Effect.logWarning('Failed to verify cache'),
-        Effect.annotateLogs('error', error instanceof Error ? error.message : Inspectable.toStringUnknown(error)),
-      ),
-    ),
+    Effect.tapBoth({
+      onSuccess: stats => pipe(Effect.logDebug('Cache verified'), Effect.annotateLogs('stats', stats)),
+      onFailure: ({ error }) =>
+        pipe(
+          Effect.logWarning('Failed to verify cache'),
+          Effect.annotateLogs('error', error instanceof Error ? error.message : Inspectable.toStringUnknown(error)),
+        ),
+    }),
     Effect.ignore,
     Effect.delay(delay),
   )
