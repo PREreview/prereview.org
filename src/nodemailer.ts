@@ -1,4 +1,4 @@
-import { Config, Context, Effect, Layer } from 'effect'
+import { Config, Context, Effect, Layer, Redacted } from 'effect'
 import { toError } from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -14,8 +14,10 @@ export interface NodemailerEnv {
 
 export class Nodemailer extends Context.Tag('Nodemailer')<Nodemailer, Transporter<unknown>>() {}
 
-export const make = (options: URL | Transporter<unknown>): Effect.Effect<Transporter<unknown>> =>
-  options instanceof URL ? Effect.sync(() => createTransport(options.href)) : Effect.succeed(options)
+export const make = (options: Redacted.Redacted<URL> | Transporter<unknown>): Effect.Effect<Transporter<unknown>> =>
+  Redacted.isRedacted(options)
+    ? Effect.sync(() => createTransport(Redacted.value(options).href))
+    : Effect.succeed(options)
 
 export const layer: (options: Parameters<typeof make>[0]) => Layer.Layer<Nodemailer> = flow(
   make,
