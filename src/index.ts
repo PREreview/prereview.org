@@ -36,7 +36,7 @@ pipe(
     Layer.mergeAll(
       LibsqlClient.layerConfig({
         url: Config.string('LIBSQL_URL'),
-        authToken: Config.withDefault(Config.string('LIBSQL_AUTH_TOKEN'), undefined),
+        authToken: Config.withDefault(Config.redacted('LIBSQL_AUTH_TOKEN'), undefined),
       }),
       Layer.effectDiscard(Effect.logDebug('Database connected')),
       Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
