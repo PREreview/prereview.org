@@ -80,6 +80,7 @@ import {
   type CanWriteCommentsEnv,
   canUseSearchQueries,
 } from './feature-flags.js'
+import { fetchWithCache } from './fetch-cache.js'
 import type { SleepEnv } from './fetch.js'
 import { funding } from './funding.js'
 import type { GhostApiEnv } from './ghost.js'
@@ -884,7 +885,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               getPrereviewFromZenodo,
               RTE.local((env: RouterEnv) => ({
                 ...env,
-                fetch: (url, init) => env.fetch(url, { ...init, cache: 'no-store' }),
+                fetch: fetchWithCache(env),
               })),
             ),
             env,
