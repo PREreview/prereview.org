@@ -10,9 +10,9 @@ import {
   Path,
 } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
-import { Cause, Config, Effect, flow, Layer, Option, pipe, Schema } from 'effect'
+import { Cause, Config, Effect, flow, Layer, Option, pipe, Redacted, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import { Express, ExpressConfig, FlashMessage, Locale } from './Context.js'
+import { Express, ExpressConfig, FlashMessage, Locale, SessionSecret } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
 import { CanChooseLocale, UseCrowdinInContext } from './feature-flags.js'
@@ -143,13 +143,14 @@ const getFlashMessage = HttpMiddleware.make(app =>
 
 const getLoggedInUser = HttpMiddleware.make(app =>
   Effect.gen(function* () {
-    const { secret, sessionCookie, sessionStore } = yield* ExpressConfig
+    const secret = yield* SessionSecret
+    const { sessionCookie, sessionStore } = yield* ExpressConfig
 
     const session = yield* pipe(
       HttpServerRequest.schemaCookies(
         Schema.Struct({ session: pipe(Schema.propertySignature(Schema.String), Schema.fromKey(sessionCookie)) }),
       ),
-      Effect.andThen(({ session }) => cookieSignature.unsign(session, secret)),
+      Effect.andThen(({ session }) => cookieSignature.unsign(session, Redacted.value(secret))),
       Effect.andThen(Schema.decodeUnknown(Uuid.UuidSchema)),
       Effect.andThen(sessionId => sessionStore.get(sessionId)),
       Effect.andThen(Schema.decodeUnknown(Schema.Struct({ user: UserSchema }))),

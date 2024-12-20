@@ -2,15 +2,15 @@ import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import {
+  test as baseTest,
+  expect,
   type Fixtures,
   type PlaywrightTestArgs,
   type PlaywrightTestOptions,
-  test as baseTest,
-  expect,
 } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { Effect, Logger as EffectLogger, Fiber, Layer, Option, pipe } from 'effect'
+import { Effect, Logger as EffectLogger, Fiber, Layer, Option, pipe, Redacted } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
@@ -39,7 +39,7 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.js'
-import { DeprecatedLoggerEnv, ExpressConfig } from '../src/Context.js'
+import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import type {
@@ -1297,7 +1297,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           researchInterestsStore,
           reviewRequestStore,
           scietyListToken: 'secret' as NonEmptyString,
-          secret: '',
           sessionCookie: 'session',
           sessionStore: new Keyv(),
           slackApiToken: '',
@@ -1325,6 +1324,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provideService(GhostApi, { key: 'key' }),
         Effect.provide(Nodemailer.layer(nodemailer)),
         Effect.provideService(PublicUrl, new URL(`http://localhost:${port}`)),
+        Effect.provideService(SessionSecret, Redacted.make('')),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),
         Effect.provide(TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() })),

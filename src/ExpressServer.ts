@@ -1,9 +1,9 @@
 import { FetchHttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
-import { Effect } from 'effect'
+import { Effect, Redacted } from 'effect'
 import Keyv from 'keyv'
 import { app } from './app.js'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig } from './Context.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, SessionSecret } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { CanWriteComments, UseCrowdinInContext } from './feature-flags.js'
 import { GhostApi } from './ghost.js'
@@ -25,6 +25,7 @@ export const expressServer = Effect.gen(function* () {
   const templatePage = yield* TemplatePage
   const useCrowdinInContext = yield* UseCrowdinInContext
   const ghostApi = yield* GhostApi
+  const secret = yield* SessionSecret
 
   return app({
     canWriteComments,
@@ -34,6 +35,7 @@ export const expressServer = Effect.gen(function* () {
     ghostApi,
     nodemailer,
     publicUrl,
+    secret: Redacted.value(secret),
     ...sleep,
     templatePage,
     useCrowdinInContext,
@@ -95,7 +97,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     researchInterestsStore: new Keyv({ emitErrors: false, namespace: 'research-interests', store: createKeyvStore() }),
     reviewRequestStore: new Keyv({ emitErrors: false, namespace: 'review-request', store: createKeyvStore() }),
     scietyListToken: env.SCIETY_LIST_TOKEN,
-    secret: env.SECRET,
     sessionCookie: 'session',
     sessionStore: new Keyv({
       emitErrors: false,

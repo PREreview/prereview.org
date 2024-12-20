@@ -1,4 +1,4 @@
-import { Context } from 'effect'
+import { Context, type Redacted } from 'effect'
 import type { LoggerEnv } from 'logger-fp-ts'
 import type { app, ConfigEnv } from './app.js'
 import type { EnvVars } from './env.js'
@@ -25,6 +25,7 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
     | 'ghostApi'
     | 'nodemailer'
     | 'publicUrl'
+    | 'secret'
     | 'sleep'
     | 'templatePage'
     | 'useCrowdinInContext'
@@ -34,3 +35,5 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}
 
 export class FlashMessage extends Context.Tag('CurrentFlashMessage')<FlashMessage, typeof FlashMessageSchema.Type>() {}
+
+export class SessionSecret extends Context.Tag('SessionSecret')<SessionSecret, Redacted.Redacted>() {}

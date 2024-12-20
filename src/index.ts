@@ -5,7 +5,7 @@ import { Config, Effect, Function, Layer, Logger, LogLevel, Schema } from 'effec
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
 import fetch from 'make-fetch-happen'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig } from './Context.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
 import * as FeatureFlags from './feature-flags.js'
@@ -68,6 +68,7 @@ pipe(
     }),
   ),
   Effect.provideServiceEffect(PublicUrl, Config.url('PUBLIC_URL')),
+  Effect.provideServiceEffect(SessionSecret, Config.redacted('SECRET')),
   Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.provide(Logger.replaceEffect(Logger.defaultLogger, DeprecatedLogger)),
   Effect.provideServiceEffect(DeprecatedLoggerEnv, makeDeprecatedLoggerEnv),
