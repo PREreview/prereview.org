@@ -1,10 +1,10 @@
-import { Config, Context, Effect, flow, Inspectable, Layer, pipe, Runtime } from 'effect'
+import { Config, Context, Effect, flow, Inspectable, Layer, pipe, Redacted, Runtime } from 'effect'
 import { Redis as IoRedis } from 'ioredis'
 
-const makeRedis = (url: URL) =>
+const makeRedis = (url: Redacted.Redacted<URL>) =>
   Effect.gen(function* () {
     const runtime = yield* Effect.runtime()
-    const redis = new IoRedis(url.href, { commandTimeout: 2 * 1000, enableAutoPipelining: true })
+    const redis = new IoRedis(Redacted.value(url).href, { commandTimeout: 2 * 1000, enableAutoPipelining: true })
 
     const runSync = Runtime.runSync(runtime)
 

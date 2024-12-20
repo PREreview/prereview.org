@@ -47,7 +47,7 @@ pipe(
   ),
   Effect.provideServiceEffect(GhostApi, Config.all({ key: Config.string('GHOST_API_KEY') })),
   Effect.provide(Nodemailer.layerConfig(Config.url('SMTP_URI'))),
-  Effect.provide(Redis.layerConfig(Config.url('REDIS_URI'))),
+  Effect.provide(Redis.layerConfig(Config.redacted(Config.url('REDIS_URI')))),
   Effect.provideServiceEffect(
     FetchHttpClient.Fetch,
     Effect.gen(function* () {
