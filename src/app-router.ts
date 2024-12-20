@@ -882,7 +882,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getPrereview: withEnv(
             flow(
               getPrereviewFromZenodo,
-              RTE.local((env: RouterEnv) => ({ ...env, fetch: env.fetch })),
+              RTE.local((env: RouterEnv) => ({
+                ...env,
+                fetch: (url, init) => env.fetch(url, { ...init, cache: 'no-store' }),
+              })),
             ),
             env,
           ),
