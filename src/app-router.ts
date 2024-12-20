@@ -879,7 +879,13 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getComments: withEnv(getCommentsForPrereviewFromZenodo, env),
-          getPrereview: withEnv(getPrereviewFromZenodo, env),
+          getPrereview: withEnv(
+            flow(
+              getPrereviewFromZenodo,
+              RTE.local((env: RouterEnv) => ({ ...env, fetch: env.fetch })),
+            ),
+            env,
+          ),
         })),
       ),
     ),
