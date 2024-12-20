@@ -20,7 +20,7 @@ export const verifyCache = Effect.gen(function* () {
         Effect.annotateLogs('error', error instanceof Error ? error.message : Inspectable.toStringUnknown(error)),
       ),
     ),
-    Effect.orElse(() => Effect.void),
+    Effect.ignore,
     Effect.delay(delay),
   )
 })

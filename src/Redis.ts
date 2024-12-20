@@ -29,7 +29,7 @@ const teardownRedis = (redis: IoRedis) =>
     Effect.tapError(error =>
       pipe(Effect.logWarning('Redis unable to disconnect'), Effect.annotateLogs('error', error.message)),
     ),
-    Effect.orElse(() => Effect.void),
+    Effect.ignore,
   )
 
 export const redisLifecycle = (...args: Parameters<typeof makeRedis>) =>
