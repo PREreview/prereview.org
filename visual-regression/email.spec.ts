@@ -9,7 +9,7 @@ import {
 } from '../src/email.js'
 import { html } from '../src/html.js'
 import { DefaultLocale } from '../src/locales/index.js'
-import type { EmailAddress } from '../src/types/email-address.js'
+import { EmailAddress } from '../src/types/email-address.js'
 import type { Pseudonym } from '../src/types/pseudonym.js'
 import type { NonEmptyString } from '../src/types/string.js'
 import { expect, test } from './base.js'
@@ -22,7 +22,7 @@ test('email-verification HTML for an invited author looks right', async ({ page 
       pseudonym: 'Orange Panda' as Pseudonym,
     },
     emailAddress: new UnverifiedContactEmailAddress({
-      value: 'jcarberry@example.com' as EmailAddress,
+      value: EmailAddress('jcarberry@example.com'),
       verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
     }),
     authorInvite: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
@@ -41,7 +41,7 @@ test('email-verification text for an invited author looks right', async ({ page 
       pseudonym: 'Orange Panda' as Pseudonym,
     },
     emailAddress: new UnverifiedContactEmailAddress({
-      value: 'jcarberry@example.com' as EmailAddress,
+      value: EmailAddress('jcarberry@example.com'),
       verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
     }),
     authorInvite: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
@@ -60,7 +60,7 @@ test('email-verification HTML for a comment looks right', async ({ page }) => {
       pseudonym: 'Orange Panda' as Pseudonym,
     },
     emailAddress: new UnverifiedContactEmailAddress({
-      value: 'jcarberry@example.com' as EmailAddress,
+      value: EmailAddress('jcarberry@example.com'),
       verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
     }),
     comment: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
@@ -80,7 +80,7 @@ test('email-verification text for a comment looks right', async ({ page }) => {
       pseudonym: 'Orange Panda' as Pseudonym,
     },
     emailAddress: new UnverifiedContactEmailAddress({
-      value: 'jcarberry@example.com' as EmailAddress,
+      value: EmailAddress('jcarberry@example.com'),
       verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
     }),
     comment: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
@@ -96,7 +96,7 @@ test('author-invite HTML looks right', async ({ page }) => {
   const email = createAuthorInviteEmail(
     {
       name: 'Josiah Carberry' as NonEmptyString,
-      emailAddress: 'jcarberry@example.com' as EmailAddress,
+      emailAddress: EmailAddress('jcarberry@example.com'),
     },
     'cda07004-01ec-4d48-8ff0-87bb32c6e81d' as Uuid,
     {
@@ -121,7 +121,7 @@ test('author-invite text looks right', async ({ page }) => {
   const email = createAuthorInviteEmail(
     {
       name: 'Josiah Carberry' as NonEmptyString,
-      emailAddress: 'jcarberry@example.com' as EmailAddress,
+      emailAddress: EmailAddress('jcarberry@example.com'),
     },
     'cda07004-01ec-4d48-8ff0-87bb32c6e81d' as Uuid,
     {

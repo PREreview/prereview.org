@@ -75,7 +75,7 @@ import {
   isNonCacheable,
 } from '../src/status-code.js'
 import { type ClubId, clubIds } from '../src/types/club-id.js'
-import type { EmailAddress } from '../src/types/email-address.js'
+import { EmailAddress } from '../src/types/email-address.js'
 import { type FieldId, fieldIds } from '../src/types/field.js'
 import { ProfileId } from '../src/types/index.js'
 import {
@@ -379,7 +379,7 @@ const asset = (): fc.Arbitrary<keyof typeof assets> =>
 const js = (): fc.Arbitrary<EndsWith<keyof typeof assets, '.js'>> =>
   asset().filter((asset): asset is EndsWith<typeof asset, '.js'> => asset.endsWith('.js'))
 
-export const emailAddress = (): fc.Arbitrary<EmailAddress> => fc.emailAddress() as fc.Arbitrary<EmailAddress>
+export const emailAddress = (): fc.Arbitrary<EmailAddress> => fc.emailAddress().map(EmailAddress)
 
 export const contactEmailAddress = (): fc.Arbitrary<ContactEmailAddress> =>
   fc.oneof(unverifiedContactEmailAddress(), verifiedContactEmailAddress())

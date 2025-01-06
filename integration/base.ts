@@ -69,7 +69,7 @@ import * as Nodemailer from '../src/nodemailer.js'
 import { Program } from '../src/Program.js'
 import { PublicUrl } from '../src/public-url.js'
 import * as TemplatePage from '../src/TemplatePage.js'
-import type { EmailAddress } from '../src/types/email-address.js'
+import { EmailAddress } from '../src/types/email-address.js'
 import type { NonEmptyString } from '../src/types/string.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
 import Logger = L.Logger
@@ -1998,7 +1998,7 @@ export const hasAnUnverifiedEmailAddress: Fixtures<
       '0000-0002-1825-0097',
       ContactEmailAddressC.encode(
         new UnverifiedContactEmailAddress({
-          value: 'jcarberry@example.com' as EmailAddress,
+          value: EmailAddress('jcarberry@example.com'),
           verificationToken: 'ff0d6f8e-7dca-4a26-b68b-93f2d2bc3c2a' as Uuid,
         }),
       ),
@@ -2016,7 +2016,7 @@ export const hasAVerifiedEmailAddress: Fixtures<
   contactEmailAddressStore: async ({ contactEmailAddressStore }, use) => {
     await contactEmailAddressStore.set(
       '0000-0002-1825-0097',
-      ContactEmailAddressC.encode(new VerifiedContactEmailAddress({ value: 'jcarberry@example.com' as EmailAddress })),
+      ContactEmailAddressC.encode(new VerifiedContactEmailAddress({ value: EmailAddress('jcarberry@example.com') })),
     )
 
     await use(contactEmailAddressStore)
@@ -2094,7 +2094,7 @@ export const invitedToBeAnAuthor: Fixtures<
       'bec5727e-9992-4f3b-85be-6712df617b9d',
       AuthorInviteC.encode({
         status: 'open',
-        emailAddress: 'jcarberry@example.com' as EmailAddress,
+        emailAddress: EmailAddress('jcarberry@example.com'),
         review: 1055806,
       }),
     )
@@ -2102,7 +2102,7 @@ export const invitedToBeAnAuthor: Fixtures<
     const email = createAuthorInviteEmail(
       {
         name: 'Josiah Carberry' as NonEmptyString,
-        emailAddress: 'jcarberry@example.com' as EmailAddress,
+        emailAddress: EmailAddress('jcarberry@example.com'),
       },
       'bec5727e-9992-4f3b-85be-6712df617b9d' as Uuid,
       {

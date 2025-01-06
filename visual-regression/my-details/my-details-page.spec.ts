@@ -3,7 +3,7 @@ import { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../../src/contact-email-address.js'
 import { createPage } from '../../src/my-details-page/my-details-page.js'
-import type { EmailAddress } from '../../src/types/email-address.js'
+import { EmailAddress } from '../../src/types/email-address.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
 import type { NonEmptyString } from '../../src/types/string.js'
 import type { UserOnboarding } from '../../src/user-onboarding.js'
@@ -24,7 +24,7 @@ test('content looks right when publicly visible', async ({ showPage }) => {
       image: new URL('https://placehold.co/48x48'),
       profile: new URL('http://example.com/'),
     }),
-    contactEmailAddress: O.some(new VerifiedContactEmailAddress({ value: 'some-email@example.com' as EmailAddress })),
+    contactEmailAddress: O.some(new VerifiedContactEmailAddress({ value: EmailAddress('some-email@example.com') })),
     openForRequests: O.some({ value: true, visibility: 'public' }),
     careerStage: O.some({ value: 'mid', visibility: 'public' }),
     researchInterests: O.some({
@@ -60,7 +60,7 @@ test('content looks right when restricted visible', async ({ showPage }) => {
     }),
     contactEmailAddress: O.some(
       new UnverifiedContactEmailAddress({
-        value: 'some-email@example.com' as EmailAddress,
+        value: EmailAddress('some-email@example.com'),
         verificationToken: '9492b53b-ac19-4a6d-966c-5d2f27e80b83' as Uuid,
       }),
     ),

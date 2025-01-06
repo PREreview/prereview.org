@@ -17,7 +17,7 @@ import {
   verifyContactEmailAddressMatch,
   writeReviewVerifyEmailAddressMatch,
 } from './routes.js'
-import type { EmailAddress } from './types/email-address.js'
+import { EmailAddress } from './types/email-address.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import type { NonEmptyString } from './types/string.js'
 import type { User } from './user.js'
@@ -47,7 +47,7 @@ export const sendContactEmailAddressVerificationEmail = (
       R.asks(
         ({ locale }: { locale: SupportedLocale }) =>
           ({
-            from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
+            from: { address: EmailAddress('help@prereview.org'), name: 'PREreview' },
             to: { address: emailAddress.value, name: user.name },
             subject: translate(locale, 'email', 'verifyEmailAddressTitle')(),
             text: `${translate(locale, 'email', 'hiName')({ name: user.name })}\n\n${translate(locale, 'email', 'verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`,
@@ -86,7 +86,7 @@ export const sendContactEmailAddressVerificationEmailForReview = (
       R.asks(
         ({ locale }: { locale: SupportedLocale }) =>
           ({
-            from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
+            from: { address: EmailAddress('help@prereview.org'), name: 'PREreview' },
             to: { address: emailAddress.value, name: user.name },
             subject: translate(locale, 'email', 'verifyEmailAddressTitle')(),
             text: `${translate(locale, 'email', 'hiName')({ name: user.name })}\n\n${translate(locale, 'email', 'verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`,
@@ -127,7 +127,7 @@ export const createContactEmailAddressVerificationEmailForInvitedAuthor = ({
       R.asks(
         ({ locale }: { locale: SupportedLocale }) =>
           ({
-            from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
+            from: { address: EmailAddress('help@prereview.org'), name: 'PREreview' },
             to: { address: emailAddress.value, name: user.name },
             subject: translate(locale, 'email', 'verifyEmailAddressTitle')(),
             text: `${translate(locale, 'email', 'hiName')({ name: user.name })}\n\n${translate(locale, 'email', 'verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`,
@@ -168,7 +168,7 @@ export const createContactEmailAddressVerificationEmailForComment = ({
     R.map(
       verificationUrl =>
         ({
-          from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
+          from: { address: EmailAddress('help@prereview.org'), name: 'PREreview' },
           to: { address: emailAddress.value, name: user.name },
           subject: translate(locale, 'email', 'verifyEmailAddressTitle')(),
           text: `${translate(locale, 'email', 'hiName')({ name: user.name })}\n\n${translate(locale, 'email', 'verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`,
@@ -204,7 +204,7 @@ export const createAuthorInviteEmail = (
     R.map(
       ({ inviteUrl, declineUrl }) =>
         ({
-          from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
+          from: { address: EmailAddress('help@prereview.org'), name: 'PREreview' },
           to: { address: person.emailAddress, name: person.name },
           subject: 'Be listed as a PREreview author',
           text: `

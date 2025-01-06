@@ -7,7 +7,7 @@ import { Eq as stringEq } from 'fp-ts/lib/string.js'
 import { Orcid, Eq as eqOrcid } from 'orcid-id-ts'
 import { type Html, html } from './html.js'
 import type { ClubId } from './types/club-id.js'
-import type { EmailAddress } from './types/email-address.js'
+import { EmailAddress } from './types/email-address.js'
 
 export interface Club {
   readonly name: string
@@ -197,7 +197,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
         orcid: Orcid('0000-0002-5815-8703'),
       },
     ],
-    contact: 'jenny.leopold@medizin.uni-leipzig.de' as EmailAddress,
+    contact: EmailAddress('jenny.leopold@medizin.uni-leipzig.de'),
   },
   bios2: {
     name: 'Computational Biodiversity Science and Services',
@@ -330,7 +330,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Surya Nedunchezhiyan', orcid: Orcid('0009-0008-3322-2327') },
       { name: 'Tiffany I. Leung', orcid: Orcid('0000-0002-6007-4023') },
     ],
-    contact: 'ed-support@jmir.org' as EmailAddress,
+    contact: EmailAddress('ed-support@jmir.org'),
   },
   'language-club': {
     name: 'Language Club',
@@ -372,7 +372,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Luis Alberto Bezares Calderón', orcid: Orcid('0000-0001-6678-6876') },
       { name: 'Alexandra Kerbl', orcid: Orcid('0000-0002-9454-6359') },
     ],
-    contact: 'lab239@exeter.ac.uk' as EmailAddress,
+    contact: EmailAddress('lab239@exeter.ac.uk'),
   },
   neuroden: {
     name: 'Neuroden',
@@ -394,7 +394,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Abbas Saifuddin', orcid: Orcid('0009-0003-9667-6207') },
       { name: 'Hamza Mustafa', orcid: Orcid('0009-0006-0344-5365') },
     ],
-    contact: 'hsa230003@utdallas.edu' as EmailAddress,
+    contact: EmailAddress('hsa230003@utdallas.edu'),
   },
   'nsa-utd': {
     name: 'Neuroscience Student Association at UTD',
@@ -414,7 +414,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Emma Unger', orcid: Orcid('0009-0000-6854-2621') },
       { name: 'Mohammad Khan', orcid: Orcid('0009-0007-7940-1964') },
     ],
-    contact: 'msj220001@utdallas.edu' as EmailAddress,
+    contact: EmailAddress('msj220001@utdallas.edu'),
   },
   'open-box-science': {
     name: 'Open Box Science',
@@ -453,7 +453,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       </p>
     `,
     leads: [{ name: 'Assist. Prof. Dr. Salwan M. Abdulateef', orcid: Orcid('0000-0002-7389-0003') }],
-    contact: 'ag.salwan.mahmood@uoanbar.edu.iq' as EmailAddress,
+    contact: EmailAddress('ag.salwan.mahmood@uoanbar.edu.iq'),
   },
   'open-science-community-uruguay': {
     name: 'Open Science Community Uruguay (OSCU)',
@@ -469,7 +469,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       { name: 'Daniel Prieto', orcid: Orcid('0000-0001-8356-1708') },
       { name: 'Mateo Vidal Panario', orcid: Orcid('0009-0009-3980-7163') },
     ],
-    contact: 'csilvera@fcien.edu.uy' as EmailAddress,
+    contact: EmailAddress('csilvera@fcien.edu.uy'),
   },
   oxplants: {
     name: 'OxPlants Preprint Club',
@@ -517,7 +517,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       </p>
     `,
     leads: [{ name: 'Alain Manuel Chaple Gil', orcid: Orcid('0000-0002-8571-4429') }],
-    contact: 'alain.chaple@uautonoma.cl' as EmailAddress,
+    contact: EmailAddress('alain.chaple@uautonoma.cl'),
   },
   'rr-id-student-reviewer-club': {
     name: 'RR\\ID Student Reviewer Club',
@@ -537,7 +537,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       </p>
     `,
     leads: [{ name: 'Hildy Fong Baker', orcid: Orcid('0000-0002-3836-1966') }],
-    contact: 'rrid@berkeley.edu' as EmailAddress,
+    contact: EmailAddress('rrid@berkeley.edu'),
   },
   'sg-biofilms-microbiome': {
     name: 'SG Biofilms and Microbiome Club',

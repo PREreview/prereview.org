@@ -4,7 +4,7 @@ import { missingE } from '../../src/form.js'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
-import type { EmailAddress } from '../../src/types/email-address.js'
+import { EmailAddress } from '../../src/types/email-address.js'
 import type { NonEmptyString } from '../../src/types/string.js'
 import { addAuthorsForm } from '../../src/write-review/add-authors-page/add-authors-form.js'
 import { expect, test } from '../base.js'
@@ -22,7 +22,7 @@ const locale = DefaultLocale
 
 test('content looks right when there is another author', async ({ showPage }) => {
   const response = addAuthorsForm({
-    authors: [{ name: 'Josiah Carberry' as NonEmptyString, emailAddress: 'jcarberry@example.com' as EmailAddress }],
+    authors: [{ name: 'Josiah Carberry' as NonEmptyString, emailAddress: EmailAddress('jcarberry@example.com') }],
     form: {
       anotherAuthor: E.right(undefined),
     },
@@ -38,10 +38,10 @@ test('content looks right when there is another author', async ({ showPage }) =>
 test('content looks right when there are other authors', async ({ showPage }) => {
   const response = addAuthorsForm({
     authors: [
-      { name: 'Josiah Carberry' as NonEmptyString, emailAddress: 'jcarberry@example.com' as EmailAddress },
-      { name: 'Jean-Baptiste Botul' as NonEmptyString, emailAddress: 'jbbotul@example.com' as EmailAddress },
-      { name: 'Arne Saknussemm' as NonEmptyString, emailAddress: 'asaknussemm@example.com' as EmailAddress },
-      { name: 'Otto Lidenbrock' as NonEmptyString, emailAddress: 'olidenbrock@example.com' as EmailAddress },
+      { name: 'Josiah Carberry' as NonEmptyString, emailAddress: EmailAddress('jcarberry@example.com') },
+      { name: 'Jean-Baptiste Botul' as NonEmptyString, emailAddress: EmailAddress('jbbotul@example.com') },
+      { name: 'Arne Saknussemm' as NonEmptyString, emailAddress: EmailAddress('asaknussemm@example.com') },
+      { name: 'Otto Lidenbrock' as NonEmptyString, emailAddress: EmailAddress('olidenbrock@example.com') },
     ],
     form: {
       anotherAuthor: E.right(undefined),
@@ -57,7 +57,7 @@ test('content looks right when there are other authors', async ({ showPage }) =>
 
 test('content looks right when fields are missing', async ({ showPage }) => {
   const response = addAuthorsForm({
-    authors: [{ name: 'Josiah Carberry' as NonEmptyString, emailAddress: 'jcarberry@example.com' as EmailAddress }],
+    authors: [{ name: 'Josiah Carberry' as NonEmptyString, emailAddress: EmailAddress('jcarberry@example.com') }],
     form: {
       anotherAuthor: E.left(missingE()),
     },

@@ -27,3 +27,5 @@ export const EmailAddressSchema = pipe(
   Schema.filter(s => isEmailValid(s), { message: () => 'not an email address' }),
   Schema.brand(EmailAddressBrand),
 )
+
+export const EmailAddress = (email: string) => EmailAddressSchema.make(email)

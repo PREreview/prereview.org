@@ -3,7 +3,7 @@ import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
-import type { EmailAddress } from '../../src/types/email-address.js'
+import { EmailAddress } from '../../src/types/email-address.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
 import type { NonEmptyString } from '../../src/types/string.js'
 import type { User } from '../../src/user.js'
@@ -62,9 +62,9 @@ test('content looks right when there are more authors', async ({ page, showHtml,
         ...form,
         moreAuthors: 'yes',
         otherAuthors: [
-          { name: 'Jean-Baptiste Botul' as NonEmptyString, emailAddress: 'jbbotul@example.com' as EmailAddress },
-          { name: 'Arne Saknussemm' as NonEmptyString, emailAddress: 'asaknussemm@example.com' as EmailAddress },
-          { name: 'Otto Lidenbrock' as NonEmptyString, emailAddress: 'olidenbrock@example.com' as EmailAddress },
+          { name: 'Jean-Baptiste Botul' as NonEmptyString, emailAddress: EmailAddress('jbbotul@example.com') },
+          { name: 'Arne Saknussemm' as NonEmptyString, emailAddress: EmailAddress('asaknussemm@example.com') },
+          { name: 'Otto Lidenbrock' as NonEmptyString, emailAddress: EmailAddress('olidenbrock@example.com') },
         ],
       },
     },

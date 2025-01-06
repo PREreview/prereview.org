@@ -3,7 +3,7 @@ import { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { authorInviteStart } from '../../src/author-invite-flow/index.js'
 import { html } from '../../src/html.js'
-import type { EmailAddress } from '../../src/types/email-address.js'
+import { EmailAddress } from '../../src/types/email-address.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
 import { expect, test } from '../base.js'
 
@@ -19,7 +19,7 @@ test('content looks right when already started', async ({ showPage }) => {
     getAuthorInvite: () =>
       TE.right({
         status: 'assigned',
-        emailAddress: 'jcarberry@example.com' as EmailAddress,
+        emailAddress: EmailAddress('jcarberry@example.com'),
         orcid: Orcid('0000-0002-1825-0097'),
         review: 1234,
       }),

@@ -7,7 +7,7 @@ import type { Prereviews } from '../../src/club-profile-page/prereviews.js'
 import { html, rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { ClubId } from '../../src/types/club-id.js'
-import type { EmailAddress } from '../../src/types/email-address.js'
+import { EmailAddress } from '../../src/types/email-address.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
@@ -45,7 +45,7 @@ const club1 = {
     { name: 'Arpita Ghosh', orcid: Orcid('0009-0003-2106-3270') },
     { name: 'Garima Jain', orcid: Orcid('0000-0002-8079-9611') },
   ],
-  contact: 'email@example.com' as EmailAddress,
+  contact: EmailAddress('email@example.com'),
   joinLink: new URL(
     'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
   ),
