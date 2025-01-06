@@ -23,52 +23,57 @@ pipe(
   Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
   Effect.provide(
-    FeatureFlags.layerConfig({
-      canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
-      canWriteComments: Config.map(Config.withDefault(Config.boolean('CAN_WRITE_COMMENTS'), false), Function.constant),
-      requiresAVerifiedEmailAddress: Config.withDefault(Config.boolean('REQUIRES_A_VERIFIED_EMAIL_ADDRESS'), false),
-      useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
-    }),
-  ),
-  Effect.provide(NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) })),
-  Effect.provideServiceEffect(ExpressConfig, ExpressConfigLive),
-  Effect.provide(
     Layer.mergeAll(
-      LibsqlClient.layerConfig({
-        url: Schema.Config(
-          'LIBSQL_URL',
-          Schema.Union(Schema.TemplateLiteral('file:', Schema.String), Schema.Literal(':memory:'), Schema.URL),
-        ),
-        authToken: Config.withDefault(Config.redacted('LIBSQL_AUTH_TOKEN'), undefined),
-      }),
-      Layer.effectDiscard(Effect.logDebug('Database connected')),
-      Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
+      NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
+      Layer.effect(ExpressConfig, ExpressConfigLive),
+      Layer.effect(
+        FetchHttpClient.Fetch,
+        Effect.gen(function* () {
+          const publicUrl = yield* PublicUrl
+
+          return fetch.defaults({
+            cachePath: 'data/cache',
+            headers: {
+              'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
+            },
+          }) as unknown as typeof globalThis.fetch
+        }),
+      ),
     ),
   ),
-  Effect.provideServiceEffect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
-  Effect.provide(Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI')))),
-  Effect.provide(Redis.layerConfig(Config.redacted(Config.url('REDIS_URI')))),
-  Effect.provideServiceEffect(
-    FetchHttpClient.Fetch,
-    Effect.gen(function* () {
-      const publicUrl = yield* PublicUrl
-
-      return fetch.defaults({
-        cachePath: 'data/cache',
-        headers: {
-          'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
-        },
-      }) as unknown as typeof globalThis.fetch
-    }),
-  ),
   Effect.provide(
-    TemplatePage.optionsLayerConfig({
-      fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
-      environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
-    }),
+    Layer.mergeAll(
+      FeatureFlags.layerConfig({
+        canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
+        canWriteComments: Config.map(
+          Config.withDefault(Config.boolean('CAN_WRITE_COMMENTS'), false),
+          Function.constant,
+        ),
+        requiresAVerifiedEmailAddress: Config.withDefault(Config.boolean('REQUIRES_A_VERIFIED_EMAIL_ADDRESS'), false),
+        useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
+      }),
+      Layer.mergeAll(
+        LibsqlClient.layerConfig({
+          url: Schema.Config(
+            'LIBSQL_URL',
+            Schema.Union(Schema.TemplateLiteral('file:', Schema.String), Schema.Literal(':memory:'), Schema.URL),
+          ),
+          authToken: Config.withDefault(Config.redacted('LIBSQL_AUTH_TOKEN'), undefined),
+        }),
+        Layer.effectDiscard(Effect.logDebug('Database connected')),
+        Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
+      ),
+      Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
+      Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),
+      Redis.layerConfig(Config.redacted(Config.url('REDIS_URI'))),
+      TemplatePage.optionsLayerConfig({
+        fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
+        environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
+      }),
+      Layer.effect(PublicUrl, Config.url('PUBLIC_URL')),
+      Layer.effect(SessionSecret, Config.redacted('SECRET')),
+    ),
   ),
-  Effect.provideServiceEffect(PublicUrl, Config.url('PUBLIC_URL')),
-  Effect.provideServiceEffect(SessionSecret, Config.redacted('SECRET')),
   Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.provide(Logger.replaceEffect(Logger.defaultLogger, DeprecatedLogger)),
   Effect.provideServiceEffect(DeprecatedLoggerEnv, makeDeprecatedLoggerEnv),
