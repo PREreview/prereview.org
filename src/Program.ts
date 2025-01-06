@@ -292,6 +292,17 @@ const publishComment = Layer.effect(
   }),
 )
 
+const commentEvents = Layer.scoped(
+  Comments.CommentEvents,
+  Effect.acquireRelease(
+    pipe(
+      PubSub.unbounded() satisfies Effect.Effect<typeof Comments.CommentEvents.Service>,
+      Effect.tap(Effect.logDebug('Comment events started')),
+    ),
+    flow(PubSub.shutdown, Effect.tap(Effect.logDebug('Comment events stopped'))),
+  ),
+)
+
 const getPreprint = Layer.effect(
   Preprint.GetPreprint,
   Effect.gen(function* () {
@@ -347,18 +358,7 @@ export const Program = pipe(
     ),
   ),
   Layer.provide(Layer.effect(Comments.GetComment, Comments.makeGetComment)),
-  Layer.provide(
-    Layer.scoped(
-      Comments.CommentEvents,
-      Effect.acquireRelease(
-        pipe(
-          PubSub.unbounded() satisfies Effect.Effect<typeof Comments.CommentEvents.Service>,
-          Effect.tap(Effect.logDebug('Comment events started')),
-        ),
-        flow(PubSub.shutdown, Effect.tap(Effect.logDebug('Comment events stopped'))),
-      ),
-    ),
-  ),
+  Layer.provide(commentEvents),
   Layer.provide(LibsqlEventStore.layer),
   Layer.provide(setUpFetch),
   Layer.provide(Uuid.layer),
