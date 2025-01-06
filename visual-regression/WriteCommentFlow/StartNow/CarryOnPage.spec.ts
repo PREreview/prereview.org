@@ -5,7 +5,7 @@ import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import * as Prereview from '../../../src/Prereview.js'
 import * as Routes from '../../../src/routes.js'
-import type { Uuid } from '../../../src/types/index.js'
+import { Uuid } from '../../../src/types/index.js'
 import * as _ from '../../../src/WriteCommentFlow/StartNow/CarryOnPage.js'
 import { expect, test } from '../../base.js'
 
@@ -13,7 +13,7 @@ import PlainDate = Temporal.PlainDate
 
 test('content looks right', async ({ showPage }) => {
   const response = _.CarryOnPage({
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     nextPage: Routes.WriteCommentEnterComment,
     prereview,
     locale: DefaultLocale,

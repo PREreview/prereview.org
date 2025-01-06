@@ -1,6 +1,6 @@
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Orcid } from 'orcid-id-ts'
-import type { Uuid } from 'uuid-ts'
+import { Uuid } from 'uuid-ts'
 import { authorInviteStart } from '../../src/author-invite-flow/index.js'
 import { html } from '../../src/html.js'
 import { EmailAddress } from '../../src/types/email-address.js'
@@ -9,7 +9,7 @@ import { expect, test } from '../base.js'
 
 test('content looks right when already started', async ({ showPage }) => {
   const response = await authorInviteStart({
-    id: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
+    id: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     user: {
       name: 'Josiah Carberry',
       orcid: Orcid('0000-0002-1825-0097'),

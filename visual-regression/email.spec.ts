@@ -1,6 +1,6 @@
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
-import type { Uuid } from 'uuid-ts'
+import { Uuid } from 'uuid-ts'
 import { UnverifiedContactEmailAddress } from '../src/contact-email-address.js'
 import {
   createAuthorInviteEmail,
@@ -23,9 +23,9 @@ test('email-verification HTML for an invited author looks right', async ({ page 
     },
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
-      verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
+      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
     }),
-    authorInvite: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
+    authorInvite: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
   })({ publicUrl: new URL('http://example.com'), locale: DefaultLocale })
 
   await page.setContent(email.html.toString())
@@ -42,9 +42,9 @@ test('email-verification text for an invited author looks right', async ({ page 
     },
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
-      verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
+      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
     }),
-    authorInvite: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
+    authorInvite: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
   })({ publicUrl: new URL('http://example.com'), locale: DefaultLocale })
 
   await page.setContent(`<pre>${email.text}</pre>`)
@@ -61,9 +61,9 @@ test('email-verification HTML for a comment looks right', async ({ page }) => {
     },
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
-      verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
+      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
     }),
-    comment: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
+    comment: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     locale: DefaultLocale,
   })({ publicUrl: new URL('http://example.com') })
 
@@ -81,9 +81,9 @@ test('email-verification text for a comment looks right', async ({ page }) => {
     },
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
-      verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
+      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
     }),
-    comment: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
+    comment: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     locale: DefaultLocale,
   })({ publicUrl: new URL('http://example.com') })
 
@@ -98,7 +98,7 @@ test('author-invite HTML looks right', async ({ page }) => {
       name: 'Josiah Carberry' as NonEmptyString,
       emailAddress: EmailAddress('jcarberry@example.com'),
     },
-    'cda07004-01ec-4d48-8ff0-87bb32c6e81d' as Uuid,
+    Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d'),
     {
       author: 'Jean-Baptiste Botul',
       preprint: {
@@ -123,7 +123,7 @@ test('author-invite text looks right', async ({ page }) => {
       name: 'Josiah Carberry' as NonEmptyString,
       emailAddress: EmailAddress('jcarberry@example.com'),
     },
-    'cda07004-01ec-4d48-8ff0-87bb32c6e81d' as Uuid,
+    Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d'),
     {
       author: 'Jean-Baptiste Botul',
       preprint: {

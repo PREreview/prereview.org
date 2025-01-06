@@ -1,13 +1,13 @@
 import { Either } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.js'
-import type { NonEmptyString, Uuid } from '../../../src/types/index.js'
+import { type NonEmptyString, Uuid } from '../../../src/types/index.js'
 import * as CompetingInterestsForm from '../../../src/WriteCommentFlow/CompetingInterestsPage/CompetingInterestsForm.js'
 import * as _ from '../../../src/WriteCommentFlow/CompetingInterestsPage/CompetingInterestsPage.js'
 import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.CompetingInterestsPage({
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     form: new CompetingInterestsForm.EmptyForm(),
     locale: DefaultLocale,
   })
@@ -19,7 +19,7 @@ test('content looks right', async ({ showPage }) => {
 
 test('content looks right when there are details', async ({ showPage }) => {
   const response = _.CompetingInterestsPage({
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     form: new CompetingInterestsForm.CompletedFormYes({
       competingInterests: 'yes',
       competingInterestsDetails:
@@ -35,7 +35,7 @@ test('content looks right when there are details', async ({ showPage }) => {
 
 test('content looks right when missing', async ({ showPage }) => {
   const response = _.CompetingInterestsPage({
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     form: new CompetingInterestsForm.InvalidForm({
       competingInterests: Either.left(new CompetingInterestsForm.Missing()),
       competingInterestsDetails: Either.right(''),
@@ -50,7 +50,7 @@ test('content looks right when missing', async ({ showPage }) => {
 
 test('content looks right when details are missing', async ({ showPage }) => {
   const response = _.CompetingInterestsPage({
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     form: new CompetingInterestsForm.InvalidForm({
       competingInterests: Either.right('yes'),
       competingInterestsDetails: Either.left(new CompetingInterestsForm.Missing()),

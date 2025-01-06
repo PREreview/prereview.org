@@ -22,7 +22,7 @@ import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import { Orcid } from 'orcid-id-ts'
 import type { BrowserContextOptions } from 'playwright-core'
 import { URL } from 'url'
-import type { Uuid } from 'uuid-ts'
+import { Uuid } from 'uuid-ts'
 import {
   EmptyDepositionC,
   InProgressDepositionC,
@@ -1999,7 +1999,7 @@ export const hasAnUnverifiedEmailAddress: Fixtures<
       ContactEmailAddressC.encode(
         new UnverifiedContactEmailAddress({
           value: EmailAddress('jcarberry@example.com'),
-          verificationToken: 'ff0d6f8e-7dca-4a26-b68b-93f2d2bc3c2a' as Uuid,
+          verificationToken: Uuid('ff0d6f8e-7dca-4a26-b68b-93f2d2bc3c2a'),
         }),
       ),
     )
@@ -2104,7 +2104,7 @@ export const invitedToBeAnAuthor: Fixtures<
         name: 'Josiah Carberry' as NonEmptyString,
         emailAddress: EmailAddress('jcarberry@example.com'),
       },
-      'bec5727e-9992-4f3b-85be-6712df617b9d' as Uuid,
+      Uuid('bec5727e-9992-4f3b-85be-6712df617b9d'),
       {
         author: 'Josiah Carberry',
         preprint: {

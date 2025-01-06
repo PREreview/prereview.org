@@ -7,7 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { type Uuid, isUuid, v4 } from 'uuid-ts'
 import * as FptsToEffect from '../FptsToEffect.js'
 
-export type { Uuid } from 'uuid-ts'
+export { Uuid } from 'uuid-ts'
 
 export class GenerateUuid extends Context.Tag('GenerateUuid')<GenerateUuid, Effect.Effect<Uuid>>() {}
 

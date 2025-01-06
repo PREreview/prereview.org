@@ -23,7 +23,7 @@ import {
   createResponse,
 } from 'node-mocks-http'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
-import { type Uuid, isUuid } from 'uuid-ts'
+import { Uuid } from 'uuid-ts'
 import type {
   AssignedAuthorInvite,
   AuthorInvite,
@@ -223,7 +223,7 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
       ),
     )
 
-export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
+export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().map(Uuid)
 
 export const locale = (): fc.Arbitrary<string> =>
   constantFrom(

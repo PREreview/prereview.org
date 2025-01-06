@@ -1,4 +1,4 @@
-import type { Uuid } from 'uuid-ts'
+import { Uuid } from 'uuid-ts'
 import { needToVerifyEmailAddressPage } from '../../src/author-invite-flow/need-to-verify-email-address-page/need-to-verify-email-address-page.js'
 import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.js'
 import { EmailAddress } from '../../src/types/email-address.js'
@@ -6,10 +6,10 @@ import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = needToVerifyEmailAddressPage({
-    inviteId: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
+    inviteId: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     contactEmailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
-      verificationToken: '2a29e36c-da26-438d-9a67-577101fa8968' as Uuid,
+      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
     }),
   })
 

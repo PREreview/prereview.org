@@ -1,6 +1,6 @@
 import * as O from 'fp-ts/lib/Option.js'
 import { Orcid } from 'orcid-id-ts'
-import type { Uuid } from 'uuid-ts'
+import { Uuid } from 'uuid-ts'
 import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../../src/contact-email-address.js'
 import { createPage } from '../../src/my-details-page/my-details-page.js'
 import { EmailAddress } from '../../src/types/email-address.js'
@@ -61,7 +61,7 @@ test('content looks right when restricted visible', async ({ showPage }) => {
     contactEmailAddress: O.some(
       new UnverifiedContactEmailAddress({
         value: EmailAddress('some-email@example.com'),
-        verificationToken: '9492b53b-ac19-4a6d-966c-5d2f27e80b83' as Uuid,
+        verificationToken: Uuid('9492b53b-ac19-4a6d-966c-5d2f27e80b83'),
       }),
     ),
     openForRequests: O.some({ value: false, visibility: 'restricted' }),

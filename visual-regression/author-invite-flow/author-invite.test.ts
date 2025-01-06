@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Orcid } from 'orcid-id-ts'
-import type { Uuid } from 'uuid-ts'
+import { Uuid } from 'uuid-ts'
 import { authorInvite } from '../../src/author-invite-flow/index.js'
 import { html } from '../../src/html.js'
 import { EmailAddress } from '../../src/types/email-address.js'
@@ -12,7 +12,7 @@ import { expect, test } from '../base.js'
 import PlainDate = Temporal.PlainDate
 
 test('content looks right', async ({ showPage }) => {
-  const response = await authorInvite({ id: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid })({
+  const response = await authorInvite({ id: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0') })({
     getAuthorInvite: () =>
       TE.right({ status: 'open', emailAddress: EmailAddress('jcarberry@example.com'), review: 1234 }),
     getPrereview: () =>
@@ -65,7 +65,7 @@ test('content looks right', async ({ showPage }) => {
 
 test('content looks right when logged in', async ({ showPage }) => {
   const response = await authorInvite({
-    id: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
+    id: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     user: {
       name: 'Josiah Carberry',
       orcid: Orcid('0000-0002-1825-0097'),

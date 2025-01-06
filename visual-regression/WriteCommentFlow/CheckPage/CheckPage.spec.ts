@@ -2,7 +2,7 @@ import { Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
-import type { NonEmptyString, Uuid } from '../../../src/types/index.js'
+import { type NonEmptyString, Uuid } from '../../../src/types/index.js'
 import type { Pseudonym } from '../../../src/types/pseudonym.js'
 import type { User } from '../../../src/user.js'
 import * as _ from '../../../src/WriteCommentFlow/CheckPage/CheckPage.js'
@@ -12,7 +12,7 @@ test('content looks right', async ({ showPage }) => {
   const response = _.CheckPage({
     competingInterests: Option.none(),
     comment,
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     locale: DefaultLocale,
     persona: 'public',
     user,
@@ -27,7 +27,7 @@ test('content looks right using a pseudonym', async ({ showPage }) => {
   const response = _.CheckPage({
     competingInterests: Option.none(),
     comment,
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     locale: DefaultLocale,
     persona: 'pseudonym',
     user,
@@ -44,7 +44,7 @@ test('content looks right with competing interests', async ({ showPage }) => {
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' as NonEmptyString.NonEmptyString,
     ),
     comment,
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     locale: DefaultLocale,
     persona: 'public',
     user,

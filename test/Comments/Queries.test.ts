@@ -6,13 +6,13 @@ import { Orcid } from 'orcid-id-ts'
 import * as _ from '../../src/Comments/Queries.js'
 import * as Comments from '../../src/Comments/index.js'
 import { html } from '../../src/html.js'
-import type { Uuid } from '../../src/types/index.js'
+import { Uuid } from '../../src/types/index.js'
 import * as fc from '../fc.js'
 
 describe('GetNextExpectedCommandForUser', () => {
   const authorId = Orcid('0000-0002-1825-0097')
   const prereviewId = 123
-  const resourceId = '358f7fc0-9725-4192-8673-d7c64f398401' as Uuid.Uuid
+  const resourceId = Uuid.Uuid('358f7fc0-9725-4192-8673-d7c64f398401')
   const commentWasStarted = new Comments.CommentWasStarted({ authorId, prereviewId })
   const commentWasEntered = new Comments.CommentWasEntered({ comment: html`Some comment` })
   const personaWasChosen = new Comments.PersonaWasChosen({ persona: 'public' })
@@ -172,7 +172,7 @@ describe('GetNextExpectedCommandForUser', () => {
 describe('GetNextExpectedCommandForUserOnAComment', () => {
   const authorId = Orcid('0000-0002-1825-0097')
   const prereviewId = 123
-  const resourceId = '358f7fc0-9725-4192-8673-d7c64f398401' as Uuid.Uuid
+  const resourceId = Uuid.Uuid('358f7fc0-9725-4192-8673-d7c64f398401')
   const commentWasStarted = new Comments.CommentWasStarted({ authorId, prereviewId })
   const commentWasEntered = new Comments.CommentWasEntered({ comment: html`Some comment` })
   const personaWasChosen = new Comments.PersonaWasChosen({ persona: 'public' })
@@ -313,7 +313,7 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
 describe('GetACommentInNeedOfADoi', () => {
   const authorId = Orcid('0000-0002-1825-0097')
   const prereviewId = 123
-  const resourceId = '358f7fc0-9725-4192-8673-d7c64f398401' as Uuid.Uuid
+  const resourceId = Uuid.Uuid('358f7fc0-9725-4192-8673-d7c64f398401')
   const commentWasStarted = new Comments.CommentWasStarted({ authorId, prereviewId })
   const commentWasEntered = new Comments.CommentWasEntered({ comment: html`Some comment` })
   const personaWasChosen = new Comments.PersonaWasChosen({ persona: 'public' })

@@ -1,14 +1,14 @@
 import { Either } from 'effect'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
-import type { Uuid } from '../../../src/types/index.js'
+import { Uuid } from '../../../src/types/index.js'
 import * as EnterCommentForm from '../../../src/WriteCommentFlow/EnterCommentPage/EnterCommentForm.js'
 import * as _ from '../../../src/WriteCommentFlow/EnterCommentPage/EnterCommentPage.js'
 import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.EnterCommentPage({
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     form: new EnterCommentForm.EmptyForm(),
     locale: DefaultLocale,
     prereviewId: 10779310,
@@ -21,7 +21,7 @@ test('content looks right', async ({ showPage }) => {
 
 test('content looks right when there is a comment', async ({ showPage }) => {
   const response = _.EnterCommentPage({
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     form: new EnterCommentForm.CompletedForm({ comment }),
     locale: DefaultLocale,
     prereviewId: 10779310,
@@ -34,7 +34,7 @@ test('content looks right when there is a comment', async ({ showPage }) => {
 
 test('content looks right when the comment is missing', async ({ showPage }) => {
   const response = _.EnterCommentPage({
-    commentId: '7ad2f67d-dc01-48c5-b6ac-3490d494f67d' as Uuid.Uuid,
+    commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     form: new EnterCommentForm.InvalidForm({ comment: Either.left(new EnterCommentForm.Missing()) }),
     locale: DefaultLocale,
     prereviewId: 10779310,

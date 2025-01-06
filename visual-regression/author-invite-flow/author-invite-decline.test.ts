@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
-import type { Uuid } from 'uuid-ts'
+import { Uuid } from 'uuid-ts'
 import { declinePage } from '../../src/author-invite-flow/decline-page/decline-page.js'
 import { inviteDeclinedPage } from '../../src/author-invite-flow/decline-page/invite-declined-page.js'
 import { html } from '../../src/html.js'
@@ -11,7 +11,7 @@ import PlainDate = Temporal.PlainDate
 
 test('content looks right before declining', async ({ showPage }) => {
   const response = declinePage({
-    inviteId: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
+    inviteId: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     review: {
       authors: {
         named: [
@@ -56,7 +56,7 @@ test('content looks right before declining', async ({ showPage }) => {
 })
 
 test('content looks right when declined', async ({ showPage }) => {
-  const response = inviteDeclinedPage('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid)
+  const response = inviteDeclinedPage(Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'))
 
   const content = await showPage(response)
 
