@@ -1,4 +1,5 @@
-import { Effect, pipe, Runtime } from 'effect'
+import { Effect, Either, pipe, Runtime } from 'effect'
+import * as E from 'fp-ts/lib/Either.js'
 import type * as IO from 'fp-ts/lib/IO.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -10,6 +11,11 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 export interface EffectEnv<R> {
   readonly runtime: Runtime.Runtime<R>
 }
+
+export const either: <R, L>(either: Either.Either<R, L>) => E.Either<L, R> = Either.match({
+  onLeft: E.left,
+  onRight: E.right,
+})
 
 export const toReaderMiddleware = <A, I, E, R>(
   effect: Effect.Effect<A, E, R>,

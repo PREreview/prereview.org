@@ -1,23 +1,29 @@
 import { isEmailValid } from '@hapi/address'
-import { Schema } from 'effect'
-import { pipe } from 'fp-ts/lib/function.js'
+import { Either, Schema, pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import type { NonEmptyString } from './string.js'
+import * as EffectToFpts from '../EffectToFpts.js'
 
-export type EmailAddress = NonEmptyString & EmailAddressBrand
+const EmailAddressBrand: unique symbol = Symbol.for('EmailAddress')
 
-export const EmailAddressC = C.fromDecoder(pipe(D.string, D.refine(isEmailAddress, 'EmailAddress')))
+export type EmailAddress = typeof EmailAddressSchema.Type
 
-export const EmailAddressSchema: Schema.Schema<EmailAddress, string> = pipe(
-  Schema.String,
-  Schema.filter(isEmailAddress, { message: () => 'not an email address' }),
+export const EmailAddressC = C.fromDecoder(
+  pipe(
+    D.string,
+    D.parse(s =>
+      EffectToFpts.either(
+        Either.try({
+          try: () => EmailAddressSchema.make(s),
+          catch: () => D.error(s, 'EmailAddress'),
+        }),
+      ),
+    ),
+  ),
 )
 
-function isEmailAddress(value: string): value is EmailAddress {
-  return isEmailValid(value)
-}
-
-interface EmailAddressBrand {
-  readonly EmailAddress: unique symbol
-}
+export const EmailAddressSchema = pipe(
+  Schema.String,
+  Schema.filter(s => isEmailValid(s), { message: () => 'not an email address' }),
+  Schema.brand(EmailAddressBrand),
+)
