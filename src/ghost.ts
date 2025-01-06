@@ -1,5 +1,5 @@
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform'
-import { Context, Data, Effect, flow, identity, Match, Schema } from 'effect'
+import { Context, Data, Effect, flow, identity, Match, Redacted, Schema } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as R from 'fp-ts/lib/Reader.js'
@@ -11,7 +11,7 @@ import { type Html, rawHtml, sanitizeHtml } from './html.js'
 
 export interface GhostApiEnv {
   ghostApi: {
-    key: string
+    key: Redacted.Redacted
   }
 }
 
@@ -50,7 +50,7 @@ export const getPage = (
     ),
   )
 
-export class GhostApi extends Context.Tag('GhostApi')<GhostApi, { key: string }>() {}
+export class GhostApi extends Context.Tag('GhostApi')<GhostApi, { key: Redacted.Redacted }>() {}
 
 class GhostPageNotFound extends Data.TaggedError('GhostPageNotFound') {}
 
@@ -62,7 +62,9 @@ const getPageWithEffect = (id: string) =>
     const ghostApi = yield* GhostApi
 
     return yield* pipe(
-      client.get(new URL(`https://content.prereview.org/ghost/api/content/pages/${id}?key=${ghostApi.key}`)),
+      client.get(
+        new URL(`https://content.prereview.org/ghost/api/content/pages/${id}?key=${Redacted.value(ghostApi.key)}`),
+      ),
       Effect.filterOrFail(response => response.status === 200, identity),
       Effect.andThen(HttpClientResponse.schemaBodyJson(GhostPageSchema)),
       Effect.scoped,

@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Redacted } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
@@ -17,7 +18,7 @@ describe('resources', () => {
       { body: { pages: [{ html: '<p>Foo<script>bar</script></p>' }] } },
     )
 
-    const actual = await _.resources({ fetch, ghostApi: { key } })()
+    const actual = await _.resources({ fetch, ghostApi: { key: Redacted.make(key) } })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -42,7 +43,7 @@ describe('resources', () => {
         response,
       )
 
-      const actual = await _.resources({ fetch, ghostApi: { key } })()
+      const actual = await _.resources({ fetch, ghostApi: { key: Redacted.make(key) } })()
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',

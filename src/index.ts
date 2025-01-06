@@ -45,7 +45,7 @@ pipe(
       Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
     ),
   ),
-  Effect.provideServiceEffect(GhostApi, Config.all({ key: Config.string('GHOST_API_KEY') })),
+  Effect.provideServiceEffect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
   Effect.provide(Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI')))),
   Effect.provide(Redis.layerConfig(Config.redacted(Config.url('REDIS_URI')))),
   Effect.provideServiceEffect(

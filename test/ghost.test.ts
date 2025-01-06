@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Redacted } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -20,7 +21,7 @@ describe('getPage', () => {
           { url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } },
           { body: { pages: [{ html: html.toString() }] } },
         ),
-      ghostApi: { key },
+      ghostApi: { key: Redacted.make(key) },
     })()
 
     expect(actual).toStrictEqual(E.right(html))
@@ -43,7 +44,7 @@ describe('getPage', () => {
           },
         },
       ),
-      ghostApi: { key },
+      ghostApi: { key: Redacted.make(key) },
     })()
 
     expect(actual).toStrictEqual(
@@ -72,7 +73,7 @@ describe('getPage', () => {
           },
         },
       ),
-      ghostApi: { key },
+      ghostApi: { key: Redacted.make(key) },
     })()
 
     expect(actual).toStrictEqual(
@@ -101,7 +102,7 @@ describe('getPage', () => {
           },
         },
       ),
-      ghostApi: { key },
+      ghostApi: { key: Redacted.make(key) },
     })()
 
     expect(actual).toStrictEqual(E.right(rawHtml('<a href="https://donorbox.org/prereview" class="button">Donate</a>')))
@@ -124,7 +125,7 @@ describe('getPage', () => {
           },
         },
       ),
-      ghostApi: { key },
+      ghostApi: { key: Redacted.make(key) },
     })()
 
     expect(actual).toStrictEqual(E.right(rawHtml('<h2 id="some-heading">Some heading</h2>')))
@@ -141,7 +142,7 @@ describe('getPage', () => {
 
     const actual = await _.getPage(id)({
       fetch,
-      ghostApi: { key },
+      ghostApi: { key: Redacted.make(key) },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -158,7 +159,7 @@ describe('getPage', () => {
 
     const actual = await _.getPage(id)({
       fetch,
-      ghostApi: { key },
+      ghostApi: { key: Redacted.make(key) },
     })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
@@ -175,7 +176,7 @@ describe('getPage', () => {
 
     const actual = await _.getPage(id)({
       fetch,
-      ghostApi: { key },
+      ghostApi: { key: Redacted.make(key) },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -189,7 +190,7 @@ describe('getPage', () => {
   ])('when fetch throws an error', async (id, key, error) => {
     const actual = await _.getPage(id)({
       fetch: () => Promise.reject(error),
-      ghostApi: { key },
+      ghostApi: { key: Redacted.make(key) },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))

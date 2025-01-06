@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, pipe, TestContext } from 'effect'
+import { Effect, pipe, Redacted, TestContext } from 'effect'
 import fetchMock from 'fetch-mock'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/AboutUsPage/index.js'
@@ -40,7 +40,7 @@ describe('AboutUsPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(GhostApi, { key }),
+        Effect.provideService(GhostApi, { key: Redacted.make(key) }),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),
@@ -74,7 +74,7 @@ describe('AboutUsPage', () => {
         expect(fetch.done()).toBeTruthy()
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(GhostApi, { key }),
+        Effect.provideService(GhostApi, { key: Redacted.make(key) }),
         Effect.provide(TestContext.TestContext),
         Effect.runPromise,
       ),

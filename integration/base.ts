@@ -1321,7 +1321,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             useCrowdinInContext: false,
           }),
         ),
-        Effect.provideService(GhostApi, { key: 'key' }),
+        Effect.provideService(GhostApi, { key: Redacted.make('key') }),
         Effect.provide(Nodemailer.layer(nodemailer)),
         Effect.provideService(PublicUrl, new URL(`http://localhost:${port}`)),
         Effect.provideService(SessionSecret, Redacted.make('')),
