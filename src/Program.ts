@@ -362,9 +362,10 @@ export const Program = pipe(
       Layer.effect(
         GetPageFromGhost,
         Effect.gen(function* () {
+          const thing = yield* AppCacheMakeRequest
           const fetch = yield* pipe(
             HttpClient.HttpClient,
-            Effect.andThen(HttpClient.transform(AppCacheMakeRequest)),
+            Effect.andThen(HttpClient.transform(thing)),
             Effect.andThen(EffectToFpts.httpClient),
           )
           const ghostApi = yield* GhostApi
