@@ -1,4 +1,4 @@
-import { Headers, HttpClient, HttpClientRequest, UrlParams } from '@effect/platform'
+import { Headers, HttpClient, HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { Config, Effect, Function, Layer, Logger, LogLevel, Schema } from 'effect'
@@ -61,6 +61,13 @@ const HttpClientLive = Layer.effect(
               method: error.request.method,
             }),
           ),
+        ),
+      ),
+      HttpClient.transform((effect, request) =>
+        pipe(
+          Effect.succeed(HttpClientResponse.fromWeb(request, new Response())),
+          Effect.tap(Effect.logDebug('Making request in background')),
+          Effect.tap(() => effect),
         ),
       ),
     )
