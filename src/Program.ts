@@ -8,7 +8,6 @@ import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from '
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
-import { collapseRequests, logFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import { html } from './html.js'
@@ -327,10 +326,9 @@ const getPreprint = Layer.effect(
 const setUpFetch = Layer.effect(
   FetchHttpClient.Fetch,
   Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const logger = yield* DeprecatedLoggerEnv
+    const fetch = yield* EffectToFpts.httpClient
 
-    return pipe({ fetch, ...logger }, logFetch(), collapseRequests()).fetch
+    return fetch as typeof globalThis.fetch
   }),
 )
 

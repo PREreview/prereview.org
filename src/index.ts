@@ -1,10 +1,9 @@
-import { FetchHttpClient } from '@effect/platform'
-import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
+import { Headers, HttpClient, HttpClientRequest, UrlParams } from '@effect/platform'
+import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { Config, Effect, Function, Layer, Logger, LogLevel, Schema } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
-import fetch from 'make-fetch-happen'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
@@ -18,6 +17,56 @@ import * as Redis from './Redis.js'
 import * as TemplatePage from './TemplatePage.js'
 import { verifyCache } from './VerifyCache.js'
 
+const HttpClientLive = Layer.effect(
+  HttpClient.HttpClient,
+  Effect.gen(function* () {
+    const client = yield* HttpClient.HttpClient
+
+    return pipe(
+      client,
+      HttpClient.mapRequest(
+        HttpClientRequest.setHeaders({
+          'User-Agent': 'PREreview (https://prereview.org/; mailto:engineering@prereview.org)',
+        }),
+      ),
+      HttpClient.tapRequest(request =>
+        Effect.logDebug('Sending HTTP Request').pipe(
+          Effect.annotateLogs({
+            headers: Headers.redact(request.headers, 'authorization'),
+            url: request.url,
+            urlParams: UrlParams.toString(request.urlParams),
+            method: request.method,
+          }),
+        ),
+      ),
+      HttpClient.tap(response =>
+        Effect.logDebug('Received HTTP response').pipe(
+          Effect.annotateLogs({
+            status: response.status,
+            headers: response.headers,
+            url: response.request.url,
+            urlParams: UrlParams.toString(response.request.urlParams),
+            method: response.request.method,
+          }),
+        ),
+      ),
+      HttpClient.transformResponse(
+        Effect.tapError(error =>
+          Effect.logError('Error sending HTTP request').pipe(
+            Effect.annotateLogs({
+              reason: error.reason,
+              error: error.cause,
+              url: error.request.url,
+              urlParams: UrlParams.toString(error.request.urlParams),
+              method: error.request.method,
+            }),
+          ),
+        ),
+      ),
+    )
+  }),
+).pipe(Layer.provide(NodeHttpClient.layer))
+
 pipe(
   Program,
   Layer.merge(Layer.effectDiscard(verifyCache)),
@@ -26,19 +75,7 @@ pipe(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
       Layer.effect(ExpressConfig, ExpressConfigLive),
-      Layer.effect(
-        FetchHttpClient.Fetch,
-        Effect.gen(function* () {
-          const publicUrl = yield* PublicUrl
-
-          return fetch.defaults({
-            cachePath: 'data/cache',
-            headers: {
-              'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
-            },
-          }) as unknown as typeof globalThis.fetch
-        }),
-      ),
+      HttpClientLive,
     ),
   ),
   Effect.provide(

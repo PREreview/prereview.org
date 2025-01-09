@@ -63,7 +63,7 @@ const getPageWithEffect = (id: string) =>
 
     return yield* pipe(
       client.get(
-        new URL(`https://content.prereview.org/ghost/api/content/pages/${id}?key=${Redacted.value(ghostApi.key)}`),
+        new URL(`https://content.prereview.org/ghost/api/content/pages/${id}/?key=${Redacted.value(ghostApi.key)}`),
       ),
       Effect.filterOrFail(response => response.status === 200, identity),
       Effect.andThen(HttpClientResponse.schemaBodyJson(GhostPageSchema)),
