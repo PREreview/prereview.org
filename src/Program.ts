@@ -1,4 +1,4 @@
-import { FetchHttpClient } from '@effect/platform'
+import { FetchHttpClient, HttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
@@ -326,7 +326,8 @@ const getPreprint = Layer.effect(
 const setUpFetch = Layer.effect(
   FetchHttpClient.Fetch,
   Effect.gen(function* () {
-    const fetch = yield* EffectToFpts.httpClient
+    const client = yield* HttpClient.HttpClient
+    const fetch = yield* EffectToFpts.httpClient(client)
 
     return fetch as typeof globalThis.fetch
   }),

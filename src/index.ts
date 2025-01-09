@@ -4,7 +4,6 @@ import { LibsqlClient } from '@effect/sql-libsql'
 import { Config, Effect, Function, Layer, Logger, LogLevel, Schema } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
-import { AppCacheMakeRequest } from './AppCacheMakeRequest.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
@@ -64,7 +63,6 @@ const HttpClientLive = Layer.effect(
           ),
         ),
       ),
-      HttpClient.transform(AppCacheMakeRequest),
     )
   }),
 ).pipe(Layer.provide(NodeHttpClient.layer))

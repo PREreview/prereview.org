@@ -1,6 +1,8 @@
-import { FetchHttpClient } from '@effect/platform'
-import { Effect } from 'effect'
+import { HttpClient } from '@effect/platform'
+import { Effect, pipe } from 'effect'
+import { AppCacheMakeRequest } from '../AppCacheMakeRequest.js'
 import { Locale } from '../Context.js'
+import * as EffectToFpts from '../EffectToFpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { getPage, GhostApi } from '../ghost.js'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
@@ -11,7 +13,11 @@ import * as Routes from '../routes.js'
 
 export const AboutUsPage = Effect.gen(function* () {
   const locale = yield* Locale
-  const fetch = yield* FetchHttpClient.Fetch
+  const fetch = yield* pipe(
+    HttpClient.HttpClient,
+    Effect.andThen(HttpClient.transform(AppCacheMakeRequest)),
+    Effect.andThen(EffectToFpts.httpClient),
+  )
   const ghostApi = yield* GhostApi
 
   const content = yield* FptsToEffect.readerTaskEither(getPage('6154aa157741400e8722bb14'), {

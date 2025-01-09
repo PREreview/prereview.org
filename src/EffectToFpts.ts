@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientRequest, type HttpMethod } from '@effect/platform'
+import { type HttpClient, HttpClientRequest, type HttpMethod } from '@effect/platform'
 import { Effect, Either, pipe, Runtime } from 'effect'
 import type { Fetch } from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
@@ -18,33 +18,33 @@ const isHttpMethod = (method: string): method is HttpMethod.HttpMethod => {
   return ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'].includes(method)
 }
 
-export const httpClient: Effect.Effect<Fetch, never, HttpClient.HttpClient> = Effect.gen(function* () {
-  const client = yield* HttpClient.HttpClient
-  const runtime = yield* Effect.runtime()
+export const httpClient = (client: HttpClient.HttpClient): Effect.Effect<Fetch> =>
+  Effect.gen(function* () {
+    const runtime = yield* Effect.runtime()
 
-  return (url, init) => {
-    const method = init.method.toUpperCase()
+    return (url, init) => {
+      const method = init.method.toUpperCase()
 
-    if (!isHttpMethod(method)) {
-      return Promise.reject(new Error('Unsupported method'))
-    }
+      if (!isHttpMethod(method)) {
+        return Promise.reject(new Error('Unsupported method'))
+      }
 
-    const request = HttpClientRequest.make(method)(url, init)
+      const request = HttpClientRequest.make(method)(url, init)
 
-    return Runtime.runPromise(runtime)(
-      pipe(
-        client.execute(request),
-        Effect.andThen(response =>
-          pipe(
-            response.text,
-            Effect.andThen(body => new Response(body, { headers: response.headers, status: response.status })),
+      return Runtime.runPromise(runtime)(
+        pipe(
+          client.execute(request),
+          Effect.andThen(response =>
+            pipe(
+              response.text,
+              Effect.andThen(body => new Response(body, { headers: response.headers, status: response.status })),
+            ),
           ),
+          Effect.scoped,
         ),
-        Effect.scoped,
-      ),
-    )
-  }
-})
+      )
+    }
+  })
 
 export const either: <R, L>(either: Either.Either<R, L>) => E.Either<L, R> = Either.match({
   onLeft: E.left,
