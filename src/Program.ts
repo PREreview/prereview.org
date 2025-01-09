@@ -2,6 +2,7 @@ import { FetchHttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
+import { GetPageFromGhost } from './AboutUsPage/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from './Context.js'
@@ -11,6 +12,7 @@ import { createContactEmailAddressVerificationEmailForComment } from './email.js
 import { collapseRequests, logFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
+import { getPage, GhostApi } from './ghost.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
@@ -357,6 +359,18 @@ export const Program = pipe(
         Comments.makeGetNextExpectedCommandForUserOnAComment,
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
+      Layer.effect(
+        GetPageFromGhost,
+        Effect.gen(function* () {
+          const fetch = yield* FetchHttpClient.Fetch
+          const ghostApi = yield* GhostApi
+          return id =>
+            FptsToEffect.readerTaskEither(getPage(id), {
+              fetch,
+              ghostApi,
+            })
+        }),
+      ),
     ),
   ),
   Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch)),
