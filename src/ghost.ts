@@ -56,15 +56,20 @@ class GhostPageNotFound extends Data.TaggedError('GhostPageNotFound') {}
 
 class GhostPageUnavailable extends Data.TaggedError('GhostPageUnavailable') {}
 
+export const generateGhostPageUrl = (id: string) =>
+  Effect.gen(function* () {
+    const ghostApi = yield* GhostApi
+
+    return new URL(`https://content.prereview.org/ghost/api/content/pages/${id}/?key=${Redacted.value(ghostApi.key)}`)
+  })
+
 const getPageWithEffect = (id: string) =>
   Effect.gen(function* () {
     const client = yield* HttpClient.HttpClient
-    const ghostApi = yield* GhostApi
 
     return yield* pipe(
-      client.get(
-        new URL(`https://content.prereview.org/ghost/api/content/pages/${id}/?key=${Redacted.value(ghostApi.key)}`),
-      ),
+      generateGhostPageUrl(id),
+      Effect.andThen(url => client.get(url)),
       Effect.filterOrFail(response => response.status === 200, identity),
       Effect.andThen(HttpClientResponse.schemaBodyJson(GhostPageSchema)),
       Effect.scoped,

@@ -1,4 +1,10 @@
-import { HttpClient, type HttpClientError, type HttpClientRequest, type HttpClientResponse } from '@effect/platform'
+import {
+  HttpClient,
+  UrlParams,
+  type HttpClientError,
+  type HttpClientRequest,
+  type HttpClientResponse,
+} from '@effect/platform'
 import crypto from 'crypto'
 import { Context, DateTime, Effect, pipe, type Scope } from 'effect'
 
@@ -55,5 +61,8 @@ export const CachingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
   })
 
 const keyForRequest = (request: HttpClientRequest.HttpClientRequest): string => {
-  return crypto.createHash('md5').update(request.url).digest('hex')
+  const url = new URL(request.url)
+  url.search = UrlParams.toString(request.urlParams)
+
+  return crypto.createHash('md5').update(url.href).digest('hex')
 }

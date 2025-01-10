@@ -6,12 +6,10 @@ import {
   HttpServerRequest,
   HttpServerResponse,
 } from '@effect/platform'
-import crypto from 'crypto'
 import { Effect, flow, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { AboutUsPage } from './AboutUsPage/index.js'
-import { HttpCache } from './AppCacheMakeRequest.js'
+import { AboutUsPage, GhostPage } from './AboutUsPage/index.js'
 import { ExpressConfig, FlashMessage, Locale } from './Context.js'
 import { PublicUrl } from './public-url.js'
 import { Redis } from './Redis.js'
@@ -163,13 +161,9 @@ export const Router = pipe(
   HttpRouter.get(
     '/invalidate',
     Effect.gen(function* () {
-      const cache = yield* HttpCache
-      cache.delete(
-        crypto
-          .createHash('md5')
-          .update('https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14/')
-          .digest('hex'),
-      )
+      const ghostPage = yield* GhostPage
+      yield* ghostPage.invalidate('6154aa157741400e8722bb14')
+
       return yield* HttpServerResponse.json({ status: 'ok' })
     }),
   ),

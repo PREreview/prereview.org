@@ -6,16 +6,19 @@ import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import * as Routes from '../routes.js'
 
-export class GetPageFromGhost extends Context.Tag('GetPageFromGhost')<
-  GetPageFromGhost,
-  (id: string) => Effect.Effect<Html, 'unavailable' | 'not-found'>
+export class GhostPage extends Context.Tag('GhostPage')<
+  GhostPage,
+  {
+    get: (id: string) => Effect.Effect<Html, 'unavailable' | 'not-found'>
+    invalidate: (id: string) => Effect.Effect<void>
+  }
 >() {}
 
 export const AboutUsPage = Effect.gen(function* () {
   const locale = yield* Locale
-  const getPageFromGhost = yield* GetPageFromGhost
+  const ghostPage = yield* GhostPage
 
-  const content = yield* getPageFromGhost('6154aa157741400e8722bb14')
+  const content = yield* ghostPage.get('6154aa157741400e8722bb14')
 
   return createPage({ content, locale })
 }).pipe(Effect.catchAll(() => HavingProblemsPage))

@@ -1,8 +1,9 @@
 import { FetchHttpClient, HttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
+import crypto from 'crypto'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
-import { GetPageFromGhost } from './AboutUsPage/index.js'
+import { GhostPage } from './AboutUsPage/index.js'
 import { CachingHttpClient, HttpCache } from './AppCacheMakeRequest.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
@@ -12,7 +13,7 @@ import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
-import { getPage, GhostApi } from './ghost.js'
+import { generateGhostPageUrl, getPage, GhostApi } from './ghost.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
@@ -360,15 +361,24 @@ export const Program = pipe(
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
       Layer.effect(
-        GetPageFromGhost,
+        GhostPage,
         Effect.gen(function* () {
+          const cache = yield* HttpCache
           const fetch = yield* pipe(CachingHttpClient, Effect.andThen(EffectToFpts.httpClient))
           const ghostApi = yield* GhostApi
-          return id =>
-            FptsToEffect.readerTaskEither(getPage(id), {
-              fetch,
-              ghostApi,
-            })
+          return {
+            get: id =>
+              FptsToEffect.readerTaskEither(getPage(id), {
+                fetch,
+                ghostApi,
+              }),
+            invalidate: id =>
+              Effect.gen(function* () {
+                const url = yield* generateGhostPageUrl(id)
+
+                cache.delete(crypto.createHash('md5').update(url.href).digest('hex'))
+              }).pipe(Effect.provideService(GhostApi, ghostApi)),
+          }
         }),
       ),
     ),
