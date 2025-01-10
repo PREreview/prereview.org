@@ -47,7 +47,7 @@ export const CachingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
         return yield* pipe(
           req,
           httpClient.execute,
-          Effect.tap(response => cache.set(key, { staleAt: DateTime.addDuration(timestamp, '5 seconds'), response })),
+          Effect.tap(response => cache.set(key, { staleAt: DateTime.addDuration(timestamp, '10 seconds'), response })),
         )
       })
 
