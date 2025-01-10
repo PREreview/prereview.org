@@ -3,7 +3,7 @@ import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
 import { GetPageFromGhost } from './AboutUsPage/index.js'
-import { AppCacheMakeRequest } from './AppCacheMakeRequest.js'
+import { CachingHttpClient } from './AppCacheMakeRequest.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from './Context.js'
@@ -362,12 +362,7 @@ export const Program = pipe(
       Layer.effect(
         GetPageFromGhost,
         Effect.gen(function* () {
-          const thing = yield* AppCacheMakeRequest
-          const fetch = yield* pipe(
-            HttpClient.HttpClient,
-            Effect.andThen(HttpClient.transform(thing)),
-            Effect.andThen(EffectToFpts.httpClient),
-          )
+          const fetch = yield* pipe(CachingHttpClient, Effect.andThen(EffectToFpts.httpClient))
           const ghostApi = yield* GhostApi
           return id =>
             FptsToEffect.readerTaskEither(getPage(id), {
