@@ -1,10 +1,9 @@
 import { FetchHttpClient, HttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
-import crypto from 'crypto'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
 import { GhostPage } from './AboutUsPage/index.js'
-import { CachingHttpClient, HttpCache } from './AppCacheMakeRequest.js'
+import { type CacheValue, CachingHttpClient, HttpCache } from './AppCacheMakeRequest.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from './Context.js'
@@ -376,13 +375,27 @@ export const Program = pipe(
               Effect.gen(function* () {
                 const url = yield* generateGhostPageUrl(id)
 
-                cache.delete(crypto.createHash('md5').update(url.href).digest('hex'))
+                cache.delete(url)
               }).pipe(Effect.provideService(GhostApi, ghostApi)),
           }
         }),
       ),
     ),
   ),
-  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch, Layer.succeed(HttpCache, new Map()))),
+  Layer.provide(
+    Layer.mergeAll(
+      commentEvents,
+      LibsqlEventStore.layer,
+      setUpFetch,
+      Layer.sync(HttpCache, () => {
+        const cache = new Map<string, CacheValue>()
+        return {
+          get: key => cache.get(key.href),
+          set: (key, value) => cache.set(key.href, value),
+          delete: key => cache.delete(key.href),
+        }
+      }),
+    ),
+  ),
   Layer.provide(Layer.mergeAll(Uuid.layer, Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv), MigratorLive)),
 )

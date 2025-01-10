@@ -5,12 +5,22 @@ import {
   type HttpClientRequest,
   type HttpClientResponse,
 } from '@effect/platform'
-import crypto from 'crypto'
 import { Context, DateTime, Effect, pipe, type Scope } from 'effect'
+
+export interface CacheValue {
+  staleAt: DateTime.DateTime
+  response: HttpClientResponse.HttpClientResponse
+}
+
+type CacheKey = URL
 
 export class HttpCache extends Context.Tag('HttpCache')<
   HttpCache,
-  Map<string, { staleAt: DateTime.DateTime; response: HttpClientResponse.HttpClientResponse }>
+  {
+    get: (key: CacheKey) => CacheValue | undefined
+    set: (key: CacheKey, value: CacheValue) => void
+    delete: (key: CacheKey) => void
+  }
 >() {}
 
 export const CachingHttpClient: Effect.Effect<HttpClient.HttpClient, never, HttpCache | HttpClient.HttpClient> =
@@ -60,9 +70,9 @@ export const CachingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
     return HttpClient.makeWith(cachingBehaviour, Effect.succeed)
   })
 
-const keyForRequest = (request: HttpClientRequest.HttpClientRequest): string => {
+const keyForRequest = (request: HttpClientRequest.HttpClientRequest): CacheKey => {
   const url = new URL(request.url)
   url.search = UrlParams.toString(request.urlParams)
 
-  return crypto.createHash('md5').update(url.href).digest('hex')
+  return url
 }
