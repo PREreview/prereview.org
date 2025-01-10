@@ -1,11 +1,16 @@
 import { HttpClient, type HttpClientError, type HttpClientRequest, type HttpClientResponse } from '@effect/platform'
 import crypto from 'crypto'
-import { DateTime, Effect, pipe, type Scope } from 'effect'
+import { Context, DateTime, Effect, pipe, type Scope } from 'effect'
 
-export const CachingHttpClient: Effect.Effect<HttpClient.HttpClient, never, HttpClient.HttpClient> = Effect.gen(
-  function* () {
+export class HttpCache extends Context.Tag('HttpCache')<
+  HttpCache,
+  Map<string, { staleAt: DateTime.DateTime; response: HttpClientResponse.HttpClientResponse }>
+>() {}
+
+export const CachingHttpClient: Effect.Effect<HttpClient.HttpClient, never, HttpCache | HttpClient.HttpClient> =
+  Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient
-    const cache = new Map<string, { staleAt: DateTime.DateTime; response: HttpClientResponse.HttpClientResponse }>()
+    const cache = yield* HttpCache
 
     const cachingBehaviour = (
       request: Effect.Effect<HttpClientRequest.HttpClientRequest>,
@@ -47,8 +52,7 @@ export const CachingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
       })
 
     return HttpClient.makeWith(cachingBehaviour, Effect.succeed)
-  },
-)
+  })
 
 const keyForRequest = (request: HttpClientRequest.HttpClientRequest): string => {
   return crypto.createHash('md5').update(request.url).digest('hex')

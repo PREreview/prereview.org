@@ -3,7 +3,7 @@ import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
 import { GetPageFromGhost } from './AboutUsPage/index.js'
-import { CachingHttpClient } from './AppCacheMakeRequest.js'
+import { CachingHttpClient, HttpCache } from './AppCacheMakeRequest.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from './Context.js'
@@ -373,6 +373,6 @@ export const Program = pipe(
       ),
     ),
   ),
-  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch)),
+  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch, Layer.succeed(HttpCache, new Map()))),
   Layer.provide(Layer.mergeAll(Uuid.layer, Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv), MigratorLive)),
 )
