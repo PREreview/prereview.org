@@ -15,7 +15,7 @@ import * as EffectToFpts from './EffectToFpts.js'
 import { PageNotFound } from './PageNotFound/index.js'
 import { type RouterEnv, routes } from './app-router.js'
 import { doesPreprintExist, getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
-import { getPage } from './ghost.js'
+import { getPage, type GhostApiEnv } from './ghost.js'
 import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
@@ -42,6 +42,7 @@ export type ConfigEnv = Omit<
   | 'runtime'
   | 'sendEmail'
 > &
+  GhostApiEnv &
   NodemailerEnv & {
     allowSiteCrawlers: boolean
     useCrowdinInContext: boolean

@@ -82,7 +82,6 @@ import {
 } from './feature-flags.js'
 import type { SleepEnv } from './fetch.js'
 import { funding } from './funding.js'
-import type { GhostApiEnv } from './ghost.js'
 import { home } from './home-page/index.js'
 import { howToUse } from './how-to-use.js'
 import * as Keyv from './keyv.js'
@@ -363,7 +362,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   ConnectOrcidOAuthEnv &
   Keyv.ContactEmailAddressStoreEnv &
   FormStoreEnv &
-  GhostApiEnv &
   Keyv.IsOpenForRequestsStoreEnv &
   IsUserBlockedEnv &
   Keyv.LanguagesStoreEnv &
