@@ -4,6 +4,7 @@ import { Effect, TestContext } from 'effect'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/AboutUsPage/index.js'
 import { Locale } from '../../src/Context.js'
+import { GetPageFromGhost } from '../../src/GhostPage.js'
 import * as Routes from '../../src/routes.js'
 import * as fc from '../fc.js'
 
@@ -25,7 +26,7 @@ describe('AboutUsPage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provide(TestContext.TestContext),
-      Effect.provideService(_.GetPageFromGhost, () => Effect.succeed(html)),
+      Effect.provideService(GetPageFromGhost, () => Effect.succeed(html)),
       Effect.runPromise,
     ),
   )
@@ -47,7 +48,7 @@ describe('AboutUsPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provide(TestContext.TestContext),
-        Effect.provideService(_.GetPageFromGhost, () => Effect.fail(error)),
+        Effect.provideService(GetPageFromGhost, () => Effect.fail(error)),
         Effect.runPromise,
       ),
   )

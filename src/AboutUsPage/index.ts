@@ -1,15 +1,11 @@
-import { Context, Effect } from 'effect'
+import { Effect } from 'effect'
 import { Locale } from '../Context.js'
+import { GetPageFromGhost } from '../GhostPage.js'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { type Html, fixHeadingLevels, html, plainText } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import * as Routes from '../routes.js'
-
-export class GetPageFromGhost extends Context.Tag('GetPageFromGhost')<
-  GetPageFromGhost,
-  (id: string) => Effect.Effect<Html, 'unavailable' | 'not-found'>
->() {}
 
 export const AboutUsPage = Effect.gen(function* () {
   const locale = yield* Locale
