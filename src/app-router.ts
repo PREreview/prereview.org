@@ -24,6 +24,7 @@ import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
+import type { GetPageFromGhostEnv } from './GhostPage.js'
 import {
   authorInvite,
   authorInviteCheck,
@@ -349,6 +350,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   DoesPreprintExistEnv &
   EffectEnv<Locale> &
   ResolvePreprintIdEnv &
+  GetPageFromGhostEnv &
   GetPreprintIdEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
