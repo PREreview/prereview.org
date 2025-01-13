@@ -7,22 +7,22 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { type MissingE, hasAnError, missingE } from '../form.js'
-import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
-import { templatePage } from '../page.js'
-import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
+import { type MissingE, hasAnError, missingE } from '../../form.js'
+import { html, plainText, rawHtml, sendHtml } from '../../html.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../../locales/index.js'
+import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware.js'
+import { templatePage } from '../../page.js'
+import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import {
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewMatch,
-} from '../routes.js'
-import { type NonEmptyString, NonEmptyStringC } from '../types/string.js'
-import { type User, getUser } from '../user.js'
-import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
-import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from './shared-elements.js'
+} from '../../routes.js'
+import { type NonEmptyString, NonEmptyStringC } from '../../types/string.js'
+import { type User, getUser } from '../../user.js'
+import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from '../form.js'
+import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from '../shared-elements.js'
 
 export const writeReviewCompetingInterests = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
