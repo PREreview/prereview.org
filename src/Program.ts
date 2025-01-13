@@ -12,7 +12,7 @@ import { collapseRequests, logFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import { getPage, GhostApi } from './ghost.js'
-import { GetPageFromGhost } from './GhostPage.js'
+import * as GhostPage from './GhostPage.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
@@ -360,15 +360,25 @@ export const Program = pipe(
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
       Layer.effect(
-        GetPageFromGhost,
+        GhostPage.GetPageFromGhost,
         Effect.gen(function* () {
           const fetch = yield* FetchHttpClient.Fetch
           const ghostApi = yield* GhostApi
-          return id =>
-            FptsToEffect.readerTaskEither(getPage(id), {
-              fetch,
-              ghostApi,
-            })
+          return flow(
+            id =>
+              FptsToEffect.readerTaskEither(getPage(id), {
+                fetch,
+                ghostApi,
+              }),
+            Effect.mapError(
+              flow(
+                Match.value,
+                Match.when('not-found', () => new GhostPage.PageIsNotFound()),
+                Match.when('unavailable', () => new GhostPage.PageIsUnavailable()),
+                Match.exhaustive,
+              ),
+            ),
+          )
         }),
       ),
     ),
