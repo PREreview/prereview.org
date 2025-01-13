@@ -1536,7 +1536,22 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       writeReviewCompetingInterestsMatch.parser,
-      P.map(({ id }) => writeReviewCompetingInterests(id)),
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS(
+            'body',
+            RM.gets(c => c.getBody()),
+          ),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(writeReviewCompetingInterests)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       writeReviewConductMatch.parser,
