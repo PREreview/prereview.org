@@ -46,7 +46,7 @@ jobs:
         run: find locales -empty -type d -delete
 
       - name: 'Commit changes'
-        uses: stefanzweifel/git-auto-commit-action@v5.0.1
+        uses: stefanzweifel/git-auto-commit-action@v5.1.0
         if: ${{ !env.ACT }}
         with:
           commit_message: 'Update locales'
