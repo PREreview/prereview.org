@@ -109,6 +109,7 @@ const getPrereviewsPageForSciety = flow(
       size: '100',
       sort: '-mostrecent',
       resource_type: 'publication::publication-peerreview',
+      access_status: 'open',
     }),
   getCommunityRecords('prereview-reviews'),
   RTE.map(records => RA.chunksOf(20)(records.hits.hits)),
@@ -121,6 +122,7 @@ export const getPrereviewsForSciety = pipe(
     page: '1',
     size: '1',
     resource_type: 'publication::publication-peerreview',
+    access_status: 'open',
   }),
   getCommunityRecords('prereview-reviews'),
   RTE.mapLeft(() => 'unavailable' as const),
@@ -164,6 +166,7 @@ export const getRecentPrereviewsFromZenodo = ({
             size: '5',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
+            access_status: 'open',
             q: [
               field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
               language ? `language:"${iso6391To3(language)}"` : '',
@@ -237,7 +240,7 @@ export const getPrereviewFromZenodo = (id: number) =>
     RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv & WasPrereviewRemovedEnv>()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview)), () => 'not-found' as const),
+    RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview), and(isOpen)), () => 'not-found' as const),
     RTE.chainW(recordToPrereview),
     RTE.orElseFirstW(
       RTE.fromReaderIOK(
@@ -282,6 +285,7 @@ export const getPrereviewsForProfileFromZenodo = flow(
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
+      access_status: 'open',
     }),
   getCommunityRecords('prereview-reviews'),
   RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
@@ -314,6 +318,7 @@ export const getPrereviewsForUserFromZenodo = flow(
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
+      access_status: 'open',
     }),
   getCommunityRecords('prereview-reviews'),
   RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
@@ -346,6 +351,7 @@ export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
+      access_status: 'open',
     }),
     getCommunityRecords('prereview-reviews'),
     RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
@@ -381,6 +387,7 @@ export const getPrereviewsForPreprintFromZenodo = flow(
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
+      access_status: 'open',
     }),
   getCommunityRecords('prereview-reviews'),
   RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
@@ -412,6 +419,7 @@ export const getCommentsForPrereviewFromZenodo = flow(
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-other',
+      access_status: 'open',
     }),
   getCommunityRecords('prereview-reviews'),
   RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
@@ -921,6 +929,10 @@ function isInCommunity(record: Record) {
 
 function isPeerReview(record: Record) {
   return record.metadata.resource_type.type === 'publication' && record.metadata.resource_type.subtype === 'peerreview'
+}
+
+function isOpen(record: Record) {
+  return record.metadata.access_right === 'open'
 }
 
 const getReviewFields = flow(

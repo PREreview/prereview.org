@@ -4,6 +4,7 @@ import { Effect, TestContext } from 'effect'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/AboutUsPage/index.js'
 import { Locale } from '../../src/Context.js'
+import { GetPageFromGhost, PageIsNotFound, PageIsUnavailable } from '../../src/GhostPage.js'
 import * as Routes from '../../src/routes.js'
 import * as fc from '../fc.js'
 
@@ -25,12 +26,12 @@ describe('AboutUsPage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provide(TestContext.TestContext),
-      Effect.provideService(_.GetPageFromGhost, () => Effect.succeed(html)),
+      Effect.provideService(GetPageFromGhost, () => Effect.succeed(html)),
       Effect.runPromise,
     ),
   )
 
-  test.prop([fc.supportedLocale(), fc.constantFrom('unavailable', 'not-found')])(
+  test.prop([fc.supportedLocale(), fc.oneof(fc.constant(new PageIsUnavailable()), fc.constant(new PageIsNotFound()))])(
     'when the page cannot be loaded',
     async (locale, error) =>
       Effect.gen(function* () {
@@ -47,7 +48,7 @@ describe('AboutUsPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provide(TestContext.TestContext),
-        Effect.provideService(_.GetPageFromGhost, () => Effect.fail(error)),
+        Effect.provideService(GetPageFromGhost, () => Effect.fail(error)),
         Effect.runPromise,
       ),
   )

@@ -24,6 +24,7 @@ import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
+import type { GetPageFromGhostEnv } from './GhostPage.js'
 import {
   authorInvite,
   authorInviteCheck,
@@ -81,7 +82,6 @@ import {
 } from './feature-flags.js'
 import type { SleepEnv } from './fetch.js'
 import { funding } from './funding.js'
-import type { GhostApiEnv } from './ghost.js'
 import { home } from './home-page/index.js'
 import { howToUse } from './how-to-use.js'
 import * as Keyv from './keyv.js'
@@ -349,6 +349,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   DoesPreprintExistEnv &
   EffectEnv<Locale> &
   ResolvePreprintIdEnv &
+  GetPageFromGhostEnv &
   GetPreprintIdEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
@@ -361,7 +362,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   ConnectOrcidOAuthEnv &
   Keyv.ContactEmailAddressStoreEnv &
   FormStoreEnv &
-  GhostApiEnv &
   Keyv.IsOpenForRequestsStoreEnv &
   IsUserBlockedEnv &
   Keyv.LanguagesStoreEnv &
@@ -1536,7 +1536,22 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       writeReviewCompetingInterestsMatch.parser,
-      P.map(({ id }) => writeReviewCompetingInterests(id)),
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS(
+            'body',
+            RM.gets(c => c.getBody()),
+          ),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(writeReviewCompetingInterests)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       writeReviewConductMatch.parser,

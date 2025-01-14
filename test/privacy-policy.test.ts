@@ -1,24 +1,18 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
-import { Redacted } from 'effect'
-import fetchMock from 'fetch-mock'
+import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
+import type { GetPageFromGhostEnv } from '../src/GhostPage.js'
 import * as _ from '../src/privacy-policy.js'
 import { privacyPolicyMatch } from '../src/routes.js'
 import * as fc from './fc.js'
 
 describe('privacyPolicy', () => {
-  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('when the page can be loaded', async key => {
-    const fetch = fetchMock.sandbox().getOnce(
-      {
-        url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb0f',
-        query: { key },
-      },
-      { body: { pages: [{ html: '<p>Foo<script>bar</script></p>' }] } },
-    )
+  test.prop([fc.html()])('when the page can be loaded', async page => {
+    const getPageFromGhost = jest.fn<GetPageFromGhostEnv['getPageFromGhost']>(_ => TE.right(page))
 
-    const actual = await _.privacyPolicy({ fetch, ghostApi: { key: Redacted.make(key) } })()
+    const actual = await _.privacyPolicy({ getPageFromGhost })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -30,30 +24,19 @@ describe('privacyPolicy', () => {
       skipToLabel: 'main',
       js: [],
     })
+    expect(getPageFromGhost).toHaveBeenCalledWith('6154aa157741400e8722bb0f')
   })
 
-  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.fetchResponse()])(
-    'when the page cannot be loaded',
-    async (key, response) => {
-      const fetch = fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb0f?',
-          query: { key },
-        },
-        response,
-      )
+  test.prop([fc.constantFrom('unavailable', 'not-found')])('when the page cannot be loaded', async error => {
+    const actual = await _.privacyPolicy({ getPageFromGhost: () => TE.left(error) })()
 
-      const actual = await _.privacyPolicy({ fetch, ghostApi: { key: Redacted.make(key) } })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-      expect(fetch.done()).toBeTruthy()
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
 })

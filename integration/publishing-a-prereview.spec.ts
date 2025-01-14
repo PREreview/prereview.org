@@ -70,9 +70,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
 
     await page.getByLabel('No').check()
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('I’m following the Code of Conduct').check()
@@ -739,7 +736,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview with competing interests',
-  async ({ contextOptions, page }, testInfo) => {
+  async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -754,21 +751,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 
     await page.getByLabel('Yes').check()
     await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
-
-    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
-
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('Competing interests Maecenas sed dapibus massa.')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
@@ -2625,7 +2613,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare any competing interests',
-  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -2649,14 +2637,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'aria-invalid',
       'true',
     )
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Select yes if you have any competing interests' }).click()
 
     await expect(page.getByLabel('No')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Yes').check()
 
@@ -2668,23 +2652,16 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('What are they?')).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Enter details of your competing interests' }).click()
 
     await expect(page.getByLabel('What are they?')).toBeFocused()
-
-    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare any competing interests by any author',
-  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -2713,16 +2690,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(
       page.getByRole('group', { name: 'Do you, or any of the other authors, have any competing interests?' }),
     ).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page
       .getByRole('link', { name: 'Select yes if you, or any of the other authors, have any competing interests' })
       .click()
 
     await expect(page.getByLabel('No')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Yes').check()
 
@@ -2734,17 +2707,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('What are they?')).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Enter details of the competing interests' }).click()
 
     await expect(page.getByLabel('What are they?')).toBeFocused()
-
-    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 

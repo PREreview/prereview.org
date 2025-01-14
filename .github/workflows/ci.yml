@@ -55,13 +55,13 @@ jobs:
         run: npm run build:assets
 
       - name: 'Upload assets'
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: assets
           path: dist/assets
 
       - name: 'Upload manifest'
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: manifest
           path: src/manifest.json
@@ -91,13 +91,13 @@ jobs:
         run: scripts/intlc.sh
 
       - name: 'Upload locales'
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: locales
           path: src/locales
 
       - name: 'Upload assets locales'
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: locales-assets
           path: assets/locales
@@ -118,7 +118,7 @@ jobs:
 
       - name: 'Build image'
         id: build
-        uses: docker/build-push-action@v6.10.0
+        uses: docker/build-push-action@v6.11.0
         with:
           context: .
           outputs: type=docker,dest=/tmp/image.tar
@@ -126,7 +126,7 @@ jobs:
           cache-to: type=gha,mode=max,ignore-error=true
 
       - name: 'Upload build'
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: image
           path: /tmp/image.tar
@@ -306,7 +306,7 @@ jobs:
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: integration-tests-results-${{ matrix.shard }}
           path: integration-results
@@ -396,7 +396,7 @@ jobs:
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: visual-regression-tests-results-${{ matrix.shard }}
           path: integration-results

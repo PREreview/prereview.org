@@ -197,6 +197,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
             size: '5',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
+            access_status: 'open',
             q: `${
               field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : ''
             }${field && language ? ' AND ' : ''}${language ? `language:"${iso6391To3(language)}"` : ''}${(field || language) && query ? ' AND ' : ''}${query ? `(title:(${query}) OR metadata.creators.person_or_org.name:(${query}))` : ''}`,
@@ -308,6 +309,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 size: '5',
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',
+                access_status: 'open',
                 q: '',
               }).toString()}` && cache === 'force-cache',
           {
@@ -323,6 +325,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 size: '5',
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',
+                access_status: 'open',
                 q: '',
               }).toString()}` && cache === 'no-cache',
           { throws: new Error('Network error') },
@@ -463,6 +466,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               size: '5',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             },
           },
           {
@@ -604,6 +608,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           size: '5',
           sort: 'publication-desc',
           resource_type: 'publication::publication-peerreview',
+          access_status: 'open',
         },
       },
       {
@@ -638,6 +643,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
             size: '5',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
+            access_status: 'open',
           },
         },
         {
@@ -664,6 +670,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
             size: '5',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
+            access_status: 'open',
           },
         },
         { status },
@@ -1082,6 +1089,63 @@ describe('getPrereviewFromZenodo', () => {
       expect(fetch.done()).toBeTruthy()
     },
   )
+
+  test.prop([fc.integer(), fc.preprintDoi()])('when the record is restricted', async (id, preprintDoi) => {
+    const record: Record = {
+      conceptdoi: Doi('10.5072/zenodo.1061863'),
+      conceptrecid: 1061863,
+      files: [
+        {
+          links: {
+            self: new URL('http://example.com/review.html/content'),
+          },
+          key: 'review.html',
+          size: 58,
+        },
+      ],
+      id,
+      links: {
+        latest: new URL('http://example.com/latest'),
+        latest_html: new URL('http://example.com/latest_html'),
+      },
+      metadata: {
+        access_right: 'restricted',
+        communities: [{ id: 'prereview-reviews' }],
+        creators: [{ name: 'PREreviewer' }],
+        description: 'Description',
+        doi: Doi('10.5281/zenodo.1061864'),
+        license: { id: 'cc-by-4.0' },
+        publication_date: new Date('2022-07-05'),
+        related_identifiers: [
+          {
+            scheme: 'doi',
+            identifier: preprintDoi,
+            relation: 'reviews',
+            resource_type: 'publication-preprint',
+          },
+        ],
+        resource_type: {
+          type: 'publication',
+          subtype: 'peerreview',
+        },
+        title: 'Title',
+      },
+    }
+
+    const actual = await _.getPrereviewFromZenodo(id)({
+      clock: SystemClock,
+      fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+        body: RecordC.encode(record),
+        status: Status.OK,
+      }),
+      getPreprint: shouldNotBeCalled,
+      logger: () => IO.of(undefined),
+      sleep: shouldNotBeCalled,
+      wasPrereviewRemoved: () => false,
+    })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
 
   test.prop([fc.integer(), fc.preprintDoi()])('when the record is not in the community', async (id, preprintDoi) => {
     const record: Record = {
@@ -1512,6 +1576,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 size: '100',
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',
+                access_status: 'open',
               },
             },
             {
@@ -1709,6 +1774,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 size: '100',
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',
+                access_status: 'open',
               },
             },
             {
@@ -1948,6 +2014,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             },
           },
           {
@@ -1993,6 +2060,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           size: '100',
           sort: 'publication-desc',
           resource_type: 'publication::publication-peerreview',
+          access_status: 'open',
         },
       },
       { status },
@@ -2161,6 +2229,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             },
           },
           {
@@ -2396,6 +2465,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             },
           },
           {
@@ -2441,6 +2511,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
           size: '100',
           sort: 'publication-desc',
           resource_type: 'publication::publication-peerreview',
+          access_status: 'open',
         },
       },
       { status },
@@ -2621,6 +2692,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             },
           },
           {
@@ -2673,6 +2745,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
             size: '100',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
+            access_status: 'open',
           },
         },
         {
@@ -2754,6 +2827,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             }).toString()}` && cache === 'force-cache',
         {
           body: RecordsC.encode(records),
@@ -2768,6 +2842,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             }).toString()}` && cache === 'no-cache',
         { throws: new Error('Network error') },
       )
@@ -2811,6 +2886,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           size: '100',
           sort: 'publication-desc',
           resource_type: 'publication::publication-peerreview',
+          access_status: 'open',
         },
       },
       { status },
@@ -2942,6 +3018,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             },
           },
           {
@@ -3036,6 +3113,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             },
           },
           {
@@ -3161,6 +3239,7 @@ describe('getCommentsForPrereviewFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-other',
+              access_status: 'open',
             },
           },
           {
@@ -3258,6 +3337,7 @@ describe('getCommentsForPrereviewFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-other',
+              access_status: 'open',
             }).toString()}` && cache === 'force-cache',
         {
           body: RecordsC.encode(records),
@@ -3272,6 +3352,7 @@ describe('getCommentsForPrereviewFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-other',
+              access_status: 'open',
             }).toString()}` && cache === 'no-cache',
         { throws: new Error('Network error') },
       )
@@ -3315,6 +3396,7 @@ describe('getCommentsForPrereviewFromZenodo', () => {
           size: '100',
           sort: 'publication-desc',
           resource_type: 'publication::publication-other',
+          access_status: 'open',
         },
       },
       { status },
@@ -3402,6 +3484,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
               q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             },
           },
           {
@@ -3478,6 +3561,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             }).toString()}` && cache === 'force-cache',
         {
           body: RecordsC.encode(records),
@@ -3492,6 +3576,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             }).toString()}` && cache === 'no-cache',
         { throws: new Error('Network error') },
       )
@@ -3528,6 +3613,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
             q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
+            access_status: 'open',
           },
         },
         { status },
@@ -3597,6 +3683,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
               q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
             },
           },
           {

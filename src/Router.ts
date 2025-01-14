@@ -9,8 +9,9 @@ import {
 import { Effect, flow, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { AboutUsPage, GhostPage } from './AboutUsPage/index.js'
+import { AboutUsPage } from './AboutUsPage/index.js'
 import { ExpressConfig, FlashMessage, Locale } from './Context.js'
+import { GhostPage } from './GhostPage.js'
 import { PublicUrl } from './public-url.js'
 import { Redis } from './Redis.js'
 import {

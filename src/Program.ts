@@ -2,7 +2,6 @@ import { FetchHttpClient, HttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
-import { GhostPage } from './AboutUsPage/index.js'
 import { type CacheValue, CachingHttpClient, HttpCache } from './AppCacheMakeRequest.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
@@ -13,6 +12,7 @@ import { createContactEmailAddressVerificationEmailForComment } from './email.js
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import { generateGhostPageUrl, getPage, GhostApi } from './ghost.js'
+import * as GhostPage from './GhostPage.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
@@ -360,17 +360,27 @@ export const Program = pipe(
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
       Layer.effect(
-        GhostPage,
+        GhostPage.GhostPage,
         Effect.gen(function* () {
           const cache = yield* HttpCache
           const fetch = yield* pipe(CachingHttpClient, Effect.andThen(EffectToFpts.httpClient))
           const ghostApi = yield* GhostApi
           return {
-            get: id =>
-              FptsToEffect.readerTaskEither(getPage(id), {
-                fetch,
-                ghostApi,
-              }),
+            get: flow(
+              (id: string) =>
+                FptsToEffect.readerTaskEither(getPage(id), {
+                  fetch,
+                  ghostApi,
+                }),
+              Effect.mapError(
+                flow(
+                  Match.value,
+                  Match.when('not-found', () => new GhostPage.PageIsNotFound()),
+                  Match.when('unavailable', () => new GhostPage.PageIsUnavailable()),
+                  Match.exhaustive,
+                ),
+              ),
+            ),
             invalidate: id =>
               Effect.gen(function* () {
                 const url = yield* generateGhostPageUrl(id)
