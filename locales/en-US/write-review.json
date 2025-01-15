@@ -303,7 +303,7 @@
     "message": "Do you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests?"
   },
   "whatIsCompetingInterest": {
-    "message": "A competing interest is anything that could interfere with the objective of a PREreview."
+    "message": "A competing interest is anything that could interfere with the objectivity of a PREreview."
   },
   "examples": {
     "message": "Examples"

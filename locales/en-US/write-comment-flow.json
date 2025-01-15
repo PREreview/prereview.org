@@ -81,7 +81,7 @@
     "message": "<error>Error:</error> Enter details of your competing interests"
   },
   "competingInterestsTip": {
-    "message": "A competing interest is anything that could interfere with the objective of the comment on a PREreview."
+    "message": "A competing interest is anything that could interfere with the objectivity of the comment on a PREreview."
   },
   "examplesCompetingInterests": {
     "message": "Examples"
