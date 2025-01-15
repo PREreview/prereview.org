@@ -13,7 +13,7 @@ ORCID_API_URL = "https://api.orcid.org/"
 PUBLIC_URL = "https://prereview.org/"
 REQUIRES_A_VERIFIED_EMAIL_ADDRESS = "true"
 SLACK_UPDATE = "true"
-VERIFY_CACHE_DELAY = "10 minutes"
+VERIFY_CACHE_DELAY = "1 hour"
 ZENODO_URL = "https://zenodo.org/"
 
 [mounts]
