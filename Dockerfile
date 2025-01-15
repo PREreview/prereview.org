@@ -1,4 +1,4 @@
-FROM node:22.10.0-bookworm-slim AS node
+FROM node:22.13.0-bookworm-slim AS node
 ENV NODE_OPTIONS="--unhandled-rejections=strict --enable-source-maps"
 WORKDIR /app
 
