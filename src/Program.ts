@@ -2,7 +2,7 @@ import { FetchHttpClient, HttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
-import { type CacheValue, CachingHttpClient, HttpCache } from './AppCacheMakeRequest.js'
+import { CachingHttpClient } from './AppCacheMakeRequest.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from './Context.js'
@@ -14,6 +14,7 @@ import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import { generateGhostPageUrl, getPage, GhostApi } from './ghost.js'
 import * as GhostPage from './GhostPage.js'
 import { html } from './html.js'
+import * as HttpCache from './HttpCache.js'
 import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
 import * as LibsqlEventStore from './LibsqlEventStore.js'
@@ -362,7 +363,7 @@ export const Program = pipe(
       Layer.effect(
         GhostPage.GhostPage,
         Effect.gen(function* () {
-          const cache = yield* HttpCache
+          const cache = yield* HttpCache.HttpCache
           const fetch = yield* pipe(CachingHttpClient, Effect.andThen(EffectToFpts.httpClient))
           const ghostApi = yield* GhostApi
           return {
@@ -392,20 +393,6 @@ export const Program = pipe(
       ),
     ),
   ),
-  Layer.provide(
-    Layer.mergeAll(
-      commentEvents,
-      LibsqlEventStore.layer,
-      setUpFetch,
-      Layer.sync(HttpCache, () => {
-        const cache = new Map<string, CacheValue>()
-        return {
-          get: key => cache.get(key.href),
-          set: (key, value) => cache.set(key.href, value),
-          delete: key => cache.delete(key.href),
-        }
-      }),
-    ),
-  ),
+  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch, HttpCache.layer)),
   Layer.provide(Layer.mergeAll(Uuid.layer, Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv), MigratorLive)),
 )
