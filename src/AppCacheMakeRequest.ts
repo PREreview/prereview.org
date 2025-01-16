@@ -1,9 +1,9 @@
 import {
   HttpClient,
+  HttpClientResponse,
   UrlParams,
   type HttpClientError,
   type HttpClientRequest,
-  type HttpClientResponse,
 } from '@effect/platform'
 import { DateTime, Effect, pipe, type Scope } from 'effect'
 import * as HttpCache from './HttpCache.js'
@@ -43,7 +43,13 @@ export const CachingHttpClient: Effect.Effect<
             }),
           )
         }
-        return response.response
+        return HttpClientResponse.fromWeb(
+          req,
+          new Response(response.response.body, {
+            status: response.response.status,
+            headers: response.response.headers,
+          }),
+        )
       } else {
         yield* Effect.logDebug('Cache miss')
       }
@@ -51,14 +57,25 @@ export const CachingHttpClient: Effect.Effect<
       return yield* pipe(
         req,
         httpClient.execute,
-        Effect.tap(response => cache.set(key, { staleAt: DateTime.addDuration(timestamp, '10 seconds'), response })),
+        Effect.tap(response =>
+          pipe(cache.set(key, { staleAt: DateTime.addDuration(timestamp, '10 seconds'), response }), Effect.ignore),
+        ),
         Effect.tap(response =>
           Effect.gen(function* () {
             const cachedValue = yield* cache.get(key)
             if (cachedValue === undefined) {
               return yield* Effect.logError('cache entry not found')
             }
-            if (response !== cachedValue.response) {
+            if (
+              response !==
+              HttpClientResponse.fromWeb(
+                req,
+                new Response(cachedValue.response.body, {
+                  status: cachedValue.response.status,
+                  headers: cachedValue.response.headers,
+                }),
+              )
+            ) {
               return yield* Effect.logError('cached response does not equal original')
             }
           }),

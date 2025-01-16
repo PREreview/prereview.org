@@ -1,18 +1,31 @@
 import type { HttpClientResponse } from '@effect/platform'
-import { Context, type DateTime, Effect, Layer } from 'effect'
+import { Context, type DateTime, Effect, Layer, pipe, Schema } from 'effect'
 
-export interface CacheValue {
+interface CacheValue {
+  staleAt: DateTime.DateTime
+  response: StoredResponse
+}
+
+interface CacheInput {
   staleAt: DateTime.DateTime
   response: HttpClientResponse.HttpClientResponse
 }
 
 export type CacheKey = URL
 
+type StoredResponse = typeof StoredResponseSchema.Type
+
+const StoredResponseSchema = Schema.Struct({
+  status: Schema.Number,
+  headers: Schema.Record({ key: Schema.String, value: Schema.String }),
+  body: Schema.String,
+})
+
 export class HttpCache extends Context.Tag('HttpCache')<
   HttpCache,
   {
     get: (key: CacheKey) => Effect.Effect<CacheValue | undefined>
-    set: (key: CacheKey, value: CacheValue) => Effect.Effect<void>
+    set: (key: CacheKey, value: CacheInput) => Effect.Effect<void, Error>
     delete: (key: CacheKey) => Effect.Effect<void>
   }
 >() {}
@@ -21,7 +34,20 @@ export const layer = Layer.sync(HttpCache, () => {
   const cache = new Map<string, CacheValue>()
   return {
     get: key => Effect.succeed(cache.get(key.href)),
-    set: (key, value) => Effect.succeed(cache.set(key.href, value)),
+    set: (key, input) =>
+      pipe(
+        Effect.gen(function* () {
+          return {
+            status: input.response.status,
+            headers: input.response.headers,
+            body: yield* input.response.text,
+          }
+        }),
+        Effect.andThen(Schema.encode(StoredResponseSchema)),
+        Effect.andThen(storedResponse => {
+          cache.set(key.href, { staleAt: input.staleAt, response: storedResponse })
+        }),
+      ),
     delete: key => Effect.succeed(cache.delete(key.href)),
   }
 })
