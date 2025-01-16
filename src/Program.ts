@@ -386,7 +386,7 @@ export const Program = pipe(
               Effect.gen(function* () {
                 const url = yield* generateGhostPageUrl(id)
 
-                cache.delete(url)
+                yield* cache.delete(url)
               }).pipe(Effect.provideService(GhostApi, ghostApi)),
           }
         }),

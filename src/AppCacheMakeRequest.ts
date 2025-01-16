@@ -23,7 +23,7 @@ export const CachingHttpClient: Effect.Effect<
       const timestamp = yield* DateTime.now
       const req = yield* request
       const key = keyForRequest(req)
-      const response = cache.get(key)
+      const response = yield* cache.get(key)
 
       if (response) {
         if (DateTime.lessThan(timestamp, response.staleAt)) {
@@ -54,7 +54,7 @@ export const CachingHttpClient: Effect.Effect<
         Effect.tap(response => cache.set(key, { staleAt: DateTime.addDuration(timestamp, '10 seconds'), response })),
         Effect.tap(response =>
           Effect.gen(function* () {
-            const cachedValue = cache.get(key)
+            const cachedValue = yield* cache.get(key)
             if (cachedValue === undefined) {
               return yield* Effect.logError('cache entry not found')
             }
