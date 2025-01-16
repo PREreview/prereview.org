@@ -1,10 +1,12 @@
 import {
+  Headers,
   HttpClient,
   HttpClientResponse,
   UrlParams,
   type HttpClientError,
   type HttpClientRequest,
 } from '@effect/platform'
+import { diff } from 'deep-object-diff'
 import { DateTime, Effect, pipe, type Scope } from 'effect'
 import * as HttpCache from './HttpCache.js'
 
@@ -47,7 +49,7 @@ export const CachingHttpClient: Effect.Effect<
           req,
           new Response(response.response.body, {
             status: response.response.status,
-            headers: response.response.headers,
+            headers: Headers.fromInput(response.response.headers),
           }),
         )
       } else {
@@ -66,17 +68,27 @@ export const CachingHttpClient: Effect.Effect<
             if (cachedValue === undefined) {
               return yield* Effect.logError('cache entry not found')
             }
-            if (
-              response !==
-              HttpClientResponse.fromWeb(
-                req,
-                new Response(cachedValue.response.body, {
-                  status: cachedValue.response.status,
-                  headers: cachedValue.response.headers,
-                }),
+            const origResponse = {
+              status: response.status,
+              headers: { ...response.headers },
+              body: yield* response.text,
+            }
+            const cachedResponse = {
+              status: cachedValue.response.status,
+              headers: cachedValue.response.headers,
+              body: cachedValue.response.body,
+            }
+            const difference = diff(origResponse, cachedResponse)
+            function replacer(_: unknown, value: unknown) {
+              if (value == undefined) {
+                return null
+              }
+              return value
+            }
+            if (Object.keys(difference).length !== 0) {
+              return yield* Effect.logError('cached response does not equal original').pipe(
+                Effect.annotateLogs({ diff: JSON.parse(JSON.stringify(difference, replacer)) }),
               )
-            ) {
-              return yield* Effect.logError('cached response does not equal original')
             }
           }),
         ),

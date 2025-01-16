@@ -1,4 +1,4 @@
-import type { HttpClientResponse } from '@effect/platform'
+import { Headers, type HttpClientResponse } from '@effect/platform'
 import { Context, type DateTime, Effect, Layer, pipe, Schema } from 'effect'
 
 interface CacheValue {
@@ -13,11 +13,11 @@ interface CacheInput {
 
 export type CacheKey = URL
 
-type StoredResponse = typeof StoredResponseSchema.Type
+type StoredResponse = typeof StoredResponseSchema.Encoded
 
 const StoredResponseSchema = Schema.Struct({
   status: Schema.Number,
-  headers: Schema.Record({ key: Schema.String, value: Schema.String }),
+  headers: Headers.schema,
   body: Schema.String,
 })
 
