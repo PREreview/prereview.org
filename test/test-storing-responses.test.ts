@@ -1,4 +1,4 @@
-import { Headers, HttpClient } from '@effect/platform'
+import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { NodeHttpClient } from '@effect/platform-node'
 import { expect, test } from '@jest/globals'
 import { Effect, pipe, Schema } from 'effect'
@@ -26,11 +26,12 @@ test('test', () =>
         }),
       Effect.andThen(Schema.encode(StoredResponseSchema)),
       Effect.andThen(Schema.decode(StoredResponseSchema)),
-      Effect.andThen(stored => ({
-        ...stored,
-        headers: Headers.fromInput(stored.headers),
-        text: Effect.succeed(stored.body),
-      })),
+      Effect.andThen(stored =>
+        HttpClientResponse.fromWeb(
+          originalResponse.request,
+          new Response(stored.body, { status: stored.status, headers: stored.headers }),
+        ),
+      ),
     )
 
     expect(testResponse.status).toStrictEqual(originalResponse.status)
