@@ -64,6 +64,17 @@ export const CachingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
           req,
           httpClient.execute,
           Effect.tap(response => cache.set(key, { staleAt: DateTime.addDuration(timestamp, '10 seconds'), response })),
+          Effect.tap(response =>
+            Effect.gen(function* () {
+              const cachedValue = cache.get(key)
+              if (cachedValue === undefined) {
+                return yield* Effect.logError('cache entry not found')
+              }
+              if (response !== cachedValue.response) {
+                return yield* Effect.logError('cached response does not equal original')
+              }
+            }),
+          ),
         )
       })
 
