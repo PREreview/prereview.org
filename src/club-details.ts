@@ -503,6 +503,28 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Elodie Lafont', orcid: Orcid('0000-0003-1978-7491') }],
   },
+  'review-curate-network': {
+    name: 'Review & Curate Network (RCN)',
+    description: html`
+      <p>
+        The network started as a club with support from the ASAPbio community seed grant (850 USD) project to help
+        promote open science and access in Randa. However, due to the burning interest in becoming inclusive and meeting
+        the needs of a wider scientific community in Africa regarding open science and access, we changed the club’s
+        aims and scope. Today, the network, which was initially called the “Rwanda Preprint Club,” is the “Review and
+        Curate Network (RCN).”
+      </p>
+      <p>
+        The network aims to foster a collaborative and transparent environment for the evaluation, validation, and
+        organization of preprints. By focusing on preprints, the club also aims to accelerate scientific progress,
+        allowing for immediate dissemination of findings while maintaining the rigor of traditional Science.
+      </p>
+    `,
+    leads: [
+      { name: 'Dine Roseline Dzekem', orcid: Orcid('0000-0002-8210-9258') },
+      { name: 'Ogunniyi Tolulope', orcid: Orcid('0000-0003-2582-4420') },
+    ],
+    joinLink: new URL('https://chat.whatsapp.com/EwqcyyjUIR57BZMvwuwIET'),
+  },
   'reviewing-dental-articles-club': {
     name: 'Reviewing Dental Articles Club',
     description: html`
