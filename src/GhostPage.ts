@@ -22,6 +22,24 @@ export interface GetPageFromGhostEnv {
 export const getPageFromGhost = (id: string) =>
   R.asks(({ getPageFromGhost }: GetPageFromGhostEnv) => getPageFromGhost(id))
 
+const loadWithCachingClient = () => Effect.log('Loading about-us page')
+
+const legacyFetch = (ghostApi: typeof GhostApi.Service, fetch: typeof FetchHttpClient.Fetch.Service) => (id: string) =>
+  pipe(
+    FptsToEffect.readerTaskEither(getPage(id), {
+      fetch,
+      ghostApi,
+    }),
+    Effect.mapError(
+      flow(
+        Match.value,
+        Match.when('not-found', () => new PageIsNotFound()),
+        Match.when('unavailable', () => new PageIsUnavailable()),
+        Match.exhaustive,
+      ),
+    ),
+  )
+
 export const layer = Layer.effect(
   GetPageFromGhost,
   Effect.gen(function* () {
@@ -30,23 +48,10 @@ export const layer = Layer.effect(
     return id =>
       pipe(
         Effect.if(id === '6154aa157741400e8722bb14', {
-          onTrue: () => Effect.log('Loading about-us page'),
+          onTrue: loadWithCachingClient,
           onFalse: () => Effect.void,
         }),
-        Effect.andThen(
-          FptsToEffect.readerTaskEither(getPage(id), {
-            fetch,
-            ghostApi,
-          }),
-        ),
-        Effect.mapError(
-          flow(
-            Match.value,
-            Match.when('not-found', () => new PageIsNotFound()),
-            Match.when('unavailable', () => new PageIsUnavailable()),
-            Match.exhaustive,
-          ),
-        ),
+        Effect.andThen(legacyFetch(ghostApi, fetch)(id)),
       )
   }),
 )
