@@ -1,11 +1,4 @@
-import {
-  Headers,
-  HttpClient,
-  HttpClientResponse,
-  UrlParams,
-  type HttpClientError,
-  type HttpClientRequest,
-} from '@effect/platform'
+import { HttpClient, type HttpClientError, type HttpClientRequest, type HttpClientResponse } from '@effect/platform'
 import { diff } from 'deep-object-diff'
 import { DateTime, Effect, pipe, type Scope } from 'effect'
 import * as HttpCache from './HttpCache.js'
@@ -24,8 +17,7 @@ export const CachingHttpClient: Effect.Effect<
     Effect.gen(function* () {
       const timestamp = yield* DateTime.now
       const req = yield* request
-      const key = keyForRequest(req)
-      const response = yield* cache.get(key)
+      const response = yield* cache.get(req)
 
       if (response) {
         if (DateTime.lessThan(timestamp, response.staleAt)) {
@@ -43,13 +35,7 @@ export const CachingHttpClient: Effect.Effect<
             }),
           )
         }
-        return HttpClientResponse.fromWeb(
-          req,
-          new Response(response.response.body, {
-            status: response.response.status,
-            headers: Headers.fromInput(response.response.headers),
-          }),
-        )
+        return response.response
       } else {
         yield* Effect.logDebug('Cache miss')
       }
@@ -60,7 +46,7 @@ export const CachingHttpClient: Effect.Effect<
         Effect.tap(response => pipe(cache.set(response, DateTime.addDuration(timestamp, '10 seconds')), Effect.ignore)),
         Effect.tap(response =>
           Effect.gen(function* () {
-            const cachedValue = yield* cache.get(key)
+            const cachedValue = yield* cache.get(req)
             if (cachedValue === undefined) {
               return yield* Effect.logError('cache entry not found')
             }
@@ -72,7 +58,7 @@ export const CachingHttpClient: Effect.Effect<
             const cachedResponse = {
               status: cachedValue.response.status,
               headers: cachedValue.response.headers,
-              body: cachedValue.response.body,
+              body: yield* cachedValue.response.text,
             }
             const difference = diff(origResponse, cachedResponse)
             function replacer(_: unknown, value: unknown) {
@@ -93,10 +79,3 @@ export const CachingHttpClient: Effect.Effect<
 
   return HttpClient.makeWith(cachingBehaviour, Effect.succeed)
 })
-
-const keyForRequest = (request: HttpClientRequest.HttpClientRequest): HttpCache.CacheKey => {
-  const url = new URL(request.url)
-  url.search = UrlParams.toString(request.urlParams)
-
-  return url
-}

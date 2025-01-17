@@ -1,5 +1,5 @@
-import { Headers, UrlParams, type HttpClientRequest, type HttpClientResponse } from '@effect/platform'
-import { Context, Effect, Layer, pipe, Schema, type DateTime } from 'effect'
+import { Headers, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
+import { Context, Effect, Layer, Option, pipe, Schema, type DateTime } from 'effect'
 
 interface CacheValue {
   staleAt: DateTime.DateTime
@@ -19,7 +19,9 @@ const StoredResponseSchema = Schema.Struct({
 export class HttpCache extends Context.Tag('HttpCache')<
   HttpCache,
   {
-    get: (key: CacheKey) => Effect.Effect<CacheValue | undefined>
+    get: (
+      request: HttpClientRequest.HttpClientRequest,
+    ) => Effect.Effect<{ staleAt: DateTime.DateTime; response: HttpClientResponse.HttpClientResponse } | undefined>
     set: (response: HttpClientResponse.HttpClientResponse, staleAt: DateTime.DateTime) => Effect.Effect<void, Error>
     delete: (key: CacheKey) => Effect.Effect<void>
   }
@@ -28,7 +30,23 @@ export class HttpCache extends Context.Tag('HttpCache')<
 export const layer = Layer.sync(HttpCache, () => {
   const cache = new Map<string, CacheValue>()
   return {
-    get: key => Effect.succeed(cache.get(key.href)),
+    get: request =>
+      pipe(
+        cache.get(keyForRequest(request).href),
+        Option.fromNullable,
+        Option.map(({ staleAt, response }) => ({
+          staleAt,
+          response: HttpClientResponse.fromWeb(
+            request,
+            new Response(response.body, {
+              status: response.status,
+              headers: Headers.fromInput(response.headers),
+            }),
+          ),
+        })),
+        Option.getOrUndefined,
+        Effect.succeed,
+      ),
     set: (response, staleAt) =>
       pipe(
         Effect.gen(function* () {
