@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Context, Data, Effect, flow, Layer, Match } from 'effect'
+import { Context, Data, Effect, flow, Layer, Match, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as FptsToEffect from './FptsToEffect.js'
@@ -27,20 +27,26 @@ export const layer = Layer.effect(
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
     const ghostApi = yield* GhostApi
-    return flow(
-      id =>
-        FptsToEffect.readerTaskEither(getPage(id), {
-          fetch,
-          ghostApi,
+    return id =>
+      pipe(
+        Effect.if(id === '6154aa157741400e8722bb14', {
+          onTrue: () => Effect.log('Loading about-us page'),
+          onFalse: () => Effect.void,
         }),
-      Effect.mapError(
-        flow(
-          Match.value,
-          Match.when('not-found', () => new PageIsNotFound()),
-          Match.when('unavailable', () => new PageIsUnavailable()),
-          Match.exhaustive,
+        Effect.andThen(
+          FptsToEffect.readerTaskEither(getPage(id), {
+            fetch,
+            ghostApi,
+          }),
         ),
-      ),
-    )
+        Effect.mapError(
+          flow(
+            Match.value,
+            Match.when('not-found', () => new PageIsNotFound()),
+            Match.when('unavailable', () => new PageIsUnavailable()),
+            Match.exhaustive,
+          ),
+        ),
+      )
   }),
 )
