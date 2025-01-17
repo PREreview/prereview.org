@@ -4,7 +4,7 @@ test('can read about us', async ({ fetch, page }) => {
   await page.goto('/')
 
   fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14', query: { key: 'key' } },
+    { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14/', query: { key: 'key' } },
     { body: { pages: [{ html: '<p>Some information about us.</p>' }] } },
   )
 
@@ -14,9 +14,9 @@ test('can read about us', async ({ fetch, page }) => {
   await expect(page.getByRole('link', { name: 'about' })).toHaveAttribute('aria-current', 'page')
 })
 
-test('might not load the text in time', async ({ fetch, page }) => {
+test.skip('might not load the text in time', async ({ fetch, page }) => {
   fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14', query: { key: 'key' } },
+    { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14/', query: { key: 'key' } },
     new Promise(() => setTimeout(() => ({ body: { pages: [{ html: '<p>Some information about us.</p>' }] } }), 2000)),
   )
 

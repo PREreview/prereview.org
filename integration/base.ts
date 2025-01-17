@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { NodeHttpClient, NodeHttpServer } from '@effect/platform-node'
+import { NodeHttpServer } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import {
   test as baseTest,
@@ -1326,8 +1326,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provide(Nodemailer.layer(nodemailer)),
         Effect.provideService(PublicUrl, new URL(`http://localhost:${port}`)),
         Effect.provideService(SessionSecret, Redacted.make('')),
-        Effect.provide(NodeHttpClient.layer),
         Effect.provide(HttpCache.layer),
+        Effect.provide(FetchHttpClient.layer),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),
         Effect.provide(TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() })),
