@@ -1,8 +1,8 @@
 import {
   HttpClient,
-  HttpClientRequest,
   UrlParams,
   type HttpClientError,
+  type HttpClientRequest,
   type HttpClientResponse,
 } from '@effect/platform'
 import { diff } from 'deep-object-diff'
