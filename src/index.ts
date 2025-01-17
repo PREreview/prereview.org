@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
+import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { Config, Effect, Function, Layer, Logger, LogLevel, Schema } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
@@ -26,6 +26,7 @@ pipe(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
       Layer.effect(ExpressConfig, ExpressConfigLive),
+      NodeHttpClient.layer,
       Layer.effect(
         FetchHttpClient.Fetch,
         Effect.gen(function* () {

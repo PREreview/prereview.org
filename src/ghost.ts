@@ -56,7 +56,7 @@ class GhostPageNotFound extends Data.TaggedError('GhostPageNotFound') {}
 
 class GhostPageUnavailable extends Data.TaggedError('GhostPageUnavailable') {}
 
-const getPageWithEffect = (id: string) =>
+export const getPageWithEffect = (id: string) =>
   Effect.gen(function* () {
     const client = yield* HttpClient.HttpClient
     const ghostApi = yield* GhostApi

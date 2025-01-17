@@ -1,9 +1,9 @@
-import { FetchHttpClient } from '@effect/platform'
+import { FetchHttpClient, HttpClient } from '@effect/platform'
 import { Context, Data, Effect, flow, Layer, Match, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as FptsToEffect from './FptsToEffect.js'
-import { getPage, GhostApi } from './ghost.js'
+import { getPage, getPageWithEffect, GhostApi } from './ghost.js'
 import type { Html } from './html.js'
 
 export class PageIsNotFound extends Data.TaggedError('PageIsNotFound') {}
@@ -22,7 +22,7 @@ export interface GetPageFromGhostEnv {
 export const getPageFromGhost = (id: string) =>
   R.asks(({ getPageFromGhost }: GetPageFromGhostEnv) => getPageFromGhost(id))
 
-const loadWithCachingClient = () => Effect.log('Loading about-us page')
+const loadWithCachingClient = (id: string) => pipe(getPageWithEffect(id), Effect.ignoreLogged)
 
 const legacyFetch = (ghostApi: typeof GhostApi.Service, fetch: typeof FetchHttpClient.Fetch.Service) => (id: string) =>
   pipe(
@@ -43,12 +43,18 @@ const legacyFetch = (ghostApi: typeof GhostApi.Service, fetch: typeof FetchHttpC
 export const layer = Layer.effect(
   GetPageFromGhost,
   Effect.gen(function* () {
+    const httpClient = yield* HttpClient.HttpClient
     const fetch = yield* FetchHttpClient.Fetch
     const ghostApi = yield* GhostApi
     return id =>
       pipe(
         Effect.if(id === '6154aa157741400e8722bb14', {
-          onTrue: loadWithCachingClient,
+          onTrue: () =>
+            pipe(
+              loadWithCachingClient(id),
+              Effect.provideService(GhostApi, ghostApi),
+              Effect.provideService(HttpClient.HttpClient, httpClient),
+            ),
           onFalse: () => Effect.void,
         }),
         Effect.andThen(legacyFetch(ghostApi, fetch)(id)),
