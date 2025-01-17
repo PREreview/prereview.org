@@ -1,4 +1,4 @@
-import { FetchHttpClient, HttpClient } from '@effect/platform'
+import { FetchHttpClient, Headers, HttpClient, HttpClientRequest, UrlParams } from '@effect/platform'
 import { Context, Data, Effect, flow, Layer, Match, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
@@ -22,7 +22,12 @@ export interface GetPageFromGhostEnv {
 export const getPageFromGhost = (id: string) =>
   R.asks(({ getPageFromGhost }: GetPageFromGhostEnv) => getPageFromGhost(id))
 
-const loadWithCachingClient = (id: string) => pipe(getPageWithEffect(id), Effect.ignoreLogged)
+const loadWithCachingClient = (id: string) =>
+  pipe(
+    getPageWithEffect(id),
+    Effect.tapError(error => Effect.logError('Failed to load ghost page').pipe(Effect.annotateLogs({ error }))),
+    Effect.ignore,
+  )
 
 const legacyFetch = (ghostApi: typeof GhostApi.Service, fetch: typeof FetchHttpClient.Fetch.Service) => (id: string) =>
   pipe(
@@ -40,6 +45,48 @@ const legacyFetch = (ghostApi: typeof GhostApi.Service, fetch: typeof FetchHttpC
     ),
   )
 
+const loggingHttpClient = (client: HttpClient.HttpClient) =>
+  pipe(
+    client,
+    HttpClient.mapRequest(
+      HttpClientRequest.setHeaders({
+        'User-Agent': 'PREreview (https://prereview.org/; mailto:engineering@prereview.org)',
+      }),
+    ),
+    HttpClient.tapRequest(request =>
+      Effect.logDebug('Sending HTTP Request').pipe(
+        Effect.annotateLogs({
+          headers: Headers.redact(request.headers, 'authorization'),
+          url: request.url,
+          urlParams: UrlParams.toString(request.urlParams),
+          method: request.method,
+        }),
+      ),
+    ),
+    HttpClient.tap(response =>
+      Effect.logDebug('Received HTTP response').pipe(
+        Effect.annotateLogs({
+          status: response.status,
+          headers: response.headers,
+          url: response.request.url,
+          urlParams: UrlParams.toString(response.request.urlParams),
+          method: response.request.method,
+        }),
+      ),
+    ),
+    HttpClient.tapError(error =>
+      Effect.logError('Error sending HTTP request').pipe(
+        Effect.annotateLogs({
+          reason: error.reason,
+          error: error.cause,
+          url: error.request.url,
+          urlParams: UrlParams.toString(error.request.urlParams),
+          method: error.request.method,
+        }),
+      ),
+    ),
+  )
+
 export const layer = Layer.effect(
   GetPageFromGhost,
   Effect.gen(function* () {
@@ -53,7 +100,7 @@ export const layer = Layer.effect(
             pipe(
               loadWithCachingClient(id),
               Effect.provideService(GhostApi, ghostApi),
-              Effect.provideService(HttpClient.HttpClient, httpClient),
+              Effect.provideService(HttpClient.HttpClient, loggingHttpClient(httpClient)),
             ),
           onFalse: () => Effect.void,
         }),
