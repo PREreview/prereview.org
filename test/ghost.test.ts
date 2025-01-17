@@ -18,7 +18,7 @@ describe('getPage', () => {
       fetch: fetchMock
         .sandbox()
         .getOnce(
-          { url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } },
+          { url: `https://content.prereview.org/ghost/api/content/pages/${id}/`, query: { key } },
           { body: { pages: [{ html: html.toString() }] } },
         ),
       ghostApi: { key: Redacted.make(key) },
@@ -33,7 +33,7 @@ describe('getPage', () => {
   ])('when the page contains links', async (id, key) => {
     const actual = await _.getPage(id)({
       fetch: fetchMock.sandbox().getOnce(
-        { url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } },
+        { url: `https://content.prereview.org/ghost/api/content/pages/${id}/`, query: { key } },
         {
           body: {
             pages: [
@@ -62,7 +62,7 @@ describe('getPage', () => {
   ])('when the page contains an image', async (id, key) => {
     const actual = await _.getPage(id)({
       fetch: fetchMock.sandbox().getOnce(
-        { url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } },
+        { url: `https://content.prereview.org/ghost/api/content/pages/${id}/`, query: { key } },
         {
           body: {
             pages: [
@@ -91,7 +91,7 @@ describe('getPage', () => {
   ])('when the page contains a button', async (id, key) => {
     const actual = await _.getPage(id)({
       fetch: fetchMock.sandbox().getOnce(
-        { url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } },
+        { url: `https://content.prereview.org/ghost/api/content/pages/${id}/`, query: { key } },
         {
           body: {
             pages: [
@@ -114,7 +114,7 @@ describe('getPage', () => {
   ])('when the page contains a heading with an ID', async (id, key) => {
     const actual = await _.getPage(id)({
       fetch: fetchMock.sandbox().getOnce(
-        { url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } },
+        { url: `https://content.prereview.org/ghost/api/content/pages/${id}/`, query: { key } },
         {
           body: {
             pages: [
@@ -138,7 +138,7 @@ describe('getPage', () => {
   ])('when the response cannot be decoded', async (id, key, response) => {
     const fetch = fetchMock
       .sandbox()
-      .getOnce({ url: `begin:https://content.prereview.org/ghost/api/content/pages/${id}?`, query: { key } }, response)
+      .getOnce({ url: `begin:https://content.prereview.org/ghost/api/content/pages/${id}/?`, query: { key } }, response)
 
     const actual = await _.getPage(id)({
       fetch,
@@ -155,7 +155,7 @@ describe('getPage', () => {
   ])('when the response has a 404 status code', async (id, key) => {
     const fetch = fetchMock
       .sandbox()
-      .getOnce({ url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } }, Status.NotFound)
+      .getOnce({ url: `https://content.prereview.org/ghost/api/content/pages/${id}/`, query: { key } }, Status.NotFound)
 
     const actual = await _.getPage(id)({
       fetch,
@@ -172,7 +172,7 @@ describe('getPage', () => {
   ])('when the response has a non-200/404 status code', async (id, key, status) => {
     const fetch = fetchMock
       .sandbox()
-      .getOnce({ url: `begin:https://content.prereview.org/ghost/api/content/pages/${id}?`, query: { key } }, status)
+      .getOnce({ url: `begin:https://content.prereview.org/ghost/api/content/pages/${id}/?`, query: { key } }, status)
 
     const actual = await _.getPage(id)({
       fetch,
