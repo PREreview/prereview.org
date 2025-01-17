@@ -53,6 +53,7 @@ import type {
 import * as FeatureFlags from '../src/feature-flags.js'
 import { GhostApi } from '../src/ghost.js'
 import { rawHtml } from '../src/html.js'
+import * as HttpCache from '../src/HttpCache.js'
 import type {
   AuthorInviteStoreEnv,
   ContactEmailAddressStoreEnv,
@@ -1326,6 +1327,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provideService(PublicUrl, new URL(`http://localhost:${port}`)),
         Effect.provideService(SessionSecret, Redacted.make('')),
         Effect.provide(NodeHttpClient.layer),
+        Effect.provide(HttpCache.layer),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),
         Effect.provide(TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() })),

@@ -11,6 +11,7 @@ import { ExpressConfigLive } from './ExpressServer.js'
 import * as FeatureFlags from './feature-flags.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { GhostApi } from './ghost.js'
+import * as HttpCache from './HttpCache.js'
 import * as Nodemailer from './nodemailer.js'
 import { Program } from './Program.js'
 import { PublicUrl } from './public-url.js'
@@ -27,6 +28,7 @@ pipe(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
       Layer.effect(ExpressConfig, ExpressConfigLive),
       NodeHttpClient.layer,
+      HttpCache.layer,
       Layer.effect(
         FetchHttpClient.Fetch,
         Effect.gen(function* () {

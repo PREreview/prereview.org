@@ -2,6 +2,7 @@ import { FetchHttpClient, Headers, HttpClient, HttpClientRequest, UrlParams } fr
 import { Context, Data, Effect, flow, Layer, Match, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
+import { CachingHttpClient } from './CachingHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPage, getPageWithEffect, GhostApi } from './ghost.js'
 import type { Html } from './html.js'
@@ -90,7 +91,7 @@ const loggingHttpClient = (client: HttpClient.HttpClient) =>
 export const layer = Layer.effect(
   GetPageFromGhost,
   Effect.gen(function* () {
-    const httpClient = yield* HttpClient.HttpClient
+    const httpClient = yield* CachingHttpClient
     const fetch = yield* FetchHttpClient.Fetch
     const ghostApi = yield* GhostApi
     return id =>
