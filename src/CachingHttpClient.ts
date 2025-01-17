@@ -37,9 +37,7 @@ export const CachingHttpClient: Effect.Effect<
               yield* pipe(
                 req,
                 httpClient.execute,
-                Effect.tap(response =>
-                  cache.set(key, { staleAt: DateTime.addDuration(timestamp, '10 seconds'), response }),
-                ),
+                Effect.tap(response => cache.set(response, DateTime.addDuration(timestamp, '10 seconds'))),
                 Effect.scoped,
               )
             }),
@@ -59,9 +57,7 @@ export const CachingHttpClient: Effect.Effect<
       return yield* pipe(
         req,
         httpClient.execute,
-        Effect.tap(response =>
-          pipe(cache.set(key, { staleAt: DateTime.addDuration(timestamp, '10 seconds'), response }), Effect.ignore),
-        ),
+        Effect.tap(response => pipe(cache.set(response, DateTime.addDuration(timestamp, '10 seconds')), Effect.ignore)),
         Effect.tap(response =>
           Effect.gen(function* () {
             const cachedValue = yield* cache.get(key)

@@ -1,14 +1,9 @@
-import { Headers, type HttpClientResponse } from '@effect/platform'
-import { Context, type DateTime, Effect, Layer, pipe, Schema } from 'effect'
+import { Headers, UrlParams, type HttpClientRequest, type HttpClientResponse } from '@effect/platform'
+import { Context, Effect, Layer, pipe, Schema, type DateTime } from 'effect'
 
 interface CacheValue {
   staleAt: DateTime.DateTime
   response: StoredResponse
-}
-
-interface CacheInput {
-  staleAt: DateTime.DateTime
-  response: HttpClientResponse.HttpClientResponse
 }
 
 export type CacheKey = URL
@@ -25,7 +20,7 @@ export class HttpCache extends Context.Tag('HttpCache')<
   HttpCache,
   {
     get: (key: CacheKey) => Effect.Effect<CacheValue | undefined>
-    set: (key: CacheKey, value: CacheInput) => Effect.Effect<void, Error>
+    set: (response: HttpClientResponse.HttpClientResponse, staleAt: DateTime.DateTime) => Effect.Effect<void, Error>
     delete: (key: CacheKey) => Effect.Effect<void>
   }
 >() {}
@@ -34,20 +29,27 @@ export const layer = Layer.sync(HttpCache, () => {
   const cache = new Map<string, CacheValue>()
   return {
     get: key => Effect.succeed(cache.get(key.href)),
-    set: (key, input) =>
+    set: (response, staleAt) =>
       pipe(
         Effect.gen(function* () {
           return {
-            status: input.response.status,
-            headers: input.response.headers,
-            body: yield* input.response.text,
+            status: response.status,
+            headers: response.headers,
+            body: yield* response.text,
           }
         }),
         Effect.andThen(Schema.encode(StoredResponseSchema)),
         Effect.andThen(storedResponse => {
-          cache.set(key.href, { staleAt: input.staleAt, response: storedResponse })
+          cache.set(keyForRequest(response.request).href, { staleAt, response: storedResponse })
         }),
       ),
     delete: key => Effect.succeed(cache.delete(key.href)),
   }
 })
+
+const keyForRequest = (request: HttpClientRequest.HttpClientRequest): CacheKey => {
+  const url = new URL(request.url)
+  url.search = UrlParams.toString(request.urlParams)
+
+  return url
+}
