@@ -11,7 +11,6 @@ import { createContactEmailAddressVerificationEmailForComment } from './email.js
 import { collapseRequests, logFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
-import { getPage, GhostApi } from './ghost.js'
 import * as GhostPage from './GhostPage.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
@@ -359,28 +358,7 @@ export const Program = pipe(
         Comments.makeGetNextExpectedCommandForUserOnAComment,
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
-      Layer.effect(
-        GhostPage.GetPageFromGhost,
-        Effect.gen(function* () {
-          const fetch = yield* FetchHttpClient.Fetch
-          const ghostApi = yield* GhostApi
-          return flow(
-            id =>
-              FptsToEffect.readerTaskEither(getPage(id), {
-                fetch,
-                ghostApi,
-              }),
-            Effect.mapError(
-              flow(
-                Match.value,
-                Match.when('not-found', () => new GhostPage.PageIsNotFound()),
-                Match.when('unavailable', () => new GhostPage.PageIsUnavailable()),
-                Match.exhaustive,
-              ),
-            ),
-          )
-        }),
-      ),
+      GhostPage.layer,
     ),
   ),
   Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch)),
