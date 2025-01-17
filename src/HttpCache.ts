@@ -6,7 +6,7 @@ interface CacheValue {
   response: StoredResponse
 }
 
-export type CacheKey = URL
+type CacheKey = string
 
 type StoredResponse = typeof StoredResponseSchema.Encoded
 
@@ -23,16 +23,16 @@ export class HttpCache extends Context.Tag('HttpCache')<
       request: HttpClientRequest.HttpClientRequest,
     ) => Effect.Effect<{ staleAt: DateTime.DateTime; response: HttpClientResponse.HttpClientResponse } | undefined>
     set: (response: HttpClientResponse.HttpClientResponse, staleAt: DateTime.DateTime) => Effect.Effect<void, Error>
-    delete: (key: CacheKey) => Effect.Effect<void>
+    delete: (url: URL) => Effect.Effect<void>
   }
 >() {}
 
 export const layer = Layer.sync(HttpCache, () => {
-  const cache = new Map<string, CacheValue>()
+  const cache = new Map<CacheKey, CacheValue>()
   return {
     get: request =>
       pipe(
-        cache.get(keyForRequest(request).href),
+        cache.get(keyForRequest(request)),
         Option.fromNullable,
         Option.map(({ staleAt, response }) => ({
           staleAt,
@@ -58,10 +58,10 @@ export const layer = Layer.sync(HttpCache, () => {
         }),
         Effect.andThen(Schema.encode(StoredResponseSchema)),
         Effect.andThen(storedResponse => {
-          cache.set(keyForRequest(response.request).href, { staleAt, response: storedResponse })
+          cache.set(keyForRequest(response.request), { staleAt, response: storedResponse })
         }),
       ),
-    delete: key => Effect.succeed(cache.delete(key.href)),
+    delete: url => Effect.succeed(cache.delete(url.href)),
   }
 })
 
@@ -69,5 +69,5 @@ const keyForRequest = (request: HttpClientRequest.HttpClientRequest): CacheKey =
   const url = new URL(request.url)
   url.search = UrlParams.toString(request.urlParams)
 
-  return url
+  return url.href
 }
