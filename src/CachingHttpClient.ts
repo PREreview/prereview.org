@@ -1,4 +1,10 @@
-import { HttpClient, type HttpClientError, type HttpClientRequest, type HttpClientResponse } from '@effect/platform'
+import {
+  HttpClient,
+  UrlParams,
+  type HttpClientError,
+  type HttpClientRequest,
+  type HttpClientResponse,
+} from '@effect/platform'
 import { diff } from 'deep-object-diff'
 import { DateTime, Effect, Option, pipe, type Scope } from 'effect'
 import * as HttpCache from './HttpCache.js'
@@ -19,11 +25,17 @@ export const CachingHttpClient: Effect.Effect<
       const req = yield* request
       const response = yield* pipe(Effect.option(cache.get(req)), Effect.andThen(Option.getOrUndefined))
 
+      const logAnnotations = {
+        url: req.url,
+        urlParams: UrlParams.toString(req.urlParams),
+        method: req.method,
+      }
+
       if (response) {
         if (DateTime.lessThan(timestamp, response.staleAt)) {
-          yield* Effect.logDebug('Cache hit')
+          yield* Effect.logDebug('Cache hit').pipe(Effect.annotateLogs(logAnnotations))
         } else {
-          yield* Effect.logDebug('Cache stale')
+          yield* Effect.logDebug('Cache stale').pipe(Effect.annotateLogs(logAnnotations))
           yield* Effect.forkDaemon(
             Effect.gen(function* () {
               yield* pipe(
@@ -37,7 +49,7 @@ export const CachingHttpClient: Effect.Effect<
         }
         return response.response
       } else {
-        yield* Effect.logDebug('Cache miss')
+        yield* Effect.logDebug('Cache miss').pipe(Effect.annotateLogs(logAnnotations))
       }
 
       return yield* pipe(
@@ -48,7 +60,7 @@ export const CachingHttpClient: Effect.Effect<
           Effect.gen(function* () {
             const cachedValue = yield* pipe(Effect.option(cache.get(req)), Effect.andThen(Option.getOrUndefined))
             if (cachedValue === undefined) {
-              return yield* Effect.logError('cache entry not found')
+              return yield* Effect.logError('cache entry not found').pipe(Effect.annotateLogs(logAnnotations))
             }
             const origResponse = {
               status: response.status,
@@ -69,7 +81,7 @@ export const CachingHttpClient: Effect.Effect<
             }
             if (Object.keys(difference).length !== 0) {
               return yield* Effect.logError('cached response does not equal original').pipe(
-                Effect.annotateLogs({ diff: JSON.parse(JSON.stringify(difference, replacer)) }),
+                Effect.annotateLogs({ ...logAnnotations, diff: JSON.parse(JSON.stringify(difference, replacer)) }),
               )
             }
           }),
