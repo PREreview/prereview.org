@@ -1,5 +1,5 @@
 import { Headers, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
-import { Context, Effect, Layer, Option, pipe, Schema, type DateTime } from 'effect'
+import { Context, Effect, Layer, Option, pipe, Schema, type Cause, type DateTime } from 'effect'
 
 interface CacheValue {
   staleAt: DateTime.DateTime
@@ -21,7 +21,10 @@ export class HttpCache extends Context.Tag('HttpCache')<
   {
     get: (
       request: HttpClientRequest.HttpClientRequest,
-    ) => Effect.Effect<{ staleAt: DateTime.DateTime; response: HttpClientResponse.HttpClientResponse } | undefined>
+    ) => Effect.Effect<
+      { staleAt: DateTime.DateTime; response: HttpClientResponse.HttpClientResponse },
+      Cause.NoSuchElementException
+    >
     set: (response: HttpClientResponse.HttpClientResponse, staleAt: DateTime.DateTime) => Effect.Effect<void, Error>
     delete: (url: URL) => Effect.Effect<void>
   }
@@ -44,8 +47,6 @@ export const layer = Layer.sync(HttpCache, () => {
             }),
           ),
         })),
-        Option.getOrUndefined,
-        Effect.succeed,
       ),
     set: (response, staleAt) =>
       pipe(

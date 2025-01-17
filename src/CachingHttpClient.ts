@@ -1,6 +1,6 @@
 import { HttpClient, type HttpClientError, type HttpClientRequest, type HttpClientResponse } from '@effect/platform'
 import { diff } from 'deep-object-diff'
-import { DateTime, Effect, pipe, type Scope } from 'effect'
+import { DateTime, Effect, Option, pipe, type Scope } from 'effect'
 import * as HttpCache from './HttpCache.js'
 
 export const CachingHttpClient: Effect.Effect<
@@ -17,7 +17,7 @@ export const CachingHttpClient: Effect.Effect<
     Effect.gen(function* () {
       const timestamp = yield* DateTime.now
       const req = yield* request
-      const response = yield* cache.get(req)
+      const response = yield* pipe(Effect.option(cache.get(req)), Effect.andThen(Option.getOrUndefined))
 
       if (response) {
         if (DateTime.lessThan(timestamp, response.staleAt)) {
@@ -46,7 +46,7 @@ export const CachingHttpClient: Effect.Effect<
         Effect.tap(response => pipe(cache.set(response, DateTime.addDuration(timestamp, '10 seconds')), Effect.ignore)),
         Effect.tap(response =>
           Effect.gen(function* () {
-            const cachedValue = yield* cache.get(req)
+            const cachedValue = yield* pipe(Effect.option(cache.get(req)), Effect.andThen(Option.getOrUndefined))
             if (cachedValue === undefined) {
               return yield* Effect.logError('cache entry not found')
             }
