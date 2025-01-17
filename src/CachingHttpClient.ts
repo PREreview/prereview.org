@@ -1,8 +1,8 @@
 import {
   HttpClient,
+  HttpClientRequest,
   UrlParams,
   type HttpClientError,
-  type HttpClientRequest,
   type HttpClientResponse,
 } from '@effect/platform'
 import { diff } from 'deep-object-diff'
@@ -37,14 +37,16 @@ export const CachingHttpClient: Effect.Effect<
         } else {
           yield* Effect.logDebug('Cache stale').pipe(Effect.annotateLogs(logAnnotations))
           yield* Effect.forkDaemon(
-            Effect.gen(function* () {
-              yield* pipe(
-                req,
-                httpClient.execute,
-                Effect.tap(response => cache.set(response, DateTime.addDuration(timestamp, '10 seconds'))),
-                Effect.scoped,
-              )
-            }),
+            pipe(
+              req,
+              httpClient.execute,
+              Effect.tap(response => cache.set(response, DateTime.addDuration(timestamp, '10 seconds'))),
+              Effect.scoped,
+              Effect.tapError(error =>
+                Effect.logError('Unable to update cached response').pipe(Effect.annotateLogs({ error })),
+              ),
+              Effect.ignore,
+            ),
           )
         }
         return response.response
