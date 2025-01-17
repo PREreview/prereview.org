@@ -27,7 +27,8 @@ const loadWithCachingClient = (id: string) =>
   pipe(
     getPageWithEffect(id),
     Effect.tapError(error => Effect.logError('Failed to load ghost page').pipe(Effect.annotateLogs({ error }))),
-    Effect.ignore,
+    Effect.catchTag('GhostPageNotFound', () => Effect.fail(new PageIsNotFound())),
+    Effect.catchTag('GhostPageUnavailable', () => Effect.fail(new PageIsUnavailable())),
   )
 
 const legacyFetch = (ghostApi: typeof GhostApi.Service, fetch: typeof FetchHttpClient.Fetch.Service) => (id: string) =>
@@ -95,17 +96,14 @@ export const layer = Layer.effect(
     const fetch = yield* FetchHttpClient.Fetch
     const ghostApi = yield* GhostApi
     return id =>
-      pipe(
-        Effect.if(id === '6154aa157741400e8722bb14', {
-          onTrue: () =>
-            pipe(
-              loadWithCachingClient(id),
-              Effect.provideService(GhostApi, ghostApi),
-              Effect.provideService(HttpClient.HttpClient, loggingHttpClient(httpClient)),
-            ),
-          onFalse: () => Effect.void,
-        }),
-        Effect.andThen(legacyFetch(ghostApi, fetch)(id)),
-      )
+      Effect.if(id === '6154aa157741400e8722bb14', {
+        onTrue: () =>
+          pipe(
+            loadWithCachingClient(id),
+            Effect.provideService(GhostApi, ghostApi),
+            Effect.provideService(HttpClient.HttpClient, loggingHttpClient(httpClient)),
+          ),
+        onFalse: () => legacyFetch(ghostApi, fetch)(id),
+      })
   }),
 )
