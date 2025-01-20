@@ -75,9 +75,11 @@ import {
 import {
   type CanConnectOrcidProfileEnv,
   type CanRequestReviewsEnv,
+  type CanSeeAlternativeCompetingInterestsFormEnv,
   type CanUploadAvatarEnv,
   type CanUseSearchQueriesEnv,
   type CanWriteCommentsEnv,
+  canSeeAlternativeCompetingInterestsForm,
   canUseSearchQueries,
 } from './feature-flags.js'
 import type { SleepEnv } from './fetch.js'
@@ -343,6 +345,7 @@ const withEnv =
 export type RouterEnv = Keyv.AvatarStoreEnv &
   CanConnectOrcidProfileEnv &
   CanRequestReviewsEnv &
+  CanSeeAlternativeCompetingInterestsFormEnv &
   CanUploadAvatarEnv &
   CanUseSearchQueriesEnv &
   CanWriteCommentsEnv &
@@ -1548,6 +1551,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             RM.gets(c => c.getMethod()),
           ),
           RM.apS('user', maybeGetUser),
+          RM.apSW('alternative', RM.rightReader(canSeeAlternativeCompetingInterestsForm)),
           RM.bindW('response', RM.fromReaderTaskK(writeReviewCompetingInterests)),
           RM.ichainW(handleResponse),
         ),
