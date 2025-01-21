@@ -77,7 +77,7 @@ export const createPage = ({
                 ${request.subfields.length > 0
                   ? html`
                       <ul class="categories">
-                        ${request.subfields.map(subfield => html` <li>${getSubfieldName(subfield, locale)}</li>`)}
+                        ${request.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
                       </ul>
                     `
                   : ''}
