@@ -147,7 +147,9 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
  – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}" class="back"
+          ><span>Back</span></a
+        >
       </nav>
 
       <main id="form">

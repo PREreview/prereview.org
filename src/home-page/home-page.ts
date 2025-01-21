@@ -76,7 +76,9 @@ export const createPage = ({
 
           <p>${translate(locale, 'home-page', 'overviewBetterWayText')()}</p>
 
-          <a href="${Routes.AboutUs}" class="forward">${translate(locale, 'home-page', 'overviewBetterWayLink')()}</a>
+          <a href="${Routes.AboutUs}" class="forward"
+            ><span>${translate(locale, 'home-page', 'overviewBetterWayLink')()}</span></a
+          >
         </section>
       </div>
 
@@ -184,7 +186,7 @@ export const createPage = ({
 
               <nav>
                 <a href="${format(reviewRequestsMatch.formatter, {})}" class="forward"
-                  >${translate(locale, 'home-page', 'requestsLink')()}</a
+                  ><span>${translate(locale, 'home-page', 'requestsLink')()}</span></a
                 >
               </nav>
             </section>
@@ -353,7 +355,7 @@ export const createPage = ({
 
               <nav>
                 <a href="${format(reviewsMatch.formatter, {})}" class="forward"
-                  >${translate(locale, 'home-page', 'reviewsLink')()}</a
+                  ><span>${translate(locale, 'home-page', 'reviewsLink')()}</span></a
                 >
               </nav>
             </section>

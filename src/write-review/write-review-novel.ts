@@ -144,7 +144,9 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
  – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}" class="back"
+          ><span>Back</span></a
+        >
       </nav>
 
       <main id="form">

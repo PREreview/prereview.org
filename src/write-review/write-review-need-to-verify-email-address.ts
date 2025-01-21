@@ -120,7 +120,9 @@ function needToVerifyEmailAddressMessage({
     title: plainText`Verify your email address – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id })}" class="back"
+          ><span>Back</span></a
+        >
       </nav>
 
       <main id="main-content">

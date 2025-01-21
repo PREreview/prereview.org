@@ -9,7 +9,7 @@ import { changeLanguagesMatch, myDetailsMatch } from '../routes.js'
 export const createFormPage = (languages: O.Option<Languages>) =>
   PageResponse({
     title: plainText`What languages can you review in?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(changeLanguagesMatch.formatter, {})}" novalidate>
         <h1><label for="languages">What languages can you review in?</label></h1>

@@ -17,7 +17,7 @@ export const createFormPage = ({
   PageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: plainText`${error ? 'Error: ' : ''}What career stage are you at?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(changeCareerStageMatch.formatter, {})}" novalidate>
         ${error

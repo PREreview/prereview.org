@@ -155,7 +155,9 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm) {
       preprint.title
     }”`,
     nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
+        ><span>Back to preprint</span></a
+      >
     `,
     main: html`
       <form method="post" action="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" novalidate>

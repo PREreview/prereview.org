@@ -19,7 +19,9 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm) 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: plainText`${error ? 'Error: ' : ''}Paste your PREreview of “${preprint.title}”`,
-    nav: html` <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back">Back</a> `,
+    nav: html`
+      <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"><span>Back</span></a>
+    `,
     main: html`
       <form method="post" action="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" novalidate>
         ${error

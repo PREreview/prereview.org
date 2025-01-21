@@ -27,7 +27,7 @@ export const EnterEmailAddressPage = ({
     ),
     nav: html`
       <a href="${Routes.WriteCommentCodeOfConduct.href({ commentId })}" class="back"
-        >${translate(locale, 'write-comment-flow', 'back')()}</a
+        ><span>${translate(locale, 'write-comment-flow', 'back')()}</span></a
       >
     `,
     main: html`

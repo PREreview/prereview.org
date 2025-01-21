@@ -27,7 +27,7 @@ export const CompetingInterestsPage = ({
     ),
     nav: html`
       <a href="${Routes.WriteCommentChoosePersona.href({ commentId })}" class="back"
-        >${translate(locale, 'write-comment-flow', 'back')()}</a
+        ><span>${translate(locale, 'write-comment-flow', 'back')()}</span></a
       >
     `,
     main: html`

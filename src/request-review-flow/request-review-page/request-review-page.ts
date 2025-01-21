@@ -10,7 +10,9 @@ export const requestReviewPage = ({ preprint, user }: { preprint: PreprintTitle;
   StreamlinePageResponse({
     title: plainText`Request a PREreview`,
     nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
+        ><span>Back to preprint</span></a
+      >
     `,
     main: html`
       <h1>Request a PREreview</h1>

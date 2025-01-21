@@ -16,7 +16,9 @@ export const startPage = (preprint: Preprint, user?: User) =>
   StreamlinePageResponse({
     title: plainText`Write a PREreview`,
     nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
+        ><span>Back to preprint</span></a
+      >
     `,
     main: html`
       <h1>Write a PREreview</h1>

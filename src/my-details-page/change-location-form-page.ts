@@ -9,7 +9,7 @@ import { changeLocationMatch, myDetailsMatch } from '../routes.js'
 export const createFormPage = (location: O.Option<Location>) =>
   PageResponse({
     title: plainText`Where are you based?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(changeLocationMatch.formatter, {})}" novalidate>
         <h1><label for="location">Where are you based?</label></h1>

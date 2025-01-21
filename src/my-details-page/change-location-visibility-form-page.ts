@@ -8,7 +8,7 @@ import { changeLocationVisibilityMatch, myDetailsMatch } from '../routes.js'
 export const createFormPage = ({ location }: { location: Location }) =>
   PageResponse({
     title: plainText`Who can see your location?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(changeLocationVisibilityMatch.formatter, {})}" novalidate>
         <fieldset role="group">

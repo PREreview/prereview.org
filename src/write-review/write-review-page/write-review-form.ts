@@ -27,7 +27,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm) 
           id: preprint.id,
         })}"
         class="back"
-        >Back</a
+        ><span>Back</span></a
       >
     `,
     main: html`

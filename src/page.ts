@@ -351,14 +351,14 @@ export const page = ({
                 <div>
                   ${translate(locale, 'footer', 'newsletterText')()}
                   <a href="https://prereview.civicrm.org/civicrm/mailing/url?u=17&qid=30" class="forward"
-                    >${translate(locale, 'footer', 'newsletterLink')()}</a
+                    ><span>${translate(locale, 'footer', 'newsletterLink')()}</span></a
                   >
                 </div>
 
                 <div>
                   ${translate(locale, 'footer', 'slackText')()}
                   <a href="https://bit.ly/PREreview-Slack" class="forward"
-                    >${translate(locale, 'footer', 'slackLink')()}</a
+                    ><span>${translate(locale, 'footer', 'slackLink')()}</span></a
                   >
                 </div>
 

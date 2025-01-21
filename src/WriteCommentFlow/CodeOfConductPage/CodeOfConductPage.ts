@@ -28,7 +28,7 @@ export const CodeOfConductPage = ({
     ),
     nav: html`
       <a href="${Routes.WriteCommentCompetingInterests.href({ commentId })}" class="back"
-        >${translate(locale, 'write-comment-flow', 'back')()}</a
+        ><span>${translate(locale, 'write-comment-flow', 'back')()}</span></a
       >
     `,
     main: html`

@@ -7,7 +7,7 @@ import { myDetailsMatch, removeAvatarMatch } from '../routes.js'
 export const page = PageResponse({
   status: Status.OK,
   title: plainText`Remove your avatar`,
-  nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+  nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
   main: html`
     <form method="post" action="${format(removeAvatarMatch.formatter, {})}" enctype="multipart/form-data" novalidate>
       <h1>Remove your avatar</h1>

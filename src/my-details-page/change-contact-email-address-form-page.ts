@@ -18,7 +18,7 @@ export const createFormPage = (form: ChangeContactEmailAddressForm) => {
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: plainText`${error ? 'Error: ' : ''}What is your email address?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(changeContactEmailAddressMatch.formatter, {})}" novalidate>
         ${error

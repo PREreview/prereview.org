@@ -8,7 +8,7 @@ import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../routes.js'
 export const createFormPage = ({ careerStage }: { careerStage: CareerStage }) =>
   PageResponse({
     title: plainText`Who can see your career stage?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(changeCareerStageVisibilityMatch.formatter, {})}" novalidate>
         <fieldset role="group">

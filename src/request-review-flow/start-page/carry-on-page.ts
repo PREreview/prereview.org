@@ -8,7 +8,9 @@ export const carryOnPage = (preprint: ReviewRequestPreprintId) =>
   StreamlinePageResponse({
     title: plainText`Request a PREreview`,
     nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back">Back to preprint</a>
+      <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back"
+        ><span>Back to preprint</span></a
+      >
     `,
     main: html`
       <h1>Request a PREreview</h1>

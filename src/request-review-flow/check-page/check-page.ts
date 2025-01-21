@@ -20,7 +20,9 @@ export function checkPage({
 }) {
   return StreamlinePageResponse({
     title: plainText`Check your request`,
-    nav: html`<a href="${format(requestReviewPersonaMatch.formatter, { id: preprint })}" class="back">Back</a>`,
+    nav: html`<a href="${format(requestReviewPersonaMatch.formatter, { id: preprint })}" class="back"
+      ><span>Back</span></a
+    >`,
     main: html`
       <single-use-form>
         <form method="post" action="${format(requestReviewCheckMatch.formatter, { id: preprint })}" novalidate>

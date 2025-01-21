@@ -25,7 +25,7 @@ export const WriteCommentPage = ({
     title: plainText(t('write-comment-flow', 'writeCommentTitle')()),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"
-        >${t('write-comment-flow', 'backToPrereview')()}</a
+        ><span>${t('write-comment-flow', 'backToPrereview')()}</span></a
       >
     `,
     main: html`

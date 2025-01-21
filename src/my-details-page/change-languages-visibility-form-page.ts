@@ -8,7 +8,7 @@ import { changeLanguagesVisibilityMatch, myDetailsMatch } from '../routes.js'
 export const createFormPage = ({ languages }: { languages: Languages }) =>
   PageResponse({
     title: plainText`Who can see your languages?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(changeLanguagesVisibilityMatch.formatter, {})}" novalidate>
         <fieldset role="group">

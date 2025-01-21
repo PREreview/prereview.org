@@ -152,7 +152,7 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
     title: plainText`${error ? 'Error: ' : ''}Contact details – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back"><span>Back</span></a>
       </nav>
 
       <main id="form">

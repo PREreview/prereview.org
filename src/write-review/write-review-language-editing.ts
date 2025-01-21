@@ -135,7 +135,7 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
     }”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}" class="back"><span>Back</span></a>
       </nav>
 
       <main id="form">

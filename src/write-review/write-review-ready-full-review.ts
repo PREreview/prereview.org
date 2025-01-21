@@ -138,7 +138,9 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
     }Is it ready for attention from an editor, publisher or broader audience? – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" class="back"
+          ><span>Back</span></a
+        >
       </nav>
 
       <main id="form">

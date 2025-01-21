@@ -8,7 +8,7 @@ import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../route
 export const createFormPage = ({ researchInterests }: { researchInterests: ResearchInterests }) =>
   PageResponse({
     title: plainText`Who can see your research interests?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(changeResearchInterestsVisibilityMatch.formatter, {})}" novalidate>
         <fieldset role="group">

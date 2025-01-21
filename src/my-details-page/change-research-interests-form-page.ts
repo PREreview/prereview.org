@@ -9,7 +9,7 @@ import { changeResearchInterestsMatch, myDetailsMatch } from '../routes.js'
 export const createFormPage = (researchInterests: O.Option<ResearchInterests>) =>
   PageResponse({
     title: plainText`What are your research interests?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(changeResearchInterestsMatch.formatter, {})}" novalidate>
         <h1><label for="research-interests">What are your research interests?</label></h1>

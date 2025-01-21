@@ -17,7 +17,7 @@ export const createFormPage = ({
   PageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: plainText`${error ? 'Error: ' : ''}Are you happy to take requests for a PREreview?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(changeOpenForRequestsMatch.formatter, {})}" novalidate>
         ${error

@@ -146,7 +146,9 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
  – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}" class="back"
+          ><span>Back</span></a
+        >
       </nav>
 
       <main id="form">

@@ -11,7 +11,7 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm) => {
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: plainText`${error ? 'Error: ' : ''}Which preprint would you like reviewed?`,
-    nav: html`<a href="${format(homeMatch.formatter, {})}" class="back">Back</a>`,
+    nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"><span>Back</span></a>`,
     main: html`
       <form method="post" action="${format(requestAPrereviewMatch.formatter, {})}" novalidate>
         ${error

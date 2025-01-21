@@ -119,7 +119,7 @@ function personaForm(
             },
           )}"
           class="back"
-          >Back</a
+          ><span>Back</span></a
         >
       </nav>
 

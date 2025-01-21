@@ -138,7 +138,9 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
     }”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}" class="back"
+          ><span>Back</span></a
+        >
       </nav>
 
       <main id="form">

@@ -134,7 +134,9 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
  – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
+          ><span>Back</span></a
+        >
       </nav>
 
       <main id="form">

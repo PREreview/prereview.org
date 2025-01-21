@@ -30,7 +30,7 @@ export const ChoosePersonaPage = ({
     ),
     nav: html`
       <a href="${Routes.WriteCommentEnterComment.href({ commentId })}" class="back"
-        >${translate(locale, 'write-comment-flow', 'back')()}</a
+        ><span>${translate(locale, 'write-comment-flow', 'back')()}</span></a
       >
     `,
     main: html`

@@ -10,7 +10,9 @@ export const ownPreprintPage = (preprint: PreprintId, canonical: Formatter<{ id:
     status: Status.Forbidden,
     title: plainText`Sorry, you can’t review your own preprint`,
     nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back">Back to preprint</a>
+      <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back"
+        ><span>Back to preprint</span></a
+      >
     `,
     main: html`
       <h1>Sorry, you can’t review your own preprint</h1>

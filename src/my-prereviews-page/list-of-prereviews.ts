@@ -37,13 +37,13 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
 
         <div class="forward-group">
           <a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(user.orcid) })}" class="forward"
-            >View public profile</a
+            ><span>View public profile</span></a
           >
 
           <a
             href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(user.pseudonym) })}"
             class="forward"
-            >View pseudonym profile</a
+            ><span>View pseudonym profile</span></a
           >
         </div>
       </div>

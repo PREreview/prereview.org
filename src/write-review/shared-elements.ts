@@ -6,7 +6,7 @@ export const errorPrefix = (locale: SupportedLocale, error: boolean) => (s: stri
   pipe(error ? translate(locale)('write-review', 'errorPrefix')() : '', prefix => `${prefix}${s}`)
 
 export const backNav = (locale: SupportedLocale, href: string) =>
-  html`<a href="${href}" class="back">${translate(locale, 'write-review', 'backNav')()}</a>`
+  html`<a href="${href}" class="back"><span>${translate(locale, 'write-review', 'backNav')()}</span></a>`
 
 export const errorSummary = (locale: SupportedLocale) => (errorItems: Html) => html`
   <error-summary aria-labelledby="error-summary-title" role="alert">
