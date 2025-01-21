@@ -509,9 +509,18 @@ header {
       color: inherit;
     }
 
-    & + :not(.visually-hidden),
+    & + :not(.visually-hidden, :--list),
     & + .visually-hidden + * {
       margin-block-start: var(--space-m-l);
+    }
+  }
+
+  section & {
+    margin-block-start: var(--space-l-xl);
+
+    &:has(+ :--list) {
+      border-block-end: var(--width-divider-narrow) solid var(--color-red-60);
+      padding-block-end: var(--space-4xs);
     }
   }
 }
@@ -566,15 +575,6 @@ article {
 
   :where(.summary-card, :--scroller) + & {
     margin-block-start: var(--space-m-l);
-  }
-
-  section & {
-    margin-block-start: var(--space-l-xl);
-
-    &:has(+ :--list) {
-      border-block-end: var(--width-divider-narrow) solid var(--color-red-60);
-      padding-block-end: var(--space-4xs);
-    }
   }
 }
 

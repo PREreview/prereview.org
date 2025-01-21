@@ -86,7 +86,9 @@ export const createPage = ({
           () => '',
           requests => html`
             <section aria-labelledby="recent-review-requests-title">
-              <h2 id="recent-review-requests-title">${translate(locale, 'home-page', 'requestsTitle')()}</h2>
+              <header>
+                <h2 id="recent-review-requests-title">${translate(locale, 'home-page', 'requestsTitle')()}</h2>
+              </header>
               <ol class="cards" aria-labelledby="recent-review-requests-title" tabindex="0">
                 ${requests.map(
                   (request, index) => html`
@@ -191,7 +193,9 @@ export const createPage = ({
       )}
 
       <section aria-labelledby="statistics-title">
-        <h2 id="statistics-title">${translate(locale, 'home-page', 'statisticsTitle')()}</h2>
+        <header>
+          <h2 id="statistics-title">${translate(locale, 'home-page', 'statisticsTitle')()}</h2>
+        </header>
 
         <ul class="statistics">
           <li>
@@ -239,7 +243,9 @@ export const createPage = ({
           () => '',
           prereviews => html`
             <section aria-labelledby="recent-prereviews-title">
-              <h2 id="recent-prereviews-title">${translate(locale, 'home-page', 'reviewsTitle')()}</h2>
+              <header>
+                <h2 id="recent-prereviews-title">${translate(locale, 'home-page', 'reviewsTitle')()}</h2>
+              </header>
 
               <ol class="cards" aria-labelledby="recent-prereviews-title" tabindex="0">
                 ${prereviews.map(
@@ -356,7 +362,9 @@ export const createPage = ({
       )}
 
       <section aria-labelledby="funders-title">
-        <h2 id="funders-title">${translate(locale, 'home-page', 'fundersTitle')()}</h2>
+        <header>
+          <h2 id="funders-title">${translate(locale, 'home-page', 'fundersTitle')()}</h2>
+        </header>
 
         <ol class="logos">
           <li>
