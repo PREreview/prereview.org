@@ -1426,13 +1426,13 @@ notification-banner {
     --outside-color: var(--color-notice);
   }
 
-  & > * {
+  & > :not(:first-child) {
     margin-block-start: var(--space-2xs-xs);
-    padding-inline: var(--space-s);
+    margin-inline: var(--space-s);
   }
 
   & > :first-child {
-    margin-block-start: 0;
+    padding-inline: var(--space-s);
 
     @media screen {
       @media (forced-colors: none) {
