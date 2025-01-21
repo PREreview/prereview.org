@@ -1429,9 +1429,11 @@ notification-banner {
   & > :not(:first-child) {
     margin-block-start: var(--space-2xs-xs);
     margin-inline: var(--space-s);
+    hyphens: manual;
   }
 
   & > :first-child {
+    margin-block-start: 0;
     padding-inline: var(--space-s);
 
     @media screen {
