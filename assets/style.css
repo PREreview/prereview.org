@@ -561,6 +561,7 @@ article {
 }
 
 :--heading {
+  inline-size: fit-content;
   font-weight: 700;
   line-height: 1.2;
   text-wrap: pretty;
@@ -896,6 +897,7 @@ math {
 
   & small {
     display: block;
+    inline-size: fit-content;
     font-size: var(--step--2);
   }
 }
@@ -960,6 +962,7 @@ td {
 }
 
 p {
+  inline-size: fit-content;
   max-inline-size: 64ch;
   margin-block-start: var(--space-xs);
   text-wrap: pretty;
@@ -1433,6 +1436,7 @@ notification-banner {
 
     @media screen {
       @media (forced-colors: none) {
+        inline-size: 100%;
         padding-block: var(--space-2xs);
         background-color: var(--outside-color);
         color: var(--color-background);

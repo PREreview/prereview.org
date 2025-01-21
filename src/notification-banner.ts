@@ -12,7 +12,7 @@ export const showNotificationBanner = ({ title, type, content }: NotificationBan
     ${type !== 'success' ? rawHtml(`type="${type}"`) : ''}
     role="alert"
   >
-    <h2 id="notification-banner-title">${title}</h2>
+    <h2 id="notification-banner-title"><span>${title}</span></h2>
 
     ${content}
   </notification-banner>
