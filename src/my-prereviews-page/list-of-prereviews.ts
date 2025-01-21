@@ -69,7 +69,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
                   ? html`
                       <ul class="categories">
                         ${prereview.subfields.map(
-                          subfield => html`<li>${getSubfieldName(subfield, DefaultLocale)}</li>`,
+                          subfield => html`<li><span>${getSubfieldName(subfield, DefaultLocale)}</span></li>`,
                         )}
                       </ul>
                     `

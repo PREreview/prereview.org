@@ -125,7 +125,7 @@ export function createPage({
                         ? html`
                             <ul class="categories">
                               ${prereview.subfields.map(
-                                subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
+                                subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
                               )}
                             </ul>
                           `

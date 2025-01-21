@@ -132,7 +132,7 @@ export const createPage = ({
                           ? html`
                               <ul class="categories">
                                 ${request.subfields.map(
-                                  subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
+                                  subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
                                 )}
                               </ul>
                             `
@@ -297,7 +297,7 @@ export const createPage = ({
                           ? html`
                               <ul class="categories">
                                 ${prereview.subfields.map(
-                                  subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
+                                  subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
                                 )}
                               </ul>
                             `
