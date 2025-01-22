@@ -60,12 +60,20 @@ export function addAuthorsForm({
               <div>
                 <h2>${t('write-review', 'authorNumber')({ number: index + 1 })}</h2>
 
-                <a href="${format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
-                  >${rawHtml(t('write-review', 'changeAuthorDetailsLink')({ name: author.name, visuallyHidden }))}</a
-                >
-                <a href="${format(writeReviewRemoveAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
-                  >${rawHtml(t('write-review', 'removeAuthor')({ name: author.name, visuallyHidden }))}</a
-                >
+                <ul>
+                  <li>
+                    <a href="${format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
+                      >${rawHtml(
+                        t('write-review', 'changeAuthorDetailsLink')({ name: author.name, visuallyHidden }),
+                      )}</a
+                    >
+                  </li>
+                  <li>
+                    <a href="${format(writeReviewRemoveAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
+                      >${rawHtml(t('write-review', 'removeAuthor')({ name: author.name, visuallyHidden }))}</a
+                    >
+                  </li>
+                </ul>
               </div>
 
               <dl class="summary-list">

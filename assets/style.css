@@ -781,6 +781,21 @@ math {
       font-size: var(--step-1);
       line-height: inherit;
     }
+
+    & > ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      margin-block-start: 0;
+      padding-inline-start: 0;
+      column-gap: var(--space-xs-m);
+      list-style-type: none;
+      row-gap: var(--space-3xs-2xs);
+
+      & li {
+        margin-block-start: 0;
+      }
+    }
   }
 
   & > :--scroller {
