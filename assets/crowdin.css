@@ -4,3 +4,8 @@
   position: relative;
   z-index: 1000;
 }
+
+.crowdin_phrase:only-child {
+  display: inline-block;
+  inline-size: fit-content;
+}
