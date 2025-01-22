@@ -770,14 +770,13 @@ math {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     column-gap: var(--space-xs-m);
     background-color: var(--color-background-alt);
     row-gap: var(--space-4xs);
     border-block-end: var(--width-divider-narrow) solid var(--color-background-alt);
 
     & h2 {
-      flex-grow: 1;
       font-size: var(--step-1);
       line-height: inherit;
     }
