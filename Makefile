@@ -22,7 +22,7 @@ src/locales: $(shell find locales -type f)
 	scripts/intlc.sh
 	touch src/locales
 
-src/manifest.json: src/locales $(shell find assets -type f | grep -v assets/locales)
+src/manifest.json: node_modules src/locales $(shell find assets -type f | grep -v assets/locales)
 	npx webpack build --mode development
 	touch src/manifest.json
 
