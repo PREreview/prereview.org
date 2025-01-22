@@ -670,6 +670,7 @@ h6 {
     list-style-type: none;
 
     & > li {
+      inline-size: auto;
       max-inline-size: 100%;
       margin-block-start: var(--space-xs);
 
@@ -700,6 +701,7 @@ li {
   }
 
   &:where(:not(:has(:--list))) {
+    inline-size: fit-content;
     max-inline-size: 64ch;
   }
 }
@@ -2055,6 +2057,7 @@ skip-link {
   }
 
   > li {
+    inline-size: auto;
     max-inline-size: 100%;
     text-align: initial;
   }
