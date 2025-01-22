@@ -63,14 +63,14 @@ function renderContentForOrcid(
 
         <dl class="summary-list">
           <div>
-            <dt>ORCID iD</dt>
+            <dt><span>ORCID iD</span></dt>
             <dd><a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a></dd>
           </div>
 
           ${slackUser
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'slackName')()}</dt>
+                  <dt><span>${translate(locale, 'profile-page', 'slackName')()}</span></dt>
                   <dd>
                     <span class="slack">
                       <img src="${slackUser.image.href}" alt="" width="48" height="48" />
@@ -83,7 +83,7 @@ function renderContentForOrcid(
           ${careerStage
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'careerStage')()}</dt>
+                  <dt><span>${translate(locale, 'profile-page', 'careerStage')()}</span></dt>
                   <dd>${translate(locale, 'profile-page', `careerStage${capitalize(careerStage)}`)()}</dd>
                 </div>
               `
@@ -91,7 +91,7 @@ function renderContentForOrcid(
           ${researchInterests
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'researchInterests')()}</dt>
+                  <dt><span>${translate(locale, 'profile-page', 'researchInterests')()}</span></dt>
                   <dd>${researchInterests}</dd>
                 </div>
               `
@@ -99,7 +99,7 @@ function renderContentForOrcid(
           ${location
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'location')()}</dt>
+                  <dt><span>${translate(locale, 'profile-page', 'location')()}</span></dt>
                   <dd>${location}</dd>
                 </div>
               `
@@ -107,7 +107,7 @@ function renderContentForOrcid(
           ${languages
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'languages')()}</dt>
+                  <dt><span>${translate(locale, 'profile-page', 'languages')()}</span></dt>
                   <dd>${languages}</dd>
                 </div>
               `
@@ -115,7 +115,7 @@ function renderContentForOrcid(
           ${RA.isNonEmpty(clubs)
             ? html`
                 <div>
-                  <dt>${translate(locale, 'profile-page', 'clubs')()}</dt>
+                  <dt><span>${translate(locale, 'profile-page', 'clubs')()}</span></dt>
                   <dd>
                     ${pipe(
                       clubs,

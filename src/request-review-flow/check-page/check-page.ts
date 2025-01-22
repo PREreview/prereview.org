@@ -35,7 +35,7 @@ export function checkPage({
 
             <dl class="summary-list">
               <div>
-                <dt>Published name</dt>
+                <dt><span>Published name</span></dt>
                 <dd>
                   ${displayAuthor(
                     match(reviewRequest.persona)

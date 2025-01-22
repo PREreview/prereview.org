@@ -97,17 +97,17 @@ export function createPage({
 
       <dl class="summary-list">
         <div>
-          <dt>Name</dt>
+          <dt><span>Name</span></dt>
           <dd>${user.name}</dd>
         </div>
 
         <div>
-          <dt>ORCID iD</dt>
+          <dt><span>ORCID iD</span></dt>
           <dd><span class="orcid">${user.orcid}</span></dd>
         </div>
 
         <div>
-          <dt>PREreview pseudonym</dt>
+          <dt><span>PREreview pseudonym</span></dt>
           <dd>${user.pseudonym}</dd>
         </div>
 
@@ -117,7 +117,7 @@ export function createPage({
             O.isNone,
             () => html`
               <div>
-                <dt>ORCID profile</dt>
+                <dt><span>ORCID profile</span></dt>
                 <dd>
                   <a href="${format(connectOrcidMatch.formatter, {})}">Connect ORCID profile</a>
                 </dd>
@@ -128,7 +128,7 @@ export function createPage({
             O.isSome,
             () => html`
               <div>
-                <dt>ORCID profile</dt>
+                <dt><span>ORCID profile</span></dt>
                 <dd>Connected</dd>
                 <dd>
                   <a href="${format(disconnectOrcidMatch.formatter, {})}"
@@ -145,7 +145,7 @@ export function createPage({
             O.isNone,
             () => html`
               <div>
-                <dt>Avatar</dt>
+                <dt><span>Avatar</span></dt>
                 <dd>
                   <a href="${format(changeAvatarMatch.formatter, {})}">Upload avatar</a>
                 </dd>
@@ -156,7 +156,7 @@ export function createPage({
             { value: P.select() },
             avatar => html`
               <div>
-                <dt>Avatar</dt>
+                <dt><span>Avatar</span></dt>
                 <dd><img src="${avatar.href}" width="300" height="300" alt="" /></dd>
                 <dd>
                   <ul>
@@ -181,7 +181,7 @@ export function createPage({
             O.isNone,
             () => html`
               <div>
-                <dt>Slack Community name</dt>
+                <dt><span>Slack Community name</span></dt>
                 <dd>
                   <a href="${format(connectSlackMatch.formatter, {})}">Connect Slack account</a>
                 </dd>
@@ -192,7 +192,7 @@ export function createPage({
             { value: P.select() },
             slackUser => html`
               <div>
-                <dt>Slack Community name</dt>
+                <dt><span>Slack Community name</span></dt>
                 <dd>
                   <span class="slack">
                     <img src="${slackUser.image.href}" alt="" width="48" height="48" />
@@ -213,7 +213,7 @@ export function createPage({
             O.isNone,
             () => html`
               <div>
-                <dt>Email address</dt>
+                <dt><span>Email address</span></dt>
                 <dd>
                   <a href="${format(changeContactEmailAddressMatch.formatter, {})}">Enter email address</a>
                 </dd>
@@ -224,7 +224,7 @@ export function createPage({
             { value: P.select() },
             contactEmailAddress => html`
               <div>
-                <dt>Email address</dt>
+                <dt><span>Email address</span></dt>
                 <dd>
                   ${contactEmailAddress.value}
                   ${match(contactEmailAddress._tag)
@@ -247,7 +247,7 @@ export function createPage({
             O.isSome,
             () => html`
               <div>
-                <dt>Open for review requests</dt>
+                <dt><span>Open for review requests</span></dt>
                 ${match(openForRequests)
                   .when(
                     O.isNone,
@@ -314,7 +314,7 @@ export function createPage({
           .exhaustive()}
 
         <div>
-          <dt>Career stage</dt>
+          <dt><span>Career stage</span></dt>
           ${match(careerStage)
             .when(
               O.isNone,
@@ -360,7 +360,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt>Research interests</dt>
+          <dt><span>Research interests</span></dt>
           ${match(researchInterests)
             .when(
               O.isNone,
@@ -402,7 +402,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt>Location</dt>
+          <dt><span>Location</span></dt>
           ${match(location)
             .when(
               O.isNone,
@@ -444,7 +444,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt>Languages</dt>
+          <dt><span>Languages</span></dt>
           ${match(languages)
             .when(
               O.isNone,

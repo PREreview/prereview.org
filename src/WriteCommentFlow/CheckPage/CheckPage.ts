@@ -39,7 +39,7 @@ export const CheckPage = ({
 
             <dl class="summary-list">
               <div>
-                <dt>${translate(locale, 'write-comment-flow', 'publishedNameHeading')()}</dt>
+                <dt><span>${translate(locale, 'write-comment-flow', 'publishedNameHeading')()}</span></dt>
                 <dd>
                   ${pipe(
                     Match.value(persona),
@@ -80,7 +80,7 @@ export const CheckPage = ({
                 </dd>
               </div>
               <div>
-                <dt>${translate(locale, 'write-comment-flow', 'competingInterestsHeading')()}</dt>
+                <dt><span>${translate(locale, 'write-comment-flow', 'competingInterestsHeading')()}</span></dt>
                 <dd>
                   ${Option.getOrElse(competingInterests, () =>
                     translate(locale, 'write-comment-flow', 'noCompetingInterests')(),

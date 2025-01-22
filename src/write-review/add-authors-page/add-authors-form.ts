@@ -70,11 +70,11 @@ export function addAuthorsForm({
 
               <dl class="summary-list">
                 <div>
-                  <dt>${t('write-review', 'name')()}</dt>
+                  <dt><span>${t('write-review', 'name')()}</span></dt>
                   <dd>${author.name}</dd>
                 </div>
                 <div>
-                  <dt>${t('write-review', 'emailAddress')()}</dt>
+                  <dt><span>${t('write-review', 'emailAddress')()}</span></dt>
                   <dd>${author.emailAddress}</dd>
                 </div>
               </dl>

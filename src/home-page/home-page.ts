@@ -201,40 +201,46 @@ export const createPage = ({
 
         <ul class="statistics">
           <li>
-            ${rawHtml(
-              translate(
-                locale,
-                'home-page',
-                'statisticsReviews',
-              )({
-                number: statistics.prereviews,
-                data: text => `<data value="${statistics.servers}">${text}</data>`,
-              }),
-            )}
+            <span
+              >${rawHtml(
+                translate(
+                  locale,
+                  'home-page',
+                  'statisticsReviews',
+                )({
+                  number: statistics.prereviews,
+                  data: text => `<data value="${statistics.servers}">${text}</data>`,
+                }),
+              )}</span
+            >
           </li>
           <li>
-            ${rawHtml(
-              translate(
-                locale,
-                'home-page',
-                'statisticsServers',
-              )({
-                number: statistics.servers,
-                data: text => `<data value="${statistics.servers}">${text}</data>`,
-              }),
-            )}
+            <span
+              >${rawHtml(
+                translate(
+                  locale,
+                  'home-page',
+                  'statisticsServers',
+                )({
+                  number: statistics.servers,
+                  data: text => `<data value="${statistics.servers}">${text}</data>`,
+                }),
+              )}</span
+            >
           </li>
           <li>
-            ${rawHtml(
-              translate(
-                locale,
-                'home-page',
-                'statisticsUsers',
-              )({
-                number: statistics.users,
-                data: text => `<data value="${statistics.users}">${text}</data>`,
-              }),
-            )}
+            <span
+              >${rawHtml(
+                translate(
+                  locale,
+                  'home-page',
+                  'statisticsUsers',
+                )({
+                  number: statistics.users,
+                  data: text => `<data value="${statistics.users}">${text}</data>`,
+                }),
+              )}</span
+            >
           </li>
         </ul>
       </section>

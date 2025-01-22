@@ -56,7 +56,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
 
             <dl class="summary-list">
               <div>
-                <dt>${t('preprintTitle')()}</dt>
+                <dt><span>${t('preprintTitle')()}</span></dt>
                 <dd>
                   <cite lang="${preprint.language}" dir="${rtlDetect.getLangDir(preprint.language)}"
                     >${preprint.title}</cite
@@ -64,7 +64,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                 </dd>
               </div>
               <div>
-                <dt>${t('preprintServer')()}</dt>
+                <dt><span>${t('preprintServer')()}</span></dt>
                 <dd>
                   ${match(preprint.id.type)
                     .with('advance', () => 'Advance')
@@ -113,10 +113,12 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
             <dl class="summary-list">
               <div>
                 <dt>
-                  ${match(review.moreAuthors)
-                    .with('yes', t('yourPublishedName'))
-                    .with('no', 'yes-private', t('publishedName'))
-                    .exhaustive()}
+                  <span
+                    >${match(review.moreAuthors)
+                      .with('yes', t('yourPublishedName'))
+                      .with('no', 'yes-private', t('publishedName'))
+                      .exhaustive()}</span
+                  >
                 </dt>
                 <dd>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</dd>
                 <dd>
@@ -129,7 +131,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
               ${review.moreAuthors === 'yes' && RA.isNonEmpty(review.otherAuthors)
                 ? html`
                     <div>
-                      <dt>Invited author${review.otherAuthors.length !== 1 ? 's' : ''}</dt>
+                      <dt><span>Invited author${review.otherAuthors.length !== 1 ? 's' : ''}</span></dt>
                       <dd>${pipe(review.otherAuthors, RNEA.map(get('name')), formatList(DefaultLocale))}</dd>
                       <dd>
                         <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
@@ -141,7 +143,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                 : ''}
 
               <div>
-                <dt>Competing interests</dt>
+                <dt><span>Competing interests</span></dt>
                 <dd>${getCompetingInterests(review)}</dd>
                 <dd>
                   <a href="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}"
@@ -175,7 +177,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                 : html`
                     <dl class="summary-list">
                       <div>
-                        <dt>${t('doesIntroductionExplain')()}</dt>
+                        <dt><span>${t('doesIntroductionExplain')()}</span></dt>
                         <dd>
                           ${match(review.introductionMatches)
                             .with('yes', () => 'Yes')
@@ -194,7 +196,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         </dd>
                       </div>
                       <div>
-                        <dt>${t('methodsWellSuited')()}</dt>
+                        <dt><span>${t('methodsWellSuited')()}</span></dt>
                         <dd>
                           ${match(review.methodsAppropriate)
                             .with('inappropriate', () => 'Highly inappropriate')
@@ -215,7 +217,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         </dd>
                       </div>
                       <div>
-                        <dt>${t('conclusionsSupported')()}</dt>
+                        <dt><span>${t('conclusionsSupported')()}</span></dt>
                         <dd>
                           ${match(review.resultsSupported)
                             .with('not-supported', () => 'Highly unsupported')
@@ -236,7 +238,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         </dd>
                       </div>
                       <div>
-                        <dt>${t('dataPresentationWellSuited')()}</dt>
+                        <dt><span>${t('dataPresentationWellSuited')()}</span></dt>
                         <dd>
                           ${match(review.dataPresentation)
                             .with('inappropriate-unclear', () => 'Highly inappropriate or unclear')
@@ -257,7 +259,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         </dd>
                       </div>
                       <div>
-                        <dt>${t('clearDiscussion')()}</dt>
+                        <dt><span>${t('clearDiscussion')()}</span></dt>
                         <dd>
                           ${match(review.findingsNextSteps)
                             .with('inadequately', () => 'Very unclearly')
@@ -278,7 +280,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         </dd>
                       </div>
                       <div>
-                        <dt>${t('advanceKnowledge')()}</dt>
+                        <dt><span>${t('advanceKnowledge')()}</span></dt>
                         <dd>
                           ${match(review.novel)
                             .with('no', () => 'Not at all likely')
@@ -297,7 +299,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         </dd>
                       </div>
                       <div>
-                        <dt>${t('benefitFromEditing')()}</dt>
+                        <dt><span>${t('benefitFromEditing')()}</span></dt>
                         <dd>
                           ${match(review.languageEditing)
                             .with('no', () => 'No')
@@ -312,7 +314,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         </dd>
                       </div>
                       <div>
-                        <dt>${t('wouldRecommend')()}</dt>
+                        <dt><span>${t('wouldRecommend')()}</span></dt>
                         <dd>
                           ${match(review.shouldRead)
                             .with('no', () => 'No, it’s of low quality or is majorly flawed')
@@ -328,7 +330,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         </dd>
                       </div>
                       <div>
-                        <dt>${t('readyForAttention')()}</dt>
+                        <dt><span>${t('readyForAttention')()}</span></dt>
                         <dd>
                           ${match(review.readyFullReview)
                             .with('no', () => 'No, it needs a major revision')
