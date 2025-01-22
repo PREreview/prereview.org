@@ -1214,9 +1214,9 @@ label {
 [role='toolbar'] {
   display: flex;
   flex-wrap: wrap;
-  inline-size: fit-content;
   gap: var(--space-2xs);
   justify-content: flex-start;
+  inline-size: fit-content;
   margin-block-start: var(--space-s);
 
   & > [role='group'] {
