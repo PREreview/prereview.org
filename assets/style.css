@@ -2676,6 +2676,11 @@ skip-link {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
+
+    & > span {
+      display: inline-block;
+      inline-size: fit-content;
+    }
   }
 
   & data {
