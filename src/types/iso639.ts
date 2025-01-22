@@ -194,7 +194,7 @@ const iso6393To1Mapping = {
   zha: 'za',
   zho: 'zh',
   zul: 'zu',
-} satisfies Record<keyof Omit<typeof iso6393, 'hbs'>, Iso6391Code>
+} satisfies Record<Iso6393Code, Iso6391Code>
 
 const swapFn = <T extends Record<string, S>, S extends string>(obj: T): { [K in keyof T as T[K]]: K } =>
   Object.entries(obj).reduce((res, [key, value]) => {
