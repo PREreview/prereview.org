@@ -1,6 +1,13 @@
 @charset "utf-8";
 
-.crowdin_jipt_translated {
+.crowdin_jipt_approved,
+.crowdin_jipt_hidden,
+.crowdin_jipt_no_preview,
+.crowdin_jipt_not_found,
+.crowdin_jipt_partially_approved,
+.crowdin_jipt_partially_translated,
+.crowdin_jipt_translated,
+.crowdin_jipt_untranslated {
   position: relative;
   z-index: 1000;
 }
