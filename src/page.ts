@@ -116,6 +116,7 @@ export const page = ({
                 _jipt.push(['project', 'prereview'])
               </script>
               <script type="text/javascript" src="https://cdn.crowdin.com/jipt/jipt.js"></script>
+              <link href="${assets['crowdin.css']}" rel="stylesheet" />
             `
           : ''}
         ${scripts.flatMap(file =>

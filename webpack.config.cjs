@@ -18,6 +18,7 @@ module.exports = (env, argv) => ({
   entry: {
     'collapsible-menu': path.resolve('assets', 'collapsible-menu.ts'),
     'conditional-inputs': path.resolve('assets', 'conditional-inputs.ts'),
+    crowdin: path.resolve('assets', 'crowdin.css'),
     'editor-toolbar': path.resolve('assets', 'editor-toolbar.ts'),
     'error-summary': path.resolve('assets', 'error-summary.ts'),
     'favicon.ico': path.resolve('assets', 'favicon.ico'),
@@ -136,7 +137,7 @@ module.exports = (env, argv) => ({
     }),
     new PurgeCSSPlugin({
       paths: [...globSync(`assets/**/*.ts`, { nodir: true }), ...globSync(`src/**/*`, { nodir: true })],
-      safelist: ['contenteditable', /^:/],
+      safelist: ['contenteditable', /^crowdin_/, /^:/],
       variables: true,
     }),
     new RemoveEmptyScriptsPlugin({
