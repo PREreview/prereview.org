@@ -1,10 +1,9 @@
-import { FetchHttpClient, Headers, HttpClient, HttpClientRequest, UrlParams } from '@effect/platform'
-import { Context, Data, Effect, flow, Layer, Match, pipe } from 'effect'
+import { Headers, HttpClient, HttpClientRequest, UrlParams } from '@effect/platform'
+import { Context, Data, Effect, Layer, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { CachingHttpClient } from './CachingHttpClient.js'
-import * as FptsToEffect from './FptsToEffect.js'
-import { getPage, getPageWithEffect, GhostApi } from './ghost.js'
+import { getPageWithEffect, GhostApi } from './ghost.js'
 import type { Html } from './html.js'
 
 export class PageIsNotFound extends Data.TaggedError('PageIsNotFound') {}
@@ -29,22 +28,6 @@ const loadWithCachingClient = (id: string) =>
     Effect.tapError(error => Effect.logError('Failed to load ghost page').pipe(Effect.annotateLogs({ error }))),
     Effect.catchTag('GhostPageNotFound', () => Effect.fail(new PageIsNotFound())),
     Effect.catchTag('GhostPageUnavailable', () => Effect.fail(new PageIsUnavailable())),
-  )
-
-const legacyFetch = (ghostApi: typeof GhostApi.Service, fetch: typeof FetchHttpClient.Fetch.Service) => (id: string) =>
-  pipe(
-    FptsToEffect.readerTaskEither(getPage(id), {
-      fetch,
-      ghostApi,
-    }),
-    Effect.mapError(
-      flow(
-        Match.value,
-        Match.when('not-found', () => new PageIsNotFound()),
-        Match.when('unavailable', () => new PageIsUnavailable()),
-        Match.exhaustive,
-      ),
-    ),
   )
 
 const loggingHttpClient = (client: HttpClient.HttpClient) =>
@@ -93,17 +76,12 @@ export const layer = Layer.effect(
   GetPageFromGhost,
   Effect.gen(function* () {
     const httpClient = yield* CachingHttpClient
-    const fetch = yield* FetchHttpClient.Fetch
     const ghostApi = yield* GhostApi
     return id =>
-      Effect.if(id === '6154aa157741400e8722bb14', {
-        onTrue: () =>
-          pipe(
-            loadWithCachingClient(id),
-            Effect.provideService(GhostApi, ghostApi),
-            Effect.provideService(HttpClient.HttpClient, loggingHttpClient(httpClient)),
-          ),
-        onFalse: () => legacyFetch(ghostApi, fetch)(id),
-      })
+      pipe(
+        loadWithCachingClient(id),
+        Effect.provideService(GhostApi, ghostApi),
+        Effect.provideService(HttpClient.HttpClient, loggingHttpClient(httpClient)),
+      )
   }),
 )
