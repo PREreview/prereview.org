@@ -1,5 +1,5 @@
 import { Headers, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
-import { Context, Effect, Layer, Option, pipe, Schema, type Cause, type DateTime } from 'effect'
+import { Cause, Context, Effect, Layer, Option, pipe, Schema, type DateTime } from 'effect'
 import * as Redis from './Redis.js'
 
 interface CacheValue {
@@ -44,7 +44,23 @@ export const layerPersistedToRedis = Layer.effect(
     const redis = yield* Redis.HttpCacheRedis
 
     return {
-      get: () => Option.none(),
+      get: request =>
+        pipe(
+          Effect.tryPromise(() => redis.get(keyForRequest(request))),
+          Effect.andThen(Option.fromNullable),
+          Effect.andThen(Schema.decode(CacheValueFromStringSchema)),
+          Effect.map(({ staleAt, response }) => ({
+            staleAt,
+            response: HttpClientResponse.fromWeb(
+              request,
+              new Response(response.body, {
+                status: response.status,
+                headers: Headers.fromInput(response.headers),
+              }),
+            ),
+          })),
+          Effect.mapError(() => new Cause.NoSuchElementException()),
+        ),
       set: (response, staleAt) =>
         pipe(
           Effect.gen(function* () {
