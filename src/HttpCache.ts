@@ -1,5 +1,6 @@
 import { Headers, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
 import { Context, Effect, Layer, Option, pipe, Schema, type Cause, type DateTime } from 'effect'
+import * as Redis from './Redis.js'
 
 interface CacheValue {
   staleAt: DateTime.DateTime
@@ -30,13 +31,18 @@ export class HttpCache extends Context.Tag('HttpCache')<
   }
 >() {}
 
-export const layerPersistedToRedis = Layer.sync(HttpCache, () => {
-  return {
-    get: () => Option.none(),
-    set: () => Effect.void,
-    delete: () => Effect.void,
-  }
-})
+export const layerPersistedToRedis = Layer.effect(
+  HttpCache,
+  Effect.gen(function* () {
+    yield* Redis.HttpCacheRedis
+
+    return {
+      get: () => Option.none(),
+      set: () => Effect.void,
+      delete: () => Effect.void,
+    }
+  }),
+)
 
 export const layerInMemory = Layer.sync(HttpCache, () => {
   const cache = new Map<CacheKey, CacheValue>()
