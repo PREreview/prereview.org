@@ -34,11 +34,24 @@ export class HttpCache extends Context.Tag('HttpCache')<
 export const layerPersistedToRedis = Layer.effect(
   HttpCache,
   Effect.gen(function* () {
-    yield* Redis.HttpCacheRedis
+    const redis = yield* Redis.HttpCacheRedis
 
     return {
       get: () => Option.none(),
-      set: () => Effect.void,
+      set: (response, staleAt) =>
+        pipe(
+          Effect.gen(function* () {
+            return {
+              status: response.status,
+              headers: response.headers,
+              body: yield* response.text,
+            }
+          }),
+          Effect.andThen(Schema.encode(StoredResponseSchema)),
+          Effect.andThen(storedResponse => {
+            return redis.set(keyForRequest(response.request), JSON.stringify({ staleAt, response: storedResponse }))
+          }),
+        ),
       delete: () => Effect.void,
     }
   }),
