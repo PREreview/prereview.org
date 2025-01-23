@@ -23,12 +23,13 @@ pipe(
   Program,
   Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
+  Effect.provide(HttpCache.layerInMemory),
   Effect.provide(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
       Layer.effect(ExpressConfig, ExpressConfigLive),
       NodeHttpClient.layer,
-      HttpCache.layerInMemory,
+      HttpCache.layerPersistedToRedis,
       Layer.effect(
         FetchHttpClient.Fetch,
         Effect.gen(function* () {
@@ -69,6 +70,7 @@ pipe(
       Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
       Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),
       Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
+      Redis.layerHttpCacheConfig(Config.redacted(Config.url('HTTP_CACHE_REDIS_URI'))),
       TemplatePage.optionsLayerConfig({
         fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
         environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),

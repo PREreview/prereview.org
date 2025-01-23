@@ -28,6 +28,7 @@ src/manifest.json: node_modules src/locales $(shell find assets -type f | grep -
 
 start-app: .env node_modules start-services src/manifest.json
 	REDIS_URI=redis://$(shell docker compose port redis 6379) \
+	HTTP_CACHE_REDIS_URI=redis://$(shell docker compose port redis 6379) \
 	SMTP_URI=smtp://$(shell docker compose port mailcatcher 1025) \
   npx tsx watch --clear-screen=false --include=src/manifest.json --require dotenv/config src/index.ts
 
