@@ -30,7 +30,15 @@ export class HttpCache extends Context.Tag('HttpCache')<
   }
 >() {}
 
-export const layer = Layer.sync(HttpCache, () => {
+export const layerPersistedToRedis = Layer.sync(HttpCache, () => {
+  return {
+    get: () => Option.none(),
+    set: () => Effect.void,
+    delete: () => Effect.void,
+  }
+})
+
+export const layerInMemory = Layer.sync(HttpCache, () => {
   const cache = new Map<CacheKey, CacheValue>()
   return {
     get: request =>

@@ -28,7 +28,7 @@ pipe(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
       Layer.effect(ExpressConfig, ExpressConfigLive),
       NodeHttpClient.layer,
-      HttpCache.layer,
+      HttpCache.layerInMemory,
       Layer.effect(
         FetchHttpClient.Fetch,
         Effect.gen(function* () {
