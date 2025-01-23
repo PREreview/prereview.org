@@ -1,0 +1,10 @@
+app = 'http-cache'
+primary_region = 'iad'
+
+[build]
+image = 'redis:7.4.2-alpine'
+
+[[vm]]
+memory = '512mb'
+cpu_kind = 'shared'
+cpus = 1
