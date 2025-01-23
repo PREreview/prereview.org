@@ -1,16 +1,18 @@
+import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
-import { getPageFromGhost } from './GhostPage.js'
+import { GetPageFromGhost } from './GhostPage.js'
+import { HavingProblemsPage } from './HavingProblemsPage/index.js'
 import { type Html, fixHeadingLevels, html, plainText } from './html.js'
-import { havingProblemsPage } from './http-error.js'
 import { PageResponse } from './response.js'
 import { trainingsMatch } from './routes.js'
 
-export const trainings = pipe(
-  getPageFromGhost('64639b5007fb34a92c7f8518'),
-  RTE.matchW(() => havingProblemsPage, createPage),
-)
+export const TrainingsPage = Effect.gen(function* () {
+  const getPageFromGhost = yield* GetPageFromGhost
+
+  const content = yield* getPageFromGhost('64639b5007fb34a92c7f8518')
+
+  return createPage(content)
+}).pipe(Effect.catchAll(() => HavingProblemsPage))
 
 function createPage(content: Html) {
   return PageResponse({

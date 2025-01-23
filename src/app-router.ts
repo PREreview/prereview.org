@@ -231,7 +231,6 @@ import {
   reviewsDataMatch,
   reviewsMatch,
   scietyListMatch,
-  trainingsMatch,
   usersDataMatch,
   verifyContactEmailAddressMatch,
   writeReviewAddAuthorMatch,
@@ -270,7 +269,6 @@ import {
   getUserFromSlack,
   removeOrcidFromSlackProfile,
 } from './slack.js'
-import { trainings } from './trainings.js'
 import type { PreprintId } from './types/preprint-id.js'
 import { type GenerateUuidEnv, generateUuid } from './types/uuid.js'
 import type { GetUserOnboardingEnv } from './user-onboarding.js'
@@ -568,17 +566,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.of({}),
           RM.apS('user', maybeGetUser),
           RM.apSW('response', RM.fromReaderTask(funding)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-    ),
-    pipe(
-      trainingsMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(trainings)),
           RM.ichainW(handleResponse),
         ),
       ),

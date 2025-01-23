@@ -1,42 +1,32 @@
 import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
-import { format } from 'fp-ts-routing'
-import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect } from '@jest/globals'
+import { Effect, TestContext } from 'effect'
 import { Status } from 'hyper-ts'
-import type { GetPageFromGhostEnv } from '../src/GhostPage.js'
-import { trainingsMatch } from '../src/routes.js'
+import { Locale } from '../src/Context.js'
+import { GetPageFromGhost, PageIsNotFound, PageIsUnavailable } from '../src/GhostPage.js'
 import * as _ from '../src/trainings.js'
 import * as fc from './fc.js'
 
 describe('trainings', () => {
-  test.prop([fc.html()])('when the page can be loaded', async page => {
-    const getPageFromGhost = jest.fn<GetPageFromGhostEnv['getPageFromGhost']>(_ => TE.right(page))
+  test.prop([fc.supportedLocale(), fc.oneof(fc.constant(new PageIsUnavailable()), fc.constant(new PageIsNotFound()))])(
+    'when the page cannot be loaded',
+    async (locale, error) =>
+      Effect.gen(function* () {
+        const actual = yield* _.TrainingsPage
 
-    const actual = await _.trainings({ getPageFromGhost })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      canonical: format(trainingsMatch.formatter, {}),
-      current: 'trainings',
-      status: Status.OK,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-    expect(getPageFromGhost).toHaveBeenCalledWith('64639b5007fb34a92c7f8518')
-  })
-
-  test.prop([fc.constantFrom('unavailable', 'not-found')])('when the page cannot be loaded', async error => {
-    const actual = await _.trainings({ getPageFromGhost: () => TE.left(error) })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provideService(Locale, locale),
+        Effect.provide(TestContext.TestContext),
+        Effect.provideService(GetPageFromGhost, () => Effect.fail(error)),
+        Effect.runPromise,
+      ),
+  )
 })

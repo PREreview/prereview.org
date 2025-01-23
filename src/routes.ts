@@ -24,6 +24,7 @@ export interface Route<A extends { readonly [K in keyof A]: unknown }> {
 }
 
 export const AboutUs = '/about'
+export const Trainings = '/trainings'
 
 export const WriteComment: Route<{ id: number }> = {
   path: '/reviews/:id/write-a-comment',

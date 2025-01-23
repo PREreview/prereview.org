@@ -24,6 +24,7 @@ import {
 } from './response.js'
 import * as Routes from './routes.js'
 import { TemplatePage } from './TemplatePage.js'
+import { TrainingsPage } from './trainings.js'
 import { LoggedInUser } from './user.js'
 import * as WriteCommentFlow from './WriteCommentFlow/index.js'
 
@@ -151,7 +152,10 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
 ])
 
 export const Router = pipe(
-  HttpRouter.fromIterable([MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage)]),
+  HttpRouter.fromIterable([
+    MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage),
+    MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),
+  ]),
   HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
     HttpMiddleware.make(
