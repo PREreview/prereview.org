@@ -1,7 +1,7 @@
 import {
   HttpClient,
+  HttpClientError,
   UrlParams,
-  type HttpClientError,
   type HttpClientRequest,
   type HttpClientResponse,
 } from '@effect/platform'
@@ -57,6 +57,10 @@ export const CachingHttpClient: Effect.Effect<
       return yield* pipe(
         req,
         httpClient.execute,
+        Effect.timeoutFail({
+          duration: '2 seconds',
+          onTimeout: () => new HttpClientError.RequestError({ request: req, reason: 'Transport', cause: 'Timeout' }),
+        }),
         Effect.tap(response => pipe(cache.set(response, DateTime.addDuration(timestamp, '10 seconds')), Effect.ignore)),
         Effect.tap(response =>
           Effect.gen(function* () {
