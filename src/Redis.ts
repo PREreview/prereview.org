@@ -39,9 +39,9 @@ const teardownRedis = (redis: IoRedis) =>
 export const redisLifecycle = (...args: Parameters<typeof makeRedis>) =>
   Effect.acquireRelease(makeRedis(...args), teardownRedis)
 
-export const Redis = Context.GenericTag<IoRedis>('Redis')
+export class DataStoreRedis extends Context.Tag('DataStoreRedis')<DataStoreRedis, IoRedis>() {}
 
-export const layer = flow(redisLifecycle, Layer.effect(Redis))
+export const layerDataStore = flow(redisLifecycle, Layer.effect(DataStoreRedis))
 
-export const layerConfig = (options: Config.Config.Wrap<Parameters<typeof layer>[0]>) =>
-  Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layer))
+export const layerDataStoreConfig = (options: Config.Config.Wrap<Parameters<typeof layerDataStore>[0]>) =>
+  Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layerDataStore))

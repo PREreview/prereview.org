@@ -68,7 +68,7 @@ pipe(
       ),
       Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
       Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),
-      Redis.layerConfig(Config.redacted(Config.url('REDIS_URI'))),
+      Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
       TemplatePage.optionsLayerConfig({
         fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
         environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),

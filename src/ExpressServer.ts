@@ -9,7 +9,7 @@ import { CanWriteComments, UseCrowdinInContext } from './feature-flags.js'
 import { GhostApi } from './ghost.js'
 import { Nodemailer } from './nodemailer.js'
 import { PublicUrl } from './public-url.js'
-import { Redis } from './Redis.js'
+import { DataStoreRedis } from './Redis.js'
 import { TemplatePage } from './TemplatePage.js'
 import { GenerateUuid } from './types/uuid.js'
 
@@ -44,7 +44,7 @@ export const expressServer = Effect.gen(function* () {
 })
 
 export const ExpressConfigLive = Effect.gen(function* () {
-  const redis = yield* Redis
+  const redis = yield* DataStoreRedis
   const env = yield* DeprecatedEnvVars
   const loggerEnv = yield* DeprecatedLoggerEnv
 

@@ -12,7 +12,7 @@ import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from './AboutUsPage/index.js'
 import { ExpressConfig, FlashMessage, Locale } from './Context.js'
 import { PublicUrl } from './public-url.js'
-import { Redis } from './Redis.js'
+import { DataStoreRedis } from './Redis.js'
 import {
   type FlashMessageResponse,
   type LogInResponse,
@@ -165,7 +165,7 @@ export const Router = pipe(
   HttpRouter.get(
     '/health',
     Effect.gen(function* () {
-      const maybeRedis = yield* Effect.serviceOption(Redis)
+      const maybeRedis = yield* Effect.serviceOption(DataStoreRedis)
 
       if (Option.isNone(maybeRedis)) {
         return yield* HttpServerResponse.json({ status: 'ok' })
