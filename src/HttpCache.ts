@@ -3,7 +3,7 @@ import { Context, Effect, Layer, Option, pipe, Schema, type Cause, type DateTime
 import * as Redis from './Redis.js'
 
 interface CacheValue {
-  staleAt: DateTime.DateTime
+  staleAt: DateTime.Utc
   response: StoredResponse
 }
 
@@ -17,16 +17,23 @@ const StoredResponseSchema = Schema.Struct({
   body: Schema.String,
 })
 
+const CacheValueSchema = Schema.Struct({
+  staleAt: Schema.DateTimeUtcFromNumber,
+  response: StoredResponseSchema,
+})
+
+const CacheValueFromStringSchema = Schema.parseJson(CacheValueSchema)
+
 export class HttpCache extends Context.Tag('HttpCache')<
   HttpCache,
   {
     get: (
       request: HttpClientRequest.HttpClientRequest,
     ) => Effect.Effect<
-      { staleAt: DateTime.DateTime; response: HttpClientResponse.HttpClientResponse },
+      { staleAt: DateTime.Utc; response: HttpClientResponse.HttpClientResponse },
       Cause.NoSuchElementException
     >
-    set: (response: HttpClientResponse.HttpClientResponse, staleAt: DateTime.DateTime) => Effect.Effect<void, Error>
+    set: (response: HttpClientResponse.HttpClientResponse, staleAt: DateTime.Utc) => Effect.Effect<void, Error>
     delete: (url: URL) => Effect.Effect<void>
   }
 >() {}
@@ -42,14 +49,17 @@ export const layerPersistedToRedis = Layer.effect(
         pipe(
           Effect.gen(function* () {
             return {
-              status: response.status,
-              headers: response.headers,
-              body: yield* response.text,
+              staleAt,
+              response: {
+                status: response.status,
+                headers: response.headers,
+                body: yield* response.text,
+              },
             }
           }),
-          Effect.andThen(Schema.encode(StoredResponseSchema)),
-          Effect.andThen(storedResponse => {
-            return redis.set(keyForRequest(response.request), JSON.stringify({ staleAt, response: storedResponse }))
+          Effect.andThen(Schema.encode(CacheValueFromStringSchema)),
+          Effect.andThen(value => {
+            return redis.set(keyForRequest(response.request), value)
           }),
         ),
       delete: () => Effect.void,
