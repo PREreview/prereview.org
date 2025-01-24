@@ -2,6 +2,7 @@ import { HttpClient, HttpClientRequest, HttpClientResponse } from '@effect/platf
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { type Duration, Effect, Either, Fiber, Option, pipe, TestClock, TestContext } from 'effect'
+import { StatusCodes } from 'http-status-codes'
 import * as _ from '../src/CachingHttpClient/index.js'
 import * as HttpCache from '../src/HttpCache.js'
 import * as fc from './fc.js'
@@ -70,21 +71,23 @@ describe('there is no cache entry', () => {
 
     test.todo('with a network error')
 
-    test.failing.prop([fc.url()])('with a response that does not have a 200 status code', url =>
-      Effect.gen(function* () {
-        const cache = new Map()
-        const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response(null, { status: 404 }))
-        const client = yield* pipe(
-          _.CachingHttpClient,
-          Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
-          Effect.provide(HttpCache.layerInMemory(cache)),
-        )
+    test.failing.prop([fc.url(), fc.statusCode().filter(status => status !== StatusCodes.OK)])(
+      'with a response that does not have a 200 status code',
+      (url, status) =>
+        Effect.gen(function* () {
+          const cache = new Map()
+          const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response(null, { status }))
+          const client = yield* pipe(
+            _.CachingHttpClient,
+            Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
+            Effect.provide(HttpCache.layerInMemory(cache)),
+          )
 
-        const actualResponse = yield* client.get(url)
+          const actualResponse = yield* client.get(url)
 
-        expect(actualResponse).toStrictEqual(response)
-        expect(cache.size).toBe(0)
-      }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
+          expect(actualResponse).toStrictEqual(response)
+          expect(cache.size).toBe(0)
+        }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
     )
   })
 })
