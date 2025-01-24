@@ -2,7 +2,7 @@ import { Headers, HttpClient, HttpClientRequest, UrlParams } from '@effect/platf
 import { Context, Data, Effect, Layer, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { CachingHttpClient } from './CachingHttpClient.js'
+import { CachingHttpClient } from './CachingHttpClient/index.js'
 import { getPageWithEffect, GhostApi } from './ghost.js'
 import type { Html } from './html.js'
 

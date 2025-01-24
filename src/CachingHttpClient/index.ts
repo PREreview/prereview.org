@@ -7,7 +7,7 @@ import {
 } from '@effect/platform'
 import { diff } from 'deep-object-diff'
 import { DateTime, Effect, Option, pipe, type Scope } from 'effect'
-import * as HttpCache from './HttpCache.js'
+import * as HttpCache from '../HttpCache.js'
 
 export const CachingHttpClient: Effect.Effect<
   HttpClient.HttpClient,
