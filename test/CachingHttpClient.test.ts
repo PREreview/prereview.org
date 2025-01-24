@@ -70,6 +70,21 @@ describe('there is no cache entry', () => {
 
     test.todo('with a network error')
 
-    test.todo('with an unexpected response')
+    test.failing.prop([fc.url()])('with a response that does not have a 200 status code', url =>
+      Effect.gen(function* () {
+        const cache = new Map()
+        const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response(null, { status: 404 }))
+        const client = yield* pipe(
+          _.CachingHttpClient,
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
+          Effect.provide(HttpCache.layerInMemory(cache)),
+        )
+
+        const actualResponse = yield* client.get(url)
+
+        expect(actualResponse).toStrictEqual(response)
+        expect(cache.size).toBe(0)
+      }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
   })
 })
