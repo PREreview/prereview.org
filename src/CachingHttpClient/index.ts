@@ -6,8 +6,9 @@ import {
   type HttpClientResponse,
 } from '@effect/platform'
 import { DateTime, Effect, Option, pipe, type Scope } from 'effect'
-import * as HttpCache from '../HttpCache.js'
-import { serializationErrorChecking } from './SerializationErrorChecking.js'
+import * as HttpCache from './HttpCache.js'
+
+export * from './HttpCache.js'
 
 export const CachingHttpClient: Effect.Effect<
   HttpClient.HttpClient,
@@ -15,7 +16,7 @@ export const CachingHttpClient: Effect.Effect<
   HttpCache.HttpCache | HttpClient.HttpClient
 > = Effect.gen(function* () {
   const httpClient = yield* HttpClient.HttpClient
-  const cache = yield* HttpCache.HttpCache.pipe(Effect.andThen(serializationErrorChecking))
+  const cache = yield* HttpCache.HttpCache
 
   const cachingBehaviour = (
     request: Effect.Effect<HttpClientRequest.HttpClientRequest>,

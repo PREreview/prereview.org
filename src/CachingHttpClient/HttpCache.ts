@@ -1,6 +1,7 @@
 import { Headers, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
 import { Cause, Context, Effect, Layer, Option, pipe, Schema, type DateTime } from 'effect'
-import * as Redis from './Redis.js'
+import * as Redis from '../Redis.js'
+import { serializationErrorChecking } from './SerializationErrorChecking.js'
 
 interface CacheValue {
   staleAt: DateTime.Utc
@@ -43,43 +44,46 @@ export const layerPersistedToRedis = Layer.effect(
   Effect.gen(function* () {
     const redis = yield* Redis.HttpCacheRedis
 
-    return {
-      get: request =>
-        pipe(
-          Effect.tryPromise(() => redis.get(keyForRequest(request))),
-          Effect.andThen(Option.fromNullable),
-          Effect.andThen(Schema.decode(CacheValueFromStringSchema)),
-          Effect.map(({ staleAt, response }) => ({
-            staleAt,
-            response: HttpClientResponse.fromWeb(
-              request,
-              new Response(response.body, {
-                status: response.status,
-                headers: Headers.fromInput(response.headers),
-              }),
-            ),
-          })),
-          Effect.mapError(() => new Cause.NoSuchElementException()),
-        ),
-      set: (response, staleAt) =>
-        pipe(
-          Effect.gen(function* () {
-            return {
+    return pipe(
+      {
+        get: request =>
+          pipe(
+            Effect.tryPromise(() => redis.get(keyForRequest(request))),
+            Effect.andThen(Option.fromNullable),
+            Effect.andThen(Schema.decode(CacheValueFromStringSchema)),
+            Effect.map(({ staleAt, response }) => ({
               staleAt,
-              response: {
-                status: response.status,
-                headers: response.headers,
-                body: yield* response.text,
-              },
-            }
-          }),
-          Effect.andThen(Schema.encode(CacheValueFromStringSchema)),
-          Effect.andThen(value => {
-            return redis.set(keyForRequest(response.request), value)
-          }),
-        ),
-      delete: () => Effect.void,
-    }
+              response: HttpClientResponse.fromWeb(
+                request,
+                new Response(response.body, {
+                  status: response.status,
+                  headers: Headers.fromInput(response.headers),
+                }),
+              ),
+            })),
+            Effect.mapError(() => new Cause.NoSuchElementException()),
+          ),
+        set: (response, staleAt) =>
+          pipe(
+            Effect.gen(function* () {
+              return {
+                staleAt,
+                response: {
+                  status: response.status,
+                  headers: response.headers,
+                  body: yield* response.text,
+                },
+              }
+            }),
+            Effect.andThen(Schema.encode(CacheValueFromStringSchema)),
+            Effect.andThen(value => {
+              return redis.set(keyForRequest(response.request), value)
+            }),
+          ),
+        delete: () => Effect.void,
+      },
+      serializationErrorChecking,
+    )
   }),
 )
 

@@ -5,13 +5,13 @@ import { Config, Effect, Function, Layer, Logger, LogLevel, Schema } from 'effec
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
 import fetch from 'make-fetch-happen'
+import * as CachingHttpClient from './CachingHttpClient/index.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
 import * as FeatureFlags from './feature-flags.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { GhostApi } from './ghost.js'
-import * as HttpCache from './HttpCache.js'
 import * as Nodemailer from './nodemailer.js'
 import { Program } from './Program.js'
 import { PublicUrl } from './public-url.js'
@@ -23,13 +23,13 @@ pipe(
   Program,
   Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
-  Effect.provide(HttpCache.layerInMemory()),
+  Effect.provide(CachingHttpClient.layerInMemory()),
   Effect.provide(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
       Layer.effect(ExpressConfig, ExpressConfigLive),
       NodeHttpClient.layer,
-      HttpCache.layerPersistedToRedis,
+      CachingHttpClient.layerPersistedToRedis,
       Layer.effect(
         FetchHttpClient.Fetch,
         Effect.gen(function* () {

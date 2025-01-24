@@ -4,7 +4,6 @@ import { describe, expect } from '@jest/globals'
 import { type Duration, Effect, Either, Fiber, Option, pipe, TestClock, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as _ from '../src/CachingHttpClient/index.js'
-import * as HttpCache from '../src/HttpCache.js'
 import * as fc from './fc.js'
 
 const stubbedClient = (
@@ -27,7 +26,7 @@ describe('there is no cache entry', () => {
         const client = yield* pipe(
           _.CachingHttpClient,
           Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse)),
-          Effect.provide(HttpCache.layerInMemory(cache)),
+          Effect.provide(_.layerInMemory(cache)),
         )
 
         const actualResponse = yield* client.get(url)
@@ -42,7 +41,7 @@ describe('there is no cache entry', () => {
         const client = yield* pipe(
           _.CachingHttpClient,
           Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse)),
-          Effect.provideService(HttpCache.HttpCache, {
+          Effect.provideService(_.HttpCache, {
             get: () => Option.none(),
             set: () => Effect.fail(error),
             delete: () => Effect.void,
@@ -62,7 +61,7 @@ describe('there is no cache entry', () => {
         const client = yield* pipe(
           _.CachingHttpClient,
           Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse, '3 seconds')),
-          Effect.provide(HttpCache.layerInMemory(cache)),
+          Effect.provide(_.layerInMemory(cache)),
         )
 
         const fiber = yield* pipe(client.get(url), Effect.either, Effect.fork)
@@ -81,7 +80,7 @@ describe('there is no cache entry', () => {
         const client = yield* pipe(
           _.CachingHttpClient,
           Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
-          Effect.provide(HttpCache.layerInMemory(cache)),
+          Effect.provide(_.layerInMemory(cache)),
         )
 
         const actualResponse = yield* Effect.either(client.get(url))
@@ -100,7 +99,7 @@ describe('there is no cache entry', () => {
           const client = yield* pipe(
             _.CachingHttpClient,
             Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
-            Effect.provide(HttpCache.layerInMemory(cache)),
+            Effect.provide(_.layerInMemory(cache)),
           )
 
           const actualResponse = yield* client.get(url)
