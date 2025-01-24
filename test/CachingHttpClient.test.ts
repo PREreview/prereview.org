@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import { HttpClient, HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { type Duration, Effect, Either, Fiber, Option, pipe, TestClock, TestContext } from 'effect'
@@ -12,6 +12,11 @@ const stubbedClient = (
   responseDuration: Duration.DurationInput = 0,
 ): HttpClient.HttpClient.With<never, never> =>
   HttpClient.makeWith(() => Effect.succeed(response).pipe(Effect.delay(responseDuration)), Effect.succeed)
+
+const stubbedFailingClient = (
+  error: HttpClientError.HttpClientError,
+): HttpClient.HttpClient.With<HttpClientError.HttpClientError, never> =>
+  HttpClient.makeWith(() => Effect.fail(error), Effect.succeed)
 
 describe('there is no cache entry', () => {
   describe('the request succeeds', () => {
@@ -69,7 +74,22 @@ describe('there is no cache entry', () => {
       }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
     )
 
-    test.todo('with a network error')
+    test.prop([fc.url()])('with a network error', url =>
+      Effect.gen(function* () {
+        const cache = new Map()
+        const error = new HttpClientError.RequestError({ request: HttpClientRequest.get(url), reason: 'Transport' })
+        const client = yield* pipe(
+          _.CachingHttpClient,
+          Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
+          Effect.provide(HttpCache.layerInMemory(cache)),
+        )
+
+        const actualResponse = yield* Effect.either(client.get(url))
+
+        expect(actualResponse).toStrictEqual(Either.left(error))
+        expect(cache.size).toBe(0)
+      }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
 
     test.failing.prop([fc.url(), fc.statusCode().filter(status => status !== StatusCodes.OK)])(
       'with a response that does not have a 200 status code',
