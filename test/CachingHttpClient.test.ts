@@ -1,13 +1,16 @@
 import { HttpClient, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Option, pipe, TestContext } from 'effect'
+import { type Duration, Effect, Either, Fiber, Option, pipe, TestClock, TestContext } from 'effect'
 import * as _ from '../src/CachingHttpClient/index.js'
 import * as HttpCache from '../src/HttpCache.js'
 import * as fc from './fc.js'
 
-const stubbedClient = (response: HttpClientResponse.HttpClientResponse): HttpClient.HttpClient.With<never, never> =>
-  HttpClient.makeWith(() => Effect.succeed(response), Effect.succeed)
+const stubbedClient = (
+  response: HttpClientResponse.HttpClientResponse,
+  responseDuration: Duration.DurationInput = 0,
+): HttpClient.HttpClient.With<never, never> =>
+  HttpClient.makeWith(() => Effect.succeed(response).pipe(Effect.delay(responseDuration)), Effect.succeed)
 
 describe('there is no cache entry', () => {
   describe('the request succeeds', () => {
@@ -46,7 +49,24 @@ describe('there is no cache entry', () => {
   })
 
   describe('the request fails', () => {
-    test.todo('with a timeout')
+    test.prop([fc.url()])('with a timeout', url =>
+      Effect.gen(function* () {
+        const cache = new Map()
+        const successfulResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
+        const client = yield* pipe(
+          _.CachingHttpClient,
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse, '3 seconds')),
+          Effect.provide(HttpCache.layerInMemory(cache)),
+        )
+
+        const fiber = yield* pipe(client.get(url), Effect.either, Effect.fork)
+        yield* TestClock.adjust('3 seconds')
+        const actualResponse = yield* Fiber.join(fiber)
+
+        expect(actualResponse).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'RequestError' })))
+        expect(cache.size).toBe(0)
+      }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
 
     test.todo('with a network error')
 
