@@ -11,14 +11,14 @@ const stubbedClient = (response: HttpClientResponse.HttpClientResponse): HttpCli
 
 describe('there is no cache entry', () => {
   describe('the request succeeds', () => {
-    test.failing.prop([fc.url()])('able to cache it', url =>
+    test.prop([fc.url()])('able to cache it', url =>
       Effect.gen(function* () {
         const cache = new Map()
         const successfulResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
         const client = yield* pipe(
           _.CachingHttpClient,
           Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse)),
-          Effect.provide(HttpCache.layerInMemory),
+          Effect.provide(HttpCache.layerInMemory(cache)),
         )
 
         const actualResponse = yield* client.get(url)

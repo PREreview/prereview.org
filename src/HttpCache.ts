@@ -83,41 +83,41 @@ export const layerPersistedToRedis = Layer.effect(
   }),
 )
 
-export const layerInMemory = Layer.sync(HttpCache, () => {
-  const cache = new Map<CacheKey, CacheValue>()
-  return {
-    get: request =>
-      pipe(
-        cache.get(keyForRequest(request)),
-        Option.fromNullable,
-        Option.map(({ staleAt, response }) => ({
-          staleAt,
-          response: HttpClientResponse.fromWeb(
-            request,
-            new Response(response.body, {
+export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
+  Layer.sync(HttpCache, () => {
+    return {
+      get: request =>
+        pipe(
+          cache.get(keyForRequest(request)),
+          Option.fromNullable,
+          Option.map(({ staleAt, response }) => ({
+            staleAt,
+            response: HttpClientResponse.fromWeb(
+              request,
+              new Response(response.body, {
+                status: response.status,
+                headers: Headers.fromInput(response.headers),
+              }),
+            ),
+          })),
+        ),
+      set: (response, staleAt) =>
+        pipe(
+          Effect.gen(function* () {
+            return {
               status: response.status,
-              headers: Headers.fromInput(response.headers),
-            }),
-          ),
-        })),
-      ),
-    set: (response, staleAt) =>
-      pipe(
-        Effect.gen(function* () {
-          return {
-            status: response.status,
-            headers: response.headers,
-            body: yield* response.text,
-          }
-        }),
-        Effect.andThen(Schema.encode(StoredResponseSchema)),
-        Effect.andThen(storedResponse => {
-          cache.set(keyForRequest(response.request), { staleAt, response: storedResponse })
-        }),
-      ),
-    delete: url => Effect.succeed(cache.delete(url.href)),
-  }
-})
+              headers: response.headers,
+              body: yield* response.text,
+            }
+          }),
+          Effect.andThen(Schema.encode(StoredResponseSchema)),
+          Effect.andThen(storedResponse => {
+            cache.set(keyForRequest(response.request), { staleAt, response: storedResponse })
+          }),
+        ),
+      delete: url => Effect.succeed(cache.delete(url.href)),
+    }
+  })
 
 const keyForRequest = (request: HttpClientRequest.HttpClientRequest): CacheKey => {
   const url = new URL(request.url)
