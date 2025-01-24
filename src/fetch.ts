@@ -1,9 +1,18 @@
-import { Duration } from 'effect'
+import {
+  HttpBody,
+  type HttpClient,
+  type HttpClientError,
+  HttpClientRequest,
+  type HttpClientResponse,
+  HttpMethod,
+} from '@effect/platform'
+import { Duration, Effect, flow, pipe, Runtime } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import { constVoid } from 'fp-ts/lib/function.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import * as L from 'logger-fp-ts'
+import { CachingHttpClient, type HttpCache } from './CachingHttpClient/index.js'
 
 export interface SleepEnv {
   readonly sleep: (duration: number) => T.Task<void>
@@ -125,3 +134,50 @@ export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(): (env: E) => E {
     },
   })
 }
+
+export const makeFetch: Effect.Effect<typeof globalThis.fetch, never, HttpClient.HttpClient | HttpCache> = Effect.gen(
+  function* () {
+    const client = yield* CachingHttpClient
+    const runtime = yield* Effect.runtime()
+
+    return flow(
+      convertRequest,
+      Effect.andThen(client.execute),
+      Effect.andThen(convertResponse),
+      Effect.scoped,
+      Runtime.runPromise(runtime),
+    )
+  },
+)
+
+const convertRequest = (
+  input: string | URL | globalThis.Request,
+  init?: RequestInit,
+): Effect.Effect<HttpClientRequest.HttpClientRequest, Error> =>
+  Effect.gen(function* () {
+    const request = new Request(input, init)
+    const method = request.method
+
+    if (!HttpMethod.isHttpMethod(method)) {
+      return yield* Effect.fail(new Error('Unsupported method'))
+    }
+
+    if (HttpMethod.hasBody(method)) {
+      return HttpClientRequest.make(method)(request.url, { headers: request.headers })
+    }
+
+    const body = yield* Effect.tryPromise({
+      try: () => request.text().then(HttpBody.text),
+      catch: () => new Error('Unable to read body'),
+    })
+
+    return HttpClientRequest.make(method)(request.url, { headers: request.headers, body })
+  })
+
+const convertResponse = (
+  response: HttpClientResponse.HttpClientResponse,
+): Effect.Effect<Response, HttpClientError.ResponseError> =>
+  pipe(
+    response.text,
+    Effect.andThen(body => new Response(body, { headers: response.headers, status: response.status })),
+  )

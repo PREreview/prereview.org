@@ -1,4 +1,3 @@
-import { FetchHttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
 import { Duration, Effect, Redacted } from 'effect'
 import Keyv from 'keyv'
@@ -15,7 +14,6 @@ import { GenerateUuid } from './types/uuid.js'
 
 export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig
-  const fetch = yield* FetchHttpClient.Fetch
   const { clock } = yield* DeprecatedLoggerEnv
   const sleep = yield* DeprecatedSleepEnv
   const canWriteComments = yield* CanWriteComments
@@ -30,7 +28,6 @@ export const expressServer = Effect.gen(function* () {
   return app({
     canWriteComments,
     clock,
-    fetch,
     generateUuid,
     ghostApi,
     nodemailer,

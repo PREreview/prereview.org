@@ -1,10 +1,8 @@
-import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { Config, Effect, Function, Layer, Logger, LogLevel, Schema } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { createServer } from 'http'
-import fetch from 'make-fetch-happen'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
@@ -17,32 +15,16 @@ import { Program } from './Program.js'
 import { PublicUrl } from './public-url.js'
 import * as Redis from './Redis.js'
 import * as TemplatePage from './TemplatePage.js'
-import { verifyCache } from './VerifyCache.js'
 
 pipe(
   Program,
-  Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
-  Effect.provide(CachingHttpClient.layerInMemory()),
   Effect.provide(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
       Layer.effect(ExpressConfig, ExpressConfigLive),
       NodeHttpClient.layer,
       CachingHttpClient.layerPersistedToRedis,
-      Layer.effect(
-        FetchHttpClient.Fetch,
-        Effect.gen(function* () {
-          const publicUrl = yield* PublicUrl
-
-          return fetch.defaults({
-            cachePath: 'data/cache',
-            headers: {
-              'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
-            },
-          }) as unknown as typeof globalThis.fetch
-        }),
-      ),
     ),
   ),
   Effect.provide(
@@ -79,6 +61,7 @@ pipe(
       Layer.effect(SessionSecret, Config.redacted('SECRET')),
     ),
   ),
+  Effect.withTracerEnabled(false),
   Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.provide(Logger.replaceEffect(Logger.defaultLogger, DeprecatedLogger)),
   Effect.provideServiceEffect(DeprecatedLoggerEnv, makeDeprecatedLoggerEnv),

@@ -1,5 +1,6 @@
 import express from 'express'
 import asyncHandler from 'express-async-handler'
+import type * as F from 'fetch-fp-ts'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import { apply, pipe } from 'fp-ts/lib/function.js'
@@ -29,6 +30,7 @@ export type ConfigEnv = Omit<
   RouterEnv & LegacyEnv,
   | 'doesPreprintExist'
   | 'resolvePreprintId'
+  | 'fetch'
   | 'getPreprintId'
   | 'getUser'
   | 'getUserOnboarding'
@@ -112,11 +114,13 @@ export const app = (config: ConfigEnv) => {
   return ({
     locale,
     logger,
+    fetch,
     runtime,
     user,
   }: {
     locale: SupportedLocale
     logger: L.Logger
+    fetch: F.Fetch
     runtime: RouterEnv['runtime']
     user?: User
   }) => {
@@ -148,23 +152,28 @@ export const app = (config: ConfigEnv) => {
         asyncHandler((req, res, next) => {
           return pipe(
             appMiddleware,
-            R.local((env: ConfigEnv & L.LoggerEnv & { runtime: RouterEnv['runtime'] }): RouterEnv & LegacyEnv => ({
-              ...env,
-              doesPreprintExist: withEnv(doesPreprintExist, env),
-              getUser: () => (user ? M.of(user) : M.left('no-session')),
-              getUserOnboarding: withEnv(getUserOnboarding, env),
-              getPageFromGhost: withEnv(getPage, env),
-              getPreprint: withEnv(getPreprint, env),
-              getPreprintTitle: withEnv(getPreprintTitle, env),
-              locale,
-              getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
-              getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
-              getPreprintId: withEnv(getPreprintId, env),
-              resolvePreprintId: withEnv(resolvePreprintId, env),
-              sendEmail: withEnv(sendEmailWithNodemailer, env),
-            })),
-            R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: RouterEnv['runtime'] } => ({
+            R.local(
+              (
+                env: ConfigEnv & L.LoggerEnv & { runtime: RouterEnv['runtime'] } & F.FetchEnv,
+              ): RouterEnv & LegacyEnv => ({
+                ...env,
+                doesPreprintExist: withEnv(doesPreprintExist, env),
+                getUser: () => (user ? M.of(user) : M.left('no-session')),
+                getUserOnboarding: withEnv(getUserOnboarding, env),
+                getPageFromGhost: withEnv(getPage, env),
+                getPreprint: withEnv(getPreprint, env),
+                getPreprintTitle: withEnv(getPreprintTitle, env),
+                locale,
+                getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
+                getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
+                getPreprintId: withEnv(getPreprintId, env),
+                resolvePreprintId: withEnv(resolvePreprintId, env),
+                sendEmail: withEnv(sendEmailWithNodemailer, env),
+              }),
+            ),
+            R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: RouterEnv['runtime'] } & F.FetchEnv => ({
               ...appEnv,
+              fetch,
               logger,
               runtime,
             })),

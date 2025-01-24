@@ -1,4 +1,4 @@
-import { FetchHttpClient } from '@effect/platform'
+import { Headers, HttpClient, HttpClientRequest, UrlParams } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
@@ -8,7 +8,7 @@ import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from '
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
-import { collapseRequests, logFetch } from './fetch.js'
+import { makeFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import * as GhostPage from './GhostPage.js'
@@ -30,7 +30,7 @@ const getPrereview = Layer.effect(
   Prereview.GetPrereview,
   Effect.gen(function* () {
     const { wasPrereviewRemoved, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
-    const fetch = yield* FetchHttpClient.Fetch
+    const fetch = yield* makeFetch
     const logger = yield* DeprecatedLoggerEnv
     const getPreprintService = yield* Preprint.GetPreprint
     const sleep = yield* DeprecatedSleepEnv
@@ -186,7 +186,7 @@ const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
     const { legacyPrereviewApi, orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
-    const fetch = yield* FetchHttpClient.Fetch
+    const fetch = yield* makeFetch
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
     const sleep = yield* DeprecatedSleepEnv
@@ -271,7 +271,7 @@ const publishComment = Layer.effect(
   Comments.PublishCommentOnZenodo,
   Effect.gen(function* () {
     const { zenodoApiKey, zenodoUrl } = yield* ExpressConfig
-    const fetch = yield* FetchHttpClient.Fetch
+    const fetch = yield* makeFetch
     const logger = yield* DeprecatedLoggerEnv
 
     return comment =>
@@ -307,7 +307,7 @@ const commentEvents = Layer.scoped(
 const getPreprint = Layer.effect(
   Preprint.GetPreprint,
   Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
+    const fetch = yield* makeFetch
     const sleep = yield* DeprecatedSleepEnv
 
     return id =>
@@ -326,12 +326,49 @@ const getPreprint = Layer.effect(
 )
 
 const setUpFetch = Layer.effect(
-  FetchHttpClient.Fetch,
+  HttpClient.HttpClient,
   Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const logger = yield* DeprecatedLoggerEnv
-
-    return pipe({ fetch, ...logger }, logFetch(), collapseRequests()).fetch
+    const client = yield* HttpClient.HttpClient
+    return pipe(
+      client,
+      HttpClient.mapRequest(
+        HttpClientRequest.setHeaders({
+          'User-Agent': 'PREreview (https://prereview.org/; mailto:engineering@prereview.org)',
+        }),
+      ),
+      HttpClient.tapRequest(request =>
+        Effect.logDebug('Sending HTTP Request').pipe(
+          Effect.annotateLogs({
+            headers: Headers.redact(request.headers, 'authorization'),
+            url: request.url,
+            urlParams: UrlParams.toString(request.urlParams),
+            method: request.method,
+          }),
+        ),
+      ),
+      HttpClient.tap(response =>
+        Effect.logDebug('Received HTTP response').pipe(
+          Effect.annotateLogs({
+            status: response.status,
+            headers: response.headers,
+            url: response.request.url,
+            urlParams: UrlParams.toString(response.request.urlParams),
+            method: response.request.method,
+          }),
+        ),
+      ),
+      HttpClient.tapError(error =>
+        Effect.logError('Error sending HTTP request').pipe(
+          Effect.annotateLogs({
+            reason: error.reason,
+            error: error.cause,
+            url: error.request.url,
+            urlParams: UrlParams.toString(error.request.urlParams),
+            method: error.request.method,
+          }),
+        ),
+      ),
+    )
   }),
 )
 
