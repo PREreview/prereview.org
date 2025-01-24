@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, pipe, TestContext } from 'effect'
+import { Effect, Option, pipe, TestContext } from 'effect'
 import * as _ from '../src/CachingHttpClient/index.js'
 import * as HttpCache from '../src/HttpCache.js'
 import * as fc from './fc.js'
@@ -27,7 +27,22 @@ describe('there is no cache entry', () => {
       }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
     )
 
-    test.todo('not able to cache it')
+    test.prop([fc.url(), fc.error()])('not able to cache it', (url, error) =>
+      Effect.gen(function* () {
+        const successfulResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
+        const client = yield* pipe(
+          _.CachingHttpClient,
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse)),
+          Effect.provideService(HttpCache.HttpCache, {
+            get: () => Option.none(),
+            set: () => Effect.fail(error),
+            delete: () => Effect.void,
+          }),
+        )
+        const actualResponse = yield* client.get(url)
+        expect(actualResponse).toStrictEqual(successfulResponse)
+      }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
   })
 
   describe('the request fails', () => {
