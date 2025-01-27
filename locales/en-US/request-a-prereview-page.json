@@ -1,0 +1,17 @@
+{
+  "unsupportedUrlTitle": {
+    "message": "Sorry, we don’t support this URL"
+  },
+  "supportPreprintsFrom": {
+    "message": "We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research Square, SciELO, ScienceOpen, SocArXiv, TechRxiv and Zenodo."
+  },
+  "urlContactUs": {
+    "message": "If this URL is for a preprint on a server we don’t support, please <contact>get in touch</contact>."
+  },
+  "tryDoi": {
+    "message": "Otherwise, if the preprint has a DOI, please try using that instead."
+  },
+  "back": {
+    "message": "Back"
+  }
+}

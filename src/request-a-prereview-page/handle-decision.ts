@@ -13,10 +13,7 @@ import { unsupportedDoiPage } from './unsupported-doi-page.js'
 import { unsupportedPreprintPage } from './unsupported-preprint-page.js'
 import { unsupportedUrlPage } from './unsupported-url-page.js'
 
-export const handleDecision = (
-  decision: Decision.Decision,
-  locale: SupportedLocale, // eslint-disable-line @typescript-eslint/no-unused-vars
-): Response.Response =>
+export const handleDecision = (decision: Decision.Decision, locale: SupportedLocale): Response.Response =>
   match(decision)
     .with({ _tag: 'BeginFlow', preprint: P.select() }, preprint =>
       Response.RedirectResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
@@ -28,6 +25,6 @@ export const handleDecision = (
     .with({ _tag: 'ShowUnknownPreprint', preprint: P.select() }, unknownPreprintPage)
     .with({ _tag: 'ShowUnsupportedDoi' }, () => unsupportedDoiPage)
     .with({ _tag: 'ShowUnsupportedPreprint', preprint: P.select() }, unsupportedPreprintPage)
-    .with({ _tag: 'ShowUnsupportedUrl' }, () => unsupportedUrlPage)
+    .with({ _tag: 'ShowUnsupportedUrl' }, () => unsupportedUrlPage(locale))
     .with({ _tag: 'ShowEmptyForm' }, () => requestAPrereviewPage(Form.EmptyForm))
     .exhaustive()
