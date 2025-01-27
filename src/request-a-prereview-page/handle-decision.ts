@@ -24,7 +24,7 @@ export const handleDecision = (decision: Decision.Decision, locale: SupportedLoc
     .with({ _tag: 'ShowNotAPreprint' }, () => notAPreprintPage)
     .with({ _tag: 'ShowUnknownPreprint', preprint: P.select() }, unknownPreprintPage)
     .with({ _tag: 'ShowUnsupportedDoi' }, () => unsupportedDoiPage(locale))
-    .with({ _tag: 'ShowUnsupportedPreprint', preprint: P.select() }, unsupportedPreprintPage)
+    .with({ _tag: 'ShowUnsupportedPreprint' }, ({ preprint }) => unsupportedPreprintPage(preprint, locale))
     .with({ _tag: 'ShowUnsupportedUrl' }, () => unsupportedUrlPage(locale))
     .with({ _tag: 'ShowEmptyForm' }, () => requestAPrereviewPage(Form.EmptyForm))
     .exhaustive()

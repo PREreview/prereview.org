@@ -1,9 +1,15 @@
 {
+  "unsupportedPreprintTitle": {
+    "message": "Sorry, we don’t support requests for this preprint"
+  },
   "unsupportedDoiTitle": {
     "message": "Sorry, we don’t support this DOI"
   },
   "unsupportedUrlTitle": {
     "message": "Sorry, we don’t support this URL"
+  },
+  "unsupportedPreprintMessage": {
+    "message": "We don’t support requests for this {server} preprint yet."
   },
   "supportPreprintsFrom": {
     "message": "We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research Square, SciELO, ScienceOpen, SocArXiv, TechRxiv and Zenodo."
