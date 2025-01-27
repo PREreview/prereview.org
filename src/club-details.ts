@@ -235,6 +235,22 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Timo Betz', orcid: Orcid('0000-0002-1548-0655') }],
   },
+  emerge: {
+    name: 'EMERGE, A Matrix for Ethnographic Collaboration and Practice',
+    description: html`
+      <p>
+        EMERGE is a distributed project with ethnography research spaces based in Canada and the United States, with
+        collaborators undertaking work around the world. It is supported by a Partnership Development Grant from the
+        Social Sciences and Humanities Research Council of Canada.
+      </p>
+      <p>
+        In 2025, EMERGE research spaces are experimenting with open peer review of manuscripts prior to journal
+        submission. Looking ahead, we see review of preprints by researchers outside of EMERGE as an avenue for further
+        internationalizing the project.
+      </p>
+    `,
+    leads: [{ name: 'Marcel LaFlamme', orcid: Orcid('0000-0002-7489-4233') }],
+  },
   'etymos-analytica': {
     name: 'Etymos Analytica',
     description: html`<p>A research consortium for students of Government Medical college.</p>`,

@@ -16,6 +16,7 @@ export const clubIds = [
   'biophysics-leipzig',
   'bios2',
   'cara',
+  'emerge',
   'etymos-analytica',
   'hhmi-training-pilot',
   'iib-mar-del-plata',
