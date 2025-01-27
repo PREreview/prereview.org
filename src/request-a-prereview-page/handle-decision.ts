@@ -1,6 +1,7 @@
 import { format } from 'fp-ts-routing'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
+import type { SupportedLocale } from '../locales/index.js'
 import * as Response from '../response.js'
 import { requestReviewMatch } from '../routes.js'
 import type * as Decision from './decision.js'
@@ -12,7 +13,10 @@ import { unsupportedDoiPage } from './unsupported-doi-page.js'
 import { unsupportedPreprintPage } from './unsupported-preprint-page.js'
 import { unsupportedUrlPage } from './unsupported-url-page.js'
 
-export const handleDecision = (decision: Decision.Decision): Response.Response =>
+export const handleDecision = (
+  decision: Decision.Decision,
+  locale: SupportedLocale, // eslint-disable-line @typescript-eslint/no-unused-vars
+): Response.Response =>
   match(decision)
     .with({ _tag: 'BeginFlow', preprint: P.select() }, preprint =>
       Response.RedirectResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),

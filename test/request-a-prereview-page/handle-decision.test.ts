@@ -7,8 +7,8 @@ import { requestAPrereviewMatch, requestReviewMatch } from '../../src/routes.js'
 import * as fc from './fc.js'
 
 describe('handleDecision', () => {
-  test.prop([fc.reviewRequestPreprintId()])('with a BeginFlow decision', preprint => {
-    const actual = _.handleDecision({ _tag: 'BeginFlow', preprint })
+  test.prop([fc.reviewRequestPreprintId(), fc.supportedLocale()])('with a BeginFlow decision', (preprint, locale) => {
+    const actual = _.handleDecision({ _tag: 'BeginFlow', preprint }, locale)
 
     expect(actual).toStrictEqual({
       _tag: 'RedirectResponse',
@@ -17,8 +17,8 @@ describe('handleDecision', () => {
     })
   })
 
-  test('with a DenyAccess decision', () => {
-    const actual = _.handleDecision({ _tag: 'DenyAccess' })
+  test.prop([fc.supportedLocale()])('with a DenyAccess decision', locale => {
+    const actual = _.handleDecision({ _tag: 'DenyAccess' }, locale)
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -30,8 +30,8 @@ describe('handleDecision', () => {
     })
   })
 
-  test('with a ShowError decision', () => {
-    const actual = _.handleDecision({ _tag: 'ShowError' })
+  test.prop([fc.supportedLocale()])('with a ShowError decision', locale => {
+    const actual = _.handleDecision({ _tag: 'ShowError' }, locale)
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -43,8 +43,8 @@ describe('handleDecision', () => {
     })
   })
 
-  test('with a ShowNotAPreprint decision', () => {
-    const actual = _.handleDecision({ _tag: 'ShowNotAPreprint' })
+  test.prop([fc.supportedLocale()])('with a ShowNotAPreprint decision', locale => {
+    const actual = _.handleDecision({ _tag: 'ShowNotAPreprint' }, locale)
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -56,8 +56,24 @@ describe('handleDecision', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId()])('with a ShowUnknownPreprint decision', preprint => {
-    const actual = _.handleDecision({ _tag: 'ShowUnknownPreprint', preprint })
+  test.prop([fc.indeterminatePreprintId(), fc.supportedLocale()])(
+    'with a ShowUnknownPreprint decision',
+    (preprint, locale) => {
+      const actual = _.handleDecision({ _tag: 'ShowUnknownPreprint', preprint }, locale)
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.BadRequest,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
+
+  test.prop([fc.preprintId(), fc.supportedLocale()])('with a ShowUnsupportedPreprint decision', (preprint, locale) => {
+    const actual = _.handleDecision({ _tag: 'ShowUnsupportedPreprint', preprint }, locale)
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -69,8 +85,8 @@ describe('handleDecision', () => {
     })
   })
 
-  test.prop([fc.preprintId()])('with a ShowUnsupportedPreprint decision', preprint => {
-    const actual = _.handleDecision({ _tag: 'ShowUnsupportedPreprint', preprint })
+  test.prop([fc.supportedLocale()])('with a ShowUnsupportedDoi decision', locale => {
+    const actual = _.handleDecision({ _tag: 'ShowUnsupportedDoi' }, locale)
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -82,8 +98,8 @@ describe('handleDecision', () => {
     })
   })
 
-  test('with a ShowUnsupportedDoi decision', () => {
-    const actual = _.handleDecision({ _tag: 'ShowUnsupportedDoi' })
+  test.prop([fc.supportedLocale()])('with a ShowUnsupportedUrl decision', locale => {
+    const actual = _.handleDecision({ _tag: 'ShowUnsupportedUrl' }, locale)
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -95,21 +111,8 @@ describe('handleDecision', () => {
     })
   })
 
-  test('with a ShowUnsupportedUrl decision', () => {
-    const actual = _.handleDecision({ _tag: 'ShowUnsupportedUrl' })
-
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.BadRequest,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
-
-  test.prop([fc.invalidForm()])('with an ShowFormWithErrors decision', form => {
-    const actual = _.handleDecision({ _tag: 'ShowFormWithErrors', form })
+  test.prop([fc.invalidForm(), fc.supportedLocale()])('with an ShowFormWithErrors decision', (form, locale) => {
+    const actual = _.handleDecision({ _tag: 'ShowFormWithErrors', form }, locale)
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -123,8 +126,8 @@ describe('handleDecision', () => {
     })
   })
 
-  test('with an ShowEmptyForm decision', () => {
-    const actual = _.handleDecision({ _tag: 'ShowEmptyForm' })
+  test.prop([fc.supportedLocale()])('with an ShowEmptyForm decision', locale => {
+    const actual = _.handleDecision({ _tag: 'ShowEmptyForm' }, locale)
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
