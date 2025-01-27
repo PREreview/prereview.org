@@ -18,6 +18,7 @@ export type PreprintId =
   | EcoevorxivPreprintId
   | EdarxivPreprintId
   | EngrxivPreprintId
+  | JxivPreprintId
   | MedrxivPreprintId
   | MetaarxivPreprintId
   | OsfPreprintId
@@ -115,6 +116,11 @@ export interface EdarxivPreprintId {
 export interface EngrxivPreprintId {
   readonly type: 'engrxiv'
   readonly value: Doi<'31224'>
+}
+
+export interface JxivPreprintId {
+  readonly type: 'jxiv'
+  readonly value: Doi<'51094'>
 }
 
 export interface MedrxivPreprintId {
@@ -240,6 +246,7 @@ export const isPreprintDoi: Predicate.Refinement<Doi, Extract<IndeterminatePrepr
     '35542',
     '36227',
     '48550',
+    '51094',
     '57844',
     '60763',
     '62329',
@@ -282,6 +289,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('35542'), doi => ({ type: 'edarxiv', value: doi }) satisfies EdarxivPreprintId)
     .when(hasRegistrant('36227'), doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId)
     .when(hasRegistrant('48550'), doi => ({ type: 'arxiv', value: doi }) satisfies ArxivPreprintId)
+    .when(hasRegistrant('51094'), doi => ({ type: 'jxiv', value: doi }) satisfies JxivPreprintId)
     .when(hasRegistrant('57844'), doi => ({ type: 'arcadia-science', value: doi }) satisfies ArcadiaSciencePreprintId)
     .when(hasRegistrant('60763'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivPreprintId)
     .when(hasRegistrant('62329'), doi => ({ type: 'curvenote', value: doi }) satisfies CurvenotePreprintId)

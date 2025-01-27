@@ -97,6 +97,7 @@ import {
   type EdarxivPreprintId,
   type EngrxivPreprintId,
   type IndeterminatePreprintId,
+  type JxivPreprintId,
   type MedrxivPreprintId,
   type MetaarxivPreprintId,
   type OsfPreprintId,
@@ -641,6 +642,12 @@ export const engrxivPreprintUrl = (): fc.Arbitrary<[URL, EngrxivPreprintId]> =>
       { type: 'engrxiv', value: `10.31224/${id}` as Doi<'31224'> },
     ])
 
+export const jxivPreprintId = (): fc.Arbitrary<JxivPreprintId> =>
+  fc.record({
+    type: constant('jxiv'),
+    value: doi(constant('51094')),
+  })
+
 export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
   fc.record({
     type: constant('medrxiv'),
@@ -850,6 +857,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
     engrxivPreprintId(),
+    jxivPreprintId(),
     medrxivPreprintId(),
     metaarxivPreprintId(),
     osfPreprintId(),
@@ -946,6 +954,7 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     curvenotePreprintId(),
     eartharxivPreprintId(),
     engrxivPreprintId(),
+    jxivPreprintId(),
     metaarxivPreprintId(),
     osfPreprintId(),
     philsciPreprintId(),

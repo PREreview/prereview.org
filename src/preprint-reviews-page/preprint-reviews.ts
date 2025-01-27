@@ -88,6 +88,7 @@ export const createPage = ({
                   .with('ecoevorxiv', () => 'EcoEvoRxiv')
                   .with('edarxiv', () => 'EdArXiv')
                   .with('engrxiv', () => 'engrXiv')
+                  .with('jxiv', () => 'Jxiv')
                   .with('medrxiv', () => 'medRxiv')
                   .with('metaarxiv', () => 'MetaArXiv')
                   .with('osf', () => 'OSF')

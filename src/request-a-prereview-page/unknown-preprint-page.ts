@@ -43,6 +43,7 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId) => {
                 .with('ecoevorxiv', () => 'an EcoEvoRxiv')
                 .with('edarxiv', () => 'an EdArXiv')
                 .with('engrxiv', () => 'an engrXiv')
+                .with('jxiv', () => 'a Jxiv')
                 .with('medrxiv', () => 'a medRxiv')
                 .with('metaarxiv', () => 'a MetaArXiv')
                 .with('osf', 'osf-preprints', () => 'an OSF')
