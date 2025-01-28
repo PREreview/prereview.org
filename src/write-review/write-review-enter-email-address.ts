@@ -74,8 +74,8 @@ export const writeReviewEnterEmailAddress = flow(
   ),
   RM.orElseW(error =>
     match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
+      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
+      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
       .exhaustive(),
   ),
 )

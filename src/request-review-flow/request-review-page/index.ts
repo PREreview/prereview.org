@@ -60,8 +60,8 @@ export const requestReview = ({
           .with('already-started', () =>
             RedirectResponse({ location: format(requestReviewStartMatch.formatter, { id: preprint }) }),
           )
-          .with('not-found', () => pageNotFound)
-          .with('unavailable', () => havingProblemsPage)
+          .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound)
+          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage)
           .exhaustive(),
       requestReviewPage,
     ),

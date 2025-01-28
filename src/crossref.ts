@@ -15,7 +15,7 @@ import { detectLanguage, detectLanguageFrom } from './detect-language.js'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
 import { type Html, sanitizeHtml } from './html.js'
 import { transformJatsToHtml } from './jats.js'
-import type { Preprint } from './preprint.js'
+import * as Preprint from './preprint.js'
 import type {
   AdvancePreprintId,
   AfricarxivOsfPreprintId,
@@ -94,13 +94,13 @@ export const getPreprintFromCrossref = flow(
   RTE.chainEitherKW(workToPreprint),
   RTE.mapLeft(error =>
     match(error)
-      .with({ status: Status.NotFound }, () => 'not-found' as const)
-      .with('not a preprint', () => 'not-a-preprint' as const)
-      .otherwise(() => 'unavailable' as const),
+      .with({ status: Status.NotFound }, () => new Preprint.PreprintIsNotFound())
+      .with('not a preprint', () => new Preprint.NotAPreprint())
+      .otherwise(() => new Preprint.PreprintIsUnavailable()),
   ),
 )
 
-function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> {
+function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.Preprint> {
   return pipe(
     E.Do,
     E.filterOrElse(

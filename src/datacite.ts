@@ -15,7 +15,7 @@ import { P, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language.js'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
 import { sanitizeHtml } from './html.js'
-import type { Preprint } from './preprint.js'
+import * as Preprint from './preprint.js'
 import type {
   AfricarxivFigsharePreprintId,
   AfricarxivUbuntunetPreprintId,
@@ -55,13 +55,13 @@ export const getPreprintFromDatacite = flow(
   RTE.chainEitherKW(dataciteWorkToPreprint),
   RTE.mapLeft(error =>
     match(error)
-      .with({ status: Status.NotFound }, () => 'not-found' as const)
-      .with('not a preprint', () => 'not-a-preprint' as const)
-      .otherwise(() => 'unavailable' as const),
+      .with({ status: Status.NotFound }, () => new Preprint.PreprintIsNotFound())
+      .with('not a preprint', () => new Preprint.NotAPreprint())
+      .otherwise(() => new Preprint.PreprintIsUnavailable()),
   ),
 )
 
-function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> {
+function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.Preprint> {
   return pipe(
     E.Do,
     E.filterOrElse(

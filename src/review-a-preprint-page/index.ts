@@ -90,8 +90,8 @@ const whichPreprint = flow(
         .with({ _tag: 'UnknownPreprintE', actual: P.select() }, createUnknownPreprintPage)
         .with({ _tag: 'UnsupportedDoiE' }, () => unsupportedDoiPage)
         .with({ _tag: 'UnsupportedUrlE' }, () => unsupportedUrlPage)
-        .with('not-a-preprint', () => notAPreprintPage)
-        .with('unavailable', () => failureMessage)
+        .with({ _tag: 'NotAPreprint' }, () => notAPreprintPage)
+        .with({ _tag: 'PreprintIsUnavailable' }, () => failureMessage)
         .otherwise(flow(E.left, createPage)),
     preprint => RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint }) }),
   ),

@@ -4,7 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import type { CanRequestReviewsEnv } from '../../src/feature-flags.js'
-import type { GetPreprintTitleEnv } from '../../src/preprint.js'
+import { PreprintIsNotFound, PreprintIsUnavailable, type GetPreprintTitleEnv } from '../../src/preprint.js'
 import * as _ from '../../src/request-review-flow/index.js'
 import type { GetReviewRequestEnv } from '../../src/review-request.js'
 import { requestReviewMatch, requestReviewStartMatch } from '../../src/routes.js'
@@ -70,7 +70,9 @@ describe('requestReview', () => {
         test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined })])(
           "when the preprint doesn't exist",
           async (preprint, user) => {
-            const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.left('not-found'))
+            const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
+              TE.left(new PreprintIsNotFound()),
+            )
 
             const actual = await _.requestReview({ preprint, user })({
               canRequestReviews: () => true,
@@ -93,7 +95,9 @@ describe('requestReview', () => {
         test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined })])(
           "when the preprint can't be loaded",
           async (preprint, user) => {
-            const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.left('unavailable'))
+            const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
+              TE.left(new PreprintIsUnavailable()),
+            )
 
             const actual = await _.requestReview({ preprint, user })({
               canRequestReviews: () => true,

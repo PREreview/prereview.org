@@ -72,8 +72,8 @@ export const requestReviewPersona = ({
             .with('no-session', () =>
               LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
             )
-            .with('not-found', () => pageNotFound)
-            .with('unavailable', () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound)
+            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage)
             .exhaustive(),
         ),
       state =>

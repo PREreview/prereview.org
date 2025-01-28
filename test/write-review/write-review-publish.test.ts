@@ -10,6 +10,7 @@ import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
 import type { TemplatePageEnv } from '../../src/page.js'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes.js'
 import { UserC } from '../../src/user.js'
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
@@ -441,7 +442,7 @@ describe('writeReviewPublish', () => {
         _.writeReviewPublish(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left('unavailable'),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           publicUrl: new URL('http://example.com'),
@@ -496,7 +497,7 @@ describe('writeReviewPublish', () => {
         _.writeReviewPublish(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left('not-found'),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           publicUrl: new URL('http://example.com'),

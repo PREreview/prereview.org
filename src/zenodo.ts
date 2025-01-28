@@ -49,6 +49,7 @@ import { getClubByName, getClubName } from './club-details.js'
 import { type SleepEnv, reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
 import { type Html, plainText, sanitizeHtml } from './html.js'
 import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.js'
+import type * as Preprint from './preprint.js'
 import {
   type GetPreprintEnv,
   type GetPreprintIdEnv,
@@ -247,12 +248,14 @@ export const getPrereviewFromZenodo = (id: number) =>
         flow(
           error =>
             match(error)
+              .with({ _tag: 'PreprintIsUnavailable' }, () => O.some('unavailable' as const))
+              .with({ _tag: 'PreprintIsNotFound' }, () => O.none)
               .with(P.intersection(P.instanceOf(Error), { status: P.number }), () => O.none)
               .with(P.instanceOf(Error), error => O.some(error.message))
               .with({ status: P.union(Status.NotFound, Status.Gone) }, () => O.none)
               .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
               .with({ _tag: P.string }, error => O.some(D.draw(error)))
-              .with('unknown-license', 'text-unavailable', 'unavailable', O.some)
+              .with('unknown-license', 'text-unavailable', O.some)
               .with('no reviewed preprint', 'removed', 'not-found', () => O.none)
               .exhaustive(),
           O.match(
@@ -268,6 +271,7 @@ export const getPrereviewFromZenodo = (id: number) =>
         .with(
           'no reviewed preprint',
           'not-found',
+          { _tag: 'PreprintIsNotFound' },
           { status: P.union(Status.NotFound, Status.Gone) },
           () => 'not-found' as const,
         )
@@ -721,7 +725,12 @@ function recordToPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
-  HttpError<404> | 'no reviewed preprint' | 'unavailable' | 'not-found' | 'text-unavailable' | 'unknown-license',
+  | HttpError<404>
+  | 'no reviewed preprint'
+  | Preprint.PreprintIsUnavailable
+  | Preprint.PreprintIsNotFound
+  | 'text-unavailable'
+  | 'unknown-license',
   Prereview
 > {
   return pipe(
@@ -740,7 +749,10 @@ function recordToPrereview(
     RTE.chainW(({ license, preprintId, reviewTextUrl }) =>
       sequenceS(RTE.ApplyPar)({
         addendum: RTE.right(pipe(O.fromNullable(record.metadata.notes), O.map(sanitizeHtml), O.toUndefined)),
-        authors: RTE.right<F.FetchEnv & GetPreprintEnv & L.LoggerEnv>(getAuthors(record) as never),
+        authors: RTE.right<
+          F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
+          Preprint.PreprintIsUnavailable | Preprint.PreprintIsNotFound | 'text-unavailable'
+        >(getAuthors(record) as never),
         club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
         doi: RTE.right(record.metadata.doi),
         language: RTE.right(
@@ -840,7 +852,7 @@ function recordToScietyPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   L.LoggerEnv & GetPreprintIdEnv,
-  'no reviewed preprint' | 'not-a-preprint' | 'not-found' | 'unavailable',
+  'no reviewed preprint' | Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
   ScietyPrereview & ReviewsDataPrereview
 > {
   return pipe(
@@ -868,7 +880,7 @@ function recordToRecentPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   GetPreprintTitleEnv & L.LoggerEnv,
-  'no reviewed preprint' | 'unavailable' | 'not-found',
+  'no reviewed preprint' | Preprint.PreprintIsUnavailable | Preprint.PreprintIsNotFound,
   RecentPrereviews['recentPrereviews'][number]
 > {
   return pipe(

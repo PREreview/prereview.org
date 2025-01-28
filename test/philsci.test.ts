@@ -6,6 +6,7 @@ import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import { rawHtml } from '../src/html.js'
 import * as _ from '../src/philsci.js'
+import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../src/preprint.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
 
@@ -225,7 +226,7 @@ describe('getPreprintFromPhilsci', () => {
 
       const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: shouldNotBeCalled })()
 
-      expect(actual).toStrictEqual(E.left('not-found'))
+      expect(actual).toStrictEqual(E.left(new PreprintIsNotFound()))
     },
   )
 
@@ -307,7 +308,7 @@ describe('getPreprintFromPhilsci', () => {
 
     const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: shouldNotBeCalled })()
 
-    expect(actual).toStrictEqual(E.left('not-a-preprint'))
+    expect(actual).toStrictEqual(E.left(new NotAPreprint()))
   })
 
   test.prop([fc.philsciPreprintId(), fc.record({ status: fc.integer(), body: fc.string() })])(
@@ -322,7 +323,7 @@ describe('getPreprintFromPhilsci', () => {
 
       const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: shouldNotBeCalled })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(actual).toStrictEqual(E.left(new PreprintIsUnavailable()))
       expect(fetch.done()).toBeTruthy()
     },
   )

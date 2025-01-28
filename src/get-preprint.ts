@@ -6,11 +6,12 @@ import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref.js'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite.js'
 import { type SleepEnv, useStaleCache } from './fetch.js'
 import { getPreprintFromPhilsci } from './philsci.js'
+import * as Preprint from './preprint.js'
 import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id.js'
 
 export const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
-    .with({ type: 'jxiv' }, () => RTE.left('unavailable' as const))
+    .with({ type: 'jxiv' }, () => RTE.left(new Preprint.PreprintIsUnavailable()))
     .with({ type: 'philsci' }, getPreprintFromPhilsci)
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
@@ -20,7 +21,7 @@ export const getPreprint = flow(
   getPreprintFromSource,
   RTE.mapLeft(error =>
     match(error)
-      .with('not-a-preprint', () => 'not-found' as const)
+      .with({ _tag: 'NotAPreprint' }, () => new Preprint.PreprintIsNotFound())
       .otherwise(identity),
   ),
 )
@@ -43,13 +44,13 @@ export const resolvePreprintId = flow(
 
 export const getPreprintId = (
   id: IndeterminatePreprintId,
-): RTE.ReaderTaskEither<FetchEnv & SleepEnv, 'unavailable', PreprintId> =>
+): RTE.ReaderTaskEither<FetchEnv & SleepEnv, Preprint.PreprintIsUnavailable, PreprintId> =>
   match(id)
     .with(
       { type: P.union('biorxiv-medrxiv', 'zenodo-africarxiv') },
       flow(
         resolvePreprintId,
-        RTE.mapLeft(() => 'unavailable' as const),
+        RTE.mapLeft(() => new Preprint.PreprintIsUnavailable()),
       ),
     )
     .otherwise(RTE.right)
@@ -59,9 +60,8 @@ export const doesPreprintExist = flow(
   RTE.map(() => true),
   RTE.orElseW(error =>
     match(error)
-      .with('not-found', () => RTE.right(false))
-      .with('not-a-preprint', RTE.left)
-      .with('unavailable', RTE.left)
+      .with({ _tag: 'PreprintIsNotFound' }, () => RTE.right(false))
+      .with({ _tag: P.union('NotAPreprint', 'PreprintIsUnavailable') }, RTE.left)
       .exhaustive(),
   ),
 )

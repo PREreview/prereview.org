@@ -4,7 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
-import type { GetPreprintTitleEnv } from '../../src/preprint.js'
+import { type GetPreprintTitleEnv, PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewAddAuthorMatch, writeReviewMatch, writeReviewPublishMatch } from '../../src/routes.js'
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
@@ -160,7 +160,9 @@ describe('writeReviewAddAuthors', () => {
   test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user()])(
     'when the preprint cannot be loaded',
     async (preprintId, body, method, user) => {
-      const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.left('unavailable'))
+      const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
+        TE.left(new PreprintIsUnavailable()),
+      )
 
       const actual = await _.writeReviewAddAuthors({ body, id: preprintId, method, user })({
         formStore: new Keyv(),
@@ -184,7 +186,7 @@ describe('writeReviewAddAuthors', () => {
     async (preprintId, body, method, user) => {
       const actual = await _.writeReviewAddAuthors({ body, id: preprintId, method, user })({
         formStore: new Keyv(),
-        getPreprintTitle: () => TE.left('not-found'),
+        getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
       })()
 
       expect(actual).toStrictEqual({

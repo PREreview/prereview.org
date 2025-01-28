@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import type { TemplatePageEnv } from '../../src/page.js'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch } from '../../src/routes.js'
 import { UserC } from '../../src/user.js'
 import * as _ from '../../src/write-review/index.js'
@@ -157,7 +158,7 @@ describe('writeReviewPublished', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
-          getPreprintTitle: () => TE.left('unavailable'),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
           getUser: () => M.of(user),
           publicUrl: new URL('http://example.com'),
           secret,
@@ -212,7 +213,7 @@ describe('writeReviewPublished', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
-          getPreprintTitle: () => TE.left('not-found'),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
           getUser: () => M.of(user),
           publicUrl: new URL('http://example.com'),
           secret,

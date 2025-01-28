@@ -8,6 +8,7 @@ import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import { rawHtml } from '../../src/html.js'
 import type { TemplatePageEnv } from '../../src/page.js'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes.js'
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
@@ -158,7 +159,7 @@ describe('writeReviewLanguageEditing', () => {
       const actual = await runMiddleware(
         _.writeReviewLanguageEditing(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.left('unavailable'),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
           getUser: () => M.of(user),
           templatePage,
         }),
@@ -190,7 +191,7 @@ describe('writeReviewLanguageEditing', () => {
       const actual = await runMiddleware(
         _.writeReviewLanguageEditing(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.left('not-found'),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
           getUser: () => M.of(user),
           templatePage,
         }),

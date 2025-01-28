@@ -35,15 +35,7 @@ const getPrereview = Layer.effect(
     const getPreprintService = yield* Preprint.GetPreprint
     const sleep = yield* DeprecatedSleepEnv
 
-    const getPreprint = yield* EffectToFpts.makeTaskEitherK(
-      flow(
-        getPreprintService,
-        Effect.catchTags({
-          PreprintIsNotFound: () => Effect.fail('not-found' as const),
-          PreprintIsUnavailable: () => Effect.fail('unavailable' as const),
-        }),
-      ),
-    )
+    const getPreprint = yield* EffectToFpts.makeTaskEitherK(getPreprintService)
 
     return id =>
       pipe(
@@ -310,18 +302,7 @@ const getPreprint = Layer.effect(
     const fetch = yield* FetchHttpClient.Fetch
     const sleep = yield* DeprecatedSleepEnv
 
-    return id =>
-      pipe(
-        FptsToEffect.readerTaskEither(getPreprintUtil(id), { fetch, ...sleep }),
-        Effect.mapError(
-          flow(
-            Match.value,
-            Match.when('not-found', () => new Preprint.PreprintIsNotFound()),
-            Match.when('unavailable', () => new Preprint.PreprintIsUnavailable()),
-            Match.exhaustive,
-          ),
-        ),
-      )
+    return id => FptsToEffect.readerTaskEither(getPreprintUtil(id), { fetch, ...sleep })
   }),
 )
 

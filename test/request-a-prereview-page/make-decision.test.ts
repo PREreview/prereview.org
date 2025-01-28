@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { CanRequestReviewsEnv } from '../../src/feature-flags.js'
+import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import * as _ from '../../src/request-a-prereview-page/make-decision.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
@@ -51,7 +52,7 @@ describe('makeDecision', () => {
         ])('when the preprint is not found', async ([value, preprint], user) => {
           const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
-            resolvePreprintId: () => TE.left('not-found'),
+            resolvePreprintId: () => TE.left(new PreprintIsNotFound()),
           })()
 
           expect(actual).toStrictEqual({
@@ -69,7 +70,7 @@ describe('makeDecision', () => {
         ])('when it is not a preprint', async (value, user) => {
           const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
-            resolvePreprintId: () => TE.left('not-a-preprint'),
+            resolvePreprintId: () => TE.left(new NotAPreprint()),
           })()
 
           expect(actual).toStrictEqual({ _tag: 'ShowNotAPreprint' })
@@ -84,7 +85,7 @@ describe('makeDecision', () => {
         ])("when the preprint can't be loaded", async (value, user) => {
           const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
-            resolvePreprintId: () => TE.left('unavailable'),
+            resolvePreprintId: () => TE.left(new PreprintIsUnavailable()),
           })()
 
           expect(actual).toStrictEqual({ _tag: 'ShowError' })

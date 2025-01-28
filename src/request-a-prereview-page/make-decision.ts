@@ -49,9 +49,9 @@ const resolvePreprintId = (
     Preprint.resolvePreprintId(preprintId),
     RTE.mapLeft(error =>
       match(error)
-        .with('not-a-preprint', () => Decision.ShowNotAPreprint)
-        .with('not-found', () => Decision.ShowUnknownPreprint(preprintId))
-        .with('unavailable', () => Decision.ShowError)
+        .with({ _tag: 'NotAPreprint' }, () => Decision.ShowNotAPreprint)
+        .with({ _tag: 'PreprintIsNotFound' }, () => Decision.ShowUnknownPreprint(preprintId))
+        .with({ _tag: 'PreprintIsUnavailable' }, () => Decision.ShowError)
         .exhaustive(),
     ),
   )

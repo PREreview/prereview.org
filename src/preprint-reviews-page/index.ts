@@ -37,8 +37,8 @@ export const preprintReviews = (
     RTE.matchW(
       error =>
         match(error)
-          .with('not-found', () => pageNotFound)
-          .with('unavailable', () => failureMessage)
+          .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => failureMessage)
           .exhaustive(),
       createPage,
     ),

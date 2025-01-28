@@ -13,6 +13,7 @@ import {
 } from '../../src/contact-email-address.js'
 import { rawHtml } from '../../src/html.js'
 import type { TemplatePageEnv } from '../../src/page.js'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../src/routes.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
@@ -276,7 +277,7 @@ describe('writeReviewEnterEmailAddress', () => {
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           generateUuid: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left('unavailable'),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
           getUser: () => M.of(user),
           saveContactEmailAddress: shouldNotBeCalled,
           templatePage,
@@ -312,7 +313,7 @@ describe('writeReviewEnterEmailAddress', () => {
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           generateUuid: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left('not-found'),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
           getUser: () => M.of(user),
           saveContactEmailAddress: shouldNotBeCalled,
           templatePage,

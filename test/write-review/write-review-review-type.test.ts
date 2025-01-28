@@ -5,6 +5,7 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes.js'
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
@@ -140,7 +141,7 @@ describe('writeReviewReviewType', () => {
     async (preprintId, body, method, user) => {
       const actual = await _.writeReviewReviewType({ id: preprintId, user, body, method })({
         formStore: new Keyv(),
-        getPreprint: () => TE.left('unavailable'),
+        getPreprint: () => TE.left(new PreprintIsUnavailable()),
       })()
 
       expect(actual).toStrictEqual({
@@ -159,7 +160,7 @@ describe('writeReviewReviewType', () => {
     async (preprintId, body, method, user) => {
       const actual = await _.writeReviewReviewType({ id: preprintId, user, body, method })({
         formStore: new Keyv(),
-        getPreprint: () => TE.left('not-found'),
+        getPreprint: () => TE.left(new PreprintIsNotFound()),
       })()
 
       expect(actual).toStrictEqual({

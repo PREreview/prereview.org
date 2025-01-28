@@ -12,7 +12,7 @@ import { isOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
 import { sanitizeHtml } from './html.js'
-import type { Preprint } from './preprint.js'
+import * as Preprint from './preprint.js'
 import type { PhilsciPreprintId } from './types/preprint-id.js'
 
 import PlainDate = Temporal.PlainDate
@@ -104,9 +104,9 @@ export const getPreprintFromPhilsci = flow(
   RTE.chainEitherKW(eprintToPreprint),
   RTE.mapLeft(error =>
     match(error)
-      .with({ status: P.union(Status.NotFound, Status.Unauthorized) }, () => 'not-found' as const)
-      .with('not a preprint', () => 'not-a-preprint' as const)
-      .otherwise(() => 'unavailable' as const),
+      .with({ status: P.union(Status.NotFound, Status.Unauthorized) }, () => new Preprint.PreprintIsNotFound())
+      .with('not a preprint', () => new Preprint.NotAPreprint())
+      .otherwise(() => new Preprint.PreprintIsUnavailable()),
   ),
 )
 
@@ -126,7 +126,7 @@ const getEprint = flow(
   RTE.chainTaskEitherKW(F.decode(EprintD)),
 )
 
-function eprintToPreprint(eprint: D.TypeOf<typeof EprintD>): E.Either<D.DecodeError | string, Preprint> {
+function eprintToPreprint(eprint: D.TypeOf<typeof EprintD>): E.Either<D.DecodeError | string, Preprint.Preprint> {
   return pipe(
     E.Do,
     E.filterOrElse(

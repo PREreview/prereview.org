@@ -4,7 +4,7 @@ import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
-import type { DoesPreprintExistEnv } from '../../src/preprint.js'
+import { NotAPreprint, PreprintIsUnavailable, type DoesPreprintExistEnv } from '../../src/preprint.js'
 import * as _ from '../../src/review-a-preprint-page/index.js'
 import { reviewAPreprintMatch, writeReviewMatch } from '../../src/routes.js'
 import { fromPreprintDoi } from '../../src/types/preprint-id.js'
@@ -88,7 +88,7 @@ describe('reviewAPreprint', () => {
 
     test.prop([fc.record({ preprint: fc.preprintDoi() })])('when it is not a preprint', async body => {
       const actual = await _.reviewAPreprint({ body, method: 'POST' })({
-        doesPreprintExist: () => TE.left('not-a-preprint'),
+        doesPreprintExist: () => TE.left(new NotAPreprint()),
       })()
 
       expect(actual).toStrictEqual({
@@ -103,7 +103,7 @@ describe('reviewAPreprint', () => {
 
     test.prop([fc.record({ preprint: fc.preprintDoi() })])("when we can't see if the preprint exists", async body => {
       const actual = await _.reviewAPreprint({ body, method: 'POST' })({
-        doesPreprintExist: () => TE.left('unavailable'),
+        doesPreprintExist: () => TE.left(new PreprintIsUnavailable()),
       })()
 
       expect(actual).toStrictEqual({

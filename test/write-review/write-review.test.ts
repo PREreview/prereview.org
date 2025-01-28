@@ -4,6 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewStartMatch } from '../../src/routes.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
@@ -99,7 +100,7 @@ describe('writeReview', () => {
     async (preprintId, user) => {
       const actual = await _.writeReview({ id: preprintId, user })({
         formStore: new Keyv(),
-        getPreprint: () => TE.left('unavailable'),
+        getPreprint: () => TE.left(new PreprintIsUnavailable()),
       })()
 
       expect(actual).toStrictEqual({
@@ -118,7 +119,7 @@ describe('writeReview', () => {
     async (preprintId, user) => {
       const actual = await _.writeReview({ id: preprintId, user })({
         formStore: new Keyv(),
-        getPreprint: () => TE.left('not-found'),
+        getPreprint: () => TE.left(new PreprintIsNotFound()),
       })()
 
       expect(actual).toStrictEqual({
