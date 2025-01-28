@@ -86,11 +86,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
                     'preprint',
                     pipe(
                       getPreprintTitle(preprint),
-                      RTE.mapLeft(error =>
-                        match(error)
-                          .with('not-found', () => 'unavailable' as const)
-                          .otherwise(identity),
-                      ),
+                      RTE.mapLeft(() => 'unavailable' as const),
                     ),
                   ),
                   RTE.let('fields', () => fields),
@@ -123,11 +119,7 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
             'preprint',
             pipe(
               getPreprintTitle(preprint),
-              RTE.mapLeft(error =>
-                match(error)
-                  .with('not-found', () => 'unavailable' as const)
-                  .otherwise(identity),
-              ),
+              RTE.mapLeft(() => 'unavailable' as const),
             ),
           ),
           RTE.let('fields', () => fields),
