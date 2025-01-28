@@ -5,7 +5,6 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import type { Refinement } from 'fp-ts/lib/Refinement.js'
 import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -22,33 +21,25 @@ import type {
   AfricarxivZenodoPreprintId,
   ArcadiaSciencePreprintId,
   ArxivPreprintId,
+  IndeterminatePreprintId,
   OsfPreprintId,
+  PreprintId,
   PsychArchivesPreprintId,
   ZenodoPreprintId,
 } from './types/preprint-id.js'
 
-export type DatacitePreprintId =
-  | AfricarxivFigsharePreprintId
-  | AfricarxivUbuntunetPreprintId
-  | AfricarxivZenodoPreprintId
-  | ArcadiaSciencePreprintId
-  | ArxivPreprintId
-  | OsfPreprintId
-  | PsychArchivesPreprintId
-  | ZenodoPreprintId
+const dataciteDoiPrefixes = ['5281', '6084', '17605', '23668', '48550', '57844', '60763'] as const
 
-export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant(
-  '5281',
-  '6084',
-  '17605',
-  '23668',
-  '48550',
-  '57844',
-  '60763',
-)
+type DataciteDoiPrefix = (typeof dataciteDoiPrefixes)[number]
+
+export type DatacitePreprintId = Extract<PreprintId, { value: Doi<DataciteDoiPrefix> }>
+
+export type IndeterminateDatacitePreprintId = Extract<IndeterminatePreprintId, { value: Doi<DataciteDoiPrefix> }>
+
+export const isDatacitePreprintDoi = hasRegistrant(...dataciteDoiPrefixes)
 
 export const getPreprintFromDatacite = flow(
-  (id: DatacitePreprintId) => getWork(id.value),
+  (id: IndeterminateDatacitePreprintId) => getWork(id.value),
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),

@@ -4,7 +4,6 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import type { Refinement } from 'fp-ts/lib/Refinement.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
 import { Status } from 'hyper-ts'
@@ -27,9 +26,11 @@ import type {
   EcoevorxivPreprintId,
   EdarxivPreprintId,
   EngrxivPreprintId,
+  IndeterminatePreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
   OsfPreprintsPreprintId,
+  PreprintId,
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
@@ -40,30 +41,7 @@ import type {
   VerixivPreprintId,
 } from './types/preprint-id.js'
 
-export type CrossrefPreprintId =
-  | AdvancePreprintId
-  | AfricarxivOsfPreprintId
-  | AuthoreaPreprintId
-  | BiorxivPreprintId
-  | ChemrxivPreprintId
-  | CurvenotePreprintId
-  | EartharxivPreprintId
-  | EcoevorxivPreprintId
-  | EdarxivPreprintId
-  | EngrxivPreprintId
-  | MedrxivPreprintId
-  | MetaarxivPreprintId
-  | OsfPreprintsPreprintId
-  | PreprintsorgPreprintId
-  | PsyarxivPreprintId
-  | ResearchSquarePreprintId
-  | ScieloPreprintId
-  | ScienceOpenPreprintId
-  | SocarxivPreprintId
-  | TechrxivPreprintId
-  | VerixivPreprintId
-
-export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']> = hasRegistrant(
+const crossrefDoiPrefixes = [
   '1101',
   '1590',
   '12688',
@@ -84,10 +62,18 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']>
   '35542',
   '36227',
   '62329',
-)
+] as const
+
+type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
+
+export type CrossrefPreprintId = Extract<PreprintId, { value: Doi<CrossrefDoiPrefix> }>
+
+export type IndeterminateCrossrefPreprintId = Extract<IndeterminatePreprintId, { value: Doi<CrossrefDoiPrefix> }>
+
+export const isCrossrefPreprintDoi = hasRegistrant(...crossrefDoiPrefixes)
 
 export const getPreprintFromCrossref = flow(
-  (id: CrossrefPreprintId) => getWork(id.value),
+  (id: IndeterminateCrossrefPreprintId) => getWork(id.value),
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
