@@ -8,7 +8,7 @@ import * as _ from '../src/trainings.js'
 import * as fc from './fc.js'
 
 describe('trainings', () => {
-  test.prop([fc.supportedLocale(), fc.oneof(fc.constant(new PageIsUnavailable()), fc.constant(new PageIsNotFound()))])(
+  test.prop([fc.supportedLocale(), fc.constantFrom(new PageIsUnavailable(), new PageIsNotFound())])(
     'when the page cannot be loaded',
     async (locale, error) =>
       Effect.gen(function* () {

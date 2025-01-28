@@ -3,7 +3,7 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, Either, HashSet, Option } from 'effect'
+import { Array, Either, Option } from 'effect'
 import type { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import type * as F from 'fetch-fp-ts'
@@ -147,7 +147,7 @@ export function constant<const T>(value: T): Arbitrary<T> {
   return fc.constant(value)
 }
 
-export function constantFrom<const T>(...values: Array<T>): Arbitrary<T> {
+export function constantFrom<const T extends Array<unknown>>(...values: T): Arbitrary<T[number]> {
   return fc.constantFrom(...values)
 }
 
@@ -249,7 +249,8 @@ export const locale = (): fc.Arbitrary<string> =>
     'zh-Hans-CN',
   )
 
-export const supportedLocale = (): fc.Arbitrary<SupportedLocale> => constantFrom(...HashSet.values(SupportedLocales))
+export const supportedLocale = (): fc.Arbitrary<SupportedLocale> =>
+  constantFrom(...Array.fromIterable(SupportedLocales))
 
 export const pageResponse = ({
   canonical,
