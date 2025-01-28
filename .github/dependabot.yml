@@ -39,6 +39,10 @@ updates:
         patterns:
           - '@keyv/*'
           - 'keyv'
+      stylelint:
+        patterns:
+          - 'stylelint'
+          - 'stylelint-*'
       tiptap:
         patterns:
           - '@tiptap/*'
