@@ -5,17 +5,18 @@ import express, { type ErrorRequestHandler } from 'express'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import type { LogEntry } from 'logger-fp-ts'
 import * as L from 'logging-ts/lib/IO.js'
+import type { AppContext } from './app.js'
 import { DeprecatedLoggerEnv, Express, Locale } from './Context.js'
 import { LoggedInUser } from './user.js'
 
 export const ExpressHttpApp: HttpApp.Default<
   ConfigError.ConfigError,
-  DeprecatedLoggerEnv | Express | HttpServerRequest.HttpServerRequest | Locale
+  DeprecatedLoggerEnv | Express | HttpServerRequest.HttpServerRequest | AppContext
 > = Effect.gen(function* () {
   const expressApp = yield* Express
   const loggerEnv = yield* DeprecatedLoggerEnv
   const request = yield* HttpServerRequest.HttpServerRequest
-  const runtime = yield* Effect.runtime<Locale>()
+  const runtime = yield* Effect.runtime<AppContext>()
 
   const nodeRequest = NodeHttpServerRequest.toIncomingMessage(request)
   const nodeResponse = NodeHttpServerRequest.toServerResponse(request)

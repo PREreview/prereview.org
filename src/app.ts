@@ -1,3 +1,4 @@
+import type { Runtime } from 'effect'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
@@ -75,6 +76,10 @@ const withEnv =
   (...a: A) =>
     f(...a)(env)
 
+export type AppContext = Runtime.Runtime.Context<RouterEnv['runtime']>
+
+type AppRuntime = Runtime.Runtime<AppContext>
+
 export const app = (config: ConfigEnv) => {
   const proxy = createProxyMiddleware<Express.Request, Express.Response>({
     target: config.legacyPrereviewApi.url,
@@ -117,7 +122,7 @@ export const app = (config: ConfigEnv) => {
   }: {
     locale: SupportedLocale
     logger: L.Logger
-    runtime: RouterEnv['runtime']
+    runtime: AppRuntime
     user?: User
   }) => {
     return express()
@@ -148,7 +153,7 @@ export const app = (config: ConfigEnv) => {
         asyncHandler((req, res, next) => {
           return pipe(
             appMiddleware,
-            R.local((env: ConfigEnv & L.LoggerEnv & { runtime: RouterEnv['runtime'] }): RouterEnv & LegacyEnv => ({
+            R.local((env: ConfigEnv & L.LoggerEnv & { runtime: AppRuntime }): RouterEnv & LegacyEnv => ({
               ...env,
               doesPreprintExist: withEnv(doesPreprintExist, env),
               getUser: () => (user ? M.of(user) : M.left('no-session')),
@@ -163,7 +168,7 @@ export const app = (config: ConfigEnv) => {
               resolvePreprintId: withEnv(resolvePreprintId, env),
               sendEmail: withEnv(sendEmailWithNodemailer, env),
             })),
-            R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: RouterEnv['runtime'] } => ({
+            R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: AppRuntime } => ({
               ...appEnv,
               logger,
               runtime,
