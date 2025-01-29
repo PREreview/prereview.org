@@ -36,15 +36,39 @@ describe('getRecord', () => {
   )
 
   describe('with a response', () => {
-    test.prop([fc.doi(), fc.statusCode().filter(status => status >= 200)])('always fails', (doi, status) =>
-      Effect.gen(function* () {
-        const client = stubbedClient(() => new Response(null, { status }))
+    describe('with a 404 status code', () => {
+      test.prop([fc.doi()])('always fails', doi =>
+        Effect.gen(function* () {
+          const client = stubbedClient(() => new Response(null, { status: 404 }))
 
-        const actual = yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
+          const actual = yield* pipe(
+            Effect.flip(_.getRecord(doi)),
+            Effect.provideService(HttpClient.HttpClient, client),
+          )
 
-        expect(actual._tag).toStrictEqual('RecordIsUnavailable')
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
-    )
+          expect(actual._tag).toStrictEqual('RecordIsNotFound')
+          expect(actual.cause).toStrictEqual(expect.objectContaining({ status: 404 }))
+        }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      )
+    })
+
+    describe('with another status code', () => {
+      test.prop([fc.doi(), fc.statusCode().filter(status => status >= 200 && status !== 404)])(
+        'with another status code',
+        (doi, status) =>
+          Effect.gen(function* () {
+            const client = stubbedClient(() => new Response(null, { status }))
+
+            const actual = yield* pipe(
+              Effect.flip(_.getRecord(doi)),
+              Effect.provideService(HttpClient.HttpClient, client),
+            )
+
+            expect(actual._tag).toStrictEqual('RecordIsUnavailable')
+            expect(actual.cause).toStrictEqual(expect.objectContaining({ status }))
+          }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      )
+    })
   })
 
   describe('with a request error', () => {

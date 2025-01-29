@@ -19,6 +19,7 @@ export const getPreprintFromJapanLinkCenter: (
     getRecord(id.value),
     Effect.andThen(() => Effect.fail(new Preprint.PreprintIsUnavailable({}))),
     Effect.catchTags({
+      RecordIsNotFound: error => new Preprint.PreprintIsNotFound({ cause: error }),
       RecordIsUnavailable: error => new Preprint.PreprintIsUnavailable({ cause: error }),
     }),
     Effect.provide(FetchHttpClient.layer),
