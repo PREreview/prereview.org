@@ -31,7 +31,7 @@ export const toReaderTaskEither = <A, E, R>(effect: Effect.Effect<A, E, R>): RTE
     ),
   )
 
-export const toReaderTask = <A, R>(effect: Effect.Effect<A>): RT.ReaderTask<EffectEnv<R>, A> =>
+export const toReaderTask = <A, R>(effect: Effect.Effect<A, never, R>): RT.ReaderTask<EffectEnv<R>, A> =>
   pipe(
     RT.ask<EffectEnv<R>>(),
     RT.chainTaskK(
@@ -41,33 +41,33 @@ export const toReaderTask = <A, R>(effect: Effect.Effect<A>): RT.ReaderTask<Effe
     ),
   )
 
-export const toReaderIO = <A, R>(effect: Effect.Effect<A>): RIO.ReaderIO<EffectEnv<R>, A> =>
+export const toReaderIO = <A, R>(effect: Effect.Effect<A, never, R>): RIO.ReaderIO<EffectEnv<R>, A> =>
   pipe(
     RIO.ask<EffectEnv<R>>(),
     RIO.map(({ runtime }) => Runtime.runSync(runtime)(effect)),
   )
 
-export const makeTaskEitherK = <A extends ReadonlyArray<unknown>, B, E>(
-  f: (...a: A) => Effect.Effect<B, E>,
-): Effect.Effect<(...a: A) => TE.TaskEither<E, B>> =>
+export const makeTaskEitherK = <A extends ReadonlyArray<unknown>, B, E, R>(
+  f: (...a: A) => Effect.Effect<B, E, R>,
+): Effect.Effect<(...a: A) => TE.TaskEither<E, B>, never, R> =>
   Effect.gen(function* () {
-    const runtime = yield* Effect.runtime()
+    const runtime = yield* Effect.runtime<R>()
 
-    return (...a) => toReaderTaskEither<B, E, never>(f(...a))({ runtime })
+    return (...a) => toReaderTaskEither(f(...a))({ runtime })
   })
 
-export const makeTaskK = <A extends ReadonlyArray<unknown>, B>(
-  f: (...a: A) => Effect.Effect<B>,
-): Effect.Effect<(...a: A) => T.Task<B>> =>
+export const makeTaskK = <A extends ReadonlyArray<unknown>, B, R>(
+  f: (...a: A) => Effect.Effect<B, never, R>,
+): Effect.Effect<(...a: A) => T.Task<B>, never, R> =>
   Effect.gen(function* () {
-    const runtime = yield* Effect.runtime()
+    const runtime = yield* Effect.runtime<R>()
 
-    return (...a) => toReaderTask<B, never>(f(...a))({ runtime })
+    return (...a) => toReaderTask(f(...a))({ runtime })
   })
 
-export const makeIO = <A>(effect: Effect.Effect<A>): Effect.Effect<IO.IO<A>> =>
+export const makeIO = <A, R>(effect: Effect.Effect<A, never, R>): Effect.Effect<IO.IO<A>, never, R> =>
   Effect.gen(function* () {
-    const runtime = yield* Effect.runtime()
+    const runtime = yield* Effect.runtime<R>()
 
-    return toReaderIO<A, never>(effect)({ runtime })
+    return toReaderIO(effect)({ runtime })
   })
