@@ -4,7 +4,7 @@ import type * as IO from 'fp-ts/lib/IO.js'
 import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -30,14 +30,7 @@ export const toReaderTaskEitherK =
     toReaderTaskEither(f(...a))
 
 export const toReaderTaskEither = <A, E, R>(effect: Effect.Effect<A, E, R>): RTE.ReaderTaskEither<EffectEnv<R>, E, A> =>
-  pipe(
-    RTE.ask<EffectEnv<R>>(),
-    RTE.chainTaskEitherK(
-      ({ runtime }) =>
-        () =>
-          pipe(Effect.either(effect), Runtime.runPromise(runtime)),
-    ),
-  )
+  toReaderTask(Effect.either(effect))
 
 export const toReaderTaskK =
   <A extends ReadonlyArray<unknown>, B, R>(
