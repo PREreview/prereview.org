@@ -105,7 +105,7 @@ describe('writeReviewAddAuthor', () => {
     'when the preprint cannot be loaded',
     async (id, body, method, user) => {
       const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
-        TE.left(new PreprintIsUnavailable()),
+        TE.left(new PreprintIsUnavailable({})),
       )
 
       const actual = await _.writeReviewAddAuthor({ body, id, method, user })({
@@ -130,7 +130,7 @@ describe('writeReviewAddAuthor', () => {
     async (id, body, method, user) => {
       const actual = await _.writeReviewAddAuthor({ body, id, method, user })({
         formStore: new Keyv(),
-        getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
+        getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
       })()
 
       expect(actual).toStrictEqual({

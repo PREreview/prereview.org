@@ -88,7 +88,7 @@ describe('reviewAPreprint', () => {
 
     test.prop([fc.record({ preprint: fc.preprintDoi() })])('when it is not a preprint', async body => {
       const actual = await _.reviewAPreprint({ body, method: 'POST' })({
-        doesPreprintExist: () => TE.left(new NotAPreprint()),
+        doesPreprintExist: () => TE.left(new NotAPreprint({})),
       })()
 
       expect(actual).toStrictEqual({
@@ -103,7 +103,7 @@ describe('reviewAPreprint', () => {
 
     test.prop([fc.record({ preprint: fc.preprintDoi() })])("when we can't see if the preprint exists", async body => {
       const actual = await _.reviewAPreprint({ body, method: 'POST' })({
-        doesPreprintExist: () => TE.left(new PreprintIsUnavailable()),
+        doesPreprintExist: () => TE.left(new PreprintIsUnavailable({})),
       })()
 
       expect(actual).toStrictEqual({

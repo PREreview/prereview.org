@@ -203,7 +203,7 @@ describe('requestReviewPersona', () => {
     async (preprint, user, method, body) => {
       const actual = await _.requestReviewPersona({ body, preprint, method, user })({
         getReviewRequest: () => shouldNotBeCalled,
-        getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
+        getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
         saveReviewRequest: shouldNotBeCalled,
       })()
 

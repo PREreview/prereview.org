@@ -56,11 +56,11 @@ export interface GetPreprintTitleEnv {
   ) => TE.TaskEither<PreprintIsNotFound | PreprintIsUnavailable, PreprintTitle>
 }
 
-export class NotAPreprint extends Data.TaggedError('NotAPreprint') {}
+export class NotAPreprint extends Data.TaggedError('NotAPreprint')<{ cause?: unknown }> {}
 
-export class PreprintIsNotFound extends Data.TaggedError('PreprintIsNotFound') {}
+export class PreprintIsNotFound extends Data.TaggedError('PreprintIsNotFound')<{ cause?: unknown }> {}
 
-export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailable') {}
+export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailable')<{ cause?: unknown }> {}
 
 export const Preprint = Data.struct<Preprint>
 

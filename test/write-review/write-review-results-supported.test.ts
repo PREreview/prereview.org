@@ -165,7 +165,7 @@ describe('writeReviewResultsSupported', () => {
       const actual = await runMiddleware(
         _.writeReviewResultsSupported(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
           templatePage,
         }),
@@ -197,7 +197,7 @@ describe('writeReviewResultsSupported', () => {
       const actual = await runMiddleware(
         _.writeReviewResultsSupported(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
           templatePage,
         }),

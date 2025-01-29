@@ -1723,7 +1723,7 @@ describe('getPreprintFromDatacite', () => {
 
     const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
-    expect(actual).toStrictEqual(E.left(new PreprintIsNotFound()))
+    expect(actual).toStrictEqual(E.left(new PreprintIsNotFound({})))
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -1888,7 +1888,7 @@ describe('getPreprintFromDatacite', () => {
 
       const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
-      expect(actual).toStrictEqual(E.left(new NotAPreprint()))
+      expect(actual).toStrictEqual(E.left(new NotAPreprint({})))
     },
   )
 
@@ -1901,7 +1901,7 @@ describe('getPreprintFromDatacite', () => {
 
       const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
-      expect(actual).toStrictEqual(E.left(new PreprintIsUnavailable()))
+      expect(actual).toStrictEqual(E.left(new PreprintIsUnavailable({})))
       expect(fetch.done()).toBeTruthy()
     },
   )

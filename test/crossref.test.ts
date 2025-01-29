@@ -2937,7 +2937,7 @@ describe('getPreprintFromCrossref', () => {
 
     const actual = await _.getPreprintFromCrossref(id)({ fetch, sleep: () => T.of(undefined) })()
 
-    expect(actual).toStrictEqual(E.left(new PreprintIsNotFound()))
+    expect(actual).toStrictEqual(E.left(new PreprintIsNotFound({})))
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -3001,7 +3001,7 @@ describe('getPreprintFromCrossref', () => {
 
     const actual = await _.getPreprintFromCrossref(id)({ fetch, sleep: () => T.of(undefined) })()
 
-    expect(actual).toStrictEqual(E.left(new NotAPreprint()))
+    expect(actual).toStrictEqual(E.left(new NotAPreprint({})))
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -3014,7 +3014,7 @@ describe('getPreprintFromCrossref', () => {
 
       const actual = await _.getPreprintFromCrossref(id)({ fetch, sleep: () => T.of(undefined) })()
 
-      expect(actual).toStrictEqual(E.left(new PreprintIsUnavailable()))
+      expect(actual).toStrictEqual(E.left(new PreprintIsUnavailable({})))
       expect(fetch.done()).toBeTruthy()
     },
   )

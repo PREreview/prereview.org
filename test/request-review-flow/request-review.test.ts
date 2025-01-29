@@ -71,7 +71,7 @@ describe('requestReview', () => {
           "when the preprint doesn't exist",
           async (preprint, user) => {
             const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
-              TE.left(new PreprintIsNotFound()),
+              TE.left(new PreprintIsNotFound({})),
             )
 
             const actual = await _.requestReview({ preprint, user })({
@@ -96,7 +96,7 @@ describe('requestReview', () => {
           "when the preprint can't be loaded",
           async (preprint, user) => {
             const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
-              TE.left(new PreprintIsUnavailable()),
+              TE.left(new PreprintIsUnavailable({})),
             )
 
             const actual = await _.requestReview({ preprint, user })({

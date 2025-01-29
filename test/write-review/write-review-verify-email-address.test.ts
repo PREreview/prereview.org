@@ -358,7 +358,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         )({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
           orcidOauth,
           publicUrl,
@@ -397,7 +397,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         )({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
           orcidOauth,
           publicUrl,

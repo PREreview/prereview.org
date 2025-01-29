@@ -52,7 +52,7 @@ describe('makeDecision', () => {
         ])('when the preprint is not found', async ([value, preprint], user) => {
           const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
-            resolvePreprintId: () => TE.left(new PreprintIsNotFound()),
+            resolvePreprintId: () => TE.left(new PreprintIsNotFound({})),
           })()
 
           expect(actual).toStrictEqual({
@@ -70,7 +70,7 @@ describe('makeDecision', () => {
         ])('when it is not a preprint', async (value, user) => {
           const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
-            resolvePreprintId: () => TE.left(new NotAPreprint()),
+            resolvePreprintId: () => TE.left(new NotAPreprint({})),
           })()
 
           expect(actual).toStrictEqual({ _tag: 'ShowNotAPreprint' })
@@ -85,7 +85,7 @@ describe('makeDecision', () => {
         ])("when the preprint can't be loaded", async (value, user) => {
           const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
-            resolvePreprintId: () => TE.left(new PreprintIsUnavailable()),
+            resolvePreprintId: () => TE.left(new PreprintIsUnavailable({})),
           })()
 
           expect(actual).toStrictEqual({ _tag: 'ShowError' })

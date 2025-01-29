@@ -158,7 +158,7 @@ describe('writeReviewPublished', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
-          getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
           publicUrl: new URL('http://example.com'),
           secret,
@@ -213,7 +213,7 @@ describe('writeReviewPublished', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
-          getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
           publicUrl: new URL('http://example.com'),
           secret,

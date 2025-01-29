@@ -159,7 +159,7 @@ describe('writeReviewNovel', () => {
       const actual = await runMiddleware(
         _.writeReviewNovel(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
           templatePage,
         }),
@@ -191,7 +191,7 @@ describe('writeReviewNovel', () => {
       const actual = await runMiddleware(
         _.writeReviewNovel(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
           templatePage,
         }),

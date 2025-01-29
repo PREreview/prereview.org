@@ -87,7 +87,7 @@ describe('preprintReviews', () => {
   test.prop([fc.indeterminatePreprintId()])('when the preprint is not found', async preprintId => {
     const actual = await _.preprintReviews(preprintId)({
       canRequestReviews: () => false,
-      getPreprint: () => TE.left(new PreprintIsNotFound()),
+      getPreprint: () => TE.left(new PreprintIsNotFound({})),
       getPrereviews: shouldNotBeCalled,
       getRapidPrereviews: shouldNotBeCalled,
     })()
@@ -105,7 +105,7 @@ describe('preprintReviews', () => {
   test.prop([fc.indeterminatePreprintId()])('when the preprint is unavailable', async preprintId => {
     const actual = await _.preprintReviews(preprintId)({
       canRequestReviews: () => false,
-      getPreprint: () => TE.left(new PreprintIsUnavailable()),
+      getPreprint: () => TE.left(new PreprintIsUnavailable({})),
       getPrereviews: shouldNotBeCalled,
       getRapidPrereviews: shouldNotBeCalled,
     })()

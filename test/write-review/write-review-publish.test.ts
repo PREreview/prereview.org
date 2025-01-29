@@ -442,7 +442,7 @@ describe('writeReviewPublish', () => {
         _.writeReviewPublish(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           publicUrl: new URL('http://example.com'),
@@ -497,7 +497,7 @@ describe('writeReviewPublish', () => {
         _.writeReviewPublish(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           publicUrl: new URL('http://example.com'),

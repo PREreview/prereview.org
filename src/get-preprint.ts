@@ -37,7 +37,7 @@ export const getPreprint = flow(
   getPreprintFromSource,
   RTE.mapLeft(error =>
     match(error)
-      .with({ _tag: 'NotAPreprint' }, () => new Preprint.PreprintIsNotFound())
+      .with({ _tag: 'NotAPreprint' }, error => new Preprint.PreprintIsNotFound({ cause: error }))
       .otherwise(identity),
   ),
 )
@@ -66,7 +66,7 @@ export const getPreprintId = (
       { type: P.union('biorxiv-medrxiv', 'zenodo-africarxiv') },
       flow(
         resolvePreprintId,
-        RTE.mapLeft(() => new Preprint.PreprintIsUnavailable()),
+        RTE.mapLeft(error => new Preprint.PreprintIsUnavailable({ cause: error })),
       ),
     )
     .otherwise(RTE.right)

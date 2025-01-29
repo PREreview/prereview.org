@@ -224,7 +224,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
           templatePage,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
@@ -258,7 +258,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
           templatePage,
           verifyContactEmailAddressForReview: shouldNotBeCalled,

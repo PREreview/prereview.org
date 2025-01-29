@@ -95,7 +95,7 @@ describe('writeReviewCompetingInterests', () => {
     async (preprintId, body, method, user) => {
       const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, method, user })({
         formStore: new Keyv(),
-        getPreprintTitle: () => TE.left(new PreprintIsUnavailable()),
+        getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
       })()
 
       expect(actual).toStrictEqual({
@@ -114,7 +114,7 @@ describe('writeReviewCompetingInterests', () => {
     async (preprintId, body, method, user) => {
       const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, method, user })({
         formStore: new Keyv(),
-        getPreprintTitle: () => TE.left(new PreprintIsNotFound()),
+        getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
       })()
 
       expect(actual).toStrictEqual({

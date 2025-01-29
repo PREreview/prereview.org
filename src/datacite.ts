@@ -46,9 +46,9 @@ export const getPreprintFromDatacite = flow(
   RTE.chainEitherKW(dataciteWorkToPreprint),
   RTE.mapLeft(error =>
     match(error)
-      .with({ status: Status.NotFound }, () => new Preprint.PreprintIsNotFound())
-      .with('not a preprint', () => new Preprint.NotAPreprint())
-      .otherwise(() => new Preprint.PreprintIsUnavailable()),
+      .with({ status: Status.NotFound }, response => new Preprint.PreprintIsNotFound({ cause: response }))
+      .with('not a preprint', () => new Preprint.NotAPreprint({}))
+      .otherwise(error => new Preprint.PreprintIsUnavailable({ cause: error })),
   ),
 )
 

@@ -104,9 +104,12 @@ export const getPreprintFromPhilsci = flow(
   RTE.chainEitherKW(eprintToPreprint),
   RTE.mapLeft(error =>
     match(error)
-      .with({ status: P.union(Status.NotFound, Status.Unauthorized) }, () => new Preprint.PreprintIsNotFound())
-      .with('not a preprint', () => new Preprint.NotAPreprint())
-      .otherwise(() => new Preprint.PreprintIsUnavailable()),
+      .with(
+        { status: P.union(Status.NotFound, Status.Unauthorized) },
+        response => new Preprint.PreprintIsNotFound({ cause: response }),
+      )
+      .with('not a preprint', () => new Preprint.NotAPreprint({}))
+      .otherwise(error => new Preprint.PreprintIsUnavailable({ cause: error })),
   ),
 )
 

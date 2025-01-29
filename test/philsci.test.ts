@@ -226,7 +226,7 @@ describe('getPreprintFromPhilsci', () => {
 
       const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: shouldNotBeCalled })()
 
-      expect(actual).toStrictEqual(E.left(new PreprintIsNotFound()))
+      expect(actual).toStrictEqual(E.left(new PreprintIsNotFound({})))
     },
   )
 
@@ -308,7 +308,7 @@ describe('getPreprintFromPhilsci', () => {
 
     const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: shouldNotBeCalled })()
 
-    expect(actual).toStrictEqual(E.left(new NotAPreprint()))
+    expect(actual).toStrictEqual(E.left(new NotAPreprint({})))
   })
 
   test.prop([fc.philsciPreprintId(), fc.record({ status: fc.integer(), body: fc.string() })])(
@@ -323,7 +323,7 @@ describe('getPreprintFromPhilsci', () => {
 
       const actual = await _.getPreprintFromPhilsci(id)({ fetch, sleep: shouldNotBeCalled })()
 
-      expect(actual).toStrictEqual(E.left(new PreprintIsUnavailable()))
+      expect(actual).toStrictEqual(E.left(new PreprintIsUnavailable({})))
       expect(fetch.done()).toBeTruthy()
     },
   )
