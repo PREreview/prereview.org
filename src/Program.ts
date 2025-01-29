@@ -301,8 +301,9 @@ const getPreprint = Layer.effect(
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
     const sleep = yield* DeprecatedSleepEnv
+    const runtime = yield* Effect.runtime()
 
-    return id => FptsToEffect.readerTaskEither(getPreprintUtil(id), { fetch, ...sleep })
+    return id => FptsToEffect.readerTaskEither(getPreprintUtil(id), { fetch, runtime, ...sleep })
   }),
 )
 

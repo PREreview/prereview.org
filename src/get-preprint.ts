@@ -4,18 +4,29 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match, P, P as p } from 'ts-pattern'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref.js'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite.js'
+import * as EffectToFpTs from './EffectToFpts.js'
 import { type SleepEnv, useStaleCache } from './fetch.js'
-import { isJapanLinkCenterPreprintDoi } from './JapanLinkCenter/index.js'
+import { getPreprintFromJapanLinkCenter, isJapanLinkCenterPreprintDoi } from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './philsci.js'
 import * as Preprint from './preprint.js'
 import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id.js'
 
 export const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
+    .returnType<
+      RTE.ReaderTaskEither<
+        FetchEnv & SleepEnv & EffectToFpTs.EffectEnv<never>,
+        Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
+        Preprint.Preprint
+      >
+    >()
     .with({ type: 'philsci' }, getPreprintFromPhilsci)
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
-    .with({ value: p.when(isJapanLinkCenterPreprintDoi) }, () => RTE.left(new Preprint.PreprintIsUnavailable()))
+    .with(
+      { value: p.when(isJapanLinkCenterPreprintDoi) },
+      EffectToFpTs.toReaderTaskEitherK(getPreprintFromJapanLinkCenter),
+    )
     .exhaustive()
 
 export const getPreprint = flow(
@@ -45,7 +56,11 @@ export const resolvePreprintId = flow(
 
 export const getPreprintId = (
   id: IndeterminatePreprintId,
-): RTE.ReaderTaskEither<FetchEnv & SleepEnv, Preprint.PreprintIsUnavailable, PreprintId> =>
+): RTE.ReaderTaskEither<
+  FetchEnv & SleepEnv & EffectToFpTs.EffectEnv<never>,
+  Preprint.PreprintIsUnavailable,
+  PreprintId
+> =>
   match(id)
     .with(
       { type: P.union('biorxiv-medrxiv', 'zenodo-africarxiv') },
