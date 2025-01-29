@@ -6,6 +6,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as b from 'fp-ts/lib/boolean.js'
 import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { P, match } from 'ts-pattern'
+import type { EnvFor } from '../Fpts.js'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags.js'
 import * as Preprint from '../preprint.js'
 import * as ReviewRequest from '../review-request.js'
@@ -85,5 +86,3 @@ const ensureUserCanRequestReviews: (user?: User) => RE.ReaderEither<CanRequestRe
       ),
     ),
   )
-
-type EnvFor<T> = T extends R.Reader<infer R, unknown> ? R : never

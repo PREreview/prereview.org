@@ -1,11 +1,11 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
+import type { EnvFor } from '../Fpts.js'
 import { saveAvatar } from '../avatar.js'
 import { canUploadAvatar } from '../feature-flags.js'
 import { type MissingE, type TooBigE, type WrongTypeE, missingE, tooBigE, wrongTypeE } from '../form.js'
@@ -109,5 +109,3 @@ const AvatarFieldD = pipe(
   }),
   D.map(({ avatar }) => avatar),
 )
-
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

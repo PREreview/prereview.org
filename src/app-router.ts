@@ -24,6 +24,7 @@ import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
+import { withEnv } from './Fpts.js'
 import type { GetPageFromGhostEnv } from './GhostPage.js'
 import {
   authorInvite,
@@ -334,11 +335,6 @@ const getSlackUser = flow(
   Keyv.getSlackUserId,
   RTE.chainW(({ userId }) => getUserFromSlack(userId)),
 )
-
-const withEnv =
-  <R, A extends ReadonlyArray<unknown>, B>(f: (...a: A) => R.Reader<R, B>, env: R) =>
-  (...a: A) =>
-    f(...a)(env)
 
 export type RouterEnv = Keyv.AvatarStoreEnv &
   CanConnectOrcidProfileEnv &

@@ -1,12 +1,12 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/lib/Option.js'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
+import type { EnvFor } from '../Fpts.js'
 import { deleteCareerStage, getCareerStage, saveCareerStage } from '../career-stage.js'
 import { havingProblemsPage } from '../http-error.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
@@ -81,5 +81,3 @@ const handleChangeCareerStageForm = ({ body, user }: { body: unknown; user: User
           .exhaustive(),
     ),
   )
-
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

@@ -15,6 +15,7 @@ import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
+import type { EnvFor } from './Fpts.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
 
@@ -228,5 +229,3 @@ const destroyImageOnCloudinary = (publicId: NonEmptyString) =>
     ),
     RTE.bimap(() => 'unavailable' as const, constVoid),
   )
-
-type EnvFor<T> = T extends R.Reader<infer R, unknown> ? R : never

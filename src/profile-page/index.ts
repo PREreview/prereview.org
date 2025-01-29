@@ -1,8 +1,7 @@
-import type { Types } from 'effect'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { flow } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
+import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
 import { ProfileId } from '../types/index.js'
@@ -42,5 +41,3 @@ const profileForPseudonym = (locale: SupportedLocale) =>
       profile => createPage(profile, locale),
     ),
   )
-
-type EnvFor<T> = Types.UnionToIntersection<T extends Reader<infer R, unknown> ? R : never>

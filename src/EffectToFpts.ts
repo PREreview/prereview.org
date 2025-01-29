@@ -1,13 +1,13 @@
-import { Effect, Either, flow, Function, pipe, Runtime } from 'effect'
+import { Effect, Either, pipe, Runtime } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type * as IO from 'fp-ts/lib/IO.js'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
+import { withEnv } from './Fpts.js'
 
 export interface EffectEnv<R> {
   readonly runtime: Runtime.Runtime<R>
@@ -79,6 +79,3 @@ export const makeIO = <A, R>(effect: Effect.Effect<A, never, R>): Effect.Effect<
 
     return toReaderIO(effect)({ runtime })
   })
-
-const withEnv = <R, A extends ReadonlyArray<unknown>, B>(f: (...a: A) => Reader<R, B>, env: R): ((...a: A) => B) =>
-  flow(f, Function.apply(env))

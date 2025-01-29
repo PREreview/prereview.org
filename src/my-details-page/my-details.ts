@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/lib/Option.js'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { pipe } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
+import type { EnvFor } from '../Fpts.js'
 import { maybeGetAvatar } from '../avatar.js'
 import { maybeGetCareerStage } from '../career-stage.js'
 import { maybeGetContactEmailAddress } from '../contact-email-address.js'
@@ -78,5 +78,3 @@ export const myDetails = ({ user }: { user?: User }) =>
       createPage,
     ),
   )
-
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never
