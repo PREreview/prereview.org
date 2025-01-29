@@ -1,6 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
-import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
+import { Effect, flow, Layer, Match, Option, pipe, PubSub, type Runtime } from 'effect'
 import { fileURLToPath } from 'url'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
@@ -9,6 +9,7 @@ import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import { collapseRequests, logFetch } from './fetch.js'
+import type { EnvFor } from './Fpts.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { getPreprint as getPreprintUtil } from './get-preprint.js'
 import * as GhostPage from './GhostPage.js'
@@ -301,7 +302,8 @@ const getPreprint = Layer.effect(
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
     const sleep = yield* DeprecatedSleepEnv
-    const runtime = yield* Effect.runtime()
+    const runtime =
+      yield* Effect.runtime<Runtime.Runtime.Context<EnvFor<ReturnType<typeof getPreprintUtil>>['runtime']>>()
 
     return id => FptsToEffect.readerTaskEither(getPreprintUtil(id), { fetch, runtime, ...sleep })
   }),

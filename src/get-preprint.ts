@@ -1,3 +1,4 @@
+import type { Effect } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { flow, identity } from 'fp-ts/lib/function.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -6,6 +7,7 @@ import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref.js'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite.js'
 import * as EffectToFpTs from './EffectToFpts.js'
 import { type SleepEnv, useStaleCache } from './fetch.js'
+import type { EnvFor } from './Fpts.js'
 import { getPreprintFromJapanLinkCenter, isJapanLinkCenterPreprintDoi } from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './philsci.js'
 import * as Preprint from './preprint.js'
@@ -15,7 +17,9 @@ export const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
     .returnType<
       RTE.ReaderTaskEither<
-        FetchEnv & SleepEnv & EffectToFpTs.EffectEnv<never>,
+        FetchEnv &
+          SleepEnv &
+          EffectToFpTs.EffectEnv<Effect.Effect.Context<ReturnType<typeof getPreprintFromJapanLinkCenter>>>,
         Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
         Preprint.Preprint
       >
@@ -56,11 +60,7 @@ export const resolvePreprintId = flow(
 
 export const getPreprintId = (
   id: IndeterminatePreprintId,
-): RTE.ReaderTaskEither<
-  FetchEnv & SleepEnv & EffectToFpTs.EffectEnv<never>,
-  Preprint.PreprintIsUnavailable,
-  PreprintId
-> =>
+): RTE.ReaderTaskEither<EnvFor<ReturnType<typeof resolvePreprintId>>, Preprint.PreprintIsUnavailable, PreprintId> =>
   match(id)
     .with(
       { type: P.union('biorxiv-medrxiv', 'zenodo-africarxiv') },
