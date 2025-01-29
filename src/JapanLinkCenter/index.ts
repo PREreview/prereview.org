@@ -3,6 +3,7 @@ import { Effect, pipe } from 'effect'
 import { DeprecatedSleepEnv } from '../Context.js'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from '../fetch.js'
 import * as Preprint from '../preprint.js'
+import { recordToPreprint } from './Preprint.js'
 import type { JapanLinkCenterPreprintId } from './PreprintId.js'
 import { getRecord } from './Record.js'
 
@@ -12,12 +13,12 @@ export const getPreprintFromJapanLinkCenter: (
   id: JapanLinkCenterPreprintId,
 ) => Effect.Effect<
   Preprint.Preprint,
-  Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
+  Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
   FetchHttpClient.Fetch | DeprecatedSleepEnv
 > = id =>
   pipe(
     getRecord(id.value),
-    Effect.andThen(() => Effect.fail(new Preprint.PreprintIsUnavailable({}))),
+    Effect.andThen(recordToPreprint),
     Effect.catchTags({
       RecordIsNotFound: error => new Preprint.PreprintIsNotFound({ cause: error }),
       RecordIsUnavailable: error => new Preprint.PreprintIsUnavailable({ cause: error }),
