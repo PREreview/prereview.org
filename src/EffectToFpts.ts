@@ -1,6 +1,7 @@
-import { Effect, Either, pipe, Runtime } from 'effect'
+import { Effect, Either, flow, Function, pipe, Runtime } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type * as IO from 'fp-ts/lib/IO.js'
+import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -21,6 +22,13 @@ export const toReaderMiddleware = <A, I, E, R>(
   effect: Effect.Effect<A, E, R>,
 ): RM.ReaderMiddleware<EffectEnv<R>, I, I, E, A> => RM.fromReaderTaskEither(toReaderTaskEither(effect))
 
+export const toReaderTaskEitherK =
+  <A extends ReadonlyArray<unknown>, B, E, R>(
+    f: (...a: A) => Effect.Effect<B, E, R>,
+  ): ((...a: A) => RTE.ReaderTaskEither<EffectEnv<R>, E, B>) =>
+  (...a) =>
+    toReaderTaskEither(f(...a))
+
 export const toReaderTaskEither = <A, E, R>(effect: Effect.Effect<A, E, R>): RTE.ReaderTaskEither<EffectEnv<R>, E, A> =>
   pipe(
     RTE.ask<EffectEnv<R>>(),
@@ -30,6 +38,13 @@ export const toReaderTaskEither = <A, E, R>(effect: Effect.Effect<A, E, R>): RTE
           pipe(Effect.either(effect), Runtime.runPromise(runtime)),
     ),
   )
+
+export const toReaderTaskK =
+  <A extends ReadonlyArray<unknown>, B, R>(
+    f: (...a: A) => Effect.Effect<B, never, R>,
+  ): ((...a: A) => RT.ReaderTask<EffectEnv<R>, B>) =>
+  (...a) =>
+    toReaderTask(f(...a))
 
 export const toReaderTask = <A, R>(effect: Effect.Effect<A, never, R>): RT.ReaderTask<EffectEnv<R>, A> =>
   pipe(
@@ -53,7 +68,7 @@ export const makeTaskEitherK = <A extends ReadonlyArray<unknown>, B, E, R>(
   Effect.gen(function* () {
     const runtime = yield* Effect.runtime<R>()
 
-    return (...a) => toReaderTaskEither(f(...a))({ runtime })
+    return withEnv(toReaderTaskEitherK(f), { runtime })
   })
 
 export const makeTaskK = <A extends ReadonlyArray<unknown>, B, R>(
@@ -62,7 +77,7 @@ export const makeTaskK = <A extends ReadonlyArray<unknown>, B, R>(
   Effect.gen(function* () {
     const runtime = yield* Effect.runtime<R>()
 
-    return (...a) => toReaderTask(f(...a))({ runtime })
+    return withEnv(toReaderTaskK(f), { runtime })
   })
 
 export const makeIO = <A, R>(effect: Effect.Effect<A, never, R>): Effect.Effect<IO.IO<A>, never, R> =>
@@ -71,3 +86,6 @@ export const makeIO = <A, R>(effect: Effect.Effect<A, never, R>): Effect.Effect<
 
     return toReaderIO(effect)({ runtime })
   })
+
+const withEnv = <R, A extends ReadonlyArray<unknown>, B>(f: (...a: A) => Reader<R, B>, env: R): ((...a: A) => B) =>
+  flow(f, Function.apply(env))
