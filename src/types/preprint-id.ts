@@ -305,6 +305,7 @@ export function fromUrl(url: URL): Option.Option<IndeterminatePreprintId> {
     .with(['biorxiv.org', P.select()], extractFromBiorxivMedrxivPath('biorxiv'))
     .with(['edarxiv.org', P.select()], extractFromEdarxivPath)
     .with(['engrxiv.org', P.select()], extractFromEngrxivPath)
+    .with(['jxiv.jst.go.jp', P.select()], extractFromJxivPath)
     .with(['medrxiv.org', P.select()], extractFromBiorxivMedrxivPath('medrxiv'))
     .with(['osf.io', P.select()], extractFromOsfPath)
     .with(['philsci-archive.pitt.edu', P.select()], extractFromPhilsciPath)
@@ -362,6 +363,12 @@ const extractFromFigsharePath = (type: 'africarxiv') =>
     Option.filter(Predicate.compose(isDoi, hasRegistrant('6084'))),
     Option.andThen(doi => ({ type, value: doi }) satisfies AfricarxivFigsharePreprintId),
   )
+
+const extractFromJxivPath = flow(
+  decodeURIComponent,
+  Option.liftNullable(s => /^index\.php\/jxiv\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.51094/jxiv.${id}`, parsePreprintDoi)),
+)
 
 const extractFromOsfPath = flow(
   decodeURIComponent,

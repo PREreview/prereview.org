@@ -328,6 +328,31 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Option.some({ type: 'engrxiv', value: doi }))
   })
 
+  test.prop([fc.jxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+    examples: [
+      [
+        [
+          new URL('https://jxiv.jst.go.jp/index.php/jxiv/preprint/view/1041/version/1215'), // version
+          Doi('10.51094/jxiv.1041'),
+        ],
+      ],
+      [
+        [
+          new URL('https://jxiv.jst.go.jp/index.php/jxiv/preprint/view/1041/2898'), // html view of pdf
+          Doi('10.51094/jxiv.1041'),
+        ],
+      ],
+      [
+        [
+          new URL('https://jxiv.jst.go.jp/index.php/jxiv/preprint/download/1041/2898'), // pdf
+          Doi('10.51094/jxiv.1041'),
+        ],
+      ],
+    ],
+  })('with a Jxiv URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(Option.some({ type: 'jxiv', value: doi }))
+  })
+
   test.prop([fc.medrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [

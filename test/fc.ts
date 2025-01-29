@@ -450,6 +450,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
     biorxivPreprintUrl(),
     edarxivPreprintUrl(),
     engrxivPreprintUrl(),
+    jxivPreprintUrl(),
     medrxivPreprintUrl(),
     metaarxivPreprintUrl(),
     osfPreprintsPreprintUrl(),
@@ -652,6 +653,14 @@ export const jxivPreprintId = (): fc.Arbitrary<JxivPreprintId> =>
     type: constant('jxiv'),
     value: doi(constant('51094')),
   })
+
+export const jxivPreprintUrl = (): fc.Arbitrary<[URL, JxivPreprintId]> =>
+  fc
+    .integer({ min: 1 })
+    .map(id => [
+      new URL(`https://jxiv.jst.go.jp/index.php/jxiv/preprint/view/${id}`),
+      { type: 'jxiv', value: `10.51094/jxiv.${id}` as Doi<'51094'> },
+    ])
 
 export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
   fc.record({
