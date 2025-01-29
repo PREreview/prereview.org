@@ -16,9 +16,12 @@ describe('isDatacitePreprintDoi', () => {
     expect(_.isDatacitePreprintDoi(doi)).toBe(true)
   })
 
-  test.prop([fc.oneof(fc.crossrefPreprintDoi(), fc.nonPreprintDoi())])('with a non-DataCite DOI', doi => {
-    expect(_.isDatacitePreprintDoi(doi)).toBe(false)
-  })
+  test.prop([fc.oneof(fc.crossrefPreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
+    'with a non-DataCite DOI',
+    doi => {
+      expect(_.isDatacitePreprintDoi(doi)).toBe(false)
+    },
+  )
 })
 
 describe('getPreprintFromDatacite', () => {

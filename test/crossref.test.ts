@@ -14,9 +14,12 @@ describe('isCrossrefPreprintDoi', () => {
     expect(_.isCrossrefPreprintDoi(doi)).toBe(true)
   })
 
-  test.prop([fc.oneof(fc.datacitePreprintDoi(), fc.nonPreprintDoi())])('with a non-Crossref DOI', doi => {
-    expect(_.isCrossrefPreprintDoi(doi)).toBe(false)
-  })
+  test.prop([fc.oneof(fc.datacitePreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
+    'with a non-Crossref DOI',
+    doi => {
+      expect(_.isCrossrefPreprintDoi(doi)).toBe(false)
+    },
+  )
 })
 
 describe('getPreprintFromCrossref', () => {

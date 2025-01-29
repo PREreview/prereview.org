@@ -44,6 +44,7 @@ import type { DatacitePreprintId } from '../src/datacite.js'
 import type { Email } from '../src/email.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
+import type { JapanLinkCenterPreprintId } from '../src/JapanLinkCenter/PreprintId.js'
 import type { Languages } from '../src/languages.js'
 import { type SupportedLocale, SupportedLocales } from '../src/locales/index.js'
 import type { Location } from '../src/location.js'
@@ -470,6 +471,9 @@ export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']>
 
 export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value']> =>
   datacitePreprintId().map(id => id.value)
+
+export const japanLinkCenterPreprintDoi = (): fc.Arbitrary<JapanLinkCenterPreprintId['value']> =>
+  japanLinkCenterPreprintId().map(id => id.value)
 
 export const advancePreprintId = (): fc.Arbitrary<AdvancePreprintId> =>
   fc.record({
@@ -917,6 +921,8 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
     psychArchivesPreprintId(),
     zenodoPreprintId(),
   )
+
+export const japanLinkCenterPreprintId = (): fc.Arbitrary<JapanLinkCenterPreprintId> => jxivPreprintId()
 
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc
