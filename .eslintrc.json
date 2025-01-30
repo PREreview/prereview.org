@@ -62,6 +62,7 @@
     "@typescript-eslint/no-confusing-void-expression": "off",
     "@typescript-eslint/no-deprecated": "off",
     "@typescript-eslint/no-import-type-side-effects": "error",
+    "@typescript-eslint/no-misused-spread": "off",
     "@typescript-eslint/prefer-nullish-coalescing": ["error", { "ignoreConditionalTests": true }],
     "@typescript-eslint/restrict-template-expressions": ["error", { "allowNumber": true }],
     "@typescript-eslint/strict-boolean-expressions": "error",
