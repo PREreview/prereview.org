@@ -3,8 +3,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { type Duration, Effect, Either, Fiber, Option, pipe, TestClock, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import * as _ from '../src/CachingHttpClient/index.js'
-import * as fc from './fc.js'
+import * as _ from '../../src/CachingHttpClient/index.js'
+import * as fc from '../fc.js'
 
 const stubbedClient = (
   response: HttpClientResponse.HttpClientResponse,
