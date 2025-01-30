@@ -181,7 +181,6 @@ export const toPage = ({
 }): Page =>
   response._tag === 'TwoUpPageResponse'
     ? {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         locale: locale !== DefaultLocale ? locale : undefined,
         title: response.title,
         description: response.description,
@@ -202,7 +201,6 @@ export const toPage = ({
         userOnboarding,
       }
     : {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         locale: locale !== DefaultLocale ? locale : undefined,
         title: response.title,
         description: response.description,
