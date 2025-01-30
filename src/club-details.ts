@@ -175,6 +175,24 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Ayla Sant’Ana da Silva', orcid: Orcid('0000-0001-8466-9390') }],
   },
+  'biopeers-slu': {
+    name: 'BioPeers SLU',
+    description: html`
+      <p>
+        We are a team of scientists with a broad range of expertise encompassing structural biology, biochemistry, plant
+        biology and cell biology. We are affiliated with the
+        <a href="https://www.slu.se/">Swedish University of Agricultural Sciences, Uppsala</a>.
+      </p>
+      <p>
+        BioPeers SLU is a PREreview Club comprising PhD students and postdocs working at Uppsala BioCenter, SLU. The
+        club is associated with the weekly <a href="https://www.alyonaminina.org/jc">Journal Club Seminar series</a>.
+      </p>
+    `,
+    leads: [
+      { name: 'Alyona Minina', orcid: Orcid('0000-0002-2619-1859') },
+      { name: 'Alessia Suriano', orcid: Orcid('0009-0004-0588-6645') },
+    ],
+  },
   'biophysics-leipzig': {
     name: 'Biophysics Leipzig University',
     description: html`
