@@ -19,12 +19,12 @@ const stubbedFailingClient = (
 
 describe('there is no cache entry', () => {
   describe('the request succeeds', () => {
-    test.prop([fc.url()])('able to cache it', url =>
+    test.prop([fc.url(), fc.durationInput()])('able to cache it', (url, timeToStale) =>
       Effect.gen(function* () {
         const cache = new Map()
         const successfulResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
         const client = yield* pipe(
-          _.CachingHttpClient,
+          _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse)),
           Effect.provide(_.layerInMemory(cache)),
         )
@@ -35,11 +35,11 @@ describe('there is no cache entry', () => {
       }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
     )
 
-    test.prop([fc.url(), fc.error()])('not able to cache it', (url, error) =>
+    test.prop([fc.url(), fc.error(), fc.durationInput()])('not able to cache it', (url, error, timeToStale) =>
       Effect.gen(function* () {
         const successfulResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
         const client = yield* pipe(
-          _.CachingHttpClient,
+          _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse)),
           Effect.provideService(_.HttpCache, {
             get: () => Option.none(),
@@ -54,12 +54,12 @@ describe('there is no cache entry', () => {
   })
 
   describe('the request fails', () => {
-    test.prop([fc.url()])('with a timeout', url =>
+    test.prop([fc.url(), fc.durationInput()])('with a timeout', (url, timeToStale) =>
       Effect.gen(function* () {
         const cache = new Map()
         const successfulResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
         const client = yield* pipe(
-          _.CachingHttpClient,
+          _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse, '3 seconds')),
           Effect.provide(_.layerInMemory(cache)),
         )
@@ -73,12 +73,12 @@ describe('there is no cache entry', () => {
       }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
     )
 
-    test.prop([fc.url()])('with a network error', url =>
+    test.prop([fc.url(), fc.durationInput()])('with a network error', (url, timeToStale) =>
       Effect.gen(function* () {
         const cache = new Map()
         const error = new HttpClientError.RequestError({ request: HttpClientRequest.get(url), reason: 'Transport' })
         const client = yield* pipe(
-          _.CachingHttpClient,
+          _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
           Effect.provide(_.layerInMemory(cache)),
         )
@@ -90,14 +90,14 @@ describe('there is no cache entry', () => {
       }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
     )
 
-    test.failing.prop([fc.url(), fc.statusCode().filter(status => status !== StatusCodes.OK)])(
+    test.failing.prop([fc.url(), fc.statusCode().filter(status => status !== StatusCodes.OK), fc.durationInput()])(
       'with a response that does not have a 200 status code',
-      (url, status) =>
+      (url, status, timeToStale) =>
         Effect.gen(function* () {
           const cache = new Map()
           const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response(null, { status }))
           const client = yield* pipe(
-            _.CachingHttpClient,
+            _.CachingHttpClient(timeToStale),
             Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
             Effect.provide(_.layerInMemory(cache)),
           )
