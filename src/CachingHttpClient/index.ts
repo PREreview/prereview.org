@@ -5,7 +5,7 @@ import {
   type HttpClientRequest,
   type HttpClientResponse,
 } from '@effect/platform'
-import { DateTime, Effect, Option, pipe, type Scope } from 'effect'
+import { DateTime, Effect, Layer, Option, pipe, type Scope } from 'effect'
 import * as HttpCache from './HttpCache.js'
 
 export * from './HttpCache.js'
@@ -68,3 +68,5 @@ export const CachingHttpClient: Effect.Effect<
 
   return HttpClient.makeWith(cachingBehaviour, Effect.succeed)
 })
+
+export const layer = Layer.effect(HttpClient.HttpClient, CachingHttpClient)
