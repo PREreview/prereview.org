@@ -6,6 +6,7 @@ import {
   type HttpClientResponse,
 } from '@effect/platform'
 import { DateTime, Effect, Layer, Option, pipe, type Scope } from 'effect'
+import { loggingHttpClient } from '../LoggingHttpClient.js'
 import * as HttpCache from './HttpCache.js'
 
 export * from './HttpCache.js'
@@ -15,7 +16,7 @@ export const CachingHttpClient: Effect.Effect<
   never,
   HttpCache.HttpCache | HttpClient.HttpClient
 > = Effect.gen(function* () {
-  const httpClient = yield* HttpClient.HttpClient
+  const httpClient = yield* Effect.andThen(HttpClient.HttpClient, loggingHttpClient)
   const cache = yield* HttpCache.HttpCache
 
   const cachingBehaviour = (

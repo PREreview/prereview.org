@@ -4,7 +4,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { getPageWithEffect, GhostApi } from './ghost.js'
 import type { Html } from './html.js'
-import { loggingHttpClient } from './LoggingHttpClient.js'
 
 export class PageIsNotFound extends Data.TaggedError('PageIsNotFound') {}
 
@@ -39,7 +38,7 @@ export const layer = Layer.effect(
       pipe(
         loadWithCachingClient(id),
         Effect.provideService(GhostApi, ghostApi),
-        Effect.provideService(HttpClient.HttpClient, loggingHttpClient(httpClient)),
+        Effect.provideService(HttpClient.HttpClient, httpClient),
       )
   }),
 )
