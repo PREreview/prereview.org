@@ -331,7 +331,7 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(getPrereview)),
   Layer.provide(
     Layer.mergeAll(
-      getPreprint,
+      Layer.provide(getPreprint, CachingHttpClient.layer('10 minutes')),
       doesUserHaveAVerifiedEmailAddress,
       getContactEmailAddress,
       saveContactEmailAddress,
@@ -343,11 +343,9 @@ export const Program = pipe(
         Comments.makeGetNextExpectedCommandForUserOnAComment,
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
-      GhostPage.layer,
+      Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
     ),
   ),
-  Layer.provide(
-    Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch, CachingHttpClient.layer('10 seconds')),
-  ),
+  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch)),
   Layer.provide(Layer.mergeAll(Uuid.layer, Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv), MigratorLive)),
 )
