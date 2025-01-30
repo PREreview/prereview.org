@@ -71,4 +71,5 @@ export const CachingHttpClient = (
     return HttpClient.makeWith(cachingBehaviour, Effect.succeed)
   })
 
-export const layer = Layer.effect(HttpClient.HttpClient, CachingHttpClient('10 seconds'))
+export const layer = (timeToStale: Duration.DurationInput) =>
+  Layer.effect(HttpClient.HttpClient, CachingHttpClient(timeToStale))
