@@ -13,6 +13,7 @@ import type { Redis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import * as EffectToFpts from './EffectToFpts.js'
+import { withEnv } from './Fpts.js'
 import { PageNotFound } from './PageNotFound/index.js'
 import { type RouterEnv, routes } from './app-router.js'
 import { doesPreprintExist, getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
@@ -70,11 +71,6 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
       .exhaustive(),
   ),
 )
-
-const withEnv =
-  <R, A extends ReadonlyArray<unknown>, B>(f: (...a: A) => R.Reader<R, B>, env: R) =>
-  (...a: A) =>
-    f(...a)(env)
 
 export type AppContext =
   | Runtime.Runtime.Context<RouterEnv['runtime']>

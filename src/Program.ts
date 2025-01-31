@@ -2,6 +2,7 @@ import { FetchHttpClient, HttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
+import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from './Context.js'
@@ -334,7 +335,7 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(getPrereview)),
   Layer.provide(
     Layer.mergeAll(
-      getPreprint,
+      Layer.provide(getPreprint, CachingHttpClient.layer('10 minutes')),
       doesUserHaveAVerifiedEmailAddress,
       getContactEmailAddress,
       saveContactEmailAddress,
@@ -346,7 +347,7 @@ export const Program = pipe(
         Comments.makeGetNextExpectedCommandForUserOnAComment,
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
-      GhostPage.layer,
+      Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
     ),
   ),
   Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch)),
