@@ -13,7 +13,7 @@ import { getPreprintFromPhilsci } from './philsci.js'
 import * as Preprint from './preprint.js'
 import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id.js'
 
-export const getPreprintFromSource = (id: IndeterminatePreprintId) =>
+const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
     .returnType<
       RTE.ReaderTaskEither<
