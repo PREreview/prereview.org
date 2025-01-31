@@ -135,7 +135,7 @@ summary > span {
         mask-image: url('remixicon/icons/Logos/twitter-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
@@ -154,7 +154,7 @@ summary > span {
         mask-image: url('remixicon/icons/Logos/mastodon-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
@@ -173,7 +173,7 @@ summary > span {
         mask-image: url('remixicon/icons/Logos/linkedin-box-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
@@ -192,7 +192,7 @@ summary > span {
         mask-image: url('remixicon/icons/Logos/github-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
@@ -211,7 +211,7 @@ summary > span {
         mask-image: url('remixicon/icons/Business/mail-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
@@ -230,7 +230,7 @@ summary > span {
         mask-image: url('icons/sciety-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
