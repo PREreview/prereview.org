@@ -1,4 +1,4 @@
-import type { Runtime } from 'effect'
+import type { Effect, Runtime } from 'effect'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
@@ -13,7 +13,6 @@ import type { Redis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import * as EffectToFpts from './EffectToFpts.js'
-import { type EnvFor, withEnv } from './Fpts.js'
 import { PageNotFound } from './PageNotFound/index.js'
 import { type RouterEnv, routes } from './app-router.js'
 import { doesPreprintExist, getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
@@ -72,9 +71,14 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
   ),
 )
 
+const withEnv =
+  <R, A extends ReadonlyArray<unknown>, B>(f: (...a: A) => R.Reader<R, B>, env: R) =>
+  (...a: A) =>
+    f(...a)(env)
+
 export type AppContext =
   | Runtime.Runtime.Context<RouterEnv['runtime']>
-  | Runtime.Runtime.Context<EnvFor<ReturnType<typeof getPreprint>>['runtime']>
+  | Effect.Effect.Context<ReturnType<typeof getPreprint>>
 
 type AppRuntime = Runtime.Runtime<AppContext>
 
@@ -153,17 +157,17 @@ export const app = (config: ConfigEnv) => {
             appMiddleware,
             R.local((env: ConfigEnv & L.LoggerEnv & { runtime: AppRuntime }): RouterEnv & LegacyEnv => ({
               ...env,
-              doesPreprintExist: withEnv(doesPreprintExist, env),
+              doesPreprintExist: withEnv(EffectToFpts.toReaderTaskEitherK(doesPreprintExist), env),
               getUser: () => (user ? M.of(user) : M.left('no-session')),
               getUserOnboarding: withEnv(getUserOnboarding, env),
               getPageFromGhost: withEnv(getPage, env),
-              getPreprint: withEnv(getPreprint, env),
-              getPreprintTitle: withEnv(getPreprintTitle, env),
+              getPreprint: withEnv(EffectToFpts.toReaderTaskEitherK(getPreprint), env),
+              getPreprintTitle: withEnv(EffectToFpts.toReaderTaskEitherK(getPreprintTitle), env),
               locale,
               getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
               getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
-              getPreprintId: withEnv(getPreprintId, env),
-              resolvePreprintId: withEnv(resolvePreprintId, env),
+              getPreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(getPreprintId), env),
+              resolvePreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(resolvePreprintId), env),
               sendEmail: withEnv(sendEmailWithNodemailer, env),
             })),
             R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: AppRuntime } => ({
