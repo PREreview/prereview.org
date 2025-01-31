@@ -8,6 +8,7 @@ import * as EffectToFpts from './EffectToFpts.js'
 import { CanWriteComments, UseCrowdinInContext } from './feature-flags.js'
 import { GhostApi } from './ghost.js'
 import { Nodemailer } from './nodemailer.js'
+import * as Preprint from './preprint.js'
 import { PublicUrl } from './public-url.js'
 import { DataStoreRedis } from './Redis.js'
 import { TemplatePage } from './TemplatePage.js'
@@ -26,12 +27,14 @@ export const expressServer = Effect.gen(function* () {
   const useCrowdinInContext = yield* UseCrowdinInContext
   const ghostApi = yield* GhostApi
   const secret = yield* SessionSecret
+  const getPreprint = yield* Effect.andThen(Preprint.GetPreprint, EffectToFpts.makeTaskEitherK)
 
   return app({
     canWriteComments,
     clock,
     fetch,
     generateUuid,
+    getPreprint,
     ghostApi,
     nodemailer,
     publicUrl,

@@ -16,7 +16,7 @@ import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
 import { PageNotFound } from './PageNotFound/index.js'
 import { type RouterEnv, routes } from './app-router.js'
-import { doesPreprintExist, getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
+import { doesPreprintExist, getPreprintId, getPreprintTitle, resolvePreprintId } from './get-preprint.js'
 import { getPage, type GhostApiEnv } from './ghost.js'
 import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
@@ -35,7 +35,6 @@ export type ConfigEnv = Omit<
   | 'getUser'
   | 'getUserOnboarding'
   | 'getPageFromGhost'
-  | 'getPreprint'
   | 'getPreprintTitle'
   | 'locale'
   | 'logger'
@@ -74,7 +73,7 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
 
 export type AppContext =
   | Runtime.Runtime.Context<RouterEnv['runtime']>
-  | Effect.Effect.Context<ReturnType<typeof getPreprint>>
+  | Effect.Effect.Context<ReturnType<typeof resolvePreprintId>>
 
 type AppRuntime = Runtime.Runtime<AppContext>
 
@@ -157,7 +156,6 @@ export const app = (config: ConfigEnv) => {
               getUser: () => (user ? M.of(user) : M.left('no-session')),
               getUserOnboarding: withEnv(getUserOnboarding, env),
               getPageFromGhost: withEnv(getPage, env),
-              getPreprint: withEnv(EffectToFpts.toReaderTaskEitherK(getPreprint), env),
               getPreprintTitle: withEnv(EffectToFpts.toReaderTaskEitherK(getPreprintTitle), env),
               locale,
               getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),

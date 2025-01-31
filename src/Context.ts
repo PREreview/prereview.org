@@ -22,6 +22,7 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
     | 'clock'
     | 'fetch'
     | 'generateUuid'
+    | 'getPreprint'
     | 'ghostApi'
     | 'nodemailer'
     | 'publicUrl'
