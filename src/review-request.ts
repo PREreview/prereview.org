@@ -10,9 +10,11 @@ import type {
   AfricarxivUbuntunetPreprintId,
   ArxivPreprintId,
   BiorxivPreprintId,
+  EartharxivPreprintId,
   EcoevorxivPreprintId,
   EdarxivPreprintId,
   MedrxivPreprintId,
+  MetaarxivPreprintId,
   OsfPreprintsPreprintId,
   PreprintId,
   PreprintsorgPreprintId,
@@ -27,9 +29,11 @@ export type ReviewRequestPreprintId =
   | AfricarxivUbuntunetPreprintId
   | ArxivPreprintId
   | BiorxivPreprintId
+  | EartharxivPreprintId
   | EcoevorxivPreprintId
   | EdarxivPreprintId
   | MedrxivPreprintId
+  | MetaarxivPreprintId
   | OsfPreprintsPreprintId
   | PreprintsorgPreprintId
   | PsyarxivPreprintId
@@ -117,9 +121,11 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
         type: P.union(
           'arxiv',
           'biorxiv',
+          'eartharxiv',
           'ecoevorxiv',
           'edarxiv',
           'medrxiv',
+          'metaarxiv',
           'osf-preprints',
           'preprints.org',
           'psyarxiv',
