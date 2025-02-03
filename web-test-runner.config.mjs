@@ -11,6 +11,7 @@ export default {
     playwrightLauncher({ product: 'webkit' }),
     playwrightLauncher({ product: 'firefox' }),
   ],
+  browserStartTimeout: 60_000,
   files: 'test/assets/**/*.test.ts',
   nodeResolve: true,
   plugins: [url({}), esbuildPlugin({ ts: true })],
