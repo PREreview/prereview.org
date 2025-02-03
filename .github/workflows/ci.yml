@@ -430,7 +430,7 @@ jobs:
       - name: 'Run the tests'
         uses: docker://mcr.microsoft.com/playwright:v1.50.1-jammy
         with:
-          args: npx web-test-runner
+          args: env HOME=/root npx web-test-runner
 
   typecheck:
     name: 'Typecheck'
