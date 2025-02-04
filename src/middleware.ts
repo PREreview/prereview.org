@@ -1,4 +1,4 @@
-import { pipe } from 'fp-ts/lib/function.js'
+import { pipe } from 'effect'
 import httpErrors from 'http-errors'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'

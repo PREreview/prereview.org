@@ -1,7 +1,6 @@
-import { Context, Data, type Effect, Match, type Predicate } from 'effect'
+import { Context, Data, type Effect, flow, Match, pipe, type Predicate } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'

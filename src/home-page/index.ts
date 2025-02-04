@@ -1,5 +1,5 @@
+import { pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags.js'
 import type { SupportedLocale } from '../locales/index.js'
 import type { PageResponse } from '../response.js'

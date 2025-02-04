@@ -1,8 +1,8 @@
 import type { Temporal } from '@js-temporal/polyfill'
+import { flow, Function, pipe } from 'effect'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { constVoid, flow, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -51,7 +51,7 @@ const UsersE = ReadonlyArrayE(UserE)
 const isAllowed = pipe(
   RM.ask<ScietyListEnv>(),
   RM.chain(env => RM.decodeHeader('Authorization', D.literal(`Bearer ${env.scietyListToken}`).decode)),
-  RM.bimap(() => 'forbidden' as const, constVoid),
+  RM.bimap(() => 'forbidden' as const, Function.constVoid),
 )
 
 export const usersData = pipe(

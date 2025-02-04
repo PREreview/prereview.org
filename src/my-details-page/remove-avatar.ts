@@ -1,7 +1,7 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { deleteAvatar, getAvatar } from '../avatar.js'

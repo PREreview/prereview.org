@@ -1,7 +1,7 @@
 import { isDoi } from 'doi-ts'
+import { flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'

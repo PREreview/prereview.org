@@ -1,7 +1,7 @@
+import { pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
 import type { Uuid } from 'uuid-ts'
 import type { UnverifiedContactEmailAddress } from './contact-email-address.js'

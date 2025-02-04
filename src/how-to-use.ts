@@ -1,6 +1,6 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import { getPageFromGhost } from './GhostPage.js'
 import { type Html, fixHeadingLevels, html, plainText } from './html.js'
 import { havingProblemsPage } from './http-error.js'

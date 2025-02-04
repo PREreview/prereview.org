@@ -1,6 +1,5 @@
-import { Duration } from 'effect'
+import { Duration, Function } from 'effect'
 import type * as F from 'fetch-fp-ts'
-import { constVoid } from 'fp-ts/lib/function.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import * as L from 'logger-fp-ts'
@@ -36,7 +35,7 @@ export function revalidateIfStale<E extends F.FetchEnv & SleepEnv>(): (env: E) =
           .sleep(Duration.toMillis(Duration.min(Duration.times('0.2 seconds', openRequests.size), '30 seconds')))()
           .then(() => env.fetch(url, { ...init, cache: 'no-cache' }))
           .then(response => response.text())
-          .catch(constVoid)
+          .catch(Function.constVoid)
           .finally(() => openRequests.delete(url))
       }
 

@@ -1,6 +1,6 @@
+import { pipe } from 'effect'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
 import { type CanWriteCommentsEnv, canWriteComments } from '../feature-flags.js'
 import { pageNotFound } from '../http-error.js'

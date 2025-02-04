@@ -1,7 +1,7 @@
+import { flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { get } from 'spectacles-ts'

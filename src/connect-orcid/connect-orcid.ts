@@ -1,6 +1,6 @@
+import { flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import { P, match } from 'ts-pattern'
 import { canConnectOrcidProfile } from '../feature-flags.js'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'

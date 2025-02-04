@@ -1,5 +1,5 @@
+import { flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { P, match } from 'ts-pattern'

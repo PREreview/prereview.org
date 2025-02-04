@@ -1,6 +1,6 @@
 import { toTemporalInstant } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Predicate } from 'effect'
+import { Function, Predicate, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as A from 'fp-ts/lib/Array.js'
@@ -13,9 +13,8 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import type * as T from 'fp-ts/lib/Task.js'
-import { constVoid, flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { isString, toUpperCase } from 'fp-ts/lib/string.js'
+import type * as T from 'fp-ts/lib/Task.js'
 import httpErrors, { type HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -489,7 +488,7 @@ export const addAuthorToRecordOnZenodo = (
       ),
     ),
     RTE.chainW(publishDeposition),
-    RTE.bimap(() => 'unavailable', constVoid),
+    RTE.bimap(() => 'unavailable', Function.constVoid),
   )
 
 interface CommentToPublish {
@@ -561,7 +560,7 @@ export const publishDepositionOnZenodo = (
         ),
       ),
     ),
-    RTE.bimap(() => 'unavailable', constVoid),
+    RTE.bimap(() => 'unavailable', Function.constVoid),
   )
 
 export const createRecordOnZenodo: (

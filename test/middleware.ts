@@ -1,6 +1,6 @@
+import { pipe } from 'effect'
 import * as L from 'fp-ts-contrib/lib/List.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import type { Middleware } from 'hyper-ts/lib/Middleware.js'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import type { Action, ExpressConnection } from 'hyper-ts/lib/express.js'

@@ -1,5 +1,5 @@
+import { pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import type { SupportedLocale } from '../locales/index.js'
 import type { User } from '../user.js'
 import { handleDecision } from './handle-decision.js'

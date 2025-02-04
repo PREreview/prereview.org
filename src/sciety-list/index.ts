@@ -1,15 +1,15 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
+import { flow, Function, pipe } from 'effect'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { constVoid, flow, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import safeStableStringify from 'safe-stable-stringify'
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
 import type { NonEmptyString } from '../types/string.js'
 
@@ -63,7 +63,7 @@ const JsonE: E.Encoder<string, Json> = { encode: safeStableStringify }
 const isAllowed = pipe(
   RM.ask<ScietyListEnv>(),
   RM.chain(env => RM.decodeHeader('Authorization', D.literal(`Bearer ${env.scietyListToken}`).decode)),
-  RM.bimap(() => 'forbidden' as const, constVoid),
+  RM.bimap(() => 'forbidden' as const, Function.constVoid),
 )
 
 export const scietyList = pipe(

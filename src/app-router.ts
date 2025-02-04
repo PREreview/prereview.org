@@ -1,4 +1,5 @@
 import cookieSignature from 'cookie-signature'
+import { Function, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -9,7 +10,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as T from 'fp-ts/lib/Task.js'
-import { constVoid, constant, flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
 import httpErrors from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
@@ -392,7 +392,7 @@ const triggerRefreshOfPrereview = (id: number, user: User) =>
     void pipe(
       RTE.fromTask(T.delay(2000)(T.of(undefined))),
       RTE.chainW(() => refreshPrereview(id, user)),
-    )(env)().catch(constVoid)
+    )(env)().catch(Function.constVoid)
   })
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5_242_880 } })
@@ -2070,4 +2070,4 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
   concatAll(P.getParserMonoid()),
 )
 
-export const routes = pipe(route(router, constant(new httpErrors.NotFound())), RM.fromMiddleware, RM.iflatten)
+export const routes = pipe(route(router, Function.constant(new httpErrors.NotFound())), RM.fromMiddleware, RM.iflatten)

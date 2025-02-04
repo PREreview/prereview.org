@@ -1,7 +1,7 @@
 import { toUrl } from 'doi-ts'
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
 import type { ReviewRequestPreprintId } from '../review-request.js'
 import { profileMatch } from '../routes.js'

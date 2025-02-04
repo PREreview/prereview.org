@@ -1,7 +1,6 @@
-import { Context, Effect, Layer, Schema } from 'effect'
+import { Context, Effect, Layer, Schema, pipe } from 'effect'
 import type { IO } from 'fp-ts/lib/IO.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { type Uuid, isUuid, v4 } from 'uuid-ts'

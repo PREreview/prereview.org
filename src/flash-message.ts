@@ -1,6 +1,6 @@
 import cookie from 'cookie'
+import { flow, pipe } from 'effect'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import type { HeadersOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import * as D from 'io-ts/lib/Decoder.js'

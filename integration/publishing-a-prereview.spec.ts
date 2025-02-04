@@ -1,5 +1,5 @@
 import { Doi } from 'doi-ts'
-import { constVoid } from 'fp-ts/lib/function.js'
+import { Function } from 'effect'
 import { Status } from 'hyper-ts'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import { Orcid } from 'orcid-id-ts'
@@ -426,7 +426,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.keyboard.press('Shift+ArrowLeft')
 
     page.once('dialog', dialog => {
-      void dialog.accept('https://example.com').catch(constVoid)
+      void dialog.accept('https://example.com').catch(Function.constVoid)
     })
     await page.getByRole('button', { name: 'Link' }).click()
 

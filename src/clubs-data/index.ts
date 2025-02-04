@@ -1,6 +1,6 @@
+import { Function, flow, pipe } from 'effect'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import { constVoid, flow, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -43,7 +43,7 @@ const ClubsE = ReadonlyArrayE(ClubE)
 const isAllowed = pipe(
   RM.ask<ScietyListEnv>(),
   RM.chain(env => RM.decodeHeader('Authorization', D.literal(`Bearer ${env.scietyListToken}`).decode)),
-  RM.bimap(() => 'forbidden' as const, constVoid),
+  RM.bimap(() => 'forbidden' as const, Function.constVoid),
 )
 
 export const clubsData = pipe(

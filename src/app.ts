@@ -1,9 +1,8 @@
-import type { Effect, Runtime } from 'effect'
+import { type Effect, Function, pipe, type Runtime } from 'effect'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
-import { apply, pipe } from 'fp-ts/lib/function.js'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
@@ -169,7 +168,7 @@ export const app = (config: ConfigEnv) => {
               logger,
               runtime,
             })),
-            apply(config),
+            Function.apply(config),
             toRequestHandler,
           )(req, res, next)
         }),

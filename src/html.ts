@@ -1,5 +1,4 @@
-import type { Predicate } from 'effect'
-import { pipe } from 'fp-ts/lib/function.js'
+import { type Predicate, pipe } from 'effect'
 import { decode } from 'html-entities'
 import { type HeadersOpen, MediaType, type ResponseEnded } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'

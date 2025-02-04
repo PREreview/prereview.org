@@ -1,6 +1,6 @@
+import { pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { type Orcid, isOrcid } from 'orcid-id-ts'

@@ -1,4 +1,4 @@
-import { pipe } from 'fp-ts/lib/function.js'
+import { pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import { RawHtmlC } from '../html.js'

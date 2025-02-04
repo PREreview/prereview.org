@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
+import { Function, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -8,7 +9,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as b from 'fp-ts/lib/boolean.js'
-import { constVoid, flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
@@ -353,7 +353,7 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: LegacyCompatibleN
             ),
             RTE.chainW(F.send),
             RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
-            RTE.bimap(() => 'unavailable' as const, constVoid),
+            RTE.bimap(() => 'unavailable' as const, Function.constVoid),
           ),
       ),
     ),

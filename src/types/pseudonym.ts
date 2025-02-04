@@ -1,7 +1,6 @@
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
-import { Schema } from 'effect'
-import { pipe } from 'fp-ts/lib/function.js'
+import { pipe, Schema } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { NonEmptyString } from './string.js'

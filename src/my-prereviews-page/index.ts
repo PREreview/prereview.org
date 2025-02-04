@@ -1,6 +1,6 @@
+import { flow, identity, pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import type { Response } from '../response.js'

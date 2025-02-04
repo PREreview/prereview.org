@@ -1,3 +1,4 @@
+import { Function, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -5,9 +6,8 @@ import * as O from 'fp-ts/lib/Option.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
-import { constant, flow, pipe } from 'fp-ts/lib/function.js'
 import { isString } from 'fp-ts/lib/string.js'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { type OAuthEnv, exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { endSession as _endSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -169,7 +169,7 @@ export const authenticateError = (error: string) =>
 
 function getReferer(state: string) {
   return pipe(
-    RE.fromEither(E.tryCatch(() => new URL(state), constant('not-a-url'))),
+    RE.fromEither(E.tryCatch(() => new URL(state), Function.constant('not-a-url'))),
     RE.chain(ifHasSameOrigin),
     RE.match(
       () => format(homeMatch.formatter, {}),

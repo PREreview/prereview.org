@@ -1,5 +1,4 @@
-import { Effect } from 'effect'
-import { pipe } from 'fp-ts/lib/function.js'
+import { Effect, pipe } from 'effect'
 import type { HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'

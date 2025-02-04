@@ -1,6 +1,5 @@
 import { hasRegistrant } from 'doi-ts'
-import { Option, type Predicate } from 'effect'
-import { pipe } from 'fp-ts/lib/function.js'
+import { Option, pipe, type Predicate } from 'effect'
 import { P, match } from 'ts-pattern'
 import type {
   AfricarxivOsfPreprintId,

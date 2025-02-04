@@ -1,5 +1,5 @@
+import { identity } from 'effect'
 import { format } from 'fp-ts-routing'
-import { identity } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import { html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
