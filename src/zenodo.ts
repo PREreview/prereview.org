@@ -1,12 +1,12 @@
 import { toTemporalInstant } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
+import { Predicate } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as A from 'fp-ts/lib/Array.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as NEA from 'fp-ts/lib/NonEmptyArray.js'
 import * as O from 'fp-ts/lib/Option.js'
-import { and } from 'fp-ts/lib/Predicate.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -241,7 +241,10 @@ export const getPrereviewFromZenodo = (id: number) =>
     RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv & WasPrereviewRemovedEnv>()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview), and(isOpen)), () => 'not-found' as const),
+    RTE.filterOrElseW(
+      pipe(isInCommunity, Predicate.and(isPeerReview), Predicate.and(isOpen)),
+      () => 'not-found' as const,
+    ),
     RTE.chainW(recordToPrereview),
     RTE.orElseFirstW(
       RTE.fromReaderIOK(

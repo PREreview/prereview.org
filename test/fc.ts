@@ -3,13 +3,11 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, Duration, Either, Option } from 'effect'
+import { Array, Duration, Either, Option, Predicate } from 'effect'
 import type { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import type * as F from 'fetch-fp-ts'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
-import { not } from 'fp-ts/lib/Predicate.js'
-import type { Refinement } from 'fp-ts/lib/Refinement.js'
 import type * as H from 'hyper-ts'
 import { Status } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -435,9 +433,9 @@ export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbi
   fc
     .tuple(withRegistrant ?? doiRegistrant(), fc.string({ unit: 'grapheme', minLength: 1 }))
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
-    .filter(isDoi as Refinement<unknown, Doi<R>>)
+    .filter(isDoi as Predicate.Refinement<unknown, Doi<R>>)
 
-export const nonPreprintDoi = (): fc.Arbitrary<Doi> => doi().filter(not(isPreprintDoi))
+export const nonPreprintDoi = (): fc.Arbitrary<Doi> => doi().filter(Predicate.not(isPreprintDoi))
 
 export const preprintDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>['value']> =>
   preprintIdWithDoi().map(id => id.value)

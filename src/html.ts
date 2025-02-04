@@ -1,4 +1,4 @@
-import type { Refinement } from 'fp-ts/lib/Refinement.js'
+import type { Predicate } from 'effect'
 import { pipe } from 'fp-ts/lib/function.js'
 import { decode } from 'html-entities'
 import { type HeadersOpen, MediaType, type ResponseEnded } from 'hyper-ts'
@@ -176,7 +176,7 @@ export function plainText(
   input: TemplateStringsArray | Html | string,
   ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>
 ): PlainText {
-  const isTemplateStringsArray = Array.isArray as unknown as Refinement<unknown, TemplateStringsArray>
+  const isTemplateStringsArray = Array.isArray as unknown as Predicate.Refinement<unknown, TemplateStringsArray>
 
   return decode(
     stripTags(mathmlToTex((isTemplateStringsArray(input) ? html(input, ...placeholders) : input).toString())),

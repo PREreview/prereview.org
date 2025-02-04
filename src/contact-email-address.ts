@@ -1,6 +1,5 @@
-import { Context, Data, type Effect, Match } from 'effect'
+import { Context, Data, type Effect, Match, type Predicate } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type { Refinement } from 'fp-ts/lib/Refinement.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
@@ -173,6 +172,6 @@ export const verifyContactEmailAddressForInvitedAuthor = (verify: {
     ),
   )
 
-export const isUnverified: Refinement<ContactEmailAddress, UnverifiedContactEmailAddress> = (
+export const isUnverified: Predicate.Refinement<ContactEmailAddress, UnverifiedContactEmailAddress> = (
   emailAddress: ContactEmailAddress,
 ): emailAddress is UnverifiedContactEmailAddress => emailAddress._tag === 'UnverifiedContactEmailAddress'
