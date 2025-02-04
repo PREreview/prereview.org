@@ -1,4 +1,4 @@
-import { identity, pipe } from 'effect'
+import { identity, pipe, String } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -6,7 +6,6 @@ import * as J from 'fp-ts/lib/Json.js'
 import type { Ord } from 'fp-ts/lib/Ord.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RS from 'fp-ts/lib/ReadonlySet.js'
-import { split } from 'fp-ts/lib/string.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Orcid } from 'orcid-id-ts'
@@ -103,7 +102,7 @@ const JsonD = {
 }
 
 const SpaceSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
-  pipe(NonEmptyStringC, D.map(split(' ')), D.compose(D.array(decoder)))
+  pipe(NonEmptyStringC, D.map(String.split(' ')), D.compose(D.array(decoder)))
 
 const ReadonlySetD = <A>(item: D.Decoder<unknown, A>, ordItem: Ord<A>) =>
   pipe(SpaceSeparatedListD(item), D.readonly, D.map(RS.fromReadonlyArray(ordItem)))

@@ -1,8 +1,7 @@
-import { flow, pipe } from 'effect'
+import { flow, pipe, String } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IOE from 'fp-ts/lib/IOEither.js'
-import { split } from 'fp-ts/lib/string.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import { v4 } from 'uuid-ts'
@@ -46,7 +45,7 @@ const UrlD = pipe(
 )
 
 const CommaSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
-  pipe(D.string, D.map(split(',')), D.compose(D.array(decoder)))
+  pipe(D.string, D.map(String.split(',')), D.compose(D.array(decoder)))
 
 const UndefinedD: D.Decoder<unknown, undefined> = {
   decode: val => (val === undefined ? D.success(undefined) : D.failure(val, 'undefined')),

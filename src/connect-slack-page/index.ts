@@ -1,5 +1,5 @@
 import cookie from 'cookie'
-import { flow, identity, pipe } from 'effect'
+import { String, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -10,7 +10,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
 import * as RS from 'fp-ts/lib/ReadonlySet.js'
-import { split } from 'fp-ts/lib/string.js'
 import { MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -171,7 +170,7 @@ const JsonD = {
 }
 
 const CommaSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
-  pipe(NonEmptyStringC, D.map(split(',')), D.compose(D.array(decoder)))
+  pipe(NonEmptyStringC, D.map(String.split(',')), D.compose(D.array(decoder)))
 
 const ReadonlySetD = <A>(item: D.Decoder<unknown, A>, ordItem: Ord<A>) =>
   pipe(CommaSeparatedListD(item), D.readonly, D.map(RS.fromReadonlyArray(ordItem)))

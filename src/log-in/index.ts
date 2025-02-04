@@ -1,4 +1,4 @@
-import { Function, flow, pipe } from 'effect'
+import { Function, String, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -6,7 +6,6 @@ import * as O from 'fp-ts/lib/Option.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { isString } from 'fp-ts/lib/string.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { type OAuthEnv, exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { endSession as _endSession, storeSession } from 'hyper-ts-session'
@@ -42,7 +41,7 @@ export const logIn = pipe(
   RM.decodeHeader(
     'Referer',
     flow(
-      O.fromPredicate(isString),
+      O.fromPredicate(String.isString),
       O.match(() => E.right(''), E.right),
     ),
   ),
@@ -52,7 +51,7 @@ export const logIn = pipe(
 
 export const logInAndRedirect = flow(
   RM.fromReaderK(toUrl),
-  RM.ichainW(flow(String, requestAuthorizationCode('/authenticate'))),
+  RM.ichainW(flow(url => url.href, requestAuthorizationCode('/authenticate'))),
   R.local(addRedirectUri()),
 )
 

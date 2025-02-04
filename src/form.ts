@@ -1,9 +1,8 @@
-import { flow, pipe } from 'effect'
+import { flow, pipe, String } from 'effect'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
-import { isString } from 'fp-ts/lib/string.js'
 import * as DE from 'io-ts/lib/DecodeError.js'
 import type * as D from 'io-ts/lib/Decoder.js'
 import * as FS from 'io-ts/lib/FreeSemigroup.js'
@@ -85,7 +84,7 @@ export const hasAnError: <K extends string>(form: RR.ReadonlyRecord<K, E.Either<
 export function getInput(field: string): (error: D.DecodeError) => O.Option<string> {
   return FS.fold(
     DE.fold({
-      Leaf: O.fromPredicate(isString),
+      Leaf: O.fromPredicate(String.isString),
       Key: (key, kind, errors) => (key === field ? getInput(field)(errors) : O.none),
       Index: (index, kind, errors) => getInput(field)(errors),
       Member: (index, errors) => getInput(field)(errors),

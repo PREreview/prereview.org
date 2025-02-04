@@ -1,5 +1,5 @@
 import cookieSignature from 'cookie-signature'
-import { Function, flow, pipe } from 'effect'
+import { Function, String, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -10,7 +10,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as T from 'fp-ts/lib/Task.js'
-import { isString } from 'fp-ts/lib/string.js'
 import httpErrors from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
@@ -782,7 +781,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               ),
             env,
           ),
-          unsignValue: value => O.fromPredicate(isString)(cookieSignature.unsign(value, env.secret)),
+          unsignValue: value => O.fromPredicate(String.isString)(cookieSignature.unsign(value, env.secret)),
         })),
       ),
     ),

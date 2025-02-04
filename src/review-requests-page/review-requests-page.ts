@@ -1,11 +1,10 @@
-import { flow, pipe } from 'effect'
+import { flow, pipe, String } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as Ord from 'fp-ts/lib/Ord.js'
 import { type Ordering, sign } from 'fp-ts/lib/Ordering.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { snd } from 'fp-ts/lib/ReadonlyTuple.js'
-import { isString } from 'fp-ts/lib/string.js'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
@@ -181,7 +180,7 @@ const title = ({
     [
       field ? getFieldName(field, locale) : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
-    ].filter(isString),
+    ].filter(String.isString),
   )
 
   return plainText(

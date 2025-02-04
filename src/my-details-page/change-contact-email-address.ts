@@ -1,10 +1,9 @@
-import { flow, pipe } from 'effect'
+import { String, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as s from 'fp-ts/lib/string.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
@@ -113,7 +112,7 @@ const EmailAddressFieldD = pipe(
   D.struct({
     emailAddress: pipe(
       D.string,
-      D.map(s.trim),
+      D.map(String.trim),
       D.compose(
         D.union(
           EmailAddressC,

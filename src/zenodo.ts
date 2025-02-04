@@ -1,6 +1,6 @@
 import { toTemporalInstant } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Function, Predicate, flow, identity, pipe } from 'effect'
+import { Function, Predicate, String, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as A from 'fp-ts/lib/Array.js'
@@ -13,7 +13,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { isString, toUpperCase } from 'fp-ts/lib/string.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import httpErrors, { type HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
@@ -682,7 +681,7 @@ ${newPrereview.review.toString()}`,
               requested ? 'Requested PREreview' : undefined,
               newPrereview.structured ? 'Structured PREreview' : undefined,
             ],
-            A.filter(isString),
+            A.filter(String.isString),
             A.matchW(() => undefined, identity),
           ),
           related_identifiers: [
@@ -906,7 +905,7 @@ function recordToRecentPrereview(
 const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
   D.struct({
     metadata: D.struct({
-      license: D.struct({ id: pipe(D.string, D.map(toUpperCase), D.compose(D.literal('CC-BY-4.0'))) }),
+      license: D.struct({ id: pipe(D.string, D.map(String.toUpperCase), D.compose(D.literal('CC-BY-4.0'))) }),
     }),
   }),
   D.map(get('metadata.license.id')),

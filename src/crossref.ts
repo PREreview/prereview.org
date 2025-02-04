@@ -1,11 +1,10 @@
 import { type Work, getWork } from 'crossref-ts'
 import { type Doi, hasRegistrant } from 'doi-ts'
-import { flow, pipe } from 'effect'
+import { String, flow, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import { isString } from 'fp-ts/lib/string.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -103,7 +102,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.P
               name: author.name,
             }))
             .with({ family: P.string }, author => ({
-              name: [author.prefix, author.given, author.family, author.suffix].filter(isString).join(' '),
+              name: [author.prefix, author.given, author.family, author.suffix].filter(String.isString).join(' '),
               orcid: author.ORCID,
             }))
             .exhaustive(),

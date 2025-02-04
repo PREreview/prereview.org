@@ -1,10 +1,9 @@
-import { flow, identity, pipe } from 'effect'
+import { String, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as s from 'fp-ts/lib/string.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -36,11 +35,11 @@ const PersonalDetailsD = D.struct({
   name: D.nullable(
     D.struct({
       'given-names': D.struct({
-        value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
+        value: pipe(D.string, D.map(String.trim), D.compose(NonEmptyStringC)),
       }),
       'family-name': D.nullable(
         D.struct({
-          value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
+          value: pipe(D.string, D.map(String.trim), D.compose(NonEmptyStringC)),
         }),
       ),
     }),

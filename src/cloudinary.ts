@@ -1,13 +1,12 @@
 import { now } from 'clock-ts'
 import { v2 as cloudinary } from 'cloudinary'
-import { Function, flow, pipe } from 'effect'
+import { Function, String, flow, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as s from 'fp-ts/lib/string.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -47,7 +46,7 @@ const JsonD = {
     ),
 }
 
-const PublicIdD = pipe(D.string, D.map(s.replace(/^prereview-profile\//, '')), D.compose(NonEmptyStringC))
+const PublicIdD = pipe(D.string, D.map(String.replace(/^prereview-profile\//, '')), D.compose(NonEmptyStringC))
 
 const UploadResponseD = pipe(
   JsonD,

@@ -3,7 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { identity, pipe } from 'effect'
+import { identity, pipe, String } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as A from 'fp-ts/lib/Array.js'
@@ -11,7 +11,6 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import { isString } from 'fp-ts/lib/string.js'
 import * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
@@ -757,7 +756,7 @@ describe('getPrereviewFromZenodo', () => {
               structured ? 'Structured PREreview' : undefined,
               live ? 'Live Review' : undefined,
             ],
-            A.filter(isString),
+            A.filter(String.isString),
             A.matchW(() => undefined, identity),
           ),
           language: 'eng',
@@ -4729,7 +4728,9 @@ ${newPrereview.review.toString()}`,
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
-                  keywords: [requested ? 'Requested PREreview' : undefined, 'Structured PREreview'].filter(isString),
+                  keywords: [requested ? 'Requested PREreview' : undefined, 'Structured PREreview'].filter(
+                    String.isString,
+                  ),
                   ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
@@ -5037,7 +5038,9 @@ ${newPrereview.review.toString()}`,
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
-                  keywords: [requested ? 'Requested PREreview' : undefined, 'Structured PREreview'].filter(isString),
+                  keywords: [requested ? 'Requested PREreview' : undefined, 'Structured PREreview'].filter(
+                    String.isString,
+                  ),
                   ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }

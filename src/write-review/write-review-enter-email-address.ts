@@ -1,8 +1,7 @@
-import { flow, pipe } from 'effect'
+import { String, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
-import * as s from 'fp-ts/lib/string.js'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -137,7 +136,7 @@ const handleEnterEmailAddressForm = ({ preprint, user }: { preprint: PreprintTit
   )
 
 const EmailAddressFieldD = pipe(
-  D.struct({ emailAddress: pipe(D.string, D.map(s.trim), D.compose(EmailAddressC)) }),
+  D.struct({ emailAddress: pipe(D.string, D.map(String.trim), D.compose(EmailAddressC)) }),
   D.map(get('emailAddress')),
 )
 
