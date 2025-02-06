@@ -6,7 +6,7 @@ import { type Html, plainText } from './html.js'
 export function detectLanguage(html: Html): Option.Option<LanguageCode> {
   return pipe(
     detectAll(plainText(html).toString()),
-    Array.findFirst(({ lang }) => Option.liftPredicate(lang, iso6391Validate)),
+    Array.findFirst(({ lang }) => Option.liftPredicate(lang, iso6391.validate)),
   )
 }
 
@@ -18,6 +18,3 @@ export function detectLanguageFrom<L extends LanguageCode>(
     Option.liftPredicate(detected => Array.contains(languages, detected)),
   )
 }
-
-// https://github.com/meikidd/iso-639-1/pull/61
-const iso6391Validate = iso6391.validate as (code: string) => code is LanguageCode
