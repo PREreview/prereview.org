@@ -14,6 +14,7 @@ import type {
   EartharxivPreprintId,
   EcoevorxivPreprintId,
   EdarxivPreprintId,
+  EngrxivPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
   OsfPreprintsPreprintId,
@@ -35,6 +36,7 @@ export type ReviewRequestPreprintId =
   | EartharxivPreprintId
   | EcoevorxivPreprintId
   | EdarxivPreprintId
+  | EngrxivPreprintId
   | MedrxivPreprintId
   | MetaarxivPreprintId
   | OsfPreprintsPreprintId
@@ -129,6 +131,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
           'eartharxiv',
           'ecoevorxiv',
           'edarxiv',
+          'engrxiv',
           'medrxiv',
           'metaarxiv',
           'osf-preprints',
