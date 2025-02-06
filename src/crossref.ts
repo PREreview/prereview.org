@@ -398,7 +398,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('21203'), 'DOI'),
-      publisher: D.literal('Research Square Platform LLC'),
       institution: D.fromTuple(D.struct({ name: D.literal('Research Square') })),
     }),
     D.map(
