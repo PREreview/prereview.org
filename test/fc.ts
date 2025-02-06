@@ -959,6 +959,7 @@ export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId>
     psyarxivPreprintId(),
     scieloPreprintId(),
     socarxivPreprintId(),
+    techrxivPreprintId(),
   )
 
 export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, ReviewRequestPreprintId>> =>
@@ -977,7 +978,6 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     psychArchivesPreprintId(),
     researchSquarePreprintId(),
     scienceOpenPreprintId(),
-    techrxivPreprintId(),
     verixivPreprintId(),
     zenodoPreprintId(),
   )

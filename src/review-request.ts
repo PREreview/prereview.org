@@ -22,6 +22,7 @@ import type {
   PsyarxivPreprintId,
   ScieloPreprintId,
   SocarxivPreprintId,
+  TechrxivPreprintId,
 } from './types/preprint-id.js'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
@@ -41,6 +42,7 @@ export type ReviewRequestPreprintId =
   | PsyarxivPreprintId
   | ScieloPreprintId
   | SocarxivPreprintId
+  | TechrxivPreprintId
 
 export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
@@ -134,6 +136,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
           'psyarxiv',
           'scielo',
           'socarxiv',
+          'techrxiv',
         ),
       },
       () => true,
