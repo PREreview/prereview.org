@@ -5,7 +5,7 @@ import * as P from 'fp-ts-routing'
 import * as O from 'fp-ts/lib/Option.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import iso6391, { type LanguageCode } from 'iso-639-1'
+import iso6391 from 'iso-639-1'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import { ClubIdC } from './types/club-id.js'
@@ -126,7 +126,7 @@ export const EmptyAsUndefinedC = <I, O, A>(codec: C.Codec<I, O, A>) =>
 
 const FieldIdC = pipe(C.string, C.refine(isFieldId, 'FieldId'))
 
-const LanguageC = pipe(C.string, C.refine(iso6391Validate, 'LanguageCode'))
+const LanguageC = pipe(C.string, C.refine(iso6391.validate, 'LanguageCode'))
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
@@ -619,8 +619,3 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
 const singleton = <K extends string, V>(k: K, v: V): Record<K, V> => ({ [k as any]: v }) as any
-
-// https://github.com/meikidd/iso-639-1/pull/61
-function iso6391Validate(code: string): code is LanguageCode {
-  return iso6391.validate(code)
-}
