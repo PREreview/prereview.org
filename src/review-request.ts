@@ -7,6 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import type { Orcid } from 'orcid-id-ts'
 import { match, P } from 'ts-pattern'
 import type {
+  AdvancePreprintId,
   AfricarxivUbuntunetPreprintId,
   ArxivPreprintId,
   BiorxivPreprintId,
@@ -26,6 +27,7 @@ import type {
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 
 export type ReviewRequestPreprintId =
+  | AdvancePreprintId
   | AfricarxivUbuntunetPreprintId
   | ArxivPreprintId
   | BiorxivPreprintId
@@ -119,6 +121,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
     .with(
       {
         type: P.union(
+          'advance',
           'arxiv',
           'biorxiv',
           'eartharxiv',
