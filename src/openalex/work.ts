@@ -1,17 +1,17 @@
 import { type Doi, toUrl } from 'doi-ts'
-import { flow, pipe } from 'effect'
+import { flow, pipe, String } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as Eq from 'fp-ts/lib/Eq.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as s from 'fp-ts/lib/string.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { get } from 'spectacles-ts'
+import * as EffectToFpTs from '../EffectToFpts.js'
 import { timeoutRequest } from '../fetch.js'
 import { NetworkError, UnableToDecodeBody, UnexpectedStatusCode } from './http.js'
 
@@ -72,7 +72,7 @@ export const getWorkByDoi: (
 )
 
 const eqUrl: Eq.Eq<URL> = pipe(
-  s.Eq,
+  EffectToFpTs.eq(String.Equivalence),
   Eq.contramap(url => url.href),
 )
 
