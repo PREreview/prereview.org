@@ -1,10 +1,9 @@
-import { flow, identity, pipe } from 'effect'
+import { Boolean, flow, identity, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as RE from 'fp-ts/lib/ReaderEither.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as b from 'fp-ts/lib/boolean.js'
 import { P, match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags.js'
@@ -80,9 +79,9 @@ const ensureUserCanRequestReviews: (user?: User) => RE.ReaderEither<CanRequestRe
   flow(
     canRequestReviews,
     R.map(
-      b.match(
-        () => E.left(Decision.DenyAccess),
-        () => E.right(undefined),
-      ),
+      Boolean.match({
+        onFalse: () => E.left(Decision.DenyAccess),
+        onTrue: () => E.right(undefined),
+      }),
     ),
   )

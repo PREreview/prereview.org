@@ -84,7 +84,7 @@
       "error",
       {
         "allow": [
-          "fp-ts/lib/!(function|Predicate|Refinement|string).js",
+          "fp-ts/lib/!(boolean|function|Predicate|Refinement|string).js",
           "fp-ts-contrib/lib/*",
           "io-ts/lib/*",
           "iso-639-3/to-*.json",

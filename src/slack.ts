@@ -1,11 +1,10 @@
-import { flow, Function, pipe } from 'effect'
+import { Boolean, flow, Function, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as b from 'fp-ts/lib/boolean.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
@@ -104,9 +103,9 @@ export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
   pipe(
     shouldUpdate,
     R.chainW(
-      b.match(
-        () => RTE.of(undefined),
-        () =>
+      Boolean.match({
+        onFalse: () => RTE.of(undefined),
+        onTrue: () =>
           pipe(
             'https://slack.com/api/users.profile.set',
             F.Request('POST'),
@@ -131,7 +130,7 @@ export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
               ),
             ),
           ),
-      ),
+      }),
     ),
   )
 
@@ -139,9 +138,9 @@ export const removeOrcidFromSlackProfile = (userId: SlackUserId) =>
   pipe(
     shouldUpdate,
     R.chainW(
-      b.match(
-        () => RTE.of(undefined),
-        () =>
+      Boolean.match({
+        onFalse: () => RTE.of(undefined),
+        onTrue: () =>
           pipe(
             'https://slack.com/api/users.profile.set',
             F.Request('POST'),
@@ -166,7 +165,7 @@ export const removeOrcidFromSlackProfile = (userId: SlackUserId) =>
               ),
             ),
           ),
-      ),
+      }),
     ),
   )
 
