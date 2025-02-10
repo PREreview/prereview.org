@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
+import { Struct } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import Keyv from 'keyv'
-import { get } from 'spectacles-ts'
 import { ContactEmailAddressC } from '../src/contact-email-address.js'
 import * as _ from '../src/keyv.js'
 import { OrcidTokenC } from '../src/orcid-token.js'
@@ -216,7 +216,7 @@ describe('getCareerStage', () => {
     expect(actual).toStrictEqual(E.right(careerStage))
   })
 
-  test.prop([fc.orcid(), fc.careerStage().map(get('value'))])(
+  test.prop([fc.orcid(), fc.careerStage().map(Struct.get('value'))])(
     'when the key contains a career stage as a string',
     async (orcid, careerStage) => {
       const store = new Keyv()

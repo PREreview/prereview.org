@@ -1,11 +1,10 @@
-import { flow, pipe } from 'effect'
+import { flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
-import { get } from 'spectacles-ts'
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.js'
 import { DefaultLocale, translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
@@ -133,7 +132,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                 ? html`
                     <div>
                       <dt><span>Invited author${review.otherAuthors.length !== 1 ? 's' : ''}</span></dt>
-                      <dd>${pipe(review.otherAuthors, RNEA.map(get('name')), formatList(DefaultLocale))}</dd>
+                      <dd>${pipe(review.otherAuthors, RNEA.map(Struct.get('name')), formatList(DefaultLocale))}</dd>
                       <dd>
                         <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
                           >${rawHtml(t('changeInvitedAuthors')(visuallyHidden))}</a

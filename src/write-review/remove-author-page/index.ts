@@ -1,4 +1,4 @@
-import { flow, pipe } from 'effect'
+import { Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
@@ -6,7 +6,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
@@ -151,5 +150,5 @@ const RemoveAuthorFieldD = pipe(
   D.struct({
     removeAuthor: D.literal('yes', 'no'),
   }),
-  D.map(get('removeAuthor')),
+  D.map(Struct.get('removeAuthor')),
 )

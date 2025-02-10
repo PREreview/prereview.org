@@ -1,5 +1,5 @@
 import cookie from 'cookie'
-import { String, flow, identity, pipe } from 'effect'
+import { String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -14,7 +14,6 @@ import { MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { setFlashMessage } from '../flash-message.js'
 import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in/index.js'
@@ -205,7 +204,7 @@ export const connectSlackCode = flow(
       ),
     ),
   ),
-  RM.bindW('slackUser', RM.fromReaderTaskEitherK(flow(get('code'), exchangeAuthorizationCode))),
+  RM.bindW('slackUser', RM.fromReaderTaskEitherK(flow(Struct.get('code'), exchangeAuthorizationCode))),
   RM.chainFirstReaderTaskEitherKW(({ user, slackUser }) =>
     saveSlackUserId(user.orcid, {
       userId: slackUser.authed_user.id,

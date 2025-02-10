@@ -1,4 +1,4 @@
-import { flow, pipe } from 'effect'
+import { flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
@@ -6,12 +6,11 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
-import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
+import { getPreprintTitle, type GetPreprintTitleEnv, type PreprintTitle } from '../../preprint.js'
 import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorMatch, writeReviewMatch } from '../../routes.js'
 import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
@@ -128,5 +127,5 @@ const AnotherAuthorFieldD = pipe(
   D.struct({
     anotherAuthor: D.literal('yes', 'no'),
   }),
-  D.map(get('anotherAuthor')),
+  D.map(Struct.get('anotherAuthor')),
 )

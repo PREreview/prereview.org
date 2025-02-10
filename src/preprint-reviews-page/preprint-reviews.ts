@@ -1,6 +1,6 @@
 import textClipper from '@arendjr/text-clipper'
 import { isDoi, toUrl } from 'doi-ts'
-import { flow, pipe } from 'effect'
+import { flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as I from 'fp-ts/lib/Identity.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
@@ -8,7 +8,6 @@ import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
-import { get } from 'spectacles-ts'
 import { match, P as p } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
@@ -184,7 +183,7 @@ function showReview(review: Prereview) {
             <span class="visually-hidden">Authored</span> by
             ${pipe(
               review.authors.named,
-              RNEA.map(get('name')),
+              RNEA.map(Struct.get('name')),
               RNEA.concatW(
                 review.authors.anonymous > 0
                   ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
@@ -222,7 +221,7 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
 
     <div class="byline">
       <span class="visually-hidden">Authored</span> by
-      ${pipe(rapidPrereviews, RNEA.map(flow(get('author'), displayAuthor)), formatList(DefaultLocale))}
+      ${pipe(rapidPrereviews, RNEA.map(flow(Struct.get('author'), displayAuthor)), formatList(DefaultLocale))}
     </div>
 
     <details>

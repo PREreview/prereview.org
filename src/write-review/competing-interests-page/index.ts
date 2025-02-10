@@ -1,10 +1,9 @@
-import { pipe } from 'effect'
+import { Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
@@ -145,10 +144,10 @@ const handleCompetingInterestsForm = ({
 
 const CompetingInterestsFieldD = pipe(
   D.struct({ competingInterests: D.literal('yes', 'no') }),
-  D.map(get('competingInterests')),
+  D.map(Struct.get('competingInterests')),
 )
 
 const CompetingInterestsDetailsFieldD = pipe(
   D.struct({ competingInterestsDetails: NonEmptyStringC }),
-  D.map(get('competingInterestsDetails')),
+  D.map(Struct.get('competingInterestsDetails')),
 )

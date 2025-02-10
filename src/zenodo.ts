@@ -1,6 +1,6 @@
 import { toTemporalInstant } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Function, Predicate, String, flow, identity, pipe } from 'effect'
+import { Function, Predicate, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as A from 'fp-ts/lib/Array.js'
@@ -20,7 +20,6 @@ import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import {
@@ -890,7 +889,7 @@ function recordToRecentPrereview(
       sequenceS(RTE.ApplyPar)({
         club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
         id: RTE.right(record.id),
-        reviewers: RTE.right(pipe(record.metadata.creators, RNEA.map(get('name')))),
+        reviewers: RTE.right(pipe(record.metadata.creators, RNEA.map(Struct.get('name')))),
         published: RTE.right(
           toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),
@@ -908,7 +907,7 @@ const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
       license: D.struct({ id: pipe(D.string, D.map(String.toUpperCase), D.compose(D.literal('CC-BY-4.0'))) }),
     }),
   }),
-  D.map(get('metadata.license.id')),
+  D.map(({ metadata }) => metadata.license.id),
 )
 
 function getAuthors(record: Record | InProgressDeposition): Prereview['authors'] {
@@ -952,7 +951,7 @@ const getReviewFields = flow(
   (record: Record) => record.metadata.subjects ?? [],
   RA.filterMap(
     flow(
-      get('identifier'),
+      Struct.get('identifier'),
       O.fromNullableK(identifier => (/^https:\/\/openalex\.org\/fields\/(.+)$/.exec(identifier) ?? [])[1]),
       O.filter(isFieldId),
     ),
@@ -963,7 +962,7 @@ const getReviewSubfields = flow(
   (record: Record) => record.metadata.subjects ?? [],
   RA.filterMap(
     flow(
-      get('identifier'),
+      Struct.get('identifier'),
       O.fromNullableK(identifier => (/^https:\/\/openalex\.org\/subfields\/(.+)$/.exec(identifier) ?? [])[1]),
       O.filter(isSubfieldId),
     ),
@@ -972,7 +971,7 @@ const getReviewSubfields = flow(
 
 const getReviewClub = flow(
   (record: Record) => record.metadata.contributors ?? [],
-  RA.findFirstMap(flow(get('name'), getClubByName)),
+  RA.findFirstMap(flow(Struct.get('name'), getClubByName)),
 )
 
 const getReviewUrl = flow(

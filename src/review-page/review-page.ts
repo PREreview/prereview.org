@@ -1,11 +1,10 @@
 import { toUrl } from 'doi-ts'
-import { flow, identity, pipe } from 'effect'
+import { flow, identity, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
-import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
@@ -222,7 +221,7 @@ export const createPage = ({
                                       'review-page',
                                       'commentItemTitle',
                                     )({
-                                      author: pipe(RNEA.head(item.authors.named), get('name')),
+                                      author: pipe(RNEA.head(item.authors.named), Struct.get('name')),
                                       authors: item.authors.named.length,
                                     })}
                                   </h3>

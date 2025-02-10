@@ -1,11 +1,10 @@
-import { flow, pipe } from 'effect'
+import { flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { deleteCareerStage, getCareerStage, saveCareerStage } from '../career-stage.js'
 import { havingProblemsPage } from '../http-error.js'
@@ -54,7 +53,7 @@ const handleChangeCareerStageForm = ({ body, user }: { body: unknown; user: User
                 'visibility',
                 pipe(
                   getCareerStage(user.orcid),
-                  RTE.map(get('visibility')),
+                  RTE.map(Struct.get('visibility')),
                   RTE.orElseW(error =>
                     match(error)
                       .with('not-found', () => RTE.of('restricted' as const))

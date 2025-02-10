@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
@@ -8,7 +8,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.js'
@@ -232,12 +231,12 @@ const UseInvitedAddressFieldD = pipe(
   D.struct({
     useInvitedAddress: D.literal('yes', 'no'),
   }),
-  D.map(get('useInvitedAddress')),
+  D.map(Struct.get('useInvitedAddress')),
 )
 
 const OtherEmailAddressFieldD = pipe(
   D.struct({
     otherEmailAddress: EmailAddressC,
   }),
-  D.map(get('otherEmailAddress')),
+  D.map(Struct.get('otherEmailAddress')),
 )

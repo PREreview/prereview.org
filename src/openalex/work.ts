@@ -1,5 +1,5 @@
 import { type Doi, toUrl } from 'doi-ts'
-import { flow, pipe, String } from 'effect'
+import { flow, pipe, String, Struct } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as Eq from 'fp-ts/lib/Eq.js'
@@ -10,7 +10,6 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import * as EffectToFpTs from '../EffectToFpts.js'
 import { timeoutRequest } from '../fetch.js'
 import { NetworkError, UnableToDecodeBody, UnexpectedStatusCode } from './http.js'
@@ -84,5 +83,5 @@ export const getCategories: (work: Work) => ReadonlyArray<{ id: URL; display_nam
     { id: topic.field.id, display_name: topic.field.display_name },
     { id: topic.domain.id, display_name: topic.domain.display_name },
   ]),
-  RA.uniq(pipe(eqUrl, Eq.contramap(get('id')))),
+  RA.uniq(pipe(eqUrl, Eq.contramap(Struct.get('id')))),
 )

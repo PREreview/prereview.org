@@ -1,10 +1,9 @@
-import { flow, pipe } from 'effect'
+import { Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
@@ -108,7 +107,7 @@ const ConductFieldD = pipe(
   D.struct({
     conduct: D.literal('yes'),
   }),
-  D.map(get('conduct')),
+  D.map(Struct.get('conduct')),
 )
 
 interface CodeOfConductForm {

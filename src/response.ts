@@ -1,5 +1,5 @@
 import cookie from 'cookie'
-import { Schema, flow, pipe } from 'effect'
+import { Schema, Struct, flow, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
@@ -8,7 +8,6 @@ import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message.js'
 import { type Html, html, rawHtml, sendHtml } from './html.js'
@@ -286,7 +285,7 @@ export const handlePageResponse = ({
           .exhaustive(),
       ),
     ),
-    RM.ichainMiddlewareK(flow(get('body'), sendHtml)),
+    RM.ichainMiddlewareK(flow(Struct.get('body'), sendHtml)),
   )
 
 const handleTwoUpPageResponse = ({
@@ -337,7 +336,7 @@ const handleTwoUpPageResponse = ({
     RM.ichainFirst(() => RM.header('Vary', 'Cookie')),
     RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
     RM.ichainFirst(({ canonical }) => RM.header('Link', `<${canonical}>; rel="canonical"`)),
-    RM.ichainMiddlewareK(flow(get('body'), sendHtml)),
+    RM.ichainMiddlewareK(flow(Struct.get('body'), sendHtml)),
   )
 
 const handleRedirectResponse = ({

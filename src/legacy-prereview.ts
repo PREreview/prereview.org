@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Boolean, Function, flow, identity, pipe } from 'effect'
+import { Boolean, Function, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -11,7 +11,6 @@ import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
@@ -188,7 +187,9 @@ export const getPreprintIdFromLegacyPreviewUuid: (
       .with({ status: Status.NotFound }, () => 'not-found' as const)
       .otherwise(() => 'unavailable' as const),
   ),
-  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(flow(get('data.[0].handle'), parsePreprintDoi)),
+  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(
+    flow(({ data }) => data[0].handle, parsePreprintDoi),
+  ),
 )
 
 export const getProfileIdFromLegacyPreviewUuid: (
@@ -241,7 +242,12 @@ export const getPseudonymFromLegacyPrereview = (orcid: Orcid) =>
     RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
     RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
     RTE.chainOptionK(() => 'unknown-pseudonym' as unknown)(
-      flow(get('data.personas'), RA.findFirst(get('isAnonymous')), O.map(get('name')), O.filter(isPseudonym)),
+      flow(
+        ({ data }) => data.personas,
+        RA.findFirst(Struct.get('isAnonymous')),
+        O.map(Struct.get('name')),
+        O.filter(isPseudonym),
+      ),
     ),
     RTE.mapLeft(error =>
       match(error)
@@ -285,7 +291,7 @@ export const getRapidPreviewsFromLegacyPrereview = (id: Extract<PreprintId, { va
     RTE.chainTaskEitherKW(F.decode(LegacyRapidPrereviewsD)),
     RTE.map(
       flow(
-        get('data'),
+        Struct.get('data'),
         RA.map(results => ({
           author: { name: results.author.name, orcid: results.author.orcid },
           questions: {

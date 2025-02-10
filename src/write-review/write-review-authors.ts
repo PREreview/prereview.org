@@ -1,11 +1,10 @@
-import { flow, pipe } from 'effect'
+import { Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as I from 'fp-ts/lib/Identity.js'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
@@ -135,14 +134,14 @@ const MoreAuthorsFieldD = pipe(
   D.struct({
     moreAuthors: D.literal('yes', 'yes-private', 'no'),
   }),
-  D.map(get('moreAuthors')),
+  D.map(Struct.get('moreAuthors')),
 )
 
 const MoreAuthorsApprovedFieldD = pipe(
   D.struct({
     moreAuthorsApproved: D.literal('yes'),
   }),
-  D.map(get('moreAuthorsApproved')),
+  D.map(Struct.get('moreAuthorsApproved')),
 )
 
 interface AuthorsForm {

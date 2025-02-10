@@ -1,7 +1,6 @@
-import { flow, identity, pipe } from 'effect'
+import { flow, identity, pipe, Struct } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import type { Response } from '../response.js'
 import type { User } from '../user.js'
@@ -17,7 +16,7 @@ export const myPrereviews = ({ user }: { user?: User }): RT.ReaderTask<Prereview
     RTE.apS('user', RTE.fromEither(RequireLogIn.ensureUserIsLoggedIn(user))),
     RTE.bindW(
       'prereviews',
-      flow(get('user'), Prereviews.getMyPrereviews, RTE.chainEitherKW(NoPrereviews.ensureThereArePrereviews)),
+      flow(Struct.get('user'), Prereviews.getMyPrereviews, RTE.chainEitherKW(NoPrereviews.ensureThereArePrereviews)),
     ),
     RTE.matchW(identity, ListOfPrereviews.ListOfPrereviews),
     RT.map(result =>
