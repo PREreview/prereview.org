@@ -606,6 +606,27 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Viduthalai Rasheedkhan Regina', orcid: Orcid('0000-0001-5457-8965') }],
   },
+  'snl-semantics': {
+    name: 'SNL Semantics',
+    description: html`
+      <p>
+        The Society for the Neurobiology of Language (SNL) is a non-profit organization whose goal is to foster progress
+        in understanding the neurobiological basis for language via the interdisciplinary exchange of ideas. The Society
+        brings together scientists with different perspectives and methodological approaches to the study of language
+        and related systems.
+      </p>
+      <p>Among the other member-initiated virtual activities, this club aims at providing SNL members:</p>
+      <ol>
+        <li>the opportunity to get credit for their review work</li>
+        <li>a platform where to practice their peer review (and writing) skills</li>
+        <li>a way to stay abreast of scientific research on the neurobiology of semantics</li>
+      </ol>
+    `,
+    leads: [
+      { name: 'Valentina Borghesani', orcid: Orcid('0000-0002-7909-8631') },
+      { name: 'Gabriella Liuzzi', orcid: Orcid('0000-0001-8960-5601') },
+    ],
+  },
   'surrey-microbiology': {
     name: 'University of Surrey Microbiology Journal Club',
     description: html`
