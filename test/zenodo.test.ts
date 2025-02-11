@@ -3,10 +3,9 @@ import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { identity, pipe, String } from 'effect'
+import { Array, pipe, String } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
-import * as A from 'fp-ts/lib/Array.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as O from 'fp-ts/lib/Option.js'
@@ -756,8 +755,8 @@ describe('getPrereviewFromZenodo', () => {
               structured ? 'Structured PREreview' : undefined,
               live ? 'Live Review' : undefined,
             ],
-            A.filter(String.isString),
-            A.matchW(() => undefined, identity),
+            Array.filter(String.isString),
+            Array.match({ onEmpty: () => undefined, onNonEmpty: values => [...values] }),
           ),
           language: 'eng',
           license: { id: 'cc-by-4.0' },

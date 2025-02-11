@@ -1,9 +1,8 @@
 import { toTemporalInstant } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Function, Predicate, String, Struct, flow, identity, pipe } from 'effect'
+import { Array, Function, Predicate, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
-import * as A from 'fp-ts/lib/Array.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as NEA from 'fp-ts/lib/NonEmptyArray.js'
 import * as O from 'fp-ts/lib/Option.js'
@@ -44,6 +43,7 @@ import {
 } from 'zenodo-ts'
 import { getClubByName, getClubName } from './club-details.js'
 import { type SleepEnv, reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import * as FptsToEffect from './FptsToEffect.js'
 import { type Html, plainText, sanitizeHtml } from './html.js'
 import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.js'
 import type * as Preprint from './preprint.js'
@@ -471,9 +471,9 @@ export const addAuthorToRecordOnZenodo = (
           ...deposition.metadata,
           creators: pipe(getAuthors(deposition), ({ named, anonymous }) =>
             pipe(
-              NEA.fromReadonlyNonEmptyArray(named),
-              A.appendW(persona === 'public' ? { name: user.name, orcid: user.orcid } : { name: user.pseudonym }),
-              NEA.concatW(
+              named,
+              Array.append(persona === 'public' ? { name: user.name, orcid: user.orcid } : { name: user.pseudonym }),
+              Array.appendAll(
                 match(anonymous)
                   .with(P.number.gt(2), anonymous => [{ name: `${anonymous - 1} other authors` }])
                   .with(2, () => [{ name: '1 other author' }])
@@ -680,8 +680,8 @@ ${newPrereview.review.toString()}`,
               requested ? 'Requested PREreview' : undefined,
               newPrereview.structured ? 'Structured PREreview' : undefined,
             ],
-            A.filter(String.isString),
-            A.matchW(() => undefined, identity),
+            Array.filter(String.isString),
+            Array.match({ onEmpty: () => undefined, onNonEmpty: value => [...value] }),
           ),
           related_identifiers: [
             {
@@ -698,10 +698,10 @@ ${newPrereview.review.toString()}`,
           ],
           subjects: pipe(
             [...subjects],
-            A.match(
-              () => undefined,
-              NEA.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })),
-            ),
+            Array.match({
+              onEmpty: () => undefined,
+              onNonEmpty: Array.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })),
+            }),
           ),
         }) satisfies DepositMetadata,
     ),
@@ -934,7 +934,7 @@ function getAuthors(record: Record | InProgressDeposition): Prereview['authors']
 function isInCommunity(record: Record) {
   return pipe(
     O.fromNullable(record.metadata.communities),
-    O.chain(A.findFirst(community => community.id === 'prereview-reviews')),
+    O.chain(Array.findFirst(community => community.id === 'prereview-reviews')),
     O.isSome,
   )
 }
@@ -1008,27 +1008,29 @@ const getReviewedPreprintId = (record: Record) =>
   pipe(
     RTE.fromNullable('no reviewed preprint' as const)(record.metadata.related_identifiers),
     RTE.chainOptionK(() => 'no reviewed preprint' as const)(
-      A.findFirstMap(relatedIdentifier =>
-        match(relatedIdentifier)
-          .with(
-            {
-              relation: 'reviews',
-              scheme: 'doi',
-              resource_type: 'publication-preprint',
-              identifier: P.select(),
-            },
-            flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)),
-          )
-          .with(
-            {
-              relation: 'reviews',
-              scheme: 'url',
-              resource_type: 'publication-preprint',
-              identifier: P.select(),
-            },
-            flow(O.fromEitherK(UrlD.decode), O.chain(fromUrl)),
-          )
-          .otherwise(() => O.none),
+      Array.findFirst(relatedIdentifier =>
+        FptsToEffect.option(
+          match(relatedIdentifier)
+            .with(
+              {
+                relation: 'reviews',
+                scheme: 'doi',
+                resource_type: 'publication-preprint',
+                identifier: P.select(),
+              },
+              flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)),
+            )
+            .with(
+              {
+                relation: 'reviews',
+                scheme: 'url',
+                resource_type: 'publication-preprint',
+                identifier: P.select(),
+              },
+              flow(O.fromEitherK(UrlD.decode), O.chain(fromUrl)),
+            )
+            .otherwise(() => O.none),
+        ),
       ),
     ),
     RTE.orElseFirst(
