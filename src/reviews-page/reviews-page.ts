@@ -1,8 +1,7 @@
-import { flow, Number, Order, pipe, String } from 'effect'
+import { flow, Number, Order, pipe, String, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { snd } from 'fp-ts/lib/ReadonlyTuple.js'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
@@ -231,7 +230,7 @@ const form = ({
               language =>
                 [language, new Intl.DisplayNames(locale, { type: 'language' }).of(language) ?? language] as const,
             ),
-            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), snd))),
+            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond))),
             RA.map(
               ([code, name]) =>
                 html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
@@ -250,7 +249,7 @@ const form = ({
           ${pipe(
             fieldIds,
             RA.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, string]),
-            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), snd))),
+            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond))),
             RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
           )}
         </select>

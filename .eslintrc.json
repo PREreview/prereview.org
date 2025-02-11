@@ -84,7 +84,7 @@
       "error",
       {
         "allow": [
-          "fp-ts/lib/!(boolean|Eq|function|Ord|Ordering|Predicate|ReadonlyRecord|ReadonlySet|Refinement|string).js",
+          "fp-ts/lib/!(boolean|Eq|function|Ord|Ordering|Predicate|ReadonlyRecord|ReadonlySet|ReadonlyTuple|Refinement|string).js",
           "fp-ts-contrib/lib/*",
           "io-ts/lib/*",
           "iso-639-3/to-*.json",
