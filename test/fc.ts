@@ -3,7 +3,7 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, Duration, Either, Option, Predicate } from 'effect'
+import { Array, Duration, Either, HashSet, Option, Predicate } from 'effect'
 import type { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import type * as F from 'fetch-fp-ts'
@@ -150,8 +150,10 @@ export function constantFrom<const T extends Array<unknown>>(...values: T): Arbi
   return fc.constantFrom(...values)
 }
 
-export const set = <A>(arb: fc.Arbitrary<A>, constraints?: fc.UniqueArraySharedConstraints): fc.Arbitrary<Set<A>> =>
-  fc.uniqueArray(arb, constraints).map(values => new Set(values))
+export const hashSet = <A>(
+  arb: fc.Arbitrary<A>,
+  constraints?: fc.UniqueArraySharedConstraints,
+): fc.Arbitrary<HashSet.HashSet<A>> => fc.uniqueArray(arb, constraints).map(HashSet.fromIterable)
 
 const some = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> => arb.map(Option.some)
 
@@ -1068,12 +1070,12 @@ export const isOpenForRequestsVisibility = (): fc.Arbitrary<
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
 
 export const slackUserId = (): fc.Arbitrary<SlackUserId> =>
-  fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString(), scopes: set(nonEmptyString()) })
+  fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString(), scopes: hashSet(nonEmptyString()) })
 
 export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
   fc.record({
     accessToken: nonEmptyString(),
-    scopes: set(nonEmptyString()),
+    scopes: hashSet(nonEmptyString()),
   })
 
 export const clubId = (): fc.Arbitrary<ClubId> => constantFrom(...clubIds)

@@ -257,7 +257,7 @@ describe('connectSlackCode', () => {
     fc.oauth(),
     fc.origin(),
     fc.nonEmptyString(),
-    fc.set(fc.lorem(), { minLength: 1 }),
+    fc.hashSet(fc.lorem(), { minLength: 1 }),
     fc.nonEmptyString(),
     fc.lorem(),
     fc

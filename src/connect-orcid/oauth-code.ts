@@ -1,11 +1,9 @@
-import { identity, pipe, String } from 'effect'
+import { HashSet, identity, pipe, String } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
-import type { Ord } from 'fp-ts/lib/Ord.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RS from 'fp-ts/lib/ReadonlySet.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Orcid } from 'orcid-id-ts'
@@ -13,7 +11,7 @@ import { maybeGetOrcidToken, saveOrcidToken } from '../orcid-token.js'
 import { toUrl } from '../public-url.js'
 import { FlashMessageResponse } from '../response.js'
 import { connectOrcidMatch, myDetailsMatch } from '../routes.js'
-import { NonEmptyStringC, ordNonEmptyString } from '../types/string.js'
+import { NonEmptyStringC } from '../types/string.js'
 import type { User } from '../user.js'
 import { connectFailureMessage } from './failure-message.js'
 
@@ -104,8 +102,7 @@ const JsonD = {
 const SpaceSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
   pipe(NonEmptyStringC, D.map(String.split(' ')), D.compose(D.array(decoder)))
 
-const ReadonlySetD = <A>(item: D.Decoder<unknown, A>, ordItem: Ord<A>) =>
-  pipe(SpaceSeparatedListD(item), D.readonly, D.map(RS.fromReadonlyArray(ordItem)))
+const HashSetD = <A>(item: D.Decoder<unknown, A>) => pipe(SpaceSeparatedListD(item), D.map(HashSet.fromIterable))
 
 const OrcidUserTokenD = (orcid: Orcid) =>
   pipe(
@@ -114,7 +111,7 @@ const OrcidUserTokenD = (orcid: Orcid) =>
       D.struct({
         access_token: NonEmptyStringC,
         orcid: D.literal(orcid),
-        scope: ReadonlySetD(NonEmptyStringC, ordNonEmptyString),
+        scope: HashSetD(NonEmptyStringC),
       }),
     ),
   )

@@ -1,3 +1,4 @@
+import { HashSet } from 'effect'
 import * as O from 'fp-ts/lib/Option.js'
 import { Orcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
@@ -17,7 +18,7 @@ test('content looks right when publicly visible', async ({ showPage }) => {
     avatar: O.some(new URL('https://placehold.co/300x300')),
     orcidToken: O.some({
       accessToken: 'some-token' as NonEmptyString,
-      scopes: new Set(['some-scope' as NonEmptyString]),
+      scopes: HashSet.make('some-scope' as NonEmptyString),
     }),
     slackUser: O.some({
       name: 'jcarberry',

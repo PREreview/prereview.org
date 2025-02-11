@@ -1,14 +1,12 @@
 import cookie from 'cookie'
-import { Record, String, Struct, flow, identity, pipe } from 'effect'
+import { HashSet, Record, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import type * as O from 'fp-ts/lib/Option.js'
-import type { Ord } from 'fp-ts/lib/Ord.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RS from 'fp-ts/lib/ReadonlySet.js'
 import { MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -23,7 +21,7 @@ import { handlePageResponse } from '../response.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../routes.js'
 import { saveSlackUserId } from '../slack-user-id.js'
 import { isSlackUser } from '../slack-user.js'
-import { NonEmptyStringC, ordNonEmptyString } from '../types/string.js'
+import { NonEmptyStringC } from '../types/string.js'
 import { generateUuid } from '../types/uuid.js'
 import { type GetUserEnv, type User, getUser, maybeGetUser } from '../user.js'
 import { accessDeniedMessage } from './access-denied-message.js'
@@ -170,8 +168,7 @@ const JsonD = {
 const CommaSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
   pipe(NonEmptyStringC, D.map(String.split(',')), D.compose(D.array(decoder)))
 
-const ReadonlySetD = <A>(item: D.Decoder<unknown, A>, ordItem: Ord<A>) =>
-  pipe(CommaSeparatedListD(item), D.readonly, D.map(RS.fromReadonlyArray(ordItem)))
+const HashSetD = <A>(item: D.Decoder<unknown, A>) => pipe(CommaSeparatedListD(item), D.map(HashSet.fromIterable))
 
 const SlackUserTokenD = pipe(
   JsonD,
@@ -181,7 +178,7 @@ const SlackUserTokenD = pipe(
         id: NonEmptyStringC,
         access_token: NonEmptyStringC,
         token_type: D.literal('user'),
-        scope: ReadonlySetD(NonEmptyStringC, ordNonEmptyString),
+        scope: HashSetD(NonEmptyStringC),
       }),
     }),
   ),

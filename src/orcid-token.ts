@@ -1,16 +1,14 @@
-import { flow, pipe } from 'effect'
-import type { Ord } from 'fp-ts/lib/Ord.js'
+import { Array, flow, HashSet, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RS from 'fp-ts/lib/ReadonlySet.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import { type NonEmptyString, NonEmptyStringC, ordNonEmptyString } from './types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
 
 export interface OrcidToken {
   readonly accessToken: NonEmptyString
-  readonly scopes: ReadonlySet<NonEmptyString>
+  readonly scopes: HashSet.HashSet<NonEmptyString>
 }
 
 export interface GetOrcidTokenEnv {
@@ -25,12 +23,12 @@ export interface DeleteOrcidTokenEnv {
   deleteOrcidToken: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
 }
 
-const ReadonlySetC = <O, A>(item: C.Codec<unknown, O, A>, ordItem: Ord<A>) =>
-  pipe(C.array(item), C.readonly, C.imap(RS.fromReadonlyArray(ordItem), RS.toReadonlyArray(ordItem)))
+const HashSetC = <O, A>(item: C.Codec<unknown, O, A>) =>
+  pipe(C.array(item), C.imap(HashSet.fromIterable, flow(HashSet.values, Array.fromIterable)))
 
 export const OrcidTokenC = C.struct({
   accessToken: NonEmptyStringC,
-  scopes: ReadonlySetC(NonEmptyStringC, ordNonEmptyString),
+  scopes: HashSetC(NonEmptyStringC),
 }) satisfies C.Codec<unknown, unknown, OrcidToken>
 
 export const getOrcidToken = (orcid: Orcid) =>

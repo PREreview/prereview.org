@@ -1,7 +1,6 @@
-import { pipe, Schema, String } from 'effect'
+import { pipe, Schema } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as EffectToFpTs from '../EffectToFpts.js'
 
 export type NonEmptyString = string & NonEmptyStringBrand
 
@@ -15,8 +14,6 @@ export const NonEmptyStringSchema: Schema.Schema<NonEmptyString, string> = pipe(
 export function isNonEmptyString(value: string): value is NonEmptyString {
   return value.trim().length > 0
 }
-
-export const ordNonEmptyString = EffectToFpTs.ord<NonEmptyString>(String.Order)
 
 interface NonEmptyStringBrand {
   readonly NonEmptyString: unique symbol
