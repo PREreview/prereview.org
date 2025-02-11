@@ -4,7 +4,6 @@ import { Array, Function, Predicate, String, Struct, flow, identity, pipe } from
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as E from 'fp-ts/lib/Either.js'
-import * as NEA from 'fp-ts/lib/NonEmptyArray.js'
 import * as O from 'fp-ts/lib/Option.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
@@ -656,12 +655,12 @@ function createDepositMetadata(
             newPrereview.preprint.title
           }”`.toString(),
           creators: pipe(
-            NEA.of(
+            Array.of(
               newPrereview.persona === 'public'
                 ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
                 : { name: newPrereview.user.pseudonym },
             ),
-            NEA.concatW(
+            Array.appendAll(
               match(newPrereview.otherAuthors.length)
                 .with(P.number.gt(1), anonymous => [{ name: `${anonymous} other authors` }])
                 .with(1, () => [{ name: '1 other author' }])
