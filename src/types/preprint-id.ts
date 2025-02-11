@@ -1,6 +1,5 @@
 import { type Doi, Eq as eqDoi, hasRegistrant, isDoi, parse } from 'doi-ts'
-import { Either, Option, Predicate, flow } from 'effect'
-import * as Eq from 'fp-ts/lib/Eq.js'
+import { Either, type Equivalence, Option, Predicate, flow } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import * as FptsToEffect from '../FptsToEffect.js'
@@ -208,7 +207,7 @@ export interface ZenodoOrAfricarxivPreprintId {
   readonly value: Doi<'5281'>
 }
 
-export const eqPreprintId: Eq.Eq<IndeterminatePreprintId> = Eq.fromEquals((a, b) => {
+export const PreprintIdEquivalence: Equivalence.Equivalence<IndeterminatePreprintId> = (a, b) => {
   if (a.type !== b.type) {
     return false
   }
@@ -217,8 +216,8 @@ export const eqPreprintId: Eq.Eq<IndeterminatePreprintId> = Eq.fromEquals((a, b)
     return a.value === b.value
   }
 
-  return eqDoi.equals(a.value, b.value as typeof a.value)
-})
+  return FptsToEffect.eq(eqDoi)(a.value, b.value as typeof a.value)
+}
 
 export const isPreprintDoi: Predicate.Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> =
   hasRegistrant(

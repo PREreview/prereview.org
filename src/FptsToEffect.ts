@@ -1,5 +1,6 @@
-import { type Array, Effect, Either, flow, identity, Option } from 'effect'
+import { type Array, Effect, Either, type Equivalence, flow, identity, Option } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
+import type { Eq } from 'fp-ts/lib/Eq.js' // eslint-disable-line import/no-internal-modules
 import type * as IO from 'fp-ts/lib/IO.js'
 import * as O from 'fp-ts/lib/Option.js'
 import type { Reader } from 'fp-ts/lib/Reader.js'
@@ -14,6 +15,8 @@ export const array: <A>(array: RNEA.ReadonlyNonEmptyArray<A>) => Array.NonEmptyR
 export const either: <E, A>(value: E.Either<E, A>) => Either.Either<A, E> = E.matchW(Either.left, Either.right)
 
 export const option: <A>(value: O.Option<A>) => Option.Option<A> = O.match(Option.none, Option.some)
+
+export const eq = <A>(value: Eq<A>): Equivalence.Equivalence<A> => value.equals
 
 export const io: <A>(value: IO.IO<A>) => Effect.Effect<A> = Effect.sync
 

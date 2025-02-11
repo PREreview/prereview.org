@@ -1,8 +1,7 @@
 import { type Doi, toUrl } from 'doi-ts'
-import { flow, pipe, String, Struct } from 'effect'
+import { Equivalence, flow, pipe, String, Struct } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
-import * as Eq from 'fp-ts/lib/Eq.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
@@ -70,10 +69,7 @@ export const getWorkByDoi: (
   RTE.chainTaskEitherKW(flow(F.decode(pipe(JsonD, D.compose(WorkC))), TE.mapLeft(UnableToDecodeBody))),
 )
 
-const eqUrl: Eq.Eq<URL> = pipe(
-  EffectToFpTs.eq(String.Equivalence),
-  Eq.contramap(url => url.href),
-)
+const UrlEquivalence: Equivalence.Equivalence<URL> = Equivalence.mapInput(String.Equivalence, url => url.href)
 
 export const getCategories: (work: Work) => ReadonlyArray<{ id: URL; display_name: string }> = flow(
   work => work.topics,
@@ -83,5 +79,5 @@ export const getCategories: (work: Work) => ReadonlyArray<{ id: URL; display_nam
     { id: topic.field.id, display_name: topic.field.display_name },
     { id: topic.domain.id, display_name: topic.domain.display_name },
   ]),
-  RA.uniq(pipe(eqUrl, Eq.contramap(Struct.get('id')))),
+  RA.uniq(EffectToFpTs.eq(Equivalence.mapInput(UrlEquivalence, Struct.get('id')))),
 )

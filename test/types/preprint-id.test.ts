@@ -5,7 +5,7 @@ import { Option } from 'effect'
 import * as _ from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 
-describe('eqPreprintId', () => {
+describe('PreprintIdEquivalence', () => {
   test.prop([fc.indeterminatePreprintId().map(id => [id, id] as const)], {
     examples: [
       [
@@ -28,7 +28,7 @@ describe('eqPreprintId', () => {
       ],
     ],
   })('with the same preprint ID', ([id1, id2]) => {
-    expect(_.eqPreprintId.equals(id1, id2)).toBe(true)
+    expect(_.PreprintIdEquivalence(id1, id2)).toBe(true)
   })
 
   test.prop(
@@ -60,7 +60,7 @@ describe('eqPreprintId', () => {
       ],
     },
   )('with different preprint IDs', ([id1, id2]) => {
-    expect(_.eqPreprintId.equals(id1, id2)).toBe(false)
+    expect(_.PreprintIdEquivalence(id1, id2)).toBe(false)
   })
 })
 

@@ -14,7 +14,7 @@ import type { ReviewRequestPreprintId } from '../review-request.js'
 import type { ReviewRequests } from '../review-requests-page/index.js'
 import { reviewMatch } from '../routes.js'
 import type { FieldId } from '../types/field.js'
-import { type PreprintId, eqPreprintId } from '../types/preprint-id.js'
+import { type PreprintId, PreprintIdEquivalence } from '../types/preprint-id.js'
 import type { GenerateUuidEnv } from '../types/uuid.js'
 import type { User } from '../user.js'
 import type { NewPrereview } from '../write-review/index.js'
@@ -45,7 +45,7 @@ export const publishToPrereviewCoarNotifyInbox = (
 export const isReviewRequested = (id: PreprintId) =>
   pipe(
     RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
-    RTE.map(RA.some(request => eqPreprintId.equals(request.preprint, id))),
+    RTE.map(RA.some(request => PreprintIdEquivalence(request.preprint, id))),
   )
 
 export const getReviewRequestsFromPrereviewCoarNotify = ({
