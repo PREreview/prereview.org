@@ -1,6 +1,5 @@
-import { flow, Order, pipe, String } from 'effect'
+import { flow, Number, Order, pipe, String } from 'effect'
 import { format } from 'fp-ts-routing'
-import { sign } from 'fp-ts/lib/Ordering.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { snd } from 'fp-ts/lib/ReadonlyTuple.js'
@@ -264,7 +263,7 @@ const form = ({
 function StringOrder(...args: ConstructorParameters<typeof Intl.Collator>): Order.Order<string> {
   const collator = new Intl.Collator(...args)
 
-  return flow((a, b) => collator.compare(a, b), sign)
+  return flow((a, b) => collator.compare(a, b), Number.sign)
 }
 
 function formatList(
