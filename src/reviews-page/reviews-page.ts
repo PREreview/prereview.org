@@ -1,7 +1,6 @@
-import { flow, pipe, String } from 'effect'
+import { flow, Order, pipe, String } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as Ord from 'fp-ts/lib/Ord.js'
-import { type Ordering, sign } from 'fp-ts/lib/Ordering.js'
+import { sign } from 'fp-ts/lib/Ordering.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { snd } from 'fp-ts/lib/ReadonlyTuple.js'
@@ -9,6 +8,7 @@ import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
+import * as EffectToFpts from '../EffectToFpts.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
@@ -232,7 +232,7 @@ const form = ({
               language =>
                 [language, new Intl.DisplayNames(locale, { type: 'language' }).of(language) ?? language] as const,
             ),
-            RA.sort(Ord.contramap(snd)(ordString(locale))),
+            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), snd))),
             RA.map(
               ([code, name]) =>
                 html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
@@ -251,7 +251,7 @@ const form = ({
           ${pipe(
             fieldIds,
             RA.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, string]),
-            RA.sort(Ord.contramap(snd)(ordString(locale))),
+            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), snd))),
             RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
           )}
         </select>
@@ -261,9 +261,7 @@ const form = ({
   </form>
 `
 
-const ordString = flow(localeCompare, Ord.fromCompare)
-
-function localeCompare(...args: ConstructorParameters<typeof Intl.Collator>): (a: string, b: string) => Ordering {
+function StringOrder(...args: ConstructorParameters<typeof Intl.Collator>): Order.Order<string> {
   const collator = new Intl.Collator(...args)
 
   return flow((a, b) => collator.compare(a, b), sign)
