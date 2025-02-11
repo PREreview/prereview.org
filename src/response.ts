@@ -1,8 +1,7 @@
 import cookie from 'cookie'
-import { Schema, Struct, flow, pipe } from 'effect'
+import { Record, Schema, Struct, flow, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
 import { type HeadersOpen, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/lib/Middleware.js'
@@ -485,7 +484,7 @@ function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R
 const deleteSlackState = pipe(
   M.decodeHeader<HeadersOpen, unknown, string>('Cookie', D.string.decode),
   M.orElse(() => M.right('')),
-  M.map(header => RR.has('slack-state', cookie.parse(header))),
+  M.map(header => Record.has(cookie.parse(header), 'slack-state')),
   M.chain(hasCookie => (hasCookie ? M.clearCookie('slack-state', { httpOnly: true }) : M.right(undefined))),
 )
 

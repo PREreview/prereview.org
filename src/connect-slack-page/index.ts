@@ -1,5 +1,5 @@
 import cookie from 'cookie'
-import { String, Struct, flow, identity, pipe } from 'effect'
+import { Record, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -8,7 +8,6 @@ import type * as O from 'fp-ts/lib/Option.js'
 import type { Ord } from 'fp-ts/lib/Ord.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
 import * as RS from 'fp-ts/lib/ReadonlySet.js'
 import { MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -195,7 +194,7 @@ export const connectSlackCode = flow(
     pipe(
       RM.decodeHeader('Cookie', D.string.decode),
       RM.mapLeft(() => 'no-cookie' as const),
-      RM.chainOptionK(() => 'no-cookie' as const)(flow(cookie.parse, RR.lookup('slack-state'))),
+      RM.chainOptionK(() => 'no-cookie' as const)(flow(cookie.parse, Record.get('slack-state'))),
       RM.chainReaderKW(unsignValue),
       RM.chainEitherK(E.fromOption(() => 'no-cookie' as const)),
       RM.filterOrElseW(

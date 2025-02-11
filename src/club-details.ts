@@ -1,9 +1,8 @@
-import { Equal, flow, pipe } from 'effect'
+import { Equal, flow, pipe, type Record, Struct } from 'effect'
 import type * as O from 'fp-ts/lib/Option.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
-import { Orcid, Eq as eqOrcid } from 'orcid-id-ts'
+import { Eq as eqOrcid, Orcid } from 'orcid-id-ts'
 import { type Html, html } from './html.js'
 import type { ClubId } from './types/club-id.js'
 import { EmailAddress } from './types/email-address.js'
@@ -22,13 +21,13 @@ export const getClubName = (id: ClubId) => clubs[id].name
 
 export const getClubByName = (name: string): O.Option<ClubId> =>
   pipe(
-    RR.keys(clubs),
+    Struct.keys(clubs),
     RA.findFirst(id => Equal.equals(clubs[id].name, name)),
   )
 
 export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
   pipe(
-    RR.keys(clubs),
+    Struct.keys(clubs),
     RA.filter(
       flow(
         id => clubs[id].leads,
@@ -37,7 +36,7 @@ export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
     ),
   )
 
-const clubs: RR.ReadonlyRecord<ClubId, Club> = {
+const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   'asapbio-cancer-biology': {
     name: 'ASAPbio Cancer Biology Crowd',
     description: html`

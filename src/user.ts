@@ -1,7 +1,6 @@
-import { Context, Data, Effect, flow, pipe, Schema } from 'effect'
+import { Context, Data, Effect, flow, pipe, Record, Schema } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as O from 'fp-ts/lib/Option.js'
-import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
 import type { StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -44,10 +43,10 @@ export const UserSchema = Schema.Struct({
   pseudonym: Pseudonym.PseudonymSchema,
 })
 
-export const newSessionForUser: (user: User) => JsonRecord = flow(UserC.encode, user => RR.singleton('user', user))
+export const newSessionForUser: (user: User) => JsonRecord = flow(UserC.encode, user => Record.singleton('user', user))
 
 export const getUserFromSession: (session: JsonRecord) => O.Option<User> = flow(
-  RR.lookup('user'),
+  Record.get<string>('user'),
   O.chainEitherK(UserC.decode),
 )
 
