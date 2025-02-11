@@ -66,6 +66,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     leads: [
       { name: 'Rio Sugimura', orcid: Orcid('0000-0001-5701-3628') },
       { name: 'Yanyang Chen', orcid: Orcid('0000-0003-4665-9671') },
+      { name: 'Alex To', orcid: Orcid('0000-0001-7872-228X') },
     ],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
