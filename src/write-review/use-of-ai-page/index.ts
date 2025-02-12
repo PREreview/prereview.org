@@ -69,7 +69,48 @@ export const writeReviewUseOfAi = ({
     ),
   )
 
-export const writeReviewUseOfAiSubmission = () => RT.of(havingProblemsPage)
+export const writeReviewUseOfAiSubmission = ({
+  body,
+  id,
+  locale,
+  user,
+}: {
+  body: unknown
+  id: IndeterminatePreprintId
+  locale: SupportedLocale
+  user?: User
+}): RT.ReaderTask<FormStoreEnv & GetPreprintTitleEnv, PageResponse | RedirectResponse> =>
+  pipe(
+    getPreprintTitle(id),
+    RTE.matchE(
+      error =>
+        RT.of(
+          match(error)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
+            .exhaustive(),
+        ),
+      preprint =>
+        pipe(
+          RTE.Do,
+          RTE.let('locale', () => locale),
+          RTE.let('preprint', () => preprint),
+          RTE.let('body', () => body),
+          RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+          RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
+          RTE.matchW(
+            error =>
+              match(error)
+                .with('no-form', 'no-session', () =>
+                  RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                )
+                .with('form-unavailable', () => havingProblemsPage)
+                .exhaustive(),
+            () => havingProblemsPage,
+          ),
+        ),
+    ),
+  )
 
 const showUseOfAiForm = ({
   form,
