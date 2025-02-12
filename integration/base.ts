@@ -1,4 +1,4 @@
-import { FetchHttpClient } from '@effect/platform'
+import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import {
@@ -10,7 +10,7 @@ import {
 } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { Effect, Logger as EffectLogger, Fiber, Layer, Option, pipe, Redacted } from 'effect'
+import { Effect, Logger as EffectLogger, Fiber, Layer, Option, pipe, Redacted, Schedule } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
@@ -1344,6 +1344,16 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       )
 
       const fiber = Effect.runFork(server)
+
+      await pipe(
+        HttpClient.head(`http://localhost:${port}/health`),
+        Effect.timeout('50 millis'),
+        Effect.andThen(HttpClientResponse.filterStatusOk),
+        Effect.scoped,
+        Effect.retry(Schedule.forever),
+        Effect.provide(FetchHttpClient.layer),
+        Effect.runPromise,
+      )
 
       await use(fiber)
 
