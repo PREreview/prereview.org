@@ -365,7 +365,7 @@ describe('writeReviewAuthors', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.cookieName(), fc.string()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection()])(
     "when there isn't a session",
     async (preprintId, preprintTitle, connection) => {
       const actual = await runMiddleware(
