@@ -10,6 +10,7 @@ import { type PageResponse, RedirectResponse } from '../../response.js'
 import { writeReviewMatch } from '../../routes.js'
 import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
 import type { User } from '../../user.js'
+import { type FormStoreEnv, getForm } from '../form.js'
 
 export const writeReviewUseOfAi = ({
   id,
@@ -17,7 +18,7 @@ export const writeReviewUseOfAi = ({
 }: {
   id: IndeterminatePreprintId
   user?: User
-}): RT.ReaderTask<GetPreprintTitleEnv & MustDeclareUseOfAiEnv, PageResponse | RedirectResponse> =>
+}): RT.ReaderTask<FormStoreEnv & GetPreprintTitleEnv & MustDeclareUseOfAiEnv, PageResponse | RedirectResponse> =>
   pipe(
     getPreprintTitle(id),
     RTE.matchE(
@@ -42,12 +43,14 @@ export const writeReviewUseOfAi = ({
               ),
             ),
           ),
+          RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.matchW(
             error =>
               match(error)
-                .with('no-session', () =>
+                .with('no-form', 'no-session', () =>
                   RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                 )
+                .with('form-unavailable', () => havingProblemsPage)
                 .with('not-found', () => pageNotFound)
                 .exhaustive(),
             () => havingProblemsPage,
