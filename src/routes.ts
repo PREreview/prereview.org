@@ -456,6 +456,8 @@ export const writeReviewRemoveAuthorMatch = pipe(
 
 export const writeReviewAddAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('add-more-authors')), P.then(P.end))
 
+export const writeReviewUseOfAiMatch = pipe(writeReviewBaseMatch, P.then(P.lit('use-of-ai')), P.then(P.end))
+
 export const writeReviewCompetingInterestsMatch = pipe(
   writeReviewBaseMatch,
   P.then(P.lit('competing-interests')),

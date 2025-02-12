@@ -7,6 +7,7 @@ export { writeReviewPublish, type NewPrereview, type PublishPrereviewEnv } from 
 export { writeReviewPublished } from './published-page/index.js'
 export { writeReviewRemoveAuthor } from './remove-author-page/index.js'
 export { writeReviewStart } from './start-page/index.js'
+export { writeReviewUseOfAi } from './use-of-ai-page/index.js'
 export { writeReview } from './write-a-prereview-page/index.js'
 export { writeReviewAuthors } from './write-review-authors.js'
 export { writeReviewConduct } from './write-review-conduct.js'

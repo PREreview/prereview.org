@@ -258,6 +258,7 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
   writeReviewStartMatch,
+  writeReviewUseOfAiMatch,
   writeReviewVerifyEmailAddressMatch,
 } from './routes.js'
 import { type ScietyListEnv, scietyList } from './sciety-list/index.js'
@@ -302,6 +303,7 @@ import {
   writeReviewReviewType,
   writeReviewShouldRead,
   writeReviewStart,
+  writeReviewUseOfAi,
   writeReviewVerifyEmailAddress,
 } from './write-review/index.js'
 import {
@@ -1515,6 +1517,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(writeReviewAddAuthors)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+    ),
+    pipe(
+      writeReviewUseOfAiMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS('user', maybeGetUser),
+          RM.apS('response', RM.of(writeReviewUseOfAi)),
           RM.ichainW(handleResponse),
         ),
       ),
