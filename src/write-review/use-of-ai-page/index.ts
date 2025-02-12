@@ -69,6 +69,8 @@ export const writeReviewUseOfAi = ({
     ),
   )
 
+export const writeReviewUseOfAiSubmission = () => RT.of(havingProblemsPage)
+
 const showUseOfAiForm = ({
   form,
   preprint,

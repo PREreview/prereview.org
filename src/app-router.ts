@@ -305,6 +305,7 @@ import {
   writeReviewShouldRead,
   writeReviewStart,
   writeReviewUseOfAi,
+  writeReviewUseOfAiSubmission,
   writeReviewVerifyEmailAddress,
 } from './write-review/index.js'
 import {
@@ -1528,12 +1529,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(({ id }) =>
         pipe(
           RM.of({ id }),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
           RM.apS('user', maybeGetUser),
           RM.apSW(
             'locale',
             RM.asks((env: RouterEnv) => env.locale),
           ),
-          RM.bindW('response', RM.fromReaderTaskK(writeReviewUseOfAi)),
+          RM.bindW('response', state =>
+            RM.fromReaderTask((state.method === 'POST' ? writeReviewUseOfAiSubmission : writeReviewUseOfAi)(state)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
