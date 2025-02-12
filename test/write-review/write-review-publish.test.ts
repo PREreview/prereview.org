@@ -37,6 +37,7 @@ describe('writeReviewPublish', () => {
     fc.completedForm(),
     fc.user(),
     fc.unverifiedContactEmailAddress(),
+    fc.boolean(),
   ])(
     'when the user needs to verify their email address',
     async (
@@ -46,6 +47,7 @@ describe('writeReviewPublish', () => {
       newReview,
       user,
       contactEmailAddress,
+      mustDeclareUseOfAi,
     ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
@@ -59,6 +61,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          mustDeclareUseOfAi,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -98,9 +101,17 @@ describe('writeReviewPublish', () => {
     ),
     fc.completedForm(),
     fc.user(),
+    fc.boolean(),
   ])(
     'when the user needs to enter an email address',
-    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newReview, user) => {
+    async (
+      preprintId,
+      preprintTitle,
+      [connection, sessionCookie, sessionId, secret],
+      newReview,
+      user,
+      mustDeclareUseOfAi,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
@@ -113,6 +124,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          mustDeclareUseOfAi,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -156,6 +168,7 @@ describe('writeReviewPublish', () => {
     fc.verifiedContactEmailAddress(),
     fc.doi(),
     fc.integer(),
+    fc.boolean(),
   ])(
     'when the form is complete with a questions-based review',
     async (
@@ -167,6 +180,7 @@ describe('writeReviewPublish', () => {
       contactEmailAddress,
       reviewDoi,
       reviewId,
+      mustDeclareUseOfAi,
     ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
@@ -180,6 +194,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          mustDeclareUseOfAi,
           publicUrl: new URL('http://example.com'),
           publishPrereview,
           getContactEmailAddress: () => TE.right(contactEmailAddress),
@@ -239,6 +254,7 @@ describe('writeReviewPublish', () => {
     fc.verifiedContactEmailAddress(),
     fc.doi(),
     fc.integer(),
+    fc.boolean(),
   ])(
     'when the form is complete with a freeform review',
     async (
@@ -250,6 +266,7 @@ describe('writeReviewPublish', () => {
       contactEmailAddress,
       reviewDoi,
       reviewId,
+      mustDeclareUseOfAi,
     ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
@@ -264,6 +281,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          mustDeclareUseOfAi,
           publicUrl: new URL('http://example.com'),
           publishPrereview,
           secret,
@@ -320,6 +338,7 @@ describe('writeReviewPublish', () => {
     fc.incompleteForm(),
     fc.user(),
     fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+    fc.boolean(),
   ])(
     'when the form is incomplete',
     async (
@@ -329,6 +348,7 @@ describe('writeReviewPublish', () => {
       newPrereview,
       user,
       contactEmailAddress,
+      mustDeclareUseOfAi,
     ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
@@ -342,6 +362,7 @@ describe('writeReviewPublish', () => {
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           formStore,
+          mustDeclareUseOfAi,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -380,9 +401,10 @@ describe('writeReviewPublish', () => {
       ),
     ),
     fc.user(),
+    fc.boolean(),
   ])(
     'when there is no form',
-    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
+    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], user, mustDeclareUseOfAi) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
 
@@ -393,6 +415,7 @@ describe('writeReviewPublish', () => {
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           formStore: new Keyv(),
+          mustDeclareUseOfAi,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -431,9 +454,10 @@ describe('writeReviewPublish', () => {
     ),
     fc.user(),
     fc.html(),
+    fc.boolean(),
   ])(
     'when the preprint cannot be loaded',
-    async (preprintId, [connection, sessionCookie, sessionId, secret], user, page) => {
+    async (preprintId, [connection, sessionCookie, sessionId, secret], user, page, mustDeclareUseOfAi) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
@@ -445,6 +469,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          mustDeclareUseOfAi,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -486,9 +511,10 @@ describe('writeReviewPublish', () => {
     ),
     fc.user(),
     fc.html(),
+    fc.boolean(),
   ])(
     'when the preprint cannot be found',
-    async (preprintId, [connection, sessionCookie, sessionId, secret], user, page) => {
+    async (preprintId, [connection, sessionCookie, sessionId, secret], user, page, mustDeclareUseOfAi) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
@@ -500,6 +526,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          mustDeclareUseOfAi,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -527,9 +554,16 @@ describe('writeReviewPublish', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.cookieName(), fc.string()])(
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.connection(),
+    fc.cookieName(),
+    fc.string(),
+    fc.boolean(),
+  ])(
     "when there isn't a session",
-    async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
+    async (preprintId, preprintTitle, connection, sessionCookie, secret, mustDeclareUseOfAi) => {
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
           getContactEmailAddress: shouldNotBeCalled,
@@ -537,6 +571,7 @@ describe('writeReviewPublish', () => {
           getUser: () => M.left('no-session'),
           getUserOnboarding: shouldNotBeCalled,
           formStore: new Keyv(),
+          mustDeclareUseOfAi,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -581,6 +616,7 @@ describe('writeReviewPublish', () => {
     fc.user(),
     fc.verifiedContactEmailAddress(),
     fc.html(),
+    fc.boolean(),
   ])(
     'when the PREreview cannot be published',
     async (
@@ -591,6 +627,7 @@ describe('writeReviewPublish', () => {
       user,
       contactEmailAddress,
       page,
+      mustDeclareUseOfAi,
     ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
@@ -605,6 +642,7 @@ describe('writeReviewPublish', () => {
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           formStore,
+          mustDeclareUseOfAi,
           publicUrl: new URL('http://example.com'),
           publishPrereview: () => TE.left('unavailable'),
           secret,
