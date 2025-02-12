@@ -1287,6 +1287,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             update: updatesLegacyPrereview,
           },
           locationStore,
+          mustDeclareUseOfAi: false,
           orcidApiUrl: new URL('http://api.orcid.test/'),
           orcidOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),

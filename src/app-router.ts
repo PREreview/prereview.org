@@ -79,6 +79,7 @@ import {
   type CanUploadAvatarEnv,
   type CanUseSearchQueriesEnv,
   type CanWriteCommentsEnv,
+  type MustDeclareUseOfAiEnv,
   canSeeAlternativeCompetingInterestsForm,
   canUseSearchQueries,
 } from './feature-flags.js'
@@ -344,6 +345,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   CanUploadAvatarEnv &
   CanUseSearchQueriesEnv &
   CanWriteCommentsEnv &
+  MustDeclareUseOfAiEnv &
   DoesPreprintExistEnv &
   EffectEnv<Locale> &
   ResolvePreprintIdEnv &

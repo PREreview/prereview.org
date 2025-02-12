@@ -72,6 +72,12 @@ export const canSeeAlternativeCompetingInterestsForm = R.asks(
     canSeeAlternativeCompetingInterestsForm,
 )
 
+export interface MustDeclareUseOfAiEnv {
+  mustDeclareUseOfAi: boolean
+}
+
+export const mustDeclareUseOfAi = R.asks(({ mustDeclareUseOfAi }: MustDeclareUseOfAiEnv) => mustDeclareUseOfAi)
+
 export const layer = (options: {
   canChooseLocale: typeof CanChooseLocale.Service
   canWriteComments: typeof CanWriteComments.Service
