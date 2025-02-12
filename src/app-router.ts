@@ -1527,7 +1527,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ id }),
           RM.apS('user', maybeGetUser),
-          RM.apS('response', RM.of(writeReviewUseOfAi)),
+          RM.bindW('response', RM.fromReaderTaskK(writeReviewUseOfAi)),
           RM.ichainW(handleResponse),
         ),
       ),
