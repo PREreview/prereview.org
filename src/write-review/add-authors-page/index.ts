@@ -7,6 +7,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
+import { mustDeclareUseOfAi, type MustDeclareUseOfAiEnv } from '../../feature-flags.js'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
@@ -29,7 +30,7 @@ export const writeReviewAddAuthors = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  FormStoreEnv & GetPreprintTitleEnv,
+  FormStoreEnv & GetPreprintTitleEnv & MustDeclareUseOfAiEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -50,6 +51,7 @@ export const writeReviewAddAuthors = ({
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
           RTE.let('body', () => body),
+          RTE.apSW('mustDeclareUseOfAi', RTE.fromReader(mustDeclareUseOfAi)),
           RTE.bindW('form', ({ preprint, user }) => getForm(user.orcid, preprint.id)),
           RTE.let(
             'authors',
@@ -92,12 +94,14 @@ const handleAddAuthorsForm = ({
   form,
   preprint,
   locale,
+  mustDeclareUseOfAi,
 }: {
   authors: O.Some<RNEA.ReadonlyNonEmptyArray<NonNullable<Form['otherAuthors']>[number]>>
   body: unknown
   form: Form
   preprint: PreprintTitle
   locale: SupportedLocale
+  mustDeclareUseOfAi: boolean
 }) =>
   pipe(
     E.Do,
@@ -117,7 +121,9 @@ const handleAddAuthorsForm = ({
             RedirectResponse({ location: format(writeReviewAddAuthorMatch.formatter, { id: preprint.id }) }),
           )
           .with({ anotherAuthor: 'no' }, () =>
-            RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+            RedirectResponse({
+              location: format(nextFormMatch(form, mustDeclareUseOfAi).formatter, { id: preprint.id }),
+            }),
           )
           .exhaustive(),
     ),

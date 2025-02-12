@@ -30,6 +30,7 @@ import {
   writeReviewReviewMatch,
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
+  writeReviewUseOfAiMatch,
 } from '../routes.js'
 import { EmailAddressC } from '../types/email-address.js'
 import type { PreprintId } from '../types/preprint-id.js'
@@ -99,7 +100,7 @@ export function deleteForm(
   )
 }
 
-export const nextFormMatch = (form: Form) =>
+export const nextFormMatch = (form: Form, mustDeclareUseOfAi = false) =>
   match(form)
     .with(
       { alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
@@ -127,6 +128,11 @@ export const nextFormMatch = (form: Form) =>
     .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
     .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
     .with({ moreAuthors: 'yes', otherAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
+    .with(
+      { generativeAiIdeas: P.optional(undefined) },
+      () => mustDeclareUseOfAi,
+      () => writeReviewUseOfAiMatch,
+    )
     .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
     .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
     .otherwise(() => writeReviewPublishMatch)

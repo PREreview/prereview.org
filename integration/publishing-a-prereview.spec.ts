@@ -2626,7 +2626,6 @@ test.extend(mustDeclareUseOfAi).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/use-of-ai')
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -2665,7 +2664,6 @@ test.extend(mustDeclareUseOfAi).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/use-of-ai')
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 

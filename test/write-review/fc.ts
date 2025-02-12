@@ -305,6 +305,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         readyFullReview: readyFullReview(),
         persona: persona(),
         reviewType: fc.constant('questions'),
+        generativeAiIdeas: generativeAiIdeas(),
       }),
       fc.oneof(
         fc.record({
@@ -417,6 +418,7 @@ export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { r
         persona: persona(),
         review: fc.html(),
         reviewType: fc.constant('freeform'),
+        generativeAiIdeas: generativeAiIdeas(),
       }),
       fc.oneof(
         fc.record({

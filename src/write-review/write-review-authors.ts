@@ -6,6 +6,7 @@ import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
+import { mustDeclareUseOfAi } from '../feature-flags.js'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
 import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
@@ -34,6 +35,7 @@ export const writeReviewAuthors = flow(
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
+      RM.apSW('mustDeclareUseOfAi', RM.rightReader(mustDeclareUseOfAi)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handleAuthorsForm).otherwise(showAuthorsForm)),
       RM.orElseW(error =>
         match(error)
@@ -84,11 +86,13 @@ const handleAuthorsForm = ({
   preprint,
   user,
   locale,
+  mustDeclareUseOfAi,
 }: {
   form: Form
   preprint: PreprintTitle
   user: User
   locale: SupportedLocale
+  mustDeclareUseOfAi: boolean
 }) =>
   pipe(
     RM.decodeBody(body =>
@@ -120,7 +124,7 @@ const handleAuthorsForm = ({
         .with({ form: { moreAuthors: 'yes' } }, () =>
           seeOther(format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })),
         )
-        .otherwise(({ form }) => redirectToNextForm(preprint.id)(form)),
+        .otherwise(({ form }) => redirectToNextForm(preprint.id)(form, mustDeclareUseOfAi)),
     ),
     RM.orElseW(error =>
       match(error)

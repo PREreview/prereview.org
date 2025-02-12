@@ -15,6 +15,11 @@ export const CompletedFormC = pipe(
     persona: C.literal('public', 'pseudonym'),
   }),
   C.intersect(
+    C.partial({
+      generativeAiIdeas: C.literal('yes', 'no'),
+    }),
+  ),
+  C.intersect(
     C.sum('competingInterests')({
       yes: C.struct({
         competingInterests: C.literal('yes'),
