@@ -5,7 +5,8 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
-import { writeReviewMatch, writeReviewUseOfAiMatch } from '../../src/routes.js'
+import { writeReviewMatch, writeReviewPublishMatch, writeReviewUseOfAiMatch } from '../../src/routes.js'
+import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
 import * as fc from './fc.js'
@@ -136,29 +137,87 @@ describe('writeReviewUseOfAi', () => {
 })
 
 describe('writeReviewUseOfAiSubmission', () => {
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.user(),
-    fc.anything(),
-    fc.supportedLocale(),
-    fc.form(),
-  ])('when there is a form', async (preprintId, preprintTitle, user, body, locale, form) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(form))
+  describe('when there is a form', () => {
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.user(),
+      fc.record({ generativeAiIdeas: fc.constantFrom('yes', 'no') }),
+      fc.supportedLocale(),
+      fc.completedForm(),
+    ])('when the form is completed', async (preprintId, preprintTitle, user, body, locale, form) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(form)))
 
-    const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+      const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject(body)
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+      })
+    })
+
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.user(),
+      fc.record({ generativeAiIdeas: fc.constantFrom('yes', 'no') }),
+      fc.supportedLocale(),
+      fc.incompleteForm(),
+    ])('when the form is incomplete', async (preprintId, preprintTitle, user, body, locale, form) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(form))
+
+      const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
+
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject(body)
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+      })
+    })
+
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.user(),
+      fc.oneof(
+        fc.record(
+          { generativeAiIdeas: fc.string().filter(s => !['yes', 'no'].includes(s)) },
+          { withDeletedKeys: true },
+        ),
+        fc.anything(),
+      ),
+      fc.supportedLocale(),
+      fc.incompleteForm(),
+    ])('without declare the use of AI', async (preprintId, preprintTitle, user, body, locale, form) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(form))
+
+      const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'StreamlinePageResponse',
+        canonical: format(writeReviewUseOfAiMatch.formatter, { id: preprintTitle.id }),
+        status: Status.BadRequest,
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
+      })
     })
   })
 

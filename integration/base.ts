@@ -104,6 +104,7 @@ interface AppFixtures {
   canUseSearchQueries: CanUseSearchQueriesEnv['canUseSearchQueries']
   canWriteComments: typeof CanWriteComments.Service
   requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
+  mustDeclareUseOfAi: FeatureFlags.MustDeclareUseOfAiEnv['mustDeclareUseOfAi']
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
 }
@@ -1188,6 +1189,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await fs.writeFile(testInfo.outputPath('emails.json'), JSON.stringify(emails, undefined, 2))
   },
+  mustDeclareUseOfAi: async ({}, use) => {
+    await use(false)
+  },
   nodemailer: async ({ emails }, use) => {
     await use(
       nodemailer.createTransport<unknown>({
@@ -1253,6 +1257,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canUseSearchQueries,
         canWriteComments,
         requiresAVerifiedEmailAddress,
+        mustDeclareUseOfAi,
         nodemailer,
       },
       use,
@@ -1287,7 +1292,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             update: updatesLegacyPrereview,
           },
           locationStore,
-          mustDeclareUseOfAi: false,
+          mustDeclareUseOfAi,
           orcidApiUrl: new URL('http://api.orcid.test/'),
           orcidOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
@@ -1989,6 +1994,16 @@ export const requiresAVerifiedEmailAddress: Fixtures<
   Pick<AppFixtures, 'requiresAVerifiedEmailAddress'>
 > = {
   requiresAVerifiedEmailAddress: async ({}, use) => {
+    await use(true)
+  },
+}
+
+export const mustDeclareUseOfAi: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'mustDeclareUseOfAi'>
+> = {
+  mustDeclareUseOfAi: async ({}, use) => {
     await use(true)
   },
 }
