@@ -1,24 +1,32 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
+import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import { mustDeclareUseOfAi, type MustDeclareUseOfAiEnv } from '../../feature-flags.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { getPreprintTitle, type GetPreprintTitleEnv } from '../../preprint.js'
-import { type PageResponse, RedirectResponse } from '../../response.js'
+import type { SupportedLocale } from '../../locales/index.js'
+import { getPreprintTitle, type GetPreprintTitleEnv, type PreprintTitle } from '../../preprint.js'
+import { RedirectResponse, type PageResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewMatch } from '../../routes.js'
 import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
 import type { User } from '../../user.js'
-import { type FormStoreEnv, getForm } from '../form.js'
+import { getForm, type Form, type FormStoreEnv } from '../form.js'
+import { useOfAiForm } from './use-of-ai-form.js'
 
 export const writeReviewUseOfAi = ({
   id,
+  locale,
   user,
 }: {
   id: IndeterminatePreprintId
+  locale: SupportedLocale
   user?: User
-}): RT.ReaderTask<FormStoreEnv & GetPreprintTitleEnv & MustDeclareUseOfAiEnv, PageResponse | RedirectResponse> =>
+}): RT.ReaderTask<
+  FormStoreEnv & GetPreprintTitleEnv & MustDeclareUseOfAiEnv,
+  PageResponse | RedirectResponse | StreamlinePageResponse
+> =>
   pipe(
     getPreprintTitle(id),
     RTE.matchE(
@@ -32,6 +40,8 @@ export const writeReviewUseOfAi = ({
       preprint =>
         pipe(
           RTE.Do,
+          RTE.let('locale', () => locale),
+          RTE.let('preprint', () => preprint),
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
           RTE.apSW(
             'mustDeclareUseOfAi',
@@ -53,8 +63,18 @@ export const writeReviewUseOfAi = ({
                 .with('form-unavailable', () => havingProblemsPage)
                 .with('not-found', () => pageNotFound)
                 .exhaustive(),
-            () => havingProblemsPage,
+            showUseOfAiForm,
           ),
         ),
     ),
   )
+
+const showUseOfAiForm = ({
+  form,
+  preprint,
+  locale,
+}: {
+  form: Form
+  preprint: PreprintTitle
+  locale: SupportedLocale
+}) => useOfAiForm(preprint, { generativeAiIdeas: E.right(form.generativeAiIdeas) }, locale, form.moreAuthors)
