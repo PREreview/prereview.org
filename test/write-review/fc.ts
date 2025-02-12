@@ -209,7 +209,6 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
           shouldRead: shouldRead(),
           readyFullReview: readyFullReview(),
           moreAuthors: moreAuthors(),
-          generativeAiIdeas: generativeAiIdeas(),
           competingInterests: competingInterests(),
           conduct: conduct(),
         },
@@ -218,6 +217,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
       fc.oneof(
         fc.record(
           {
+            generativeAiIdeas: generativeAiIdeas(),
             introductionMatchesDetails: introductionMatchesDetails(),
             methodsAppropriateDetails: methodsAppropriateDetails(),
             resultsSupportedDetails: resultsSupportedDetails(),
@@ -248,7 +248,6 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
           review: fc.html(),
           persona: persona(),
           moreAuthors: moreAuthors(),
-          generativeAiIdeas: generativeAiIdeas(),
           competingInterests: competingInterests(),
           conduct: conduct(),
         },
@@ -257,6 +256,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
       fc.oneof(
         fc.record(
           {
+            generativeAiIdeas: generativeAiIdeas(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
             introductionMatches: introductionMatches(),
@@ -453,6 +453,7 @@ export const unknownFormType = () =>
       persona: persona(),
       moreAuthors: moreAuthors(),
       otherAuthors: otherAuthors(),
+      generativeAiIdeas: generativeAiIdeas(),
       competingInterests: competingInterests(),
       conduct: conduct(),
       introductionMatches: introductionMatches(),
