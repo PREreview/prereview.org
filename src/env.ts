@@ -64,6 +64,7 @@ const EnvD = pipe(
     LEGACY_PREREVIEW_API_KEY: D.string,
     LEGACY_PREREVIEW_URL: UrlD,
     LEGACY_PREREVIEW_UPDATE: withDefault(BooleanD, false),
+    MUST_DECLARE_USE_OF_AI: withDefault(BooleanD, false),
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
     ORCID_URL: withDefault(UrlD, new URL('https://orcid.org/')),
