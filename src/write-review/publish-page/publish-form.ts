@@ -26,6 +26,7 @@ import {
   writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
+  writeReviewUseOfAiMatch,
 } from '../../routes.js'
 import { ProfileId } from '../../types/index.js'
 import { isPseudonym } from '../../types/pseudonym.js'
@@ -136,6 +137,33 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                       <dd>
                         <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
                           >${rawHtml(t('changeInvitedAuthors')(visuallyHidden))}</a
+                        >
+                      </dd>
+                    </div>
+                  `
+                : ''}
+              ${typeof review.generativeAiIdeas === 'string'
+                ? html`
+                    <div>
+                      <dt><span>Use of AI</span></dt>
+                      <dd>
+                        ${match([review.generativeAiIdeas, review.moreAuthors])
+                          .with(
+                            ['yes', P.union('yes', 'yes-private')],
+                            () =>
+                              'The authors declare that they used generative AI to come up with new ideas for their review.',
+                          )
+                          .with(
+                            ['yes', 'no'],
+                            () =>
+                              'The author declares that they used generative AI to come up with new ideas for their review.',
+                          )
+                          .with(['no', P.string], () => 'Not used')
+                          .exhaustive()}
+                      </dd>
+                      <dd>
+                        <a href="${format(writeReviewUseOfAiMatch.formatter, { id: preprint.id })}"
+                          >Change <span class="visually-hidden">use of AI</span></a
                         >
                       </dd>
                     </div>
