@@ -3,12 +3,11 @@ import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { Array, pipe, String } from 'effect'
+import { Array, Option, pipe, String } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -4568,7 +4567,7 @@ describe('createRecordOnZenodo', () => {
 
 ${newPrereview.review.toString()}`,
                   ...(requested ? { keywords: ['Requested PREreview'] } : {}),
-                  ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
+                  ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
                     : {}),
@@ -4730,7 +4729,7 @@ ${newPrereview.review.toString()}`,
                   keywords: [requested ? 'Requested PREreview' : undefined, 'Structured PREreview'].filter(
                     String.isString,
                   ),
-                  ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
+                  ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
                     : {}),
@@ -4886,7 +4885,7 @@ ${newPrereview.review.toString()}`,
 
 ${newPrereview.review.toString()}`,
                   ...(requested ? { keywords: ['Requested PREreview'] } : {}),
-                  ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
+                  ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
                     : {}),
@@ -5040,7 +5039,7 @@ ${newPrereview.review.toString()}`,
                   keywords: [requested ? 'Requested PREreview' : undefined, 'Structured PREreview'].filter(
                     String.isString,
                   ),
-                  ...(O.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
+                  ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
                   ...(RA.isNonEmpty(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
                     : {}),

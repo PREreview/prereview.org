@@ -1,8 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { pipe } from 'effect'
+import { Option, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../src/user.js'
 import * as fc from './fc.js'
@@ -31,12 +30,12 @@ describe('getUserFromSession', () => {
   test.prop([fc.user()])('when there is a user', user => {
     const actual = _.getUserFromSession({ user })
 
-    expect(actual).toStrictEqual(O.some(user))
+    expect(actual).toStrictEqual(Option.some(user))
   })
 
   test.prop([fc.jsonRecord()])("when there isn't a user", session => {
     const actual = _.getUserFromSession(session)
 
-    expect(actual).toStrictEqual(O.none)
+    expect(actual).toStrictEqual(Option.none())
   })
 })

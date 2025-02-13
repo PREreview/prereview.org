@@ -1,13 +1,13 @@
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
-import { Schema, Tuple, identity, pipe } from 'effect'
+import { Option, Schema, Tuple, identity, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import iso6391 from 'iso-639-1'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
+import * as FptsToEffect from './FptsToEffect.js'
 import { ClubIdC } from './types/club-id.js'
 import { isFieldId } from './types/field.js'
 import { ProfileId, Uuid } from './types/index.js'
@@ -596,7 +596,9 @@ export const scietyListMatch = pipe(P.lit('sciety-list'), P.then(P.end))
 function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
   return new P.Match(
     new P.Parser(r =>
-      O.Functor.map(O.fromEither(codec.decode(r.query)), query => Tuple.make(query, new P.Route(r.parts, {}))),
+      Option.map(Option.getRight(FptsToEffect.either(codec.decode(r.query))), query =>
+        Tuple.make(query, new P.Route(r.parts, {})),
+      ),
     ),
     new P.Formatter((r, query) => new P.Route(r.parts, codec.encode(query))),
   )
@@ -606,11 +608,11 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
   return new P.Match(
     new P.Parser(r => {
       if (typeof r.parts[0] !== 'string') {
-        return O.none
+        return Option.none()
       } else {
         const head = r.parts[0]
         const tail = r.parts.slice(1)
-        return O.Functor.map(O.fromEither(type.decode(head)), a =>
+        return Option.map(Option.getRight(FptsToEffect.either(type.decode(head))), a =>
           Tuple.make(singleton(k, a), new P.Route(tail, r.query)),
         )
       }

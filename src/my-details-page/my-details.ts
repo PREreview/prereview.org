@@ -1,6 +1,5 @@
-import { pipe } from 'effect'
+import { Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
@@ -37,7 +36,7 @@ export const myDetails = ({ user }: { user?: User }) =>
             RTE.fromReader(canConnectOrcidProfile(user)),
             RTE.chainW(canConnectOrcidProfile =>
               match(canConnectOrcidProfile)
-                .with(true, () => pipe(maybeGetOrcidToken(user.orcid), RTE.map(O.fromNullable)))
+                .with(true, () => pipe(maybeGetOrcidToken(user.orcid), RTE.map(Option.fromNullable)))
                 .with(false, () => RTE.of(undefined))
                 .exhaustive(),
             ),
@@ -49,19 +48,19 @@ export const myDetails = ({ user }: { user?: User }) =>
             RTE.fromReader(canUploadAvatar(user)),
             RTE.chainW(canUploadAvatar =>
               match(canUploadAvatar)
-                .with(true, () => pipe(maybeGetAvatar(user.orcid), RTE.map(O.fromNullable)))
+                .with(true, () => pipe(maybeGetAvatar(user.orcid), RTE.map(Option.fromNullable)))
                 .with(false, () => RTE.of(undefined))
                 .exhaustive(),
             ),
           ),
         ),
-        RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(O.fromNullable))),
-        RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(O.fromNullable))),
-        RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(O.fromNullable))),
-        RTE.apSW('careerStage', pipe(maybeGetCareerStage(user.orcid), RTE.map(O.fromNullable))),
-        RTE.apSW('researchInterests', pipe(maybeGetResearchInterests(user.orcid), RTE.map(O.fromNullable))),
-        RTE.apSW('location', pipe(maybeGetLocation(user.orcid), RTE.map(O.fromNullable))),
-        RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(O.fromNullable))),
+        RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(Option.fromNullable))),
+        RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(Option.fromNullable))),
+        RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(Option.fromNullable))),
+        RTE.apSW('careerStage', pipe(maybeGetCareerStage(user.orcid), RTE.map(Option.fromNullable))),
+        RTE.apSW('researchInterests', pipe(maybeGetResearchInterests(user.orcid), RTE.map(Option.fromNullable))),
+        RTE.apSW('location', pipe(maybeGetLocation(user.orcid), RTE.map(Option.fromNullable))),
+        RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(Option.fromNullable))),
       ),
     ),
     RTE.chainFirstW(({ user, userOnboarding }) =>

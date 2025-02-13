@@ -1,7 +1,6 @@
-import { String, Struct, flow, pipe } from 'effect'
+import { Option, String, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -109,7 +108,7 @@ const handleEnterEmailAddressForm = ({ preprint, user }: { preprint: PreprintTit
         E.mapLeft(error => ({
           emailAddress: match(getInput('emailAddress')(error))
             .returnType<E.Either<MissingE | InvalidE, never>>()
-            .with(P.union(P.when(O.isNone), { value: '' }), () => pipe(missingE(), E.left))
+            .with(P.union(P.when(Option.isNone), { value: '' }), () => pipe(missingE(), E.left))
             .with({ value: P.select() }, flow(invalidE, E.left))
             .exhaustive(),
         })),

@@ -2,7 +2,7 @@ import { type Array, Effect, Either, type Equivalence, flow, identity, Option } 
 import * as E from 'fp-ts/lib/Either.js'
 import type { Eq } from 'fp-ts/lib/Eq.js' // eslint-disable-line import/no-internal-modules
 import type * as IO from 'fp-ts/lib/IO.js'
-import * as O from 'fp-ts/lib/Option.js'
+import * as O from 'fp-ts/lib/Option.js' // eslint-disable-line import/no-internal-modules
 import type { Reader } from 'fp-ts/lib/Reader.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -14,7 +14,15 @@ export const array: <A>(array: RNEA.ReadonlyNonEmptyArray<A>) => Array.NonEmptyR
 
 export const either: <E, A>(value: E.Either<E, A>) => Either.Either<A, E> = E.matchW(Either.left, Either.right)
 
+export const eitherK: <E, A extends ReadonlyArray<unknown>, B>(
+  f: (...a: A) => E.Either<E, B>,
+) => (...a: A) => Either.Either<B, E> = f => flow(f, either)
+
 export const option: <A>(value: O.Option<A>) => Option.Option<A> = O.match(Option.none, Option.some)
+
+export const optionK: <A extends ReadonlyArray<unknown>, B>(
+  f: (...a: A) => O.Option<B>,
+) => (...a: A) => Option.Option<B> = f => flow(f, option)
 
 export const eq = <A>(value: Eq<A>): Equivalence.Equivalence<A> => value.equals
 

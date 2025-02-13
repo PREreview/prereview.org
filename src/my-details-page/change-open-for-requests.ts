@@ -1,6 +1,5 @@
-import { flow, identity, pipe } from 'effect'
+import { Option, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -38,7 +37,7 @@ export const changeOpenForRequests = ({ body, method, user }: { body: unknown; m
 
 const showChangeOpenForRequestsForm = flow(
   ({ user }: { user: User }) => isOpenForRequests(user.orcid),
-  RTE.match(() => O.none, O.some),
+  RTE.match(Option.none, Option.some),
   RT.map(openForRequests => createFormPage({ openForRequests })),
 )
 
@@ -48,7 +47,7 @@ const handleChangeOpenForRequestsForm = ({ body, user }: { body: unknown; user: 
   pipe(
     RTE.fromEither(ChangeOpenForRequestsFormD.decode(body)),
     RTE.matchE(
-      () => RT.of(createFormPage({ openForRequests: O.none, error: true })),
+      () => RT.of(createFormPage({ openForRequests: Option.none(), error: true })),
       flow(
         ({ openForRequests }) =>
           match(openForRequests)

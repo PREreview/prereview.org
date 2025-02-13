@@ -48,7 +48,7 @@ export const isScietyPreprint: Predicate.Refinement<PreprintId, PreprintIdSuppor
         Option.some,
       )
       .with({ type: 'africarxiv', value: P.when(pipe(hasRegistrant('31730'))) }, Option.some)
-      .otherwise(() => Option.none()),
+      .otherwise(Option.none),
 )
 
 export const scietyUrl = (preprint: PreprintIdSupportedBySciety) => {

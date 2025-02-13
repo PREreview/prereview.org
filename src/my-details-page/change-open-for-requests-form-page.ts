@@ -1,5 +1,5 @@
+import type { Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import type * as O from 'fp-ts/lib/Option.js'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../html.js'
@@ -11,7 +11,7 @@ export const createFormPage = ({
   openForRequests,
   error = false,
 }: {
-  openForRequests: O.Option<IsOpenForRequests>
+  openForRequests: Option.Option<IsOpenForRequests>
   error?: boolean
 }) =>
   PageResponse({

@@ -1,6 +1,5 @@
-import { flow, pipe, Struct } from 'effect'
+import { flow, Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -33,7 +32,7 @@ export const changeLanguages = ({ body, method, user }: { body: unknown; method:
 
 const showChangeLanguagesForm = flow(
   ({ user }: { user: User }) => getLanguages(user.orcid),
-  RTE.match(() => O.none, O.some),
+  RTE.match(Option.none, Option.some),
   RT.map(createFormPage),
 )
 

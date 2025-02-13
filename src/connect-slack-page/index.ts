@@ -1,10 +1,9 @@
 import cookie from 'cookie'
-import { HashSet, Record, String, Struct, flow, identity, pipe } from 'effect'
+import { HashSet, type Option, Record, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
-import type * as O from 'fp-ts/lib/Option.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
@@ -37,7 +36,7 @@ export interface SignValueEnv {
 }
 
 export interface UnsignValueEnv {
-  unsignValue: (value: string) => O.Option<string>
+  unsignValue: (value: string) => Option.Option<string>
 }
 
 const signValue = (value: string) => R.asks(({ signValue }: SignValueEnv) => signValue(value))

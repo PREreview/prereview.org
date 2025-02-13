@@ -1,8 +1,7 @@
 import type { Doi } from 'doi-ts'
-import { flow, pipe } from 'effect'
+import { Option, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
@@ -36,7 +35,7 @@ export interface NewPrereview {
   persona: 'public' | 'pseudonym'
   preprint: PreprintTitle
   review: Html
-  language: O.Option<LanguageCode>
+  language: Option.Option<LanguageCode>
   structured: boolean
   user: User
 }
@@ -141,8 +140,8 @@ const handlePublishForm = ({
       conduct: form.conduct,
       otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
       language: match(form)
-        .returnType<O.Option<LanguageCode>>()
-        .with({ reviewType: 'questions' }, () => O.some('en'))
+        .returnType<Option.Option<LanguageCode>>()
+        .with({ reviewType: 'questions' }, () => Option.some('en'))
         .with({ reviewType: 'freeform' }, form => detectLanguage(form.review))
         .exhaustive(),
       persona: form.persona,

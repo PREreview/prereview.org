@@ -1,7 +1,6 @@
-import { String, Struct, pipe } from 'effect'
+import { Option, String, Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -101,7 +100,7 @@ const handleAddAuthorForm = ({
         EmailAddressFieldD.decode(body),
         E.mapLeft(error =>
           match(getInput('emailAddress')(error))
-            .with(P.union(P.when(O.isNone), { value: '' }), () => missingE())
+            .with(P.union(P.when(Option.isNone), { value: '' }), () => missingE())
             .with({ value: P.select() }, invalidE)
             .exhaustive(),
         ),

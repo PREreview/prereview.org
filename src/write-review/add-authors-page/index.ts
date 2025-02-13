@@ -1,7 +1,6 @@
-import { flow, pipe, Struct } from 'effect'
+import { flow, Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
@@ -9,6 +8,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import { mustDeclareUseOfAi, type MustDeclareUseOfAiEnv } from '../../feature-flags.js'
 import { missingE } from '../../form.js'
+import * as FptsToEffect from '../../FptsToEffect.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { getPreprintTitle, type GetPreprintTitleEnv, type PreprintTitle } from '../../preprint.js'
@@ -56,8 +56,8 @@ export const writeReviewAddAuthors = ({
           RTE.let(
             'authors',
             flow(
-              O.fromNullableK(({ form }) => form.otherAuthors),
-              O.chain(RNEA.fromReadonlyArray),
+              Option.liftNullable(({ form }) => form.otherAuthors),
+              Option.flatMap(FptsToEffect.optionK(RNEA.fromReadonlyArray)),
             ),
           ),
           RTE.matchW(
@@ -96,7 +96,7 @@ const handleAddAuthorsForm = ({
   locale,
   mustDeclareUseOfAi,
 }: {
-  authors: O.Some<RNEA.ReadonlyNonEmptyArray<NonNullable<Form['otherAuthors']>[number]>>
+  authors: Option.Some<RNEA.ReadonlyNonEmptyArray<NonNullable<Form['otherAuthors']>[number]>>
   body: unknown
   form: Form
   preprint: PreprintTitle

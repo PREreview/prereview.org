@@ -1,7 +1,6 @@
-import { Struct, pipe } from 'effect'
+import { Option, Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -157,7 +156,7 @@ const handleEnterEmailAddressForm = ({
             OtherEmailAddressFieldD.decode(body),
             E.mapLeft(error =>
               match(getInput('otherEmailAddress')(error))
-                .with(P.union(P.when(O.isNone), { value: '' }), () => missingE())
+                .with(P.union(P.when(Option.isNone), { value: '' }), () => missingE())
                 .with({ value: P.select() }, invalidE)
                 .exhaustive(),
             ),

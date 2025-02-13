@@ -1,7 +1,6 @@
-import { flow, pipe, Record, String } from 'effect'
+import { flow, Option, pipe, Record, String } from 'effect'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as DE from 'io-ts/lib/DecodeError.js'
 import type * as D from 'io-ts/lib/Decoder.js'
 import * as FS from 'io-ts/lib/FreeSemigroup.js'
@@ -80,11 +79,11 @@ export const wrongTypeE = (): WrongTypeE => ({
 export const hasAnError: <K extends string>(form: Record.ReadonlyRecord<K, E.Either<unknown, unknown>>) => boolean =
   Record.some(E.isLeft)
 
-export function getInput(field: string): (error: D.DecodeError) => O.Option<string> {
+export function getInput(field: string): (error: D.DecodeError) => Option.Option<string> {
   return FS.fold(
     DE.fold({
-      Leaf: O.fromPredicate(String.isString),
-      Key: (key, kind, errors) => (key === field ? getInput(field)(errors) : O.none),
+      Leaf: Option.liftPredicate(String.isString),
+      Key: (key, kind, errors) => (key === field ? getInput(field)(errors) : Option.none()),
       Index: (index, kind, errors) => getInput(field)(errors),
       Member: (index, errors) => getInput(field)(errors),
       Lazy: (id, errors) => getInput(field)(errors),
@@ -93,7 +92,7 @@ export function getInput(field: string): (error: D.DecodeError) => O.Option<stri
     (left, right) =>
       pipe(
         getInput(field)(left),
-        O.alt(() => getInput(field)(right)),
+        Option.orElse(() => getInput(field)(right)),
       ),
   )
 }

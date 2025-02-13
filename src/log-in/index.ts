@@ -1,8 +1,7 @@
-import { Function, String, flow, pipe } from 'effect'
+import { Function, Option, String, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -40,10 +39,7 @@ export interface IsUserBlockedEnv {
 export const logIn = pipe(
   RM.decodeHeader(
     'Referer',
-    flow(
-      O.fromPredicate(String.isString),
-      O.match(() => E.right(''), E.right),
-    ),
+    flow(Option.liftPredicate(String.isString), Option.match({ onNone: () => E.right(''), onSome: E.right })),
   ),
   RM.ichainW(requestAuthorizationCode('/authenticate')),
   R.local(addRedirectUri()),

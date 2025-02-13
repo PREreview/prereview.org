@@ -1,8 +1,7 @@
 import { type Work, getWork } from 'crossref-ts'
 import { type Doi, hasRegistrant } from 'doi-ts'
-import { String, flow, pipe } from 'effect'
+import { Option, String, flow, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { Status } from 'hyper-ts'
@@ -164,8 +163,8 @@ const isAPreprint: (work: Work) => boolean = isMatching(
 
 const findPublishedDate = (work: Work) =>
   pipe(
-    O.fromNullable(work.published),
-    O.getOrElse(() => work.created),
+    Option.fromNullable(work.published),
+    Option.getOrElse(() => work.created),
   )
 
 const detectLanguageForServer = ({
@@ -174,28 +173,28 @@ const detectLanguageForServer = ({
 }: {
   type: CrossrefPreprintId['type']
   text: Html
-}): O.Option<LanguageCode> =>
+}): Option.Option<LanguageCode> =>
   match({ type, text })
-    .with({ type: 'advance' }, () => O.some('en' as const))
+    .with({ type: 'advance' }, () => Option.some('en' as const))
     .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
     .with({ type: 'authorea', text: P.select() }, detectLanguage)
-    .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
-    .with({ type: 'chemrxiv' }, () => O.some('en' as const))
-    .with({ type: 'curvenote' }, () => O.some('en' as const))
-    .with({ type: 'eartharxiv' }, () => O.some('en' as const))
-    .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
+    .with({ type: P.union('biorxiv', 'medrxiv') }, () => Option.some('en' as const))
+    .with({ type: 'chemrxiv' }, () => Option.some('en' as const))
+    .with({ type: 'curvenote' }, () => Option.some('en' as const))
+    .with({ type: 'eartharxiv' }, () => Option.some('en' as const))
+    .with({ type: 'ecoevorxiv' }, () => Option.some('en' as const))
     .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
-    .with({ type: 'engrxiv' }, () => O.some('en' as const))
-    .with({ type: 'metaarxiv' }, () => O.some('en' as const))
+    .with({ type: 'engrxiv' }, () => Option.some('en' as const))
+    .with({ type: 'metaarxiv' }, () => Option.some('en' as const))
     .with({ type: 'osf-preprints', text: P.select() }, detectLanguage)
-    .with({ type: 'preprints.org' }, () => O.some('en' as const))
-    .with({ type: 'psyarxiv' }, () => O.some('en' as const))
-    .with({ type: 'research-square' }, () => O.some('en' as const))
+    .with({ type: 'preprints.org' }, () => Option.some('en' as const))
+    .with({ type: 'psyarxiv' }, () => Option.some('en' as const))
+    .with({ type: 'research-square' }, () => Option.some('en' as const))
     .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
     .with({ type: 'science-open', text: P.select() }, detectLanguage)
     .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
-    .with({ type: 'techrxiv' }, () => O.some('en' as const))
-    .with({ type: 'verixiv' }, () => O.some('en' as const))
+    .with({ type: 'techrxiv' }, () => Option.some('en' as const))
+    .with({ type: 'verixiv' }, () => Option.some('en' as const))
     .exhaustive()
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(

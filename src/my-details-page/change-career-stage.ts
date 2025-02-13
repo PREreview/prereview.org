@@ -1,6 +1,5 @@
-import { flow, pipe, Struct } from 'effect'
+import { flow, Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -32,7 +31,7 @@ export const changeCareerStage = ({ body, method, user }: { body: unknown; metho
 
 const showChangeCareerStageForm = flow(
   ({ user }: { user: User }) => getCareerStage(user.orcid),
-  RTE.match(() => O.none, O.some),
+  RTE.match(Option.none, Option.some),
   RT.map(careerStage => createFormPage({ careerStage })),
 )
 
@@ -42,7 +41,7 @@ const handleChangeCareerStageForm = ({ body, user }: { body: unknown; user: User
   pipe(
     RTE.fromEither(ChangeCareerStageFormD.decode(body)),
     RTE.matchE(
-      () => RT.of(createFormPage({ careerStage: O.none, error: true })),
+      () => RT.of(createFormPage({ careerStage: Option.none(), error: true })),
       ({ careerStage }) =>
         match(careerStage)
           .with(P.union('early', 'mid', 'late'), careerStage =>

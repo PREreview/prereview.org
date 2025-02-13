@@ -1,12 +1,12 @@
+import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
 import { P, match } from 'ts-pattern'
 import { html, plainText } from '../html.js'
 import type { Location } from '../location.js'
 import { PageResponse } from '../response.js'
 import { changeLocationMatch, myDetailsMatch } from '../routes.js'
 
-export const createFormPage = (location: O.Option<Location>) =>
+export const createFormPage = (location: Option.Option<Location>) =>
   PageResponse({
     title: plainText`Where are you based?`,
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
@@ -20,7 +20,7 @@ export const createFormPage = (location: O.Option<Location>) =>
           type="text"
           ${match(location)
             .with({ value: { value: P.select() } }, location => html`value="${location}"`)
-            .when(O.isNone, () => '')
+            .when(Option.isNone, () => '')
             .exhaustive()}
         />
 

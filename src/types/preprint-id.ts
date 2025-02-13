@@ -315,7 +315,7 @@ export function fromUrl(url: URL): Option.Option<IndeterminatePreprintId> {
     .with(['scienceopen.com', 'hosted-document'], () => extractFromScienceOpenQueryString(url.searchParams))
     .with(['techrxiv.org', P.select()], extractFromTechrxivPath)
     .with(['zenodo.org', P.select()], extractFromZenodoPath)
-    .otherwise(() => Option.none())
+    .otherwise(Option.none)
 }
 
 const extractFromDoiPath = flow(decodeURIComponent, parsePreprintDoi)

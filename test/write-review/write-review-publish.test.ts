@@ -1,9 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import cookieSignature from 'cookie-signature'
+import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
@@ -213,7 +213,7 @@ describe('writeReviewPublish', () => {
         persona: newReview.persona,
         preprint: preprintTitle,
         review: expect.anything(),
-        language: O.some('en'),
+        language: Option.some('en'),
         structured: true,
         user,
       })

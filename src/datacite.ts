@@ -1,9 +1,8 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { type Work, getWork } from 'datacite-ts'
 import { type Doi, hasRegistrant } from 'doi-ts'
-import { flow, identity, pipe } from 'effect'
+import { Option, flow, identity, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { Status } from 'hyper-ts'
@@ -13,6 +12,7 @@ import { parse } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language.js'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import * as FptsToEffect from './FptsToEffect.js'
 import { sanitizeHtml } from './html.js'
 import * as Preprint from './preprint.js'
 import type {
@@ -112,10 +112,10 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           'language',
           E.fromOptionK(() => 'unknown language' as const)(({ text }) =>
             match({ type, text })
-              .returnType<O.Option<LanguageCode>>()
+              .returnType<Option.Option<LanguageCode>>()
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
-              .with({ type: 'arcadia-science' }, () => O.some('en' as const))
-              .with({ type: 'arxiv' }, () => O.some('en' as const))
+              .with({ type: 'arcadia-science' }, () => Option.some('en' as const))
+              .with({ type: 'arxiv' }, () => Option.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
               .with({ type: 'zenodo', text: P.select() }, detectLanguage)
@@ -139,10 +139,10 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           'language',
           E.fromOptionK(() => 'unknown language')(({ text }) =>
             match({ type, text })
-              .returnType<O.Option<LanguageCode>>()
+              .returnType<Option.Option<LanguageCode>>()
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
-              .with({ type: 'arcadia-science' }, () => O.some('en' as const))
-              .with({ type: 'arxiv' }, () => O.some('en' as const))
+              .with({ type: 'arcadia-science' }, () => Option.some('en' as const))
+              .with({ type: 'arxiv' }, () => Option.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
               .with({ type: 'zenodo', text: P.select() }, detectLanguage)
@@ -157,32 +157,17 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
 
 const findOrcid = flow(
   (person: Extract<Work['creators'][number], { nameIdentifiers: ReadonlyArray<unknown> }>) => person.nameIdentifiers,
-  RA.findFirst(({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID'),
-  O.chain(({ nameIdentifier }) => parse(nameIdentifier)),
-  O.toUndefined,
+  FptsToEffect.optionK(RA.findFirst(({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID')),
+  Option.flatMap(({ nameIdentifier }) => FptsToEffect.option(parse(nameIdentifier))),
+  Option.getOrUndefined,
 )
 
 const findPublishedDate = (dates: Work['dates']) =>
   pipe(
-    O.none,
-    O.alt(() =>
-      pipe(
-        dates,
-        RA.findFirst(({ dateType }) => dateType === 'Submitted'),
-      ),
-    ),
-    O.alt(() =>
-      pipe(
-        dates,
-        RA.findFirst(({ dateType }) => dateType === 'Created'),
-      ),
-    ),
-    O.alt(() =>
-      pipe(
-        dates,
-        RA.findFirst(({ dateType }) => dateType === 'Issued'),
-      ),
-    ),
+    Option.none(),
+    Option.orElse(() => pipe(dates, FptsToEffect.optionK(RA.findFirst(({ dateType }) => dateType === 'Submitted')))),
+    Option.orElse(() => pipe(dates, FptsToEffect.optionK(RA.findFirst(({ dateType }) => dateType === 'Created')))),
+    Option.orElse(() => pipe(dates, FptsToEffect.optionK(RA.findFirst(({ dateType }) => dateType === 'Issued')))),
   )
 
 const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(

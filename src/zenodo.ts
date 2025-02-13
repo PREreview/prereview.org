@@ -1,10 +1,9 @@
 import { toTemporalInstant } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, Function, Predicate, String, Struct, flow, identity, pipe } from 'effect'
+import { Array, Function, Option, Predicate, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -196,16 +195,16 @@ export const getRecentPrereviewsFromZenodo = ({
           flow(
             error =>
               match(error)
-                .with(P.instanceOf(Error), error => O.some(error.message))
-                .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
-                .with({ _tag: P.string }, error => O.some(D.draw(error)))
-                .with('unavailable', O.some)
-                .with('not-found', () => O.none)
+                .with(P.instanceOf(Error), error => Option.some(error.message))
+                .with({ status: P.number }, response => Option.some(`${response.status} ${response.statusText}`))
+                .with({ _tag: P.string }, error => Option.some(D.draw(error)))
+                .with('unavailable', Option.some)
+                .with('not-found', Option.none)
                 .exhaustive(),
-            O.match(
-              () => RIO.of(undefined),
-              flow(error => ({ error }), L.errorP('Unable to get recent records from Zenodo')),
-            ),
+            Option.match({
+              onNone: () => RIO.of(undefined),
+              onSome: flow(error => ({ error }), L.errorP('Unable to get recent records from Zenodo')),
+            }),
           ),
         ),
       ),
@@ -247,20 +246,20 @@ export const getPrereviewFromZenodo = (id: number) =>
         flow(
           error =>
             match(error)
-              .with({ _tag: 'PreprintIsUnavailable' }, () => O.some('unavailable' as const))
-              .with({ _tag: 'PreprintIsNotFound' }, () => O.none)
-              .with(P.intersection(P.instanceOf(Error), { status: P.number }), () => O.none)
-              .with(P.instanceOf(Error), error => O.some(error.message))
-              .with({ status: P.union(Status.NotFound, Status.Gone) }, () => O.none)
-              .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
-              .with({ _tag: P.string }, error => O.some(D.draw(error)))
-              .with('unknown-license', 'text-unavailable', O.some)
-              .with('no reviewed preprint', 'removed', 'not-found', () => O.none)
+              .with({ _tag: 'PreprintIsUnavailable' }, () => Option.some('unavailable' as const))
+              .with({ _tag: 'PreprintIsNotFound' }, Option.none)
+              .with(P.intersection(P.instanceOf(Error), { status: P.number }), Option.none)
+              .with(P.instanceOf(Error), error => Option.some(error.message))
+              .with({ status: P.union(Status.NotFound, Status.Gone) }, Option.none)
+              .with({ status: P.number }, response => Option.some(`${response.status} ${response.statusText}`))
+              .with({ _tag: P.string }, error => Option.some(D.draw(error)))
+              .with('unknown-license', 'text-unavailable', Option.some)
+              .with('no reviewed preprint', 'removed', 'not-found', Option.none)
               .exhaustive(),
-          O.match(
-            () => RIO.of(undefined),
-            flow(error => ({ error }), L.errorP('Unable to get record from Zenodo')),
-          ),
+          Option.match({
+            onNone: () => RIO.of(undefined),
+            onSome: flow(error => ({ error }), L.errorP('Unable to get record from Zenodo')),
+          }),
         ),
       ),
     ),
@@ -667,7 +666,7 @@ function createDepositMetadata(
                 .otherwise(() => []),
             ),
           ),
-          language: O.toUndefined(newPrereview.language),
+          language: Option.getOrUndefined(newPrereview.language),
           description: `<p><strong>This Zenodo record is a permanently preserved version of a ${
             newPrereview.structured ? 'Structured ' : ''
           }PREreview. You can view the complete PREreview at <a href="${url.href}">${url.href}</a>.</strong></p>
@@ -747,18 +746,20 @@ function recordToPrereview(
     ),
     RTE.chainW(({ license, preprintId, reviewTextUrl }) =>
       sequenceS(RTE.ApplyPar)({
-        addendum: RTE.right(pipe(O.fromNullable(record.metadata.notes), O.map(sanitizeHtml), O.toUndefined)),
+        addendum: RTE.right(
+          pipe(Option.fromNullable(record.metadata.notes), Option.map(sanitizeHtml), Option.getOrUndefined),
+        ),
         authors: RTE.right<
           F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
           Preprint.PreprintIsUnavailable | Preprint.PreprintIsNotFound | 'text-unavailable'
         >(getAuthors(record) as never),
-        club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
+        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         doi: RTE.right(record.metadata.doi),
         language: RTE.right(
           pipe(
-            O.fromNullable(record.metadata.language),
-            O.filter(iso6393Validate),
-            O.match(() => undefined, iso6393To1),
+            Option.fromNullable(record.metadata.language),
+            Option.filter(iso6393Validate),
+            Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
           ),
         ),
         license: RTE.right(license),
@@ -808,9 +809,9 @@ function recordToPrereviewComment(
         doi: RTE.right(record.metadata.doi),
         language: RTE.right(
           pipe(
-            O.fromNullable(record.metadata.language),
-            O.filter(iso6393Validate),
-            O.match(() => undefined, iso6393To1),
+            Option.fromNullable(record.metadata.language),
+            Option.filter(iso6393Validate),
+            Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
           ),
         ),
         id: RTE.right(record.id),
@@ -832,13 +833,13 @@ function recordToPreprintPrereview(
     RTE.chainW(reviewTextUrl =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right(getAuthors(record)),
-        club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
+        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         id: RTE.right(record.id),
         language: RTE.right(
           pipe(
-            O.fromNullable(record.metadata.language),
-            O.filter(iso6393Validate),
-            O.match(() => undefined, iso6393To1),
+            Option.fromNullable(record.metadata.language),
+            Option.filter(iso6393Validate),
+            Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
           ),
         ),
         text: getReviewText(reviewTextUrl),
@@ -863,12 +864,12 @@ function recordToScietyPrereview(
       doi: review.metadata.doi,
       authors: review.metadata.creators,
       language: pipe(
-        O.fromNullable(review.metadata.language),
-        O.filter(iso6393Validate),
-        O.match(() => undefined, iso6393To1),
+        Option.fromNullable(review.metadata.language),
+        Option.filter(iso6393Validate),
+        Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
       ),
       type: record.metadata.keywords?.includes('Structured PREreview') === true ? 'structured' : 'full',
-      club: pipe(getReviewClub(record), O.toUndefined),
+      club: pipe(getReviewClub(record), Option.getOrUndefined),
       live: record.metadata.keywords?.includes('Live Review') === true,
       requested: record.metadata.keywords?.includes('Requested PREreview') === true,
     })),
@@ -886,7 +887,7 @@ function recordToRecentPrereview(
     getReviewedPreprintId(record),
     RTE.chainW(preprintId =>
       sequenceS(RTE.ApplyPar)({
-        club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
+        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         id: RTE.right(record.id),
         reviewers: RTE.right(pipe(record.metadata.creators, RNEA.map(Struct.get('name')))),
         published: RTE.right(
@@ -917,12 +918,12 @@ function getAuthors(record: Record | InProgressDeposition): Prereview['authors']
   }
 
   const anonymous = pipe(
-    O.fromNullable(/^([1-9][0-9]*) other authors?$/.exec(last.name)),
-    O.chain(RA.lookup(1)),
-    O.match(
-      () => 0,
-      number => parseInt(number, 10),
-    ),
+    Option.fromNullable(/^([1-9][0-9]*) other authors?$/.exec(last.name)),
+    Option.flatMap(FptsToEffect.optionK(RA.lookup(1))),
+    Option.match({
+      onNone: () => 0,
+      onSome: number => parseInt(number, 10),
+    }),
   )
 
   return match(anonymous)
@@ -932,9 +933,9 @@ function getAuthors(record: Record | InProgressDeposition): Prereview['authors']
 
 function isInCommunity(record: Record) {
   return pipe(
-    O.fromNullable(record.metadata.communities),
-    O.chain(Array.findFirst(community => community.id === 'prereview-reviews')),
-    O.isSome,
+    Option.fromNullable(record.metadata.communities),
+    Option.flatMap(Array.findFirst(community => community.id === 'prereview-reviews')),
+    Option.isSome,
   )
 }
 
@@ -951,8 +952,8 @@ const getReviewFields = flow(
   RA.filterMap(
     flow(
       Struct.get('identifier'),
-      O.fromNullableK(identifier => (/^https:\/\/openalex\.org\/fields\/(.+)$/.exec(identifier) ?? [])[1]),
-      O.filter(isFieldId),
+      Option.liftNullable(identifier => (/^https:\/\/openalex\.org\/fields\/(.+)$/.exec(identifier) ?? [])[1]),
+      Option.filter(isFieldId),
     ),
   ),
 )
@@ -962,22 +963,22 @@ const getReviewSubfields = flow(
   RA.filterMap(
     flow(
       Struct.get('identifier'),
-      O.fromNullableK(identifier => (/^https:\/\/openalex\.org\/subfields\/(.+)$/.exec(identifier) ?? [])[1]),
-      O.filter(isSubfieldId),
+      Option.liftNullable(identifier => (/^https:\/\/openalex\.org\/subfields\/(.+)$/.exec(identifier) ?? [])[1]),
+      Option.filter(isSubfieldId),
     ),
   ),
 )
 
 const getReviewClub = flow(
   (record: Record) => record.metadata.contributors ?? [],
-  RA.findFirstMap(flow(Struct.get('name'), getClubByName)),
+  FptsToEffect.optionK(RA.findFirstMap(flow(Struct.get('name'), getClubByName))),
 )
 
 const getReviewUrl = flow(
-  O.fromPredicate(isOpenRecord),
-  O.map(record => record.files),
-  O.chain(RA.findFirst(file => file.key.endsWith('.html'))),
-  O.map(file => file.links.self),
+  Option.liftPredicate(isOpenRecord),
+  Option.map(record => record.files),
+  Option.flatMap(FptsToEffect.optionK(RA.findFirst(file => file.key.endsWith('.html')))),
+  Option.map(file => file.links.self),
 )
 
 const getReviewText = flow(
@@ -1008,28 +1009,26 @@ const getReviewedPreprintId = (record: Record) =>
     RTE.fromNullable('no reviewed preprint' as const)(record.metadata.related_identifiers),
     RTE.chainOptionK(() => 'no reviewed preprint' as const)(
       Array.findFirst(relatedIdentifier =>
-        FptsToEffect.option(
-          match(relatedIdentifier)
-            .with(
-              {
-                relation: 'reviews',
-                scheme: 'doi',
-                resource_type: 'publication-preprint',
-                identifier: P.select(),
-              },
-              flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)),
-            )
-            .with(
-              {
-                relation: 'reviews',
-                scheme: 'url',
-                resource_type: 'publication-preprint',
-                identifier: P.select(),
-              },
-              flow(O.fromEitherK(UrlD.decode), O.chain(fromUrl)),
-            )
-            .otherwise(() => O.none),
-        ),
+        match(relatedIdentifier)
+          .with(
+            {
+              relation: 'reviews',
+              scheme: 'doi',
+              resource_type: 'publication-preprint',
+              identifier: P.select(),
+            },
+            flow(FptsToEffect.eitherK(PreprintDoiD.decode), Option.getRight, Option.map(fromPreprintDoi)),
+          )
+          .with(
+            {
+              relation: 'reviews',
+              scheme: 'url',
+              resource_type: 'publication-preprint',
+              identifier: P.select(),
+            },
+            flow(FptsToEffect.eitherK(UrlD.decode), Option.getRight, Option.flatMap(fromUrl)),
+          )
+          .otherwise(Option.none),
       ),
     ),
     RTE.orElseFirst(

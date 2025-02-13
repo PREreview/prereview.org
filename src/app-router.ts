@@ -1,9 +1,8 @@
 import cookieSignature from 'cookie-signature'
-import { Function, String, flow, pipe } from 'effect'
+import { Function, Option, String, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -786,7 +785,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               ),
             env,
           ),
-          unsignValue: value => O.fromPredicate(String.isString)(cookieSignature.unsign(value, env.secret)),
+          unsignValue: value => Option.liftPredicate(String.isString)(cookieSignature.unsign(value, env.secret)),
         })),
       ),
     ),
