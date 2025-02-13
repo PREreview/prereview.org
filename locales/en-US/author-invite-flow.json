@@ -22,5 +22,20 @@
   },
   "updatePrereview": {
     "message": "Update PREreview"
+  },
+  "nameAdded": {
+    "message": "Name added"
+  },
+  "whatHappensNext": {
+    "message": "What happens next"
+  },
+  "ableToSeePrereviewShortly": {
+    "message": "You’ll be able to see your name on the PREreview shortly."
+  },
+  "yourDoi": {
+    "message": "Your DOI"
+  },
+  "closeWindowOrSeePrereview": {
+    "message": "You can close this window, or <link>see the PREreview</link>."
   }
 }

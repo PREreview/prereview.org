@@ -8,9 +8,9 @@ import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
-import { type Html, html, plainText } from '../html.js'
+import { type Html, html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -86,32 +86,33 @@ function publishedPage({
   inviteId,
   review,
   reviewId,
+  locale,
 }: {
   inviteId: Uuid
   review: Prereview
   reviewId: number
   locale: SupportedLocale
 }) {
+  const t = translate(locale, 'author-invite-flow')
+  const prereviewLink = (text: string) =>
+    `<a href="${format(reviewMatch.formatter, { id: reviewId })}">${text}</a>`.toString()
   return StreamlinePageResponse({
-    title: plainText`Name added`,
+    title: pipe(t('nameAdded')(), plainText),
     main: html`
       <div class="panel">
-        <h1>Name added</h1>
+        <h1>${t('nameAdded')()}</h1>
 
         <div>
-          Your DOI <br />
+          ${t('yourDoi')()} <br />
           <strong class="doi" translate="no">${review.doi}</strong>
         </div>
       </div>
 
-      <h2>What happens next</h2>
+      <h2>${t('whatHappensNext')()}</h2>
 
-      <p>You’ll be able to see your name on the PREreview shortly.</p>
+      <p>${t('ableToSeePrereviewShortly')()}</p>
 
-      <p>
-        You can close this window, or
-        <a href="${format(reviewMatch.formatter, { id: reviewId })}">see the PREreview</a>.
-      </p>
+      <p>${rawHtml(t('closeWindowOrSeePrereview')({ link: prereviewLink }))}</p>
     `,
     canonical: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
   })
