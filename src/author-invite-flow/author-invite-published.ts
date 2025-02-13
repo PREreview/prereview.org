@@ -10,6 +10,7 @@ import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
 import { type Html, html, plainText } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -48,6 +49,7 @@ export const authorInvitePublished = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.let('inviteId', () => id),
     RTE.bindW('invite', ({ user }) =>
       pipe(
@@ -80,7 +82,16 @@ export const authorInvitePublished = ({
     ),
   )
 
-function publishedPage({ inviteId, review, reviewId }: { inviteId: Uuid; review: Prereview; reviewId: number }) {
+function publishedPage({
+  inviteId,
+  review,
+  reviewId,
+}: {
+  inviteId: Uuid
+  review: Prereview
+  reviewId: number
+  locale: SupportedLocale
+}) {
   return StreamlinePageResponse({
     title: plainText`Name added`,
     main: html`
