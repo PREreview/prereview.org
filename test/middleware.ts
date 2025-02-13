@@ -1,5 +1,5 @@
 import { pipe } from 'effect'
-import * as L from 'fp-ts-contrib/lib/List.js'
+import * as L from 'fp-ts-contrib/lib/List.js' // eslint-disable-line import/no-extraneous-dependencies
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { Middleware } from 'hyper-ts/lib/Middleware.js'
 import * as M from 'hyper-ts/lib/Middleware.js'
