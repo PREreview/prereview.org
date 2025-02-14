@@ -66,8 +66,4 @@ describe('getFromRedis', () => {
       }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
     )
   })
-
-  describe('redis is slow', () => {
-    it.todo('returns an error')
-  })
 })
