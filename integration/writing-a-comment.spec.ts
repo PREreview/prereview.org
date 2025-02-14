@@ -10,6 +10,7 @@ import {
   hasAnUnverifiedEmailAddress,
   requiresAVerifiedEmailAddress,
   test,
+  waitForNotBusy,
   willPublishAComment,
 } from './base.js'
 
@@ -89,7 +90,7 @@ test.extend(canLogIn).extend(canWriteComments).extend(willPublishAComment)(
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
 
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
 
     await page.getByLabel('Write your comment').click()
     await page.keyboard.type('# Some title')
@@ -198,7 +199,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -213,7 +214,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
     )
 
     await page.getByRole('link', { name: 'Change comment' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
 
     await page
       .getByLabel('Write your comment')
@@ -298,7 +299,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -391,7 +392,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -487,7 +488,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.goto('/reviews/1061864')
@@ -574,7 +575,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -688,7 +689,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -798,7 +799,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requir
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -911,7 +912,7 @@ test
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1101,7 +1102,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1189,7 +1190,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -1283,7 +1284,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1394,7 +1395,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1490,7 +1491,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requir
 
     await page.goto('/reviews/1061864/write-a-comment')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()

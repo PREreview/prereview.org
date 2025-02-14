@@ -20,7 +20,7 @@ import * as L from 'logger-fp-ts'
 import nodemailer from 'nodemailer'
 import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import { Orcid } from 'orcid-id-ts'
-import type { BrowserContextOptions } from 'playwright-core'
+import type { BrowserContextOptions, Page } from 'playwright-core'
 import { URL } from 'url'
 import { Uuid } from 'uuid-ts'
 import {
@@ -2152,3 +2152,9 @@ export const invitedToBeAnAuthor: Fixtures<
 }
 
 export const test = baseTest.extend(appFixtures)
+
+export const waitForNotBusy = async (page: Page) => {
+  await page.waitForLoadState()
+
+  await page.locator('body', { hasNot: page.locator('[aria-busy=true]') }).waitFor()
+}
