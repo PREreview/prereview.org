@@ -1,9 +1,11 @@
 import { Headers, HttpClientRequest } from '@effect/platform'
-import { describe, expect, it } from '@jest/globals'
+import { it } from '@fast-check/jest'
+import { describe, expect } from '@jest/globals'
 import { Cause, DateTime, Effect, Either, Schema, TestContext } from 'effect'
 import { CacheValueFromStringSchema } from '../../src/CachingHttpClient/HttpCache.js'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.js'
 import type * as Redis from '../../src/Redis.js'
+import * as fc from '../fc.js'
 
 describe('getFromRedis', () => {
   describe('there is a value for a given key', () => {
@@ -51,7 +53,18 @@ describe('getFromRedis', () => {
   })
 
   describe('redis is unreachable', () => {
-    it.todo('returns an error')
+    it.failing.prop([fc.anything()])('returns an error', error =>
+      Effect.gen(function* () {
+        const request = HttpClientRequest.get('http://example.com')
+        const redis = {
+          get: () => Promise.reject(error),
+        } as unknown as typeof Redis.HttpCacheRedis.Service
+
+        const result = yield* Effect.either(_.getFromRedis(redis)(request))
+
+        expect(result).toStrictEqual(Either.left(new Cause.UnknownException(error)))
+      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
   })
 
   describe('redis is slow', () => {
