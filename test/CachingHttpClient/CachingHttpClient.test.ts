@@ -115,23 +115,35 @@ describe('there is no cache entry', () => {
 describe('there is a cache entry', () => {
   describe('the cached response is fresh', () => {
     test.todo('the cached response is returned')
+
+    test.todo('makes no request')
   })
 
   describe('the cached response is stale', () => {
-    test.todo('the cached response is returned')
+    test.todo('the cached response is returned immediately')
 
     describe('cached response can be revalidated', () => {
-      test.todo('able to cache it')
+      describe('able to cache it', () => {
+        test.todo('updates the cached value')
+      })
 
-      test.todo('not able to cache it')
+      describe('not able to cache it', () => {
+        test.todo('ignores the failure')
+      })
     })
 
     describe("cached response can't be revalidated", () => {
-      test.todo('with a timeout')
+      describe('with a timeout', () => {
+        test.todo('ignores the failure')
+      })
 
-      test.todo('with a network error')
+      describe('with a network error', () => {
+        test.todo('ignores the failure')
+      })
 
-      test.todo('with a response that does not have a 200 status code')
+      describe('with a response that does not have a 200 status code', () => {
+        test.todo('ignores the failure')
+      })
     })
   })
 })
