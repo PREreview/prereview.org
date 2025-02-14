@@ -1,3 +1,4 @@
+import { HttpMethod } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
@@ -1116,8 +1117,8 @@ export const origin = (): fc.Arbitrary<URL> => url().map(url => new URL(url.orig
 
 export const url = (): fc.Arbitrary<URL> => fc.webUrl().map(url => new URL(url))
 
-export const requestMethod = (): fc.Arbitrary<RequestMethod> =>
-  constantFrom('CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE')
+export const requestMethod = (): fc.Arbitrary<HttpMethod.HttpMethod> =>
+  constantFrom('DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT')
 
 const headerName = () =>
   fc.string({

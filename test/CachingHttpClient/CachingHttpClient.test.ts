@@ -141,23 +141,26 @@ describe('the cache is too slow', () => {
 })
 
 describe('with a non-GET request', () => {
-  test.failing.prop([fc.url(), fc.statusCode().filter(status => status >= StatusCodes.OK), fc.durationInput()])(
-    'does not interact with cache',
-    (url, status, timeToStale) =>
-      Effect.gen(function* () {
-        const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response(null, { status }))
-        const client = yield* pipe(
-          _.CachingHttpClient(timeToStale),
-          Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
-          Effect.provideService(_.HttpCache, {
-            get: shouldNotBeCalled,
-            set: shouldNotBeCalled,
-            delete: shouldNotBeCalled,
-          }),
-        )
-        const actualResponse = yield* client.get(url)
+  test.failing.prop([
+    fc.requestMethod().filter(method => method !== 'GET'),
+    fc.url(),
+    fc.statusCode().filter(status => status >= StatusCodes.OK),
+    fc.durationInput(),
+  ])('does not interact with cache', (method, url, status, timeToStale) =>
+    Effect.gen(function* () {
+      const response = HttpClientResponse.fromWeb(HttpClientRequest.make(method)(url), new Response(null, { status }))
+      const client = yield* pipe(
+        _.CachingHttpClient(timeToStale),
+        Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
+        Effect.provideService(_.HttpCache, {
+          get: shouldNotBeCalled,
+          set: shouldNotBeCalled,
+          delete: shouldNotBeCalled,
+        }),
+      )
+      const actualResponse = yield* client.get(url)
 
-        expect(actualResponse).toStrictEqual(response)
-      }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
+      expect(actualResponse).toStrictEqual(response)
+    }).pipe(Effect.scoped, Effect.provide(TestContext.TestContext), Effect.runPromise),
   )
 })
