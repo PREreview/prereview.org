@@ -41,7 +41,7 @@ describe('getFromRedis', () => {
       Effect.gen(function* () {
         const request = HttpClientRequest.get('http://example.com')
         const redis = {
-          get: () => Promise.resolve(undefined),
+          get: () => Promise.resolve(null),
         } as unknown as typeof Redis.HttpCacheRedis.Service
 
         const result = yield* Effect.either(_.getFromRedis(redis)(request))
