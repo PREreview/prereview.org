@@ -10,6 +10,8 @@ import { loggingHttpClient } from '../LoggingHttpClient.js'
 import * as HttpCache from './HttpCache.js'
 
 export * from './HttpCache.js'
+export { layerInMemory } from './InMemory.js'
+export { layerPersistedToRedis } from './PersistedToRedis.js'
 
 export const CachingHttpClient = (
   timeToStale: Duration.DurationInput,
