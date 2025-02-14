@@ -11,23 +11,7 @@ export const layerPersistedToRedis = Layer.effect(
 
     return pipe(
       {
-        get: request =>
-          pipe(
-            Effect.tryPromise(() => redis.get(keyForRequest(request))),
-            Effect.andThen(Option.fromNullable),
-            Effect.andThen(Schema.decode(CacheValueFromStringSchema)),
-            Effect.map(({ staleAt, response }) => ({
-              staleAt,
-              response: HttpClientResponse.fromWeb(
-                request,
-                new Response(response.body, {
-                  status: response.status,
-                  headers: Headers.fromInput(response.headers),
-                }),
-              ),
-            })),
-            Effect.mapError(() => new Cause.NoSuchElementException()),
-          ),
+        get: getFromRedis(redis),
         set: (response, staleAt) =>
           pipe(
             Effect.gen(function* () {
@@ -51,3 +35,23 @@ export const layerPersistedToRedis = Layer.effect(
     )
   }),
 )
+
+export const getFromRedis =
+  (redis: typeof Redis.HttpCacheRedis.Service): (typeof HttpCache.Service)['get'] =>
+  request =>
+    pipe(
+      Effect.tryPromise(() => redis.get(keyForRequest(request))),
+      Effect.andThen(Option.fromNullable),
+      Effect.andThen(Schema.decode(CacheValueFromStringSchema)),
+      Effect.map(({ staleAt, response }) => ({
+        staleAt,
+        response: HttpClientResponse.fromWeb(
+          request,
+          new Response(response.body, {
+            status: response.status,
+            headers: Headers.fromInput(response.headers),
+          }),
+        ),
+      })),
+      Effect.mapError(() => new Cause.NoSuchElementException()),
+    )
