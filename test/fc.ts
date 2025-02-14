@@ -1,4 +1,4 @@
-import { HttpMethod } from '@effect/platform'
+import type { HttpMethod } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
