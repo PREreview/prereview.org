@@ -1,6 +1,6 @@
 import { Headers, HttpClientRequest } from '@effect/platform'
 import { describe, expect, it } from '@jest/globals'
-import { DateTime, Effect, Either, Schema, TestContext } from 'effect'
+import { Cause, DateTime, Effect, Either, Schema, TestContext } from 'effect'
 import { CacheValueFromStringSchema } from '../../src/CachingHttpClient/HttpCache.js'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.js'
 import type * as Redis from '../../src/Redis.js'
@@ -37,7 +37,17 @@ describe('getFromRedis', () => {
   })
 
   describe('there is no value for a given key', () => {
-    it.todo('returns not found')
+    it('returns not found', () =>
+      Effect.gen(function* () {
+        const request = HttpClientRequest.get('http://example.com')
+        const redis = {
+          get: () => Promise.resolve(undefined),
+        } as unknown as typeof Redis.HttpCacheRedis.Service
+
+        const result = yield* Effect.either(_.getFromRedis(redis)(request))
+
+        expect(result).toStrictEqual(Either.left(new Cause.NoSuchElementException()))
+      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise))
   })
 
   describe('redis is unreachable', () => {
