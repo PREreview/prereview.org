@@ -53,7 +53,7 @@ describe('getFromRedis', () => {
   })
 
   describe('redis is unreachable', () => {
-    it.failing.prop([fc.anything()])('returns an error', error =>
+    it.prop([fc.anything()])('returns an error', error =>
       Effect.gen(function* () {
         const request = HttpClientRequest.get('http://example.com')
         const redis = {

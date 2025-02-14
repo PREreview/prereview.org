@@ -30,7 +30,7 @@ export class HttpCache extends Context.Tag('HttpCache')<
       request: HttpClientRequest.HttpClientRequest,
     ) => Effect.Effect<
       { staleAt: DateTime.Utc; response: HttpClientResponse.HttpClientResponse },
-      Cause.NoSuchElementException
+      Cause.NoSuchElementException | Cause.UnknownException
     >
     set: (response: HttpClientResponse.HttpClientResponse, staleAt: DateTime.Utc) => Effect.Effect<void, Error>
     delete: (url: URL) => Effect.Effect<void>
