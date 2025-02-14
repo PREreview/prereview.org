@@ -337,7 +337,26 @@ function renderReview(form: CompletedForm) {
 
     <h2>Competing interests</h2>
 
-    <p>${getCompetingInterests(form)}</p>`
+    <p>${getCompetingInterests(form)}</p>
+
+    ${form.generativeAiIdeas === 'yes'
+      ? html`
+          <h2>Use of Artificial Intelligence (AI)</h2>
+
+          <p>
+            ${match(form.moreAuthors)
+              .with(
+                P.union('yes', 'yes-private'),
+                () => 'The authors declare that they used generative AI to come up with new ideas for their review.',
+              )
+              .with(
+                'no',
+                () => 'The author declares that they used generative AI to come up with new ideas for their review.',
+              )
+              .exhaustive()}
+          </p>
+        `
+      : ''} `
 }
 
 function failureMessage(user: User) {
