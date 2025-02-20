@@ -156,7 +156,7 @@ describe('there is a cache entry', () => {
   )
 
   describe('the cached response is fresh', () => {
-    test.failing.prop([fc.url()])('the cached response is returned without making any requests', url =>
+    test.failing('the cached response is returned without making any requests', () =>
       Effect.gen(function* () {
         const client = yield* pipe(
           _.CachingHttpClient(timeToStale),
