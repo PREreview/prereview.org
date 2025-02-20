@@ -8,11 +8,16 @@ import type * as Redis from '../../src/Redis.js'
 import * as fc from '../fc.js'
 
 describe('getFromRedis', () => {
+  const request = HttpClientRequest.get('http://example.com')
+  const stubbedRedisReturning = (value: string | null) =>
+    ({
+      get: () => Promise.resolve(value),
+    }) as unknown as typeof Redis.HttpCacheRedis.Service
+
   describe('there is a value for a given key', () => {
     describe('the value can be read', () => {
       it('succeeds', () =>
         Effect.gen(function* () {
-          const request = HttpClientRequest.get('http://example.com')
           const decodableValue = yield* Schema.encode(CacheValueFromStringSchema)({
             staleAt: yield* DateTime.now,
             response: {
@@ -21,9 +26,7 @@ describe('getFromRedis', () => {
               body: '',
             },
           })
-          const redis = {
-            get: () => Promise.resolve(decodableValue),
-          } as unknown as typeof Redis.HttpCacheRedis.Service
+          const redis = stubbedRedisReturning(decodableValue)
 
           const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
@@ -34,10 +37,7 @@ describe('getFromRedis', () => {
     describe('the value can not be read', () => {
       it.prop([fc.string()])('returns not found', unreadableValue =>
         Effect.gen(function* () {
-          const request = HttpClientRequest.get('http://example.com')
-          const redis = {
-            get: () => Promise.resolve(unreadableValue),
-          } as unknown as typeof Redis.HttpCacheRedis.Service
+          const redis = stubbedRedisReturning(unreadableValue)
 
           const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
@@ -52,10 +52,7 @@ describe('getFromRedis', () => {
   describe('there is no value for a given key', () => {
     it('returns not found', () =>
       Effect.gen(function* () {
-        const request = HttpClientRequest.get('http://example.com')
-        const redis = {
-          get: () => Promise.resolve(null),
-        } as unknown as typeof Redis.HttpCacheRedis.Service
+        const redis = stubbedRedisReturning(null)
 
         const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
@@ -66,7 +63,6 @@ describe('getFromRedis', () => {
   describe('redis is unreachable', () => {
     it.prop([fc.anything()])('returns an error', error =>
       Effect.gen(function* () {
-        const request = HttpClientRequest.get('http://example.com')
         const redis = {
           get: () => Promise.reject(error),
         } as unknown as typeof Redis.HttpCacheRedis.Service
