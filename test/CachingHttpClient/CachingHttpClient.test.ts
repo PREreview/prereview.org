@@ -133,7 +133,21 @@ describe('there is no cache entry', () => {
 
 describe('there is a cache entry', () => {
   describe('the cached response is fresh', () => {
-    test.todo('the cached response is returned')
+    test.failing.prop([fc.url(), fc.durationInput()])('the cached response is returned', (url, timeToStale) =>
+      Effect.gen(function* () {
+        const cache = new Map()
+        const originalResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
+        const client = yield* pipe(
+          _.CachingHttpClient(timeToStale),
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(originalResponse)),
+          Effect.provide(_.layerInMemory(cache)),
+        )
+
+        yield* client.get(url)
+        const responseFromFreshCache = yield* client.get(url)
+        expect(responseFromFreshCache).toStrictEqual(originalResponse)
+      }).pipe(effectTestBoilerplate, Effect.runPromise),
+    )
 
     test.todo('makes no request')
   })
