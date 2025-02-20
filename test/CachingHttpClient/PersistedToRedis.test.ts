@@ -32,7 +32,18 @@ describe('getFromRedis', () => {
     })
 
     describe('the value can not be read', () => {
-      it.todo('returns not found')
+      it.prop([fc.string()])('returns not found', unreadableValue =>
+        Effect.gen(function* () {
+          const request = HttpClientRequest.get('http://example.com')
+          const redis = {
+            get: () => Promise.resolve(unreadableValue),
+          } as unknown as typeof Redis.HttpCacheRedis.Service
+
+          const result = yield* Effect.either(_.getFromRedis(redis)(request))
+
+          expect(result).toStrictEqual(Either.left(new Cause.NoSuchElementException()))
+        }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      )
 
       it.todo('removes the value')
     })
