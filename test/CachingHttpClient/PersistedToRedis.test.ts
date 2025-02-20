@@ -1,6 +1,6 @@
 import { Headers, HttpClientRequest } from '@effect/platform'
 import { it } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { Cause, DateTime, Effect, Either, Schema, TestContext } from 'effect'
 import { CacheValueFromStringSchema } from '../../src/CachingHttpClient/HttpCache.js'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.js'
@@ -12,6 +12,7 @@ describe('getFromRedis', () => {
   const stubbedRedisReturning = (value: string | null) =>
     ({
       get: () => Promise.resolve(value),
+      del: jest.fn(() => Promise.resolve(1)),
     }) as unknown as typeof Redis.HttpCacheRedis.Service
 
   describe('there is a value for a given key', () => {
@@ -45,7 +46,16 @@ describe('getFromRedis', () => {
         }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
       )
 
-      it.todo('removes the value')
+      it.failing.prop([fc.string()])('removes the value', unreadableValue =>
+        Effect.gen(function* () {
+          const redis = stubbedRedisReturning(unreadableValue)
+
+          yield* Effect.either(_.getFromRedis(redis)(request))
+
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          expect(redis.del).toHaveBeenCalledTimes(1)
+        }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      )
     })
   })
 
