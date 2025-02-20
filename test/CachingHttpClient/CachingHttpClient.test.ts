@@ -139,7 +139,10 @@ describe('there is no cache entry', () => {
 describe('there is a cache entry', () => {
   const timeToStale = '10 seconds'
   const url = new URL('https://example.com')
-  const originalResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
+  const originalResponse = HttpClientResponse.fromWeb(
+    HttpClientRequest.get(url),
+    new Response('foo', { headers: [['foo', 'bar']] }),
+  )
 
   let cache: Map<string, _.CacheValue>
 
@@ -156,7 +159,7 @@ describe('there is a cache entry', () => {
   )
 
   describe('the cached response is fresh', () => {
-    test.failing('the cached response is returned without making any requests', () =>
+    test('the cached response is returned without making any requests', () =>
       Effect.gen(function* () {
         const client = yield* pipe(
           _.CachingHttpClient(timeToStale),
@@ -165,9 +168,10 @@ describe('there is a cache entry', () => {
         )
         const responseFromFreshCache = yield* client.get(url)
 
-        expect(responseFromFreshCache).toStrictEqual(originalResponse)
-      }).pipe(effectTestBoilerplate, Effect.runPromise),
-    )
+        expect(responseFromFreshCache.status).toStrictEqual(originalResponse.status)
+        expect(responseFromFreshCache.headers).toStrictEqual(originalResponse.headers)
+        expect(yield* responseFromFreshCache.text).toStrictEqual(yield* originalResponse.text)
+      }).pipe(effectTestBoilerplate, Effect.runPromise))
   })
 
   describe('the cached response is stale', () => {
