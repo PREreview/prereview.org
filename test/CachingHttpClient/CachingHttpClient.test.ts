@@ -1,7 +1,20 @@
 import { HttpClient, HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Cause, type Duration, Effect, Either, Fiber, flow, Option, pipe, TestClock, TestContext } from 'effect'
+import {
+  Cause,
+  type Duration,
+  Effect,
+  Either,
+  Fiber,
+  flow,
+  Logger,
+  LogLevel,
+  Option,
+  pipe,
+  TestClock,
+  TestContext,
+} from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as _ from '../../src/CachingHttpClient/index.js'
 import * as fc from '../fc.js'
@@ -18,7 +31,11 @@ const stubbedFailingClient = (
 ): HttpClient.HttpClient.With<HttpClientError.HttpClientError, never> =>
   HttpClient.makeWith(() => Effect.fail(error), Effect.succeed)
 
-const effectTestBoilerplate = flow(Effect.scoped, Effect.provide(TestContext.TestContext))
+const effectTestBoilerplate = flow(
+  Effect.scoped,
+  Effect.provide(TestContext.TestContext),
+  Logger.withMinimumLogLevel(LogLevel.None),
+)
 
 describe('there is no cache entry', () => {
   describe('the request succeeds', () => {
