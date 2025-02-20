@@ -1,6 +1,6 @@
 import { HttpClient, HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { beforeEach, describe, expect } from '@jest/globals'
 import {
   Cause,
   type Duration,
@@ -137,20 +137,27 @@ describe('there is no cache entry', () => {
 })
 
 describe('there is a cache entry', () => {
+  const timeToStale = '10 seconds'
+  const url = new URL('https://example.com')
+  const originalResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
+
+  let cache: Map<string, _.CacheValue>
+
+  beforeEach(() =>
+    Effect.gen(function* () {
+      cache = new Map()
+      const clientToPopulateCache = yield* pipe(
+        _.CachingHttpClient(timeToStale),
+        Effect.provideService(HttpClient.HttpClient, stubbedClient(originalResponse)),
+        Effect.provide(_.layerInMemory(cache)),
+      )
+      yield* clientToPopulateCache.get(url)
+    }).pipe(effectTestBoilerplate, Effect.runPromise),
+  )
+
   describe('the cached response is fresh', () => {
     test.failing.prop([fc.url()])('the cached response is returned without making any requests', url =>
       Effect.gen(function* () {
-        const timeToStale = '5 seconds'
-        const cache = new Map()
-        const originalResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
-        const clientToPopulateCache = yield* pipe(
-          _.CachingHttpClient(timeToStale),
-          Effect.provideService(HttpClient.HttpClient, stubbedClient(originalResponse)),
-          Effect.provide(_.layerInMemory(cache)),
-        )
-
-        yield* clientToPopulateCache.get(url)
-
         const client = yield* pipe(
           _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
