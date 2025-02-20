@@ -31,10 +31,15 @@ const stubbedFailingClient = (
 ): HttpClient.HttpClient.With<HttpClientError.HttpClientError, never> =>
   HttpClient.makeWith(() => Effect.fail(error), Effect.succeed)
 
+const shouldNotBeCalledHttpClient: HttpClient.HttpClient.With<HttpClientError.HttpClientError, never> =
+  HttpClient.makeWith(() => {
+    throw new Error('should not make any http requests with HttpClient')
+  }, Effect.succeed)
+
 const effectTestBoilerplate = flow(
   Effect.scoped,
   Effect.provide(TestContext.TestContext),
-  Logger.withMinimumLogLevel(LogLevel.None),
+  Logger.withMinimumLogLevel(LogLevel.Debug),
 )
 
 describe('there is no cache entry', () => {
@@ -133,23 +138,29 @@ describe('there is no cache entry', () => {
 
 describe('there is a cache entry', () => {
   describe('the cached response is fresh', () => {
-    test.failing.prop([fc.url(), fc.durationInput()])('the cached response is returned', (url, timeToStale) =>
+    test.failing.prop([fc.url()])('the cached response is returned without making any requests', url =>
       Effect.gen(function* () {
+        const timeToStale = '5 seconds'
         const cache = new Map()
         const originalResponse = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
-        const client = yield* pipe(
+        const clientToPopulateCache = yield* pipe(
           _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedClient(originalResponse)),
           Effect.provide(_.layerInMemory(cache)),
         )
 
-        yield* client.get(url)
+        yield* clientToPopulateCache.get(url)
+
+        const client = yield* pipe(
+          _.CachingHttpClient(timeToStale),
+          Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
+          Effect.provide(_.layerInMemory(cache)),
+        )
         const responseFromFreshCache = yield* client.get(url)
+
         expect(responseFromFreshCache).toStrictEqual(originalResponse)
       }).pipe(effectTestBoilerplate, Effect.runPromise),
     )
-
-    test.todo('makes no request')
   })
 
   describe('the cached response is stale', () => {
