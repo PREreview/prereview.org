@@ -39,7 +39,7 @@ const shouldNotBeCalledHttpClient: HttpClient.HttpClient.With<HttpClientError.Ht
 const effectTestBoilerplate = flow(
   Effect.scoped,
   Effect.provide(TestContext.TestContext),
-  Logger.withMinimumLogLevel(LogLevel.Debug),
+  Logger.withMinimumLogLevel(LogLevel.None),
 )
 
 describe('there is no cache entry', () => {
