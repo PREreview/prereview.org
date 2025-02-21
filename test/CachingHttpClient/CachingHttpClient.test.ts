@@ -187,9 +187,8 @@ describe('there is a cache entry', () => {
           Effect.provide(_.layerInMemory(cache)),
         )
 
-        const fiber = yield* pipe(client.get(url), Effect.fork)
         yield* TestClock.adjust('20 seconds')
-        const responseFromStaleCache = yield* Fiber.join(fiber)
+        const responseFromStaleCache = yield* client.get(url)
 
         expect(responseFromStaleCache.status).toStrictEqual(originalResponse.status)
         expect(responseFromStaleCache.headers).toStrictEqual(originalResponse.headers)
