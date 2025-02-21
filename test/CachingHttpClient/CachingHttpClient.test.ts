@@ -217,7 +217,28 @@ describe('there is a cache entry', () => {
       })
 
       describe('not able to cache it', () => {
-        test.todo('ignores the failure')
+        test('ignores the failure', () =>
+          Effect.gen(function* () {
+            cache.set = () => {
+              throw new Error('failed to set cache value')
+            }
+
+            const client = yield* pipe(
+              _.CachingHttpClient(timeToStale),
+              Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+              Effect.provide(_.layerInMemory(cache)),
+            )
+
+            yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
+            const responseFromStaleCache = yield* client.get(url).pipe(Effect.either)
+            yield* TestClock.adjust('1 seconds')
+            const responseFromCacheFollowingServingOfStaleEntry = yield* client.get(url)
+
+            expect(responseFromStaleCache).toStrictEqual(Either.right(expect.anything()))
+            expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
+              yield* originalResponse.text,
+            )
+          }).pipe(effectTestBoilerplate, Effect.runPromise))
       })
     })
 
