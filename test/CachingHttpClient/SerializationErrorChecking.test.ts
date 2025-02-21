@@ -5,6 +5,7 @@ import { expect } from '@playwright/test'
 import { DateTime, Effect, pipe, TestContext } from 'effect'
 import { HttpCache } from '../../src/CachingHttpClient/HttpCache.js'
 import { layerInMemory } from '../../src/CachingHttpClient/InMemory.js'
+import { serializationErrorChecking } from '../../src/CachingHttpClient/SerializationErrorChecking.js'
 import * as fc from '../fc.js'
 
 describe('when the cached response matches the original', () => {
@@ -17,6 +18,7 @@ describe('when the cached response matches the original', () => {
 
       yield* pipe(
         HttpCache,
+        Effect.andThen(serializationErrorChecking),
         Effect.andThen(httpCache => httpCache.set(response, staleAt)),
         Effect.provide(layerInMemory(cacheStorage)),
       )
@@ -41,6 +43,7 @@ describe('when the cached response does not match the original', () => {
 
       yield* pipe(
         HttpCache,
+        Effect.andThen(serializationErrorChecking),
         Effect.andThen(httpCache => httpCache.set(response, staleAt)),
         Effect.provide(layerInMemory(cacheStorage)),
       )
