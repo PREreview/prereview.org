@@ -273,7 +273,29 @@ describe('there is a cache entry', () => {
       })
 
       describe('with a response that does not have a 200 status code', () => {
-        test.todo('ignores the failure')
+        test.failing('ignores the failure', () =>
+          Effect.gen(function* () {
+            const non200Response = HttpClientResponse.fromWeb(
+              HttpClientRequest.get(url),
+              new Response(null, { status: StatusCodes.NOT_FOUND }),
+            )
+            const client = yield* pipe(
+              _.CachingHttpClient(timeToStale),
+              Effect.provideService(HttpClient.HttpClient, stubbedClient(non200Response)),
+              Effect.provide(_.layerInMemory(cache)),
+            )
+
+            yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
+            const responseFromStaleCache = yield* client.get(url).pipe(Effect.either)
+            yield* TestClock.adjust('1 seconds')
+            const responseFromCacheFollowingServingOfStaleEntry = yield* client.get(url)
+
+            expect(responseFromStaleCache).toStrictEqual(Either.right(expect.anything()))
+            expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
+              yield* originalResponse.text,
+            )
+          }).pipe(effectTestBoilerplate, Effect.runPromise),
+        )
       })
     })
   })
