@@ -77,6 +77,7 @@ export const serializationErrorChecking = (
             Effect.logError,
             Effect.annotateLogs({ ...logAnnotations, diff: yield* loggableDiff(response, cachedValue.response) }),
           )
+          yield* httpCache.delete(new URL(response.request.url))
           return
         }
       })
