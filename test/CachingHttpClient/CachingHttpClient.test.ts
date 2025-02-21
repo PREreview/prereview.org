@@ -3,7 +3,7 @@ import { test } from '@fast-check/jest'
 import { beforeEach, describe, expect } from '@jest/globals'
 import {
   Cause,
-  type Duration,
+  Duration,
   Effect,
   Either,
   Fiber,
@@ -143,6 +143,10 @@ describe('there is a cache entry', () => {
     HttpClientRequest.get(url),
     new Response('original response body', { headers: [['foo', 'bar']] }),
   )
+  const newResponse = HttpClientResponse.fromWeb(
+    HttpClientRequest.get(url),
+    new Response('new response body', { headers: [['foo', 'bar']] }),
+  )
 
   let cache: Map<string, _.CacheValue>
 
@@ -177,17 +181,13 @@ describe('there is a cache entry', () => {
   describe('the cached response is stale', () => {
     test('the cached response is returned immediately', () =>
       Effect.gen(function* () {
-        const newResponse = HttpClientResponse.fromWeb(
-          HttpClientRequest.get(url),
-          new Response('new response body', { headers: [['foo', 'bar']] }),
-        )
         const client = yield* pipe(
           _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse, '30 seconds')),
           Effect.provide(_.layerInMemory(cache)),
         )
 
-        yield* TestClock.adjust('20 seconds')
+        yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
         const responseFromStaleCache = yield* client.get(url)
 
         expect(responseFromStaleCache.status).toStrictEqual(originalResponse.status)
@@ -197,7 +197,23 @@ describe('there is a cache entry', () => {
 
     describe('cached response can be revalidated', () => {
       describe('able to cache it', () => {
-        test.todo('updates the cached value')
+        test('updates the cached value', () =>
+          Effect.gen(function* () {
+            const client = yield* pipe(
+              _.CachingHttpClient(timeToStale),
+              Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+              Effect.provide(_.layerInMemory(cache)),
+            )
+
+            yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
+            yield* client.get(url)
+            yield* TestClock.adjust('1 seconds')
+            const responseFromCacheFollowingServingOfStaleEntry = yield* client.get(url)
+
+            expect(responseFromCacheFollowingServingOfStaleEntry.status).toStrictEqual(newResponse.status)
+            expect(responseFromCacheFollowingServingOfStaleEntry.headers).toStrictEqual(newResponse.headers)
+            expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(yield* newResponse.text)
+          }).pipe(effectTestBoilerplate, Effect.runPromise))
       })
 
       describe('not able to cache it', () => {
