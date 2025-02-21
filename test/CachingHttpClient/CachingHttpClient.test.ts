@@ -141,7 +141,7 @@ describe('there is a cache entry', () => {
   const url = new URL('https://example.com')
   const originalResponse = HttpClientResponse.fromWeb(
     HttpClientRequest.get(url),
-    new Response('foo', { headers: [['foo', 'bar']] }),
+    new Response('original response body', { headers: [['foo', 'bar']] }),
   )
 
   let cache: Map<string, _.CacheValue>
@@ -175,7 +175,26 @@ describe('there is a cache entry', () => {
   })
 
   describe('the cached response is stale', () => {
-    test.todo('the cached response is returned immediately')
+    test('the cached response is returned immediately', () =>
+      Effect.gen(function* () {
+        const newResponse = HttpClientResponse.fromWeb(
+          HttpClientRequest.get(url),
+          new Response('new response body', { headers: [['foo', 'bar']] }),
+        )
+        const client = yield* pipe(
+          _.CachingHttpClient(timeToStale),
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse, '30 seconds')),
+          Effect.provide(_.layerInMemory(cache)),
+        )
+
+        const fiber = yield* pipe(client.get(url), Effect.fork)
+        yield* TestClock.adjust('20 seconds')
+        const responseFromStaleCache = yield* Fiber.join(fiber)
+
+        expect(responseFromStaleCache.status).toStrictEqual(originalResponse.status)
+        expect(responseFromStaleCache.headers).toStrictEqual(originalResponse.headers)
+        expect(yield* responseFromStaleCache.text).toStrictEqual(yield* originalResponse.text)
+      }).pipe(effectTestBoilerplate, Effect.runPromise))
 
     describe('cached response can be revalidated', () => {
       describe('able to cache it', () => {
