@@ -60,7 +60,7 @@ export const serializationErrorChecking = (
         method: response.request.method,
       }
 
-      Effect.gen(function* () {
+      yield* Effect.gen(function* () {
         const cachedValue = yield* pipe(
           httpCache.get(response.request),
           Effect.orElseSucceed(() => undefined),
@@ -75,7 +75,7 @@ export const serializationErrorChecking = (
           yield* pipe(
             'Cached response does not equal original',
             Effect.logError,
-            Effect.annotateLogs({ ...logAnnotations, diff: loggableDiff(response, cachedValue.response) }),
+            Effect.annotateLogs({ ...logAnnotations, diff: yield* loggableDiff(response, cachedValue.response) }),
           )
           return
         }

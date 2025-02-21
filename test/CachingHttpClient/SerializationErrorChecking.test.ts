@@ -15,7 +15,10 @@ describe('when the cached response matches the original', () => {
     Effect.gen(function* () {
       const cacheStorage = new Map()
 
-      const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
+      const response = HttpClientResponse.fromWeb(
+        HttpClientRequest.get(url),
+        new Response('original response body', { headers: [['foo', 'bar']] }),
+      )
       const staleAt = yield* DateTime.now
 
       yield* pipe(
@@ -37,10 +40,13 @@ describe('when the cached response does not match the original', () => {
       // eslint-disable-next-line @typescript-eslint/unbound-method
       const healthySetMethod = cacheStorage.set
       cacheStorage.set = function (key, value) {
-        return healthySetMethod.call(this, key, `${value} extra nonsense`)
+        return healthySetMethod.call(this, key, { ...value, response: 'bogus' })
       }
 
-      const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
+      const response = HttpClientResponse.fromWeb(
+        HttpClientRequest.get(url),
+        new Response('original response body', { headers: [['foo', 'bar']] }),
+      )
       const staleAt = yield* DateTime.now
 
       yield* pipe(
