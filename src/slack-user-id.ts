@@ -1,4 +1,4 @@
-import { Array, flow, HashSet, pipe } from 'effect'
+import { HashSet, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
@@ -24,7 +24,7 @@ export interface DeleteSlackUserIdEnv {
 }
 
 const HashSetC = <O, A>(item: C.Codec<unknown, O, A>) =>
-  pipe(C.array(item), C.imap(HashSet.fromIterable, flow(HashSet.values, Array.fromIterable)))
+  pipe(C.array(item), C.imap(HashSet.fromIterable, HashSet.toValues))
 
 export const SlackUserIdC = C.struct({
   accessToken: NonEmptyStringC,
