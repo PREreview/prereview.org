@@ -296,6 +296,9 @@
   "competingInterestsTitle": {
     "message": "Do you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests?"
   },
+  "competingInterests": {
+    "message": "Competing interests"
+  },
   "selectYesIfCompetingInterest": {
     "message": "Select yes if you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests"
   },
@@ -305,8 +308,14 @@
   "doYouHaveCompetingInterests": {
     "message": "Do you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests?"
   },
+  "discloseCompetingInterests": {
+    "message": "We ask all reviewers to disclose any competing interests that could influence their review of the preprint."
+  },
   "whatIsCompetingInterest": {
     "message": "A competing interest is anything that could interfere with the objectivity of a PREreview."
+  },
+  "competingInterestsMatter": {
+    "message": "Competing interests matter because they can introduce perceived or actual bias in the evaluation of the preprint. Declaring them is crucial for ensuring transparency and maintaining the integrity of the review process."
   },
   "examples": {
     "message": "Examples"

@@ -187,7 +187,8 @@ export function alternativeCompetingInterestsForm(
   return StreamlinePageResponse({
     status: error ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
-      `Competing interests – PREreview of “${preprint.title.toString()}”`,
+      t('write-review', 'competingInterests')(),
+      prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),
@@ -200,13 +201,11 @@ export function alternativeCompetingInterestsForm(
       >
         ${error ? pipe(form, toErrorItems(locale, otherAuthors), errorSummary(locale)) : ''}
 
-        <h1>Competing interests</h1>
+        <h1>${t('write-review', 'competingInterests')()}</h1>
 
-        <p>
-          We ask all reviewers to disclose any competing interests that could influence their review of the preprint.
-        </p>
+        <p>${t('write-review', 'discloseCompetingInterests')()}</p>
 
-        <p>A competing interest is anything that could interfere with the objectivity of a PREreview.</p>
+        <p>${t('write-review', 'whatIsCompetingInterest')()}</p>
 
         <details>
           <summary><span>${t('write-review', 'examples')()}</span></summary>
@@ -224,11 +223,7 @@ export function alternativeCompetingInterestsForm(
           </div>
         </details>
 
-        <p>
-          Competing interests matter because they can introduce perceived or actual bias in the evaluation of the
-          preprint. Declaring them is crucial for ensuring transparency and maintaining the integrity of the review
-          process.
-        </p>
+        <p>${t('write-review', 'competingInterestsMatter')()}</p>
 
         <div ${rawHtml(E.isLeft(form.competingInterests) ? 'class="error"' : '')}>
           <conditional-inputs>
