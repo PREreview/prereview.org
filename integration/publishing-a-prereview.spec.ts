@@ -578,9 +578,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Do you, or any of the other authors, have any competing interests?',
-    )
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Competing interests')
 
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
