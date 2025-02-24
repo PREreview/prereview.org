@@ -3,7 +3,6 @@ primary_region = "iad"
 
 [env]
 CAN_CHOOSE_LOCALE = "true"
-CAN_SEE_ALTERNATIVE_COMPETING_INTERESTS_FORM = "true"
 CAN_WRITE_COMMENTS = "true"
 COAR_NOTIFY_URL = "https://coar-notify-sandbox.prereview.org/"
 ENVIRONMENT_LABEL = "sandbox"
