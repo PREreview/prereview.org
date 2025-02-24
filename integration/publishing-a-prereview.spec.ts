@@ -68,7 +68,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Do you have any competing interests?')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Competing interests')
 
     await page.getByLabel('No').check()
 
