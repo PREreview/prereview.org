@@ -31,7 +31,7 @@ export function removeAuthorForm({
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: pipe(
-      t('write-review', 'removeAuthorTitle')({ authorName: author.name }),
+      t('write-review', 'sureYouWantToRemove')({ authorName: author.name }),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,

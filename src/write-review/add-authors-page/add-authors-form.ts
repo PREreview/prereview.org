@@ -43,7 +43,7 @@ export function addAuthorsForm({
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: pipe(
-      t('write-review', 'addAuthorsTitle')({ authorCount }),
+      t('write-review', 'addedAuthorCount')({ authorCount }),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,

@@ -122,7 +122,7 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
 
   return templatePage({
     title: pipe(
-      t('write-review', 'codeOfConductTitle')(),
+      t('write-review', 'codeOfConduct')(),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,

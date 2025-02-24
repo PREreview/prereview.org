@@ -159,7 +159,7 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, loc
 
   return templatePage({
     title: pipe(
-      t('write-review', 'authorsTitle')(),
+      t('write-review', 'didYouReviewWithAnyoneElse')(),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,

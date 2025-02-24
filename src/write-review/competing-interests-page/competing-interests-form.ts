@@ -35,7 +35,7 @@ export function competingInterestsForm(
   return StreamlinePageResponse({
     status: error ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
-      t('write-review', 'competingInterestsTitle')({ otherAuthors }),
+      t('write-review', 'doYouHaveCompetingInterests')({ otherAuthors }),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,

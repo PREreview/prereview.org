@@ -32,7 +32,7 @@ export function changeAuthorForm({
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: pipe(
-      t('write-review', 'changeAuthorTitle')({ name: author.name }),
+      t('write-review', 'changeAuthorDetailsHeading')({ name: author.name }),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,

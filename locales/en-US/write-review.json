@@ -2,9 +2,6 @@
   "prereviewOf": {
     "message": "PREreview of “{preprintTitle}”"
   },
-  "addAuthorTitle": {
-    "message": "Add an author"
-  },
   "enterTheirName": {
     "message": "Enter their name"
   },
@@ -31,9 +28,6 @@
   },
   "saveAndContinue": {
     "message": "Save and continue"
-  },
-  "addAuthorsTitle": {
-    "message": "You have added {authorCount, number} other {authorCount, plural, one {author} other {authors}}"
   },
   "back": {
     "message": "Back"
@@ -70,9 +64,6 @@
   },
   "continueButton": {
     "message": "Continue"
-  },
-  "changeAuthorTitle": {
-    "message": "Change {name}’s details"
   },
   "enterName": {
     "message": "Enter their name"
@@ -248,9 +239,6 @@
   "publishButton": {
     "message": "Publish PREreview"
   },
-  "removeAuthorTitle": {
-    "message": "Are you sure you want to remove {authorName}?"
-  },
   "selectYesToRemove": {
     "message": "Select yes if you want to remove {authorName}"
   },
@@ -265,9 +253,6 @@
   },
   "asYouHaveAlreadyStarted": {
     "message": "As you’ve already started a PREreview of <cite>{preprintTitle}</cite>, we’ll take you to the next step so you can carry on."
-  },
-  "authorsTitle": {
-    "message": "Did you review this preprint with anyone else?"
   },
   "selectYesIfYouReviewedWithSomeoneElse": {
     "message": "Select yes if you reviewed the preprint with someone else"
@@ -292,9 +277,6 @@
   },
   "theyHaveReadAndApproved": {
     "message": "They have read and approved the PREreview"
-  },
-  "competingInterestsTitle": {
-    "message": "Do you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests?"
   },
   "competingInterests": {
     "message": "Competing interests"
@@ -343,9 +325,6 @@
   },
   "whatAreThey": {
     "message": "What are they?"
-  },
-  "codeOfConductTitle": {
-    "message": "Code of Conduct"
   },
   "confirmCodeOfConduct": {
     "message": "Confirm that you are following the Code of Conduct"
