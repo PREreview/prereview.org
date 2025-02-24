@@ -62,7 +62,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     canRequestReviews: () => true,
     canUploadAvatar: () => true,
     canUseSearchQueries: () => true,
-    canSeeAlternativeCompetingInterestsForm: true,
     cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
     coarNotifyToken: env.COAR_NOTIFY_TOKEN,
     coarNotifyUrl: env.COAR_NOTIFY_URL,

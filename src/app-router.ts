@@ -74,12 +74,10 @@ import {
 import {
   type CanConnectOrcidProfileEnv,
   type CanRequestReviewsEnv,
-  type CanSeeAlternativeCompetingInterestsFormEnv,
   type CanUploadAvatarEnv,
   type CanUseSearchQueriesEnv,
   type CanWriteCommentsEnv,
   type MustDeclareUseOfAiEnv,
-  canSeeAlternativeCompetingInterestsForm,
   canUseSearchQueries,
 } from './feature-flags.js'
 import type { SleepEnv } from './fetch.js'
@@ -341,7 +339,6 @@ const getSlackUser = flow(
 export type RouterEnv = Keyv.AvatarStoreEnv &
   CanConnectOrcidProfileEnv &
   CanRequestReviewsEnv &
-  CanSeeAlternativeCompetingInterestsFormEnv &
   CanUploadAvatarEnv &
   CanUseSearchQueriesEnv &
   CanWriteCommentsEnv &
@@ -1562,7 +1559,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             RM.gets(c => c.getMethod()),
           ),
           RM.apS('user', maybeGetUser),
-          RM.apSW('alternative', RM.rightReader(canSeeAlternativeCompetingInterestsForm)),
+          RM.apSW('alternative', RM.of(true)),
           RM.bindW('response', RM.fromReaderTaskK(writeReviewCompetingInterests)),
           RM.ichainW(handleResponse),
         ),

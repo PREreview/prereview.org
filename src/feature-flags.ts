@@ -63,15 +63,6 @@ export interface CanUseSearchQueriesEnv {
 export const canUseSearchQueries = (user?: User) =>
   R.asks(({ canUseSearchQueries }: CanUseSearchQueriesEnv) => canUseSearchQueries(user))
 
-export interface CanSeeAlternativeCompetingInterestsFormEnv {
-  canSeeAlternativeCompetingInterestsForm: boolean
-}
-
-export const canSeeAlternativeCompetingInterestsForm = R.asks(
-  ({ canSeeAlternativeCompetingInterestsForm }: CanSeeAlternativeCompetingInterestsFormEnv) =>
-    canSeeAlternativeCompetingInterestsForm,
-)
-
 export interface MustDeclareUseOfAiEnv {
   mustDeclareUseOfAi: boolean
 }

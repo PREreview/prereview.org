@@ -1273,7 +1273,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           avatarStore: new Keyv(),
           canConnectOrcidProfile,
           canRequestReviews,
-          canSeeAlternativeCompetingInterestsForm: true,
           canUploadAvatar,
           canUseSearchQueries,
           cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
