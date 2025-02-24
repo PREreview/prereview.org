@@ -575,7 +575,7 @@ jobs:
 
       - name: 'Upload sources to Crowdin'
         if: steps.changes.outputs.sources == 'true'
-        uses: crowdin/github-action@v2.5.2
+        uses: crowdin/github-action@v2.6.1
         with:
           upload_sources: true
           upload_translations: false
