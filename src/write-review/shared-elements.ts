@@ -1,6 +1,9 @@
-import { pipe } from 'effect'
+import { pipe, String } from 'effect'
 import { type Html, html } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
+
+export const prereviewOfSuffix = (locale: SupportedLocale, preprintTitle: Html): ((s: string) => string) =>
+  String.concat(` – ${translate(locale)('write-review', 'prereviewOf')({ preprintTitle: preprintTitle.toString() })}`)
 
 export const errorPrefix = (locale: SupportedLocale, error: boolean) => (s: string) =>
   pipe(error ? translate(locale)('write-review', 'errorPrefix')() : '', prefix => `${prefix}${s}`)

@@ -21,7 +21,7 @@ import {
 } from '../routes.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
-import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from './shared-elements.js'
+import { backNav, errorPrefix, errorSummary, prereviewOfSuffix, saveAndContinueButton } from './shared-elements.js'
 
 export const writeReviewAuthors = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -159,7 +159,8 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User, loc
 
   return templatePage({
     title: pipe(
-      t('write-review', 'authorsTitle')({ preprintTitle: preprint.title.toString() }),
+      t('write-review', 'authorsTitle')(),
+      prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),

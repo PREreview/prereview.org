@@ -14,7 +14,7 @@ import {
   writeReviewCompetingInterestsMatch,
 } from '../../routes.js'
 import type { NonEmptyString } from '../../types/string.js'
-import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from '../shared-elements.js'
+import { backNav, errorPrefix, errorSummary, prereviewOfSuffix, saveAndContinueButton } from '../shared-elements.js'
 
 export interface CompetingInterestsForm {
   readonly competingInterests: E.Either<MissingE, 'yes' | 'no' | undefined>
@@ -35,7 +35,8 @@ export function competingInterestsForm(
   return StreamlinePageResponse({
     status: error ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
-      t('write-review', 'competingInterestsTitle')({ otherAuthors, preprintTitle: preprint.title.toString() }),
+      t('write-review', 'competingInterestsTitle')({ otherAuthors }),
+      prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),
