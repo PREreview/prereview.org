@@ -137,7 +137,7 @@
     "prettier": "^3.5.2",
     "prettier-plugin-organize-imports": "^4.1.0",
     "prettier-plugin-sh": "^0.15.0",
-    "prettier-plugin-toml": "^2.0.1",
+    "prettier-plugin-toml": "^2.0.2",
     "purgecss-webpack-plugin": "^7.0.2",
     "remixicon": "^4.6.0",
     "stylelint": "^16.14.1",
