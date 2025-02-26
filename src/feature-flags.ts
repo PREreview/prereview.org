@@ -56,13 +56,6 @@ export interface CanRequestReviewsEnv {
 export const canRequestReviews = (user?: User) =>
   R.asks(({ canRequestReviews }: CanRequestReviewsEnv) => canRequestReviews(user))
 
-export interface CanUseSearchQueriesEnv {
-  canUseSearchQueries: (user?: User) => boolean
-}
-
-export const canUseSearchQueries = (user?: User) =>
-  R.asks(({ canUseSearchQueries }: CanUseSearchQueriesEnv) => canUseSearchQueries(user))
-
 export interface MustDeclareUseOfAiEnv {
   mustDeclareUseOfAi: boolean
 }

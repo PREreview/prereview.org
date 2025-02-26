@@ -1268,7 +1268,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           canConnectOrcidProfile,
           canRequestReviews,
           canUploadAvatar,
-          canUseSearchQueries: () => true,
           cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
           formStore,
           careerStageStore,
