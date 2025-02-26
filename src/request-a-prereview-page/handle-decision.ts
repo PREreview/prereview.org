@@ -1,6 +1,6 @@
 import { format } from 'fp-ts-routing'
 import { P, match } from 'ts-pattern'
-import { havingProblemsPage, pageNotFound } from '../http-error.js'
+import { havingProblemsPage } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
 import * as Response from '../response.js'
 import { requestReviewMatch } from '../routes.js'
@@ -18,7 +18,6 @@ export const handleDecision = (decision: Decision.Decision, locale: SupportedLoc
     .with({ _tag: 'BeginFlow', preprint: P.select() }, preprint =>
       Response.RedirectResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
     )
-    .with({ _tag: 'DenyAccess' }, () => pageNotFound)
     .with({ _tag: 'ShowError' }, () => havingProblemsPage)
     .with({ _tag: 'ShowFormWithErrors' }, ({ form }) => requestAPrereviewPage(form, locale))
     .with({ _tag: 'ShowNotAPreprint' }, () => notAPreprintPage)

@@ -11,7 +11,6 @@ import PlainDate = Temporal.PlainDate
 
 test('content looks right', async ({ showTwoUpPage }) => {
   const response = createPage({
-    canRequestReviews: true,
     preprint,
     reviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
     rapidPrereviews: [],
@@ -25,7 +24,6 @@ test('content looks right', async ({ showTwoUpPage }) => {
 
 test('content looks right when empty', async ({ showTwoUpPage }) => {
   const response = createPage({
-    canRequestReviews: false,
     preprint: { ...preprint, authors: [preprint.authors[0]], abstract: undefined },
     reviews: [],
     rapidPrereviews: [],
@@ -39,7 +37,6 @@ test('content looks right when empty', async ({ showTwoUpPage }) => {
 
 test('content looks right with rapid PREreviews', async ({ showTwoUpPage }) => {
   const response = createPage({
-    canRequestReviews: false,
     preprint,
     reviews: [prereview1],
     rapidPrereviews: [rapidPrereview1],

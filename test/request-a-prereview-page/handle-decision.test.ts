@@ -17,19 +17,6 @@ describe('handleDecision', () => {
     })
   })
 
-  test.prop([fc.supportedLocale()])('with a DenyAccess decision', locale => {
-    const actual = _.handleDecision({ _tag: 'DenyAccess' }, locale)
-
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.NotFound,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
-
   test.prop([fc.supportedLocale()])('with a ShowError decision', locale => {
     const actual = _.handleDecision({ _tag: 'ShowError' }, locale)
 

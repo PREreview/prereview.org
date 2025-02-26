@@ -17,7 +17,6 @@ export const home = ({
   pipe(
     RT.Do,
     RT.apS('recentPrereviews', getRecentPrereviews()),
-    RT.let('canRequestReviews', () => true),
     RT.apSW('recentReviewRequests', getRecentReviewRequests()),
     RT.let('statistics', () => ({ prereviews: 1100, servers: 27, users: 3155 })),
     RT.let('locale', () => locale),

@@ -23,12 +23,10 @@ import type { Prereview } from './prereviews.js'
 import type { RapidPrereview } from './rapid-prereviews.js'
 
 export const createPage = ({
-  canRequestReviews,
   preprint,
   reviews,
   rapidPrereviews,
 }: {
-  canRequestReviews: boolean
   preprint: Preprint
   reviews: ReadonlyArray<Prereview>
   rapidPrereviews: ReadonlyArray<RapidPrereview>
@@ -156,7 +154,7 @@ export const createPage = ({
       <div class="button-group" role="group">
         <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}" class="button">Write a PREreview</a>
 
-        ${canRequestReviews && isReviewRequestPreprintId(preprint.id)
+        ${isReviewRequestPreprintId(preprint.id)
           ? html`<a href="${format(requestReviewMatch.formatter, { id: preprint.id })}">Request a PREreview</a>`
           : ''}
       </div>

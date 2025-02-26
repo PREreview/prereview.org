@@ -12,7 +12,6 @@ import PlainDate = Temporal.PlainDate
 test('content looks right', async ({ showPage }) => {
   const response = createPage({
     recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
-    canRequestReviews: false,
     recentReviewRequests: [
       recentReviewRequest1,
       recentReviewRequest2,
@@ -32,22 +31,7 @@ test('content looks right', async ({ showPage }) => {
 test('content looks right when empty', async ({ showPage }) => {
   const response = createPage({
     recentPrereviews: [],
-    canRequestReviews: false,
     recentReviewRequests: [],
-    statistics,
-    locale: DefaultLocale,
-  })
-
-  const content = await showPage(response)
-
-  await expect(content).toHaveScreenshot()
-})
-
-test('content looks right when reviews can be requested', async ({ showPage }) => {
-  const response = createPage({
-    recentPrereviews: [recentPrereview1],
-    canRequestReviews: true,
-    recentReviewRequests: [recentReviewRequest1],
     statistics,
     locale: DefaultLocale,
   })

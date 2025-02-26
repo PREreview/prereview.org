@@ -25,13 +25,11 @@ import type { RecentPrereview } from './recent-prereviews.js'
 import type { RecentReviewRequest } from './recent-review-requests.js'
 
 export const createPage = ({
-  canRequestReviews,
   locale,
   recentPrereviews,
   recentReviewRequests,
   statistics,
 }: {
-  canRequestReviews: boolean
   locale: SupportedLocale
   recentPrereviews: ReadonlyArray<RecentPrereview>
   recentReviewRequests: ReadonlyArray<RecentReviewRequest>
@@ -48,13 +46,9 @@ export const createPage = ({
           <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button"
             >${translate(locale, 'home-page', 'reviewPreprintButton')()}</a
           >
-          ${canRequestReviews
-            ? html`
-                <a href="${format(requestAPrereviewMatch.formatter, {})}"
-                  >${translate(locale, 'home-page', 'requestReviewButton')()}</a
-                >
-              `
-            : ''}
+          <a href="${format(requestAPrereviewMatch.formatter, {})}"
+            >${translate(locale, 'home-page', 'requestReviewButton')()}</a
+          >
         </div>
 
         <img src="${assets['stool.svg']}" width="794" height="663" alt="" />

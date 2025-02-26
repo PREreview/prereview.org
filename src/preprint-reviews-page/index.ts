@@ -25,7 +25,6 @@ export const preprintReviews = (
         RTE.let('preprint', () => preprint),
         RTE.apS('rapidPrereviews', getRapidPrereviews(preprint.id)),
         RTE.apSW('reviews', getPrereviews(preprint.id)),
-        RTE.let('canRequestReviews', () => true),
       ),
     ),
     RTE.matchW(
