@@ -92,6 +92,7 @@ test('content looks right when empty', async ({ showPage }) => {
   const response = createPage({
     user,
     userOnboarding: { seenMyDetailsPage: false },
+    avatar: Option.none(),
     slackUser: Option.none(),
     contactEmailAddress: Option.none(),
     openForRequests: Option.none(),
