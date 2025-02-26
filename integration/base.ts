@@ -43,11 +43,7 @@ import {
 import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
-import type {
-  CanConnectOrcidProfileEnv,
-  CanWriteComments,
-  RequiresAVerifiedEmailAddress,
-} from '../src/feature-flags.js'
+import type { CanWriteComments, RequiresAVerifiedEmailAddress } from '../src/feature-flags.js'
 import * as FeatureFlags from '../src/feature-flags.js'
 import { GhostApi } from '../src/ghost.js'
 import { rawHtml } from '../src/html.js'
@@ -94,7 +90,6 @@ interface AppFixtures {
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
-  canConnectOrcidProfile: CanConnectOrcidProfileEnv['canConnectOrcidProfile']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canWriteComments: typeof CanWriteComments.Service
   requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
@@ -109,9 +104,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   baseURL: async ({ port }, use) => {
     await use(`http://localhost:${port}`)
-  },
-  canConnectOrcidProfile: async ({}, use) => {
-    await use(() => false)
   },
   canWriteComments: async ({}, use) => {
     await use(() => false)
@@ -1236,7 +1228,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         userOnboardingStore,
         wasPrereviewRemoved,
         authorInviteStore,
-        canConnectOrcidProfile,
         canWriteComments,
         requiresAVerifiedEmailAddress,
         mustDeclareUseOfAi,
@@ -1253,7 +1244,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           allowSiteCrawlers: true,
           authorInviteStore,
           avatarStore: new Keyv(),
-          canConnectOrcidProfile,
+          canConnectOrcidProfile: () => true,
           cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
           formStore,
           careerStageStore,
@@ -1923,16 +1914,6 @@ export const willPublishAComment: Fixtures<
       })
 
     await use(fetch)
-  },
-}
-
-export const canConnectOrcidProfile: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canConnectOrcidProfile'>
-> = {
-  canConnectOrcidProfile: async ({}, use) => {
-    await use(() => true)
   },
 }
 

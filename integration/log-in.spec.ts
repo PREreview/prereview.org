@@ -3,7 +3,6 @@ import type { MutableRedirectUri } from 'oauth2-mock-server'
 import path from 'path'
 import {
   areLoggedIn,
-  canConnectOrcidProfile,
   canLogIn,
   expect,
   hasAVerifiedEmailAddress,
@@ -83,7 +82,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ 
   await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'can connect my ORCID profile',
   async ({ fetch, javaScriptEnabled, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
@@ -119,7 +118,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to grant access to your ORCID profile',
   async ({ oauthServer, page }) => {
     await page.goto('/connect-orcid')
