@@ -13,7 +13,6 @@ LOG_FORMAT = "json"
 MUST_DECLARE_USE_OF_AI = "true"
 ORCID_API_URL = "https://api.orcid.org/"
 PUBLIC_URL = "https://sandbox.prereview.org/"
-REQUIRES_A_VERIFIED_EMAIL_ADDRESS = "true"
 VERIFY_CACHE = "false"
 ZENODO_URL = "https://sandbox.zenodo.org/"
 
