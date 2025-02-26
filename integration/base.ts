@@ -1288,7 +1288,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           FeatureFlags.layer({
             canChooseLocale: false,
             canWriteComments,
-            requiresAVerifiedEmailAddress: true,
             useCrowdinInContext: false,
           }),
         ),

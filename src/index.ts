@@ -52,7 +52,6 @@ pipe(
           Config.withDefault(Config.boolean('CAN_WRITE_COMMENTS'), false),
           Function.constant,
         ),
-        requiresAVerifiedEmailAddress: Config.succeed(true),
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
       }),
       Layer.mergeAll(
