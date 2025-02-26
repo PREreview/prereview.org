@@ -270,14 +270,11 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
     })
   })
 
-  test.prop([fc.orcid(), fc.integer(), fc.boolean()])(
-    "when the comment hasn't been started",
-    (authorId, prereviewId, requireVerifiedEmailAddress) => {
-      const actual = _.GetNextExpectedCommandForUserOnAComment(requireVerifiedEmailAddress)([])(resourceId)
+  test.prop([fc.boolean()])("when the comment hasn't been started", requireVerifiedEmailAddress => {
+    const actual = _.GetNextExpectedCommandForUserOnAComment(requireVerifiedEmailAddress)([])(resourceId)
 
-      expect(actual).toStrictEqual(Either.left(new Comments.CommentHasNotBeenStarted()))
-    },
-  )
+    expect(actual).toStrictEqual(Either.left(new Comments.CommentHasNotBeenStarted()))
+  })
 
   test.prop([fc.orcid(), fc.integer(), fc.uuid(), fc.boolean()])(
     'when the comment is being published',
