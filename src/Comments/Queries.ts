@@ -9,7 +9,6 @@ import * as ExpectedCommand from './ExpectedCommand.js'
 import { CommentNotStarted, type CommentState } from './State.js'
 
 export const GetNextExpectedCommandForUser =
-  (requireVerifiedEmailAddress: boolean) =>
   (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
   ({
     authorId,
@@ -38,11 +37,7 @@ export const GetNextExpectedCommandForUser =
             }),
           ),
       ),
-      Record.map(
-        Array.reduce(new CommentNotStarted() as CommentState, (state, event) =>
-          EvolveComment(requireVerifiedEmailAddress)(state)(event),
-        ),
-      ),
+      Record.map(Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(state)(event))),
       Record.filter(state => state._tag === 'CommentInProgress' || state._tag === 'CommentReadyForPublishing'),
       Record.toEntries,
       Array.head,
@@ -69,7 +64,7 @@ export const GetNextExpectedCommandForUser =
       return new ExpectedCommand.ExpectedToAgreeToCodeOfConduct({ commentId })
     }
 
-    if (requireVerifiedEmailAddress && comment._tag === 'CommentInProgress' && !comment.verifiedEmailAddressExists) {
+    if (comment._tag === 'CommentInProgress' && !comment.verifiedEmailAddressExists) {
       return new ExpectedCommand.ExpectedToVerifyEmailAddress({ commentId })
     }
 
@@ -77,7 +72,6 @@ export const GetNextExpectedCommandForUser =
   }
 
 export const GetNextExpectedCommandForUserOnAComment =
-  (requireVerifiedEmailAddress: boolean) =>
   (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
   (
     commentId: Uuid.Uuid,
@@ -86,7 +80,7 @@ export const GetNextExpectedCommandForUserOnAComment =
     Errors.CommentHasNotBeenStarted | Errors.CommentIsBeingPublished | Errors.CommentWasAlreadyPublished
   > => {
     const comment = Array.reduce(events, new CommentNotStarted() as CommentState, (state, { event, resourceId }) =>
-      resourceId === commentId ? EvolveComment(requireVerifiedEmailAddress)(state)(event) : state,
+      resourceId === commentId ? EvolveComment(state)(event) : state,
     )
 
     if (comment._tag === 'CommentNotStarted') {
@@ -117,7 +111,7 @@ export const GetNextExpectedCommandForUserOnAComment =
       return Either.right(new ExpectedCommand.ExpectedToAgreeToCodeOfConduct({ commentId }))
     }
 
-    if (requireVerifiedEmailAddress && comment._tag === 'CommentInProgress' && !comment.verifiedEmailAddressExists) {
+    if (comment._tag === 'CommentInProgress' && !comment.verifiedEmailAddressExists) {
       return Either.right(new ExpectedCommand.ExpectedToVerifyEmailAddress({ commentId }))
     }
 

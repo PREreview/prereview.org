@@ -17,18 +17,15 @@ export class CommentEvents extends Context.Tag('CommentEvents')<
 export class GetNextExpectedCommandForUserOnAComment extends Context.Tag('GetNextExpectedCommandForUserOnAComment')<
   GetNextExpectedCommandForUserOnAComment,
   (
-    ...params: Parameters<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUserOnAComment>>>
-  ) => Effect.Effect<
-    ReturnType<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUserOnAComment>>>,
-    UnableToQuery
-  >
+    ...params: Parameters<ReturnType<typeof Queries.GetNextExpectedCommandForUserOnAComment>>
+  ) => Effect.Effect<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUserOnAComment>>, UnableToQuery>
 >() {}
 
 export class GetNextExpectedCommandForUser extends Context.Tag('GetNextExpectedCommandForUser')<
   GetNextExpectedCommandForUser,
   (
-    ...params: Parameters<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUser>>>
-  ) => Effect.Effect<ReturnType<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUser>>>, UnableToQuery>
+    ...params: Parameters<ReturnType<typeof Queries.GetNextExpectedCommandForUser>>
+  ) => Effect.Effect<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUser>>, UnableToQuery>
 >() {}
 
 export class GetComment extends Context.Tag('GetComment')<
