@@ -43,7 +43,7 @@ import {
 import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
-import type { CanWriteComments, RequiresAVerifiedEmailAddress } from '../src/feature-flags.js'
+import type { CanWriteComments } from '../src/feature-flags.js'
 import * as FeatureFlags from '../src/feature-flags.js'
 import { GhostApi } from '../src/ghost.js'
 import { rawHtml } from '../src/html.js'
@@ -92,7 +92,6 @@ interface AppFixtures {
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canWriteComments: typeof CanWriteComments.Service
-  requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
   mustDeclareUseOfAi: FeatureFlags.MustDeclareUseOfAiEnv['mustDeclareUseOfAi']
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
@@ -1198,9 +1197,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
-  requiresAVerifiedEmailAddress: async ({}, use) => {
-    await use(false)
-  },
   researchInterestsStore: async ({}, use) => {
     await use(new Keyv())
   },
@@ -1229,7 +1225,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         wasPrereviewRemoved,
         authorInviteStore,
         canWriteComments,
-        requiresAVerifiedEmailAddress,
         mustDeclareUseOfAi,
         nodemailer,
       },
@@ -1293,7 +1288,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           FeatureFlags.layer({
             canChooseLocale: false,
             canWriteComments,
-            requiresAVerifiedEmailAddress,
+            requiresAVerifiedEmailAddress: true,
             useCrowdinInContext: false,
           }),
         ),
@@ -1923,16 +1918,6 @@ export const canWriteComments: Fixtures<
 > = {
   canWriteComments: async ({}, use) => {
     await use(() => true)
-  },
-}
-
-export const requiresAVerifiedEmailAddress: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'requiresAVerifiedEmailAddress'>
-> = {
-  requiresAVerifiedEmailAddress: async ({}, use) => {
-    await use(true)
   },
 }
 

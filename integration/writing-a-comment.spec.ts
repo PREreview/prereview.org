@@ -8,13 +8,13 @@ import {
   canWriteComments,
   expect,
   hasAnUnverifiedEmailAddress,
-  requiresAVerifiedEmailAddress,
+  hasAVerifiedEmailAddress,
   test,
   waitForNotBusy,
   willPublishAComment,
 } from './base.js'
 
-test.extend(canLogIn).extend(canWriteComments).extend(willPublishAComment)(
+test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(canWriteComments).extend(willPublishAComment)(
   'can write a comment on a PREreview',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
@@ -127,7 +127,7 @@ test.extend(canLogIn).extend(canWriteComments).extend(willPublishAComment)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(canWriteComments)(
   'can change the comment after previewing',
   async ({ fetch, page }) => {
     const record: Record = {
@@ -227,7 +227,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(canWriteComments)(
   'can change your name after previewing',
   async ({ fetch, page }) => {
     const record: Record = {
@@ -320,7 +320,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(canWriteComments)(
   'can change the competing interests after previewing',
   async ({ fetch, page }) => {
     const record: Record = {
@@ -503,7 +503,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(canWriteComments)(
   'can go back through the form',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
@@ -617,7 +617,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(canWriteComments)(
   'see existing values when going back a step',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
@@ -727,7 +727,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requiresAVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'have to give your email address',
   async ({ javaScriptEnabled, emails, fetch, page }) => {
     const record: Record = {
@@ -835,12 +835,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requir
   },
 )
 
-test
-  .extend(canLogIn)
-  .extend(areLoggedIn)
-  .extend(hasAnUnverifiedEmailAddress)
-  .extend(canWriteComments)
-  .extend(requiresAVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress).extend(canWriteComments)(
   'have to verify your email address',
   async ({ javaScriptEnabled, emails, fetch, page }) => {
     const record: Record = {
@@ -1419,7 +1414,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments).extend(requiresAVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canWriteComments)(
   'have to enter an email address',
   async ({ javaScriptEnabled, fetch, page }) => {
     const record: Record = {
