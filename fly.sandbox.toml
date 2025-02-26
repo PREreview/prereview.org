@@ -3,7 +3,6 @@ primary_region = "iad"
 
 [env]
 CAN_CHOOSE_LOCALE = "true"
-CAN_WRITE_COMMENTS = "true"
 COAR_NOTIFY_URL = "https://coar-notify-sandbox.prereview.org/"
 ENVIRONMENT_LABEL = "sandbox"
 FATHOM_SITE_ID = "BGNKWQNI"

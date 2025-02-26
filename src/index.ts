@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
+import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import fetch from 'make-fetch-happen'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
@@ -48,10 +48,7 @@ pipe(
     Layer.mergeAll(
       FeatureFlags.layerConfig({
         canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
-        canWriteComments: Config.map(
-          Config.withDefault(Config.boolean('CAN_WRITE_COMMENTS'), false),
-          Function.constant,
-        ),
+        canWriteComments: Config.succeed(() => true),
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
       }),
       Layer.mergeAll(
