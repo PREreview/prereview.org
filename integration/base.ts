@@ -43,7 +43,6 @@ import {
 import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
-import type { CanWriteComments } from '../src/feature-flags.js'
 import * as FeatureFlags from '../src/feature-flags.js'
 import { GhostApi } from '../src/ghost.js'
 import { rawHtml } from '../src/html.js'
@@ -91,7 +90,6 @@ interface AppFixtures {
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
-  canWriteComments: typeof CanWriteComments.Service
   mustDeclareUseOfAi: FeatureFlags.MustDeclareUseOfAiEnv['mustDeclareUseOfAi']
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
@@ -103,9 +101,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   baseURL: async ({ port }, use) => {
     await use(`http://localhost:${port}`)
-  },
-  canWriteComments: async ({}, use) => {
-    await use(() => false)
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
@@ -1224,7 +1219,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         userOnboardingStore,
         wasPrereviewRemoved,
         authorInviteStore,
-        canWriteComments,
         mustDeclareUseOfAi,
         nodemailer,
       },
@@ -1287,7 +1281,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provide(
           FeatureFlags.layer({
             canChooseLocale: false,
-            canWriteComments,
+            canWriteComments: () => true,
             useCrowdinInContext: false,
           }),
         ),
@@ -1907,16 +1901,6 @@ export const willPublishAComment: Fixtures<
       })
 
     await use(fetch)
-  },
-}
-
-export const canWriteComments: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canWriteComments'>
-> = {
-  canWriteComments: async ({}, use) => {
-    await use(() => true)
   },
 }
 
