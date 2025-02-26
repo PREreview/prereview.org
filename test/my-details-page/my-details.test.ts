@@ -25,7 +25,6 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.location()),
         fc.either(fc.constant('not-found'), fc.languages()),
         fc.boolean(),
-        fc.boolean(),
       ])(
         'when the user has visited before',
         async (
@@ -41,11 +40,9 @@ describe('myDetails', () => {
           location,
           languages,
           canConnectOrcidProfile,
-          canUploadAvatar,
         ) => {
           const actual = await _.myDetails({ user })({
             canConnectOrcidProfile: () => canConnectOrcidProfile,
-            canUploadAvatar: () => canUploadAvatar,
             getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -85,7 +82,6 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.location()),
         fc.either(fc.constant('not-found'), fc.languages()),
         fc.boolean(),
-        fc.boolean(),
       ])(
         "when the user hasn't visited before",
         async (
@@ -101,13 +97,11 @@ describe('myDetails', () => {
           location,
           languages,
           canConnectOrcidProfile,
-          canUploadAvatar,
         ) => {
           const saveUserOnboarding = jest.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
 
           const actual = await _.myDetails({ user })({
             canConnectOrcidProfile: () => canConnectOrcidProfile,
-            canUploadAvatar: () => canUploadAvatar,
             getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -148,7 +142,6 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.location()),
         fc.either(fc.constant('not-found'), fc.languages()),
         fc.boolean(),
-        fc.boolean(),
       ])(
         'when the user onboarding cannot be updated',
         async (
@@ -164,11 +157,9 @@ describe('myDetails', () => {
           location,
           languages,
           canConnectOrcidProfile,
-          canUploadAvatar,
         ) => {
           const actual = await _.myDetails({ user })({
             canConnectOrcidProfile: () => canConnectOrcidProfile,
-            canUploadAvatar: () => canUploadAvatar,
             getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -206,7 +197,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.location()),
       fc.either(fc.constant('not-found'), fc.languages()),
       fc.boolean(),
-      fc.boolean(),
     ])(
       'when the user onboarding cannot be loaded',
       async (
@@ -221,11 +211,9 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -261,7 +249,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.researchInterests()),
       fc.either(fc.constant('not-found'), fc.location()),
       fc.either(fc.constant('not-found'), fc.languages()),
-      fc.boolean(),
     ])(
       'when the ORCID token cannot be loaded',
       async (
@@ -275,11 +262,9 @@ describe('myDetails', () => {
         researchInterests,
         location,
         languages,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => true,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -331,11 +316,9 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -387,11 +370,9 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.left('unavailable'),
@@ -443,11 +424,9 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -499,11 +478,9 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.left('unavailable'),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -555,11 +532,9 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -611,11 +586,9 @@ describe('myDetails', () => {
         researchInterests,
         languages,
         canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -667,11 +640,9 @@ describe('myDetails', () => {
         researchInterests,
         location,
         canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -700,7 +671,6 @@ describe('myDetails', () => {
   test('when the user is not logged in', async () => {
     const actual = await _.myDetails({})({
       canConnectOrcidProfile: shouldNotBeCalled,
-      canUploadAvatar: shouldNotBeCalled,
       getAvatar: shouldNotBeCalled,
       getCareerStage: shouldNotBeCalled,
       getContactEmailAddress: shouldNotBeCalled,

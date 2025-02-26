@@ -6,7 +6,7 @@ import type { EnvFor } from '../Fpts.js'
 import { maybeGetAvatar } from '../avatar.js'
 import { maybeGetCareerStage } from '../career-stage.js'
 import { maybeGetContactEmailAddress } from '../contact-email-address.js'
-import { canConnectOrcidProfile, canUploadAvatar } from '../feature-flags.js'
+import { canConnectOrcidProfile } from '../feature-flags.js'
 import { havingProblemsPage } from '../http-error.js'
 import { maybeIsOpenForRequests } from '../is-open-for-requests.js'
 import { maybeGetLanguages } from '../languages.js'
@@ -42,18 +42,7 @@ export const myDetails = ({ user }: { user?: User }) =>
             ),
           ),
         ),
-        RTE.apSW(
-          'avatar',
-          pipe(
-            RTE.fromReader(canUploadAvatar(user)),
-            RTE.chainW(canUploadAvatar =>
-              match(canUploadAvatar)
-                .with(true, () => pipe(maybeGetAvatar(user.orcid), RTE.map(Option.fromNullable)))
-                .with(false, () => RTE.of(undefined))
-                .exhaustive(),
-            ),
-          ),
-        ),
+        RTE.apSW('avatar', pipe(maybeGetAvatar(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(Option.fromNullable))),

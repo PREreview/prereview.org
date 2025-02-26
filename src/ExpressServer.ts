@@ -59,7 +59,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
     avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
     canConnectOrcidProfile: () => true,
-    canUploadAvatar: () => true,
     cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
     coarNotifyToken: env.COAR_NOTIFY_TOKEN,
     coarNotifyUrl: env.COAR_NOTIFY_URL,
