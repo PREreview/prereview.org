@@ -49,13 +49,6 @@ export interface CanUploadAvatarEnv {
 export const canUploadAvatar = (user: User) =>
   R.asks(({ canUploadAvatar }: CanUploadAvatarEnv) => canUploadAvatar(user))
 
-export interface CanRequestReviewsEnv {
-  canRequestReviews: (user?: User) => boolean
-}
-
-export const canRequestReviews = (user?: User) =>
-  R.asks(({ canRequestReviews }: CanRequestReviewsEnv) => canRequestReviews(user))
-
 export interface MustDeclareUseOfAiEnv {
   mustDeclareUseOfAi: boolean
 }

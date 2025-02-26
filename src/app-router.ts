@@ -73,7 +73,6 @@ import {
 } from './email.js'
 import type {
   CanConnectOrcidProfileEnv,
-  CanRequestReviewsEnv,
   CanUploadAvatarEnv,
   CanWriteCommentsEnv,
   MustDeclareUseOfAiEnv,
@@ -336,7 +335,6 @@ const getSlackUser = flow(
 
 export type RouterEnv = Keyv.AvatarStoreEnv &
   CanConnectOrcidProfileEnv &
-  CanRequestReviewsEnv &
   CanUploadAvatarEnv &
   CanWriteCommentsEnv &
   MustDeclareUseOfAiEnv &
@@ -829,7 +827,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.bindW('response', ({ user }) => RM.fromReaderTask(preprintReviews(id, user))),
+          RM.apSW('response', RM.fromReaderTask(preprintReviews(id))),
           RM.ichainW(handleResponse),
         ),
       ),

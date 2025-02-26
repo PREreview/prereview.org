@@ -62,7 +62,6 @@ describe('preprintReviews', () => {
     const getRapidPrereviews = jest.fn<_.GetRapidPrereviewsEnv['getRapidPrereviews']>(_ => TE.right(rapidPrereviews))
 
     const actual = await _.preprintReviews(preprint.id)({
-      canRequestReviews: () => false,
       getPreprint,
       getPrereviews,
       getRapidPrereviews,
@@ -86,7 +85,6 @@ describe('preprintReviews', () => {
 
   test.prop([fc.indeterminatePreprintId()])('when the preprint is not found', async preprintId => {
     const actual = await _.preprintReviews(preprintId)({
-      canRequestReviews: () => false,
       getPreprint: () => TE.left(new PreprintIsNotFound({})),
       getPrereviews: shouldNotBeCalled,
       getRapidPrereviews: shouldNotBeCalled,
@@ -104,7 +102,6 @@ describe('preprintReviews', () => {
 
   test.prop([fc.indeterminatePreprintId()])('when the preprint is unavailable', async preprintId => {
     const actual = await _.preprintReviews(preprintId)({
-      canRequestReviews: () => false,
       getPreprint: () => TE.left(new PreprintIsUnavailable({})),
       getPrereviews: shouldNotBeCalled,
       getRapidPrereviews: shouldNotBeCalled,
@@ -149,7 +146,6 @@ describe('preprintReviews', () => {
     ),
   ])('when the reviews cannot be loaded', async (preprint, rapidPrereviews) => {
     const actual = await _.preprintReviews(preprint.id)({
-      canRequestReviews: () => false,
       getPreprint: () => TE.right(preprint),
       getPrereviews: () => TE.left('unavailable'),
       getRapidPrereviews: () => TE.right(rapidPrereviews),
@@ -189,7 +185,6 @@ describe('preprintReviews', () => {
     fc.boolean(),
   ])('when the rapid PREreviews cannot be loaded', async (preprint, prereviews) => {
     const actual = await _.preprintReviews(preprint.id)({
-      canRequestReviews: () => false,
       getPreprint: () => TE.right(preprint),
       getPrereviews: () => TE.right(prereviews),
       getRapidPrereviews: () => TE.left('unavailable'),
