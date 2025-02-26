@@ -47,7 +47,6 @@ import type {
   CanConnectOrcidProfileEnv,
   CanRequestReviewsEnv,
   CanUploadAvatarEnv,
-  CanUseSearchQueriesEnv,
   CanWriteComments,
   RequiresAVerifiedEmailAddress,
 } from '../src/feature-flags.js'
@@ -101,7 +100,6 @@ interface AppFixtures {
   canRequestReviews: CanRequestReviewsEnv['canRequestReviews']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canUploadAvatar: CanUploadAvatarEnv['canUploadAvatar']
-  canUseSearchQueries: CanUseSearchQueriesEnv['canUseSearchQueries']
   canWriteComments: typeof CanWriteComments.Service
   requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
   mustDeclareUseOfAi: FeatureFlags.MustDeclareUseOfAiEnv['mustDeclareUseOfAi']
@@ -123,9 +121,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(() => false)
   },
   canUploadAvatar: async ({}, use) => {
-    await use(() => false)
-  },
-  canUseSearchQueries: async ({}, use) => {
     await use(() => false)
   },
   canWriteComments: async ({}, use) => {
@@ -1254,7 +1249,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canConnectOrcidProfile,
         canRequestReviews,
         canUploadAvatar,
-        canUseSearchQueries,
         canWriteComments,
         requiresAVerifiedEmailAddress,
         mustDeclareUseOfAi,
@@ -1274,7 +1268,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           canConnectOrcidProfile,
           canRequestReviews,
           canUploadAvatar,
-          canUseSearchQueries,
+          canUseSearchQueries: () => true,
           cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
           formStore,
           careerStageStore,
@@ -1973,16 +1967,6 @@ export const canUploadAvatar: Fixtures<
   Pick<AppFixtures, 'canUploadAvatar'>
 > = {
   canUploadAvatar: async ({}, use) => {
-    await use(() => true)
-  },
-}
-
-export const canUseSearchQueries: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canUseSearchQueries'>
-> = {
-  canUseSearchQueries: async ({}, use) => {
     await use(() => true)
   },
 }
