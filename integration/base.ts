@@ -1244,7 +1244,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           allowSiteCrawlers: true,
           authorInviteStore,
           avatarStore: new Keyv(),
-          canConnectOrcidProfile: () => true,
           cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
           formStore,
           careerStageStore,

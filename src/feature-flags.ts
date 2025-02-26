@@ -35,13 +35,6 @@ export interface CanChooseLocaleEnv {
   canChooseLocale: boolean
 }
 
-export interface CanConnectOrcidProfileEnv {
-  canConnectOrcidProfile: (user: User) => boolean
-}
-
-export const canConnectOrcidProfile = (user: User) =>
-  R.asks(({ canConnectOrcidProfile }: CanConnectOrcidProfileEnv) => canConnectOrcidProfile(user))
-
 export interface MustDeclareUseOfAiEnv {
   mustDeclareUseOfAi: boolean
 }

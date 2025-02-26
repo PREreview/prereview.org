@@ -6,7 +6,6 @@ import type { EnvFor } from '../Fpts.js'
 import { maybeGetAvatar } from '../avatar.js'
 import { maybeGetCareerStage } from '../career-stage.js'
 import { maybeGetContactEmailAddress } from '../contact-email-address.js'
-import { canConnectOrcidProfile } from '../feature-flags.js'
 import { havingProblemsPage } from '../http-error.js'
 import { maybeIsOpenForRequests } from '../is-open-for-requests.js'
 import { maybeGetLanguages } from '../languages.js'
@@ -30,18 +29,7 @@ export const myDetails = ({ user }: { user?: User }) =>
         RTE.Do,
         RTE.let('user', () => user),
         RTE.apSW('userOnboarding', getUserOnboarding(user.orcid)),
-        RTE.apSW(
-          'orcidToken',
-          pipe(
-            RTE.fromReader(canConnectOrcidProfile(user)),
-            RTE.chainW(canConnectOrcidProfile =>
-              match(canConnectOrcidProfile)
-                .with(true, () => pipe(maybeGetOrcidToken(user.orcid), RTE.map(Option.fromNullable)))
-                .with(false, () => RTE.of(undefined))
-                .exhaustive(),
-            ),
-          ),
-        ),
+        RTE.apSW('orcidToken', pipe(maybeGetOrcidToken(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('avatar', pipe(maybeGetAvatar(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(Option.fromNullable))),
