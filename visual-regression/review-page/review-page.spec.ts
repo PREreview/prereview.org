@@ -15,7 +15,6 @@ test('content looks right', async ({ showPage }) => {
     locale: DefaultLocale,
     review,
     comments: [],
-    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -35,7 +34,6 @@ test('content looks right with anonymous authors', async ({ showPage }) => {
       },
     },
     comments: [],
-    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -49,7 +47,6 @@ test('content looks right when in a club', async ({ showPage }) => {
     locale: DefaultLocale,
     review: { ...review, club: 'hhmi-training-pilot' },
     comments: [],
-    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -63,7 +60,6 @@ test("content looks right when it's requested", async ({ showPage }) => {
     locale: DefaultLocale,
     review: { ...review, requested: true },
     comments: [],
-    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -77,7 +73,6 @@ test("content looks right when it's live", async ({ showPage }) => {
     locale: DefaultLocale,
     review: { ...review, live: true },
     comments: [],
-    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -99,7 +94,6 @@ test('content looks right with an addendum', async ({ showPage }) => {
         </p>`,
     },
     comments: [],
-    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -113,7 +107,6 @@ test('content looks right when it is structured', async ({ showPage }) => {
     locale: DefaultLocale,
     review: structuredReview,
     comments: [],
-    canWriteComments: false,
   })
 
   const content = await showPage(response)
@@ -127,21 +120,6 @@ test('content looks right when there are comments', async ({ showPage }) => {
     locale: DefaultLocale,
     review,
     comments: [comment1, comment2],
-    canWriteComments: false,
-  })
-
-  const content = await showPage(response)
-
-  await expect(content).toHaveScreenshot()
-})
-
-test('content looks right when comments can be written', async ({ showPage }) => {
-  const response = createPage({
-    id: 1234,
-    locale: DefaultLocale,
-    review,
-    comments: [],
-    canWriteComments: true,
   })
 
   const content = await showPage(response)

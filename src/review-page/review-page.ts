@@ -23,13 +23,11 @@ export const createPage = ({
   locale,
   review,
   comments,
-  canWriteComments,
 }: {
   id: number
   locale: SupportedLocale
   review: Prereview
   comments: ReadonlyArray<Comment>
-  canWriteComments: boolean
 }) =>
   PageResponse({
     title: plainText(
@@ -193,107 +191,104 @@ export const createPage = ({
             ${fixHeadingLevels(2, review.addendum)}
           `
         : ''}
-      ${RA.isNonEmpty(comments) || canWriteComments
-        ? html`
-            <article aria-labelledby="comments-title">
-              <h2 id="comments-title">${translate(locale, 'review-page', 'commentsTitle')()}</h2>
-              ${canWriteComments
-                ? html`<a href="${Routes.WriteComment.href({ id })}" class="button"
-                    >${translate(locale, 'review-page', 'writeCommentButton')()}</a
-                  >`
-                : ''}
-              ${pipe(
-                comments,
-                RA.match(
-                  () => html`<p>${translate(locale, 'review-page', 'noComments')()}</p>`,
-                  comments =>
-                    html`<ol class="cards">
-                      ${pipe(
-                        comments,
-                        RNEA.map(
-                          item => html`
-                            <li>
-                              <article aria-labelledby="comment-${item.id}-title">
-                                <header>
-                                  <h3 class="visually-hidden" id="comment-${item.id}-title">
-                                    ${translate(
-                                      locale,
-                                      'review-page',
-                                      'commentItemTitle',
-                                    )({
-                                      author: pipe(RNEA.head(item.authors.named), Struct.get('name')),
-                                      authors: item.authors.named.length,
-                                    })}
-                                  </h3>
 
-                                  <div class="byline">
-                                    ${rawHtml(
-                                      translate(
-                                        locale,
-                                        'review-page',
-                                        'commentItemAuthors',
-                                      )({
-                                        authors: pipe(
-                                          item.authors.named,
-                                          RNEA.map(displayAuthor),
-                                          formatList(locale),
-                                        ).toString(),
-                                        hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                                      }),
-                                    )}
-                                  </div>
+      <article aria-labelledby="comments-title">
+        <h2 id="comments-title">${translate(locale, 'review-page', 'commentsTitle')()}</h2>
 
-                                  <dl>
-                                    <div>
-                                      <dt>${translate(locale, 'review-page', 'published')()}</dt>
-                                      <dd>${renderDate(locale)(item.published)}</dd>
-                                    </div>
-                                    <div>
-                                      <dt>DOI</dt>
-                                      <dd>
-                                        <a href="${toUrl(item.doi).href}" class="doi" translate="no">${item.doi}</a>
-                                      </dd>
-                                    </div>
-                                    <div>
-                                      <dt>${translate(locale, 'review-page', 'license')()}</dt>
-                                      <dd>
-                                        ${match(item.license)
-                                          .with(
-                                            'CC-BY-4.0',
-                                            () => html`
-                                              <a href="https://creativecommons.org/licenses/by/4.0/">
-                                                <dfn>
-                                                  <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
-                                                    ><span translate="no">CC BY 4.0</span></abbr
-                                                  >
-                                                </dfn>
-                                              </a>
-                                            `,
-                                          )
-                                          .exhaustive()}
-                                      </dd>
-                                    </div>
-                                  </dl>
-                                </header>
+        <a href="${Routes.WriteComment.href({ id })}" class="button"
+          >${translate(locale, 'review-page', 'writeCommentButton')()}</a
+        >
 
-                                <div
-                                  ${item.language
-                                    ? html`lang="${item.language}" dir="${rtlDetect.getLangDir(item.language)}"`
-                                    : ''}
-                                >
-                                  ${fixHeadingLevels(3, item.text)}
-                                </div>
-                              </article>
-                            </li>
-                          `,
-                        ),
-                      )}
-                    </ol>`,
-                ),
-              )}
-            </article>
-          `
-        : ''}
+        ${pipe(
+          comments,
+          RA.match(
+            () => html`<p>${translate(locale, 'review-page', 'noComments')()}</p>`,
+            comments =>
+              html`<ol class="cards">
+                ${pipe(
+                  comments,
+                  RNEA.map(
+                    item => html`
+                      <li>
+                        <article aria-labelledby="comment-${item.id}-title">
+                          <header>
+                            <h3 class="visually-hidden" id="comment-${item.id}-title">
+                              ${translate(
+                                locale,
+                                'review-page',
+                                'commentItemTitle',
+                              )({
+                                author: pipe(RNEA.head(item.authors.named), Struct.get('name')),
+                                authors: item.authors.named.length,
+                              })}
+                            </h3>
+
+                            <div class="byline">
+                              ${rawHtml(
+                                translate(
+                                  locale,
+                                  'review-page',
+                                  'commentItemAuthors',
+                                )({
+                                  authors: pipe(
+                                    item.authors.named,
+                                    RNEA.map(displayAuthor),
+                                    formatList(locale),
+                                  ).toString(),
+                                  hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                                }),
+                              )}
+                            </div>
+
+                            <dl>
+                              <div>
+                                <dt>${translate(locale, 'review-page', 'published')()}</dt>
+                                <dd>${renderDate(locale)(item.published)}</dd>
+                              </div>
+                              <div>
+                                <dt>DOI</dt>
+                                <dd>
+                                  <a href="${toUrl(item.doi).href}" class="doi" translate="no">${item.doi}</a>
+                                </dd>
+                              </div>
+                              <div>
+                                <dt>${translate(locale, 'review-page', 'license')()}</dt>
+                                <dd>
+                                  ${match(item.license)
+                                    .with(
+                                      'CC-BY-4.0',
+                                      () => html`
+                                        <a href="https://creativecommons.org/licenses/by/4.0/">
+                                          <dfn>
+                                            <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
+                                              ><span translate="no">CC BY 4.0</span></abbr
+                                            >
+                                          </dfn>
+                                        </a>
+                                      `,
+                                    )
+                                    .exhaustive()}
+                                </dd>
+                              </div>
+                            </dl>
+                          </header>
+
+                          <div
+                            ${item.language
+                              ? html`lang="${item.language}" dir="${rtlDetect.getLangDir(item.language)}"`
+                              : ''}
+                          >
+                            ${fixHeadingLevels(3, item.text)}
+                          </div>
+                        </article>
+                      </li>
+                    `,
+                  ),
+                )}
+              </ol>`,
+          ),
+        )}
+      </article>
     `,
     skipToLabel: 'prereview',
     canonical: format(reviewMatch.formatter, { id }),
