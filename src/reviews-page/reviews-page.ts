@@ -19,7 +19,6 @@ import type { RecentPrereviews } from './recent-prereviews.js'
 
 export const createPage = (
   { currentPage, field, language, query, totalPages, recentPrereviews }: RecentPrereviews,
-  canUseSearchQueries: boolean,
   locale: SupportedLocale,
 ) =>
   PageResponse({
@@ -28,7 +27,7 @@ export const createPage = (
     main: html`
       <h1>${translate(locale, 'reviews-page', 'title')()}</h1>
 
-      ${form({ canUseSearchQueries, field, language, locale, query })}
+      ${form({ field, language, locale, query })}
 
       <ol class="cards" id="results">
         ${pipe(
@@ -145,7 +144,6 @@ export const createPage = (
 
 export const emptyPage = (
   { field, language, query }: { field?: FieldId; language?: LanguageCode; query?: NonEmptyString },
-  canUseSearchQueries: boolean,
   locale: SupportedLocale,
 ) =>
   PageResponse({
@@ -154,7 +152,7 @@ export const emptyPage = (
     main: html`
       <h1>${translate(locale, 'reviews-page', 'title')()}</h1>
 
-      ${form({ canUseSearchQueries, field, language, locale, query })}
+      ${form({ field, language, locale, query })}
 
       <div class="inset" id="results">
         <p>${translate(locale, 'reviews-page', 'noResults')()}</p>
@@ -191,13 +189,11 @@ const title = ({
 }
 
 const form = ({
-  canUseSearchQueries,
   field,
   language,
   locale,
   query,
 }: Pick<RecentPrereviews, 'field' | 'language' | 'query'> & {
-  canUseSearchQueries: boolean
   locale: SupportedLocale
 }) => html`
   <form
@@ -209,14 +205,10 @@ const form = ({
   >
     <h2 class="visually-hidden" id="filter-label">${translate(locale, 'reviews-page', 'filterTitle')()}</h2>
     <input type="hidden" name="page" value="1" />
-    ${canUseSearchQueries
-      ? html`<div>
-          <label for="query">${translate(locale, 'reviews-page', 'filterTitleAuthorLabel')()}</label>
-          <input type="text" name="query" id="query" ${query === undefined ? '' : html`value="${query}"`} />
-        </div>`
-      : query
-        ? html`<input type="hidden" name="query" value="${query}" />`
-        : ''}
+    <div>
+      <label for="query">${translate(locale, 'reviews-page', 'filterTitleAuthorLabel')()}</label>
+      <input type="text" name="query" id="query" ${query === undefined ? '' : html`value="${query}"`} />
+    </div>
     <div>
       <label for="language">${translate(locale, 'reviews-page', 'filterLanguageLabel')()}</label>
       <div class="select">
