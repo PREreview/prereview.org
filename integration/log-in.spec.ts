@@ -5,7 +5,6 @@ import {
   areLoggedIn,
   canConnectOrcidProfile,
   canLogIn,
-  canUploadAvatar,
   expect,
   hasAVerifiedEmailAddress,
   isANewUser,
@@ -134,55 +133,52 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
-  'can upload an avatar',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    await page.getByRole('link', { name: 'My details' }).click()
-    await page.getByRole('link', { name: 'Upload avatar' }).click()
-    await page.getByLabel('Upload an avatar').setInputFiles(path.join(import.meta.dirname, 'fixtures', '600x400.png'))
+test.extend(canLogIn).extend(areLoggedIn)('can upload an avatar', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.getByRole('link', { name: 'My details' }).click()
+  await page.getByRole('link', { name: 'Upload avatar' }).click()
+  await page.getByLabel('Upload an avatar').setInputFiles(path.join(import.meta.dirname, 'fixtures', '600x400.png'))
 
-    fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/upload', { body: { public_id: 'an-avatar' } })
-    await page.route('https://res.cloudinary.com/**/*', route =>
-      route.fulfill({ path: path.join(import.meta.dirname, 'fixtures', '300x300.png') }),
-    )
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/upload', { body: { public_id: 'an-avatar' } })
+  await page.route('https://res.cloudinary.com/**/*', route =>
+    route.fulfill({ path: path.join(import.meta.dirname, 'fixtures', '300x300.png') }),
+  )
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
-    }
-    await expect(page.getByRole('main')).toContainText('Avatar')
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+  }
+  await expect(page.getByRole('main')).toContainText('Avatar')
 
-    await page.reload()
+  await page.reload()
 
-    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+  await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 
-    await page.getByRole('link', { name: 'Change avatar' }).click()
+  await page.getByRole('link', { name: 'Change avatar' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Upload an avatar')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Upload an avatar')
 
-    await page.getByRole('link', { name: 'Back' }).click()
-    await page.getByRole('link', { name: 'Remove avatar' }).click()
+  await page.getByRole('link', { name: 'Back' }).click()
+  await page.getByRole('link', { name: 'Remove avatar' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Remove your avatar')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Remove your avatar')
 
-    fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/destroy', { body: { result: 'ok' } })
+  fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/destroy', { body: { result: 'ok' } })
 
-    await page.getByRole('button', { name: 'Remove avatar' }).click()
+  await page.getByRole('button', { name: 'Remove avatar' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
-    }
-    await expect(page.getByRole('link', { name: 'Upload avatar' })).toBeVisible()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+  }
+  await expect(page.getByRole('link', { name: 'Upload avatar' })).toBeVisible()
 
-    await page.reload()
+  await page.reload()
 
-    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
-  },
-)
+  await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+})
 
 test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
   'can connect my Slack Community account',
@@ -436,27 +432,24 @@ test.extend(canLogIn).extend(areLoggedIn)('have to give a valid email address', 
   await expect(page.getByLabel('What is your email address?')).toBeFocused()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
-  'have to upload an avatar',
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/my-details/change-avatar')
+test.extend(canLogIn).extend(areLoggedIn)('have to upload an avatar', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/my-details/change-avatar')
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByLabel('Upload an avatar')).toHaveAttribute('aria-invalid', 'true')
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('Upload an avatar')).toHaveAttribute('aria-invalid', 'true')
 
-    await page.getByRole('link', { name: 'Select an image' }).click()
+  await page.getByRole('link', { name: 'Select an image' }).click()
 
-    await expect(page.getByLabel('Upload an avatar')).toBeFocused()
-  },
-)
+  await expect(page.getByLabel('Upload an avatar')).toBeFocused()
+})
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to upload an avatar of a reasonable size',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/my-details/change-avatar')
@@ -479,7 +472,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to upload an image as an avatar',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/my-details/change-avatar')

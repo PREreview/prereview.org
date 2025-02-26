@@ -45,7 +45,6 @@ import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import type {
   CanConnectOrcidProfileEnv,
-  CanUploadAvatarEnv,
   CanWriteComments,
   RequiresAVerifiedEmailAddress,
 } from '../src/feature-flags.js'
@@ -97,7 +96,6 @@ interface AppFixtures {
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   canConnectOrcidProfile: CanConnectOrcidProfileEnv['canConnectOrcidProfile']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
-  canUploadAvatar: CanUploadAvatarEnv['canUploadAvatar']
   canWriteComments: typeof CanWriteComments.Service
   requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
   mustDeclareUseOfAi: FeatureFlags.MustDeclareUseOfAiEnv['mustDeclareUseOfAi']
@@ -113,9 +111,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(`http://localhost:${port}`)
   },
   canConnectOrcidProfile: async ({}, use) => {
-    await use(() => false)
-  },
-  canUploadAvatar: async ({}, use) => {
     await use(() => false)
   },
   canWriteComments: async ({}, use) => {
@@ -1242,7 +1237,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         wasPrereviewRemoved,
         authorInviteStore,
         canConnectOrcidProfile,
-        canUploadAvatar,
         canWriteComments,
         requiresAVerifiedEmailAddress,
         mustDeclareUseOfAi,
@@ -1260,7 +1254,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           authorInviteStore,
           avatarStore: new Keyv(),
           canConnectOrcidProfile,
-          canUploadAvatar,
+          canUploadAvatar: () => true,
           cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
           formStore,
           careerStageStore,
@@ -1939,16 +1933,6 @@ export const canConnectOrcidProfile: Fixtures<
   Pick<AppFixtures, 'canConnectOrcidProfile'>
 > = {
   canConnectOrcidProfile: async ({}, use) => {
-    await use(() => true)
-  },
-}
-
-export const canUploadAvatar: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canUploadAvatar'>
-> = {
-  canUploadAvatar: async ({}, use) => {
     await use(() => true)
   },
 }
