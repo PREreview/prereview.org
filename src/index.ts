@@ -48,7 +48,6 @@ pipe(
     Layer.mergeAll(
       FeatureFlags.layerConfig({
         canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
-        canWriteComments: Config.succeed(() => true),
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
       }),
       Layer.mergeAll(

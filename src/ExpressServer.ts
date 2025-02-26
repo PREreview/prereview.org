@@ -5,7 +5,7 @@ import Keyv from 'keyv'
 import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, SessionSecret } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
-import { CanWriteComments, UseCrowdinInContext } from './feature-flags.js'
+import { UseCrowdinInContext } from './feature-flags.js'
 import { GhostApi } from './ghost.js'
 import { Nodemailer } from './nodemailer.js'
 import * as Preprint from './preprint.js'
@@ -19,7 +19,6 @@ export const expressServer = Effect.gen(function* () {
   const fetch = yield* FetchHttpClient.Fetch
   const { clock } = yield* DeprecatedLoggerEnv
   const sleep = yield* DeprecatedSleepEnv
-  const canWriteComments = yield* CanWriteComments
   const nodemailer = yield* Nodemailer
   const publicUrl = yield* PublicUrl
   const generateUuid = yield* Effect.andThen(GenerateUuid, EffectToFpts.makeIO)
@@ -30,7 +29,6 @@ export const expressServer = Effect.gen(function* () {
   const getPreprint = yield* Effect.andThen(Preprint.GetPreprint, EffectToFpts.makeTaskEitherK)
 
   return app({
-    canWriteComments,
     clock,
     fetch,
     generateUuid,

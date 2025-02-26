@@ -45,15 +45,13 @@ describe('reviewPage', () => {
         text: fc.html(),
       }),
     ),
-    fc.boolean(),
-  ])('when the review can be loaded', async (locale, id, prereview, comments, canWriteComments) => {
+  ])('when the review can be loaded', async (locale, id, prereview, comments) => {
     const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
     const getComments = jest.fn<_.GetCommentsEnv['getComments']>(_ => TE.right(comments))
 
     const actual = await _.reviewPage({ id, locale })({
       getPrereview,
       getComments,
-      canWriteComments: () => canWriteComments,
     })()
 
     expect(actual).toStrictEqual({
@@ -71,65 +69,53 @@ describe('reviewPage', () => {
     expect(getComments).toHaveBeenCalledWith(prereview.doi)
   })
 
-  test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])(
-    'when the review is not found',
-    async (locale, id, canWriteComments) => {
-      const actual = await _.reviewPage({ id, locale })({
-        getPrereview: () => TE.left('not-found'),
-        getComments: shouldNotBeCalled,
-        canWriteComments: () => canWriteComments,
-      })()
+  test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])('when the review is not found', async (locale, id) => {
+    const actual = await _.reviewPage({ id, locale })({
+      getPrereview: () => TE.left('not-found'),
+      getComments: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.NotFound,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.NotFound,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
 
-  test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])(
-    'when the review was removed',
-    async (locale, id, canWriteComments) => {
-      const actual = await _.reviewPage({ id, locale })({
-        getPrereview: () => TE.left('removed'),
-        getComments: shouldNotBeCalled,
-        canWriteComments: () => canWriteComments,
-      })()
+  test.prop([fc.supportedLocale(), fc.integer()])('when the review was removed', async (locale, id) => {
+    const actual = await _.reviewPage({ id, locale })({
+      getPrereview: () => TE.left('removed'),
+      getComments: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.Gone,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.Gone,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
 
-  test.prop([fc.supportedLocale(), fc.integer(), fc.boolean()])(
-    'when the review cannot be loaded',
-    async (locale, id, canWriteComments) => {
-      const actual = await _.reviewPage({ id, locale })({
-        getPrereview: () => TE.left('unavailable'),
-        getComments: shouldNotBeCalled,
-        canWriteComments: () => canWriteComments,
-      })()
+  test.prop([fc.supportedLocale(), fc.integer()])('when the review cannot be loaded', async (locale, id) => {
+    const actual = await _.reviewPage({ id, locale })({
+      getPrereview: () => TE.left('unavailable'),
+      getComments: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
 
   test.prop([
     fc.supportedLocale(),
@@ -154,12 +140,10 @@ describe('reviewPage', () => {
       structured: fc.boolean(),
       text: fc.html(),
     }),
-    fc.boolean(),
-  ])('when the comments cannot be loaded', async (locale, id, prereview, canWriteComments) => {
+  ])('when the comments cannot be loaded', async (locale, id, prereview) => {
     const actual = await _.reviewPage({ id, locale })({
       getPrereview: () => TE.right(prereview),
       getComments: () => TE.left('unavailable'),
-      canWriteComments: () => canWriteComments,
     })()
 
     expect(actual).toStrictEqual({
