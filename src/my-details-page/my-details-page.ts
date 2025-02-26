@@ -51,7 +51,7 @@ export function createPage({
 }: {
   user: User
   userOnboarding: UserOnboarding
-  orcidToken?: Option.Option<OrcidToken>
+  orcidToken: Option.Option<OrcidToken>
   avatar: Option.Option<URL>
   slackUser: Option.Option<SlackUser>
   contactEmailAddress: Option.Option<ContactEmailAddress>
@@ -112,7 +112,6 @@ export function createPage({
         </div>
 
         ${match(orcidToken)
-          .with(undefined, () => '')
           .when(
             Option.isNone,
             () => html`
