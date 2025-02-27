@@ -1,5 +1,5 @@
 import { Headers, HttpClientResponse } from '@effect/platform'
-import { Effect, Layer, Option, pipe, Schema } from 'effect'
+import { Cause, Effect, Layer, Option, pipe, Schema } from 'effect'
 import * as Redis from '../Redis.js'
 import { CacheValueFromStringSchema, HttpCache, keyForRequest } from './HttpCache.js'
 import { serializationErrorChecking } from './SerializationErrorChecking.js'
@@ -42,7 +42,7 @@ export const getFromRedis =
     pipe(
       Effect.tryPromise(() => redis.get(keyForRequest(request))),
       Effect.andThen(Option.fromNullable),
-      Effect.andThen(Schema.decodeOption(CacheValueFromStringSchema)),
+      Effect.andThen(Schema.decode(CacheValueFromStringSchema)),
       Effect.map(({ staleAt, response }) => ({
         staleAt,
         response: HttpClientResponse.fromWeb(
@@ -53,4 +53,5 @@ export const getFromRedis =
           }),
         ),
       })),
+      Effect.catchTag('ParseError', () => new Cause.NoSuchElementException()),
     )
