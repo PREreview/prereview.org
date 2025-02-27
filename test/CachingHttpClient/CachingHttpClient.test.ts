@@ -298,7 +298,7 @@ describe('there is a cache entry', () => {
 })
 
 describe('getting from the cache is too slow', () => {
-  test.failing.prop([fc.url(), fc.statusCode().filter(status => status >= StatusCodes.OK), fc.durationInput()])(
+  test.failing.prop([fc.url(), fc.statusCode(), fc.durationInput()])(
     'makes the real request',
     (url, status, timeToStale) =>
       Effect.gen(function* () {

@@ -1143,7 +1143,8 @@ export const headers = (include: fc.Arbitrary<Record<string, string>> = constant
       return headers
     })
 
-export const statusCode = (): fc.Arbitrary<Status> => constantFrom(...Object.values(Status))
+export const statusCode = (): fc.Arbitrary<Status> =>
+  constantFrom(...Object.values(Status).filter(status => status >= 200))
 
 export const cacheableStatusCode = (): fc.Arbitrary<CacheableStatusCodes> => statusCode().filter(isCacheable)
 
