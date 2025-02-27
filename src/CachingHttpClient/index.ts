@@ -38,7 +38,12 @@ export const CachingHttpClient = (
               pipe(
                 req,
                 httpClient.execute,
-                Effect.tap(response => cache.set(response, DateTime.addDuration(timestamp, timeToStale))),
+                Effect.tap(
+                  HttpClientResponse.matchStatus({
+                    [Status.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
+                    orElse: Function.constVoid,
+                  }),
+                ),
                 Effect.scoped,
                 Effect.tapError(error =>
                   Effect.logError('Unable to update cached response').pipe(Effect.annotateLogs({ error })),

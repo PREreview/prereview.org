@@ -269,7 +269,7 @@ describe('there is a cache entry', () => {
       })
 
       describe('with a response that does not have a 200 status code', () => {
-        test.failing('ignores the failure', () =>
+        test('ignores the failure', () =>
           Effect.gen(function* () {
             const non200Response = HttpClientResponse.fromWeb(
               HttpClientRequest.get(url),
@@ -290,8 +290,7 @@ describe('there is a cache entry', () => {
             expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
               yield* originalResponse.text,
             )
-          }).pipe(effectTestBoilerplate, Effect.runPromise),
-        )
+          }).pipe(effectTestBoilerplate, Effect.runPromise))
       })
     })
   })
