@@ -1115,7 +1115,7 @@ export const instant = (): fc.Arbitrary<Temporal.Instant> =>
 
 export const origin = (): fc.Arbitrary<URL> => url().map(url => new URL(url.origin))
 
-export const url = (): fc.Arbitrary<URL> => fc.webUrl().map(url => new URL(url))
+export const url = (): fc.Arbitrary<URL> => fc.webUrl({ withQueryParameters: true }).map(url => new URL(url))
 
 export const requestMethod = (): fc.Arbitrary<HttpMethod.HttpMethod> =>
   constantFrom('DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT')
@@ -1191,7 +1191,9 @@ export const request = ({
       body: body ?? constant(undefined),
       headers: headers ?? constant({}),
       method: method ?? requestMethod(),
-      url: path ? fc.tuple(path, url()).map(([path, base]) => new URL(path, base).href) : fc.webUrl(),
+      url: path
+        ? fc.tuple(path, url()).map(([path, base]) => new URL(path, base).href)
+        : fc.webUrl({ withQueryParameters: true }),
     })
     .map(args =>
       Object.defineProperties(createRequest(args), { [fc.toStringMethod]: { value: () => fc.stringify(args) } }),
