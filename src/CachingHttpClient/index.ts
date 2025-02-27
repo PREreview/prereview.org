@@ -1,11 +1,5 @@
-import {
-  HttpClient,
-  HttpClientError,
-  UrlParams,
-  type HttpClientRequest,
-  type HttpClientResponse,
-} from '@effect/platform'
-import { DateTime, Effect, Layer, Option, pipe, type Duration, type Scope } from 'effect'
+import { HttpClient, HttpClientError, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
+import { DateTime, Effect, Function, Layer, Option, pipe, type Duration, type Scope } from 'effect'
 import { Status } from 'hyper-ts'
 import { loggingHttpClient } from '../LoggingHttpClient.js'
 import * as HttpCache from './HttpCache.js'
@@ -65,12 +59,13 @@ export const CachingHttpClient = (
             duration: '2 seconds',
             onTimeout: () => new HttpClientError.RequestError({ request: req, reason: 'Transport', cause: 'Timeout' }),
           }),
-          Effect.tap(response => {
-            if (response.status !== Status.OK) {
-              return
-            }
-            return pipe(cache.set(response, DateTime.addDuration(timestamp, timeToStale)), Effect.ignore)
-          }),
+          Effect.tap(
+            HttpClientResponse.matchStatus({
+              [Status.OK]: response =>
+                pipe(cache.set(response, DateTime.addDuration(timestamp, timeToStale)), Effect.ignore),
+              orElse: Function.constVoid,
+            }),
+          ),
         )
       })
 
