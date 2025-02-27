@@ -115,7 +115,7 @@ describe('there is no cache entry', () => {
       }).pipe(effectTestBoilerplate, Effect.runPromise),
     )
 
-    test.failing.prop([fc.url(), fc.statusCode().filter(status => status !== StatusCodes.OK), fc.durationInput()])(
+    test.prop([fc.url(), fc.statusCode().filter(status => status !== StatusCodes.OK), fc.durationInput()])(
       'with a response that does not have a 200 status code',
       (url, status, timeToStale) =>
         Effect.gen(function* () {

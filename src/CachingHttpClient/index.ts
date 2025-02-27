@@ -6,6 +6,7 @@ import {
   type HttpClientResponse,
 } from '@effect/platform'
 import { DateTime, Effect, Layer, Option, pipe, type Duration, type Scope } from 'effect'
+import { Status } from 'hyper-ts'
 import { loggingHttpClient } from '../LoggingHttpClient.js'
 import * as HttpCache from './HttpCache.js'
 
@@ -53,9 +54,9 @@ export const CachingHttpClient = (
             )
           }
           return response.response
-        } else {
-          yield* Effect.logDebug('Cache miss').pipe(Effect.annotateLogs(logAnnotations))
         }
+
+        yield* Effect.logDebug('Cache miss').pipe(Effect.annotateLogs(logAnnotations))
 
         return yield* pipe(
           req,
@@ -64,9 +65,12 @@ export const CachingHttpClient = (
             duration: '2 seconds',
             onTimeout: () => new HttpClientError.RequestError({ request: req, reason: 'Transport', cause: 'Timeout' }),
           }),
-          Effect.tap(response =>
-            pipe(cache.set(response, DateTime.addDuration(timestamp, timeToStale)), Effect.ignore),
-          ),
+          Effect.tap(response => {
+            if (response.status !== Status.OK) {
+              return
+            }
+            return pipe(cache.set(response, DateTime.addDuration(timestamp, timeToStale)), Effect.ignore)
+          }),
         )
       })
 
