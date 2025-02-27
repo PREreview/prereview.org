@@ -64,7 +64,7 @@ export const sendContactEmailAddressVerificationEmailForReview = (
     RTE.chainW(sendEmail),
   )
 
-const createContactEmailAddressVerificationEmail = ({
+export const createContactEmailAddressVerificationEmail = ({
   verificationUrl,
   user,
   emailAddress,
