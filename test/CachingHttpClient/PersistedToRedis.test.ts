@@ -46,7 +46,7 @@ describe('getFromRedis', () => {
         }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
       )
 
-      it.failing.prop([fc.string()])('removes the value', unreadableValue =>
+      it.prop([fc.string()])('removes the value', unreadableValue =>
         Effect.gen(function* () {
           const redis = stubbedRedisReturning(unreadableValue)
 

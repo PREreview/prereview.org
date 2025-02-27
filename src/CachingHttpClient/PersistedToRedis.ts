@@ -53,5 +53,10 @@ export const getFromRedis =
           }),
         ),
       })),
-      Effect.catchTag('ParseError', () => new Cause.NoSuchElementException()),
+      Effect.catchTag('ParseError', () =>
+        pipe(
+          Effect.tryPromise(() => redis.del(keyForRequest(request))),
+          Effect.andThen(new Cause.NoSuchElementException()),
+        ),
+      ),
     )
