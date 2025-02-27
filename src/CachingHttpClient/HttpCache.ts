@@ -1,5 +1,5 @@
 import { Headers, type HttpClientRequest, type HttpClientResponse, UrlParams } from '@effect/platform'
-import { type Cause, Context, type DateTime, type Effect, Schema } from 'effect'
+import { type Cause, Context, Data, type DateTime, type Effect, Schema } from 'effect'
 
 export interface CacheValue {
   staleAt: DateTime.Utc
@@ -23,6 +23,8 @@ const CacheValueSchema = Schema.Struct({
 
 export const CacheValueFromStringSchema = Schema.parseJson(CacheValueSchema)
 
+export class HttpCacheUnavailable extends Data.TaggedError('HttpCacheUnavailable')<{ cause: unknown }> {}
+
 export class HttpCache extends Context.Tag('HttpCache')<
   HttpCache,
   {
@@ -30,7 +32,7 @@ export class HttpCache extends Context.Tag('HttpCache')<
       request: HttpClientRequest.HttpClientRequest,
     ) => Effect.Effect<
       { staleAt: DateTime.Utc; response: HttpClientResponse.HttpClientResponse },
-      Cause.NoSuchElementException | Cause.UnknownException
+      Cause.NoSuchElementException | HttpCacheUnavailable
     >
     set: (response: HttpClientResponse.HttpClientResponse, staleAt: DateTime.Utc) => Effect.Effect<void, Error>
     delete: (url: URL) => Effect.Effect<void>

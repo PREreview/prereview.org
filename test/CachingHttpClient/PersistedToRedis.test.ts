@@ -2,7 +2,7 @@ import { Headers, HttpClientRequest } from '@effect/platform'
 import { it } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Cause, DateTime, Effect, Either, Schema, TestContext } from 'effect'
-import { CacheValueFromStringSchema } from '../../src/CachingHttpClient/HttpCache.js'
+import { CacheValueFromStringSchema, HttpCacheUnavailable } from '../../src/CachingHttpClient/HttpCache.js'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.js'
 import type * as Redis from '../../src/Redis.js'
 import * as fc from '../fc.js'
@@ -79,7 +79,9 @@ describe('getFromRedis', () => {
 
         const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
-        expect(result).toStrictEqual(Either.left(new Cause.UnknownException(error)))
+        expect(result).toStrictEqual(
+          Either.left(new HttpCacheUnavailable({ cause: new Cause.UnknownException(error) })),
+        )
       }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
     )
   })
