@@ -243,11 +243,7 @@ describe('there is a cache entry', () => {
     })
 
     describe("cached response can't be revalidated", () => {
-      describe('with a timeout', () => {
-        test.todo('ignores the failure')
-      })
-
-      describe('with a network error', () => {
+      describe('when no response is received', () => {
         test('ignores the failure', () =>
           Effect.gen(function* () {
             const error = new HttpClientError.RequestError({
