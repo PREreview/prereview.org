@@ -1,4 +1,4 @@
-import { type HttpClientResponse, UrlParams } from '@effect/platform'
+import { type HttpClientResponse, Url, UrlParams } from '@effect/platform'
 import { diff } from 'deep-object-diff'
 import { type DateTime, Effect, pipe } from 'effect'
 import type * as HttpCache from './HttpCache.js'
@@ -77,7 +77,7 @@ export const serializationErrorChecking = (
             Effect.logError,
             Effect.annotateLogs({ ...logAnnotations, diff: yield* loggableDiff(response, cachedValue.response) }),
           )
-          yield* httpCache.delete(new URL(response.request.url))
+          yield* httpCache.delete(pipe(new URL(response.request.url), Url.setUrlParams(response.request.urlParams)))
           return
         }
       })

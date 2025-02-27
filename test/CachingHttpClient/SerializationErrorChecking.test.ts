@@ -34,7 +34,7 @@ describe('when the cached response matches the original', () => {
 })
 
 describe('when the cached response does not match the original', () => {
-  it.failing.prop([fc.url()])('the response is removed from the cache', url =>
+  it.prop([fc.url()])('the response is removed from the cache', url =>
     Effect.gen(function* () {
       const cacheStorage = new Map()
       // eslint-disable-next-line @typescript-eslint/unbound-method
