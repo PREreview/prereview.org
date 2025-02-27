@@ -44,31 +44,7 @@ export const sendContactEmailAddressVerificationEmail = (
   pipe(
     RTE.fromReader(toUrl(verifyContactEmailAddressMatch.formatter, { verify: emailAddress.verificationToken })),
     RTE.chainReaderKW(verificationUrl =>
-      R.asks(
-        ({ locale }: { locale: SupportedLocale }) =>
-          ({
-            from: { address: EmailAddress('help@prereview.org'), name: 'PREreview' },
-            to: { address: emailAddress.value, name: user.name },
-            subject: translate(locale, 'email', 'verifyEmailAddressTitle')(),
-            text: `${translate(locale, 'email', 'hiName')({ name: user.name })}\n\n${translate(locale, 'email', 'verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`,
-            html: mjmlToHtml(html`
-              <mjml lang="${locale}" dir="${rtlDetect.getLangDir(locale)}">
-                <mj-head>${mjmlStyle}</mj-head>
-                <mj-body>
-                  <mj-section>
-                    <mj-column>
-                      <mj-text>${translate(locale, 'email', 'hiName')({ name: user.name })}</mj-text>
-                      <mj-text>${translate(locale, 'email', 'verifyEmailAddressWithButton')()}</mj-text>
-                      <mj-button href="${verificationUrl.href}"
-                        >${translate(locale, 'email', 'verifyEmailAddressButton')()}</mj-button
-                      >
-                    </mj-column>
-                  </mj-section>
-                </mj-body>
-              </mjml>
-            `),
-          }) satisfies Email,
-      ),
+      createContactEmailAddressVerificationEmail({ emailAddress, user, verificationUrl }),
     ),
     RTE.chainW(sendEmail),
   )
@@ -83,33 +59,44 @@ export const sendContactEmailAddressVerificationEmailForReview = (
       toUrl(writeReviewVerifyEmailAddressMatch.formatter, { id: preprint, verify: emailAddress.verificationToken }),
     ),
     RTE.chainReaderKW(verificationUrl =>
-      R.asks(
-        ({ locale }: { locale: SupportedLocale }) =>
-          ({
-            from: { address: EmailAddress('help@prereview.org'), name: 'PREreview' },
-            to: { address: emailAddress.value, name: user.name },
-            subject: translate(locale, 'email', 'verifyEmailAddressTitle')(),
-            text: `${translate(locale, 'email', 'hiName')({ name: user.name })}\n\n${translate(locale, 'email', 'verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`,
-            html: mjmlToHtml(html`
-              <mjml lang="${locale}" dir="${rtlDetect.getLangDir(locale)}">
-                <mj-head>${mjmlStyle}</mj-head>
-                <mj-body>
-                  <mj-section>
-                    <mj-column>
-                      <mj-text>${translate(locale, 'email', 'hiName')({ name: user.name })}</mj-text>
-                      <mj-text>${translate(locale, 'email', 'verifyEmailAddressWithButton')()}</mj-text>
-                      <mj-button href="${verificationUrl.href}"
-                        >${translate(locale, 'email', 'verifyEmailAddressButton')()}</mj-button
-                      >
-                    </mj-column>
-                  </mj-section>
-                </mj-body>
-              </mjml>
-            `),
-          }) satisfies Email,
-      ),
+      createContactEmailAddressVerificationEmail({ emailAddress, user, verificationUrl }),
     ),
     RTE.chainW(sendEmail),
+  )
+
+const createContactEmailAddressVerificationEmail = ({
+  verificationUrl,
+  user,
+  emailAddress,
+}: {
+  verificationUrl: URL
+  user: User
+  emailAddress: UnverifiedContactEmailAddress
+}) =>
+  R.asks(
+    ({ locale }: { locale: SupportedLocale }) =>
+      ({
+        from: { address: EmailAddress('help@prereview.org'), name: 'PREreview' },
+        to: { address: emailAddress.value, name: user.name },
+        subject: translate(locale, 'email', 'verifyEmailAddressTitle')(),
+        text: `${translate(locale, 'email', 'hiName')({ name: user.name })}\n\n${translate(locale, 'email', 'verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`,
+        html: mjmlToHtml(html`
+          <mjml lang="${locale}" dir="${rtlDetect.getLangDir(locale)}">
+            <mj-head>${mjmlStyle}</mj-head>
+            <mj-body>
+              <mj-section>
+                <mj-column>
+                  <mj-text>${translate(locale, 'email', 'hiName')({ name: user.name })}</mj-text>
+                  <mj-text>${translate(locale, 'email', 'verifyEmailAddressWithButton')()}</mj-text>
+                  <mj-button href="${verificationUrl.href}"
+                    >${translate(locale, 'email', 'verifyEmailAddressButton')()}</mj-button
+                  >
+                </mj-column>
+              </mj-section>
+            </mj-body>
+          </mjml>
+        `),
+      }) satisfies Email,
   )
 
 export const createContactEmailAddressVerificationEmailForInvitedAuthor = ({
