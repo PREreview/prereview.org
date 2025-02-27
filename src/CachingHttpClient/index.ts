@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientError, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
-import { DateTime, Effect, Function, Layer, Option, pipe, type Duration, type Scope } from 'effect'
+import { DateTime, Effect, Function, Layer, pipe, type Duration, type Scope } from 'effect'
 import { Status } from 'hyper-ts'
 import { loggingHttpClient } from '../LoggingHttpClient.js'
 import * as HttpCache from './HttpCache.js'
@@ -26,7 +26,11 @@ export const CachingHttpClient = (
           return yield* httpClient.execute(req)
         }
 
-        const response = yield* pipe(Effect.option(cache.get(req)), Effect.andThen(Option.getOrUndefined))
+        const response = yield* pipe(
+          cache.get(req),
+          Effect.timeout('200 millis'),
+          Effect.orElseSucceed(Function.constUndefined),
+        )
 
         const logAnnotations = {
           url: req.url,
