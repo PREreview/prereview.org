@@ -1,20 +1,7 @@
 import { HttpClient, HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { beforeEach, describe, expect } from '@jest/globals'
-import {
-  Cause,
-  Duration,
-  Effect,
-  Either,
-  Fiber,
-  flow,
-  Logger,
-  LogLevel,
-  Option,
-  pipe,
-  TestClock,
-  TestContext,
-} from 'effect'
+import { Duration, Effect, Either, Fiber, flow, Logger, LogLevel, Option, pipe, TestClock, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as _ from '../../src/CachingHttpClient/index.js'
 import * as fc from '../fc.js'
@@ -297,24 +284,26 @@ describe('there is a cache entry', () => {
 })
 
 describe('getting from the cache is too slow', () => {
-  test.prop([fc.url(), fc.statusCode(), fc.durationInput()])('makes the real request', (url, status, timeToStale) =>
-    Effect.gen(function* () {
-      const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response(null, { status }))
-      const client = yield* pipe(
-        _.CachingHttpClient(timeToStale),
-        Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
-        Effect.provideService(_.HttpCache, {
-          get: () => pipe(Effect.fail(new Cause.NoSuchElementException()), Effect.delay('2 seconds')),
-          set: () => Effect.void,
-          delete: shouldNotBeCalled,
-        }),
-      )
-      const fiber = yield* pipe(client.get(url), Effect.fork)
-      yield* TestClock.adjust('1 seconds')
-      const actualResponse = yield* Fiber.join(fiber)
+  test.prop([fc.url(), fc.statusCode(), fc.durationInput(), fc.durationInput()])(
+    'makes the real request',
+    (url, status, timeToStale, delay) =>
+      Effect.gen(function* () {
+        const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response(null, { status }))
+        const client = yield* pipe(
+          _.CachingHttpClient(timeToStale),
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
+          Effect.provideService(_.HttpCache, {
+            get: () => pipe(Effect.sync(shouldNotBeCalled), Effect.delay(Duration.sum(_.CacheTimeout, delay))),
+            set: () => Effect.void,
+            delete: shouldNotBeCalled,
+          }),
+        )
+        const fiber = yield* pipe(client.get(url), Effect.fork)
+        yield* TestClock.adjust(_.CacheTimeout)
+        const actualResponse = yield* Fiber.join(fiber)
 
-      expect(actualResponse).toStrictEqual(response)
-    }).pipe(effectTestBoilerplate, Effect.runPromise),
+        expect(actualResponse).toStrictEqual(response)
+      }).pipe(effectTestBoilerplate, Effect.runPromise),
   )
 })
 

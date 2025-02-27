@@ -8,6 +8,8 @@ export * from './HttpCache.js'
 export { layerInMemory } from './InMemory.js'
 export { layerPersistedToRedis } from './PersistedToRedis.js'
 
+export const CacheTimeout = '200 millis'
+
 export const CachingHttpClient = (
   timeToStale: Duration.DurationInput,
 ): Effect.Effect<HttpClient.HttpClient, never, HttpCache.HttpCache | HttpClient.HttpClient> =>
@@ -28,7 +30,7 @@ export const CachingHttpClient = (
 
         const response = yield* pipe(
           cache.get(req),
-          Effect.timeout('200 millis'),
+          Effect.timeout(CacheTimeout),
           Effect.orElseSucceed(Function.constUndefined),
         )
 
