@@ -21,6 +21,11 @@ export const CachingHttpClient = (
       Effect.gen(function* () {
         const timestamp = yield* DateTime.now
         const req = yield* request
+
+        if (req.method !== 'GET') {
+          return yield* httpClient.execute(req)
+        }
+
         const response = yield* pipe(Effect.option(cache.get(req)), Effect.andThen(Option.getOrUndefined))
 
         const logAnnotations = {
