@@ -98,7 +98,7 @@ describe('writeToRedis', () => {
     }) as unknown as typeof Redis.HttpCacheRedis.Service
 
   describe('the value can be written', () => {
-    it.failing.prop([fc.url(), fc.dateTimeUtc(), fc.string()])('succeeds', (url, staleAt, body) =>
+    it.prop([fc.url(), fc.dateTimeUtc(), fc.string()])('succeeds', (url, staleAt, body) =>
       Effect.gen(function* () {
         const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response(body))
         const redis = stubbedRedis()

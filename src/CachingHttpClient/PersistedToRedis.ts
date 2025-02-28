@@ -64,6 +64,7 @@ export const writeToRedis =
       Effect.andThen(value => {
         return redis.set(keyForRequest(response.request), value)
       }),
+      Effect.asVoid,
       Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
     )
 
