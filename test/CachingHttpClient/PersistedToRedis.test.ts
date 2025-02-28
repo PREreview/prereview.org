@@ -2,11 +2,7 @@ import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform
 import { it } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Cause, DateTime, Effect, Either, Schema, TestContext } from 'effect'
-import {
-  CacheValueFromStringSchema,
-  InternalHttpCacheFailure,
-  keyForRequest,
-} from '../../src/CachingHttpClient/HttpCache.js'
+import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.js'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.js'
 import type * as Redis from '../../src/Redis.js'
 import * as fc from '../fc.js'
@@ -108,7 +104,7 @@ describe('writeToRedis', () => {
         expect(result).toStrictEqual(Either.right(undefined))
         // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(redis.set).toHaveBeenCalledWith(
-          keyForRequest(response.request),
+          _.keyForRequest(response.request),
           expect.stringContaining(JSON.stringify(body)),
         )
       }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),

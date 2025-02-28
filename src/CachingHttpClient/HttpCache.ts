@@ -1,12 +1,10 @@
-import { Headers, type HttpClientRequest, type HttpClientResponse, UrlParams } from '@effect/platform'
+import { Headers, type HttpClientRequest, type HttpClientResponse } from '@effect/platform'
 import { type Cause, Context, Data, type DateTime, type Effect, Schema } from 'effect'
 
 export interface CacheValue {
   staleAt: DateTime.Utc
   response: StoredResponse
 }
-
-export type CacheKey = string
 
 type StoredResponse = typeof StoredResponseSchema.Encoded
 
@@ -41,10 +39,3 @@ export class HttpCache extends Context.Tag('HttpCache')<
     delete: (url: URL) => Effect.Effect<void, InternalHttpCacheFailure>
   }
 >() {}
-
-export const keyForRequest = (request: HttpClientRequest.HttpClientRequest): CacheKey => {
-  const url = new URL(request.url)
-  url.search = UrlParams.toString(request.urlParams)
-
-  return url.href
-}

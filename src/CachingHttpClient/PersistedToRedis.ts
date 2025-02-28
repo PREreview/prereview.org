@@ -1,7 +1,7 @@
-import { Headers, HttpClientResponse } from '@effect/platform'
+import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
 import { Cause, Effect, Layer, Option, pipe, Schema } from 'effect'
 import * as Redis from '../Redis.js'
-import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure, keyForRequest } from './HttpCache.js'
+import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure } from './HttpCache.js'
 import { serializationErrorChecking } from './SerializationErrorChecking.js'
 
 export const layerPersistedToRedis = Layer.effect(
@@ -76,3 +76,12 @@ export const deleteFromRedis =
       Effect.asVoid,
       Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
     )
+
+export type CacheKey = string
+
+export const keyForRequest = (request: HttpClientRequest.HttpClientRequest): CacheKey => {
+  const url = new URL(request.url)
+  url.search = UrlParams.toString(request.urlParams)
+
+  return url.href
+}

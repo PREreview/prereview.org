@@ -1,13 +1,15 @@
-import { Headers, HttpClientResponse } from '@effect/platform'
+import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
 import { Effect, Layer, Option, pipe, Schema } from 'effect'
-import {
-  type CacheKey,
-  type CacheValue,
-  HttpCache,
-  InternalHttpCacheFailure,
-  keyForRequest,
-  StoredResponseSchema,
-} from './HttpCache.js'
+import { type CacheValue, HttpCache, InternalHttpCacheFailure, StoredResponseSchema } from './HttpCache.js'
+
+export type CacheKey = string
+
+export const keyForRequest = (request: HttpClientRequest.HttpClientRequest): CacheKey => {
+  const url = new URL(request.url)
+  url.search = UrlParams.toString(request.urlParams)
+
+  return url.href
+}
 
 export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
   Layer.sync(HttpCache, () => {
