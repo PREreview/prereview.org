@@ -31,6 +31,12 @@ export const CachingHttpClient = (
         const response = yield* pipe(
           cache.get(req),
           Effect.timeout(CacheTimeout),
+          Effect.tapErrorTag('InternalHttpCacheFailure', error =>
+            Effect.logError('Failed to read from the HttpCache').pipe(Effect.annotateLogs({ error })),
+          ),
+          Effect.tapErrorTag('TimeoutException', error =>
+            Effect.logWarning('Reading from HttpCache timed out').pipe(Effect.annotateLogs({ error })),
+          ),
           Effect.orElseSucceed(Function.constUndefined),
         )
 
@@ -78,7 +84,13 @@ export const CachingHttpClient = (
           Effect.tap(
             HttpClientResponse.matchStatus({
               [Status.OK]: response =>
-                pipe(cache.set(response, DateTime.addDuration(timestamp, timeToStale)), Effect.ignore),
+                pipe(
+                  cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
+                  Effect.tapErrorTag('InternalHttpCacheFailure', error =>
+                    Effect.logError('Unable to cache the response').pipe(Effect.annotateLogs({ error })),
+                  ),
+                  Effect.ignore,
+                ),
               orElse: Function.constVoid,
             }),
           ),
