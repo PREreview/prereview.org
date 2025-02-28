@@ -63,13 +63,10 @@ export const serializationErrorChecking = (
       yield* Effect.gen(function* () {
         const cachedValue = yield* pipe(
           httpCache.get(response.request),
-          Effect.orElseSucceed(() => undefined),
+          Effect.tapErrorTag('NoSuchElementException', () =>
+            pipe('Cache entry not found after setting it', Effect.logError, Effect.annotateLogs(logAnnotations)),
+          ),
         )
-
-        if (cachedValue === undefined) {
-          yield* pipe('Cache entry not found after setting it', Effect.logError, Effect.annotateLogs(logAnnotations))
-          return
-        }
 
         if (yield* isDifferent(response, cachedValue.response)) {
           yield* pipe(
@@ -80,7 +77,7 @@ export const serializationErrorChecking = (
           yield* httpCache.delete(toUrl(response.request))
           return
         }
-      })
+      }).pipe(Effect.ignore)
     }),
 })
 
