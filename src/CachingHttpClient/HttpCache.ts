@@ -23,7 +23,7 @@ const CacheValueSchema = Schema.Struct({
 
 export const CacheValueFromStringSchema = Schema.parseJson(CacheValueSchema)
 
-export class HttpCacheUnavailable extends Data.TaggedError('HttpCacheUnavailable')<{ cause: unknown }> {}
+export class InternalHttpCacheFailure extends Data.TaggedError('InternalHttpCacheFailure')<{ cause: unknown }> {}
 
 export class HttpCache extends Context.Tag('HttpCache')<
   HttpCache,
@@ -32,7 +32,7 @@ export class HttpCache extends Context.Tag('HttpCache')<
       request: HttpClientRequest.HttpClientRequest,
     ) => Effect.Effect<
       { staleAt: DateTime.Utc; response: HttpClientResponse.HttpClientResponse },
-      Cause.NoSuchElementException | HttpCacheUnavailable
+      Cause.NoSuchElementException | InternalHttpCacheFailure
     >
     set: (response: HttpClientResponse.HttpClientResponse, staleAt: DateTime.Utc) => Effect.Effect<void, Error>
     delete: (url: URL) => Effect.Effect<void>

@@ -1,7 +1,7 @@
 import { Headers, HttpClientResponse } from '@effect/platform'
 import { Cause, Effect, Layer, Option, pipe, Schema } from 'effect'
 import * as Redis from '../Redis.js'
-import { CacheValueFromStringSchema, HttpCache, HttpCacheUnavailable, keyForRequest } from './HttpCache.js'
+import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure, keyForRequest } from './HttpCache.js'
 import { serializationErrorChecking } from './SerializationErrorChecking.js'
 
 export const layerPersistedToRedis = Layer.effect(
@@ -59,5 +59,5 @@ export const getFromRedis =
           Effect.andThen(new Cause.NoSuchElementException()),
         ),
       ),
-      Effect.catchTag('UnknownException', cause => new HttpCacheUnavailable({ cause })),
+      Effect.catchTag('UnknownException', cause => new InternalHttpCacheFailure({ cause })),
     )
