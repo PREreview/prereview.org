@@ -28,6 +28,7 @@ export const layerPersistedToRedis = Layer.effect(
             Effect.andThen(value => {
               return redis.set(keyForRequest(response.request), value)
             }),
+            Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
           ),
         delete: () => Effect.void,
       },

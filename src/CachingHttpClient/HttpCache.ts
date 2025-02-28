@@ -34,7 +34,10 @@ export class HttpCache extends Context.Tag('HttpCache')<
       { staleAt: DateTime.Utc; response: HttpClientResponse.HttpClientResponse },
       Cause.NoSuchElementException | InternalHttpCacheFailure
     >
-    set: (response: HttpClientResponse.HttpClientResponse, staleAt: DateTime.Utc) => Effect.Effect<void, Error>
+    set: (
+      response: HttpClientResponse.HttpClientResponse,
+      staleAt: DateTime.Utc,
+    ) => Effect.Effect<void, InternalHttpCacheFailure>
     delete: (url: URL) => Effect.Effect<void>
   }
 >() {}

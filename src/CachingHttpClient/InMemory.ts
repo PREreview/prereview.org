@@ -1,6 +1,13 @@
 import { Headers, HttpClientResponse } from '@effect/platform'
 import { Effect, Layer, Option, pipe, Schema } from 'effect'
-import { type CacheKey, type CacheValue, HttpCache, keyForRequest, StoredResponseSchema } from './HttpCache.js'
+import {
+  type CacheKey,
+  type CacheValue,
+  HttpCache,
+  InternalHttpCacheFailure,
+  keyForRequest,
+  StoredResponseSchema,
+} from './HttpCache.js'
 
 export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
   Layer.sync(HttpCache, () => {
@@ -33,6 +40,7 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
           Effect.andThen(storedResponse => {
             cache.set(keyForRequest(response.request), { staleAt, response: storedResponse })
           }),
+          Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
         ),
       delete: url => Effect.succeed(cache.delete(url.href)),
     }

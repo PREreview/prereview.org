@@ -4,6 +4,7 @@ import { beforeEach, describe, expect } from '@jest/globals'
 import { Duration, Effect, Either, Fiber, flow, Logger, LogLevel, Option, pipe, TestClock, TestContext } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as _ from '../../src/CachingHttpClient/index.js'
+import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -55,7 +56,7 @@ describe('there is no cache entry', () => {
           Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse)),
           Effect.provideService(_.HttpCache, {
             get: () => Option.none(),
-            set: () => Effect.fail(error),
+            set: () => new InternalHttpCacheFailure({ cause: error }),
             delete: () => Effect.void,
           }),
         )
