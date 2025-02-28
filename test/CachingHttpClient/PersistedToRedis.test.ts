@@ -186,6 +186,18 @@ describe('deleteFromRedis', () => {
   })
 
   describe('redis is unreachable', () => {
-    it.todo('returns an error')
+    it.prop([fc.url(), fc.anything()])('returns an error', (url, error) =>
+      Effect.gen(function* () {
+        const redis = {
+          del: () => Promise.reject(error),
+        } as unknown as typeof Redis.HttpCacheRedis.Service
+
+        const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
+
+        expect(result).toStrictEqual(
+          Either.left(new InternalHttpCacheFailure({ cause: new Cause.UnknownException(error) })),
+        )
+      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
   })
 })
