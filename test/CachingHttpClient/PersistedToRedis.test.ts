@@ -135,6 +135,19 @@ describe('writeToRedis', () => {
   })
 
   describe('redis is unreachable', () => {
-    it.todo('returns an error')
+    it.prop([fc.url(), fc.dateTimeUtc(), fc.string(), fc.anything()])('returns an error', (url, staleAt, body, error) =>
+      Effect.gen(function* () {
+        const redis = {
+          set: () => Promise.reject(error),
+        } as unknown as typeof Redis.HttpCacheRedis.Service
+        const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response(body))
+
+        const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
+
+        expect(result).toStrictEqual(
+          Either.left(new InternalHttpCacheFailure({ cause: new Cause.UnknownException(error) })),
+        )
+      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
   })
 })
