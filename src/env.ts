@@ -1,8 +1,7 @@
+import { flow, pipe, String } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IOE from 'fp-ts/lib/IOEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
-import { split } from 'fp-ts/lib/string.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import { v4 } from 'uuid-ts'
@@ -46,7 +45,7 @@ const UrlD = pipe(
 )
 
 const CommaSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
-  pipe(D.string, D.map(split(',')), D.compose(D.array(decoder)))
+  pipe(D.string, D.map(String.split(',')), D.compose(D.array(decoder)))
 
 const UndefinedD: D.Decoder<unknown, undefined> = {
   decode: val => (val === undefined ? D.success(undefined) : D.failure(val, 'undefined')),
@@ -56,7 +55,6 @@ const EnvD = pipe(
   D.struct({
     ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
     BLOCKED_USERS: withDefault(CommaSeparatedListD(OrcidD), []),
-    CAN_SEE_ALTERNATIVE_COMPETING_INTERESTS_FORM: withDefault(BooleanD, false),
     COAR_NOTIFY_TOKEN: D.string,
     COAR_NOTIFY_URL: UrlD,
     CLOUDINARY_API_KEY: D.string,
@@ -65,6 +63,7 @@ const EnvD = pipe(
     LEGACY_PREREVIEW_API_KEY: D.string,
     LEGACY_PREREVIEW_URL: UrlD,
     LEGACY_PREREVIEW_UPDATE: withDefault(BooleanD, false),
+    MUST_DECLARE_USE_OF_AI: withDefault(BooleanD, false),
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
     ORCID_URL: withDefault(UrlD, new URL('https://orcid.org/')),

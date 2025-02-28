@@ -1,33 +1,64 @@
-import type { FetchEnv } from 'fetch-fp-ts'
-import { flow, identity } from 'fp-ts/lib/function.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { match, P, P as p } from 'ts-pattern'
-import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref.js'
-import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite.js'
-import { type SleepEnv, useStaleCache } from './fetch.js'
+import { Effect, flow, Match, pipe } from 'effect'
+import { DeprecatedSleepEnv } from './Context.js'
+import { getPreprintFromCrossref, type IndeterminateCrossrefPreprintId, isCrossrefPreprintDoi } from './crossref.js'
+import { getPreprintFromDatacite, type IndeterminateDatacitePreprintId, isDatacitePreprintDoi } from './datacite.js'
+import { makeFetch } from './fetch.js'
+import * as FptsToEffect from './FptsToEffect.js'
+import {
+  getPreprintFromJapanLinkCenter,
+  isJapanLinkCenterPreprintDoi,
+  type JapanLinkCenterPreprintId,
+} from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './philsci.js'
-import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id.js'
+import * as Preprint from './preprint.js'
+import type { IndeterminatePreprintId } from './types/preprint-id.js'
 
-export const getPreprintFromSource = (id: IndeterminatePreprintId) =>
-  match(id)
-    .with({ type: 'philsci' }, getPreprintFromPhilsci)
-    .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
-    .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
-    .exhaustive()
+const getPreprintFromSource = pipe(
+  Match.type<IndeterminatePreprintId>(),
+  Match.when({ type: 'philsci' }, id =>
+    Effect.gen(function* () {
+      const fetch = yield* makeFetch
+      const sleep = yield* DeprecatedSleepEnv
+
+      return yield* FptsToEffect.readerTaskEither(getPreprintFromPhilsci(id), { fetch, ...sleep })
+    }),
+  ),
+  Match.when(
+    (id): id is IndeterminateCrossrefPreprintId => isCrossrefPreprintDoi(id.value),
+    id =>
+      Effect.gen(function* () {
+        const fetch = yield* makeFetch
+        const sleep = yield* DeprecatedSleepEnv
+
+        return yield* FptsToEffect.readerTaskEither(getPreprintFromCrossref(id), { fetch, ...sleep })
+      }),
+  ),
+  Match.when(
+    (id): id is IndeterminateDatacitePreprintId => isDatacitePreprintDoi(id.value),
+    id =>
+      Effect.gen(function* () {
+        const fetch = yield* makeFetch
+        const sleep = yield* DeprecatedSleepEnv
+
+        return yield* FptsToEffect.readerTaskEither(getPreprintFromDatacite(id), { fetch, ...sleep })
+      }),
+  ),
+  Match.when(
+    (id): id is JapanLinkCenterPreprintId => isJapanLinkCenterPreprintDoi(id.value),
+    getPreprintFromJapanLinkCenter,
+  ),
+  Match.exhaustive,
+)
 
 export const getPreprint = flow(
   getPreprintFromSource,
-  RTE.mapLeft(error =>
-    match(error)
-      .with('not-a-preprint', () => 'not-found' as const)
-      .otherwise(identity),
-  ),
+  Effect.catchTag('NotAPreprint', error => new Preprint.PreprintIsNotFound({ cause: error })),
 )
 
 export const getPreprintTitle = flow(
   getPreprint,
-  RTE.local(useStaleCache()),
-  RTE.map(preprint => ({
+
+  Effect.map(preprint => ({
     id: preprint.id,
     language: preprint.title.language,
     title: preprint.title.text,
@@ -36,31 +67,30 @@ export const getPreprintTitle = flow(
 
 export const resolvePreprintId = flow(
   getPreprintFromSource,
-  RTE.local(useStaleCache()),
-  RTE.map(preprint => preprint.id),
+  Effect.map(preprint => preprint.id),
 )
 
-export const getPreprintId = (
-  id: IndeterminatePreprintId,
-): RTE.ReaderTaskEither<FetchEnv & SleepEnv, 'unavailable', PreprintId> =>
-  match(id)
-    .with(
-      { type: P.union('biorxiv-medrxiv', 'zenodo-africarxiv') },
-      flow(
-        resolvePreprintId,
-        RTE.mapLeft(() => 'unavailable' as const),
-      ),
-    )
-    .otherwise(RTE.right)
+export const getPreprintId = pipe(
+  Match.type<IndeterminatePreprintId>(),
+  Match.when(
+    { type: 'biorxiv-medrxiv' },
+    flow(
+      resolvePreprintId,
+      Effect.mapError(error => new Preprint.PreprintIsUnavailable({ cause: error })),
+    ),
+  ),
+  Match.when(
+    { type: 'zenodo-africarxiv' },
+    flow(
+      resolvePreprintId,
+      Effect.mapError(error => new Preprint.PreprintIsUnavailable({ cause: error })),
+    ),
+  ),
+  Match.orElse(id => Effect.succeed(id)),
+)
 
 export const doesPreprintExist = flow(
   resolvePreprintId,
-  RTE.map(() => true),
-  RTE.orElseW(error =>
-    match(error)
-      .with('not-found', () => RTE.right(false))
-      .with('not-a-preprint', RTE.left)
-      .with('unavailable', RTE.left)
-      .exhaustive(),
-  ),
+  Effect.andThen(true),
+  Effect.catchTag('PreprintIsNotFound', () => Effect.succeed(false)),
 )

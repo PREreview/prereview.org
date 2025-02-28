@@ -1,4 +1,4 @@
-FROM node:22.13.1-bookworm-slim AS node
+FROM node:22.14.0-bookworm-slim AS node
 ENV NODE_OPTIONS="--unhandled-rejections=strict --enable-source-maps"
 WORKDIR /app
 
@@ -71,7 +71,7 @@ RUN npm run build:assets && npm run build:app
 #
 # Stage: Integration test environment
 #
-FROM mcr.microsoft.com/playwright:v1.47.2-jammy AS test-integration
+FROM mcr.microsoft.com/playwright:v1.50.1-jammy AS test-integration
 WORKDIR /app
 
 COPY --from=npm-dev /app/ .

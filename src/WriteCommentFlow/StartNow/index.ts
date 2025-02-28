@@ -1,7 +1,6 @@
 import { Effect, Match, pipe } from 'effect'
 import * as Comments from '../../Comments/index.js'
 import { Locale } from '../../Context.js'
-import { EnsureCanWriteComments } from '../../feature-flags.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
 import { GetPrereview } from '../../Prereview.js'
@@ -28,7 +27,6 @@ export const StartNow = ({
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
-    yield* EnsureCanWriteComments
 
     const getPrereview = yield* GetPrereview
 
@@ -76,7 +74,6 @@ export const StartNow = ({
     )
   }).pipe(
     Effect.catchTags({
-      NotAllowedToWriteComments: () => PageNotFound,
       PrereviewIsNotFound: () => PageNotFound,
       PrereviewIsUnavailable: () => HavingProblemsPage,
       PrereviewWasRemoved: () => PageNotFound,

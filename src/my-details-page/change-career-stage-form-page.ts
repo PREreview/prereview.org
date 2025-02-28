@@ -1,5 +1,5 @@
+import type { Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import type * as O from 'fp-ts/lib/Option.js'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.js'
@@ -11,7 +11,7 @@ export const createFormPage = ({
   careerStage,
   error = false,
 }: {
-  careerStage: O.Option<CareerStage>
+  careerStage: Option.Option<CareerStage>
   error?: boolean
 }) =>
   PageResponse({

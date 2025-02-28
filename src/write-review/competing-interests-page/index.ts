@@ -1,10 +1,9 @@
+import { Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
@@ -16,24 +15,18 @@ import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
 import { NonEmptyStringC } from '../../types/string.js'
 import type { User } from '../../user.js'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from '../form.js'
-import {
-  type CompetingInterestsForm,
-  alternativeCompetingInterestsForm,
-  competingInterestsForm,
-} from './competing-interests-form.js'
+import { type CompetingInterestsForm, competingInterestsForm } from './competing-interests-form.js'
 
 export const writeReviewCompetingInterests = ({
   body,
   id,
   method,
   user,
-  alternative = false,
 }: {
   body: unknown
   id: IndeterminatePreprintId
   method: string
   user?: User
-  alternative?: boolean
 }): RT.ReaderTask<GetPreprintTitleEnv & FormStoreEnv, PageResponse | StreamlinePageResponse | RedirectResponse> =>
   pipe(
     getPreprintTitle(id),
@@ -41,8 +34,8 @@ export const writeReviewCompetingInterests = ({
       error =>
         RT.of(
           match(error)
-            .with('not-found', () => pageNotFound)
-            .with('unavailable', () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),
       preprint =>
@@ -54,7 +47,6 @@ export const writeReviewCompetingInterests = ({
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.let('body', () => body),
           RTE.let('method', () => method),
-          RTE.let('alternative', () => alternative),
           RTE.matchEW(
             error =>
               RT.of(
@@ -78,14 +70,12 @@ const showCompetingInterestsForm = ({
   form,
   preprint,
   locale,
-  alternative,
 }: {
   form: Form
   preprint: PreprintTitle
   locale: SupportedLocale
-  alternative: boolean
 }) =>
-  (alternative ? alternativeCompetingInterestsForm : competingInterestsForm)(
+  competingInterestsForm(
     preprint,
     {
       competingInterests: E.right(form.competingInterests),
@@ -96,9 +86,9 @@ const showCompetingInterestsForm = ({
   )
 
 const showCompetingInterestsErrorForm =
-  (preprint: PreprintTitle, moreAuthors: Form['moreAuthors'], locale: SupportedLocale, alternative: boolean) =>
+  (preprint: PreprintTitle, moreAuthors: Form['moreAuthors'], locale: SupportedLocale) =>
   (form: CompetingInterestsForm) =>
-    (alternative ? alternativeCompetingInterestsForm : competingInterestsForm)(preprint, form, locale, moreAuthors)
+    competingInterestsForm(preprint, form, locale, moreAuthors)
 
 const handleCompetingInterestsForm = ({
   body,
@@ -106,14 +96,12 @@ const handleCompetingInterestsForm = ({
   preprint,
   user,
   locale,
-  alternative: alt,
 }: {
   body: unknown
   form: Form
   preprint: PreprintTitle
   user: User
   locale: SupportedLocale
-  alternative: boolean
 }) =>
   pipe(
     RTE.Do,
@@ -137,7 +125,7 @@ const handleCompetingInterestsForm = ({
       error =>
         match(error)
           .with('form-unavailable', () => havingProblemsPage)
-          .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, form.moreAuthors, locale, alt))
+          .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, form.moreAuthors, locale))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
     ),
@@ -145,10 +133,10 @@ const handleCompetingInterestsForm = ({
 
 const CompetingInterestsFieldD = pipe(
   D.struct({ competingInterests: D.literal('yes', 'no') }),
-  D.map(get('competingInterests')),
+  D.map(Struct.get('competingInterests')),
 )
 
 const CompetingInterestsDetailsFieldD = pipe(
   D.struct({ competingInterestsDetails: NonEmptyStringC }),
-  D.map(get('competingInterestsDetails')),
+  D.map(Struct.get('competingInterestsDetails')),
 )

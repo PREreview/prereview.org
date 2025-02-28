@@ -3,7 +3,7 @@ import path from 'path'
 
 export default defineConfig({
   expect: {
-    toHaveScreenshot: { maxDiffPixels: 30 },
+    toHaveScreenshot: { maxDiffPixelRatio: 0.0005 },
   },
   fullyParallel: true,
   outputDir: 'integration-results',

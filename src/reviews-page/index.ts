@@ -1,6 +1,6 @@
+import { pipe } from 'effect'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import type { LanguageCode } from 'iso-639-1'
 import { match } from 'ts-pattern'
 import { pageNotFound } from '../http-error.js'
@@ -15,14 +15,12 @@ import { createPage, emptyPage } from './reviews-page.js'
 export type { GetRecentPrereviewsEnv, RecentPrereviews } from './recent-prereviews.js'
 
 export const reviewsPage = ({
-  canUseSearchQueries,
   field,
   language,
   locale,
   page,
   query,
 }: {
-  canUseSearchQueries: boolean
   field?: FieldId
   language?: LanguageCode
   locale: SupportedLocale
@@ -30,21 +28,13 @@ export const reviewsPage = ({
   query?: NonEmptyString
 }): RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> =>
   pipe(
-    getRecentPrereviews({ field, language, page, query: canUseSearchQueries ? query : undefined }),
+    getRecentPrereviews({ field, language, page, query }),
     RTE.matchW(
       error =>
         match(error)
-          .with('not-found', () =>
-            page === 1
-              ? emptyPage(
-                  { field, language, query: canUseSearchQueries ? query : undefined },
-                  canUseSearchQueries,
-                  locale,
-                )
-              : pageNotFound,
-          )
+          .with('not-found', () => (page === 1 ? emptyPage({ field, language, query }, locale) : pageNotFound))
           .with('unavailable', () => failureMessage)
           .exhaustive(),
-      prereviews => createPage(prereviews, canUseSearchQueries, locale),
+      prereviews => createPage(prereviews, locale),
     ),
   )

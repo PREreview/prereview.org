@@ -1,12 +1,9 @@
 import { toTemporalInstant } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
+import { Array, Function, Option, Predicate, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
-import * as A from 'fp-ts/lib/Array.js'
 import * as E from 'fp-ts/lib/Either.js'
-import * as NEA from 'fp-ts/lib/NonEmptyArray.js'
-import * as O from 'fp-ts/lib/Option.js'
-import { and } from 'fp-ts/lib/Predicate.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -14,15 +11,12 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import { constVoid, flow, identity, pipe } from 'fp-ts/lib/function.js'
-import { isString, toUpperCase } from 'fp-ts/lib/string.js'
 import httpErrors, { type HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import {
@@ -47,8 +41,10 @@ import {
 } from 'zenodo-ts'
 import { getClubByName, getClubName } from './club-details.js'
 import { type SleepEnv, reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import * as FptsToEffect from './FptsToEffect.js'
 import { type Html, plainText, sanitizeHtml } from './html.js'
 import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.js'
+import type * as Preprint from './preprint.js'
 import {
   type GetPreprintEnv,
   type GetPreprintIdEnv,
@@ -199,16 +195,16 @@ export const getRecentPrereviewsFromZenodo = ({
           flow(
             error =>
               match(error)
-                .with(P.instanceOf(Error), error => O.some(error.message))
-                .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
-                .with({ _tag: P.string }, error => O.some(D.draw(error)))
-                .with('unavailable', O.some)
-                .with('not-found', () => O.none)
+                .with(P.instanceOf(Error), error => Option.some(error.message))
+                .with({ status: P.number }, response => Option.some(`${response.status} ${response.statusText}`))
+                .with({ _tag: P.string }, error => Option.some(D.draw(error)))
+                .with('unavailable', Option.some)
+                .with('not-found', Option.none)
                 .exhaustive(),
-            O.match(
-              () => RIO.of(undefined),
-              flow(error => ({ error }), L.errorP('Unable to get recent records from Zenodo')),
-            ),
+            Option.match({
+              onNone: () => RIO.of(undefined),
+              onSome: flow(error => ({ error }), L.errorP('Unable to get recent records from Zenodo')),
+            }),
           ),
         ),
       ),
@@ -240,25 +236,30 @@ export const getPrereviewFromZenodo = (id: number) =>
     RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv & WasPrereviewRemovedEnv>()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview), and(isOpen)), () => 'not-found' as const),
+    RTE.filterOrElseW(
+      pipe(isInCommunity, Predicate.and(isPeerReview), Predicate.and(isOpen)),
+      () => 'not-found' as const,
+    ),
     RTE.chainW(recordToPrereview),
     RTE.orElseFirstW(
       RTE.fromReaderIOK(
         flow(
           error =>
             match(error)
-              .with(P.intersection(P.instanceOf(Error), { status: P.number }), () => O.none)
-              .with(P.instanceOf(Error), error => O.some(error.message))
-              .with({ status: P.union(Status.NotFound, Status.Gone) }, () => O.none)
-              .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
-              .with({ _tag: P.string }, error => O.some(D.draw(error)))
-              .with('unknown-license', 'text-unavailable', 'unavailable', O.some)
-              .with('no reviewed preprint', 'removed', 'not-found', () => O.none)
+              .with({ _tag: 'PreprintIsUnavailable' }, () => Option.some('unavailable' as const))
+              .with({ _tag: 'PreprintIsNotFound' }, Option.none)
+              .with(P.intersection(P.instanceOf(Error), { status: P.number }), Option.none)
+              .with(P.instanceOf(Error), error => Option.some(error.message))
+              .with({ status: P.union(Status.NotFound, Status.Gone) }, Option.none)
+              .with({ status: P.number }, response => Option.some(`${response.status} ${response.statusText}`))
+              .with({ _tag: P.string }, error => Option.some(D.draw(error)))
+              .with('unknown-license', 'text-unavailable', Option.some)
+              .with('no reviewed preprint', 'removed', 'not-found', Option.none)
               .exhaustive(),
-          O.match(
-            () => RIO.of(undefined),
-            flow(error => ({ error }), L.errorP('Unable to get record from Zenodo')),
-          ),
+          Option.match({
+            onNone: () => RIO.of(undefined),
+            onSome: flow(error => ({ error }), L.errorP('Unable to get record from Zenodo')),
+          }),
         ),
       ),
     ),
@@ -268,6 +269,7 @@ export const getPrereviewFromZenodo = (id: number) =>
         .with(
           'no reviewed preprint',
           'not-found',
+          { _tag: 'PreprintIsNotFound' },
           { status: P.union(Status.NotFound, Status.Gone) },
           () => 'not-found' as const,
         )
@@ -467,9 +469,9 @@ export const addAuthorToRecordOnZenodo = (
           ...deposition.metadata,
           creators: pipe(getAuthors(deposition), ({ named, anonymous }) =>
             pipe(
-              NEA.fromReadonlyNonEmptyArray(named),
-              A.appendW(persona === 'public' ? { name: user.name, orcid: user.orcid } : { name: user.pseudonym }),
-              NEA.concatW(
+              named,
+              Array.append(persona === 'public' ? { name: user.name, orcid: user.orcid } : { name: user.pseudonym }),
+              Array.appendAll(
                 match(anonymous)
                   .with(P.number.gt(2), anonymous => [{ name: `${anonymous - 1} other authors` }])
                   .with(2, () => [{ name: '1 other author' }])
@@ -482,7 +484,7 @@ export const addAuthorToRecordOnZenodo = (
       ),
     ),
     RTE.chainW(publishDeposition),
-    RTE.bimap(() => 'unavailable', constVoid),
+    RTE.bimap(() => 'unavailable', Function.constVoid),
   )
 
 interface CommentToPublish {
@@ -554,7 +556,7 @@ export const publishDepositionOnZenodo = (
         ),
       ),
     ),
-    RTE.bimap(() => 'unavailable', constVoid),
+    RTE.bimap(() => 'unavailable', Function.constVoid),
   )
 
 export const createRecordOnZenodo: (
@@ -652,19 +654,19 @@ function createDepositMetadata(
             newPrereview.preprint.title
           }”`.toString(),
           creators: pipe(
-            NEA.of(
+            Array.of(
               newPrereview.persona === 'public'
                 ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
                 : { name: newPrereview.user.pseudonym },
             ),
-            NEA.concatW(
+            Array.appendAll(
               match(newPrereview.otherAuthors.length)
                 .with(P.number.gt(1), anonymous => [{ name: `${anonymous} other authors` }])
                 .with(1, () => [{ name: '1 other author' }])
                 .otherwise(() => []),
             ),
           ),
-          language: O.toUndefined(newPrereview.language),
+          language: Option.getOrUndefined(newPrereview.language),
           description: `<p><strong>This Zenodo record is a permanently preserved version of a ${
             newPrereview.structured ? 'Structured ' : ''
           }PREreview. You can view the complete PREreview at <a href="${url.href}">${url.href}</a>.</strong></p>
@@ -676,8 +678,8 @@ ${newPrereview.review.toString()}`,
               requested ? 'Requested PREreview' : undefined,
               newPrereview.structured ? 'Structured PREreview' : undefined,
             ],
-            A.filter(isString),
-            A.matchW(() => undefined, identity),
+            Array.filter(String.isString),
+            Array.match({ onEmpty: () => undefined, onNonEmpty: value => [...value] }),
           ),
           related_identifiers: [
             {
@@ -694,10 +696,10 @@ ${newPrereview.review.toString()}`,
           ],
           subjects: pipe(
             [...subjects],
-            A.match(
-              () => undefined,
-              NEA.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })),
-            ),
+            Array.match({
+              onEmpty: () => undefined,
+              onNonEmpty: Array.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })),
+            }),
           ),
         }) satisfies DepositMetadata,
     ),
@@ -721,7 +723,12 @@ function recordToPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
-  HttpError<404> | 'no reviewed preprint' | 'unavailable' | 'not-found' | 'text-unavailable' | 'unknown-license',
+  | HttpError<404>
+  | 'no reviewed preprint'
+  | Preprint.PreprintIsUnavailable
+  | Preprint.PreprintIsNotFound
+  | 'text-unavailable'
+  | 'unknown-license',
   Prereview
 > {
   return pipe(
@@ -739,15 +746,20 @@ function recordToPrereview(
     ),
     RTE.chainW(({ license, preprintId, reviewTextUrl }) =>
       sequenceS(RTE.ApplyPar)({
-        addendum: RTE.right(pipe(O.fromNullable(record.metadata.notes), O.map(sanitizeHtml), O.toUndefined)),
-        authors: RTE.right<F.FetchEnv & GetPreprintEnv & L.LoggerEnv>(getAuthors(record) as never),
-        club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
+        addendum: RTE.right(
+          pipe(Option.fromNullable(record.metadata.notes), Option.map(sanitizeHtml), Option.getOrUndefined),
+        ),
+        authors: RTE.right<
+          F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
+          Preprint.PreprintIsUnavailable | Preprint.PreprintIsNotFound | 'text-unavailable'
+        >(getAuthors(record) as never),
+        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         doi: RTE.right(record.metadata.doi),
         language: RTE.right(
           pipe(
-            O.fromNullable(record.metadata.language),
-            O.filter(iso6393Validate),
-            O.match(() => undefined, iso6393To1),
+            Option.fromNullable(record.metadata.language),
+            Option.filter(iso6393Validate),
+            Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
           ),
         ),
         license: RTE.right(license),
@@ -797,9 +809,9 @@ function recordToPrereviewComment(
         doi: RTE.right(record.metadata.doi),
         language: RTE.right(
           pipe(
-            O.fromNullable(record.metadata.language),
-            O.filter(iso6393Validate),
-            O.match(() => undefined, iso6393To1),
+            Option.fromNullable(record.metadata.language),
+            Option.filter(iso6393Validate),
+            Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
           ),
         ),
         id: RTE.right(record.id),
@@ -821,13 +833,13 @@ function recordToPreprintPrereview(
     RTE.chainW(reviewTextUrl =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right(getAuthors(record)),
-        club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
+        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         id: RTE.right(record.id),
         language: RTE.right(
           pipe(
-            O.fromNullable(record.metadata.language),
-            O.filter(iso6393Validate),
-            O.match(() => undefined, iso6393To1),
+            Option.fromNullable(record.metadata.language),
+            Option.filter(iso6393Validate),
+            Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
           ),
         ),
         text: getReviewText(reviewTextUrl),
@@ -840,7 +852,7 @@ function recordToScietyPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   L.LoggerEnv & GetPreprintIdEnv,
-  'no reviewed preprint' | 'not-a-preprint' | 'not-found' | 'unavailable',
+  'no reviewed preprint' | Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
   ScietyPrereview & ReviewsDataPrereview
 > {
   return pipe(
@@ -852,12 +864,12 @@ function recordToScietyPrereview(
       doi: review.metadata.doi,
       authors: review.metadata.creators,
       language: pipe(
-        O.fromNullable(review.metadata.language),
-        O.filter(iso6393Validate),
-        O.match(() => undefined, iso6393To1),
+        Option.fromNullable(review.metadata.language),
+        Option.filter(iso6393Validate),
+        Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
       ),
       type: record.metadata.keywords?.includes('Structured PREreview') === true ? 'structured' : 'full',
-      club: pipe(getReviewClub(record), O.toUndefined),
+      club: pipe(getReviewClub(record), Option.getOrUndefined),
       live: record.metadata.keywords?.includes('Live Review') === true,
       requested: record.metadata.keywords?.includes('Requested PREreview') === true,
     })),
@@ -868,16 +880,16 @@ function recordToRecentPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   GetPreprintTitleEnv & L.LoggerEnv,
-  'no reviewed preprint' | 'unavailable' | 'not-found',
+  'no reviewed preprint' | Preprint.PreprintIsUnavailable | Preprint.PreprintIsNotFound,
   RecentPrereviews['recentPrereviews'][number]
 > {
   return pipe(
     getReviewedPreprintId(record),
     RTE.chainW(preprintId =>
       sequenceS(RTE.ApplyPar)({
-        club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
+        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         id: RTE.right(record.id),
-        reviewers: RTE.right(pipe(record.metadata.creators, RNEA.map(get('name')))),
+        reviewers: RTE.right(pipe(record.metadata.creators, RNEA.map(Struct.get('name')))),
         published: RTE.right(
           toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),
@@ -892,10 +904,10 @@ function recordToRecentPrereview(
 const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
   D.struct({
     metadata: D.struct({
-      license: D.struct({ id: pipe(D.string, D.map(toUpperCase), D.compose(D.literal('CC-BY-4.0'))) }),
+      license: D.struct({ id: pipe(D.string, D.map(String.toUpperCase), D.compose(D.literal('CC-BY-4.0'))) }),
     }),
   }),
-  D.map(get('metadata.license.id')),
+  D.map(({ metadata }) => metadata.license.id),
 )
 
 function getAuthors(record: Record | InProgressDeposition): Prereview['authors'] {
@@ -906,12 +918,12 @@ function getAuthors(record: Record | InProgressDeposition): Prereview['authors']
   }
 
   const anonymous = pipe(
-    O.fromNullable(/^([1-9][0-9]*) other authors?$/.exec(last.name)),
-    O.chain(RA.lookup(1)),
-    O.match(
-      () => 0,
-      number => parseInt(number, 10),
-    ),
+    Option.fromNullable(/^([1-9][0-9]*) other authors?$/.exec(last.name)),
+    Option.flatMap(FptsToEffect.optionK(RA.lookup(1))),
+    Option.match({
+      onNone: () => 0,
+      onSome: number => parseInt(number, 10),
+    }),
   )
 
   return match(anonymous)
@@ -921,9 +933,9 @@ function getAuthors(record: Record | InProgressDeposition): Prereview['authors']
 
 function isInCommunity(record: Record) {
   return pipe(
-    O.fromNullable(record.metadata.communities),
-    O.chain(A.findFirst(community => community.id === 'prereview-reviews')),
-    O.isSome,
+    Option.fromNullable(record.metadata.communities),
+    Option.flatMap(Array.findFirst(community => community.id === 'prereview-reviews')),
+    Option.isSome,
   )
 }
 
@@ -939,9 +951,9 @@ const getReviewFields = flow(
   (record: Record) => record.metadata.subjects ?? [],
   RA.filterMap(
     flow(
-      get('identifier'),
-      O.fromNullableK(identifier => (/^https:\/\/openalex\.org\/fields\/(.+)$/.exec(identifier) ?? [])[1]),
-      O.filter(isFieldId),
+      Struct.get('identifier'),
+      Option.liftNullable(identifier => (/^https:\/\/openalex\.org\/fields\/(.+)$/.exec(identifier) ?? [])[1]),
+      Option.filter(isFieldId),
     ),
   ),
 )
@@ -950,23 +962,23 @@ const getReviewSubfields = flow(
   (record: Record) => record.metadata.subjects ?? [],
   RA.filterMap(
     flow(
-      get('identifier'),
-      O.fromNullableK(identifier => (/^https:\/\/openalex\.org\/subfields\/(.+)$/.exec(identifier) ?? [])[1]),
-      O.filter(isSubfieldId),
+      Struct.get('identifier'),
+      Option.liftNullable(identifier => (/^https:\/\/openalex\.org\/subfields\/(.+)$/.exec(identifier) ?? [])[1]),
+      Option.filter(isSubfieldId),
     ),
   ),
 )
 
 const getReviewClub = flow(
   (record: Record) => record.metadata.contributors ?? [],
-  RA.findFirstMap(flow(get('name'), getClubByName)),
+  FptsToEffect.optionK(RA.findFirstMap(flow(Struct.get('name'), getClubByName))),
 )
 
 const getReviewUrl = flow(
-  O.fromPredicate(isOpenRecord),
-  O.map(record => record.files),
-  O.chain(RA.findFirst(file => file.key.endsWith('.html'))),
-  O.map(file => file.links.self),
+  Option.liftPredicate(isOpenRecord),
+  Option.map(record => record.files),
+  Option.flatMap(FptsToEffect.optionK(RA.findFirst(file => file.key.endsWith('.html')))),
+  Option.map(file => file.links.self),
 )
 
 const getReviewText = flow(
@@ -996,7 +1008,7 @@ const getReviewedPreprintId = (record: Record) =>
   pipe(
     RTE.fromNullable('no reviewed preprint' as const)(record.metadata.related_identifiers),
     RTE.chainOptionK(() => 'no reviewed preprint' as const)(
-      A.findFirstMap(relatedIdentifier =>
+      Array.findFirst(relatedIdentifier =>
         match(relatedIdentifier)
           .with(
             {
@@ -1005,7 +1017,7 @@ const getReviewedPreprintId = (record: Record) =>
               resource_type: 'publication-preprint',
               identifier: P.select(),
             },
-            flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)),
+            flow(FptsToEffect.eitherK(PreprintDoiD.decode), Option.getRight, Option.map(fromPreprintDoi)),
           )
           .with(
             {
@@ -1014,9 +1026,9 @@ const getReviewedPreprintId = (record: Record) =>
               resource_type: 'publication-preprint',
               identifier: P.select(),
             },
-            flow(O.fromEitherK(UrlD.decode), O.chain(fromUrl)),
+            flow(FptsToEffect.eitherK(UrlD.decode), Option.getRight, Option.flatMap(fromUrl)),
           )
-          .otherwise(() => O.none),
+          .otherwise(Option.none),
       ),
     ),
     RTE.orElseFirst(

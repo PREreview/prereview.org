@@ -1,13 +1,13 @@
 import { type Doi, isDoi, parse } from 'doi-ts'
+import { Option, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE } from '../form.js'
+import * as FptsToEffect from '../FptsToEffect.js'
 import { type DoesPreprintExistEnv, doesPreprintExist } from '../preprint.js'
 import { type PageResponse, RedirectResponse } from '../response.js'
 import { writeReviewMatch } from '../routes.js'
@@ -66,15 +66,17 @@ const parseWhichPreprint = flow(
   E.mapLeft(
     flow(
       getInput('preprint'),
-      O.chain(input =>
+      Option.flatMap(input =>
         pipe(
-          parse(input),
-          O.map(unsupportedDoiE),
-          O.altW(() => pipe(O.fromEither(UrlD.decode(input)), O.map(unsupportedUrlE))),
-          O.altW(() => O.some(invalidE(input))),
+          FptsToEffect.option(parse(input)),
+          Option.map(unsupportedDoiE),
+          Option.orElse(() =>
+            pipe(Option.getRight(FptsToEffect.either(UrlD.decode(input))), Option.map(unsupportedUrlE)),
+          ),
+          Option.orElseSome(() => invalidE(input)),
         ),
       ),
-      O.getOrElseW(() => invalidE('')),
+      Option.getOrElse(() => invalidE('')),
     ),
   ),
 )
@@ -90,8 +92,8 @@ const whichPreprint = flow(
         .with({ _tag: 'UnknownPreprintE', actual: P.select() }, createUnknownPreprintPage)
         .with({ _tag: 'UnsupportedDoiE' }, () => unsupportedDoiPage)
         .with({ _tag: 'UnsupportedUrlE' }, () => unsupportedUrlPage)
-        .with('not-a-preprint', () => notAPreprintPage)
-        .with('unavailable', () => failureMessage)
+        .with({ _tag: 'NotAPreprint' }, () => notAPreprintPage)
+        .with({ _tag: 'PreprintIsUnavailable' }, () => failureMessage)
         .otherwise(flow(E.left, createPage)),
     preprint => RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint }) }),
   ),

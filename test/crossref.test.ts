@@ -6,6 +6,7 @@ import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import * as _ from '../src/crossref.js'
 import { rawHtml } from '../src/html.js'
+import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../src/preprint.js'
 import * as fc from './fc.js'
 
 describe('isCrossrefPreprintDoi', () => {
@@ -13,9 +14,12 @@ describe('isCrossrefPreprintDoi', () => {
     expect(_.isCrossrefPreprintDoi(doi)).toBe(true)
   })
 
-  test.prop([fc.oneof(fc.datacitePreprintDoi(), fc.nonPreprintDoi())])('with a non-Crossref DOI', doi => {
-    expect(_.isCrossrefPreprintDoi(doi)).toBe(false)
-  })
+  test.prop([fc.oneof(fc.datacitePreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
+    'with a non-Crossref DOI',
+    doi => {
+      expect(_.isCrossrefPreprintDoi(doi)).toBe(false)
+    },
+  )
 })
 
 describe('getPreprintFromCrossref', () => {
@@ -2933,7 +2937,7 @@ describe('getPreprintFromCrossref', () => {
 
     const actual = await _.getPreprintFromCrossref(id)({ fetch, sleep: () => T.of(undefined) })()
 
-    expect(actual).toStrictEqual(E.left('not-found'))
+    expect(actual).toStrictEqual(E.left(new PreprintIsNotFound({})))
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -2997,7 +3001,7 @@ describe('getPreprintFromCrossref', () => {
 
     const actual = await _.getPreprintFromCrossref(id)({ fetch, sleep: () => T.of(undefined) })()
 
-    expect(actual).toStrictEqual(E.left('not-a-preprint'))
+    expect(actual).toStrictEqual(E.left(new NotAPreprint({})))
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -3010,7 +3014,7 @@ describe('getPreprintFromCrossref', () => {
 
       const actual = await _.getPreprintFromCrossref(id)({ fetch, sleep: () => T.of(undefined) })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(actual).toStrictEqual(E.left(new PreprintIsUnavailable({})))
       expect(fetch.done()).toBeTruthy()
     },
   )

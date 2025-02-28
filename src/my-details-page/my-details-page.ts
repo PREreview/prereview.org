@@ -1,5 +1,5 @@
+import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
 import { P, match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.js'
 import type { ContactEmailAddress } from '../contact-email-address.js'
@@ -51,15 +51,15 @@ export function createPage({
 }: {
   user: User
   userOnboarding: UserOnboarding
-  orcidToken?: O.Option<OrcidToken>
-  avatar?: O.Option<URL>
-  slackUser: O.Option<SlackUser>
-  contactEmailAddress: O.Option<ContactEmailAddress>
-  openForRequests: O.Option<IsOpenForRequests>
-  careerStage: O.Option<CareerStage>
-  researchInterests: O.Option<ResearchInterests>
-  location: O.Option<Location>
-  languages: O.Option<Languages>
+  orcidToken: Option.Option<OrcidToken>
+  avatar: Option.Option<URL>
+  slackUser: Option.Option<SlackUser>
+  contactEmailAddress: Option.Option<ContactEmailAddress>
+  openForRequests: Option.Option<IsOpenForRequests>
+  careerStage: Option.Option<CareerStage>
+  researchInterests: Option.Option<ResearchInterests>
+  location: Option.Option<Location>
+  languages: Option.Option<Languages>
 }) {
   return PageResponse({
     title: plainText`My details`,
@@ -112,9 +112,8 @@ export function createPage({
         </div>
 
         ${match(orcidToken)
-          .with(undefined, () => '')
           .when(
-            O.isNone,
+            Option.isNone,
             () => html`
               <div>
                 <dt><span>ORCID profile</span></dt>
@@ -125,7 +124,7 @@ export function createPage({
             `,
           )
           .when(
-            O.isSome,
+            Option.isSome,
             () => html`
               <div>
                 <dt><span>ORCID profile</span></dt>
@@ -140,9 +139,8 @@ export function createPage({
           )
           .exhaustive()}
         ${match(avatar)
-          .with(undefined, () => '')
           .when(
-            O.isNone,
+            Option.isNone,
             () => html`
               <div>
                 <dt><span>Avatar</span></dt>
@@ -178,7 +176,7 @@ export function createPage({
           .exhaustive()}
         ${match(slackUser)
           .when(
-            O.isNone,
+            Option.isNone,
             () => html`
               <div>
                 <dt><span>Slack Community name</span></dt>
@@ -210,7 +208,7 @@ export function createPage({
           .exhaustive()}
         ${match(contactEmailAddress)
           .when(
-            O.isNone,
+            Option.isNone,
             () => html`
               <div>
                 <dt><span>Email address</span></dt>
@@ -242,15 +240,15 @@ export function createPage({
           )
           .exhaustive()}
         ${match(slackUser)
-          .when(O.isNone, () => '')
+          .when(Option.isNone, () => '')
           .when(
-            O.isSome,
+            Option.isSome,
             () => html`
               <div>
                 <dt><span>Open for review requests</span></dt>
                 ${match(openForRequests)
                   .when(
-                    O.isNone,
+                    Option.isNone,
                     () => html`
                       <dd>
                         <a href="${format(changeOpenForRequestsMatch.formatter, {})}">Enter open for review requests</a>
@@ -317,7 +315,7 @@ export function createPage({
           <dt><span>Career stage</span></dt>
           ${match(careerStage)
             .when(
-              O.isNone,
+              Option.isNone,
               () => html`
                 <dd>
                   <a href="${format(changeCareerStageMatch.formatter, {})}">Enter career stage</a>
@@ -363,7 +361,7 @@ export function createPage({
           <dt><span>Research interests</span></dt>
           ${match(researchInterests)
             .when(
-              O.isNone,
+              Option.isNone,
               () => html`
                 <dd>
                   <a href="${format(changeResearchInterestsMatch.formatter, {})}">Enter research interests</a>
@@ -405,7 +403,7 @@ export function createPage({
           <dt><span>Location</span></dt>
           ${match(location)
             .when(
-              O.isNone,
+              Option.isNone,
               () => html`
                 <dd>
                   <a href="${format(changeLocationMatch.formatter, {})}">Enter location</a>
@@ -447,7 +445,7 @@ export function createPage({
           <dt><span>Languages</span></dt>
           ${match(languages)
             .when(
-              O.isNone,
+              Option.isNone,
               () => html`
                 <dd>
                   <a href="${format(changeLanguagesMatch.formatter, {})}">Enter languages</a>

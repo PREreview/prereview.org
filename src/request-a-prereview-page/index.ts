@@ -1,6 +1,19 @@
+import { pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
-import { flow } from 'fp-ts/lib/function.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { handleDecision } from './handle-decision.js'
 import { makeDecision } from './make-decision.js'
 
-export const requestAPrereview = flow(makeDecision, RT.map(handleDecision))
+export const requestAPrereview = ({
+  body,
+  locale,
+  method,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  method: string
+}) =>
+  pipe(
+    makeDecision({ body, method }),
+    RT.map(decision => handleDecision(decision, locale)),
+  )

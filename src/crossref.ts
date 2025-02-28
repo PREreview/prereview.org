@@ -1,12 +1,9 @@
 import { type Work, getWork } from 'crossref-ts'
 import { type Doi, hasRegistrant } from 'doi-ts'
+import { Option, String, flow, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import type { Refinement } from 'fp-ts/lib/Refinement.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
-import { isString } from 'fp-ts/lib/string.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -15,7 +12,7 @@ import { detectLanguage, detectLanguageFrom } from './detect-language.js'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
 import { type Html, sanitizeHtml } from './html.js'
 import { transformJatsToHtml } from './jats.js'
-import type { Preprint } from './preprint.js'
+import * as Preprint from './preprint.js'
 import type {
   AdvancePreprintId,
   AfricarxivOsfPreprintId,
@@ -27,9 +24,11 @@ import type {
   EcoevorxivPreprintId,
   EdarxivPreprintId,
   EngrxivPreprintId,
+  IndeterminatePreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
   OsfPreprintsPreprintId,
+  PreprintId,
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
@@ -40,30 +39,7 @@ import type {
   VerixivPreprintId,
 } from './types/preprint-id.js'
 
-export type CrossrefPreprintId =
-  | AdvancePreprintId
-  | AfricarxivOsfPreprintId
-  | AuthoreaPreprintId
-  | BiorxivPreprintId
-  | ChemrxivPreprintId
-  | CurvenotePreprintId
-  | EartharxivPreprintId
-  | EcoevorxivPreprintId
-  | EdarxivPreprintId
-  | EngrxivPreprintId
-  | MedrxivPreprintId
-  | MetaarxivPreprintId
-  | OsfPreprintsPreprintId
-  | PreprintsorgPreprintId
-  | PsyarxivPreprintId
-  | ResearchSquarePreprintId
-  | ScieloPreprintId
-  | ScienceOpenPreprintId
-  | SocarxivPreprintId
-  | TechrxivPreprintId
-  | VerixivPreprintId
-
-export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']> = hasRegistrant(
+const crossrefDoiPrefixes = [
   '1101',
   '1590',
   '12688',
@@ -84,23 +60,31 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']>
   '35542',
   '36227',
   '62329',
-)
+] as const
+
+type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
+
+export type CrossrefPreprintId = Extract<PreprintId, { value: Doi<CrossrefDoiPrefix> }>
+
+export type IndeterminateCrossrefPreprintId = Extract<IndeterminatePreprintId, { value: Doi<CrossrefDoiPrefix> }>
+
+export const isCrossrefPreprintDoi = hasRegistrant(...crossrefDoiPrefixes)
 
 export const getPreprintFromCrossref = flow(
-  (id: CrossrefPreprintId) => getWork(id.value),
+  (id: IndeterminateCrossrefPreprintId) => getWork(id.value),
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainEitherKW(workToPreprint),
   RTE.mapLeft(error =>
     match(error)
-      .with({ status: Status.NotFound }, () => 'not-found' as const)
-      .with('not a preprint', () => 'not-a-preprint' as const)
-      .otherwise(() => 'unavailable' as const),
+      .with({ status: Status.NotFound }, response => new Preprint.PreprintIsNotFound({ cause: response }))
+      .with('not a preprint', () => new Preprint.NotAPreprint({}))
+      .otherwise(error => new Preprint.PreprintIsUnavailable({ cause: error })),
   ),
 )
 
-function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> {
+function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.Preprint> {
   return pipe(
     E.Do,
     E.filterOrElse(
@@ -117,7 +101,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               name: author.name,
             }))
             .with({ family: P.string }, author => ({
-              name: [author.prefix, author.given, author.family, author.suffix].filter(isString).join(' '),
+              name: [author.prefix, author.given, author.family, author.suffix].filter(String.isString).join(' '),
               orcid: author.ORCID,
             }))
             .exhaustive(),
@@ -179,8 +163,8 @@ const isAPreprint: (work: Work) => boolean = isMatching(
 
 const findPublishedDate = (work: Work) =>
   pipe(
-    O.fromNullable(work.published),
-    O.getOrElse(() => work.created),
+    Option.fromNullable(work.published),
+    Option.getOrElse(() => work.created),
   )
 
 const detectLanguageForServer = ({
@@ -189,28 +173,28 @@ const detectLanguageForServer = ({
 }: {
   type: CrossrefPreprintId['type']
   text: Html
-}): O.Option<LanguageCode> =>
+}): Option.Option<LanguageCode> =>
   match({ type, text })
-    .with({ type: 'advance' }, () => O.some('en' as const))
+    .with({ type: 'advance' }, () => Option.some('en' as const))
     .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
     .with({ type: 'authorea', text: P.select() }, detectLanguage)
-    .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
-    .with({ type: 'chemrxiv' }, () => O.some('en' as const))
-    .with({ type: 'curvenote' }, () => O.some('en' as const))
-    .with({ type: 'eartharxiv' }, () => O.some('en' as const))
-    .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
+    .with({ type: P.union('biorxiv', 'medrxiv') }, () => Option.some('en' as const))
+    .with({ type: 'chemrxiv' }, () => Option.some('en' as const))
+    .with({ type: 'curvenote' }, () => Option.some('en' as const))
+    .with({ type: 'eartharxiv' }, () => Option.some('en' as const))
+    .with({ type: 'ecoevorxiv' }, () => Option.some('en' as const))
     .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
-    .with({ type: 'engrxiv' }, () => O.some('en' as const))
-    .with({ type: 'metaarxiv' }, () => O.some('en' as const))
+    .with({ type: 'engrxiv' }, () => Option.some('en' as const))
+    .with({ type: 'metaarxiv' }, () => Option.some('en' as const))
     .with({ type: 'osf-preprints', text: P.select() }, detectLanguage)
-    .with({ type: 'preprints.org' }, () => O.some('en' as const))
-    .with({ type: 'psyarxiv' }, () => O.some('en' as const))
-    .with({ type: 'research-square' }, () => O.some('en' as const))
+    .with({ type: 'preprints.org' }, () => Option.some('en' as const))
+    .with({ type: 'psyarxiv' }, () => Option.some('en' as const))
+    .with({ type: 'research-square' }, () => Option.some('en' as const))
     .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
     .with({ type: 'science-open', text: P.select() }, detectLanguage)
     .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
-    .with({ type: 'techrxiv' }, () => O.some('en' as const))
-    .with({ type: 'verixiv' }, () => O.some('en' as const))
+    .with({ type: 'techrxiv' }, () => Option.some('en' as const))
+    .with({ type: 'verixiv' }, () => Option.some('en' as const))
     .exhaustive()
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
@@ -413,7 +397,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('21203'), 'DOI'),
-      publisher: D.literal('Research Square Platform LLC'),
       institution: D.fromTuple(D.struct({ name: D.literal('Research Square') })),
     }),
     D.map(

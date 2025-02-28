@@ -1,12 +1,10 @@
+import { flow, Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
+import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import { deleteLanguages, getLanguages, saveLanguages } from '../languages.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
@@ -34,7 +32,7 @@ export const changeLanguages = ({ body, method, user }: { body: unknown; method:
 
 const showChangeLanguagesForm = flow(
   ({ user }: { user: User }) => getLanguages(user.orcid),
-  RTE.match(() => O.none, O.some),
+  RTE.match(Option.none, Option.some),
   RT.map(createFormPage),
 )
 
@@ -60,7 +58,7 @@ const handleChangeLanguagesForm = ({ body, user }: { body: unknown; user: User }
             'visibility',
             pipe(
               getLanguages(user.orcid),
-              RTE.map(get('visibility')),
+              RTE.map(Struct.get('visibility')),
               RTE.orElseW(error =>
                 match(error)
                   .with('not-found', () => RTE.of('restricted' as const))
@@ -76,5 +74,3 @@ const handleChangeLanguagesForm = ({ body, user }: { body: unknown; user: User }
         ),
     ),
   )
-
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

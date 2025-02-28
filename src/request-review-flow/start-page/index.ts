@@ -1,9 +1,8 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import { P, match } from 'ts-pattern'
-import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
@@ -26,21 +25,12 @@ export const requestReviewStart = ({
   preprint: IndeterminatePreprintId
   user?: User
 }): RT.ReaderTask<
-  CanRequestReviewsEnv & GetPreprintTitleEnv & GetReviewRequestEnv & SaveReviewRequestEnv,
+  GetPreprintTitleEnv & GetReviewRequestEnv & SaveReviewRequestEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-    RTE.chainFirstW(
-      flow(
-        RTE.fromReaderK(({ user }) => canRequestReviews(user)),
-        RTE.filterOrElse(
-          canRequestReviews => canRequestReviews,
-          () => 'not-found' as const,
-        ),
-      ),
-    ),
     RTE.bindW('preprint', () =>
       pipe(
         getPreprintTitle(preprint),
@@ -61,8 +51,8 @@ export const requestReviewStart = ({
           .with('no-session', () =>
             LogInResponse({ location: format(requestReviewStartMatch.formatter, { id: preprint }) }),
           )
-          .with('not-found', () => pageNotFound)
-          .with('unavailable', () => havingProblemsPage)
+          .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound)
+          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage)
           .exhaustive(),
       state =>
         match(state)

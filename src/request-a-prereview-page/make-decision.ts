@@ -1,16 +1,12 @@
+import { flow, identity, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import * as R from 'fp-ts/lib/Reader.js'
-import type * as RE from 'fp-ts/lib/ReaderEither.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as b from 'fp-ts/lib/boolean.js'
-import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { P, match } from 'ts-pattern'
-import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags.js'
+import type { EnvFor } from '../Fpts.js'
 import * as Preprint from '../preprint.js'
 import * as ReviewRequest from '../review-request.js'
 import * as PreprintId from '../types/preprint-id.js'
-import type { User } from '../user.js'
 import * as Decision from './decision.js'
 import * as Form from './form.js'
 
@@ -19,15 +15,12 @@ export type Env = EnvFor<ReturnType<typeof makeDecision>>
 export const makeDecision = ({
   body,
   method,
-  user,
 }: {
   body: unknown
   method: string
-  user?: User
-}): RT.ReaderTask<CanRequestReviewsEnv & Preprint.ResolvePreprintIdEnv, Decision.Decision> =>
+}): RT.ReaderTask<Preprint.ResolvePreprintIdEnv, Decision.Decision> =>
   pipe(
-    user,
-    RTE.fromReaderEitherK(ensureUserCanRequestReviews),
+    RTE.Do,
     RTE.filterOrElseW(
       () => method === 'POST',
       () => Decision.ShowEmptyForm,
@@ -49,9 +42,9 @@ const resolvePreprintId = (
     Preprint.resolvePreprintId(preprintId),
     RTE.mapLeft(error =>
       match(error)
-        .with('not-a-preprint', () => Decision.ShowNotAPreprint)
-        .with('not-found', () => Decision.ShowUnknownPreprint(preprintId))
-        .with('unavailable', () => Decision.ShowError)
+        .with({ _tag: 'NotAPreprint' }, () => Decision.ShowNotAPreprint)
+        .with({ _tag: 'PreprintIsNotFound' }, () => Decision.ShowUnknownPreprint(preprintId))
+        .with({ _tag: 'PreprintIsUnavailable' }, () => Decision.ShowError)
         .exhaustive(),
     ),
   )
@@ -74,16 +67,3 @@ const extractPreprintId: (
       .exhaustive(),
   ),
 )
-
-const ensureUserCanRequestReviews: (user?: User) => RE.ReaderEither<CanRequestReviewsEnv, Decision.DenyAccess, void> =
-  flow(
-    canRequestReviews,
-    R.map(
-      b.match(
-        () => E.left(Decision.DenyAccess),
-        () => E.right(undefined),
-      ),
-    ),
-  )
-
-type EnvFor<T> = T extends R.Reader<infer R, unknown> ? R : never

@@ -1,7 +1,5 @@
 import { hasRegistrant } from 'doi-ts'
-import * as O from 'fp-ts/lib/Option.js'
-import { type Refinement, fromOptionK } from 'fp-ts/lib/Refinement.js'
-import { pipe } from 'fp-ts/lib/function.js'
+import { Option, pipe, type Predicate } from 'effect'
 import { P, match } from 'ts-pattern'
 import type {
   AfricarxivOsfPreprintId,
@@ -29,10 +27,10 @@ export type PreprintIdSupportedBySciety =
   | ScieloPreprintId
   | SocarxivPreprintId
 
-export const isScietyPreprint: Refinement<PreprintId, PreprintIdSupportedBySciety> = fromOptionK(
+export const isScietyPreprint: Predicate.Refinement<PreprintId, PreprintIdSupportedBySciety> = Option.toRefinement(
   (preprint: PreprintId) =>
     match(preprint)
-      .returnType<O.Option<PreprintIdSupportedBySciety>>()
+      .returnType<Option.Option<PreprintIdSupportedBySciety>>()
       .with(
         {
           type: P.union(
@@ -47,10 +45,10 @@ export const isScietyPreprint: Refinement<PreprintId, PreprintIdSupportedBySciet
             'socarxiv',
           ),
         },
-        O.some,
+        Option.some,
       )
-      .with({ type: 'africarxiv', value: P.when(pipe(hasRegistrant('31730'))) }, O.some)
-      .otherwise(() => O.none),
+      .with({ type: 'africarxiv', value: P.when(pipe(hasRegistrant('31730'))) }, Option.some)
+      .otherwise(Option.none),
 )
 
 export const scietyUrl = (preprint: PreprintIdSupportedBySciety) => {

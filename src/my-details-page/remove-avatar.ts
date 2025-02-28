@@ -1,9 +1,9 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
+import type { EnvFor } from '../Fpts.js'
 import { deleteAvatar, getAvatar } from '../avatar.js'
 import { havingProblemsPage } from '../http-error.js'
 import { FlashMessageResponse, LogInResponse, RedirectResponse } from '../response.js'
@@ -46,5 +46,3 @@ const handleRemoveAvatarForm = ({ user }: { user: User }) =>
       () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'avatar-removed' }),
     ),
   )
-
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

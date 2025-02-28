@@ -10,7 +10,7 @@ import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewRemoveAuthorMatch } from '../../routes.js'
 import type { NonEmptyString } from '../../types/string.js'
-import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from '../shared-elements.js'
+import { backNav, errorPrefix, errorSummary, prereviewOfSuffix, saveAndContinueButton } from '../shared-elements.js'
 
 export function removeAuthorForm({
   author,
@@ -31,7 +31,8 @@ export function removeAuthorForm({
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: pipe(
-      t('write-review', 'removeAuthorTitle')({ authorName: author.name, preprintTitle: preprint.title.toString() }),
+      t('write-review', 'sureYouWantToRemove')({ authorName: author.name }),
+      prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),

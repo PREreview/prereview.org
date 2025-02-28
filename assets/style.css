@@ -49,11 +49,12 @@
 }
 
 :root {
-  --font-sans-serif: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue',
-    'Noto Sans', 'Liberation Sans', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-monospace: 'IBM Plex Mono', ui-monospace, 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Ubuntu Mono',
-    'Liberation Mono', 'DejaVu Sans Mono', 'Courier New', monospace;
+  --font-sans-serif:
+    'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Noto Sans',
+    'Liberation Sans', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-monospace:
+    'IBM Plex Mono', ui-monospace, 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Ubuntu Mono', 'Liberation Mono',
+    'DejaVu Sans Mono', 'Courier New', monospace;
   --color-primary: var(--color-red-600);
   --color-background: var(--color-white);
   --color-background-alt: var(--color-black-10);
@@ -135,7 +136,7 @@ summary > span {
         mask-image: url('remixicon/icons/Logos/twitter-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
@@ -154,7 +155,7 @@ summary > span {
         mask-image: url('remixicon/icons/Logos/mastodon-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
@@ -173,7 +174,7 @@ summary > span {
         mask-image: url('remixicon/icons/Logos/linkedin-box-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
@@ -192,7 +193,7 @@ summary > span {
         mask-image: url('remixicon/icons/Logos/github-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
@@ -211,7 +212,7 @@ summary > span {
         mask-image: url('remixicon/icons/Business/mail-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {
@@ -230,7 +231,7 @@ summary > span {
         mask-image: url('icons/sciety-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
-        mask-position: left bottom 40%;
+        mask-position: left 0% bottom 40%;
         mask-size: 1.1em;
 
         @media (forced-colors: active) {

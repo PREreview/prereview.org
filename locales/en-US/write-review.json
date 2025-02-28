@@ -1,6 +1,6 @@
 {
-  "addAuthorTitle": {
-    "message": "Add an author – PREreview of “{preprintTitle}”"
+  "prereviewOf": {
+    "message": "PREreview of “{preprintTitle}”"
   },
   "enterTheirName": {
     "message": "Enter their name"
@@ -28,9 +28,6 @@
   },
   "saveAndContinue": {
     "message": "Save and continue"
-  },
-  "addAuthorsTitle": {
-    "message": "You have added {authorCount, number} other {authorCount, plural, one {author} other {authors}} – PREreview of “{preprintTitle}”"
   },
   "back": {
     "message": "Back"
@@ -67,9 +64,6 @@
   },
   "continueButton": {
     "message": "Continue"
-  },
-  "changeAuthorTitle": {
-    "message": "Change {name}’s details – PREreview of “{preprintTitle}”"
   },
   "enterName": {
     "message": "Enter their name"
@@ -245,9 +239,6 @@
   "publishButton": {
     "message": "Publish PREreview"
   },
-  "removeAuthorTitle": {
-    "message": "Are you sure you want to remove {authorName}? – PREreview of “{preprintTitle}”"
-  },
   "selectYesToRemove": {
     "message": "Select yes if you want to remove {authorName}"
   },
@@ -262,9 +253,6 @@
   },
   "asYouHaveAlreadyStarted": {
     "message": "As you’ve already started a PREreview of <cite>{preprintTitle}</cite>, we’ll take you to the next step so you can carry on."
-  },
-  "authorsTitle": {
-    "message": "Did you review this preprint with anyone else? – PREreview of “{preprintTitle}”"
   },
   "selectYesIfYouReviewedWithSomeoneElse": {
     "message": "Select yes if you reviewed the preprint with someone else"
@@ -290,8 +278,8 @@
   "theyHaveReadAndApproved": {
     "message": "They have read and approved the PREreview"
   },
-  "competingInterestsTitle": {
-    "message": "Do you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests? – PREreview of “{preprintTitle}”"
+  "competingInterests": {
+    "message": "Competing interests"
   },
   "selectYesIfCompetingInterest": {
     "message": "Select yes if you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests"
@@ -302,8 +290,14 @@
   "doYouHaveCompetingInterests": {
     "message": "Do you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests?"
   },
+  "discloseCompetingInterests": {
+    "message": "We ask all reviewers to disclose any competing interests that could influence their review of the preprint."
+  },
   "whatIsCompetingInterest": {
     "message": "A competing interest is anything that could interfere with the objectivity of a PREreview."
+  },
+  "competingInterestsMatter": {
+    "message": "Competing interests matter because they can introduce perceived or actual bias in the evaluation of the preprint. Declaring them is crucial for ensuring transparency and maintaining the integrity of the review process."
   },
   "examples": {
     "message": "Examples"
@@ -331,9 +325,6 @@
   },
   "whatAreThey": {
     "message": "What are they?"
-  },
-  "codeOfConductTitle": {
-    "message": "Code of Conduct – PREreview of “{preprintTitle}”"
   },
   "confirmCodeOfConduct": {
     "message": "Confirm that you are following the Code of Conduct"

@@ -1,15 +1,14 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
+import type { EnvFor } from '../Fpts.js'
 import { saveAvatar } from '../avatar.js'
-import { canUploadAvatar } from '../feature-flags.js'
 import { type MissingE, type TooBigE, type WrongTypeE, missingE, tooBigE, wrongTypeE } from '../form.js'
-import { havingProblemsPage, pageNotFound } from '../http-error.js'
+import { havingProblemsPage } from '../http-error.js'
 import { FlashMessageResponse, LogInResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -21,16 +20,7 @@ export const changeAvatar = ({ body, method, user }: { body: unknown; method: st
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-    RTE.bindW(
-      'canUploadAvatar',
-      flow(
-        RTE.fromReaderK(({ user }) => canUploadAvatar(user)),
-        RTE.filterOrElse(
-          canUploadAvatar => canUploadAvatar,
-          () => 'not-found' as const,
-        ),
-      ),
-    ),
+
     RTE.let('body', () => body),
     RTE.let('method', () => method),
     RTE.matchEW(
@@ -38,7 +28,6 @@ export const changeAvatar = ({ body, method, user }: { body: unknown; method: st
         RT.of(
           match(error)
             .with('no-session', () => LogInResponse({ location: format(myDetailsMatch.formatter, {}) }))
-            .with('not-found', () => pageNotFound)
             .exhaustive(),
         ),
       state =>
@@ -109,5 +98,3 @@ const AvatarFieldD = pipe(
   }),
   D.map(({ avatar }) => avatar),
 )
-
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

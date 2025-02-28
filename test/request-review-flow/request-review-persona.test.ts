@@ -3,7 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
-import type { GetPreprintTitleEnv } from '../../src/preprint.js'
+import { PreprintIsUnavailable, type GetPreprintTitleEnv } from '../../src/preprint.js'
 import * as _ from '../../src/request-review-flow/persona-page/index.js'
 import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request.js'
 import {
@@ -203,7 +203,7 @@ describe('requestReviewPersona', () => {
     async (preprint, user, method, body) => {
       const actual = await _.requestReviewPersona({ body, preprint, method, user })({
         getReviewRequest: () => shouldNotBeCalled,
-        getPreprintTitle: () => TE.left('unavailable'),
+        getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
         saveReviewRequest: shouldNotBeCalled,
       })()
 

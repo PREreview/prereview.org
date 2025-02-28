@@ -7,6 +7,7 @@ import { Status } from 'hyper-ts'
 import { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/datacite.js'
 import { rawHtml } from '../src/html.js'
+import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../src/preprint.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
 
@@ -15,9 +16,12 @@ describe('isDatacitePreprintDoi', () => {
     expect(_.isDatacitePreprintDoi(doi)).toBe(true)
   })
 
-  test.prop([fc.oneof(fc.crossrefPreprintDoi(), fc.nonPreprintDoi())])('with a non-DataCite DOI', doi => {
-    expect(_.isDatacitePreprintDoi(doi)).toBe(false)
-  })
+  test.prop([fc.oneof(fc.crossrefPreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
+    'with a non-DataCite DOI',
+    doi => {
+      expect(_.isDatacitePreprintDoi(doi)).toBe(false)
+    },
+  )
 })
 
 describe('getPreprintFromDatacite', () => {
@@ -1719,7 +1723,7 @@ describe('getPreprintFromDatacite', () => {
 
     const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
-    expect(actual).toStrictEqual(E.left('not-found'))
+    expect(actual).toStrictEqual(E.left(new PreprintIsNotFound({})))
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -1884,7 +1888,7 @@ describe('getPreprintFromDatacite', () => {
 
       const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
-      expect(actual).toStrictEqual(E.left('not-a-preprint'))
+      expect(actual).toStrictEqual(E.left(new NotAPreprint({})))
     },
   )
 
@@ -1897,7 +1901,7 @@ describe('getPreprintFromDatacite', () => {
 
       const actual = await _.getPreprintFromDatacite(id)({ fetch, sleep: shouldNotBeCalled })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(actual).toStrictEqual(E.left(new PreprintIsUnavailable({})))
       expect(fetch.done()).toBeTruthy()
     },
   )

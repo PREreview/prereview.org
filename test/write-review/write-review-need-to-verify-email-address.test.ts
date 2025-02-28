@@ -8,6 +8,7 @@ import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address.js'
 import type { TemplatePageEnv } from '../../src/page.js'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
@@ -223,7 +224,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left('unavailable'),
+          getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
           templatePage,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
@@ -257,7 +258,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left('not-found'),
+          getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
           templatePage,
           verifyContactEmailAddressForReview: shouldNotBeCalled,

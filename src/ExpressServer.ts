@@ -4,9 +4,10 @@ import Keyv from 'keyv'
 import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, SessionSecret } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
-import { CanWriteComments, UseCrowdinInContext } from './feature-flags.js'
+import { UseCrowdinInContext } from './feature-flags.js'
 import { GhostApi } from './ghost.js'
 import { Nodemailer } from './nodemailer.js'
+import * as Preprint from './preprint.js'
 import { PublicUrl } from './public-url.js'
 import { DataStoreRedis } from './Redis.js'
 import { TemplatePage } from './TemplatePage.js'
@@ -16,7 +17,6 @@ export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig
   const { clock } = yield* DeprecatedLoggerEnv
   const sleep = yield* DeprecatedSleepEnv
-  const canWriteComments = yield* CanWriteComments
   const nodemailer = yield* Nodemailer
   const publicUrl = yield* PublicUrl
   const generateUuid = yield* Effect.andThen(GenerateUuid, EffectToFpts.makeIO)
@@ -24,11 +24,12 @@ export const expressServer = Effect.gen(function* () {
   const useCrowdinInContext = yield* UseCrowdinInContext
   const ghostApi = yield* GhostApi
   const secret = yield* SessionSecret
+  const getPreprint = yield* Effect.andThen(Preprint.GetPreprint, EffectToFpts.makeTaskEitherK)
 
   return app({
-    canWriteComments,
     clock,
     generateUuid,
+    getPreprint,
     ghostApi,
     nodemailer,
     publicUrl,
@@ -52,11 +53,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
     authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
     avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
-    canConnectOrcidProfile: () => true,
-    canRequestReviews: () => true,
-    canUploadAvatar: () => true,
-    canUseSearchQueries: () => true,
-    canSeeAlternativeCompetingInterestsForm: env.CAN_SEE_ALTERNATIVE_COMPETING_INTERESTS_FORM,
     cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
     coarNotifyToken: env.COAR_NOTIFY_TOKEN,
     coarNotifyUrl: env.COAR_NOTIFY_URL,
@@ -81,6 +77,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
     },
     languagesStore: new Keyv({ emitErrors: false, namespace: 'languages', store: createKeyvStore() }),
     locationStore: new Keyv({ emitErrors: false, namespace: 'location', store: createKeyvStore() }),
+    mustDeclareUseOfAi: env.MUST_DECLARE_USE_OF_AI,
     orcidApiUrl: env.ORCID_API_URL,
     orcidApiToken: env.ORCID_API_READ_PUBLIC_TOKEN,
     orcidOauth: {

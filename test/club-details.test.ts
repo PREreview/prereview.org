@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import * as O from 'fp-ts/lib/Option.js'
+import { Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/club-details.js'
 import * as fc from './fc.js'
@@ -12,13 +12,13 @@ describe('getClubByName', () => {
   ])('with a club name (%s)', (name, expected) => {
     const actual = _.getClubByName(name)
 
-    expect(actual).toStrictEqual(O.some(expected))
+    expect(actual).toStrictEqual(Option.some(expected))
   })
 
   test.prop([fc.string()])('with something else', name => {
     const actual = _.getClubByName(name)
 
-    expect(actual).toStrictEqual(O.none)
+    expect(actual).toStrictEqual(Option.none())
   })
 })
 

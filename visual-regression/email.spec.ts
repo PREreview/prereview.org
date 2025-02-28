@@ -4,6 +4,7 @@ import { Uuid } from 'uuid-ts'
 import { UnverifiedContactEmailAddress } from '../src/contact-email-address.js'
 import {
   createAuthorInviteEmail,
+  createContactEmailAddressVerificationEmail,
   createContactEmailAddressVerificationEmailForComment,
   createContactEmailAddressVerificationEmailForInvitedAuthor,
 } from '../src/email.js'
@@ -13,6 +14,44 @@ import { EmailAddress } from '../src/types/email-address.js'
 import type { Pseudonym } from '../src/types/pseudonym.js'
 import type { NonEmptyString } from '../src/types/string.js'
 import { expect, test } from './base.js'
+
+test('email-verification HTML looks right', async ({ page }) => {
+  const email = createContactEmailAddressVerificationEmail({
+    user: {
+      name: 'Josiah Carberry',
+      orcid: Orcid('0000-0002-1825-0097'),
+      pseudonym: 'Orange Panda' as Pseudonym,
+    },
+    emailAddress: new UnverifiedContactEmailAddress({
+      value: EmailAddress('jcarberry@example.com'),
+      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
+    }),
+    verificationUrl: new URL('http://example.com'),
+  })({ locale: DefaultLocale })
+
+  await page.setContent(email.html.toString())
+
+  await expect(page).toHaveScreenshot({ fullPage: true })
+})
+
+test('email-verification text looks right', async ({ page }) => {
+  const email = createContactEmailAddressVerificationEmail({
+    user: {
+      name: 'Josiah Carberry',
+      orcid: Orcid('0000-0002-1825-0097'),
+      pseudonym: 'Orange Panda' as Pseudonym,
+    },
+    emailAddress: new UnverifiedContactEmailAddress({
+      value: EmailAddress('jcarberry@example.com'),
+      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
+    }),
+    verificationUrl: new URL('http://example.com'),
+  })({ locale: DefaultLocale })
+
+  await page.setContent(`<pre>${email.text}</pre>`)
+
+  await expect(page).toHaveScreenshot({ fullPage: true })
+})
 
 test('email-verification HTML for an invited author looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({

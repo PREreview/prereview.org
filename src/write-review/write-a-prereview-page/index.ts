@@ -1,8 +1,8 @@
+import { flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { type GetPreprintEnv, getPreprint } from '../../preprint.js'
@@ -28,8 +28,8 @@ export const writeReview = ({
       error =>
         RT.of(
           match(error)
-            .with('not-found', () => pageNotFound)
-            .with('unavailable', () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),
       preprint =>

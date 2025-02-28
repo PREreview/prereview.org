@@ -1,40 +1,52 @@
 import { hasRegistrant } from 'doi-ts'
+import { flow, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Orcid } from 'orcid-id-ts'
 import { match, P } from 'ts-pattern'
 import type {
+  AdvancePreprintId,
   AfricarxivUbuntunetPreprintId,
   ArxivPreprintId,
   BiorxivPreprintId,
+  EartharxivPreprintId,
   EcoevorxivPreprintId,
   EdarxivPreprintId,
+  EngrxivPreprintId,
   MedrxivPreprintId,
+  MetaarxivPreprintId,
   OsfPreprintsPreprintId,
   PreprintId,
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
+  ResearchSquarePreprintId,
   ScieloPreprintId,
   SocarxivPreprintId,
+  TechrxivPreprintId,
 } from './types/preprint-id.js'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 
 export type ReviewRequestPreprintId =
+  | AdvancePreprintId
   | AfricarxivUbuntunetPreprintId
   | ArxivPreprintId
   | BiorxivPreprintId
+  | EartharxivPreprintId
   | EcoevorxivPreprintId
   | EdarxivPreprintId
+  | EngrxivPreprintId
   | MedrxivPreprintId
+  | MetaarxivPreprintId
   | OsfPreprintsPreprintId
   | PreprintsorgPreprintId
   | PsyarxivPreprintId
+  | ResearchSquarePreprintId
   | ScieloPreprintId
   | SocarxivPreprintId
+  | TechrxivPreprintId
 
 export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
@@ -115,16 +127,22 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
     .with(
       {
         type: P.union(
+          'advance',
           'arxiv',
           'biorxiv',
+          'eartharxiv',
           'ecoevorxiv',
           'edarxiv',
+          'engrxiv',
           'medrxiv',
+          'metaarxiv',
           'osf-preprints',
           'preprints.org',
           'psyarxiv',
+          'research-square',
           'scielo',
           'socarxiv',
+          'techrxiv',
         ),
       },
       () => true,

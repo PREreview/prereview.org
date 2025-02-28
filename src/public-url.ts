@@ -1,8 +1,7 @@
-import { Context } from 'effect'
+import { Context, Function, pipe } from 'effect'
 import { type Formatter, format } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
-import { constant, pipe } from 'fp-ts/lib/function.js'
 import type { Route } from './routes.js'
 
 export interface PublicUrlEnv {
@@ -21,7 +20,7 @@ export function ifHasSameOrigin(url: URL) {
   return RE.asksReaderEither(({ publicUrl }: PublicUrlEnv) =>
     pipe(
       url,
-      RE.fromPredicate(url => url.origin === publicUrl.origin, constant('different-origin')),
+      RE.fromPredicate(url => url.origin === publicUrl.origin, Function.constant('different-origin')),
     ),
   )
 }

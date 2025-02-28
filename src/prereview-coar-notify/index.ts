@@ -1,8 +1,8 @@
+import { flow, identity, pipe } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
@@ -14,7 +14,7 @@ import type { ReviewRequestPreprintId } from '../review-request.js'
 import type { ReviewRequests } from '../review-requests-page/index.js'
 import { reviewMatch } from '../routes.js'
 import type { FieldId } from '../types/field.js'
-import { type PreprintId, eqPreprintId } from '../types/preprint-id.js'
+import { type PreprintId, PreprintIdEquivalence } from '../types/preprint-id.js'
 import type { GenerateUuidEnv } from '../types/uuid.js'
 import type { User } from '../user.js'
 import type { NewPrereview } from '../write-review/index.js'
@@ -45,7 +45,7 @@ export const publishToPrereviewCoarNotifyInbox = (
 export const isReviewRequested = (id: PreprintId) =>
   pipe(
     RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
-    RTE.map(RA.some(request => eqPreprintId.equals(request.preprint, id))),
+    RTE.map(RA.some(request => PreprintIdEquivalence(request.preprint, id))),
   )
 
 export const getReviewRequestsFromPrereviewCoarNotify = ({
@@ -86,11 +86,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
                     'preprint',
                     pipe(
                       getPreprintTitle(preprint),
-                      RTE.mapLeft(error =>
-                        match(error)
-                          .with('not-found', () => 'unavailable' as const)
-                          .otherwise(identity),
-                      ),
+                      RTE.mapLeft(() => 'unavailable' as const),
                     ),
                   ),
                   RTE.let('fields', () => fields),
@@ -123,11 +119,7 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
             'preprint',
             pipe(
               getPreprintTitle(preprint),
-              RTE.mapLeft(error =>
-                match(error)
-                  .with('not-found', () => 'unavailable' as const)
-                  .otherwise(identity),
-              ),
+              RTE.mapLeft(() => 'unavailable' as const),
             ),
           ),
           RTE.let('fields', () => fields),

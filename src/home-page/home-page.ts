@@ -1,7 +1,7 @@
+import { flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
@@ -25,13 +25,11 @@ import type { RecentPrereview } from './recent-prereviews.js'
 import type { RecentReviewRequest } from './recent-review-requests.js'
 
 export const createPage = ({
-  canRequestReviews,
   locale,
   recentPrereviews,
   recentReviewRequests,
   statistics,
 }: {
-  canRequestReviews: boolean
   locale: SupportedLocale
   recentPrereviews: ReadonlyArray<RecentPrereview>
   recentReviewRequests: ReadonlyArray<RecentReviewRequest>
@@ -48,13 +46,9 @@ export const createPage = ({
           <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button"
             >${translate(locale, 'home-page', 'reviewPreprintButton')()}</a
           >
-          ${canRequestReviews
-            ? html`
-                <a href="${format(requestAPrereviewMatch.formatter, {})}"
-                  >${translate(locale, 'home-page', 'requestReviewButton')()}</a
-                >
-              `
-            : ''}
+          <a href="${format(requestAPrereviewMatch.formatter, {})}"
+            >${translate(locale, 'home-page', 'requestReviewButton')()}</a
+          >
         </div>
 
         <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
@@ -160,6 +154,7 @@ export const createPage = ({
                               .with('ecoevorxiv', () => 'EcoEvoRxiv')
                               .with('edarxiv', () => 'EdArXiv')
                               .with('engrxiv', () => 'engrXiv')
+                              .with('jxiv', () => 'Jxiv')
                               .with('medrxiv', () => 'medRxiv')
                               .with('metaarxiv', () => 'MetaArXiv')
                               .with('osf', () => 'OSF')
@@ -335,6 +330,7 @@ export const createPage = ({
                               .with('ecoevorxiv', () => 'EcoEvoRxiv')
                               .with('edarxiv', () => 'EdArXiv')
                               .with('engrxiv', () => 'engrXiv')
+                              .with('jxiv', () => 'Jxiv')
                               .with('medrxiv', () => 'medRxiv')
                               .with('metaarxiv', () => 'MetaArXiv')
                               .with('osf', () => 'OSF')

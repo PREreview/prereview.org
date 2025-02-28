@@ -185,6 +185,8 @@ export const otherAuthors = ({ minLength }: { minLength?: number } = {}): fc.Arb
   Required<Form>['otherAuthors']
 > => fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }), { minLength })
 
+export const generativeAiIdeas = (): fc.Arbitrary<Required<Form>['generativeAiIdeas']> => fc.constantFrom('yes', 'no')
+
 export const competingInterests = (): fc.Arbitrary<Required<Form>['competingInterests']> => fc.constantFrom('yes', 'no')
 
 export const reviewType = (): fc.Arbitrary<Required<Form>['reviewType']> => fc.constantFrom('freeform', 'questions')
@@ -215,6 +217,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
       fc.oneof(
         fc.record(
           {
+            generativeAiIdeas: generativeAiIdeas(),
             introductionMatchesDetails: introductionMatchesDetails(),
             methodsAppropriateDetails: methodsAppropriateDetails(),
             resultsSupportedDetails: resultsSupportedDetails(),
@@ -253,6 +256,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
       fc.oneof(
         fc.record(
           {
+            generativeAiIdeas: generativeAiIdeas(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
             introductionMatches: introductionMatches(),
@@ -301,6 +305,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         readyFullReview: readyFullReview(),
         persona: persona(),
         reviewType: fc.constant('questions'),
+        generativeAiIdeas: generativeAiIdeas(),
       }),
       fc.oneof(
         fc.record({
@@ -413,6 +418,7 @@ export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { r
         persona: persona(),
         review: fc.html(),
         reviewType: fc.constant('freeform'),
+        generativeAiIdeas: generativeAiIdeas(),
       }),
       fc.oneof(
         fc.record({
@@ -449,6 +455,7 @@ export const unknownFormType = () =>
       persona: persona(),
       moreAuthors: moreAuthors(),
       otherAuthors: otherAuthors(),
+      generativeAiIdeas: generativeAiIdeas(),
       competingInterests: competingInterests(),
       conduct: conduct(),
       introductionMatches: introductionMatches(),

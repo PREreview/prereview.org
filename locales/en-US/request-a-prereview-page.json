@@ -1,0 +1,50 @@
+{
+  "requestTitle": {
+    "message": "<error>Error:</error> Which preprint would you like reviewed?"
+  },
+  "useDoiUrl": {
+    "message": "Use the preprint DOI or URL."
+  },
+  "whatIsDoi": {
+    "message": "What is a DOI?"
+  },
+  "whatIsDoiText": {
+    "message": "A <doi>DOI</doi> is a unique identifier that you can find on many preprints. For example, {example} or {exampleUrl}."
+  },
+  "errorSummaryTitle": {
+    "message": "There is a problem"
+  },
+  "errorEnterPreprint": {
+    "message": "<error>Error:</error> Enter the preprint DOI or URL"
+  },
+  "unsupportedPreprintTitle": {
+    "message": "Sorry, we don’t support requests for this preprint"
+  },
+  "unsupportedDoiTitle": {
+    "message": "Sorry, we don’t support this DOI"
+  },
+  "unsupportedUrlTitle": {
+    "message": "Sorry, we don’t support this URL"
+  },
+  "unsupportedPreprintMessage": {
+    "message": "We don’t support requests for this {server} preprint yet."
+  },
+  "supportPreprintsFrom": {
+    "message": "We support preprints from Advance, AfricArXiv, Arcadia Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, Jxiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research Square, SciELO, ScienceOpen, SocArXiv, TechRxiv, VeriXiv and Zenodo."
+  },
+  "doiContactUs": {
+    "message": "If this DOI is for a preprint on a server we don’t support, please <contact>get in touch</contact>."
+  },
+  "urlContactUs": {
+    "message": "If this URL is for a preprint on a server we don’t support, please <contact>get in touch</contact>."
+  },
+  "tryDoi": {
+    "message": "Otherwise, if the preprint has a DOI, please try using that instead."
+  },
+  "continueButton": {
+    "message": "Continue"
+  },
+  "back": {
+    "message": "Back"
+  }
+}

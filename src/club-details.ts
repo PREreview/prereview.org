@@ -1,10 +1,8 @@
-import type * as O from 'fp-ts/lib/Option.js'
+import { Equal, flow, type Option, pipe, type Record, Struct } from 'effect'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
-import { Eq as stringEq } from 'fp-ts/lib/string.js'
-import { Orcid, Eq as eqOrcid } from 'orcid-id-ts'
+import { Eq as eqOrcid, Orcid } from 'orcid-id-ts'
+import * as FptsToEffect from './FptsToEffect.js'
 import { type Html, html } from './html.js'
 import type { ClubId } from './types/club-id.js'
 import { EmailAddress } from './types/email-address.js'
@@ -21,15 +19,12 @@ export const getClubDetails = (id: ClubId) => clubs[id]
 
 export const getClubName = (id: ClubId) => clubs[id].name
 
-export const getClubByName = (name: string): O.Option<ClubId> =>
-  pipe(
-    RR.keys(clubs),
-    RA.findFirst(id => stringEq.equals(clubs[id].name, name)),
-  )
+export const getClubByName = (name: string): Option.Option<ClubId> =>
+  pipe(Struct.keys(clubs), FptsToEffect.optionK(RA.findFirst(id => Equal.equals(clubs[id].name, name))))
 
 export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
   pipe(
-    RR.keys(clubs),
+    Struct.keys(clubs),
     RA.filter(
       flow(
         id => clubs[id].leads,
@@ -38,7 +33,7 @@ export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
     ),
   )
 
-const clubs: RR.ReadonlyRecord<ClubId, Club> = {
+const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   'asapbio-cancer-biology': {
     name: 'ASAPbio Cancer Biology Crowd',
     description: html`
@@ -68,6 +63,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     leads: [
       { name: 'Rio Sugimura', orcid: Orcid('0000-0001-5701-3628') },
       { name: 'Yanyang Chen', orcid: Orcid('0000-0003-4665-9671') },
+      { name: 'Alex To', orcid: Orcid('0000-0001-7872-228X') },
     ],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
@@ -175,6 +171,24 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Ayla Sant’Ana da Silva', orcid: Orcid('0000-0001-8466-9390') }],
   },
+  'biopeers-slu': {
+    name: 'BioPeers SLU',
+    description: html`
+      <p>
+        We are a team of scientists with a broad range of expertise encompassing structural biology, biochemistry, plant
+        biology and cell biology. We are affiliated with the
+        <a href="https://www.slu.se/">Swedish University of Agricultural Sciences, Uppsala</a>.
+      </p>
+      <p>
+        BioPeers SLU is a PREreview Club comprising PhD students and postdocs working at Uppsala BioCenter, SLU. The
+        club is associated with the weekly <a href="https://www.alyonaminina.org/jc">Journal Club Seminar series</a>.
+      </p>
+    `,
+    leads: [
+      { name: 'Alyona Minina', orcid: Orcid('0000-0002-2619-1859') },
+      { name: 'Alessia Suriano', orcid: Orcid('0009-0004-0588-6645') },
+    ],
+  },
   'biophysics-leipzig': {
     name: 'Biophysics Leipzig University',
     description: html`
@@ -234,6 +248,22 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       </p>
     `,
     leads: [{ name: 'Timo Betz', orcid: Orcid('0000-0002-1548-0655') }],
+  },
+  emerge: {
+    name: 'EMERGE, A Matrix for Ethnographic Collaboration and Practice',
+    description: html`
+      <p>
+        EMERGE is a distributed project with ethnography research spaces based in Canada and the United States, with
+        collaborators undertaking work around the world. It is supported by a Partnership Development Grant from the
+        Social Sciences and Humanities Research Council of Canada.
+      </p>
+      <p>
+        In 2025, EMERGE research spaces are experimenting with open peer review of manuscripts prior to journal
+        submission. Looking ahead, we see review of preprints by researchers outside of EMERGE as an avenue for further
+        internationalizing the project.
+      </p>
+    `,
+    leads: [{ name: 'Marcel LaFlamme', orcid: Orcid('0000-0002-7489-4233') }],
   },
   'etymos-analytica': {
     name: 'Etymos Analytica',
@@ -572,6 +602,27 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       <p>We are a group at SCELSE who are interested in microbial interactions in biofilms and microbiome.</p>
     `,
     leads: [{ name: 'Viduthalai Rasheedkhan Regina', orcid: Orcid('0000-0001-5457-8965') }],
+  },
+  'snl-semantics': {
+    name: 'SNL Semantics',
+    description: html`
+      <p>
+        The Society for the Neurobiology of Language (SNL) is a non-profit organization whose goal is to foster progress
+        in understanding the neurobiological basis for language via the interdisciplinary exchange of ideas. The Society
+        brings together scientists with different perspectives and methodological approaches to the study of language
+        and related systems.
+      </p>
+      <p>Among the other member-initiated virtual activities, this club aims at providing SNL members:</p>
+      <ol>
+        <li>the opportunity to get credit for their review work</li>
+        <li>a platform where to practice their peer review (and writing) skills</li>
+        <li>a way to stay abreast of scientific research on the neurobiology of semantics</li>
+      </ol>
+    `,
+    leads: [
+      { name: 'Valentina Borghesani', orcid: Orcid('0000-0002-7909-8631') },
+      { name: 'Gabriella Liuzzi', orcid: Orcid('0000-0001-8960-5601') },
+    ],
   },
   'surrey-microbiology': {
     name: 'University of Surrey Microbiology Journal Club',

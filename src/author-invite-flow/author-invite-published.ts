@@ -1,15 +1,16 @@
 import type { Doi } from 'doi-ts'
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
-import { type Html, html, plainText } from '../html.js'
+import { type Html, html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -48,6 +49,7 @@ export const authorInvitePublished = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.let('inviteId', () => id),
     RTE.bindW('invite', ({ user }) =>
       pipe(
@@ -80,27 +82,37 @@ export const authorInvitePublished = ({
     ),
   )
 
-function publishedPage({ inviteId, review, reviewId }: { inviteId: Uuid; review: Prereview; reviewId: number }) {
+function publishedPage({
+  inviteId,
+  review,
+  reviewId,
+  locale,
+}: {
+  inviteId: Uuid
+  review: Prereview
+  reviewId: number
+  locale: SupportedLocale
+}) {
+  const t = translate(locale, 'author-invite-flow')
+  const prereviewLink = (text: string) =>
+    `<a href="${format(reviewMatch.formatter, { id: reviewId })}">${text}</a>`.toString()
   return StreamlinePageResponse({
-    title: plainText`Name added`,
+    title: pipe(t('nameAdded')(), plainText),
     main: html`
       <div class="panel">
-        <h1>Name added</h1>
+        <h1>${t('nameAdded')()}</h1>
 
         <div>
-          Your DOI <br />
+          ${t('yourDoi')()} <br />
           <strong class="doi" translate="no">${review.doi}</strong>
         </div>
       </div>
 
-      <h2>What happens next</h2>
+      <h2>${t('whatHappensNext')()}</h2>
 
-      <p>You’ll be able to see your name on the PREreview shortly.</p>
+      <p>${t('ableToSeePrereviewShortly')()}</p>
 
-      <p>
-        You can close this window, or
-        <a href="${format(reviewMatch.formatter, { id: reviewId })}">see the PREreview</a>.
-      </p>
+      <p>${rawHtml(t('closeWindowOrSeePrereview')({ link: prereviewLink }))}</p>
     `,
     canonical: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
   })

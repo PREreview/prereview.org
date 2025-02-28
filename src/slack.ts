@@ -1,16 +1,15 @@
+import { Boolean, flow, Function, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as b from 'fp-ts/lib/boolean.js'
-import { constVoid, flow, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import { type Orcid, toUrl } from 'orcid-id-ts'
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import { URL } from 'url'
 import { timeoutRequest } from './fetch.js'
 import type { SlackUserId } from './slack-user-id.js'
@@ -104,9 +103,9 @@ export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
   pipe(
     shouldUpdate,
     R.chainW(
-      b.match(
-        () => RTE.of(undefined),
-        () =>
+      Boolean.match({
+        onFalse: () => RTE.of(undefined),
+        onTrue: () =>
           pipe(
             'https://slack.com/api/users.profile.set',
             F.Request('POST'),
@@ -123,7 +122,7 @@ export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
               match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
             ),
             RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to update Slack profile')))),
-            RTE.bimap(() => 'unavailable' as const, constVoid),
+            RTE.bimap(() => 'unavailable' as const, Function.constVoid),
             RTE.chain(() =>
               sendUserAMessage(
                 userId,
@@ -131,7 +130,7 @@ export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
               ),
             ),
           ),
-      ),
+      }),
     ),
   )
 
@@ -139,9 +138,9 @@ export const removeOrcidFromSlackProfile = (userId: SlackUserId) =>
   pipe(
     shouldUpdate,
     R.chainW(
-      b.match(
-        () => RTE.of(undefined),
-        () =>
+      Boolean.match({
+        onFalse: () => RTE.of(undefined),
+        onTrue: () =>
           pipe(
             'https://slack.com/api/users.profile.set',
             F.Request('POST'),
@@ -158,7 +157,7 @@ export const removeOrcidFromSlackProfile = (userId: SlackUserId) =>
               match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
             ),
             RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to update Slack profile')))),
-            RTE.bimap(() => 'unavailable' as const, constVoid),
+            RTE.bimap(() => 'unavailable' as const, Function.constVoid),
             RTE.chain(() =>
               sendUserAMessage(
                 userId,
@@ -166,7 +165,7 @@ export const removeOrcidFromSlackProfile = (userId: SlackUserId) =>
               ),
             ),
           ),
-      ),
+      }),
     ),
   )
 
@@ -184,7 +183,7 @@ const sendUserAMessage = (userId: SlackUserId, text: string) =>
       match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
     ),
     RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to send Slack message')))),
-    RTE.bimap(() => 'unavailable' as const, constVoid),
+    RTE.bimap(() => 'unavailable' as const, Function.constVoid),
   )
 
 function addSlackApiHeaders(request: F.Request) {

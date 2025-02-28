@@ -1,10 +1,9 @@
 import type { Doi } from 'doi-ts'
+import { Option, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -12,6 +11,7 @@ import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../../contact-email-address.js'
 import { detectLanguage } from '../../detect-language.js'
+import { mustDeclareUseOfAi } from '../../feature-flags.js'
 import { type Html, fixHeadingLevels, html, plainText, sendHtml } from '../../html.js'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware.js'
@@ -35,7 +35,7 @@ export interface NewPrereview {
   persona: 'public' | 'pseudonym'
   preprint: PreprintTitle
   review: Html
-  language: O.Option<LanguageCode>
+  language: Option.Option<LanguageCode>
   structured: boolean
   user: User
 }
@@ -57,6 +57,7 @@ export const writeReviewPublish = flow(
       ),
       RM.bind('form', ({ originalForm }) => RM.right(CompletedFormC.decode(originalForm))),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
+      RM.apSW('mustDeclareUseOfAi', RM.rightReader(mustDeclareUseOfAi)),
       RM.bindW('contactEmailAddress', ({ user }) => RM.fromReaderTaskEither(maybeGetContactEmailAddress(user.orcid))),
       RM.ichainW(decideNextStep),
       RM.orElseW(error =>
@@ -73,8 +74,8 @@ export const writeReviewPublish = flow(
   ),
   RM.orElseW(error =>
     match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
+      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
+      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
       .exhaustive(),
   ),
 )
@@ -86,6 +87,7 @@ const decideNextStep = (state: {
   preprint: PreprintTitle
   user: User
   locale: SupportedLocale
+  mustDeclareUseOfAi: boolean
 }) =>
   match(state)
     .returnType<
@@ -99,7 +101,13 @@ const decideNextStep = (state: {
     >()
     .with(
       P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
-      ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm)),
+      ({ originalForm, mustDeclareUseOfAi }) =>
+        RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm, mustDeclareUseOfAi)),
+    )
+    .with(
+      { mustDeclareUseOfAi: true, form: P.when(E.isRight), originalForm: { generativeAiIdeas: P.optional(undefined) } },
+      ({ originalForm, mustDeclareUseOfAi }) =>
+        RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm, mustDeclareUseOfAi)),
     )
     .with({ contactEmailAddress: P.optional({ _tag: 'UnverifiedContactEmailAddress' }) }, () =>
       RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: state.preprint.id }))),
@@ -132,8 +140,8 @@ const handlePublishForm = ({
       conduct: form.conduct,
       otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
       language: match(form)
-        .returnType<O.Option<LanguageCode>>()
-        .with({ reviewType: 'questions' }, () => O.some('en'))
+        .returnType<Option.Option<LanguageCode>>()
+        .with({ reviewType: 'questions' }, () => Option.some('en'))
         .with({ reviewType: 'freeform' }, form => detectLanguage(form.review))
         .exhaustive(),
       persona: form.persona,
@@ -329,7 +337,26 @@ function renderReview(form: CompletedForm) {
 
     <h2>Competing interests</h2>
 
-    <p>${getCompetingInterests(form)}</p>`
+    <p>${getCompetingInterests(form)}</p>
+
+    ${form.generativeAiIdeas === 'yes'
+      ? html`
+          <h2>Use of Artificial Intelligence (AI)</h2>
+
+          <p>
+            ${match(form.moreAuthors)
+              .with(
+                P.union('yes', 'yes-private'),
+                () => 'The authors declare that they used generative AI to come up with new ideas for their review.',
+              )
+              .with(
+                'no',
+                () => 'The author declares that they used generative AI to come up with new ideas for their review.',
+              )
+              .exhaustive()}
+          </p>
+        `
+      : ''} `
 }
 
 function failureMessage(user: User) {

@@ -2,7 +2,6 @@ import { HttpClient } from '@effect/platform'
 import { Context, Data, Effect, Layer, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { CachingHttpClient } from './CachingHttpClient/index.js'
 import { getPageWithEffect, GhostApi } from './ghost.js'
 import type { Html } from './html.js'
 
@@ -33,7 +32,7 @@ const loadWithCachingClient = (id: string) =>
 export const layer = Layer.effect(
   GetPageFromGhost,
   Effect.gen(function* () {
-    const httpClient = yield* CachingHttpClient
+    const httpClient = yield* HttpClient.HttpClient
     const ghostApi = yield* GhostApi
     return id =>
       pipe(

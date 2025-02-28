@@ -1,11 +1,10 @@
+import { Option, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
+import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import {
   type IsOpenForRequests,
@@ -38,7 +37,7 @@ export const changeOpenForRequests = ({ body, method, user }: { body: unknown; m
 
 const showChangeOpenForRequestsForm = flow(
   ({ user }: { user: User }) => isOpenForRequests(user.orcid),
-  RTE.match(() => O.none, O.some),
+  RTE.match(Option.none, Option.some),
   RT.map(openForRequests => createFormPage({ openForRequests })),
 )
 
@@ -48,7 +47,7 @@ const handleChangeOpenForRequestsForm = ({ body, user }: { body: unknown; user: 
   pipe(
     RTE.fromEither(ChangeOpenForRequestsFormD.decode(body)),
     RTE.matchE(
-      () => RT.of(createFormPage({ openForRequests: O.none, error: true })),
+      () => RT.of(createFormPage({ openForRequests: Option.none(), error: true })),
       flow(
         ({ openForRequests }) =>
           match(openForRequests)
@@ -86,5 +85,3 @@ const handleChangeOpenForRequestsForm = ({ body, user }: { body: unknown; user: 
       ),
     ),
   )
-
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

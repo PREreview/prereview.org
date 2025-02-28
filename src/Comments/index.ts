@@ -1,6 +1,5 @@
 import { Array, Effect, Layer, Match, pipe, PubSub, Queue, Schedule } from 'effect'
 import { EventStore } from '../EventStore.js'
-import { RequiresAVerifiedEmailAddress } from '../feature-flags.js'
 import type { Uuid } from '../types/index.js'
 import {
   CommentEvents,
@@ -33,18 +32,17 @@ export * from './State.js'
 export const makeHandleCommentCommand: Effect.Effect<
   typeof HandleCommentCommand.Service,
   never,
-  EventStore | CommentEvents | RequiresAVerifiedEmailAddress
+  EventStore | CommentEvents
 > = Effect.gen(function* () {
   const eventStore = yield* EventStore
   const commentEvents = yield* CommentEvents
-  const requiresAVerifiedEmailAddress = yield* RequiresAVerifiedEmailAddress
 
   return ({ commentId, command }) =>
     Effect.gen(function* () {
       const { events, latestVersion } = yield* eventStore.getEvents(commentId)
 
       const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
-        EvolveComment(requiresAVerifiedEmailAddress)(state)(event),
+        EvolveComment(state)(event),
       )
 
       yield* pipe(
@@ -66,20 +64,15 @@ export const makeHandleCommentCommand: Effect.Effect<
     )
 })
 
-export const makeGetComment: Effect.Effect<
-  typeof GetComment.Service,
-  never,
-  EventStore | RequiresAVerifiedEmailAddress
-> = Effect.gen(function* () {
+export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, EventStore> = Effect.gen(function* () {
   const eventStore = yield* EventStore
-  const requiresAVerifiedEmailAddress = yield* RequiresAVerifiedEmailAddress
 
   return commentId =>
     Effect.gen(function* () {
       const { events } = yield* eventStore.getEvents(commentId)
 
       return Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
-        EvolveComment(requiresAVerifiedEmailAddress)(state)(event),
+        EvolveComment(state)(event),
       )
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
@@ -87,32 +80,30 @@ export const makeGetComment: Effect.Effect<
 export const makeGetNextExpectedCommandForUser: Effect.Effect<
   typeof GetNextExpectedCommandForUser.Service,
   never,
-  EventStore | RequiresAVerifiedEmailAddress
+  EventStore
 > = Effect.gen(function* () {
   const eventStore = yield* EventStore
-  const requiresAVerifiedEmailAddress = yield* RequiresAVerifiedEmailAddress
 
   return ({ authorId, prereviewId }) =>
     Effect.gen(function* () {
       const events = yield* eventStore.getAllEvents
 
-      return Queries.GetNextExpectedCommandForUser(requiresAVerifiedEmailAddress)(events)({ authorId, prereviewId })
+      return Queries.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 
 export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
   typeof GetNextExpectedCommandForUserOnAComment.Service,
   never,
-  EventStore | RequiresAVerifiedEmailAddress
+  EventStore
 > = Effect.gen(function* () {
   const eventStore = yield* EventStore
-  const requiresAVerifiedEmailAddress = yield* RequiresAVerifiedEmailAddress
 
   return commentId =>
     Effect.gen(function* () {
       const events = yield* eventStore.getAllEvents
 
-      return Queries.GetNextExpectedCommandForUserOnAComment(requiresAVerifiedEmailAddress)(events)(commentId)
+      return Queries.GetNextExpectedCommandForUserOnAComment(events)(commentId)
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 

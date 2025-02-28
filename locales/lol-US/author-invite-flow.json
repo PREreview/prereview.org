@@ -22,5 +22,20 @@
   },
   "updatePrereview": {
     "message": "crwdns1646:0crwdne1646:0"
+  },
+  "nameAdded": {
+    "message": "crwdns4530:0crwdne4530:0"
+  },
+  "whatHappensNext": {
+    "message": "crwdns4532:0crwdne4532:0"
+  },
+  "ableToSeePrereviewShortly": {
+    "message": "crwdns4534:0crwdne4534:0"
+  },
+  "yourDoi": {
+    "message": "crwdns4536:0crwdne4536:0"
+  },
+  "closeWindowOrSeePrereview": {
+    "message": "crwdns4538:0crwdne4538:0"
   }
 }

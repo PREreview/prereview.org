@@ -9,13 +9,7 @@ import { CommandHandlerSpecification } from '../CommandHandlerSpecification.js'
 
 const given = CommandHandlerSpecification.for({
   decide: _.DecideComment,
-  evolve: _.EvolveComment(false),
-  initialState: new _.CommentNotStarted(),
-})
-
-const givenWhenAVerifiedEmailAddressIsRequired = CommandHandlerSpecification.for({
-  decide: _.DecideComment,
-  evolve: _.EvolveComment(true),
+  evolve: _.EvolveComment,
   initialState: new _.CommentNotStarted(),
 })
 
@@ -102,18 +96,16 @@ describe('when in progress', () => {
   test('cannot request publication', () =>
     given(started).when(new _.PublishComment()).thenError(new _.CommentIsIncomplete()))
 
-  describe('when a verified email address is required', () => {
-    test('cannot request publication', () =>
-      givenWhenAVerifiedEmailAddressIsRequired(
-        started,
-        new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-        new _.PersonaWasChosen({ persona: 'public' }),
-        new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-        new _.CodeOfConductWasAgreed(),
-      )
-        .when(new _.PublishComment())
-        .thenError(new _.CommentIsIncomplete()))
-  })
+  test('cannot request publication', () =>
+    given(
+      started,
+      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
+      new _.PersonaWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductWasAgreed(),
+    )
+      .when(new _.PublishComment())
+      .thenError(new _.CommentIsIncomplete()))
 
   test('DOI cannot be marked as assigned', () =>
     given(started)
@@ -124,31 +116,16 @@ describe('when in progress', () => {
     given(started).when(new _.MarkCommentAsPublished()).thenError(new _.CommentIsIncomplete()))
 })
 
-describe.each([
-  [
-    'feature flag turned off',
-    given,
-    [
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-    ],
-  ],
-  [
-    'feature flag turned on',
-    givenWhenAVerifiedEmailAddressIsRequired,
-    [
-      new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
-      new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-    ],
-  ],
-])('when ready for publication (%s)', (_name, given, minimumEventsToBeReady) => {
+describe('when ready for publication', () => {
+  const minimumEventsToBeReady = [
+    new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
+    new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
+    new _.PersonaWasChosen({ persona: 'public' }),
+    new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
+    new _.CodeOfConductWasAgreed(),
+    new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
+  ]
+
   test('cannot be started again', () =>
     given(...minimumEventsToBeReady)
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -211,6 +188,7 @@ describe('when being published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -223,6 +201,7 @@ describe('when being published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.EnterComment({ comment: html`<p>Some different comment.</p>` }))
@@ -235,6 +214,7 @@ describe('when being published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
@@ -247,6 +227,7 @@ describe('when being published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
@@ -259,6 +240,7 @@ describe('when being published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.AgreeToCodeOfConduct())
@@ -271,6 +253,7 @@ describe('when being published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
@@ -283,6 +266,7 @@ describe('when being published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.CommentPublicationWasRequested(),
     )
       .when(new _.PublishComment())
@@ -296,6 +280,7 @@ describe('when being published', () => {
         new _.PersonaWasChosen({ persona: 'public' }),
         new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
+        new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
         new _.CommentPublicationWasRequested(),
       )
         .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
@@ -308,6 +293,7 @@ describe('when being published', () => {
         new _.PersonaWasChosen({ persona: 'public' }),
         new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
+        new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
         new _.CommentPublicationWasRequested(),
       )
         .when(new _.MarkCommentAsPublished())
@@ -322,6 +308,7 @@ describe('when being published', () => {
         new _.PersonaWasChosen({ persona: 'public' }),
         new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
+        new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
         new _.CommentPublicationWasRequested(),
         new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       )
@@ -335,6 +322,7 @@ describe('when being published', () => {
         new _.PersonaWasChosen({ persona: 'public' }),
         new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
         new _.CodeOfConductWasAgreed(),
+        new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
         new _.CommentPublicationWasRequested(),
         new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       )
@@ -351,6 +339,7 @@ describe('when published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
@@ -364,6 +353,7 @@ describe('when published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
@@ -377,6 +367,7 @@ describe('when published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
@@ -390,6 +381,7 @@ describe('when published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
@@ -403,6 +395,7 @@ describe('when published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
@@ -416,6 +409,7 @@ describe('when published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
@@ -429,6 +423,7 @@ describe('when published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
@@ -442,6 +437,7 @@ describe('when published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
@@ -455,6 +451,7 @@ describe('when published', () => {
       new _.PersonaWasChosen({ persona: 'public' }),
       new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
       new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )

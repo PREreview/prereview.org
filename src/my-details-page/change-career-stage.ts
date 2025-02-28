@@ -1,12 +1,10 @@
+import { flow, Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
+import type { EnvFor } from '../Fpts.js'
 import { deleteCareerStage, getCareerStage, saveCareerStage } from '../career-stage.js'
 import { havingProblemsPage } from '../http-error.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
@@ -33,7 +31,7 @@ export const changeCareerStage = ({ body, method, user }: { body: unknown; metho
 
 const showChangeCareerStageForm = flow(
   ({ user }: { user: User }) => getCareerStage(user.orcid),
-  RTE.match(() => O.none, O.some),
+  RTE.match(Option.none, Option.some),
   RT.map(careerStage => createFormPage({ careerStage })),
 )
 
@@ -43,7 +41,7 @@ const handleChangeCareerStageForm = ({ body, user }: { body: unknown; user: User
   pipe(
     RTE.fromEither(ChangeCareerStageFormD.decode(body)),
     RTE.matchE(
-      () => RT.of(createFormPage({ careerStage: O.none, error: true })),
+      () => RT.of(createFormPage({ careerStage: Option.none(), error: true })),
       ({ careerStage }) =>
         match(careerStage)
           .with(P.union('early', 'mid', 'late'), careerStage =>
@@ -54,7 +52,7 @@ const handleChangeCareerStageForm = ({ body, user }: { body: unknown; user: User
                 'visibility',
                 pipe(
                   getCareerStage(user.orcid),
-                  RTE.map(get('visibility')),
+                  RTE.map(Struct.get('visibility')),
                   RTE.orElseW(error =>
                     match(error)
                       .with('not-found', () => RTE.of('restricted' as const))
@@ -81,5 +79,3 @@ const handleChangeCareerStageForm = ({ body, user }: { body: unknown; user: User
           .exhaustive(),
     ),
   )
-
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

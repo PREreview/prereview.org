@@ -1,28 +1,33 @@
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../html.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { requestAPrereviewMatch } from '../routes.js'
 
-export const unsupportedUrlPage = PageResponse({
-  status: Status.BadRequest,
-  title: plainText`Sorry, we don’t support this URL`,
-  main: html`
-    <h1>Sorry, we don’t support this URL</h1>
+export const unsupportedUrlPage = (locale: SupportedLocale) =>
+  PageResponse({
+    status: Status.BadRequest,
+    title: plainText(translate(locale, 'request-a-prereview-page', 'unsupportedUrlTitle')()),
+    main: html`
+      <h1>${translate(locale, 'request-a-prereview-page', 'unsupportedUrlTitle')()}</h1>
 
-    <p>
-      We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv,
-      engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research&nbsp;Square,
-      SciELO, ScienceOpen, SocArXiv, TechRxiv and Zenodo.
-    </p>
+      <p>${translate(locale, 'request-a-prereview-page', 'supportPreprintsFrom')()}</p>
 
-    <p>
-      If this URL is for a preprint on a server we don’t support, please
-      <a href="mailto:help@prereview.org">get in touch</a>.
-    </p>
+      <p>
+        ${rawHtml(
+          translate(
+            locale,
+            'request-a-prereview-page',
+            'urlContactUs',
+          )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
+        )}
+      </p>
 
-    <p>Otherwise, if the preprint has a DOI, please try using that instead.</p>
+      <p>${translate(locale, 'request-a-prereview-page', 'tryDoi')()}</p>
 
-    <a href="${format(requestAPrereviewMatch.formatter, {})}" class="button">Back</a>
-  `,
-})
+      <a href="${format(requestAPrereviewMatch.formatter, {})}" class="button"
+        >${translate(locale, 'request-a-prereview-page', 'back')()}</a
+      >
+    `,
+  })

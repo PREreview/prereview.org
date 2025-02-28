@@ -1,6 +1,5 @@
-import { Array, DateTime, Effect, HashMap, Inspectable, List, Logger, Match } from 'effect'
+import { Array, DateTime, Effect, HashMap, Inspectable, List, Logger, Match, pipe } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import type * as J from 'fp-ts/lib/Json.js'
 import * as L from 'logger-fp-ts'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, type DeprecatedSleepEnv } from './Context.js'

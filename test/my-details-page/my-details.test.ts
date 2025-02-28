@@ -24,8 +24,6 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.researchInterests()),
         fc.either(fc.constant('not-found'), fc.location()),
         fc.either(fc.constant('not-found'), fc.languages()),
-        fc.boolean(),
-        fc.boolean(),
       ])(
         'when the user has visited before',
         async (
@@ -40,12 +38,8 @@ describe('myDetails', () => {
           researchInterests,
           location,
           languages,
-          canConnectOrcidProfile,
-          canUploadAvatar,
         ) => {
           const actual = await _.myDetails({ user })({
-            canConnectOrcidProfile: () => canConnectOrcidProfile,
-            canUploadAvatar: () => canUploadAvatar,
             getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -84,8 +78,6 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.researchInterests()),
         fc.either(fc.constant('not-found'), fc.location()),
         fc.either(fc.constant('not-found'), fc.languages()),
-        fc.boolean(),
-        fc.boolean(),
       ])(
         "when the user hasn't visited before",
         async (
@@ -100,14 +92,10 @@ describe('myDetails', () => {
           researchInterests,
           location,
           languages,
-          canConnectOrcidProfile,
-          canUploadAvatar,
         ) => {
           const saveUserOnboarding = jest.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
 
           const actual = await _.myDetails({ user })({
-            canConnectOrcidProfile: () => canConnectOrcidProfile,
-            canUploadAvatar: () => canUploadAvatar,
             getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -147,8 +135,6 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.researchInterests()),
         fc.either(fc.constant('not-found'), fc.location()),
         fc.either(fc.constant('not-found'), fc.languages()),
-        fc.boolean(),
-        fc.boolean(),
       ])(
         'when the user onboarding cannot be updated',
         async (
@@ -163,12 +149,8 @@ describe('myDetails', () => {
           researchInterests,
           location,
           languages,
-          canConnectOrcidProfile,
-          canUploadAvatar,
         ) => {
           const actual = await _.myDetails({ user })({
-            canConnectOrcidProfile: () => canConnectOrcidProfile,
-            canUploadAvatar: () => canUploadAvatar,
             getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -205,8 +187,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.researchInterests()),
       fc.either(fc.constant('not-found'), fc.location()),
       fc.either(fc.constant('not-found'), fc.languages()),
-      fc.boolean(),
-      fc.boolean(),
     ])(
       'when the user onboarding cannot be loaded',
       async (
@@ -220,12 +200,8 @@ describe('myDetails', () => {
         researchInterests,
         location,
         languages,
-        canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
-          canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -261,7 +237,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.researchInterests()),
       fc.either(fc.constant('not-found'), fc.location()),
       fc.either(fc.constant('not-found'), fc.languages()),
-      fc.boolean(),
     ])(
       'when the ORCID token cannot be loaded',
       async (
@@ -275,11 +250,8 @@ describe('myDetails', () => {
         researchInterests,
         location,
         languages,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
-          canConnectOrcidProfile: () => true,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -315,8 +287,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.researchInterests()),
       fc.either(fc.constant('not-found'), fc.location()),
       fc.either(fc.constant('not-found'), fc.languages()),
-      fc.boolean(),
-      fc.boolean(),
     ])(
       'when the Slack user cannot be loaded',
       async (
@@ -330,12 +300,8 @@ describe('myDetails', () => {
         researchInterests,
         location,
         languages,
-        canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
-          canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -371,8 +337,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.researchInterests()),
       fc.either(fc.constant('not-found'), fc.location()),
       fc.either(fc.constant('not-found'), fc.languages()),
-      fc.boolean(),
-      fc.boolean(),
     ])(
       'when the contact email address cannot be loaded',
       async (
@@ -386,12 +350,8 @@ describe('myDetails', () => {
         researchInterests,
         location,
         languages,
-        canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
-          canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.left('unavailable'),
@@ -427,8 +387,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.researchInterests()),
       fc.either(fc.constant('not-found'), fc.location()),
       fc.either(fc.constant('not-found'), fc.languages()),
-      fc.boolean(),
-      fc.boolean(),
     ])(
       'when being open for requests is unavailable',
       async (
@@ -442,12 +400,8 @@ describe('myDetails', () => {
         researchInterests,
         location,
         languages,
-        canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
-          canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -483,8 +437,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.researchInterests()),
       fc.either(fc.constant('not-found'), fc.location()),
       fc.either(fc.constant('not-found'), fc.languages()),
-      fc.boolean(),
-      fc.boolean(),
     ])(
       'when the career stage cannot be loaded',
       async (
@@ -498,12 +450,8 @@ describe('myDetails', () => {
         researchInterests,
         location,
         languages,
-        canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
-          canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.left('unavailable'),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -539,8 +487,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.careerStage()),
       fc.either(fc.constant('not-found'), fc.location()),
       fc.either(fc.constant('not-found'), fc.languages()),
-      fc.boolean(),
-      fc.boolean(),
     ])(
       'when the research interests cannot be loaded',
       async (
@@ -554,12 +500,8 @@ describe('myDetails', () => {
         careerStage,
         location,
         languages,
-        canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
-          canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -595,8 +537,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.careerStage()),
       fc.either(fc.constant('not-found'), fc.researchInterests()),
       fc.either(fc.constant('not-found'), fc.languages()),
-      fc.boolean(),
-      fc.boolean(),
     ])(
       'when the location cannot be loaded',
       async (
@@ -610,12 +550,8 @@ describe('myDetails', () => {
         careerStage,
         researchInterests,
         languages,
-        canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
-          canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -651,8 +587,6 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found'), fc.careerStage()),
       fc.either(fc.constant('not-found'), fc.researchInterests()),
       fc.either(fc.constant('not-found'), fc.location()),
-      fc.boolean(),
-      fc.boolean(),
     ])(
       'when the languages cannot be loaded',
       async (
@@ -666,12 +600,8 @@ describe('myDetails', () => {
         careerStage,
         researchInterests,
         location,
-        canConnectOrcidProfile,
-        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
-          canConnectOrcidProfile: () => canConnectOrcidProfile,
-          canUploadAvatar: () => canUploadAvatar,
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -699,8 +629,6 @@ describe('myDetails', () => {
 
   test('when the user is not logged in', async () => {
     const actual = await _.myDetails({})({
-      canConnectOrcidProfile: shouldNotBeCalled,
-      canUploadAvatar: shouldNotBeCalled,
       getAvatar: shouldNotBeCalled,
       getCareerStage: shouldNotBeCalled,
       getContactEmailAddress: shouldNotBeCalled,

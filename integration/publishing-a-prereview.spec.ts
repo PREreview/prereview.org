@@ -1,5 +1,5 @@
 import { Doi } from 'doi-ts'
-import { constVoid } from 'fp-ts/lib/function.js'
+import { Function } from 'effect'
 import { Status } from 'hyper-ts'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import { Orcid } from 'orcid-id-ts'
@@ -11,8 +11,10 @@ import {
   expect,
   hasAVerifiedEmailAddress,
   hasAnUnverifiedEmailAddress,
+  mustDeclareUseOfAi,
   test,
   updatesLegacyPrereview,
+  waitForNotBusy,
   willPublishAReview,
 } from './base.js'
 
@@ -34,7 +36,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
 
     if (javaScriptEnabled) {
       await expect(page.getByLabel('Write your PREreview')).toHaveText(/^Write a short summary of/)
@@ -60,13 +62,9 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('No, I reviewed it alone').check()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Do you have any competing interests?')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Competing interests')
 
     await page.getByLabel('No').check()
 
@@ -266,7 +264,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -297,7 +295,7 @@ test
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForLoadState()
+  await waitForNotBusy(page)
   await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Josiah Carberry').check()
@@ -335,7 +333,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Paste your PREreview')
 
@@ -382,7 +380,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
 
     if (!javaScriptEnabled) {
       await expect(page.getByRole('button', { name: 'Bold' })).toBeHidden()
@@ -426,7 +424,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.keyboard.press('Shift+ArrowLeft')
 
     page.once('dialog', dialog => {
-      void dialog.accept('https://example.com').catch(constVoid)
+      void dialog.accept('https://example.com').catch(Function.constVoid)
     })
     await page.getByRole('button', { name: 'Link' }).click()
 
@@ -559,7 +557,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -576,9 +574,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Do you, or any of the other authors, have any competing interests?',
-    )
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Competing interests')
 
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -707,7 +703,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -741,7 +737,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -772,7 +768,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Orange Panda').check()
@@ -800,7 +796,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -817,7 +813,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     )
 
     await page.getByRole('link', { name: 'Change PREreview' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
 
     await page
       .getByLabel('Write your PREreview')
@@ -837,7 +833,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -860,6 +856,40 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   },
 )
 
+test.extend(mustDeclareUseOfAi).extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'can change the use of AI after previewing',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await waitForNotBusy(page)
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText('Use of AI Not used')
+
+    await page.getByRole('link', { name: 'Change use of AI' }).click()
+
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText(
+      'Use of AI The author declares that they used generative AI to come up with new ideas for their review.',
+    )
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can change the competing interests after previewing',
   async ({ page }) => {
@@ -867,7 +897,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1073,7 +1103,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1234,7 +1264,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1289,7 +1319,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1629,7 +1659,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1651,9 +1681,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 
     await page.setContent(String(emails[0]?.html))
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Verify email address' }).click()
@@ -1679,7 +1706,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1716,7 +1743,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1796,7 +1823,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1886,7 +1913,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a review', async ({ jav
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForLoadState()
+  await waitForNotBusy(page)
   await page.getByLabel('Write your PREreview').clear()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -1909,7 +1936,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -2333,7 +2360,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForLoadState()
+  await waitForNotBusy(page)
   await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -2365,7 +2392,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -2384,14 +2411,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'aria-invalid',
       'true',
     )
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Select yes if you reviewed the preprint with someone else' }).click()
 
     await expect(page.getByLabel('No, I reviewed it alone')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
@@ -2402,7 +2425,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -2419,16 +2442,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('They have read and approved the PREreview')).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page
       .getByRole('link', { name: 'Confirm that the other authors have read and approved the PREreview' })
       .click()
 
     await expect(page.getByLabel('They have read and approved the PREreview')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
@@ -2439,7 +2458,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -2538,7 +2557,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -2578,7 +2597,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -2611,6 +2630,82 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
+test.extend(mustDeclareUseOfAi).extend(canLogIn).extend(areLoggedIn)(
+  'have to declare the use of AI',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await waitForNotBusy(page)
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', { name: 'Did you use AI to generate ideas for this review?' }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Select yes if you used AI to generate ideas for this review' }).click()
+
+    await expect(page.getByLabel('No')).toBeFocused()
+  },
+)
+
+test.extend(mustDeclareUseOfAi).extend(canLogIn).extend(areLoggedIn)(
+  'have to declare the use of AI by any author',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await waitForNotBusy(page)
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, and some or all want to be listed as authors').check()
+    await page.getByLabel('They have read and approved the PREreview').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
+    await page.getByLabel('Email address').fill('jbbotul@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Did you, or any of the other authors, use AI to generate ideas for this review?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page
+      .getByRole('link', {
+        name: 'Select yes if you, or any of the other authors, used AI to generate ideas for this review',
+      })
+      .click()
+
+    await expect(page.getByLabel('No')).toBeFocused()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare any competing interests',
   async ({ javaScriptEnabled, page }) => {
@@ -2618,7 +2713,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -2666,7 +2761,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -2721,7 +2816,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -2755,7 +2850,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter an email address', asyn
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForLoadState()
+  await waitForNotBusy(page)
   await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Josiah Carberry').check()
@@ -2792,7 +2887,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
+    await waitForNotBusy(page)
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()

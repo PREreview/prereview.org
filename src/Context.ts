@@ -18,10 +18,10 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
   ExpressConfig,
   Omit<
     ConfigEnv,
-    | 'canWriteComments'
     | 'clock'
     | 'fetch'
     | 'generateUuid'
+    | 'getPreprint'
     | 'ghostApi'
     | 'nodemailer'
     | 'publicUrl'

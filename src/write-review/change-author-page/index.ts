@@ -1,15 +1,13 @@
+import { Option, String, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
-import * as s from 'fp-ts/lib/string.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE, missingE } from '../../form.js'
+import * as FptsToEffect from '../../FptsToEffect.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
@@ -41,8 +39,8 @@ export const writeReviewChangeAuthor = ({
       error =>
         RT.of(
           match(error)
-            .with('not-found', () => pageNotFound)
-            .with('unavailable', () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),
       preprint =>
@@ -68,8 +66,8 @@ export const writeReviewChangeAuthor = ({
             'author',
             RTE.fromOptionK(() => 'no-author' as const)(
               flow(
-                O.fromNullableK(({ form }) => form.otherAuthors),
-                O.chain(RA.lookup(number - 1)),
+                Option.liftNullable(({ form }) => form.otherAuthors),
+                Option.flatMap(FptsToEffect.optionK(RA.lookup(number - 1))),
               ),
             ),
           ),
@@ -131,7 +129,7 @@ const handleChangeAuthorForm = ({
         EmailAddressFieldD.decode(body),
         E.mapLeft(error =>
           match(getInput('emailAddress')(error))
-            .with(P.union(P.when(O.isNone), { value: '' }), () => missingE())
+            .with(P.union(P.when(Option.isNone), { value: '' }), () => missingE())
             .with({ value: P.select() }, invalidE)
             .exhaustive(),
         ),
@@ -166,9 +164,9 @@ const handleChangeAuthorForm = ({
     ),
   )
 
-const NameFieldD = pipe(D.struct({ name: NonEmptyStringC }), D.map(get('name')))
+const NameFieldD = pipe(D.struct({ name: NonEmptyStringC }), D.map(Struct.get('name')))
 
 const EmailAddressFieldD = pipe(
-  D.struct({ emailAddress: pipe(D.string, D.map(s.trim), D.compose(EmailAddressC)) }),
-  D.map(get('emailAddress')),
+  D.struct({ emailAddress: pipe(D.string, D.map(String.trim), D.compose(EmailAddressC)) }),
+  D.map(Struct.get('emailAddress')),
 )

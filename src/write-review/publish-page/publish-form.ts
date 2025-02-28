@@ -1,11 +1,10 @@
+import { flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
-import { get } from 'spectacles-ts'
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.js'
 import { DefaultLocale, translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
@@ -27,6 +26,7 @@ import {
   writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
+  writeReviewUseOfAiMatch,
 } from '../../routes.js'
 import { ProfileId } from '../../types/index.js'
 import { isPseudonym } from '../../types/pseudonym.js'
@@ -79,6 +79,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                     .with('ecoevorxiv', () => 'EcoEvoRxiv')
                     .with('edarxiv', () => 'EdArXiv')
                     .with('engrxiv', () => 'engrXiv')
+                    .with('jxiv', () => 'Jxiv')
                     .with('medrxiv', () => 'medRxiv')
                     .with('metaarxiv', () => 'MetaArXiv')
                     .with('osf', () => 'OSF')
@@ -132,10 +133,37 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                 ? html`
                     <div>
                       <dt><span>Invited author${review.otherAuthors.length !== 1 ? 's' : ''}</span></dt>
-                      <dd>${pipe(review.otherAuthors, RNEA.map(get('name')), formatList(DefaultLocale))}</dd>
+                      <dd>${pipe(review.otherAuthors, RNEA.map(Struct.get('name')), formatList(DefaultLocale))}</dd>
                       <dd>
                         <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
                           >${rawHtml(t('changeInvitedAuthors')(visuallyHidden))}</a
+                        >
+                      </dd>
+                    </div>
+                  `
+                : ''}
+              ${typeof review.generativeAiIdeas === 'string'
+                ? html`
+                    <div>
+                      <dt><span>Use of AI</span></dt>
+                      <dd>
+                        ${match([review.generativeAiIdeas, review.moreAuthors])
+                          .with(
+                            ['yes', P.union('yes', 'yes-private')],
+                            () =>
+                              'The authors declare that they used generative AI to come up with new ideas for their review.',
+                          )
+                          .with(
+                            ['yes', 'no'],
+                            () =>
+                              'The author declares that they used generative AI to come up with new ideas for their review.',
+                          )
+                          .with(['no', P.string], () => 'Not used')
+                          .exhaustive()}
+                      </dd>
+                      <dd>
+                        <a href="${format(writeReviewUseOfAiMatch.formatter, { id: preprint.id })}"
+                          >Change <span class="visually-hidden">use of AI</span></a
                         >
                       </dd>
                     </div>

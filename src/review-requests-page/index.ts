@@ -1,6 +1,6 @@
+import { pipe } from 'effect'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import type { LanguageCode } from 'iso-639-1'
 import { match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'

@@ -1,6 +1,6 @@
+import { pipe } from 'effect'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import { getClubDetails } from '../club-details.js'
 import { havingProblemsPage } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'

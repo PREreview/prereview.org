@@ -1,12 +1,9 @@
+import { Option, String, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
-import * as s from 'fp-ts/lib/string.js'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
   UnverifiedContactEmailAddress,
@@ -74,8 +71,8 @@ export const writeReviewEnterEmailAddress = flow(
   ),
   RM.orElseW(error =>
     match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
+      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
+      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
       .exhaustive(),
   ),
 )
@@ -111,7 +108,7 @@ const handleEnterEmailAddressForm = ({ preprint, user }: { preprint: PreprintTit
         E.mapLeft(error => ({
           emailAddress: match(getInput('emailAddress')(error))
             .returnType<E.Either<MissingE | InvalidE, never>>()
-            .with(P.union(P.when(O.isNone), { value: '' }), () => pipe(missingE(), E.left))
+            .with(P.union(P.when(Option.isNone), { value: '' }), () => pipe(missingE(), E.left))
             .with({ value: P.select() }, flow(invalidE, E.left))
             .exhaustive(),
         })),
@@ -137,8 +134,8 @@ const handleEnterEmailAddressForm = ({ preprint, user }: { preprint: PreprintTit
   )
 
 const EmailAddressFieldD = pipe(
-  D.struct({ emailAddress: pipe(D.string, D.map(s.trim), D.compose(EmailAddressC)) }),
-  D.map(get('emailAddress')),
+  D.struct({ emailAddress: pipe(D.string, D.map(String.trim), D.compose(EmailAddressC)) }),
+  D.map(Struct.get('emailAddress')),
 )
 
 interface EnterEmailAddressForm {

@@ -1,4 +1,4 @@
-import { FetchHttpClient } from '@effect/platform'
+import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import {
@@ -10,7 +10,7 @@ import {
 } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { Effect, Logger as EffectLogger, Fiber, Layer, Option, pipe, Redacted } from 'effect'
+import { Effect, Logger as EffectLogger, Fiber, Layer, Option, pipe, Redacted, Schedule } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
@@ -20,7 +20,7 @@ import * as L from 'logger-fp-ts'
 import nodemailer from 'nodemailer'
 import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import { Orcid } from 'orcid-id-ts'
-import type { BrowserContextOptions } from 'playwright-core'
+import type { BrowserContextOptions, Page } from 'playwright-core'
 import { URL } from 'url'
 import { Uuid } from 'uuid-ts'
 import {
@@ -43,14 +43,6 @@ import {
 import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
-import type {
-  CanConnectOrcidProfileEnv,
-  CanRequestReviewsEnv,
-  CanUploadAvatarEnv,
-  CanUseSearchQueriesEnv,
-  CanWriteComments,
-  RequiresAVerifiedEmailAddress,
-} from '../src/feature-flags.js'
 import * as FeatureFlags from '../src/feature-flags.js'
 import { GhostApi } from '../src/ghost.js'
 import { rawHtml } from '../src/html.js'
@@ -97,13 +89,8 @@ interface AppFixtures {
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
-  canConnectOrcidProfile: CanConnectOrcidProfileEnv['canConnectOrcidProfile']
-  canRequestReviews: CanRequestReviewsEnv['canRequestReviews']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
-  canUploadAvatar: CanUploadAvatarEnv['canUploadAvatar']
-  canUseSearchQueries: CanUseSearchQueriesEnv['canUseSearchQueries']
-  canWriteComments: typeof CanWriteComments.Service
-  requiresAVerifiedEmailAddress: typeof RequiresAVerifiedEmailAddress.Service
+  mustDeclareUseOfAi: FeatureFlags.MustDeclareUseOfAiEnv['mustDeclareUseOfAi']
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
 }
@@ -114,21 +101,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   baseURL: async ({ port }, use) => {
     await use(`http://localhost:${port}`)
-  },
-  canConnectOrcidProfile: async ({}, use) => {
-    await use(() => false)
-  },
-  canRequestReviews: async ({}, use) => {
-    await use(() => false)
-  },
-  canUploadAvatar: async ({}, use) => {
-    await use(() => false)
-  },
-  canUseSearchQueries: async ({}, use) => {
-    await use(() => false)
-  },
-  canWriteComments: async ({}, use) => {
-    await use(() => false)
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
@@ -1188,6 +1160,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await fs.writeFile(testInfo.outputPath('emails.json'), JSON.stringify(emails, undefined, 2))
   },
+  mustDeclareUseOfAi: async ({}, use) => {
+    await use(false)
+  },
   nodemailer: async ({ emails }, use) => {
     await use(
       nodemailer.createTransport<unknown>({
@@ -1217,9 +1192,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
-  requiresAVerifiedEmailAddress: async ({}, use) => {
-    await use(false)
-  },
   researchInterestsStore: async ({}, use) => {
     await use(new Keyv())
   },
@@ -1247,12 +1219,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         userOnboardingStore,
         wasPrereviewRemoved,
         authorInviteStore,
-        canConnectOrcidProfile,
-        canRequestReviews,
-        canUploadAvatar,
-        canUseSearchQueries,
-        canWriteComments,
-        requiresAVerifiedEmailAddress,
+        mustDeclareUseOfAi,
         nodemailer,
       },
       use,
@@ -1266,11 +1233,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           allowSiteCrawlers: true,
           authorInviteStore,
           avatarStore: new Keyv(),
-          canConnectOrcidProfile,
-          canRequestReviews,
-          canSeeAlternativeCompetingInterestsForm: false,
-          canUploadAvatar,
-          canUseSearchQueries,
           cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
           formStore,
           careerStageStore,
@@ -1287,6 +1249,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             update: updatesLegacyPrereview,
           },
           locationStore,
+          mustDeclareUseOfAi,
           orcidApiUrl: new URL('http://api.orcid.test/'),
           orcidOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
@@ -1318,8 +1281,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provide(
           FeatureFlags.layer({
             canChooseLocale: false,
-            canWriteComments,
-            requiresAVerifiedEmailAddress,
             useCrowdinInContext: false,
           }),
         ),
@@ -1338,6 +1299,16 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       )
 
       const fiber = Effect.runFork(server)
+
+      await pipe(
+        HttpClient.head(`http://localhost:${port}/health`),
+        Effect.timeout('50 millis'),
+        Effect.andThen(HttpClientResponse.filterStatusOk),
+        Effect.scoped,
+        Effect.retry(Schedule.forever),
+        Effect.provide(FetchHttpClient.layer),
+        Effect.runPromise,
+      )
 
       await use(fiber)
 
@@ -1932,62 +1903,12 @@ export const willPublishAComment: Fixtures<
   },
 }
 
-export const canConnectOrcidProfile: Fixtures<
+export const mustDeclareUseOfAi: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'canConnectOrcidProfile'>
+  Pick<AppFixtures, 'mustDeclareUseOfAi'>
 > = {
-  canConnectOrcidProfile: async ({}, use) => {
-    await use(() => true)
-  },
-}
-
-export const canRequestReviews: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canRequestReviews'>
-> = {
-  canRequestReviews: async ({}, use) => {
-    await use(() => true)
-  },
-}
-
-export const canUploadAvatar: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canUploadAvatar'>
-> = {
-  canUploadAvatar: async ({}, use) => {
-    await use(() => true)
-  },
-}
-
-export const canUseSearchQueries: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canUseSearchQueries'>
-> = {
-  canUseSearchQueries: async ({}, use) => {
-    await use(() => true)
-  },
-}
-
-export const canWriteComments: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canWriteComments'>
-> = {
-  canWriteComments: async ({}, use) => {
-    await use(() => true)
-  },
-}
-
-export const requiresAVerifiedEmailAddress: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'requiresAVerifiedEmailAddress'>
-> = {
-  requiresAVerifiedEmailAddress: async ({}, use) => {
+  mustDeclareUseOfAi: async ({}, use) => {
     await use(true)
   },
 }
@@ -2126,3 +2047,9 @@ export const invitedToBeAnAuthor: Fixtures<
 }
 
 export const test = baseTest.extend(appFixtures)
+
+export const waitForNotBusy = async (page: Page) => {
+  await page.waitForLoadState()
+
+  await page.locator('body', { hasNot: page.locator('[aria-busy=true]') }).waitFor()
+}

@@ -11,7 +11,7 @@ import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewChangeAuthorMatch } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import type { NonEmptyString } from '../../types/string.js'
-import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from '../shared-elements.js'
+import { backNav, errorPrefix, errorSummary, prereviewOfSuffix, saveAndContinueButton } from '../shared-elements.js'
 
 export function changeAuthorForm({
   author,
@@ -32,7 +32,8 @@ export function changeAuthorForm({
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: pipe(
-      t('write-review', 'changeAuthorTitle')({ name: author.name, preprintTitle: preprint.title.toString() }),
+      t('write-review', 'changeAuthorDetailsHeading')({ name: author.name }),
+      prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),

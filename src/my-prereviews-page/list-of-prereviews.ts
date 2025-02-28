@@ -1,6 +1,6 @@
+import { flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml } from '../html.js'
@@ -93,6 +93,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
                       .with('ecoevorxiv', () => 'EcoEvoRxiv')
                       .with('edarxiv', () => 'EdArXiv')
                       .with('engrxiv', () => 'engrXiv')
+                      .with('jxiv', () => 'Jxiv')
                       .with('medrxiv', () => 'medRxiv')
                       .with('metaarxiv', () => 'MetaArXiv')
                       .with('osf', () => 'OSF')

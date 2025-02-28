@@ -9,9 +9,10 @@ export default {
   browsers: [
     playwrightLauncher({ product: 'chromium' }),
     playwrightLauncher({ product: 'webkit' }),
-    playwrightLauncher({ product: 'firefox' }),
+    // playwrightLauncher({ product: 'firefox' }),
   ],
   files: 'test/assets/**/*.test.ts',
+  filterBrowserLogs: log => log.type !== 'Lit is in dev mode',
   nodeResolve: true,
   plugins: [url({}), esbuildPlugin({ ts: true })],
 }

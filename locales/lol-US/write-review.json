@@ -1,6 +1,9 @@
 {
+  "prereviewOf": {
+    "message": "crwdns4539:0{preprintTitle}crwdne4539:0"
+  },
   "addAuthorTitle": {
-    "message": "crwdns3898:0{preprintTitle}crwdne3898:0"
+    "message": "crwdns4541:0crwdne4541:0"
   },
   "enterTheirName": {
     "message": "crwdns3900:0crwdne3900:0"
@@ -30,7 +33,7 @@
     "message": "crwdns3916:0crwdne3916:0"
   },
   "addAuthorsTitle": {
-    "message": "crwdns4062:0authorCount={authorCount}crwdnd4062:0authorCount={authorCount}crwdnd4062:0preprintTitle={preprintTitle}crwdne4062:0"
+    "message": "crwdns4543:0authorCount={authorCount}crwdnd4543:0authorCount={authorCount}crwdne4543:0"
   },
   "back": {
     "message": "crwdns3920:0crwdne3920:0"
@@ -69,7 +72,7 @@
     "message": "crwdns3942:0crwdne3942:0"
   },
   "changeAuthorTitle": {
-    "message": "crwdns3944:0{name}crwdnd3944:0{preprintTitle}crwdne3944:0"
+    "message": "crwdns4545:0{name}crwdne4545:0"
   },
   "enterName": {
     "message": "crwdns3946:0crwdne3946:0"
@@ -246,7 +249,7 @@
     "message": "crwdns4060:0crwdne4060:0"
   },
   "removeAuthorTitle": {
-    "message": "crwdns4376:0{authorName}crwdnd4376:0{preprintTitle}crwdne4376:0"
+    "message": "crwdns4547:0{authorName}crwdne4547:0"
   },
   "selectYesToRemove": {
     "message": "crwdns4378:0{authorName}crwdne4378:0"
@@ -264,7 +267,7 @@
     "message": "crwdns4434:0{preprintTitle}crwdne4434:0"
   },
   "authorsTitle": {
-    "message": "crwdns4388:0{preprintTitle}crwdne4388:0"
+    "message": "crwdns4549:0crwdne4549:0"
   },
   "selectYesIfYouReviewedWithSomeoneElse": {
     "message": "crwdns4390:0crwdne4390:0"
@@ -291,7 +294,10 @@
     "message": "crwdns4404:0crwdne4404:0"
   },
   "competingInterestsTitle": {
-    "message": "crwdns4406:0{preprintTitle}crwdne4406:0"
+    "message": "crwdns4551:0crwdne4551:0"
+  },
+  "competingInterests": {
+    "message": "crwdns4553:0crwdne4553:0"
   },
   "selectYesIfCompetingInterest": {
     "message": "crwdns4408:0crwdne4408:0"
@@ -302,8 +308,14 @@
   "doYouHaveCompetingInterests": {
     "message": "crwdns4412:0crwdne4412:0"
   },
+  "discloseCompetingInterests": {
+    "message": "crwdns4555:0crwdne4555:0"
+  },
   "whatIsCompetingInterest": {
     "message": "crwdns4492:0crwdne4492:0"
+  },
+  "competingInterestsMatter": {
+    "message": "crwdns4557:0crwdne4557:0"
   },
   "examples": {
     "message": "crwdns4416:0crwdne4416:0"
@@ -333,7 +345,7 @@
     "message": "crwdns4432:0crwdne4432:0"
   },
   "codeOfConductTitle": {
-    "message": "crwdns4452:0{preprintTitle}crwdne4452:0"
+    "message": "crwdns4559:0crwdne4559:0"
   },
   "confirmCodeOfConduct": {
     "message": "crwdns4454:0crwdne4454:0"

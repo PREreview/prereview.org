@@ -4,7 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
-import type { GetPreprintTitleEnv } from '../../src/preprint.js'
+import { type GetPreprintTitleEnv, PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewAddAuthorMatch, writeReviewMatch, writeReviewPublishMatch } from '../../src/routes.js'
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
@@ -17,7 +17,8 @@ describe('writeReviewAddAuthors', () => {
     fc.preprintTitle(),
     fc.user(),
     fc.incompleteForm({ moreAuthors: fc.constant('yes') }),
-  ])('when there is another author to add', async (preprintId, preprintTitle, user, newReview) => {
+    fc.boolean(),
+  ])('when there is another author to add', async (preprintId, preprintTitle, user, newReview, mustDeclareUseOfAi) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -29,6 +30,7 @@ describe('writeReviewAddAuthors', () => {
     })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
+      mustDeclareUseOfAi,
     })()
 
     expect(actual).toStrictEqual({
@@ -44,7 +46,8 @@ describe('writeReviewAddAuthors', () => {
       fc.preprintTitle(),
       fc.user(),
       fc.completedForm({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) }),
-    ])('when the form is completed', async (preprintId, preprintTitle, user, newReview) => {
+      fc.boolean(),
+    ])('when the form is completed', async (preprintId, preprintTitle, user, newReview, mustDeclareUseOfAi) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -56,6 +59,7 @@ describe('writeReviewAddAuthors', () => {
       })({
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
+        mustDeclareUseOfAi,
       })()
 
       expect(actual).toStrictEqual({
@@ -70,7 +74,8 @@ describe('writeReviewAddAuthors', () => {
       fc.preprintTitle(),
       fc.user(),
       fc.incompleteForm({ moreAuthors: fc.constant('yes') }),
-    ])('when the form is incomplete', async (preprintId, preprintTitle, user, newReview) => {
+      fc.boolean(),
+    ])('when the form is incomplete', async (preprintId, preprintTitle, user, newReview, mustDeclareUseOfAi) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -82,6 +87,7 @@ describe('writeReviewAddAuthors', () => {
       })({
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
+        mustDeclareUseOfAi,
       })()
 
       expect(actual).toStrictEqual({
@@ -99,28 +105,34 @@ describe('writeReviewAddAuthors', () => {
     fc.string(),
     fc.user(),
     fc.form({ moreAuthors: fc.constantFrom('yes'), otherAuthors: fc.constantFrom([], undefined) }),
-  ])('when there are no authors', async (preprintId, preprintTitle, body, method, user, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    fc.boolean(),
+  ])(
+    'when there are no authors',
+    async (preprintId, preprintTitle, body, method, user, newReview, mustDeclareUseOfAi) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewAddAuthors({ body, id: preprintId, method, user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+      const actual = await _.writeReviewAddAuthors({ body, id: preprintId, method, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        mustDeclareUseOfAi,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: Status.SeeOther,
-      location: format(writeReviewAddAuthorMatch.formatter, { id: preprintTitle.id }),
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(writeReviewAddAuthorMatch.formatter, { id: preprintTitle.id }),
+      })
+    },
+  )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.user(), fc.boolean()])(
     'when there is no form',
-    async (preprintId, preprintTitle, body, method, user) => {
+    async (preprintId, preprintTitle, body, method, user, mustDeclareUseOfAi) => {
       const actual = await _.writeReviewAddAuthors({ id: preprintId, body, method, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
+        mustDeclareUseOfAi,
       })()
 
       expect(actual).toStrictEqual({
@@ -138,33 +150,41 @@ describe('writeReviewAddAuthors', () => {
     fc.string(),
     fc.user(),
     fc.form({ moreAuthors: fc.constantFrom('yes-private', 'no') }),
-  ])('when there are no more authors', async (preprintId, preprintTitle, body, method, user, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    fc.boolean(),
+  ])(
+    'when there are no more authors',
+    async (preprintId, preprintTitle, body, method, user, newReview, mustDeclareUseOfAi) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewAddAuthors({ body, id: preprintId, method, user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+      const actual = await _.writeReviewAddAuthors({ body, id: preprintId, method, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        mustDeclareUseOfAi,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.NotFound,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.boolean()])(
     'when the preprint cannot be loaded',
-    async (preprintId, body, method, user) => {
-      const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.left('unavailable'))
+    async (preprintId, body, method, user, mustDeclareUseOfAi) => {
+      const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
+        TE.left(new PreprintIsUnavailable({})),
+      )
 
       const actual = await _.writeReviewAddAuthors({ body, id: preprintId, method, user })({
         formStore: new Keyv(),
         getPreprintTitle,
+        mustDeclareUseOfAi,
       })()
 
       expect(actual).toStrictEqual({
@@ -179,12 +199,13 @@ describe('writeReviewAddAuthors', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.boolean()])(
     'when the preprint cannot be found',
-    async (preprintId, body, method, user) => {
+    async (preprintId, body, method, user, mustDeclareUseOfAi) => {
       const actual = await _.writeReviewAddAuthors({ body, id: preprintId, method, user })({
         formStore: new Keyv(),
-        getPreprintTitle: () => TE.left('not-found'),
+        getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
+        mustDeclareUseOfAi,
       })()
 
       expect(actual).toStrictEqual({
@@ -198,12 +219,13 @@ describe('writeReviewAddAuthors', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.boolean()])(
     "when there isn't a session",
-    async (preprintId, preprintTitle, body, method) => {
+    async (preprintId, preprintTitle, body, method, mustDeclareUseOfAi) => {
       const actual = await _.writeReviewAddAuthors({ body, id: preprintId, method })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
+        mustDeclareUseOfAi,
       })()
 
       expect(actual).toStrictEqual({

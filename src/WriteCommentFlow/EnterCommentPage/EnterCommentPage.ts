@@ -1,6 +1,5 @@
-import { absurd, Either, Function, Match, pipe } from 'effect'
+import { absurd, Either, Function, identity, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { identity } from 'fp-ts/lib/function.js'
 import { StatusCodes } from 'http-status-codes'
 import { type Html, html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'

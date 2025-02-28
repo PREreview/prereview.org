@@ -11,7 +11,7 @@ import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import type { NonEmptyString } from '../../types/string.js'
-import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from '../shared-elements.js'
+import { backNav, errorPrefix, errorSummary, prereviewOfSuffix, saveAndContinueButton } from '../shared-elements.js'
 
 export function addAuthorForm({
   form,
@@ -31,7 +31,8 @@ export function addAuthorForm({
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: pipe(
-      t('write-review', 'addAuthorTitle')({ preprintTitle: preprint.title.toString() }),
+      t('write-review', 'addAuthor')(),
+      prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),

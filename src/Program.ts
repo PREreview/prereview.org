@@ -1,7 +1,8 @@
-import { Headers, HttpClient, HttpClientRequest, UrlParams } from '@effect/platform'
+import { HttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
+import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from './Context.js'
@@ -35,15 +36,7 @@ const getPrereview = Layer.effect(
     const getPreprintService = yield* Preprint.GetPreprint
     const sleep = yield* DeprecatedSleepEnv
 
-    const getPreprint = yield* EffectToFpts.makeTaskEitherK(
-      flow(
-        getPreprintService,
-        Effect.catchTags({
-          PreprintIsNotFound: () => Effect.fail('not-found' as const),
-          PreprintIsUnavailable: () => Effect.fail('unavailable' as const),
-        }),
-      ),
-    )
+    const getPreprint = yield* EffectToFpts.makeTaskEitherK(getPreprintService)
 
     return id =>
       pipe(
@@ -307,68 +300,17 @@ const commentEvents = Layer.scoped(
 const getPreprint = Layer.effect(
   Preprint.GetPreprint,
   Effect.gen(function* () {
-    const fetch = yield* makeFetch
     const sleep = yield* DeprecatedSleepEnv
+    const httpClient = yield* HttpClient.HttpClient
+    const httpCache = yield* CachingHttpClient.HttpCache
 
     return id =>
       pipe(
-        FptsToEffect.readerTaskEither(getPreprintUtil(id), { fetch, ...sleep }),
-        Effect.mapError(
-          flow(
-            Match.value,
-            Match.when('not-found', () => new Preprint.PreprintIsNotFound()),
-            Match.when('unavailable', () => new Preprint.PreprintIsUnavailable()),
-            Match.exhaustive,
-          ),
-        ),
+        getPreprintUtil(id),
+        Effect.provideService(HttpClient.HttpClient, httpClient),
+        Effect.provideService(CachingHttpClient.HttpCache, httpCache),
+        Effect.provideService(DeprecatedSleepEnv, sleep),
       )
-  }),
-)
-
-const setUpFetch = Layer.effect(
-  HttpClient.HttpClient,
-  Effect.gen(function* () {
-    const client = yield* HttpClient.HttpClient
-    return pipe(
-      client,
-      HttpClient.mapRequest(
-        HttpClientRequest.setHeaders({
-          'User-Agent': 'PREreview (https://prereview.org/; mailto:engineering@prereview.org)',
-        }),
-      ),
-      HttpClient.tapRequest(request =>
-        Effect.logDebug('Sending HTTP Request').pipe(
-          Effect.annotateLogs({
-            headers: Headers.redact(request.headers, 'authorization'),
-            url: request.url,
-            urlParams: UrlParams.toString(request.urlParams),
-            method: request.method,
-          }),
-        ),
-      ),
-      HttpClient.tap(response =>
-        Effect.logDebug('Received HTTP response').pipe(
-          Effect.annotateLogs({
-            status: response.status,
-            headers: response.headers,
-            url: response.request.url,
-            urlParams: UrlParams.toString(response.request.urlParams),
-            method: response.request.method,
-          }),
-        ),
-      ),
-      HttpClient.tapError(error =>
-        Effect.logError('Error sending HTTP request').pipe(
-          Effect.annotateLogs({
-            reason: error.reason,
-            error: error.cause,
-            url: error.request.url,
-            urlParams: UrlParams.toString(error.request.urlParams),
-            method: error.request.method,
-          }),
-        ),
-      ),
-    )
   }),
 )
 
@@ -383,7 +325,7 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(getPrereview)),
   Layer.provide(
     Layer.mergeAll(
-      getPreprint,
+      Layer.provide(getPreprint, CachingHttpClient.layer('10 minutes')),
       doesUserHaveAVerifiedEmailAddress,
       getContactEmailAddress,
       saveContactEmailAddress,
@@ -395,9 +337,9 @@ export const Program = pipe(
         Comments.makeGetNextExpectedCommandForUserOnAComment,
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
-      GhostPage.layer,
+      Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
     ),
   ),
-  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch)),
+  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer)),
   Layer.provide(Layer.mergeAll(Uuid.layer, Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv), MigratorLive)),
 )

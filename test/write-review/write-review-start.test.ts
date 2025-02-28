@@ -4,6 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../src/routes.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
@@ -11,15 +12,16 @@ import * as fc from './fc.js'
 
 describe('writeReviewStart', () => {
   describe('when there is a session', () => {
-    test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.form(), fc.user()])(
+    test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.form(), fc.user(), fc.boolean()])(
       'there is a form',
-      async (preprintId, preprint, newReview, user) => {
+      async (preprintId, preprint, newReview, user, mustDeclareUseOfAi) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
         const actual = await _.writeReviewStart({ id: preprintId, user })({
           formStore,
           getPreprint: () => TE.right(preprint),
+          mustDeclareUseOfAi,
         })()
 
         expect(actual).toStrictEqual({
@@ -35,12 +37,13 @@ describe('writeReviewStart', () => {
       },
     )
 
-    test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.user()])(
+    test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.user(), fc.boolean()])(
       "there isn't a form",
-      async (preprintId, preprint, user) => {
+      async (preprintId, preprint, user, mustDeclareUseOfAi) => {
         const actual = await _.writeReviewStart({ id: preprintId, user })({
           formStore: new Keyv(),
           getPreprint: () => TE.right(preprint),
+          mustDeclareUseOfAi,
         })()
 
         expect(actual).toStrictEqual({
@@ -55,7 +58,8 @@ describe('writeReviewStart', () => {
       fc.indeterminatePreprintId(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.preprint({ authors: fc.constant([user]) }))),
       fc.option(fc.form(), { nil: undefined }),
-    ])('the user is an author', async (preprintId, [user, preprint], newReview) => {
+      fc.boolean(),
+    ])('the user is an author', async (preprintId, [user, preprint], newReview, mustDeclareUseOfAi) => {
       const formStore = new Keyv()
       if (newReview) {
         await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
@@ -64,6 +68,7 @@ describe('writeReviewStart', () => {
       const actual = await _.writeReviewStart({ id: preprintId, user })({
         formStore,
         getPreprint: () => TE.right(preprint),
+        mustDeclareUseOfAi,
       })()
 
       expect(actual).toStrictEqual({
@@ -79,12 +84,13 @@ describe('writeReviewStart', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprint()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.boolean()])(
     "when there isn't a session",
-    async (preprintId, preprint) => {
+    async (preprintId, preprint, mustDeclareUseOfAi) => {
       const actual = await _.writeReviewStart({ id: preprintId, user: undefined })({
         formStore: new Keyv(),
         getPreprint: () => TE.right(preprint),
+        mustDeclareUseOfAi,
       })()
 
       expect(actual).toStrictEqual({
@@ -94,12 +100,13 @@ describe('writeReviewStart', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined })])(
+  test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.boolean()])(
     'when the preprint cannot be loaded',
-    async (preprintId, user) => {
+    async (preprintId, user, mustDeclareUseOfAi) => {
       const actual = await _.writeReviewStart({ id: preprintId, user })({
         formStore: new Keyv(),
-        getPreprint: () => TE.left('unavailable'),
+        getPreprint: () => TE.left(new PreprintIsUnavailable({})),
+        mustDeclareUseOfAi,
       })()
 
       expect(actual).toStrictEqual({
@@ -113,12 +120,13 @@ describe('writeReviewStart', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined })])(
+  test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.boolean()])(
     'when the preprint is not found',
-    async (preprintId, user) => {
+    async (preprintId, user, mustDeclareUseOfAi) => {
       const actual = await _.writeReviewStart({ id: preprintId, user })({
         formStore: new Keyv(),
-        getPreprint: () => TE.left('not-found'),
+        getPreprint: () => TE.left(new PreprintIsNotFound({})),
+        mustDeclareUseOfAi,
       })()
 
       expect(actual).toStrictEqual({

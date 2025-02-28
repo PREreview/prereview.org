@@ -1,4 +1,4 @@
-import { pipe } from 'fp-ts/lib/function.js'
+import { pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 
@@ -13,9 +13,11 @@ export const clubIds = [
   'bimsb-neuroscience',
   'biobio',
   'biomass-biocatalysis',
+  'biopeers-slu',
   'biophysics-leipzig',
   'bios2',
   'cara',
+  'emerge',
   'etymos-analytica',
   'hhmi-training-pilot',
   'iib-mar-del-plata',
@@ -34,6 +36,7 @@ export const clubIds = [
   'reviewing-dental-articles-club',
   'rr-id-student-reviewer-club',
   'sg-biofilms-microbiome',
+  'snl-semantics',
   'surrey-microbiology',
   'tsl-preprint-club',
 ] as const

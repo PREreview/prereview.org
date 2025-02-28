@@ -1,7 +1,7 @@
+import { flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
@@ -105,6 +105,7 @@ export function renderListOfPrereviews(
                         .with('ecoevorxiv', () => 'EcoEvoRxiv')
                         .with('edarxiv', () => 'EdArXiv')
                         .with('engrxiv', () => 'engrXiv')
+                        .with('jxiv', () => 'Jxiv')
                         .with('medrxiv', () => 'medRxiv')
                         .with('metaarxiv', () => 'MetaArXiv')
                         .with('osf', () => 'OSF')

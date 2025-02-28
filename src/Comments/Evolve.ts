@@ -141,13 +141,10 @@ const onEvent = pipe(
   Match.exhaustive,
 )
 
-export const EvolveComment =
-  (requireVerifiedEmailAddress: boolean) =>
-  (state: State.CommentState): ((event: Events.CommentEvent) => State.CommentState) =>
-    flow(onEvent, Function.apply(state)<State.CommentState>, checkIsReadyForPublication(requireVerifiedEmailAddress))
+export const EvolveComment = (state: State.CommentState): ((event: Events.CommentEvent) => State.CommentState) =>
+  flow(onEvent, Function.apply(state)<State.CommentState>, checkIsReadyForPublication)
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const checkIsReadyForPublication = (requireVerifiedEmailAddress: boolean) => (state: State.CommentState) => {
+const checkIsReadyForPublication = (state: State.CommentState) => {
   if (state._tag !== 'CommentInProgress') {
     return state
   }
@@ -159,7 +156,7 @@ const checkIsReadyForPublication = (requireVerifiedEmailAddress: boolean) => (st
     typeof persona !== 'string' ||
     !Option.isOption(competingInterests) ||
     codeOfConductAgreed !== true ||
-    (requireVerifiedEmailAddress && verifiedEmailAddressExists !== true)
+    verifiedEmailAddressExists !== true
   ) {
     return state
   }

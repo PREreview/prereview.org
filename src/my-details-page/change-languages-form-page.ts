@@ -1,12 +1,12 @@
+import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
 import { P, match } from 'ts-pattern'
 import { html, plainText } from '../html.js'
 import type { Languages } from '../languages.js'
 import { PageResponse } from '../response.js'
 import { changeLanguagesMatch, myDetailsMatch } from '../routes.js'
 
-export const createFormPage = (languages: O.Option<Languages>) =>
+export const createFormPage = (languages: Option.Option<Languages>) =>
   PageResponse({
     title: plainText`What languages can you review in?`,
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
@@ -20,7 +20,7 @@ export const createFormPage = (languages: O.Option<Languages>) =>
           type="text"
           ${match(languages)
             .with({ value: { value: P.select() } }, languages => html`value="${languages}"`)
-            .when(O.isNone, () => '')
+            .when(Option.isNone, () => '')
             .exhaustive()}
         />
 

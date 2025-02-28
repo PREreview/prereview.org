@@ -1,17 +1,17 @@
+import { flow, Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
+import { mustDeclareUseOfAi, type MustDeclareUseOfAiEnv } from '../../feature-flags.js'
 import { missingE } from '../../form.js'
+import * as FptsToEffect from '../../FptsToEffect.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
-import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
+import { getPreprintTitle, type GetPreprintTitleEnv, type PreprintTitle } from '../../preprint.js'
 import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorMatch, writeReviewMatch } from '../../routes.js'
 import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
@@ -30,7 +30,7 @@ export const writeReviewAddAuthors = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  FormStoreEnv & GetPreprintTitleEnv,
+  FormStoreEnv & GetPreprintTitleEnv & MustDeclareUseOfAiEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -39,8 +39,8 @@ export const writeReviewAddAuthors = ({
       error =>
         RT.of(
           match(error)
-            .with('not-found', () => pageNotFound)
-            .with('unavailable', () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),
       preprint =>
@@ -51,12 +51,13 @@ export const writeReviewAddAuthors = ({
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
           RTE.let('body', () => body),
+          RTE.apSW('mustDeclareUseOfAi', RTE.fromReader(mustDeclareUseOfAi)),
           RTE.bindW('form', ({ preprint, user }) => getForm(user.orcid, preprint.id)),
           RTE.let(
             'authors',
             flow(
-              O.fromNullableK(({ form }) => form.otherAuthors),
-              O.chain(RNEA.fromReadonlyArray),
+              Option.liftNullable(({ form }) => form.otherAuthors),
+              Option.flatMap(FptsToEffect.optionK(RNEA.fromReadonlyArray)),
             ),
           ),
           RTE.matchW(
@@ -93,12 +94,14 @@ const handleAddAuthorsForm = ({
   form,
   preprint,
   locale,
+  mustDeclareUseOfAi,
 }: {
-  authors: O.Some<RNEA.ReadonlyNonEmptyArray<NonNullable<Form['otherAuthors']>[number]>>
+  authors: Option.Some<RNEA.ReadonlyNonEmptyArray<NonNullable<Form['otherAuthors']>[number]>>
   body: unknown
   form: Form
   preprint: PreprintTitle
   locale: SupportedLocale
+  mustDeclareUseOfAi: boolean
 }) =>
   pipe(
     E.Do,
@@ -118,7 +121,9 @@ const handleAddAuthorsForm = ({
             RedirectResponse({ location: format(writeReviewAddAuthorMatch.formatter, { id: preprint.id }) }),
           )
           .with({ anotherAuthor: 'no' }, () =>
-            RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+            RedirectResponse({
+              location: format(nextFormMatch(form, mustDeclareUseOfAi).formatter, { id: preprint.id }),
+            }),
           )
           .exhaustive(),
     ),
@@ -128,5 +133,5 @@ const AnotherAuthorFieldD = pipe(
   D.struct({
     anotherAuthor: D.literal('yes', 'no'),
   }),
-  D.map(get('anotherAuthor')),
+  D.map(Struct.get('anotherAuthor')),
 )

@@ -1,5 +1,5 @@
+import { pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import type { PseudonymProfileId } from '../types/profile-id.js'
 import type { Pseudonym } from '../types/pseudonym.js'
 import { type Prereviews, getPrereviews } from './prereviews.js'

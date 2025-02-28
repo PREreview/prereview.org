@@ -1,12 +1,9 @@
+import { Option, String, Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
-import * as s from 'fp-ts/lib/string.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE, missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
@@ -38,8 +35,8 @@ export const writeReviewAddAuthor = ({
       error =>
         RT.of(
           match(error)
-            .with('not-found', () => pageNotFound)
-            .with('unavailable', () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),
       preprint =>
@@ -103,7 +100,7 @@ const handleAddAuthorForm = ({
         EmailAddressFieldD.decode(body),
         E.mapLeft(error =>
           match(getInput('emailAddress')(error))
-            .with(P.union(P.when(O.isNone), { value: '' }), () => missingE())
+            .with(P.union(P.when(Option.isNone), { value: '' }), () => missingE())
             .with({ value: P.select() }, invalidE)
             .exhaustive(),
         ),
@@ -137,9 +134,9 @@ const handleAddAuthorForm = ({
     ),
   )
 
-const NameFieldD = pipe(D.struct({ name: NonEmptyStringC }), D.map(get('name')))
+const NameFieldD = pipe(D.struct({ name: NonEmptyStringC }), D.map(Struct.get('name')))
 
 const EmailAddressFieldD = pipe(
-  D.struct({ emailAddress: pipe(D.string, D.map(s.trim), D.compose(EmailAddressC)) }),
-  D.map(get('emailAddress')),
+  D.struct({ emailAddress: pipe(D.string, D.map(String.trim), D.compose(EmailAddressC)) }),
+  D.map(Struct.get('emailAddress')),
 )

@@ -1,14 +1,13 @@
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
-import { Schema } from 'effect'
+import { Option, Schema, Tuple, identity, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
-import * as O from 'fp-ts/lib/Option.js'
-import { identity, pipe, tuple } from 'fp-ts/lib/function.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import iso6391, { type LanguageCode } from 'iso-639-1'
+import iso6391 from 'iso-639-1'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
+import * as FptsToEffect from './FptsToEffect.js'
 import { ClubIdC } from './types/club-id.js'
 import { isFieldId } from './types/field.js'
 import { ProfileId, Uuid } from './types/index.js'
@@ -127,7 +126,7 @@ export const EmptyAsUndefinedC = <I, O, A>(codec: C.Codec<I, O, A>) =>
 
 const FieldIdC = pipe(C.string, C.refine(isFieldId, 'FieldId'))
 
-const LanguageC = pipe(C.string, C.refine(iso6391Validate, 'LanguageCode'))
+const LanguageC = pipe(C.string, C.refine(iso6391.validate, 'LanguageCode'))
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
@@ -457,6 +456,8 @@ export const writeReviewRemoveAuthorMatch = pipe(
 
 export const writeReviewAddAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('add-more-authors')), P.then(P.end))
 
+export const writeReviewUseOfAiMatch = pipe(writeReviewBaseMatch, P.then(P.lit('use-of-ai')), P.then(P.end))
+
 export const writeReviewCompetingInterestsMatch = pipe(
   writeReviewBaseMatch,
   P.then(P.lit('competing-interests')),
@@ -595,7 +596,9 @@ export const scietyListMatch = pipe(P.lit('sciety-list'), P.then(P.end))
 function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
   return new P.Match(
     new P.Parser(r =>
-      O.Functor.map(O.fromEither(codec.decode(r.query)), query => tuple(query, new P.Route(r.parts, {}))),
+      Option.map(Option.getRight(FptsToEffect.either(codec.decode(r.query))), query =>
+        Tuple.make(query, new P.Route(r.parts, {})),
+      ),
     ),
     new P.Formatter((r, query) => new P.Route(r.parts, codec.encode(query))),
   )
@@ -605,11 +608,13 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
   return new P.Match(
     new P.Parser(r => {
       if (typeof r.parts[0] !== 'string') {
-        return O.none
+        return Option.none()
       } else {
         const head = r.parts[0]
         const tail = r.parts.slice(1)
-        return O.Functor.map(O.fromEither(type.decode(head)), a => tuple(singleton(k, a), new P.Route(tail, r.query)))
+        return Option.map(Option.getRight(FptsToEffect.either(type.decode(head))), a =>
+          Tuple.make(singleton(k, a), new P.Route(tail, r.query)),
+        )
       }
     }),
     new P.Formatter((r, o) => new P.Route(r.parts.concat(type.encode(o[k])), r.query)),
@@ -618,8 +623,3 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
 const singleton = <K extends string, V>(k: K, v: V): Record<K, V> => ({ [k as any]: v }) as any
-
-// https://github.com/meikidd/iso-639-1/pull/61
-function iso6391Validate(code: string): code is LanguageCode {
-  return iso6391.validate(code)
-}

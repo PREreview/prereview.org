@@ -1,15 +1,12 @@
+import { flow, Number, Order, pipe, String, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as Ord from 'fp-ts/lib/Ord.js'
-import { type Ordering, sign } from 'fp-ts/lib/Ordering.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { snd } from 'fp-ts/lib/ReadonlyTuple.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
-import { isString } from 'fp-ts/lib/string.js'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
+import * as EffectToFpts from '../EffectToFpts.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
@@ -22,7 +19,6 @@ import type { RecentPrereviews } from './recent-prereviews.js'
 
 export const createPage = (
   { currentPage, field, language, query, totalPages, recentPrereviews }: RecentPrereviews,
-  canUseSearchQueries: boolean,
   locale: SupportedLocale,
 ) =>
   PageResponse({
@@ -31,7 +27,7 @@ export const createPage = (
     main: html`
       <h1>${translate(locale, 'reviews-page', 'title')()}</h1>
 
-      ${form({ canUseSearchQueries, field, language, locale, query })}
+      ${form({ field, language, locale, query })}
 
       <ol class="cards" id="results">
         ${pipe(
@@ -99,6 +95,7 @@ export const createPage = (
                         .with('ecoevorxiv', () => 'EcoEvoRxiv')
                         .with('edarxiv', () => 'EdArXiv')
                         .with('engrxiv', () => 'engrXiv')
+                        .with('jxiv', () => 'Jxiv')
                         .with('medrxiv', () => 'medRxiv')
                         .with('metaarxiv', () => 'MetaArXiv')
                         .with('osf', () => 'OSF')
@@ -147,7 +144,6 @@ export const createPage = (
 
 export const emptyPage = (
   { field, language, query }: { field?: FieldId; language?: LanguageCode; query?: NonEmptyString },
-  canUseSearchQueries: boolean,
   locale: SupportedLocale,
 ) =>
   PageResponse({
@@ -156,7 +152,7 @@ export const emptyPage = (
     main: html`
       <h1>${translate(locale, 'reviews-page', 'title')()}</h1>
 
-      ${form({ canUseSearchQueries, field, language, locale, query })}
+      ${form({ field, language, locale, query })}
 
       <div class="inset" id="results">
         <p>${translate(locale, 'reviews-page', 'noResults')()}</p>
@@ -180,7 +176,7 @@ const title = ({
       query,
       field ? getFieldName(field, locale) : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
-    ].filter(isString),
+    ].filter(String.isString),
   )
 
   return plainText(
@@ -193,13 +189,11 @@ const title = ({
 }
 
 const form = ({
-  canUseSearchQueries,
   field,
   language,
   locale,
   query,
 }: Pick<RecentPrereviews, 'field' | 'language' | 'query'> & {
-  canUseSearchQueries: boolean
   locale: SupportedLocale
 }) => html`
   <form
@@ -211,14 +205,10 @@ const form = ({
   >
     <h2 class="visually-hidden" id="filter-label">${translate(locale, 'reviews-page', 'filterTitle')()}</h2>
     <input type="hidden" name="page" value="1" />
-    ${canUseSearchQueries
-      ? html`<div>
-          <label for="query">${translate(locale, 'reviews-page', 'filterTitleAuthorLabel')()}</label>
-          <input type="text" name="query" id="query" ${query === undefined ? '' : html`value="${query}"`} />
-        </div>`
-      : query
-        ? html`<input type="hidden" name="query" value="${query}" />`
-        : ''}
+    <div>
+      <label for="query">${translate(locale, 'reviews-page', 'filterTitleAuthorLabel')()}</label>
+      <input type="text" name="query" id="query" ${query === undefined ? '' : html`value="${query}"`} />
+    </div>
     <div>
       <label for="language">${translate(locale, 'reviews-page', 'filterLanguageLabel')()}</label>
       <div class="select">
@@ -232,7 +222,7 @@ const form = ({
               language =>
                 [language, new Intl.DisplayNames(locale, { type: 'language' }).of(language) ?? language] as const,
             ),
-            RA.sort(Ord.contramap(snd)(ordString(locale))),
+            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond))),
             RA.map(
               ([code, name]) =>
                 html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
@@ -251,7 +241,7 @@ const form = ({
           ${pipe(
             fieldIds,
             RA.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, string]),
-            RA.sort(Ord.contramap(snd)(ordString(locale))),
+            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond))),
             RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
           )}
         </select>
@@ -261,12 +251,10 @@ const form = ({
   </form>
 `
 
-const ordString = flow(localeCompare, Ord.fromCompare)
-
-function localeCompare(...args: ConstructorParameters<typeof Intl.Collator>): (a: string, b: string) => Ordering {
+function StringOrder(...args: ConstructorParameters<typeof Intl.Collator>): Order.Order<string> {
   const collator = new Intl.Collator(...args)
 
-  return flow((a, b) => collator.compare(a, b), sign)
+  return flow((a, b) => collator.compare(a, b), Number.sign)
 }
 
 function formatList(

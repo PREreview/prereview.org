@@ -1,6 +1,5 @@
 import { type Doi, Eq as eqDoi, hasRegistrant, isDoi, parse } from 'doi-ts'
-import { Either, Option, Predicate, flow } from 'effect'
-import * as Eq from 'fp-ts/lib/Eq.js'
+import { Either, type Equivalence, Option, Predicate, flow } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import * as FptsToEffect from '../FptsToEffect.js'
@@ -18,6 +17,7 @@ export type PreprintId =
   | EcoevorxivPreprintId
   | EdarxivPreprintId
   | EngrxivPreprintId
+  | JxivPreprintId
   | MedrxivPreprintId
   | MetaarxivPreprintId
   | OsfPreprintId
@@ -117,6 +117,11 @@ export interface EngrxivPreprintId {
   readonly value: Doi<'31224'>
 }
 
+export interface JxivPreprintId {
+  readonly type: 'jxiv'
+  readonly value: Doi<'51094'>
+}
+
 export interface MedrxivPreprintId {
   readonly type: 'medrxiv'
   readonly value: Doi<'1101'>
@@ -202,7 +207,7 @@ export interface ZenodoOrAfricarxivPreprintId {
   readonly value: Doi<'5281'>
 }
 
-export const eqPreprintId: Eq.Eq<IndeterminatePreprintId> = Eq.fromEquals((a, b) => {
+export const PreprintIdEquivalence: Equivalence.Equivalence<IndeterminatePreprintId> = (a, b) => {
   if (a.type !== b.type) {
     return false
   }
@@ -211,8 +216,8 @@ export const eqPreprintId: Eq.Eq<IndeterminatePreprintId> = Eq.fromEquals((a, b)
     return a.value === b.value
   }
 
-  return eqDoi.equals(a.value, b.value as typeof a.value)
-})
+  return FptsToEffect.eq(eqDoi)(a.value, b.value as typeof a.value)
+}
 
 export const isPreprintDoi: Predicate.Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> =
   hasRegistrant(
@@ -240,6 +245,7 @@ export const isPreprintDoi: Predicate.Refinement<Doi, Extract<IndeterminatePrepr
     '35542',
     '36227',
     '48550',
+    '51094',
     '57844',
     '60763',
     '62329',
@@ -282,6 +288,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('35542'), doi => ({ type: 'edarxiv', value: doi }) satisfies EdarxivPreprintId)
     .when(hasRegistrant('36227'), doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId)
     .when(hasRegistrant('48550'), doi => ({ type: 'arxiv', value: doi }) satisfies ArxivPreprintId)
+    .when(hasRegistrant('51094'), doi => ({ type: 'jxiv', value: doi }) satisfies JxivPreprintId)
     .when(hasRegistrant('57844'), doi => ({ type: 'arcadia-science', value: doi }) satisfies ArcadiaSciencePreprintId)
     .when(hasRegistrant('60763'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivPreprintId)
     .when(hasRegistrant('62329'), doi => ({ type: 'curvenote', value: doi }) satisfies CurvenotePreprintId)
@@ -297,6 +304,7 @@ export function fromUrl(url: URL): Option.Option<IndeterminatePreprintId> {
     .with(['biorxiv.org', P.select()], extractFromBiorxivMedrxivPath('biorxiv'))
     .with(['edarxiv.org', P.select()], extractFromEdarxivPath)
     .with(['engrxiv.org', P.select()], extractFromEngrxivPath)
+    .with(['jxiv.jst.go.jp', P.select()], extractFromJxivPath)
     .with(['medrxiv.org', P.select()], extractFromBiorxivMedrxivPath('medrxiv'))
     .with(['osf.io', P.select()], extractFromOsfPath)
     .with(['philsci-archive.pitt.edu', P.select()], extractFromPhilsciPath)
@@ -307,7 +315,7 @@ export function fromUrl(url: URL): Option.Option<IndeterminatePreprintId> {
     .with(['scienceopen.com', 'hosted-document'], () => extractFromScienceOpenQueryString(url.searchParams))
     .with(['techrxiv.org', P.select()], extractFromTechrxivPath)
     .with(['zenodo.org', P.select()], extractFromZenodoPath)
-    .otherwise(() => Option.none())
+    .otherwise(Option.none)
 }
 
 const extractFromDoiPath = flow(decodeURIComponent, parsePreprintDoi)
@@ -354,6 +362,12 @@ const extractFromFigsharePath = (type: 'africarxiv') =>
     Option.filter(Predicate.compose(isDoi, hasRegistrant('6084'))),
     Option.andThen(doi => ({ type, value: doi }) satisfies AfricarxivFigsharePreprintId),
   )
+
+const extractFromJxivPath = flow(
+  decodeURIComponent,
+  Option.liftNullable(s => /^index\.php\/jxiv\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.51094/jxiv.${id}`, parsePreprintDoi)),
+)
 
 const extractFromOsfPath = flow(
   decodeURIComponent,

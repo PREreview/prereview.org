@@ -1,5 +1,6 @@
 import { now } from 'clock-ts'
 import { v2 as cloudinary } from 'cloudinary'
+import { Function, String, flow, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -7,14 +8,13 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { constVoid, flow, pipe } from 'fp-ts/lib/function.js'
-import * as s from 'fp-ts/lib/string.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
+import type { EnvFor } from './Fpts.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
 
@@ -46,7 +46,7 @@ const JsonD = {
     ),
 }
 
-const PublicIdD = pipe(D.string, D.map(s.replace(/^prereview-profile\//, '')), D.compose(NonEmptyStringC))
+const PublicIdD = pipe(D.string, D.map(String.replace(/^prereview-profile\//, '')), D.compose(NonEmptyStringC))
 
 const UploadResponseD = pipe(
   JsonD,
@@ -166,13 +166,13 @@ export const saveAvatarOnCloudinary = (
       match(existing)
         .with(P.string, existing =>
           RIO.asks((env: EnvFor<ReturnType<typeof destroyImageOnCloudinary>>) => {
-            void destroyImageOnCloudinary(existing)(env)().catch(constVoid)
+            void destroyImageOnCloudinary(existing)(env)().catch(Function.constVoid)
           }),
         )
         .with(undefined, RIO.of)
         .exhaustive(),
     ),
-    RTE.bimap(() => 'unavailable' as const, constVoid),
+    RTE.bimap(() => 'unavailable' as const, Function.constVoid),
   )
 
 export const removeAvatarFromCloudinary = (orcid: Orcid) =>
@@ -182,13 +182,13 @@ export const removeAvatarFromCloudinary = (orcid: Orcid) =>
     RTE.chainFirstW(() => deleteCloudinaryAvatar(orcid)),
     RTE.chainFirstReaderIOKW(({ publicId }) =>
       RIO.asks((env: EnvFor<ReturnType<typeof destroyImageOnCloudinary>>) => {
-        void destroyImageOnCloudinary(publicId)(env)().catch(constVoid)
+        void destroyImageOnCloudinary(publicId)(env)().catch(Function.constVoid)
       }),
     ),
-    RTE.map(constVoid),
+    RTE.map(Function.constVoid),
     RTE.orElseW(error =>
       match(error)
-        .with('not-found', () => RTE.right(constVoid()))
+        .with('not-found', () => RTE.right(Function.constVoid()))
         .otherwise(RTE.left),
     ),
   )
@@ -226,7 +226,5 @@ const destroyImageOnCloudinary = (publicId: NonEmptyString) =>
     RTE.orElseFirstW(
       RTE.fromReaderIOK(flow(error => ({ error, publicId }), L.errorP('Failed to destroy image on Cloudinary'))),
     ),
-    RTE.bimap(() => 'unavailable' as const, constVoid),
+    RTE.bimap(() => 'unavailable' as const, Function.constVoid),
   )
-
-type EnvFor<T> = T extends R.Reader<infer R, unknown> ? R : never

@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -38,7 +38,7 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Set up assets cache'
-        uses: actions/cache@v4.2.0
+        uses: actions/cache@v4.2.1
         if: ${{ !env.ACT }}
         with:
           path: .cache/webpack
@@ -46,7 +46,7 @@ jobs:
           restore-keys: webpack-
 
       - name: 'Download assets locales'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: locales-assets
           path: assets/locales
@@ -55,13 +55,13 @@ jobs:
         run: npm run build:assets
 
       - name: 'Upload assets'
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: assets
           path: dist/assets
 
       - name: 'Upload manifest'
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: manifest
           path: src/manifest.json
@@ -91,13 +91,13 @@ jobs:
         run: scripts/intlc.sh
 
       - name: 'Upload locales'
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: locales
           path: src/locales
 
       - name: 'Upload assets locales'
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: locales-assets
           path: assets/locales
@@ -114,11 +114,11 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: 'Set up Docker Build'
-        uses: docker/setup-buildx-action@v3.8.0
+        uses: docker/setup-buildx-action@v3.10.0
 
       - name: 'Build image'
         id: build
-        uses: docker/build-push-action@v6.12.0
+        uses: docker/build-push-action@v6.15.0
         with:
           context: .
           outputs: type=docker,dest=/tmp/image.tar
@@ -126,7 +126,7 @@ jobs:
           cache-to: type=gha,mode=max,ignore-error=true
 
       - name: 'Upload build'
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: image
           path: /tmp/image.tar
@@ -141,7 +141,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -162,7 +162,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -186,7 +186,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -195,19 +195,19 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: locales
           path: src/locales
 
       - name: 'Download assets locales'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: locales-assets
           path: assets/locales
@@ -232,7 +232,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -241,13 +241,13 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: locales
           path: src/locales
@@ -272,7 +272,7 @@ jobs:
         uses: nschloe/action-cached-lfs-checkout@v1.2.3
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -281,32 +281,32 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: assets
           path: dist/assets
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: locales
           path: src/locales
 
       - name: 'Run Playwright'
         id: 'playwright'
-        uses: docker://mcr.microsoft.com/playwright:v1.47.2-jammy
+        uses: docker://mcr.microsoft.com/playwright:v1.50.1-jammy
         with:
           args: env HOME=/root npx playwright test integration --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: integration-tests-results-${{ matrix.shard }}
           path: integration-results
@@ -334,7 +334,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: 'Download image'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: image
           path: /tmp
@@ -362,7 +362,7 @@ jobs:
         uses: nschloe/action-cached-lfs-checkout@v1.2.3
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -371,32 +371,32 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: assets
           path: dist/assets
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: locales
           path: src/locales
 
       - name: 'Run Playwright'
         id: 'playwright'
-        uses: docker://mcr.microsoft.com/playwright:v1.47.2-jammy
+        uses: docker://mcr.microsoft.com/playwright:v1.50.1-jammy
         with:
           args: env HOME=/root npx playwright test visual-regression --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: visual-regression-tests-results-${{ matrix.shard }}
           path: integration-results
@@ -413,7 +413,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -421,20 +421,16 @@ jobs:
       - name: 'Install dependencies'
         run: npm ci --engine-strict --ignore-scripts
 
-      - name: 'Install browser dependencies'
-        run: npx playwright install-deps
-
-      - name: 'Install browsers'
-        run: npx playwright install
-
       - name: 'Download assets locales'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: locales-assets
           path: assets/locales
 
       - name: 'Run the tests'
-        run: npx web-test-runner
+        uses: docker://mcr.microsoft.com/playwright:v1.50.1-jammy
+        with:
+          args: env HOME=/root npx web-test-runner
 
   typecheck:
     name: 'Typecheck'
@@ -449,7 +445,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -458,19 +454,19 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: locales
           path: src/locales
 
       - name: 'Download assets locales'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: locales-assets
           path: assets/locales
@@ -507,7 +503,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 'Download image'
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: image
           path: /tmp
@@ -579,7 +575,7 @@ jobs:
 
       - name: 'Upload sources to Crowdin'
         if: steps.changes.outputs.sources == 'true'
-        uses: crowdin/github-action@v2.5.1
+        uses: crowdin/github-action@v2.6.1
         with:
           upload_sources: true
           upload_translations: false

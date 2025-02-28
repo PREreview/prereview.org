@@ -1,17 +1,15 @@
 import { type Doi, toUrl } from 'doi-ts'
+import { Equivalence, flow, pipe, String, Struct } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
-import * as Eq from 'fp-ts/lib/Eq.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
-import * as s from 'fp-ts/lib/string.js'
 import { Status } from 'hyper-ts'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
+import * as EffectToFpTs from '../EffectToFpts.js'
 import { timeoutRequest } from '../fetch.js'
 import { NetworkError, UnableToDecodeBody, UnexpectedStatusCode } from './http.js'
 
@@ -71,10 +69,7 @@ export const getWorkByDoi: (
   RTE.chainTaskEitherKW(flow(F.decode(pipe(JsonD, D.compose(WorkC))), TE.mapLeft(UnableToDecodeBody))),
 )
 
-const eqUrl: Eq.Eq<URL> = pipe(
-  s.Eq,
-  Eq.contramap(url => url.href),
-)
+const UrlEquivalence: Equivalence.Equivalence<URL> = Equivalence.mapInput(String.Equivalence, url => url.href)
 
 export const getCategories: (work: Work) => ReadonlyArray<{ id: URL; display_name: string }> = flow(
   work => work.topics,
@@ -84,5 +79,5 @@ export const getCategories: (work: Work) => ReadonlyArray<{ id: URL; display_nam
     { id: topic.field.id, display_name: topic.field.display_name },
     { id: topic.domain.id, display_name: topic.domain.display_name },
   ]),
-  RA.uniq(pipe(eqUrl, Eq.contramap(get('id')))),
+  RA.uniq(EffectToFpTs.eq(Equivalence.mapInput(UrlEquivalence, Struct.get('id')))),
 )

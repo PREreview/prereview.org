@@ -40,18 +40,6 @@ describe('GetNextExpectedCommandForUser', () => {
           competingInterestsWereDeclared,
           codeOfConductWasAgreed,
         ],
-        true,
-      ],
-      [
-        'ExpectedToPublishComment',
-        [
-          commentWasStarted,
-          commentWasEntered,
-          personaWasChosen,
-          competingInterestsWereDeclared,
-          codeOfConductWasAgreed,
-        ],
-        false,
       ],
       [
         'ExpectedToPublishComment',
@@ -63,12 +51,9 @@ describe('GetNextExpectedCommandForUser', () => {
           codeOfConductWasAgreed,
           existenceOfVerifiedEmailAddressWasConfirmed,
         ],
-        true,
       ],
-    ])('returns %s', (expected, events, requireVerifiedEmailAddress = false) => {
-      const actual = _.GetNextExpectedCommandForUser(requireVerifiedEmailAddress)(
-        Array.map(events, event => ({ event, resourceId })),
-      )({
+    ])('returns %s', (expected, events) => {
+      const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
         authorId,
         prereviewId,
       })
@@ -78,7 +63,7 @@ describe('GetNextExpectedCommandForUser', () => {
 
     test('when last answer was changed', () => {
       const events = [commentWasStarted, commentWasEntered, commentWasEntered]
-      const actual = _.GetNextExpectedCommandForUser(false)(Array.map(events, event => ({ event, resourceId })))({
+      const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
         authorId,
         prereviewId,
       })
@@ -88,7 +73,7 @@ describe('GetNextExpectedCommandForUser', () => {
 
     test('when a previous answer was changed', () => {
       const events = [commentWasStarted, commentWasEntered, personaWasChosen, commentWasEntered]
-      const actual = _.GetNextExpectedCommandForUser(false)(Array.map(events, event => ({ event, resourceId })))({
+      const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
         authorId,
         prereviewId,
       })
@@ -103,9 +88,10 @@ describe('GetNextExpectedCommandForUser', () => {
         personaWasChosen,
         competingInterestsWereDeclared,
         codeOfConductWasAgreed,
+        existenceOfVerifiedEmailAddressWasConfirmed,
         personaWasChosen,
       ]
-      const actual = _.GetNextExpectedCommandForUser(false)(Array.map(events, event => ({ event, resourceId })))({
+      const actual = _.GetNextExpectedCommandForUser(Array.map(events, event => ({ event, resourceId })))({
         authorId,
         prereviewId,
       })
@@ -114,55 +100,52 @@ describe('GetNextExpectedCommandForUser', () => {
     })
   })
 
-  test.prop([fc.orcid(), fc.integer(), fc.boolean()])(
-    'when there are no comments, starts a new comment',
-    (authorId, prereviewId, requireVerifiedEmailAddress) => {
-      const actual = _.GetNextExpectedCommandForUser(requireVerifiedEmailAddress)([])({ authorId, prereviewId })
+  test.prop([fc.orcid(), fc.integer()])('when there are no comments, starts a new comment', (authorId, prereviewId) => {
+    const actual = _.GetNextExpectedCommandForUser([])({ authorId, prereviewId })
 
-      expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
-    },
-  )
+    expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
+  })
 
-  test.prop([fc.orcid(), fc.integer(), fc.uuid(), fc.boolean()])(
+  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
     'when in progress comments are by other authors, starts a new comment',
-    (authorId, prereviewId, resourceId, requireVerifiedEmailAddress) => {
+    (authorId, prereviewId, resourceId) => {
       const events = [
         {
           event: new Comments.CommentWasStarted({ prereviewId, authorId: Orcid('0000-0002-1825-0097') }),
           resourceId,
         },
       ]
-      const actual = _.GetNextExpectedCommandForUser(requireVerifiedEmailAddress)(events)({ authorId, prereviewId })
+      const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
       expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
     },
   )
 
-  test.prop([fc.orcid(), fc.integer(), fc.uuid(), fc.boolean()])(
+  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
     'when in progress comments are for other PREreviews, starts a new comment',
-    (authorId, prereviewId, resourceId, requireVerifiedEmailAddress) => {
+    (authorId, prereviewId, resourceId) => {
       const events = [
         {
           event: new Comments.CommentWasStarted({ prereviewId: 123, authorId }),
           resourceId,
         },
       ]
-      const actual = _.GetNextExpectedCommandForUser(requireVerifiedEmailAddress)(events)({ authorId, prereviewId })
+      const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
       expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
     },
   )
 
-  test.prop([fc.orcid(), fc.integer(), fc.uuid(), fc.boolean()])(
+  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
     'when no user input is needed for a comment, starts a new comment',
-    (authorId, prereviewId, resourceId, requireVerifiedEmailAddress) => {
+    (authorId, prereviewId, resourceId) => {
       const events = [
         {
           event: new Comments.CommentPublicationWasRequested({ prereviewId, authorId }),
           resourceId,
         },
       ]
-      const actual = _.GetNextExpectedCommandForUser(requireVerifiedEmailAddress)(events)({ authorId, prereviewId })
+      const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
       expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
     },
@@ -200,18 +183,6 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
           competingInterestsWereDeclared,
           codeOfConductWasAgreed,
         ],
-        true,
-      ],
-      [
-        'ExpectedToPublishComment',
-        [
-          commentWasStarted,
-          commentWasEntered,
-          personaWasChosen,
-          competingInterestsWereDeclared,
-          codeOfConductWasAgreed,
-        ],
-        false,
       ],
       [
         'ExpectedToPublishComment',
@@ -223,30 +194,29 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
           codeOfConductWasAgreed,
           existenceOfVerifiedEmailAddressWasConfirmed,
         ],
-        true,
       ],
-    ])('returns %s', (expected, events, requireVerifiedEmailAddress = false) => {
-      const actual = _.GetNextExpectedCommandForUserOnAComment(requireVerifiedEmailAddress)(
-        Array.map(events, event => ({ event, resourceId })),
-      )(resourceId)
+    ])('returns %s', (expected, events) => {
+      const actual = _.GetNextExpectedCommandForUserOnAComment(Array.map(events, event => ({ event, resourceId })))(
+        resourceId,
+      )
 
       expect(actual).toStrictEqual(Either.right(expect.objectContaining({ _tag: expected, commentId: resourceId })))
     })
 
     test('when last answer was changed', () => {
       const events = [commentWasStarted, commentWasEntered, commentWasEntered]
-      const actual = _.GetNextExpectedCommandForUserOnAComment(false)(
-        Array.map(events, event => ({ event, resourceId })),
-      )(resourceId)
+      const actual = _.GetNextExpectedCommandForUserOnAComment(Array.map(events, event => ({ event, resourceId })))(
+        resourceId,
+      )
 
       expect(actual).toStrictEqual(Either.right(new Comments.ExpectedToChooseAPersona({ commentId: resourceId })))
     })
 
     test('when a previous answer was changed', () => {
       const events = [commentWasStarted, commentWasEntered, personaWasChosen, commentWasEntered]
-      const actual = _.GetNextExpectedCommandForUserOnAComment(false)(
-        Array.map(events, event => ({ event, resourceId })),
-      )(resourceId)
+      const actual = _.GetNextExpectedCommandForUserOnAComment(Array.map(events, event => ({ event, resourceId })))(
+        resourceId,
+      )
 
       expect(actual).toStrictEqual(
         Either.right(new Comments.ExpectedToDeclareCompetingInterests({ commentId: resourceId })),
@@ -260,50 +230,48 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
         personaWasChosen,
         competingInterestsWereDeclared,
         codeOfConductWasAgreed,
+        existenceOfVerifiedEmailAddressWasConfirmed,
         personaWasChosen,
       ]
-      const actual = _.GetNextExpectedCommandForUserOnAComment(false)(
-        Array.map(events, event => ({ event, resourceId })),
-      )(resourceId)
+      const actual = _.GetNextExpectedCommandForUserOnAComment(Array.map(events, event => ({ event, resourceId })))(
+        resourceId,
+      )
 
       expect(actual).toStrictEqual(Either.right(new Comments.ExpectedToPublishComment({ commentId: resourceId })))
     })
   })
 
-  test.prop([fc.orcid(), fc.integer(), fc.boolean()])(
-    "when the comment hasn't been started",
-    (authorId, prereviewId, requireVerifiedEmailAddress) => {
-      const actual = _.GetNextExpectedCommandForUserOnAComment(requireVerifiedEmailAddress)([])(resourceId)
+  test("when the comment hasn't been started", () => {
+    const actual = _.GetNextExpectedCommandForUserOnAComment([])(resourceId)
 
-      expect(actual).toStrictEqual(Either.left(new Comments.CommentHasNotBeenStarted()))
-    },
-  )
+    expect(actual).toStrictEqual(Either.left(new Comments.CommentHasNotBeenStarted()))
+  })
 
-  test.prop([fc.orcid(), fc.integer(), fc.uuid(), fc.boolean()])(
+  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
     'when the comment is being published',
-    (authorId, prereviewId, resourceId, requireVerifiedEmailAddress) => {
+    (authorId, prereviewId, resourceId) => {
       const events = [
         {
           event: new Comments.CommentPublicationWasRequested({ prereviewId, authorId }),
           resourceId,
         },
       ]
-      const actual = _.GetNextExpectedCommandForUserOnAComment(requireVerifiedEmailAddress)(events)(resourceId)
+      const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
       expect(actual).toStrictEqual(Either.left(new Comments.CommentIsBeingPublished()))
     },
   )
 
-  test.prop([fc.orcid(), fc.integer(), fc.uuid(), fc.boolean()])(
+  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
     'when the comment has been published',
-    (authorId, prereviewId, resourceId, requireVerifiedEmailAddress) => {
+    (authorId, prereviewId, resourceId) => {
       const events = [
         {
           event: new Comments.CommentPublicationWasRequested({ prereviewId, authorId }),
           resourceId,
         },
       ]
-      const actual = _.GetNextExpectedCommandForUserOnAComment(requireVerifiedEmailAddress)(events)(resourceId)
+      const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
       expect(actual).toStrictEqual(Either.left(new Comments.CommentWasAlreadyPublished()))
     },

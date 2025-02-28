@@ -6,9 +6,8 @@ import {
   type HttpClientResponse,
   HttpMethod,
 } from '@effect/platform'
-import { Duration, Effect, flow, pipe, Runtime } from 'effect'
+import { Duration, Effect, flow, Function, pipe, Runtime } from 'effect'
 import type * as F from 'fetch-fp-ts'
-import { constVoid } from 'fp-ts/lib/function.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import * as L from 'logger-fp-ts'
@@ -45,7 +44,7 @@ export function revalidateIfStale<E extends F.FetchEnv & SleepEnv>(): (env: E) =
           .sleep(Duration.toMillis(Duration.min(Duration.times('0.2 seconds', openRequests.size), '30 seconds')))()
           .then(() => env.fetch(url, { ...init, cache: 'no-cache' }))
           .then(response => response.text())
-          .catch(constVoid)
+          .catch(Function.constVoid)
           .finally(() => openRequests.delete(url))
       }
 
@@ -137,7 +136,7 @@ export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(): (env: E) => E {
 
 export const makeFetch: Effect.Effect<typeof globalThis.fetch, never, HttpClient.HttpClient | HttpCache> = Effect.gen(
   function* () {
-    const client = yield* CachingHttpClient
+    const client = yield* CachingHttpClient('10 seconds')
     const runtime = yield* Effect.runtime()
 
     return flow(

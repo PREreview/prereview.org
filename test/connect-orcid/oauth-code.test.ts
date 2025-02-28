@@ -18,7 +18,7 @@ describe('connectOrcidCode', () => {
       fc.user(),
       fc.oauth(),
       fc.origin(),
-      fc.set(fc.lorem({ maxCount: 1 }), { minLength: 1 }),
+      fc.hashSet(fc.lorem({ maxCount: 1 }), { minLength: 1 }),
       fc.nonEmptyString(),
       fc.orcidToken(),
     ])('there is a token already', async (code, user, orcidOauth, publicUrl, scopes, accessToken, existingToken) => {
@@ -91,7 +91,7 @@ describe('connectOrcidCode', () => {
       fc.user(),
       fc.oauth(),
       fc.origin(),
-      fc.set(fc.lorem({ maxCount: 1 }), { minLength: 1 }),
+      fc.hashSet(fc.lorem({ maxCount: 1 }), { minLength: 1 }),
       fc.nonEmptyString(),
     ])("there isn't a token already", async (code, user, orcidOauth, publicUrl, scopes, accessToken) => {
       const fetch = fetchMock.sandbox().postOnce(

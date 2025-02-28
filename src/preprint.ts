@@ -33,30 +33,34 @@ export interface PreprintTitle {
 }
 
 export interface DoesPreprintExistEnv {
-  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'not-a-preprint' | 'unavailable', boolean>
+  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<NotAPreprint | PreprintIsUnavailable, boolean>
 }
 
 export interface ResolvePreprintIdEnv {
   resolvePreprintId: (
     id: IndeterminatePreprintId,
-  ) => TE.TaskEither<'not-a-preprint' | 'not-found' | 'unavailable', PreprintId>
+  ) => TE.TaskEither<NotAPreprint | PreprintIsNotFound | PreprintIsUnavailable, PreprintId>
 }
 
 export interface GetPreprintIdEnv {
-  getPreprintId: (id: IndeterminatePreprintId) => TE.TaskEither<'unavailable', PreprintId>
+  getPreprintId: (id: IndeterminatePreprintId) => TE.TaskEither<PreprintIsUnavailable, PreprintId>
 }
 
 export interface GetPreprintEnv {
-  getPreprint: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
+  getPreprint: (id: IndeterminatePreprintId) => TE.TaskEither<PreprintIsNotFound | PreprintIsUnavailable, Preprint>
 }
 
 export interface GetPreprintTitleEnv {
-  getPreprintTitle: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', PreprintTitle>
+  getPreprintTitle: (
+    id: IndeterminatePreprintId,
+  ) => TE.TaskEither<PreprintIsNotFound | PreprintIsUnavailable, PreprintTitle>
 }
 
-export class PreprintIsNotFound extends Data.TaggedError('PreprintIsNotFound') {}
+export class NotAPreprint extends Data.TaggedError('NotAPreprint')<{ cause?: unknown }> {}
 
-export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailable') {}
+export class PreprintIsNotFound extends Data.TaggedError('PreprintIsNotFound')<{ cause?: unknown }> {}
+
+export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailable')<{ cause?: unknown }> {}
 
 export const Preprint = Data.struct<Preprint>
 
@@ -79,5 +83,5 @@ export const getPreprint = (id: IndeterminatePreprintId) =>
 
 export const getPreprintTitle = (
   id: IndeterminatePreprintId,
-): RTE.ReaderTaskEither<GetPreprintTitleEnv, 'not-found' | 'unavailable', PreprintTitle> =>
+): RTE.ReaderTaskEither<GetPreprintTitleEnv, PreprintIsNotFound | PreprintIsUnavailable, PreprintTitle> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(id)))

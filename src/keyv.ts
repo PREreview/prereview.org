@@ -1,9 +1,8 @@
+import { flow, identity, pipe, Record } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import type { Decoder } from 'io-ts/lib/Decoder.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Encoder } from 'io-ts/lib/Encoder.js'
@@ -121,7 +120,11 @@ const deleteKey =
 const getAll = <K extends string, V>(
   keyDecoder: Decoder<unknown, K>,
   valueDecoder: Decoder<unknown, V>,
-): RTE.ReaderTaskEither<KeyvEnv & L.LoggerEnv, 'unavailable', RR.ReadonlyRecord<K, V>> =>
+): RTE.ReaderTaskEither<
+  KeyvEnv & L.LoggerEnv,
+  'unavailable',
+  Record.ReadonlyRecord<Record.ReadonlyRecord.NonLiteralKey<K>, V>
+> =>
   pipe(
     RTE.ask<KeyvEnv>(),
     RTE.chainW(({ keyv }) =>
@@ -130,7 +133,7 @@ const getAll = <K extends string, V>(
       ),
     ),
     RTE.chainEitherKW(D.array(D.tuple(keyDecoder, valueDecoder)).decode),
-    RTE.bimap(() => 'unavailable' as const, RR.fromEntries),
+    RTE.bimap(() => 'unavailable' as const, Record.fromEntries),
   )
 
 const getKey =

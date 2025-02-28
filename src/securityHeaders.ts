@@ -6,6 +6,7 @@ const crowdin = {
   scriptSrc: ['cdn.crowdin.com', "'unsafe-inline'", "'unsafe-eval'"],
   imgSrc: ['*.crowdin.com'],
   frameSrc: ['crowdin.com', 'accounts.crowdin.com'],
+  styleSrc: ["'unsafe-inline'"],
   crossOriginEmbedderPolicy: 'unsafe-none' as const,
 }
 
@@ -38,7 +39,7 @@ export const securityHeaders = (protocol: URL['protocol'], useCrowdinInContext: 
         'frame-src': useCrowdinInContext ? crowdin.frameSrc : "'none'",
         'object-src': "'none'",
         'script-src-attr': useCrowdinInContext ? "'unsafe-inline'" : "'none'",
-        'style-src': ["'self'", 'https:', "'unsafe-inline'"],
+        'style-src': ["'self'", 'https:'].concat(useCrowdinInContext ? crowdin.styleSrc : []),
       },
     }),
     'Cross-Origin-Embedder-Policy': useCrowdinInContext ? crowdin.crossOriginEmbedderPolicy : crossOriginEmbedderPolicy,

@@ -1,12 +1,11 @@
+import { Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import {
@@ -140,5 +139,5 @@ const PersonaFieldD = pipe(
   D.struct({
     persona: D.literal('public', 'pseudonym'),
   }),
-  D.map(get('persona')),
+  D.map(Struct.get('persona')),
 )

@@ -1,15 +1,14 @@
+import type { HttpMethod } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, Either, HashSet, Option } from 'effect'
+import { Array, DateTime, Duration, Either, HashSet, Option, Predicate } from 'effect'
 import type { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import type * as F from 'fetch-fp-ts'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
-import { not } from 'fp-ts/lib/Predicate.js'
-import type { Refinement } from 'fp-ts/lib/Refinement.js'
 import type * as H from 'hyper-ts'
 import { Status } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -44,6 +43,7 @@ import type { DatacitePreprintId } from '../src/datacite.js'
 import type { Email } from '../src/email.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
+import type { JapanLinkCenterPreprintId } from '../src/JapanLinkCenter/PreprintId.js'
 import type { Languages } from '../src/languages.js'
 import { type SupportedLocale, SupportedLocales } from '../src/locales/index.js'
 import type { Location } from '../src/location.js'
@@ -97,6 +97,7 @@ import {
   type EdarxivPreprintId,
   type EngrxivPreprintId,
   type IndeterminatePreprintId,
+  type JxivPreprintId,
   type MedrxivPreprintId,
   type MetaarxivPreprintId,
   type OsfPreprintId,
@@ -146,12 +147,14 @@ export function constant<const T>(value: T): Arbitrary<T> {
   return fc.constant(value)
 }
 
-export function constantFrom<const T>(...values: Array<T>): Arbitrary<T> {
+export function constantFrom<const T extends Array<unknown>>(...values: T): Arbitrary<T[number]> {
   return fc.constantFrom(...values)
 }
 
-export const set = <A>(arb: fc.Arbitrary<A>, constraints?: fc.UniqueArraySharedConstraints): fc.Arbitrary<Set<A>> =>
-  fc.uniqueArray(arb, constraints).map(values => new Set(values))
+export const hashSet = <A>(
+  arb: fc.Arbitrary<A>,
+  constraints?: fc.UniqueArraySharedConstraints,
+): fc.Arbitrary<HashSet.HashSet<A>> => fc.uniqueArray(arb, constraints).map(HashSet.fromIterable)
 
 const some = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> => arb.map(Option.some)
 
@@ -164,6 +167,8 @@ const right = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A>> => arb.m
 
 export const either = <E, A>(leftArb: fc.Arbitrary<E>, rightArb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A, E>> =>
   fc.oneof(left(leftArb), right(rightArb))
+
+export const durationInput = (): fc.Arbitrary<Duration.DurationInput> => fc.integer({ min: 0 }).map(Duration.seconds)
 
 export const json = (): fc.Arbitrary<Json> => fc.jsonValue() as fc.Arbitrary<Json>
 
@@ -248,7 +253,8 @@ export const locale = (): fc.Arbitrary<string> =>
     'zh-Hans-CN',
   )
 
-export const supportedLocale = (): fc.Arbitrary<SupportedLocale> => constantFrom(...HashSet.values(SupportedLocales))
+export const supportedLocale = (): fc.Arbitrary<SupportedLocale> =>
+  constantFrom(...Array.fromIterable(SupportedLocales))
 
 export const pageResponse = ({
   canonical,
@@ -430,9 +436,9 @@ export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbi
   fc
     .tuple(withRegistrant ?? doiRegistrant(), fc.string({ unit: 'grapheme', minLength: 1 }))
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
-    .filter(isDoi as Refinement<unknown, Doi<R>>)
+    .filter(isDoi as Predicate.Refinement<unknown, Doi<R>>)
 
-export const nonPreprintDoi = (): fc.Arbitrary<Doi> => doi().filter(not(isPreprintDoi))
+export const nonPreprintDoi = (): fc.Arbitrary<Doi> => doi().filter(Predicate.not(isPreprintDoi))
 
 export const preprintDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>['value']> =>
   preprintIdWithDoi().map(id => id.value)
@@ -447,6 +453,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
     biorxivPreprintUrl(),
     edarxivPreprintUrl(),
     engrxivPreprintUrl(),
+    jxivPreprintUrl(),
     medrxivPreprintUrl(),
     metaarxivPreprintUrl(),
     osfPreprintsPreprintUrl(),
@@ -468,6 +475,9 @@ export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']>
 
 export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value']> =>
   datacitePreprintId().map(id => id.value)
+
+export const japanLinkCenterPreprintDoi = (): fc.Arbitrary<JapanLinkCenterPreprintId['value']> =>
+  japanLinkCenterPreprintId().map(id => id.value)
 
 export const advancePreprintId = (): fc.Arbitrary<AdvancePreprintId> =>
   fc.record({
@@ -639,6 +649,20 @@ export const engrxivPreprintUrl = (): fc.Arbitrary<[URL, EngrxivPreprintId]> =>
     .map(id => [
       new URL(`https://engrxiv.org/preprint/view/${id}`),
       { type: 'engrxiv', value: `10.31224/${id}` as Doi<'31224'> },
+    ])
+
+export const jxivPreprintId = (): fc.Arbitrary<JxivPreprintId> =>
+  fc.record({
+    type: constant('jxiv'),
+    value: doi(constant('51094')),
+  })
+
+export const jxivPreprintUrl = (): fc.Arbitrary<[URL, JxivPreprintId]> =>
+  fc
+    .integer({ min: 1 })
+    .map(id => [
+      new URL(`https://jxiv.jst.go.jp/index.php/jxiv/preprint/view/${id}`),
+      { type: 'jxiv', value: `10.51094/jxiv.${id}` as Doi<'51094'> },
     ])
 
 export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
@@ -850,6 +874,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
     engrxivPreprintId(),
+    jxivPreprintId(),
     medrxivPreprintId(),
     metaarxivPreprintId(),
     osfPreprintId(),
@@ -909,6 +934,8 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
     zenodoPreprintId(),
   )
 
+export const japanLinkCenterPreprintId = (): fc.Arbitrary<JapanLinkCenterPreprintId> => jxivPreprintId()
+
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc
     .string({
@@ -921,22 +948,27 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
 
 export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId> =>
   fc.oneof(
+    advancePreprintId(),
     africarxivUbuntunetPreprintId(),
     arxivPreprintId(),
     biorxivPreprintId(),
+    eartharxivPreprintId(),
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
+    engrxivPreprintId(),
     medrxivPreprintId(),
+    metaarxivPreprintId(),
     osfPreprintsPreprintId(),
     preprintsorgPreprintId(),
     psyarxivPreprintId(),
+    researchSquarePreprintId(),
     scieloPreprintId(),
     socarxivPreprintId(),
+    techrxivPreprintId(),
   )
 
 export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, ReviewRequestPreprintId>> =>
   fc.oneof(
-    advancePreprintId(),
     africarxivFigsharePreprintId(),
     africarxivOsfPreprintId(),
     africarxivZenodoPreprintId(),
@@ -944,15 +976,11 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     authoreaPreprintId(),
     chemrxivPreprintId(),
     curvenotePreprintId(),
-    eartharxivPreprintId(),
-    engrxivPreprintId(),
-    metaarxivPreprintId(),
+    jxivPreprintId(),
     osfPreprintId(),
     philsciPreprintId(),
     psychArchivesPreprintId(),
-    researchSquarePreprintId(),
     scienceOpenPreprintId(),
-    techrxivPreprintId(),
     verixivPreprintId(),
     zenodoPreprintId(),
   )
@@ -1043,12 +1071,12 @@ export const isOpenForRequestsVisibility = (): fc.Arbitrary<
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
 
 export const slackUserId = (): fc.Arbitrary<SlackUserId> =>
-  fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString(), scopes: set(nonEmptyString()) })
+  fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString(), scopes: hashSet(nonEmptyString()) })
 
 export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
   fc.record({
     accessToken: nonEmptyString(),
-    scopes: set(nonEmptyString()),
+    scopes: hashSet(nonEmptyString()),
   })
 
 export const clubId = (): fc.Arbitrary<ClubId> => constantFrom(...clubIds)
@@ -1062,6 +1090,8 @@ export const orcidProfileId = (): fc.Arbitrary<ProfileId.OrcidProfileId> => orci
 
 export const pseudonymProfileId = (): fc.Arbitrary<ProfileId.PseudonymProfileId> =>
   pseudonym().map(ProfileId.forPseudonym)
+
+export const dateTimeUtc = (): fc.Arbitrary<DateTime.Utc> => fc.date().map(DateTime.unsafeFromDate)
 
 export const year = (): fc.Arbitrary<number> => fc.integer({ min: -271820, max: 275759 })
 
@@ -1087,10 +1117,10 @@ export const instant = (): fc.Arbitrary<Temporal.Instant> =>
 
 export const origin = (): fc.Arbitrary<URL> => url().map(url => new URL(url.origin))
 
-export const url = (): fc.Arbitrary<URL> => fc.webUrl().map(url => new URL(url))
+export const url = (): fc.Arbitrary<URL> => fc.webUrl({ withQueryParameters: true }).map(url => new URL(url))
 
-export const requestMethod = (): fc.Arbitrary<RequestMethod> =>
-  constantFrom('CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE')
+export const requestMethod = (): fc.Arbitrary<HttpMethod.HttpMethod> =>
+  constantFrom('DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT')
 
 const headerName = () =>
   fc.string({
@@ -1115,7 +1145,8 @@ export const headers = (include: fc.Arbitrary<Record<string, string>> = constant
       return headers
     })
 
-export const statusCode = (): fc.Arbitrary<Status> => constantFrom(...Object.values(Status))
+export const statusCode = (): fc.Arbitrary<Status> =>
+  constantFrom(...Object.values(Status).filter(status => status >= 200))
 
 export const cacheableStatusCode = (): fc.Arbitrary<CacheableStatusCodes> => statusCode().filter(isCacheable)
 
@@ -1163,7 +1194,9 @@ export const request = ({
       body: body ?? constant(undefined),
       headers: headers ?? constant({}),
       method: method ?? requestMethod(),
-      url: path ? fc.tuple(path, url()).map(([path, base]) => new URL(path, base).href) : fc.webUrl(),
+      url: path
+        ? fc.tuple(path, url()).map(([path, base]) => new URL(path, base).href)
+        : fc.webUrl({ withQueryParameters: true }),
     })
     .map(args =>
       Object.defineProperties(createRequest(args), { [fc.toStringMethod]: { value: () => fc.stringify(args) } }),

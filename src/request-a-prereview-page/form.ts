@@ -1,7 +1,6 @@
 import * as Doi from 'doi-ts'
+import { flow, Option, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { getInput } from '../form.js'
 
@@ -69,11 +68,5 @@ const WhichPreprintD = pipe(
 
 export const fromBody: (body: unknown) => E.Either<InvalidForm, ValidForm> = flow(
   WhichPreprintD.decode,
-  E.bimap(
-    flow(
-      getInput('preprint'),
-      O.match(() => InvalidForm(''), InvalidForm),
-    ),
-    ValidForm,
-  ),
+  E.bimap(flow(getInput('preprint'), Option.match({ onNone: () => InvalidForm(''), onSome: InvalidForm })), ValidForm),
 )

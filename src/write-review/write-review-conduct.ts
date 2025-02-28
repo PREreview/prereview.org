@@ -1,10 +1,9 @@
+import { Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
@@ -20,7 +19,7 @@ import {
 } from '../routes.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
-import { backNav, errorPrefix, errorSummary, saveAndContinueButton } from './shared-elements.js'
+import { backNav, errorPrefix, errorSummary, prereviewOfSuffix, saveAndContinueButton } from './shared-elements.js'
 
 export const writeReviewConduct = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -51,8 +50,8 @@ export const writeReviewConduct = flow(
   ),
   RM.orElseW(error =>
     match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
+      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
+      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
       .exhaustive(),
   ),
 )
@@ -108,7 +107,7 @@ const ConductFieldD = pipe(
   D.struct({
     conduct: D.literal('yes'),
   }),
-  D.map(get('conduct')),
+  D.map(Struct.get('conduct')),
 )
 
 interface CodeOfConductForm {
@@ -123,7 +122,8 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
 
   return templatePage({
     title: pipe(
-      t('write-review', 'codeOfConductTitle')({ preprintTitle: preprint.title.toString() }),
+      t('write-review', 'codeOfConduct')(),
+      prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),

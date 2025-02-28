@@ -1,10 +1,10 @@
 import { isDoi } from 'doi-ts'
+import { flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import type { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
-import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { getAssignSemigroup } from 'fp-ts/lib/struct.js'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import * as C from 'io-ts/lib/Codec.js'
@@ -30,6 +30,7 @@ import {
   writeReviewReviewMatch,
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
+  writeReviewUseOfAiMatch,
 } from '../routes.js'
 import { EmailAddressC } from '../types/email-address.js'
 import type { PreprintId } from '../types/preprint-id.js'
@@ -99,7 +100,7 @@ export function deleteForm(
   )
 }
 
-export const nextFormMatch = (form: Form) =>
+export const nextFormMatch = (form: Form, mustDeclareUseOfAi = false) =>
   match(form)
     .with(
       { alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
@@ -127,6 +128,11 @@ export const nextFormMatch = (form: Form) =>
     .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
     .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
     .with({ moreAuthors: 'yes', otherAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
+    .with(
+      { generativeAiIdeas: P.optional(undefined) },
+      () => mustDeclareUseOfAi,
+      () => writeReviewUseOfAiMatch,
+    )
     .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
     .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
     .otherwise(() => writeReviewPublishMatch)
@@ -211,6 +217,7 @@ export const FormC = pipe(
       exceptionally: NonEmptyStringC,
       skip: NonEmptyStringC,
     }),
+    generativeAiIdeas: C.literal('yes', 'no'),
     novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
     novelDetails: C.partial({
       no: NonEmptyStringC,

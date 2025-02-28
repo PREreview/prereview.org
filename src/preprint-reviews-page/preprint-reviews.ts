@@ -1,14 +1,13 @@
 import textClipper from '@arendjr/text-clipper'
 import { isDoi, toUrl } from 'doi-ts'
+import { flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as I from 'fp-ts/lib/Identity.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
-import { get } from 'spectacles-ts'
 import { match, P as p } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
@@ -24,12 +23,10 @@ import type { Prereview } from './prereviews.js'
 import type { RapidPrereview } from './rapid-prereviews.js'
 
 export const createPage = ({
-  canRequestReviews,
   preprint,
   reviews,
   rapidPrereviews,
 }: {
-  canRequestReviews: boolean
   preprint: Preprint
   reviews: ReadonlyArray<Prereview>
   rapidPrereviews: ReadonlyArray<RapidPrereview>
@@ -88,6 +85,7 @@ export const createPage = ({
                   .with('ecoevorxiv', () => 'EcoEvoRxiv')
                   .with('edarxiv', () => 'EdArXiv')
                   .with('engrxiv', () => 'engrXiv')
+                  .with('jxiv', () => 'Jxiv')
                   .with('medrxiv', () => 'medRxiv')
                   .with('metaarxiv', () => 'MetaArXiv')
                   .with('osf', () => 'OSF')
@@ -156,7 +154,7 @@ export const createPage = ({
       <div class="button-group" role="group">
         <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}" class="button">Write a PREreview</a>
 
-        ${canRequestReviews && isReviewRequestPreprintId(preprint.id)
+        ${isReviewRequestPreprintId(preprint.id)
           ? html`<a href="${format(requestReviewMatch.formatter, { id: preprint.id })}">Request a PREreview</a>`
           : ''}
       </div>
@@ -183,7 +181,7 @@ function showReview(review: Prereview) {
             <span class="visually-hidden">Authored</span> by
             ${pipe(
               review.authors.named,
-              RNEA.map(get('name')),
+              RNEA.map(Struct.get('name')),
               RNEA.concatW(
                 review.authors.anonymous > 0
                   ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
@@ -221,7 +219,7 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
 
     <div class="byline">
       <span class="visually-hidden">Authored</span> by
-      ${pipe(rapidPrereviews, RNEA.map(flow(get('author'), displayAuthor)), formatList(DefaultLocale))}
+      ${pipe(rapidPrereviews, RNEA.map(flow(Struct.get('author'), displayAuthor)), formatList(DefaultLocale))}
     </div>
 
     <details>

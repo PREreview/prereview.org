@@ -62,6 +62,7 @@
     "@typescript-eslint/no-confusing-void-expression": "off",
     "@typescript-eslint/no-deprecated": "off",
     "@typescript-eslint/no-import-type-side-effects": "error",
+    "@typescript-eslint/no-misused-spread": "off",
     "@typescript-eslint/prefer-nullish-coalescing": ["error", { "ignoreConditionalTests": true }],
     "@typescript-eslint/restrict-template-expressions": ["error", { "allowNumber": true }],
     "@typescript-eslint/strict-boolean-expressions": "error",
@@ -83,8 +84,7 @@
       "error",
       {
         "allow": [
-          "fp-ts/lib/*",
-          "fp-ts-contrib/lib/*",
+          "fp-ts/lib/!(Array|boolean|Eq|function|NonEmptyArray|Option|Ord|Ordering|Predicate|ReadonlyRecord|ReadonlySet|ReadonlyTuple|Refinement|string).js",
           "io-ts/lib/*",
           "iso-639-3/to-*.json",
           "http-proxy-middleware/dist/types",

@@ -1,15 +1,12 @@
 import cookie from 'cookie'
-import { Schema } from 'effect'
+import { Record, Schema, Struct, flow, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as RR from 'fp-ts/lib/ReadonlyRecord.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import { type HeadersOpen, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message.js'
 import { type Html, html, rawHtml, sendHtml } from './html.js'
@@ -181,7 +178,6 @@ export const toPage = ({
 }): Page =>
   response._tag === 'TwoUpPageResponse'
     ? {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         locale: locale !== DefaultLocale ? locale : undefined,
         title: response.title,
         description: response.description,
@@ -202,7 +198,6 @@ export const toPage = ({
         userOnboarding,
       }
     : {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         locale: locale !== DefaultLocale ? locale : undefined,
         title: response.title,
         description: response.description,
@@ -289,7 +284,7 @@ export const handlePageResponse = ({
           .exhaustive(),
       ),
     ),
-    RM.ichainMiddlewareK(flow(get('body'), sendHtml)),
+    RM.ichainMiddlewareK(flow(Struct.get('body'), sendHtml)),
   )
 
 const handleTwoUpPageResponse = ({
@@ -340,7 +335,7 @@ const handleTwoUpPageResponse = ({
     RM.ichainFirst(() => RM.header('Vary', 'Cookie')),
     RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
     RM.ichainFirst(({ canonical }) => RM.header('Link', `<${canonical}>; rel="canonical"`)),
-    RM.ichainMiddlewareK(flow(get('body'), sendHtml)),
+    RM.ichainMiddlewareK(flow(Struct.get('body'), sendHtml)),
   )
 
 const handleRedirectResponse = ({
@@ -489,7 +484,7 @@ function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R
 const deleteSlackState = pipe(
   M.decodeHeader<HeadersOpen, unknown, string>('Cookie', D.string.decode),
   M.orElse(() => M.right('')),
-  M.map(header => RR.has('slack-state', cookie.parse(header))),
+  M.map(header => Record.has(cookie.parse(header), 'slack-state')),
   M.chain(hasCookie => (hasCookie ? M.clearCookie('slack-state', { httpOnly: true }) : M.right(undefined))),
 )
 

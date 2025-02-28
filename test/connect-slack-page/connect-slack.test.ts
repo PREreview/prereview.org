@@ -1,9 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { Option } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
@@ -257,7 +257,7 @@ describe('connectSlackCode', () => {
     fc.oauth(),
     fc.origin(),
     fc.nonEmptyString(),
-    fc.set(fc.lorem(), { minLength: 1 }),
+    fc.hashSet(fc.lorem(), { minLength: 1 }),
     fc.nonEmptyString(),
     fc.lorem(),
     fc
@@ -269,7 +269,7 @@ describe('connectSlackCode', () => {
     'when the access token can be decoded',
     async (code, user, oauth, publicUrl, userId, scopes, accessToken, state, [signedState, connection]) => {
       const saveSlackUserId = jest.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
-      const unsignValue = jest.fn<_.UnsignValueEnv['unsignValue']>(_ => O.some(state))
+      const unsignValue = jest.fn<_.UnsignValueEnv['unsignValue']>(_ => Option.some(state))
 
       const actual = await runMiddleware(
         _.connectSlackCode(
@@ -362,7 +362,7 @@ describe('connectSlackCode', () => {
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
           templatePage,
-          unsignValue: () => O.some(state),
+          unsignValue: () => Option.some(state),
         }),
         connection,
       )()
@@ -418,7 +418,7 @@ describe('connectSlackCode', () => {
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
           templatePage,
-          unsignValue: () => O.some(unsignedState),
+          unsignValue: () => Option.some(unsignedState),
         }),
         connection,
       )()
@@ -468,7 +468,7 @@ describe('connectSlackCode', () => {
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
           templatePage,
-          unsignValue: () => O.none,
+          unsignValue: Option.none,
         }),
         connection,
       )()
@@ -529,7 +529,7 @@ describe('connectSlackCode', () => {
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
           templatePage,
-          unsignValue: () => O.some(state),
+          unsignValue: () => Option.some(state),
         }),
         connection,
       )()
@@ -585,7 +585,7 @@ describe('connectSlackCode', () => {
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
           templatePage,
-          unsignValue: () => O.some(state),
+          unsignValue: () => Option.some(state),
         }),
         connection,
       )()

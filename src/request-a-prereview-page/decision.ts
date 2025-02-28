@@ -4,7 +4,6 @@ import type * as Form from './form.js'
 
 export type Decision =
   | BeginFlow
-  | DenyAccess
   | ShowError
   | ShowNotAPreprint
   | ShowUnknownPreprint
@@ -17,10 +16,6 @@ export type Decision =
 export interface BeginFlow {
   _tag: 'BeginFlow'
   preprint: ReviewRequestPreprintId
-}
-
-export interface DenyAccess {
-  _tag: 'DenyAccess'
 }
 
 export interface ShowError {
@@ -59,8 +54,6 @@ export interface ShowEmptyForm {
 }
 
 export const BeginFlow = (preprint: ReviewRequestPreprintId): BeginFlow => ({ _tag: 'BeginFlow', preprint })
-
-export const DenyAccess: DenyAccess = { _tag: 'DenyAccess' }
 
 export const ShowError: ShowError = { _tag: 'ShowError' }
 

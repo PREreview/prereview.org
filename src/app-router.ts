@@ -1,16 +1,14 @@
 import cookieSignature from 'cookie-signature'
+import { Function, Option, String, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as T from 'fp-ts/lib/Task.js'
-import { constVoid, constant, flow, pipe } from 'fp-ts/lib/function.js'
-import { isString } from 'fp-ts/lib/string.js'
 import httpErrors from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
@@ -24,6 +22,7 @@ import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
+import { withEnv } from './Fpts.js'
 import type { GetPageFromGhostEnv } from './GhostPage.js'
 import {
   authorInvite,
@@ -72,16 +71,7 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from './email.js'
-import {
-  type CanConnectOrcidProfileEnv,
-  type CanRequestReviewsEnv,
-  type CanSeeAlternativeCompetingInterestsFormEnv,
-  type CanUploadAvatarEnv,
-  type CanUseSearchQueriesEnv,
-  type CanWriteCommentsEnv,
-  canSeeAlternativeCompetingInterestsForm,
-  canUseSearchQueries,
-} from './feature-flags.js'
+import type { MustDeclareUseOfAiEnv } from './feature-flags.js'
 import type { SleepEnv } from './fetch.js'
 import { funding } from './funding.js'
 import { home } from './home-page/index.js'
@@ -258,6 +248,7 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
   writeReviewStartMatch,
+  writeReviewUseOfAiMatch,
   writeReviewVerifyEmailAddressMatch,
 } from './routes.js'
 import { type ScietyListEnv, scietyList } from './sciety-list/index.js'
@@ -302,6 +293,8 @@ import {
   writeReviewReviewType,
   writeReviewShouldRead,
   writeReviewStart,
+  writeReviewUseOfAi,
+  writeReviewUseOfAiSubmission,
   writeReviewVerifyEmailAddress,
 } from './write-review/index.js'
 import {
@@ -335,18 +328,8 @@ const getSlackUser = flow(
   RTE.chainW(({ userId }) => getUserFromSlack(userId)),
 )
 
-const withEnv =
-  <R, A extends ReadonlyArray<unknown>, B>(f: (...a: A) => R.Reader<R, B>, env: R) =>
-  (...a: A) =>
-    f(...a)(env)
-
 export type RouterEnv = Keyv.AvatarStoreEnv &
-  CanConnectOrcidProfileEnv &
-  CanRequestReviewsEnv &
-  CanSeeAlternativeCompetingInterestsFormEnv &
-  CanUploadAvatarEnv &
-  CanUseSearchQueriesEnv &
-  CanWriteCommentsEnv &
+  MustDeclareUseOfAiEnv &
   DoesPreprintExistEnv &
   EffectEnv<Locale> &
   ResolvePreprintIdEnv &
@@ -396,7 +379,7 @@ const triggerRefreshOfPrereview = (id: number, user: User) =>
     void pipe(
       RTE.fromTask(T.delay(2000)(T.of(undefined))),
       RTE.chainW(() => refreshPrereview(id, user)),
-    )(env)().catch(constVoid)
+    )(env)().catch(Function.constVoid)
   })
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5_242_880 } })
@@ -490,9 +473,8 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             'locale',
             RM.asks((env: RouterEnv) => env.locale),
           ),
-          RM.bindW('canUseSearchQueries', ({ user }) => RM.rightReader(canUseSearchQueries(user))),
-          RM.bindW('response', ({ canUseSearchQueries, locale }) =>
-            RM.fromReaderTask(reviewsPage({ canUseSearchQueries, field, language, locale, page: page ?? 1, query })),
+          RM.bindW('response', ({ locale }) =>
+            RM.fromReaderTask(reviewsPage({ field, language, locale, page: page ?? 1, query })),
           ),
           RM.ichainW(handleResponse),
         ),
@@ -756,7 +738,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canConnectSlack: () => true,
           isSlackUser: withEnv(isSlackUser, env),
         })),
       ),
@@ -767,7 +748,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canConnectSlack: () => true,
           signValue: value => cookieSignature.sign(value, env.secret),
         })),
       ),
@@ -786,7 +766,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               ),
             env,
           ),
-          unsignValue: value => O.fromPredicate(isString)(cookieSignature.unsign(value, env.secret)),
+          unsignValue: value => Option.liftPredicate(String.isString)(cookieSignature.unsign(value, env.secret)),
         })),
       ),
     ),
@@ -811,7 +791,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canConnectSlack: () => true,
           deleteSlackUserId: withEnv(
             (orcid: Orcid) =>
               pipe(
@@ -837,7 +816,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.bindW('response', ({ user }) => RM.fromReaderTask(preprintReviews(id, user))),
+          RM.apSW('response', RM.fromReaderTask(preprintReviews(id))),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -901,7 +880,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canConnectSlack: () => true,
           getAvatar: withEnv(getAvatarFromCloudinary, { ...env, getCloudinaryAvatar: withEnv(Keyv.getAvatar, env) }),
           getCareerStage: withEnv(Keyv.getCareerStage, env),
           getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
@@ -1525,6 +1503,31 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       ),
     ),
     pipe(
+      writeReviewUseOfAiMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS(
+            'body',
+            RM.gets(c => c.getBody()),
+          ),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW('response', state =>
+            RM.fromReaderTask((state.method === 'POST' ? writeReviewUseOfAiSubmission : writeReviewUseOfAi)(state)),
+          ),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+    ),
+    pipe(
       writeReviewCompetingInterestsMatch.parser,
       P.map(({ id }) =>
         pipe(
@@ -1538,7 +1541,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             RM.gets(c => c.getMethod()),
           ),
           RM.apS('user', maybeGetUser),
-          RM.apSW('alternative', RM.rightReader(canSeeAlternativeCompetingInterestsForm)),
           RM.bindW('response', RM.fromReaderTaskK(writeReviewCompetingInterests)),
           RM.ichainW(handleResponse),
         ),
@@ -1661,7 +1663,11 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             'body',
             RM.gets(c => c.getBody()),
           ),
-          RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.apSW('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(requestAPrereview)),
           RM.ichainW(handleResponse),
         ),
@@ -2070,4 +2076,4 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
   concatAll(P.getParserMonoid()),
 )
 
-export const routes = pipe(route(router, constant(new httpErrors.NotFound())), RM.fromMiddleware, RM.iflatten)
+export const routes = pipe(route(router, Function.constant(new httpErrors.NotFound())), RM.fromMiddleware, RM.iflatten)

@@ -18,7 +18,7 @@ import {
 } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import type { NonEmptyString } from '../../types/string.js'
-import { backNav, errorPrefix, errorSummary } from '../shared-elements.js'
+import { backNav, errorPrefix, errorSummary, prereviewOfSuffix } from '../shared-elements.js'
 
 interface AddAuthorsForm {
   readonly anotherAuthor: E.Either<MissingE, 'yes' | 'no' | undefined>
@@ -43,7 +43,8 @@ export function addAuthorsForm({
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: pipe(
-      t('write-review', 'addAuthorsTitle')({ authorCount, preprintTitle: preprint.title.toString() }),
+      t('write-review', 'addedAuthorCount')({ authorCount }),
+      prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),

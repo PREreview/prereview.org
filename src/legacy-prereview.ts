@@ -1,22 +1,20 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
+import { Boolean, Function, Option, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as b from 'fp-ts/lib/boolean.js'
-import { constVoid, flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
 import { type SleepEnv, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import * as FptsToEffect from './FptsToEffect.js'
 import { ProfileId } from './types/index.js'
 import { type IndeterminatePreprintId, type PreprintId, parsePreprintDoi } from './types/preprint-id.js'
 import { PseudonymC, isPseudonym } from './types/pseudonym.js'
@@ -189,7 +187,9 @@ export const getPreprintIdFromLegacyPreviewUuid: (
       .with({ status: Status.NotFound }, () => 'not-found' as const)
       .otherwise(() => 'unavailable' as const),
   ),
-  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(flow(get('data.[0].handle'), parsePreprintDoi)),
+  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(
+    flow(({ data }) => data[0].handle, parsePreprintDoi),
+  ),
 )
 
 export const getProfileIdFromLegacyPreviewUuid: (
@@ -242,7 +242,12 @@ export const getPseudonymFromLegacyPrereview = (orcid: Orcid) =>
     RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
     RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
     RTE.chainOptionK(() => 'unknown-pseudonym' as unknown)(
-      flow(get('data.personas'), RA.findFirst(get('isAnonymous')), O.map(get('name')), O.filter(isPseudonym)),
+      flow(
+        ({ data }) => data.personas,
+        FptsToEffect.optionK(RA.findFirst(Struct.get('isAnonymous'))),
+        Option.map(Struct.get('name')),
+        Option.filter(isPseudonym),
+      ),
     ),
     RTE.mapLeft(error =>
       match(error)
@@ -286,7 +291,7 @@ export const getRapidPreviewsFromLegacyPrereview = (id: Extract<PreprintId, { va
     RTE.chainTaskEitherKW(F.decode(LegacyRapidPrereviewsD)),
     RTE.map(
       flow(
-        get('data'),
+        Struct.get('data'),
         RA.map(results => ({
           author: { name: results.author.name, orcid: results.author.orcid },
           questions: {
@@ -325,9 +330,9 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: LegacyCompatibleN
   pipe(
     shouldUpdate,
     R.chain(
-      b.match(
-        () => RTE.of(undefined),
-        () =>
+      Boolean.match({
+        onFalse: () => RTE.of(undefined),
+        onTrue: () =>
           pipe(
             resolvePreprint(newPrereview.preprint.id.value),
             RTE.chainReaderKW(preprint =>
@@ -353,9 +358,9 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: LegacyCompatibleN
             ),
             RTE.chainW(F.send),
             RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
-            RTE.bimap(() => 'unavailable' as const, constVoid),
+            RTE.bimap(() => 'unavailable' as const, Function.constVoid),
           ),
-      ),
+      }),
     ),
   )
 

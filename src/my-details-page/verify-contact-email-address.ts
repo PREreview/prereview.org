@@ -1,9 +1,9 @@
+import { flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { Reader } from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
+import type { EnvFor } from '../Fpts.js'
 import {
   getContactEmailAddress,
   isUnverified,
@@ -51,5 +51,3 @@ export const verifyContactEmailAddress = ({ verify, user }: { verify: Uuid; user
         }),
     ),
   )
-
-type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

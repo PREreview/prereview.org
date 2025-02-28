@@ -1,18 +1,18 @@
 import { Temporal } from '@js-temporal/polyfill'
+import { flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { isNonEmpty } from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import { flow, identity, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
 import { sanitizeHtml } from './html.js'
-import type { Preprint } from './preprint.js'
+import * as Preprint from './preprint.js'
 import type { PhilsciPreprintId } from './types/preprint-id.js'
 
 import PlainDate = Temporal.PlainDate
@@ -104,9 +104,12 @@ export const getPreprintFromPhilsci = flow(
   RTE.chainEitherKW(eprintToPreprint),
   RTE.mapLeft(error =>
     match(error)
-      .with({ status: P.union(Status.NotFound, Status.Unauthorized) }, () => 'not-found' as const)
-      .with('not a preprint', () => 'not-a-preprint' as const)
-      .otherwise(() => 'unavailable' as const),
+      .with(
+        { status: P.union(Status.NotFound, Status.Unauthorized) },
+        response => new Preprint.PreprintIsNotFound({ cause: response }),
+      )
+      .with('not a preprint', () => new Preprint.NotAPreprint({}))
+      .otherwise(error => new Preprint.PreprintIsUnavailable({ cause: error })),
   ),
 )
 
@@ -126,7 +129,7 @@ const getEprint = flow(
   RTE.chainTaskEitherKW(F.decode(EprintD)),
 )
 
-function eprintToPreprint(eprint: D.TypeOf<typeof EprintD>): E.Either<D.DecodeError | string, Preprint> {
+function eprintToPreprint(eprint: D.TypeOf<typeof EprintD>): E.Either<D.DecodeError | string, Preprint.Preprint> {
   return pipe(
     E.Do,
     E.filterOrElse(

@@ -1,11 +1,10 @@
+import { Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { flow, pipe } from 'fp-ts/lib/function.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
@@ -39,8 +38,8 @@ export const writeReviewReviewType = ({
       error =>
         RT.of(
           match(error)
-            .with('not-found', () => pageNotFound)
-            .with('unavailable', () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),
       preprint =>
@@ -139,7 +138,7 @@ const ReviewTypeFieldD = pipe(
   D.struct({
     reviewType: D.literal('questions', 'freeform', 'already-written'),
   }),
-  D.map(get('reviewType')),
+  D.map(Struct.get('reviewType')),
 )
 
 interface ReviewTypeForm {

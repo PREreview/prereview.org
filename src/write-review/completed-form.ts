@@ -1,4 +1,4 @@
-import { pipe } from 'fp-ts/lib/function.js'
+import { pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import { RawHtmlC } from '../html.js'
@@ -14,6 +14,11 @@ export const CompletedFormC = pipe(
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     persona: C.literal('public', 'pseudonym'),
   }),
+  C.intersect(
+    C.partial({
+      generativeAiIdeas: C.literal('yes', 'no'),
+    }),
+  ),
   C.intersect(
     C.sum('competingInterests')({
       yes: C.struct({

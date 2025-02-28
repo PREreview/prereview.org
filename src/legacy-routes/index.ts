@@ -1,10 +1,9 @@
 import { type Doi, isDoi } from 'doi-ts'
+import { Function, Option, Tuple, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import * as O from 'fp-ts/lib/Option.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { constant, flow, pipe, tuple } from 'fp-ts/lib/function.js'
 import httpErrors from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
@@ -13,6 +12,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { match, P as p } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
+import * as FptsToEffect from '../FptsToEffect.js'
 import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { movedPermanently, notFound, serviceUnavailable } from '../middleware.js'
 import type { TemplatePageEnv } from '../page.js'
@@ -229,7 +229,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
 )
 
 export const legacyRoutes = pipe(
-  route(legacyRouter, constant(new httpErrors.NotFound())),
+  route(legacyRouter, Function.constant(new httpErrors.NotFound())),
   RM.fromMiddleware,
   RM.iflatten,
 )
@@ -282,7 +282,9 @@ const redirectToProfile = flow(
 function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
   return new P.Match(
     new P.Parser(r =>
-      O.Functor.map(O.fromEither(codec.decode(r.query)), query => tuple(query, new P.Route(r.parts, {}))),
+      Option.map(Option.getRight(FptsToEffect.either(codec.decode(r.query))), query =>
+        Tuple.make(query, new P.Route(r.parts, {})),
+      ),
     ),
     new P.Formatter((r, query) => new P.Route(r.parts, codec.encode(query))),
   )
@@ -292,11 +294,13 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
   return new P.Match(
     new P.Parser(r => {
       if (typeof r.parts[0] !== 'string') {
-        return O.none
+        return Option.none()
       } else {
         const head = r.parts[0]
         const tail = r.parts.slice(1)
-        return O.Functor.map(O.fromEither(type.decode(head)), a => tuple(singleton(k, a), new P.Route(tail, r.query)))
+        return Option.map(Option.getRight(FptsToEffect.either(type.decode(head))), a =>
+          Tuple.make(singleton(k, a), new P.Route(tail, r.query)),
+        )
       }
     }),
     new P.Formatter((r, o) => new P.Route(r.parts.concat(type.encode(o[k])), r.query)),
