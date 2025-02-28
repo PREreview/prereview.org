@@ -154,11 +154,35 @@ describe('writeToRedis', () => {
 
 describe('deleteFromRedis', () => {
   describe('the cached response can be deleted', () => {
-    it.todo('succeeds')
+    it.failing.prop([fc.url()])('succeeds', url =>
+      Effect.gen(function* () {
+        const redis = {
+          del: jest.fn(() => Promise.resolve(1)),
+        } as unknown as typeof Redis.HttpCacheRedis.Service
+
+        const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
+
+        expect(result).toStrictEqual(Either.void)
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(redis.del).toHaveBeenCalledWith(url.href)
+      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
   })
 
   describe('there is no cached response', () => {
-    it.todo('succeeds')
+    it.failing.prop([fc.url()])('succeeds', url =>
+      Effect.gen(function* () {
+        const redis = {
+          del: jest.fn(() => Promise.resolve(0)),
+        } as unknown as typeof Redis.HttpCacheRedis.Service
+
+        const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
+
+        expect(result).toStrictEqual(Either.void)
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(redis.del).toHaveBeenCalledWith(url.href)
+      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
   })
 
   describe('redis is unreachable', () => {
