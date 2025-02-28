@@ -12,24 +12,7 @@ export const layerPersistedToRedis = Layer.effect(
     return pipe(
       {
         get: getFromRedis(redis),
-        set: (response, staleAt) =>
-          pipe(
-            Effect.gen(function* () {
-              return {
-                staleAt,
-                response: {
-                  status: response.status,
-                  headers: response.headers,
-                  body: yield* response.text,
-                },
-              }
-            }),
-            Effect.andThen(Schema.encode(CacheValueFromStringSchema)),
-            Effect.andThen(value => {
-              return redis.set(keyForRequest(response.request), value)
-            }),
-            Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
-          ),
+        set: writeToRedis(redis),
         delete: () => Effect.void,
       },
       serializationErrorChecking,
@@ -61,4 +44,25 @@ export const getFromRedis =
         ),
       ),
       Effect.catchTag('UnknownException', cause => new InternalHttpCacheFailure({ cause })),
+    )
+
+const writeToRedis =
+  (redis: typeof Redis.HttpCacheRedis.Service): (typeof HttpCache.Service)['set'] =>
+  (response, staleAt) =>
+    pipe(
+      Effect.gen(function* () {
+        return {
+          staleAt,
+          response: {
+            status: response.status,
+            headers: response.headers,
+            body: yield* response.text,
+          },
+        }
+      }),
+      Effect.andThen(Schema.encode(CacheValueFromStringSchema)),
+      Effect.andThen(value => {
+        return redis.set(keyForRequest(response.request), value)
+      }),
+      Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
     )
