@@ -1,4 +1,4 @@
-import { Headers, HttpClientRequest } from '@effect/platform'
+import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { it } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Cause, DateTime, Effect, Either, Schema, TestContext } from 'effect'
@@ -88,8 +88,24 @@ describe('getFromRedis', () => {
 })
 
 describe('writeToRedis', () => {
+  const stubbedRedis = () =>
+    ({
+      set: jest.fn(() => Promise.resolve()),
+    }) as unknown as typeof Redis.HttpCacheRedis.Service
+
   describe('the value can be written', () => {
-    it.todo('succeeds')
+    it.prop([fc.url(), fc.dateTimeUtc()])('succeeds', (url, staleAt) =>
+      Effect.gen(function* () {
+        const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
+        const redis = stubbedRedis()
+
+        const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
+
+        expect(result).toStrictEqual(Either.right(undefined))
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(redis.set).toHaveBeenCalled()
+      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
   })
 
   describe('the response body can not be read', () => {

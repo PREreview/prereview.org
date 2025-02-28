@@ -4,7 +4,7 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, Duration, Either, HashSet, Option, Predicate } from 'effect'
+import { Array, DateTime, Duration, Either, HashSet, Option, Predicate } from 'effect'
 import type { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import type * as F from 'fetch-fp-ts'
@@ -1090,6 +1090,8 @@ export const orcidProfileId = (): fc.Arbitrary<ProfileId.OrcidProfileId> => orci
 
 export const pseudonymProfileId = (): fc.Arbitrary<ProfileId.PseudonymProfileId> =>
   pseudonym().map(ProfileId.forPseudonym)
+
+export const dateTimeUtc = (): fc.Arbitrary<DateTime.Utc> => fc.date().map(DateTime.unsafeFromDate)
 
 export const year = (): fc.Arbitrary<number> => fc.integer({ min: -271820, max: 275759 })
 

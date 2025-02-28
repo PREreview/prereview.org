@@ -46,7 +46,7 @@ export const getFromRedis =
       Effect.catchTag('UnknownException', cause => new InternalHttpCacheFailure({ cause })),
     )
 
-const writeToRedis =
+export const writeToRedis =
   (redis: typeof Redis.HttpCacheRedis.Service): (typeof HttpCache.Service)['set'] =>
   (response, staleAt) =>
     pipe(
