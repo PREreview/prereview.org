@@ -151,3 +151,17 @@ describe('writeToRedis', () => {
     )
   })
 })
+
+describe('deleteFromRedis', () => {
+  describe('the cached response can be deleted', () => {
+    it.todo('succeeds')
+  })
+
+  describe('there is no cached response', () => {
+    it.todo('succeeds')
+  })
+
+  describe('redis is unreachable', () => {
+    it.todo('returns an error')
+  })
+})
