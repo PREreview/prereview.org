@@ -68,7 +68,10 @@ export const writeToRedis =
     )
 
 export const deleteFromRedis =
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (redis: typeof Redis.HttpCacheRedis.Service): (typeof HttpCache.Service)['delete'] =>
-    () =>
-      Effect.void
+  url =>
+    pipe(
+      Effect.tryPromise(() => redis.del(url.href)),
+      Effect.asVoid,
+      Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
+    )

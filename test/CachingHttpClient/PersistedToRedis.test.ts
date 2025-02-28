@@ -154,7 +154,7 @@ describe('writeToRedis', () => {
 
 describe('deleteFromRedis', () => {
   describe('the cached response can be deleted', () => {
-    it.failing.prop([fc.url()])('succeeds', url =>
+    it.prop([fc.url()])('succeeds', url =>
       Effect.gen(function* () {
         const redis = {
           del: jest.fn(() => Promise.resolve(1)),
@@ -170,7 +170,7 @@ describe('deleteFromRedis', () => {
   })
 
   describe('there is no cached response', () => {
-    it.failing.prop([fc.url()])('succeeds', url =>
+    it.prop([fc.url()])('succeeds', url =>
       Effect.gen(function* () {
         const redis = {
           del: jest.fn(() => Promise.resolve(0)),
