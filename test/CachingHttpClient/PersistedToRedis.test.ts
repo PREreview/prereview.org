@@ -2,7 +2,11 @@ import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform
 import { it } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Cause, DateTime, Effect, Either, Schema, TestContext } from 'effect'
-import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.js'
+import {
+  CacheValueFromStringSchema,
+  InternalHttpCacheFailure,
+  keyForRequest,
+} from '../../src/CachingHttpClient/HttpCache.js'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.js'
 import type * as Redis from '../../src/Redis.js'
 import * as fc from '../fc.js'
@@ -94,16 +98,19 @@ describe('writeToRedis', () => {
     }) as unknown as typeof Redis.HttpCacheRedis.Service
 
   describe('the value can be written', () => {
-    it.prop([fc.url(), fc.dateTimeUtc()])('succeeds', (url, staleAt) =>
+    it.prop([fc.url(), fc.dateTimeUtc(), fc.string()])('succeeds', (url, staleAt, body) =>
       Effect.gen(function* () {
-        const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response())
+        const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), new Response(body))
         const redis = stubbedRedis()
 
         const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
 
         expect(result).toStrictEqual(Either.right(undefined))
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        expect(redis.set).toHaveBeenCalled()
+        expect(redis.set).toHaveBeenCalledWith(
+          keyForRequest(response.request),
+          expect.stringContaining(JSON.stringify(body)),
+        )
       }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
     )
   })
