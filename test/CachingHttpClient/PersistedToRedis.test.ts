@@ -116,7 +116,22 @@ describe('writeToRedis', () => {
   })
 
   describe('the response body can not be read', () => {
-    it.todo('returns an error without touching redis')
+    it.prop([fc.url(), fc.dateTimeUtc(), fc.nonEmptyString()])(
+      'returns an error without touching redis',
+      (url, staleAt, body) =>
+        Effect.gen(function* () {
+          const fetchResponse = new Response(body)
+          const response = HttpClientResponse.fromWeb(HttpClientRequest.get(url), fetchResponse)
+          const redis = stubbedRedis()
+          yield* Effect.promise(async () => fetchResponse.body?.cancel())
+
+          const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
+
+          expect(result).toStrictEqual(Either.left(expect.anything()))
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          expect(redis.set).not.toHaveBeenCalled()
+        }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    )
   })
 
   describe('redis is unreachable', () => {
