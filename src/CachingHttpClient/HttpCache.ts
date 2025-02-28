@@ -38,7 +38,7 @@ export class HttpCache extends Context.Tag('HttpCache')<
       response: HttpClientResponse.HttpClientResponse,
       staleAt: DateTime.Utc,
     ) => Effect.Effect<void, InternalHttpCacheFailure>
-    delete: (url: URL) => Effect.Effect<void>
+    delete: (url: URL) => Effect.Effect<void, InternalHttpCacheFailure>
   }
 >() {}
 
