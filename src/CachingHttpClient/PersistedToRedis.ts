@@ -13,7 +13,7 @@ export const layerPersistedToRedis = Layer.effect(
       {
         get: getFromRedis(redis),
         set: writeToRedis(redis),
-        delete: () => Effect.void,
+        delete: deleteFromRedis(redis),
       },
       serializationErrorChecking,
     )
@@ -66,3 +66,9 @@ export const writeToRedis =
       }),
       Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
     )
+
+export const deleteFromRedis =
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  (redis: typeof Redis.HttpCacheRedis.Service): (typeof HttpCache.Service)['delete'] =>
+    () =>
+      Effect.void
