@@ -86,3 +86,17 @@ describe('getFromRedis', () => {
     )
   })
 })
+
+describe('writeToRedis', () => {
+  describe('the value can be written', () => {
+    it.todo('succeeds')
+  })
+
+  describe('the response body can not be read', () => {
+    it.todo('returns an error without touching redis')
+  })
+
+  describe('redis is unreachable', () => {
+    it.todo('returns an error')
+  })
+})
