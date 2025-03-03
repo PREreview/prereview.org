@@ -1,4 +1,4 @@
-import type * as D from 'io-ts/lib/Decoder.js'
+import type { ParseResult } from 'effect'
 
 export interface NetworkError {
   readonly _tag: 'NetworkError'
@@ -16,7 +16,10 @@ export const UnexpectedStatusCode = (actual: number): UnexpectedStatusCode => ({
 
 export interface UnableToDecodeBody {
   readonly _tag: 'UnableToDecodeBody'
-  readonly error: D.DecodeError
+  readonly error?: ParseResult.ParseError
 }
 
-export const UnableToDecodeBody = (error: D.DecodeError): UnableToDecodeBody => ({ _tag: 'UnableToDecodeBody', error })
+export const UnableToDecodeBody = (error?: ParseResult.ParseError): UnableToDecodeBody => ({
+  _tag: 'UnableToDecodeBody',
+  error,
+})

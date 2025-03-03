@@ -1,61 +1,35 @@
 import { type Doi, toUrl } from 'doi-ts'
-import { Equivalence, flow, pipe, String, Struct } from 'effect'
+import { Either, Equivalence, flow, Schema, String, Struct } from 'effect'
 import * as F from 'fetch-fp-ts'
-import * as E from 'fp-ts/lib/Either.js'
-import * as J from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
-import * as C from 'io-ts/lib/Codec.js'
-import * as D from 'io-ts/lib/Decoder.js'
 import * as EffectToFpTs from '../EffectToFpts.js'
 import { timeoutRequest } from '../fetch.js'
 import { NetworkError, UnableToDecodeBody, UnexpectedStatusCode } from './http.js'
 
-export type Work = C.TypeOf<typeof WorkC>
+export type Work = typeof WorkSchema.Type
 
-const UrlC = C.make(
-  pipe(
-    D.string,
-    D.parse(s =>
-      E.tryCatch(
-        () => new URL(s),
-        () => D.error(s, 'URL'),
-      ),
-    ),
-  ),
-  { encode: url => url.href },
-)
-
-export const WorkC = C.struct({
-  topics: C.array(
-    C.struct({
-      id: UrlC,
-      display_name: C.string,
-      subfield: C.struct({
-        id: UrlC,
-        display_name: C.string,
+export const WorkSchema = Schema.Struct({
+  topics: Schema.Array(
+    Schema.Struct({
+      id: Schema.URL,
+      display_name: Schema.String,
+      subfield: Schema.Struct({
+        id: Schema.URL,
+        display_name: Schema.String,
       }),
-      field: C.struct({
-        id: UrlC,
-        display_name: C.string,
+      field: Schema.Struct({
+        id: Schema.URL,
+        display_name: Schema.String,
       }),
-      domain: C.struct({
-        id: UrlC,
-        display_name: C.string,
+      domain: Schema.Struct({
+        id: Schema.URL,
+        display_name: Schema.String,
       }),
     }),
   ),
 })
-
-const JsonD = {
-  decode: (s: string) =>
-    pipe(
-      J.parse(s),
-      E.mapLeft(() => D.error(s, 'JSON')),
-    ),
-}
 
 export const getWorkByDoi: (
   doi: Doi,
@@ -66,7 +40,8 @@ export const getWorkByDoi: (
   RTE.local(timeoutRequest(2000)),
   RTE.mapLeft(NetworkError),
   RTE.filterOrElseW(F.hasStatus(Status.OK), response => UnexpectedStatusCode(response.status)),
-  RTE.chainTaskEitherKW(flow(F.decode(pipe(JsonD, D.compose(WorkC))), TE.mapLeft(UnableToDecodeBody))),
+  RTE.chainTaskEitherKW(F.getText(() => UnableToDecodeBody())),
+  RTE.chainEitherKW(flow(Schema.decodeEither(Schema.parseJson(WorkSchema)), Either.mapLeft(UnableToDecodeBody))),
 )
 
 const UrlEquivalence: Equivalence.Equivalence<URL> = Equivalence.mapInput(String.Equivalence, url => url.href)

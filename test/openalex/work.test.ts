@@ -1,6 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { toUrl } from 'doi-ts'
+import { Either, Schema } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -11,20 +12,21 @@ import * as fc from './fc.js'
 describe('getWorkByDoi', () => {
   test.prop([
     fc.doi(),
-    fc
-      .work()
-      .chain(work =>
-        fc.tuple(
-          fc.fetchResponse({ status: fc.constant(Status.OK), json: fc.constant(_.WorkC.encode(work)) }),
-          fc.constant(work),
-        ),
+    fc.work().chain(work =>
+      fc.tuple(
+        fc.fetchResponse({
+          status: fc.constant(Status.OK),
+          json: fc.constant(Schema.encodeSync(_.WorkSchema)(work)),
+        }),
+        fc.constant(work),
       ),
+    ),
   ])('when the work can be decoded', async (doi, [response, expected]) => {
     const fetch = jest.fn<FetchEnv['fetch']>(_ => Promise.resolve(response))
 
     const actual = await _.getWorkByDoi(doi)({ fetch })()
 
-    expect(actual).toStrictEqual(E.right(expected))
+    expect(actual).toStrictEqual(Either.right(expected))
     expect(fetch).toHaveBeenCalledWith(
       `https://api.openalex.org/works/${toUrl(doi).href}`,
       expect.objectContaining({ method: 'GET' }),
@@ -36,7 +38,7 @@ describe('getWorkByDoi', () => {
     async (doi, response) => {
       const actual = await _.getWorkByDoi(doi)({ fetch: () => Promise.resolve(response) })()
 
-      expect(actual).toStrictEqual(E.left(expect.objectContaining({ _tag: 'UnableToDecodeBody' })))
+      expect(actual).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'UnableToDecodeBody' })))
     },
   )
 

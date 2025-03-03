@@ -1,10 +1,9 @@
-import { flow, pipe } from 'effect'
+import { flow, ParseResult, pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { Status } from 'hyper-ts'
-import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import { revalidateIfStale, useStaleCache } from '../fetch.js'
 import { getCategories, getWorkByDoi } from './work.js'
 
@@ -24,7 +23,11 @@ export const getCategoriesFromOpenAlex = flow(
       .with({ _tag: 'UnableToDecodeBody' }, ({ error }) =>
         pipe(
           RT.of('unavailable' as const),
-          RT.chainFirstReaderIOK(() => L.errorP('Failed to get fields from OpenAlex')({ error: D.draw(error) })),
+          RT.chainFirstReaderIOK(() =>
+            L.errorP('Failed to get fields from OpenAlex')({
+              error: error ? ParseResult.TreeFormatter.formatErrorSync(error) : null,
+            }),
+          ),
         ),
       )
       .with({ _tag: 'UnexpectedStatusCode', actual: P.union(Status.NotFound, Status.Gone) }, () =>
