@@ -5,7 +5,6 @@ import { Either, Schema } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
-import { NetworkError, UnexpectedStatusCode } from '../../src/openalex/http.js'
 import * as _ from '../../src/openalex/work.js'
 import * as fc from './fc.js'
 
@@ -38,23 +37,34 @@ describe('getWorkByDoi', () => {
     async (doi, response) => {
       const actual = await _.getWorkByDoi(doi)({ fetch: () => Promise.resolve(response) })()
 
-      expect(actual).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'UnableToDecodeBody' })))
+      expect(actual).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'WorkIsUnavailable' })))
     },
   )
 
-  test.prop([fc.doi(), fc.fetchResponse({ status: fc.integer().filter(status => status !== Status.OK) })])(
-    'when the status code is not ok',
+  test.prop([fc.doi(), fc.fetchResponse({ status: fc.constantFrom(Status.NotFound, Status.Gone) })])(
+    'when the work is not found',
     async (doi, response) => {
       const actual = await _.getWorkByDoi(doi)({ fetch: () => Promise.resolve(response) })()
 
-      expect(actual).toStrictEqual(E.left(UnexpectedStatusCode(response.status)))
+      expect(actual).toStrictEqual(E.left(new _.WorkIsNotFound({ cause: response })))
     },
   )
+
+  test.prop([
+    fc.doi(),
+    fc.fetchResponse({
+      status: fc.integer().filter(status => ![Status.OK, Status.NotFound, Status.Gone].includes(status as never)),
+    }),
+  ])('when the status code is not ok', async (doi, response) => {
+    const actual = await _.getWorkByDoi(doi)({ fetch: () => Promise.resolve(response) })()
+
+    expect(actual).toStrictEqual(E.left(new _.WorkIsUnavailable({ cause: response })))
+  })
 
   test.prop([fc.doi(), fc.error()])('when the request fails', async (doi, error) => {
     const actual = await _.getWorkByDoi(doi)({ fetch: () => Promise.reject(error) })()
 
-    expect(actual).toStrictEqual(E.left(NetworkError(error)))
+    expect(actual).toStrictEqual(E.left(new _.WorkIsUnavailable({ cause: error })))
   })
 })
 
