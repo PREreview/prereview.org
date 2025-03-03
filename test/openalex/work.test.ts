@@ -53,7 +53,7 @@ describe('getWorkByDoi', () => {
   test.prop([
     fc.doi(),
     fc.fetchResponse({
-      status: fc.integer().filter(status => ![Status.OK, Status.NotFound, Status.Gone].includes(status as never)),
+      status: fc.statusCode().filter(status => ![Status.OK, Status.NotFound, Status.Gone].includes(status as never)),
     }),
   ])('when the status code is not ok', async (doi, response) => {
     const actual = await _.getWorkByDoi(doi)({ fetch: () => Promise.resolve(response) })()

@@ -35,7 +35,7 @@ describe('getRecentReviewRequests', () => {
         ),
       ),
   ])('when a list is found', async (origin, [requests, response]) => {
-    const fetch = jest.fn<Fetch>(_ => Promise.resolve(response))
+    const fetch = jest.fn<Fetch>(_ => Promise.resolve(response.clone()))
 
     const result = await _.getRecentReviewRequests(origin)({
       fetch,
@@ -73,7 +73,7 @@ describe('getRecentReviewRequests', () => {
         ),
       ),
   ])('when the response is stale', async (origin, [requests, response]) => {
-    const fetch = jest.fn<Fetch>(_ => Promise.resolve(response))
+    const fetch = jest.fn<Fetch>(_ => Promise.resolve(response.clone()))
 
     const result = await _.getRecentReviewRequests(origin)({
       fetch,

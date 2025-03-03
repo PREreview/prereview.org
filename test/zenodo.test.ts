@@ -4154,7 +4154,9 @@ describe('addAuthorToRecordOnZenodo', () => {
     fc.user(),
     fc.constantFrom('public', 'pseudonym'),
     fc.oneof(
-      fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
+      fc
+        .fetchResponse({ status: fc.statusCode().filter(status => status >= 400) })
+        .map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),
     ),
   ])('Zenodo is unavailable', async (zenodoApiKey, id, user, persona, response) => {
@@ -4293,7 +4295,9 @@ ${comment.comment.toString()}`,
     fc.string(),
     fc.origin(),
     fc.oneof(
-      fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
+      fc
+        .fetchResponse({ status: fc.statusCode().filter(status => status >= 400) })
+        .map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),
     ),
   ])('Zenodo is unavailable', async (comment, zenodoApiKey, publicUrl, response) => {
@@ -4441,7 +4445,9 @@ describe('publishDepositionOnZenodo', () => {
     fc.integer(),
     fc.string(),
     fc.oneof(
-      fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
+      fc
+        .fetchResponse({ status: fc.statusCode().filter(status => status >= 400) })
+        .map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),
     ),
   ])('Zenodo is unavailable', async (id, zenodoApiKey, response) => {
@@ -5105,7 +5111,9 @@ ${newPrereview.review.toString()}`,
     fc.string(),
     fc.origin(),
     fc.oneof(
-      fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
+      fc
+        .fetchResponse({ status: fc.statusCode().filter(status => status >= 400) })
+        .map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),
     ),
   ])('Zenodo is unavailable', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, response) => {

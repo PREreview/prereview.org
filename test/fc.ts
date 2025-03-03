@@ -5,9 +5,8 @@ import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
 import { Array, DateTime, Duration, Either, HashSet, Option, Predicate } from 'effect'
-import type { Request, Response } from 'express'
+import type { Response as ExpressResponse, Request } from 'express'
 import * as fc from 'fast-check'
-import type * as F from 'fetch-fp-ts'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
 import type * as H from 'hyper-ts'
 import { Status } from 'hyper-ts'
@@ -122,7 +121,6 @@ import { type NonEmptyString, isNonEmptyString } from '../src/types/string.js'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.js'
 import type { UserOnboarding } from '../src/user-onboarding.js'
 import type { User } from '../src/user.js'
-import { shouldNotBeCalled } from './should-not-be-called.js'
 
 export type Arbitrary<T> = fc.Arbitrary<T>
 
@@ -1159,24 +1157,33 @@ export const fetchResponse = ({
   text,
 }: {
   headers?: fc.Arbitrary<Headers>
-  status?: fc.Arbitrary<number>
+  status?: fc.Arbitrary<Status>
   json?: fc.Arbitrary<Json>
   text?: fc.Arbitrary<string>
-} = {}): fc.Arbitrary<F.Response> =>
+} = {}): fc.Arbitrary<Response> =>
   fc
     .record({
       headers: headers_ ?? headers(),
-      status: status ?? fc.integer(),
-      statusText: fc.string(),
-      url: fc.string(),
+      status: status ?? statusCode(),
       text: json ? json.map(JSON.stringify) : (text ?? fc.string()),
     })
-    .map(args =>
-      Object.defineProperties(
-        { ...args, clone: shouldNotBeCalled, text: () => Promise.resolve(args.text) },
-        { [fc.toStringMethod]: { value: () => fc.stringify(args) } },
-      ),
-    )
+    .map(args => {
+      return Object.defineProperties(
+        new Response(
+          ![Status.NoContent, Status.ResetContent].includes(args.status as never) &&
+          (args.status < 300 || args.status >= 400)
+            ? args.text
+            : undefined,
+          {
+            headers: args.headers,
+            status: args.status,
+          },
+        ),
+        {
+          [fc.toStringMethod]: { value: () => fc.stringify({ ...args, headers: { ...args.headers } }) },
+        },
+      )
+    })
 
 export const request = ({
   body,
@@ -1202,7 +1209,7 @@ export const request = ({
       Object.defineProperties(createRequest(args), { [fc.toStringMethod]: { value: () => fc.stringify(args) } }),
     )
 
-export const response = (): fc.Arbitrary<Response> =>
+export const response = (): fc.Arbitrary<ExpressResponse> =>
   fc
     .record({ req: request() })
     .map(args =>
