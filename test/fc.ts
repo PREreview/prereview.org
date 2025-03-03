@@ -965,6 +965,7 @@ export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId>
     scieloPreprintId(),
     socarxivPreprintId(),
     techrxivPreprintId(),
+    zenodoPreprintId(),
   )
 
 export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, ReviewRequestPreprintId>> =>
@@ -982,7 +983,6 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     psychArchivesPreprintId(),
     scienceOpenPreprintId(),
     verixivPreprintId(),
-    zenodoPreprintId(),
   )
 
 export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
