@@ -1,4 +1,4 @@
-import { HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import { HttpClientResponse } from '@effect/platform'
 import { it } from '@fast-check/jest'
 import { describe } from '@jest/globals'
 import { expect } from '@playwright/test'
@@ -10,12 +10,12 @@ import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('when the cached response matches the original', () => {
-  it.prop([fc.url()])('the response is left in the cache', url =>
+  it.prop([fc.httpClientRequest()])('the response is left in the cache', request =>
     Effect.gen(function* () {
       const cacheStorage = new Map()
 
       const response = HttpClientResponse.fromWeb(
-        HttpClientRequest.get(url),
+        request,
         new Response('original response body', { headers: [['foo', 'bar']] }),
       )
       const staleAt = yield* DateTime.now
@@ -33,7 +33,7 @@ describe('when the cached response matches the original', () => {
 })
 
 describe('when the cached response does not match the original', () => {
-  it.prop([fc.url()])('the response is removed from the cache', url =>
+  it.prop([fc.httpClientRequest()])('the response is removed from the cache', request =>
     Effect.gen(function* () {
       const cacheStorage = new Map()
       // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -43,7 +43,7 @@ describe('when the cached response does not match the original', () => {
       }
 
       const response = HttpClientResponse.fromWeb(
-        HttpClientRequest.get(url),
+        request,
         new Response('original response body', { headers: [['foo', 'bar']] }),
       )
       const staleAt = yield* DateTime.now

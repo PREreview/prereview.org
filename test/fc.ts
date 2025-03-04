@@ -1,4 +1,4 @@
-import type { HttpMethod } from '@effect/platform'
+import { HttpBody, HttpClientRequest, type HttpMethod } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
@@ -404,6 +404,24 @@ export const verifiedContactEmailAddress = (): fc.Arbitrary<VerifiedContactEmail
     .map(data => new VerifiedContactEmailAddress(data))
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
+
+export const httpBody = (): fc.Arbitrary<HttpBody.HttpBody> => fc.string().map(HttpBody.text)
+
+export const httpClientRequest = ({
+  method,
+  url: _url,
+}: {
+  method?: fc.Arbitrary<HttpClientRequest.HttpClientRequest['method']>
+  url?: fc.Arbitrary<string | URL>
+} = {}): fc.Arbitrary<HttpClientRequest.HttpClientRequest> =>
+  fc
+    .record({
+      body: httpBody(),
+      headers: headers(),
+      method: method ?? requestMethod(),
+      url: _url ?? url(),
+    })
+    .map(({ method, url, ...options }) => HttpClientRequest.make(method)(url, options))
 
 export const cookieName = (): fc.Arbitrary<string> => fc.lorem({ maxCount: 1 })
 
