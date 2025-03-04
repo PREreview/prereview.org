@@ -1,10 +1,11 @@
 import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { it } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Cause, DateTime, Effect, Either, Schema, TestContext } from 'effect'
+import { Cause, DateTime, Effect, Either, Schema } from 'effect'
 import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.js'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.js'
 import type * as Redis from '../../src/Redis.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('getFromRedis', () => {
@@ -32,7 +33,7 @@ describe('getFromRedis', () => {
           const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
           expect(result).toStrictEqual(Either.right(expect.anything()))
-        }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise))
+        }).pipe(EffectTest.run))
     })
 
     describe('the value can not be read', () => {
@@ -43,7 +44,7 @@ describe('getFromRedis', () => {
           const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
           expect(result).toStrictEqual(Either.left(new Cause.NoSuchElementException()))
-        }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+        }).pipe(EffectTest.run),
       )
 
       it.prop([fc.string()])('removes the value', unreadableValue =>
@@ -54,7 +55,7 @@ describe('getFromRedis', () => {
 
           // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(redis.del).toHaveBeenCalledTimes(1)
-        }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+        }).pipe(EffectTest.run),
       )
     })
   })
@@ -67,7 +68,7 @@ describe('getFromRedis', () => {
         const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
         expect(result).toStrictEqual(Either.left(new Cause.NoSuchElementException()))
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise))
+      }).pipe(EffectTest.run))
   })
 
   describe('redis is unreachable', () => {
@@ -82,7 +83,7 @@ describe('getFromRedis', () => {
         expect(result).toStrictEqual(
           Either.left(new InternalHttpCacheFailure({ cause: new Cause.UnknownException(error) })),
         )
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
   })
 })
@@ -107,7 +108,7 @@ describe('writeToRedis', () => {
           _.keyForRequest(response.request),
           expect.stringContaining(JSON.stringify(body)),
         )
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
   })
 
@@ -126,7 +127,7 @@ describe('writeToRedis', () => {
           expect(result).toStrictEqual(Either.left(expect.anything()))
           // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(redis.set).not.toHaveBeenCalled()
-        }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+        }).pipe(EffectTest.run),
     )
   })
 
@@ -143,7 +144,7 @@ describe('writeToRedis', () => {
         expect(result).toStrictEqual(
           Either.left(new InternalHttpCacheFailure({ cause: new Cause.UnknownException(error) })),
         )
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
   })
 })
@@ -161,7 +162,7 @@ describe('deleteFromRedis', () => {
         expect(result).toStrictEqual(Either.void)
         // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(redis.del).toHaveBeenCalledWith(url.href)
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
   })
 
@@ -177,7 +178,7 @@ describe('deleteFromRedis', () => {
         expect(result).toStrictEqual(Either.void)
         // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(redis.del).toHaveBeenCalledWith(url.href)
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
   })
 
@@ -193,7 +194,7 @@ describe('deleteFromRedis', () => {
         expect(result).toStrictEqual(
           Either.left(new InternalHttpCacheFailure({ cause: new Cause.UnknownException(error) })),
         )
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
   })
 })

@@ -1,10 +1,11 @@
 import { HttpClient, HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { beforeEach, describe, expect } from '@jest/globals'
-import { Duration, Effect, Either, Fiber, flow, Logger, LogLevel, Option, pipe, TestClock, TestContext } from 'effect'
+import { Duration, Effect, Either, Fiber, Option, pipe, TestClock } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as _ from '../../src/CachingHttpClient/index.js'
 import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -24,12 +25,6 @@ const shouldNotBeCalledHttpClient: HttpClient.HttpClient.With<HttpClientError.Ht
     throw new Error('should not make any http requests with HttpClient')
   }, Effect.succeed)
 
-const effectTestBoilerplate = flow(
-  Effect.scoped,
-  Effect.provide(TestContext.TestContext),
-  Logger.withMinimumLogLevel(LogLevel.None),
-)
-
 describe('there is no cache entry', () => {
   describe('the request succeeds', () => {
     test.prop([fc.url(), fc.durationInput()])('able to cache it', (url, timeToStale) =>
@@ -45,7 +40,7 @@ describe('there is no cache entry', () => {
         const actualResponse = yield* client.get(url)
         expect(actualResponse).toStrictEqual(successfulResponse)
         expect(cache.size).toBe(1)
-      }).pipe(effectTestBoilerplate, Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
 
     test.prop([fc.url(), fc.error(), fc.durationInput()])('not able to cache it', (url, error, timeToStale) =>
@@ -62,7 +57,7 @@ describe('there is no cache entry', () => {
         )
         const actualResponse = yield* client.get(url)
         expect(actualResponse).toStrictEqual(successfulResponse)
-      }).pipe(effectTestBoilerplate, Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
   })
 
@@ -83,7 +78,7 @@ describe('there is no cache entry', () => {
 
         expect(actualResponse).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'RequestError' })))
         expect(cache.size).toBe(0)
-      }).pipe(effectTestBoilerplate, Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
 
     test.prop([fc.url(), fc.durationInput()])('with a network error', (url, timeToStale) =>
@@ -100,7 +95,7 @@ describe('there is no cache entry', () => {
 
         expect(actualResponse).toStrictEqual(Either.left(error))
         expect(cache.size).toBe(0)
-      }).pipe(effectTestBoilerplate, Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
 
     test.prop([fc.url(), fc.statusCode().filter(status => status !== StatusCodes.OK), fc.durationInput()])(
@@ -119,7 +114,7 @@ describe('there is no cache entry', () => {
 
           expect(actualResponse).toStrictEqual(response)
           expect(cache.size).toBe(0)
-        }).pipe(effectTestBoilerplate, Effect.runPromise),
+        }).pipe(EffectTest.run),
     )
   })
 })
@@ -147,7 +142,7 @@ describe('there is a cache entry', () => {
         Effect.provide(_.layerInMemory(cache)),
       )
       yield* clientToPopulateCache.get(url)
-    }).pipe(effectTestBoilerplate, Effect.runPromise),
+    }).pipe(EffectTest.run),
   )
 
   describe('the cached response is fresh', () => {
@@ -163,7 +158,7 @@ describe('there is a cache entry', () => {
         expect(responseFromFreshCache.status).toStrictEqual(originalResponse.status)
         expect(responseFromFreshCache.headers).toStrictEqual(originalResponse.headers)
         expect(yield* responseFromFreshCache.text).toStrictEqual(yield* originalResponse.text)
-      }).pipe(effectTestBoilerplate, Effect.runPromise))
+      }).pipe(EffectTest.run))
   })
 
   describe('the cached response is stale', () => {
@@ -181,7 +176,7 @@ describe('there is a cache entry', () => {
         expect(responseFromStaleCache.status).toStrictEqual(originalResponse.status)
         expect(responseFromStaleCache.headers).toStrictEqual(originalResponse.headers)
         expect(yield* responseFromStaleCache.text).toStrictEqual(yield* originalResponse.text)
-      }).pipe(effectTestBoilerplate, Effect.runPromise))
+      }).pipe(EffectTest.run))
 
     describe('cached response can be revalidated', () => {
       describe('able to cache it', () => {
@@ -201,7 +196,7 @@ describe('there is a cache entry', () => {
             expect(responseFromCacheFollowingServingOfStaleEntry.status).toStrictEqual(newResponse.status)
             expect(responseFromCacheFollowingServingOfStaleEntry.headers).toStrictEqual(newResponse.headers)
             expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(yield* newResponse.text)
-          }).pipe(effectTestBoilerplate, Effect.runPromise))
+          }).pipe(EffectTest.run))
       })
 
       describe('not able to cache it', () => {
@@ -226,7 +221,7 @@ describe('there is a cache entry', () => {
             expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
               yield* originalResponse.text,
             )
-          }).pipe(effectTestBoilerplate, Effect.runPromise))
+          }).pipe(EffectTest.run))
       })
     })
 
@@ -253,7 +248,7 @@ describe('there is a cache entry', () => {
             expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
               yield* originalResponse.text,
             )
-          }).pipe(effectTestBoilerplate, Effect.runPromise))
+          }).pipe(EffectTest.run))
       })
 
       describe('with a response that does not have a 200 status code', () => {
@@ -278,7 +273,7 @@ describe('there is a cache entry', () => {
             expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
               yield* originalResponse.text,
             )
-          }).pipe(effectTestBoilerplate, Effect.runPromise))
+          }).pipe(EffectTest.run))
       })
     })
   })
@@ -304,7 +299,7 @@ describe('getting from the cache is too slow', () => {
         const actualResponse = yield* Fiber.join(fiber)
 
         expect(actualResponse).toStrictEqual(response)
-      }).pipe(effectTestBoilerplate, Effect.runPromise),
+      }).pipe(EffectTest.run),
   )
 })
 
@@ -327,6 +322,6 @@ describe('with a non-GET request', () => {
         const actualResponse = yield* client.execute(request)
 
         expect(actualResponse).toStrictEqual(response)
-      }).pipe(effectTestBoilerplate, Effect.runPromise),
+      }).pipe(EffectTest.run),
   )
 })

@@ -3,8 +3,9 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { Effect, pipe, TestContext, Tuple } from 'effect'
+import { Effect, pipe, Tuple } from 'effect'
 import * as _ from '../../src/JapanLinkCenter/Record.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('getRecord', () => {
@@ -33,7 +34,7 @@ describe('getRecord', () => {
       yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
       expect(clientSpy).toHaveBeenCalledWith(HttpClientRequest.get(expectedUrl))
-    }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    }).pipe(EffectTest.run),
   )
 
   describe('with a response', () => {
@@ -179,7 +180,7 @@ describe('getRecord', () => {
                 publication_date: Temporal.PlainDate.from('2025-01-28'),
               }),
             )
-          }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+          }).pipe(EffectTest.run),
         )
       })
 
@@ -197,7 +198,7 @@ describe('getRecord', () => {
             expect(actual.cause).toStrictEqual(
               expect.objectContaining({ _tag: expect.stringMatching(/^ParseError|ResponseError$/) }),
             )
-          }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+          }).pipe(EffectTest.run),
         )
       })
     })
@@ -214,7 +215,7 @@ describe('getRecord', () => {
 
           expect(actual._tag).toStrictEqual('RecordIsNotFound')
           expect(actual.cause).toStrictEqual(expect.objectContaining({ status: 404 }))
-        }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+        }).pipe(EffectTest.run),
       )
     })
 
@@ -232,7 +233,7 @@ describe('getRecord', () => {
 
             expect(actual._tag).toStrictEqual('RecordIsUnavailable')
             expect(actual.cause).toStrictEqual(expect.objectContaining({ status }))
-          }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+          }).pipe(EffectTest.run),
       )
     })
   })
@@ -245,7 +246,7 @@ describe('getRecord', () => {
 
         expect(actual._tag).toStrictEqual('RecordIsUnavailable')
         expect(actual.cause).toStrictEqual(expect.objectContaining({ _tag: 'RequestError', reason }))
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
   })
 
@@ -264,7 +265,7 @@ describe('getRecord', () => {
 
         expect(actual._tag).toStrictEqual('RecordIsUnavailable')
         expect(actual.cause).toStrictEqual(expect.objectContaining({ _tag: 'ResponseError', reason }))
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      }).pipe(EffectTest.run),
     )
   })
 })

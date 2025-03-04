@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Either, Equal, TestContext } from 'effect'
+import { Effect, Either, Equal } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import * as ContactEmailAddress from '../../src/contact-email-address.js'
@@ -9,6 +9,7 @@ import * as Routes from '../../src/routes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as _ from '../../src/WriteCommentFlow/NeedToVerifyEmailAddressPage/index.js'
 import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -59,8 +60,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
                 Effect.succeed(contactEmailAddress),
               ),
               Effect.provideService(LoggedInUser, user),
-              Effect.provide(TestContext.TestContext),
-              Effect.runPromise,
+              EffectTest.run,
             ),
         )
 
@@ -93,8 +93,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
               Effect.succeed(contactEmailAddress),
             ),
             Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
+            EffectTest.run,
           ),
         )
 
@@ -125,8 +124,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
               Effect.fail(new ContactEmailAddress.ContactEmailAddressIsNotFound()),
             ),
             Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
+            EffectTest.run,
           ),
         )
 
@@ -157,8 +155,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
               Effect.fail(new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
             ),
             Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
+            EffectTest.run,
           ),
         )
       })
@@ -193,8 +190,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
       )
     })
@@ -221,8 +217,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -248,8 +243,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -275,8 +269,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -301,8 +294,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
 
@@ -331,8 +323,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -357,8 +348,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
   })
@@ -377,8 +367,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
       Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 })

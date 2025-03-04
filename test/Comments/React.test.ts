@@ -1,8 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Either, pipe, TestContext } from 'effect'
+import { Effect, Either, pipe } from 'effect'
 import * as Comments from '../../src/Comments/index.js'
 import * as _ from '../../src/Comments/React.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -26,8 +27,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(true)),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
   )
 
@@ -47,8 +47,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
     }).pipe(
       Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
       Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(true)),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 
@@ -63,8 +62,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(false)),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
   )
 
@@ -84,8 +82,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
   )
 
@@ -100,7 +97,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
       )
 
       expect(actual).toStrictEqual(Either.left(new Comments.UnableToQuery({})))
-    }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    }).pipe(EffectTest.run),
   )
 })
 
@@ -126,8 +123,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
         })
       }).pipe(
         Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
   )
 
@@ -144,8 +140,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
       }).pipe(
         Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
   )
 
@@ -164,7 +159,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
         )
 
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+      }).pipe(EffectTest.run),
   )
 })
 
@@ -185,8 +180,7 @@ describe('PublishCommentWhenDoiWasAssigned', () => {
       })
     }).pipe(
       Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 
@@ -203,8 +197,7 @@ describe('PublishCommentWhenDoiWasAssigned', () => {
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
       }).pipe(
         Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
   )
 
@@ -220,6 +213,6 @@ describe('PublishCommentWhenDoiWasAssigned', () => {
       )
 
       expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
-    }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    }).pipe(EffectTest.run),
   )
 })

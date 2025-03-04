@@ -2,13 +2,12 @@ import { HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { it } from '@fast-check/jest'
 import { describe } from '@jest/globals'
 import { expect } from '@playwright/test'
-import { DateTime, Effect, flow, Logger, LogLevel, pipe, TestContext } from 'effect'
+import { DateTime, Effect, pipe } from 'effect'
 import { HttpCache } from '../../src/CachingHttpClient/HttpCache.js'
 import { layerInMemory } from '../../src/CachingHttpClient/InMemory.js'
 import { serializationErrorChecking } from '../../src/CachingHttpClient/SerializationErrorChecking.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
-
-const effectTestBoilerplate = flow(Effect.provide(TestContext.TestContext), Logger.withMinimumLogLevel(LogLevel.None))
 
 describe('when the cached response matches the original', () => {
   it.prop([fc.url()])('the response is left in the cache', url =>
@@ -29,7 +28,7 @@ describe('when the cached response matches the original', () => {
       )
 
       expect(cacheStorage.size).toBe(1)
-    }).pipe(effectTestBoilerplate, Effect.runPromise),
+    }).pipe(EffectTest.run),
   )
 })
 
@@ -57,6 +56,6 @@ describe('when the cached response does not match the original', () => {
       )
 
       expect(cacheStorage.size).toBe(0)
-    }).pipe(effectTestBoilerplate, Effect.runPromise),
+    }).pipe(EffectTest.run),
   )
 })

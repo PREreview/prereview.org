@@ -1,11 +1,12 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, TestContext } from 'effect'
+import { Effect } from 'effect'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/AboutUsPage/index.js'
 import { Locale } from '../../src/Context.js'
 import { GetPageFromGhost, PageIsNotFound, PageIsUnavailable } from '../../src/GhostPage.js'
 import * as Routes from '../../src/routes.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('AboutUsPage', () => {
@@ -25,9 +26,8 @@ describe('AboutUsPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provide(TestContext.TestContext),
       Effect.provideService(GetPageFromGhost, () => Effect.succeed(html)),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 
@@ -47,9 +47,8 @@ describe('AboutUsPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provide(TestContext.TestContext),
         Effect.provideService(GetPageFromGhost, () => Effect.fail(error)),
-        Effect.runPromise,
+        EffectTest.run,
       ),
   )
 })
