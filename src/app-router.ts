@@ -27,6 +27,7 @@ import type { EffectEnv } from './EffectToFpts.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
 import type { GetPageFromGhostEnv } from './GhostPage.js'
+import { getCategoriesFromOpenAlex } from './OpenAlex/index.js'
 import {
   authorInvite,
   authorInviteCheck,
@@ -119,7 +120,6 @@ import {
   verifyContactEmailAddress,
 } from './my-details-page/index.js'
 import { myPrereviews } from './my-prereviews-page/index.js'
-import { getCategoriesFromOpenAlex } from './openalex/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
 import { partners } from './partners.js'

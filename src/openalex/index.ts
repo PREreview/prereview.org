@@ -1,6 +1,6 @@
 import type * as Doi from 'doi-ts'
 import { Effect, pipe } from 'effect'
-import { getCategories, getWorkByDoi, WorkIsUnavailable } from './work.js'
+import { getCategories, getWorkByDoi, WorkIsUnavailable } from './Work.js'
 
 export const getCategoriesFromOpenAlex = (doi: Doi.Doi) =>
   pipe(

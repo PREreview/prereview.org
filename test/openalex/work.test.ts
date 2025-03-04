@@ -4,7 +4,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { toUrl } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/openalex/work.js'
+import * as _ from '../../src/OpenAlex/Work.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from './fc.js'
 
