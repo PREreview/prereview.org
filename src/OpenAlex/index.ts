@@ -1,6 +1,11 @@
 import type * as Doi from 'doi-ts'
-import { Effect, pipe } from 'effect'
-import { getCategories, getWorkByDoi, WorkIsUnavailable } from './Work.js'
+import { Context, Effect, pipe } from 'effect'
+import { getCategories, getWorkByDoi, type WorkIsNotFound, WorkIsUnavailable } from './Work.js'
+
+export class GetCategories extends Context.Tag('GetCategories')<
+  GetCategories,
+  (doi: Doi.Doi) => Effect.Effect<ReadonlyArray<{ id: URL; display_name: string }>, WorkIsNotFound | WorkIsUnavailable>
+>() {}
 
 export const getCategoriesFromOpenAlex = (doi: Doi.Doi) =>
   pipe(

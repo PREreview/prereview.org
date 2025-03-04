@@ -19,6 +19,7 @@ import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
 import * as LibsqlEventStore from './LibsqlEventStore.js'
 import { DefaultLocale, translate } from './locales/index.js'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
+import * as OpenAlex from './OpenAlex/index.js'
 import { getNameFromOrcid } from './orcid.js'
 import * as Preprint from './preprint.js'
 import * as Prereview from './Prereview.js'
@@ -314,6 +315,15 @@ const getPreprint = Layer.effect(
   }),
 )
 
+const getCategories = Layer.effect(
+  OpenAlex.GetCategories,
+  Effect.gen(function* () {
+    const httpClient = yield* HttpClient.HttpClient
+
+    return id => pipe(OpenAlex.getCategoriesFromOpenAlex(id), Effect.provideService(HttpClient.HttpClient, httpClient))
+  }),
+)
+
 const setUpFetch = Layer.effect(
   FetchHttpClient.Fetch,
   Effect.gen(function* () {
@@ -336,6 +346,7 @@ export const Program = pipe(
   Layer.provide(
     Layer.mergeAll(
       Layer.provide(getPreprint, CachingHttpClient.layer('10 minutes')),
+      Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
       doesUserHaveAVerifiedEmailAddress,
       getContactEmailAddress,
       saveContactEmailAddress,
