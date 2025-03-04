@@ -1,4 +1,4 @@
-import { HttpBody, HttpClientRequest, HttpClientResponse, type HttpMethod } from '@effect/platform'
+import { HttpBody, HttpClientError, HttpClientRequest, HttpClientResponse, type HttpMethod } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
@@ -435,6 +435,30 @@ export const httpClientResponse = ({
       response: fetchResponse(response),
     })
     .map(({ request, response }) => HttpClientResponse.fromWeb(request, response))
+
+export const httpClientRequestError = ({
+  reason,
+}: {
+  reason?: fc.Arbitrary<HttpClientError.RequestError['reason']>
+} = {}): fc.Arbitrary<HttpClientError.RequestError> =>
+  fc
+    .record({
+      request: httpClientRequest(),
+      reason: reason ?? constantFrom('Transport', 'Encode', 'InvalidUrl'),
+    })
+    .map(args => new HttpClientError.RequestError(args))
+
+export const httpClientResponseError = (): fc.Arbitrary<HttpClientError.ResponseError> =>
+  fc
+    .record({
+      request: httpClientRequest(),
+      response: httpClientResponse(),
+      reason: constantFrom('StatusCode', 'Decode', 'EmptyBody'),
+    })
+    .map(args => new HttpClientError.ResponseError(args))
+
+export const httpClientError = (): fc.Arbitrary<HttpClientError.HttpClientError> =>
+  fc.oneof(httpClientRequestError(), httpClientResponseError())
 
 export const cookieName = (): fc.Arbitrary<string> => fc.lorem({ maxCount: 1 })
 

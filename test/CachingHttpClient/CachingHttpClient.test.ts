@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { beforeEach, describe, expect } from '@jest/globals'
 import { Duration, Effect, Either, Fiber, Option, pipe, TestClock } from 'effect'
@@ -89,10 +89,13 @@ describe('there is no cache entry', () => {
       }).pipe(EffectTest.run),
     )
 
-    test.prop([fc.httpClientRequest(), fc.durationInput()])('with a network error', (request, timeToStale) =>
+    test.prop([
+      fc.httpClientRequest({ method: fc.constant('GET') }),
+      fc.durationInput(),
+      fc.httpClientRequestError({ reason: fc.constant('Transport') }),
+    ])('with a network error', (request, timeToStale, error) =>
       Effect.gen(function* () {
         const cache = new Map()
-        const error = new HttpClientError.RequestError({ request, reason: 'Transport' })
         const client = yield* pipe(
           _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
@@ -242,30 +245,24 @@ describe('there is a cache entry', () => {
 
     describe("cached response can't be revalidated", () => {
       describe('when no response is received', () => {
-        test.prop([fc.httpClientRequest({ method: fc.constant('GET'), url: fc.constant(url) })])(
-          'ignores the failure',
-          request =>
-            Effect.gen(function* () {
-              const error = new HttpClientError.RequestError({
-                request,
-                reason: 'Transport',
-              })
-              const client = yield* pipe(
-                _.CachingHttpClient(timeToStale),
-                Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
-                Effect.provide(_.layerInMemory(cache)),
-              )
+        test.prop([fc.httpClientRequestError({ reason: fc.constant('Transport') })])('ignores the failure', error =>
+          Effect.gen(function* () {
+            const client = yield* pipe(
+              _.CachingHttpClient(timeToStale),
+              Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
+              Effect.provide(_.layerInMemory(cache)),
+            )
 
-              yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
-              const responseFromStaleCache = yield* client.execute(request).pipe(Effect.either)
-              yield* TestClock.adjust('1 seconds')
-              const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(request)
+            yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
+            const responseFromStaleCache = yield* client.get(url).pipe(Effect.either)
+            yield* TestClock.adjust('1 seconds')
+            const responseFromCacheFollowingServingOfStaleEntry = yield* client.get(url)
 
-              expect(responseFromStaleCache).toStrictEqual(Either.right(expect.anything()))
-              expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
-                yield* originalResponse.text,
-              )
-            }).pipe(EffectTest.run),
+            expect(responseFromStaleCache).toStrictEqual(Either.right(expect.anything()))
+            expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
+              yield* originalResponse.text,
+            )
+          }).pipe(EffectTest.run),
         )
       })
 

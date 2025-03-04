@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
@@ -239,38 +239,26 @@ describe('getRecord', () => {
   })
 
   describe('with a request error', () => {
-    test.prop([fc.doi(), fc.constantFrom('Transport', 'Encode', 'InvalidUrl')])('returns unavailable', (doi, reason) =>
+    test.prop([fc.doi(), fc.httpClientRequestError()])('returns unavailable', (doi, error) =>
       Effect.gen(function* () {
-        const client = stubbedFailingClient(request => new HttpClientError.RequestError({ request, reason }))
+        const client = stubbedFailingClient(() => error)
         const actual = yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
         expect(actual._tag).toStrictEqual('RecordIsUnavailable')
-        expect(actual.cause).toStrictEqual(expect.objectContaining({ _tag: 'RequestError', reason }))
+        expect(actual.cause).toStrictEqual(error)
       }).pipe(EffectTest.run),
     )
   })
 
   describe('with a response error', () => {
-    test.prop([fc.doi(), fc.constantFrom('StatusCode', 'Decode', 'EmptyBody'), fc.httpClientResponse()])(
-      'returns unavailable',
-      (doi, reason, response) =>
-        Effect.gen(function* () {
-          const client = stubbedFailingClient(
-            request =>
-              new HttpClientError.ResponseError({
-                request,
-                response,
-                reason,
-              }),
-          )
-          const actual = yield* pipe(
-            Effect.flip(_.getRecord(doi)),
-            Effect.provideService(HttpClient.HttpClient, client),
-          )
+    test.prop([fc.doi(), fc.httpClientResponseError()])('returns unavailable', (doi, error) =>
+      Effect.gen(function* () {
+        const client = stubbedFailingClient(() => error)
+        const actual = yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
-          expect(actual._tag).toStrictEqual('RecordIsUnavailable')
-          expect(actual.cause).toStrictEqual(expect.objectContaining({ _tag: 'ResponseError', reason }))
-        }).pipe(EffectTest.run),
+        expect(actual._tag).toStrictEqual('RecordIsUnavailable')
+        expect(actual.cause).toStrictEqual(error)
+      }).pipe(EffectTest.run),
     )
   })
 })
