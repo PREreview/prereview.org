@@ -1,4 +1,4 @@
-import { HttpBody, HttpClientRequest, type HttpMethod } from '@effect/platform'
+import { HttpBody, HttpClientRequest, HttpClientResponse, type HttpMethod } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
@@ -422,6 +422,19 @@ export const httpClientRequest = ({
       url: _url ?? url(),
     })
     .map(({ method, url, ...options }) => HttpClientRequest.make(method)(url, options))
+
+export const httpClientResponse = ({
+  request,
+  ...response
+}: {
+  request?: fc.Arbitrary<HttpClientRequest.HttpClientRequest>
+} & Parameters<typeof fetchResponse>[0] = {}): fc.Arbitrary<HttpClientResponse.HttpClientResponse> =>
+  fc
+    .record({
+      request: request ?? httpClientRequest(),
+      response: fetchResponse(response),
+    })
+    .map(({ request, response }) => HttpClientResponse.fromWeb(request, response))
 
 export const cookieName = (): fc.Arbitrary<string> => fc.lorem({ maxCount: 1 })
 

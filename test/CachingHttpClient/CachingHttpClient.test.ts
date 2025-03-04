@@ -27,64 +27,66 @@ const shouldNotBeCalledHttpClient: HttpClient.HttpClient.With<HttpClientError.Ht
 
 describe('there is no cache entry', () => {
   describe('the request succeeds', () => {
-    test.prop([fc.httpClientRequest({ method: fc.constant('GET') }), fc.durationInput()])(
-      'able to cache it',
-      (request, timeToStale) =>
-        Effect.gen(function* () {
-          const cache = new Map()
-          const successfulResponse = HttpClientResponse.fromWeb(request, new Response())
-          const client = yield* pipe(
-            _.CachingHttpClient(timeToStale),
-            Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse)),
-            Effect.provide(_.layerInMemory(cache)),
-          )
+    test.prop([
+      fc.httpClientResponse({
+        request: fc.httpClientRequest({ method: fc.constant('GET') }),
+        status: fc.constant(StatusCodes.OK),
+      }),
+      fc.durationInput(),
+    ])('able to cache it', (response, timeToStale) =>
+      Effect.gen(function* () {
+        const cache = new Map()
+        const client = yield* pipe(
+          _.CachingHttpClient(timeToStale),
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
+          Effect.provide(_.layerInMemory(cache)),
+        )
 
-          const actualResponse = yield* client.execute(request)
-          expect(actualResponse).toStrictEqual(successfulResponse)
-          expect(cache.size).toBe(1)
-        }).pipe(EffectTest.run),
+        const actualResponse = yield* client.execute(response.request)
+        expect(actualResponse).toStrictEqual(response)
+        expect(cache.size).toBe(1)
+      }).pipe(EffectTest.run),
     )
 
-    test.prop([fc.httpClientRequest(), fc.error(), fc.durationInput()])(
+    test.prop([fc.httpClientResponse(), fc.error(), fc.durationInput()])(
       'not able to cache it',
-      (request, error, timeToStale) =>
+      (response, error, timeToStale) =>
         Effect.gen(function* () {
-          const successfulResponse = HttpClientResponse.fromWeb(request, new Response())
           const client = yield* pipe(
             _.CachingHttpClient(timeToStale),
-            Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse)),
+            Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
             Effect.provideService(_.HttpCache, {
               get: () => Option.none(),
               set: () => new InternalHttpCacheFailure({ cause: error }),
               delete: () => Effect.void,
             }),
           )
-          const actualResponse = yield* client.execute(request)
-          expect(actualResponse).toStrictEqual(successfulResponse)
+          const actualResponse = yield* client.execute(response.request)
+          expect(actualResponse).toStrictEqual(response)
         }).pipe(EffectTest.run),
     )
   })
 
   describe('the request fails', () => {
-    test.prop([fc.httpClientRequest({ method: fc.constant('GET') }), fc.durationInput()])(
-      'with a timeout',
-      (request, timeToStale) =>
-        Effect.gen(function* () {
-          const cache = new Map()
-          const successfulResponse = HttpClientResponse.fromWeb(request, new Response())
-          const client = yield* pipe(
-            _.CachingHttpClient(timeToStale),
-            Effect.provideService(HttpClient.HttpClient, stubbedClient(successfulResponse, '3 seconds')),
-            Effect.provide(_.layerInMemory(cache)),
-          )
+    test.prop([
+      fc.httpClientResponse({ request: fc.httpClientRequest({ method: fc.constant('GET') }) }),
+      fc.durationInput(),
+    ])('with a timeout', (response, timeToStale) =>
+      Effect.gen(function* () {
+        const cache = new Map()
+        const client = yield* pipe(
+          _.CachingHttpClient(timeToStale),
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(response, '3 seconds')),
+          Effect.provide(_.layerInMemory(cache)),
+        )
 
-          const fiber = yield* pipe(client.execute(request), Effect.either, Effect.fork)
-          yield* TestClock.adjust('3 seconds')
-          const actualResponse = yield* Fiber.join(fiber)
+        const fiber = yield* pipe(client.execute(response.request), Effect.either, Effect.fork)
+        yield* TestClock.adjust('3 seconds')
+        const actualResponse = yield* Fiber.join(fiber)
 
-          expect(actualResponse).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'RequestError' })))
-          expect(cache.size).toBe(0)
-        }).pipe(EffectTest.run),
+        expect(actualResponse).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'RequestError' })))
+        expect(cache.size).toBe(0)
+      }).pipe(EffectTest.run),
     )
 
     test.prop([fc.httpClientRequest(), fc.durationInput()])('with a network error', (request, timeToStale) =>
@@ -105,20 +107,18 @@ describe('there is no cache entry', () => {
     )
 
     test.prop([
-      fc.httpClientRequest(),
-      fc.statusCode().filter(status => status !== StatusCodes.OK),
+      fc.httpClientResponse({ status: fc.statusCode().filter(status => status !== StatusCodes.OK) }),
       fc.durationInput(),
-    ])('with a response that does not have a 200 status code', (request, status, timeToStale) =>
+    ])('with a response that does not have a 200 status code', (response, timeToStale) =>
       Effect.gen(function* () {
         const cache = new Map()
-        const response = HttpClientResponse.fromWeb(request, new Response(null, { status }))
         const client = yield* pipe(
           _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
           Effect.provide(_.layerInMemory(cache)),
         )
 
-        const actualResponse = yield* client.execute(request)
+        const actualResponse = yield* client.execute(response.request)
 
         expect(actualResponse).toStrictEqual(response)
         expect(cache.size).toBe(0)
@@ -270,30 +270,29 @@ describe('there is a cache entry', () => {
       })
 
       describe('with a response that does not have a 200 status code', () => {
-        test.prop([fc.httpClientRequest({ method: fc.constant('GET'), url: fc.constant(url) })])(
-          'ignores the failure',
-          request =>
-            Effect.gen(function* () {
-              const non200Response = HttpClientResponse.fromWeb(
-                request,
-                new Response(null, { status: StatusCodes.NOT_FOUND }),
-              )
-              const client = yield* pipe(
-                _.CachingHttpClient(timeToStale),
-                Effect.provideService(HttpClient.HttpClient, stubbedClient(non200Response)),
-                Effect.provide(_.layerInMemory(cache)),
-              )
+        test.prop([
+          fc.httpClientResponse({
+            request: fc.httpClientRequest({ method: fc.constant('GET'), url: fc.constant(url) }),
+            status: fc.constant(StatusCodes.NOT_FOUND),
+          }),
+        ])('ignores the failure', non200Response =>
+          Effect.gen(function* () {
+            const client = yield* pipe(
+              _.CachingHttpClient(timeToStale),
+              Effect.provideService(HttpClient.HttpClient, stubbedClient(non200Response)),
+              Effect.provide(_.layerInMemory(cache)),
+            )
 
-              yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
-              const responseFromStaleCache = yield* client.get(url).pipe(Effect.either)
-              yield* TestClock.adjust('1 seconds')
-              const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(request)
+            yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
+            const responseFromStaleCache = yield* client.get(url).pipe(Effect.either)
+            yield* TestClock.adjust('1 seconds')
+            const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(non200Response.request)
 
-              expect(responseFromStaleCache).toStrictEqual(Either.right(expect.anything()))
-              expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
-                yield* originalResponse.text,
-              )
-            }).pipe(EffectTest.run),
+            expect(responseFromStaleCache).toStrictEqual(Either.right(expect.anything()))
+            expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
+              yield* originalResponse.text,
+            )
+          }).pipe(EffectTest.run),
         )
       })
     })
@@ -301,11 +300,10 @@ describe('there is a cache entry', () => {
 })
 
 describe('getting from the cache is too slow', () => {
-  test.prop([fc.httpClientRequest(), fc.statusCode(), fc.durationInput(), fc.durationInput()])(
+  test.prop([fc.httpClientResponse(), fc.durationInput(), fc.durationInput()])(
     'makes the real request',
-    (request, status, timeToStale, delay) =>
+    (response, timeToStale, delay) =>
       Effect.gen(function* () {
-        const response = HttpClientResponse.fromWeb(request, new Response(null, { status }))
         const client = yield* pipe(
           _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
@@ -315,7 +313,7 @@ describe('getting from the cache is too slow', () => {
             delete: shouldNotBeCalled,
           }),
         )
-        const fiber = yield* pipe(client.execute(request), Effect.fork)
+        const fiber = yield* pipe(client.execute(response.request), Effect.fork)
         yield* TestClock.adjust(_.CacheTimeout)
         const actualResponse = yield* Fiber.join(fiber)
 
@@ -326,12 +324,13 @@ describe('getting from the cache is too slow', () => {
 
 describe('with a non-GET request', () => {
   test.prop([
-    fc.httpClientRequest({ method: fc.requestMethod().filter(method => method !== 'GET') }),
+    fc.httpClientResponse({
+      request: fc.httpClientRequest({ method: fc.requestMethod().filter(method => method !== 'GET') }),
+    }),
     fc.statusCode(),
     fc.durationInput(),
-  ])('does not interact with cache', (request, status, timeToStale) =>
+  ])('does not interact with cache', (response, timeToStale) =>
     Effect.gen(function* () {
-      const response = HttpClientResponse.fromWeb(request, new Response(null, { status }))
       const client = yield* pipe(
         _.CachingHttpClient(timeToStale),
         Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
@@ -341,7 +340,7 @@ describe('with a non-GET request', () => {
           delete: shouldNotBeCalled,
         }),
       )
-      const actualResponse = yield* client.execute(request)
+      const actualResponse = yield* client.execute(response.request)
 
       expect(actualResponse).toStrictEqual(response)
     }).pipe(EffectTest.run),

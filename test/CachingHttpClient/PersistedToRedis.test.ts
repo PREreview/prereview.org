@@ -96,9 +96,11 @@ describe('writeToRedis', () => {
     }) as unknown as typeof Redis.HttpCacheRedis.Service
 
   describe('the value can be written', () => {
-    it.prop([fc.httpClientRequest(), fc.dateTimeUtc(), fc.string()])('succeeds', (request, staleAt, body) =>
+    it.prop([
+      fc.string().chain(text => fc.tuple(fc.httpClientResponse({ text: fc.constant(text) }), fc.constant(text))),
+      fc.dateTimeUtc(),
+    ])('succeeds', ([response, body], staleAt) =>
       Effect.gen(function* () {
-        const response = HttpClientResponse.fromWeb(request, new Response(body))
         const redis = stubbedRedis()
 
         const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
@@ -133,14 +135,13 @@ describe('writeToRedis', () => {
   })
 
   describe('redis is unreachable', () => {
-    it.prop([fc.httpClientRequest(), fc.dateTimeUtc(), fc.string(), fc.anything()])(
+    it.prop([fc.httpClientResponse(), fc.dateTimeUtc(), fc.anything()])(
       'returns an error',
-      (request, staleAt, body, error) =>
+      (response, staleAt, error) =>
         Effect.gen(function* () {
           const redis = {
             set: (() => Promise.reject<'OK'>(error)) satisfies (typeof Redis.HttpCacheRedis.Service)['set'],
           } as unknown as typeof Redis.HttpCacheRedis.Service
-          const response = HttpClientResponse.fromWeb(request, new Response(body))
 
           const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
 

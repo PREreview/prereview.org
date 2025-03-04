@@ -251,21 +251,26 @@ describe('getRecord', () => {
   })
 
   describe('with a response error', () => {
-    test.prop([fc.doi(), fc.constantFrom('StatusCode', 'Decode', 'EmptyBody')])('returns unavailable', (doi, reason) =>
-      Effect.gen(function* () {
-        const client = stubbedFailingClient(
-          request =>
-            new HttpClientError.ResponseError({
-              request,
-              response: HttpClientResponse.fromWeb(request, new Response()),
-              reason,
-            }),
-        )
-        const actual = yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
+    test.prop([fc.doi(), fc.constantFrom('StatusCode', 'Decode', 'EmptyBody'), fc.httpClientResponse()])(
+      'returns unavailable',
+      (doi, reason, response) =>
+        Effect.gen(function* () {
+          const client = stubbedFailingClient(
+            request =>
+              new HttpClientError.ResponseError({
+                request,
+                response,
+                reason,
+              }),
+          )
+          const actual = yield* pipe(
+            Effect.flip(_.getRecord(doi)),
+            Effect.provideService(HttpClient.HttpClient, client),
+          )
 
-        expect(actual._tag).toStrictEqual('RecordIsUnavailable')
-        expect(actual.cause).toStrictEqual(expect.objectContaining({ _tag: 'ResponseError', reason }))
-      }).pipe(EffectTest.run),
+          expect(actual._tag).toStrictEqual('RecordIsUnavailable')
+          expect(actual.cause).toStrictEqual(expect.objectContaining({ _tag: 'ResponseError', reason }))
+        }).pipe(EffectTest.run),
     )
   })
 })
