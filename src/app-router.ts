@@ -1,5 +1,6 @@
+import type { HttpClient } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
-import { Function, Option, String, flow, pipe } from 'effect'
+import { Effect, Function, Option, String, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -20,8 +21,10 @@ import multer, { MulterError } from 'multer'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
+import * as CachingHttpClient from './CachingHttpClient/index.js'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
+import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
 import type { GetPageFromGhostEnv } from './GhostPage.js'
 import {
@@ -331,7 +334,7 @@ const getSlackUser = flow(
 export type RouterEnv = Keyv.AvatarStoreEnv &
   MustDeclareUseOfAiEnv &
   DoesPreprintExistEnv &
-  EffectEnv<Locale> &
+  EffectEnv<Locale | HttpClient.HttpClient | CachingHttpClient.HttpCache> &
   ResolvePreprintIdEnv &
   GetPageFromGhostEnv &
   GetPreprintIdEnv &
@@ -1606,7 +1609,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                 pipe(
                   match(id)
                     .with({ type: 'philsci' }, () => RTE.of([]))
-                    .otherwise(id => getCategoriesFromOpenAlex(id.value)),
+                    .otherwise(
+                      EffectToFpts.toReaderTaskEitherK(id =>
+                        pipe(
+                          getCategoriesFromOpenAlex(id.value),
+                          Effect.provide(CachingHttpClient.layer('10 minutes')),
+                        ),
+                      ),
+                    ),
                   RTE.match(
                     () => [],
                     RA.map(category => ({ id: category.id, name: category.display_name })),
