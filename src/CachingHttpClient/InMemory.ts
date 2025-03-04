@@ -22,7 +22,7 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
             staleAt,
             response: HttpClientResponse.fromWeb(
               request,
-              new Response(response.body, {
+              new Response(response.body !== '' ? response.body : undefined, {
                 status: response.status,
                 headers: Headers.fromInput(response.headers),
               }),
