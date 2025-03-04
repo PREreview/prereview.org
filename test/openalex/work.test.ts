@@ -1,11 +1,11 @@
+import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { toUrl } from 'doi-ts'
-import { Either, Schema } from 'effect'
-import type { FetchEnv } from 'fetch-fp-ts'
-import * as E from 'fp-ts/lib/Either.js'
+import { Effect, pipe, Schema } from 'effect'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/openalex/work.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from './fc.js'
 
 describe('getWorkByDoi', () => {
@@ -20,34 +20,46 @@ describe('getWorkByDoi', () => {
         fc.constant(work),
       ),
     ),
-  ])('when the work can be decoded', async (doi, [response, expected]) => {
-    const fetch = jest.fn<FetchEnv['fetch']>(_ => Promise.resolve(response))
+  ])('when the work can be decoded', (doi, [response, expected]) =>
+    Effect.gen(function* () {
+      const clientSpy = jest.fn((_: HttpClientRequest.HttpClientRequest) => response)
+      const client = stubbedClient(clientSpy)
 
-    const actual = await _.getWorkByDoi(doi)({ fetch })()
+      const actual = yield* pipe(_.getWorkByDoi(doi), Effect.provideService(HttpClient.HttpClient, client))
 
-    expect(actual).toStrictEqual(Either.right(expected))
-    expect(fetch).toHaveBeenCalledWith(
-      `https://api.openalex.org/works/${toUrl(doi).href}`,
-      expect.objectContaining({ method: 'GET' }),
-    )
-  })
+      expect(actual).toStrictEqual(expected)
+      expect(clientSpy).toHaveBeenCalledWith(HttpClientRequest.get(`https://api.openalex.org/works/${toUrl(doi).href}`))
+    }).pipe(EffectTest.run),
+  )
 
   test.prop([fc.doi(), fc.fetchResponse({ status: fc.constant(Status.OK) })])(
     "when the work can't be decoded",
-    async (doi, response) => {
-      const actual = await _.getWorkByDoi(doi)({ fetch: () => Promise.resolve(response) })()
+    (doi, response) =>
+      Effect.gen(function* () {
+        const client = stubbedClient(() => response)
 
-      expect(actual).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'WorkIsUnavailable' })))
-    },
+        const actual = yield* pipe(
+          Effect.flip(_.getWorkByDoi(doi)),
+          Effect.provideService(HttpClient.HttpClient, client),
+        )
+
+        expect(actual).toStrictEqual(expect.objectContaining({ _tag: 'WorkIsUnavailable' }))
+      }).pipe(EffectTest.run),
   )
 
   test.prop([fc.doi(), fc.fetchResponse({ status: fc.constantFrom(Status.NotFound, Status.Gone) })])(
     'when the work is not found',
-    async (doi, response) => {
-      const actual = await _.getWorkByDoi(doi)({ fetch: () => Promise.resolve(response) })()
+    (doi, response) =>
+      Effect.gen(function* () {
+        const client = stubbedClient(() => response)
 
-      expect(actual).toStrictEqual(E.left(new _.WorkIsNotFound({ cause: response })))
-    },
+        const actual = yield* pipe(
+          Effect.flip(_.getWorkByDoi(doi)),
+          Effect.provideService(HttpClient.HttpClient, client),
+        )
+
+        expect(actual).toStrictEqual(new _.WorkIsNotFound({ cause: response }))
+      }).pipe(EffectTest.run),
   )
 
   test.prop([
@@ -55,17 +67,40 @@ describe('getWorkByDoi', () => {
     fc.fetchResponse({
       status: fc.statusCode().filter(status => ![Status.OK, Status.NotFound, Status.Gone].includes(status as never)),
     }),
-  ])('when the status code is not ok', async (doi, response) => {
-    const actual = await _.getWorkByDoi(doi)({ fetch: () => Promise.resolve(response) })()
+  ])('when the status code is not ok', (doi, response) =>
+    Effect.gen(function* () {
+      const client = stubbedClient(() => response)
 
-    expect(actual).toStrictEqual(E.left(new _.WorkIsUnavailable({ cause: response })))
-  })
+      const actual = yield* pipe(Effect.flip(_.getWorkByDoi(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
-  test.prop([fc.doi(), fc.error()])('when the request fails', async (doi, error) => {
-    const actual = await _.getWorkByDoi(doi)({ fetch: () => Promise.reject(error) })()
+      expect(actual).toStrictEqual(new _.WorkIsUnavailable({ cause: response }))
+    }).pipe(EffectTest.run),
+  )
 
-    expect(actual).toStrictEqual(E.left(new _.WorkIsUnavailable({ cause: error })))
-  })
+  test.prop([
+    fc.doi(),
+    fc.fetchResponse({
+      status: fc.statusCode().filter(status => ![Status.OK, Status.NotFound, Status.Gone].includes(status as never)),
+    }),
+  ])('when the status code is not ok', (doi, response) =>
+    Effect.gen(function* () {
+      const client = stubbedClient(() => response)
+
+      const actual = yield* pipe(Effect.flip(_.getWorkByDoi(doi)), Effect.provideService(HttpClient.HttpClient, client))
+
+      expect(actual).toStrictEqual(new _.WorkIsUnavailable({ cause: response }))
+    }).pipe(EffectTest.run),
+  )
+
+  test.prop([fc.doi(), fc.httpClientError()])('when the request fails', (doi, error) =>
+    Effect.gen(function* () {
+      const client = stubbedFailingClient(() => error)
+
+      const actual = yield* pipe(Effect.flip(_.getWorkByDoi(doi)), Effect.provideService(HttpClient.HttpClient, client))
+
+      expect(actual).toStrictEqual(new _.WorkIsUnavailable({ cause: error }))
+    }).pipe(EffectTest.run),
+  )
 })
 
 describe('getCategories', () => {
@@ -94,3 +129,15 @@ describe('getCategories', () => {
     expect(actual).toStrictEqual(expected)
   })
 })
+
+const stubbedClient = (f: (request: HttpClientRequest.HttpClientRequest) => Response) =>
+  HttpClient.makeWith<never, never, never, never>(
+    Effect.andThen(request => HttpClientResponse.fromWeb(request, f(request))),
+    Effect.succeed,
+  )
+
+const stubbedFailingClient = (f: (request: HttpClientRequest.HttpClientRequest) => HttpClientError.HttpClientError) =>
+  HttpClient.makeWith<never, never, HttpClientError.HttpClientError, never>(
+    Effect.andThen(request => Effect.fail(f(request))),
+    Effect.succeed,
+  )
