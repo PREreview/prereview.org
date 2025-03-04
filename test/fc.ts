@@ -1182,7 +1182,13 @@ export const fetchResponse = ({
   fc
     .record({
       headers: headers_ ?? headers(),
-      status: status ?? statusCode(),
+      status:
+        status ??
+        statusCode().filter(status =>
+          (json ?? text)
+            ? ![Status.NoContent, Status.ResetContent].includes(status as never) && (status < 300 || status >= 400)
+            : true,
+        ),
       text: json ? json.map(JSON.stringify) : (text ?? fc.string()),
     })
     .map(args => {
