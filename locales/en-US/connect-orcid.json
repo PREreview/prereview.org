@@ -16,5 +16,23 @@
   },
   "startNow": {
     "message": "Start now"
+  },
+  "cannotConnectProfile": {
+    "message": "Sorry, we can’t connect your profile"
+  },
+  "youDeniedAccess": {
+    "message": "You have denied PREreview access to your ORCID profile."
+  },
+  "tryAgain": {
+    "message": "Please try again."
+  },
+  "havingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
+  "unableToConnect": {
+    "message": "We’re unable to connect your profile right now."
+  },
+  "tryAgainLater": {
+    "message": "Please try again later."
   }
 }
