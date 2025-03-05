@@ -134,9 +134,6 @@
   "backToPreprint": {
     "message": "Back to preprint"
   },
-  "skipToMain": {
-    "message": "Skip to main content"
-  },
   "publishTitle": {
     "message": "Publish your PREreview of “{preprintTitle}”"
   },
