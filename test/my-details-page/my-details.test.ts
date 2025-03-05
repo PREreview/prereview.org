@@ -14,6 +14,7 @@ describe('myDetails', () => {
     describe('when the details can be loaded', () => {
       test.prop([
         fc.user(),
+        fc.supportedLocale(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(true) }),
         fc.either(fc.constant('not-found'), fc.orcidToken()),
         fc.either(fc.constant('not-found'), fc.url()),
@@ -28,6 +29,7 @@ describe('myDetails', () => {
         'when the user has visited before',
         async (
           user,
+          locale,
           userOnboarding,
           orcidToken,
           avatar,
@@ -39,7 +41,7 @@ describe('myDetails', () => {
           location,
           languages,
         ) => {
-          const actual = await _.myDetails({ user })({
+          const actual = await _.myDetails({ locale, user })({
             getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -68,6 +70,7 @@ describe('myDetails', () => {
 
       test.prop([
         fc.user(),
+        fc.supportedLocale(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(false) }),
         fc.either(fc.constant('not-found'), fc.orcidToken()),
         fc.either(fc.constant('not-found'), fc.url()),
@@ -82,6 +85,7 @@ describe('myDetails', () => {
         "when the user hasn't visited before",
         async (
           user,
+          locale,
           userOnboarding,
           orcidToken,
           avatar,
@@ -95,7 +99,7 @@ describe('myDetails', () => {
         ) => {
           const saveUserOnboarding = jest.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
 
-          const actual = await _.myDetails({ user })({
+          const actual = await _.myDetails({ locale, user })({
             getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -125,6 +129,7 @@ describe('myDetails', () => {
 
       test.prop([
         fc.user(),
+        fc.supportedLocale(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(false) }),
         fc.either(fc.constant('not-found'), fc.orcidToken()),
         fc.either(fc.constant('not-found'), fc.url()),
@@ -139,6 +144,7 @@ describe('myDetails', () => {
         'when the user onboarding cannot be updated',
         async (
           user,
+          locale,
           userOnboarding,
           orcidToken,
           avatar,
@@ -150,7 +156,7 @@ describe('myDetails', () => {
           location,
           languages,
         ) => {
-          const actual = await _.myDetails({ user })({
+          const actual = await _.myDetails({ locale, user })({
             getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -178,6 +184,7 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.supportedLocale(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
       fc.either(fc.constant('not-found'), fc.url()),
       fc.either(fc.constant('not-found'), fc.slackUser()),
@@ -191,6 +198,7 @@ describe('myDetails', () => {
       'when the user onboarding cannot be loaded',
       async (
         user,
+        locale,
         orcidToken,
         avatar,
         slackUser,
@@ -201,7 +209,7 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await _.myDetails({ user })({
+        const actual = await _.myDetails({ locale, user })({
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -228,6 +236,7 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.url()),
       fc.either(fc.constant('not-found'), fc.slackUser()),
@@ -241,6 +250,7 @@ describe('myDetails', () => {
       'when the ORCID token cannot be loaded',
       async (
         user,
+        locale,
         userOnboarding,
         avatar,
         slackUser,
@@ -251,7 +261,7 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await _.myDetails({ user })({
+        const actual = await _.myDetails({ locale, user })({
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -278,6 +288,7 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
       fc.either(fc.constant('not-found'), fc.url()),
@@ -291,6 +302,7 @@ describe('myDetails', () => {
       'when the Slack user cannot be loaded',
       async (
         user,
+        locale,
         userOnboarding,
         orcidToken,
         avatar,
@@ -301,7 +313,7 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await _.myDetails({ user })({
+        const actual = await _.myDetails({ locale, user })({
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -328,6 +340,7 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
       fc.either(fc.constant('not-found'), fc.url()),
@@ -341,6 +354,7 @@ describe('myDetails', () => {
       'when the contact email address cannot be loaded',
       async (
         user,
+        locale,
         userOnboarding,
         orcidToken,
         avatar,
@@ -351,7 +365,7 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await _.myDetails({ user })({
+        const actual = await _.myDetails({ locale, user })({
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.left('unavailable'),
@@ -378,6 +392,7 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
       fc.either(fc.constant('not-found'), fc.url()),
@@ -391,6 +406,7 @@ describe('myDetails', () => {
       'when being open for requests is unavailable',
       async (
         user,
+        locale,
         userOnboarding,
         orcidToken,
         avatar,
@@ -401,7 +417,7 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await _.myDetails({ user })({
+        const actual = await _.myDetails({ locale, user })({
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -428,6 +444,7 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
       fc.either(fc.constant('not-found'), fc.url()),
@@ -441,6 +458,7 @@ describe('myDetails', () => {
       'when the career stage cannot be loaded',
       async (
         user,
+        locale,
         userOnboarding,
         orcidToken,
         avatar,
@@ -451,7 +469,7 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await _.myDetails({ user })({
+        const actual = await _.myDetails({ locale, user })({
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.left('unavailable'),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -478,6 +496,7 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
       fc.either(fc.constant('not-found'), fc.url()),
@@ -491,6 +510,7 @@ describe('myDetails', () => {
       'when the research interests cannot be loaded',
       async (
         user,
+        locale,
         userOnboarding,
         orcidToken,
         avatar,
@@ -501,7 +521,7 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await _.myDetails({ user })({
+        const actual = await _.myDetails({ locale, user })({
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -528,6 +548,7 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
       fc.either(fc.constant('not-found'), fc.url()),
@@ -541,6 +562,7 @@ describe('myDetails', () => {
       'when the location cannot be loaded',
       async (
         user,
+        locale,
         userOnboarding,
         orcidToken,
         avatar,
@@ -551,7 +573,7 @@ describe('myDetails', () => {
         researchInterests,
         languages,
       ) => {
-        const actual = await _.myDetails({ user })({
+        const actual = await _.myDetails({ locale, user })({
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -578,6 +600,7 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
       fc.either(fc.constant('not-found'), fc.url()),
@@ -591,6 +614,7 @@ describe('myDetails', () => {
       'when the languages cannot be loaded',
       async (
         user,
+        locale,
         userOnboarding,
         orcidToken,
         avatar,
@@ -601,7 +625,7 @@ describe('myDetails', () => {
         researchInterests,
         location,
       ) => {
-        const actual = await _.myDetails({ user })({
+        const actual = await _.myDetails({ locale, user })({
           getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -627,8 +651,8 @@ describe('myDetails', () => {
     )
   })
 
-  test('when the user is not logged in', async () => {
-    const actual = await _.myDetails({})({
+  test.prop([fc.supportedLocale()])('when the user is not logged in', async locale => {
+    const actual = await _.myDetails({ locale })({
       getAvatar: shouldNotBeCalled,
       getCareerStage: shouldNotBeCalled,
       getContactEmailAddress: shouldNotBeCalled,

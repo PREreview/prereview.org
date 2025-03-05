@@ -2,6 +2,7 @@ import { HashSet, Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
 import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../../src/contact-email-address.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import { createPage } from '../../src/my-details-page/my-details-page.js'
 import { EmailAddress } from '../../src/types/email-address.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
@@ -13,6 +14,7 @@ import { expect, test } from '../base.js'
 test('content looks right when publicly visible', async ({ showPage }) => {
   const response = createPage({
     user,
+    locale: DefaultLocale,
     userOnboarding,
     avatar: Option.some(new URL('https://placehold.co/300x300')),
     orcidToken: Option.some({
@@ -52,6 +54,7 @@ test('content looks right when publicly visible', async ({ showPage }) => {
 test('content looks right when restricted visible', async ({ showPage }) => {
   const response = createPage({
     user,
+    locale: DefaultLocale,
     userOnboarding,
     orcidToken: Option.none(),
     avatar: Option.none(),
@@ -91,6 +94,7 @@ test('content looks right when restricted visible', async ({ showPage }) => {
 test('content looks right when empty', async ({ showPage }) => {
   const response = createPage({
     user,
+    locale: DefaultLocale,
     userOnboarding: { seenMyDetailsPage: false },
     orcidToken: Option.none(),
     avatar: Option.none(),

@@ -6,6 +6,7 @@ import type { ContactEmailAddress } from '../contact-email-address.js'
 import { html, plainText } from '../html.js'
 import type { IsOpenForRequests } from '../is-open-for-requests.js'
 import type { Languages } from '../languages.js'
+import type { SupportedLocale } from '../locales/index.js'
 import type { Location } from '../location.js'
 import type { OrcidToken } from '../orcid-token.js'
 import type { ResearchInterests } from '../research-interests.js'
@@ -38,6 +39,8 @@ import type { User } from '../user.js'
 
 export function createPage({
   user,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  locale,
   userOnboarding,
   orcidToken,
   avatar,
@@ -50,6 +53,7 @@ export function createPage({
   languages,
 }: {
   user: User
+  locale: SupportedLocale
   userOnboarding: UserOnboarding
   orcidToken: Option.Option<OrcidToken>
   avatar: Option.Option<URL>

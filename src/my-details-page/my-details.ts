@@ -9,6 +9,7 @@ import { maybeGetContactEmailAddress } from '../contact-email-address.js'
 import { havingProblemsPage } from '../http-error.js'
 import { maybeIsOpenForRequests } from '../is-open-for-requests.js'
 import { maybeGetLanguages } from '../languages.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { maybeGetLocation } from '../location.js'
 import { maybeGetOrcidToken } from '../orcid-token.js'
 import { maybeGetResearchInterests } from '../research-interests.js'
@@ -21,13 +22,14 @@ import { createPage } from './my-details-page.js'
 
 export type Env = EnvFor<typeof myDetails>
 
-export const myDetails = ({ user }: { user?: User }) =>
+export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: User }) =>
   pipe(
     RTE.fromNullable('no-session' as const)(user),
     RTE.chainW(user =>
       pipe(
         RTE.Do,
         RTE.let('user', () => user),
+        RTE.let('locale', () => locale),
         RTE.apSW('userOnboarding', getUserOnboarding(user.orcid)),
         RTE.apSW('orcidToken', pipe(maybeGetOrcidToken(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('avatar', pipe(maybeGetAvatar(user.orcid), RTE.map(Option.fromNullable))),
