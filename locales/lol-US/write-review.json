@@ -2,9 +2,6 @@
   "prereviewOf": {
     "message": "crwdns4539:0{preprintTitle}crwdne4539:0"
   },
-  "addAuthorTitle": {
-    "message": "crwdns4541:0crwdne4541:0"
-  },
   "enterTheirName": {
     "message": "crwdns3900:0crwdne3900:0"
   },
@@ -31,9 +28,6 @@
   },
   "saveAndContinue": {
     "message": "crwdns3916:0crwdne3916:0"
-  },
-  "addAuthorsTitle": {
-    "message": "crwdns4543:0authorCount={authorCount}crwdnd4543:0authorCount={authorCount}crwdne4543:0"
   },
   "back": {
     "message": "crwdns3920:0crwdne3920:0"
@@ -70,9 +64,6 @@
   },
   "continueButton": {
     "message": "crwdns3942:0crwdne3942:0"
-  },
-  "changeAuthorTitle": {
-    "message": "crwdns4545:0{name}crwdne4545:0"
   },
   "enterName": {
     "message": "crwdns3946:0crwdne3946:0"
@@ -142,9 +133,6 @@
   },
   "backToPreprint": {
     "message": "crwdns3990:0crwdne3990:0"
-  },
-  "skipToMain": {
-    "message": "crwdns3992:0crwdne3992:0"
   },
   "publishTitle": {
     "message": "crwdns3994:0{preprintTitle}crwdne3994:0"
@@ -248,9 +236,6 @@
   "publishButton": {
     "message": "crwdns4060:0crwdne4060:0"
   },
-  "removeAuthorTitle": {
-    "message": "crwdns4547:0{authorName}crwdne4547:0"
-  },
   "selectYesToRemove": {
     "message": "crwdns4378:0{authorName}crwdne4378:0"
   },
@@ -265,9 +250,6 @@
   },
   "asYouHaveAlreadyStarted": {
     "message": "crwdns4434:0{preprintTitle}crwdne4434:0"
-  },
-  "authorsTitle": {
-    "message": "crwdns4549:0crwdne4549:0"
   },
   "selectYesIfYouReviewedWithSomeoneElse": {
     "message": "crwdns4390:0crwdne4390:0"
@@ -292,9 +274,6 @@
   },
   "theyHaveReadAndApproved": {
     "message": "crwdns4404:0crwdne4404:0"
-  },
-  "competingInterestsTitle": {
-    "message": "crwdns4551:0crwdne4551:0"
   },
   "competingInterests": {
     "message": "crwdns4553:0crwdne4553:0"
@@ -343,9 +322,6 @@
   },
   "whatAreThey": {
     "message": "crwdns4432:0crwdne4432:0"
-  },
-  "codeOfConductTitle": {
-    "message": "crwdns4559:0crwdne4559:0"
   },
   "confirmCodeOfConduct": {
     "message": "crwdns4454:0crwdne4454:0"
