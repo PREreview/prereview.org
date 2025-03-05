@@ -34,5 +34,20 @@
   },
   "tryAgainLater": {
     "message": "Please try again later."
+  },
+  "disconnectOrcidProfile": {
+    "message": "Disconnect your ORCID profile"
+  },
+  "canDisconnect": {
+    "message": "You can disconnect your PREreview profile from your ORCID profile."
+  },
+  "stopAddingPrereviews": {
+    "message": "We’ll stop adding new PREreviews to your ORCID profile."
+  },
+  "canReconnect": {
+    "message": "You will be able to reconnect it at any time."
+  },
+  "disconnectProfileButton": {
+    "message": "Disconnect profile"
   }
 }
