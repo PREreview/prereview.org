@@ -5,8 +5,8 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { match } from 'ts-pattern'
 import { Locale } from './Context.js'
 import { HavingProblemsPage } from './HavingProblemsPage/index.js'
-import { html, plainText, sendHtml } from './html.js'
-import { DefaultLocale } from './locales/index.js'
+import { html, plainText, rawHtml, sendHtml } from './html.js'
+import { DefaultLocale, translate } from './locales/index.js'
 import { NoPermissionPage } from './NoPermissionPage/index.js'
 import { templatePage } from './page.js'
 import { PageNotFound } from './PageNotFound/index.js'
@@ -29,37 +29,42 @@ export function handleError(error: HttpError<typeof Status.NotFound | typeof Sta
 
 function notFoundPage(user?: User) {
   return templatePage({
-    title: plainText`Page not found`,
+    title: plainText(translate(DefaultLocale, 'page-not-found', 'pageNotFoundTitle')()),
     content: html`
       <main id="main-content">
-        <h1>Page not found</h1>
+        <h1>${translate(DefaultLocale, 'page-not-found', 'pageNotFoundTitle')()}</h1>
 
-        <p>If you typed the web address, check it is correct.</p>
+        <p>${translate(DefaultLocale, 'page-not-found', 'checkCorrect')()}</p>
 
-        <p>If you pasted the web address, check you copied the entire address.</p>
+        <p>${translate(DefaultLocale, 'page-not-found', 'checkEntire')()}</p>
 
         <p>
-          If the web address is correct or you selected a link or button, please
-          <a href="mailto:help@prereview.org">get in touch</a>.
+          ${rawHtml(
+            translate(
+              DefaultLocale,
+              'page-not-found',
+              'contactUs',
+            )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
+          )}
         </p>
       </main>
     `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
+    skipLinks: [[html`${translate(DefaultLocale, 'skip-links', 'main')()}`, '#main-content']],
     user,
   })
 }
 
 function problemsPage(user?: User) {
   return templatePage({
-    title: plainText`Sorry, we’re having problems`,
+    title: plainText(translate(DefaultLocale, 'having-problems-page', 'havingProblemsTitle')()),
     content: html`
       <main id="main-content">
-        <h1>Sorry, we’re having problems</h1>
+        <h1>${translate(DefaultLocale, 'having-problems-page', 'havingProblemsTitle')()}</h1>
 
-        <p>Please try again later.</p>
+        <p>${translate(DefaultLocale, 'having-problems-page', 'tryAgainLater')()}</p>
       </main>
     `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
+    skipLinks: [[html`${translate(DefaultLocale, 'skip-links', 'main')()}`, '#main-content']],
     user,
   })
 }
