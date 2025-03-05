@@ -3,13 +3,14 @@ import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { maybeGetOrcidToken } from '../orcid-token.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { connectOrcidMatch, connectOrcidStartMatch } from '../routes.js'
 import type { User } from '../user.js'
 import { connectOrcidPage } from './connect-orcid-page.js'
 
-export const connectOrcid = ({ user }: { user?: User }) =>
+export const connectOrcid = ({ locale, user }: { locale: SupportedLocale; user?: User }) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
@@ -23,7 +24,7 @@ export const connectOrcid = ({ user }: { user?: User }) =>
       ({ orcidToken }) =>
         match(orcidToken)
           .with(P.not(undefined), () => RedirectResponse({ location: format(connectOrcidStartMatch.formatter, {}) }))
-          .with(undefined, () => connectOrcidPage)
+          .with(undefined, () => connectOrcidPage(locale))
           .exhaustive(),
     ),
   )
