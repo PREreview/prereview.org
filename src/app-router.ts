@@ -692,6 +692,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ code }),
           RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.bindW('response', RM.fromReaderTaskK(connectOrcidCode)),
           RM.ichainW(handleResponse),
         ),
@@ -710,7 +714,11 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apS('response', RM.of(connectOrcidError({ error }))),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bind('response', ({ locale }) => RM.of(connectOrcidError({ error, locale }))),
           RM.ichainW(handleResponse),
         ),
       ),
