@@ -29,6 +29,7 @@ export const disconnectOrcid = ({ method, locale, user }: { method: string; loca
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.bindW('orcidToken', ({ user }) => maybeGetOrcidToken(user.orcid)),
     RTE.let('method', () => method),
+    RTE.let('locale', () => locale),
     RTE.matchEW(
       error =>
         RT.of(
@@ -54,12 +55,12 @@ export const disconnectOrcid = ({ method, locale, user }: { method: string; loca
     ),
   )
 
-const handleForm = ({ orcidToken, user }: { orcidToken: OrcidToken; user: User }) =>
+const handleForm = ({ locale, orcidToken, user }: { locale: SupportedLocale; orcidToken: OrcidToken; user: User }) =>
   pipe(
     deleteOrcidToken(user.orcid),
     RTE.chainFirstW(() => revokeAccessToken(orcidToken.accessToken)),
     RTE.matchW(
-      () => disconnectFailureMessage,
+      () => disconnectFailureMessage(locale),
       () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'orcid-disconnected' }),
     ),
   )

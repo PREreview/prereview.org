@@ -9,7 +9,7 @@ test('content looks right when failing to connect', async ({ showPage }) => {
 })
 
 test('content looks right when failing to disconnect', async ({ showPage }) => {
-  const content = await showPage(disconnectFailureMessage)
+  const content = await showPage(disconnectFailureMessage(DefaultLocale))
 
   await expect(content).toHaveScreenshot()
 })
