@@ -11,6 +11,7 @@ import type {
   AfricarxivUbuntunetPreprintId,
   ArxivPreprintId,
   BiorxivPreprintId,
+  ChemrxivPreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
   EdarxivPreprintId,
@@ -35,6 +36,7 @@ export type ReviewRequestPreprintId =
   | AfricarxivUbuntunetPreprintId
   | ArxivPreprintId
   | BiorxivPreprintId
+  | ChemrxivPreprintId
   | EartharxivPreprintId
   | EcoevorxivPreprintId
   | EdarxivPreprintId
@@ -132,6 +134,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
           'advance',
           'arxiv',
           'biorxiv',
+          'chemrxiv',
           'eartharxiv',
           'ecoevorxiv',
           'edarxiv',
