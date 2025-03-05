@@ -16,16 +16,15 @@ export const connectFailureMessage = (locale: SupportedLocale) =>
     `,
   })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const disconnectFailureMessage = (locale: SupportedLocale) =>
   PageResponse({
     status: Status.ServiceUnavailable,
-    title: plainText`Sorry, we’re having problems`,
+    title: plainText(translate(locale, 'connect-orcid', 'havingProblems')()),
     main: html`
-      <h1>Sorry, we’re having problems</h1>
+      <h1>${translate(locale, 'connect-orcid', 'havingProblems')()}</h1>
 
-      <p>We’re unable to disconnect your profile right now.</p>
+      <p>${translate(locale, 'connect-orcid', 'unableToDisconnect')()}</p>
 
-      <p>Please try again later.</p>
+      <p>${translate(locale, 'connect-orcid', 'tryAgainLater')()}</p>
     `,
   })

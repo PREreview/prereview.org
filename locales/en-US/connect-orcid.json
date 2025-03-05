@@ -32,6 +32,9 @@
   "unableToConnect": {
     "message": "We’re unable to connect your profile right now."
   },
+  "unableToDisconnect": {
+    "message": "We’re unable to disconnect your profile right now."
+  },
   "tryAgainLater": {
     "message": "Please try again later."
   },
