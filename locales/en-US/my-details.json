@@ -1,0 +1,149 @@
+{
+  "myDetails": {
+    "message": "My details"
+  },
+  "welcomeToPrereview": {
+    "message": "Welcome to PREreview! You can use this page to help authors, editors, and other PREreviewers learn more about your interests, work, and review activity."
+  },
+  "onlyYouCanSee": {
+    "message": "Only you can see this page. You have two profile pages that everyone can see:"
+  },
+  "viewPublicProfile": {
+    "message": "View public profile"
+  },
+  "viewPseudonymProfile": {
+    "message": "View pseudonym profile"
+  },
+  "name": {
+    "message": "Name"
+  },
+  "pseudonym": {
+    "message": "PREreview pseudonym"
+  },
+  "orcidProfile": {
+    "message": "ORCID profile"
+  },
+  "connected": {
+    "message": "Connected"
+  },
+  "connectOrcidProfile": {
+    "message": "Connect ORCID profile"
+  },
+  "disconnectOrcidProfile": {
+    "message": "Disconnect <visuallyHidden>ORCID profile</visuallyHidden>"
+  },
+  "avatar": {
+    "message": "Avatar"
+  },
+  "uploadAvatar": {
+    "message": "Upload avatar"
+  },
+  "changeAvatar": {
+    "message": "Change <visuallyHidden>avatar</visuallyHidden>"
+  },
+  "removeAvatar": {
+    "message": "Remove <visuallyHidden>avatar</visuallyHidden>"
+  },
+  "slackCommunityName": {
+    "message": "Slack Community name"
+  },
+  "connectSlack": {
+    "message": "Connect Slack account"
+  },
+  "disconnectSlack": {
+    "message": "Disconnect <visuallyHidden>Slack account</visuallyHidden>"
+  },
+  "emailAddress": {
+    "message": "Email address"
+  },
+  "enterEmailAddress": {
+    "message": "Enter email address"
+  },
+  "unverified": {
+    "message": "Unverified"
+  },
+  "changeEmailAddress": {
+    "message": "Change <visuallyHidden>email address</visuallyHidden>"
+  },
+  "openReviewRequests": {
+    "message": "Open for review requests"
+  },
+  "enterOpenReviewRequests": {
+    "message": "Enter open for review requests"
+  },
+  "changeOpenReviewRequests": {
+    "message": "Change <visuallyHidden>open for review requests</visuallyHidden>"
+  },
+  "setOpenReviewRequestsVisibility": {
+    "message": "Set <visuallyHidden>open-for-review-requests</visuallyHidden> visibility"
+  },
+  "yes": {
+    "message": "Yes"
+  },
+  "no": {
+    "message": "No"
+  },
+  "shownPublic": {
+    "message": "Shown on your public profile"
+  },
+  "restricted": {
+    "message": "Only visible to PREreview"
+  },
+  "careerStage": {
+    "message": "Career stage"
+  },
+  "enterCareerStage": {
+    "message": "Enter career stage"
+  },
+  "changeCareerStage": {
+    "message": "Change <visuallyHidden>career stage</visuallyHidden>"
+  },
+  "setCareerStageVisibility": {
+    "message": "Set <visuallyHidden>career-stage</visuallyHidden> visibility"
+  },
+  "early": {
+    "message": "Early"
+  },
+  "mid": {
+    "message": "Mid"
+  },
+  "late": {
+    "message": "Late"
+  },
+  "researchInterests": {
+    "message": "Research interests"
+  },
+  "enterResearchInterests": {
+    "message": "Enter research interests"
+  },
+  "changeResearchInterests": {
+    "message": "Change <visuallyHidden>research interests</visuallyHidden>"
+  },
+  "setResearchInterestsVisibility": {
+    "message": "Set <visuallyHidden>research-interests</visuallyHidden> visibility"
+  },
+  "location": {
+    "message": "Location"
+  },
+  "enterLocation": {
+    "message": "Enter location"
+  },
+  "changeLocation": {
+    "message": "Change <visuallyHidden>location</visuallyHidden>"
+  },
+  "setLocationVisibility": {
+    "message": "Set <visuallyHidden>location</visuallyHidden> visibility"
+  },
+  "languages": {
+    "message": "Languages"
+  },
+  "enterLanguages": {
+    "message": "Enter languages"
+  },
+  "changeLanguages": {
+    "message": "Change <visuallyHidden>languages</visuallyHidden>"
+  },
+  "setLanguagesVisibility": {
+    "message": "Set <visuallyHidden>languages</visuallyHidden> visibility"
+  }
+}

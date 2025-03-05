@@ -3,10 +3,10 @@ import { format } from 'fp-ts-routing'
 import { P, match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.js'
 import type { ContactEmailAddress } from '../contact-email-address.js'
-import { html, plainText } from '../html.js'
+import { html, plainText, rawHtml } from '../html.js'
 import type { IsOpenForRequests } from '../is-open-for-requests.js'
 import type { Languages } from '../languages.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import type { Location } from '../location.js'
 import type { OrcidToken } from '../orcid-token.js'
 import type { ResearchInterests } from '../research-interests.js'
@@ -39,7 +39,6 @@ import type { User } from '../user.js'
 
 export function createPage({
   user,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   locale,
   userOnboarding,
   orcidToken,
@@ -65,43 +64,37 @@ export function createPage({
   location: Option.Option<Location>
   languages: Option.Option<Languages>
 }) {
+  const t = translate(locale)
+
   return PageResponse({
-    title: plainText`My details`,
+    title: plainText(t('my-details', 'myDetails')()),
     main: html`
-      <h1>My details</h1>
+      <h1>${t('my-details', 'myDetails')()}</h1>
 
       <div class="inset">
         ${match(userOnboarding)
-          .with(
-            { seenMyDetailsPage: false },
-            () => html`
-              <p>
-                Welcome to PREreview! You can use this page to help authors, editors, and other PREreviewers learn more
-                about your interests, work, and review activity.
-              </p>
-            `,
-          )
+          .with({ seenMyDetailsPage: false }, () => html`<p>${t('my-details', 'welcomeToPrereview')()}</p>`)
           .with({ seenMyDetailsPage: true }, () => '')
           .exhaustive()}
 
-        <p>Only you can see this page. You have two profile pages that everyone can see:</p>
+        <p>${t('my-details', 'onlyYouCanSee')()}</p>
 
         <div class="forward-group">
           <a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(user.orcid) })}" class="forward"
-            ><span>View public profile</span></a
+            ><span>${t('my-details', 'viewPublicProfile')()}</span></a
           >
 
           <a
             href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(user.pseudonym) })}"
             class="forward"
-            ><span>View pseudonym profile</span></a
+            ><span>${t('my-details', 'viewPseudonymProfile')()}</span></a
           >
         </div>
       </div>
 
       <dl class="summary-list">
         <div>
-          <dt><span>Name</span></dt>
+          <dt><span>${t('my-details', 'name')()}</span></dt>
           <dd>${user.name}</dd>
         </div>
 
@@ -111,7 +104,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>PREreview pseudonym</span></dt>
+          <dt><span>${t('my-details', 'pseudonym')()}</span></dt>
           <dd>${user.pseudonym}</dd>
         </div>
 
@@ -120,9 +113,9 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>ORCID profile</span></dt>
+                <dt><span>${t('my-details', 'orcidProfile')()}</span></dt>
                 <dd>
-                  <a href="${format(connectOrcidMatch.formatter, {})}">Connect ORCID profile</a>
+                  <a href="${format(connectOrcidMatch.formatter, {})}">${t('my-details', 'connectOrcidProfile')()}</a>
                 </dd>
               </div>
             `,
@@ -131,11 +124,11 @@ export function createPage({
             Option.isSome,
             () => html`
               <div>
-                <dt><span>ORCID profile</span></dt>
-                <dd>Connected</dd>
+                <dt><span>${t('my-details', 'orcidProfile')()}</span></dt>
+                <dd>${t('my-details', 'connected')()}</dd>
                 <dd>
                   <a href="${format(disconnectOrcidMatch.formatter, {})}"
-                    >Disconnect <span class="visually-hidden">ORCID profile</span></a
+                    >${rawHtml(t('my-details', 'disconnectOrcidProfile')(visuallyHidden))}</a
                   >
                 </dd>
               </div>
@@ -147,9 +140,9 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>Avatar</span></dt>
+                <dt><span>${t('my-details', 'avatar')()}</span></dt>
                 <dd>
-                  <a href="${format(changeAvatarMatch.formatter, {})}">Upload avatar</a>
+                  <a href="${format(changeAvatarMatch.formatter, {})}">${t('my-details', 'uploadAvatar')()}</a>
                 </dd>
               </div>
             `,
@@ -158,18 +151,18 @@ export function createPage({
             { value: P.select() },
             avatar => html`
               <div>
-                <dt><span>Avatar</span></dt>
+                <dt><span>${t('my-details', 'avatar')()}</span></dt>
                 <dd><img src="${avatar.href}" width="300" height="300" alt="" /></dd>
                 <dd>
                   <ul>
                     <li>
                       <a href="${format(changeAvatarMatch.formatter, {})}"
-                        >Change <span class="visually-hidden">avatar</span></a
+                        >${rawHtml(t('my-details', 'changeAvatar')(visuallyHidden))}</a
                       >
                     </li>
                     <li>
                       <a href="${format(removeAvatarMatch.formatter, {})}"
-                        >Remove <span class="visually-hidden">avatar</span></a
+                        >${rawHtml(t('my-details', 'removeAvatar')(visuallyHidden))}</a
                       >
                     </li>
                   </ul>
@@ -183,9 +176,9 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>Slack Community name</span></dt>
+                <dt><span>${t('my-details', 'slackCommunityName')()}</span></dt>
                 <dd>
-                  <a href="${format(connectSlackMatch.formatter, {})}">Connect Slack account</a>
+                  <a href="${format(connectSlackMatch.formatter, {})}">${t('my-details', 'connectSlack')()}</a>
                 </dd>
               </div>
             `,
@@ -194,7 +187,7 @@ export function createPage({
             { value: P.select() },
             slackUser => html`
               <div>
-                <dt><span>Slack Community name</span></dt>
+                <dt><span>${t('my-details', 'slackCommunityName')()}</span></dt>
                 <dd>
                   <span class="slack">
                     <img src="${slackUser.image.href}" alt="" width="48" height="48" />
@@ -203,7 +196,7 @@ export function createPage({
                 </dd>
                 <dd>
                   <a href="${format(disconnectSlackMatch.formatter, {})}"
-                    >Disconnect <span class="visually-hidden">Slack account</span></a
+                    >${rawHtml(t('my-details', 'disconnectSlack')(visuallyHidden))}</a
                   >
                 </dd>
               </div>
@@ -215,9 +208,11 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>Email address</span></dt>
+                <dt><span>${t('my-details', 'emailAddress')()}</span></dt>
                 <dd>
-                  <a href="${format(changeContactEmailAddressMatch.formatter, {})}">Enter email address</a>
+                  <a href="${format(changeContactEmailAddressMatch.formatter, {})}"
+                    >${t('my-details', 'enterEmailAddress')()}</a
+                  >
                 </dd>
               </div>
             `,
@@ -226,17 +221,20 @@ export function createPage({
             { value: P.select() },
             contactEmailAddress => html`
               <div>
-                <dt><span>Email address</span></dt>
+                <dt><span>${t('my-details', 'emailAddress')()}</span></dt>
                 <dd>
                   ${contactEmailAddress.value}
                   ${match(contactEmailAddress._tag)
                     .with('VerifiedContactEmailAddress', () => '')
-                    .with('UnverifiedContactEmailAddress', () => html`<small>Unverified</small>`)
+                    .with(
+                      'UnverifiedContactEmailAddress',
+                      () => html`<small>${t('my-details', 'unverified')()}</small>`,
+                    )
                     .exhaustive()}
                 </dd>
                 <dd>
                   <a href="${format(changeContactEmailAddressMatch.formatter, {})}"
-                    >Change <span class="visually-hidden">email address</span></a
+                    >${rawHtml(t('my-details', 'changeEmailAddress')(visuallyHidden))}</a
                   >
                 </dd>
               </div>
@@ -249,13 +247,15 @@ export function createPage({
             Option.isSome,
             () => html`
               <div>
-                <dt><span>Open for review requests</span></dt>
+                <dt><span>${t('my-details', 'openReviewRequests')()}</span></dt>
                 ${match(openForRequests)
                   .when(
                     Option.isNone,
                     () => html`
                       <dd>
-                        <a href="${format(changeOpenForRequestsMatch.formatter, {})}">Enter open for review requests</a>
+                        <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
+                          >${t('my-details', 'enterOpenReviewRequests')()}</a
+                        >
                       </dd>
                     `,
                   )
@@ -267,15 +267,15 @@ export function createPage({
                           .with(
                             { value: true },
                             openForRequests =>
-                              html`Yes
+                              html`${t('my-details', 'yes')()}
                                 <small
                                   >${match(openForRequests.visibility)
-                                    .with('public', () => 'Shown on your public profile')
-                                    .with('restricted', () => 'Only visible to PREreview')
+                                    .with('public', () => t('my-details', 'shownPublic')())
+                                    .with('restricted', () => t('my-details', 'restricted')())
                                     .exhaustive()}</small
                                 > `,
                           )
-                          .with({ value: false }, () => 'No')
+                          .with({ value: false }, () => t('my-details', 'no')())
                           .exhaustive()}
                       </dd>
                       <dd>
@@ -286,12 +286,12 @@ export function createPage({
                               <ul>
                                 <li>
                                   <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                                    >Change <span class="visually-hidden">open for review requests</span></a
+                                    >${rawHtml(t('my-details', 'changeOpenReviewRequests')(visuallyHidden))}</a
                                   >
                                 </li>
                                 <li>
                                   <a href="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}"
-                                    >Set <span class="visually-hidden">open-for-review-requests</span> visibility</a
+                                    >${rawHtml(t('my-details', 'setOpenReviewRequestsVisibility')(visuallyHidden))}</a
                                   >
                                 </li>
                               </ul>
@@ -301,7 +301,7 @@ export function createPage({
                             { value: false },
                             () => html`
                               <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                                >Change <span class="visually-hidden">open for review requests</span></a
+                                >${rawHtml(t('my-details', 'changeOpenReviewRequests')(visuallyHidden))}</a
                               >
                             `,
                           )
@@ -316,13 +316,13 @@ export function createPage({
           .exhaustive()}
 
         <div>
-          <dt><span>Career stage</span></dt>
+          <dt><span>${t('my-details', 'careerStage')()}</span></dt>
           ${match(careerStage)
             .when(
               Option.isNone,
               () => html`
                 <dd>
-                  <a href="${format(changeCareerStageMatch.formatter, {})}">Enter career stage</a>
+                  <a href="${format(changeCareerStageMatch.formatter, {})}">${t('my-details', 'enterCareerStage')()}</a>
                 </dd>
               `,
             )
@@ -330,15 +330,11 @@ export function createPage({
               { value: P.select() },
               careerStage => html`
                 <dd>
-                  ${match(careerStage.value)
-                    .with('early', () => 'Early')
-                    .with('mid', () => 'Mid')
-                    .with('late', () => 'Late')
-                    .exhaustive()}
+                  ${t('my-details', careerStage.value)()}
                   <small
                     >${match(careerStage.visibility)
-                      .with('public', () => 'Shown on your public profile')
-                      .with('restricted', () => 'Only visible to PREreview')
+                      .with('public', () => t('my-details', 'shownPublic')())
+                      .with('restricted', () => t('my-details', 'restricted')())
                       .exhaustive()}</small
                   >
                 </dd>
@@ -346,12 +342,12 @@ export function createPage({
                   <ul>
                     <li>
                       <a href="${format(changeCareerStageMatch.formatter, {})}"
-                        >Change <span class="visually-hidden">career stage</span></a
+                        >${rawHtml(t('my-details', 'changeCareerStage')(visuallyHidden))}</a
                       >
                     </li>
                     <li>
                       <a href="${format(changeCareerStageVisibilityMatch.formatter, {})}"
-                        >Set <span class="visually-hidden">career-stage</span> visibility</a
+                        >${rawHtml(t('my-details', 'setCareerStageVisibility')(visuallyHidden))}</a
                       >
                     </li>
                   </ul>
@@ -362,13 +358,15 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>Research interests</span></dt>
+          <dt><span>${t('my-details', 'researchInterests')()}</span></dt>
           ${match(researchInterests)
             .when(
               Option.isNone,
               () => html`
                 <dd>
-                  <a href="${format(changeResearchInterestsMatch.formatter, {})}">Enter research interests</a>
+                  <a href="${format(changeResearchInterestsMatch.formatter, {})}"
+                    >${t('my-details', 'enterResearchInterests')()}</a
+                  >
                 </dd>
               `,
             )
@@ -379,8 +377,8 @@ export function createPage({
                   ${researchInterests.value}
                   <small
                     >${match(researchInterests.visibility)
-                      .with('public', () => 'Shown on your public profile')
-                      .with('restricted', () => 'Only visible to PREreview')
+                      .with('public', () => t('my-details', 'shownPublic')())
+                      .with('restricted', () => t('my-details', 'restricted')())
                       .exhaustive()}</small
                   >
                 </dd>
@@ -388,12 +386,12 @@ export function createPage({
                   <ul>
                     <li>
                       <a href="${format(changeResearchInterestsMatch.formatter, {})}"
-                        >Change <span class="visually-hidden">research interests</span></a
+                        >${rawHtml(t('my-details', 'changeResearchInterests')(visuallyHidden))}</a
                       >
                     </li>
                     <li>
                       <a href="${format(changeResearchInterestsVisibilityMatch.formatter, {})}"
-                        >Set <span class="visually-hidden">research-interests</span> visibility</a
+                        >${rawHtml(t('my-details', 'setResearchInterestsVisibility')(visuallyHidden))}</a
                       >
                     </li>
                   </ul>
@@ -404,13 +402,13 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>Location</span></dt>
+          <dt><span>${t('my-details', 'location')()}</span></dt>
           ${match(location)
             .when(
               Option.isNone,
               () => html`
                 <dd>
-                  <a href="${format(changeLocationMatch.formatter, {})}">Enter location</a>
+                  <a href="${format(changeLocationMatch.formatter, {})}">${t('my-details', 'enterLocation')()}</a>
                 </dd>
               `,
             )
@@ -421,8 +419,8 @@ export function createPage({
                   ${location.value}
                   <small
                     >${match(location.visibility)
-                      .with('public', () => 'Shown on your public profile')
-                      .with('restricted', () => 'Only visible to PREreview')
+                      .with('public', () => t('my-details', 'shownPublic')())
+                      .with('restricted', () => t('my-details', 'restricted')())
                       .exhaustive()}</small
                   >
                 </dd>
@@ -430,12 +428,12 @@ export function createPage({
                   <ul>
                     <li>
                       <a href="${format(changeLocationMatch.formatter, {})}"
-                        >Change <span class="visually-hidden">location</span></a
+                        >${rawHtml(t('my-details', 'changeLocation')(visuallyHidden))}</a
                       >
                     </li>
                     <li>
                       <a href="${format(changeLocationVisibilityMatch.formatter, {})}"
-                        >Set <span class="visually-hidden">location</span> visibility</a
+                        >${rawHtml(t('my-details', 'setLocationVisibility')(visuallyHidden))}</a
                       >
                     </li>
                   </ul>
@@ -446,13 +444,13 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>Languages</span></dt>
+          <dt><span>${t('my-details', 'languages')()}</span></dt>
           ${match(languages)
             .when(
               Option.isNone,
               () => html`
                 <dd>
-                  <a href="${format(changeLanguagesMatch.formatter, {})}">Enter languages</a>
+                  <a href="${format(changeLanguagesMatch.formatter, {})}">${t('my-details', 'enterLanguages')()}</a>
                 </dd>
               `,
             )
@@ -463,8 +461,8 @@ export function createPage({
                   ${languages.value}
                   <small
                     >${match(languages.visibility)
-                      .with('public', () => 'Shown on your public profile')
-                      .with('restricted', () => 'Only visible to PREreview')
+                      .with('public', () => t('my-details', 'shownPublic')())
+                      .with('restricted', () => t('my-details', 'restricted')())
                       .exhaustive()}</small
                   >
                 </dd>
@@ -472,12 +470,12 @@ export function createPage({
                   <ul>
                     <li>
                       <a href="${format(changeLanguagesMatch.formatter, {})}"
-                        >Change <span class="visually-hidden">languages</span></a
+                        >${rawHtml(t('my-details', 'changeLanguages')(visuallyHidden))}</a
                       >
                     </li>
                     <li>
                       <a href="${format(changeLanguagesVisibilityMatch.formatter, {})}"
-                        >Set <span class="visually-hidden">languages</span> visibility</a
+                        >${rawHtml(t('my-details', 'setLanguagesVisibility')(visuallyHidden))}</a
                       >
                     </li>
                   </ul>
@@ -491,4 +489,8 @@ export function createPage({
     current: 'my-details',
     canonical: format(myDetailsMatch.formatter, {}),
   })
+}
+
+const visuallyHidden = {
+  visuallyHidden: (text: string) => html`<span class="visually-hidden">${text}</span>`.toString(),
 }
