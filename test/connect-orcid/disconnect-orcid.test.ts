@@ -14,9 +14,9 @@ describe('disconnectOrcid', () => {
   describe('when the user is logged in', () => {
     describe('when ORCID is connected', () => {
       describe('when the form is submitted', () => {
-        test.prop([fc.oauth(), fc.user(), fc.orcidToken()])(
+        test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.orcidToken()])(
           'when the token can be deleted',
-          async (orcidOauth, user, orcidToken) => {
+          async (orcidOauth, user, locale, orcidToken) => {
             const deleteOrcidToken = jest.fn<DeleteOrcidTokenEnv['deleteOrcidToken']>(_ => TE.right(undefined))
             const fetch = fetchMock.sandbox().postOnce(
               {
@@ -34,7 +34,7 @@ describe('disconnectOrcid', () => {
               { status: Status.OK },
             )
 
-            const actual = await _.disconnectOrcid({ method: 'POST', user })({
+            const actual = await _.disconnectOrcid({ locale, method: 'POST', user })({
               deleteOrcidToken,
               fetch,
               getOrcidToken: () => TE.right(orcidToken),
@@ -51,10 +51,10 @@ describe('disconnectOrcid', () => {
           },
         )
 
-        test.prop([fc.oauth(), fc.user(), fc.orcidToken()])(
+        test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.orcidToken()])(
           "when the token can't be deleted",
-          async (orcidOauth, user, orcidToken) => {
-            const actual = await _.disconnectOrcid({ method: 'POST', user })({
+          async (orcidOauth, user, locale, orcidToken) => {
+            const actual = await _.disconnectOrcid({ locale, method: 'POST', user })({
               deleteOrcidToken: () => TE.left('unavailable'),
               fetch: shouldNotBeCalled,
               getOrcidToken: () => TE.right(orcidToken),
@@ -73,35 +73,38 @@ describe('disconnectOrcid', () => {
         )
       })
 
-      test.prop([fc.oauth(), fc.user(), fc.string().filter(string => string !== 'POST'), fc.orcidToken()])(
-        'when the form is ready',
-        async (orcidOauth, user, method, orcidToken) => {
-          const actual = await _.disconnectOrcid({ method, user })({
-            deleteOrcidToken: shouldNotBeCalled,
-            fetch: shouldNotBeCalled,
-            getOrcidToken: () => TE.right(orcidToken),
-            orcidOauth,
-          })()
+      test.prop([
+        fc.oauth(),
+        fc.user(),
+        fc.supportedLocale(),
+        fc.string().filter(string => string !== 'POST'),
+        fc.orcidToken(),
+      ])('when the form is ready', async (orcidOauth, user, locale, method, orcidToken) => {
+        const actual = await _.disconnectOrcid({ locale, method, user })({
+          deleteOrcidToken: shouldNotBeCalled,
+          fetch: shouldNotBeCalled,
+          getOrcidToken: () => TE.right(orcidToken),
+          orcidOauth,
+        })()
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            canonical: format(disconnectOrcidMatch.formatter, {}),
-            status: Status.OK,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'form',
-            js: [],
-          })
-        },
-      )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: format(disconnectOrcidMatch.formatter, {}),
+          status: Status.OK,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: [],
+        })
+      })
     })
 
-    test.prop([fc.oauth(), fc.user(), fc.string()])(
+    test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.string()])(
       'when ORCID is not already connected',
-      async (orcidOauth, user, method) => {
+      async (orcidOauth, user, locale, method) => {
         const getOrcidToken = jest.fn<GetOrcidTokenEnv['getOrcidToken']>(_ => TE.left('not-found'))
 
-        const actual = await _.disconnectOrcid({ method, user })({
+        const actual = await _.disconnectOrcid({ locale, method, user })({
           deleteOrcidToken: shouldNotBeCalled,
           fetch: shouldNotBeCalled,
           getOrcidToken,
@@ -117,10 +120,10 @@ describe('disconnectOrcid', () => {
       },
     )
 
-    test.prop([fc.oauth(), fc.user(), fc.string()])(
+    test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.string()])(
       "when we can't load the ORCID token",
-      async (orcidOauth, user, method) => {
-        const actual = await _.disconnectOrcid({ method, user })({
+      async (orcidOauth, user, locale, method) => {
+        const actual = await _.disconnectOrcid({ locale, method, user })({
           deleteOrcidToken: shouldNotBeCalled,
           fetch: shouldNotBeCalled,
           getOrcidToken: () => TE.left('unavailable'),
@@ -139,17 +142,20 @@ describe('disconnectOrcid', () => {
     )
   })
 
-  test.prop([fc.oauth(), fc.string()])('when the user is not logged in', async (orcidOauth, method) => {
-    const actual = await _.disconnectOrcid({ method })({
-      deleteOrcidToken: shouldNotBeCalled,
-      fetch: shouldNotBeCalled,
-      getOrcidToken: shouldNotBeCalled,
-      orcidOauth,
-    })()
+  test.prop([fc.oauth(), fc.supportedLocale(), fc.string()])(
+    'when the user is not logged in',
+    async (orcidOauth, locale, method) => {
+      const actual = await _.disconnectOrcid({ locale, method })({
+        deleteOrcidToken: shouldNotBeCalled,
+        fetch: shouldNotBeCalled,
+        getOrcidToken: shouldNotBeCalled,
+        orcidOauth,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(disconnectOrcidMatch.formatter, {}),
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(disconnectOrcidMatch.formatter, {}),
+      })
+    },
+  )
 })
