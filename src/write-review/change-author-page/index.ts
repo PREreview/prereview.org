@@ -39,7 +39,7 @@ export const writeReviewChangeAuthor = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
             .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),
@@ -81,7 +81,7 @@ export const writeReviewChangeAuthor = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('not-found', () => pageNotFound)
+                  .with('not-found', () => pageNotFound(DefaultLocale))
                   .with('form-unavailable', () => havingProblemsPage)
                   .exhaustive(),
               ),

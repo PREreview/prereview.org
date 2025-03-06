@@ -18,6 +18,7 @@ import {
 } from '../../author-invite.js'
 import type { Html } from '../../html.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale } from '../../locales/index.js'
 import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { authorInviteDeclineMatch } from '../../routes.js'
 import type { ClubId } from '../../types/club-id.js'
@@ -90,7 +91,7 @@ const showDeclinePage = (id: Uuid) =>
       error =>
         match(error)
           .with('declined', () => inviteDeclinedPage(id))
-          .with('not-found', () => pageNotFound)
+          .with('not-found', () => pageNotFound(DefaultLocale))
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
       declinePage,
@@ -110,7 +111,7 @@ const handleDecline = (id: Uuid) =>
     RTE.matchW(
       error =>
         match(error)
-          .with('not-found', () => pageNotFound)
+          .with('not-found', () => pageNotFound(DefaultLocale))
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
       () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }),

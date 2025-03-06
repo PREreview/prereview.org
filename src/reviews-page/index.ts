@@ -32,7 +32,7 @@ export const reviewsPage = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('not-found', () => (page === 1 ? emptyPage({ field, language, query }, locale) : pageNotFound))
+          .with('not-found', () => (page === 1 ? emptyPage({ field, language, query }, locale) : pageNotFound(locale)))
           .with('unavailable', () => failureMessage)
           .exhaustive(),
       prereviews => createPage(prereviews, locale),

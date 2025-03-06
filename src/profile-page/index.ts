@@ -23,7 +23,7 @@ const profileForOrcid = (locale: SupportedLocale) =>
     RTE.match(
       error =>
         match(error)
-          .with('not-found', () => pageNotFound)
+          .with('not-found', () => pageNotFound(locale))
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
       profile => createPage(profile, locale),

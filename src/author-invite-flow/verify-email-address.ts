@@ -17,6 +17,7 @@ import {
 } from '../contact-email-address.js'
 import type { Html } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -91,14 +92,14 @@ export const authorInviteVerifyEmailAddress = ({
           .with('already-completed', () =>
             RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
           )
-          .with('already-verified', () => pageNotFound)
+          .with('already-verified', () => pageNotFound(DefaultLocale))
           .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
-          .with('invalid-token', () => pageNotFound)
+          .with('invalid-token', () => pageNotFound(DefaultLocale))
           .with('no-session', () =>
             LogInResponse({ location: format(authorInviteVerifyEmailAddressMatch.formatter, { id, verify }) }),
           )
           .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound)
+          .with('not-found', () => pageNotFound(DefaultLocale))
           .with('unavailable', () => havingProblemsPage)
           .with('wrong-user', () => noPermissionPage)
           .exhaustive(),

@@ -15,6 +15,7 @@ import {
 } from '../author-invite.js'
 import { type Html, html, plainText } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -78,7 +79,7 @@ export const authorInviteStart = ({
         match(error)
           .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
           .with('no-session', () => LogInResponse({ location: format(authorInviteStartMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound)
+          .with('not-found', () => pageNotFound(DefaultLocale))
           .with('unavailable', () => havingProblemsPage)
           .with('wrong-user', () => noPermissionPage)
           .exhaustive(),

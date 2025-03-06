@@ -35,7 +35,7 @@ export const writeReviewAddAuthor = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
             .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),
@@ -74,7 +74,7 @@ export const writeReviewAddAuthor = ({
                     }),
                   ),
                 )
-                .otherwise(() => RT.of(pageNotFound)),
+                .otherwise(({ locale }) => RT.of(pageNotFound(locale))),
           ),
         ),
     ),

@@ -30,7 +30,7 @@ export const reviewPage = ({
     RTE.match(
       error =>
         match(error)
-          .with('not-found', () => pageNotFound)
+          .with('not-found', () => pageNotFound(locale))
           .with('removed', () => removedMessage)
           .with('unavailable', () => failureMessage)
           .exhaustive(),

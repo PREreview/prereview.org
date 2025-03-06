@@ -5,6 +5,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale } from '../../locales/index.js'
 import { type GetPreprintEnv, getPreprint } from '../../preprint.js'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewMatch, writeReviewStartMatch } from '../../routes.js'
@@ -28,7 +29,7 @@ export const writeReview = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
             .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),

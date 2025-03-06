@@ -6,7 +6,7 @@ import { match } from 'ts-pattern'
 import { Locale } from './Context.js'
 import { HavingProblemsPage } from './HavingProblemsPage/index.js'
 import { html, plainText, rawHtml, sendHtml } from './html.js'
-import { DefaultLocale, translate } from './locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
 import { NoPermissionPage } from './NoPermissionPage/index.js'
 import { templatePage } from './page.js'
 import { PageNotFound } from './PageNotFound/index.js'
@@ -70,7 +70,8 @@ function problemsPage(user?: User) {
 }
 
 /** @deprecated */
-export const pageNotFound = Effect.runSync(Effect.provideService(PageNotFound, Locale, DefaultLocale))
+export const pageNotFound = (locale: SupportedLocale) =>
+  Effect.runSync(Effect.provideService(PageNotFound, Locale, locale))
 
 /** @deprecated */
 export const havingProblemsPage = Effect.runSync(Effect.provideService(HavingProblemsPage, Locale, DefaultLocale))

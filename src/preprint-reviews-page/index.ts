@@ -3,6 +3,7 @@ import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import { pageNotFound } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { type GetPreprintEnv, getPreprint } from '../preprint.js'
 import type { PageResponse, TwoUpPageResponse } from '../response.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
@@ -30,7 +31,7 @@ export const preprintReviews = (
     RTE.matchW(
       error =>
         match(error)
-          .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+          .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
           .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => failureMessage)
           .exhaustive(),
       createPage,

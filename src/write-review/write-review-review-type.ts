@@ -9,6 +9,7 @@ import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { type GetPreprintEnv, type PreprintTitle, getPreprint } from '../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes.js'
@@ -38,7 +39,7 @@ export const writeReviewReviewType = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
             .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),

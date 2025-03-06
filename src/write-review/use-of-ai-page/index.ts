@@ -35,7 +35,7 @@ export const writeReviewUseOfAi = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
             .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),
@@ -63,7 +63,7 @@ export const writeReviewUseOfAi = ({
                   RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                 )
                 .with('form-unavailable', () => havingProblemsPage)
-                .with('not-found', () => pageNotFound)
+                .with('not-found', () => pageNotFound(locale))
                 .exhaustive(),
             showUseOfAiForm,
           ),
@@ -88,7 +88,7 @@ export const writeReviewUseOfAiSubmission = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
             .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
             .exhaustive(),
         ),
