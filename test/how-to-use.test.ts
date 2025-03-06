@@ -9,10 +9,10 @@ import { howToUseMatch } from '../src/routes.js'
 import * as fc from './fc.js'
 
 describe('howToUse', () => {
-  test.prop([fc.html()])('when the page can be loaded', async page => {
+  test.prop([fc.supportedLocale(), fc.html()])('when the page can be loaded', async (locale, page) => {
     const getPageFromGhost = jest.fn<GetPageFromGhostEnv['getPageFromGhost']>(_ => TE.right(page))
 
-    const actual = await _.howToUse({ getPageFromGhost })()
+    const actual = await _.howToUse(locale)({ getPageFromGhost })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -27,16 +27,19 @@ describe('howToUse', () => {
     expect(getPageFromGhost).toHaveBeenCalledWith('651d895e07fb34a92c7f8d28')
   })
 
-  test.prop([fc.constantFrom('unavailable', 'not-found')])('when the page cannot be loaded', async error => {
-    const actual = await _.howToUse({ getPageFromGhost: () => TE.left(error) })()
+  test.prop([fc.supportedLocale(), fc.constantFrom('unavailable', 'not-found')])(
+    'when the page cannot be loaded',
+    async (locale, error) => {
+      const actual = await _.howToUse(locale)({ getPageFromGhost: () => TE.left(error) })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 })
