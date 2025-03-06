@@ -3,7 +3,7 @@ import type * as Doi from 'doi-ts'
 import { Effect, pipe } from 'effect'
 import type * as ReviewPage from '../review-page/index.js'
 import { getCommunityRecords } from './CommunityRecords.js'
-import { transformRecordToCommentWithoutText } from './TransformRecordToComment.js'
+import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.js'
 
 export const getCommentsForPrereviewFromZenodo = (
   id: Doi.Doi,
