@@ -3,6 +3,7 @@ import type * as Doi from 'doi-ts'
 import { Effect, pipe } from 'effect'
 import type * as ReviewPage from '../review-page/index.js'
 import { getCommunityRecords } from './CommunityRecords.js'
+import { transformRecordToCommentWithoutText } from './TransformRecordToComment.js'
 
 export const getCommentsForPrereviewFromZenodo = (
   id: Doi.Doi,
@@ -17,5 +18,6 @@ export const getCommentsForPrereviewFromZenodo = (
     }),
     getCommunityRecords,
     Effect.orElseFail(() => 'unavailable' as const),
+    Effect.andThen(record => Effect.forEach(record.hits.hits, transformRecordToCommentWithoutText)),
     Effect.andThen(() => Effect.fail('unavailable' as const)),
   )
