@@ -4,15 +4,19 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { getPageFromGhost } from './GhostPage.js'
 import { type Html, fixHeadingLevels, html, plainText } from './html.js'
 import { havingProblemsPage } from './http-error.js'
+import type { SupportedLocale } from './locales/index.js'
 import { PageResponse } from './response.js'
 import { privacyPolicyMatch } from './routes.js'
 
-export const privacyPolicy = pipe(
-  getPageFromGhost('6154aa157741400e8722bb0f'),
-  RTE.matchW(() => havingProblemsPage, createPage),
-)
+export const privacyPolicy = (locale: SupportedLocale) =>
+  pipe(
+    RTE.Do,
+    RTE.let('locale', () => locale),
+    RTE.apS('content', getPageFromGhost('6154aa157741400e8722bb0f')),
+    RTE.matchW(() => havingProblemsPage, createPage),
+  )
 
-function createPage(content: Html) {
+function createPage({ content }: { content: Html; locale: SupportedLocale }) {
   return PageResponse({
     title: plainText`Privacy Policy`,
     main: html`
