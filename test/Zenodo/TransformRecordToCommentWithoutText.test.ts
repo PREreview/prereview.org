@@ -1,9 +1,26 @@
-import { describe, it } from '@jest/globals'
+import { it } from '@fast-check/jest'
+import { describe, expect } from '@jest/globals'
+import { Either, pipe } from 'effect'
+import type { Record } from 'zenodo-ts'
+import * as _ from '../../src/Zenodo/TransformRecordToCommentWithoutText.js'
+import * as fc from '../fc.js'
 
 describe('transformRecordToCommentWithoutText', () => {
   describe('textUrl', () => {
     describe('given there is a url to the comment text', () => {
-      it.todo('succeeds')
+      it.failing.prop([fc.webUrl()])('succeeds', url => {
+        const record = {
+          metadata: {
+            creators: [],
+            publication_date: new Date(),
+          },
+          files: [{ key: 'index.html', links: { self: url } }],
+        } as unknown as Record
+
+        const result = pipe(_.transformRecordToCommentWithoutText(record), Either.getOrThrow)
+
+        expect(result.textUrl).toStrictEqual(url)
+      })
     })
 
     describe('given there are multiple urls to the comment text', () => {
