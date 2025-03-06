@@ -3,8 +3,8 @@ import { format } from 'fp-ts-routing'
 import { Locale } from './Context.js'
 import { GetPageFromGhost } from './GhostPage.js'
 import { HavingProblemsPage } from './HavingProblemsPage/index.js'
-import { type Html, fixHeadingLevels, html, plainText } from './html.js'
-import type { SupportedLocale } from './locales/index.js'
+import { fixHeadingLevels, html, plainText, type Html } from './html.js'
+import { translate, type SupportedLocale } from './locales/index.js'
 import { PageResponse } from './response.js'
 import { trainingsMatch } from './routes.js'
 
@@ -17,11 +17,13 @@ export const TrainingsPage = Effect.gen(function* () {
   return createPage({ content, locale })
 }).pipe(Effect.catchAll(() => HavingProblemsPage))
 
-function createPage({ content }: { content: Html; locale: SupportedLocale }) {
+function createPage({ content, locale }: { content: Html; locale: SupportedLocale }) {
+  const t = translate(locale)
+
   return PageResponse({
-    title: plainText`Trainings`,
+    title: plainText(t('trainings', 'trainings')()),
     main: html`
-      <h1>Trainings</h1>
+      <h1>${t('trainings', 'trainings')()}</h1>
 
       ${fixHeadingLevels(1, content)}
     `,
