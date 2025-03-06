@@ -35,7 +35,7 @@ export const disconnectOrcid = ({ method, locale, user }: { method: string; loca
         RT.of(
           match(error)
             .with('no-session', () => LogInResponse({ location: format(disconnectOrcidMatch.formatter, {}) }))
-            .with('unavailable', () => havingProblemsPage)
+            .with('unavailable', () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       state =>

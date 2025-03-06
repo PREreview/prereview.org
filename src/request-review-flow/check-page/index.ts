@@ -82,7 +82,7 @@ export const requestReviewCheck = ({
               LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
             )
             .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       state =>

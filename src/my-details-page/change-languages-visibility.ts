@@ -7,6 +7,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import { type Languages, getLanguages, saveLanguages } from '../languages.js'
+import { DefaultLocale } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -27,7 +28,7 @@ export const changeLanguagesVisibility = ({ body, method, user }: { body: unknow
           .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
           .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
           .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
-          .with('unavailable', () => RT.of(havingProblemsPage))
+          .with('unavailable', () => RT.of(havingProblemsPage(DefaultLocale)))
           .exhaustive(),
       state =>
         match(state)
@@ -55,7 +56,7 @@ const handleChangeLanguagesVisibilityForm = ({
         ({ languagesVisibility }) => ({ ...languages, visibility: languagesVisibility }),
         languages => saveLanguages(user.orcid, languages),
         RTE.matchW(
-          () => havingProblemsPage,
+          () => havingProblemsPage(DefaultLocale),
           () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
         ),
       ),

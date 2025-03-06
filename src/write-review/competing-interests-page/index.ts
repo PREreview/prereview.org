@@ -35,7 +35,7 @@ export const writeReviewCompetingInterests = ({
         RT.of(
           match(error)
             .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       preprint =>
@@ -54,7 +54,7 @@ export const writeReviewCompetingInterests = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage)
+                  .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(DefaultLocale))
                   .exhaustive(),
               ),
             state =>
@@ -124,7 +124,7 @@ const handleCompetingInterestsForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage)
+          .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, form.moreAuthors, locale))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),

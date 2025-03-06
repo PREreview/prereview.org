@@ -19,7 +19,7 @@ export const connectOrcid = ({ locale, user }: { locale: SupportedLocale; user?:
       error =>
         match(error)
           .with('no-session', () => LogInResponse({ location: format(connectOrcidMatch.formatter, {}) }))
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       ({ orcidToken }) =>
         match(orcidToken)

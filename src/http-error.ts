@@ -74,7 +74,8 @@ export const pageNotFound = (locale: SupportedLocale) =>
   Effect.runSync(Effect.provideService(PageNotFound, Locale, locale))
 
 /** @deprecated */
-export const havingProblemsPage = Effect.runSync(Effect.provideService(HavingProblemsPage, Locale, DefaultLocale))
+export const havingProblemsPage = (locale: SupportedLocale) =>
+  Effect.runSync(Effect.provideService(HavingProblemsPage, Locale, locale))
 
 /** @deprecated */
 export const noPermissionPage = Effect.runSync(Effect.provideService(NoPermissionPage, Locale, DefaultLocale))

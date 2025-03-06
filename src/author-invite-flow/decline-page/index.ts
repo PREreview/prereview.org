@@ -92,7 +92,7 @@ const showDeclinePage = (id: Uuid) =>
         match(error)
           .with('declined', () => inviteDeclinedPage(id))
           .with('not-found', () => pageNotFound(DefaultLocale))
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .exhaustive(),
       declinePage,
     ),
@@ -112,7 +112,7 @@ const handleDecline = (id: Uuid) =>
       error =>
         match(error)
           .with('not-found', () => pageNotFound(DefaultLocale))
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .exhaustive(),
       () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }),
     ),

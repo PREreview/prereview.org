@@ -43,7 +43,7 @@ export const verifyContactEmailAddress = ({ verify, user }: { verify: Uuid; user
           .with('no-session', () =>
             LogInResponse({ location: format(verifyContactEmailAddressMatch.formatter, { verify }) }),
           )
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .exhaustive(),
       () =>
         FlashMessageResponse({

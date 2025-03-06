@@ -13,7 +13,7 @@ export const clubs = (locale: SupportedLocale) =>
     RTE.Do,
     RTE.let('locale', () => locale),
     RTE.apS('content', getPageFromGhost('64637b4c07fb34a92c7f84ec')),
-    RTE.matchW(() => havingProblemsPage, createPage),
+    RTE.matchW(() => havingProblemsPage(locale), createPage),
   )
 
 function createPage({ content, locale }: { content: Html; locale: SupportedLocale }) {

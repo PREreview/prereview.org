@@ -18,5 +18,5 @@ export const clubProfile = (id: ClubId, locale: SupportedLocale): RT.ReaderTask<
     RTE.apS('prereviews', getPrereviews(id)),
     RTE.let('club', () => getClubDetails(id)),
     RTE.let('locale', () => locale),
-    RTE.match(() => havingProblemsPage, createPage),
+    RTE.match(() => havingProblemsPage(locale), createPage),
   )

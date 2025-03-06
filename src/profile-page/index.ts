@@ -24,7 +24,7 @@ const profileForOrcid = (locale: SupportedLocale) =>
       error =>
         match(error)
           .with('not-found', () => pageNotFound(locale))
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       profile => createPage(profile, locale),
     ),
@@ -36,7 +36,7 @@ const profileForPseudonym = (locale: SupportedLocale) =>
     RTE.match(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       profile => createPage(profile, locale),
     ),

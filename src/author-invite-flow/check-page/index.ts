@@ -112,7 +112,7 @@ export const authorInviteCheck = ({
             .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-found', () => pageNotFound(locale))
-            .with('unavailable', () => havingProblemsPage)
+            .with('unavailable', () => havingProblemsPage(locale))
             .with('wrong-user', () => noPermissionPage)
             .exhaustive(),
         ),

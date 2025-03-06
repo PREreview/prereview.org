@@ -9,6 +9,7 @@ import type { EnvFor } from '../Fpts.js'
 import { saveAvatar } from '../avatar.js'
 import { type MissingE, type TooBigE, type WrongTypeE, missingE, tooBigE, wrongTypeE } from '../form.js'
 import { havingProblemsPage } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -72,7 +73,7 @@ const handleChangeAvatarForm = ({ body, user }: { body: unknown; user: User }) =
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .with({ avatar: P.any }, error => createPage({ form: error }))
           .exhaustive(),
       () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'avatar-changed' }),

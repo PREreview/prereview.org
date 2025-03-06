@@ -14,7 +14,7 @@ export const resources = (locale: SupportedLocale) =>
     RTE.let('locale', () => locale),
     RTE.apS('content', getPageFromGhost('6526c6ae07fb34a92c7f8d6f')),
 
-    RTE.matchW(() => havingProblemsPage, createPage),
+    RTE.matchW(() => havingProblemsPage(locale), createPage),
   )
 
 function createPage({ content, locale }: { content: Html; locale: SupportedLocale }) {

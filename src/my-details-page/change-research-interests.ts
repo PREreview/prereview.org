@@ -6,6 +6,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { deleteResearchInterests, getResearchInterests, saveResearchInterests } from '../research-interests.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
@@ -49,7 +50,7 @@ const handleChangeResearchInterestsForm = ({ body, user }: { body: unknown; user
         pipe(
           deleteResearchInterests(user.orcid),
           RTE.matchW(
-            () => havingProblemsPage,
+            () => havingProblemsPage(DefaultLocale),
             () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
           ),
         ),
@@ -71,7 +72,7 @@ const handleChangeResearchInterestsForm = ({ body, user }: { body: unknown; user
           ),
           RTE.chain(researchInterests => saveResearchInterests(user.orcid, researchInterests)),
           RTE.matchW(
-            () => havingProblemsPage,
+            () => havingProblemsPage(DefaultLocale),
             () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
           ),
         ),

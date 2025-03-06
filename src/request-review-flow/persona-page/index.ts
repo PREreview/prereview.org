@@ -73,7 +73,7 @@ export const requestReviewPersona = ({
               LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
             )
             .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       state =>
@@ -111,7 +111,7 @@ const handlePersonaForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .with({ persona: P.any }, form => personaForm({ form, preprint, user }))
           .exhaustive(),
       () => RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: preprint }) }),

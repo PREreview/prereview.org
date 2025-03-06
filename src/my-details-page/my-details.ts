@@ -51,7 +51,7 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
       error =>
         match(error)
           .with('no-session', () => LogInResponse({ location: format(myDetailsMatch.formatter, {}) }))
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       createPage,
     ),

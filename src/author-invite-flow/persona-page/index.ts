@@ -90,7 +90,7 @@ export const authorInvitePersona = ({
             .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-found', () => pageNotFound(DefaultLocale))
-            .with('unavailable', () => havingProblemsPage)
+            .with('unavailable', () => havingProblemsPage(DefaultLocale))
             .with('wrong-user', () => noPermissionPage)
             .exhaustive(),
         ),
@@ -129,7 +129,7 @@ const handlePersonaForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .with({ persona: P.any }, form => personaForm({ form, inviteId, user }))
           .exhaustive(),
       () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),

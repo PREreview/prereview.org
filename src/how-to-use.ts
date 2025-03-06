@@ -13,7 +13,7 @@ export const howToUse = (locale: SupportedLocale) =>
     RTE.Do,
     RTE.let('locale', () => locale),
     RTE.apS('content', getPageFromGhost('651d895e07fb34a92c7f8d28')),
-    RTE.matchW(() => havingProblemsPage, createPage),
+    RTE.matchW(() => havingProblemsPage(locale), createPage),
   )
 
 function createPage({ content, locale }: { content: Html; locale: SupportedLocale }) {

@@ -40,7 +40,7 @@ export const writeReviewReviewType = ({
         RT.of(
           match(error)
             .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       preprint =>
@@ -76,7 +76,7 @@ export const writeReviewReviewType = ({
                   .with('no-session', () =>
                     LogInResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with(P.instanceOf(Error), () => havingProblemsPage)
+                  .with(P.instanceOf(Error), () => havingProblemsPage(DefaultLocale))
                   .exhaustive(),
               ),
             state =>
@@ -128,7 +128,7 @@ const handleReviewTypeForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage)
+          .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
           .with({ reviewType: P.any }, form => reviewTypeForm(preprint, form))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),

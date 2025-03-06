@@ -6,6 +6,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { type ResearchInterests, getResearchInterests, saveResearchInterests } from '../research-interests.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
@@ -35,7 +36,7 @@ export const changeResearchInterestsVisibility = ({
           .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
           .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
           .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
-          .with('unavailable', () => RT.of(havingProblemsPage))
+          .with('unavailable', () => RT.of(havingProblemsPage(DefaultLocale)))
           .exhaustive(),
       state =>
         match(state)
@@ -65,7 +66,7 @@ const handleChangeResearchInterestsVisibilityForm = ({
         ({ researchInterestsVisibility }) => ({ ...researchInterests, visibility: researchInterestsVisibility }),
         researchInterests => saveResearchInterests(user.orcid, researchInterests),
         RTE.matchW(
-          () => havingProblemsPage,
+          () => havingProblemsPage(DefaultLocale),
           () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
         ),
       ),

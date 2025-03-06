@@ -30,7 +30,7 @@ export const reviewRequests = ({
       error =>
         match(error)
           .with('not-found', () => (page === 1 ? createEmptyPage({ field, language, locale }) : pageNotFound(locale)))
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       createPage,
     ),

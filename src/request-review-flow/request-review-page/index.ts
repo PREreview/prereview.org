@@ -52,7 +52,7 @@ export const requestReview = ({
             RedirectResponse({ location: format(requestReviewStartMatch.formatter, { id: preprint }) }),
           )
           .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(DefaultLocale))
-          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage)
+          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(DefaultLocale))
           .exhaustive(),
       requestReviewPage,
     ),
