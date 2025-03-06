@@ -101,7 +101,7 @@ export const authorInviteVerifyEmailAddress = ({
           .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-found', () => pageNotFound(DefaultLocale))
           .with('unavailable', () => havingProblemsPage(DefaultLocale))
-          .with('wrong-user', () => noPermissionPage)
+          .with('wrong-user', () => noPermissionPage(DefaultLocale))
           .exhaustive(),
       () =>
         FlashMessageResponse({

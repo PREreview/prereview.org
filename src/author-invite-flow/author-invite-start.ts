@@ -81,7 +81,7 @@ export const authorInviteStart = ({
           .with('no-session', () => LogInResponse({ location: format(authorInviteStartMatch.formatter, { id }) }))
           .with('not-found', () => pageNotFound(DefaultLocale))
           .with('unavailable', () => havingProblemsPage(DefaultLocale))
-          .with('wrong-user', () => noPermissionPage)
+          .with('wrong-user', () => noPermissionPage(DefaultLocale))
           .exhaustive(),
       ({ invite }) =>
         match(invite)

@@ -76,7 +76,7 @@ export const authorInvitePublished = ({
           .with('not-completed', () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }))
           .with('not-found', () => pageNotFound(DefaultLocale))
           .with('unavailable', () => havingProblemsPage(DefaultLocale))
-          .with('wrong-user', () => noPermissionPage)
+          .with('wrong-user', () => noPermissionPage(DefaultLocale))
           .exhaustive(),
       publishedPage,
     ),
