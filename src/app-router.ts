@@ -533,7 +533,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(ediaStatement)),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW(
+            'response',
+            RM.fromReaderTaskK(({ locale }) => ediaStatement(locale)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
