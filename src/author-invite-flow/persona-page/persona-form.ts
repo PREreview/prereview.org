@@ -1,13 +1,15 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type MissingE, hasAnError } from '../../form.js'
+import { hasAnError, type MissingE } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
-import type { SupportedLocale } from '../../locales/index.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInvitePersonaMatch } from '../../routes.js'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
 import type { User } from '../../user.js'
 
 export interface PersonaForm {
@@ -18,6 +20,7 @@ export function personaForm({
   form,
   inviteId,
   user,
+  locale,
 }: {
   form: PersonaForm
   inviteId: Uuid
@@ -25,32 +28,15 @@ export function personaForm({
   locale: SupportedLocale
 }) {
   const error = hasAnError(form)
+  const t = translate(locale, 'author-invite-flow')
+  const definition = (text: string) => html`<dfn>${text}</dfn>`.toString()
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}What name would you like to use?`,
+    title: pipe(t('whatNameWouldYouLikeToUse')(), errorPrefix(locale, error), plainText),
     main: html`
       <form method="post" action="${format(authorInvitePersonaMatch.formatter, { id: inviteId })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${E.isLeft(form.persona)
-                    ? html`
-                        <li>
-                          <a href="#persona-public">
-                            ${match(form.persona.left)
-                              .with({ _tag: 'MissingE' }, () => 'Select the name that you would like to use')
-                              .exhaustive()}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
         <div ${rawHtml(E.isLeft(form.persona) ? 'class="error"' : '')}>
           <fieldset
@@ -59,28 +45,23 @@ export function personaForm({
             ${rawHtml(E.isLeft(form.persona) ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}
           >
             <legend>
-              <h1>What name would you like to use?</h1>
+              <h1>${t('whatNameWouldYouLikeToUse')()}</h1>
             </legend>
 
-            <p id="persona-tip" role="note">
-              You can choose between the name on your ORCID&nbsp;profile or your PREreview&nbsp;pseudonym.
-            </p>
+            <p id="persona-tip" role="note">${rawHtml(t('youCanChooseBetweenOrcidNameAndPrereviewPseudonym')())}</p>
 
             <details>
-              <summary><span>What is a PREreview&nbsp;pseudonym?</span></summary>
+              <summary><span>${rawHtml(t('whatIsAPrereviewPseudonym')())}</span></summary>
 
               <div>
                 <p>
-                  A <dfn>PREreview&nbsp;pseudonym</dfn> is an alternate name you can use instead of your real&nbsp;name.
-                  It is unique and combines a random color and animal. Your pseudonym is
-                  ‘${rawHtml(user.pseudonym.replace(' ', '&nbsp;'))}.’
+                  ${t('pseudonymExplainer')({
+                    definition,
+                    userPseudonym: user.pseudonym.replace(' ', '&nbsp;'),
+                  })}
                 </p>
 
-                <p>
-                  Using your pseudonym, you can contribute to open preprint review without fearing retribution or
-                  judgment that may occur when using your real name. However, using a pseudonym retains an element of
-                  accountability.
-                </p>
+                <p>${t('whyUseAPseudonym')()}</p>
               </div>
             </details>
 
@@ -89,7 +70,7 @@ export function personaForm({
                   <div class="error-message" id="persona-error">
                     <span class="visually-hidden">Error:</span>
                     ${match(form.persona.left)
-                      .with({ _tag: 'MissingE' }, () => 'Select the name that you would like to use')
+                      .with({ _tag: 'MissingE' }, t('selectTheNameYouWouldLikeToUse'))
                       .exhaustive()}
                   </div>
                 `
@@ -110,7 +91,7 @@ export function personaForm({
                   />
                   <span>${user.name}</span>
                 </label>
-                <p id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID&nbsp;iD.</p>
+                <p id="persona-tip-public" role="note">${rawHtml(t('weWillLinkYourPrereviewToYourOrcid')())}</p>
               </li>
               <li>
                 <label>
@@ -125,15 +106,13 @@ export function personaForm({
                   />
                   <span>${user.pseudonym}</span>
                 </label>
-                <p id="persona-tip-pseudonym" role="note">
-                  We’ll only link your PREreview to others that also use your pseudonym.
-                </p>
+                <p id="persona-tip-pseudonym" role="note">${t('weWillOnlyLinkToOtherPseudonymPrereviews')()}</p>
               </li>
             </ol>
           </fieldset>
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: format(authorInvitePersonaMatch.formatter, { id: inviteId }),
@@ -141,3 +120,17 @@ export function personaForm({
     js: error ? ['error-summary.js'] : [],
   })
 }
+
+const toErrorItems = (locale: SupportedLocale) => (form: PersonaForm) => html`
+  ${E.isLeft(form.persona)
+    ? html`
+        <li>
+          <a href="#persona-public">
+            ${match(form.persona.left)
+              .with({ _tag: 'MissingE' }, translate(locale, 'author-invite-flow', 'selectTheNameYouWouldLikeToUse'))
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+`
