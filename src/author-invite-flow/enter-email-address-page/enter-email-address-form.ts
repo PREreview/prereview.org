@@ -1,13 +1,15 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type InvalidE, type MissingE, hasAnError } from '../../form.js'
+import { hasAnError, type InvalidE, type MissingE } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
-import type { SupportedLocale } from '../../locales/index.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteEnterEmailAddressMatch } from '../../routes.js'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
 import type { EmailAddress } from '../../types/email-address.js'
 
 export interface EnterEmailAddressForm {
@@ -19,6 +21,7 @@ export function enterEmailAddressForm({
   form,
   inviteId,
   invitedEmailAddress,
+  locale,
 }: {
   form: EnterEmailAddressForm
   inviteId: Uuid
@@ -26,53 +29,20 @@ export function enterEmailAddressForm({
   locale: SupportedLocale
 }) {
   const error = hasAnError(form)
+  const t = translate(locale, 'author-invite-flow')
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}Contact details`,
+    title: pipe(t('contactDetails')(), errorPrefix(locale, error), plainText),
     main: html`
       <form method="post" action="${format(authorInviteEnterEmailAddressMatch.formatter, { id: inviteId })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${E.isLeft(form.useInvitedAddress)
-                    ? html`
-                        <li>
-                          <a href="#use-invited-address-yes">
-                            ${match(form.useInvitedAddress.left)
-                              .with({ _tag: 'MissingE' }, () => 'Select the email address that you would like to use')
-                              .exhaustive()}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                  ${E.isLeft(form.otherEmailAddress)
-                    ? html`
-                        <li>
-                          <a href="#other-email-address">
-                            ${match(form.otherEmailAddress.left)
-                              .with({ _tag: 'MissingE' }, () => 'Enter your email address')
-                              .with(
-                                { _tag: 'InvalidE' },
-                                () => 'Enter an email address in the correct format, like name@example.com',
-                              )
-                              .exhaustive()}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <h1>Contact details</h1>
+        <h1>${t('contactDetails')()}</h1>
 
-        <p>We’re ready to add your name to the PREreview, but we need to confirm your email address first.</p>
+        <p>${t('readyToAddYourNameConfirmYourEmailFirst')()}</p>
 
-        <p>We’ll only use this to contact you about your account and PREreviews.</p>
+        <p>${t('usedToContactYouAboutYourAccountAndPrereviews')()}</p>
 
         <div ${rawHtml(E.isLeft(form.useInvitedAddress) ? 'class="error"' : '')}>
           <conditional-inputs>
@@ -86,7 +56,7 @@ export function enterEmailAddressForm({
               )}
             >
               <legend>
-                <h2>What email address should we use?</h2>
+                <h2>${t('whatEmailAddressShouldWeUse')()}</h2>
               </legend>
 
               ${E.isLeft(form.useInvitedAddress)
@@ -94,7 +64,7 @@ export function enterEmailAddressForm({
                     <div class="error-message" id="use-invited-address-error">
                       <span class="visually-hidden">Error:</span>
                       ${match(form.useInvitedAddress.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select the email address that you would like to use')
+                        .with({ _tag: 'MissingE' }, t('selectTheEmailAddressYouWouldLikeToUse'))
                         .exhaustive()}
                     </div>
                   `
@@ -126,22 +96,19 @@ export function enterEmailAddressForm({
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>A different one</span>
+                    <span>${t('aDifferentOne')()}</span>
                   </label>
                   <div class="conditional" id="other-email-address-control">
                     <div ${rawHtml(E.isLeft(form.otherEmailAddress) ? 'class="error"' : '')}>
-                      <label for="other-email-address" class="textarea">What is your email address?</label>
+                      <label for="other-email-address" class="textarea">${t('whatIsYourEmailAddress')()}</label>
 
                       ${E.isLeft(form.otherEmailAddress)
                         ? html`
                             <div class="error-message" id="other-email-address-error">
-                              <span class="visually-hidden">Error:</span>
+                              <span class="visually-hidden">${t('error')()}:</span>
                               ${match(form.otherEmailAddress.left)
-                                .with({ _tag: 'MissingE' }, () => 'Enter your email address')
-                                .with(
-                                  { _tag: 'InvalidE' },
-                                  () => 'Enter an email address in the correct format, like name@example.com',
-                                )
+                                .with({ _tag: 'MissingE' }, t('enterYourEmailAddress'))
+                                .with({ _tag: 'InvalidE' }, t('enterAnEmailAddressInTheCorrectFormat'))
                                 .exhaustive()}
                             </div>
                           `
@@ -172,11 +139,40 @@ export function enterEmailAddressForm({
           </conditional-inputs>
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: format(authorInviteEnterEmailAddressMatch.formatter, { id: inviteId }),
     skipToLabel: 'form',
     js: error ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
   })
+}
+
+const toErrorItems = (locale: SupportedLocale) => (form: EnterEmailAddressForm) => {
+  const t = translate(locale, 'author-invite-flow')
+  return html`
+    ${E.isLeft(form.useInvitedAddress)
+      ? html`
+          <li>
+            <a href="#use-invited-address-yes">
+              ${match(form.useInvitedAddress.left)
+                .with({ _tag: 'MissingE' }, t('selectTheEmailAddressYouWouldLikeToUse'))
+                .exhaustive()}
+            </a>
+          </li>
+        `
+      : ''}
+    ${E.isLeft(form.otherEmailAddress)
+      ? html`
+          <li>
+            <a href="#other-email-address">
+              ${match(form.otherEmailAddress.left)
+                .with({ _tag: 'MissingE' }, t('enterYourEmailAddress'))
+                .with({ _tag: 'InvalidE' }, t('enterAnEmailAddressInTheCorrectFormat'))
+                .exhaustive()}
+            </a>
+          </li>
+        `
+      : ''}
+  `
 }

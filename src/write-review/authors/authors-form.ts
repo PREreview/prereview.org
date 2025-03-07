@@ -8,9 +8,9 @@ import { type SupportedLocale, translate } from '../../locales/index.js'
 import { templatePage } from '../../page.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { writeReviewAuthorsMatch, writeReviewPersonaMatch } from '../../routes.js'
-import { errorPrefix, errorSummary } from '../../shared-translation-elements.js'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
 import type { User } from '../../user.js'
-import { backNav, prereviewOfSuffix, saveAndContinueButton } from '../shared-elements.js'
+import { backNav, prereviewOfSuffix } from '../shared-elements.js'
 
 export interface AuthorsForm {
   readonly moreAuthors: E.Either<MissingE, 'yes' | 'yes-private' | 'no' | undefined>

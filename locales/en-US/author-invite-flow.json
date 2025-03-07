@@ -67,5 +67,35 @@
   },
   "youCanCloseThisWindow": {
     "message": "You can close this window."
+  },
+  "contactDetails": {
+    "message": "Contact details"
+  },
+  "readyToAddYourNameConfirmYourEmailFirst": {
+    "message": "We’re ready to add your name to the PREreview, but we need to confirm your email address first."
+  },
+  "usedToContactYouAboutYourAccountAndPrereviews": {
+    "message": "We’ll only use this to contact you about your account and PREreviews."
+  },
+  "whatEmailAddressShouldWeUse": {
+    "message": "What email address should we use?"
+  },
+  "selectTheEmailAddressYouWouldLikeToUse": {
+    "message": "Select the email address that you would like to use"
+  },
+  "aDifferentOne": {
+    "message": "A different one"
+  },
+  "whatIsYourEmailAddress": {
+    "message": "What is your email address?"
+  },
+  "error": {
+    "message": "Error"
+  },
+  "enterYourEmailAddress": {
+    "message": "Enter your email address"
+  },
+  "enterAnEmailAddressInTheCorrectFormat": {
+    "message": "Enter an email address in the correct format, like name@example.com"
   }
 }

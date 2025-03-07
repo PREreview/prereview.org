@@ -13,3 +13,5 @@ export const errorSummary = (locale: SupportedLocale) => (errorItems: Html) => h
     </ul>
   </error-summary>
 `
+export const saveAndContinueButton = (locale: SupportedLocale) =>
+  html`<button>${translate(locale, 'shared', 'saveAndContinue')()}</button>`

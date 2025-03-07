@@ -9,8 +9,8 @@ import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewUseOfAiMatch } from '../../routes.js'
-import { errorPrefix, errorSummary } from '../../shared-translation-elements.js'
-import { backNav, saveAndContinueButton } from '../shared-elements.js'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
+import { backNav } from '../shared-elements.js'
 
 export interface UseOfAiForm {
   readonly generativeAiIdeas: E.Either<MissingE, 'yes' | 'no' | undefined>
