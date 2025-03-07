@@ -37,5 +37,14 @@
   },
   "closeWindowOrSeePrereview": {
     "message": "You can close this window, or <link>see the PREreview</link>."
+  },
+  "beListed": {
+    "message": "Be listed as an author"
+  },
+  "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
+    "message": "As you’ve already started, we’ll take you to the next step so you can carry&nbsp;on."
+  },
+  "continueButton": {
+    "message": "Continue"
   }
 }

@@ -13,9 +13,9 @@ import {
   getAuthorInvite,
   saveAuthorInvite,
 } from '../author-invite.js'
-import { type Html, html, plainText } from '../html.js'
+import { type Html, html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -104,17 +104,17 @@ function nextFormMatch(invite: AssignedAuthorInvite) {
     .exhaustive()
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function carryOnPage(inviteId: Uuid, invite: AssignedAuthorInvite, locale: SupportedLocale) {
+  const t = translate(locale, 'author-invite-flow')
   return StreamlinePageResponse({
-    title: plainText`Be listed as an author`,
+    title: pipe(t('beListed')(), plainText),
     main: html`
-      <h1>Be listed as an author</h1>
+      <h1>${t('beListed')()}</h1>
 
-      <p>As you’ve already started, we’ll take you to the next step so you can carry&nbsp;on.</p>
+      <p>${pipe(t('asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep')(), rawHtml)}</p>
 
       <a href="${format(nextFormMatch(invite).formatter, { id: inviteId })}" role="button" draggable="false"
-        >Continue</a
+        >${t('continueButton')()}</a
       >
     `,
     canonical: format(authorInviteStartMatch.formatter, { id: inviteId }),
