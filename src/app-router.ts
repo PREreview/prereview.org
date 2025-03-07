@@ -90,7 +90,7 @@ import {
   isLegacyCompatiblePrereview,
 } from './legacy-prereview.js'
 import { liveReviews } from './live-reviews.js'
-import type { SupportedLocale } from './locales/index.js'
+import { DefaultLocale, type SupportedLocale } from './locales/index.js'
 import {
   type IsUserBlockedEnv,
   type OrcidOAuthEnv,
@@ -1915,6 +1915,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ id }),
           RM.apS('user', maybeGetUser),
+          RM.apS('locale', RM.of(DefaultLocale)),
           RM.bindW('response', RM.fromReaderTaskK(authorInviteStart)),
           RM.ichainW(handleResponse),
         ),

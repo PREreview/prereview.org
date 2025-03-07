@@ -3,6 +3,7 @@ import { Orcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
 import { authorInviteStart } from '../../src/author-invite-flow/index.js'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import { EmailAddress } from '../../src/types/email-address.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
 import { expect, test } from '../base.js'
@@ -15,6 +16,7 @@ test('content looks right when already started', async ({ showPage }) => {
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
+    locale: DefaultLocale,
   })({
     getAuthorInvite: () =>
       TE.right({

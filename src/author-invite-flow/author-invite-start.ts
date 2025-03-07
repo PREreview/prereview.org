@@ -15,7 +15,7 @@ import {
 } from '../author-invite.js'
 import { type Html, html, plainText } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -46,6 +46,7 @@ export const authorInviteStart = ({
 }: {
   id: Uuid
   user?: User
+  locale: SupportedLocale
 }): RT.ReaderTask<
   GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
