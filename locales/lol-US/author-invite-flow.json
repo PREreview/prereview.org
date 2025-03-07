@@ -37,5 +37,35 @@
   },
   "closeWindowOrSeePrereview": {
     "message": "crwdns4538:0crwdne4538:0"
+  },
+  "beListed": {
+    "message": "crwdns4715:0crwdne4715:0"
+  },
+  "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
+    "message": "crwdns4717:0crwdne4717:0"
+  },
+  "continueButton": {
+    "message": "crwdns4719:0crwdne4719:0"
+  },
+  "sorryHavingProblems": {
+    "message": "crwdns4721:0crwdne4721:0"
+  },
+  "unableToAddYourNameWorkHasBeenSaved": {
+    "message": "crwdns4723:0crwdne4723:0"
+  },
+  "comeBackLater": {
+    "message": "crwdns4725:0crwdne4725:0"
+  },
+  "getInTouch": {
+    "message": "crwdns4727:0crwdne4727:0"
+  },
+  "invitationDeclined": {
+    "message": "crwdns4729:0crwdne4729:0"
+  },
+  "youHaveDeclinedToAppearAsAuthor": {
+    "message": "crwdns4731:0crwdne4731:0"
+  },
+  "youCanCloseThisWindow": {
+    "message": "crwdns4733:0crwdne4733:0"
   }
 }
