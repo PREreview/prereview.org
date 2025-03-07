@@ -58,5 +58,14 @@
   },
   "getInTouch": {
     "message": "If this problem persists, please <link>get in touch</link>."
+  },
+  "invitationDeclined": {
+    "message": "Invitation declined"
+  },
+  "youHaveDeclinedToAppearAsAuthor": {
+    "message": "You’ve declined to appear as an author on this PREreview."
+  },
+  "youCanCloseThisWindow": {
+    "message": "You can close this window."
   }
 }
