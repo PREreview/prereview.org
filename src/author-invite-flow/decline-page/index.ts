@@ -90,7 +90,7 @@ const showDeclinePage = (id: Uuid) =>
     RTE.matchW(
       error =>
         match(error)
-          .with('declined', () => inviteDeclinedPage(id))
+          .with('declined', () => inviteDeclinedPage(DefaultLocale, id))
           .with('not-found', () => pageNotFound(DefaultLocale))
           .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .exhaustive(),
