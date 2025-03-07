@@ -5,6 +5,7 @@ import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type MissingE, hasAnError } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInvitePersonaMatch } from '../../routes.js'
 import type { User } from '../../user.js'
@@ -13,7 +14,16 @@ export interface PersonaForm {
   readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>
 }
 
-export function personaForm({ form, inviteId, user }: { form: PersonaForm; inviteId: Uuid; user: User }) {
+export function personaForm({
+  form,
+  inviteId,
+  user,
+}: {
+  form: PersonaForm
+  inviteId: Uuid
+  user: User
+  locale: SupportedLocale
+}) {
   const error = hasAnError(form)
 
   return StreamlinePageResponse({

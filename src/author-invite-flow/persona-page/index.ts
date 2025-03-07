@@ -18,7 +18,7 @@ import {
 import { missingE } from '../../form.js'
 import type { Html } from '../../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale } from '../../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   authorInviteCheckMatch,
@@ -60,6 +60,7 @@ export const authorInvitePersona = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.let('inviteId', () => id),
     RTE.bindW('invite', ({ user }) =>
       pipe(
@@ -97,8 +98,8 @@ export const authorInvitePersona = ({
       state =>
         match(state)
           .with({ method: 'POST' }, handlePersonaForm)
-          .with({ method: P.string }, ({ invite, user }) =>
-            RT.of(personaForm({ form: { persona: E.right(invite.persona) }, inviteId: id, user })),
+          .with({ method: P.string }, ({ invite, user, locale }) =>
+            RT.of(personaForm({ form: { persona: E.right(invite.persona) }, inviteId: id, user, locale })),
           )
           .exhaustive(),
     ),
@@ -109,11 +110,13 @@ const handlePersonaForm = ({
   invite,
   inviteId,
   user,
+  locale,
 }: {
   body: unknown
   invite: AssignedAuthorInvite
   inviteId: Uuid
   user: User
+  locale: SupportedLocale
 }) =>
   pipe(
     RTE.Do,
@@ -130,7 +133,7 @@ const handlePersonaForm = ({
       error =>
         match(error)
           .with('unavailable', () => havingProblemsPage(DefaultLocale))
-          .with({ persona: P.any }, form => personaForm({ form, inviteId, user }))
+          .with({ persona: P.any }, form => personaForm({ form, inviteId, user, locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
     ),
