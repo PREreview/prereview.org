@@ -24,7 +24,7 @@ import {
 import { getInput, invalidE, missingE } from '../../form.js'
 import type { Html } from '../../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale } from '../../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   authorInviteCheckMatch,
@@ -74,6 +74,7 @@ export const authorInviteEnterEmailAddress = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.let('inviteId', () => id),
     RTE.bindW('invite', ({ user }) =>
       pipe(
@@ -114,21 +115,25 @@ export const authorInviteEnterEmailAddress = ({
             RT.of(RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) })),
           )
           .with({ method: 'POST' }, handleEnterEmailAddressForm)
-          .with({ contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' } }, ({ contactEmailAddress, invite }) =>
-            RT.of(
-              enterEmailAddressForm({
-                form: { useInvitedAddress: E.right('no'), otherEmailAddress: E.right(contactEmailAddress.value) },
-                inviteId: id,
-                invitedEmailAddress: invite.emailAddress,
-              }),
-            ),
+          .with(
+            { contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' } },
+            ({ contactEmailAddress, invite, locale }) =>
+              RT.of(
+                enterEmailAddressForm({
+                  form: { useInvitedAddress: E.right('no'), otherEmailAddress: E.right(contactEmailAddress.value) },
+                  inviteId: id,
+                  invitedEmailAddress: invite.emailAddress,
+                  locale,
+                }),
+              ),
           )
-          .with({ contactEmailAddress: undefined }, ({ invite }) =>
+          .with({ contactEmailAddress: undefined }, ({ invite, locale }) =>
             RT.of(
               enterEmailAddressForm({
                 form: { useInvitedAddress: E.right(undefined), otherEmailAddress: E.right(undefined) },
                 inviteId: id,
                 invitedEmailAddress: invite.emailAddress,
+                locale,
               }),
             ),
           )
@@ -141,11 +146,13 @@ const handleEnterEmailAddressForm = ({
   invite,
   inviteId,
   user,
+  locale,
 }: {
   body: unknown
   invite: AssignedAuthorInvite
   inviteId: Uuid
   user: User
+  locale: SupportedLocale
 }) =>
   pipe(
     RTE.Do,
@@ -210,6 +217,7 @@ const handleEnterEmailAddressForm = ({
               form,
               inviteId,
               invitedEmailAddress: invite.emailAddress,
+              locale,
             }),
           )
           .exhaustive(),

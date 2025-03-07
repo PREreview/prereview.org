@@ -5,6 +5,7 @@ import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type InvalidE, type MissingE, hasAnError } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteEnterEmailAddressMatch } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
@@ -22,6 +23,7 @@ export function enterEmailAddressForm({
   form: EnterEmailAddressForm
   inviteId: Uuid
   invitedEmailAddress: EmailAddress
+  locale: SupportedLocale
 }) {
   const error = hasAnError(form)
 
