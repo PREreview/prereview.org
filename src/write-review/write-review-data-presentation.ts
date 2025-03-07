@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -26,9 +26,11 @@ import {
   writeReviewResultsSupportedMatch,
   writeReviewReviewTypeMatch,
 } from '../routes.js'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewDataPresentation = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -163,20 +165,22 @@ function dataPresentationForm(
   preprint: PreprintTitle,
   form: DataPresentationForm,
   user: User,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   locale: SupportedLocale,
 ) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return templatePage({
-    title: plainText`${
-      error ? 'Error: ' : ''
-    }Are the data presentations, including visualizations, well-suited to represent the data?
- – PREreview of “${preprint.title}”`,
+    title: pipe(
+      t('areTheDataPresentationsWellSuited')(),
+      errorPrefix(locale, error),
+      prereviewOfSuffix(locale, preprint.title),
+      plainText,
+    ),
     content: html`
       <nav>
         <a href="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>Back</span></a
+          ><span>${t('back')()}</span></a
         >
       </nav>
 
@@ -186,29 +190,7 @@ function dataPresentationForm(
           action="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}"
           novalidate
         >
-          ${error
-            ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
-                  <ul>
-                    ${E.isLeft(form.dataPresentation)
-                      ? html`
-                          <li>
-                            <a href="#data-presentation-highly-appropriate">
-                              ${match(form.dataPresentation.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => 'Select if the data presentations are well-suited to represent the data?',
-                                )
-                                .exhaustive()}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
-              `
-            : ''}
+          ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
           <div ${rawHtml(E.isLeft(form.dataPresentation) ? 'class="error"' : '')}>
             <conditional-inputs>
@@ -221,7 +203,7 @@ function dataPresentationForm(
                 )}
               >
                 <legend>
-                  <h1>Are the data presentations, including visualizations, well-suited to represent the data?</h1>
+                  <h1>${t('selectIfDataPresentationsWellSuited')()}</h1>
                 </legend>
 
                 ${E.isLeft(form.dataPresentation)
@@ -229,10 +211,7 @@ function dataPresentationForm(
                       <div class="error-message" id="data-presentation-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.dataPresentation.left)
-                          .with(
-                            { _tag: 'MissingE' },
-                            () => 'Select if the data presentations are well-suited to represent the data?',
-                          )
+                          .with({ _tag: 'MissingE' }, t('areTheDataPresentationsWellSuited'))
                           .exhaustive()}
                       </div>
                     `
@@ -252,16 +231,15 @@ function dataPresentationForm(
                           .with({ right: 'highly-appropriate-clear' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Highly appropriate and clear</span>
+                      <span>${t('highlyAppropriateAndClear')()}</span>
                     </label>
                     <p id="data-presentation-tip-highly-appropriate-clear" role="note">
-                      They thoroughly follow accessibility best practices and effectively communicate the results and
-                      key patterns in the data, making it very easy to comprehend or interpret the data.
+                      ${t('highlyAppropriateAndClearTip')()}
                     </p>
                     <div class="conditional" id="data-presentation-highly-appropriate-clear-control">
                       <div>
                         <label for="data-presentation-highly-appropriate-clear-details" class="textarea"
-                          >Why are they highly appropriate and clear? (optional)</label
+                          >${t('highlyAppropriateAndClearWhy')()}</label
                         >
 
                         <textarea
@@ -288,16 +266,15 @@ ${match(form.dataPresentationHighlyAppropriateClearDetails)
                           .with({ right: 'mostly-appropriate-clear' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Somewhat appropriate and clear</span>
+                      <span>${t('somewhatAppropriate')()}</span>
                     </label>
                     <p id="data-presentation-tip-mostly-appropriate-clear" role="note">
-                      They follow accessibility best practices and well communicate the results and main patterns in the
-                      data, making it easy to comprehend or interpret the data effectively.
+                      ${t('somewhatAppropriateTip')()}
                     </p>
                     <div class="conditional" id="data-presentation-mostly-appropriate-clear-control">
                       <div>
                         <label for="data-presentation-mostly-appropriate-clear-details" class="textarea"
-                          >Why are they somewhat appropriate and clear? (optional)</label
+                          >${t('somewhatAppropriateWhy')()}</label
                         >
 
                         <textarea
@@ -324,17 +301,13 @@ ${match(form.dataPresentationMostlyAppropriateClearDetails)
                           .with({ right: 'neutral' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Neither appropriate and clear nor inappropriate and unclear</span>
+                      <span>${t('neitherAppropriateOrClear')()}</span>
                     </label>
-                    <p id="data-presentation-tip-neutral" role="note">
-                      They follow some elements of accessibility best practices and communicate the results and
-                      patterns. However, the presentations chosen are not the best or clearest ones to use for this kind
-                      of data.
-                    </p>
+                    <p id="data-presentation-tip-neutral" role="note">${t('neitherAppropriateOrClearTip')()}</p>
                     <div class="conditional" id="data-presentation-neutral-control">
                       <div>
                         <label for="data-presentation-neutral-details" class="textarea"
-                          >Why are they neither appropriate and clear nor inappropriate and unclear? (optional)</label
+                          >${t('neitherAppropriateOrClearWhy')()}</label
                         >
 
                         <textarea name="dataPresentationNeutralDetails" id="data-presentation-neutral-details" rows="5">
@@ -357,16 +330,15 @@ ${match(form.dataPresentationNeutralDetails)
                           .with({ right: 'somewhat-inappropriate-unclear' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Somewhat inappropriate or unclear</span>
+                      <span>${t('somewhatInappropriate')()}</span>
                     </label>
                     <p id="data-presentation-tip-somewhat-inappropriate-unclear" role="note">
-                      They don’t follow accessibility best practices, and contain minor inaccuracies, ambiguities, or
-                      omissions, making it slightly challenging to comprehend or interpret the data effectively.
+                      ${t('somewhatInappropriateTip')()}
                     </p>
                     <div class="conditional" id="data-presentation-somewhat-inappropriate-unclear-control">
                       <div>
                         <label for="data-presentation-somewhat-inappropriate-unclear-details" class="textarea"
-                          >Why are they somewhat inappropriate or unclear? (optional)</label
+                          >${t('somewhatInappropriateWhy')()}</label
                         >
 
                         <textarea
@@ -393,17 +365,13 @@ ${match(form.dataPresentationSomewhatInappropriateUnclearDetails)
                           .with({ right: 'inappropriate-unclear' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Highly inappropriate or unclear</span>
+                      <span>${t('highlyInappropriate')()}</span>
                     </label>
-                    <p id="data-presentation-tip-inappropriate-unclear" role="note">
-                      They present major accessibility barriers, and lack proper labeling, appropriate scales, or
-                      relevant contextual information, making it very challenging to comprehend or interpret the data
-                      effectively.
-                    </p>
+                    <p id="data-presentation-tip-inappropriate-unclear" role="note">${t('highlyInappropriateTip')()}</p>
                     <div class="conditional" id="data-presentation-inappropriate-unclear-control">
                       <div>
                         <label for="data-presentation-inappropriate-unclear-details" class="textarea"
-                          >Why are they highly inappropriate or unclear? (optional)</label
+                          >${t('highlyInappropriateWhy')()}</label
                         >
 
                         <textarea
@@ -429,7 +397,7 @@ ${match(form.dataPresentationInappropriateUnclearDetails)
                           .with({ right: 'skip' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>I don’t know</span>
+                      <span>${t('iDoNotKnow')()}</span>
                     </label>
                   </li>
                 </ol>
@@ -437,13 +405,27 @@ ${match(form.dataPresentationInappropriateUnclearDetails)
             </conditional-inputs>
           </div>
 
-          <button>Save and continue</button>
+          ${saveAndContinueButton(locale)}
         </form>
       </main>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
-    skipLinks: [[html`Skip to form`, '#form']],
+    skipLinks: [[html`${translate(locale, 'skip-links', 'form')()}`, '#form']],
     type: 'streamline',
     user,
   })
 }
+
+const toErrorItems = (locale: SupportedLocale) => (form: DataPresentationForm) => html`
+  ${E.isLeft(form.dataPresentation)
+    ? html`
+        <li>
+          <a href="#data-presentation-highly-appropriate">
+            ${match(form.dataPresentation.left)
+              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'selectIfDataPresentationsWellSuited'))
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : ''}
+`
