@@ -203,7 +203,7 @@ function dataPresentationForm(
                 )}
               >
                 <legend>
-                  <h1>${t('selectIfDataPresentationsWellSuited')()}</h1>
+                  <h1>${t('areTheDataPresentationsWellSuited')()}</h1>
                 </legend>
 
                 ${E.isLeft(form.dataPresentation)
@@ -211,7 +211,7 @@ function dataPresentationForm(
                       <div class="error-message" id="data-presentation-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.dataPresentation.left)
-                          .with({ _tag: 'MissingE' }, t('areTheDataPresentationsWellSuited'))
+                          .with({ _tag: 'MissingE' }, t('selectIfDataPresentationsWellSuited'))
                           .exhaustive()}
                       </div>
                     `
