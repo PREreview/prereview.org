@@ -7,7 +7,6 @@ import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-start.js'
 import * as _ from '../../src/author-invite-flow/index.js'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite.js'
-import { DefaultLocale } from '../../src/locales/index.js'
 import {
   authorInviteDeclineMatch,
   authorInvitePersonaMatch,
@@ -35,7 +34,7 @@ describe('authorInviteStart', () => {
         const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
         const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
-        const actual = await _.authorInviteStart({ id: inviteId, user, locale: DefaultLocale })({
+        const actual = await _.authorInviteStart({ id: inviteId, user })({
           getAuthorInvite,
           getPrereview,
           saveAuthorInvite,
@@ -71,7 +70,7 @@ describe('authorInviteStart', () => {
         const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
         const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-        const actual = await _.authorInviteStart({ id: inviteId, user, locale: DefaultLocale })({
+        const actual = await _.authorInviteStart({ id: inviteId, user })({
           getAuthorInvite,
           getPrereview,
           saveAuthorInvite: shouldNotBeCalled,
@@ -102,7 +101,7 @@ describe('authorInviteStart', () => {
           }),
         }),
       ])('the invite is already assigned to someone else', async (inviteId, [user, invite], prereview) => {
-        const actual = await _.authorInviteStart({ id: inviteId, user, locale: DefaultLocale })({
+        const actual = await _.authorInviteStart({ id: inviteId, user })({
           getAuthorInvite: () => TE.right(invite),
           getPrereview: () => TE.right(prereview),
           saveAuthorInvite: shouldNotBeCalled,
@@ -133,7 +132,7 @@ describe('authorInviteStart', () => {
         const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
         const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-        const actual = await _.authorInviteStart({ id: inviteId, user, locale: DefaultLocale })({
+        const actual = await _.authorInviteStart({ id: inviteId, user })({
           getAuthorInvite,
           getPrereview,
           saveAuthorInvite: shouldNotBeCalled,
@@ -162,7 +161,7 @@ describe('authorInviteStart', () => {
       const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
       const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-      const actual = await _.authorInviteStart({ id: inviteId, locale: DefaultLocale })({
+      const actual = await _.authorInviteStart({ id: inviteId })({
         getAuthorInvite,
         getPrereview,
         saveAuthorInvite: shouldNotBeCalled,
@@ -182,7 +181,7 @@ describe('authorInviteStart', () => {
     fc.option(fc.user(), { nil: undefined }),
     fc.authorInvite().filter(invite => invite.status !== 'declined'),
   ])('when the review cannot be loaded', async (inviteId, user, invite) => {
-    const actual = await _.authorInviteStart({ id: inviteId, user, locale: DefaultLocale })({
+    const actual = await _.authorInviteStart({ id: inviteId, user })({
       getAuthorInvite: () => TE.right(invite),
       getPrereview: () => TE.left('unavailable'),
       saveAuthorInvite: shouldNotBeCalled,
@@ -201,7 +200,7 @@ describe('authorInviteStart', () => {
   test.prop([fc.uuid(), fc.option(fc.user(), { nil: undefined }), fc.declinedAuthorInvite()])(
     'when the invite has been declined',
     async (inviteId, user, invite) => {
-      const actual = await _.authorInviteStart({ id: inviteId, user, locale: DefaultLocale })({
+      const actual = await _.authorInviteStart({ id: inviteId, user })({
         getAuthorInvite: () => TE.right(invite),
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
@@ -218,7 +217,7 @@ describe('authorInviteStart', () => {
   test.prop([fc.uuid(), fc.option(fc.user(), { nil: undefined })])(
     'when the invite cannot be loaded',
     async (inviteId, user) => {
-      const actual = await _.authorInviteStart({ id: inviteId, user, locale: DefaultLocale })({
+      const actual = await _.authorInviteStart({ id: inviteId, user })({
         getAuthorInvite: () => TE.left('unavailable'),
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
@@ -238,7 +237,7 @@ describe('authorInviteStart', () => {
   test.prop([fc.uuid(), fc.option(fc.user(), { nil: undefined })])(
     'when the invite is not found',
     async (inviteId, user) => {
-      const actual = await _.authorInviteStart({ id: inviteId, user, locale: DefaultLocale })({
+      const actual = await _.authorInviteStart({ id: inviteId, user })({
         getAuthorInvite: () => TE.left('not-found'),
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,

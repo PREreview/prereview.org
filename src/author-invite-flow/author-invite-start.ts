@@ -46,7 +46,6 @@ export const authorInviteStart = ({
 }: {
   id: Uuid
   user?: User
-  locale: SupportedLocale
 }): RT.ReaderTask<
   GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
@@ -66,6 +65,7 @@ export const authorInviteStart = ({
     ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.apSW('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.chainFirstW(({ invite, user }) =>
       match(invite)
         .with({ status: 'open' }, invite => saveAuthorInvite(id, { ...invite, status: 'assigned', orcid: user.orcid }))
@@ -84,12 +84,12 @@ export const authorInviteStart = ({
           .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .with('wrong-user', () => noPermissionPage(DefaultLocale))
           .exhaustive(),
-      ({ invite }) =>
+      ({ invite, locale }) =>
         match(invite)
           .with({ status: 'open' }, () =>
             RedirectResponse({ location: format(authorInvitePersonaMatch.formatter, { id }) }),
           )
-          .with({ status: 'assigned' }, invite => carryOnPage(id, invite))
+          .with({ status: 'assigned' }, invite => carryOnPage(id, invite, locale))
           .with({ status: 'completed' }, () =>
             RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
           )
@@ -104,7 +104,8 @@ function nextFormMatch(invite: AssignedAuthorInvite) {
     .exhaustive()
 }
 
-function carryOnPage(inviteId: Uuid, invite: AssignedAuthorInvite) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function carryOnPage(inviteId: Uuid, invite: AssignedAuthorInvite, locale: SupportedLocale) {
   return StreamlinePageResponse({
     title: plainText`Be listed as an author`,
     main: html`
