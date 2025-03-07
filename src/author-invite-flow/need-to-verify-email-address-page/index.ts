@@ -49,6 +49,7 @@ export const authorInviteNeedToVerifyEmailAddress = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.let('inviteId', () => id),
     RTE.bindW('invite', ({ user }) =>
       pipe(

@@ -2,6 +2,7 @@ import { format } from 'fp-ts-routing'
 import type { Uuid } from 'uuid-ts'
 import type { UnverifiedContactEmailAddress } from '../../contact-email-address.js'
 import { html, plainText } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteNeedToVerifyEmailAddressMatch } from '../../routes.js'
 
@@ -11,6 +12,7 @@ export function needToVerifyEmailAddressPage({
 }: {
   contactEmailAddress: UnverifiedContactEmailAddress
   inviteId: Uuid
+  locale: SupportedLocale
 }) {
   return StreamlinePageResponse({
     title: plainText`Verify your email address`,
