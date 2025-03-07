@@ -138,11 +138,13 @@ const handlePublishForm = ({
   inviteId,
   persona,
   user,
+  locale,
 }: {
   invite: AssignedAuthorInvite
   inviteId: Uuid
   persona: 'public' | 'pseudonym'
   user: User
+  locale: SupportedLocale
 }) =>
   pipe(
     saveAuthorInvite(inviteId, { status: 'completed', orcid: invite.orcid, review: invite.review }),
@@ -159,7 +161,7 @@ const handlePublishForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => failureMessage)
+          .with('unavailable', () => failureMessage(locale))
           .exhaustive(),
       () =>
         RedirectResponse({
