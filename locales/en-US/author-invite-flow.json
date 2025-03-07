@@ -97,5 +97,14 @@
   },
   "enterAnEmailAddressInTheCorrectFormat": {
     "message": "Enter an email address in the correct format, like name@example.com"
+  },
+  "verifyYourEmailAddress": {
+    "message": "Verify your email address`"
+  },
+  "pleaseOpenLinkInEmailWeSentYou": {
+    "message": "Please open the email we sent to {contactEmailAddress} and follow the link. You’ll then be able to add your name to the PREreview."
+  },
+  "onceVerifiedYouCanClosePage": {
+    "message": "Once your address is verified, you can close this page."
   }
 }
