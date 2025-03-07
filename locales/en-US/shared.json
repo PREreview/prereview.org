@@ -1,0 +1,8 @@
+{
+  "errorPrefix": {
+    "message": "Error: "
+  },
+  "errorSummaryTitle": {
+    "message": "There is a problem"
+  }
+}

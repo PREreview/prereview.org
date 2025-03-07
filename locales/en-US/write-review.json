@@ -32,9 +32,6 @@
   "back": {
     "message": "Back"
   },
-  "errorSummaryTitle": {
-    "message": "There is a problem"
-  },
   "yesIfAnotherAuthor": {
     "message": "Select yes if you need to add another author"
   },
@@ -79,9 +76,6 @@
   },
   "error": {
     "message": "Error"
-  },
-  "errorPrefix": {
-    "message": "Error: "
   },
   "backNav": {
     "message": "Back"

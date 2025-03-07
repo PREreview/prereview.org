@@ -9,8 +9,9 @@ import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewRemoveAuthorMatch } from '../../routes.js'
+import { errorPrefix, errorSummary } from '../../shared-translation-elements.js'
 import type { NonEmptyString } from '../../types/string.js'
-import { backNav, errorPrefix, errorSummary, prereviewOfSuffix, saveAndContinueButton } from '../shared-elements.js'
+import { backNav, prereviewOfSuffix, saveAndContinueButton } from '../shared-elements.js'
 
 export function removeAuthorForm({
   author,

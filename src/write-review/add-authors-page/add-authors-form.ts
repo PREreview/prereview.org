@@ -16,9 +16,10 @@ import {
   writeReviewChangeAuthorMatch,
   writeReviewRemoveAuthorMatch,
 } from '../../routes.js'
+import { errorPrefix, errorSummary } from '../../shared-translation-elements.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import type { NonEmptyString } from '../../types/string.js'
-import { backNav, errorPrefix, errorSummary, prereviewOfSuffix } from '../shared-elements.js'
+import { backNav, prereviewOfSuffix } from '../shared-elements.js'
 
 interface AddAuthorsForm {
   readonly anotherAuthor: E.Either<MissingE, 'yes' | 'no' | undefined>
