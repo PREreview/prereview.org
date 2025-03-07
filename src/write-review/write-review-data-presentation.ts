@@ -16,6 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -35,6 +36,7 @@ export const writeReviewDataPresentation = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
+      RM.apS('locale', RM.of(DefaultLocale)),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -70,21 +72,32 @@ export const writeReviewDataPresentation = flow(
 )
 
 const showDataPresentationForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    dataPresentationForm(preprint, FormToFieldsE.encode(form), user),
+  RM.fromReaderK(
+    ({ form, preprint, user, locale }: { form: Form; preprint: PreprintTitle; user: User; locale: SupportedLocale }) =>
+      dataPresentationForm(preprint, FormToFieldsE.encode(form), user, locale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showDataPresentationErrorForm = (preprint: PreprintTitle, user: User) =>
+const showDataPresentationErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
   flow(
-    RM.fromReaderK((form: DataPresentationForm) => dataPresentationForm(preprint, form, user)),
+    RM.fromReaderK((form: DataPresentationForm) => dataPresentationForm(preprint, form, user, locale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleDataPresentationForm = ({
+  form,
+  preprint,
+  user,
+  locale,
+}: {
+  form: Form
+  preprint: PreprintTitle
+  user: User
+  locale: SupportedLocale
+}) =>
   pipe(
     RM.decodeBody(decodeFields(dataPresentationFields)),
     RM.map(updateFormWithFields(form)),
@@ -93,7 +106,7 @@ const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; prep
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ dataPresentation: P.any }, showDataPresentationErrorForm(preprint, user))
+        .with({ dataPresentation: P.any }, showDataPresentationErrorForm(preprint, user, locale))
         .exhaustive(),
     ),
   )
@@ -146,7 +159,13 @@ const FormToFieldsE: Encoder<DataPresentationForm, Form> = {
 
 type DataPresentationForm = Fields<typeof dataPresentationFields>
 
-function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationForm, user: User) {
+function dataPresentationForm(
+  preprint: PreprintTitle,
+  form: DataPresentationForm,
+  user: User,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  locale: SupportedLocale,
+) {
   const error = hasAnError(form)
 
   return templatePage({
