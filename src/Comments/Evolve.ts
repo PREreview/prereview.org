@@ -1,4 +1,4 @@
-import { flow, Function, identity, Match, Option, pipe } from 'effect'
+import { flow, Function, Match, Option, pipe } from 'effect'
 import type * as Events from './Events.js'
 import * as State from './State.js'
 
@@ -9,45 +9,45 @@ const onCommentWasStarted = (event: Events.CommentWasStarted) =>
       'CommentNotStarted',
       () => new State.CommentInProgress({ authorId: event.authorId, prereviewId: event.prereviewId }),
     ),
-    Match.tag('CommentInProgress', identity),
-    Match.tag('CommentReadyForPublishing', identity),
-    Match.tag('CommentBeingPublished', identity),
-    Match.tag('CommentPublished', identity),
+    Match.tag('CommentInProgress', comment => comment),
+    Match.tag('CommentReadyForPublishing', comment => comment),
+    Match.tag('CommentBeingPublished', comment => comment),
+    Match.tag('CommentPublished', comment => comment),
     Match.exhaustive,
   )
 
 const onCommentWasEntered = (event: Events.CommentWasEntered) =>
   flow(
     Match.value<State.CommentState>,
-    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentNotStarted', comment => comment),
     Match.tag('CommentInProgress', state => new State.CommentInProgress({ ...state, comment: event.comment })),
     Match.tag(
       'CommentReadyForPublishing',
       state => new State.CommentReadyForPublishing({ ...state, comment: event.comment }),
     ),
-    Match.tag('CommentBeingPublished', identity),
-    Match.tag('CommentPublished', identity),
+    Match.tag('CommentBeingPublished', comment => comment),
+    Match.tag('CommentPublished', comment => comment),
     Match.exhaustive,
   )
 
 const onPersonaWasChosen = (event: Events.PersonaWasChosen) =>
   flow(
     Match.value<State.CommentState>,
-    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentNotStarted', comment => comment),
     Match.tag('CommentInProgress', state => new State.CommentInProgress({ ...state, persona: event.persona })),
     Match.tag(
       'CommentReadyForPublishing',
       state => new State.CommentReadyForPublishing({ ...state, persona: event.persona }),
     ),
-    Match.tag('CommentBeingPublished', identity),
-    Match.tag('CommentPublished', identity),
+    Match.tag('CommentBeingPublished', comment => comment),
+    Match.tag('CommentPublished', comment => comment),
     Match.exhaustive,
   )
 
 const onCompetingInterestsWereDeclared = (event: Events.CompetingInterestsWereDeclared) =>
   flow(
     Match.value<State.CommentState>,
-    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentNotStarted', comment => comment),
     Match.tag(
       'CommentInProgress',
       state => new State.CommentInProgress({ ...state, competingInterests: event.competingInterests }),
@@ -56,52 +56,52 @@ const onCompetingInterestsWereDeclared = (event: Events.CompetingInterestsWereDe
       'CommentReadyForPublishing',
       state => new State.CommentReadyForPublishing({ ...state, competingInterests: event.competingInterests }),
     ),
-    Match.tag('CommentBeingPublished', identity),
-    Match.tag('CommentPublished', identity),
+    Match.tag('CommentBeingPublished', comment => comment),
+    Match.tag('CommentPublished', comment => comment),
     Match.exhaustive,
   )
 
 const onCodeOfConductWasAgreed = () =>
   flow(
     Match.value<State.CommentState>,
-    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentNotStarted', comment => comment),
     Match.tag('CommentInProgress', state => new State.CommentInProgress({ ...state, codeOfConductAgreed: true })),
-    Match.tag('CommentReadyForPublishing', identity),
-    Match.tag('CommentBeingPublished', identity),
-    Match.tag('CommentPublished', identity),
+    Match.tag('CommentReadyForPublishing', comment => comment),
+    Match.tag('CommentBeingPublished', comment => comment),
+    Match.tag('CommentPublished', comment => comment),
     Match.exhaustive,
   )
 
 const onExistenceOfVerifiedEmailAddressWasConfirmed = () =>
   flow(
     Match.value<State.CommentState>,
-    Match.tag('CommentNotStarted', identity),
+    Match.tag('CommentNotStarted', comment => comment),
     Match.tag(
       'CommentInProgress',
       state => new State.CommentInProgress({ ...state, verifiedEmailAddressExists: true }),
     ),
-    Match.tag('CommentReadyForPublishing', identity),
-    Match.tag('CommentBeingPublished', identity),
-    Match.tag('CommentPublished', identity),
+    Match.tag('CommentReadyForPublishing', comment => comment),
+    Match.tag('CommentBeingPublished', comment => comment),
+    Match.tag('CommentPublished', comment => comment),
     Match.exhaustive,
   )
 
 const onCommentPublicationWasRequested = () =>
   flow(
     Match.value<State.CommentState>,
-    Match.tag('CommentNotStarted', identity),
-    Match.tag('CommentInProgress', identity),
+    Match.tag('CommentNotStarted', comment => comment),
+    Match.tag('CommentInProgress', comment => comment),
     Match.tag('CommentReadyForPublishing', state => new State.CommentBeingPublished(state)),
-    Match.tag('CommentBeingPublished', identity),
-    Match.tag('CommentPublished', identity),
+    Match.tag('CommentBeingPublished', comment => comment),
+    Match.tag('CommentPublished', comment => comment),
     Match.exhaustive,
   )
 
 const onDoiWasAssigned = (event: Events.DoiWasAssigned) =>
   flow(
     Match.value<State.CommentState>,
-    Match.tag('CommentNotStarted', identity),
-    Match.tag('CommentInProgress', identity),
+    Match.tag('CommentNotStarted', comment => comment),
+    Match.tag('CommentInProgress', comment => comment),
     Match.tag(
       'CommentReadyForPublishing',
       state => new State.CommentBeingPublished({ ...state, id: event.id, doi: event.doi }),
@@ -110,20 +110,20 @@ const onDoiWasAssigned = (event: Events.DoiWasAssigned) =>
       'CommentBeingPublished',
       state => new State.CommentBeingPublished({ ...state, id: event.id, doi: event.doi }),
     ),
-    Match.tag('CommentPublished', identity),
+    Match.tag('CommentPublished', comment => comment),
     Match.exhaustive,
   )
 
 const onCommentWasPublished = () =>
   flow(
     Match.value<State.CommentState>,
-    Match.tag('CommentNotStarted', identity),
-    Match.tag('CommentInProgress', identity),
-    Match.tag('CommentReadyForPublishing', identity),
+    Match.tag('CommentNotStarted', comment => comment),
+    Match.tag('CommentInProgress', comment => comment),
+    Match.tag('CommentReadyForPublishing', comment => comment),
     Match.tag('CommentBeingPublished', ({ id, doi, ...state }) =>
       typeof id === 'number' && typeof doi === 'string' ? new State.CommentPublished({ ...state, id, doi }) : state,
     ),
-    Match.tag('CommentPublished', identity),
+    Match.tag('CommentPublished', comment => comment),
     Match.exhaustive,
   )
 
