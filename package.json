@@ -112,7 +112,7 @@
     "css-minimizer-webpack-plugin": "^7.0.0",
     "del-cli": "^6.0.0",
     "dotenv": "^16.4.7",
-    "eslint": "^8.57.1",
+    "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.0.2",
     "eslint-import-resolver-typescript": "^3.8.3",
     "eslint-plugin-import": "^2.31.0",
