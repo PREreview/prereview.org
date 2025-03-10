@@ -37,5 +37,98 @@
   },
   "closeWindowOrSeePrereview": {
     "message": "You can close this window, or <link>see the PREreview</link>."
+  },
+  "beListed": {
+    "message": "Be listed as an author"
+  },
+  "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
+    "message": "As you’ve already started, we’ll take you to the next step so you can carry&nbsp;on."
+  },
+  "continueButton": {
+    "message": "Continue"
+  },
+  "sorryHavingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
+  "unableToAddYourNameWorkHasBeenSaved": {
+    "message": "We were unable to add your name to the PREreview. We saved your work."
+  },
+  "comeBackLater": {
+    "message": "Please try again later by coming back to this page."
+  },
+  "getInTouch": {
+    "message": "If this problem persists, please <link>get in touch</link>."
+  },
+  "invitationDeclined": {
+    "message": "Invitation declined"
+  },
+  "youHaveDeclinedToAppearAsAuthor": {
+    "message": "You’ve declined to appear as an author on this PREreview."
+  },
+  "youCanCloseThisWindow": {
+    "message": "You can close this window."
+  },
+  "contactDetails": {
+    "message": "Contact details"
+  },
+  "readyToAddYourNameConfirmYourEmailFirst": {
+    "message": "We’re ready to add your name to the PREreview, but we need to confirm your email address first."
+  },
+  "usedToContactYouAboutYourAccountAndPrereviews": {
+    "message": "We’ll only use this to contact you about your account and PREreviews."
+  },
+  "whatEmailAddressShouldWeUse": {
+    "message": "What email address should we use?"
+  },
+  "selectTheEmailAddressYouWouldLikeToUse": {
+    "message": "Select the email address that you would like to use"
+  },
+  "aDifferentOne": {
+    "message": "A different one"
+  },
+  "whatIsYourEmailAddress": {
+    "message": "What is your email address?"
+  },
+  "error": {
+    "message": "Error"
+  },
+  "enterYourEmailAddress": {
+    "message": "Enter your email address"
+  },
+  "enterAnEmailAddressInTheCorrectFormat": {
+    "message": "Enter an email address in the correct format, like name@example.com"
+  },
+  "verifyYourEmailAddress": {
+    "message": "Verify your email address"
+  },
+  "pleaseOpenLinkInEmailWeSentYou": {
+    "message": "Please open the email we sent to {contactEmailAddress} and follow the link. You’ll then be able to add your name to the PREreview."
+  },
+  "onceVerifiedYouCanClosePage": {
+    "message": "Once your address is verified, you can close this page."
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "What name would you like to use?"
+  },
+  "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
+    "message": "You can choose between the name on your ORCID&nbsp;profile or your PREreview&nbsp;pseudonym."
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "What is a PREreview&nbsp;pseudonym?"
+  },
+  "pseudonymExplainer": {
+    "message": "A <definition>PREreview&nbsp;pseudonym</definition> is an alternate name you can use instead of your real&nbsp;name. It is unique and combines a random color and animal. Your pseudonym is ‘{userPseudonym}.’"
+  },
+  "whyUseAPseudonym": {
+    "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability."
+  },
+  "selectTheNameYouWouldLikeToUse": {
+    "message": "Select the name that you would like to use"
+  },
+  "weWillLinkYourPrereviewToYourOrcid": {
+    "message": "We’ll link your PREreview to your ORCID&nbsp;iD."
+  },
+  "weWillOnlyLinkToOtherPseudonymPrereviews": {
+    "message": "We’ll only link your PREreview to others that also use your pseudonym."
   }
 }

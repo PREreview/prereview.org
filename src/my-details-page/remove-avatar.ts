@@ -6,6 +6,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { deleteAvatar, getAvatar } from '../avatar.js'
 import { havingProblemsPage } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -25,7 +26,7 @@ export const removeAvatar = ({ method, user }: { method: string; user?: User }) 
           match(error)
             .with('no-session', () => LogInResponse({ location: format(myDetailsMatch.formatter, {}) }))
             .with('not-found', () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }))
-            .with('unavailable', () => havingProblemsPage)
+            .with('unavailable', () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       state =>
@@ -41,7 +42,7 @@ const handleRemoveAvatarForm = ({ user }: { user: User }) =>
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .exhaustive(),
       () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'avatar-removed' }),
     ),

@@ -37,5 +37,98 @@
   },
   "closeWindowOrSeePrereview": {
     "message": "crwdns4538:0crwdne4538:0"
+  },
+  "beListed": {
+    "message": "crwdns4715:0crwdne4715:0"
+  },
+  "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
+    "message": "crwdns4717:0crwdne4717:0"
+  },
+  "continueButton": {
+    "message": "crwdns4719:0crwdne4719:0"
+  },
+  "sorryHavingProblems": {
+    "message": "crwdns4721:0crwdne4721:0"
+  },
+  "unableToAddYourNameWorkHasBeenSaved": {
+    "message": "crwdns4723:0crwdne4723:0"
+  },
+  "comeBackLater": {
+    "message": "crwdns4725:0crwdne4725:0"
+  },
+  "getInTouch": {
+    "message": "crwdns4727:0crwdne4727:0"
+  },
+  "invitationDeclined": {
+    "message": "crwdns4729:0crwdne4729:0"
+  },
+  "youHaveDeclinedToAppearAsAuthor": {
+    "message": "crwdns4731:0crwdne4731:0"
+  },
+  "youCanCloseThisWindow": {
+    "message": "crwdns4733:0crwdne4733:0"
+  },
+  "contactDetails": {
+    "message": "crwdns4777:0crwdne4777:0"
+  },
+  "readyToAddYourNameConfirmYourEmailFirst": {
+    "message": "crwdns4779:0crwdne4779:0"
+  },
+  "usedToContactYouAboutYourAccountAndPrereviews": {
+    "message": "crwdns4781:0crwdne4781:0"
+  },
+  "whatEmailAddressShouldWeUse": {
+    "message": "crwdns4783:0crwdne4783:0"
+  },
+  "selectTheEmailAddressYouWouldLikeToUse": {
+    "message": "crwdns4785:0crwdne4785:0"
+  },
+  "aDifferentOne": {
+    "message": "crwdns4787:0crwdne4787:0"
+  },
+  "whatIsYourEmailAddress": {
+    "message": "crwdns4789:0crwdne4789:0"
+  },
+  "error": {
+    "message": "crwdns4791:0crwdne4791:0"
+  },
+  "enterYourEmailAddress": {
+    "message": "crwdns4793:0crwdne4793:0"
+  },
+  "enterAnEmailAddressInTheCorrectFormat": {
+    "message": "crwdns4795:0crwdne4795:0"
+  },
+  "verifyYourEmailAddress": {
+    "message": "crwdns4797:0crwdne4797:0"
+  },
+  "pleaseOpenLinkInEmailWeSentYou": {
+    "message": "crwdns4799:0{contactEmailAddress}crwdne4799:0"
+  },
+  "onceVerifiedYouCanClosePage": {
+    "message": "crwdns4801:0crwdne4801:0"
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "crwdns4803:0crwdne4803:0"
+  },
+  "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
+    "message": "crwdns4805:0crwdne4805:0"
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "crwdns4807:0crwdne4807:0"
+  },
+  "pseudonymExplainer": {
+    "message": "crwdns4809:0{userPseudonym}crwdne4809:0"
+  },
+  "whyUseAPseudonym": {
+    "message": "crwdns4811:0crwdne4811:0"
+  },
+  "selectTheNameYouWouldLikeToUse": {
+    "message": "crwdns4813:0crwdne4813:0"
+  },
+  "weWillLinkYourPrereviewToYourOrcid": {
+    "message": "crwdns4815:0crwdne4815:0"
+  },
+  "weWillOnlyLinkToOtherPseudonymPrereviews": {
+    "message": "crwdns4817:0crwdne4817:0"
   }
 }

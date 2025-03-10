@@ -7,6 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
@@ -71,8 +72,8 @@ export const requestReviewPersona = ({
             .with('no-session', () =>
               LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
             )
-            .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound)
-            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(DefaultLocale))
+            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       state =>
@@ -110,7 +111,7 @@ const handlePersonaForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .with({ persona: P.any }, form => personaForm({ form, preprint, user }))
           .exhaustive(),
       () => RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: preprint }) }),

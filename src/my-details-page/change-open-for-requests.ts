@@ -12,6 +12,7 @@ import {
   isOpenForRequests,
   saveOpenForRequests,
 } from '../is-open-for-requests.js'
+import { DefaultLocale } from '../locales/index.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -79,7 +80,7 @@ const handleChangeOpenForRequestsForm = ({ body, user }: { body: unknown; user: 
             .exhaustive(),
         RTE.chain(openForRequests => saveOpenForRequests(user.orcid, openForRequests)),
         RTE.matchW(
-          () => havingProblemsPage,
+          () => havingProblemsPage(DefaultLocale),
           () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
         ),
       ),

@@ -1,24 +1,18 @@
-import { HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { it } from '@fast-check/jest'
 import { describe } from '@jest/globals'
 import { expect } from '@playwright/test'
-import { DateTime, Effect, flow, Logger, LogLevel, pipe, TestContext } from 'effect'
+import { DateTime, Effect, pipe } from 'effect'
 import { HttpCache } from '../../src/CachingHttpClient/HttpCache.js'
 import { layerInMemory } from '../../src/CachingHttpClient/InMemory.js'
 import { serializationErrorChecking } from '../../src/CachingHttpClient/SerializationErrorChecking.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
-const effectTestBoilerplate = flow(Effect.provide(TestContext.TestContext), Logger.withMinimumLogLevel(LogLevel.None))
-
 describe('when the cached response matches the original', () => {
-  it.prop([fc.url()])('the response is left in the cache', url =>
+  it.prop([fc.httpClientResponse()])('the response is left in the cache', response =>
     Effect.gen(function* () {
       const cacheStorage = new Map()
 
-      const response = HttpClientResponse.fromWeb(
-        HttpClientRequest.get(url),
-        new Response('original response body', { headers: [['foo', 'bar']] }),
-      )
       const staleAt = yield* DateTime.now
 
       yield* pipe(
@@ -29,12 +23,12 @@ describe('when the cached response matches the original', () => {
       )
 
       expect(cacheStorage.size).toBe(1)
-    }).pipe(effectTestBoilerplate, Effect.runPromise),
+    }).pipe(EffectTest.run),
   )
 })
 
 describe('when the cached response does not match the original', () => {
-  it.prop([fc.url()])('the response is removed from the cache', url =>
+  it.prop([fc.httpClientResponse()])('the response is removed from the cache', response =>
     Effect.gen(function* () {
       const cacheStorage = new Map()
       // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -43,10 +37,6 @@ describe('when the cached response does not match the original', () => {
         return healthySetMethod.call(this, key, { ...value, response: 'bogus' })
       }
 
-      const response = HttpClientResponse.fromWeb(
-        HttpClientRequest.get(url),
-        new Response('original response body', { headers: [['foo', 'bar']] }),
-      )
       const staleAt = yield* DateTime.now
 
       yield* pipe(
@@ -57,6 +47,6 @@ describe('when the cached response does not match the original', () => {
       )
 
       expect(cacheStorage.size).toBe(0)
-    }).pipe(effectTestBoilerplate, Effect.runPromise),
+    }).pipe(EffectTest.run),
   )
 })

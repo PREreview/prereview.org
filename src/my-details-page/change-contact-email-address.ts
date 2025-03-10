@@ -16,6 +16,7 @@ import {
 } from '../contact-email-address.js'
 import { getInput, invalidE, missingE } from '../form.js'
 import { havingProblemsPage } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import { EmailAddressC } from '../types/email-address.js'
@@ -92,7 +93,7 @@ const handleChangeContactEmailAddressForm = ({ body, user }: { body: unknown; us
               RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
               RTE.chainFirstW(contactEmailAddress => verifyContactEmailAddress(user, contactEmailAddress)),
               RTE.matchW(
-                () => havingProblemsPage,
+                () => havingProblemsPage(DefaultLocale),
                 () =>
                   FlashMessageResponse({
                     location: format(myDetailsMatch.formatter, {}),

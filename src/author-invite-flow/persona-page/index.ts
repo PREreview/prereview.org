@@ -18,6 +18,7 @@ import {
 import { missingE } from '../../form.js'
 import type { Html } from '../../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   authorInviteCheckMatch,
@@ -59,6 +60,7 @@ export const authorInvitePersona = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.let('inviteId', () => id),
     RTE.bindW('invite', ({ user }) =>
       pipe(
@@ -88,16 +90,16 @@ export const authorInvitePersona = ({
             .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
             .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-            .with('not-found', () => pageNotFound)
-            .with('unavailable', () => havingProblemsPage)
-            .with('wrong-user', () => noPermissionPage)
+            .with('not-found', () => pageNotFound(DefaultLocale))
+            .with('unavailable', () => havingProblemsPage(DefaultLocale))
+            .with('wrong-user', () => noPermissionPage(DefaultLocale))
             .exhaustive(),
         ),
       state =>
         match(state)
           .with({ method: 'POST' }, handlePersonaForm)
-          .with({ method: P.string }, ({ invite, user }) =>
-            RT.of(personaForm({ form: { persona: E.right(invite.persona) }, inviteId: id, user })),
+          .with({ method: P.string }, ({ invite, user, locale }) =>
+            RT.of(personaForm({ form: { persona: E.right(invite.persona) }, inviteId: id, user, locale })),
           )
           .exhaustive(),
     ),
@@ -108,11 +110,13 @@ const handlePersonaForm = ({
   invite,
   inviteId,
   user,
+  locale,
 }: {
   body: unknown
   invite: AssignedAuthorInvite
   inviteId: Uuid
   user: User
+  locale: SupportedLocale
 }) =>
   pipe(
     RTE.Do,
@@ -128,8 +132,8 @@ const handlePersonaForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage)
-          .with({ persona: P.any }, form => personaForm({ form, inviteId, user }))
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
+          .with({ persona: P.any }, form => personaForm({ form, inviteId, user, locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
     ),

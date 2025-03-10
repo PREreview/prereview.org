@@ -92,9 +92,9 @@ export const authorInvite = ({
       error =>
         match(error)
           .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound)
-          .with('unavailable', () => havingProblemsPage)
-          .with('wrong-user', () => noPermissionPage)
+          .with('not-found', () => pageNotFound(DefaultLocale))
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
+          .with('wrong-user', () => noPermissionPage(DefaultLocale))
           .exhaustive(),
       state =>
         match(state)

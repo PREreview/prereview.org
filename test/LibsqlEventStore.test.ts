@@ -3,10 +3,11 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Array, Effect, Equal, Layer, Logger, LogLevel, TestClock, TestContext } from 'effect'
+import { Array, Effect, Equal, Layer, TestClock } from 'effect'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/LibsqlEventStore.js'
 import { Uuid } from '../src/types/index.js'
+import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
 
@@ -22,8 +23,7 @@ it.prop([fc.uuid()])('starts empty', resourceId =>
   }).pipe(
     Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
     Effect.provide(TestLibsqlClient),
-    Effect.provide(TestContext.TestContext),
-    Effect.runPromise,
+    EffectTest.run,
   ),
 )
 
@@ -42,8 +42,7 @@ describe('when the last known version is 0', () => {
     }).pipe(
       Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
       Effect.provide(TestLibsqlClient),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 })
@@ -56,10 +55,7 @@ describe('when the last known version is invalid', () => {
         Effect.gen(function* () {
           const eventStore = yield* _.make
 
-          const error = yield* Logger.withMinimumLogLevel(
-            Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events)),
-            LogLevel.None,
-          )
+          const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
 
           expect(error).toBeInstanceOf(EventStore.FailedToCommitEvent)
 
@@ -71,8 +67,7 @@ describe('when the last known version is invalid', () => {
         }).pipe(
           Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
           Effect.provide(TestLibsqlClient),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
   })
@@ -90,10 +85,7 @@ describe('when the last known version is invalid', () => {
 
         yield* eventStore.commitEvents(resourceId, 0)(...existingEvents)
 
-        const error = yield* Logger.withMinimumLogLevel(
-          Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events)),
-          LogLevel.None,
-        )
+        const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
 
         expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
@@ -108,8 +100,7 @@ describe('when the last known version is invalid', () => {
       }).pipe(
         Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
         Effect.provide(TestLibsqlClient),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
   })
@@ -136,8 +127,7 @@ describe('when the last known version is up to date', () => {
       }).pipe(
         Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
         Effect.provide(TestLibsqlClient),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
   )
 })
@@ -158,10 +148,7 @@ describe('when the last known version is out of date', () => {
 
       yield* eventStore.commitEvents(resourceId, 0)(...existingEvents)
 
-      const error = yield* Logger.withMinimumLogLevel(
-        Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events)),
-        LogLevel.None,
-      )
+      const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
 
       expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
@@ -176,8 +163,7 @@ describe('when the last known version is out of date', () => {
     }).pipe(
       Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
       Effect.provide(TestLibsqlClient),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 })
@@ -212,12 +198,7 @@ it.prop([
       { event: event2, resourceId: resourceId2, version: 1 },
       { event: event3, resourceId: resourceId2, version: 2 },
     ])
-  }).pipe(
-    Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-    Effect.provide(TestLibsqlClient),
-    Effect.provide(TestContext.TestContext),
-    Effect.runPromise,
-  ),
+  }).pipe(Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make), Effect.provide(TestLibsqlClient), EffectTest.run),
 )
 
 const TestLibsqlClient = Layer.unwrapScoped(

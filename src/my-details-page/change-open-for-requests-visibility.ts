@@ -7,6 +7,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import { type IsOpenForRequests, isOpenForRequests, saveOpenForRequests } from '../is-open-for-requests.js'
+import { DefaultLocale } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -35,7 +36,7 @@ export const changeOpenForRequestsVisibility = ({
           .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
           .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
           .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
-          .with('unavailable', () => RT.of(havingProblemsPage))
+          .with('unavailable', () => RT.of(havingProblemsPage(DefaultLocale)))
           .exhaustive(),
       state =>
         match(state)
@@ -69,7 +70,7 @@ const handleChangeOpenForRequestsVisibilityForm = ({
         ({ openForRequestsVisibility }) => ({ ...openForRequests, visibility: openForRequestsVisibility }),
         openForRequests => saveOpenForRequests(user.orcid, openForRequests),
         RTE.matchW(
-          () => havingProblemsPage,
+          () => havingProblemsPage(DefaultLocale),
           () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
         ),
       ),

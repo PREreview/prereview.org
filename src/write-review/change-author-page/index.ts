@@ -39,8 +39,8 @@ export const writeReviewChangeAuthor = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       preprint =>
@@ -81,8 +81,8 @@ export const writeReviewChangeAuthor = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('not-found', () => pageNotFound)
-                  .with('form-unavailable', () => havingProblemsPage)
+                  .with('not-found', () => pageNotFound(DefaultLocale))
+                  .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
                   .exhaustive(),
               ),
             state =>
@@ -157,7 +157,7 @@ const handleChangeAuthorForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage)
+          .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ name: P.any }, error => changeAuthorForm({ author, form: error, number, preprint, locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),

@@ -6,6 +6,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { deleteLocation, getLocation, saveLocation } from '../location.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
@@ -46,7 +47,7 @@ const handleChangeLocationForm = ({ body, user }: { body: unknown; user: User })
         pipe(
           deleteLocation(user.orcid),
           RTE.matchW(
-            () => havingProblemsPage,
+            () => havingProblemsPage(DefaultLocale),
             () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
           ),
         ),
@@ -68,7 +69,7 @@ const handleChangeLocationForm = ({ body, user }: { body: unknown; user: User })
           ),
           RTE.chain(location => saveLocation(user.orcid, location)),
           RTE.matchW(
-            () => havingProblemsPage,
+            () => havingProblemsPage(DefaultLocale),
             () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
           ),
         ),

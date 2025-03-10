@@ -1,4 +1,4 @@
-import type { Work } from '../../src/openalex/work.js'
+import type { Work } from '../../src/OpenAlex/Work.js'
 import * as fc from '../fc.js'
 
 export * from '../fc.js'

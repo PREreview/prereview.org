@@ -7,6 +7,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Orcid } from 'orcid-id-ts'
+import type { SupportedLocale } from '../locales/index.js'
 import { maybeGetOrcidToken, saveOrcidToken } from '../orcid-token.js'
 import { toUrl } from '../public-url.js'
 import { FlashMessageResponse } from '../response.js'
@@ -24,7 +25,7 @@ export interface OrcidOAuthEnv {
   }
 }
 
-export const connectOrcidCode = ({ code, user }: { code: string; user?: User }) =>
+export const connectOrcidCode = ({ code, locale, user }: { code: string; locale: SupportedLocale; user?: User }) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
@@ -41,7 +42,7 @@ export const connectOrcidCode = ({ code, user }: { code: string; user?: User }) 
       oldOrcidToken ? revokeAccessToken(oldOrcidToken.accessToken) : RTE.of(undefined),
     ),
     RTE.matchW(
-      () => connectFailureMessage,
+      () => connectFailureMessage(locale),
       () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'orcid-connected' }),
     ),
   )

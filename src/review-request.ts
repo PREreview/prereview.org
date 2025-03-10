@@ -11,6 +11,7 @@ import type {
   AfricarxivUbuntunetPreprintId,
   ArxivPreprintId,
   BiorxivPreprintId,
+  ChemrxivPreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
   EdarxivPreprintId,
@@ -25,6 +26,7 @@ import type {
   ScieloPreprintId,
   SocarxivPreprintId,
   TechrxivPreprintId,
+  ZenodoPreprintId,
 } from './types/preprint-id.js'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
@@ -34,6 +36,7 @@ export type ReviewRequestPreprintId =
   | AfricarxivUbuntunetPreprintId
   | ArxivPreprintId
   | BiorxivPreprintId
+  | ChemrxivPreprintId
   | EartharxivPreprintId
   | EcoevorxivPreprintId
   | EdarxivPreprintId
@@ -47,6 +50,7 @@ export type ReviewRequestPreprintId =
   | ScieloPreprintId
   | SocarxivPreprintId
   | TechrxivPreprintId
+  | ZenodoPreprintId
 
 export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
@@ -130,6 +134,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
           'advance',
           'arxiv',
           'biorxiv',
+          'chemrxiv',
           'eartharxiv',
           'ecoevorxiv',
           'edarxiv',
@@ -143,6 +148,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
           'scielo',
           'socarxiv',
           'techrxiv',
+          'zenodo',
         ),
       },
       () => true,

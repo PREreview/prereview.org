@@ -126,7 +126,7 @@ export const publishedPage = ({
         >
       </main>
     `,
-    skipLinks: [[html`${t('write-review', 'skipToMain')()}`, '#main-content']],
+    skipLinks: [[html`${t('skip-links', 'main')()}`, '#main-content']],
     type: 'streamline',
     user,
   })

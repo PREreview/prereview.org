@@ -35,8 +35,8 @@ export const writeReviewUseOfAi = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       preprint =>
@@ -62,8 +62,8 @@ export const writeReviewUseOfAi = ({
                 .with('no-form', 'no-session', () =>
                   RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                 )
-                .with('form-unavailable', () => havingProblemsPage)
-                .with('not-found', () => pageNotFound)
+                .with('form-unavailable', () => havingProblemsPage(locale))
+                .with('not-found', () => pageNotFound(locale))
                 .exhaustive(),
             showUseOfAiForm,
           ),
@@ -88,8 +88,8 @@ export const writeReviewUseOfAiSubmission = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       preprint =>
@@ -107,7 +107,7 @@ export const writeReviewUseOfAiSubmission = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('form-unavailable', () => havingProblemsPage)
+                  .with('form-unavailable', () => havingProblemsPage(locale))
                   .exhaustive(),
               ),
             handleUseOfAiForm,
@@ -158,7 +158,7 @@ const handleUseOfAiForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage)
+          .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ generativeAiIdeas: P.any }, showUseOfAiErrorForm(preprint, form.moreAuthors, locale))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),

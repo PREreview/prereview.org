@@ -1,5 +1,5 @@
 import cookieSignature from 'cookie-signature'
-import { Function, Option, String, flow, pipe } from 'effect'
+import { Effect, Function, Option, String, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -22,8 +22,10 @@ import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
+import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
 import type { GetPageFromGhostEnv } from './GhostPage.js'
+import * as OpenAlex from './OpenAlex/index.js'
 import {
   authorInvite,
   authorInviteCheck,
@@ -88,7 +90,7 @@ import {
   isLegacyCompatiblePrereview,
 } from './legacy-prereview.js'
 import { liveReviews } from './live-reviews.js'
-import type { SupportedLocale } from './locales/index.js'
+import { DefaultLocale, type SupportedLocale } from './locales/index.js'
 import {
   type IsUserBlockedEnv,
   type OrcidOAuthEnv,
@@ -116,7 +118,6 @@ import {
   verifyContactEmailAddress,
 } from './my-details-page/index.js'
 import { myPrereviews } from './my-prereviews-page/index.js'
-import { getCategoriesFromOpenAlex } from './openalex/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
 import { partners } from './partners.js'
@@ -331,7 +332,7 @@ const getSlackUser = flow(
 export type RouterEnv = Keyv.AvatarStoreEnv &
   MustDeclareUseOfAiEnv &
   DoesPreprintExistEnv &
-  EffectEnv<Locale> &
+  EffectEnv<Locale | OpenAlex.GetCategories> &
   ResolvePreprintIdEnv &
   GetPageFromGhostEnv &
   GetPreprintIdEnv &
@@ -492,7 +493,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(howToUse)),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW(
+            'response',
+            RM.fromReaderTaskK(({ locale }) => howToUse(locale)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -503,7 +511,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(people)),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW(
+            'response',
+            RM.fromReaderTaskK(({ locale }) => people(locale)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -514,7 +529,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(codeOfConduct)),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW(
+            'response',
+            RM.fromReaderTaskK(({ locale }) => codeOfConduct(locale)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -525,7 +547,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(ediaStatement)),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW(
+            'response',
+            RM.fromReaderTaskK(({ locale }) => ediaStatement(locale)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -536,7 +565,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(clubs)),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW(
+            'response',
+            RM.fromReaderTaskK(({ locale }) => clubs(locale)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -547,7 +583,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(funding)),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW(
+            'response',
+            RM.fromReaderTaskK(({ locale }) => funding(locale)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -558,7 +601,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(resources)),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW(
+            'response',
+            RM.fromReaderTaskK(({ locale }) => resources(locale)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -584,7 +634,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(liveReviews)),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW(
+            'response',
+            RM.fromReaderTaskK(({ locale }) => liveReviews(locale)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -595,7 +652,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(privacyPolicy)),
+          RM.apS(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW(
+            'response',
+            RM.fromReaderTaskK(({ locale }) => privacyPolicy(locale)),
+          ),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -659,6 +723,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.bindW('response', RM.fromReaderTaskK(connectOrcid)),
           RM.ichainW(handleResponse),
         ),
@@ -687,6 +755,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ code }),
           RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.bindW('response', RM.fromReaderTaskK(connectOrcidCode)),
           RM.ichainW(handleResponse),
         ),
@@ -705,7 +777,11 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apS('response', RM.of(connectOrcidError({ error }))),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bind('response', ({ locale }) => RM.of(connectOrcidError({ error, locale }))),
           RM.ichainW(handleResponse),
         ),
       ),
@@ -719,6 +795,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.apS(
             'method',
             RM.gets(c => c.getMethod()),
+          ),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
           ),
           RM.bindW('response', RM.fromReaderTaskK(disconnectOrcid)),
           RM.ichainW(handleResponse),
@@ -873,6 +953,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.bindW('response', RM.fromReaderTaskK(myDetails)),
           RM.ichainW(handleResponse),
         ),
@@ -1606,7 +1690,11 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                 pipe(
                   match(id)
                     .with({ type: 'philsci' }, () => RTE.of([]))
-                    .otherwise(id => getCategoriesFromOpenAlex(id.value)),
+                    .otherwise(
+                      EffectToFpts.toReaderTaskEitherK(id =>
+                        pipe(OpenAlex.GetCategories, Effect.andThen(Function.apply(id.value))),
+                      ),
+                    ),
                   RTE.match(
                     () => [],
                     RA.map(category => ({ id: category.id, name: category.display_name })),
@@ -1827,6 +1915,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ id }),
           RM.apS('user', maybeGetUser),
+          RM.apS('locale', RM.of(DefaultLocale)),
           RM.bindW('response', RM.fromReaderTaskK(authorInviteStart)),
           RM.ichainW(handleResponse),
         ),

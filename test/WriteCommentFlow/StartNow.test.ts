@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Either, TestContext } from 'effect'
+import { Effect, Either } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale } from '../../src/Context.js'
@@ -10,6 +10,7 @@ import { Uuid } from '../../src/types/index.js'
 import { LoggedInUser } from '../../src/user.js'
 import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
 import * as _ from '../../src/WriteCommentFlow/StartNow/index.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -57,8 +58,7 @@ describe('StartNow', () => {
           ),
           Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
       )
 
@@ -91,8 +91,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
       )
     })
@@ -123,8 +122,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
 
@@ -148,8 +146,7 @@ describe('StartNow', () => {
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewWasRemoved())),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -177,8 +174,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
 
@@ -202,8 +198,7 @@ describe('StartNow', () => {
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsNotFound())),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -229,8 +224,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsUnavailable())),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
   })
@@ -250,8 +244,7 @@ describe('StartNow', () => {
       Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
       Effect.provideService(Prereview.GetPrereview, shouldNotBeCalled),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 })

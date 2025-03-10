@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Either, Equal, TestContext } from 'effect'
+import { Effect, Either, Equal } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale } from '../../src/Context.js'
@@ -8,6 +8,7 @@ import * as Routes from '../../src/routes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as _ from '../../src/WriteCommentFlow/EnterCommentPage/index.js'
 import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -37,8 +38,7 @@ describe('EnterCommentPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -61,8 +61,7 @@ describe('EnterCommentPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -85,8 +84,7 @@ describe('EnterCommentPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -108,8 +106,7 @@ describe('EnterCommentPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
 
@@ -135,8 +132,7 @@ describe('EnterCommentPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -158,8 +154,7 @@ describe('EnterCommentPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
   })
@@ -175,8 +170,7 @@ describe('EnterCommentPage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 })
@@ -226,8 +220,7 @@ describe('EnterCommentSubmission', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
             Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
+            EffectTest.run,
           ),
         )
 
@@ -257,8 +250,7 @@ describe('EnterCommentSubmission', () => {
             Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
+            EffectTest.run,
           ),
         )
       })
@@ -293,8 +285,7 @@ describe('EnterCommentSubmission', () => {
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
       )
     })
@@ -321,8 +312,7 @@ describe('EnterCommentSubmission', () => {
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -348,8 +338,7 @@ describe('EnterCommentSubmission', () => {
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -373,8 +362,7 @@ describe('EnterCommentSubmission', () => {
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
 
@@ -403,8 +391,7 @@ describe('EnterCommentSubmission', () => {
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -428,8 +415,7 @@ describe('EnterCommentSubmission', () => {
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
   })
@@ -447,8 +433,7 @@ describe('EnterCommentSubmission', () => {
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 })

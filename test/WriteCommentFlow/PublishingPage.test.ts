@@ -1,12 +1,13 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Equal, TestContext } from 'effect'
+import { Effect, Equal } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as _ from '../../src/WriteCommentFlow/PublishingPage/index.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -35,8 +36,7 @@ describe('PublishingPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -60,8 +60,7 @@ describe('PublishingPage', () => {
 
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -87,8 +86,7 @@ describe('PublishingPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -110,8 +108,7 @@ describe('PublishingPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
 
@@ -137,8 +134,7 @@ describe('PublishingPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -160,8 +156,7 @@ describe('PublishingPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
   })
@@ -177,8 +172,7 @@ describe('PublishingPage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 })

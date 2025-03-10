@@ -7,6 +7,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import { deleteLanguages, getLanguages, saveLanguages } from '../languages.js'
+import { DefaultLocale } from '../locales/index.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import { NonEmptyStringC } from '../types/string.js'
@@ -46,7 +47,7 @@ const handleChangeLanguagesForm = ({ body, user }: { body: unknown; user: User }
         pipe(
           deleteLanguages(user.orcid),
           RTE.matchW(
-            () => havingProblemsPage,
+            () => havingProblemsPage(DefaultLocale),
             () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
           ),
         ),
@@ -68,7 +69,7 @@ const handleChangeLanguagesForm = ({ body, user }: { body: unknown; user: User }
           ),
           RTE.chain(languages => saveLanguages(user.orcid, languages)),
           RTE.matchW(
-            () => havingProblemsPage,
+            () => havingProblemsPage(DefaultLocale),
             () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
           ),
         ),

@@ -29,8 +29,8 @@ export const reviewRequests = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('not-found', () => (page === 1 ? createEmptyPage({ field, language, locale }) : pageNotFound))
-          .with('unavailable', () => havingProblemsPage)
+          .with('not-found', () => (page === 1 ? createEmptyPage({ field, language, locale }) : pageNotFound(locale)))
+          .with('unavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       createPage,
     ),

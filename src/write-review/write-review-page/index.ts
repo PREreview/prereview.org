@@ -9,6 +9,7 @@ import { P, match } from 'ts-pattern'
 import { invalidE, missingE } from '../../form.js'
 import { type Html, sanitizeHtml } from '../../html.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewMatch, writeReviewReviewTypeMatch } from '../../routes.js'
@@ -38,8 +39,8 @@ export const writeReviewReview = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       preprint =>
@@ -57,7 +58,7 @@ export const writeReviewReview = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage)
+                  .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(DefaultLocale))
                   .exhaustive(),
               ),
             state =>
@@ -122,7 +123,7 @@ const handleWriteReviewForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage)
+          .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
           .with({ review: P.any }, form => writeReviewForm(preprint, form))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
@@ -156,7 +157,7 @@ const handlePasteReviewForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage)
+          .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
           .with({ review: P.any }, form => pasteReviewForm(preprint, form))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),

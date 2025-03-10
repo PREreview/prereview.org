@@ -111,9 +111,9 @@ export const authorInviteCheck = ({
             )
             .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-            .with('not-found', () => pageNotFound)
-            .with('unavailable', () => havingProblemsPage)
-            .with('wrong-user', () => noPermissionPage)
+            .with('not-found', () => pageNotFound(locale))
+            .with('unavailable', () => havingProblemsPage(locale))
+            .with('wrong-user', () => noPermissionPage(locale))
             .exhaustive(),
         ),
       state =>
@@ -138,11 +138,13 @@ const handlePublishForm = ({
   inviteId,
   persona,
   user,
+  locale,
 }: {
   invite: AssignedAuthorInvite
   inviteId: Uuid
   persona: 'public' | 'pseudonym'
   user: User
+  locale: SupportedLocale
 }) =>
   pipe(
     saveAuthorInvite(inviteId, { status: 'completed', orcid: invite.orcid, review: invite.review }),
@@ -159,7 +161,7 @@ const handlePublishForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => failureMessage)
+          .with('unavailable', () => failureMessage(locale))
           .exhaustive(),
       () =>
         RedirectResponse({

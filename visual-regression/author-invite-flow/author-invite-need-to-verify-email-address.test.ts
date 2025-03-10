@@ -1,6 +1,7 @@
 import { Uuid } from 'uuid-ts'
 import { needToVerifyEmailAddressPage } from '../../src/author-invite-flow/need-to-verify-email-address-page/need-to-verify-email-address-page.js'
 import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import { EmailAddress } from '../../src/types/email-address.js'
 import { expect, test } from '../base.js'
 
@@ -11,6 +12,7 @@ test('content looks right', async ({ showPage }) => {
       value: EmailAddress('jcarberry@example.com'),
       verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)

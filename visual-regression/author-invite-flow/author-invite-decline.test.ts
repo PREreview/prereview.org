@@ -5,6 +5,7 @@ import { Uuid } from 'uuid-ts'
 import { declinePage } from '../../src/author-invite-flow/decline-page/decline-page.js'
 import { inviteDeclinedPage } from '../../src/author-invite-flow/decline-page/invite-declined-page.js'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
@@ -56,7 +57,7 @@ test('content looks right before declining', async ({ showPage }) => {
 })
 
 test('content looks right when declined', async ({ showPage }) => {
-  const response = inviteDeclinedPage(Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'))
+  const response = inviteDeclinedPage(DefaultLocale, Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'))
 
   const content = await showPage(response)
 

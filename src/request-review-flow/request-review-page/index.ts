@@ -4,6 +4,7 @@ import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
 import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { type GetReviewRequestEnv, isReviewRequestPreprintId, maybeGetReviewRequest } from '../../review-request.js'
@@ -50,8 +51,8 @@ export const requestReview = ({
           .with('already-started', () =>
             RedirectResponse({ location: format(requestReviewStartMatch.formatter, { id: preprint }) }),
           )
-          .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound)
-          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage)
+          .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(DefaultLocale))
+          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(DefaultLocale))
           .exhaustive(),
       requestReviewPage,
     ),

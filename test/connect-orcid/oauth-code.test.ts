@@ -16,84 +16,89 @@ describe('connectOrcidCode', () => {
     test.prop([
       fc.string(),
       fc.user(),
+      fc.supportedLocale(),
       fc.oauth(),
       fc.origin(),
       fc.hashSet(fc.lorem({ maxCount: 1 }), { minLength: 1 }),
       fc.nonEmptyString(),
       fc.orcidToken(),
-    ])('there is a token already', async (code, user, orcidOauth, publicUrl, scopes, accessToken, existingToken) => {
-      const fetch = fetchMock
-        .sandbox()
-        .postOnce(
-          {
-            url: orcidOauth.tokenUrl.href,
-            functionMatcher: (_, req: RequestInit) =>
-              req.body ===
-              new URLSearchParams({
-                client_id: orcidOauth.clientId,
-                client_secret: orcidOauth.clientSecret,
-                grant_type: 'authorization_code',
-                redirect_uri: new URL(format(connectOrcidMatch.formatter, {}), publicUrl).toString(),
-                code,
-              }).toString(),
-            headers: {
-              'Content-Type': MediaType.applicationFormURLEncoded,
+    ])(
+      'there is a token already',
+      async (code, user, locale, orcidOauth, publicUrl, scopes, accessToken, existingToken) => {
+        const fetch = fetchMock
+          .sandbox()
+          .postOnce(
+            {
+              url: orcidOauth.tokenUrl.href,
+              functionMatcher: (_, req: RequestInit) =>
+                req.body ===
+                new URLSearchParams({
+                  client_id: orcidOauth.clientId,
+                  client_secret: orcidOauth.clientSecret,
+                  grant_type: 'authorization_code',
+                  redirect_uri: new URL(format(connectOrcidMatch.formatter, {}), publicUrl).toString(),
+                  code,
+                }).toString(),
+              headers: {
+                'Content-Type': MediaType.applicationFormURLEncoded,
+              },
             },
-          },
-          {
-            status: Status.OK,
-            body: {
-              access_token: accessToken,
-              orcid: user.orcid,
-              token_type: 'user',
-              scope: [...scopes].join(' '),
+            {
+              status: Status.OK,
+              body: {
+                access_token: accessToken,
+                orcid: user.orcid,
+                token_type: 'user',
+                scope: [...scopes].join(' '),
+              },
             },
-          },
-        )
-        .postOnce(
-          {
-            url: orcidOauth.revokeUrl.href,
-            functionMatcher: (_, req: RequestInit) =>
-              req.body ===
-              new URLSearchParams({
-                client_id: orcidOauth.clientId,
-                client_secret: orcidOauth.clientSecret,
-                token: existingToken.accessToken,
-                token_type_hint: 'access_token',
-              }).toString(),
-            headers: {
-              'Content-Type': MediaType.applicationFormURLEncoded,
+          )
+          .postOnce(
+            {
+              url: orcidOauth.revokeUrl.href,
+              functionMatcher: (_, req: RequestInit) =>
+                req.body ===
+                new URLSearchParams({
+                  client_id: orcidOauth.clientId,
+                  client_secret: orcidOauth.clientSecret,
+                  token: existingToken.accessToken,
+                  token_type_hint: 'access_token',
+                }).toString(),
+              headers: {
+                'Content-Type': MediaType.applicationFormURLEncoded,
+              },
             },
-          },
-          { status: Status.OK },
-        )
-      const saveOrcidToken = jest.fn<EditOrcidTokenEnv['saveOrcidToken']>(_ => TE.right(undefined))
+            { status: Status.OK },
+          )
+        const saveOrcidToken = jest.fn<EditOrcidTokenEnv['saveOrcidToken']>(_ => TE.right(undefined))
 
-      const actual = await _.connectOrcidCode({ code, user })({
-        fetch,
-        getOrcidToken: () => TE.right(existingToken),
-        orcidOauth,
-        publicUrl,
-        saveOrcidToken,
-      })()
+        const actual = await _.connectOrcidCode({ code, locale, user })({
+          fetch,
+          getOrcidToken: () => TE.right(existingToken),
+          orcidOauth,
+          publicUrl,
+          saveOrcidToken,
+        })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'FlashMessageResponse',
-        location: format(myDetailsMatch.formatter, {}),
-        message: 'orcid-connected',
-      })
-      expect(saveOrcidToken).toHaveBeenCalledWith(user.orcid, { accessToken, scopes })
-      expect(fetch.done()).toBeTruthy()
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'FlashMessageResponse',
+          location: format(myDetailsMatch.formatter, {}),
+          message: 'orcid-connected',
+        })
+        expect(saveOrcidToken).toHaveBeenCalledWith(user.orcid, { accessToken, scopes })
+        expect(fetch.done()).toBeTruthy()
+      },
+    )
 
     test.prop([
       fc.string(),
       fc.user(),
+      fc.supportedLocale(),
       fc.oauth(),
       fc.origin(),
       fc.hashSet(fc.lorem({ maxCount: 1 }), { minLength: 1 }),
       fc.nonEmptyString(),
-    ])("there isn't a token already", async (code, user, orcidOauth, publicUrl, scopes, accessToken) => {
+    ])("there isn't a token already", async (code, user, locale, orcidOauth, publicUrl, scopes, accessToken) => {
       const fetch = fetchMock.sandbox().postOnce(
         {
           url: orcidOauth.tokenUrl.href,
@@ -122,7 +127,7 @@ describe('connectOrcidCode', () => {
       )
       const saveOrcidToken = jest.fn<EditOrcidTokenEnv['saveOrcidToken']>(_ => TE.right(undefined))
 
-      const actual = await _.connectOrcidCode({ code, user })({
+      const actual = await _.connectOrcidCode({ code, locale, user })({
         fetch,
         getOrcidToken: () => TE.left('not-found'),
         orcidOauth,
@@ -140,16 +145,16 @@ describe('connectOrcidCode', () => {
     })
   })
 
-  test.prop([fc.string(), fc.user(), fc.oauth(), fc.origin(), fc.string()])(
+  test.prop([fc.string(), fc.user(), fc.supportedLocale(), fc.oauth(), fc.origin(), fc.string()])(
     'when the access token cannot be decoded',
-    async (code, user, orcidOauth, publicUrl, accessToken) => {
+    async (code, user, locale, orcidOauth, publicUrl, accessToken) => {
       const orcidUserIdStore = new Keyv()
       const fetch = fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
         status: Status.OK,
         body: accessToken,
       })
 
-      const actual = await _.connectOrcidCode({ code, user })({
+      const actual = await _.connectOrcidCode({ code, locale, user })({
         fetch,
         getOrcidToken: shouldNotBeCalled,
         orcidOauth,
@@ -173,17 +178,18 @@ describe('connectOrcidCode', () => {
   test.prop([
     fc.string(),
     fc.user(),
+    fc.supportedLocale(),
     fc.oauth(),
     fc.origin(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
-  ])('when the response has a non-200/404 status code', async (code, user, oauth, publicUrl, accessToken) => {
+  ])('when the response has a non-200/404 status code', async (code, user, locale, oauth, publicUrl, accessToken) => {
     const orcidUserIdStore = new Keyv()
     const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
       status: Status.OK,
       body: accessToken,
     })
 
-    const actual = await _.connectOrcidCode({ code, user })({
+    const actual = await _.connectOrcidCode({ code, locale, user })({
       fetch,
       getOrcidToken: shouldNotBeCalled,
       publicUrl,
@@ -203,12 +209,12 @@ describe('connectOrcidCode', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.string(), fc.user(), fc.oauth(), fc.origin(), fc.error()])(
+  test.prop([fc.string(), fc.user(), fc.supportedLocale(), fc.oauth(), fc.origin(), fc.error()])(
     'when fetch throws an error',
-    async (code, user, orcidOauth, publicUrl, error) => {
+    async (code, user, locale, orcidOauth, publicUrl, error) => {
       const orcidUserIdStore = new Keyv()
 
-      const actual = await _.connectOrcidCode({ code, user })({
+      const actual = await _.connectOrcidCode({ code, locale, user })({
         fetch: () => Promise.reject(error),
         getOrcidToken: shouldNotBeCalled,
         orcidOauth,

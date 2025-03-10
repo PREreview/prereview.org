@@ -314,6 +314,15 @@ const getPreprint = Layer.effect(
   }),
 )
 
+const getCategories = Layer.effect(
+  OpenAlex.GetCategories,
+  Effect.gen(function* () {
+    const httpClient = yield* HttpClient.HttpClient
+
+    return id => pipe(OpenAlex.getCategoriesFromOpenAlex(id), Effect.provideService(HttpClient.HttpClient, httpClient))
+  }),
+)
+
 const MigratorLive = LibsqlMigrator.layer({
   loader: LibsqlMigrator.fromFileSystem(fileURLToPath(new URL('migrations', import.meta.url))),
   schemaDirectory: 'src/migrations',
@@ -326,6 +335,7 @@ export const Program = pipe(
   Layer.provide(
     Layer.mergeAll(
       Layer.provide(getPreprint, CachingHttpClient.layer('10 minutes')),
+      Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
       doesUserHaveAVerifiedEmailAddress,
       getContactEmailAddress,
       saveContactEmailAddress,

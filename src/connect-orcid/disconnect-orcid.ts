@@ -6,6 +6,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { type DeleteOrcidTokenEnv, type OrcidToken, deleteOrcidToken, maybeGetOrcidToken } from '../orcid-token.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { disconnectOrcidMatch, myDetailsMatch } from '../routes.js'
@@ -22,18 +23,19 @@ export interface OrcidOAuthEnv {
   }
 }
 
-export const disconnectOrcid = ({ method, user }: { method: string; user?: User }) =>
+export const disconnectOrcid = ({ method, locale, user }: { method: string; locale: SupportedLocale; user?: User }) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.bindW('orcidToken', ({ user }) => maybeGetOrcidToken(user.orcid)),
     RTE.let('method', () => method),
+    RTE.let('locale', () => locale),
     RTE.matchEW(
       error =>
         RT.of(
           match(error)
             .with('no-session', () => LogInResponse({ location: format(disconnectOrcidMatch.formatter, {}) }))
-            .with('unavailable', () => havingProblemsPage)
+            .with('unavailable', () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       state =>
@@ -48,17 +50,17 @@ export const disconnectOrcid = ({ method, user }: { method: string; user?: User 
             RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })),
           )
           .with({ orcidToken: P.not(undefined), method: 'POST' }, handleForm)
-          .with({ method: P.string }, () => RT.of(disconnectOrcidPage))
+          .with({ method: P.string }, () => RT.of(disconnectOrcidPage(locale)))
           .exhaustive(),
     ),
   )
 
-const handleForm = ({ orcidToken, user }: { orcidToken: OrcidToken; user: User }) =>
+const handleForm = ({ locale, orcidToken, user }: { locale: SupportedLocale; orcidToken: OrcidToken; user: User }) =>
   pipe(
     deleteOrcidToken(user.orcid),
     RTE.chainFirstW(() => revokeAccessToken(orcidToken.accessToken)),
     RTE.matchW(
-      () => disconnectFailureMessage,
+      () => disconnectFailureMessage(locale),
       () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'orcid-disconnected' }),
     ),
   )

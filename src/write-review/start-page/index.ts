@@ -32,8 +32,8 @@ export const writeReviewStart = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       preprint =>
@@ -56,7 +56,7 @@ export const writeReviewStart = ({
                 .with('no-session', () =>
                   LogInResponse({ location: format(writeReviewStartMatch.formatter, { id: preprint.id }) }),
                 )
-                .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage)
+                .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(DefaultLocale))
                 .exhaustive(),
             ({ form, locale, mustDeclareUseOfAi }) =>
               carryOnPage(

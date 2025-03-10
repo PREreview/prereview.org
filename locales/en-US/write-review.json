@@ -26,14 +26,8 @@
   "useOfEmail": {
     "message": "We’ll only use this to contact them about this PREreview."
   },
-  "saveAndContinue": {
-    "message": "Save and continue"
-  },
   "back": {
     "message": "Back"
-  },
-  "errorSummaryTitle": {
-    "message": "There is a problem"
   },
   "yesIfAnotherAuthor": {
     "message": "Select yes if you need to add another author"
@@ -79,9 +73,6 @@
   },
   "error": {
     "message": "Error"
-  },
-  "errorPrefix": {
-    "message": "Error: "
   },
   "backNav": {
     "message": "Back"
@@ -133,9 +124,6 @@
   },
   "backToPreprint": {
     "message": "Back to preprint"
-  },
-  "skipToMain": {
-    "message": "Skip to main content"
   },
   "publishTitle": {
     "message": "Publish your PREreview of “{preprintTitle}”"
@@ -379,5 +367,59 @@
   },
   "iAmFollowingCodeOfConduct": {
     "message": "I’m following the Code of Conduct"
+  },
+  "areTheDataPresentationsWellSuited": {
+    "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
+  },
+  "selectIfDataPresentationsWellSuited": {
+    "message": "Select if the data presentations are well-suited to represent the data?"
+  },
+  "highlyAppropriateAndClear": {
+    "message": "Highly appropriate and clear"
+  },
+  "highlyAppropriateAndClearTip": {
+    "message": "They thoroughly follow accessibility best practices and effectively communicate the results and key patterns in the data, making it very easy to comprehend or interpret the data."
+  },
+  "highlyAppropriateAndClearWhy": {
+    "message": "Why are they highly appropriate and clear? (optional)"
+  },
+  "somewhatAppropriate": {
+    "message": "Somewhat appropriate and clear"
+  },
+  "somewhatAppropriateTip": {
+    "message": "They follow accessibility best practices and well communicate the results and main patterns in the data, making it easy to comprehend or interpret the data effectively."
+  },
+  "somewhatAppropriateWhy": {
+    "message": "Why are they somewhat appropriate and clear? (optional)"
+  },
+  "neitherAppropriateOrClear": {
+    "message": "Neither appropriate and clear nor inappropriate and unclear"
+  },
+  "neitherAppropriateOrClearTip": {
+    "message": "They follow some elements of accessibility best practices and communicate the results and patterns. However, the presentations chosen are not the best or clearest ones to use for this kind of data."
+  },
+  "neitherAppropriateOrClearWhy": {
+    "message": "Why are they neither appropriate and clear nor inappropriate and unclear? (optional)"
+  },
+  "somewhatInappropriate": {
+    "message": "Somewhat inappropriate or unclear"
+  },
+  "somewhatInappropriateTip": {
+    "message": "They don’t follow accessibility best practices, and contain minor inaccuracies, ambiguities, or omissions, making it slightly challenging to comprehend or interpret the data effectively."
+  },
+  "somewhatInappropriateWhy": {
+    "message": "Why are they somewhat inappropriate or unclear? (optional)"
+  },
+  "highlyInappropriate": {
+    "message": "Highly inappropriate or unclear"
+  },
+  "highlyInappropriateTip": {
+    "message": "They present major accessibility barriers, and lack proper labeling, appropriate scales, or relevant contextual information, making it very challenging to comprehend or interpret the data effectively."
+  },
+  "highlyInappropriateWhy": {
+    "message": "Why are they highly inappropriate or unclear? (optional)"
+  },
+  "iDoNotKnow": {
+    "message": "I don’t know"
   }
 }

@@ -39,8 +39,8 @@ export const writeReviewAddAuthors = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       preprint =>
@@ -66,7 +66,7 @@ export const writeReviewAddAuthors = ({
                 .with('no-form', 'no-session', () =>
                   RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                 )
-                .with('form-unavailable', () => havingProblemsPage)
+                .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
                 .exhaustive(),
             state =>
               match(state)
@@ -82,7 +82,7 @@ export const writeReviewAddAuthors = ({
                     locale: state.locale,
                   }),
                 )
-                .otherwise(() => pageNotFound),
+                .otherwise(({ locale }) => pageNotFound(locale)),
           ),
         ),
     ),

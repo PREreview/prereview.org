@@ -17,9 +17,10 @@ import {
   writeReviewConductMatch,
   writeReviewMatch,
 } from '../routes.js'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../shared-translation-elements.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
-import { backNav, errorPrefix, errorSummary, prereviewOfSuffix, saveAndContinueButton } from './shared-elements.js'
+import { backNav, prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewConduct = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),

@@ -18,7 +18,7 @@ export const handleDecision = (decision: Decision.Decision, locale: SupportedLoc
     .with({ _tag: 'BeginFlow', preprint: P.select() }, preprint =>
       Response.RedirectResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
     )
-    .with({ _tag: 'ShowError' }, () => havingProblemsPage)
+    .with({ _tag: 'ShowError' }, () => havingProblemsPage(locale))
     .with({ _tag: 'ShowFormWithErrors' }, ({ form }) => requestAPrereviewPage(form, locale))
     .with({ _tag: 'ShowNotAPreprint' }, () => notAPreprintPage)
     .with({ _tag: 'ShowUnknownPreprint', preprint: P.select() }, unknownPreprintPage)

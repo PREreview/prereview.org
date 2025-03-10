@@ -13,8 +13,9 @@ import {
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
 } from '../../routes.js'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
 import type { NonEmptyString } from '../../types/string.js'
-import { backNav, errorPrefix, errorSummary, prereviewOfSuffix, saveAndContinueButton } from '../shared-elements.js'
+import { backNav, prereviewOfSuffix } from '../shared-elements.js'
 
 export interface CompetingInterestsForm {
   readonly competingInterests: E.Either<MissingE, 'yes' | 'no' | undefined>

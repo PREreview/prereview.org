@@ -1,17 +1,24 @@
+import { pipe } from 'effect'
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../../html.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 
-export const failureMessage = StreamlinePageResponse({
-  status: Status.ServiceUnavailable,
-  title: plainText`Sorry, we’re having problems`,
-  main: html`
-    <h1>Sorry, we’re having problems</h1>
+const mailToHelpLink = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()
 
-    <p>We were unable to add your name to the PREreview. We saved your work.</p>
+export const failureMessage = (locale: SupportedLocale) => {
+  const t = translate(locale, 'author-invite-flow')
+  return StreamlinePageResponse({
+    status: Status.ServiceUnavailable,
+    title: pipe(t('sorryHavingProblems')(), plainText),
+    main: html`
+      <h1>${t('sorryHavingProblems')()}</h1>
 
-    <p>Please try again later by coming back to this page.</p>
+      <p>${t('unableToAddYourNameWorkHasBeenSaved')()}</p>
 
-    <p>If this problem persists, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
-  `,
-})
+      <p>${t('comeBackLater')()}</p>
+
+      <p>${pipe(t('getInTouch')({ link: mailToHelpLink }), rawHtml)}</p>
+    `,
+  })
+}

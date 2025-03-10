@@ -1,10 +1,11 @@
-import { HttpClient, HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { Effect, pipe, TestContext, Tuple } from 'effect'
+import { Effect, pipe, Tuple } from 'effect'
 import * as _ from '../../src/JapanLinkCenter/Record.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('getRecord', () => {
@@ -33,7 +34,7 @@ describe('getRecord', () => {
       yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
       expect(clientSpy).toHaveBeenCalledWith(HttpClientRequest.get(expectedUrl))
-    }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+    }).pipe(EffectTest.run),
   )
 
   describe('with a response', () => {
@@ -179,7 +180,7 @@ describe('getRecord', () => {
                 publication_date: Temporal.PlainDate.from('2025-01-28'),
               }),
             )
-          }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+          }).pipe(EffectTest.run),
         )
       })
 
@@ -197,7 +198,7 @@ describe('getRecord', () => {
             expect(actual.cause).toStrictEqual(
               expect.objectContaining({ _tag: expect.stringMatching(/^ParseError|ResponseError$/) }),
             )
-          }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+          }).pipe(EffectTest.run),
         )
       })
     })
@@ -214,7 +215,7 @@ describe('getRecord', () => {
 
           expect(actual._tag).toStrictEqual('RecordIsNotFound')
           expect(actual.cause).toStrictEqual(expect.objectContaining({ status: 404 }))
-        }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+        }).pipe(EffectTest.run),
       )
     })
 
@@ -232,39 +233,32 @@ describe('getRecord', () => {
 
             expect(actual._tag).toStrictEqual('RecordIsUnavailable')
             expect(actual.cause).toStrictEqual(expect.objectContaining({ status }))
-          }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+          }).pipe(EffectTest.run),
       )
     })
   })
 
   describe('with a request error', () => {
-    test.prop([fc.doi(), fc.constantFrom('Transport', 'Encode', 'InvalidUrl')])('returns unavailable', (doi, reason) =>
+    test.prop([fc.doi(), fc.httpClientRequestError()])('returns unavailable', (doi, error) =>
       Effect.gen(function* () {
-        const client = stubbedFailingClient(request => new HttpClientError.RequestError({ request, reason }))
+        const client = stubbedFailingClient(() => error)
         const actual = yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
         expect(actual._tag).toStrictEqual('RecordIsUnavailable')
-        expect(actual.cause).toStrictEqual(expect.objectContaining({ _tag: 'RequestError', reason }))
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+        expect(actual.cause).toStrictEqual(error)
+      }).pipe(EffectTest.run),
     )
   })
 
   describe('with a response error', () => {
-    test.prop([fc.doi(), fc.constantFrom('StatusCode', 'Decode', 'EmptyBody')])('returns unavailable', (doi, reason) =>
+    test.prop([fc.doi(), fc.httpClientResponseError()])('returns unavailable', (doi, error) =>
       Effect.gen(function* () {
-        const client = stubbedFailingClient(
-          request =>
-            new HttpClientError.ResponseError({
-              request,
-              response: HttpClientResponse.fromWeb(request, new Response()),
-              reason,
-            }),
-        )
+        const client = stubbedFailingClient(() => error)
         const actual = yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
         expect(actual._tag).toStrictEqual('RecordIsUnavailable')
-        expect(actual.cause).toStrictEqual(expect.objectContaining({ _tag: 'ResponseError', reason }))
-      }).pipe(Effect.provide(TestContext.TestContext), Effect.runPromise),
+        expect(actual.cause).toStrictEqual(error)
+      }).pipe(EffectTest.run),
     )
   })
 })

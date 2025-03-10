@@ -10,6 +10,7 @@ import { type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.js
 import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../contact-email-address.js'
 import type { Html } from '../../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
+import { DefaultLocale } from '../../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   authorInviteCheckMatch,
@@ -48,6 +49,7 @@ export const authorInviteNeedToVerifyEmailAddress = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.let('inviteId', () => id),
     RTE.bindW('invite', ({ user }) =>
       pipe(
@@ -74,9 +76,9 @@ export const authorInviteNeedToVerifyEmailAddress = ({
           .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
           .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound)
-          .with('unavailable', () => havingProblemsPage)
-          .with('wrong-user', () => noPermissionPage)
+          .with('not-found', () => pageNotFound(DefaultLocale))
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
+          .with('wrong-user', () => noPermissionPage(DefaultLocale))
           .exhaustive(),
       state =>
         match(state)

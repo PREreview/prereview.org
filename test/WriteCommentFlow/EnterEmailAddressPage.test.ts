@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Either, Equal, TestContext } from 'effect'
+import { Effect, Either, Equal } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import * as ContactEmailAddress from '../../src/contact-email-address.js'
@@ -10,6 +10,7 @@ import { Uuid } from '../../src/types/index.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as _ from '../../src/WriteCommentFlow/EnterEmailAddressPage/index.js'
 import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
+import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -60,8 +61,7 @@ describe('EnterEmailAddressPage', () => {
                 Effect.succeed(contactEmailAddress),
               ),
               Effect.provideService(LoggedInUser, user),
-              Effect.provide(TestContext.TestContext),
-              Effect.runPromise,
+              EffectTest.run,
             ),
         )
 
@@ -95,8 +95,7 @@ describe('EnterEmailAddressPage', () => {
               Effect.succeed(contactEmailAddress),
             ),
             Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
+            EffectTest.run,
           ),
         )
 
@@ -129,8 +128,7 @@ describe('EnterEmailAddressPage', () => {
               Effect.fail(new ContactEmailAddress.ContactEmailAddressIsNotFound()),
             ),
             Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
+            EffectTest.run,
           ),
         )
 
@@ -161,8 +159,7 @@ describe('EnterEmailAddressPage', () => {
               Effect.fail(new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
             ),
             Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
+            EffectTest.run,
           ),
         )
       })
@@ -197,8 +194,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
       )
     })
@@ -225,8 +221,7 @@ describe('EnterEmailAddressPage', () => {
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -252,8 +247,7 @@ describe('EnterEmailAddressPage', () => {
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -279,8 +273,7 @@ describe('EnterEmailAddressPage', () => {
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -305,8 +298,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
 
@@ -335,8 +327,7 @@ describe('EnterEmailAddressPage', () => {
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -361,8 +352,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
   })
@@ -381,8 +371,7 @@ describe('EnterEmailAddressPage', () => {
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
       Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 })
@@ -441,8 +430,7 @@ describe('EnterEmailAddressSubmission', () => {
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
             Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
             Effect.provideService(LoggedInUser, user),
-            Effect.provide(TestContext.TestContext),
-            Effect.runPromise,
+            EffectTest.run,
           ),
         )
       })
@@ -480,8 +468,7 @@ describe('EnterEmailAddressSubmission', () => {
           Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
       )
     })
@@ -509,8 +496,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
         Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -537,8 +523,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
         Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -565,8 +550,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
         Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -591,8 +575,7 @@ describe('EnterEmailAddressSubmission', () => {
           Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
 
@@ -622,8 +605,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
         Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
         Effect.provideService(LoggedInUser, user),
-        Effect.provide(TestContext.TestContext),
-        Effect.runPromise,
+        EffectTest.run,
       ),
     )
 
@@ -648,8 +630,7 @@ describe('EnterEmailAddressSubmission', () => {
           Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(LoggedInUser, user),
-          Effect.provide(TestContext.TestContext),
-          Effect.runPromise,
+          EffectTest.run,
         ),
     )
   })
@@ -668,8 +649,7 @@ describe('EnterEmailAddressSubmission', () => {
       Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
       Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
       Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
-      Effect.provide(TestContext.TestContext),
-      Effect.runPromise,
+      EffectTest.run,
     ),
   )
 })

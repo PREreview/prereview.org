@@ -9,6 +9,7 @@ import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { type GetPreprintEnv, type PreprintTitle, getPreprint } from '../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes.js'
@@ -38,8 +39,8 @@ export const writeReviewReviewType = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound)
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage)
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       preprint =>
@@ -75,7 +76,7 @@ export const writeReviewReviewType = ({
                   .with('no-session', () =>
                     LogInResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with(P.instanceOf(Error), () => havingProblemsPage)
+                  .with(P.instanceOf(Error), () => havingProblemsPage(DefaultLocale))
                   .exhaustive(),
               ),
             state =>
@@ -127,7 +128,7 @@ const handleReviewTypeForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage)
+          .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
           .with({ reviewType: P.any }, form => reviewTypeForm(preprint, form))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),

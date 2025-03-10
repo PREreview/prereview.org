@@ -31,7 +31,7 @@ export const getFromRedis =
         staleAt,
         response: HttpClientResponse.fromWeb(
           request,
-          new Response(response.body, {
+          new Response(response.body !== '' ? response.body : undefined, {
             status: response.status,
             headers: Headers.fromInput(response.headers),
           }),

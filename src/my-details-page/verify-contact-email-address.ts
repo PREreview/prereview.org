@@ -11,6 +11,7 @@ import {
   VerifiedContactEmailAddress,
 } from '../contact-email-address.js'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse } from '../response.js'
 import { myDetailsMatch, verifyContactEmailAddressMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -38,11 +39,11 @@ export const verifyContactEmailAddress = ({ verify, user }: { verify: Uuid; user
     RTE.matchW(
       error =>
         match(error)
-          .with('already-verified', 'not-found', 'invalid-token', () => pageNotFound)
+          .with('already-verified', 'not-found', 'invalid-token', () => pageNotFound(DefaultLocale))
           .with('no-session', () =>
             LogInResponse({ location: format(verifyContactEmailAddressMatch.formatter, { verify }) }),
           )
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
           .exhaustive(),
       () =>
         FlashMessageResponse({

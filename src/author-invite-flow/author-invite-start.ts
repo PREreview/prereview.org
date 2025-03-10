@@ -13,8 +13,9 @@ import {
   getAuthorInvite,
   saveAuthorInvite,
 } from '../author-invite.js'
-import { type Html, html, plainText } from '../html.js'
+import { type Html, html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -64,6 +65,7 @@ export const authorInviteStart = ({
     ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.apSW('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.chainFirstW(({ invite, user }) =>
       match(invite)
         .with({ status: 'open' }, invite => saveAuthorInvite(id, { ...invite, status: 'assigned', orcid: user.orcid }))
@@ -78,16 +80,16 @@ export const authorInviteStart = ({
         match(error)
           .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
           .with('no-session', () => LogInResponse({ location: format(authorInviteStartMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound)
-          .with('unavailable', () => havingProblemsPage)
-          .with('wrong-user', () => noPermissionPage)
+          .with('not-found', () => pageNotFound(DefaultLocale))
+          .with('unavailable', () => havingProblemsPage(DefaultLocale))
+          .with('wrong-user', () => noPermissionPage(DefaultLocale))
           .exhaustive(),
-      ({ invite }) =>
+      ({ invite, locale }) =>
         match(invite)
           .with({ status: 'open' }, () =>
             RedirectResponse({ location: format(authorInvitePersonaMatch.formatter, { id }) }),
           )
-          .with({ status: 'assigned' }, invite => carryOnPage(id, invite))
+          .with({ status: 'assigned' }, invite => carryOnPage(id, invite, locale))
           .with({ status: 'completed' }, () =>
             RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
           )
@@ -102,16 +104,17 @@ function nextFormMatch(invite: AssignedAuthorInvite) {
     .exhaustive()
 }
 
-function carryOnPage(inviteId: Uuid, invite: AssignedAuthorInvite) {
+function carryOnPage(inviteId: Uuid, invite: AssignedAuthorInvite, locale: SupportedLocale) {
+  const t = translate(locale, 'author-invite-flow')
   return StreamlinePageResponse({
-    title: plainText`Be listed as an author`,
+    title: pipe(t('beListed')(), plainText),
     main: html`
-      <h1>Be listed as an author</h1>
+      <h1>${t('beListed')()}</h1>
 
-      <p>As you’ve already started, we’ll take you to the next step so you can carry&nbsp;on.</p>
+      <p>${pipe(t('asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep')(), rawHtml)}</p>
 
       <a href="${format(nextFormMatch(invite).formatter, { id: inviteId })}" role="button" draggable="false"
-        >Continue</a
+        >${t('continueButton')()}</a
       >
     `,
     canonical: format(authorInviteStartMatch.formatter, { id: inviteId }),

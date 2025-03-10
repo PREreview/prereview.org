@@ -4,6 +4,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error.js'
+import { DefaultLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { disconnectSlackMatch, myDetailsMatch } from '../routes.js'
 import { type DeleteSlackUserIdEnv, deleteSlackUserId } from '../slack-user-id.js'
@@ -32,7 +33,7 @@ export const disconnectSlack = ({
         RT.of(
           match(error)
             .with('no-session', () => LogInResponse({ location: format(disconnectSlackMatch.formatter, {}) }))
-            .with(P.union('unavailable', P.instanceOf(Error)), () => havingProblemsPage)
+            .with(P.union('unavailable', P.instanceOf(Error)), () => havingProblemsPage(DefaultLocale))
             .exhaustive(),
         ),
       state =>
