@@ -26,9 +26,6 @@
   "useOfEmail": {
     "message": "crwdns3914:0crwdne3914:0"
   },
-  "saveAndContinue": {
-    "message": "crwdns3916:0crwdne3916:0"
-  },
   "back": {
     "message": "crwdns3920:0crwdne3920:0"
   },
@@ -370,5 +367,59 @@
   },
   "iAmFollowingCodeOfConduct": {
     "message": "crwdns4488:0crwdne4488:0"
+  },
+  "areTheDataPresentationsWellSuited": {
+    "message": "crwdns4739:0crwdne4739:0"
+  },
+  "selectIfDataPresentationsWellSuited": {
+    "message": "crwdns4741:0crwdne4741:0"
+  },
+  "highlyAppropriateAndClear": {
+    "message": "crwdns4743:0crwdne4743:0"
+  },
+  "highlyAppropriateAndClearTip": {
+    "message": "crwdns4745:0crwdne4745:0"
+  },
+  "highlyAppropriateAndClearWhy": {
+    "message": "crwdns4747:0crwdne4747:0"
+  },
+  "somewhatAppropriate": {
+    "message": "crwdns4749:0crwdne4749:0"
+  },
+  "somewhatAppropriateTip": {
+    "message": "crwdns4751:0crwdne4751:0"
+  },
+  "somewhatAppropriateWhy": {
+    "message": "crwdns4753:0crwdne4753:0"
+  },
+  "neitherAppropriateOrClear": {
+    "message": "crwdns4755:0crwdne4755:0"
+  },
+  "neitherAppropriateOrClearTip": {
+    "message": "crwdns4757:0crwdne4757:0"
+  },
+  "neitherAppropriateOrClearWhy": {
+    "message": "crwdns4759:0crwdne4759:0"
+  },
+  "somewhatInappropriate": {
+    "message": "crwdns4761:0crwdne4761:0"
+  },
+  "somewhatInappropriateTip": {
+    "message": "crwdns4763:0crwdne4763:0"
+  },
+  "somewhatInappropriateWhy": {
+    "message": "crwdns4765:0crwdne4765:0"
+  },
+  "highlyInappropriate": {
+    "message": "crwdns4767:0crwdne4767:0"
+  },
+  "highlyInappropriateTip": {
+    "message": "crwdns4769:0crwdne4769:0"
+  },
+  "highlyInappropriateWhy": {
+    "message": "crwdns4771:0crwdne4771:0"
+  },
+  "iDoNotKnow": {
+    "message": "crwdns4773:0crwdne4773:0"
   }
 }
