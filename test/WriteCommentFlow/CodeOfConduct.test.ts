@@ -257,7 +257,7 @@ describe('CodeOfConductSubmission', () => {
           .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
         fc.supportedLocale(),
         fc.oneof(
-          fc.record({ agree: fc.string().filter(string => string !== 'yes') }, { withDeletedKeys: true }),
+          fc.record({ agree: fc.string().filter(string => string !== 'yes') }, { requiredKeys: [] }),
           fc.anything().filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'agree'))),
         ),
       ])("when there isn't agreement", (commentId, [comment, user], locale, body) =>

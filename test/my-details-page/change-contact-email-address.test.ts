@@ -170,7 +170,7 @@ describe('changeContactEmailAddress', () => {
 
     describe('when no email address is set', () => {
       test.prop([
-        fc.record({ emailAddress: fc.constant('') }, { withDeletedKeys: true }),
+        fc.record({ emailAddress: fc.constant('') }, { requiredKeys: [] }),
         fc.user(),
         fc.contactEmailAddress(),
       ])('when there was an email address before', async (body, user, existingEmailAddress) => {
@@ -193,7 +193,7 @@ describe('changeContactEmailAddress', () => {
         })
       })
 
-      test.prop([fc.record({ emailAddress: fc.constant('') }, { withDeletedKeys: true }), fc.user()])(
+      test.prop([fc.record({ emailAddress: fc.constant('') }, { requiredKeys: [] }), fc.user()])(
         "when there wasn't an email address before",
         async (body, user) => {
           const actual = await _.changeContactEmailAddress({ body, method: 'POST', user })({

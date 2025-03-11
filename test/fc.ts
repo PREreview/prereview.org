@@ -211,7 +211,7 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
   recordModel: { [K in keyof T]: fc.Arbitrary<T[K]> },
   constraints?: TConstraints,
 ): fc.Arbitrary<
-  fc.RecordValue<{ [K in keyof T]: T[K] }, TConstraints extends undefined ? { withDeletedKeys: true } : TConstraints>
+  fc.RecordValue<{ [K in keyof T]: T[K] }, TConstraints extends undefined ? { requiredKeys: [] } : TConstraints>
 > =>
   fc
     .constantFrom(
@@ -222,7 +222,7 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
     .chain(omit =>
       fc.record(
         Object.fromEntries(Object.entries(recordModel).filter(([key]) => key !== omit)) as never,
-        (constraints ?? { withDeletedKeys: true }) as never,
+        (constraints ?? { requiredKeys: [] }) as never,
       ),
     )
 

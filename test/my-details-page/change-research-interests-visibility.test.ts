@@ -80,7 +80,7 @@ describe('changeResearchInterestsVisibility', () => {
   })
 
   test.prop([
-    fc.record({ researchInterestsVisibility: fc.string() }, { withDeletedKeys: true }),
+    fc.record({ researchInterestsVisibility: fc.string() }, { requiredKeys: [] }),
     fc.user(),
     fc.researchInterests(),
   ])('when the form has been submitted without setting visibility', async (body, user, researchInterests) => {

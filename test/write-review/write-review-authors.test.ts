@@ -432,7 +432,7 @@ describe('writeReviewAuthors', () => {
     fc.connection({
       body: fc.record(
         { moreAuthors: fc.string(), moreAuthorsApproved: fc.moreAuthorsApproved() },
-        { withDeletedKeys: true },
+        { requiredKeys: [] },
       ),
       method: fc.constant('POST'),
     }),

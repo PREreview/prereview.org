@@ -229,7 +229,7 @@ describe('writeReviewMethodsAppropriate', () => {
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.connection({
-      body: fc.record({ methodsAppropriate: fc.lorem() }, { withDeletedKeys: true }),
+      body: fc.record({ methodsAppropriate: fc.lorem() }, { requiredKeys: [] }),
       method: fc.constant('POST'),
     }),
     fc.user(),

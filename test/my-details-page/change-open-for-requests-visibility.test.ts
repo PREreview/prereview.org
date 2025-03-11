@@ -76,7 +76,7 @@ describe('changeOpenForRequestsVisibility', () => {
   })
 
   test.prop([
-    fc.record({ openForRequestsVisibility: fc.string() }, { withDeletedKeys: true }),
+    fc.record({ openForRequestsVisibility: fc.string() }, { requiredKeys: [] }),
     fc.user(),
     fc.isOpenForRequestsVisibility(),
   ])('when the form has been submitted without setting visibility', async (body, user, visibility) => {

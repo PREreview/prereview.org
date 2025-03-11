@@ -221,7 +221,7 @@ describe('writeReviewShouldRead', () => {
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.connection({
-      body: fc.record({ shouldRead: fc.lorem() }, { withDeletedKeys: true }),
+      body: fc.record({ shouldRead: fc.lorem() }, { requiredKeys: [] }),
       method: fc.constant('POST'),
     }),
     fc.user(),

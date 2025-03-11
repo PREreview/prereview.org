@@ -78,7 +78,7 @@ describe('changeLocationVisibility', () => {
     },
   )
 
-  test.prop([fc.record({ locationVisibility: fc.string() }, { withDeletedKeys: true }), fc.user(), fc.location()])(
+  test.prop([fc.record({ locationVisibility: fc.string() }, { requiredKeys: [] }), fc.user(), fc.location()])(
     'when the form has been submitted without setting visibility',
     async (body, user, location) => {
       const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))

@@ -107,7 +107,7 @@ describe('changeOpenForRequests', () => {
     },
   )
 
-  test.prop([fc.record({ openForRequests: fc.lorem() }, { withDeletedKeys: true }), fc.user()])(
+  test.prop([fc.record({ openForRequests: fc.lorem() }, { requiredKeys: [] }), fc.user()])(
     'when the form has been submitted without setting open for requests',
     async (body, user) => {
       const actual = await _.changeOpenForRequests({ body, method: 'POST', user })({

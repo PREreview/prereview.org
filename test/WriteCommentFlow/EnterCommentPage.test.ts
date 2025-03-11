@@ -262,7 +262,7 @@ describe('EnterCommentSubmission', () => {
           .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
         fc.supportedLocale(),
         fc.oneof(
-          fc.record({ comment: fc.constant('') }, { withDeletedKeys: true }),
+          fc.record({ comment: fc.constant('') }, { requiredKeys: [] }),
           fc.anything().filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'comment'))),
         ),
       ])("when there isn't a comment", (commentId, [comment, user], locale, body) =>

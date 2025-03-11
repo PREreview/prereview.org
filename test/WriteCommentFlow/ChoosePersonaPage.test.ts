@@ -262,7 +262,7 @@ describe('ChoosePersonaSubmission', () => {
         fc.oneof(
           fc.record(
             { persona: fc.string().filter(persona => !['public', 'pseudonym'].includes(persona)) },
-            { withDeletedKeys: true },
+            { requiredKeys: [] },
           ),
           fc.anything().filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'persona'))),
         ),

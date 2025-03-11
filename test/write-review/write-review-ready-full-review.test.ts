@@ -221,7 +221,7 @@ describe('writeReviewReadyFullReview', () => {
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.connection({
-      body: fc.record({ readyFullReview: fc.lorem() }, { withDeletedKeys: true }),
+      body: fc.record({ readyFullReview: fc.lorem() }, { requiredKeys: [] }),
       method: fc.constant('POST'),
     }),
     fc.user(),

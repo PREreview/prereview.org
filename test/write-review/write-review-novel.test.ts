@@ -219,7 +219,7 @@ describe('writeReviewNovel', () => {
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.connection({
-      body: fc.record({ novel: fc.lorem() }, { withDeletedKeys: true }),
+      body: fc.record({ novel: fc.lorem() }, { requiredKeys: [] }),
       method: fc.constant('POST'),
     }),
     fc.user(),

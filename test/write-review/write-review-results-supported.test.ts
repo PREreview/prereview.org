@@ -225,7 +225,7 @@ describe('writeReviewResultsSupported', () => {
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.connection({
-      body: fc.record({ resultsSupported: fc.lorem() }, { withDeletedKeys: true }),
+      body: fc.record({ resultsSupported: fc.lorem() }, { requiredKeys: [] }),
       method: fc.constant('POST'),
     }),
     fc.user(),

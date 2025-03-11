@@ -191,10 +191,7 @@ describe('writeReviewUseOfAiSubmission', () => {
       fc.preprintTitle(),
       fc.user(),
       fc.oneof(
-        fc.record(
-          { generativeAiIdeas: fc.string().filter(s => !['yes', 'no'].includes(s)) },
-          { withDeletedKeys: true },
-        ),
+        fc.record({ generativeAiIdeas: fc.string().filter(s => !['yes', 'no'].includes(s)) }, { requiredKeys: [] }),
         fc.anything(),
       ),
       fc.supportedLocale(),

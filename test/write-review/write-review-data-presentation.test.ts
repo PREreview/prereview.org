@@ -227,7 +227,7 @@ describe('writeReviewDataPresentation', () => {
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.connection({
-      body: fc.record({ dataPresentation: fc.lorem() }, { withDeletedKeys: true }),
+      body: fc.record({ dataPresentation: fc.lorem() }, { requiredKeys: [] }),
       method: fc.constant('POST'),
     }),
     fc.user(),

@@ -78,29 +78,28 @@ describe('changeCareerStageVisibility', () => {
     },
   )
 
-  test.prop([
-    fc.record({ careerStageVisibility: fc.string() }, { withDeletedKeys: true }),
-    fc.user(),
-    fc.careerStage(),
-  ])('when the form has been submitted without setting visibility', async (body, user, careerStage) => {
-    const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
+  test.prop([fc.record({ careerStageVisibility: fc.string() }, { requiredKeys: [] }), fc.user(), fc.careerStage()])(
+    'when the form has been submitted without setting visibility',
+    async (body, user, careerStage) => {
+      const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
-    const actual = await _.changeCareerStageVisibility({ body, method: 'POST', user })({
-      deleteCareerStage: shouldNotBeCalled,
-      getCareerStage: () => TE.of(careerStage),
-      saveCareerStage,
-    })()
+      const actual = await _.changeCareerStageVisibility({ body, method: 'POST', user })({
+        deleteCareerStage: shouldNotBeCalled,
+        getCareerStage: () => TE.of(careerStage),
+        saveCareerStage,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: Status.SeeOther,
-      location: format(myDetailsMatch.formatter, {}),
-    })
-    expect(saveCareerStage).toHaveBeenCalledWith(user.orcid, {
-      value: careerStage.value,
-      visibility: 'restricted',
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(myDetailsMatch.formatter, {}),
+      })
+      expect(saveCareerStage).toHaveBeenCalledWith(user.orcid, {
+        value: careerStage.value,
+        visibility: 'restricted',
+      })
+    },
+  )
 
   test.prop([fc.anything(), fc.string(), fc.user()])("there isn't a career stage", async (body, method, user) => {
     const actual = await _.changeCareerStageVisibility({ body, method, user })({

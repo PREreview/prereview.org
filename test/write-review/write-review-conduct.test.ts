@@ -208,7 +208,7 @@ describe('writeReviewConduct', () => {
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.connection({
-      body: fc.record({ conduct: fc.string() }, { withDeletedKeys: true }),
+      body: fc.record({ conduct: fc.string() }, { requiredKeys: [] }),
       method: fc.constant('POST'),
     }),
     fc.user(),

@@ -442,7 +442,7 @@ describe('EnterEmailAddressSubmission', () => {
           .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
         fc.supportedLocale(),
         fc.oneof(
-          fc.record({ emailAddress: fc.string().filter(string => !string.includes('@')) }, { withDeletedKeys: true }),
+          fc.record({ emailAddress: fc.string().filter(string => !string.includes('@')) }, { requiredKeys: [] }),
           fc
             .anything()
             .filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'emailAddress'))),

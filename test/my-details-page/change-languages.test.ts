@@ -96,7 +96,7 @@ describe('changeLanguages', () => {
     })
   })
 
-  test.prop([fc.record({ languages: fc.constant('') }, { withDeletedKeys: true }), fc.user()])(
+  test.prop([fc.record({ languages: fc.constant('') }, { requiredKeys: [] }), fc.user()])(
     'when the form has been submitted without setting languages',
     async (body, user) => {
       const deleteLanguages = jest.fn<_.Env['deleteLanguages']>(_ => TE.right(undefined))

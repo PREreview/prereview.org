@@ -32,7 +32,7 @@ export const coarReviewActionOfferPayload = (): fc.Arbitrary<CoarReviewActionOff
 
 export const newPrereview = (): fc.Arbitrary<NewPrereview> =>
   fc.record({
-    preprint: fc.record({ doi: fc.doi() }, { withDeletedKeys: true }),
+    preprint: fc.record({ doi: fc.doi() }, { requiredKeys: [] }),
     doi: fc.doi(),
     url: fc.url(),
     author: fc.record({

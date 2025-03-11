@@ -105,7 +105,7 @@ describe('changeResearchInterests', () => {
     },
   )
 
-  test.prop([fc.record({ researchInterests: fc.constant('') }, { withDeletedKeys: true }), fc.user()])(
+  test.prop([fc.record({ researchInterests: fc.constant('') }, { requiredKeys: [] }), fc.user()])(
     'when the form has been submitted without setting research interests',
     async (body, user) => {
       const deleteResearchInterests = jest.fn<_.Env['deleteResearchInterests']>(_ => TE.right(undefined))

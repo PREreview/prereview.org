@@ -148,10 +148,10 @@ describe('writeReviewCompetingInterests', () => {
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.oneof(
-      fc.record({ competingInterests: fc.string() }, { withDeletedKeys: true }),
+      fc.record({ competingInterests: fc.string() }, { requiredKeys: [] }),
       fc.record(
         { competingInterests: fc.constant('yes'), competingInterestsDetails: fc.constant('') },
-        { withDeletedKeys: true },
+        { requiredKeys: [] },
       ),
     ),
     fc.user(),

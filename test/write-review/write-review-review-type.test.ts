@@ -177,7 +177,7 @@ describe('writeReviewReviewType', () => {
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprint(),
-    fc.record({ reviewType: fc.lorem() }, { withDeletedKeys: true }),
+    fc.record({ reviewType: fc.lorem() }, { requiredKeys: [] }),
     fc.user(),
     fc.form(),
   ])(

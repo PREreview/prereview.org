@@ -78,7 +78,7 @@ describe('changeLanguagesVisibility', () => {
     },
   )
 
-  test.prop([fc.record({ languagesVisibility: fc.string() }, { withDeletedKeys: true }), fc.user(), fc.languages()])(
+  test.prop([fc.record({ languagesVisibility: fc.string() }, { requiredKeys: [] }), fc.user(), fc.languages()])(
     'when the form has been submitted without setting visibility',
     async (body, user, languages) => {
       const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))

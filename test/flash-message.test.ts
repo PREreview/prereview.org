@@ -19,7 +19,7 @@ describe('deleteFlashMessage', () => {
     expect(actual).toStrictEqual(E.right([{ type: 'clearCookie', name: 'flash-message', options: { httpOnly: true } }]))
   })
 
-  test.prop([fc.connection<HeadersOpen>({ headers: fc.record({ Cookie: fc.string() }, { withDeletedKeys: true }) })])(
+  test.prop([fc.connection<HeadersOpen>({ headers: fc.record({ Cookie: fc.string() }, { requiredKeys: [] }) })])(
     "when there isn't a message",
     async connection => {
       const actual = await runMiddleware(_.deleteFlashMessage, connection)()
@@ -54,7 +54,7 @@ describe('getFlashMessage', () => {
             fc.string().map(message => `flash-message="${encodeURIComponent(message)}"`),
           ),
         },
-        { withDeletedKeys: true },
+        { requiredKeys: [] },
       ),
     }),
   ])("when the message can't be decoded", async connection => {

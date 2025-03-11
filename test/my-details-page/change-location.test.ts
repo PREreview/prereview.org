@@ -96,7 +96,7 @@ describe('changeLocation', () => {
     })
   })
 
-  test.prop([fc.record({ location: fc.constant('') }, { withDeletedKeys: true }), fc.user()])(
+  test.prop([fc.record({ location: fc.constant('') }, { requiredKeys: [] }), fc.user()])(
     'when the form has been submitted without setting a location',
     async (body, user) => {
       const deleteLocation = jest.fn<_.Env['deleteLocation']>(_ => TE.right(undefined))

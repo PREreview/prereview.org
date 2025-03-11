@@ -398,7 +398,7 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.string(),
     fc.connection({
-      headers: fc.record({ Cookie: fc.lorem() }, { withDeletedKeys: true }),
+      headers: fc.record({ Cookie: fc.lorem() }, { requiredKeys: [] }),
     }),
     fc.html(),
   ])(

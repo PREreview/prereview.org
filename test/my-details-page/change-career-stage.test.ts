@@ -119,7 +119,7 @@ describe('changeCareerStage', () => {
     expect(deleteCareerStage).toHaveBeenCalledWith(user.orcid)
   })
 
-  test.prop([fc.record({ careerStage: fc.lorem() }, { withDeletedKeys: true }), fc.user()])(
+  test.prop([fc.record({ careerStage: fc.lorem() }, { requiredKeys: [] }), fc.user()])(
     'when the form has been submitted without setting career stage',
     async (body, user) => {
       const actual = await _.changeCareerStage({ body, method: 'POST', user })({

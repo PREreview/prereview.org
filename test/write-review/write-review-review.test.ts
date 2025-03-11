@@ -163,7 +163,7 @@ describe('writeReviewReview', () => {
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
-    fc.record({ review: fc.constant('') }, { withDeletedKeys: true }),
+    fc.record({ review: fc.constant('') }, { requiredKeys: [] }),
     fc.user(),
     fc.freeformForm(),
   ])('without a review', async (preprintId, preprintTitle, body, user, newReview) => {

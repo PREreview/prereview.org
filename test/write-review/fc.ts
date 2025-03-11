@@ -20,7 +20,7 @@ export const introductionMatchesDetails = (): fc.Arbitrary<Required<Form>['intro
         partly: fc.nonEmptyString(),
         no: fc.nonEmptyString(),
       },
-      { withDeletedKeys: true },
+      { requiredKeys: [] },
     ),
     fc.constant({}),
   )
@@ -45,7 +45,7 @@ export const methodsAppropriateDetails = (): fc.Arbitrary<Required<Form>['method
         'mostly-appropriate': fc.nonEmptyString(),
         'highly-appropriate': fc.nonEmptyString(),
       },
-      { withDeletedKeys: true },
+      { requiredKeys: [] },
     ),
     fc.constant({}),
   )
@@ -63,7 +63,7 @@ export const resultsSupportedDetails = (): fc.Arbitrary<Required<Form>['resultsS
         'well-supported': fc.nonEmptyString(),
         'strongly-supported': fc.nonEmptyString(),
       },
-      { withDeletedKeys: true },
+      { requiredKeys: [] },
     ),
     fc.constant({}),
   )
@@ -88,7 +88,7 @@ export const dataPresentationDetails = (): fc.Arbitrary<Required<Form>['dataPres
         'mostly-appropriate-clear': fc.nonEmptyString(),
         'highly-appropriate-clear': fc.nonEmptyString(),
       },
-      { withDeletedKeys: true },
+      { requiredKeys: [] },
     ),
     fc.constant({}),
   )
@@ -106,7 +106,7 @@ export const findingsNextStepsDetails = (): fc.Arbitrary<Required<Form>['finding
         'clearly-insightfully': fc.nonEmptyString(),
         exceptionally: fc.nonEmptyString(),
       },
-      { withDeletedKeys: true },
+      { requiredKeys: [] },
     ),
     fc.constant({}),
   )
@@ -124,7 +124,7 @@ export const novelDetails = (): fc.Arbitrary<Required<Form>['novelDetails']> =>
         substantial: fc.nonEmptyString(),
         highly: fc.nonEmptyString(),
       },
-      { withDeletedKeys: true },
+      { requiredKeys: [] },
     ),
     fc.constant({}),
   )
@@ -138,7 +138,7 @@ export const languageEditingDetails = (): fc.Arbitrary<Required<Form>['languageE
         yes: fc.nonEmptyString(),
         no: fc.nonEmptyString(),
       },
-      { withDeletedKeys: true },
+      { requiredKeys: [] },
     ),
     fc.constant({}),
   )
@@ -153,7 +153,7 @@ export const shouldReadDetails = (): fc.Arbitrary<Required<Form>['shouldReadDeta
         'yes-but': fc.nonEmptyString(),
         no: fc.nonEmptyString(),
       },
-      { withDeletedKeys: true },
+      { requiredKeys: [] },
     ),
     fc.constant({}),
   )
@@ -169,7 +169,7 @@ export const readyFullReviewDetails = (): fc.Arbitrary<Required<Form>['readyFull
         'yes-changes': fc.nonEmptyString(),
         no: fc.nonEmptyString(),
       },
-      { withDeletedKeys: true },
+      { requiredKeys: [] },
     ),
     fc.constant({}),
   )
@@ -232,7 +232,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
             review: fc.html(),
             otherAuthors: otherAuthors(),
           },
-          { withDeletedKeys: true },
+          { requiredKeys: [] },
         ),
         fc.constant({}),
       ),
@@ -280,7 +280,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             reviewType: fc.constant('freeform'),
             otherAuthors: otherAuthors(),
           },
-          { withDeletedKeys: true },
+          { requiredKeys: [] },
         ),
         fc.constant({}),
       ),

@@ -219,7 +219,7 @@ describe('writeReviewLanguageEditing', () => {
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.connection({
-      body: fc.record({ languageEditing: fc.lorem() }, { withDeletedKeys: true }),
+      body: fc.record({ languageEditing: fc.lorem() }, { requiredKeys: [] }),
       method: fc.constant('POST'),
     }),
     fc.user(),

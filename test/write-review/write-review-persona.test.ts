@@ -216,7 +216,7 @@ describe('writeReviewPersona', () => {
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.connection({
-      body: fc.record({ persona: fc.string() }, { withDeletedKeys: true }),
+      body: fc.record({ persona: fc.string() }, { requiredKeys: [] }),
       method: fc.constant('POST'),
     }),
     fc.user(),

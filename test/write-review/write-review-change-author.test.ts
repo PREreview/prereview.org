@@ -51,7 +51,7 @@ describe('writeReviewChangeAuthor', () => {
             name: fc.anything().filter(value => typeof value !== 'string' || value === ''),
             emailAddress: fc.anything().filter(value => typeof value !== 'string' || !value.includes('@')),
           },
-          { withDeletedKeys: true },
+          { requiredKeys: [] },
         ),
       ),
       fc

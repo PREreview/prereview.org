@@ -130,7 +130,7 @@ describe('reviewAPreprint', () => {
     })
   })
 
-  test.prop([fc.record({ preprint: fc.string() }, { withDeletedKeys: true })])('with a non-DOI', async body => {
+  test.prop([fc.record({ preprint: fc.string() }, { requiredKeys: [] })])('with a non-DOI', async body => {
     const actual = await _.reviewAPreprint({ body, method: 'POST' })({ doesPreprintExist: shouldNotBeCalled })()
 
     expect(actual).toStrictEqual({

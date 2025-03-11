@@ -93,25 +93,25 @@ describe('changeAvatar', () => {
     })
   })
 
-  test.prop([
-    fc.oneof(fc.anything(), fc.record({ avatar: fc.constant('ERROR') }, { withDeletedKeys: true })),
-    fc.user(),
-  ])('when the avatar is missing', async (body, user) => {
-    const actual = await _.changeAvatar({ body, method: 'POST', user })({
-      saveAvatar: shouldNotBeCalled,
-    })()
+  test.prop([fc.oneof(fc.anything(), fc.record({ avatar: fc.constant('ERROR') }, { requiredKeys: [] })), fc.user()])(
+    'when the avatar is missing',
+    async (body, user) => {
+      const actual = await _.changeAvatar({ body, method: 'POST', user })({
+        saveAvatar: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      canonical: format(changeAvatarMatch.formatter, {}),
-      status: Status.BadRequest,
-      title: expect.anything(),
-      nav: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'form',
-      js: ['error-summary.js', 'single-use-form.js'],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(changeAvatarMatch.formatter, {}),
+        status: Status.BadRequest,
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'form',
+        js: ['error-summary.js', 'single-use-form.js'],
+      })
+    },
+  )
 
   test.prop([fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user()])(
     'when the form needs to be submitted',

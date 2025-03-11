@@ -273,11 +273,11 @@ describe('CompetingInterestsSubmission', () => {
               competingInterests: fc.string().filter(competingInterests => !['no', 'yes'].includes(competingInterests)),
               competingInterestsDetails: fc.anything(),
             },
-            { withDeletedKeys: true },
+            { requiredKeys: [] },
           ),
           fc.record(
             { competingInterests: fc.constant('yes'), competingInterestsDetails: fc.constant('') },
-            { withDeletedKeys: true },
+            { requiredKeys: [] },
           ),
           fc
             .anything()
