@@ -1,3 +1,4 @@
+import type { Doi } from 'doi-ts'
 import { flow, identity, pipe } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
@@ -131,6 +132,7 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
 
 export const sendPrereviewToPrereviewCoarNotifyInbox = (
   newPrereview: NewPrereview,
+  doi: Doi,
   id: number,
 ): RTE.ReaderTaskEither<F.FetchEnv & LoggerEnv & PrereviewCoarNotifyEnv & PublicUrlEnv, 'unavailable', void> =>
   pipe(
@@ -145,6 +147,10 @@ export const sendPrereviewToPrereviewCoarNotifyInbox = (
     ),
     RTE.apSW('prereviewUrl', RTE.rightReader(toUrl(reviewMatch.formatter, { id }))),
     RTE.let('newPrereview', ({ prereviewUrl }) => ({
+      preprint: match(newPrereview.preprint.id)
+        .with({ type: 'philsci' }, () => ({}))
+        .otherwise(id => ({ doi: id.value })),
+      doi,
       url: prereviewUrl,
       author: match(newPrereview.persona)
         .with('public', () => ({ name: newPrereview.user.name }))

@@ -1,3 +1,4 @@
+import type { Doi } from 'doi-ts'
 import { flow, Function, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -5,6 +6,8 @@ import { Status } from 'hyper-ts'
 import * as L from 'logger-fp-ts'
 
 export interface NewPrereview {
+  preprint: { doi?: Doi }
+  doi: Doi
   url: URL
   author: {
     name: string

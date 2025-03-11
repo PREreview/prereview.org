@@ -413,7 +413,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
         ),
       ),
     ),
-    RTE.chainFirstReaderIOKW(([, review]) => sendPrereviewToPrereviewCoarNotifyInbox(newPrereview, review)),
+    RTE.chainFirstReaderIOKW(([doi, review]) => sendPrereviewToPrereviewCoarNotifyInbox(newPrereview, doi, review)),
     RTE.chainFirstReaderIOKW(([, review]) => triggerRefreshOfPrereview(review, newPrereview.user)),
   )
 
