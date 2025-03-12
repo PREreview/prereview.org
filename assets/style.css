@@ -1118,7 +1118,6 @@ label {
   min-inline-size: 4em;
   padding-block: var(--space-2xs);
   padding-inline: var(--space-xs);
-  transform: translateZ(0);
   border: var(--width-divider) solid var(--color-link);
   border-radius: var(--radius-divider);
   color: var(--color-link);
@@ -1154,7 +1153,6 @@ label {
   }
 
   &:not([aria-disabled='true']) {
-    transition: filter 0.2s;
     cursor: pointer;
 
     &:hover {
