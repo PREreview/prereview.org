@@ -18,7 +18,10 @@ export const getCommentsForPrereviewFromZenodo = (
       access_status: 'open',
     }),
     getCommunityRecords,
-    Effect.orElseFail(() => 'unavailable' as const),
     Effect.andThen(record => Effect.forEach(record.hits.hits, transformRecordToCommentWithoutText)),
+    Effect.tapErrorTag('NoTextUrlAvailable', cause =>
+      Effect.logError('Zenodo record of a comment does not have a text url').pipe(Effect.annotateLogs({ cause })),
+    ),
+    Effect.orElseFail(() => 'unavailable' as const),
     Effect.andThen(Effect.forEach(addCommentText)),
   )
