@@ -2,65 +2,68 @@ import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { reviewAPreprintMatch } from '../routes.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
 
 export function createUnknownPreprintWithDoiPage(
   preprint: Extract<IndeterminatePreprintId, { value: Doi }>,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   locale: SupportedLocale,
 ) {
+  const t = translate(locale)
+
   return PageResponse({
     status: Status.BadRequest,
-    title: plainText`Sorry, we don’t know this preprint`,
+    title: plainText(t('review-a-preprint', 'dontKnowPreprint')()),
     main: html`
-      <h1>Sorry, we don’t know this preprint</h1>
+      <h1>${t('review-a-preprint', 'dontKnowPreprint')()}</h1>
 
       <p>
-        We think the DOI <q class="select-all" translate="no">${preprint.value}</q> could be
-        ${match(preprint.type)
-          .with('advance', () => 'an Advance')
-          .with('africarxiv', () => 'an AfricArXiv')
-          .with('arcadia-science', () => 'an Arcadia Science')
-          .with('arxiv', () => 'an arXiv')
-          .with('authorea', () => 'an Authorea')
-          .with('biorxiv', () => 'a bioRxiv')
-          .with('biorxiv-medrxiv', () => 'a bioRxiv or medRxiv')
-          .with('chemrxiv', () => 'a ChemRxiv')
-          .with('curvenote', () => 'a Curvenote')
-          .with('eartharxiv', () => 'an EarthArXiv')
-          .with('ecoevorxiv', () => 'an EcoEvoRxiv')
-          .with('edarxiv', () => 'an EdArXiv')
-          .with('engrxiv', () => 'an engrXiv')
-          .with('jxiv', () => 'a Jxiv')
-          .with('medrxiv', () => 'a medRxiv')
-          .with('metaarxiv', () => 'a MetaArXiv')
-          .with('osf', 'osf-preprints', () => 'an OSF')
-          .with('preprints.org', () => 'a Preprints.org')
-          .with('psyarxiv', () => 'a PsyArXiv')
-          .with('psycharchives', () => 'a PsychArchives')
-          .with('research-square', () => 'a Research Square')
-          .with('scielo', () => 'a SciELO')
-          .with('science-open', () => 'a ScienceOpen')
-          .with('socarxiv', () => 'a SocArXiv')
-          .with('techrxiv', () => 'a TechRxiv')
-          .with('verixiv', () => 'a VeriXiv')
-          .with('zenodo', () => 'a Zenodo')
-          .with('zenodo-africarxiv', () => 'a Zenodo or AfricArXiv')
-          .exhaustive()}
-        preprint, but we can’t find any details.
+        ${rawHtml(
+          match(preprint.type)
+            .with('advance', () => t('review-a-preprint', 'doiCouldBeAdvance'))
+            .with('africarxiv', () => t('review-a-preprint', 'doiCouldBeAfricarxiv'))
+            .with('arcadia-science', () => t('review-a-preprint', 'doiCouldBeArcadiaScience'))
+            .with('arxiv', () => t('review-a-preprint', 'doiCouldBeArxiv'))
+            .with('authorea', () => t('review-a-preprint', 'doiCouldBeAuthorea'))
+            .with('biorxiv', () => t('review-a-preprint', 'doiCouldBeBiorxiv'))
+            .with('biorxiv-medrxiv', () => t('review-a-preprint', 'doiCouldBeBiorxivMedrxiv'))
+            .with('chemrxiv', () => t('review-a-preprint', 'doiCouldBeChemrxiv'))
+            .with('curvenote', () => t('review-a-preprint', 'doiCouldBeCurvenote'))
+            .with('eartharxiv', () => t('review-a-preprint', 'doiCouldBeEartharxiv'))
+            .with('ecoevorxiv', () => t('review-a-preprint', 'doiCouldBeEcoevorxiv'))
+            .with('edarxiv', () => t('review-a-preprint', 'doiCouldBeEdarxiv'))
+            .with('engrxiv', () => t('review-a-preprint', 'doiCouldBeEngrxiv'))
+            .with('jxiv', () => t('review-a-preprint', 'doiCouldBeJxiv'))
+            .with('medrxiv', () => t('review-a-preprint', 'doiCouldBeMedrxiv'))
+            .with('metaarxiv', () => t('review-a-preprint', 'doiCouldBeMetaarxiv'))
+            .with('osf', 'osf-preprints', () => t('review-a-preprint', 'doiCouldBeOsf'))
+            .with('preprints.org', () => t('review-a-preprint', 'doiCouldBePreprintsorg'))
+            .with('psyarxiv', () => t('review-a-preprint', 'doiCouldBePsyarxiv'))
+            .with('psycharchives', () => t('review-a-preprint', 'doiCouldBePsycharchives'))
+            .with('research-square', () => t('review-a-preprint', 'doiCouldBeResearchSquare'))
+            .with('scielo', () => t('review-a-preprint', 'doiCouldBeScielo'))
+            .with('science-open', () => t('review-a-preprint', 'doiCouldBeScienceOpen'))
+            .with('socarxiv', () => t('review-a-preprint', 'doiCouldBeSocarxiv'))
+            .with('techrxiv', () => t('review-a-preprint', 'doiCouldBeTechrxiv'))
+            .with('verixiv', () => t('review-a-preprint', 'doiCouldBeVerixiv'))
+            .with('zenodo', () => t('review-a-preprint', 'doiCouldBeZenodo'))
+            .with('zenodo-africarxiv', () => t('review-a-preprint', 'doiCouldBeZenodoAfricarxiv'))
+            .exhaustive()({ doi: html`<q class="select-all" translate="no">${preprint.value}</q>`.toString() }),
+        )}
       </p>
 
-      <p>If you typed the DOI, check it is correct.</p>
+      <p>${t('review-a-preprint', 'checkCorrectDoi')()}</p>
 
-      <p>If you pasted the DOI, check you copied the entire address.</p>
+      <p>${t('review-a-preprint', 'checkPastedDoi')()}</p>
 
-      <p>If the DOI is correct, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+      <p>${rawHtml(t('review-a-preprint', 'doiIsCorrect')({ contact: mailToHelp }))}</p>
 
-      <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Back</a>
+      <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">${t('review-a-preprint', 'back')()}</a>
     `,
   })
 }
+
+const mailToHelp = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()
