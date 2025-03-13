@@ -16,7 +16,16 @@ describe('pickOutTextUrl', () => {
   })
 
   describe('given there are multiple urls to the comment text', () => {
-    it.todo('fails')
+    it.failing.prop([fc.url(), fc.url()])('returns none', (url1, url2) => {
+      const files = [
+        { key: 'index.html', links: { self: url1 } },
+        { key: 'index2.html', links: { self: url2 } },
+      ] satisfies _.ZenodoRecordForAComment['files']
+
+      const result = _.pickOutTextUrl(files)
+
+      expect(result).toStrictEqual(Option.none())
+    })
   })
 
   describe('given there is no url to the comment text', () => {
