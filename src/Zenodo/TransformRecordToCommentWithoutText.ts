@@ -3,14 +3,12 @@ import type * as Doi from 'doi-ts'
 import { type Array, Either, ParseResult, Schema } from 'effect'
 import type { Record } from 'zenodo-ts'
 import type * as ReviewPage from '../review-page/index.js'
-import type * as Iso639 from '../types/iso639.js'
+import * as Iso639 from '../types/iso639.js'
 import * as Orcid from '../types/Orcid.js'
 
 export type CommentWithoutText = Omit<ReviewPage.Comment, 'text'> & { textUrl: URL }
 
 declare const DoiSchema: Schema.Schema<Doi.Doi, unknown>
-
-declare const Iso6393Schema: Schema.Schema<Iso639.Iso6393Code, unknown>
 
 const PlainDateSchema: Schema.Schema<Temporal.PlainDate, string> = Schema.transformOrFail(
   Schema.String,
@@ -47,7 +45,7 @@ const ZenodoRecordForACommentSchema = () =>
         }),
       ),
       doi: DoiSchema,
-      language: Iso6393Schema,
+      language: Iso639.Iso6393Schema,
       license: Schema.Struct({
         id: Schema.Literal('CC-BY-4.0'),
       }),

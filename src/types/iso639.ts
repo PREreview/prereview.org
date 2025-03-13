@@ -1,3 +1,4 @@
+import { pipe, Schema } from 'effect'
 import type { LanguageCode as Iso6391Code } from 'iso-639-1'
 import type iso6393 from 'iso-639-3/to-1.json'
 
@@ -5,6 +6,8 @@ export type Iso6393Code = keyof Omit<typeof iso6393, 'hbs'>
 
 export const iso6393Validate = (code: string): code is Iso6393Code =>
   Object.prototype.hasOwnProperty.call(iso6393To1Mapping, code)
+
+export const Iso6393Schema = pipe(Schema.String, Schema.filter(iso6393Validate))
 
 export const iso6393To1 = (code: Iso6393Code): Iso6391Code => iso6393To1Mapping[code]
 
