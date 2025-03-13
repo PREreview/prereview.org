@@ -236,6 +236,36 @@
   "writeAPrereview": {
     "message": "Write a PREreview"
   },
+  "authoredBy": {
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors}"
+  },
+  "posted": {
+    "message": "Posted"
+  },
+  "server": {
+    "message": "Server"
+  },
+  "itemId": {
+    "message": "Item ID"
+  },
+  "youCanWriteAPrereview": {
+    "message": "You can write a PREreview of {preprintTitle}. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a journal-organized peer-review report."
+  },
+  "beforeStartHeading": {
+    "message": "Before you start"
+  },
+  "orcidLogIn": {
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one."
+  },
+  "whatIsOrcidHeading": {
+    "message": "What is an ORCID iD?"
+  },
+  "whatIsOrcid": {
+    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name."
+  },
+  "startNowButton": {
+    "message": "Start now"
+  },
   "continueWord": {
     "message": "Continue"
   },

@@ -4,8 +4,8 @@ import { format } from 'fp-ts-routing'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
-import type { SupportedLocale } from '../../locales/index.js'
+import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { Preprint } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../routes.js'
@@ -14,14 +14,14 @@ import type { User } from '../../user.js'
 
 export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: User) =>
   StreamlinePageResponse({
-    title: plainText`Write a PREreview`,
+    title: plainText(translate(locale, 'write-review', 'writeAPrereview')()),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>Back to preprint</span></a
+        ><span>${translate(locale, 'write-review', 'backToPreprint')()}</span></a
       >
     `,
     main: html`
-      <h1>Write a PREreview</h1>
+      <h1>${translate(locale, 'write-review', 'writeAPrereview')()}</h1>
 
       <article class="preview" tabindex="0" aria-labelledby="preprint-title">
         <header>
@@ -34,21 +34,29 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: Us
           </h2>
 
           <div class="byline">
-            <span class="visually-hidden">Authored</span> by
-            ${pipe(
-              preprint.authors,
-              RNEA.map(author => author.name),
-              formatList(locale),
+            ${rawHtml(
+              translate(
+                locale,
+                'write-review',
+                'authoredBy',
+              )({
+                authors: pipe(
+                  preprint.authors,
+                  RNEA.map(author => author.name),
+                  formatList(locale),
+                ).toString(),
+                ...visuallyHidden,
+              }),
             )}
           </div>
 
           <dl>
             <div>
-              <dt>Posted</dt>
+              <dt>${translate(locale, 'write-review', 'posted')()}</dt>
               <dd>${renderDate(locale)(preprint.posted)}</dd>
             </div>
             <div>
-              <dt>Server</dt>
+              <dt>${translate(locale, 'write-review', 'server')()}</dt>
               <dd>
                 ${match(preprint.id.type)
                   .with('advance', () => 'Advance')
@@ -87,7 +95,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: Us
                 { type: 'philsci' },
                 id => html`
                   <div>
-                    <dt>Item ID</dt>
+                    <dt>${translate(locale, 'write-review', 'itemId')()}</dt>
                     <dd>${id.value}</dd>
                   </div>
                 `,
@@ -115,34 +123,47 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: Us
       </article>
 
       <p>
-        You can write a PREreview of
-        <cite lang="${preprint.title.language}" dir="${rtlDetect.getLangDir(preprint.title.language)}"
-          >${preprint.title.text}</cite
-        >. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a
-        journal-organized peer-review report.
+        ${rawHtml(
+          translate(
+            locale,
+            'write-review',
+            'youCanWriteAPrereview',
+          )({
+            preprintTitle: html`<cite
+              lang="${preprint.title.language}"
+              dir="${rtlDetect.getLangDir(preprint.title.language)}"
+              >${preprint.title.text}</cite
+            >`.toString(),
+          }),
+        )}
       </p>
 
       ${user
         ? ''
         : html`
-            <h2>Before you start</h2>
+            <h2>${translate(locale, 'write-review', 'beforeStartHeading')()}</h2>
 
-            <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
+            <p>${translate(locale, 'write-review', 'orcidLogIn')()}</p>
 
             <details>
-              <summary><span>What is an ORCID&nbsp;iD?</span></summary>
+              <summary><span>${translate(locale, 'write-review', 'whatIsOrcidHeading')()}</span></summary>
 
               <div>
                 <p>
-                  An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a unique identifier that distinguishes
-                  you from everyone with the same or similar name.
+                  ${rawHtml(
+                    translate(
+                      locale,
+                      'write-review',
+                      'whatIsOrcid',
+                    )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString() }),
+                  )}
                 </p>
               </div>
             </details>
           `}
 
       <a href="${format(writeReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
-        >Start now</a
+        >${translate(locale, 'write-review', 'startNowButton')()}</a
       >
     `,
     canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
@@ -158,4 +179,8 @@ function formatList(
     list => formatter.format(list),
     rawHtml,
   )
+}
+
+const visuallyHidden: { visuallyHidden: (x: string) => string } = {
+  visuallyHidden: s => html`<span class="visually-hidden">${s}</span>`.toString(),
 }
