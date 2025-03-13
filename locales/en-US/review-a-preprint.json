@@ -1,0 +1,26 @@
+{
+  "whichPreprint": {
+    "message": "<error>Error:</error> Which preprint are you reviewing?"
+  },
+  "useDoiUrl": {
+    "message": "Use the preprint DOI or URL."
+  },
+  "whatIsDoi": {
+    "message": "What is a DOI?"
+  },
+  "whatIsDoiText": {
+    "message": "A <doi>DOI</doi> is a unique identifier that you can find on many preprints. For example, {example} or {exampleUrl}."
+  },
+  "errorSummaryTitle": {
+    "message": "There is a problem"
+  },
+  "errorEnterPreprint": {
+    "message": "<error>Error:</error> Enter the preprint DOI or URL"
+  },
+  "continueButton": {
+    "message": "Continue"
+  },
+  "back": {
+    "message": "Back"
+  }
+}
