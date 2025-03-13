@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { Preprint } from '../../src/preprint.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
 import type { User } from '../../src/user.js'
@@ -11,7 +12,7 @@ import { expect, test } from '../base.js'
 import PlainDate = Temporal.PlainDate
 
 test('content looks right', async ({ showPage }) => {
-  const response = startPage(preprint)
+  const response = startPage(preprint, DefaultLocale)
 
   const content = await showPage(response)
 
@@ -19,7 +20,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when logged in', async ({ showPage }) => {
-  const response = startPage(preprint, user)
+  const response = startPage(preprint, DefaultLocale, user)
 
   const content = await showPage(response)
 

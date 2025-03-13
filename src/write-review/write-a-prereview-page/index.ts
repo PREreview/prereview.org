@@ -5,7 +5,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintEnv, getPreprint } from '../../preprint.js'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewMatch, writeReviewStartMatch } from '../../routes.js'
@@ -18,9 +18,11 @@ import { startPage } from './write-a-prereview-page.js'
 
 export const writeReview = ({
   id,
+  locale,
   user,
 }: {
   id: IndeterminatePreprintId
+  locale: SupportedLocale
   user?: User
 }): RT.ReaderTask<GetPreprintEnv & FormStoreEnv, PageResponse | StreamlinePageResponse | RedirectResponse> =>
   pipe(
@@ -29,8 +31,8 @@ export const writeReview = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       preprint =>
@@ -54,15 +56,15 @@ export const writeReview = ({
             error =>
               match(error)
                 .with({ type: 'is-author' }, () => ownPreprintPage(preprint.id, writeReviewMatch.formatter))
-                .with('no-session', () => startPage(preprint))
-                .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(DefaultLocale))
+                .with('no-session', () => startPage(preprint, locale))
+                .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(locale))
                 .exhaustive(),
             state =>
               match(state)
                 .with({ form: P.when(E.isRight) }, () =>
                   RedirectResponse({ location: format(writeReviewStartMatch.formatter, { id: preprint.id }) }),
                 )
-                .with({ form: P.when(E.isLeft) }, ({ user }) => startPage(preprint, user))
+                .with({ form: P.when(E.isLeft) }, ({ user }) => startPage(preprint, locale, user))
                 .exhaustive(),
           ),
         ),

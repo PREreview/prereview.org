@@ -12,13 +12,13 @@ import * as fc from './fc.js'
 
 describe('writeReview', () => {
   describe('when there is a session', () => {
-    test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.form(), fc.user()])(
+    test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale(), fc.form(), fc.user()])(
       'there is a form already',
-      async (preprintId, preprint, newReview, user) => {
+      async (preprintId, preprint, locale, newReview, user) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
-        const actual = await _.writeReview({ id: preprintId, user })({
+        const actual = await _.writeReview({ id: preprintId, locale, user })({
           formStore,
           getPreprint: () => TE.right(preprint),
         })()
@@ -31,10 +31,10 @@ describe('writeReview', () => {
       },
     )
 
-    test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.user()])(
+    test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale(), fc.user()])(
       "there isn't a form",
-      async (preprintId, preprint, user) => {
-        const actual = await _.writeReview({ id: preprintId, user })({
+      async (preprintId, preprint, locale, user) => {
+        const actual = await _.writeReview({ id: preprintId, locale, user })({
           formStore: new Keyv(),
           getPreprint: () => TE.right(preprint),
         })()
@@ -54,9 +54,10 @@ describe('writeReview', () => {
 
     test.prop([
       fc.indeterminatePreprintId(),
+      fc.supportedLocale(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.preprint({ authors: fc.constant([user]) }))),
-    ])('the user is an author', async (preprintId, [user, preprint]) => {
-      const actual = await _.writeReview({ id: preprintId, user })({
+    ])('the user is an author', async (preprintId, locale, [user, preprint]) => {
+      const actual = await _.writeReview({ id: preprintId, locale, user })({
         formStore: new Keyv(),
         getPreprint: () => TE.right(preprint),
       })()
@@ -74,10 +75,10 @@ describe('writeReview', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprint()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale()])(
     "when there isn't a session",
-    async (preprintId, preprint) => {
-      const actual = await _.writeReview({ id: preprintId, user: undefined })({
+    async (preprintId, preprint, locale) => {
+      const actual = await _.writeReview({ id: preprintId, locale, user: undefined })({
         formStore: new Keyv(),
         getPreprint: () => TE.right(preprint),
       })()
@@ -95,10 +96,10 @@ describe('writeReview', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined })])(
+  test.prop([fc.indeterminatePreprintId(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })])(
     'when the preprint cannot be loaded',
-    async (preprintId, user) => {
-      const actual = await _.writeReview({ id: preprintId, user })({
+    async (preprintId, locale, user) => {
+      const actual = await _.writeReview({ id: preprintId, locale, user })({
         formStore: new Keyv(),
         getPreprint: () => TE.left(new PreprintIsUnavailable({})),
       })()
@@ -114,10 +115,10 @@ describe('writeReview', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined })])(
+  test.prop([fc.indeterminatePreprintId(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })])(
     'when the preprint is not found',
-    async (preprintId, user) => {
-      const actual = await _.writeReview({ id: preprintId, user })({
+    async (preprintId, locale, user) => {
+      const actual = await _.writeReview({ id: preprintId, locale, user })({
         formStore: new Keyv(),
         getPreprint: () => TE.left(new PreprintIsNotFound({})),
       })()

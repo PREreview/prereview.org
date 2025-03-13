@@ -5,14 +5,14 @@ import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
-import { DefaultLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import type { Preprint } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../routes.js'
 import { renderDate } from '../../time.js'
 import type { User } from '../../user.js'
 
-export const startPage = (preprint: Preprint, user?: User) =>
+export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: User) =>
   StreamlinePageResponse({
     title: plainText`Write a PREreview`,
     nav: html`
@@ -38,14 +38,14 @@ export const startPage = (preprint: Preprint, user?: User) =>
             ${pipe(
               preprint.authors,
               RNEA.map(author => author.name),
-              formatList(DefaultLocale),
+              formatList(locale),
             )}
           </div>
 
           <dl>
             <div>
               <dt>Posted</dt>
-              <dd>${renderDate(DefaultLocale)(preprint.posted)}</dd>
+              <dd>${renderDate(locale)(preprint.posted)}</dd>
             </div>
             <div>
               <dt>Server</dt>
