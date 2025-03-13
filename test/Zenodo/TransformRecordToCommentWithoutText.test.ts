@@ -29,6 +29,12 @@ describe('pickOutTextUrl', () => {
   })
 
   describe('given there is no url to the comment text', () => {
-    it.todo('fails')
+    it.prop([fc.url()])('returns none', url => {
+      const files = [{ key: 'index.txt', links: { self: url } }] satisfies _.ZenodoRecordForAComment['files']
+
+      const result = _.pickOutTextUrl(files)
+
+      expect(result).toStrictEqual(Option.none())
+    })
   })
 })
