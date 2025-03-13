@@ -6,7 +6,7 @@ import * as fc from '../fc.js'
 
 describe('pickOutTextUrl', () => {
   describe('given there is a url to the comment text', () => {
-    it.failing.prop([fc.url()])('succeeds', url => {
+    it.prop([fc.url()])('succeeds', url => {
       const files = [{ key: 'index.html', links: { self: url } }] satisfies _.ZenodoRecordForAComment['files']
 
       const result = pipe(_.pickOutTextUrl(files), Either.getOrThrow)

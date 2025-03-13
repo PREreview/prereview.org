@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { type Array, Data, Either, ParseResult, pipe, Schema } from 'effect'
+import { Array, Data, Either, ParseResult, pipe, Schema } from 'effect'
 import type * as ReviewPage from '../review-page/index.js'
 import * as Doi from '../types/Doi.js'
 import * as Iso639 from '../types/iso639.js'
@@ -71,8 +71,12 @@ export interface ZenodoRecordForAComment {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const pickOutTextUrl = (files: ZenodoRecordForAComment['files']) => Either.right(new URL('http://example.com'))
+export const pickOutTextUrl = (files: ZenodoRecordForAComment['files']) =>
+  pipe(
+    Array.findFirst(files, file => file.key.endsWith('.html')),
+    Either.fromOption(() => new NoTextUrlAvailable({ cause: undefined })),
+    Either.andThen(file => file.links.self),
+  )
 
 class NoTextUrlAvailable extends Data.TaggedError('NoTextUrlAvailable')<{ cause: unknown }> {}
 
