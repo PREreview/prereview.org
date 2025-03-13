@@ -1,10 +1,8 @@
-import { isDoi, type Doi } from 'doi-ts'
-import { pipe, Schema } from 'effect'
+import { Schema } from 'effect'
 import { rawHtml, type Html } from '../html.js'
+import * as Doi from '../types/Doi.js'
 import { NonEmptyString } from '../types/index.js'
 import * as Orcid from '../types/Orcid.js'
-
-const DoiSchema: Schema.Schema<Doi, string> = pipe(Schema.String, Schema.filter(isDoi))
 
 const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.Object, {
   strict: true,
@@ -47,7 +45,7 @@ export class CommentPublicationWasRequested extends Schema.TaggedClass<CommentPu
 
 export class DoiWasAssigned extends Schema.TaggedClass<DoiWasAssigned>()('DoiWasAssigned', {
   id: Schema.Number,
-  doi: DoiSchema,
+  doi: Doi.DoiSchema,
 }) {}
 
 export class CommentWasPublished extends Schema.TaggedClass<CommentWasPublished>()('CommentWasPublished', {}) {}

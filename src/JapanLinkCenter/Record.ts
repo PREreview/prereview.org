@@ -1,12 +1,10 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import * as Doi from 'doi-ts'
 import { Array, Data, Effect, Match, ParseResult, pipe, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Orcid from 'orcid-id-ts'
 import * as FptsToEffect from '../FptsToEffect.js'
-
-const DoiSchema: Schema.Schema<Doi.Doi, string> = pipe(Schema.String, Schema.filter(Doi.isDoi))
+import * as Doi from '../types/Doi.js'
 
 const OrcidFromUrlSchema = Schema.transformOrFail(
   Schema.URL,
@@ -54,7 +52,7 @@ const PublicationDateSchema = Schema.transformOrFail(
 )
 
 export class Record extends Schema.Class<Record>('Record')({
-  doi: DoiSchema,
+  doi: Doi.DoiSchema,
   url: Schema.URL,
   content_type: Schema.Literal('JA', 'BK', 'RD', 'EL', 'GD'),
   publication_date: PublicationDateSchema,
