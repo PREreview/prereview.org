@@ -20,11 +20,17 @@
   "havingProblems": {
     "message": "Sorry, we’re having problems"
   },
+  "unsupportedDoi": {
+    "message": "Sorry, we don’t support this DOI"
+  },
   "unsupportedUrl": {
     "message": "Sorry, we don’t support this URL"
   },
   "supportPreprintsFrom": {
     "message": "We support preprints from Advance, AfricArXiv, Arcadia Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, Jxiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research Square, SciELO, ScienceOpen, SocArXiv, TechRxiv, VeriXiv and Zenodo."
+  },
+  "doiIsForPreprint": {
+    "message": "If this DOI is for a preprint on a server we don’t support, please <contact>get in touch</contact>."
   },
   "urlIsForPreprint": {
     "message": "If this URL is for a preprint on a server we don’t support, please <contact>get in touch</contact>."
