@@ -20,11 +20,26 @@
   "havingProblems": {
     "message": "Sorry, we’re having problems"
   },
+  "dontKnowPreprint": {
+    "message": "Sorry, we don’t know this preprint"
+  },
   "unsupportedDoi": {
     "message": "Sorry, we don’t support this DOI"
   },
   "unsupportedUrl": {
     "message": "Sorry, we don’t support this URL"
+  },
+  "urlCouldBePhilsci": {
+    "message": "We think the URL {url} could be a PhilSci-Archive preprint, but we can’t find any details."
+  },
+  "checkCorrectUrl": {
+    "message": "If you typed the URL, check it is correct."
+  },
+  "checkPastedUrl": {
+    "message": "If you pasted the URL, check you copied the entire address."
+  },
+  "urlIsCorrect": {
+    "message": "If the URL is correct, please <contact>get in touch</contact>."
   },
   "supportPreprintsFrom": {
     "message": "We support preprints from Advance, AfricArXiv, Arcadia Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, Jxiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research Square, SciELO, ScienceOpen, SocArXiv, TechRxiv, VeriXiv and Zenodo."
