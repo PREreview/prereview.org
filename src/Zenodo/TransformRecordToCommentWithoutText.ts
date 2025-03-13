@@ -1,6 +1,6 @@
-import { type Temporal, toTemporalInstant } from '@js-temporal/polyfill'
+import { Temporal, toTemporalInstant } from '@js-temporal/polyfill'
 import type * as Doi from 'doi-ts'
-import { type Array, Either, Schema } from 'effect'
+import { type Array, Either, ParseResult, Schema } from 'effect'
 import type { Record } from 'zenodo-ts'
 import type * as ReviewPage from '../review-page/index.js'
 import type * as Iso639 from '../types/iso639.js'
@@ -12,7 +12,19 @@ declare const DoiSchema: Schema.Schema<Doi.Doi, unknown>
 
 declare const Iso6393Schema: Schema.Schema<Iso639.Iso6393Code, unknown>
 
-declare const PlainDateSchema: Schema.Schema<Temporal.PlainDate, unknown>
+const PlainDateSchema: Schema.Schema<Temporal.PlainDate, string> = Schema.transformOrFail(
+  Schema.String,
+  Schema.instanceOf(Temporal.PlainDate),
+  {
+    strict: true,
+    decode: (input, _, ast) =>
+      ParseResult.try({
+        try: () => Temporal.PlainDate.from(input, { overflow: 'reject' }),
+        catch: () => new ParseResult.Type(ast, input, 'Not a PlainDate'),
+      }),
+    encode: date => ParseResult.succeed(date.toString()),
+  },
+)
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ZenodoRecordForACommentSchema = () =>
