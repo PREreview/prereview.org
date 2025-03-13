@@ -72,7 +72,7 @@ export interface ZenodoRecordForAComment {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const pickOutTextUrl = (files: ZenodoRecordForAComment['files']) => Either.right(new URL('http://example.com'))
+export const pickOutTextUrl = (files: ZenodoRecordForAComment['files']) => Either.right(new URL('http://example.com'))
 
 export const transformRecordToCommentWithoutText = (
   record: ZenodoRecordForAComment,
