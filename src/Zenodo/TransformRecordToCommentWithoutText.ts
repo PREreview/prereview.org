@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, ParseResult, pipe, Schema } from 'effect'
+import { Array, Data, Either, Option, ParseResult, pipe, Schema } from 'effect'
 import type * as ReviewPage from '../review-page/index.js'
 import * as Doi from '../types/Doi.js'
 import * as Iso639 from '../types/iso639.js'
@@ -74,17 +74,17 @@ export interface ZenodoRecordForAComment {
 export const pickOutTextUrl = (files: ZenodoRecordForAComment['files']) =>
   pipe(
     Array.findFirst(files, file => file.key.endsWith('.html')),
-    Either.fromOption(() => new NoTextUrlAvailable({ cause: undefined })),
-    Either.andThen(file => file.links.self),
+    Option.andThen(file => file.links.self),
   )
 
-class NoTextUrlAvailable extends Data.TaggedError('NoTextUrlAvailable')<{ cause: unknown }> {}
+class NoTextUrlAvailable extends Data.TaggedError('NoTextUrlAvailable')<{ affectedRecordId: number }> {}
 
 export const transformRecordToCommentWithoutText = (
   record: ZenodoRecordForAComment,
 ): Either.Either<CommentWithoutText, NoTextUrlAvailable> =>
   pipe(
     pickOutTextUrl(record.files),
+    Either.fromOption(() => new NoTextUrlAvailable({ affectedRecordId: record.id })),
     Either.andThen(
       textUrl =>
         ({
