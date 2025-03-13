@@ -1,7 +1,6 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Either, pipe } from 'effect'
-import type { Record } from 'zenodo-ts'
 import * as _ from '../../src/Zenodo/TransformRecordToCommentWithoutText.js'
 import * as fc from '../fc.js'
 
@@ -15,7 +14,7 @@ describe('transformRecordToCommentWithoutText', () => {
             publication_date: new Date(),
           },
           files: [{ key: 'index.html', links: { self: url } }],
-        } as unknown as Record
+        } as unknown as _.ZenodoRecordForAComment
 
         const result = pipe(_.transformRecordToCommentWithoutText(record), Either.getOrThrow)
 

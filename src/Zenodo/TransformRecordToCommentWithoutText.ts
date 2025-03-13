@@ -1,6 +1,5 @@
-import { Temporal, toTemporalInstant } from '@js-temporal/polyfill'
+import { Temporal } from '@js-temporal/polyfill'
 import { type Array, Either, ParseResult, Schema } from 'effect'
-import type { Record } from 'zenodo-ts'
 import type * as ReviewPage from '../review-page/index.js'
 import * as Doi from '../types/Doi.js'
 import * as Iso639 from '../types/iso639.js'
@@ -22,37 +21,34 @@ const PlainDateSchema: Schema.Schema<Temporal.PlainDate, string> = Schema.transf
   },
 )
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ZenodoRecordForACommentSchema = () =>
-  Schema.Struct({
-    id: Schema.Number,
-    files: Schema.NonEmptyArray(
+export const ZenodoRecordForACommentSchema = Schema.Struct({
+  id: Schema.Number,
+  files: Schema.NonEmptyArray(
+    Schema.Struct({
+      key: Schema.String,
+      links: Schema.Struct({
+        self: Schema.URL,
+      }),
+    }),
+  ),
+  metadata: Schema.Struct({
+    access_right: Schema.Literal('open'),
+    creators: Schema.NonEmptyArray(
       Schema.Struct({
-        key: Schema.String,
-        links: Schema.Struct({
-          self: Schema.URL,
-        }),
+        name: Schema.String,
+        orcid: Schema.optionalWith(Orcid.OrcidSchema, { exact: true }),
       }),
     ),
-    metadata: Schema.Struct({
-      access_right: Schema.Literal('open'),
-      creators: Schema.NonEmptyArray(
-        Schema.Struct({
-          name: Schema.String,
-          orcid: Schema.optionalWith(Orcid.OrcidSchema, { exact: true }),
-        }),
-      ),
-      doi: Doi.DoiSchema,
-      language: Iso639.Iso6393Schema,
-      license: Schema.Struct({
-        id: Schema.Literal('CC-BY-4.0'),
-      }),
-      publication_date: PlainDateSchema,
+    doi: Doi.DoiSchema,
+    language: Iso639.Iso6393Schema,
+    license: Schema.Struct({
+      id: Schema.Literal('CC-BY-4.0'),
     }),
-  })
+    publication_date: PlainDateSchema,
+  }),
+})
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface ZenodoRecordForAComment {
+export interface ZenodoRecordForAComment {
   id: number
   files: Array.NonEmptyReadonlyArray<{
     key: string
@@ -75,13 +71,15 @@ interface ZenodoRecordForAComment {
   }
 }
 
-export const transformRecordToCommentWithoutText = (record: Record): Either.Either<CommentWithoutText> =>
+export const transformRecordToCommentWithoutText = (
+  record: ZenodoRecordForAComment,
+): Either.Either<CommentWithoutText> =>
   Either.right({
     authors: { named: record.metadata.creators },
     doi: record.metadata.doi,
     language: 'en',
     id: record.id,
     license: 'CC-BY-4.0',
-    published: toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
+    published: record.metadata.publication_date,
     textUrl: new URL('http://example.com'),
   })
