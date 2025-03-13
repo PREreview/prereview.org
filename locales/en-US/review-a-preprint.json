@@ -17,6 +17,15 @@
   "errorEnterPreprint": {
     "message": "<error>Error:</error> Enter the preprint DOI or URL"
   },
+  "havingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
+  "unableToPublishNow": {
+    "message": "We’re unable to publish PREreviews for this preprint now."
+  },
+  "tryAgainLater": {
+    "message": "Please try again later."
+  },
   "continueButton": {
     "message": "Continue"
   },

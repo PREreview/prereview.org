@@ -1,18 +1,17 @@
 import { Status } from 'hyper-ts'
 import { html, plainText } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const failureMessage = (locale: SupportedLocale) =>
   PageResponse({
     status: Status.ServiceUnavailable,
-    title: plainText`Sorry, we’re having problems`,
+    title: plainText(translate(locale, 'review-a-preprint', 'havingProblems')()),
     main: html`
-      <h1>Sorry, we’re having problems</h1>
+      <h1>${translate(locale, 'review-a-preprint', 'havingProblems')()}</h1>
 
-      <p>We’re unable to publish PREreviews for this preprint now.</p>
+      <p>${translate(locale, 'review-a-preprint', 'unableToPublishNow')()}</p>
 
-      <p>Please try again later.</p>
+      <p>${translate(locale, 'review-a-preprint', 'tryAgainLater')()}</p>
     `,
   })
