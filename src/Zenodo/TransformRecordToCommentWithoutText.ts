@@ -73,7 +73,9 @@ export interface ZenodoRecordForAComment {
 
 export const pickOutTextUrl = (files: ZenodoRecordForAComment['files']) =>
   pipe(
-    Array.findFirst(files, file => file.key.endsWith('.html')),
+    Array.filter(files, file => file.key.endsWith('.html')),
+    Option.liftPredicate(filteredFiles => filteredFiles.length === 1),
+    Option.andThen(Array.head),
     Option.andThen(file => file.links.self),
   )
 
