@@ -5,6 +5,7 @@ import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import type { InvalidE } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { homeMatch, reviewAPreprintMatch } from '../routes.js'
 
@@ -12,7 +13,8 @@ export type SubmittedWhichPreprint = E.Either<InvalidE, Doi>
 export type UnsubmittedWhichPreprint = E.Right<undefined>
 export type WhichPreprint = SubmittedWhichPreprint | UnsubmittedWhichPreprint
 
-export const createPage = (whichPreprint: WhichPreprint) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale) => {
   const error = E.isLeft(whichPreprint)
 
   return PageResponse({

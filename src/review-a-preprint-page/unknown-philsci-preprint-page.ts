@@ -1,11 +1,13 @@
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { html, plainText } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { reviewAPreprintMatch } from '../routes.js'
 import type { PhilsciPreprintId } from '../types/preprint-id.js'
 
-export const createUnknownPhilsciPreprintPage = (preprint: PhilsciPreprintId) =>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const createUnknownPhilsciPreprintPage = (preprint: PhilsciPreprintId, locale: SupportedLocale) =>
   PageResponse({
     status: Status.BadRequest,
     title: plainText`Sorry, we don’t know this preprint`,

@@ -8,6 +8,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE } from '../form.js'
 import * as FptsToEffect from '../FptsToEffect.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { type DoesPreprintExistEnv, doesPreprintExist } from '../preprint.js'
 import { type PageResponse, RedirectResponse } from '../response.js'
 import { writeReviewMatch } from '../routes.js'
@@ -22,11 +23,12 @@ import { unsupportedUrlPage } from './unsupported-url-page.js'
 
 export const reviewAPreprint = (state: {
   body: unknown
+  locale: SupportedLocale
   method: string
 }): RT.ReaderTask<DoesPreprintExistEnv, PageResponse | RedirectResponse> =>
   match(state)
-    .with({ method: 'POST', body: P.select() }, whichPreprint)
-    .otherwise(() => RT.of(createPage(E.right(undefined))))
+    .with({ method: 'POST', body: P.select() }, whichPreprint(state.locale))
+    .otherwise(() => RT.of(createPage(E.right(undefined), state.locale)))
 
 const UrlD = pipe(
   D.string,
@@ -81,23 +83,26 @@ const parseWhichPreprint = flow(
   ),
 )
 
-const whichPreprint = flow(
-  RTE.fromEitherK(parseWhichPreprint),
-  RTE.chainFirstW(preprint =>
-    pipe(doesPreprintExist(preprint), RTE.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(preprint)))),
-  ),
-  RTE.matchW(
-    error =>
-      match(error)
-        .with({ _tag: 'UnknownPreprintE', actual: P.select() }, createUnknownPreprintPage)
-        .with({ _tag: 'UnsupportedDoiE' }, () => unsupportedDoiPage)
-        .with({ _tag: 'UnsupportedUrlE' }, () => unsupportedUrlPage)
-        .with({ _tag: 'NotAPreprint' }, () => notAPreprintPage)
-        .with({ _tag: 'PreprintIsUnavailable' }, () => failureMessage)
-        .otherwise(flow(E.left, createPage)),
-    preprint => RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint }) }),
-  ),
-)
+const whichPreprint = (locale: SupportedLocale) =>
+  flow(
+    RTE.fromEitherK(parseWhichPreprint),
+    RTE.chainFirstW(preprint =>
+      pipe(doesPreprintExist(preprint), RTE.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(preprint)))),
+    ),
+    RTE.matchW(
+      error =>
+        match(error)
+          .with({ _tag: 'UnknownPreprintE', actual: P.select() }, preprint =>
+            createUnknownPreprintPage(preprint, locale),
+          )
+          .with({ _tag: 'UnsupportedDoiE' }, () => unsupportedDoiPage(locale))
+          .with({ _tag: 'UnsupportedUrlE' }, () => unsupportedUrlPage(locale))
+          .with({ _tag: 'NotAPreprint' }, () => notAPreprintPage(locale))
+          .with({ _tag: 'PreprintIsUnavailable' }, () => failureMessage(locale))
+          .otherwise(form => createPage(E.left(form), locale)),
+      preprint => RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint }) }),
+    ),
+  )
 
 interface UnknownPreprintE {
   readonly _tag: 'UnknownPreprintE'
@@ -129,9 +134,9 @@ const unsupportedUrlE = (actual: URL): UnsupportedUrlE => ({
   actual,
 })
 
-function createUnknownPreprintPage(preprint: IndeterminatePreprintId) {
+function createUnknownPreprintPage(preprint: IndeterminatePreprintId, locale: SupportedLocale) {
   return match(preprint)
-    .with({ type: 'philsci' }, createUnknownPhilsciPreprintPage)
-    .with({ value: P.when(isDoi) }, createUnknownPreprintWithDoiPage)
+    .with({ type: 'philsci' }, preprint => createUnknownPhilsciPreprintPage(preprint, locale))
+    .with({ value: P.when(isDoi) }, preprint => createUnknownPreprintWithDoiPage(preprint, locale))
     .exhaustive()
 }
