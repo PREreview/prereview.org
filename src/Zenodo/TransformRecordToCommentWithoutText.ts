@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { type Array, Either, ParseResult, Schema } from 'effect'
+import { type Array, Either, ParseResult, pipe, Schema } from 'effect'
 import type * as ReviewPage from '../review-page/index.js'
 import * as Doi from '../types/Doi.js'
 import * as Iso639 from '../types/iso639.js'
@@ -71,15 +71,24 @@ export interface ZenodoRecordForAComment {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const pickOutTextUrl = (files: ZenodoRecordForAComment['files']) => Either.right(new URL('http://example.com'))
+
 export const transformRecordToCommentWithoutText = (
   record: ZenodoRecordForAComment,
 ): Either.Either<CommentWithoutText> =>
-  Either.right({
-    authors: { named: record.metadata.creators },
-    doi: record.metadata.doi,
-    language: 'en',
-    id: record.id,
-    license: 'CC-BY-4.0',
-    published: record.metadata.publication_date,
-    textUrl: new URL('http://example.com'),
-  })
+  pipe(
+    pickOutTextUrl(record.files),
+    Either.andThen(
+      textUrl =>
+        ({
+          authors: { named: record.metadata.creators },
+          doi: record.metadata.doi,
+          language: 'en',
+          id: record.id,
+          license: 'CC-BY-4.0',
+          published: record.metadata.publication_date,
+          textUrl,
+        }) satisfies CommentWithoutText,
+    ),
+  )
