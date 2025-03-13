@@ -1,14 +1,12 @@
 import { type Temporal, toTemporalInstant } from '@js-temporal/polyfill'
 import type * as Doi from 'doi-ts'
 import { type Array, Either, Schema } from 'effect'
-import type * as Orcid from 'orcid-id-ts'
 import type { Record } from 'zenodo-ts'
 import type * as ReviewPage from '../review-page/index.js'
 import type * as Iso639 from '../types/iso639.js'
+import * as Orcid from '../types/Orcid.js'
 
 export type CommentWithoutText = Omit<ReviewPage.Comment, 'text'> & { textUrl: URL }
-
-declare const OrcidSchema: Schema.Schema<Orcid.Orcid, unknown>
 
 declare const DoiSchema: Schema.Schema<Doi.Doi, unknown>
 
@@ -33,7 +31,7 @@ const ZenodoRecordForACommentSchema = () =>
       creators: Schema.NonEmptyArray(
         Schema.Struct({
           name: Schema.String,
-          orcid: Schema.optionalWith(OrcidSchema, { exact: true }),
+          orcid: Schema.optionalWith(Orcid.OrcidSchema, { exact: true }),
         }),
       ),
       doi: DoiSchema,

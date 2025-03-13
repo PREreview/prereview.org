@@ -8,6 +8,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import * as FptsToEffect from './FptsToEffect.js'
 import { Pseudonym } from './types/index.js'
+import * as Orcid from './types/Orcid.js'
 
 export type User = C.TypeOf<typeof UserC>
 
@@ -29,8 +30,6 @@ export const maybeGetUser = pipe(
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
-const OrcidSchema = pipe(Schema.String, Schema.filter(isOrcid))
-
 export const UserC = C.struct({
   name: C.string,
   orcid: OrcidC,
@@ -39,7 +38,7 @@ export const UserC = C.struct({
 
 export const UserSchema = Schema.Struct({
   name: Schema.String,
-  orcid: OrcidSchema,
+  orcid: Orcid.OrcidSchema,
   pseudonym: Pseudonym.PseudonymSchema,
 })
 

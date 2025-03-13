@@ -1,12 +1,10 @@
 import { isDoi, type Doi } from 'doi-ts'
 import { pipe, Schema } from 'effect'
-import { isOrcid, type Orcid } from 'orcid-id-ts'
 import { rawHtml, type Html } from '../html.js'
 import { NonEmptyString } from '../types/index.js'
+import * as Orcid from '../types/Orcid.js'
 
 const DoiSchema: Schema.Schema<Doi, string> = pipe(Schema.String, Schema.filter(isDoi))
-
-const OrcidSchema: Schema.Schema<Orcid, string> = pipe(Schema.String, Schema.filter(isOrcid))
 
 const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.Object, {
   strict: true,
@@ -16,7 +14,7 @@ const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, 
 
 export class CommentWasStarted extends Schema.TaggedClass<CommentWasStarted>()('CommentWasStarted', {
   prereviewId: Schema.Number,
-  authorId: OrcidSchema,
+  authorId: Orcid.OrcidSchema,
 }) {}
 
 export class CommentWasEntered extends Schema.TaggedClass<CommentWasEntered>()('CommentWasEntered', {
