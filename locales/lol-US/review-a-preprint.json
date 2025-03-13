@@ -1,0 +1,167 @@
+{
+  "whichPreprint": {
+    "message": "crwdns4838:0crwdne4838:0"
+  },
+  "useDoiUrl": {
+    "message": "crwdns4840:0crwdne4840:0"
+  },
+  "whatIsDoi": {
+    "message": "crwdns4842:0crwdne4842:0"
+  },
+  "whatIsDoiText": {
+    "message": "crwdns4844:0{example}crwdnd4844:0{exampleUrl}crwdne4844:0"
+  },
+  "errorSummaryTitle": {
+    "message": "crwdns4846:0crwdne4846:0"
+  },
+  "errorEnterPreprint": {
+    "message": "crwdns4848:0crwdne4848:0"
+  },
+  "havingProblems": {
+    "message": "crwdns4854:0crwdne4854:0"
+  },
+  "dontKnowPreprint": {
+    "message": "crwdns4872:0crwdne4872:0"
+  },
+  "notAPreprint": {
+    "message": "crwdns4944:0crwdne4944:0"
+  },
+  "unsupportedDoi": {
+    "message": "crwdns4860:0crwdne4860:0"
+  },
+  "unsupportedUrl": {
+    "message": "crwdns4862:0crwdne4862:0"
+  },
+  "doiCouldBeAdvance": {
+    "message": "crwdns4882:0{doi}crwdne4882:0"
+  },
+  "doiCouldBeAfricarxiv": {
+    "message": "crwdns4884:0{doi}crwdne4884:0"
+  },
+  "doiCouldBeArcadiaScience": {
+    "message": "crwdns4886:0{doi}crwdne4886:0"
+  },
+  "doiCouldBeArxiv": {
+    "message": "crwdns4888:0{doi}crwdne4888:0"
+  },
+  "doiCouldBeAuthorea": {
+    "message": "crwdns4890:0{doi}crwdne4890:0"
+  },
+  "doiCouldBeBiorxiv": {
+    "message": "crwdns4892:0{doi}crwdne4892:0"
+  },
+  "doiCouldBeBiorxivMedrxiv": {
+    "message": "crwdns4894:0{doi}crwdne4894:0"
+  },
+  "doiCouldBeChemrxiv": {
+    "message": "crwdns4896:0{doi}crwdne4896:0"
+  },
+  "doiCouldBeCurvenote": {
+    "message": "crwdns4898:0{doi}crwdne4898:0"
+  },
+  "doiCouldBeEartharxiv": {
+    "message": "crwdns4900:0{doi}crwdne4900:0"
+  },
+  "doiCouldBeEcoevorxiv": {
+    "message": "crwdns4902:0{doi}crwdne4902:0"
+  },
+  "doiCouldBeEdarxiv": {
+    "message": "crwdns4904:0{doi}crwdne4904:0"
+  },
+  "doiCouldBeEngrxiv": {
+    "message": "crwdns4906:0{doi}crwdne4906:0"
+  },
+  "doiCouldBeJxiv": {
+    "message": "crwdns4908:0{doi}crwdne4908:0"
+  },
+  "doiCouldBeMedrxiv": {
+    "message": "crwdns4910:0{doi}crwdne4910:0"
+  },
+  "doiCouldBeMetaarxiv": {
+    "message": "crwdns4912:0{doi}crwdne4912:0"
+  },
+  "doiCouldBeOsf": {
+    "message": "crwdns4914:0{doi}crwdne4914:0"
+  },
+  "doiCouldBePreprintsorg": {
+    "message": "crwdns4916:0{doi}crwdne4916:0"
+  },
+  "doiCouldBePsyarxiv": {
+    "message": "crwdns4918:0{doi}crwdne4918:0"
+  },
+  "doiCouldBePsycharchives": {
+    "message": "crwdns4920:0{doi}crwdne4920:0"
+  },
+  "doiCouldBeResearchSquare": {
+    "message": "crwdns4922:0{doi}crwdne4922:0"
+  },
+  "doiCouldBeScielo": {
+    "message": "crwdns4924:0{doi}crwdne4924:0"
+  },
+  "doiCouldBeScienceOpen": {
+    "message": "crwdns4926:0{doi}crwdne4926:0"
+  },
+  "doiCouldBeSocarxiv": {
+    "message": "crwdns4928:0{doi}crwdne4928:0"
+  },
+  "doiCouldBeTechrxiv": {
+    "message": "crwdns4930:0{doi}crwdne4930:0"
+  },
+  "doiCouldBeVerixiv": {
+    "message": "crwdns4932:0{doi}crwdne4932:0"
+  },
+  "doiCouldBeZenodo": {
+    "message": "crwdns4934:0{doi}crwdne4934:0"
+  },
+  "doiCouldBeZenodoAfricarxiv": {
+    "message": "crwdns4936:0{doi}crwdne4936:0"
+  },
+  "urlCouldBePhilsci": {
+    "message": "crwdns4874:0{url}crwdne4874:0"
+  },
+  "checkCorrectDoi": {
+    "message": "crwdns4938:0crwdne4938:0"
+  },
+  "checkCorrectUrl": {
+    "message": "crwdns4876:0crwdne4876:0"
+  },
+  "checkPastedDoi": {
+    "message": "crwdns4940:0crwdne4940:0"
+  },
+  "checkPastedUrl": {
+    "message": "crwdns4878:0crwdne4878:0"
+  },
+  "doiIsCorrect": {
+    "message": "crwdns4942:0crwdne4942:0"
+  },
+  "urlIsCorrect": {
+    "message": "crwdns4880:0crwdne4880:0"
+  },
+  "supportPreprintsFrom": {
+    "message": "crwdns4864:0crwdne4864:0"
+  },
+  "isAPreprint": {
+    "message": "crwdns4946:0crwdne4946:0"
+  },
+  "doiIsForPreprint": {
+    "message": "crwdns4866:0crwdne4866:0"
+  },
+  "urlIsForPreprint": {
+    "message": "crwdns4868:0crwdne4868:0"
+  },
+  "otherwiseUseDoi": {
+    "message": "crwdns4870:0crwdne4870:0"
+  },
+  "unableToPublishNow": {
+    "message": "crwdns4856:0crwdne4856:0"
+  },
+  "tryAgainLater": {
+    "message": "crwdns4858:0crwdne4858:0"
+  },
+  "continueButton": {
+    "message": "crwdns4850:0crwdne4850:0"
+  },
+  "back": {
+    "message": "crwdns4852:0crwdne4852:0"
+  }
+}
