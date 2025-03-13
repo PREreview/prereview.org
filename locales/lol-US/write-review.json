@@ -236,6 +236,36 @@
   "writeAPrereview": {
     "message": "crwdns4382:0crwdne4382:0"
   },
+  "authoredBy": {
+    "message": "crwdns4818:0{authors}crwdne4818:0"
+  },
+  "posted": {
+    "message": "crwdns4820:0crwdne4820:0"
+  },
+  "server": {
+    "message": "crwdns4822:0crwdne4822:0"
+  },
+  "itemId": {
+    "message": "crwdns4824:0crwdne4824:0"
+  },
+  "youCanWriteAPrereview": {
+    "message": "crwdns4826:0{preprintTitle}crwdne4826:0"
+  },
+  "beforeStartHeading": {
+    "message": "crwdns4828:0crwdne4828:0"
+  },
+  "orcidLogIn": {
+    "message": "crwdns4830:0crwdne4830:0"
+  },
+  "whatIsOrcidHeading": {
+    "message": "crwdns4832:0crwdne4832:0"
+  },
+  "whatIsOrcid": {
+    "message": "crwdns4834:0crwdne4834:0"
+  },
+  "startNowButton": {
+    "message": "crwdns4836:0crwdne4836:0"
+  },
   "continueWord": {
     "message": "crwdns4384:0crwdne4384:0"
   },
