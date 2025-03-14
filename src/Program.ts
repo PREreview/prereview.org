@@ -24,9 +24,11 @@ import { getNameFromOrcid } from './orcid.js'
 import * as Preprint from './preprint.js'
 import * as Prereview from './Prereview.js'
 import { PublicUrl } from './public-url.js'
+import * as ReviewPage from './review-page/index.js'
 import { Uuid } from './types/index.js'
 import { WebApp } from './WebApp.js'
 import { createCommentOnZenodo, getPrereviewFromZenodo, publishDepositionOnZenodo } from './zenodo.js'
+import * as Zenodo from './Zenodo/index.js'
 
 const getPrereview = Layer.effect(
   Prereview.GetPrereview,
@@ -324,6 +326,16 @@ const getCategories = Layer.effect(
   }),
 )
 
+const getCommentsForReview = Layer.effect(
+  ReviewPage.GetCommentsForReview,
+  Effect.gen(function* () {
+    const httpClient = yield* HttpClient.HttpClient
+
+    return id =>
+      pipe(Zenodo.getCommentsForPrereviewFromZenodo(id), Effect.provideService(HttpClient.HttpClient, httpClient))
+  }),
+)
+
 const setUpFetch = Layer.effect(
   FetchHttpClient.Fetch,
   Effect.gen(function* () {
@@ -347,6 +359,7 @@ export const Program = pipe(
     Layer.mergeAll(
       Layer.provide(getPreprint, CachingHttpClient.layer('10 minutes')),
       Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
+      Layer.provide(getCommentsForReview, CachingHttpClient.layer('10 minutes')),
       doesUserHaveAVerifiedEmailAddress,
       getContactEmailAddress,
       saveContactEmailAddress,

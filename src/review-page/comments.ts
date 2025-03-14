@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
+import { Context, type Effect } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
@@ -20,6 +21,11 @@ export interface Comment {
   published: PlainDate
   text: Html
 }
+
+export class GetCommentsForReview extends Context.Tag('GetCommentsForReview')<
+  GetCommentsForReview,
+  (id: Doi) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'>
+>() {}
 
 export interface GetCommentsEnv {
   getComments: (id: Doi) => TE.TaskEither<'unavailable', ReadonlyArray<Comment>>

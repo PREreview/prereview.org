@@ -152,6 +152,7 @@ import {
 import { resources } from './resources.js'
 import { handleResponse } from './response.js'
 import { reviewAPreprint } from './review-a-preprint-page/index.js'
+import * as ReviewPage from './review-page/index.js'
 import { reviewPage } from './review-page/index.js'
 import { reviewRequests } from './review-requests-page/index.js'
 import { reviewsData } from './reviews-data/index.js'
@@ -261,6 +262,7 @@ import {
   getUserFromSlack,
   removeOrcidFromSlackProfile,
 } from './slack.js'
+import type * as Doi from './types/Doi.js'
 import type { PreprintId } from './types/preprint-id.js'
 import { type GenerateUuidEnv, generateUuid } from './types/uuid.js'
 import type { GetUserOnboardingEnv } from './user-onboarding.js'
@@ -302,7 +304,6 @@ import {
   type WasPrereviewRemovedEnv,
   addAuthorToRecordOnZenodo,
   createRecordOnZenodo,
-  getCommentsForPrereviewFromZenodo,
   getPrereviewFromZenodo,
   getPrereviewsForClubFromZenodo,
   getPrereviewsForPreprintFromZenodo,
@@ -332,7 +333,7 @@ const getSlackUser = flow(
 export type RouterEnv = Keyv.AvatarStoreEnv &
   MustDeclareUseOfAiEnv &
   DoesPreprintExistEnv &
-  EffectEnv<Locale | OpenAlex.GetCategories> &
+  EffectEnv<Locale | OpenAlex.GetCategories | ReviewPage.GetCommentsForReview> &
   ResolvePreprintIdEnv &
   GetPageFromGhostEnv &
   GetPreprintIdEnv &
@@ -929,7 +930,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getComments: withEnv(getCommentsForPrereviewFromZenodo, env),
+          getComments: withEnv(
+            EffectToFpts.toReaderTaskEitherK((id: Doi.Doi) =>
+              pipe(ReviewPage.GetCommentsForReview, Effect.andThen(Function.apply(id))),
+            ),
+            env,
+          ),
           getPrereview: withEnv(getPrereviewFromZenodo, env),
         })),
       ),
