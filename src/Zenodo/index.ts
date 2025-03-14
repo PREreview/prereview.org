@@ -24,4 +24,16 @@ export const getCommentsForPrereviewFromZenodo = (
     ),
     Effect.orElseFail(() => 'unavailable' as const),
     Effect.andThen(Effect.forEach(addCommentText)),
+    Effect.catchTags({
+      RequestError: error =>
+        Effect.logError('Unable to retrieve comment text from Zenodo').pipe(
+          Effect.annotateLogs({ error }),
+          Effect.andThen(Effect.fail('unavailable' as const)),
+        ),
+      ResponseError: error =>
+        Effect.logError('Unable to retrieve comment text from Zenodo').pipe(
+          Effect.annotateLogs({ error }),
+          Effect.andThen(Effect.fail('unavailable' as const)),
+        ),
+    }),
   )
