@@ -19,7 +19,7 @@ export const getCommentsForPrereviewFromZenodo = (
     }),
     getCommunityRecords,
     Effect.andThen(record => Effect.forEach(record.hits.hits, transformRecordToCommentWithoutText)),
-    Effect.andThen(Effect.forEach(addCommentText)),
+    Effect.andThen(Effect.forEach(addCommentText, { concurrency: 'unbounded' })),
     Effect.catchTags({
       NoTextUrlAvailable: error =>
         Effect.logError('Zenodo record of a comment does not have a text url').pipe(
