@@ -42,7 +42,7 @@ export const ZenodoRecordForACommentSchema = Schema.Struct({
     doi: Doi.DoiSchema,
     language: Schema.optionalWith(Iso639.Iso6393Schema, { exact: true }),
     license: Schema.Struct({
-      id: Schema.Literal('CC-BY-4.0'),
+      id: Schema.Literal('cc-by-4.0'),
     }),
     publication_date: PlainDateSchema,
   }),
