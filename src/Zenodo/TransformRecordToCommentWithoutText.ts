@@ -40,7 +40,7 @@ export const ZenodoRecordForACommentSchema = Schema.Struct({
       }),
     ),
     doi: Doi.DoiSchema,
-    language: Iso639.Iso6393Schema,
+    language: Schema.optionalWith(Iso639.Iso6393Schema, { exact: true }),
     license: Schema.Struct({
       id: Schema.Literal('CC-BY-4.0'),
     }),
@@ -63,7 +63,7 @@ export interface ZenodoRecordForAComment {
       orcid?: Orcid.Orcid
     }>
     doi: Doi.Doi
-    language: Iso639.Iso6393Code
+    language?: Iso639.Iso6393Code
     license: {
       id: 'CC-BY-4.0'
     }
