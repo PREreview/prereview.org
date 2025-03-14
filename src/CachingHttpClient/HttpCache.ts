@@ -1,5 +1,5 @@
 import { Headers, type HttpClientRequest, type HttpClientResponse } from '@effect/platform'
-import { type Cause, Context, Data, type DateTime, type Effect, Schema } from 'effect'
+import { Context, Data, type DateTime, type Effect, Schema } from 'effect'
 
 export interface CacheValue {
   staleAt: DateTime.Utc
@@ -23,6 +23,8 @@ export const CacheValueFromStringSchema = Schema.parseJson(CacheValueSchema)
 
 export class InternalHttpCacheFailure extends Data.TaggedError('InternalHttpCacheFailure')<{ cause: unknown }> {}
 
+export class NoCachedResponseFound extends Data.TaggedError('NoCachedResponseFound')<{ cause?: unknown }> {}
+
 export class HttpCache extends Context.Tag('HttpCache')<
   HttpCache,
   {
@@ -30,7 +32,7 @@ export class HttpCache extends Context.Tag('HttpCache')<
       request: HttpClientRequest.HttpClientRequest,
     ) => Effect.Effect<
       { staleAt: DateTime.Utc; response: HttpClientResponse.HttpClientResponse },
-      Cause.NoSuchElementException | InternalHttpCacheFailure
+      NoCachedResponseFound | InternalHttpCacheFailure
     >
     set: (
       response: HttpClientResponse.HttpClientResponse,

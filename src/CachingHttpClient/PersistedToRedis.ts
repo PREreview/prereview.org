@@ -1,7 +1,7 @@
 import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
-import { Cause, Effect, Layer, Option, pipe, Schema } from 'effect'
+import { Effect, Either, Layer, pipe, Schema } from 'effect'
 import * as Redis from '../Redis.js'
-import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure } from './HttpCache.js'
+import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure, NoCachedResponseFound } from './HttpCache.js'
 import { serializationErrorChecking } from './SerializationErrorChecking.js'
 
 export const layerPersistedToRedis = Layer.effect(
@@ -25,7 +25,7 @@ export const getFromRedis =
   request =>
     pipe(
       Effect.tryPromise(() => redis.get(keyForRequest(request))),
-      Effect.andThen(Option.fromNullable),
+      Effect.andThen(Either.fromNullable(() => new NoCachedResponseFound({}))),
       Effect.andThen(Schema.decode(CacheValueFromStringSchema)),
       Effect.map(({ staleAt, response }) => ({
         staleAt,
@@ -37,10 +37,10 @@ export const getFromRedis =
           }),
         ),
       })),
-      Effect.catchTag('ParseError', () =>
+      Effect.catchTag('ParseError', cause =>
         pipe(
           Effect.tryPromise(() => redis.del(keyForRequest(request))),
-          Effect.andThen(new Cause.NoSuchElementException()),
+          Effect.andThen(() => new NoCachedResponseFound({ cause })),
         ),
       ),
       Effect.catchTag('UnknownException', cause => new InternalHttpCacheFailure({ cause })),

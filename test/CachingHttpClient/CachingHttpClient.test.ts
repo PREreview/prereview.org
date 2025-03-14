@@ -1,7 +1,7 @@
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { beforeEach, describe, expect } from '@jest/globals'
-import { Duration, Effect, Either, Fiber, Option, pipe, TestClock } from 'effect'
+import { Duration, Effect, Either, Fiber, pipe, TestClock } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as _ from '../../src/CachingHttpClient/index.js'
 import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.js'
@@ -56,7 +56,7 @@ describe('there is no cache entry', () => {
             _.CachingHttpClient(timeToStale),
             Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
             Effect.provideService(_.HttpCache, {
-              get: () => Option.none(),
+              get: () => new _.NoCachedResponseFound({}),
               set: () => new InternalHttpCacheFailure({ cause: error }),
               delete: () => Effect.void,
             }),
