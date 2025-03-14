@@ -12,7 +12,6 @@ export const addCommentText = (
     Effect.andThen(HttpClientResponse.filterStatusOk),
     Effect.andThen(response => response.text),
     Effect.andThen(sanitizeHtml),
-    Effect.scoped,
     Effect.andThen(text => ({
       ...commentWithoutText,
       text,

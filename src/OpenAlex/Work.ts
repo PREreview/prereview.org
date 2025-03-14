@@ -54,7 +54,6 @@ export const getWorkByDoi = (
     Effect.tapErrorTag('WorkIsUnavailable', error =>
       Effect.logError('Failed to get work from OpenAlex').pipe(Effect.annotateLogs({ error })),
     ),
-    Effect.scoped,
   )
 
 const UrlEquivalence: Equivalence.Equivalence<URL> = Equivalence.mapInput(String.Equivalence, url => url.href)
