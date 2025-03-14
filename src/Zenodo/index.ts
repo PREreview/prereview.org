@@ -3,12 +3,14 @@ import type * as Doi from 'doi-ts'
 import { Effect, pipe } from 'effect'
 import type * as ReviewPage from '../review-page/index.js'
 import { addCommentText } from './AddCommentText.js'
-import { getCommunityRecords } from './CommunityRecords.js'
+import { getCommunityRecords, type ZenodoOrigin } from './CommunityRecords.js'
 import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.js'
+
+export { ZenodoOrigin } from './CommunityRecords.js'
 
 export const getCommentsForPrereviewFromZenodo = (
   id: Doi.Doi,
-): Effect.Effect<ReadonlyArray<ReviewPage.Comment>, 'unavailable', HttpClient.HttpClient> =>
+): Effect.Effect<ReadonlyArray<ReviewPage.Comment>, 'unavailable', HttpClient.HttpClient | ZenodoOrigin> =>
   pipe(
     UrlParams.fromInput({
       q: `related.identifier:"${id}"`,

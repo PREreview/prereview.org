@@ -17,6 +17,7 @@ import { PublicUrl } from './public-url.js'
 import * as Redis from './Redis.js'
 import * as TemplatePage from './TemplatePage.js'
 import { verifyCache } from './VerifyCache.js'
+import * as Zenodo from './Zenodo/index.js'
 
 pipe(
   Program,
@@ -70,6 +71,7 @@ pipe(
       }),
       Layer.effect(PublicUrl, Config.url('PUBLIC_URL')),
       Layer.effect(SessionSecret, Config.redacted('SECRET')),
+      Layer.effect(Zenodo.ZenodoOrigin, Config.url('ZENODO_URL')),
     ),
   ),
   Logger.withMinimumLogLevel(LogLevel.Debug),

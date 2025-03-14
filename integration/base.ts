@@ -65,6 +65,7 @@ import * as TemplatePage from '../src/TemplatePage.js'
 import { EmailAddress } from '../src/types/email-address.js'
 import type { NonEmptyString } from '../src/types/string.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
+import { ZenodoOrigin } from '../src/Zenodo/CommunityRecords.js'
 import Logger = L.Logger
 import LogEntry = L.LogEntry
 
@@ -1288,6 +1289,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provide(Nodemailer.layer(nodemailer)),
         Effect.provideService(PublicUrl, new URL(`http://localhost:${port}`)),
         Effect.provideService(SessionSecret, Redacted.make('')),
+        Effect.provideService(ZenodoOrigin, new URL('http://zenodo.test/')),
         Effect.provide(CachingHttpClient.layerInMemory()),
         Effect.provide(FetchHttpClient.layer),
         Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),

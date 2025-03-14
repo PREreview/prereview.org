@@ -330,9 +330,14 @@ const getCommentsForReview = Layer.effect(
   ReviewPage.GetCommentsForReview,
   Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient
+    const zenodoOrigin = yield* Zenodo.ZenodoOrigin
 
     return id =>
-      pipe(Zenodo.getCommentsForPrereviewFromZenodo(id), Effect.provideService(HttpClient.HttpClient, httpClient))
+      pipe(
+        Zenodo.getCommentsForPrereviewFromZenodo(id),
+        Effect.provideService(HttpClient.HttpClient, httpClient),
+        Effect.provideService(Zenodo.ZenodoOrigin, zenodoOrigin),
+      )
   }),
 )
 
