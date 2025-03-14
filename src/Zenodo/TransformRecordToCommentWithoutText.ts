@@ -48,28 +48,7 @@ export const ZenodoRecordForACommentSchema = Schema.Struct({
   }),
 })
 
-export interface ZenodoRecordForAComment {
-  id: number
-  files: Array.NonEmptyReadonlyArray<{
-    key: string
-    links: {
-      self: URL
-    }
-  }>
-  metadata: {
-    access_right: 'open'
-    creators: Array.NonEmptyReadonlyArray<{
-      name: string
-      orcid?: Orcid.Orcid
-    }>
-    doi: Doi.Doi
-    language?: Iso639.Iso6393Code
-    license: {
-      id: 'CC-BY-4.0'
-    }
-    publication_date: Temporal.PlainDate
-  }
-}
+export type ZenodoRecordForAComment = typeof ZenodoRecordForACommentSchema.Type
 
 export const pickOutTextUrl = (files: ZenodoRecordForAComment['files']) =>
   pipe(
