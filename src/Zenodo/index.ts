@@ -19,12 +19,18 @@ export const getCommentsForPrereviewFromZenodo = (
     }),
     getCommunityRecords,
     Effect.andThen(record => Effect.forEach(record.hits.hits, transformRecordToCommentWithoutText)),
-    Effect.tapErrorTag('NoTextUrlAvailable', cause =>
-      Effect.logError('Zenodo record of a comment does not have a text url').pipe(Effect.annotateLogs({ cause })),
-    ),
-    Effect.orElseFail(() => 'unavailable' as const),
     Effect.andThen(Effect.forEach(addCommentText)),
     Effect.catchTags({
+      NoTextUrlAvailable: error =>
+        Effect.logError('Zenodo record of a comment does not have a text url').pipe(
+          Effect.annotateLogs({ error }),
+          Effect.andThen(Effect.fail('unavailable' as const)),
+        ),
+      ParseError: error =>
+        Effect.logError('Failed to decode Zenodo response while retrieving a comment').pipe(
+          Effect.annotateLogs({ error }),
+          Effect.andThen(Effect.fail('unavailable' as const)),
+        ),
       RequestError: error =>
         Effect.logError('Unable to retrieve comment text from Zenodo').pipe(
           Effect.annotateLogs({ error }),
