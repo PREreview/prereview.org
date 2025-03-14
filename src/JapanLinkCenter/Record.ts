@@ -110,5 +110,4 @@ export const getRecord = (
       ParseError: error => new RecordIsUnavailable({ cause: error }),
       ResponseError: error => new RecordIsUnavailable({ cause: error }),
     }),
-    Effect.scoped,
   )

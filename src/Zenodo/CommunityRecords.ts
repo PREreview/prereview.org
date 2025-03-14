@@ -18,6 +18,5 @@ export const getCommunityRecords = Effect.fn(function* (urlParams: UrlParams.Url
   return yield* pipe(
     httpClient.get(zenodoCommunityRecordsApiUrl, { urlParams }),
     Effect.andThen(HttpClientResponse.schemaBodyJson(RecordsSchema)),
-    Effect.scoped,
   )
 })

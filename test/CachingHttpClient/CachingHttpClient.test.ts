@@ -12,18 +12,20 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 const stubbedClient = (
   response: HttpClientResponse.HttpClientResponse,
   responseDuration: Duration.DurationInput = 0,
-): HttpClient.HttpClient.With<never, never> =>
+): HttpClient.HttpClient.With<never> =>
   HttpClient.makeWith(() => Effect.succeed(response).pipe(Effect.delay(responseDuration)), Effect.succeed)
 
 const stubbedFailingClient = (
   error: HttpClientError.HttpClientError,
-): HttpClient.HttpClient.With<HttpClientError.HttpClientError, never> =>
+): HttpClient.HttpClient.With<HttpClientError.HttpClientError> =>
   HttpClient.makeWith(() => Effect.fail(error), Effect.succeed)
 
-const shouldNotBeCalledHttpClient: HttpClient.HttpClient.With<HttpClientError.HttpClientError, never> =
-  HttpClient.makeWith(() => {
+const shouldNotBeCalledHttpClient: HttpClient.HttpClient.With<HttpClientError.HttpClientError> = HttpClient.makeWith(
+  () => {
     throw new Error('should not make any http requests with HttpClient')
-  }, Effect.succeed)
+  },
+  Effect.succeed,
+)
 
 describe('there is no cache entry', () => {
   describe('the request succeeds', () => {

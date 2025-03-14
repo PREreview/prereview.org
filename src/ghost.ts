@@ -66,7 +66,6 @@ export const getPageWithEffect = (id: string) =>
       ),
       Effect.filterOrFail(response => response.status === 200, identity),
       Effect.andThen(HttpClientResponse.schemaBodyJson(GhostPageSchema)),
-      Effect.scoped,
       Effect.andThen(response => response.pages[0].html),
       Effect.andThen(html =>
         rawHtml(html.toString().replaceAll(/href="https?:\/\/prereview\.org\/?(.*?)"/g, 'href="/$1"')),

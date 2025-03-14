@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientError, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
-import { DateTime, Effect, Function, Layer, pipe, type Duration, type Scope } from 'effect'
+import { DateTime, Effect, Function, Layer, pipe, type Duration } from 'effect'
 import { Status } from 'hyper-ts'
 import { loggingHttpClient } from '../LoggingHttpClient.js'
 import * as HttpCache from './HttpCache.js'
@@ -19,7 +19,7 @@ export const CachingHttpClient = (
 
     const cachingBehaviour = (
       request: Effect.Effect<HttpClientRequest.HttpClientRequest>,
-    ): Effect.Effect<HttpClientResponse.HttpClientResponse, HttpClientError.HttpClientError, Scope.Scope> =>
+    ): Effect.Effect<HttpClientResponse.HttpClientResponse, HttpClientError.HttpClientError> =>
       Effect.gen(function* () {
         const timestamp = yield* DateTime.now
         const req = yield* request
@@ -61,7 +61,6 @@ export const CachingHttpClient = (
                     orElse: Function.constVoid,
                   }),
                 ),
-                Effect.scoped,
                 Effect.tapError(error =>
                   Effect.logError('Unable to update cached response').pipe(Effect.annotateLogs({ error })),
                 ),

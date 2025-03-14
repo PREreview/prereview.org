@@ -1306,7 +1306,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         HttpClient.head(`http://localhost:${port}/health`),
         Effect.timeout('50 millis'),
         Effect.andThen(HttpClientResponse.filterStatusOk),
-        Effect.scoped,
         Effect.retry(Schedule.forever),
         Effect.provide(FetchHttpClient.layer),
         Effect.runPromise,
