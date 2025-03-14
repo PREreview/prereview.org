@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, Option, ParseResult, pipe, Schema } from 'effect'
+import { Array, Data, Either, Option, ParseResult, pipe, Schema, String } from 'effect'
 import type * as ReviewPage from '../review-page/index.js'
 import * as Doi from '../types/Doi.js'
 import * as Iso639 from '../types/iso639.js'
@@ -71,9 +71,9 @@ export const transformRecordToCommentWithoutText = (
         ({
           authors: { named: record.metadata.creators },
           doi: record.metadata.doi,
-          language: 'en',
+          language: record.metadata.language ? Iso639.iso6393To1(record.metadata.language) : undefined,
           id: record.id,
-          license: 'CC-BY-4.0',
+          license: String.toUpperCase(record.metadata.license.id),
           published: record.metadata.publication_date,
           textUrl,
         }) satisfies CommentWithoutText,
