@@ -17,14 +17,15 @@ describe('writeReviewRemoveAuthor', () => {
       fc.preprintTitle(),
       fc.record({ removeAuthor: fc.constant('yes') }),
       fc.user(),
+      fc.supportedLocale(),
       fc
         .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
         .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),
-    ])('when the answer is yes', async (id, preprintTitle, body, user, [newReview, number]) => {
+    ])('when the answer is yes', async (id, preprintTitle, body, user, locale, [newReview, number]) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-      const actual = await _.writeReviewRemoveAuthor({ body, id, method: 'POST', number, user })({
+      const actual = await _.writeReviewRemoveAuthor({ body, id, locale, method: 'POST', number, user })({
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
       })()
@@ -45,14 +46,15 @@ describe('writeReviewRemoveAuthor', () => {
       fc.preprintTitle(),
       fc.record({ removeAuthor: fc.constant('no') }),
       fc.user(),
+      fc.supportedLocale(),
       fc
         .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
         .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),
-    ])('when the answer is no', async (id, preprintTitle, body, user, [newReview, number]) => {
+    ])('when the answer is no', async (id, preprintTitle, body, user, locale, [newReview, number]) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-      const actual = await _.writeReviewRemoveAuthor({ body, id, method: 'POST', number, user })({
+      const actual = await _.writeReviewRemoveAuthor({ body, id, locale, method: 'POST', number, user })({
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
       })()
@@ -70,14 +72,15 @@ describe('writeReviewRemoveAuthor', () => {
       fc.preprintTitle(),
       fc.anything(),
       fc.user(),
+      fc.supportedLocale(),
       fc
         .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
         .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),
-    ])('when the form is invalid', async (id, preprintTitle, body, user, [newReview, number]) => {
+    ])('when the form is invalid', async (id, preprintTitle, body, user, locale, [newReview, number]) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-      const actual = await _.writeReviewRemoveAuthor({ body, id, method: 'POST', number, user })({
+      const actual = await _.writeReviewRemoveAuthor({ body, id, locale, method: 'POST', number, user })({
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
       })()
@@ -101,14 +104,15 @@ describe('writeReviewRemoveAuthor', () => {
     fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
+    fc.supportedLocale(),
     fc
       .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
       .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),
-  ])('when the form needs submitting', async (id, preprintTitle, body, method, user, [newReview, number]) => {
+  ])('when the form needs submitting', async (id, preprintTitle, body, method, user, locale, [newReview, number]) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewRemoveAuthor({ body, id, method, number, user })({
+    const actual = await _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
     })()
@@ -131,6 +135,7 @@ describe('writeReviewRemoveAuthor', () => {
     fc.anything(),
     fc.string(),
     fc.user(),
+    fc.supportedLocale(),
     fc
       .form({ moreAuthors: fc.constant('yes') })
       .chain(form =>
@@ -141,11 +146,11 @@ describe('writeReviewRemoveAuthor', () => {
             : fc.integer(),
         ),
       ),
-  ])("when the number doesn't match", async (id, preprintTitle, body, method, user, [newReview, number]) => {
+  ])("when the number doesn't match", async (id, preprintTitle, body, method, user, locale, [newReview, number]) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewRemoveAuthor({ body, id, method, number, user })({
+    const actual = await _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
     })()
@@ -157,21 +162,26 @@ describe('writeReviewRemoveAuthor', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.integer(), fc.user()])(
-    'when there is no form',
-    async (id, preprintTitle, body, method, number, user) => {
-      const actual = await _.writeReviewRemoveAuthor({ body, id, method, number, user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.anything(),
+    fc.string(),
+    fc.integer(),
+    fc.user(),
+    fc.supportedLocale(),
+  ])('when there is no form', async (id, preprintTitle, body, method, number, user, locale) => {
+    const actual = await _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({
+      formStore: new Keyv(),
+      getPreprintTitle: () => TE.right(preprintTitle),
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'RedirectResponse',
+      status: Status.SeeOther,
+      location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+    })
+  })
 
   test.prop([
     fc.indeterminatePreprintId(),
@@ -180,12 +190,13 @@ describe('writeReviewRemoveAuthor', () => {
     fc.string(),
     fc.integer(),
     fc.user(),
+    fc.supportedLocale(),
     fc.form({ moreAuthors: fc.constantFrom('yes-private', 'no') }),
-  ])('when there are no more authors', async (id, preprintTitle, body, method, number, user, newReview) => {
+  ])('when there are no more authors', async (id, preprintTitle, body, method, number, user, locale, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewRemoveAuthor({ body, id, method, number, user })({
+    const actual = await _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
     })()
@@ -200,14 +211,14 @@ describe('writeReviewRemoveAuthor', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.integer(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.integer(), fc.user(), fc.supportedLocale()])(
     'when the preprint cannot be loaded',
-    async (id, body, method, number, user) => {
+    async (id, body, method, number, user, locale) => {
       const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
         TE.left(new PreprintIsUnavailable({})),
       )
 
-      const actual = await _.writeReviewRemoveAuthor({ body, id, method, number, user })({
+      const actual = await _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({
         formStore: new Keyv(),
         getPreprintTitle,
       })()
@@ -224,10 +235,10 @@ describe('writeReviewRemoveAuthor', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.integer(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.integer(), fc.user(), fc.supportedLocale()])(
     'when the preprint cannot be found',
-    async (id, body, method, number, user) => {
-      const actual = await _.writeReviewRemoveAuthor({ body, id, method, number, user })({
+    async (id, body, method, number, user, locale) => {
+      const actual = await _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
       })()
@@ -243,19 +254,23 @@ describe('writeReviewRemoveAuthor', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.integer()])(
-    "when there isn't a session",
-    async (id, preprintTitle, body, method, number) => {
-      const actual = await _.writeReviewRemoveAuthor({ body, id, method, number })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.anything(),
+    fc.string(),
+    fc.integer(),
+    fc.supportedLocale(),
+  ])("when there isn't a session", async (id, preprintTitle, body, method, number, locale) => {
+    const actual = await _.writeReviewRemoveAuthor({ body, id, locale, method, number })({
+      formStore: new Keyv(),
+      getPreprintTitle: () => TE.right(preprintTitle),
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'RedirectResponse',
+      status: Status.SeeOther,
+      location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+    })
+  })
 })

@@ -9,7 +9,7 @@ import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes.js'
@@ -22,12 +22,14 @@ import { removeAuthorForm } from './remove-author-form.js'
 export const writeReviewRemoveAuthor = ({
   body,
   id,
+  locale,
   method,
   number,
   user,
 }: {
   body: unknown
   id: IndeterminatePreprintId
+  locale: SupportedLocale
   method: string
   number: number
   user?: User
@@ -38,8 +40,8 @@ export const writeReviewRemoveAuthor = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       preprint =>
@@ -50,7 +52,7 @@ export const writeReviewRemoveAuthor = ({
           RTE.let('method', () => method),
           RTE.let('body', () => body),
           RTE.let('number', () => number),
-          RTE.apS('locale', RTE.of(DefaultLocale)),
+          RTE.apS('locale', RTE.of(locale)),
           RTE.bindW(
             'form',
             flow(
@@ -80,8 +82,8 @@ export const writeReviewRemoveAuthor = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('not-found', () => pageNotFound(DefaultLocale))
-                  .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
+                  .with('not-found', () => pageNotFound(locale))
+                  .with('form-unavailable', () => havingProblemsPage(locale))
                   .exhaustive(),
               ),
             state =>
