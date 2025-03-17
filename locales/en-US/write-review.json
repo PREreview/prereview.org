@@ -29,6 +29,18 @@
   "back": {
     "message": "Back"
   },
+  "pasteYourReview": {
+    "message": "<error>Error:</error> Paste your PREreview"
+  },
+  "thereIsAProblem": {
+    "message": "There is a problem"
+  },
+  "pasteYourReviewError": {
+    "message": "<error>Error:</error> Paste your PREreview"
+  },
+  "copyAndPasteReview": {
+    "message": "Copy your PREreview and paste it here. We’ll do our best to preserve how it looks."
+  },
   "yesIfAnotherAuthor": {
     "message": "Select yes if you need to add another author"
   },
@@ -55,6 +67,9 @@
   },
   "yes": {
     "message": "Yes"
+  },
+  "saveAndContinueButton": {
+    "message": "Save and continue"
   },
   "continueButton": {
     "message": "Continue"
