@@ -23,10 +23,19 @@
   "cannotConnect": {
     "message": "Sorry, we can’t connect your account"
   },
+  "havingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
   "youDeniedAccess": {
     "message": "You have denied PREreview access to your Community Slack account."
   },
+  "unableToConnect": {
+    "message": "We’re unable to connect your account right now."
+  },
   "tryAgain": {
     "message": "Please try again."
+  },
+  "tryAgainLater": {
+    "message": "Please try again later."
   }
 }
