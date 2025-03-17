@@ -12,6 +12,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { setFlashMessage } from '../flash-message.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in/index.js'
 import { seeOther, serviceUnavailable } from '../middleware.js'
 import type { TemplatePageEnv } from '../page.js'
@@ -92,6 +93,10 @@ const exchangeAuthorizationCode = (code: string) =>
 export const connectSlack = pipe(
   RM.of({}),
   RM.apS('user', getUser),
+  RM.apSW(
+    'locale',
+    RM.asks((env: { locale: SupportedLocale }) => env.locale),
+  ),
   RM.bindW(
     'isSlackUser',
     RM.fromReaderTaskEitherK(({ user }) => isSlackUser(user.orcid)),
@@ -143,7 +148,7 @@ export const connectSlackStart = pipe(
     match(error)
       .returnType<
         RM.ReaderMiddleware<
-          GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv,
+          GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv & { locale: SupportedLocale },
           StatusOpen,
           ResponseEnded,
           never,
@@ -223,21 +228,29 @@ export const connectSlackError = (error: string) =>
     .otherwise(() => showFailureMessage)
 
 const showConnectSlackPage = flow(
-  ({ user }: { user: User }) => RM.of({ user }),
-  RM.apS('response', RM.of(connectSlackPage)),
+  ({ locale, user }: { locale: SupportedLocale; user: User }) => RM.of({ locale, user }),
+  RM.bind('response', ({ locale }) => RM.of(connectSlackPage(locale))),
   RM.ichainW(handlePageResponse),
 )
 
 const showAccessDeniedMessage = pipe(
   RM.of({}),
   RM.apS('user', maybeGetUser),
-  RM.apS('response', RM.of(accessDeniedMessage)),
+  RM.apSW(
+    'locale',
+    RM.asks((env: { locale: SupportedLocale }) => env.locale),
+  ),
+  RM.bind('response', ({ locale }) => RM.of(accessDeniedMessage(locale))),
   RM.ichainW(handlePageResponse),
 )
 
 const showFailureMessage = pipe(
   RM.of({}),
   RM.apS('user', maybeGetUser),
-  RM.apS('response', RM.of(failureMessage)),
+  RM.apSW(
+    'locale',
+    RM.asks((env: { locale: SupportedLocale }) => env.locale),
+  ),
+  RM.bind('response', ({ locale }) => RM.of(failureMessage(locale))),
   RM.ichainW(handlePageResponse),
 )

@@ -9,7 +9,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import * as _ from '../../src/connect-slack-page/index.js'
-import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../src/routes.js'
 import type { EditSlackUserIdEnv } from '../../src/slack-user-id.js'
@@ -21,9 +20,9 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('connectSlack', () => {
   describe('when the user is logged in', () => {
-    test.prop([fc.oauth(), fc.user(), fc.connection(), fc.userOnboarding(), fc.html()])(
+    test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.connection(), fc.userOnboarding(), fc.html()])(
       'when the Slack is not already connected',
-      async (orcidOauth, user, connection, userOnboarding, page) => {
+      async (orcidOauth, user, locale, connection, userOnboarding, page) => {
         const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
         const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
@@ -32,6 +31,7 @@ describe('connectSlack', () => {
             isSlackUser: () => TE.right(false),
             getUser: () => M.of(user),
             getUserOnboarding,
+            locale,
             orcidOauth,
             publicUrl: new URL('http://example.com'),
             templatePage,
@@ -55,21 +55,22 @@ describe('connectSlack', () => {
           content: expect.anything(),
           skipLinks: [[expect.anything(), '#main']],
           js: [],
-          locale: DefaultLocale,
+          locale,
           user,
           userOnboarding,
         })
       },
     )
 
-    test.prop([fc.oauth(), fc.user(), fc.connection()])(
+    test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.connection()])(
       'when the Slack is connected',
-      async (orcidOauth, user, connection) => {
+      async (orcidOauth, user, locale, connection) => {
         const actual = await runMiddleware(
           _.connectSlack({
             isSlackUser: () => TE.right(true),
             getUser: () => M.of(user),
             getUserOnboarding: shouldNotBeCalled,
+            locale,
             orcidOauth,
             publicUrl: new URL('http://example.com'),
             templatePage: shouldNotBeCalled,
@@ -91,9 +92,9 @@ describe('connectSlack', () => {
       },
     )
 
-    test.prop([fc.oauth(), fc.user(), fc.connection(), fc.html()])(
+    test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.connection(), fc.html()])(
       "when the Slack user can't be loaded",
-      async (orcidOauth, user, connection, page) => {
+      async (orcidOauth, user, locale, connection, page) => {
         const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
         const actual = await runMiddleware(
@@ -101,6 +102,7 @@ describe('connectSlack', () => {
             isSlackUser: () => TE.left('unavailable'),
             getUser: () => M.of(user),
             getUserOnboarding: shouldNotBeCalled,
+            locale,
             orcidOauth,
             publicUrl: new URL('http://example.com'),
             templatePage,
@@ -120,21 +122,22 @@ describe('connectSlack', () => {
           title: expect.anything(),
           content: expect.anything(),
           skipLinks: [[expect.anything(), '#main-content']],
-          locale: DefaultLocale,
+          locale,
           user,
         })
       },
     )
   })
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection()])(
+  test.prop([fc.oauth(), fc.origin(), fc.supportedLocale(), fc.connection()])(
     'when the user is not logged in',
-    async (orcidOauth, publicUrl, connection) => {
+    async (orcidOauth, publicUrl, locale, connection) => {
       const actual = await runMiddleware(
         _.connectSlack({
           isSlackUser: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           orcidOauth,
           publicUrl,
           templatePage: shouldNotBeCalled,
@@ -167,9 +170,18 @@ describe('connectSlack', () => {
 })
 
 describe('connectSlackStart', () => {
-  test.prop([fc.oauth(), fc.oauth(), fc.origin(), fc.uuid(), fc.string(), fc.user(), fc.connection()])(
+  test.prop([
+    fc.oauth(),
+    fc.oauth(),
+    fc.supportedLocale(),
+    fc.origin(),
+    fc.uuid(),
+    fc.string(),
+    fc.user(),
+    fc.connection(),
+  ])(
     'when the user is logged in',
-    async (orcidOauth, slackOauth, publicUrl, uuid, signedValue, user, connection) => {
+    async (orcidOauth, slackOauth, locale, publicUrl, uuid, signedValue, user, connection) => {
       const generateUuid = jest.fn<GenerateUuidEnv['generateUuid']>(() => uuid)
       const signValue = jest.fn<_.SignValueEnv['signValue']>(_ => signedValue)
 
@@ -177,6 +189,7 @@ describe('connectSlackStart', () => {
         _.connectSlackStart({
           generateUuid,
           getUser: () => M.of(user),
+          locale,
           orcidOauth,
           publicUrl,
           signValue,
@@ -213,13 +226,14 @@ describe('connectSlackStart', () => {
     },
   )
 
-  test.prop([fc.oauth(), fc.oauth(), fc.origin(), fc.connection()])(
+  test.prop([fc.oauth(), fc.oauth(), fc.supportedLocale(), fc.origin(), fc.connection()])(
     'when the user is not logged in',
-    async (orcidOauth, slackOauth, publicUrl, connection) => {
+    async (orcidOauth, slackOauth, locale, publicUrl, connection) => {
       const actual = await runMiddleware(
         _.connectSlackStart({
           generateUuid: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
+          locale,
           orcidOauth,
           publicUrl,
           signValue: shouldNotBeCalled,
@@ -257,6 +271,7 @@ describe('connectSlackCode', () => {
   test.prop([
     fc.string(),
     fc.user(),
+    fc.supportedLocale(),
     fc.oauth(),
     fc.origin(),
     fc.nonEmptyString(),
@@ -270,7 +285,7 @@ describe('connectSlackCode', () => {
       ),
   ])(
     'when the access token can be decoded',
-    async (code, user, oauth, publicUrl, userId, scopes, accessToken, state, [signedState, connection]) => {
+    async (code, user, locale, oauth, publicUrl, userId, scopes, accessToken, state, [signedState, connection]) => {
       const saveSlackUserId = jest.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
       const unsignValue = jest.fn<_.UnsignValueEnv['unsignValue']>(_ => Option.some(state))
 
@@ -309,6 +324,7 @@ describe('connectSlackCode', () => {
           ),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl,
           saveSlackUserId,
           slackOauth: oauth,
@@ -336,6 +352,7 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.userOnboarding(),
+    fc.supportedLocale(),
     fc.oauth(),
     fc.origin(),
     fc.string(),
@@ -344,7 +361,7 @@ describe('connectSlackCode', () => {
     fc.html(),
   ])(
     'when the access token cannot be decoded',
-    async (code, user, userOnboarding, oauth, publicUrl, accessToken, state, connection, page) => {
+    async (code, user, userOnboarding, locale, oauth, publicUrl, accessToken, state, connection, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const slackUserIdStore = new Keyv()
@@ -361,6 +378,7 @@ describe('connectSlackCode', () => {
           fetch,
           getUser: () => M.of(user),
           getUserOnboarding: () => TE.right(userOnboarding),
+          locale,
           publicUrl,
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
@@ -384,7 +402,7 @@ describe('connectSlackCode', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main']],
         js: [],
-        locale: DefaultLocale,
+        locale,
         user,
         userOnboarding,
       })
@@ -397,6 +415,7 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.userOnboarding(),
+    fc.supportedLocale(),
     fc.oauth(),
     fc.origin(),
     fc.string(),
@@ -407,7 +426,7 @@ describe('connectSlackCode', () => {
     fc.html(),
   ])(
     "when the state doesn't match",
-    async (code, user, userOnboarding, oauth, publicUrl, state, unsignedState, connection, page) => {
+    async (code, user, userOnboarding, locale, oauth, publicUrl, state, unsignedState, connection, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -418,6 +437,7 @@ describe('connectSlackCode', () => {
           fetch: shouldNotBeCalled,
           getUser: () => M.of(user),
           getUserOnboarding: () => TE.right(userOnboarding),
+          locale,
           publicUrl,
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
@@ -440,7 +460,7 @@ describe('connectSlackCode', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main']],
         js: [],
-        locale: DefaultLocale,
+        locale,
         user,
         userOnboarding,
       })
@@ -451,6 +471,7 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.userOnboarding(),
+    fc.supportedLocale(),
     fc.oauth(),
     fc.origin(),
     fc.string(),
@@ -458,7 +479,7 @@ describe('connectSlackCode', () => {
     fc.html(),
   ])(
     "when the state can't be unsigned",
-    async (code, user, userOnboarding, oauth, publicUrl, state, connection, page) => {
+    async (code, user, userOnboarding, locale, oauth, publicUrl, state, connection, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -469,6 +490,7 @@ describe('connectSlackCode', () => {
           fetch: shouldNotBeCalled,
           getUser: () => M.of(user),
           getUserOnboarding: () => TE.right(userOnboarding),
+          locale,
           publicUrl,
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
@@ -492,7 +514,7 @@ describe('connectSlackCode', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main']],
         js: [],
-        locale: DefaultLocale,
+        locale,
         user,
         userOnboarding,
       })
@@ -503,6 +525,7 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.userOnboarding(),
+    fc.supportedLocale(),
     fc.oauth(),
     fc.origin(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
@@ -514,7 +537,7 @@ describe('connectSlackCode', () => {
     fc.html(),
   ])(
     'when the response has a non-200/404 status code',
-    async (code, user, userOnboarding, oauth, publicUrl, accessToken, [state, connection], page) => {
+    async (code, user, userOnboarding, locale, oauth, publicUrl, accessToken, [state, connection], page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const slackUserIdStore = new Keyv()
@@ -531,6 +554,7 @@ describe('connectSlackCode', () => {
           fetch,
           getUser: () => M.of(user),
           getUserOnboarding: () => TE.right(userOnboarding),
+          locale,
           publicUrl,
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
@@ -554,7 +578,7 @@ describe('connectSlackCode', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main']],
         js: [],
-        locale: DefaultLocale,
+        locale,
         user,
         userOnboarding,
       })
@@ -567,6 +591,7 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.userOnboarding(),
+    fc.supportedLocale(),
     fc.oauth(),
     fc.origin(),
     fc.error(),
@@ -575,7 +600,7 @@ describe('connectSlackCode', () => {
     fc.html(),
   ])(
     'when fetch throws an error',
-    async (code, user, userOnboarding, oauth, publicUrl, error, state, connection, page) => {
+    async (code, user, userOnboarding, locale, oauth, publicUrl, error, state, connection, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const slackUserIdStore = new Keyv()
@@ -588,6 +613,7 @@ describe('connectSlackCode', () => {
           fetch: () => Promise.reject(error),
           getUser: () => M.of(user),
           getUserOnboarding: () => TE.right(userOnboarding),
+          locale,
           publicUrl,
           saveSlackUserId: shouldNotBeCalled,
           slackOauth: oauth,
@@ -611,7 +637,7 @@ describe('connectSlackCode', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main']],
         js: [],
-        locale: DefaultLocale,
+        locale,
         user,
         userOnboarding,
       })
@@ -624,15 +650,17 @@ describe('connectSlackError', () => {
   test.prop([
     fc.either(fc.oneof(fc.error(), fc.constant('no-session')), fc.user()),
     fc.userOnboarding(),
+    fc.supportedLocale(),
     fc.connection(),
     fc.html(),
-  ])('with an access_denied error', async (user, userOnboarding, connection, page) => {
+  ])('with an access_denied error', async (user, userOnboarding, locale, connection, page) => {
     const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
     const actual = await runMiddleware(
       _.connectSlackError('access_denied')({
         getUser: () => M.fromEither(user),
         getUserOnboarding: () => TE.right(userOnboarding),
+        locale,
         publicUrl: new URL('http://example.com'),
         templatePage,
       }),
@@ -652,7 +680,7 @@ describe('connectSlackError', () => {
       content: expect.anything(),
       skipLinks: [[expect.anything(), '#main']],
       js: [],
-      locale: DefaultLocale,
+      locale,
       user: E.isRight(user) ? user.right : undefined,
       userOnboarding: E.isRight(user) ? userOnboarding : undefined,
     })
@@ -661,16 +689,18 @@ describe('connectSlackError', () => {
   test.prop([
     fc.either(fc.oneof(fc.error(), fc.constant('no-session')), fc.user()),
     fc.userOnboarding(),
+    fc.supportedLocale(),
     fc.string(),
     fc.connection(),
     fc.html(),
-  ])('with an unknown error', async (user, userOnboarding, error, connection, page) => {
+  ])('with an unknown error', async (user, userOnboarding, locale, error, connection, page) => {
     const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
     const actual = await runMiddleware(
       _.connectSlackError(error)({
         getUser: () => M.fromEither(user),
         getUserOnboarding: () => TE.right(userOnboarding),
+        locale,
         publicUrl: new URL('http://example.com'),
         templatePage,
       }),
@@ -690,7 +720,7 @@ describe('connectSlackError', () => {
       content: expect.anything(),
       skipLinks: [[expect.anything(), '#main']],
       js: [],
-      locale: DefaultLocale,
+      locale,
       user: E.isRight(user) ? user.right : undefined,
       userOnboarding: E.isRight(user) ? userOnboarding : undefined,
     })
