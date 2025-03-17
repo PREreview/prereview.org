@@ -4,7 +4,6 @@ import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { connectSlackStartMatch } from '../routes.js'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const connectSlackPage = (locale: SupportedLocale) =>
   PageResponse({
     title: plainText(translate(locale, 'connect-slack-page', 'connectYourAccount')()),
