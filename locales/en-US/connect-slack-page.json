@@ -1,0 +1,23 @@
+{
+  "connectYourAccount": {
+    "message": "Connect your Community Slack Account"
+  },
+  "youCanConnect": {
+    "message": "You can connect your PREreview profile to your account on the PREreview Community Slack."
+  },
+  "showOrcidOnProfile": {
+    "message": "We’ll show your ORCID iD on your Slack profile."
+  },
+  "beforeYouStart": {
+    "message": "Before you start"
+  },
+  "needSlackAccount": {
+    "message": "You need to have an account on the PREreview Community Slack. If you don’t, fill out the <link>registration form</link> to create one."
+  },
+  "sendYouToSlack": {
+    "message": "We’ll send you to Slack, where they will ask you to log in to the PREreview Community Slack and grant PREreview access to your account there. You may have already done these steps, and Slack will return you to PREreview."
+  },
+  "startNow": {
+    "message": "Start now"
+  }
+}

@@ -1,32 +1,36 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { connectSlackStartMatch } from '../routes.js'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const connectSlackPage = (locale: SupportedLocale) =>
   PageResponse({
-    title: plainText`Connect your Community Slack Account`,
+    title: plainText(translate(locale, 'connect-slack-page', 'connectYourAccount')()),
     main: html`
-      <h1>Connect your Community Slack Account</h1>
+      <h1>${translate(locale, 'connect-slack-page', 'connectYourAccount')()}</h1>
 
-      <p>You can connect your PREreview profile to your account on the PREreview Community Slack.</p>
+      <p>${translate(locale, 'connect-slack-page', 'youCanConnect')()}</p>
 
-      <p>We’ll show your ORCID iD on your Slack profile.</p>
+      <p>${translate(locale, 'connect-slack-page', 'showOrcidOnProfile')()}</p>
 
-      <h2>Before you start</h2>
-
-      <p>
-        You need to have an account on the PREreview Community Slack. If you don’t, fill out the
-        <a href="https://bit.ly/PREreview-Slack">registration form</a> to create one.
-      </p>
+      <h2>${translate(locale, 'connect-slack-page', 'beforeYouStart')()}</h2>
 
       <p>
-        We’ll send you to Slack, where they will ask you to log in to the PREreview Community Slack and grant PREreview
-        access to your account there. You may have already done these steps, and Slack will return you to PREreview.
+        ${rawHtml(
+          translate(
+            locale,
+            'connect-slack-page',
+            'needSlackAccount',
+          )({ link: text => html`<a href="https://bit.ly/PREreview-Slack">${text}</a>`.toString() }),
+        )}
       </p>
 
-      <a href="${format(connectSlackStartMatch.formatter, {})}" role="button" draggable="false">Start now</a>
+      <p>${translate(locale, 'connect-slack-page', 'sendYouToSlack')()}</p>
+
+      <a href="${format(connectSlackStartMatch.formatter, {})}" role="button" draggable="false"
+        >${translate(locale, 'connect-slack-page', 'startNow')()}</a
+      >
     `,
   })
