@@ -29,6 +29,66 @@
   "back": {
     "message": "crwdns3920:0crwdne3920:0"
   },
+  "pasteYourReview": {
+    "message": "crwdns4974:0crwdne4974:0"
+  },
+  "writeYourReview": {
+    "message": "crwdns4984:0crwdne4984:0"
+  },
+  "thereIsAProblem": {
+    "message": "crwdns4976:0crwdne4976:0"
+  },
+  "pasteYourReviewError": {
+    "message": "crwdns4978:0crwdne4978:0"
+  },
+  "enterYourReviewError": {
+    "message": "crwdns4986:0crwdne4986:0"
+  },
+  "copyAndPasteReview": {
+    "message": "crwdns4980:0crwdne4980:0"
+  },
+  "writeReviewSupport": {
+    "message": "crwdns4988:0crwdne4988:0"
+  },
+  "goodBehaviorExamples": {
+    "message": "crwdns4990:0crwdne4990:0"
+  },
+  "goodBehaviorRespectful": {
+    "message": "crwdns4992:0crwdne4992:0"
+  },
+  "goodBehaviorHumble": {
+    "message": "crwdns4994:0crwdne4994:0"
+  },
+  "goodBehaviorActionable": {
+    "message": "crwdns4996:0crwdne4996:0"
+  },
+  "reviewSectionsExamples": {
+    "message": "crwdns4998:0crwdne4998:0"
+  },
+  "beginSummary": {
+    "message": "crwdns5000:0crwdne5000:0"
+  },
+  "sharePositiveFeedback": {
+    "message": "crwdns5002:0crwdne5002:0"
+  },
+  "shareConcerns": {
+    "message": "crwdns5004:0crwdne5004:0"
+  },
+  "writeAShortSummary": {
+    "message": "crwdns5006:0crwdne5006:0"
+  },
+  "majorIssues": {
+    "message": "crwdns5008:0crwdne5008:0"
+  },
+  "listSignificantConcerns": {
+    "message": "crwdns5010:0crwdne5010:0"
+  },
+  "minorIssues": {
+    "message": "crwdns5012:0crwdne5012:0"
+  },
+  "listFlowConcerns": {
+    "message": "crwdns5014:0crwdne5014:0"
+  },
   "yesIfAnotherAuthor": {
     "message": "crwdns3924:0crwdne3924:0"
   },
@@ -55,6 +115,9 @@
   },
   "yes": {
     "message": "crwdns3940:0crwdne3940:0"
+  },
+  "saveAndContinueButton": {
+    "message": "crwdns4982:0crwdne4982:0"
   },
   "continueButton": {
     "message": "crwdns3942:0crwdne3942:0"
@@ -295,6 +358,45 @@
   },
   "theyHaveReadAndApproved": {
     "message": "crwdns4404:0crwdne4404:0"
+  },
+  "useOfAi": {
+    "message": "crwdns5016:0crwdne5016:0"
+  },
+  "useOfAiShort": {
+    "message": "crwdns5018:0crwdne5018:0"
+  },
+  "discloseAiIdeas": {
+    "message": "crwdns5020:0crwdne5020:0"
+  },
+  "aiEditing": {
+    "message": "crwdns5022:0crwdne5022:0"
+  },
+  "understandHowCreated": {
+    "message": "crwdns5024:0crwdne5024:0"
+  },
+  "didYouUseAi": {
+    "message": "crwdns5026:0crwdne5026:0"
+  },
+  "didAuthorsUseAi": {
+    "message": "crwdns5028:0crwdne5028:0"
+  },
+  "selectYesIfUsedAi": {
+    "message": "crwdns5030:0crwdne5030:0"
+  },
+  "selectYesIfAuthorsUsedAi": {
+    "message": "crwdns5032:0crwdne5032:0"
+  },
+  "aiIdeasStatement": {
+    "message": "crwdns5034:0crwdne5034:0"
+  },
+  "aiIdeasAuthorsStatement": {
+    "message": "crwdns5036:0crwdne5036:0"
+  },
+  "aiNotUsed": {
+    "message": "crwdns5038:0crwdne5038:0"
+  },
+  "changeUseOfAi": {
+    "message": "crwdns5040:0crwdne5040:0"
   },
   "competingInterests": {
     "message": "crwdns4553:0crwdne4553:0"

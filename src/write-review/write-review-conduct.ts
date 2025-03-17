@@ -7,7 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -28,7 +28,10 @@ export const writeReviewConduct = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
-      RM.apS('locale', RM.of(DefaultLocale)),
+      RM.apSW(
+        'locale',
+        RM.asks((env: { locale: SupportedLocale }) => env.locale),
+      ),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),

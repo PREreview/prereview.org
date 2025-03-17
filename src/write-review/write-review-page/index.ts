@@ -9,7 +9,7 @@ import { P, match } from 'ts-pattern'
 import { invalidE, missingE } from '../../form.js'
 import { type Html, sanitizeHtml } from '../../html.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewMatch, writeReviewReviewTypeMatch } from '../../routes.js'
@@ -25,11 +25,13 @@ import { writeReviewForm } from './write-review-form.js'
 export const writeReviewReview = ({
   body,
   id,
+  locale,
   method,
   user,
 }: {
   body: unknown
   id: IndeterminatePreprintId
+  locale: SupportedLocale
   method: string
   user?: User
 }): RT.ReaderTask<GetPreprintTitleEnv & FormStoreEnv, PageResponse | StreamlinePageResponse | RedirectResponse> =>
@@ -39,8 +41,8 @@ export const writeReviewReview = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       preprint =>
@@ -51,6 +53,7 @@ export const writeReviewReview = ({
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.let('body', () => body),
           RTE.let('method', () => method),
+          RTE.let('locale', () => locale),
           RTE.matchEW(
             error =>
               RT.of(
@@ -58,7 +61,7 @@ export const writeReviewReview = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(DefaultLocale))
+                  .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(locale))
                   .exhaustive(),
               ),
             state =>
@@ -86,20 +89,36 @@ export const writeReviewReview = ({
     ),
   )
 
-const showWriteReviewForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
-  writeReviewForm(preprint, { review: E.right(form.review) })
+const showWriteReviewForm = ({
+  form,
+  locale,
+  preprint,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+}) => writeReviewForm(preprint, { review: E.right(form.review) }, locale)
 
-const showPasteReviewForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
-  pasteReviewForm(preprint, { review: E.right(form.review) })
+const showPasteReviewForm = ({
+  form,
+  locale,
+  preprint,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+}) => pasteReviewForm(preprint, { review: E.right(form.review) }, locale)
 
 const handleWriteReviewForm = ({
   body,
   form,
+  locale,
   preprint,
   user,
 }: {
   body: unknown
   form: Form
+  locale: SupportedLocale
   preprint: PreprintTitle
   user: User
 }) =>
@@ -108,7 +127,7 @@ const handleWriteReviewForm = ({
       review: pipe(
         ReviewFieldD.decode(body),
         E.mapLeft(missingE),
-        E.filterOrElseW(isSameMarkdownAs(template), flow(String, invalidE)),
+        E.filterOrElseW(isSameMarkdownAs(template(locale)), flow(String, invalidE)),
       ),
     }),
     RTE.chainEitherK(fields =>
@@ -123,8 +142,8 @@ const handleWriteReviewForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
-          .with({ review: P.any }, form => writeReviewForm(preprint, form))
+          .with('form-unavailable', () => havingProblemsPage(locale))
+          .with({ review: P.any }, form => writeReviewForm(preprint, form, locale))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
     ),
@@ -133,11 +152,13 @@ const handleWriteReviewForm = ({
 const handlePasteReviewForm = ({
   body,
   form,
+  locale,
   preprint,
   user,
 }: {
   body: unknown
   form: Form
+  locale: SupportedLocale
   preprint: PreprintTitle
   user: User
 }) =>
@@ -157,8 +178,8 @@ const handlePasteReviewForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
-          .with({ review: P.any }, form => pasteReviewForm(preprint, form))
+          .with('form-unavailable', () => havingProblemsPage(locale))
+          .with({ review: P.any }, form => pasteReviewForm(preprint, form, locale))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
     ),

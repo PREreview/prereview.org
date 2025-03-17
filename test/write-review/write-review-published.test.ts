@@ -7,7 +7,6 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
-import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch } from '../../src/routes.js'
@@ -35,6 +34,7 @@ describe('writeReviewPublished', () => {
     fc.origin(),
     fc.record({ doi: fc.doi(), form: fc.completedForm(), id: fc.integer() }),
     fc.user(),
+    fc.supportedLocale(),
     fc.html(),
   ])(
     'when the form is complete',
@@ -45,6 +45,7 @@ describe('writeReviewPublished', () => {
       publicUrl,
       publishedReview,
       user,
+      locale,
       page,
     ) => {
       const sessionStore = new Keyv()
@@ -58,6 +59,7 @@ describe('writeReviewPublished', () => {
         _.writeReviewPublished(preprintId)({
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           publicUrl,
           secret,
           sessionCookie,
@@ -80,7 +82,7 @@ describe('writeReviewPublished', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
         type: 'streamline',
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
@@ -100,9 +102,10 @@ describe('writeReviewPublished', () => {
       ),
     ),
     fc.user(),
+    fc.supportedLocale(),
   ])(
     'when there is no published review',
-    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
+    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], user, locale) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
 
@@ -110,6 +113,7 @@ describe('writeReviewPublished', () => {
         _.writeReviewPublished(preprintId)({
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           publicUrl: new URL('http://example.com'),
           secret,
           sessionCookie,
@@ -147,10 +151,11 @@ describe('writeReviewPublished', () => {
     ),
     fc.record({ doi: fc.doi(), form: fc.completedForm(), id: fc.integer() }),
     fc.user(),
+    fc.supportedLocale(),
     fc.html(),
   ])(
     'when the preprint cannot be loaded',
-    async (preprintId, [connection, sessionCookie, sessionId, secret], publishedReview, user, page) => {
+    async (preprintId, [connection, sessionCookie, sessionId, secret], publishedReview, user, locale, page) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, {
         user: UserC.encode(user),
@@ -162,6 +167,7 @@ describe('writeReviewPublished', () => {
         _.writeReviewPublished(preprintId)({
           getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
+          locale,
           publicUrl: new URL('http://example.com'),
           secret,
           sessionCookie,
@@ -183,7 +189,7 @@ describe('writeReviewPublished', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
@@ -203,10 +209,11 @@ describe('writeReviewPublished', () => {
     ),
     fc.record({ doi: fc.doi(), form: fc.completedForm(), id: fc.integer() }),
     fc.user(),
+    fc.supportedLocale(),
     fc.html(),
   ])(
     'when the preprint cannot be found',
-    async (preprintId, [connection, sessionCookie, sessionId, secret], publishedReview, user, page) => {
+    async (preprintId, [connection, sessionCookie, sessionId, secret], publishedReview, user, locale, page) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, {
         user: UserC.encode(user),
@@ -218,6 +225,7 @@ describe('writeReviewPublished', () => {
         _.writeReviewPublished(preprintId)({
           getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
+          locale,
           publicUrl: new URL('http://example.com'),
           secret,
           sessionCookie,
@@ -239,39 +247,44 @@ describe('writeReviewPublished', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.cookieName(), fc.string()])(
-    "when there isn't a session",
-    async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
-      const actual = await runMiddleware(
-        _.writeReviewPublished(preprintId)({
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.left('no-session'),
-          publicUrl: new URL('http://example.com'),
-          secret,
-          sessionCookie,
-          sessionStore: new Keyv(),
-          templatePage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.connection(),
+    fc.cookieName(),
+    fc.string(),
+    fc.supportedLocale(),
+  ])("when there isn't a session", async (preprintId, preprintTitle, connection, sessionCookie, secret, locale) => {
+    const actual = await runMiddleware(
+      _.writeReviewPublished(preprintId)({
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getUser: () => M.left('no-session'),
+        locale,
+        publicUrl: new URL('http://example.com'),
+        secret,
+        sessionCookie,
+        sessionStore: new Keyv(),
+        templatePage: shouldNotBeCalled,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.SeeOther },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+  })
 })

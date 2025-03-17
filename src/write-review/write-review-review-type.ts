@@ -9,7 +9,7 @@ import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { type GetPreprintEnv, type PreprintTitle, getPreprint } from '../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes.js'
@@ -22,11 +22,13 @@ import { ensureUserIsNotAnAuthor } from './user-is-author.js'
 export const writeReviewReviewType = ({
   body,
   id,
+  locale,
   method,
   user,
 }: {
   body: unknown
   id: IndeterminatePreprintId
+  locale: SupportedLocale
   method: string
   user?: User
 }): RT.ReaderTask<
@@ -39,8 +41,8 @@ export const writeReviewReviewType = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       preprint =>
@@ -68,6 +70,7 @@ export const writeReviewReviewType = ({
           ),
           RTE.let('body', () => body),
           RTE.let('method', () => method),
+          RTE.let('locale', () => locale),
           RTE.matchEW(
             error =>
               RT.of(
@@ -76,7 +79,7 @@ export const writeReviewReviewType = ({
                   .with('no-session', () =>
                     LogInResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with(P.instanceOf(Error), () => havingProblemsPage(DefaultLocale))
+                  .with(P.instanceOf(Error), () => havingProblemsPage(locale))
                   .exhaustive(),
               ),
             state =>
@@ -95,11 +98,13 @@ const showReviewTypeForm = ({ form, preprint }: { form: Form; preprint: Preprint
 const handleReviewTypeForm = ({
   body,
   form,
+  locale,
   preprint,
   user,
 }: {
   body: unknown
   form: Form
+  locale: SupportedLocale
   preprint: PreprintTitle
   user: User
 }) =>
@@ -128,7 +133,7 @@ const handleReviewTypeForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
+          .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ reviewType: P.any }, form => reviewTypeForm(preprint, form))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),

@@ -20,14 +20,16 @@ describe('writeReviewCompetingInterests', () => {
       fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.lorem() }),
     ),
     fc.user(),
+    fc.supportedLocale(),
     fc.completedForm(),
-  ])('when the form is completed', async (preprintId, preprintTitle, competingInterests, user, newReview) => {
+  ])('when the form is completed', async (preprintId, preprintTitle, competingInterests, user, locale, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
     const actual = await _.writeReviewCompetingInterests({
       body: competingInterests,
       id: preprintId,
+      locale,
       method: 'POST',
       user,
     })({
@@ -51,14 +53,16 @@ describe('writeReviewCompetingInterests', () => {
       fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.lorem() }),
     ),
     fc.user(),
+    fc.supportedLocale(),
     fc.incompleteForm(),
-  ])('when the form is incomplete', async (preprintId, preprintTitle, competingInterests, user, newReview) => {
+  ])('when the form is incomplete', async (preprintId, preprintTitle, competingInterests, user, locale, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
     const actual = await _.writeReviewCompetingInterests({
       body: competingInterests,
       id: preprintId,
+      locale,
       method: 'POST',
       user,
     })({
@@ -74,10 +78,10 @@ describe('writeReviewCompetingInterests', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.user(), fc.supportedLocale()])(
     'when there is no form',
-    async (preprintId, preprintTitle, body, user) => {
-      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, method: 'POST', user })({
+    async (preprintId, preprintTitle, body, user, locale) => {
+      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method: 'POST', user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
       })()
@@ -90,10 +94,10 @@ describe('writeReviewCompetingInterests', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
     'when the preprint cannot be loaded',
-    async (preprintId, body, method, user) => {
-      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, method, user })({
+    async (preprintId, body, method, user, locale) => {
+      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
       })()
@@ -109,10 +113,10 @@ describe('writeReviewCompetingInterests', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
     'when the preprint cannot be found',
-    async (preprintId, body, method, user) => {
-      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, method, user })({
+    async (preprintId, body, method, user, locale) => {
+      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
       })()
@@ -128,10 +132,10 @@ describe('writeReviewCompetingInterests', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()])(
     "when there isn't a session",
-    async (preprintId, preprintTitle, body, method) => {
-      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, method, user: undefined })({
+    async (preprintId, preprintTitle, body, method, locale) => {
+      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user: undefined })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
       })()
@@ -155,12 +159,13 @@ describe('writeReviewCompetingInterests', () => {
       ),
     ),
     fc.user(),
+    fc.supportedLocale(),
     fc.form(),
-  ])('without declaring any competing interests', async (preprintId, preprintTitle, body, user, newReview) => {
+  ])('without declaring any competing interests', async (preprintId, preprintTitle, body, user, locale, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, method: 'POST', user })({
+    const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method: 'POST', user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
     })()

@@ -9,7 +9,7 @@ import { P, match } from 'ts-pattern'
 import { mustDeclareUseOfAi } from '../../feature-flags.js'
 import { missingE } from '../../form.js'
 import { sendHtml } from '../../html.js'
-import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware.js'
 import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes.js'
@@ -23,7 +23,10 @@ export const writeReviewAuthors = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
-      RM.apS('locale', RM.of(DefaultLocale)),
+      RM.apSW(
+        'locale',
+        RM.asks((env: { locale: SupportedLocale }) => env.locale),
+      ),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),

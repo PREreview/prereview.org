@@ -7,7 +7,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import { rawHtml } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewAddAuthorsMatch, writeReviewMatch, writeReviewPublishMatch } from '../../src/routes.js'
@@ -28,11 +27,12 @@ describe('writeReviewAuthors', () => {
         method: fc.constant('POST'),
       }),
       fc.user(),
+      fc.supportedLocale(),
       fc.form(),
       fc.boolean(),
     ])(
       'when they have read and agreed',
-      async (preprintId, preprintTitle, connection, user, newReview, mustDeclareUseOfAi) => {
+      async (preprintId, preprintTitle, connection, user, locale, newReview, mustDeclareUseOfAi) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -41,6 +41,7 @@ describe('writeReviewAuthors', () => {
             formStore,
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
+            locale,
             mustDeclareUseOfAi,
             templatePage: shouldNotBeCalled,
           }),
@@ -77,12 +78,13 @@ describe('writeReviewAuthors', () => {
         method: fc.constant('POST'),
       }),
       fc.user(),
+      fc.supportedLocale(),
       fc.form(),
       fc.html(),
       fc.boolean(),
     ])(
       "when they haven't read and agreed",
-      async (preprintId, preprintTitle, connection, user, newReview, page, mustDeclareUseOfAi) => {
+      async (preprintId, preprintTitle, connection, user, locale, newReview, page, mustDeclareUseOfAi) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
         const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
@@ -92,6 +94,7 @@ describe('writeReviewAuthors', () => {
             formStore,
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
+            locale,
             mustDeclareUseOfAi,
             templatePage,
           }),
@@ -111,7 +114,7 @@ describe('writeReviewAuthors', () => {
           skipLinks: [[rawHtml('Skip to form'), '#form']],
           js: ['conditional-inputs.js', 'error-summary.js'],
           type: 'streamline',
-          locale: DefaultLocale,
+          locale,
           user,
         })
       },
@@ -129,11 +132,12 @@ describe('writeReviewAuthors', () => {
           method: fc.constant('POST'),
         }),
         fc.user(),
+        fc.supportedLocale(),
         fc.completedForm(),
         fc.boolean(),
       ])(
         'when the form is completed',
-        async (preprintId, preprintTitle, connection, user, newReview, mustDeclareUseOfAi) => {
+        async (preprintId, preprintTitle, connection, user, locale, newReview, mustDeclareUseOfAi) => {
           const formStore = new Keyv()
           await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -142,6 +146,7 @@ describe('writeReviewAuthors', () => {
               formStore,
               getPreprintTitle: () => TE.right(preprintTitle),
               getUser: () => M.of(user),
+              locale,
               mustDeclareUseOfAi,
               templatePage: shouldNotBeCalled,
             }),
@@ -176,11 +181,12 @@ describe('writeReviewAuthors', () => {
           method: fc.constant('POST'),
         }),
         fc.user(),
+        fc.supportedLocale(),
         fc.incompleteForm(),
         fc.boolean(),
       ])(
         'when the form is incomplete',
-        async (preprintId, preprintTitle, connection, user, newReview, mustDeclareUseOfAi) => {
+        async (preprintId, preprintTitle, connection, user, locale, newReview, mustDeclareUseOfAi) => {
           const formStore = new Keyv()
           await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -189,6 +195,7 @@ describe('writeReviewAuthors', () => {
               formStore,
               getPreprintTitle: () => TE.right(preprintTitle),
               getUser: () => M.of(user),
+              locale,
               mustDeclareUseOfAi,
               templatePage: shouldNotBeCalled,
             }),
@@ -226,11 +233,12 @@ describe('writeReviewAuthors', () => {
         method: fc.constant('POST'),
       }),
       fc.user(),
+      fc.supportedLocale(),
       fc.completedForm(),
       fc.boolean(),
     ])(
       'when the form is completed',
-      async (preprintId, preprintTitle, connection, user, newReview, mustDeclareUseOfAi) => {
+      async (preprintId, preprintTitle, connection, user, locale, newReview, mustDeclareUseOfAi) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -239,6 +247,7 @@ describe('writeReviewAuthors', () => {
             formStore,
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
+            locale,
             mustDeclareUseOfAi,
             templatePage: shouldNotBeCalled,
           }),
@@ -271,11 +280,12 @@ describe('writeReviewAuthors', () => {
         method: fc.constant('POST'),
       }),
       fc.user(),
+      fc.supportedLocale(),
       fc.incompleteForm(),
       fc.boolean(),
     ])(
       'when the form is incomplete',
-      async (preprintId, preprintTitle, connection, user, newReview, mustDeclareUseOfAi) => {
+      async (preprintId, preprintTitle, connection, user, locale, newReview, mustDeclareUseOfAi) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -284,6 +294,7 @@ describe('writeReviewAuthors', () => {
             formStore,
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
+            locale,
             mustDeclareUseOfAi,
             templatePage: shouldNotBeCalled,
           }),
@@ -306,37 +317,42 @@ describe('writeReviewAuthors', () => {
     )
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user(), fc.boolean()])(
-    'when there is no form',
-    async (preprintId, preprintTitle, connection, user, mustDeclareUseOfAi) => {
-      const actual = await runMiddleware(
-        _.writeReviewAuthors(preprintId)({
-          formStore: new Keyv(),
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-          mustDeclareUseOfAi,
-          templatePage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.connection(),
+    fc.user(),
+    fc.supportedLocale(),
+    fc.boolean(),
+  ])('when there is no form', async (preprintId, preprintTitle, connection, user, locale, mustDeclareUseOfAi) => {
+    const actual = await runMiddleware(
+      _.writeReviewAuthors(preprintId)({
+        formStore: new Keyv(),
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getUser: () => M.of(user),
+        locale,
+        mustDeclareUseOfAi,
+        templatePage: shouldNotBeCalled,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.SeeOther },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+  })
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.html(), fc.boolean()])(
+  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.supportedLocale(), fc.html(), fc.boolean()])(
     'when the preprint cannot be loaded',
-    async (preprintId, connection, user, page, mustDeclareUseOfAi) => {
+    async (preprintId, connection, user, locale, page, mustDeclareUseOfAi) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -344,6 +360,7 @@ describe('writeReviewAuthors', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
+          locale,
           mustDeclareUseOfAi,
           templatePage,
         }),
@@ -362,15 +379,15 @@ describe('writeReviewAuthors', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.html(), fc.boolean()])(
+  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.supportedLocale(), fc.html(), fc.boolean()])(
     'when the preprint cannot be found',
-    async (preprintId, connection, user, page, mustDeclareUseOfAi) => {
+    async (preprintId, connection, user, locale, page, mustDeclareUseOfAi) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -378,6 +395,7 @@ describe('writeReviewAuthors', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
+          locale,
           mustDeclareUseOfAi,
           templatePage,
         }),
@@ -396,20 +414,21 @@ describe('writeReviewAuthors', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.boolean()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.boolean(), fc.supportedLocale()])(
     "when there isn't a session",
-    async (preprintId, preprintTitle, connection, mustDeclareUseOfAi) => {
+    async (preprintId, preprintTitle, connection, mustDeclareUseOfAi, locale) => {
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintId)({
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
+          locale,
           mustDeclareUseOfAi,
           templatePage: shouldNotBeCalled,
         }),
@@ -441,12 +460,13 @@ describe('writeReviewAuthors', () => {
       method: fc.constant('POST'),
     }),
     fc.user(),
+    fc.supportedLocale(),
     fc.form(),
     fc.html(),
     fc.boolean(),
   ])(
     'without a moreAuthors',
-    async (preprintId, preprintTitle, connection, user, newReview, page, mustDeclareUseOfAi) => {
+    async (preprintId, preprintTitle, connection, user, locale, newReview, page, mustDeclareUseOfAi) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
@@ -456,6 +476,7 @@ describe('writeReviewAuthors', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           mustDeclareUseOfAi,
           templatePage,
         }),
@@ -475,7 +496,7 @@ describe('writeReviewAuthors', () => {
         skipLinks: [[rawHtml('Skip to form'), '#form']],
         js: ['conditional-inputs.js', 'error-summary.js'],
         type: 'streamline',
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },

@@ -1,9 +1,11 @@
+import { identity } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError } from '../../form.js'
 import { type Html, html, plainText, rawHtml } from '../../html.js'
+import { type SupportedLocale, translate } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../../routes.js'
@@ -13,28 +15,33 @@ export interface PasteReviewForm {
   readonly review: E.Either<MissingE, Html | undefined>
 }
 
-export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm) => {
+export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, locale: SupportedLocale) => {
   const error = hasAnError(form)
+  const t = translate(locale)
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}Paste your PREreview of “${preprint.title}”`,
+    title: plainText(t('write-review', 'pasteYourReview')({ error: error ? identity : () => '' })),
     nav: html`
-      <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"><span>Back</span></a>
+      <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
+        ><span>${t('write-review', 'backNav')()}</span></a
+      >
     `,
     main: html`
       <form method="post" action="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" novalidate>
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
+                <h2 id="error-summary-title">${t('write-review', 'thereIsAProblem')()}</h2>
                 <ul>
                   ${E.isLeft(form.review)
                     ? html`
                         <li>
                           <a href="#review">
                             ${match(form.review.left)
-                              .with({ _tag: 'MissingE' }, () => 'Paste your PREreview')
+                              .with({ _tag: 'MissingE' }, () =>
+                                t('write-review', 'pasteYourReviewError')({ error: () => '' }),
+                              )
                               .exhaustive()}
                           </a>
                         </li>
@@ -46,18 +53,19 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm) 
           : ''}
 
         <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
-          <h1><label id="review-label" for="review">Paste your PREreview</label></h1>
+          <h1>
+            <label id="review-label" for="review">${t('write-review', 'pasteYourReview')({ error: () => '' })}</label>
+          </h1>
 
-          <p id="review-tip" role="note">
-            Copy your PREreview and paste it here. We’ll do our best to preserve how it looks.
-          </p>
+          <p id="review-tip" role="note">${t('write-review', 'copyAndPasteReview')()}</p>
 
           ${E.isLeft(form.review)
             ? html`
                 <div class="error-message" id="review-error">
-                  <span class="visually-hidden">Error:</span>
                   ${match(form.review.left)
-                    .with({ _tag: 'MissingE' }, () => 'Paste your PREreview')
+                    .with({ _tag: 'MissingE' }, () =>
+                      rawHtml(t('write-review', 'pasteYourReviewError')({ error: visuallyHidden })),
+                    )
                     .exhaustive()}
                 </div>
               `
@@ -95,7 +103,7 @@ ${turndown.turndown(review.toString())}</textarea
           </html-editor>
         </div>
 
-        <button>Save and continue</button>
+        <button>${t('write-review', 'saveAndContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',
@@ -103,3 +111,5 @@ ${turndown.turndown(review.toString())}</textarea
     js: error ? ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'] : ['html-editor.js', 'editor-toolbar.js'],
   })
 }
+
+const visuallyHidden = (text: string): string => html`<span class="visually-hidden">${text}</span>`.toString()

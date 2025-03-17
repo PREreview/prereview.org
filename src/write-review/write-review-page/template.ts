@@ -1,11 +1,15 @@
-export const template = `
-Write a short summary of the research’s main findings and how this work has moved the field forward.
+import { translate, type SupportedLocale } from '../../locales/index.js'
 
-## Major issues
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const template = (locale: SupportedLocale) =>
+  `
+${translate(locale, 'write-review', 'writeAShortSummary')()}
 
-- List significant concerns about the research, if there are any.
+## ${translate(locale, 'write-review', 'majorIssues')()}
 
-## Minor issues
+- ${translate(locale, 'write-review', 'listSignificantConcerns')()}
 
-- List concerns that would improve the overall flow or clarity but are not critical to the understanding and conclusions of the research.
+## ${translate(locale, 'write-review', 'minorIssues')()}
+
+- ${translate(locale, 'write-review', 'listFlowConcerns')()}
 `.trim()
