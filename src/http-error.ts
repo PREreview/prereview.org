@@ -14,7 +14,12 @@ import { type User, maybeGetUser } from './user.js'
 
 export function handleError(error: HttpError<typeof Status.NotFound | typeof Status.ServiceUnavailable>) {
   return pipe(
-    maybeGetUser,
+    RM.of({}),
+    RM.apS('user', maybeGetUser),
+    RM.apSW(
+      'locale',
+      RM.asks((env: { locale?: SupportedLocale }) => env.locale ?? DefaultLocale),
+    ),
     RM.chainReaderKW(
       match(error)
         .with({ status: Status.NotFound }, () => notFoundPage)
@@ -27,21 +32,21 @@ export function handleError(error: HttpError<typeof Status.NotFound | typeof Sta
   )
 }
 
-function notFoundPage(user?: User) {
+function notFoundPage({ locale, user }: { locale: SupportedLocale; user?: User }) {
   return templatePage({
-    title: plainText(translate(DefaultLocale, 'page-not-found', 'pageNotFoundTitle')()),
+    title: plainText(translate(locale, 'page-not-found', 'pageNotFoundTitle')()),
     content: html`
       <main id="main-content">
-        <h1>${translate(DefaultLocale, 'page-not-found', 'pageNotFoundTitle')()}</h1>
+        <h1>${translate(locale, 'page-not-found', 'pageNotFoundTitle')()}</h1>
 
-        <p>${translate(DefaultLocale, 'page-not-found', 'checkCorrect')()}</p>
+        <p>${translate(locale, 'page-not-found', 'checkCorrect')()}</p>
 
-        <p>${translate(DefaultLocale, 'page-not-found', 'checkEntire')()}</p>
+        <p>${translate(locale, 'page-not-found', 'checkEntire')()}</p>
 
         <p>
           ${rawHtml(
             translate(
-              DefaultLocale,
+              locale,
               'page-not-found',
               'contactUs',
             )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
@@ -49,22 +54,22 @@ function notFoundPage(user?: User) {
         </p>
       </main>
     `,
-    skipLinks: [[html`${translate(DefaultLocale, 'skip-links', 'main')()}`, '#main-content']],
+    skipLinks: [[html`${translate(locale, 'skip-links', 'main')()}`, '#main-content']],
     user,
   })
 }
 
-function problemsPage(user?: User) {
+function problemsPage({ locale, user }: { locale: SupportedLocale; user?: User }) {
   return templatePage({
-    title: plainText(translate(DefaultLocale, 'having-problems-page', 'havingProblemsTitle')()),
+    title: plainText(translate(locale, 'having-problems-page', 'havingProblemsTitle')()),
     content: html`
       <main id="main-content">
-        <h1>${translate(DefaultLocale, 'having-problems-page', 'havingProblemsTitle')()}</h1>
+        <h1>${translate(locale, 'having-problems-page', 'havingProblemsTitle')()}</h1>
 
-        <p>${translate(DefaultLocale, 'having-problems-page', 'tryAgainLater')()}</p>
+        <p>${translate(locale, 'having-problems-page', 'tryAgainLater')()}</p>
       </main>
     `,
-    skipLinks: [[html`${translate(DefaultLocale, 'skip-links', 'main')()}`, '#main-content']],
+    skipLinks: [[html`${translate(locale, 'skip-links', 'main')()}`, '#main-content']],
     user,
   })
 }
