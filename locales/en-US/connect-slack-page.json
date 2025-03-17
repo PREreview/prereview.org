@@ -19,5 +19,14 @@
   },
   "startNow": {
     "message": "Start now"
+  },
+  "cannotConnect": {
+    "message": "Sorry, we can’t connect your account"
+  },
+  "youDeniedAccess": {
+    "message": "You have denied PREreview access to your Community Slack account."
+  },
+  "tryAgain": {
+    "message": "Please try again."
   }
 }
