@@ -5,7 +5,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import { type MustDeclareUseOfAiEnv, mustDeclareUseOfAi } from '../../feature-flags.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintEnv, getPreprint } from '../../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../routes.js'
@@ -18,9 +18,11 @@ import { carryOnPage } from './carry-on-page.js'
 
 export const writeReviewStart = ({
   id,
+  locale,
   user,
 }: {
   id: IndeterminatePreprintId
+  locale: SupportedLocale
   user?: User
 }): RT.ReaderTask<
   GetPreprintEnv & FormStoreEnv & MustDeclareUseOfAiEnv,
@@ -32,8 +34,8 @@ export const writeReviewStart = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       preprint =>
@@ -44,7 +46,7 @@ export const writeReviewStart = ({
             pipe(RTE.fromNullable('no-session' as const)(user), RTE.chainEitherKW(ensureUserIsNotAnAuthor(preprint))),
           ),
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
-          RTE.apS('locale', RTE.of(DefaultLocale)),
+          RTE.apS('locale', RTE.of(locale)),
           RTE.apSW('mustDeclareUseOfAi', RTE.fromReader(mustDeclareUseOfAi)),
           RTE.matchW(
             error =>
@@ -56,7 +58,7 @@ export const writeReviewStart = ({
                 .with('no-session', () =>
                   LogInResponse({ location: format(writeReviewStartMatch.formatter, { id: preprint.id }) }),
                 )
-                .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(DefaultLocale))
+                .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(locale))
                 .exhaustive(),
             ({ form, locale, mustDeclareUseOfAi }) =>
               carryOnPage(
