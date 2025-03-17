@@ -29,6 +29,18 @@
   "back": {
     "message": "crwdns3920:0crwdne3920:0"
   },
+  "pasteYourReview": {
+    "message": "crwdns4974:0crwdne4974:0"
+  },
+  "thereIsAProblem": {
+    "message": "crwdns4976:0crwdne4976:0"
+  },
+  "pasteYourReviewError": {
+    "message": "crwdns4978:0crwdne4978:0"
+  },
+  "copyAndPasteReview": {
+    "message": "crwdns4980:0crwdne4980:0"
+  },
   "yesIfAnotherAuthor": {
     "message": "crwdns3924:0crwdne3924:0"
   },
@@ -55,6 +67,9 @@
   },
   "yes": {
     "message": "crwdns3940:0crwdne3940:0"
+  },
+  "saveAndContinueButton": {
+    "message": "crwdns4982:0crwdne4982:0"
   },
   "continueButton": {
     "message": "crwdns3942:0crwdne3942:0"

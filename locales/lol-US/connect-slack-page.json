@@ -1,0 +1,41 @@
+{
+  "connectYourAccount": {
+    "message": "crwdns4948:0crwdne4948:0"
+  },
+  "youCanConnect": {
+    "message": "crwdns4950:0crwdne4950:0"
+  },
+  "showOrcidOnProfile": {
+    "message": "crwdns4952:0crwdne4952:0"
+  },
+  "beforeYouStart": {
+    "message": "crwdns4954:0crwdne4954:0"
+  },
+  "needSlackAccount": {
+    "message": "crwdns4956:0crwdne4956:0"
+  },
+  "sendYouToSlack": {
+    "message": "crwdns4958:0crwdne4958:0"
+  },
+  "startNow": {
+    "message": "crwdns4960:0crwdne4960:0"
+  },
+  "cannotConnect": {
+    "message": "crwdns4962:0crwdne4962:0"
+  },
+  "havingProblems": {
+    "message": "crwdns4964:0crwdne4964:0"
+  },
+  "youDeniedAccess": {
+    "message": "crwdns4966:0crwdne4966:0"
+  },
+  "unableToConnect": {
+    "message": "crwdns4968:0crwdne4968:0"
+  },
+  "tryAgain": {
+    "message": "crwdns4970:0crwdne4970:0"
+  },
+  "tryAgainLater": {
+    "message": "crwdns4972:0crwdne4972:0"
+  }
+}
