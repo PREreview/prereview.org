@@ -1,4 +1,17 @@
-import { Array, DateTime, Effect, HashMap, Inspectable, List, Logger, Match, pipe } from 'effect'
+import {
+  Array,
+  Cause,
+  DateTime,
+  Effect,
+  FiberId,
+  Function,
+  HashMap,
+  Inspectable,
+  List,
+  Logger,
+  Match,
+  pipe,
+} from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import type * as J from 'fp-ts/lib/Json.js'
 import * as L from 'logger-fp-ts'
@@ -29,6 +42,11 @@ export const DeprecatedLogger = Effect.gen(function* () {
     const spans = Object.fromEntries(
       List.map(options.spans, span => [span.label, options.date.getTime() - span.startTime]),
     )
+    const cause = pipe(
+      Match.value(options.cause),
+      Match.tag('Empty', Function.constUndefined),
+      Match.orElse(cause => Cause.pretty(cause, { renderErrorCause: true })),
+    ) as J.Json
 
     return Match.value(options.logLevel).pipe(
       Match.tag('Fatal', () => L.errorP),
@@ -40,6 +58,6 @@ export const DeprecatedLogger = Effect.gen(function* () {
       Match.tag('All', () => L.debugP),
       Match.tag('None', () => L.debugP),
       Match.exhaustive,
-    )(message)({ ...payload, ...spans })(loggerEnv)()
+    )(message)({ fiber: FiberId.threadName(options.fiberId), cause, ...payload, ...spans })(loggerEnv)()
   })
 })
