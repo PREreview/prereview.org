@@ -150,6 +150,7 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: Us
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
+    locale,
     user,
   })
 }

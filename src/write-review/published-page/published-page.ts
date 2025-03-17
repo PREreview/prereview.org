@@ -128,6 +128,7 @@ export const publishedPage = ({
     `,
     skipLinks: [[html`${t('skip-links', 'main')()}`, '#main-content']],
     type: 'streamline',
+    locale,
     user,
   })
 }

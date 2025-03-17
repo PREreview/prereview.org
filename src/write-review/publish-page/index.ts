@@ -375,6 +375,7 @@ function failureMessage(user: User) {
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
     type: 'streamline',
+    locale: DefaultLocale,
     user,
   })
 }

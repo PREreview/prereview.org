@@ -7,6 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -233,6 +234,7 @@ function personaForm(
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
+    locale: DefaultLocale,
     user,
   })
 }

@@ -11,6 +11,7 @@ import {
   type GetContactEmailAddressEnv,
   type SaveContactEmailAddressEnv,
 } from '../../src/contact-email-address.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../../src/routes.js'
@@ -137,6 +138,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -200,6 +202,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -251,6 +254,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -302,6 +306,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -380,6 +385,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -419,6 +425,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -513,6 +520,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user: undefined,
       })
     },

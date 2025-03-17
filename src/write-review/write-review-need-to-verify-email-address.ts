@@ -11,6 +11,7 @@ import {
 } from '../contact-email-address.js'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from '../flash-message.js'
 import { html, plainText, sendHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { showNotificationBanner } from '../notification-banner.js'
 import { templatePage } from '../page.js'
@@ -158,6 +159,7 @@ function needToVerifyEmailAddressMessage({
     skipLinks: [[html`Skip to main content`, '#main-content']],
     js: message ? ['notification-banner.js'] : [],
     type: 'streamline',
+    locale: DefaultLocale,
     user,
   })
 }

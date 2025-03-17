@@ -55,6 +55,7 @@ function notFoundPage({ locale, user }: { locale: SupportedLocale; user?: User }
       </main>
     `,
     skipLinks: [[html`${translate(locale, 'skip-links', 'main')()}`, '#main-content']],
+    locale,
     user,
   })
 }
@@ -70,6 +71,7 @@ function problemsPage({ locale, user }: { locale: SupportedLocale; user?: User }
       </main>
     `,
     skipLinks: [[html`${translate(locale, 'skip-links', 'main')()}`, '#main-content']],
+    locale,
     user,
   })
 }

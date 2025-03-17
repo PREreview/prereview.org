@@ -31,7 +31,7 @@ import type { UserOnboarding } from './user-onboarding.js'
 import type { User } from './user.js'
 
 export interface Page {
-  readonly locale?: SupportedLocale
+  readonly locale: SupportedLocale
   readonly title: PlainText
   readonly description?: PlainText
   readonly type?: 'two-up' | 'streamline'
@@ -67,18 +67,7 @@ export interface TemplatePageEnv {
 export const templatePage = (page: Page) => R.asks(({ templatePage }: TemplatePageEnv) => templatePage(page))
 
 export const page = ({
-  page: {
-    locale = DefaultLocale,
-    title,
-    description,
-    type,
-    content,
-    skipLinks = [],
-    current,
-    js = [],
-    user,
-    userOnboarding,
-  },
+  page: { locale, title, description, type, content, skipLinks = [], current, js = [], user, userOnboarding },
   environmentLabel,
   fathomId,
   publicUrl,

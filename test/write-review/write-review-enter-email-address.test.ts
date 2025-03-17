@@ -12,6 +12,7 @@ import {
   type VerifyContactEmailAddressForReviewEnv,
 } from '../../src/contact-email-address.js'
 import { rawHtml } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../src/routes.js'
@@ -105,6 +106,7 @@ describe('writeReviewEnterEmailAddress', () => {
         skipLinks: [[rawHtml('Skip to form'), '#form']],
         js: [],
         type: 'streamline',
+        locale: DefaultLocale,
         user,
       })
     },
@@ -231,6 +233,7 @@ describe('writeReviewEnterEmailAddress', () => {
         skipLinks: [[rawHtml('Skip to form'), '#form']],
         js: ['error-summary.js'],
         type: 'streamline',
+        locale: DefaultLocale,
         user,
       })
     },
@@ -298,6 +301,7 @@ describe('writeReviewEnterEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -334,6 +338,7 @@ describe('writeReviewEnterEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },

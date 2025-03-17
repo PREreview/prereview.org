@@ -9,6 +9,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes.js'
@@ -492,6 +493,7 @@ describe('writeReviewPublish', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -549,6 +551,7 @@ describe('writeReviewPublish', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -666,6 +669,7 @@ describe('writeReviewPublish', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
         type: 'streamline',
+        locale: DefaultLocale,
         user,
       })
     },

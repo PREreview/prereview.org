@@ -120,6 +120,7 @@ describe('connectSlack', () => {
           title: expect.anything(),
           content: expect.anything(),
           skipLinks: [[expect.anything(), '#main-content']],
+          locale: DefaultLocale,
           user,
         })
       },

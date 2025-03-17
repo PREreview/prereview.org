@@ -124,6 +124,7 @@ describe('legacyRoutes', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale,
         user: E.isRight(user) ? user.right : undefined,
       })
     })
@@ -161,6 +162,7 @@ describe('legacyRoutes', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale,
         user: E.isRight(user) ? user.right : undefined,
       })
     })
@@ -235,6 +237,7 @@ describe('legacyRoutes', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale,
         user: E.isRight(user) ? user.right : undefined,
       })
     })
@@ -272,6 +275,7 @@ describe('legacyRoutes', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale,
         user: E.isRight(user) ? user.right : undefined,
       })
     })
@@ -355,6 +359,7 @@ describe('legacyRoutes', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale,
         user: E.isRight(user) ? user.right : undefined,
       })
     })
@@ -394,6 +399,7 @@ describe('legacyRoutes', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale,
         user: E.isRight(user) ? user.right : undefined,
       })
     })
@@ -468,6 +474,7 @@ describe('legacyRoutes', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale,
         user: E.isRight(user) ? user.right : undefined,
       })
     })
@@ -505,6 +512,7 @@ describe('legacyRoutes', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale,
         user: E.isRight(user) ? user.right : undefined,
       })
     })

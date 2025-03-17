@@ -7,6 +7,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import { rawHtml } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes.js'
@@ -148,6 +149,7 @@ describe('writeReviewPersona', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -180,6 +182,7 @@ describe('writeReviewPersona', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -250,6 +253,7 @@ describe('writeReviewPersona', () => {
       skipLinks: [[rawHtml('Skip to form'), '#form']],
       js: ['error-summary.js'],
       type: 'streamline',
+      locale: DefaultLocale,
       user,
     })
   })

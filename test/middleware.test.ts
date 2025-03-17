@@ -3,6 +3,7 @@ import { expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/lib/Either.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
+import { DefaultLocale } from '../src/locales/index.js'
 import * as _ from '../src/middleware.js'
 import type { TemplatePageEnv } from '../src/page.js'
 import * as fc from './fc.js'
@@ -57,6 +58,7 @@ test.prop([
     title: expect.anything(),
     content: expect.anything(),
     skipLinks: [[expect.anything(), '#main-content']],
+    locale: locale ?? DefaultLocale,
     user: E.isRight(user) ? user.right : undefined,
   })
 })
@@ -86,6 +88,7 @@ test.prop([
     title: expect.anything(),
     content: expect.anything(),
     skipLinks: [[expect.anything(), '#main-content']],
+    locale: locale ?? DefaultLocale,
     user: E.isRight(user) ? user.right : undefined,
   })
 })

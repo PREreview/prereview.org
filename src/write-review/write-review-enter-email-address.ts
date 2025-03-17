@@ -13,6 +13,7 @@ import {
 } from '../contact-email-address.js'
 import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form.js'
 import { html, plainText, sendHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -231,6 +232,7 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
     js: error ? ['error-summary.js'] : [],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
+    locale: DefaultLocale,
     user,
   })
 }

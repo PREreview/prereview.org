@@ -7,6 +7,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import {
@@ -100,6 +101,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         skipLinks: [[expect.anything(), '#main-content']],
         js: [],
         type: 'streamline',
+        locale: DefaultLocale,
         user,
       })
     },
@@ -244,6 +246,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },
@@ -278,6 +281,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
+        locale: DefaultLocale,
         user,
       })
     },

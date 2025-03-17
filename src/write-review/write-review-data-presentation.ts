@@ -412,6 +412,7 @@ ${match(form.dataPresentationInappropriateUnclearDetails)
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`${translate(locale, 'skip-links', 'form')()}`, '#form']],
     type: 'streamline',
+    locale,
     user,
   })
 }
