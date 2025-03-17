@@ -5,6 +5,7 @@ import markdownIt from 'markdown-it'
 import { P, match } from 'ts-pattern'
 import { type InvalidE, type MissingE, hasAnError } from '../../form.js'
 import { type Html, html, plainText, rawHtml } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../../routes.js'
@@ -15,7 +16,7 @@ export interface WriteReviewForm {
   readonly review: E.Either<MissingE | InvalidE, Html | undefined>
 }
 
-export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm) => {
+export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, locale: SupportedLocale) => {
   const error = hasAnError(form)
 
   return StreamlinePageResponse({
@@ -104,8 +105,10 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm) 
               .with(
                 { right: undefined },
                 () => html`
-                  <textarea id="review" name="review" rows="20" aria-describedby="review-tip">${template}</textarea>
-                  <textarea hidden disabled>${markdownIt().render(template)}</textarea>
+                  <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
+${template(locale)}</textarea
+                  >
+                  <textarea hidden disabled>${markdownIt().render(template(locale))}</textarea>
                 `,
               )
               .with(

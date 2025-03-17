@@ -1,4 +1,8 @@
-export const template = `
+import type { SupportedLocale } from '../../locales/index.js'
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const template = (locale: SupportedLocale) =>
+  `
 Write a short summary of the research’s main findings and how this work has moved the field forward.
 
 ## Major issues

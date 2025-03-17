@@ -4,6 +4,7 @@ import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError } from '../../form.js'
 import { type Html, html, plainText, rawHtml } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../../routes.js'
@@ -13,7 +14,8 @@ export interface PasteReviewForm {
   readonly review: E.Either<MissingE, Html | undefined>
 }
 
-export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, locale: SupportedLocale) => {
   const error = hasAnError(form)
 
   return StreamlinePageResponse({
