@@ -1,3 +1,4 @@
+import { identity } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -5,7 +6,7 @@ import markdownIt from 'markdown-it'
 import { P, match } from 'ts-pattern'
 import { type InvalidE, type MissingE, hasAnError } from '../../form.js'
 import { type Html, html, plainText, rawHtml } from '../../html.js'
-import type { SupportedLocale } from '../../locales/index.js'
+import { type SupportedLocale, translate } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../../routes.js'
@@ -18,17 +19,14 @@ export interface WriteReviewForm {
 
 export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, locale: SupportedLocale) => {
   const error = hasAnError(form)
+  const t = translate(locale)
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of “${preprint.title}”`,
+    title: plainText(t('write-review', 'writeYourReview')({ error: error ? identity : () => '' })),
     nav: html`
-      <a
-        href="${format(writeReviewReviewTypeMatch.formatter, {
-          id: preprint.id,
-        })}"
-        class="back"
-        ><span>Back</span></a
+      <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
+        ><span>${t('write-review', 'backNav')()}</span></a
       >
     `,
     main: html`
@@ -36,14 +34,16 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
+                <h2 id="error-summary-title">${t('write-review', 'thereIsAProblem')()}</h2>
                 <ul>
                   ${E.isLeft(form.review)
                     ? html`
                         <li>
                           <a href="#review">
                             ${match(form.review.left)
-                              .with({ _tag: P.union('MissingE', 'InvalidE') }, () => 'Enter your PREreview')
+                              .with({ _tag: P.union('MissingE', 'InvalidE') }, () =>
+                                t('write-review', 'enterYourReviewError')({ error: () => '' }),
+                              )
                               .exhaustive()}
                           </a>
                         </li>
@@ -55,36 +55,39 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
           : ''}
 
         <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
-          <h1><label id="review-label" for="review">Write your PREreview</label></h1>
+          <h1>
+            <label id="review-label" for="review">${t('write-review', 'writeYourReview')({ error: () => '' })}</label>
+          </h1>
 
           <p id="review-tip" role="note">
-            We want to support you in contributing high-quality feedback on PREreview. Check out our
-            <a href="https://content.prereview.org/resources/">tips and resources for reviewers</a>.
+            ${rawHtml(
+              t(
+                'write-review',
+                'writeReviewSupport',
+              )({ link: text => html`<a href="https://content.prereview.org/resources/">${text}</a>`.toString() }),
+            )}
           </p>
 
           <details>
-            <summary><span>Examples of good reviewer behavior</span></summary>
+            <summary><span>${t('write-review', 'goodBehaviorExamples')()}</span></summary>
 
             <div>
               <ul>
-                <li>Being respectful of the authors and their work.</li>
-                <li>Being humble and aware of how you would like to receive feedback from others.</li>
-                <li>Giving clear, constructive, and actionable feedback that can improve the preprint.</li>
+                <li>${t('write-review', 'goodBehaviorRespectful')()}</li>
+                <li>${t('write-review', 'goodBehaviorHumble')()}</li>
+                <li>${t('write-review', 'goodBehaviorActionable')()}</li>
               </ul>
             </div>
           </details>
 
           <details>
-            <summary><span>Examples of helpful review sections</span></summary>
+            <summary><span>${t('write-review', 'reviewSectionsExamples')()}</span></summary>
 
             <div>
               <ol>
-                <li>Begin with a summary of the research and how it contributes to the field of study.</li>
-                <li>Next, share your positive feedback, including the approach’s strengths and results.</li>
-                <li>
-                  Finally, share major and minor concerns and related clear, constructive, and actionable suggestions
-                  for addressing them.
-                </li>
+                <li>${t('write-review', 'beginSummary')()}</li>
+                <li>${t('write-review', 'sharePositiveFeedback')()}</li>
+                <li>${t('write-review', 'shareConcerns')()}</li>
               </ol>
             </div>
           </details>
@@ -92,9 +95,10 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
           ${E.isLeft(form.review)
             ? html`
                 <div class="error-message" id="review-error">
-                  <span class="visually-hidden">Error:</span>
                   ${match(form.review.left)
-                    .with({ _tag: P.union('MissingE', 'InvalidE') }, () => 'Enter your PREreview')
+                    .with({ _tag: P.union('MissingE', 'InvalidE') }, () =>
+                      rawHtml(t('write-review', 'enterYourReviewError')({ error: visuallyHidden })),
+                    )
                     .exhaustive()}
                 </div>
               `
@@ -153,7 +157,7 @@ ${turndown.turndown(review)}</textarea
           </html-editor>
         </div>
 
-        <button>Save and continue</button>
+        <button>${t('write-review', 'saveAndContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',
@@ -161,3 +165,5 @@ ${turndown.turndown(review)}</textarea
     js: error ? ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'] : ['html-editor.js', 'editor-toolbar.js'],
   })
 }
+
+const visuallyHidden = (text: string): string => html`<span class="visually-hidden">${text}</span>`.toString()

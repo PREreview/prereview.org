@@ -1,15 +1,15 @@
-import type { SupportedLocale } from '../../locales/index.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const template = (locale: SupportedLocale) =>
   `
-Write a short summary of the research’s main findings and how this work has moved the field forward.
+${translate(locale, 'write-review', 'writeAShortSummary')()}
 
-## Major issues
+## ${translate(locale, 'write-review', 'majorIssues')()}
 
-- List significant concerns about the research, if there are any.
+- ${translate(locale, 'write-review', 'listSignificantConcerns')()}
 
-## Minor issues
+## ${translate(locale, 'write-review', 'minorIssues')()}
 
-- List concerns that would improve the overall flow or clarity but are not critical to the understanding and conclusions of the research.
+- ${translate(locale, 'write-review', 'listFlowConcerns')()}
 `.trim()

@@ -32,14 +32,62 @@
   "pasteYourReview": {
     "message": "<error>Error:</error> Paste your PREreview"
   },
+  "writeYourReview": {
+    "message": "<error>Error:</error> Write your PREreview"
+  },
   "thereIsAProblem": {
     "message": "There is a problem"
   },
   "pasteYourReviewError": {
     "message": "<error>Error:</error> Paste your PREreview"
   },
+  "enterYourReviewError": {
+    "message": "<error>Error:</error> Enter your PREreview"
+  },
   "copyAndPasteReview": {
     "message": "Copy your PREreview and paste it here. We’ll do our best to preserve how it looks."
+  },
+  "writeReviewSupport": {
+    "message": "We want to support you in contributing high-quality feedback on PREreview. Check out our <link>tips and resources for reviewers</link>."
+  },
+  "goodBehaviorExamples": {
+    "message": "Examples of good reviewer behavior"
+  },
+  "goodBehaviorRespectful": {
+    "message": "Being respectful of the authors and their work."
+  },
+  "goodBehaviorHumble": {
+    "message": "Being humble and aware of how you would like to receive feedback from others."
+  },
+  "goodBehaviorActionable": {
+    "message": "Giving clear, constructive, and actionable feedback that can improve the preprint."
+  },
+  "reviewSectionsExamples": {
+    "message": "Examples of helpful review sections"
+  },
+  "beginSummary": {
+    "message": "Begin with a summary of the research and how it contributes to the field of study."
+  },
+  "sharePositiveFeedback": {
+    "message": "Next, share your positive feedback, including the approach’s strengths and results."
+  },
+  "shareConcerns": {
+    "message": "Finally, share major and minor concerns and related clear, constructive, and actionable suggestions for addressing them."
+  },
+  "writeAShortSummary": {
+    "message": "Write a short summary of the research’s main findings and how this work has moved the field forward."
+  },
+  "majorIssues": {
+    "message": "Major issues"
+  },
+  "listSignificantConcerns": {
+    "message": "List significant concerns about the research, if there are any."
+  },
+  "minorIssues": {
+    "message": "Minor issues"
+  },
+  "listFlowConcerns": {
+    "message": "List concerns that would improve the overall flow or clarity but are not critical to the understanding and conclusions of the research."
   },
   "yesIfAnotherAuthor": {
     "message": "Select yes if you need to add another author"
