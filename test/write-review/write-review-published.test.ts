@@ -7,7 +7,6 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
-import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch } from '../../src/routes.js'
@@ -83,7 +82,7 @@ describe('writeReviewPublished', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
         type: 'streamline',
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
@@ -190,7 +189,7 @@ describe('writeReviewPublished', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
@@ -248,7 +247,7 @@ describe('writeReviewPublished', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
