@@ -4,6 +4,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import { rawHtml } from '../src/html.js'
+import { DefaultLocale } from '../src/locales/index.js'
 import type { TemplatePageEnv } from '../src/page.js'
 import * as _ from '../src/response.js'
 import type { GetUserOnboardingEnv } from '../src/user-onboarding.js'
@@ -56,6 +57,7 @@ describe('handleResponse', () => {
             skipLinks: [[expect.anything(), '#main']],
             current: response.current,
             js: response.js,
+            locale: DefaultLocale,
             user,
             userOnboarding,
           })
@@ -96,6 +98,7 @@ describe('handleResponse', () => {
             skipLinks: [[expect.anything(), '#main']],
             current: response.current,
             js: response.js,
+            locale: DefaultLocale,
             user: undefined,
             userOnboarding: undefined,
           })
@@ -240,6 +243,7 @@ describe('handleResponse', () => {
             current: response.current,
             js: response.js,
             type: 'streamline',
+            locale: DefaultLocale,
             user,
             userOnboarding,
           })
@@ -281,6 +285,7 @@ describe('handleResponse', () => {
             current: response.current,
             js: response.js,
             type: 'streamline',
+            locale: DefaultLocale,
             user: undefined,
             userOnboarding: undefined,
           })
@@ -450,6 +455,7 @@ describe('handleResponse', () => {
         ],
         js: [],
         type: 'two-up',
+        locale: DefaultLocale,
         user,
         userOnboarding,
       })
@@ -492,6 +498,7 @@ describe('handleResponse', () => {
           ],
           js: [],
           type: 'two-up',
+          locale: DefaultLocale,
           user: undefined,
           userOnboarding: undefined,
         })

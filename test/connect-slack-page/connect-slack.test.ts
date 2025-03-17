@@ -9,6 +9,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import * as _ from '../../src/connect-slack-page/index.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../src/routes.js'
 import type { EditSlackUserIdEnv } from '../../src/slack-user-id.js'
@@ -54,6 +55,7 @@ describe('connectSlack', () => {
           content: expect.anything(),
           skipLinks: [[expect.anything(), '#main']],
           js: [],
+          locale: DefaultLocale,
           user,
           userOnboarding,
         })
@@ -381,6 +383,7 @@ describe('connectSlackCode', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main']],
         js: [],
+        locale: DefaultLocale,
         user,
         userOnboarding,
       })
@@ -436,6 +439,7 @@ describe('connectSlackCode', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main']],
         js: [],
+        locale: DefaultLocale,
         user,
         userOnboarding,
       })
@@ -487,6 +491,7 @@ describe('connectSlackCode', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main']],
         js: [],
+        locale: DefaultLocale,
         user,
         userOnboarding,
       })
@@ -548,6 +553,7 @@ describe('connectSlackCode', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main']],
         js: [],
+        locale: DefaultLocale,
         user,
         userOnboarding,
       })
@@ -604,6 +610,7 @@ describe('connectSlackCode', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main']],
         js: [],
+        locale: DefaultLocale,
         user,
         userOnboarding,
       })
@@ -644,6 +651,7 @@ describe('connectSlackError', () => {
       content: expect.anything(),
       skipLinks: [[expect.anything(), '#main']],
       js: [],
+      locale: DefaultLocale,
       user: E.isRight(user) ? user.right : undefined,
       userOnboarding: E.isRight(user) ? userOnboarding : undefined,
     })
@@ -681,6 +689,7 @@ describe('connectSlackError', () => {
       content: expect.anything(),
       skipLinks: [[expect.anything(), '#main']],
       js: [],
+      locale: DefaultLocale,
       user: E.isRight(user) ? user.right : undefined,
       userOnboarding: E.isRight(user) ? userOnboarding : undefined,
     })

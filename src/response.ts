@@ -178,7 +178,7 @@ export const toPage = ({
 }): Page =>
   response._tag === 'TwoUpPageResponse'
     ? {
-        locale: locale !== DefaultLocale ? locale : undefined,
+        locale,
         title: response.title,
         description: response.description,
         content: html`
@@ -198,7 +198,7 @@ export const toPage = ({
         userOnboarding,
       }
     : {
-        locale: locale !== DefaultLocale ? locale : undefined,
+        locale,
         title: response.title,
         description: response.description,
         content: html`
