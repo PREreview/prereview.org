@@ -720,7 +720,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       orcidErrorMatch.parser,
-      P.map(({ error }) => authenticateError(error)),
+      P.map(({ error }) =>
+        pipe(
+          RM.of({}),
+          RM.apS('error', RM.of(error)),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.ichainW(authenticateError),
+        ),
+      ),
     ),
     pipe(
       connectOrcidMatch.parser,

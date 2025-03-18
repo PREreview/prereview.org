@@ -158,10 +158,10 @@ export const authenticate = flow(
   ),
 )
 
-export const authenticateError = (error: string) =>
+export const authenticateError = ({ error, locale }: { error: string; locale: SupportedLocale }) =>
   match(error)
-    .with('access_denied', () => showAccessDeniedMessage(DefaultLocale))
-    .otherwise(() => showFailureMessage(DefaultLocale))
+    .with('access_denied', () => showAccessDeniedMessage(locale))
+    .otherwise(() => showFailureMessage(locale))
 
 function getReferer(state: string) {
   return pipe(
@@ -175,9 +175,9 @@ function getReferer(state: string) {
 }
 
 const showAccessDeniedMessage = (locale: SupportedLocale) =>
-  handlePageResponse({ response: accessDeniedMessage(locale) })
+  handlePageResponse({ locale, response: accessDeniedMessage(locale) })
 
-const showFailureMessage = (locale: SupportedLocale) => handlePageResponse({ response: failureMessage(locale) })
+const showFailureMessage = (locale: SupportedLocale) => handlePageResponse({ locale, response: failureMessage(locale) })
 
 const endSession = pipe(
   _endSession(),
