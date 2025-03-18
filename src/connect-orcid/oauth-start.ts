@@ -1,3 +1,4 @@
+import { UrlParams } from '@effect/platform'
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -29,12 +30,14 @@ const authorizationRequestUrl = pipe(
   R.chainW(redirectUri =>
     R.asks(({ orcidOauth: { authorizeUrl, clientId } }: OrcidOAuthEnv) => {
       return new URL(
-        `?${new URLSearchParams({
-          client_id: clientId,
-          response_type: 'code',
-          redirect_uri: redirectUri.href,
-          scope: '/activities/update /read-limited',
-        }).toString()}`,
+        `?${UrlParams.toString(
+          UrlParams.fromInput({
+            client_id: clientId,
+            response_type: 'code',
+            redirect_uri: redirectUri.href,
+            scope: '/activities/update /read-limited',
+          }),
+        )}`,
         authorizeUrl,
       )
     }),

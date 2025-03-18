@@ -1,3 +1,4 @@
+import { UrlParams } from '@effect/platform'
 import { HashSet, identity, pipe, String } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
@@ -55,13 +56,16 @@ const exchangeAuthorizationCode = ({ code, user }: { code: string; user: User })
         pipe(
           F.Request('POST')(tokenUrl),
           F.setBody(
-            new URLSearchParams({
-              client_id: clientId,
-              client_secret: clientSecret,
-              grant_type: 'authorization_code',
-              redirect_uri: redirectUri.href,
-              code,
-            }).toString(),
+            pipe(
+              UrlParams.fromInput({
+                client_id: clientId,
+                client_secret: clientSecret,
+                grant_type: 'authorization_code',
+                redirect_uri: redirectUri.href,
+                code,
+              }),
+              UrlParams.toString,
+            ),
             MediaType.applicationFormURLEncoded,
           ),
         ),
@@ -78,12 +82,15 @@ const revokeAccessToken = (token: string) =>
       pipe(
         F.Request('POST')(revokeUrl),
         F.setBody(
-          new URLSearchParams({
-            client_id: clientId,
-            client_secret: clientSecret,
-            token,
-            token_type_hint: 'access_token',
-          }).toString(),
+          pipe(
+            UrlParams.fromInput({
+              client_id: clientId,
+              client_secret: clientSecret,
+              token,
+              token_type_hint: 'access_token',
+            }),
+            UrlParams.toString,
+          ),
           MediaType.applicationFormURLEncoded,
         ),
       ),

@@ -1,3 +1,4 @@
+import { UrlParams } from '@effect/platform'
 import { identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
@@ -71,12 +72,15 @@ const revokeAccessToken = (token: string) =>
       pipe(
         F.Request('POST')(revokeUrl),
         F.setBody(
-          new URLSearchParams({
-            client_id: clientId,
-            client_secret: clientSecret,
-            token,
-            token_type_hint: 'access_token',
-          }).toString(),
+          pipe(
+            UrlParams.fromInput({
+              client_id: clientId,
+              client_secret: clientSecret,
+              token,
+              token_type_hint: 'access_token',
+            }),
+            UrlParams.toString,
+          ),
           MediaType.applicationFormURLEncoded,
         ),
       ),

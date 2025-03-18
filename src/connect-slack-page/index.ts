@@ -1,3 +1,4 @@
+import { UrlParams } from '@effect/platform'
 import cookie from 'cookie'
 import { HashSet, type Option, Record, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
@@ -48,19 +49,18 @@ const authorizationRequestUrl = (state: string) =>
   pipe(
     toUrl(connectSlackMatch.formatter, {}),
     R.chainW(redirectUri =>
-      R.asks(
-        ({ slackOauth: { authorizeUrl, clientId } }: SlackOAuthEnv) =>
-          new URL(
-            `?${new URLSearchParams({
-              client_id: clientId,
-              response_type: 'code',
-              redirect_uri: redirectUri.href,
-              user_scope: 'users.profile:read,users.profile:write',
-              state,
-              team: 'T057XMB3EGH',
-            }).toString()}`,
-            authorizeUrl,
-          ),
+      R.asks(({ slackOauth: { authorizeUrl, clientId } }: SlackOAuthEnv) =>
+        pipe(
+          UrlParams.fromInput({
+            client_id: clientId,
+            response_type: 'code',
+            redirect_uri: redirectUri.href,
+            user_scope: 'users.profile:read,users.profile:write',
+            state,
+            team: 'T057XMB3EGH',
+          }),
+          params => new URL(`?${UrlParams.toString(params)}`, authorizeUrl),
+        ),
       ),
     ),
   )
@@ -73,13 +73,16 @@ const exchangeAuthorizationCode = (code: string) =>
         pipe(
           F.Request('POST')(tokenUrl),
           F.setBody(
-            new URLSearchParams({
-              client_id: clientId,
-              client_secret: clientSecret,
-              grant_type: 'authorization_code',
-              redirect_uri: redirectUri.href,
-              code,
-            }).toString(),
+            pipe(
+              UrlParams.fromInput({
+                client_id: clientId,
+                client_secret: clientSecret,
+                grant_type: 'authorization_code',
+                redirect_uri: redirectUri.href,
+                code,
+              }),
+              UrlParams.toString,
+            ),
             MediaType.applicationFormURLEncoded,
           ),
         ),

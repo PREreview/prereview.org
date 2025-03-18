@@ -1,3 +1,4 @@
+import { UrlParams } from '@effect/platform'
 import { now } from 'clock-ts'
 import { v2 as cloudinary } from 'cloudinary'
 import { Function, String, flow, pipe } from 'effect'
@@ -136,17 +137,20 @@ export const saveAvatarOnCloudinary = (
             }),
             F.Request('POST'),
             F.setBody(
-              new URLSearchParams({
-                ...cloudinary.utils.sign_request(
-                  {
-                    folder: 'prereview-profile',
-                    context: `orcid_id=${orcid}|instance=${publicUrl.hostname}`,
-                    timestamp: Math.round(now.getTime() / 1000),
-                  },
-                  { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
+              pipe(
+                UrlParams.fromInput(
+                  cloudinary.utils.sign_request(
+                    {
+                      folder: 'prereview-profile',
+                      context: `orcid_id=${orcid}|instance=${publicUrl.hostname}`,
+                      timestamp: Math.round(now.getTime() / 1000),
+                    },
+                    { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
+                  ),
                 ),
-                file: `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`,
-              }).toString(),
+                UrlParams.set('file', `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`),
+                UrlParams.toString,
+              ),
               MediaType.applicationFormURLEncoded,
             ),
           ),
@@ -205,15 +209,18 @@ const destroyImageOnCloudinary = (publicId: NonEmptyString) =>
           }),
           F.Request('POST'),
           F.setBody(
-            new URLSearchParams(
-              cloudinary.utils.sign_request(
-                {
-                  public_id: `prereview-profile/${publicId}`,
-                  timestamp: Math.round(now.getTime() / 1000),
-                },
-                { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
+            pipe(
+              UrlParams.fromInput(
+                cloudinary.utils.sign_request(
+                  {
+                    public_id: `prereview-profile/${publicId}`,
+                    timestamp: Math.round(now.getTime() / 1000),
+                  },
+                  { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
+                ),
               ),
-            ).toString(),
+              UrlParams.toString,
+            ),
             MediaType.applicationFormURLEncoded,
           ),
         ),

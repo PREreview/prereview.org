@@ -5,6 +5,7 @@ import {
   HttpRouter,
   HttpServerRequest,
   HttpServerResponse,
+  UrlParams,
 } from '@effect/platform'
 import { Effect, flow, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
@@ -271,17 +272,14 @@ function generateAuthorizationRequestUrl({
     )
     redirectUri.search = ''
 
-    const query = new URLSearchParams({
+    const query = UrlParams.fromInput({
       client_id: orcidOauth.clientId,
       response_type: 'code',
       redirect_uri: redirectUri.href,
       scope,
+      state,
     })
 
-    if (typeof state === 'string') {
-      query.set('state', state)
-    }
-
-    return new URL(`${orcidOauth.authorizeUrl}?${query.toString()}`)
+    return new URL(`${orcidOauth.authorizeUrl}?${UrlParams.toString(query)}`)
   })
 }
