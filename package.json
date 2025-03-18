@@ -37,7 +37,7 @@
     "http-proxy-middleware": "^3.0.3",
     "http-status-codes": "^2.3.0",
     "hyper-ts": "^0.7.9",
-    "hyper-ts-oauth": "^0.1.1",
+    "hyper-ts-oauth": "^0.1.2",
     "hyper-ts-routing": "^0.1.2",
     "hyper-ts-session": "^0.3.3",
     "io-ts": "^2.2.22",
