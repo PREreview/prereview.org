@@ -168,6 +168,7 @@ describe('authenticate', () => {
     fc.string(),
     fc.url().chain(url => fc.tuple(fc.constant(url))),
     fc.oauth(),
+    fc.supportedLocale(),
     fc.record({
       access_token: fc.string(),
       token_type: fc.string(),
@@ -180,7 +181,7 @@ describe('authenticate', () => {
     fc.connection(),
   ])(
     'when the state contains a valid referer',
-    async (code, [referer], orcidOauth, accessToken, pseudonym, secret, sessionCookie, connection) => {
+    async (code, [referer], orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
 
       const actual = await runMiddleware(
@@ -196,6 +197,7 @@ describe('authenticate', () => {
           getPseudonym: () => TE.right(pseudonym),
           getUserOnboarding: shouldNotBeCalled,
           isUserBlocked: () => false,
+          locale,
           logger: () => IO.of(undefined),
           orcidOauth,
           publicUrl: new URL('/', referer),
@@ -231,6 +233,7 @@ describe('authenticate', () => {
     fc.string(),
     fc.url().chain(url => fc.tuple(fc.constant(url))),
     fc.oauth(),
+    fc.supportedLocale(),
     fc.record({
       access_token: fc.string(),
       token_type: fc.string(),
@@ -242,7 +245,7 @@ describe('authenticate', () => {
     fc.connection(),
   ])(
     'when the user is blocked',
-    async (code, [referer], orcidOauth, accessToken, secret, sessionCookie, connection) => {
+    async (code, [referer], orcidOauth, locale, accessToken, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
       const isUserBlocked = jest.fn<_.IsUserBlockedEnv['isUserBlocked']>(_ => true)
 
@@ -259,6 +262,7 @@ describe('authenticate', () => {
           getPseudonym: shouldNotBeCalled,
           getUserOnboarding: shouldNotBeCalled,
           isUserBlocked,
+          locale,
           logger: () => IO.of(undefined),
           orcidOauth,
           publicUrl: new URL('/', referer),
@@ -289,6 +293,7 @@ describe('authenticate', () => {
     fc.string(),
     fc.url().chain(url => fc.tuple(fc.constant(url))),
     fc.oauth(),
+    fc.supportedLocale(),
     fc.record({
       access_token: fc.string(),
       token_type: fc.string(),
@@ -301,7 +306,7 @@ describe('authenticate', () => {
     fc.html(),
   ])(
     'when a pseudonym cannot be retrieved',
-    async (code, [referer], orcidOauth, accessToken, secret, sessionCookie, connection, page) => {
+    async (code, [referer], orcidOauth, locale, accessToken, secret, sessionCookie, connection, page) => {
       const sessionStore = new Keyv()
       const fetch = fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
         status: Status.OK,
@@ -318,6 +323,7 @@ describe('authenticate', () => {
           getPseudonym: () => TE.left('unavailable'),
           getUserOnboarding: shouldNotBeCalled,
           isUserBlocked: () => false,
+          locale,
           logger: () => IO.of(undefined),
           orcidOauth,
           publicUrl: new URL('/', referer),
@@ -348,6 +354,7 @@ describe('authenticate', () => {
     fc.url(),
     fc.oneof(fc.webUrl(), fc.string()),
     fc.oauth(),
+    fc.supportedLocale(),
     fc.record({
       access_token: fc.string(),
       token_type: fc.string(),
@@ -360,7 +367,7 @@ describe('authenticate', () => {
     fc.connection(),
   ])(
     'when the state contains an invalid referer',
-    async (code, publicUrl, state, orcidOauth, accessToken, pseudonym, secret, sessionCookie, connection) => {
+    async (code, publicUrl, state, orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
 
       const actual = await runMiddleware(
@@ -376,6 +383,7 @@ describe('authenticate', () => {
           getPseudonym: () => TE.right(pseudonym),
           getUserOnboarding: shouldNotBeCalled,
           isUserBlocked: () => false,
+          locale,
           logger: () => IO.of(undefined),
           orcidOauth,
           publicUrl,

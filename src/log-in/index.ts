@@ -16,7 +16,7 @@ import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { timeoutRequest } from '../fetch.js'
 import { setFlashMessage } from '../flash-message.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url.js'
 import { handlePageResponse } from '../response.js'
 import { homeMatch, orcidCodeMatch } from '../routes.js'
@@ -154,7 +154,12 @@ export const authenticate = flow(
           RM.ichain(() => RM.end()),
         ),
       )
-      .otherwise(() => showFailureMessage(DefaultLocale)),
+      .otherwise(() =>
+        pipe(
+          RM.asks(({ locale }: { locale: SupportedLocale }) => locale),
+          RM.ichainW(showFailureMessage),
+        ),
+      ),
   ),
 )
 
