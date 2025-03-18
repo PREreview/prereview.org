@@ -20,6 +20,7 @@ import type { SupportedLocale } from '../locales/index.js'
 import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url.js'
 import { handlePageResponse } from '../response.js'
 import { homeMatch, orcidCodeMatch } from '../routes.js'
+import { OrcidLocale } from '../types/index.js'
 import type { Pseudonym } from '../types/pseudonym.js'
 import { newSessionForUser } from '../user.js'
 import { accessDeniedMessage } from './access-denied-message.js'
@@ -38,18 +39,31 @@ export interface IsUserBlockedEnv {
 }
 
 export const logIn = pipe(
-  RM.decodeHeader(
-    'Referer',
-    flow(Option.liftPredicate(String.isString), Option.match({ onNone: () => E.right(''), onSome: E.right })),
+  RM.of({}),
+  RM.apS(
+    'state',
+    RM.decodeHeader(
+      'Referer',
+      flow(Option.liftPredicate(String.isString), Option.match({ onNone: () => E.right(''), onSome: E.right })),
+    ),
   ),
-  RM.ichainW(requestAuthorizationCode('/authenticate')),
-  R.local(addRedirectUri()),
+  RM.apS(
+    'lang',
+    RM.asks(({ locale }: { locale: SupportedLocale }) => OrcidLocale.fromSupportedLocale(locale)),
+  ),
+  RM.ichainW(({ state, lang }) => requestAuthorizationCode('/authenticate')(state, { lang })),
+  R.local(addRedirectUri<OrcidOAuthEnv & PublicUrlEnv & { locale: SupportedLocale }>()),
 )
 
 export const logInAndRedirect = flow(
   RM.fromReaderK(toUrl),
-  RM.ichainW(flow(url => url.href, requestAuthorizationCode('/authenticate'))),
-  R.local(addRedirectUri()),
+  RM.bindTo('url'),
+  RM.apSW(
+    'lang',
+    RM.asks(({ locale }: { locale: SupportedLocale }) => OrcidLocale.fromSupportedLocale(locale)),
+  ),
+  RM.ichainW(({ url, lang }) => requestAuthorizationCode('/authenticate')(url.href, { lang })),
+  R.local(addRedirectUri<OrcidOAuthEnv & PublicUrlEnv & { locale: SupportedLocale }>()),
 )
 
 export const logOut = pipe(

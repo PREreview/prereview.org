@@ -14,6 +14,7 @@ import {
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../../src/routes.js'
+import { OrcidLocale } from '../../src/types/index.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
 import { runMiddleware } from '../middleware.js'
@@ -514,6 +515,7 @@ describe('writeReviewVerifyEmailAddress', () => {
             name: 'Location',
             value: new URL(
               `?${new URLSearchParams({
+                lang: OrcidLocale.fromSupportedLocale(locale),
                 client_id: orcidOauth.clientId,
                 response_type: 'code',
                 redirect_uri: new URL('/orcid', publicUrl).toString(),

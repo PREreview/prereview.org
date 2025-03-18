@@ -12,6 +12,7 @@ import * as _ from '../../src/connect-slack-page/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../src/routes.js'
 import type { EditSlackUserIdEnv } from '../../src/slack-user-id.js'
+import { OrcidLocale } from '../../src/types/index.js'
 import type { GenerateUuidEnv } from '../../src/types/uuid.js'
 import type { GetUserOnboardingEnv } from '../../src/user-onboarding.js'
 import * as fc from '../fc.js'
@@ -153,6 +154,7 @@ describe('connectSlack', () => {
             name: 'Location',
             value: new URL(
               `?${new URLSearchParams({
+                lang: OrcidLocale.fromSupportedLocale(locale),
                 client_id: orcidOauth.clientId,
                 response_type: 'code',
                 redirect_uri: new URL('/orcid', publicUrl).toString(),
@@ -251,6 +253,7 @@ describe('connectSlackStart', () => {
             name: 'Location',
             value: new URL(
               `?${new URLSearchParams({
+                lang: OrcidLocale.fromSupportedLocale(locale),
                 client_id: orcidOauth.clientId,
                 response_type: 'code',
                 redirect_uri: new URL('/orcid', publicUrl).toString(),

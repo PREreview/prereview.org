@@ -26,6 +26,7 @@ import {
 import * as Routes from './routes.js'
 import { TemplatePage } from './TemplatePage.js'
 import { TrainingsPage } from './trainings.js'
+import { OrcidLocale } from './types/index.js'
 import { LoggedInUser } from './user.js'
 import * as WriteCommentFlow from './WriteCommentFlow/index.js'
 
@@ -262,10 +263,11 @@ function generateAuthorizationRequestUrl({
 }: {
   scope: string
   state?: string
-}): Effect.Effect<URL, never, ExpressConfig | PublicUrl> {
+}): Effect.Effect<URL, never, ExpressConfig | Locale | PublicUrl> {
   return Effect.gen(function* () {
     const { orcidOauth } = yield* ExpressConfig
     const publicUrl = yield* PublicUrl
+    const locale = yield* Locale
 
     const redirectUri = new URL(
       `${publicUrl.origin}${format(Routes.orcidCodeMatch.formatter, { code: 'code', state: 'state' })}`,
@@ -274,6 +276,7 @@ function generateAuthorizationRequestUrl({
 
     const query = UrlParams.fromInput({
       client_id: orcidOauth.clientId,
+      lang: OrcidLocale.fromSupportedLocale(locale),
       response_type: 'code',
       redirect_uri: redirectUri.href,
       scope,

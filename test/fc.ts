@@ -76,7 +76,7 @@ import {
 import { type ClubId, clubIds } from '../src/types/club-id.js'
 import { EmailAddress } from '../src/types/email-address.js'
 import { type FieldId, fieldIds } from '../src/types/field.js'
-import { ProfileId } from '../src/types/index.js'
+import { OrcidLocale, ProfileId } from '../src/types/index.js'
 import {
   type AdvancePreprintId,
   type AfricarxivFigsharePreprintId,
@@ -1295,6 +1295,8 @@ export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<No
   fc.string({ unit: charArb, minLength: 1 }).filter(isNonEmptyString)
 
 export const languageCode = (): fc.Arbitrary<LanguageCode> => constantFrom(...ISO6391.getAllCodes())
+
+export const orcidLocale = (): fc.Arbitrary<OrcidLocale.OrcidLocale> => constantFrom(...OrcidLocale.OrcidLocales)
 
 export const user = ({ orcid: userOrcid }: { orcid?: fc.Arbitrary<User['orcid']> } = {}): fc.Arbitrary<User> =>
   fc.record({

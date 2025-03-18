@@ -1,4 +1,5 @@
 export * as EmailAddress from './email-address.js'
+export * as OrcidLocale from './OrcidLocale.js'
 export * as ProfileId from './profile-id.js'
 export * as Pseudonym from './pseudonym.js'
 export * as NonEmptyString from './string.js'

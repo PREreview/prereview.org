@@ -13,6 +13,7 @@ import Keyv from 'keyv'
 import * as _ from '../../src/log-in/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { homeMatch, writeReviewMatch } from '../../src/routes.js'
+import { OrcidLocale } from '../../src/types/index.js'
 import { UserC } from '../../src/user.js'
 import * as fc from '../fc.js'
 import { runMiddleware } from '../middleware.js'
@@ -22,11 +23,12 @@ describe('logIn', () => {
   test.prop([
     fc.oauth(),
     fc.origin(),
+    fc.supportedLocale(),
     fc
       .webUrl()
       .chain(referer => fc.tuple(fc.connection({ headers: fc.constant({ Referer: referer }) }), fc.constant(referer))),
-  ])('when there is a Referer header', async (orcidOauth, publicUrl, [connection, referer]) => {
-    const actual = await runMiddleware(_.logIn({ orcidOauth, publicUrl }), connection)()
+  ])('when there is a Referer header', async (orcidOauth, publicUrl, locale, [connection, referer]) => {
+    const actual = await runMiddleware(_.logIn({ locale, orcidOauth, publicUrl }), connection)()
 
     expect(actual).toStrictEqual(
       E.right([
@@ -36,6 +38,7 @@ describe('logIn', () => {
           name: 'Location',
           value: new URL(
             `?${new URLSearchParams({
+              lang: OrcidLocale.fromSupportedLocale(locale),
               client_id: orcidOauth.clientId,
               response_type: 'code',
               redirect_uri: new URL('/orcid', publicUrl).toString(),
@@ -50,10 +53,10 @@ describe('logIn', () => {
     )
   })
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection()])(
+  test.prop([fc.oauth(), fc.origin(), fc.supportedLocale(), fc.connection()])(
     "when there isn't a Referer header",
-    async (orcidOauth, publicUrl, connection) => {
-      const actual = await runMiddleware(_.logIn({ orcidOauth, publicUrl }), connection)()
+    async (orcidOauth, publicUrl, locale, connection) => {
+      const actual = await runMiddleware(_.logIn({ locale, orcidOauth, publicUrl }), connection)()
 
       expect(actual).toStrictEqual(
         E.right([
@@ -63,6 +66,7 @@ describe('logIn', () => {
             name: 'Location',
             value: new URL(
               `?${new URLSearchParams({
+                lang: OrcidLocale.fromSupportedLocale(locale),
                 client_id: orcidOauth.clientId,
                 response_type: 'code',
                 redirect_uri: new URL('/orcid', publicUrl).toString(),
@@ -79,11 +83,12 @@ describe('logIn', () => {
   )
 })
 
-test.prop([fc.oauth(), fc.preprintId(), fc.origin(), fc.connection()])(
+test.prop([fc.oauth(), fc.preprintId(), fc.supportedLocale(), fc.origin(), fc.connection()])(
   'logInAndRedirect',
-  async (orcidOauth, preprintId, publicUrl, connection) => {
+  async (orcidOauth, preprintId, locale, publicUrl, connection) => {
     const actual = await runMiddleware(
       _.logInAndRedirect(writeReviewMatch.formatter, { id: preprintId })({
+        locale,
         orcidOauth,
         publicUrl,
       }),
@@ -98,6 +103,7 @@ test.prop([fc.oauth(), fc.preprintId(), fc.origin(), fc.connection()])(
           name: 'Location',
           value: new URL(
             `?${new URLSearchParams({
+              lang: OrcidLocale.fromSupportedLocale(locale),
               client_id: orcidOauth.clientId,
               response_type: 'code',
               redirect_uri: new URL('/orcid', publicUrl).toString(),

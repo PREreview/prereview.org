@@ -117,7 +117,7 @@ export const connectSlack = pipe(
     match(error)
       .returnType<
         RM.ReaderMiddleware<
-          GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv,
+          GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv & { locale: SupportedLocale },
           StatusOpen,
           ResponseEnded,
           never,
