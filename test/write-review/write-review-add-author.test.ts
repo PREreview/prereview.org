@@ -17,12 +17,13 @@ describe('writeReviewAddAuthor', () => {
     fc.preprintTitle(),
     fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }),
     fc.user(),
+    fc.supportedLocale(),
     fc.completedForm({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors() }),
-  ])('when the form is completed', async (id, preprintTitle, body, user, newReview) => {
+  ])('when the form is completed', async (id, preprintTitle, body, user, locale, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
-    const actual = await _.writeReviewAddAuthor({ body, id, method: 'POST', user })({
+    const actual = await _.writeReviewAddAuthor({ body, id, locale, method: 'POST', user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
     })()
@@ -42,12 +43,13 @@ describe('writeReviewAddAuthor', () => {
     fc.preprintTitle(),
     fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }),
     fc.user(),
+    fc.supportedLocale(),
     fc.incompleteForm({ moreAuthors: fc.constant('yes') }),
-  ])('when the form is incomplete', async (id, preprintTitle, body, user, newReview) => {
+  ])('when the form is incomplete', async (id, preprintTitle, body, user, locale, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewAddAuthor({ body, id, method: 'POST', user })({
+    const actual = await _.writeReviewAddAuthor({ body, id, locale, method: 'POST', user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
     })()
@@ -59,21 +61,25 @@ describe('writeReviewAddAuthor', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.user()])(
-    'when there is no form',
-    async (id, preprintTitle, body, method, user) => {
-      const actual = await _.writeReviewAddAuthor({ body, id, method, user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.anything(),
+    fc.string(),
+    fc.user(),
+    fc.supportedLocale(),
+  ])('when there is no form', async (id, preprintTitle, body, method, user, locale) => {
+    const actual = await _.writeReviewAddAuthor({ body, id, locale, method, user })({
+      formStore: new Keyv(),
+      getPreprintTitle: () => TE.right(preprintTitle),
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'RedirectResponse',
+      status: Status.SeeOther,
+      location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+    })
+  })
 
   test.prop([
     fc.indeterminatePreprintId(),
@@ -81,12 +87,13 @@ describe('writeReviewAddAuthor', () => {
     fc.anything(),
     fc.string(),
     fc.user(),
+    fc.supportedLocale(),
     fc.form({ moreAuthors: fc.constantFrom('yes-private', 'no') }),
-  ])('when there are no more authors', async (id, preprintTitle, body, method, user, newReview) => {
+  ])('when there are no more authors', async (id, preprintTitle, body, method, user, locale, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewAddAuthor({ body, id, method, user })({
+    const actual = await _.writeReviewAddAuthor({ body, id, locale, method, user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
     })()
@@ -101,14 +108,14 @@ describe('writeReviewAddAuthor', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
     'when the preprint cannot be loaded',
-    async (id, body, method, user) => {
+    async (id, body, method, user, locale) => {
       const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
         TE.left(new PreprintIsUnavailable({})),
       )
 
-      const actual = await _.writeReviewAddAuthor({ body, id, method, user })({
+      const actual = await _.writeReviewAddAuthor({ body, id, locale, method, user })({
         formStore: new Keyv(),
         getPreprintTitle,
       })()
@@ -125,10 +132,10 @@ describe('writeReviewAddAuthor', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
     'when the preprint cannot be found',
-    async (id, body, method, user) => {
-      const actual = await _.writeReviewAddAuthor({ body, id, method, user })({
+    async (id, body, method, user, locale) => {
+      const actual = await _.writeReviewAddAuthor({ body, id, locale, method, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
       })()
@@ -144,10 +151,10 @@ describe('writeReviewAddAuthor', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()])(
     "when there isn't a session",
-    async (id, preprintTitle, body, method) => {
-      const actual = await _.writeReviewAddAuthor({ body, id, method })({
+    async (id, preprintTitle, body, method, locale) => {
+      const actual = await _.writeReviewAddAuthor({ body, id, locale, method })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
       })()

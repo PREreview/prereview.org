@@ -7,7 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE, missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes.js'
@@ -21,11 +21,13 @@ import { addAuthorForm } from './add-author-form.js'
 export const writeReviewAddAuthor = ({
   body,
   id,
+  locale,
   method,
   user,
 }: {
   body: unknown
   id: IndeterminatePreprintId
+  locale: SupportedLocale
   method: string
   user?: User
 }): RT.ReaderTask<FormStoreEnv & GetPreprintTitleEnv, PageResponse | RedirectResponse | StreamlinePageResponse> =>
@@ -35,15 +37,15 @@ export const writeReviewAddAuthor = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       preprint =>
         pipe(
           RTE.Do,
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-          RTE.apS('locale', RTE.of(DefaultLocale)),
+          RTE.let('locale', () => locale),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
           RTE.let('body', () => body),
@@ -55,7 +57,7 @@ export const writeReviewAddAuthor = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
+                  .with('form-unavailable', () => havingProblemsPage(locale))
                   .exhaustive(),
               ),
             state =>
@@ -83,18 +85,19 @@ export const writeReviewAddAuthor = ({
 const handleAddAuthorForm = ({
   body,
   form,
+  locale,
   preprint,
   user,
 }: {
   body: unknown
   form: Form
+  locale: SupportedLocale
   preprint: PreprintTitle
   user: User
 }) =>
   pipe(
     RTE.Do,
     RTE.let('name', () => pipe(NameFieldD.decode(body), E.mapLeft(missingE))),
-    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.let('emailAddress', () =>
       pipe(
         EmailAddressFieldD.decode(body),
@@ -120,13 +123,13 @@ const handleAddAuthorForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
+          .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ name: P.any }, error =>
             addAuthorForm({
               form: error,
               preprint,
               otherAuthors: (form.otherAuthors ?? []).length > 0,
-              locale: error.locale,
+              locale,
             }),
           )
           .exhaustive(),
