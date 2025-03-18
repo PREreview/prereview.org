@@ -2,6 +2,9 @@
   "prereviewOf": {
     "message": "crwdns4539:0{preprintTitle}crwdne4539:0"
   },
+  "or": {
+    "message": "crwdns5042:0crwdne5042:0"
+  },
   "enterTheirName": {
     "message": "crwdns3900:0crwdne3900:0"
   },
@@ -28,6 +31,27 @@
   },
   "back": {
     "message": "crwdns3920:0crwdne3920:0"
+  },
+  "howWouldYouLikeToStart": {
+    "message": "crwdns5044:0crwdne5044:0"
+  },
+  "selectHowToStart": {
+    "message": "crwdns5046:0crwdne5046:0"
+  },
+  "withPrompts": {
+    "message": "crwdns5048:0crwdne5048:0"
+  },
+  "withTemplate": {
+    "message": "crwdns5050:0crwdne5050:0"
+  },
+  "alreadyWritten": {
+    "message": "crwdns5052:0crwdne5052:0"
+  },
+  "weWillAskQuestions": {
+    "message": "crwdns5054:0crwdne5054:0"
+  },
+  "weWillTemplate": {
+    "message": "crwdns5056:0crwdne5056:0"
   },
   "pasteYourReview": {
     "message": "crwdns4974:0crwdne4974:0"
@@ -217,6 +241,9 @@
   },
   "changeName": {
     "message": "crwdns4012:0crwdne4012:0"
+  },
+  "invitedAuthors": {
+    "message": "crwdns5058:0number={number}crwdne5058:0"
   },
   "changeInvitedAuthors": {
     "message": "crwdns4014:0crwdne4014:0"
