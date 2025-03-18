@@ -2,6 +2,9 @@
   "prereviewOf": {
     "message": "PREreview of “{preprintTitle}”"
   },
+  "or": {
+    "message": "or"
+  },
   "enterTheirName": {
     "message": "Enter their name"
   },
@@ -28,6 +31,27 @@
   },
   "back": {
     "message": "Back"
+  },
+  "howWouldYouLikeToStart": {
+    "message": "How would you like to start your PREreview?"
+  },
+  "selectHowToStart": {
+    "message": "Select how you would like to start your PREreview"
+  },
+  "withPrompts": {
+    "message": "With prompts"
+  },
+  "withTemplate": {
+    "message": "With a template"
+  },
+  "alreadyWritten": {
+    "message": "I’ve already written the review"
+  },
+  "weWillAskQuestions": {
+    "message": "We’ll ask questions about the preprint to create a structured review."
+  },
+  "weWillTemplate": {
+    "message": "We’ll offer a basic template, but you can review it your way."
   },
   "pasteYourReview": {
     "message": "<error>Error:</error> Paste your PREreview"

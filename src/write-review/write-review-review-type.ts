@@ -9,14 +9,16 @@ import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { type GetPreprintEnv, type PreprintTitle, getPreprint } from '../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes.js'
+import { errorPrefix, errorSummary } from '../shared-translation-elements.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
 import type { User } from '../user.js'
 import { type Form, type FormStoreEnv, createForm, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 import { ownPreprintPage } from './own-preprint-page.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 import { ensureUserIsNotAnAuthor } from './user-is-author.js'
 
 export const writeReviewReviewType = ({
@@ -92,8 +94,20 @@ export const writeReviewReviewType = ({
     ),
   )
 
-const showReviewTypeForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
-  reviewTypeForm(preprint, { reviewType: E.right(form.alreadyWritten === 'yes' ? 'already-written' : form.reviewType) })
+const showReviewTypeForm = ({
+  form,
+  locale,
+  preprint,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+}) =>
+  reviewTypeForm(
+    preprint,
+    { reviewType: E.right(form.alreadyWritten === 'yes' ? 'already-written' : form.reviewType) },
+    locale,
+  )
 
 const handleReviewTypeForm = ({
   body,
@@ -134,7 +148,7 @@ const handleReviewTypeForm = ({
       error =>
         match(error)
           .with('form-unavailable', () => havingProblemsPage(locale))
-          .with({ reviewType: P.any }, form => reviewTypeForm(preprint, form))
+          .with({ reviewType: P.any }, form => reviewTypeForm(preprint, form, locale))
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
     ),
@@ -151,41 +165,26 @@ interface ReviewTypeForm {
   readonly reviewType: E.Either<MissingE, 'questions' | 'freeform' | 'already-written' | undefined>
 }
 
-function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm) {
+function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, locale: SupportedLocale) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}How would you like to start your PREreview? – PREreview of “${
-      preprint.title
-    }”`,
+    title: pipe(
+      t('howWouldYouLikeToStart')(),
+      prereviewOfSuffix(locale, preprint.title),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>Back to preprint</span></a
+        ><span>${t('backToPreprint')()}</span></a
       >
     `,
     main: html`
       <form method="post" action="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${E.isLeft(form.reviewType)
-                    ? html`
-                        <li>
-                          <a href="#review-type-questions">
-                            ${match(form.reviewType.left)
-                              .with({ _tag: 'MissingE' }, () => 'Select how you would like to start your PREreview')
-                              .exhaustive()}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
         <div ${rawHtml(E.isLeft(form.reviewType) ? 'class="error"' : '')}>
           <fieldset
@@ -193,15 +192,15 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm) {
             ${rawHtml(E.isLeft(form.reviewType) ? 'aria-invalid="true" aria-errormessage="review-type-error"' : '')}
           >
             <legend>
-              <h1>How would you like to start your PREreview?</h1>
+              <h1>${t('howWouldYouLikeToStart')()}</h1>
             </legend>
 
             ${E.isLeft(form.reviewType)
               ? html`
                   <div class="error-message" id="review-type-error">
-                    <span class="visually-hidden">Error:</span>
+                    <span class="visually-hidden">${t('error')()}:</span>
                     ${match(form.reviewType.left)
-                      .with({ _tag: 'MissingE' }, () => 'Select how you would like to start your PREreview')
+                      .with({ _tag: 'MissingE' }, () => t('selectHowToStart')())
                       .exhaustive()}
                   </div>
                 `
@@ -220,11 +219,9 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm) {
                       .with({ right: 'questions' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>With prompts</span>
+                  <span>${t('withPrompts')()}</span>
                 </label>
-                <p id="review-type-tip-questions" role="note">
-                  We’ll ask questions about the preprint to create a structured review.
-                </p>
+                <p id="review-type-tip-questions" role="note">${t('weWillAskQuestions')()}</p>
               </li>
               <li>
                 <label>
@@ -237,14 +234,12 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm) {
                       .with({ right: 'freeform' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>With a template</span>
+                  <span>${t('withTemplate')()}</span>
                 </label>
-                <p id="review-type-tip-freeform" role="note">
-                  We’ll offer a basic template, but you can review it your way.
-                </p>
+                <p id="review-type-tip-freeform" role="note">${t('weWillTemplate')()}</p>
               </li>
               <li>
-                <span>or</span>
+                <span>${t('or')()}</span>
                 <label>
                   <input
                     name="reviewType"
@@ -254,14 +249,14 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm) {
                       .with({ right: 'already-written' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>I’ve already written the review</span>
+                  <span>${t('alreadyWritten')()}</span>
                 </label>
               </li>
             </ol>
           </fieldset>
         </div>
 
-        <button>Continue</button>
+        <button>${t('continueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',
@@ -269,3 +264,16 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm) {
     js: error ? ['error-summary.js'] : [],
   })
 }
+
+const toErrorItems = (locale: SupportedLocale) => (form: ReviewTypeForm) =>
+  E.isLeft(form.reviewType)
+    ? html`
+        <li>
+          <a href="#review-type-questions">
+            ${match(form.reviewType.left)
+              .with({ _tag: 'MissingE' }, () => translate(locale, 'write-review', 'selectHowToStart')())
+              .exhaustive()}
+          </a>
+        </li>
+      `
+    : html``
