@@ -52,7 +52,7 @@ export function addAuthorForm({
           ${E.isLeft(form.name)
             ? html`
                 <div class="error-message" id="name-error">
-                  <span class="visually-hidden">Error:</span>
+                  <span class="visually-hidden">${t('write-review', 'error')()}:</span>
                   ${match(form.name.left).with({ _tag: 'MissingE' }, t('write-review', 'enterTheirName')).exhaustive()}
                 </div>
               `

@@ -218,6 +218,9 @@
   "changeName": {
     "message": "Change <visuallyHidden>name</visuallyHidden>"
   },
+  "invitedAuthors": {
+    "message": "{number, plural, one {Invited author} other {Invited authors}}"
+  },
   "changeInvitedAuthors": {
     "message": "Change <visuallyHidden>invited authors</visuallyHidden>"
   },

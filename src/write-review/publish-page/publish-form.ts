@@ -6,7 +6,7 @@ import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.js'
-import { DefaultLocale, translate, type SupportedLocale } from '../../locales/index.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import {
@@ -132,8 +132,8 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
               ${review.moreAuthors === 'yes' && RA.isNonEmpty(review.otherAuthors)
                 ? html`
                     <div>
-                      <dt><span>Invited author${review.otherAuthors.length !== 1 ? 's' : ''}</span></dt>
-                      <dd>${pipe(review.otherAuthors, RNEA.map(Struct.get('name')), formatList(DefaultLocale))}</dd>
+                      <dt><span>${t('invitedAuthors')({ number: review.otherAuthors.length })}</span></dt>
+                      <dd>${pipe(review.otherAuthors, RNEA.map(Struct.get('name')), formatList(locale))}</dd>
                       <dd>
                         <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
                           >${rawHtml(t('changeInvitedAuthors')(visuallyHidden))}</a
