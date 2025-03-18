@@ -1,0 +1,11 @@
+{
+  "havingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
+  "unableToLogYouIn": {
+    "message": "We’re unable to log you in right now."
+  },
+  "tryAgainLater": {
+    "message": "Please try again later."
+  }
+}
