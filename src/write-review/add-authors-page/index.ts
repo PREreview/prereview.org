@@ -10,7 +10,7 @@ import { mustDeclareUseOfAi, type MustDeclareUseOfAiEnv } from '../../feature-fl
 import { missingE } from '../../form.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { getPreprintTitle, type GetPreprintTitleEnv, type PreprintTitle } from '../../preprint.js'
 import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorMatch, writeReviewMatch } from '../../routes.js'
@@ -22,11 +22,13 @@ import { addAuthorsForm } from './add-authors-form.js'
 export const writeReviewAddAuthors = ({
   body,
   id,
+  locale,
   method,
   user,
 }: {
   body: unknown
   id: IndeterminatePreprintId
+  locale: SupportedLocale
   method: string
   user?: User
 }): RT.ReaderTask<
@@ -39,15 +41,15 @@ export const writeReviewAddAuthors = ({
       error =>
         RT.of(
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(DefaultLocale))
+            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
+            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       preprint =>
         pipe(
           RTE.Do,
           RTE.apS('user', pipe(RTE.fromNullable('no-session' as const)(user))),
-          RTE.apS('locale', RTE.of(DefaultLocale)),
+          RTE.apS('locale', RTE.of(locale)),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
           RTE.let('body', () => body),
@@ -66,7 +68,7 @@ export const writeReviewAddAuthors = ({
                 .with('no-form', 'no-session', () =>
                   RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                 )
-                .with('form-unavailable', () => havingProblemsPage(DefaultLocale))
+                .with('form-unavailable', () => havingProblemsPage(locale))
                 .exhaustive(),
             state =>
               match(state)
