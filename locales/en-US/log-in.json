@@ -2,10 +2,19 @@
   "havingProblems": {
     "message": "Sorry, we’re having problems"
   },
+  "cannotLogYouIn": {
+    "message": "Sorry, we can’t log you in"
+  },
   "unableToLogYouIn": {
     "message": "We’re unable to log you in right now."
   },
+  "youDeniedAccess": {
+    "message": "You have denied PREreview access to your ORCID iD."
+  },
   "tryAgainLater": {
     "message": "Please try again later."
+  },
+  "tryAgain": {
+    "message": "Please try again."
   }
 }
