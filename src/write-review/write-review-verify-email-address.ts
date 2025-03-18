@@ -10,6 +10,7 @@ import {
   isUnverified,
   saveContactEmailAddress,
 } from '../contact-email-address.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in/index.js'
 import { notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import type { TemplatePageEnv } from '../page.js'
@@ -50,7 +51,7 @@ export const writeReviewVerifyEmailAddress = (id: IndeterminatePreprintId, verif
           match(error)
             .returnType<
               RM.ReaderMiddleware<
-                GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv,
+                GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv & { locale: SupportedLocale },
                 StatusOpen,
                 ResponseEnded,
                 never,
