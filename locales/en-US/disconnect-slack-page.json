@@ -13,5 +13,14 @@
   },
   "disconnectAccountButton": {
     "message": "Disconnect account"
+  },
+  "havingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
+  "unableToDisconnect": {
+    "message": "We’re unable to disconnect your account right now."
+  },
+  "tryAgainLater": {
+    "message": "Please try again later."
   }
 }
