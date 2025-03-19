@@ -31,8 +31,8 @@ export const reviewPage = ({
       error =>
         match(error)
           .with('not-found', () => pageNotFound(locale))
-          .with('removed', () => removedMessage)
-          .with('unavailable', () => failureMessage)
+          .with('removed', () => removedMessage(locale))
+          .with('unavailable', () => failureMessage(locale))
           .exhaustive(),
       createPage,
     ),
