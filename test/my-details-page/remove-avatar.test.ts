@@ -9,45 +9,51 @@ import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('removeAvatar', () => {
-  test.prop([fc.user(), fc.url()])('when the avatar can be deleted', async (user, avatar) => {
-    const deleteAvatar = jest.fn<_.Env['deleteAvatar']>(_ => TE.right(undefined))
+  test.prop([fc.user(), fc.supportedLocale(), fc.url()])(
+    'when the avatar can be deleted',
+    async (user, locale, avatar) => {
+      const deleteAvatar = jest.fn<_.Env['deleteAvatar']>(_ => TE.right(undefined))
 
-    const actual = await _.removeAvatar({ method: 'POST', user })({
-      deleteAvatar,
-      getAvatar: () => TE.right(avatar),
-    })()
+      const actual = await _.removeAvatar({ locale, method: 'POST', user })({
+        deleteAvatar,
+        getAvatar: () => TE.right(avatar),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'FlashMessageResponse',
-      location: format(myDetailsMatch.formatter, {}),
-      message: 'avatar-removed',
-    })
-    expect(deleteAvatar).toHaveBeenCalledWith(user.orcid)
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'FlashMessageResponse',
+        location: format(myDetailsMatch.formatter, {}),
+        message: 'avatar-removed',
+      })
+      expect(deleteAvatar).toHaveBeenCalledWith(user.orcid)
+    },
+  )
 
-  test.prop([fc.user(), fc.url()])("when the avatar can't be deleted", async (user, avatar) => {
-    const deleteAvatar = jest.fn<_.Env['deleteAvatar']>(_ => TE.left('unavailable'))
+  test.prop([fc.user(), fc.supportedLocale(), fc.url()])(
+    "when the avatar can't be deleted",
+    async (user, locale, avatar) => {
+      const deleteAvatar = jest.fn<_.Env['deleteAvatar']>(_ => TE.left('unavailable'))
 
-    const actual = await _.removeAvatar({ method: 'POST', user })({
-      deleteAvatar,
-      getAvatar: () => TE.right(avatar),
-    })()
+      const actual = await _.removeAvatar({ locale, method: 'POST', user })({
+        deleteAvatar,
+        getAvatar: () => TE.right(avatar),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-    expect(deleteAvatar).toHaveBeenCalledWith(user.orcid)
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(deleteAvatar).toHaveBeenCalledWith(user.orcid)
+    },
+  )
 
-  test.prop([fc.string().filter(method => method !== 'POST'), fc.user(), fc.url()])(
+  test.prop([fc.string().filter(method => method !== 'POST'), fc.user(), fc.supportedLocale(), fc.url()])(
     'when the form needs to be submitted',
-    async (method, user, avatar) => {
-      const actual = await _.removeAvatar({ method, user })({
+    async (method, user, locale, avatar) => {
+      const actual = await _.removeAvatar({ locale, method, user })({
         deleteAvatar: shouldNotBeCalled,
         getAvatar: () => TE.right(avatar),
       })()
@@ -65,10 +71,10 @@ describe('removeAvatar', () => {
     },
   )
 
-  test.prop([fc.string(), fc.user()])('when there is no avatar', async (method, user) => {
+  test.prop([fc.string(), fc.user(), fc.supportedLocale()])('when there is no avatar', async (method, user, locale) => {
     const getAvatar = jest.fn<_.Env['getAvatar']>(_ => TE.left('not-found'))
 
-    const actual = await _.removeAvatar({ method, user })({
+    const actual = await _.removeAvatar({ locale, method, user })({
       deleteAvatar: shouldNotBeCalled,
       getAvatar,
     })()
@@ -81,27 +87,30 @@ describe('removeAvatar', () => {
     expect(getAvatar).toHaveBeenCalledWith(user.orcid)
   })
 
-  test.prop([fc.string(), fc.user()])("when there the existing avatar can't be loaded", async (method, user) => {
-    const getAvatar = jest.fn<_.Env['getAvatar']>(_ => TE.left('unavailable'))
+  test.prop([fc.string(), fc.user(), fc.supportedLocale()])(
+    "when there the existing avatar can't be loaded",
+    async (method, user, locale) => {
+      const getAvatar = jest.fn<_.Env['getAvatar']>(_ => TE.left('unavailable'))
 
-    const actual = await _.removeAvatar({ method, user })({
-      deleteAvatar: shouldNotBeCalled,
-      getAvatar,
-    })()
+      const actual = await _.removeAvatar({ locale, method, user })({
+        deleteAvatar: shouldNotBeCalled,
+        getAvatar,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-    expect(getAvatar).toHaveBeenCalledWith(user.orcid)
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getAvatar).toHaveBeenCalledWith(user.orcid)
+    },
+  )
 
-  test.prop([fc.string()])('when the user is not logged in', async method => {
-    const actual = await _.removeAvatar({ method })({
+  test.prop([fc.string(), fc.supportedLocale()])('when the user is not logged in', async (method, locale) => {
+    const actual = await _.removeAvatar({ locale, method })({
       deleteAvatar: shouldNotBeCalled,
       getAvatar: shouldNotBeCalled,
     })()
