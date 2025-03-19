@@ -13,7 +13,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match, P as p } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import * as FptsToEffect from '../FptsToEffect.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { movedPermanently, notFound, serviceUnavailable } from '../middleware.js'
 import type { TemplatePageEnv } from '../page.js'
 import type { PublicUrlEnv } from '../public-url.js'
@@ -241,7 +241,7 @@ const showRemovedPermanentlyMessage = pipe(
     'locale',
     RM.asks((env: LegacyEnv) => env.locale),
   ),
-  RM.apSW('response', RM.of(removedPermanentlyPage(DefaultLocale))),
+  RM.bindW('response', ({ locale }) => RM.of(removedPermanentlyPage(locale))),
   RM.ichainW(handlePageResponse),
 )
 
@@ -252,7 +252,7 @@ const showRemovedForNowMessage = pipe(
     'locale',
     RM.asks((env: LegacyEnv) => env.locale),
   ),
-  RM.apSW('response', RM.of(removedForNowPage(DefaultLocale))),
+  RM.bindW('response', ({ locale }) => RM.of(removedForNowPage(locale))),
   RM.ichainW(handlePageResponse),
 )
 
