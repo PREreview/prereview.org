@@ -3,8 +3,8 @@ import { format } from 'fp-ts-routing'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
-import { type Html, html, plainText, rawHtml } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { html, plainText, rawHtml, type Html } from '../html.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { myPrereviewsMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -28,22 +28,22 @@ export const ListOfPrereviews = (args: Omit<ListOfPrereviews, '_tag'>): ListOfPr
 
 export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: SupportedLocale) =>
   PageResponse({
-    title: plainText`My PREreviews`,
+    title: plainText(translate(locale, 'my-prereviews-page', 'myPrereviews')()),
     main: html`
-      <h1>My PREreviews</h1>
+      <h1>${translate(locale, 'my-prereviews-page', 'myPrereviews')()}</h1>
 
       <div class="inset">
-        <p>Only you can see this page. You have two profile pages that everyone can see:</p>
+        <p>${translate(locale, 'my-prereviews-page', 'onlyYouCanSee')()}</p>
 
         <div class="forward-group">
           <a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(user.orcid) })}" class="forward"
-            ><span>View public profile</span></a
+            ><span>${translate(locale, 'my-prereviews-page', 'viewPublicProfile')()}</span></a
           >
 
           <a
             href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(user.pseudonym) })}"
             class="forward"
-            ><span>View pseudonym profile</span></a
+            ><span>${translate(locale, 'my-prereviews-page', 'viewPseudonymProfile')()}</span></a
           >
         </div>
       </div>
@@ -54,15 +54,24 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: Suppo
             <li>
               <article>
                 <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                  ${pipe(
-                    prereview.reviewers,
-                    RNEA.map(name => html`<b>${name}</b>`),
-                    formatList(locale),
+                  ${rawHtml(
+                    translate(
+                      locale,
+                      'reviews-list',
+                      'reviewText',
+                    )({
+                      reviewers: pipe(
+                        prereview.reviewers,
+                        RNEA.map(name => html`<b>${name}</b>`),
+                        formatList(locale),
+                      ).toString(),
+                      preprint: html`<cite
+                        dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                        lang="${prereview.preprint.language}"
+                        >${prereview.preprint.title}</cite
+                      >`.toString(),
+                    }),
                   )}
-                  reviewed
-                  <cite dir="${rtlDetect.getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
-                    >${prereview.preprint.title}</cite
-                  >
                 </a>
 
                 ${prereview.subfields.length > 0
@@ -76,9 +85,9 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: Suppo
                   : ''}
 
                 <dl>
-                  <dt>Review published</dt>
+                  <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
                   <dd>${renderDate(locale)(prereview.published)}</dd>
-                  <dt>Preprint server</dt>
+                  <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
                   <dd>
                     ${match(prereview.preprint.id.type)
                       .with('advance', () => 'Advance')

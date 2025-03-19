@@ -1,0 +1,14 @@
+{
+  "myPrereviews": {
+    "message": "My PREreviews"
+  },
+  "onlyYouCanSee": {
+    "message": "Only you can see this page. You have two profile pages that everyone can see:"
+  },
+  "viewPublicProfile": {
+    "message": "View public profile"
+  },
+  "viewPseudonymProfile": {
+    "message": "View pseudonym profile"
+  }
+}
