@@ -1,0 +1,23 @@
+{
+  "myPrereviews": {
+    "message": "crwdns5080:0crwdne5080:0"
+  },
+  "onlyYouCanSee": {
+    "message": "crwdns5082:0crwdne5082:0"
+  },
+  "viewPublicProfile": {
+    "message": "crwdns5084:0crwdne5084:0"
+  },
+  "viewPseudonymProfile": {
+    "message": "crwdns5086:0crwdne5086:0"
+  },
+  "notPublished": {
+    "message": "crwdns5180:0crwdne5180:0"
+  },
+  "appearHere": {
+    "message": "crwdns5182:0crwdne5182:0"
+  },
+  "reviewAPreprint": {
+    "message": "crwdns5184:0crwdne5184:0"
+  }
+}
