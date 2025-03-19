@@ -58,5 +58,14 @@
   },
   "weHaveRemoved": {
     "message": "We’ve removed this PREreview."
+  },
+  "havingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
+  "unableToShow": {
+    "message": "We’re unable to show the PREreview now."
+  },
+  "tryAgainLater": {
+    "message": "Please try again later."
   }
 }
