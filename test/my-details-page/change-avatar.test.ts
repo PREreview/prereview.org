@@ -15,8 +15,9 @@ describe('changeAvatar', () => {
       mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
     }),
     fc.user(),
-  ])('when the avatar can be saved', async (file, user) => {
-    const actual = await _.changeAvatar({ body: { avatar: [file] }, method: 'POST', user })({
+    fc.supportedLocale(),
+  ])('when the avatar can be saved', async (file, user, locale) => {
+    const actual = await _.changeAvatar({ body: { avatar: [file] }, locale, method: 'POST', user })({
       saveAvatar: () => TE.right(undefined),
     })()
 
@@ -33,10 +34,11 @@ describe('changeAvatar', () => {
       mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
     }),
     fc.user(),
-  ])("when the avatar can't be saved", async (file, user) => {
+    fc.supportedLocale(),
+  ])("when the avatar can't be saved", async (file, user, locale) => {
     const saveAvatar = jest.fn<_.Env['saveAvatar']>(_ => TE.left('unavailable'))
 
-    const actual = await _.changeAvatar({ body: { avatar: [file] }, method: 'POST', user })({
+    const actual = await _.changeAvatar({ body: { avatar: [file] }, locale, method: 'POST', user })({
       saveAvatar,
     })()
 
@@ -59,8 +61,9 @@ describe('changeAvatar', () => {
         .filter(string => !['image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'].includes(string)),
     }),
     fc.user(),
-  ])('when it is not an image', async (file, user) => {
-    const actual = await _.changeAvatar({ body: { avatar: [file] }, method: 'POST', user })({
+    fc.supportedLocale(),
+  ])('when it is not an image', async (file, user, locale) => {
+    const actual = await _.changeAvatar({ body: { avatar: [file] }, locale, method: 'POST', user })({
       saveAvatar: shouldNotBeCalled,
     })()
 
@@ -76,8 +79,8 @@ describe('changeAvatar', () => {
     })
   })
 
-  test.prop([fc.user()])('when the avatar is too big', async user => {
-    const actual = await _.changeAvatar({ body: { avatar: 'TOO_BIG' }, method: 'POST', user })({
+  test.prop([fc.user(), fc.supportedLocale()])('when the avatar is too big', async (user, locale) => {
+    const actual = await _.changeAvatar({ body: { avatar: 'TOO_BIG' }, locale, method: 'POST', user })({
       saveAvatar: shouldNotBeCalled,
     })()
 
@@ -93,30 +96,31 @@ describe('changeAvatar', () => {
     })
   })
 
-  test.prop([fc.oneof(fc.anything(), fc.record({ avatar: fc.constant('ERROR') }, { requiredKeys: [] })), fc.user()])(
-    'when the avatar is missing',
-    async (body, user) => {
-      const actual = await _.changeAvatar({ body, method: 'POST', user })({
-        saveAvatar: shouldNotBeCalled,
-      })()
+  test.prop([
+    fc.oneof(fc.anything(), fc.record({ avatar: fc.constant('ERROR') }, { requiredKeys: [] })),
+    fc.user(),
+    fc.supportedLocale(),
+  ])('when the avatar is missing', async (body, user, locale) => {
+    const actual = await _.changeAvatar({ body, locale, method: 'POST', user })({
+      saveAvatar: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        canonical: format(changeAvatarMatch.formatter, {}),
-        status: Status.BadRequest,
-        title: expect.anything(),
-        nav: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: ['error-summary.js', 'single-use-form.js'],
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(changeAvatarMatch.formatter, {}),
+      status: Status.BadRequest,
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'form',
+      js: ['error-summary.js', 'single-use-form.js'],
+    })
+  })
 
-  test.prop([fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user()])(
+  test.prop([fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user(), fc.supportedLocale()])(
     'when the form needs to be submitted',
-    async (body, method, user) => {
-      const actual = await _.changeAvatar({ body, method, user })({
+    async (body, method, user, locale) => {
+      const actual = await _.changeAvatar({ body, locale, method, user })({
         saveAvatar: shouldNotBeCalled,
       })()
 
@@ -133,14 +137,17 @@ describe('changeAvatar', () => {
     },
   )
 
-  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
-    const actual = await _.changeAvatar({ body, method })({
-      saveAvatar: shouldNotBeCalled,
-    })()
+  test.prop([fc.anything(), fc.string(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (body, method, locale) => {
+      const actual = await _.changeAvatar({ body, locale, method })({
+        saveAvatar: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(myDetailsMatch.formatter, {}),
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    },
+  )
 })

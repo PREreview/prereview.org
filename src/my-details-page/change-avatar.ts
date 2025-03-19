@@ -9,7 +9,7 @@ import type { EnvFor } from '../Fpts.js'
 import { saveAvatar } from '../avatar.js'
 import { type MissingE, type TooBigE, type WrongTypeE, missingE, tooBigE, wrongTypeE } from '../form.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -17,14 +17,24 @@ import { createPage } from './change-avatar-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof changeAvatar>>
 
-export const changeAvatar = ({ body, method, user }: { body: unknown; method: string; user?: User }) =>
+export const changeAvatar = ({
+  body,
+  locale,
+  method,
+  user,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  method: string
+  user?: User
+}) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
 
     RTE.let('body', () => body),
     RTE.let('method', () => method),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.matchEW(
       error =>
         RT.of(
