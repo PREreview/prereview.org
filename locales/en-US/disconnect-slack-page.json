@@ -1,0 +1,17 @@
+{
+  "disconnectSlackAccount": {
+    "message": "Disconnect your Community Slack Account"
+  },
+  "youCanDisconnect": {
+    "message": "You can disconnect your PREreview profile from your account on the PREreview Community Slack."
+  },
+  "removeOrcidId": {
+    "message": "We’ll remove your ORCID iD from your Slack profile."
+  },
+  "canReconnect": {
+    "message": "You will be able to reconnect it at any time."
+  },
+  "disconnectAccountButton": {
+    "message": "Disconnect account"
+  }
+}

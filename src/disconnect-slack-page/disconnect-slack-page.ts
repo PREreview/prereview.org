@@ -1,24 +1,23 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { disconnectSlackMatch } from '../routes.js'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const disconnectSlackPage = (locale: SupportedLocale) =>
   PageResponse({
-    title: plainText`Disconnect your Community Slack Account`,
+    title: plainText(translate(locale, 'disconnect-slack-page', 'disconnectSlackAccount')()),
     main: html`
       <form method="post" action="${format(disconnectSlackMatch.formatter, {})}" novalidate>
-        <h1>Disconnect your Community Slack Account</h1>
+        <h1>${translate(locale, 'disconnect-slack-page', 'disconnectSlackAccount')()}</h1>
 
-        <p>You can disconnect your PREreview profile from your account on the PREreview Community Slack.</p>
+        <p>${translate(locale, 'disconnect-slack-page', 'youCanDisconnect')()}</p>
 
-        <p>We’ll remove your ORCID iD from your Slack profile.</p>
+        <p>${translate(locale, 'disconnect-slack-page', 'removeOrcidId')()}</p>
 
-        <p>You will be able to reconnect it at any time.</p>
+        <p>${translate(locale, 'disconnect-slack-page', 'canReconnect')()}</p>
 
-        <button>Disconnect account</button>
+        <button>${translate(locale, 'disconnect-slack-page', 'disconnectAccountButton')()}</button>
       </form>
     `,
     canonical: format(disconnectSlackMatch.formatter, {}),
