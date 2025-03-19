@@ -11,7 +11,7 @@ import rtlDetect from 'rtl-detect'
 import { match, P as p } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import type { Preprint } from '../preprint.js'
 import { TwoUpPageResponse } from '../response.js'
 import { isReviewRequestPreprintId } from '../review-request.js'
@@ -23,17 +23,19 @@ import type { Prereview } from './prereviews.js'
 import type { RapidPrereview } from './rapid-prereviews.js'
 
 export const createPage = ({
+  locale,
   preprint,
   reviews,
   rapidPrereviews,
 }: {
+  locale: SupportedLocale
   preprint: Preprint
   reviews: ReadonlyArray<Prereview>
   rapidPrereviews: ReadonlyArray<RapidPrereview>
 }) =>
   TwoUpPageResponse({
     title: plainText`PREreviews of “${preprint.title.text}”`,
-    description: plainText`Authored by ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList(DefaultLocale))}.
+    description: plainText`Authored by ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList(locale))}.
     ${
       preprint.abstract
         ? plainText`
@@ -61,13 +63,13 @@ export const createPage = ({
 
           <div class="byline">
             <span class="visually-hidden">Authored</span> by
-            ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList(DefaultLocale))}
+            ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList(locale))}
           </div>
 
           <dl>
             <div>
               <dt>Posted</dt>
-              <dd>${renderDate(DefaultLocale)(preprint.posted)}</dd>
+              <dd>${renderDate(locale)(preprint.posted)}</dd>
             </div>
             <div>
               <dt>Server</dt>
@@ -145,7 +147,7 @@ export const createPage = ({
         rapidPrereviews,
         RA.matchW(
           () => '',
-          rapidPrereviews => showRapidPrereviews(rapidPrereviews, preprint),
+          rapidPrereviews => showRapidPrereviews(rapidPrereviews, preprint, locale),
         ),
       )}
 
@@ -160,13 +162,13 @@ export const createPage = ({
       </div>
 
       <ol class="cards">
-        ${reviews.map(showReview)}
+        ${reviews.map(review => showReview(review, locale))}
       </ol>
     `,
     canonical: format(preprintReviewsMatch.formatter, { id: preprint.id }),
   })
 
-function showReview(review: Prereview) {
+function showReview(review: Prereview, locale: SupportedLocale) {
   return html`
     <li>
       <article aria-labelledby="prereview-${review.id}-title">
@@ -187,7 +189,7 @@ function showReview(review: Prereview) {
                   ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
                   : [],
               ),
-              formatList(DefaultLocale),
+              formatList(locale),
             )}
             ${review.club ? html`of the ${getClubName(review.club)}` : ''}
           </div>
@@ -213,13 +215,17 @@ function showReview(review: Prereview) {
   `
 }
 
-function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview>, preprint: Preprint): Html {
+function showRapidPrereviews(
+  rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview>,
+  preprint: Preprint,
+  locale: SupportedLocale,
+): Html {
   return html`
     <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
 
     <div class="byline">
       <span class="visually-hidden">Authored</span> by
-      ${pipe(rapidPrereviews, RNEA.map(flow(Struct.get('author'), displayAuthor)), formatList(DefaultLocale))}
+      ${pipe(rapidPrereviews, RNEA.map(flow(Struct.get('author'), displayAuthor)), formatList(locale))}
     </div>
 
     <details>
@@ -288,25 +294,25 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
                 <tr>
                   <th scope="row">${displayRapidPrereviewQuestion(question)}</th>
                   <td class="numeric">
-                    ${(answers.yes / rapidPrereviews.length).toLocaleString(DefaultLocale, {
+                    ${(answers.yes / rapidPrereviews.length).toLocaleString(locale, {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}
                   </td>
                   <td class="numeric">
-                    ${(answers.unsure / rapidPrereviews.length).toLocaleString(DefaultLocale, {
+                    ${(answers.unsure / rapidPrereviews.length).toLocaleString(locale, {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}
                   </td>
                   <td class="numeric">
-                    ${(answers.na / rapidPrereviews.length).toLocaleString(DefaultLocale, {
+                    ${(answers.na / rapidPrereviews.length).toLocaleString(locale, {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}
                   </td>
                   <td class="numeric">
-                    ${(answers.no / rapidPrereviews.length).toLocaleString(DefaultLocale, {
+                    ${(answers.no / rapidPrereviews.length).toLocaleString(locale, {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}

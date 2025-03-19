@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { Prereview, RapidPrereview } from '../../src/preprint-reviews-page/index.js'
 import { createPage } from '../../src/preprint-reviews-page/preprint-reviews.js'
 import type { Preprint } from '../../src/preprint.js'
@@ -11,6 +12,7 @@ import PlainDate = Temporal.PlainDate
 
 test('content looks right', async ({ showTwoUpPage }) => {
   const response = createPage({
+    locale: DefaultLocale,
     preprint,
     reviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
     rapidPrereviews: [],
@@ -24,6 +26,7 @@ test('content looks right', async ({ showTwoUpPage }) => {
 
 test('content looks right when empty', async ({ showTwoUpPage }) => {
   const response = createPage({
+    locale: DefaultLocale,
     preprint: { ...preprint, authors: [preprint.authors[0]], abstract: undefined },
     reviews: [],
     rapidPrereviews: [],
@@ -37,6 +40,7 @@ test('content looks right when empty', async ({ showTwoUpPage }) => {
 
 test('content looks right with rapid PREreviews', async ({ showTwoUpPage }) => {
   const response = createPage({
+    locale: DefaultLocale,
     preprint,
     reviews: [prereview1],
     rapidPrereviews: [rapidPrereview1],

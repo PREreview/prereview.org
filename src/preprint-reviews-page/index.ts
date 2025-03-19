@@ -24,6 +24,7 @@ export const preprintReviews = (
       pipe(
         RTE.Do,
         RTE.let('preprint', () => preprint),
+        RTE.let('locale', () => DefaultLocale),
         RTE.apS('rapidPrereviews', getRapidPrereviews(preprint.id)),
         RTE.apSW('reviews', getPrereviews(preprint.id)),
       ),
@@ -32,7 +33,7 @@ export const preprintReviews = (
       error =>
         match(error)
           .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => failureMessage)
+          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => failureMessage(DefaultLocale))
           .exhaustive(),
       createPage,
     ),
