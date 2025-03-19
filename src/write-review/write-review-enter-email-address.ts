@@ -13,7 +13,7 @@ import {
 } from '../contact-email-address.js'
 import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form.js'
 import { html, plainText, sendHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -43,6 +43,7 @@ export const writeReviewEnterEmailAddress = flow(
         RM.fromReaderTaskEitherK(({ user }) => maybeGetContactEmailAddress(user.orcid)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
+      RM.apS('locale', RM.of(DefaultLocale)),
       RM.ichainW(state =>
         match(state)
           .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>
@@ -80,27 +81,45 @@ export const writeReviewEnterEmailAddress = flow(
 
 const showEnterEmailAddressForm = ({
   contactEmailAddress,
+  locale,
   preprint,
   user,
 }: {
   contactEmailAddress?: UnverifiedContactEmailAddress
+  locale: SupportedLocale
   preprint: PreprintTitle
   user: User
 }) =>
   pipe(
-    RM.rightReader(createFormPage(preprint, user, { emailAddress: E.right(contactEmailAddress?.value) })),
+    RM.rightReader(createFormPage(preprint, user, { emailAddress: E.right(contactEmailAddress?.value) }, locale)),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const showEnterEmailAddressErrorForm = ({ preprint, user }: { preprint: PreprintTitle; user: User }) =>
+const showEnterEmailAddressErrorForm = ({
+  locale,
+  preprint,
+  user,
+}: {
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
   flow(
-    RM.fromReaderK((form: EnterEmailAddressForm) => createFormPage(preprint, user, form)),
+    RM.fromReaderK((form: EnterEmailAddressForm) => createFormPage(preprint, user, form, locale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleEnterEmailAddressForm = ({ preprint, user }: { preprint: PreprintTitle; user: User }) =>
+const handleEnterEmailAddressForm = ({
+  locale,
+  preprint,
+  user,
+}: {
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
     RM.decodeBody(E.right),
     RM.chainEitherK(
@@ -131,7 +150,7 @@ const handleEnterEmailAddressForm = ({ preprint, user }: { preprint: PreprintTit
         RM.orElseW(() => serviceUnavailable),
       ),
     ),
-    RM.orElseW(showEnterEmailAddressErrorForm({ preprint, user })),
+    RM.orElseW(showEnterEmailAddressErrorForm({ locale, preprint, user })),
   )
 
 const EmailAddressFieldD = pipe(
@@ -143,7 +162,7 @@ interface EnterEmailAddressForm {
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>
 }
 
-function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAddressForm) {
+function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAddressForm, locale: SupportedLocale) {
   const error = hasAnError(form)
 
   return templatePage({
@@ -232,7 +251,7 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
     js: error ? ['error-summary.js'] : [],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
-    locale: DefaultLocale,
+    locale,
     user,
   })
 }
