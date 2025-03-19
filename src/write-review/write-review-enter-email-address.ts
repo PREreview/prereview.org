@@ -13,7 +13,7 @@ import {
 } from '../contact-email-address.js'
 import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form.js'
 import { html, plainText, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -23,10 +23,12 @@ import {
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
 } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 import { type EmailAddress, EmailAddressC } from '../types/email-address.js'
 import { generateUuid } from '../types/uuid.js'
 import { type User, getUser } from '../user.js'
 import { getForm, redirectToNextForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewEnterEmailAddress = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -164,12 +166,20 @@ interface EnterEmailAddressForm {
 
 function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAddressForm, locale: SupportedLocale) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return templatePage({
-    title: plainText`${error ? 'Error: ' : ''}Contact details – PREreview of “${preprint.title}”`,
+    title: pipe(
+      t('contactDetails')(),
+      prereviewOfSuffix(locale, preprint.title),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
       <nav>
-        <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back"><span>Back</span></a>
+        <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back"
+          ><span>${t('back')()}</span></a
+        >
       </nav>
 
       <main id="form">
@@ -181,18 +191,15 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
+                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
                   <ul>
                     ${E.isLeft(form.emailAddress)
                       ? html`
                           <li>
                             <a href="#email-address">
                               ${match(form.emailAddress.left)
-                                .with({ _tag: 'MissingE' }, () => 'Enter your email address')
-                                .with(
-                                  { _tag: 'InvalidE' },
-                                  () => 'Enter an email address in the correct format, like name@example.com',
-                                )
+                                .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')())
+                                .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')())
                                 .exhaustive()}
                             </a>
                           </li>
@@ -203,25 +210,22 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
               `
             : ''}
 
-          <h1>Contact details</h1>
+          <h1>${t('contactDetails')()}</h1>
 
-          <p>We’re ready to publish your PREreview, but we need to confirm your email address first.</p>
+          <p>${t('confirmEmailAddress')()}</p>
 
-          <p>We’ll only use this to contact you about your account and PREreviews.</p>
+          <p>${t('onlyUseContact')()}</p>
 
           <div ${error ? html`class="error"` : ''}>
-            <h2><label for="email-address">What is your email address?</label></h2>
+            <h2><label for="email-address">${t('whatIsYourEmail')()}</label></h2>
 
             ${E.isLeft(form.emailAddress)
               ? html`
                   <div class="error-message" id="email-address-error">
-                    <span class="visually-hidden">Error:</span>
+                    <span class="visually-hidden">${t('error')()}:</span>
                     ${match(form.emailAddress.left)
-                      .with({ _tag: 'MissingE' }, () => 'Enter your email address')
-                      .with(
-                        { _tag: 'InvalidE' },
-                        () => 'Enter an email address in the correct format, like name@example.com',
-                      )
+                      .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')())
+                      .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')())
                       .exhaustive()}
                   </div>
                 `
@@ -244,12 +248,12 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
             />
           </div>
 
-          <button>Save and continue</button>
+          <button>${t('saveAndContinueButton')()}</button>
         </form>
       </main>
     `,
     js: error ? ['error-summary.js'] : [],
-    skipLinks: [[html`Skip to form`, '#form']],
+    skipLinks: [[html`${translate(locale, 'skip-links', 'form')()}`, '#form']],
     type: 'streamline',
     locale,
     user,

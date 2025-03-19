@@ -563,6 +563,24 @@
   "iAmFollowingCodeOfConduct": {
     "message": "I’m following the Code of Conduct"
   },
+  "contactDetails": {
+    "message": "Contact details"
+  },
+  "enterEmailAddressError": {
+    "message": "Enter your email address"
+  },
+  "enterEmailAddressFormatError": {
+    "message": "Enter an email address in the correct format, like name@example.com"
+  },
+  "confirmEmailAddress": {
+    "message": "We’re ready to publish your PREreview, but we need to confirm your email address first."
+  },
+  "onlyUseContact": {
+    "message": "We’ll only use this to contact you about your account and PREreviews."
+  },
+  "whatIsYourEmail": {
+    "message": "What is your email address?"
+  },
   "areTheDataPresentationsWellSuited": {
     "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
   },
