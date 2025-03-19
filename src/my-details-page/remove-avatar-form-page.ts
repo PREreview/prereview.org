@@ -1,25 +1,26 @@
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { html, plainText } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { myDetailsMatch, removeAvatarMatch } from '../routes.js'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const page = (locale: SupportedLocale) =>
   PageResponse({
     status: Status.OK,
-    title: plainText`Remove your avatar`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
+    title: plainText(translate(locale, 'my-details', 'removeYourAvatar')()),
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
+      ><span>${translate(locale, 'my-details', 'back')()}</span></a
+    >`,
     main: html`
       <form method="post" action="${format(removeAvatarMatch.formatter, {})}" enctype="multipart/form-data" novalidate>
-        <h1>Remove your avatar</h1>
+        <h1>${translate(locale, 'my-details', 'removeYourAvatar')()}</h1>
 
-        <p>We’ll remove your avatar from your profile.</p>
+        <p>${translate(locale, 'my-details', 'removeAvatarFromProfile')()}</p>
 
-        <p>You will be able to upload a new one at any time.</p>
+        <p>${translate(locale, 'my-details', 'canUploadNewOne')()}</p>
 
-        <button>Remove avatar</button>
+        <button>${translate(locale, 'my-details', 'removeAvatarButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

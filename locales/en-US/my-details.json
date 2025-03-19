@@ -173,6 +173,18 @@
   "showOnPublicProfile": {
     "message": "We’ll show your avatar on your public profile."
   },
+  "removeYourAvatar": {
+    "message": "Remove your avatar"
+  },
+  "removeAvatarFromProfile": {
+    "message": "We’ll remove your avatar from your profile."
+  },
+  "canUploadNewOne": {
+    "message": "You will be able to upload a new one at any time."
+  },
+  "removeAvatarButton": {
+    "message": "Remove avatar"
+  },
   "saveAndContinueButton": {
     "message": "Save and continue"
   }
