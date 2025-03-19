@@ -126,7 +126,11 @@ export const LogInResponse = (args: Omit<LogInResponse, '_tag'>): LogInResponse 
   ...args,
 })
 
-export function handleResponse(response: {
+export function handleResponse({
+  response,
+  user,
+  locale = DefaultLocale,
+}: {
   response: Response
   user?: User
   locale?: SupportedLocale
@@ -137,7 +141,7 @@ export function handleResponse(response: {
   never,
   void
 > {
-  return match(response)
+  return match({ response, user, locale })
     .with({ response: { _tag: 'PageResponse' } }, handlePageResponse)
     .with({ response: { _tag: 'StreamlinePageResponse' } }, handlePageResponse)
     .with({ response: { _tag: 'TwoUpPageResponse' } }, handleTwoUpPageResponse)
@@ -220,11 +224,11 @@ export const toPage = ({
 export const handlePageResponse = ({
   response,
   user,
-  locale = DefaultLocale,
+  locale,
 }: {
   response: PageResponse | StreamlinePageResponse
   user?: User
-  locale?: SupportedLocale
+  locale: SupportedLocale
 }): RM.ReaderMiddleware<
   GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv,
   StatusOpen,
@@ -290,11 +294,11 @@ export const handlePageResponse = ({
 const handleTwoUpPageResponse = ({
   response,
   user,
-  locale = DefaultLocale,
+  locale,
 }: {
   response: TwoUpPageResponse
   user?: User
-  locale?: SupportedLocale
+  locale: SupportedLocale
 }): RM.ReaderMiddleware<
   GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv,
   StatusOpen,

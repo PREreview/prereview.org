@@ -184,6 +184,7 @@ const showPublishForm = ({
   pipe(
     RM.of({}),
     RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
     RM.apS('response', RM.of(publishForm(preprint, form, user, locale))),
     RM.ichainW(handlePageResponse),
   )
