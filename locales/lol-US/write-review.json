@@ -5,6 +5,18 @@
   "or": {
     "message": "crwdns5042:0crwdne5042:0"
   },
+  "havingProblems": {
+    "message": "crwdns5060:0crwdne5060:0"
+  },
+  "unableToPublish": {
+    "message": "crwdns5062:0crwdne5062:0"
+  },
+  "tryAgainLater": {
+    "message": "crwdns5064:0crwdne5064:0"
+  },
+  "getInTouch": {
+    "message": "crwdns5066:0crwdne5066:0"
+  },
   "enterTheirName": {
     "message": "crwdns3900:0crwdne3900:0"
   },

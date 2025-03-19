@@ -1,0 +1,20 @@
+{
+  "havingProblems": {
+    "message": "crwdns5068:0crwdne5068:0"
+  },
+  "cannotLogYouIn": {
+    "message": "crwdns5070:0crwdne5070:0"
+  },
+  "unableToLogYouIn": {
+    "message": "crwdns5072:0crwdne5072:0"
+  },
+  "youDeniedAccess": {
+    "message": "crwdns5074:0crwdne5074:0"
+  },
+  "tryAgainLater": {
+    "message": "crwdns5076:0crwdne5076:0"
+  },
+  "tryAgain": {
+    "message": "crwdns5078:0crwdne5078:0"
+  }
+}
