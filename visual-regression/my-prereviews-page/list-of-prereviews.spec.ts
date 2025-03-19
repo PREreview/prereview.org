@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { rawHtml } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import * as _ from '../../src/my-prereviews-page/list-of-prereviews.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
 import { expect, test } from '../base.js'
@@ -18,6 +19,7 @@ test('content looks right', async ({ showPage }) => {
         pseudonym: 'Orange Panda' as Pseudonym,
       },
     }),
+    DefaultLocale,
   )
 
   const content = await showPage(response)

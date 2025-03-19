@@ -21,8 +21,8 @@ describe('ensureThereArePrereviews', () => {
   })
 })
 
-test('toResponse', () => {
-  const actual = _.toResponse(_.NoPrereviews)
+test.prop([fc.supportedLocale()])('toResponse', locale => {
+  const actual = _.toResponse(_.NoPrereviews, locale)
 
   expect(actual).toStrictEqual({
     _tag: 'PageResponse',

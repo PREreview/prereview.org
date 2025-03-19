@@ -2,6 +2,7 @@ import { flow, identity, pipe, Struct } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
+import { DefaultLocale } from '../locales/index.js'
 import type { Response } from '../response.js'
 import type { User } from '../user.js'
 import * as ListOfPrereviews from './list-of-prereviews.js'
@@ -21,10 +22,10 @@ export const myPrereviews = ({ user }: { user?: User }): RT.ReaderTask<Prereview
     RTE.matchW(identity, ListOfPrereviews.ListOfPrereviews),
     RT.map(result =>
       match(result)
-        .with({ _tag: 'ListOfPrereviews' }, ListOfPrereviews.toResponse)
-        .with({ _tag: 'NoPrereviews' }, NoPrereviews.toResponse)
+        .with({ _tag: 'ListOfPrereviews' }, result => ListOfPrereviews.toResponse(result, DefaultLocale))
+        .with({ _tag: 'NoPrereviews' }, result => NoPrereviews.toResponse(result, DefaultLocale))
         .with({ _tag: 'RequireLogIn' }, RequireLogIn.toResponse)
-        .with({ _tag: 'UnableToLoadPrereviews' }, UnableToLoadPrereviews.toResponse)
+        .with({ _tag: 'UnableToLoadPrereviews' }, result => UnableToLoadPrereviews.toResponse(result, DefaultLocale))
         .exhaustive(),
     ),
   )

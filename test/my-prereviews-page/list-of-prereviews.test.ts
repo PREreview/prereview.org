@@ -6,17 +6,20 @@ import * as _ from '../../src/my-prereviews-page/list-of-prereviews.js'
 import { myPrereviewsMatch } from '../../src/routes.js'
 import * as fc from './fc.js'
 
-test.prop([fc.nonEmptyArray(fc.localPrereview()), fc.user()])('toResponse', (prereviews, user) => {
-  const actual = _.toResponse(_.ListOfPrereviews({ prereviews, user }))
+test.prop([fc.nonEmptyArray(fc.localPrereview()), fc.user(), fc.supportedLocale()])(
+  'toResponse',
+  (prereviews, user, locale) => {
+    const actual = _.toResponse(_.ListOfPrereviews({ prereviews, user }), locale)
 
-  expect(actual).toStrictEqual({
-    _tag: 'PageResponse',
-    canonical: format(myPrereviewsMatch.formatter, {}),
-    current: 'my-prereviews',
-    status: Status.OK,
-    title: expect.anything(),
-    main: expect.anything(),
-    skipToLabel: 'main',
-    js: [],
-  })
-})
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(myPrereviewsMatch.formatter, {}),
+      current: 'my-prereviews',
+      status: Status.OK,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  },
+)

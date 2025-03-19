@@ -3,6 +3,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { html, plainText } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { myPrereviewsMatch, reviewAPreprintMatch } from '../routes.js'
 import type { Prereview } from './prereviews.js'
@@ -19,7 +20,7 @@ export const ensureThereArePrereviews: (
   prereviews: ReadonlyArray<Prereview>,
 ) => E.Either<NoPrereviews, ReadonlyNonEmptyArray<Prereview>> = E.fromPredicate(RA.isNonEmpty, () => NoPrereviews)
 
-export const toResponse: (NoPrereviews: NoPrereviews) => PageResponse = () =>
+export const toResponse: (NoPrereviews: NoPrereviews, locale: SupportedLocale) => PageResponse = () =>
   PageResponse({
     title: plainText`My PREreviews`,
     main: html`

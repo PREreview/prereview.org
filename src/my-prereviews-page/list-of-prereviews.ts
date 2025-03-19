@@ -4,7 +4,7 @@ import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { myPrereviewsMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -26,7 +26,7 @@ export const ListOfPrereviews = (args: Omit<ListOfPrereviews, '_tag'>): ListOfPr
   ...args,
 })
 
-export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
+export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: SupportedLocale) =>
   PageResponse({
     title: plainText`My PREreviews`,
     main: html`
@@ -57,7 +57,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
                   ${pipe(
                     prereview.reviewers,
                     RNEA.map(name => html`<b>${name}</b>`),
-                    formatList(DefaultLocale),
+                    formatList(locale),
                   )}
                   reviewed
                   <cite dir="${rtlDetect.getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
@@ -69,7 +69,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
                   ? html`
                       <ul class="categories">
                         ${prereview.subfields.map(
-                          subfield => html`<li><span>${getSubfieldName(subfield, DefaultLocale)}</span></li>`,
+                          subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
                         )}
                       </ul>
                     `
@@ -77,7 +77,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews) =>
 
                 <dl>
                   <dt>Review published</dt>
-                  <dd>${renderDate(DefaultLocale)(prereview.published)}</dd>
+                  <dd>${renderDate(locale)(prereview.published)}</dd>
                   <dt>Preprint server</dt>
                   <dd>
                     ${match(prereview.preprint.id.type)

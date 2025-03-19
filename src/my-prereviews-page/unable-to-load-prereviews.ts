@@ -1,5 +1,6 @@
 import { Status } from 'hyper-ts'
 import { html, plainText } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import type * as Response from '../response.js'
 import { PageResponse } from '../response.js'
 
@@ -11,7 +12,10 @@ export const UnableToLoadPrereviews: UnableToLoadPrereviews = {
   _tag: 'UnableToLoadPrereviews',
 }
 
-export const toResponse: (unableToLoadPrereviews: UnableToLoadPrereviews) => Response.PageResponse = () =>
+export const toResponse: (
+  unableToLoadPrereviews: UnableToLoadPrereviews,
+  locale: SupportedLocale,
+) => Response.PageResponse = () =>
   PageResponse({
     status: Status.ServiceUnavailable,
     title: plainText`Sorry, we’re having problems`,
