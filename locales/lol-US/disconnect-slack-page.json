@@ -1,0 +1,26 @@
+{
+  "disconnectSlackAccount": {
+    "message": "crwdns5218:0crwdne5218:0"
+  },
+  "youCanDisconnect": {
+    "message": "crwdns5220:0crwdne5220:0"
+  },
+  "removeOrcidId": {
+    "message": "crwdns5222:0crwdne5222:0"
+  },
+  "canReconnect": {
+    "message": "crwdns5224:0crwdne5224:0"
+  },
+  "disconnectAccountButton": {
+    "message": "crwdns5226:0crwdne5226:0"
+  },
+  "havingProblems": {
+    "message": "crwdns5228:0crwdne5228:0"
+  },
+  "unableToDisconnect": {
+    "message": "crwdns5230:0crwdne5230:0"
+  },
+  "tryAgainLater": {
+    "message": "crwdns5232:0crwdne5232:0"
+  }
+}

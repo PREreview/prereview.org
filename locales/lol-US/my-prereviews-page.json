@@ -19,5 +19,14 @@
   },
   "reviewAPreprint": {
     "message": "crwdns5184:0crwdne5184:0"
+  },
+  "havingProblems": {
+    "message": "crwdns5212:0crwdne5212:0"
+  },
+  "unableToShow": {
+    "message": "crwdns5214:0crwdne5214:0"
+  },
+  "tryAgainLater": {
+    "message": "crwdns5216:0crwdne5216:0"
   }
 }

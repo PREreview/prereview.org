@@ -52,5 +52,20 @@
   },
   "writeCommentButton": {
     "message": "crwdns4170:0crwdne4170:0"
+  },
+  "prereviewRemoved": {
+    "message": "crwdns5202:0crwdne5202:0"
+  },
+  "weHaveRemoved": {
+    "message": "crwdns5204:0crwdne5204:0"
+  },
+  "havingProblems": {
+    "message": "crwdns5206:0crwdne5206:0"
+  },
+  "unableToShow": {
+    "message": "crwdns5208:0crwdne5208:0"
+  },
+  "tryAgainLater": {
+    "message": "crwdns5210:0crwdne5210:0"
   }
 }

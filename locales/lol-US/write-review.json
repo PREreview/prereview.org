@@ -74,6 +74,27 @@
   "thereIsAProblem": {
     "message": "crwdns4976:0crwdne4976:0"
   },
+  "selectTheNameError": {
+    "message": "crwdns5186:0crwdne5186:0"
+  },
+  "youCanChooseBetweenNames": {
+    "message": "crwdns5188:0crwdne5188:0"
+  },
+  "whatIsAPseudonym": {
+    "message": "crwdns5190:0crwdne5190:0"
+  },
+  "pseudonymIsA": {
+    "message": "crwdns5192:0{pseudonym}crwdne5192:0"
+  },
+  "pseudonymAccountability": {
+    "message": "crwdns5194:0crwdne5194:0"
+  },
+  "linkToOrcidId": {
+    "message": "crwdns5196:0crwdne5196:0"
+  },
+  "linkToPseudonym": {
+    "message": "crwdns5198:0crwdne5198:0"
+  },
   "pasteYourReviewError": {
     "message": "crwdns4978:0crwdne4978:0"
   },
@@ -436,6 +457,9 @@
   },
   "changeUseOfAi": {
     "message": "crwdns5040:0crwdne5040:0"
+  },
+  "whatNameToUse": {
+    "message": "crwdns5200:0crwdne5200:0"
   },
   "competingInterests": {
     "message": "crwdns4553:0crwdne4553:0"
