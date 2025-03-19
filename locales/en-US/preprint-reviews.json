@@ -127,5 +127,14 @@
   },
   "rapidReproducibility": {
     "message": "Is sufficient detail provided to allow reproduction of the study?"
+  },
+  "havingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
+  "unableToShow": {
+    "message": "We’re unable to show the preprint and its PREreviews now."
+  },
+  "tryAgainLater": {
+    "message": "Please try again later."
   }
 }
