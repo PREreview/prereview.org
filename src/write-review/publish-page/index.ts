@@ -12,8 +12,8 @@ import { P, match } from 'ts-pattern'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../../contact-email-address.js'
 import { detectLanguage } from '../../detect-language.js'
 import { mustDeclareUseOfAi } from '../../feature-flags.js'
-import { type Html, fixHeadingLevels, html, plainText, sendHtml } from '../../html.js'
-import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from '../../html.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware.js'
 import { type TemplatePageEnv, templatePage } from '../../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
@@ -125,11 +125,13 @@ const decideNextStep = (state: {
 
 const handlePublishForm = ({
   form,
+  locale,
   originalForm,
   preprint,
   user,
 }: {
   form: CompletedForm
+  locale: SupportedLocale
   originalForm: Form
   preprint: PreprintTitle
   user: User
@@ -165,7 +167,7 @@ const handlePublishForm = ({
     RM.ichainW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
     RM.ichain(() => RM.closeHeaders()),
     RM.ichain(() => RM.end()),
-    RM.orElseW(() => showFailureMessage(user)),
+    RM.orElseW(() => showFailureMessage(user, locale)),
   )
 
 const showPublishForm = ({
@@ -359,23 +361,27 @@ function renderReview(form: CompletedForm) {
       : ''} `
 }
 
-function failureMessage(user: User) {
+function failureMessage(user: User, locale: SupportedLocale) {
+  const t = translate(locale, 'write-review')
+
   return templatePage({
-    title: plainText`Sorry, we’re having problems`,
+    title: plainText(t('havingProblems')()),
     content: html`
       <main id="main-content">
-        <h1>Sorry, we’re having problems</h1>
+        <h1>${t('havingProblems')()}</h1>
 
-        <p>We were unable to publish your PREreview. We saved your work.</p>
+        <p>${t('unableToPublish')()}</p>
 
-        <p>Please try again later by coming back to this page.</p>
+        <p>${t('tryAgainLater')()}</p>
 
-        <p>If this problem persists, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+        <p>${rawHtml(t('getInTouch')({ contact: mailToHelp }))}</p>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
     type: 'streamline',
-    locale: DefaultLocale,
+    locale,
     user,
   })
 }
+
+const mailToHelp = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()
