@@ -9,7 +9,7 @@ import type { EnvFor } from '../Fpts.js'
 import { saveAvatar } from '../avatar.js'
 import { type MissingE, type TooBigE, type WrongTypeE, missingE, tooBigE, wrongTypeE } from '../form.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -24,6 +24,7 @@ export const changeAvatar = ({ body, method, user }: { body: unknown; method: st
 
     RTE.let('body', () => body),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.matchEW(
       error =>
         RT.of(
@@ -34,11 +35,11 @@ export const changeAvatar = ({ body, method, user }: { body: unknown; method: st
       state =>
         match(state)
           .with({ method: 'POST' }, handleChangeAvatarForm)
-          .otherwise(() => RT.of(createPage({ form: { avatar: E.right(undefined) } }))),
+          .otherwise(({ locale }) => RT.of(createPage({ form: { avatar: E.right(undefined) }, locale }))),
     ),
   )
 
-const handleChangeAvatarForm = ({ body, user }: { body: unknown; user: User }) =>
+const handleChangeAvatarForm = ({ body, locale, user }: { body: unknown; locale: SupportedLocale; user: User }) =>
   pipe(
     RTE.Do,
     RTE.let('avatar', () =>
@@ -73,8 +74,8 @@ const handleChangeAvatarForm = ({ body, user }: { body: unknown; user: User }) =
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage(DefaultLocale))
-          .with({ avatar: P.any }, error => createPage({ form: error }))
+          .with('unavailable', () => havingProblemsPage(locale))
+          .with({ avatar: P.any }, error => createPage({ form: error, locale }))
           .exhaustive(),
       () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'avatar-changed' }),
     ),

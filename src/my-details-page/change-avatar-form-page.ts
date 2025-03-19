@@ -4,6 +4,7 @@ import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { type MissingE, type TooBigE, type WrongTypeE, hasAnError } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeAvatarMatch, myDetailsMatch } from '../routes.js'
 
@@ -11,7 +12,8 @@ export interface UploadAvatarForm {
   readonly avatar: E.Either<MissingE | WrongTypeE | TooBigE, unknown>
 }
 
-export function createPage({ form }: { form: UploadAvatarForm }) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function createPage({ form, locale }: { form: UploadAvatarForm; locale: SupportedLocale }) {
   const error = hasAnError(form)
 
   return PageResponse({
