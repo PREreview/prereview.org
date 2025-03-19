@@ -5,7 +5,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { disconnectSlackMatch, myDetailsMatch } from '../routes.js'
 import { type DeleteSlackUserIdEnv, deleteSlackUserId } from '../slack-user-id.js'
@@ -15,9 +15,11 @@ import { disconnectSlackPage } from './disconnect-slack-page.js'
 import { failureMessage } from './failure-message.js'
 
 export const disconnectSlack = ({
+  locale,
   method,
   user,
 }: {
+  locale: SupportedLocale
   method: string
   user?: User
 }): RT.ReaderTask<
@@ -29,13 +31,13 @@ export const disconnectSlack = ({
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.bindW('isSlackUser', ({ user }) => isSlackUser(user.orcid)),
     RTE.let('method', () => method),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.matchEW(
       error =>
         RT.of(
           match(error)
             .with('no-session', () => LogInResponse({ location: format(disconnectSlackMatch.formatter, {}) }))
-            .with(P.union('unavailable', P.instanceOf(Error)), () => havingProblemsPage(DefaultLocale))
+            .with(P.union('unavailable', P.instanceOf(Error)), () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       state =>
