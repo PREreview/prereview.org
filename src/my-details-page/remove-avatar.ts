@@ -6,7 +6,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { deleteAvatar, getAvatar } from '../avatar.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -20,6 +20,7 @@ export const removeAvatar = ({ method, user }: { method: string; user?: User }) 
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.bindW('existing', ({ user }) => getAvatar(user.orcid)),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.matchEW(
       error =>
         RT.of(
@@ -32,17 +33,17 @@ export const removeAvatar = ({ method, user }: { method: string; user?: User }) 
       state =>
         match(state)
           .with({ method: 'POST' }, handleRemoveAvatarForm)
-          .otherwise(() => RT.of(page)),
+          .otherwise(({ locale }) => RT.of(page(locale))),
     ),
   )
 
-const handleRemoveAvatarForm = ({ user }: { user: User }) =>
+const handleRemoveAvatarForm = ({ locale, user }: { locale: SupportedLocale; user: User }) =>
   pipe(
     deleteAvatar(user.orcid),
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage(DefaultLocale))
+          .with('unavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'avatar-removed' }),
     ),
