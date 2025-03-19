@@ -1,6 +1,6 @@
 import { Status } from 'hyper-ts'
 import { html, plainText } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import type * as Response from '../response.js'
 import { PageResponse } from '../response.js'
 
@@ -15,15 +15,15 @@ export const UnableToLoadPrereviews: UnableToLoadPrereviews = {
 export const toResponse: (
   unableToLoadPrereviews: UnableToLoadPrereviews,
   locale: SupportedLocale,
-) => Response.PageResponse = () =>
+) => Response.PageResponse = (unableToLoadPrereviews, locale) =>
   PageResponse({
     status: Status.ServiceUnavailable,
-    title: plainText`Sorry, we’re having problems`,
+    title: plainText(translate(locale, 'my-prereviews-page', 'havingProblems')()),
     main: html`
-      <h1>Sorry, we’re having problems</h1>
+      <h1>${translate(locale, 'my-prereviews-page', 'havingProblems')()}</h1>
 
-      <p>We’re unable to show your PREreviews now.</p>
+      <p>${translate(locale, 'my-prereviews-page', 'unableToShow')()}</p>
 
-      <p>Please try again later.</p>
+      <p>${translate(locale, 'my-prereviews-page', 'tryAgainLater')()}</p>
     `,
   })

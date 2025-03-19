@@ -19,5 +19,14 @@
   },
   "reviewAPreprint": {
     "message": "Review a preprint"
+  },
+  "havingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
+  "unableToShow": {
+    "message": "We’re unable to show your PREreviews now."
+  },
+  "tryAgainLater": {
+    "message": "Please try again later."
   }
 }
