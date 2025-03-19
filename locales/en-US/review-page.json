@@ -52,5 +52,11 @@
   },
   "writeCommentButton": {
     "message": "Write a comment"
+  },
+  "prereviewRemoved": {
+    "message": "PREreview removed"
+  },
+  "weHaveRemoved": {
+    "message": "We’ve removed this PREreview."
   }
 }
