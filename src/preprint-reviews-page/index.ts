@@ -3,7 +3,7 @@ import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import { pageNotFound } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { type GetPreprintEnv, getPreprint } from '../preprint.js'
 import type { PageResponse, TwoUpPageResponse } from '../response.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
@@ -15,16 +15,20 @@ import { type GetRapidPrereviewsEnv, getRapidPrereviews } from './rapid-prerevie
 export type { GetPrereviewsEnv, Prereview } from './prereviews.js'
 export type { GetRapidPrereviewsEnv, RapidPrereview } from './rapid-prereviews.js'
 
-export const preprintReviews = (
-  id: IndeterminatePreprintId,
-): RT.ReaderTask<GetPreprintEnv & GetPrereviewsEnv & GetRapidPrereviewsEnv, PageResponse | TwoUpPageResponse> =>
+export const preprintReviews = ({
+  id,
+  locale,
+}: {
+  id: IndeterminatePreprintId
+  locale: SupportedLocale
+}): RT.ReaderTask<GetPreprintEnv & GetPrereviewsEnv & GetRapidPrereviewsEnv, PageResponse | TwoUpPageResponse> =>
   pipe(
     getPreprint(id),
     RTE.chainW(preprint =>
       pipe(
         RTE.Do,
         RTE.let('preprint', () => preprint),
-        RTE.let('locale', () => DefaultLocale),
+        RTE.let('locale', () => locale),
         RTE.apS('rapidPrereviews', getRapidPrereviews(preprint.id)),
         RTE.apSW('reviews', getPrereviews(preprint.id)),
       ),
@@ -32,8 +36,8 @@ export const preprintReviews = (
     RTE.matchW(
       error =>
         match(error)
-          .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(DefaultLocale))
-          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => failureMessage(DefaultLocale))
+          .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
+          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => failureMessage(locale))
           .exhaustive(),
       createPage,
     ),

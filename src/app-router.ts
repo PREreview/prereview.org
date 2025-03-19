@@ -909,9 +909,13 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       preprintReviewsMatch.parser,
       P.map(({ id }) =>
         pipe(
-          RM.of({}),
+          RM.of({ id }),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(preprintReviews(id))),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW('response', RM.fromReaderTaskK(preprintReviews)),
           RM.ichainW(handleResponse),
         ),
       ),

@@ -11,6 +11,7 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('preprintReviews', () => {
   test.prop([
+    fc.supportedLocale(),
     fc.preprint(),
     fc.array(
       fc.record({
@@ -56,12 +57,12 @@ describe('preprintReviews', () => {
         }),
       }),
     ),
-  ])('when the reviews can be loaded', async (preprint, prereviews, rapidPrereviews) => {
+  ])('when the reviews can be loaded', async (locale, preprint, prereviews, rapidPrereviews) => {
     const getPreprint = jest.fn<GetPreprintEnv['getPreprint']>(_ => TE.right(preprint))
     const getPrereviews = jest.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.right(prereviews))
     const getRapidPrereviews = jest.fn<_.GetRapidPrereviewsEnv['getRapidPrereviews']>(_ => TE.right(rapidPrereviews))
 
-    const actual = await _.preprintReviews(preprint.id)({
+    const actual = await _.preprintReviews({ id: preprint.id, locale })({
       getPreprint,
       getPrereviews,
       getRapidPrereviews,
@@ -83,41 +84,48 @@ describe('preprintReviews', () => {
     expect(getRapidPrereviews).toHaveBeenCalledWith(preprint.id)
   })
 
-  test.prop([fc.indeterminatePreprintId()])('when the preprint is not found', async preprintId => {
-    const actual = await _.preprintReviews(preprintId)({
-      getPreprint: () => TE.left(new PreprintIsNotFound({})),
-      getPrereviews: shouldNotBeCalled,
-      getRapidPrereviews: shouldNotBeCalled,
-    })()
+  test.prop([fc.supportedLocale(), fc.indeterminatePreprintId()])(
+    'when the preprint is not found',
+    async (locale, preprintId) => {
+      const actual = await _.preprintReviews({ id: preprintId, locale })({
+        getPreprint: () => TE.left(new PreprintIsNotFound({})),
+        getPrereviews: shouldNotBeCalled,
+        getRapidPrereviews: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.NotFound,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
-  test.prop([fc.indeterminatePreprintId()])('when the preprint is unavailable', async preprintId => {
-    const actual = await _.preprintReviews(preprintId)({
-      getPreprint: () => TE.left(new PreprintIsUnavailable({})),
-      getPrereviews: shouldNotBeCalled,
-      getRapidPrereviews: shouldNotBeCalled,
-    })()
+  test.prop([fc.supportedLocale(), fc.indeterminatePreprintId()])(
+    'when the preprint is unavailable',
+    async (locale, preprintId) => {
+      const actual = await _.preprintReviews({ id: preprintId, locale })({
+        getPreprint: () => TE.left(new PreprintIsUnavailable({})),
+        getPrereviews: shouldNotBeCalled,
+        getRapidPrereviews: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
   test.prop([
+    fc.supportedLocale(),
     fc.preprint(),
     fc.array(
       fc.record({
@@ -144,8 +152,8 @@ describe('preprintReviews', () => {
         }),
       }),
     ),
-  ])('when the reviews cannot be loaded', async (preprint, rapidPrereviews) => {
-    const actual = await _.preprintReviews(preprint.id)({
+  ])('when the reviews cannot be loaded', async (locale, preprint, rapidPrereviews) => {
+    const actual = await _.preprintReviews({ id: preprint.id, locale })({
       getPreprint: () => TE.right(preprint),
       getPrereviews: () => TE.left('unavailable'),
       getRapidPrereviews: () => TE.right(rapidPrereviews),
@@ -162,6 +170,7 @@ describe('preprintReviews', () => {
   })
 
   test.prop([
+    fc.supportedLocale(),
     fc.preprint(),
     fc.array(
       fc.record({
@@ -183,8 +192,8 @@ describe('preprintReviews', () => {
       }),
     ),
     fc.boolean(),
-  ])('when the rapid PREreviews cannot be loaded', async (preprint, prereviews) => {
-    const actual = await _.preprintReviews(preprint.id)({
+  ])('when the rapid PREreviews cannot be loaded', async (locale, preprint, prereviews) => {
+    const actual = await _.preprintReviews({ id: preprint.id, locale })({
       getPreprint: () => TE.right(preprint),
       getPrereviews: () => TE.right(prereviews),
       getRapidPrereviews: () => TE.left('unavailable'),
