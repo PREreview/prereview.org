@@ -10,5 +10,14 @@
   },
   "viewPseudonymProfile": {
     "message": "View pseudonym profile"
+  },
+  "notPublished": {
+    "message": "You haven’t published a PREreview yet."
+  },
+  "appearHere": {
+    "message": "When you do, it’ll appear here."
+  },
+  "reviewAPreprint": {
+    "message": "Review a preprint"
   }
 }

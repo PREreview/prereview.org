@@ -3,7 +3,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { html, plainText } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { myPrereviewsMatch, reviewAPreprintMatch } from '../routes.js'
 import type { Prereview } from './prereviews.js'
@@ -20,19 +20,24 @@ export const ensureThereArePrereviews: (
   prereviews: ReadonlyArray<Prereview>,
 ) => E.Either<NoPrereviews, ReadonlyNonEmptyArray<Prereview>> = E.fromPredicate(RA.isNonEmpty, () => NoPrereviews)
 
-export const toResponse: (NoPrereviews: NoPrereviews, locale: SupportedLocale) => PageResponse = () =>
+export const toResponse: (NoPrereviews: NoPrereviews, locale: SupportedLocale) => PageResponse = (
+  noPrereviews,
+  locale,
+) =>
   PageResponse({
-    title: plainText`My PREreviews`,
+    title: plainText(translate(locale, 'my-prereviews-page', 'myPrereviews')()),
     main: html`
-      <h1>My PREreviews</h1>
+      <h1>${translate(locale, 'my-prereviews-page', 'myPrereviews')()}</h1>
 
       <div class="inset">
-        <p>You haven’t published a PREreview yet.</p>
+        <p>${translate(locale, 'my-prereviews-page', 'notPublished')()}</p>
 
-        <p>When you do, it’ll appear here.</p>
+        <p>${translate(locale, 'my-prereviews-page', 'appearHere')()}</p>
       </div>
 
-      <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
+      <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button"
+        >${translate(locale, 'my-prereviews-page', 'reviewAPreprint')()}</a
+      >
     `,
     canonical: format(myPrereviewsMatch.formatter, {}),
     current: 'my-prereviews',
