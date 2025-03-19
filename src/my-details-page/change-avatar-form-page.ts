@@ -68,11 +68,13 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
             ${E.isLeft(form.avatar)
               ? html`
                   <div class="error-message" id="review-error">
-                    ${match(form.avatar.left)
-                      .with({ _tag: 'MissingE' }, () => t('selectImageError')({ error: visuallyHidden }))
-                      .with({ _tag: 'WrongTypeE' }, () => t('imageTypeError')({ error: visuallyHidden }))
-                      .with({ _tag: 'TooBigE' }, () => t('imageSizeError')({ error: visuallyHidden, size: 5 }))
-                      .exhaustive()}
+                    ${rawHtml(
+                      match(form.avatar.left)
+                        .with({ _tag: 'MissingE' }, () => t('selectImageError')({ error: visuallyHidden }))
+                        .with({ _tag: 'WrongTypeE' }, () => t('imageTypeError')({ error: visuallyHidden }))
+                        .with({ _tag: 'TooBigE' }, () => t('imageSizeError')({ error: visuallyHidden, size: 5 }))
+                        .exhaustive(),
+                    )}
                   </div>
                 `
               : ''}
