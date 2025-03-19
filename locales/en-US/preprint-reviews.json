@@ -1,0 +1,131 @@
+{
+  "prereviewsOf": {
+    "message": "PREreviews of {preprint}"
+  },
+  "abstractHeading": {
+    "message": "Abstract"
+  },
+  "posted": {
+    "message": "Posted"
+  },
+  "server": {
+    "message": "Server"
+  },
+  "itemId": {
+    "message": "Item ID"
+  },
+  "readPreprint": {
+    "message": "Read the preprint"
+  },
+  "prereviews": {
+    "message": "{number, plural, one {{number, number} PREreview} other {{number, number} PREreviews}}"
+  },
+  "writeAPrereview": {
+    "message": "Write a PREreview"
+  },
+  "requestAPrereview": {
+    "message": "Request a PREreview"
+  },
+  "prereviewByOneAuthor": {
+    "message": "PREreview by {author}"
+  },
+  "prereviewByOneAuthorInClub": {
+    "message": "PREreview by {author} of the {club}"
+  },
+  "prereviewByMultipleAuthors": {
+    "message": "PREreview by {author} et al."
+  },
+  "prereviewByMultipleAuthorsInClub": {
+    "message": "PREreview by {author} et al. of the {club}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {{number, number} other author} other {{number, number} other authors}}"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors}"
+  },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors} of the {club}"
+  },
+  "readPrereviewByOneAuthor": {
+    "message": "Read <visuallyHidden>the PREreview by {author}</visuallyHidden>"
+  },
+  "readPrereviewByOneAuthorInClub": {
+    "message": "Read <visuallyHidden>the PREreview by {author} of the {club}</visuallyHidden>"
+  },
+  "readPrereviewByMultipleAuthors": {
+    "message": "Read <visuallyHidden>the PREreview by {author} et al.</visuallyHidden>"
+  },
+  "readPrereviewByMultipleAuthorsInClub": {
+    "message": "Read <visuallyHidden>the PREreview by {author} et al. of the {club}</visuallyHidden>"
+  },
+  "rapidPrereviews": {
+    "message": "{number, plural, one {{number, number} Rapid PREreview} other {{number, number} Rapid PREreviews}}"
+  },
+  "whereCanRapidPrereview": {
+    "message": "Where can I fill out a Rapid PREreview?"
+  },
+  "rapidReplacedWith": {
+    "message": "We’ve recently replaced Rapid PREreviews with <link>Structured PREreviews</link>."
+  },
+  "writeStructuredPrereview": {
+    "message": "You can <link>write a Structured PREreview</link> now."
+  },
+  "updatingRapidPrereviews": {
+    "message": "We’ll be updating older Rapid PREreviews like these soon."
+  },
+  "aggregatedRapidPreviews": {
+    "message": "Aggregated Rapid PREreviews"
+  },
+  "question": {
+    "message": "Question"
+  },
+  "yes": {
+    "message": "Yes"
+  },
+  "unsure": {
+    "message": "Unsure"
+  },
+  "na": {
+    "message": "N/A"
+  },
+  "no": {
+    "message": "No"
+  },
+  "rapidAvailableCode": {
+    "message": "Is the code used in the manuscript available?"
+  },
+  "rapidAvailableData": {
+    "message": "Are the data used in the manuscript available?"
+  },
+  "rapidCoherent": {
+    "message": "Are the principal conclusions supported by the data and analysis?"
+  },
+  "rapidEthics": {
+    "message": "Have the authors adequately discussed ethical concerns?"
+  },
+  "rapidFuture": {
+    "message": "Are the results likely to lead to future research?"
+  },
+  "rapidLimitations": {
+    "message": "Does the manuscript discuss limitations?"
+  },
+  "rapidMethods": {
+    "message": "Are the methods and statistics appropriate for the analysis?"
+  },
+  "rapidNewData": {
+    "message": "Does the manuscript include new data?"
+  },
+  "rapidNovel": {
+    "message": "Are the findings novel?"
+  },
+  "rapidPeerReview": {
+    "message": "Do you recommend this manuscript for peer review?"
+  },
+  "rapidRecommend": {
+    "message": "Would you recommend this manuscript to others?"
+  },
+  "rapidReproducibility": {
+    "message": "Is sufficient detail provided to allow reproduction of the study?"
+  }
+}

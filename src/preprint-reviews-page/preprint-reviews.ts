@@ -1,6 +1,6 @@
 import textClipper from '@arendjr/text-clipper'
 import { isDoi, toUrl } from 'doi-ts'
-import { flow, pipe, Struct } from 'effect'
+import { flow, identity, pipe, String, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as I from 'fp-ts/lib/Identity.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
@@ -8,10 +8,10 @@ import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
-import { match, P as p } from 'ts-pattern'
+import { match, P, P as p } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
-import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../html.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import type { Preprint } from '../preprint.js'
 import { TwoUpPageResponse } from '../response.js'
 import { isReviewRequestPreprintId } from '../review-request.js'
@@ -34,22 +34,35 @@ export const createPage = ({
   rapidPrereviews: ReadonlyArray<RapidPrereview>
 }) =>
   TwoUpPageResponse({
-    title: plainText`PREreviews of “${preprint.title.text}”`,
-    description: plainText`Authored by ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList(locale))}.
+    title: plainText(
+      translate(
+        locale,
+        'preprint-reviews',
+        'prereviewsOf',
+      )({ preprint: plainText`“${preprint.title.text}”`.toString() }),
+    ),
+    description: plainText`${translate(locale, 'preprint-reviews', 'authoredBy')({ authors: pipe(preprint.authors, RNEA.map(displayAuthor), formatList(locale), list => list.toString()), visuallyHidden: identity })}
     ${
       preprint.abstract
         ? plainText`
-            Abstract
+            ${translate(locale, 'preprint-reviews', 'abstractHeading')()}
 
             ${preprint.abstract.text}
           `
         : ''
     }
     `,
-    h1: html`PREreviews of
-      <cite lang="${preprint.title.language}" dir="${rtlDetect.getLangDir(preprint.title.language)}"
-        >${preprint.title.text}</cite
-      >`,
+    h1: rawHtml(
+      translate(
+        locale,
+        'preprint-reviews',
+        'prereviewsOf',
+      )({
+        preprint: html`<cite lang="${preprint.title.language}" dir="${rtlDetect.getLangDir(preprint.title.language)}"
+          >${preprint.title.text}</cite
+        >`.toString(),
+      }),
+    ),
     aside: html`
       <article aria-labelledby="preprint-title">
         <header>
@@ -62,17 +75,25 @@ export const createPage = ({
           </h2>
 
           <div class="byline">
-            <span class="visually-hidden">Authored</span> by
-            ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList(locale))}
+            ${rawHtml(
+              translate(
+                locale,
+                'preprint-reviews',
+                'authoredBy',
+              )({
+                authors: pipe(preprint.authors, RNEA.map(displayAuthor), formatList(locale), list => list.toString()),
+                visuallyHidden,
+              }),
+            )}
           </div>
 
           <dl>
             <div>
-              <dt>Posted</dt>
+              <dt>${translate(locale, 'preprint-reviews', 'posted')()}</dt>
               <dd>${renderDate(locale)(preprint.posted)}</dd>
             </div>
             <div>
-              <dt>Server</dt>
+              <dt>${translate(locale, 'preprint-reviews', 'server')()}</dt>
               <dd>
                 ${match(preprint.id.type)
                   .with('advance', () => 'Advance')
@@ -111,7 +132,7 @@ export const createPage = ({
                 { type: 'philsci' },
                 id => html`
                   <div>
-                    <dt>Item ID</dt>
+                    <dt>${translate(locale, 'preprint-reviews', 'itemId')()}</dt>
                     <dd>${id.value}</dd>
                   </div>
                 `,
@@ -131,7 +152,7 @@ export const createPage = ({
 
         ${preprint.abstract
           ? html`
-              <h3>Abstract</h3>
+              <h3>${translate(locale, 'preprint-reviews', 'abstractHeading')()}</h3>
 
               <div lang="${preprint.abstract.language}" dir="${rtlDetect.getLangDir(preprint.abstract.language)}">
                 ${fixHeadingLevels(3, preprint.abstract.text)}
@@ -139,7 +160,7 @@ export const createPage = ({
             `
           : ''}
 
-        <a href="${preprint.url.href}" class="button">Read the preprint</a>
+        <a href="${preprint.url.href}" class="button">${translate(locale, 'preprint-reviews', 'readPreprint')()}</a>
       </article>
     `,
     main: html`
@@ -151,13 +172,17 @@ export const createPage = ({
         ),
       )}
 
-      <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
+      <h2>${translate(locale, 'preprint-reviews', 'prereviews')({ number: reviews.length })}</h2>
 
       <div class="button-group" role="group">
-        <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}" class="button">Write a PREreview</a>
+        <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}" class="button"
+          >${translate(locale, 'preprint-reviews', 'writeAPrereview')()}</a
+        >
 
         ${isReviewRequestPreprintId(preprint.id)
-          ? html`<a href="${format(requestReviewMatch.formatter, { id: preprint.id })}">Request a PREreview</a>`
+          ? html`<a href="${format(requestReviewMatch.formatter, { id: preprint.id })}"
+              >${translate(locale, 'preprint-reviews', 'requestAPrereview')()}</a
+            >`
           : ''}
       </div>
 
@@ -169,18 +194,30 @@ export const createPage = ({
   })
 
 function showReview(review: Prereview, locale: SupportedLocale) {
+  const t = translate(locale, 'preprint-reviews')
   return html`
     <li>
       <article aria-labelledby="prereview-${review.id}-title">
         <header>
           <h3 class="visually-hidden" id="prereview-${review.id}-title">
-            PREreview by ${review.authors.named[0].name}
-            ${review.authors.named.length + review.authors.anonymous > 1 ? 'et al.' : ''}
-            ${review.club ? html`of the ${getClubName(review.club)}` : ''}
+            ${match([countAuthors(review), review.club])
+              .with([1, P.string], ([, club]) =>
+                t('prereviewByOneAuthorInClub')({ author: review.authors.named[0].name, club: getClubName(club) }),
+              )
+              .with([1, undefined], () => t('prereviewByOneAuthor')({ author: review.authors.named[0].name }))
+              .with([P.number, P.string], ([, club]) =>
+                t('prereviewByMultipleAuthorsInClub')({
+                  author: review.authors.named[0].name,
+                  club: getClubName(club),
+                }),
+              )
+              .with([P.number, undefined], () =>
+                t('prereviewByMultipleAuthors')({ author: review.authors.named[0].name }),
+              )
+              .exhaustive()}
           </h3>
 
           <div class="byline">
-            <span class="visually-hidden">Authored</span> by
             ${pipe(
               review.authors.named,
               RNEA.map(Struct.get('name')),
@@ -190,8 +227,13 @@ function showReview(review: Prereview, locale: SupportedLocale) {
                   : [],
               ),
               formatList(locale),
+              list => list.toString(),
+              authors =>
+                review.club
+                  ? t('authoredByInClub')({ authors, club: getClubName(review.club), visuallyHidden })
+                  : t('authoredBy')({ authors, visuallyHidden }),
+              rawHtml,
             )}
-            ${review.club ? html`of the ${getClubName(review.club)}` : ''}
           </div>
         </header>
 
@@ -203,12 +245,30 @@ function showReview(review: Prereview, locale: SupportedLocale) {
         </div>
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
-          Read
-          <span class="visually-hidden">
-            the PREreview by ${review.authors.named[0].name}
-            ${review.authors.named.length + review.authors.anonymous > 1 ? 'et al.' : ''}
-            ${review.club ? html`of the ${getClubName(review.club)}` : ''}
-          </span>
+          ${rawHtml(
+            match([countAuthors(review), review.club])
+              .with([1, P.string], ([, club]) =>
+                t('readPrereviewByOneAuthorInClub')({
+                  author: review.authors.named[0].name,
+                  club: getClubName(club),
+                  visuallyHidden,
+                }),
+              )
+              .with([1, undefined], () =>
+                t('readPrereviewByOneAuthor')({ author: review.authors.named[0].name, visuallyHidden }),
+              )
+              .with([P.number, P.string], ([, club]) =>
+                t('readPrereviewByMultipleAuthorsInClub')({
+                  author: review.authors.named[0].name,
+                  club: getClubName(club),
+                  visuallyHidden,
+                }),
+              )
+              .with([P.number, undefined], () =>
+                t('readPrereviewByMultipleAuthors')({ author: review.authors.named[0].name, visuallyHidden }),
+              )
+              .exhaustive(),
+          )}
         </a>
       </article>
     </li>
@@ -220,46 +280,61 @@ function showRapidPrereviews(
   preprint: Preprint,
   locale: SupportedLocale,
 ): Html {
+  const t = translate(locale, 'preprint-reviews')
+
   return html`
-    <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
+    <h2>${t('rapidPrereviews')({ number: rapidPrereviews.length })}</h2>
 
     <div class="byline">
-      <span class="visually-hidden">Authored</span> by
-      ${pipe(rapidPrereviews, RNEA.map(flow(Struct.get('author'), displayAuthor)), formatList(locale))}
+      ${rawHtml(
+        t('authoredBy')({
+          authors: pipe(
+            rapidPrereviews,
+            RNEA.map(flow(Struct.get('author'), displayAuthor)),
+            formatList(locale),
+            list => list.toString(),
+          ),
+          visuallyHidden,
+        }),
+      )}
     </div>
 
     <details>
-      <summary><span>Where can I fill out a Rapid PREreview?</span></summary>
+      <summary><span>${t('whereCanRapidPrereview')()}</span></summary>
 
       <div>
         <p>
-          We’ve recently replaced Rapid PREreviews with
-          <a href="https://content.prereview.org/introducing-structured-prereviews-on-prereview-org/"
-            >Structured PREreviews</a
-          >.
+          ${t('rapidReplacedWith')({
+            link: text =>
+              html`<a href="https://content.prereview.org/introducing-structured-prereviews-on-prereview-org/"
+                >${text}</a
+              >`.toString(),
+          })}
         </p>
 
         <p>
-          You can
-          <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}">write a Structured PREreview</a> now.
+          ${t('writeStructuredPrereview')({
+            link: text =>
+              html`<a href="${format(writeReviewMatch.formatter, { id: preprint.id })}">${text}</a>`.toString(),
+          })}
         </p>
 
-        <p>We’ll be updating older Rapid PREreviews like these soon.</p>
+        <p>${t('updatingRapidPrereviews')()}</p>
       </div>
     </details>
 
     <div role="region" aria-labelledby="rapid-prereviews-caption" tabindex="0">
       <table>
         <caption id="rapid-prereviews-caption" class="visually-hidden">
-          Aggregated Rapid PREreviews
+          ${t('aggregatedRapidPreviews')()}
         </caption>
         <thead>
           <tr>
-            <th scope="col"><span class="visually-hidden">Question</span></th>
-            <th scope="col">Yes</th>
-            <th scope="col">Unsure</th>
-            <th scope="col">N/A</th>
-            <th scope="col">No</th>
+            <th scope="col"><span class="visually-hidden">${t('question')()}</span></th>
+            <th scope="col">${t('yes')()}</th>
+            <th scope="col">${t('unsure')()}</th>
+            <th scope="col">${t('na')()}</th>
+            <th scope="col">${t('no')()}</th>
           </tr>
         </thead>
         <tbody>
@@ -292,7 +367,7 @@ function showRapidPrereviews(
             RNEA.map(
               ({ question, answers }) => html`
                 <tr>
-                  <th scope="row">${displayRapidPrereviewQuestion(question)}</th>
+                  <th scope="row">${t(`rapid${String.capitalize(question)}`)()}</th>
                   <td class="numeric">
                     ${(answers.yes / rapidPrereviews.length).toLocaleString(locale, {
                       style: 'percent',
@@ -353,23 +428,6 @@ function formatList(
   )
 }
 
-function displayRapidPrereviewQuestion(question: keyof RapidPrereview['questions']): Html {
-  return match(question)
-    .with('availableCode', () => html`Is the code used in the manuscript available?`)
-    .with('availableData', () => html`Are the data used in the manuscript available?`)
-    .with('coherent', () => html`Are the principal conclusions supported by the data and analysis?`)
-    .with('ethics', () => html`Have the authors adequately discussed ethical concerns?`)
-    .with('future', () => html`Are the results likely to lead to future research?`)
-    .with('limitations', () => html`Does the manuscript discuss limitations?`)
-    .with('methods', () => html`Are the methods and statistics appropriate for the analysis?`)
-    .with('newData', () => html`Does the manuscript include new data?`)
-    .with('novel', () => html`Are the findings novel?`)
-    .with('peerReview', () => html`Do you recommend this manuscript for peer review?`)
-    .with('recommend', () => html`Would you recommend this manuscript to others?`)
-    .with('reproducibility', () => html`Is sufficient detail provided to allow reproduction of the study?`)
-    .exhaustive()
-}
-
 function countRapidPrereviewResponses<Q extends keyof RapidPrereview['questions']>(
   rapidPrereviews: ReadonlyArray<RapidPrereview>,
   question: Q,
@@ -380,3 +438,7 @@ function countRapidPrereviewResponses<Q extends keyof RapidPrereview['questions'
     0,
   )
 }
+
+const countAuthors = (prereview: Prereview) => prereview.authors.named.length + prereview.authors.anonymous
+
+const visuallyHidden = (text: string) => html`<span class="visually-hidden">${text}</span>`.toString()
