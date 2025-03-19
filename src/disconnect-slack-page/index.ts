@@ -1,10 +1,11 @@
-import { flow, pipe } from 'effect'
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { disconnectSlackMatch, myDetailsMatch } from '../routes.js'
 import { type DeleteSlackUserIdEnv, deleteSlackUserId } from '../slack-user-id.js'
@@ -28,6 +29,7 @@ export const disconnectSlack = ({
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.bindW('isSlackUser', ({ user }) => isSlackUser(user.orcid)),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.matchEW(
       error =>
         RT.of(
@@ -39,8 +41,11 @@ export const disconnectSlack = ({
       state =>
         match(state)
           .returnType<RT.ReaderTask<DeleteSlackUserIdEnv, PageResponse | RedirectResponse | FlashMessageResponse>>()
-          .with({ method: 'POST', isSlackUser: true, user: { orcid: P.select() } }, handleDisconnectSlack)
-          .with({ isSlackUser: true }, () => RT.of(disconnectSlackPage))
+          .with(
+            { method: 'POST', isSlackUser: true, user: { orcid: P.select('orcid') }, locale: P.select('locale') },
+            handleDisconnectSlack,
+          )
+          .with({ isSlackUser: true, locale: P.select() }, locale => RT.of(disconnectSlackPage(locale)))
           .with({ isSlackUser: false }, () =>
             RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })),
           )
@@ -48,10 +53,11 @@ export const disconnectSlack = ({
     ),
   )
 
-const handleDisconnectSlack = flow(
-  deleteSlackUserId,
-  RTE.matchW(
-    () => failureMessage,
-    () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'slack-disconnected' }),
-  ),
-)
+const handleDisconnectSlack = ({ locale, orcid }: { locale: SupportedLocale; orcid: Orcid }) =>
+  pipe(
+    deleteSlackUserId(orcid),
+    RTE.matchW(
+      () => failureMessage(locale),
+      () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'slack-disconnected' }),
+    ),
+  )
