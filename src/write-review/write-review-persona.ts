@@ -7,7 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -31,6 +31,7 @@ export const writeReviewPersona = flow(
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
+      RM.apS('locale', RM.of(DefaultLocale)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(showPersonaForm)),
       RM.orElseW(error =>
         match(error)
@@ -53,21 +54,32 @@ export const writeReviewPersona = flow(
 )
 
 const showPersonaForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, user),
+  RM.fromReaderK(
+    ({ form, locale, preprint, user }: { form: Form; locale: SupportedLocale; preprint: PreprintTitle; user: User }) =>
+      personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, user, locale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showPersonaErrorForm = (preprint: PreprintTitle, user: User, originalForm: Form) =>
+const showPersonaErrorForm = (preprint: PreprintTitle, user: User, originalForm: Form, locale: SupportedLocale) =>
   flow(
-    RM.fromReaderK((form: PersonaForm) => personaForm(preprint, form, originalForm.reviewType, user)),
+    RM.fromReaderK((form: PersonaForm) => personaForm(preprint, form, originalForm.reviewType, user, locale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handlePersonaForm = ({
+  form,
+  locale,
+  preprint,
+  user,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
     RM.decodeBody(body => E.right({ persona: pipe(PersonaFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
@@ -83,7 +95,7 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ persona: P.any }, showPersonaErrorForm(preprint, user, form))
+        .with({ persona: P.any }, showPersonaErrorForm(preprint, user, form, locale))
         .exhaustive(),
     ),
   )
@@ -104,6 +116,7 @@ function personaForm(
   form: PersonaForm,
   reviewType: 'freeform' | 'questions' | undefined,
   user: User,
+  locale: SupportedLocale,
 ) {
   const error = hasAnError(form)
 
@@ -234,7 +247,7 @@ function personaForm(
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
-    locale: DefaultLocale,
+    locale,
     user,
   })
 }
