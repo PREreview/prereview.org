@@ -7,7 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -17,8 +17,10 @@ import {
   writeReviewReadyFullReviewMatch,
   writeReviewReviewMatch,
 } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewPersona = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -119,9 +121,10 @@ function personaForm(
   locale: SupportedLocale,
 ) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return templatePage({
-    title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of “${preprint.title}”`,
+    title: pipe(t('whatNameToUse')(), prereviewOfSuffix(locale, preprint.title), errorPrefix(locale, error), plainText),
     content: html`
       <nav>
         <a
@@ -132,7 +135,7 @@ function personaForm(
             },
           )}"
           class="back"
-          ><span>Back</span></a
+          ><span>${t('back')()}</span></a
         >
       </nav>
 
@@ -141,14 +144,14 @@ function personaForm(
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
+                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
                   <ul>
                     ${E.isLeft(form.persona)
                       ? html`
                           <li>
                             <a href="#persona-public">
                               ${match(form.persona.left)
-                                .with({ _tag: 'MissingE' }, () => 'Select the name that you would like to use')
+                                .with({ _tag: 'MissingE' }, () => t('selectTheNameError')())
                                 .exhaustive()}
                             </a>
                           </li>
@@ -166,37 +169,34 @@ function personaForm(
               ${rawHtml(E.isLeft(form.persona) ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}
             >
               <legend>
-                <h1>What name would you like to use?</h1>
+                <h1>${t('whatNameToUse')()}</h1>
               </legend>
 
-              <p id="persona-tip" role="note">
-                You can choose between the name on your ORCID&nbsp;profile or your PREreview&nbsp;pseudonym.
-              </p>
+              <p id="persona-tip" role="note">${t('youCanChooseBetweenNames')()}</p>
 
               <details>
-                <summary><span>What is a PREreview&nbsp;pseudonym?</span></summary>
+                <summary><span>${t('whatIsAPseudonym')()}</span></summary>
 
                 <div>
                   <p>
-                    A <dfn>PREreview&nbsp;pseudonym</dfn> is an alternate name you can use instead of your
-                    real&nbsp;name. It is unique and combines a random color and animal. Your pseudonym is
-                    ‘${rawHtml(user.pseudonym.replace(' ', '&nbsp;'))}.’
+                    ${rawHtml(
+                      t('pseudonymIsA')({
+                        term: text => html`<dfn>${text}</dfn>`.toString(),
+                        pseudonym: user.pseudonym.replace(' ', ' '),
+                      }),
+                    )}
                   </p>
 
-                  <p>
-                    Using your pseudonym, you can contribute to open preprint review without fearing retribution or
-                    judgment that may occur when using your real name. However, using a pseudonym retains an element of
-                    accountability.
-                  </p>
+                  <p>${t('pseudonymAccountability')()}</p>
                 </div>
               </details>
 
               ${E.isLeft(form.persona)
                 ? html`
                     <div class="error-message" id="persona-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${t('error')()}:</span>
                       ${match(form.persona.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select the name that you would like to use')
+                        .with({ _tag: 'MissingE' }, () => t('selectTheNameError')())
                         .exhaustive()}
                     </div>
                   `
@@ -217,7 +217,7 @@ function personaForm(
                     />
                     <span>${user.name}</span>
                   </label>
-                  <p id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID&nbsp;iD.</p>
+                  <p id="persona-tip-public" role="note">${t('linkToOrcidId')()}</p>
                 </li>
                 <li>
                   <label>
@@ -232,15 +232,13 @@ function personaForm(
                     />
                     <span>${user.pseudonym}</span>
                   </label>
-                  <p id="persona-tip-pseudonym" role="note">
-                    We’ll only link your PREreview to others that also use your pseudonym.
-                  </p>
+                  <p id="persona-tip-pseudonym" role="note">${t('linkToPseudonym')()}</p>
                 </li>
               </ol>
             </fieldset>
           </div>
 
-          <button>Save and continue</button>
+          <button>${t('saveAndContinueButton')()}</button>
         </form>
       </main>
     `,
