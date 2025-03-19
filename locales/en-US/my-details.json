@@ -145,5 +145,35 @@
   },
   "setLanguagesVisibility": {
     "message": "Set <visuallyHidden>languages</visuallyHidden> visibility"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "uploadAnAvatar": {
+    "message": "<error>Error:</error> Upload an avatar"
+  },
+  "thereIsAProblem": {
+    "message": "There is a problem"
+  },
+  "selectImageError": {
+    "message": "<error>Error:</error> Select an image"
+  },
+  "imageTypeError": {
+    "message": "<error>Error:</error> The selected file must be a AVIF, HEIC, JPG, PNG or WebP"
+  },
+  "imageSizeError": {
+    "message": "<error>Error:</error> The selected file must be smaller than {size, number} MB"
+  },
+  "youCanUploadAvatar": {
+    "message": "You can upload a photo or image to use as your avatar. The selected file must be smaller than {size, number} MB."
+  },
+  "whereWillItShow": {
+    "message": "Where will it show?"
+  },
+  "showOnPublicProfile": {
+    "message": "We’ll show your avatar on your public profile."
+  },
+  "saveAndContinueButton": {
+    "message": "Save and continue"
   }
 }
