@@ -15,7 +15,7 @@ describe('GetPrereviewId', () => {
   const commentWasStarted = new Comments.CommentWasStarted({ authorId, prereviewId })
 
   describe('when a comment flow exists', () => {
-    test.failing('returns the PREreview ID', () => {
+    test('returns the PREreview ID', () => {
       const result = _.GetPrereviewId([commentWasStarted])
 
       expect(result).toStrictEqual(Option.some(prereviewId))
@@ -23,7 +23,7 @@ describe('GetPrereviewId', () => {
   })
 
   describe('when the comment flow does not exist', () => {
-    test.failing('returns none', () => {
+    test('returns none', () => {
       const result = _.GetPrereviewId([])
 
       expect(result).toStrictEqual(Option.none())

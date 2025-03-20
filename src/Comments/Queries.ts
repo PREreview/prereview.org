@@ -8,9 +8,10 @@ import { EvolveComment } from './Evolve.js'
 import * as ExpectedCommand from './ExpectedCommand.js'
 import { CommentNotStarted, type CommentState } from './State.js'
 
-export const GetPrereviewId =
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (eventsForComment: ReadonlyArray<CommentEvent>): Option.Option<number> => Option.some(42)
+export const GetPrereviewId = (eventsForComment: ReadonlyArray<CommentEvent>): Option.Option<number> =>
+  Array.findFirst(eventsForComment, event =>
+    event._tag === 'CommentWasStarted' ? Option.some(event.prereviewId) : Option.none(),
+  )
 
 export const GetNextExpectedCommandForUser =
   (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
