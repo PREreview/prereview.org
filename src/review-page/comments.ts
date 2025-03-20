@@ -22,9 +22,9 @@ export interface Comment {
   text: Html
 }
 
-export class GetCommentsForReview extends Context.Tag('GetCommentsForReview')<
-  GetCommentsForReview,
-  (id: Doi) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'>
+export class CommentsForReview extends Context.Tag('CommentsForReview')<
+  CommentsForReview,
+  { get: (id: Doi) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'> }
 >() {}
 
 export interface GetCommentsEnv {

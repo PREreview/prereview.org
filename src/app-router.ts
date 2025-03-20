@@ -333,7 +333,7 @@ const getSlackUser = flow(
 export type RouterEnv = Keyv.AvatarStoreEnv &
   MustDeclareUseOfAiEnv &
   DoesPreprintExistEnv &
-  EffectEnv<Locale | OpenAlex.GetCategories | ReviewPage.GetCommentsForReview> &
+  EffectEnv<Locale | OpenAlex.GetCategories | ReviewPage.CommentsForReview> &
   ResolvePreprintIdEnv &
   GetPageFromGhostEnv &
   GetPreprintIdEnv &
@@ -950,7 +950,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getComments: withEnv(
             EffectToFpts.toReaderTaskEitherK((id: Doi.Doi) =>
-              pipe(ReviewPage.GetCommentsForReview, Effect.andThen(Function.apply(id))),
+              pipe(
+                ReviewPage.CommentsForReview,
+                Effect.andThen(commentsForReview => commentsForReview.get(id)),
+              ),
             ),
             env,
           ),

@@ -326,18 +326,20 @@ const getCategories = Layer.effect(
   }),
 )
 
-const getCommentsForReview = Layer.effect(
-  ReviewPage.GetCommentsForReview,
+const commentsForReview = Layer.effect(
+  ReviewPage.CommentsForReview,
   Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient
     const zenodoOrigin = yield* Zenodo.ZenodoOrigin
 
-    return id =>
-      pipe(
-        Zenodo.getCommentsForPrereviewFromZenodo(id),
-        Effect.provideService(HttpClient.HttpClient, httpClient),
-        Effect.provideService(Zenodo.ZenodoOrigin, zenodoOrigin),
-      )
+    return {
+      get: id =>
+        pipe(
+          Zenodo.getCommentsForPrereviewFromZenodo(id),
+          Effect.provideService(HttpClient.HttpClient, httpClient),
+          Effect.provideService(Zenodo.ZenodoOrigin, zenodoOrigin),
+        ),
+    }
   }),
 )
 
@@ -364,7 +366,7 @@ export const Program = pipe(
     Layer.mergeAll(
       Layer.provide(getPreprint, CachingHttpClient.layer('10 minutes')),
       Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
-      Layer.provide(getCommentsForReview, CachingHttpClient.layer('10 minutes')),
+      Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
       doesUserHaveAVerifiedEmailAddress,
       getContactEmailAddress,
       saveContactEmailAddress,
