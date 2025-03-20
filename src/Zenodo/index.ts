@@ -6,6 +6,7 @@ import * as ReviewPage from '../review-page/index.js'
 import { addCommentText } from './AddCommentText.js'
 import { getCommunityRecords, type ZenodoOrigin } from './CommunityRecords.js'
 import { constructCommentListUrl } from './ConstructCommentListUrl.js'
+import { getDoiForPrereview } from './GetDoiForPrereview.js'
 import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.js'
 
 export { ZenodoOrigin } from './CommunityRecords.js'
@@ -44,7 +45,11 @@ export const getCommentsForPrereviewFromZenodo = (
 
 export const invalidateCommentsForPrereview = (
   prereviewId: number,
-): Effect.Effect<void, ReviewPage.UnableToInvalidateComments, CachingHttpClient.HttpCache | ZenodoOrigin> =>
+): Effect.Effect<
+  void,
+  ReviewPage.UnableToInvalidateComments,
+  CachingHttpClient.HttpCache | HttpClient.HttpClient | ZenodoOrigin
+> =>
   pipe(
     getDoiForPrereview(prereviewId),
     Effect.andThen(constructCommentListUrl),
@@ -55,10 +60,23 @@ export const invalidateCommentsForPrereview = (
           Effect.annotateLogs({ error }),
           Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
         ),
+      ParseError: error =>
+        Effect.logError('Failed to decode Zenodo record of a PREreview').pipe(
+          Effect.annotateLogs({ error }),
+          Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
+        ),
+      RequestError: error =>
+        Effect.logError('Unable to request a Zenodo record for a PREreview').pipe(
+          Effect.annotateLogs({ error }),
+          Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
+        ),
+      ResponseError: error =>
+        Effect.logError('Unable to get Zenodo record for a PREreview').pipe(
+          Effect.annotateLogs({ error }),
+          Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
+        ),
     }),
   )
-
-declare const getDoiForPrereview: (prereviewId: number) => Effect.Effect<Doi.Doi>
 
 const invalidateCacheEntry = Effect.fn(function* (url: URL) {
   const httpCache = yield* CachingHttpClient.HttpCache

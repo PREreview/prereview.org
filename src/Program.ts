@@ -344,6 +344,7 @@ const commentsForReview = Layer.effect(
         pipe(
           Zenodo.invalidateCommentsForPrereview(prereviewId),
           Effect.provideService(CachingHttpClient.HttpCache, httpCache),
+          Effect.provideService(HttpClient.HttpClient, httpClient),
           Effect.provideService(Zenodo.ZenodoOrigin, zenodoOrigin),
         ),
     }
