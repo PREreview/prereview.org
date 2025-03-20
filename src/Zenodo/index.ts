@@ -50,7 +50,7 @@ export const getCommentsForPrereviewFromZenodo = (
 
 export const invalidateCommentsForPrereview = (
   prereviewId: number,
-): Effect.Effect<void, CachingHttpClient.InternalHttpCacheFailure, CachingHttpClient.HttpCache> =>
+): Effect.Effect<void, CachingHttpClient.InternalHttpCacheFailure, CachingHttpClient.HttpCache | ZenodoOrigin> =>
   pipe(getDoiForPrereview(prereviewId), Effect.andThen(constructCommentListUrl), Effect.andThen(invalidateCacheEntry))
 
 declare const getDoiForPrereview: (prereviewId: number) => Effect.Effect<Doi.Doi>
