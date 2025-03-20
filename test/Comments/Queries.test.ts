@@ -10,12 +10,24 @@ import { Uuid } from '../../src/types/index.js'
 import * as fc from '../fc.js'
 
 describe('GetPrereviewId', () => {
+  const authorId = Orcid('0000-0002-1825-0097')
+  const prereviewId = 123
+  const commentWasStarted = new Comments.CommentWasStarted({ authorId, prereviewId })
+
   describe('when a comment flow exists', () => {
-    test.todo('returns the PREreview ID')
+    test.failing('returns the PREreview ID', () => {
+      const result = _.GetPrereviewId([commentWasStarted])
+
+      expect(result).toStrictEqual(Option.some(prereviewId))
+    })
   })
 
   describe('when the comment flow does not exist', () => {
-    test.todo('returns none')
+    test.failing('returns none', () => {
+      const result = _.GetPrereviewId([])
+
+      expect(result).toStrictEqual(Option.none())
+    })
   })
 })
 
