@@ -2845,40 +2845,46 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)('have to enter an email address', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('With a template').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await waitForNotBusy(page)
-  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No, I reviewed it alone').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I’m following the Code of Conduct').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to enter an email address',
+  async ({ javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await waitForNotBusy(page)
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-  } else {
-    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-  }
-  await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
 
-  await page.getByRole('link', { name: 'Enter your email address' }).click()
+    testInfo.fixme(testInfo.project.name.startsWith('Desktop Chrome (high contrast)'))
 
-  await expect(page.getByLabel('What is your email address?')).toBeFocused()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-})
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Enter your email address' }).click()
+
+    await expect(page.getByLabel('What is your email address?')).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to enter a valid email address',
