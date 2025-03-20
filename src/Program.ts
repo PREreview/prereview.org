@@ -339,6 +339,7 @@ const commentsForReview = Layer.effect(
           Effect.provideService(HttpClient.HttpClient, httpClient),
           Effect.provideService(Zenodo.ZenodoOrigin, zenodoOrigin),
         ),
+      invalidate: () => Effect.void,
     }
   }),
 )

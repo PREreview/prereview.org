@@ -24,7 +24,10 @@ export interface Comment {
 
 export class CommentsForReview extends Context.Tag('CommentsForReview')<
   CommentsForReview,
-  { get: (id: Doi) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'> }
+  {
+    get: (id: Doi) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'>
+    invalidate: (prereviewId: number) => Effect.Effect<void>
+  }
 >() {}
 
 export interface GetCommentsEnv {
