@@ -5,6 +5,7 @@ import * as CachingHttpClient from '../CachingHttpClient/index.js'
 import type * as ReviewPage from '../review-page/index.js'
 import { addCommentText } from './AddCommentText.js'
 import { getCommunityRecords, type ZenodoOrigin } from './CommunityRecords.js'
+import { constructCommentListUrl } from './ConstructCommentListUrl.js'
 import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.js'
 
 export { ZenodoOrigin } from './CommunityRecords.js'
@@ -53,8 +54,6 @@ export const invalidateCommentsForPrereview = (
   pipe(getDoiForPrereview(prereviewId), Effect.andThen(constructCommentListUrl), Effect.andThen(invalidateCacheEntry))
 
 declare const getDoiForPrereview: (prereviewId: number) => Effect.Effect<Doi.Doi>
-
-declare const constructCommentListUrl: (prereviewDoi: Doi.Doi) => URL
 
 const invalidateCacheEntry = Effect.fn(function* (url: URL) {
   const httpCache = yield* CachingHttpClient.HttpCache
