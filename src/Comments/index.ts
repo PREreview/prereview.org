@@ -1,5 +1,6 @@
 import { Array, Effect, Layer, Match, pipe, PubSub, Queue, Schedule } from 'effect'
 import { EventStore } from '../EventStore.js'
+import * as ReviewPage from '../review-page/index.js'
 import type { Uuid } from '../types/index.js'
 import {
   CommentEvents,
@@ -117,6 +118,7 @@ export const ReactToCommentEvents: Layer.Layer<
   | DoesUserHaveAVerifiedEmailAddress
   | CreateRecordOnZenodoForComment
   | PublishCommentOnZenodo
+  | ReviewPage.CommentsForReview
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const commentEvents = yield* CommentEvents
@@ -156,7 +158,13 @@ export const ReactToCommentEvents: Layer.Layer<
             pipe(
               eventStore.getEvents(commentId),
               Effect.andThen(eventsForComment => Queries.GetPrereviewId(eventsForComment.events)),
-              Effect.andThen(prereviewId => Effect.logDebug(`Need to invalidate comments for review ${prereviewId}`)),
+              Effect.andThen(prereviewId =>
+                Effect.gen(function* () {
+                  const commentsForReview = yield* ReviewPage.CommentsForReview
+
+                  yield* commentsForReview.invalidate(prereviewId)
+                }),
+              ),
             ),
           ),
           Match.orElse(() => Effect.void),
