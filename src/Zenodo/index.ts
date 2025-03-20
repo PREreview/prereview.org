@@ -45,3 +45,5 @@ export const getCommentsForPrereviewFromZenodo = (
         ),
     }),
   )
+
+export declare const invalidateCommentsForPrereview: (prereviewId: number) => Effect.Effect<void>

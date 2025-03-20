@@ -333,13 +333,13 @@ const commentsForReview = Layer.effect(
     const zenodoOrigin = yield* Zenodo.ZenodoOrigin
 
     return {
-      get: id =>
+      get: reviewDoi =>
         pipe(
-          Zenodo.getCommentsForPrereviewFromZenodo(id),
+          Zenodo.getCommentsForPrereviewFromZenodo(reviewDoi),
           Effect.provideService(HttpClient.HttpClient, httpClient),
           Effect.provideService(Zenodo.ZenodoOrigin, zenodoOrigin),
         ),
-      invalidate: () => Effect.void,
+      invalidate: prereviewId => Zenodo.invalidateCommentsForPrereview(prereviewId),
     }
   }),
 )
