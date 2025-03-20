@@ -152,6 +152,9 @@ export const ReactToCommentEvents: Layer.Layer<
           Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ commentId, event }) =>
             React.PublishCommentWhenDoiWasAssigned({ commentId, event }),
           ),
+          Match.when({ event: { _tag: 'CommentWasPublished' } }, ({ commentId }) =>
+            Effect.logDebug(`Need to invalidate comments for review of comment ${commentId}`),
+          ),
           Match.orElse(() => Effect.void),
         ),
       ),
