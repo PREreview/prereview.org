@@ -329,6 +329,7 @@ const getCategories = Layer.effect(
 const commentsForReview = Layer.effect(
   ReviewPage.CommentsForReview,
   Effect.gen(function* () {
+    const httpCache = yield* CachingHttpClient.HttpCache
     const httpClient = yield* HttpClient.HttpClient
     const zenodoOrigin = yield* Zenodo.ZenodoOrigin
 
@@ -339,7 +340,11 @@ const commentsForReview = Layer.effect(
           Effect.provideService(HttpClient.HttpClient, httpClient),
           Effect.provideService(Zenodo.ZenodoOrigin, zenodoOrigin),
         ),
-      invalidate: prereviewId => Zenodo.invalidateCommentsForPrereview(prereviewId),
+      invalidate: prereviewId =>
+        pipe(
+          Zenodo.invalidateCommentsForPrereview(prereviewId),
+          Effect.provideService(CachingHttpClient.HttpCache, httpCache),
+        ),
     }
   }),
 )

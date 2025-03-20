@@ -6,6 +6,7 @@ import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
+import type * as CachingHttpClient from '../CachingHttpClient/index.js'
 import type { Html } from '../html.js'
 
 import PlainDate = Temporal.PlainDate
@@ -26,7 +27,7 @@ export class CommentsForReview extends Context.Tag('CommentsForReview')<
   CommentsForReview,
   {
     get: (id: Doi) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'>
-    invalidate: (prereviewId: number) => Effect.Effect<void>
+    invalidate: (prereviewId: number) => Effect.Effect<void, CachingHttpClient.InternalHttpCacheFailure>
   }
 >() {}
 

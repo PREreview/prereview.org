@@ -1,6 +1,7 @@
 import { type HttpClient, UrlParams } from '@effect/platform'
 import type * as Doi from 'doi-ts'
 import { Effect, pipe } from 'effect'
+import * as CachingHttpClient from '../CachingHttpClient/index.js'
 import type * as ReviewPage from '../review-page/index.js'
 import { addCommentText } from './AddCommentText.js'
 import { getCommunityRecords, type ZenodoOrigin } from './CommunityRecords.js'
@@ -46,4 +47,17 @@ export const getCommentsForPrereviewFromZenodo = (
     }),
   )
 
-export declare const invalidateCommentsForPrereview: (prereviewId: number) => Effect.Effect<void>
+export const invalidateCommentsForPrereview = (
+  prereviewId: number,
+): Effect.Effect<void, CachingHttpClient.InternalHttpCacheFailure, CachingHttpClient.HttpCache> =>
+  pipe(getDoiForPrereview(prereviewId), Effect.andThen(constructCommentListUrl), Effect.andThen(invalidateCacheEntry))
+
+declare const getDoiForPrereview: (prereviewId: number) => Effect.Effect<Doi.Doi>
+
+declare const constructCommentListUrl: (prereviewDoi: Doi.Doi) => URL
+
+const invalidateCacheEntry = Effect.fn(function* (url: URL) {
+  const httpCache = yield* CachingHttpClient.HttpCache
+
+  yield* httpCache.delete(url)
+})
