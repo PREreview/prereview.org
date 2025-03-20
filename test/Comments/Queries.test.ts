@@ -9,6 +9,16 @@ import { html } from '../../src/html.js'
 import { Uuid } from '../../src/types/index.js'
 import * as fc from '../fc.js'
 
+describe('GetPrereviewId', () => {
+  describe('when a comment flow exists', () => {
+    test.todo('returns the PREreview ID')
+  })
+
+  describe('when the comment flow does not exist', () => {
+    test.todo('returns none')
+  })
+})
+
 describe('GetNextExpectedCommandForUser', () => {
   const authorId = Orcid('0000-0002-1825-0097')
   const prereviewId = 123
