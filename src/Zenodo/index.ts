@@ -2,7 +2,7 @@ import type { HttpClient } from '@effect/platform'
 import type * as Doi from 'doi-ts'
 import { Effect, pipe } from 'effect'
 import * as CachingHttpClient from '../CachingHttpClient/index.js'
-import type * as ReviewPage from '../review-page/index.js'
+import * as ReviewPage from '../review-page/index.js'
 import { addCommentText } from './AddCommentText.js'
 import { getCommunityRecords, type ZenodoOrigin } from './CommunityRecords.js'
 import { constructCommentListUrl } from './ConstructCommentListUrl.js'
@@ -44,8 +44,19 @@ export const getCommentsForPrereviewFromZenodo = (
 
 export const invalidateCommentsForPrereview = (
   prereviewId: number,
-): Effect.Effect<void, CachingHttpClient.InternalHttpCacheFailure, CachingHttpClient.HttpCache | ZenodoOrigin> =>
-  pipe(getDoiForPrereview(prereviewId), Effect.andThen(constructCommentListUrl), Effect.andThen(invalidateCacheEntry))
+): Effect.Effect<void, ReviewPage.UnableToInvalidateComments, CachingHttpClient.HttpCache | ZenodoOrigin> =>
+  pipe(
+    getDoiForPrereview(prereviewId),
+    Effect.andThen(constructCommentListUrl),
+    Effect.andThen(invalidateCacheEntry),
+    Effect.catchTags({
+      InternalHttpCacheFailure: error =>
+        Effect.logError('Unable to invalidate comments for PREreview').pipe(
+          Effect.annotateLogs({ error }),
+          Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
+        ),
+    }),
+  )
 
 declare const getDoiForPrereview: (prereviewId: number) => Effect.Effect<Doi.Doi>
 

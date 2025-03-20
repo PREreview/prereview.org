@@ -1,12 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
-import { Context, type Effect } from 'effect'
+import { Context, Data, type Effect } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
-import type * as CachingHttpClient from '../CachingHttpClient/index.js'
 import type { Html } from '../html.js'
 
 import PlainDate = Temporal.PlainDate
@@ -23,11 +22,13 @@ export interface Comment {
   text: Html
 }
 
+export class UnableToInvalidateComments extends Data.TaggedError('UnableToInvalidateComments')<{ cause: unknown }> {}
+
 export class CommentsForReview extends Context.Tag('CommentsForReview')<
   CommentsForReview,
   {
     get: (id: Doi) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'>
-    invalidate: (prereviewId: number) => Effect.Effect<void, CachingHttpClient.InternalHttpCacheFailure>
+    invalidate: (prereviewId: number) => Effect.Effect<void, UnableToInvalidateComments>
   }
 >() {}
 

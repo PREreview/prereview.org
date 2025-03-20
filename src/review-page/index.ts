@@ -11,7 +11,7 @@ import { type GetPrereviewEnv, getPrereview } from './prereview.js'
 import { removedMessage } from './removed-message.js'
 import { createPage } from './review-page.js'
 
-export { CommentsForReview, type Comment, type GetCommentsEnv } from './comments.js'
+export { CommentsForReview, UnableToInvalidateComments, type Comment, type GetCommentsEnv } from './comments.js'
 export type { GetPrereviewEnv, Prereview } from './prereview.js'
 
 export const reviewPage = ({
