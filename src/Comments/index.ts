@@ -155,7 +155,7 @@ export const ReactToCommentEvents: Layer.Layer<
           Match.when({ event: { _tag: 'CommentWasPublished' } }, ({ commentId }) =>
             pipe(
               eventStore.getEvents(commentId),
-              Effect.andThen(events => Queries.GetPrereviewId(events.events)(commentId)),
+              Effect.andThen(eventsForComment => Queries.GetPrereviewId(eventsForComment.events)),
               Effect.andThen(prereviewId => Effect.logDebug(`Need to invalidate comments for review ${prereviewId}`)),
             ),
           ),
