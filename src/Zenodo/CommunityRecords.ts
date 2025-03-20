@@ -1,6 +1,6 @@
-import { HttpClient, HttpClientResponse, type UrlParams } from '@effect/platform'
+import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Context, Effect, pipe, Schema } from 'effect'
-import { URL } from 'url'
+import type { URL } from 'url'
 import { ZenodoRecordForACommentSchema } from './TransformRecordToCommentWithoutText.js'
 
 const RecordsSchema = Schema.Struct({
@@ -11,12 +11,8 @@ const RecordsSchema = Schema.Struct({
 
 export class ZenodoOrigin extends Context.Tag('ZenodoHostname')<ZenodoOrigin, URL>() {}
 
-export const getCommunityRecords = Effect.fn(function* (urlParams: UrlParams.UrlParams) {
+export const getCommunityRecords = Effect.fn(function* (url: URL) {
   const httpClient = yield* HttpClient.HttpClient
-  const zenodoOrigin = yield* ZenodoOrigin
-  const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoOrigin)
-  return yield* pipe(
-    httpClient.get(zenodoCommunityRecordsApiUrl, { urlParams }),
-    Effect.andThen(HttpClientResponse.schemaBodyJson(RecordsSchema)),
-  )
+
+  return yield* pipe(httpClient.get(url), Effect.andThen(HttpClientResponse.schemaBodyJson(RecordsSchema)))
 })

@@ -1,4 +1,4 @@
-import { type HttpClient, UrlParams } from '@effect/platform'
+import type { HttpClient } from '@effect/platform'
 import type * as Doi from 'doi-ts'
 import { Effect, pipe } from 'effect'
 import * as CachingHttpClient from '../CachingHttpClient/index.js'
@@ -14,14 +14,8 @@ export const getCommentsForPrereviewFromZenodo = (
   id: Doi.Doi,
 ): Effect.Effect<ReadonlyArray<ReviewPage.Comment>, 'unavailable', HttpClient.HttpClient | ZenodoOrigin> =>
   pipe(
-    UrlParams.fromInput({
-      q: `related.identifier:"${id}"`,
-      size: '100',
-      sort: 'publication-desc',
-      resource_type: 'publication::publication-other',
-      access_status: 'open',
-    }),
-    getCommunityRecords,
+    constructCommentListUrl(id),
+    Effect.andThen(getCommunityRecords),
     Effect.andThen(record => Effect.forEach(record.hits.hits, transformRecordToCommentWithoutText)),
     Effect.andThen(Effect.forEach(addCommentText, { concurrency: 'unbounded' })),
     Effect.catchTags({
