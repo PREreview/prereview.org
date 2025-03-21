@@ -9,7 +9,6 @@ import assets from './manifest.json' with { type: 'json' }
 import * as Routes from './routes.js'
 import {
   clubsMatch,
-  ediaStatementMatch,
   fundingMatch,
   homeMatch,
   liveReviewsMatch,
@@ -365,9 +364,7 @@ export const page = ({
                     >
                   </li>
                   <li>
-                    <a
-                      href="${format(ediaStatementMatch.formatter, {})}"
-                      ${current === 'edia-statement' ? html`aria-current="page"` : ''}
+                    <a href="${Routes.EdiaStatement}" ${current === 'edia-statement' ? html`aria-current="page"` : ''}
                       >${translate(locale, 'footer', 'menuEdiaStatement')()}</a
                     >
                   </li>

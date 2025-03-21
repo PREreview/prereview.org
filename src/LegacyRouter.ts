@@ -41,8 +41,8 @@ export const LegacyRouter = HttpRouter.fromIterable([
   HttpRouter.makeRoute('*', '/docs/codeofconduct', movedPermanently(Routes.CodeOfConduct)),
   HttpRouter.makeRoute('*', '/docs/code_of_conduct', movedPermanently(Routes.CodeOfConduct)),
   HttpRouter.makeRoute('*', '/docs/resources', movedPermanently(format(Routes.resourcesMatch.formatter, {}))),
-  HttpRouter.makeRoute('*', '/edi-statement', movedPermanently(format(Routes.ediaStatementMatch.formatter, {}))),
-  HttpRouter.makeRoute('*', '/edia', movedPermanently(format(Routes.ediaStatementMatch.formatter, {}))),
+  HttpRouter.makeRoute('*', '/edi-statement', movedPermanently(Routes.EdiaStatement)),
+  HttpRouter.makeRoute('*', '/edia', movedPermanently(Routes.EdiaStatement)),
   HttpRouter.makeRoute('*', '/find-a-preprint', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
   HttpRouter.makeRoute(
     '*',
