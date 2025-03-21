@@ -63,7 +63,6 @@ import {
   connectSlackStart,
 } from './connect-slack-page/index.js'
 import { disconnectSlack } from './disconnect-slack-page/index.js'
-import { ediaStatement } from './edia-statement.js'
 import {
   type SendEmailEnv,
   createAuthorInviteEmail,
@@ -188,7 +187,6 @@ import {
   connectSlackStartMatch,
   disconnectOrcidMatch,
   disconnectSlackMatch,
-  ediaStatementMatch,
   fundingMatch,
   homeMatch,
   liveReviewsMatch,
@@ -478,24 +476,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getRecentPrereviews: withEnv(getRecentPrereviewsFromZenodo, env),
         })),
-      ),
-    ),
-    pipe(
-      ediaStatementMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW(
-            'response',
-            RM.fromReaderTaskK(({ locale }) => ediaStatement(locale)),
-          ),
-          RM.ichainW(handleResponse),
-        ),
       ),
     ),
     pipe(
