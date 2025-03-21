@@ -13,7 +13,6 @@ import {
   ediaStatementMatch,
   fundingMatch,
   homeMatch,
-  howToUseMatch,
   liveReviewsMatch,
   logInMatch,
   logOutMatch,
@@ -382,9 +381,7 @@ export const page = ({
                   </li>
                   <li><a href="https://content.prereview.org/">${translate(locale, 'footer', 'menuBlog')()}</a></li>
                   <li>
-                    <a
-                      href="${format(howToUseMatch.formatter, {})}"
-                      ${current === 'how-to-use' ? html`aria-current="page"` : ''}
+                    <a href="${Routes.HowToUse}" ${current === 'how-to-use' ? html`aria-current="page"` : ''}
                       >${translate(locale, 'footer', 'menuHowToUse')()}</a
                     >
                   </li>
