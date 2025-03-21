@@ -218,8 +218,6 @@ export const homeMatch = pipe(query(C.partial({})), P.then(P.end))
 
 export const partnersMatch = pipe(P.lit('partners'), P.then(P.end))
 
-export const liveReviewsMatch = pipe(P.lit('live-reviews'), P.then(P.end))
-
 export const resourcesMatch = pipe(P.lit('resources'), P.then(P.end))
 
 export const logInMatch = pipe(P.lit('log-in'), P.then(P.end))

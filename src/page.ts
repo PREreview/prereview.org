@@ -9,7 +9,6 @@ import assets from './manifest.json' with { type: 'json' }
 import * as Routes from './routes.js'
 import {
   homeMatch,
-  liveReviewsMatch,
   logInMatch,
   logOutMatch,
   myDetailsMatch,
@@ -247,9 +246,7 @@ export const page = ({
                           >
                         </li>
                         <li>
-                          <a
-                            href="${format(liveReviewsMatch.formatter, {})}"
-                            ${current === 'live-reviews' ? html`aria-current="page"` : ''}
+                          <a href="${Routes.LiveReviews}" ${current === 'live-reviews' ? html`aria-current="page"` : ''}
                             >${translate(locale, 'header', 'menuLiveReviews')()}</a
                           >
                         </li>

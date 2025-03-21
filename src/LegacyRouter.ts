@@ -54,7 +54,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
   ),
   HttpRouter.makeRoute('*', '/login', movedPermanently(format(Routes.logInMatch.formatter, {}))),
   HttpRouter.makeRoute('*', '/logout', movedPermanently(format(Routes.logOutMatch.formatter, {}))),
-  HttpRouter.makeRoute('*', '/preprint-journal-clubs', movedPermanently(format(Routes.liveReviewsMatch.formatter, {}))),
+  HttpRouter.makeRoute('*', '/preprint-journal-clubs', movedPermanently(Routes.LiveReviews)),
   HttpRouter.makeRoute('*', '/prereview.org', movedPermanently(format(Routes.homeMatch.formatter, {}))),
   HttpRouter.makeRoute('*', '/reviews/new', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
   HttpRouter.makeRoute('*', '/signup', movedPermanently(format(Routes.logInMatch.formatter, {}))),
