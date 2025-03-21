@@ -81,7 +81,7 @@ export type CacheKey = string
 
 export const keyForRequest = (request: HttpClientRequest.HttpClientRequest): CacheKey => {
   const url = new URL(request.url)
-  url.search = UrlParams.toString(request.urlParams)
+  url.search = pipe(UrlParams.fromInput(url.searchParams), UrlParams.appendAll(request.urlParams), UrlParams.toString)
 
   return url.href
 }
