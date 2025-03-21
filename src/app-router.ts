@@ -72,7 +72,6 @@ import {
 } from './email.js'
 import type { MustDeclareUseOfAiEnv } from './feature-flags.js'
 import type { SleepEnv } from './fetch.js'
-import { funding } from './funding.js'
 import { home } from './home-page/index.js'
 import * as Keyv from './keyv.js'
 import {
@@ -185,7 +184,6 @@ import {
   connectSlackStartMatch,
   disconnectOrcidMatch,
   disconnectSlackMatch,
-  fundingMatch,
   homeMatch,
   liveReviewsMatch,
   logInMatch,
@@ -474,24 +472,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getRecentPrereviews: withEnv(getRecentPrereviewsFromZenodo, env),
         })),
-      ),
-    ),
-    pipe(
-      fundingMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW(
-            'response',
-            RM.fromReaderTaskK(({ locale }) => funding(locale)),
-          ),
-          RM.ichainW(handleResponse),
-        ),
       ),
     ),
     pipe(
