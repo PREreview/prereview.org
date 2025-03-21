@@ -1,12 +1,11 @@
 import { Effect } from 'effect'
-import { format } from 'fp-ts-routing'
 import { Locale } from './Context.js'
 import { GetPageFromGhost } from './GhostPage.js'
 import { HavingProblemsPage } from './HavingProblemsPage/index.js'
 import { fixHeadingLevels, html, plainText, type Html } from './html.js'
 import { translate, type SupportedLocale } from './locales/index.js'
 import { PageResponse } from './response.js'
-import { peopleMatch } from './routes.js'
+import * as Routes from './routes.js'
 
 export const PeoplePage = Effect.gen(function* () {
   const getPageFromGhost = yield* GetPageFromGhost
@@ -27,7 +26,7 @@ function createPage({ content, locale }: { content: Html; locale: SupportedLocal
 
       ${fixHeadingLevels(1, content)}
     `,
-    canonical: format(peopleMatch.formatter, {}),
+    canonical: Routes.People,
     current: 'people',
   })
 }

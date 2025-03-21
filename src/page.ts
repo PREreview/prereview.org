@@ -20,7 +20,6 @@ import {
   myDetailsMatch,
   myPrereviewsMatch,
   partnersMatch,
-  peopleMatch,
   resourcesMatch,
   reviewRequestsMatch,
   reviewsMatch,
@@ -351,9 +350,7 @@ export const page = ({
                 <ul aria-label="Support links">
                   <li><a href="https://donorbox.org/prereview">${translate(locale, 'footer', 'menuDonate')()}</a></li>
                   <li>
-                    <a
-                      href="${format(peopleMatch.formatter, {})}"
-                      ${current === 'people' ? html`aria-current="page"` : ''}
+                    <a href="${Routes.People}" ${current === 'people' ? html`aria-current="page"` : ''}
                       >${translate(locale, 'footer', 'menuPeople')()}</a
                     >
                   </li>
