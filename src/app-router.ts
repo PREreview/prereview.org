@@ -46,7 +46,6 @@ import {
 } from './cloudinary.js'
 import { clubProfile } from './club-profile-page/index.js'
 import { clubsData } from './clubs-data/index.js'
-import { clubs } from './clubs.js'
 import {
   type OrcidOAuthEnv as ConnectOrcidOAuthEnv,
   connectOrcid,
@@ -176,7 +175,6 @@ import {
   changeResearchInterestsVisibilityMatch,
   clubProfileMatch,
   clubsDataMatch,
-  clubsMatch,
   connectOrcidCodeMatch,
   connectOrcidErrorMatch,
   connectOrcidMatch,
@@ -476,24 +474,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getRecentPrereviews: withEnv(getRecentPrereviewsFromZenodo, env),
         })),
-      ),
-    ),
-    pipe(
-      clubsMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW(
-            'response',
-            RM.fromReaderTaskK(({ locale }) => clubs(locale)),
-          ),
-          RM.ichainW(handleResponse),
-        ),
       ),
     ),
     pipe(
