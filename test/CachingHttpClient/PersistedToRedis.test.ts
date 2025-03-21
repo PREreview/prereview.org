@@ -1,4 +1,4 @@
-import { Headers, HttpClientResponse } from '@effect/platform'
+import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { it } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Cause, DateTime, Effect, Either, Schema } from 'effect'
@@ -200,5 +200,66 @@ describe('deleteFromRedis', () => {
         )
       }).pipe(EffectTest.run),
     )
+  })
+})
+
+describe('keyForRequest', () => {
+  describe('for equivalent URLs', () => {
+    it.skip.each([
+      ['converting percent-encoded triplets to uppercase', 'http://example.com/foo%2a', 'http://example.com/foo%2A'],
+      ['converting the scheme and host to lowercase', 'HTTP://User@Example.COM/Foo', 'http://User@example.com/Foo'],
+      [
+        'decoding percent-encoded triplets of unreserved characters',
+        'http://example.com/%7Efoo',
+        'http://example.com/~foo',
+      ],
+      ['removing dot-segments', 'http://example.com/foo/./bar/baz/../qux', 'http://example.com/foo/bar/qux'],
+      ['converting an empty path to a "/" path', 'http://example.com', 'http://example.com/'],
+      ['removing the default port', 'http://example.com:80/', 'http://example.com/'],
+      ['removing the fragment', 'http://example.com/foo#bar', 'http://example.com/foo'],
+      ['removing duplicate slashes', 'http://example.com/foo//bar.html', 'http://example.com/foo/bar.html'],
+      [
+        'sorting the query parameters',
+        'http://example.com/display?lang=en&article=fred',
+        'http://example.com/display?article=fred&lang=en',
+      ],
+      ['removing the "?" when the query is empty', 'http://example.com?', 'http://example.com'],
+    ])('the keys are the same (%s)', (_name, url1, url2) => {
+      const request1 = HttpClientRequest.get(url1)
+      const request2 = HttpClientRequest.get(url2)
+
+      const key1 = _.keyForRequest(request1)
+      const key2 = _.keyForRequest(request2)
+
+      expect(key1).toStrictEqual(key2)
+    })
+  })
+
+  describe('for nonequivalent URLs', () => {
+    it.each([
+      ['adding a trailing "/" to a non-empty path', 'http://example.com/foo', 'http://example.com/foo/'],
+      ['removing directory index', 'http://example.com/a/index.html', 'http://example.com/a/'],
+      ['replacing IP with domain name', 'http://208.77.188.166/', 'http://example.com/'],
+      ['limiting protocols', 'http://example.com/', 'https://example.com/'],
+      ['removing or adding “www” as the first domain label', 'http://example.com/', 'http://www.example.com/'],
+      [
+        'removing unused query variables',
+        'http://example.com/display?id=123&fakefoo=fakebar',
+        'http://example.com/display?id=123',
+      ],
+      [
+        'removing default query parameters',
+        'http://example.com/display?id=&sort=ascending',
+        'http://example.com/display',
+      ],
+    ])('the keys are different (%s)', (_name, url1, url2) => {
+      const request1 = HttpClientRequest.get(url1)
+      const request2 = HttpClientRequest.get(url2)
+
+      const key1 = _.keyForRequest(request1)
+      const key2 = _.keyForRequest(request2)
+
+      expect(key1).not.toStrictEqual(key2)
+    })
   })
 })
