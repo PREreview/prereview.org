@@ -77,7 +77,6 @@ import type { MustDeclareUseOfAiEnv } from './feature-flags.js'
 import type { SleepEnv } from './fetch.js'
 import { funding } from './funding.js'
 import { home } from './home-page/index.js'
-import { howToUse } from './how-to-use.js'
 import * as Keyv from './keyv.js'
 import {
   type LegacyPrereviewApiEnv,
@@ -194,7 +193,6 @@ import {
   ediaStatementMatch,
   fundingMatch,
   homeMatch,
-  howToUseMatch,
   liveReviewsMatch,
   logInMatch,
   logOutMatch,
@@ -482,24 +480,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getRecentPrereviews: withEnv(getRecentPrereviewsFromZenodo, env),
         })),
-      ),
-    ),
-    pipe(
-      howToUseMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW(
-            'response',
-            RM.fromReaderTaskK(({ locale }) => howToUse(locale)),
-          ),
-          RM.ichainW(handleResponse),
-        ),
       ),
     ),
     pipe(
