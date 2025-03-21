@@ -21,11 +21,9 @@ import {
   myPrereviewsMatch,
   partnersMatch,
   peopleMatch,
-  privacyPolicyMatch,
   resourcesMatch,
   reviewRequestsMatch,
   reviewsMatch,
-  trainingsMatch,
 } from './routes.js'
 import type { UserOnboarding } from './user-onboarding.js'
 import type { User } from './user.js'
@@ -250,9 +248,7 @@ export const page = ({
                           >
                         </li>
                         <li>
-                          <a
-                            href="${format(trainingsMatch.formatter, {})}"
-                            ${current === 'trainings' ? html`aria-current="page"` : ''}
+                          <a href="${Routes.Trainings}" ${current === 'trainings' ? html`aria-current="page"` : ''}
                             >${translate(locale, 'header', 'menuTrainings')()}</a
                           >
                         </li>
@@ -383,9 +379,7 @@ export const page = ({
                     >
                   </li>
                   <li>
-                    <a
-                      href="${format(privacyPolicyMatch.formatter, {})}"
-                      ${current === 'privacy-policy' ? html`aria-current="page"` : ''}
+                    <a href="${Routes.PrivacyPolicy}" ${current === 'privacy-policy' ? html`aria-current="page"` : ''}
                       >${translate(locale, 'footer', 'menuPrivacyPolicy')()}</a
                     >
                   </li>
