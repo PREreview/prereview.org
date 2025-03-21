@@ -205,7 +205,7 @@ describe('deleteFromRedis', () => {
 
 describe('keyForRequest', () => {
   describe('for equivalent URLs', () => {
-    it.skip.each([
+    it.each([
       ['converting percent-encoded triplets to uppercase', 'http://example.com/foo%2a', 'http://example.com/foo%2A'],
       ['converting the scheme and host to lowercase', 'HTTP://User@Example.COM/Foo', 'http://User@example.com/Foo'],
       [

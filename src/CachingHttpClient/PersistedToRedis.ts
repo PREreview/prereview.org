@@ -1,5 +1,6 @@
 import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
 import { Effect, Either, Layer, pipe, Schema } from 'effect'
+import normalizeUrl from 'normalize-url'
 import * as Redis from '../Redis.js'
 import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure, NoCachedResponseFound } from './HttpCache.js'
 import { serializationErrorChecking } from './SerializationErrorChecking.js'
@@ -83,5 +84,5 @@ export const keyForRequest = (request: HttpClientRequest.HttpClientRequest): Cac
   const url = new URL(request.url)
   url.search = pipe(UrlParams.fromInput(url.searchParams), UrlParams.appendAll(request.urlParams), UrlParams.toString)
 
-  return url.href
+  return normalizeUrl(url.href, { removeTrailingSlash: false, stripHash: true, stripWWW: false })
 }
