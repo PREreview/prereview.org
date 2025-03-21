@@ -14,7 +14,6 @@ import {
   myDetailsMatch,
   myPrereviewsMatch,
   partnersMatch,
-  resourcesMatch,
   reviewRequestsMatch,
   reviewsMatch,
 } from './routes.js'
@@ -251,9 +250,7 @@ export const page = ({
                           >
                         </li>
                         <li>
-                          <a
-                            href="${format(resourcesMatch.formatter, {})}"
-                            ${current === 'resources' ? html`aria-current="page"` : ''}
+                          <a href="${Routes.Resources}" ${current === 'resources' ? html`aria-current="page"` : ''}
                             >${translate(locale, 'header', 'menuResources')()}</a
                           >
                         </li>
