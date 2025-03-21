@@ -25,6 +25,15 @@ export interface Route<A extends { readonly [K in keyof A]: unknown }> {
 export const AboutUs = '/about'
 export const PrivacyPolicy = '/privacy-policy'
 export const Trainings = '/trainings'
+export const People = '/people'
+export const HowToUse = '/how-to-use'
+export const CodeOfConduct = '/code-of-conduct'
+export const EdiaStatement = '/edia-statement'
+export const Clubs = '/clubs'
+export const Funding = '/funding'
+export const Partners = '/partners'
+export const LiveReviews = '/live-reviews'
+export const Resources = '/resources'
 
 export const WriteComment: Route<{ id: number }> = {
   path: '/reviews/:id/write-a-comment',
