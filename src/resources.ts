@@ -1,21 +1,21 @@
-import { pipe } from 'effect'
+import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { getPageFromGhost } from './GhostPage.js'
+import { Locale } from './Context.js'
+import { GetPageFromGhost } from './GhostPage.js'
+import { HavingProblemsPage } from './HavingProblemsPage/index.js'
 import { fixHeadingLevels, html, plainText, type Html } from './html.js'
-import { havingProblemsPage } from './http-error.js'
 import { translate, type SupportedLocale } from './locales/index.js'
 import { PageResponse } from './response.js'
 import { resourcesMatch } from './routes.js'
 
-export const resources = (locale: SupportedLocale) =>
-  pipe(
-    RTE.Do,
-    RTE.let('locale', () => locale),
-    RTE.apS('content', getPageFromGhost('6526c6ae07fb34a92c7f8d6f')),
+export const ResourcesPage = Effect.gen(function* () {
+  const getPageFromGhost = yield* GetPageFromGhost
+  const locale = yield* Locale
 
-    RTE.matchW(() => havingProblemsPage(locale), createPage),
-  )
+  const content = yield* getPageFromGhost('6526c6ae07fb34a92c7f8d6f')
+
+  return createPage({ content, locale })
+}).pipe(Effect.catchAll(() => HavingProblemsPage))
 
 function createPage({ content, locale }: { content: Html; locale: SupportedLocale }) {
   const t = translate(locale)

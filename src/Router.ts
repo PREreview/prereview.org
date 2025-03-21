@@ -22,6 +22,7 @@ import { PeoplePage } from './people.js'
 import { PrivacyPolicyPage } from './privacy-policy.js'
 import { PublicUrl } from './public-url.js'
 import { DataStoreRedis } from './Redis.js'
+import { ResourcesPage } from './resources.js'
 import {
   type FlashMessageResponse,
   type LogInResponse,
@@ -172,6 +173,7 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.LiveReviews, LiveReviewsPage),
     MakeStaticRoute('GET', Routes.People, PeoplePage),
     MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),
+    MakeStaticRoute('GET', Routes.Resources, ResourcesPage),
     MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),
   ]),
   HttpRouter.concat(WriteCommentFlowRouter),
