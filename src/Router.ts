@@ -17,6 +17,7 @@ import { ExpressConfig, FlashMessage, Locale } from './Context.js'
 import { EdiaStatementPage } from './edia-statement.js'
 import { FundingPage } from './funding.js'
 import { HowToUsePage } from './how-to-use.js'
+import { LiveReviewsPage } from './live-reviews.js'
 import { PeoplePage } from './people.js'
 import { PrivacyPolicyPage } from './privacy-policy.js'
 import { PublicUrl } from './public-url.js'
@@ -168,6 +169,7 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.EdiaStatement, EdiaStatementPage),
     MakeStaticRoute('GET', Routes.Funding, FundingPage),
     MakeStaticRoute('GET', Routes.HowToUse, HowToUsePage),
+    MakeStaticRoute('GET', Routes.LiveReviews, LiveReviewsPage),
     MakeStaticRoute('GET', Routes.People, PeoplePage),
     MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),
     MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),

@@ -84,7 +84,6 @@ import {
   isLegacyCompatiblePreprint,
   isLegacyCompatiblePrereview,
 } from './legacy-prereview.js'
-import { liveReviews } from './live-reviews.js'
 import { DefaultLocale, type SupportedLocale } from './locales/index.js'
 import {
   type IsUserBlockedEnv,
@@ -185,7 +184,6 @@ import {
   disconnectOrcidMatch,
   disconnectSlackMatch,
   homeMatch,
-  liveReviewsMatch,
   logInMatch,
   logOutMatch,
   myDetailsMatch,
@@ -503,24 +501,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             RM.asks((env: RouterEnv) => env.locale),
           ),
           RM.bind('response', ({ locale }) => RM.of(partners(locale))),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-    ),
-    pipe(
-      liveReviewsMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW(
-            'response',
-            RM.fromReaderTaskK(({ locale }) => liveReviews(locale)),
-          ),
           RM.ichainW(handleResponse),
         ),
       ),
