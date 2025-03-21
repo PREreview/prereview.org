@@ -6,7 +6,6 @@ import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, SessionSecret } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { UseCrowdinInContext } from './feature-flags.js'
-import { GhostApi } from './ghost.js'
 import { Nodemailer } from './nodemailer.js'
 import * as Preprint from './preprint.js'
 import { PublicUrl } from './public-url.js'
@@ -24,7 +23,6 @@ export const expressServer = Effect.gen(function* () {
   const generateUuid = yield* Effect.andThen(GenerateUuid, EffectToFpts.makeIO)
   const templatePage = yield* TemplatePage
   const useCrowdinInContext = yield* UseCrowdinInContext
-  const ghostApi = yield* GhostApi
   const secret = yield* SessionSecret
   const getPreprint = yield* Effect.andThen(Preprint.GetPreprint, EffectToFpts.makeTaskEitherK)
 
@@ -33,7 +31,6 @@ export const expressServer = Effect.gen(function* () {
     fetch,
     generateUuid,
     getPreprint,
-    ghostApi,
     nodemailer,
     publicUrl,
     secret: Redacted.value(secret),

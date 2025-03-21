@@ -24,7 +24,6 @@ import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
-import type { GetPageFromGhostEnv } from './GhostPage.js'
 import * as OpenAlex from './OpenAlex/index.js'
 import {
   authorInvite,
@@ -317,7 +316,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   DoesPreprintExistEnv &
   EffectEnv<Locale | OpenAlex.GetCategories | ReviewPage.CommentsForReview> &
   ResolvePreprintIdEnv &
-  GetPageFromGhostEnv &
   GetPreprintIdEnv &
   GenerateUuidEnv &
   GetPreprintEnv &

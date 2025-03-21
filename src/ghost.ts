@@ -8,7 +8,7 @@ import { StatusCodes } from 'http-status-codes'
 import { URL } from 'url'
 import { type Html, rawHtml, sanitizeHtml } from './html.js'
 
-export interface GhostApiEnv {
+interface GhostApiEnv {
   ghostApi: {
     key: Redacted.Redacted
   }
