@@ -23,25 +23,25 @@ pipe(
   Program,
   Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
+  Effect.provideServiceEffect(
+    FetchHttpClient.Fetch,
+    Effect.gen(function* () {
+      const publicUrl = yield* PublicUrl
+
+      return fetch.defaults({
+        cachePath: 'data/cache',
+        headers: {
+          'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
+        },
+      }) as unknown as typeof globalThis.fetch
+    }),
+  ),
   Effect.provide(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
       Layer.effect(ExpressConfig, ExpressConfigLive),
       NodeHttpClient.layer,
       CachingHttpClient.layerPersistedToRedis,
-      Layer.effect(
-        FetchHttpClient.Fetch,
-        Effect.gen(function* () {
-          const publicUrl = yield* PublicUrl
-
-          return fetch.defaults({
-            cachePath: 'data/cache',
-            headers: {
-              'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
-            },
-          }) as unknown as typeof globalThis.fetch
-        }),
-      ),
     ),
   ),
   Effect.provide(
