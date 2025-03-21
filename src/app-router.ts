@@ -138,7 +138,6 @@ import {
   publishToPrereviewCoarNotifyInbox,
   sendPrereviewToPrereviewCoarNotifyInbox,
 } from './prereview-coar-notify/index.js'
-import { privacyPolicy } from './privacy-policy.js'
 import { profile } from './profile-page/index.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { requestAPrereview } from './request-a-prereview-page/index.js'
@@ -207,7 +206,6 @@ import {
   partnersMatch,
   peopleMatch,
   preprintReviewsMatch,
-  privacyPolicyMatch,
   profileMatch,
   removeAvatarMatch,
   requestAPrereviewMatch,
@@ -642,24 +640,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.bindW(
             'response',
             RM.fromReaderTaskK(({ locale }) => liveReviews(locale)),
-          ),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-    ),
-    pipe(
-      privacyPolicyMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW(
-            'response',
-            RM.fromReaderTaskK(({ locale }) => privacyPolicy(locale)),
           ),
           RM.ichainW(handleResponse),
         ),

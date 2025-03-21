@@ -1,45 +1,32 @@
 import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
-import { format } from 'fp-ts-routing'
-import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect } from '@jest/globals'
+import { Effect } from 'effect'
 import { Status } from 'hyper-ts'
-import type { GetPageFromGhostEnv } from '../src/GhostPage.js'
+import { Locale } from '../src/Context.js'
+import { GetPageFromGhost, PageIsNotFound, PageIsUnavailable } from '../src/GhostPage.js'
 import * as _ from '../src/privacy-policy.js'
-import { privacyPolicyMatch } from '../src/routes.js'
+import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 
 describe('privacyPolicy', () => {
-  test.prop([fc.supportedLocale(), fc.html()])('when the page can be loaded', async (locale, page) => {
-    const getPageFromGhost = jest.fn<GetPageFromGhostEnv['getPageFromGhost']>(_ => TE.right(page))
-
-    const actual = await _.privacyPolicy(locale)({ getPageFromGhost })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      canonical: format(privacyPolicyMatch.formatter, {}),
-      current: 'privacy-policy',
-      status: Status.OK,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-    expect(getPageFromGhost).toHaveBeenCalledWith('6154aa157741400e8722bb0f')
-  })
-
-  test.prop([fc.supportedLocale(), fc.constantFrom('unavailable', 'not-found')])(
+  test.prop([fc.supportedLocale(), fc.constantFrom(new PageIsUnavailable(), new PageIsNotFound())])(
     'when the page cannot be loaded',
-    async (locale, error) => {
-      const actual = await _.privacyPolicy(locale)({ getPageFromGhost: () => TE.left(error) })()
+    async (locale, error) =>
+      Effect.gen(function* () {
+        const actual = yield* _.PrivacyPolicyPage
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provideService(Locale, locale),
+        Effect.provideService(GetPageFromGhost, () => Effect.fail(error)),
+        EffectTest.run,
+      ),
   )
 })

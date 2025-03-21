@@ -12,6 +12,7 @@ import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from './AboutUsPage/index.js'
 import { ExpressConfig, FlashMessage, Locale } from './Context.js'
+import { PrivacyPolicyPage } from './privacy-policy.js'
 import { PublicUrl } from './public-url.js'
 import { DataStoreRedis } from './Redis.js'
 import {
@@ -156,6 +157,7 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
 export const Router = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage),
+    MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),
     MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),
   ]),
   HttpRouter.concat(WriteCommentFlowRouter),
