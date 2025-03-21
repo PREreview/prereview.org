@@ -1,14 +1,13 @@
-import { FetchHttpClient } from '@effect/platform'
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
-import fetch from 'make-fetch-happen'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
 import * as FeatureFlags from './feature-flags.js'
+import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { GhostApi } from './ghost.js'
 import * as Nodemailer from './nodemailer.js'
@@ -23,19 +22,7 @@ pipe(
   Program,
   Layer.merge(Layer.effectDiscard(verifyCache)),
   Layer.launch,
-  Effect.provideServiceEffect(
-    FetchHttpClient.Fetch,
-    Effect.gen(function* () {
-      const publicUrl = yield* PublicUrl
-
-      return fetch.defaults({
-        cachePath: 'data/cache',
-        headers: {
-          'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
-        },
-      }) as unknown as typeof globalThis.fetch
-    }),
-  ),
+  Effect.provideServiceEffect(FetchHttpClient.Fetch, FetchHttpClient.makeFetch),
   Effect.provide(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
