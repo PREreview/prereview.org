@@ -32,7 +32,6 @@ export type ConfigEnv = Omit<
   | 'getPreprintId'
   | 'getUser'
   | 'getUserOnboarding'
-  | 'getPageFromGhost'
   | 'getPreprintTitle'
   | 'locale'
   | 'logger'
