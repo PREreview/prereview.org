@@ -11,12 +11,8 @@ import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
-import {
-  codeOfConductMatch,
-  writeReviewCompetingInterestsMatch,
-  writeReviewConductMatch,
-  writeReviewMatch,
-} from '../routes.js'
+import * as Routes from '../routes.js'
+import { writeReviewCompetingInterestsMatch, writeReviewConductMatch, writeReviewMatch } from '../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../shared-translation-elements.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
@@ -117,8 +113,7 @@ const ConductFieldD = pipe(
 interface CodeOfConductForm {
   readonly conduct: E.Either<MissingE, 'yes' | undefined>
 }
-const codeOfConductLink = (text: string) =>
-  `<a href="${format(codeOfConductMatch.formatter, {})}">${text}</a>`.toString()
+const codeOfConductLink = (text: string) => `<a href="${Routes.CodeOfConduct}">${text}</a>`.toString()
 
 function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, user: User, locale: SupportedLocale) {
   const error = hasAnError(form)

@@ -9,7 +9,6 @@ import assets from './manifest.json' with { type: 'json' }
 import * as Routes from './routes.js'
 import {
   clubsMatch,
-  codeOfConductMatch,
   ediaStatementMatch,
   fundingMatch,
   homeMatch,
@@ -361,9 +360,7 @@ export const page = ({
                     >
                   </li>
                   <li>
-                    <a
-                      href="${format(codeOfConductMatch.formatter, {})}"
-                      ${current === 'code-of-conduct' ? html`aria-current="page"` : ''}
+                    <a href="${Routes.CodeOfConduct}" ${current === 'code-of-conduct' ? html`aria-current="page"` : ''}
                       >${translate(locale, 'footer', 'menuCodeOfConduct')()}</a
                     >
                   </li>

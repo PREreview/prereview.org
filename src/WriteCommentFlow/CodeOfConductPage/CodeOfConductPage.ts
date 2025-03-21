@@ -1,5 +1,4 @@
 import { Either, Function, identity, Match, pipe } from 'effect'
-import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
@@ -83,8 +82,7 @@ export const CodeOfConductPage = ({
                   'write-comment-flow',
                   'codeOfConductTip',
                 )({
-                  link: text =>
-                    html`<a href="${format(Routes.codeOfConductMatch.formatter, {})}">${text}</a>`.toString(),
+                  link: text => html`<a href="${Routes.CodeOfConduct}">${text}</a>`.toString(),
                 }),
               )}
             </p>
