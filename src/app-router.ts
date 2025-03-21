@@ -121,7 +121,6 @@ import { myPrereviews } from './my-prereviews-page/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
 import { partners } from './partners.js'
-import { people } from './people.js'
 import { preprintReviews } from './preprint-reviews-page/index.js'
 import type {
   DoesPreprintExistEnv,
@@ -204,7 +203,6 @@ import {
   orcidCodeMatch,
   orcidErrorMatch,
   partnersMatch,
-  peopleMatch,
   preprintReviewsMatch,
   profileMatch,
   removeAvatarMatch,
@@ -499,24 +497,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.bindW(
             'response',
             RM.fromReaderTaskK(({ locale }) => howToUse(locale)),
-          ),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-    ),
-    pipe(
-      peopleMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW(
-            'response',
-            RM.fromReaderTaskK(({ locale }) => people(locale)),
           ),
           RM.ichainW(handleResponse),
         ),
