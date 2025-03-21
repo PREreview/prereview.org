@@ -4,16 +4,16 @@ import { Effect } from 'effect'
 import { Status } from 'hyper-ts'
 import { Locale } from '../src/Context.js'
 import { GetPageFromGhost, PageIsNotFound, PageIsUnavailable } from '../src/GhostPage.js'
-import * as _ from '../src/privacy-policy.js'
+import * as _ from '../src/TrainingsPage.js'
 import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 
-describe('privacyPolicy', () => {
+describe('TrainingsPage', () => {
   test.prop([fc.supportedLocale(), fc.constantFrom(new PageIsUnavailable(), new PageIsNotFound())])(
     'when the page cannot be loaded',
     async (locale, error) =>
       Effect.gen(function* () {
-        const actual = yield* _.PrivacyPolicyPage
+        const actual = yield* _.TrainingsPage
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
