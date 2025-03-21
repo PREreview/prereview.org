@@ -36,7 +36,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
   ),
   HttpRouter.makeRoute('*', '/blog', movedPermanently('https://content.prereview.org/')),
   HttpRouter.makeRoute('*', '/coc', movedPermanently(Routes.CodeOfConduct)),
-  HttpRouter.makeRoute('*', '/communities', movedPermanently(format(Routes.clubsMatch.formatter, {}))),
+  HttpRouter.makeRoute('*', '/communities', movedPermanently(Routes.Clubs)),
   HttpRouter.makeRoute('*', '/docs/about', movedPermanently(Routes.AboutUs)),
   HttpRouter.makeRoute('*', '/docs/codeofconduct', movedPermanently(Routes.CodeOfConduct)),
   HttpRouter.makeRoute('*', '/docs/code_of_conduct', movedPermanently(Routes.CodeOfConduct)),

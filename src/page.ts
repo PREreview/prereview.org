@@ -8,7 +8,6 @@ import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate }
 import assets from './manifest.json' with { type: 'json' }
 import * as Routes from './routes.js'
 import {
-  clubsMatch,
   fundingMatch,
   homeMatch,
   liveReviewsMatch,
@@ -263,9 +262,7 @@ export const page = ({
                           >
                         </li>
                         <li>
-                          <a
-                            href="${format(clubsMatch.formatter, {})}"
-                            ${current === 'clubs' ? html`aria-current="page"` : ''}
+                          <a href="${Routes.Clubs}" ${current === 'clubs' ? html`aria-current="page"` : ''}
                             >${translate(locale, 'header', 'menuClubs')()}</a
                           >
                         </li>

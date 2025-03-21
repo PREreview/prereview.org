@@ -1,12 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect } from 'effect'
-import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { Locale } from '../src/Context.js'
 import { GetPageFromGhost, PageIsNotFound, PageIsUnavailable } from '../src/GhostPage.js'
 import * as _ from '../src/clubs.js'
-import { clubsMatch } from '../src/routes.js'
+import * as Routes from '../src/routes.js'
 import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 
@@ -19,7 +18,7 @@ describe('ClubsPage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        canonical: format(clubsMatch.formatter, {}),
+        canonical: Routes.Clubs,
         current: 'clubs',
         status: Status.OK,
         title: expect.anything(),
