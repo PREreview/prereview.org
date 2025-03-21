@@ -47,7 +47,6 @@ import {
 import { clubProfile } from './club-profile-page/index.js'
 import { clubsData } from './clubs-data/index.js'
 import { clubs } from './clubs.js'
-import { codeOfConduct } from './code-of-conduct.js'
 import {
   type OrcidOAuthEnv as ConnectOrcidOAuthEnv,
   connectOrcid,
@@ -179,7 +178,6 @@ import {
   clubProfileMatch,
   clubsDataMatch,
   clubsMatch,
-  codeOfConductMatch,
   connectOrcidCodeMatch,
   connectOrcidErrorMatch,
   connectOrcidMatch,
@@ -480,24 +478,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getRecentPrereviews: withEnv(getRecentPrereviewsFromZenodo, env),
         })),
-      ),
-    ),
-    pipe(
-      codeOfConductMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW(
-            'response',
-            RM.fromReaderTaskK(({ locale }) => codeOfConduct(locale)),
-          ),
-          RM.ichainW(handleResponse),
-        ),
       ),
     ),
     pipe(

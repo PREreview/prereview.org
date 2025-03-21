@@ -11,6 +11,7 @@ import { Effect, flow, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from './AboutUsPage/index.js'
+import { CodeOfConductPage } from './code-of-conduct.js'
 import { ExpressConfig, FlashMessage, Locale } from './Context.js'
 import { HowToUsePage } from './how-to-use.js'
 import { PeoplePage } from './people.js'
@@ -159,6 +160,7 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
 export const Router = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage),
+    MakeStaticRoute('GET', Routes.CodeOfConduct, CodeOfConductPage),
     MakeStaticRoute('GET', Routes.HowToUse, HowToUsePage),
     MakeStaticRoute('GET', Routes.People, PeoplePage),
     MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),
