@@ -1,77 +1,97 @@
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { requestAPrereviewMatch } from '../routes.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: SupportedLocale) => {
   return PageResponse({
     status: Status.BadRequest,
-    title: plainText`Sorry, we don’t know this preprint`,
+    title: plainText(translate(locale, 'request-a-prereview-page', 'dontKnowPreprint')()),
     main: html`
-      <h1>Sorry, we don’t know this preprint</h1>
+      <h1>${translate(locale, 'request-a-prereview-page', 'dontKnowPreprint')()}</h1>
+
       ${preprint.type === 'philsci'
         ? html`
             <p>
-              We think the URL
-              <q class="select-all" translate="no">https://philsci-archive.pitt.edu/${preprint.value}/</q> could be a
-              PhilSci-Archive preprint, but we can’t find any details.
+              ${rawHtml(
+                translate(
+                  locale,
+                  'request-a-prereview-page',
+                  'urlCouldBePhilsci',
+                )({
+                  url: html`<q class="select-all" translate="no"
+                    >https://philsci-archive.pitt.edu/${preprint.value}/</q
+                  >`.toString(),
+                }),
+              )}
             </p>
 
-            <p>If you typed the URL, check it is correct.</p>
+            <p>${translate(locale, 'request-a-prereview-page', 'checkCorrectUrl')()}</p>
 
-            <p>If you pasted the URL, check you copied the entire address.</p>
+            <p>${translate(locale, 'request-a-prereview-page', 'checkPastedUrl')()}</p>
 
-            <p>If the URL is correct, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+            <p>${rawHtml(translate(locale, 'request-a-prereview-page', 'urlIsCorrect')({ contact: mailToHelp }))}</p>
           `
         : html`
             <p>
-              We think the DOI <q class="select-all" translate="no">${preprint.value}</q> could be
-              ${match(preprint.type)
-                .with('advance', () => 'an Advance')
-                .with('africarxiv', () => 'an AfricArXiv')
-                .with('arcadia-science', () => 'an Arcadia Science')
-                .with('arxiv', () => 'an arXiv')
-                .with('authorea', () => 'an Authorea')
-                .with('biorxiv', () => 'a bioRxiv')
-                .with('biorxiv-medrxiv', () => 'a bioRxiv or medRxiv')
-                .with('chemrxiv', () => 'a ChemRxiv')
-                .with('curvenote', () => 'a Curvenote')
-                .with('eartharxiv', () => 'an EarthArXiv')
-                .with('ecoevorxiv', () => 'an EcoEvoRxiv')
-                .with('edarxiv', () => 'an EdArXiv')
-                .with('engrxiv', () => 'an engrXiv')
-                .with('jxiv', () => 'a Jxiv')
-                .with('medrxiv', () => 'a medRxiv')
-                .with('metaarxiv', () => 'a MetaArXiv')
-                .with('osf', 'osf-preprints', () => 'an OSF')
-                .with('preprints.org', () => 'a Preprints.org')
-                .with('psyarxiv', () => 'a PsyArXiv')
-                .with('psycharchives', () => 'a PsychArchives')
-                .with('research-square', () => 'a Research Square')
-                .with('scielo', () => 'a SciELO')
-                .with('science-open', () => 'a ScienceOpen')
-                .with('socarxiv', () => 'a SocArXiv')
-                .with('techrxiv', () => 'a TechRxiv')
-                .with('verixiv', () => 'a VeriXiv')
-                .with('zenodo', () => 'a Zenodo')
-                .with('zenodo-africarxiv', () => 'a Zenodo or AfricArXiv')
-                .exhaustive()}
-              preprint, but we can’t find any details.
+              ${rawHtml(
+                match(preprint.type)
+                  .with('advance', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAdvance'))
+                  .with('africarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAfricarxiv'))
+                  .with('arcadia-science', () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeArcadiaScience'),
+                  )
+                  .with('arxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeArxiv'))
+                  .with('authorea', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAuthorea'))
+                  .with('biorxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeBiorxiv'))
+                  .with('biorxiv-medrxiv', () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeBiorxivMedrxiv'),
+                  )
+                  .with('chemrxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeChemrxiv'))
+                  .with('curvenote', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeCurvenote'))
+                  .with('eartharxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEartharxiv'))
+                  .with('ecoevorxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEcoevorxiv'))
+                  .with('edarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEdarxiv'))
+                  .with('engrxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEngrxiv'))
+                  .with('jxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeJxiv'))
+                  .with('medrxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeMedrxiv'))
+                  .with('metaarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeMetaarxiv'))
+                  .with('osf', 'osf-preprints', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeOsf'))
+                  .with('preprints.org', () => translate(locale, 'request-a-prereview-page', 'doiCouldBePreprintsorg'))
+                  .with('psyarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBePsyarxiv'))
+                  .with('psycharchives', () => translate(locale, 'request-a-prereview-page', 'doiCouldBePsycharchives'))
+                  .with('research-square', () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeResearchSquare'),
+                  )
+                  .with('scielo', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeScielo'))
+                  .with('science-open', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeScienceOpen'))
+                  .with('socarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeSocarxiv'))
+                  .with('techrxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeTechrxiv'))
+                  .with('verixiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeVerixiv'))
+                  .with('zenodo', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeZenodo'))
+                  .with('zenodo-africarxiv', () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeZenodoAfricarxiv'),
+                  )
+                  .exhaustive()({ doi: html`<q class="select-all" translate="no">${preprint.value}</q>`.toString() }),
+              )}
             </p>
 
-            <p>If you typed the DOI, check it is correct.</p>
+            <p>${translate(locale, 'request-a-prereview-page', 'checkCorrectDoi')()}</p>
 
-            <p>If you pasted the DOI, check you copied the entire address.</p>
+            <p>${translate(locale, 'request-a-prereview-page', 'checkPastedDoi')()}</p>
 
-            <p>If the DOI is correct, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+            <p>${rawHtml(translate(locale, 'request-a-prereview-page', 'doiIsCorrect')({ contact: mailToHelp }))}</p>
           `}
 
-      <a href="${format(requestAPrereviewMatch.formatter, {})}" class="button">Back</a>
+      <a href="${format(requestAPrereviewMatch.formatter, {})}" class="button"
+        >${translate(locale, 'request-a-prereview-page', 'back')()}</a
+      >
     `,
   })
 }
+
+const mailToHelp = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()

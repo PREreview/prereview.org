@@ -20,6 +20,9 @@
   "unsupportedPreprintTitle": {
     "message": "Sorry, we don’t support requests for this preprint"
   },
+  "dontKnowPreprint": {
+    "message": "Sorry, we don’t know this preprint"
+  },
   "notAPreprint": {
     "message": "Sorry, we only support preprints"
   },
@@ -31,6 +34,111 @@
   },
   "unsupportedPreprintMessage": {
     "message": "We don’t support requests for this {server} preprint yet."
+  },
+  "doiCouldBeAdvance": {
+    "message": "We think the DOI {doi} could be an Advance preprint, but we can’t find any details."
+  },
+  "doiCouldBeAfricarxiv": {
+    "message": "We think the DOI {doi} could be an AfricArXiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeArcadiaScience": {
+    "message": "We think the DOI {doi} could be an Arcadia Science preprint, but we can’t find any details."
+  },
+  "doiCouldBeArxiv": {
+    "message": "We think the DOI {doi} could be an arXiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeAuthorea": {
+    "message": "We think the DOI {doi} could be an Authorea preprint, but we can’t find any details."
+  },
+  "doiCouldBeBiorxiv": {
+    "message": "We think the DOI {doi} could be a bioRxiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeBiorxivMedrxiv": {
+    "message": "We think the DOI {doi} could be a bioRxiv or medRxiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeChemrxiv": {
+    "message": "We think the DOI {doi} could be a ChemRxiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeCurvenote": {
+    "message": "We think the DOI {doi} could be a Curvenote preprint, but we can’t find any details."
+  },
+  "doiCouldBeEartharxiv": {
+    "message": "We think the DOI {doi} could be an EarthArXiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeEcoevorxiv": {
+    "message": "We think the DOI {doi} could be an EcoEvoRxiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeEdarxiv": {
+    "message": "We think the DOI {doi} could be an EdArXiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeEngrxiv": {
+    "message": "We think the DOI {doi} could be an engrXiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeJxiv": {
+    "message": "We think the DOI {doi} could be a Jxiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeMedrxiv": {
+    "message": "We think the DOI {doi} could be a medRxiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeMetaarxiv": {
+    "message": "We think the DOI {doi} could be a MetaArXiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeOsf": {
+    "message": "We think the DOI {doi} could be an OSF preprint, but we can’t find any details."
+  },
+  "doiCouldBePreprintsorg": {
+    "message": "We think the DOI {doi} could be a Preprints.org preprint, but we can’t find any details."
+  },
+  "doiCouldBePsyarxiv": {
+    "message": "We think the DOI {doi} could be a PsyArXiv preprint, but we can’t find any details."
+  },
+  "doiCouldBePsycharchives": {
+    "message": "We think the DOI {doi} could be a PsychArchives preprint, but we can’t find any details."
+  },
+  "doiCouldBeResearchSquare": {
+    "message": "We think the DOI {doi} could be a Research Square preprint, but we can’t find any details."
+  },
+  "doiCouldBeScielo": {
+    "message": "We think the DOI {doi} could be a SciELO preprint, but we can’t find any details."
+  },
+  "doiCouldBeScienceOpen": {
+    "message": "We think the DOI {doi} could be a ScienceOpen preprint, but we can’t find any details."
+  },
+  "doiCouldBeSocarxiv": {
+    "message": "We think the DOI {doi} could be a SocArXiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeTechrxiv": {
+    "message": "We think the DOI {doi} could be a TechRxiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeVerixiv": {
+    "message": "We think the DOI {doi} could be a VeriXiv preprint, but we can’t find any details."
+  },
+  "doiCouldBeZenodo": {
+    "message": "We think the DOI {doi} could be a Zenodo preprint, but we can’t find any details."
+  },
+  "doiCouldBeZenodoAfricarxiv": {
+    "message": "We think the DOI {doi} could be a Zenodo or AfricArXiv preprint, but we can’t find any details."
+  },
+  "urlCouldBePhilsci": {
+    "message": "We think the URL {url} could be a PhilSci-Archive preprint, but we can’t find any details."
+  },
+  "checkCorrectDoi": {
+    "message": "If you typed the DOI, check it is correct."
+  },
+  "checkCorrectUrl": {
+    "message": "If you typed the URL, check it is correct."
+  },
+  "checkPastedDoi": {
+    "message": "If you pasted the DOI, check you copied the entire address."
+  },
+  "checkPastedUrl": {
+    "message": "If you pasted the URL, check you copied the entire address."
+  },
+  "doiIsCorrect": {
+    "message": "If the DOI is correct, please <contact>get in touch</contact>."
+  },
+  "urlIsCorrect": {
+    "message": "If the URL is correct, please <contact>get in touch</contact>."
   },
   "supportPreprintsFrom": {
     "message": "We support preprints from Advance, AfricArXiv, Arcadia Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, Jxiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research Square, SciELO, ScienceOpen, SocArXiv, TechRxiv, VeriXiv and Zenodo."
