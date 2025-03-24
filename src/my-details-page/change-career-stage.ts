@@ -15,13 +15,23 @@ import { createFormPage } from './change-career-stage-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof changeCareerStage>>
 
-export const changeCareerStage = ({ body, method, user }: { body: unknown; method: string; user?: User }) =>
+export const changeCareerStage = ({
+  body,
+  locale,
+  method,
+  user,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  method: string
+  user?: User
+}) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.matchEW(
       error =>
         match(error)

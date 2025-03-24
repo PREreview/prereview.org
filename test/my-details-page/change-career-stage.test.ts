@@ -13,9 +13,10 @@ describe('changeCareerStage', () => {
     fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
+    fc.supportedLocale(),
     fc.either(fc.constantFrom('not-found', 'unavailable'), fc.careerStage()),
-  ])('when there is a logged in user', async (body, method, user, careerStage) => {
-    const actual = await _.changeCareerStage({ body, method, user })({
+  ])('when there is a logged in user', async (body, method, user, locale, careerStage) => {
+    const actual = await _.changeCareerStage({ body, locale, method, user })({
       deleteCareerStage: shouldNotBeCalled,
       getCareerStage: () => TE.fromEither(careerStage),
       saveCareerStage: shouldNotBeCalled,
@@ -34,12 +35,12 @@ describe('changeCareerStage', () => {
   })
 
   describe('when the form has been submitted', () => {
-    test.prop([fc.careerStageValue(), fc.user(), fc.careerStage()])(
+    test.prop([fc.careerStageValue(), fc.user(), fc.supportedLocale(), fc.careerStage()])(
       'there is a career stage already',
-      async (careerStage, user, existingCareerStage) => {
+      async (careerStage, user, locale, existingCareerStage) => {
         const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
-        const actual = await _.changeCareerStage({ body: { careerStage }, method: 'POST', user })({
+        const actual = await _.changeCareerStage({ body: { careerStage }, locale, method: 'POST', user })({
           deleteCareerStage: shouldNotBeCalled,
           getCareerStage: () => TE.right(existingCareerStage),
           saveCareerStage,
@@ -57,12 +58,12 @@ describe('changeCareerStage', () => {
       },
     )
 
-    test.prop([fc.careerStageValue(), fc.user()])(
+    test.prop([fc.careerStageValue(), fc.user(), fc.supportedLocale()])(
       "when there isn't a career stage already",
-      async (careerStage, user) => {
+      async (careerStage, user, locale) => {
         const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
-        const actual = await _.changeCareerStage({ body: { careerStage }, method: 'POST', user })({
+        const actual = await _.changeCareerStage({ body: { careerStage }, locale, method: 'POST', user })({
           deleteCareerStage: shouldNotBeCalled,
           getCareerStage: () => TE.left('not-found'),
           saveCareerStage,
@@ -81,11 +82,12 @@ describe('changeCareerStage', () => {
   test.prop([
     fc.oneof(fc.careerStageValue(), fc.constant('skip')),
     fc.user(),
+    fc.supportedLocale(),
     fc.either(fc.constantFrom('not-found', 'unavailable'), fc.careerStage()),
   ])(
     'when the form has been submitted but the career stage cannot be saved',
-    async (careerStage, user, existingCareerStage) => {
-      const actual = await _.changeCareerStage({ body: { careerStage }, method: 'POST', user })({
+    async (careerStage, user, locale, existingCareerStage) => {
+      const actual = await _.changeCareerStage({ body: { careerStage }, locale, method: 'POST', user })({
         deleteCareerStage: () => TE.left('unavailable'),
         getCareerStage: () => TE.fromEither(existingCareerStage),
         saveCareerStage: () => TE.left('unavailable'),
@@ -102,10 +104,10 @@ describe('changeCareerStage', () => {
     },
   )
 
-  test.prop([fc.user()])('when the form has been skipped', async user => {
+  test.prop([fc.user(), fc.supportedLocale()])('when the form has been skipped', async (user, locale) => {
     const deleteCareerStage = jest.fn<_.Env['deleteCareerStage']>(_ => TE.right(undefined))
 
-    const actual = await _.changeCareerStage({ body: { careerStage: 'skip' }, method: 'POST', user })({
+    const actual = await _.changeCareerStage({ body: { careerStage: 'skip' }, locale, method: 'POST', user })({
       deleteCareerStage,
       getCareerStage: shouldNotBeCalled,
       saveCareerStage: shouldNotBeCalled,
@@ -119,10 +121,10 @@ describe('changeCareerStage', () => {
     expect(deleteCareerStage).toHaveBeenCalledWith(user.orcid)
   })
 
-  test.prop([fc.record({ careerStage: fc.lorem() }, { requiredKeys: [] }), fc.user()])(
+  test.prop([fc.record({ careerStage: fc.lorem() }, { requiredKeys: [] }), fc.user(), fc.supportedLocale()])(
     'when the form has been submitted without setting career stage',
-    async (body, user) => {
-      const actual = await _.changeCareerStage({ body, method: 'POST', user })({
+    async (body, user, locale) => {
+      const actual = await _.changeCareerStage({ body, locale, method: 'POST', user })({
         deleteCareerStage: shouldNotBeCalled,
         getCareerStage: shouldNotBeCalled,
         saveCareerStage: shouldNotBeCalled,
@@ -141,16 +143,19 @@ describe('changeCareerStage', () => {
     },
   )
 
-  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
-    const actual = await _.changeCareerStage({ body, method, user: undefined })({
-      deleteCareerStage: shouldNotBeCalled,
-      getCareerStage: shouldNotBeCalled,
-      saveCareerStage: shouldNotBeCalled,
-    })()
+  test.prop([fc.anything(), fc.string(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (body, method, locale) => {
+      const actual = await _.changeCareerStage({ body, locale, method, user: undefined })({
+        deleteCareerStage: shouldNotBeCalled,
+        getCareerStage: shouldNotBeCalled,
+        saveCareerStage: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(myDetailsMatch.formatter, {}),
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    },
+  )
 })
