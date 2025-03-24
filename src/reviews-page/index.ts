@@ -33,7 +33,7 @@ export const reviewsPage = ({
       error =>
         match(error)
           .with('not-found', () => (page === 1 ? emptyPage({ field, language, query }, locale) : pageNotFound(locale)))
-          .with('unavailable', () => failureMessage)
+          .with('unavailable', () => failureMessage(locale))
           .exhaustive(),
       prereviews => createPage(prereviews, locale),
     ),
