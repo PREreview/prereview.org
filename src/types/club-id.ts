@@ -16,6 +16,7 @@ export const clubIds = [
   'biopeers-slu',
   'biophysics-leipzig',
   'bios2',
+  'bloomington-biology',
   'cara',
   'emerge',
   'etymos-analytica',

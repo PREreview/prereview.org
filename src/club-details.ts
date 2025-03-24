@@ -233,6 +233,18 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     ],
     joinLink: new URL('https://tally.so/r/wdPM9d'),
   },
+  'bloomington-biology': {
+    name: 'IU Bloomington Biology Club',
+    description: html`
+      <p>
+        The IU Bloomington Biology Club is associated with the graduate course Peer Review in the Life Sciences
+        (BIOL-Z620). Its purpose is to formally teach graduate students how to peer review manuscripts in a critical and
+        constructive way, and to promote an open access to science, transparency and journal-agnostic evaluation of
+        scientific work.
+      </p>
+    `,
+    leads: [{ name: 'Alizée Malnoë', orcid: Orcid('0000-0002-8777-3174') }],
+  },
   cara: {
     name: 'CARA: Critical Analysis of Research Articles Club',
     description: html`
