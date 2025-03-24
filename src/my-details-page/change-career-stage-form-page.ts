@@ -4,15 +4,19 @@ import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.js'
 import { html, plainText, rawHtml } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeCareerStageMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = ({
   careerStage,
   error = false,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  locale,
 }: {
   careerStage: Option.Option<CareerStage>
   error?: boolean
+  locale: SupportedLocale
 }) =>
   PageResponse({
     status: error ? Status.BadRequest : Status.OK,

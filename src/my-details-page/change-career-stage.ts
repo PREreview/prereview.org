@@ -1,4 +1,4 @@
-import { flow, Option, pipe, Struct } from 'effect'
+import { Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -7,7 +7,7 @@ import { match, P } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { deleteCareerStage, getCareerStage, saveCareerStage } from '../career-stage.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -21,6 +21,7 @@ export const changeCareerStage = ({ body, method, user }: { body: unknown; metho
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.matchEW(
       error =>
         match(error)
@@ -30,19 +31,20 @@ export const changeCareerStage = ({ body, method, user }: { body: unknown; metho
     ),
   )
 
-const showChangeCareerStageForm = flow(
-  ({ user }: { user: User }) => getCareerStage(user.orcid),
-  RTE.match(Option.none, Option.some),
-  RT.map(careerStage => createFormPage({ careerStage })),
-)
+const showChangeCareerStageForm = ({ locale, user }: { locale: SupportedLocale; user: User }) =>
+  pipe(
+    getCareerStage(user.orcid),
+    RTE.match(Option.none, Option.some),
+    RT.map(careerStage => createFormPage({ careerStage, locale })),
+  )
 
 const ChangeCareerStageFormD = pipe(D.struct({ careerStage: D.literal('early', 'mid', 'late', 'skip') }))
 
-const handleChangeCareerStageForm = ({ body, user }: { body: unknown; user: User }) =>
+const handleChangeCareerStageForm = ({ body, locale, user }: { body: unknown; locale: SupportedLocale; user: User }) =>
   pipe(
     RTE.fromEither(ChangeCareerStageFormD.decode(body)),
     RTE.matchE(
-      () => RT.of(createFormPage({ careerStage: Option.none(), error: true })),
+      () => RT.of(createFormPage({ careerStage: Option.none(), error: true, locale })),
       ({ careerStage }) =>
         match(careerStage)
           .with(P.union('early', 'mid', 'late'), careerStage =>

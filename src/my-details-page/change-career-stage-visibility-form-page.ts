@@ -2,10 +2,12 @@ import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.js'
 import { html, plainText } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../routes.js'
 
-export const createFormPage = ({ careerStage }: { careerStage: CareerStage }) =>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const createFormPage = ({ careerStage, locale }: { careerStage: CareerStage; locale: SupportedLocale }) =>
   PageResponse({
     title: plainText`Who can see your career stage?`,
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,

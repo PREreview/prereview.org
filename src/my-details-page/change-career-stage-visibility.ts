@@ -21,6 +21,7 @@ export const changeCareerStageVisibility = ({ body, method, user }: { body: unkn
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.bindW('careerStage', ({ user }) => getCareerStage(user.orcid)),
     RTE.matchE(
       error =>
