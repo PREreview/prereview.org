@@ -199,5 +199,20 @@
   },
   "preferNotToSay": {
     "message": "Prefer not to say"
+  },
+  "seeCareerStage": {
+    "message": "Who can see your career stage?"
+  },
+  "everyone": {
+    "message": "Everyone"
+  },
+  "showOnPublic": {
+    "message": "We’ll show it on your public profile."
+  },
+  "onlyPrereview": {
+    "message": "Only PREreview"
+  },
+  "willNotShare": {
+    "message": "We won’t share it with anyone else."
   }
 }
