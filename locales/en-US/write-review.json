@@ -8,11 +8,17 @@
   "havingProblems": {
     "message": "Sorry, we’re having problems"
   },
+  "ownPreprint": {
+    "message": "Sorry, you can’t review your own preprint"
+  },
   "unableToPublish": {
     "message": "We were unable to publish your PREreview. We saved your work."
   },
   "tryAgainLater": {
     "message": "Please try again later by coming back to this page."
+  },
+  "ifNotAuthor": {
+    "message": "If you’re not an author, please <contact>get in touch</contact>."
   },
   "getInTouch": {
     "message": "If this problem persists, please <contact>get in touch</contact>."

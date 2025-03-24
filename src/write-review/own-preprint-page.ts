@@ -1,7 +1,7 @@
-import { type Formatter, format } from 'fp-ts-routing'
+import { format, type Formatter } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { preprintReviewsMatch } from '../routes.js'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
@@ -9,21 +9,22 @@ import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.j
 export const ownPreprintPage = (
   preprint: PreprintId,
   canonical: Formatter<{ id: IndeterminatePreprintId }>,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   locale: SupportedLocale,
 ) =>
   PageResponse({
     status: Status.Forbidden,
-    title: plainText`Sorry, you can’t review your own preprint`,
+    title: plainText(translate(locale, 'write-review', 'ownPreprint')()),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back"
-        ><span>Back to preprint</span></a
+        ><span>${translate(locale, 'write-review', 'backToPreprint')()}</span></a
       >
     `,
     main: html`
-      <h1>Sorry, you can’t review your own preprint</h1>
+      <h1>${translate(locale, 'write-review', 'ownPreprint')()}</h1>
 
-      <p>If you’re not an author, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+      <p>${rawHtml(translate(locale, 'write-review', 'ifNotAuthor')({ contact: mailToHelp }))}</p>
     `,
     canonical: format(canonical, { id: preprint }),
   })
+
+const mailToHelp = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()
