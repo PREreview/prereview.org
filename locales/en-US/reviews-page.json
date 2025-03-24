@@ -43,5 +43,14 @@
   },
   "appearHere": {
     "message": "When they do, they’ll appear here."
+  },
+  "havingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
+  "unableToShow": {
+    "message": "We’re unable to show this page of recent PREreviews now."
+  },
+  "tryAgainLater": {
+    "message": "Please try again later."
   }
 }
