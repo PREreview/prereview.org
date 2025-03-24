@@ -187,5 +187,17 @@
   },
   "saveAndContinueButton": {
     "message": "Save and continue"
+  },
+  "whatCareerStage": {
+    "message": "<error>Error:</error> What career stage are you at?"
+  },
+  "selectCareerStageError": {
+    "message": "<error>Error:</error> Select which career stage you are at"
+  },
+  "or": {
+    "message": "or"
+  },
+  "preferNotToSay": {
+    "message": "Prefer not to say"
   }
 }
