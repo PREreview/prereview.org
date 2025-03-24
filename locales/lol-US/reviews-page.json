@@ -43,5 +43,14 @@
   },
   "appearHere": {
     "message": "crwdns2158:0crwdne2158:0"
+  },
+  "havingProblems": {
+    "message": "crwdns5245:0crwdne5245:0"
+  },
+  "unableToShow": {
+    "message": "crwdns5247:0crwdne5247:0"
+  },
+  "tryAgainLater": {
+    "message": "crwdns5249:0crwdne5249:0"
   }
 }

@@ -8,11 +8,17 @@
   "havingProblems": {
     "message": "crwdns5060:0crwdne5060:0"
   },
+  "ownPreprint": {
+    "message": "crwdns5283:0crwdne5283:0"
+  },
   "unableToPublish": {
     "message": "crwdns5062:0crwdne5062:0"
   },
   "tryAgainLater": {
     "message": "crwdns5064:0crwdne5064:0"
+  },
+  "ifNotAuthor": {
+    "message": "crwdns5285:0crwdne5285:0"
   },
   "getInTouch": {
     "message": "crwdns5066:0crwdne5066:0"
@@ -562,6 +568,24 @@
   },
   "iAmFollowingCodeOfConduct": {
     "message": "crwdns4488:0crwdne4488:0"
+  },
+  "contactDetails": {
+    "message": "crwdns5233:0crwdne5233:0"
+  },
+  "enterEmailAddressError": {
+    "message": "crwdns5235:0crwdne5235:0"
+  },
+  "enterEmailAddressFormatError": {
+    "message": "crwdns5237:0crwdne5237:0"
+  },
+  "confirmEmailAddress": {
+    "message": "crwdns5239:0crwdne5239:0"
+  },
+  "onlyUseContact": {
+    "message": "crwdns5241:0crwdne5241:0"
+  },
+  "whatIsYourEmail": {
+    "message": "crwdns5243:0crwdne5243:0"
   },
   "areTheDataPresentationsWellSuited": {
     "message": "crwdns4739:0crwdne4739:0"
