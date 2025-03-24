@@ -2,11 +2,13 @@ import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { requestAPrereviewMatch } from '../routes.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
 
-export const unknownPreprintPage = (preprint: IndeterminatePreprintId) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: SupportedLocale) => {
   return PageResponse({
     status: Status.BadRequest,
     title: plainText`Sorry, we don’t know this preprint`,
