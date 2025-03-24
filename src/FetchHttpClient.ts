@@ -45,7 +45,6 @@ const transmogrifyHttpClient: Effect.Effect<
     convertRequest,
     Effect.andThen(client.execute),
     Effect.andThen(convertResponse),
-    Effect.scoped,
     Runtime.runPromise(runtime),
   )
 })
