@@ -7,7 +7,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { type CareerStage, getCareerStage, saveCareerStage } from '../career-stage.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -15,13 +15,23 @@ import { createFormPage } from './change-career-stage-visibility-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof changeCareerStageVisibility>>
 
-export const changeCareerStageVisibility = ({ body, method, user }: { body: unknown; method: string; user?: User }) =>
+export const changeCareerStageVisibility = ({
+  body,
+  locale,
+  method,
+  user,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  method: string
+  user?: User
+}) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.bindW('careerStage', ({ user }) => getCareerStage(user.orcid)),
     RTE.matchE(
       error =>
@@ -29,7 +39,7 @@ export const changeCareerStageVisibility = ({ body, method, user }: { body: unkn
           .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
           .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
           .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
-          .with('unavailable', () => RT.of(havingProblemsPage(DefaultLocale)))
+          .with('unavailable', () => RT.of(havingProblemsPage(locale)))
           .exhaustive(),
       state =>
         match(state)
@@ -43,10 +53,12 @@ const ChangeCareerStageVisibilityFormD = pipe(D.struct({ careerStageVisibility: 
 const handleChangeCareerStageVisibilityForm = ({
   body,
   careerStage,
+  locale,
   user,
 }: {
   body: unknown
   careerStage: CareerStage
+  locale: SupportedLocale
   user: User
 }) =>
   pipe(
@@ -57,7 +69,7 @@ const handleChangeCareerStageVisibilityForm = ({
         ({ careerStageVisibility }) => ({ ...careerStage, visibility: careerStageVisibility }),
         careerStage => saveCareerStage(user.orcid, careerStage),
         RTE.matchW(
-          () => havingProblemsPage(DefaultLocale),
+          () => havingProblemsPage(locale),
           () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
         ),
       ),
