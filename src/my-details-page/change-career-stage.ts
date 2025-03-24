@@ -7,7 +7,7 @@ import { match, P } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { deleteCareerStage, getCareerStage, saveCareerStage } from '../career-stage.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -75,7 +75,7 @@ const handleChangeCareerStageForm = ({ body, locale, user }: { body: unknown; lo
               ),
               RTE.chain(careerStage => saveCareerStage(user.orcid, careerStage)),
               RTE.matchW(
-                () => havingProblemsPage(DefaultLocale),
+                () => havingProblemsPage(locale),
                 () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
               ),
             ),
@@ -84,7 +84,7 @@ const handleChangeCareerStageForm = ({ body, locale, user }: { body: unknown; lo
             pipe(
               deleteCareerStage(user.orcid),
               RTE.matchW(
-                () => havingProblemsPage(DefaultLocale),
+                () => havingProblemsPage(locale),
                 () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
               ),
             ),
