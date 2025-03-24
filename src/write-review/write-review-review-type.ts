@@ -77,7 +77,9 @@ export const writeReviewReviewType = ({
             error =>
               RT.of(
                 match(error)
-                  .with({ type: 'is-author' }, () => ownPreprintPage(preprint.id, writeReviewReviewTypeMatch.formatter))
+                  .with({ type: 'is-author' }, () =>
+                    ownPreprintPage(preprint.id, writeReviewReviewTypeMatch.formatter, locale),
+                  )
                   .with('no-session', () =>
                     LogInResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )

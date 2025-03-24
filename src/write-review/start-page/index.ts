@@ -51,7 +51,9 @@ export const writeReviewStart = ({
           RTE.matchW(
             error =>
               match(error)
-                .with({ type: 'is-author' }, () => ownPreprintPage(preprint.id, writeReviewStartMatch.formatter))
+                .with({ type: 'is-author' }, () =>
+                  ownPreprintPage(preprint.id, writeReviewStartMatch.formatter, locale),
+                )
                 .with('no-form', () =>
                   RedirectResponse({ location: format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }) }),
                 )

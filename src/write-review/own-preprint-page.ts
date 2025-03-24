@@ -1,11 +1,17 @@
 import { type Formatter, format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { html, plainText } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { preprintReviewsMatch } from '../routes.js'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 
-export const ownPreprintPage = (preprint: PreprintId, canonical: Formatter<{ id: IndeterminatePreprintId }>) =>
+export const ownPreprintPage = (
+  preprint: PreprintId,
+  canonical: Formatter<{ id: IndeterminatePreprintId }>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  locale: SupportedLocale,
+) =>
   PageResponse({
     status: Status.Forbidden,
     title: plainText`Sorry, you can’t review your own preprint`,
