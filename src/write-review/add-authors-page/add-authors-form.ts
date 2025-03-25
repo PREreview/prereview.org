@@ -10,7 +10,6 @@ import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import {
-  writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewChangeAuthorMatch,
@@ -147,7 +146,7 @@ export function addAuthorsForm({
         <button>${t('write-review', 'continueButton')()}</button>
       </form>
     `,
-    canonical: format(writeReviewAddAuthorMatch.formatter, { id: preprint.id }),
+    canonical: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }),
     skipToLabel: 'form',
     js: ['error-summary.js'],
   })
