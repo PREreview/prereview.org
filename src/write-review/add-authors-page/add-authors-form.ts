@@ -148,7 +148,7 @@ export function addAuthorsForm({
     `,
     canonical: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }),
     skipToLabel: 'form',
-    js: ['error-summary.js'],
+    js: error ? ['error-summary.js'] : [],
   })
 }
 

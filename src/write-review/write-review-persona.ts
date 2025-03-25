@@ -245,7 +245,7 @@ function personaForm(
         </form>
       </main>
     `,
-    js: ['error-summary.js'],
+    js: error ? ['error-summary.js'] : [],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
     locale,
