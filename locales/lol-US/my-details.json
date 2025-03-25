@@ -187,5 +187,32 @@
   },
   "saveAndContinueButton": {
     "message": "crwdns5277:0crwdne5277:0"
+  },
+  "whatCareerStage": {
+    "message": "crwdns5359:0crwdne5359:0"
+  },
+  "selectCareerStageError": {
+    "message": "crwdns5361:0crwdne5361:0"
+  },
+  "or": {
+    "message": "crwdns5363:0crwdne5363:0"
+  },
+  "preferNotToSay": {
+    "message": "crwdns5365:0crwdne5365:0"
+  },
+  "seeCareerStage": {
+    "message": "crwdns5367:0crwdne5367:0"
+  },
+  "everyone": {
+    "message": "crwdns5369:0crwdne5369:0"
+  },
+  "showOnPublic": {
+    "message": "crwdns5371:0crwdne5371:0"
+  },
+  "onlyPrereview": {
+    "message": "crwdns5373:0crwdne5373:0"
+  },
+  "willNotShare": {
+    "message": "crwdns5375:0crwdne5375:0"
   }
 }
