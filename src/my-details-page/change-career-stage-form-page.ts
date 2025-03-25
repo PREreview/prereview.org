@@ -99,7 +99,7 @@ export const createFormPage = ({
                 <span>${translate(locale, 'my-details', 'or')()}</span>
                 <label>
                   <input name="careerStage" type="radio" value="skip" />
-                  <span>${translate(locale, 'my-details', 'preferNotToSay')()}y</span>
+                  <span>${translate(locale, 'my-details', 'preferNotToSay')()}</span>
                 </label>
               </li>
             </ol>
