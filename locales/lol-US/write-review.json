@@ -152,9 +152,6 @@
   "listFlowConcerns": {
     "message": "crwdns5014:0crwdne5014:0"
   },
-  "yesIfAnotherAuthor": {
-    "message": "crwdns3924:0crwdne3924:0"
-  },
   "addedAuthorCount": {
     "message": "crwdns3926:0authorCount={authorCount}crwdnd3926:0authorCount={authorCount}crwdne3926:0"
   },
@@ -172,9 +169,6 @@
   },
   "addAnotherAuthor": {
     "message": "crwdns5377:0crwdne5377:0"
-  },
-  "needToAddAuthor": {
-    "message": "crwdns3936:0crwdne3936:0"
   },
   "no": {
     "message": "crwdns3938:0crwdne3938:0"
@@ -364,6 +358,9 @@
   },
   "sureYouWantToRemove": {
     "message": "crwdns4380:0{authorName}crwdne4380:0"
+  },
+  "yesRemove": {
+    "message": "crwdns5379:0{authorName}crwdne5379:0"
   },
   "writeAPrereview": {
     "message": "crwdns4382:0crwdne4382:0"
