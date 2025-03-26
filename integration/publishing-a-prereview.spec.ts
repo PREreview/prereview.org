@@ -2594,8 +2594,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    testInfo.fail()
-
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
@@ -2609,6 +2607,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
     await page.getByRole('link', { name: 'Enter the author names and email addresses' }).click()
 
     await expect(page.getByLabel('Enter names and email address of the other authors')).toBeFocused()
+
+    testInfo.fail()
 
     await page.getByLabel('Enter names and email address of the other authors').fill('not names and email addresses')
     await page.getByRole('button', { name: 'Save and continue' }).click()

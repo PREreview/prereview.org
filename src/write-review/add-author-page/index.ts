@@ -66,8 +66,9 @@ export const writeReviewAddAuthor = ({
               ),
             state =>
               match(state)
-                .with({ form: { moreAuthors: 'yes' }, canAddMultipleAuthors: true, method: 'POST' }, ({ locale }) =>
-                  RT.of(havingProblemsPage(locale)),
+                .with(
+                  { form: { moreAuthors: 'yes' }, canAddMultipleAuthors: true, method: 'POST' },
+                  handleAddMultipleAuthorsForm,
                 )
                 .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleAddAuthorForm)
                 .with({ form: { moreAuthors: 'yes' }, canAddMultipleAuthors: true }, ({ form, preprint, locale }) =>
@@ -98,6 +99,55 @@ export const writeReviewAddAuthor = ({
         ),
     ),
   )
+
+const handleAddMultipleAuthorsForm = ({
+  body,
+  form,
+  locale,
+  preprint,
+}: {
+  body: unknown
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+}) =>
+  pipe(
+    RTE.Do,
+    RTE.let('authors', () =>
+      pipe(
+        AuthorsFieldD.decode(body),
+        E.mapLeft(error =>
+          match(getInput('emailAddress')(error))
+            .with(P.union(P.when(Option.isNone), { value: '' }), () => missingE())
+            .with({ value: P.select() }, invalidE)
+            .exhaustive(),
+        ),
+      ),
+    ),
+    RTE.chainEitherK(fields =>
+      pipe(
+        E.Do,
+        E.apS('authors', fields.authors),
+        E.mapLeft(() => fields),
+      ),
+    ),
+    RTE.matchW(
+      error =>
+        match(error)
+          .with({ authors: P.any }, error =>
+            addMultipleAuthorsForm({
+              form: error,
+              preprint,
+              otherAuthors: (form.otherAuthors ?? []).length > 0,
+              locale,
+            }),
+          )
+          .exhaustive(),
+      () => havingProblemsPage(locale),
+    ),
+  )
+
+const AuthorsFieldD = pipe(D.struct({ authors: NonEmptyStringC }), D.map(Struct.get('authors')))
 
 const handleAddAuthorForm = ({
   body,

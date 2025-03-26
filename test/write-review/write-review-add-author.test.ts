@@ -16,7 +16,7 @@ describe('writeReviewAddAuthor', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.anything(),
+      fc.record({ authors: fc.nonEmptyString() }),
       fc.user(),
       fc.supportedLocale(),
       fc.completedForm({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors() }),
@@ -49,7 +49,7 @@ describe('writeReviewAddAuthor', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.anything(),
+      fc.record({ authors: fc.nonEmptyString() }),
       fc.user(),
       fc.supportedLocale(),
       fc.incompleteForm({ moreAuthors: fc.constant('yes') }),
