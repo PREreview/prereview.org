@@ -7,6 +7,7 @@ import { URL } from 'url'
 import { RecordC, RecordsC, type Record as ZenodoRecord } from 'zenodo-ts'
 import {
   areLoggedIn,
+  canAddMultipleAuthors,
   canLogIn,
   expect,
   hasAVerifiedEmailAddress,
@@ -688,6 +689,35 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     page = await opener
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Be listed as an author')
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
+  'can enter multiple authors at the same time',
+  async ({ page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await waitForNotBusy(page)
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, and some or all want to be listed as authors').check()
+    await page.getByLabel('They have read and approved the PREreview').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page
+      .getByLabel('Enter names and email address of the other authors')
+      .fill('Jean-Baptiste Botul jbbotul@example.com\nArne Saknussemm asaknussemm@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    testInfo.fail()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('You have added 2 other authors')
+    await expect(page.getByRole('main')).toContainText('Name Jean-Baptiste Botul Email address jbbotul@example.com')
+    await expect(page.getByRole('main')).toContainText('Name Arne Saknussemm Email address asaknussemm@example.com')
   },
 )
 
@@ -2540,6 +2570,62 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('Email address')).toBeFocused()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
+  "have to give the other author's details when entering multiple",
+  async ({ javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await waitForNotBusy(page)
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes, and some or all want to be listed as authors').click()
+    await page.getByLabel('They have read and approved the PREreview').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    testInfo.fail()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('Enter names and email address of the other authors')).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+
+    await page.getByRole('link', { name: 'Enter the author names and email addresses' }).click()
+
+    await expect(page.getByLabel('Enter names and email address of the other authors')).toBeFocused()
+
+    await page.getByLabel('Enter names and email address of the other authors').fill('not names and email addresses')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('Enter names and email address of the other authors')).not.toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+
+    await page.getByRole('link', { name: 'Enter the author names and email addresses in the correct format' }).click()
+
+    await expect(page.getByLabel('Enter names and email address of the other authors')).toBeFocused()
   },
 )
 

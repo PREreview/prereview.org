@@ -17,6 +17,7 @@ import { NonEmptyStringC } from '../../types/string.js'
 import type { User } from '../../user.js'
 import { type Form, type FormStoreEnv, getForm, saveForm, updateForm } from '../form.js'
 import { addAuthorForm } from './add-author-form.js'
+import { addMultipleAuthorsForm } from './add-multiple-authors.js'
 
 export const writeReviewAddAuthor = ({
   body,
@@ -65,10 +66,20 @@ export const writeReviewAddAuthor = ({
               ),
             state =>
               match(state)
-                .with({ form: { moreAuthors: 'yes' }, canAddMultipleAuthors: true }, ({ locale }) =>
+                .with({ form: { moreAuthors: 'yes' }, canAddMultipleAuthors: true, method: 'POST' }, ({ locale }) =>
                   RT.of(havingProblemsPage(locale)),
                 )
                 .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleAddAuthorForm)
+                .with({ form: { moreAuthors: 'yes' }, canAddMultipleAuthors: true }, ({ form, preprint, locale }) =>
+                  RT.of(
+                    addMultipleAuthorsForm({
+                      form: { authors: E.right(undefined) },
+                      preprint,
+                      otherAuthors: (form.otherAuthors ?? []).length > 0,
+                      locale,
+                    }),
+                  ),
+                )
                 .with({ form: { moreAuthors: 'yes' } }, ({ form, preprint, locale }) =>
                   RT.of(
                     addAuthorForm({

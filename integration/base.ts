@@ -91,6 +91,7 @@ interface AppFixtures {
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
+  canAddMultipleAuthors: typeof FeatureFlags.CanAddMultipleAuthors.Service
   mustDeclareUseOfAi: FeatureFlags.MustDeclareUseOfAiEnv['mustDeclareUseOfAi']
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
@@ -102,6 +103,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   baseURL: async ({ port }, use) => {
     await use(`http://localhost:${port}`)
+  },
+  canAddMultipleAuthors: async ({}, use) => {
+    await use(() => false)
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
@@ -1222,6 +1226,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         authorInviteStore,
         mustDeclareUseOfAi,
         nodemailer,
+        canAddMultipleAuthors,
       },
       use,
       testInfo,
@@ -1281,7 +1286,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         }),
         Effect.provide(
           FeatureFlags.layer({
-            canAddMultipleAuthors: () => false,
+            canAddMultipleAuthors,
             canChooseLocale: false,
             useCrowdinInContext: false,
           }),
@@ -2045,6 +2050,17 @@ export const invitedToBeAnAuthor: Fixtures<
     await page.setContent(email.html.toString())
 
     await use(page)
+  },
+}
+
+export const canAddMultipleAuthors: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canAddMultipleAuthors'>,
+  Record<never, never>
+> = {
+  canAddMultipleAuthors: async ({}, use) => {
+    await use(() => true)
   },
 }
 

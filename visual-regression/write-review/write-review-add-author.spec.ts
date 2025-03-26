@@ -6,6 +6,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import type { NonEmptyString } from '../../src/types/string.js'
 import { addAuthorForm } from '../../src/write-review/add-author-page/add-author-form.js'
+import { addMultipleAuthorsForm } from '../../src/write-review/add-author-page/add-multiple-authors.js'
 import { expect, test } from '../base.js'
 
 const preprint = {
@@ -53,6 +54,48 @@ test('content looks right when fields are invalid', async ({ showPage }) => {
     form: {
       name: E.right('a name' as NonEmptyString),
       emailAddress: E.left(invalidE('not an email address')),
+    },
+    preprint,
+    locale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when entering multiple', async ({ showPage }) => {
+  const response = addMultipleAuthorsForm({
+    form: {
+      authors: E.right(undefined),
+    },
+    preprint,
+    locale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when entering multiple and it is missing', async ({ showPage }) => {
+  const response = addMultipleAuthorsForm({
+    form: {
+      authors: E.left(missingE()),
+    },
+    preprint,
+    locale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when entering multiple and it is invalid', async ({ showPage }) => {
+  const response = addMultipleAuthorsForm({
+    form: {
+      authors: E.left(invalidE('not a list of names and email addresses')),
     },
     preprint,
     locale,
