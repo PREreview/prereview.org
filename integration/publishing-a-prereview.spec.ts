@@ -2575,7 +2575,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
   "have to give the other author's details when entering multiple",
-  async ({ javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -2607,8 +2607,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
     await page.getByRole('link', { name: 'Enter the author names and email addresses' }).click()
 
     await expect(page.getByLabel('Enter names and email address of the other authors')).toBeFocused()
-
-    testInfo.fail()
 
     await page.getByLabel('Enter names and email address of the other authors').fill('not names and email addresses')
     await page.getByRole('button', { name: 'Save and continue' }).click()

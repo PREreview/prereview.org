@@ -13,11 +13,12 @@ import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes.js'
 import { EmailAddressC } from '../../types/email-address.js'
 import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
-import { NonEmptyStringC } from '../../types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from '../../types/string.js'
 import type { User } from '../../user.js'
 import { type Form, type FormStoreEnv, getForm, saveForm, updateForm } from '../form.js'
 import { addAuthorForm } from './add-author-form.js'
 import { addMultipleAuthorsForm } from './add-multiple-authors.js'
+import { parseAuthors } from './parse-authors.js'
 
 export const writeReviewAddAuthor = ({
   body,
@@ -122,6 +123,16 @@ const handleAddMultipleAuthorsForm = ({
             .with({ value: P.select() }, invalidE)
             .exhaustive(),
         ),
+        E.chainW(
+          E.liftOption(
+            (authors: NonEmptyString) =>
+              pipe(
+                parseAuthors(authors),
+                Option.map(parsed => ({ authors, parsed })),
+              ),
+            invalidE,
+          ),
+        ),
       ),
     ),
     RTE.chainEitherK(fields =>
@@ -131,6 +142,13 @@ const handleAddMultipleAuthorsForm = ({
         E.mapLeft(() => fields),
       ),
     ),
+    RTE.mapLeft(fields => ({
+      ...fields,
+      authors: pipe(
+        fields.authors,
+        E.map(({ authors }) => authors),
+      ),
+    })),
     RTE.matchW(
       error =>
         match(error)

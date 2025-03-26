@@ -5,7 +5,7 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import { type GetPreprintTitleEnv, PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
-import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../src/routes.js'
+import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewMatch } from '../../src/routes.js'
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
@@ -37,12 +37,14 @@ describe('writeReviewAddAuthor', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        _tag: 'StreamlinePageResponse',
+        canonical: format(writeReviewAddAuthorMatch.formatter, { id: preprintTitle.id }),
+        status: Status.BadRequest,
         title: expect.anything(),
+        nav: expect.anything(),
         main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
       })
     })
 
@@ -70,12 +72,14 @@ describe('writeReviewAddAuthor', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        _tag: 'StreamlinePageResponse',
+        canonical: format(writeReviewAddAuthorMatch.formatter, { id: preprintTitle.id }),
+        status: Status.BadRequest,
         title: expect.anything(),
+        nav: expect.anything(),
         main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
       })
     })
   })
