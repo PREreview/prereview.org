@@ -1,6 +1,6 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
+import { Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
@@ -34,7 +34,10 @@ pipe(
   Effect.provide(
     Layer.mergeAll(
       FeatureFlags.layerConfig({
-        canAddMultipleAuthors: Config.succeed(() => false),
+        canAddMultipleAuthors: pipe(
+          Config.withDefault(Config.boolean('CAN_ADD_MULTIPLE_AUTHORS'), false),
+          Config.map(Function.constant),
+        ),
         canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
       }),
