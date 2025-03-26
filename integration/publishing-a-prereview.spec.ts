@@ -2618,7 +2618,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
     } else {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
-    await expect(page.getByLabel('Enter names and email address of the other authors')).not.toHaveAttribute(
+    await expect(page.getByLabel('Enter names and email address of the other authors')).toHaveAttribute(
       'aria-invalid',
       'true',
     )
