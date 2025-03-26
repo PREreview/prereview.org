@@ -18,3 +18,11 @@ export function isNonEmptyString(value: string): value is NonEmptyString {
 interface NonEmptyStringBrand {
   readonly NonEmptyString: unique symbol
 }
+
+export const NonEmptyString = (nonEmptyString: string): NonEmptyString => {
+  if (!isNonEmptyString(nonEmptyString)) {
+    throw new Error('String is empty')
+  }
+
+  return nonEmptyString
+}

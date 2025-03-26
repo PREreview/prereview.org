@@ -1,11 +1,12 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { Array, String } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import { type GetPreprintTitleEnv, PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
-import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewMatch } from '../../src/routes.js'
+import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../src/routes.js'
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
@@ -16,7 +17,12 @@ describe('writeReviewAddAuthor', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.record({ authors: fc.nonEmptyString() }),
+      fc.record({
+        authors: fc
+          .nonEmptyArray(fc.record({ name: fc.lorem(), emailAddress: fc.emailAddress() }))
+          .map(Array.reduce('', (string, author) => `${string}\n${author.name} ${author.emailAddress}`))
+          .map(String.trim),
+      }),
       fc.user(),
       fc.supportedLocale(),
       fc.completedForm({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors() }),
@@ -37,21 +43,24 @@ describe('writeReviewAddAuthor', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: format(writeReviewAddAuthorMatch.formatter, { id: preprintTitle.id }),
-        status: Status.BadRequest,
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
         title: expect.anything(),
-        nav: expect.anything(),
         main: expect.anything(),
-        skipToLabel: 'form',
-        js: ['error-summary.js'],
+        skipToLabel: 'main',
+        js: [],
       })
     })
 
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.record({ authors: fc.nonEmptyString() }),
+      fc.record({
+        authors: fc
+          .nonEmptyArray(fc.record({ name: fc.lorem(), emailAddress: fc.emailAddress() }))
+          .map(Array.reduce('', (string, author) => `${string}\n${author.name} ${author.emailAddress}`))
+          .map(String.trim),
+      }),
       fc.user(),
       fc.supportedLocale(),
       fc.incompleteForm({ moreAuthors: fc.constant('yes') }),
@@ -72,14 +81,12 @@ describe('writeReviewAddAuthor', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: format(writeReviewAddAuthorMatch.formatter, { id: preprintTitle.id }),
-        status: Status.BadRequest,
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
         title: expect.anything(),
-        nav: expect.anything(),
         main: expect.anything(),
-        skipToLabel: 'form',
-        js: ['error-summary.js'],
+        skipToLabel: 'main',
+        js: [],
       })
     })
   })

@@ -4,7 +4,7 @@ import { Option } from 'effect'
 import * as _ from '../../../src/write-review/add-author-page/parse-authors.js'
 
 describe('parseAuthors', () => {
-  test.failing.each([
+  test.each([
     ['single', 'Foo Bar foo@example.com', [{ name: 'Foo Bar', emailAddress: 'foo@example.com' }]],
     [
       'multiple',
