@@ -150,7 +150,9 @@ export function addAuthorsForm({
           : html`
               <div class="button-group" role="group">
                 <button>${t('write-review', 'continueButton')()}</button>
-                <a href="${format(writeReviewAddAuthorMatch.formatter, { id: preprint.id })}">Add another author</a>
+                <a href="${format(writeReviewAddAuthorMatch.formatter, { id: preprint.id })}"
+                  >${t('write-review', 'addAnotherAuthor')()}</a
+                >
               </div>
             `}
       </form>

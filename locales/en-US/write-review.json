@@ -170,6 +170,9 @@
   "name": {
     "message": "Name"
   },
+  "addAnotherAuthor": {
+    "message": "Add another author"
+  },
   "needToAddAuthor": {
     "message": "Do you need to add another author?"
   },
