@@ -5,10 +5,6 @@ export class CanChooseLocale extends Context.Tag('CanChooseLocale')<CanChooseLoc
 
 export class UseCrowdinInContext extends Context.Tag('UseCrowdinInContext')<UseCrowdinInContext, boolean>() {}
 
-export interface CanChooseLocaleEnv {
-  canChooseLocale: boolean
-}
-
 export interface MustDeclareUseOfAiEnv {
   mustDeclareUseOfAi: boolean
 }
