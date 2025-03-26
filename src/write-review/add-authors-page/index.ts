@@ -107,7 +107,13 @@ const handleAddAuthorsForm = ({
 }) =>
   pipe(
     E.Do,
-    E.let('anotherAuthor', () => pipe(AnotherAuthorFieldD.decode(body), E.mapLeft(missingE))),
+    E.let('anotherAuthor', () =>
+      pipe(
+        AnotherAuthorFieldD.decode(body),
+        E.altW(() => E.right('no' as const)),
+        E.mapLeft(missingE),
+      ),
+    ),
     E.chain(fields =>
       pipe(
         E.Do,

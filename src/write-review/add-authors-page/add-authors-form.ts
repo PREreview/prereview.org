@@ -10,6 +10,7 @@ import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import {
+  writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewChangeAuthorMatch,
@@ -90,60 +91,68 @@ export function addAuthorsForm({
             </div>
           `,
         )}
+        ${error
+          ? html`
+              <div ${rawHtml(E.isLeft(form.anotherAuthor) ? 'class="error"' : '')}>
+                <fieldset
+                  role="group"
+                  ${rawHtml(
+                    E.isLeft(form.anotherAuthor) ? 'aria-invalid="true" aria-errormessage="another-author-error"' : '',
+                  )}
+                >
+                  <legend><h2>${t('write-review', 'needToAddAuthor')()}</h2></legend>
 
-        <div ${rawHtml(E.isLeft(form.anotherAuthor) ? 'class="error"' : '')}>
-          <fieldset
-            role="group"
-            ${rawHtml(
-              E.isLeft(form.anotherAuthor) ? 'aria-invalid="true" aria-errormessage="another-author-error"' : '',
-            )}
-          >
-            <legend><h2>${t('write-review', 'needToAddAuthor')()}</h2></legend>
+                  ${E.isLeft(form.anotherAuthor)
+                    ? html`
+                        <div class="error-message" id="another-author-error">
+                          <span class="visually-hidden">${t('write-review', 'error')()}</span>
+                          ${match(form.anotherAuthor.left)
+                            .with({ _tag: 'MissingE' }, t('write-review', 'yesIfAnotherAuthor'))
+                            .exhaustive()}
+                        </div>
+                      `
+                    : ''}
+                  <ol>
+                    <li>
+                      <label>
+                        <input
+                          name="anotherAuthor"
+                          id="another-author-no"
+                          type="radio"
+                          value="no"
+                          ${match(form.anotherAuthor)
+                            .with({ right: 'no' }, () => 'checked')
+                            .otherwise(() => '')}
+                        />
+                        <span>${t('write-review', 'no')()}</span>
+                      </label>
+                    </li>
+                    <li>
+                      <label>
+                        <input
+                          name="anotherAuthor"
+                          id="another-author-yes"
+                          type="radio"
+                          value="yes"
+                          ${match(form.anotherAuthor)
+                            .with({ right: 'yes' }, () => 'checked')
+                            .otherwise(() => '')}
+                        />
+                        <span>${t('write-review', 'yes')()}</span>
+                      </label>
+                    </li>
+                  </ol>
+                </fieldset>
+              </div>
 
-            ${E.isLeft(form.anotherAuthor)
-              ? html`
-                  <div class="error-message" id="another-author-error">
-                    <span class="visually-hidden">${t('write-review', 'error')()}</span>
-                    ${match(form.anotherAuthor.left)
-                      .with({ _tag: 'MissingE' }, t('write-review', 'yesIfAnotherAuthor'))
-                      .exhaustive()}
-                  </div>
-                `
-              : ''}
-            <ol>
-              <li>
-                <label>
-                  <input
-                    name="anotherAuthor"
-                    id="another-author-no"
-                    type="radio"
-                    value="no"
-                    ${match(form.anotherAuthor)
-                      .with({ right: 'no' }, () => 'checked')
-                      .otherwise(() => '')}
-                  />
-                  <span>${t('write-review', 'no')()}</span>
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="anotherAuthor"
-                    id="another-author-yes"
-                    type="radio"
-                    value="yes"
-                    ${match(form.anotherAuthor)
-                      .with({ right: 'yes' }, () => 'checked')
-                      .otherwise(() => '')}
-                  />
-                  <span>${t('write-review', 'yes')()}</span>
-                </label>
-              </li>
-            </ol>
-          </fieldset>
-        </div>
-
-        <button>${t('write-review', 'continueButton')()}</button>
+              <button>${t('write-review', 'continueButton')()}</button>
+            `
+          : html`
+              <div class="button-group" role="group">
+                <button>${t('write-review', 'continueButton')()}</button>
+                <a href="${format(writeReviewAddAuthorMatch.formatter, { id: preprint.id })}">Add another author</a>
+              </div>
+            `}
       </form>
     `,
     canonical: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }),

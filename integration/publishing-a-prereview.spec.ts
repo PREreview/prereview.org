@@ -571,7 +571,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByLabel('Name').fill('Jean-Baptiste Botul')
     await page.getByLabel('Email address').fill('jbbotul@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Competing interests')
@@ -591,12 +590,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await expect(page.getByRole('main')).toContainText('Invited author Jean-Baptiste Botul')
 
     await page.getByRole('link', { name: 'Change invited authors' }).click()
-    await page.getByLabel('Yes').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('link', { name: 'Add another author' }).click()
     await page.getByLabel('Name').fill('Arne Saknussemm')
     await page.getByLabel('Email address').fill('asaknussemm@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('Invited authors Jean-Baptiste Botul and Arne Saknussemm')
@@ -605,7 +602,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByRole('link', { name: 'Remove Jean-Baptiste Botul' }).click()
     await page.getByLabel('Yes').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('Invited author Arne Saknussemm')
@@ -615,7 +611,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByLabel('Name').fill('Axel Lidenbrock')
     await page.getByLabel('Email address').fill('alidenbrock@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('Invited author Axel Lidenbrock')
@@ -1336,7 +1331,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Name').fill('Jean-Baptiste Botul')
     await page.getByLabel('Email address').fill('jbbotul@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await page.getByRole('link', { name: 'Back' }).click()
@@ -1348,7 +1342,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('Yes, and some or all want to be listed as authors')).toBeChecked()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Yes').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await page.getByRole('link', { name: 'Back' }).click()
@@ -2551,46 +2544,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)(
-  'have to say if you need to add another author',
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('With a template').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await waitForNotBusy(page)
-    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    await page.getByLabel('Yes, and some or all want to be listed as authors').click()
-    await page.getByLabel('They have read and approved the PREreview').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
-    await page.getByLabel('Email address').fill('jbbotul@example.com')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByRole('group', { name: 'Do you need to add another author?' })).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    )
-
-    await page.getByRole('link', { name: 'Select yes if you need to add another author' }).click()
-
-    await expect(page.getByLabel('No')).toBeFocused()
-  },
-)
-
-test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you want to remove an author',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -2680,7 +2633,6 @@ test.extend(mustDeclareUseOfAi).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Name').fill('Jean-Baptiste Botul')
     await page.getByLabel('Email address').fill('jbbotul@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2772,7 +2724,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Name').fill('Jean-Baptiste Botul')
     await page.getByLabel('Email address').fill('jbbotul@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
