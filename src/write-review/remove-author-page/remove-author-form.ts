@@ -94,7 +94,7 @@ export function removeAuthorForm({
                       .with({ right: 'yes' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${t('write-review', 'yes')()}</span>
+                  <span>${t('write-review', 'yesRemove')({ authorName: author.name })}</span>
                 </label>
               </li>
             </ol>

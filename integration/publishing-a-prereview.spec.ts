@@ -600,7 +600,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 
     await page.getByRole('link', { name: 'Change invited authors' }).click()
     await page.getByRole('link', { name: 'Remove Jean-Baptiste Botul' }).click()
-    await page.getByLabel('Yes').check()
+    await page.getByLabel('Yes, remove Jean-Baptiste Botul').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
 

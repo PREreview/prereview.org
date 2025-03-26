@@ -359,6 +359,9 @@
   "sureYouWantToRemove": {
     "message": "Are you sure you want to remove {authorName}?"
   },
+  "yesRemove": {
+    "message": "Yes, remove {authorName}"
+  },
   "writeAPrereview": {
     "message": "Write a PREreview"
   },
