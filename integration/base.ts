@@ -1281,6 +1281,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         }),
         Effect.provide(
           FeatureFlags.layer({
+            canAddMultipleAuthors: () => false,
             canChooseLocale: false,
             useCrowdinInContext: false,
           }),

@@ -24,6 +24,13 @@ export const ord = <A>(order: Order.Order<A>): Ord.Ord<A> => Ord.fromCompare(ord
 
 export const eq = <A>(equivalence: Equivalence.Equivalence<A>): Eq.Eq<A> => Eq.fromEquals(equivalence)
 
+export const toReaderMiddlewareK =
+  <A extends ReadonlyArray<unknown>, B, I, E, R>(
+    f: (...a: A) => Effect.Effect<B, E, R>,
+  ): ((...a: A) => RM.ReaderMiddleware<EffectEnv<R>, I, I, E, B>) =>
+  (...a) =>
+    toReaderMiddleware(f(...a))
+
 export const toReaderMiddleware = <A, I, E, R>(
   effect: Effect.Effect<A, E, R>,
 ): RM.ReaderMiddleware<EffectEnv<R>, I, I, E, A> => RM.fromReaderTaskEither(toReaderTaskEither(effect))

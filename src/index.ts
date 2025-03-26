@@ -34,6 +34,7 @@ pipe(
   Effect.provide(
     Layer.mergeAll(
       FeatureFlags.layerConfig({
+        canAddMultipleAuthors: Config.succeed(() => false),
         canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
       }),

@@ -12,52 +12,136 @@ import * as _ from '../../src/write-review/index.js'
 import * as fc from './fc.js'
 
 describe('writeReviewAddAuthor', () => {
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.completedForm({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors() }),
-  ])('when the form is completed', async (id, preprintTitle, body, user, locale, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+  describe('when multiple authors can be added', () => {
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.anything(),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.completedForm({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors() }),
+    ])('when the form is completed', async (id, preprintTitle, body, user, locale, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
-    const actual = await _.writeReviewAddAuthor({ body, id, locale, method: 'POST', user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+      const actual = await _.writeReviewAddAuthor({
+        body,
+        canAddMultipleAuthors: true,
+        id,
+        locale,
+        method: 'POST',
+        user,
+      })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: Status.SeeOther,
-      location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
-    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
-      otherAuthors: [...newReview.otherAuthors, body],
+
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.anything(),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.incompleteForm({ moreAuthors: fc.constant('yes') }),
+    ])('when the form is incomplete', async (id, preprintTitle, body, user, locale, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+
+      const actual = await _.writeReviewAddAuthor({
+        body,
+        canAddMultipleAuthors: true,
+        id,
+        locale,
+        method: 'POST',
+        user,
+      })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
   })
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.incompleteForm({ moreAuthors: fc.constant('yes') }),
-  ])('when the form is incomplete', async (id, preprintTitle, body, user, locale, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+  describe("when multiple authors can't be added", () => {
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.completedForm({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors() }),
+    ])('when the form is completed', async (id, preprintTitle, body, user, locale, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
-    const actual = await _.writeReviewAddAuthor({ body, id, locale, method: 'POST', user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+      const actual = await _.writeReviewAddAuthor({
+        body,
+        canAddMultipleAuthors: false,
+        id,
+        locale,
+        method: 'POST',
+        user,
+      })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: Status.SeeOther,
-      location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
+      })
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+        otherAuthors: [...newReview.otherAuthors, body],
+      })
+    })
+
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.incompleteForm({ moreAuthors: fc.constant('yes') }),
+    ])('when the form is incomplete', async (id, preprintTitle, body, user, locale, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+
+      const actual = await _.writeReviewAddAuthor({
+        body,
+        canAddMultipleAuthors: false,
+        id,
+        locale,
+        method: 'POST',
+        user,
+      })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
+      })
     })
   })
 
@@ -68,8 +152,9 @@ describe('writeReviewAddAuthor', () => {
     fc.string(),
     fc.user(),
     fc.supportedLocale(),
-  ])('when there is no form', async (id, preprintTitle, body, method, user, locale) => {
-    const actual = await _.writeReviewAddAuthor({ body, id, locale, method, user })({
+    fc.boolean(),
+  ])('when there is no form', async (id, preprintTitle, body, method, user, locale, canAddMultipleAuthors) => {
+    const actual = await _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({
       formStore: new Keyv(),
       getPreprintTitle: () => TE.right(preprintTitle),
     })()
@@ -88,34 +173,38 @@ describe('writeReviewAddAuthor', () => {
     fc.string(),
     fc.user(),
     fc.supportedLocale(),
+    fc.boolean(),
     fc.form({ moreAuthors: fc.constantFrom('yes-private', 'no') }),
-  ])('when there are no more authors', async (id, preprintTitle, body, method, user, locale, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+  ])(
+    'when there are no more authors',
+    async (id, preprintTitle, body, method, user, locale, canAddMultipleAuthors, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewAddAuthor({ body, id, locale, method, user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+      const actual = await _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.NotFound,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale(), fc.boolean()])(
     'when the preprint cannot be loaded',
-    async (id, body, method, user, locale) => {
+    async (id, body, method, user, locale, canAddMultipleAuthors) => {
       const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
         TE.left(new PreprintIsUnavailable({})),
       )
 
-      const actual = await _.writeReviewAddAuthor({ body, id, locale, method, user })({
+      const actual = await _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({
         formStore: new Keyv(),
         getPreprintTitle,
       })()
@@ -132,10 +221,10 @@ describe('writeReviewAddAuthor', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale(), fc.boolean()])(
     'when the preprint cannot be found',
-    async (id, body, method, user, locale) => {
-      const actual = await _.writeReviewAddAuthor({ body, id, locale, method, user })({
+    async (id, body, method, user, locale, canAddMultipleAuthors) => {
+      const actual = await _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
       })()
@@ -151,19 +240,23 @@ describe('writeReviewAddAuthor', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()])(
-    "when there isn't a session",
-    async (id, preprintTitle, body, method, locale) => {
-      const actual = await _.writeReviewAddAuthor({ body, id, locale, method })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.anything(),
+    fc.string(),
+    fc.supportedLocale(),
+    fc.boolean(),
+  ])("when there isn't a session", async (id, preprintTitle, body, method, locale, canAddMultipleAuthors) => {
+    const actual = await _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method })({
+      formStore: new Keyv(),
+      getPreprintTitle: () => TE.right(preprintTitle),
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'RedirectResponse',
+      status: Status.SeeOther,
+      location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+    })
+  })
 })

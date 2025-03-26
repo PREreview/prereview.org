@@ -20,12 +20,14 @@ import { addAuthorForm } from './add-author-form.js'
 
 export const writeReviewAddAuthor = ({
   body,
+  canAddMultipleAuthors,
   id,
   locale,
   method,
   user,
 }: {
   body: unknown
+  canAddMultipleAuthors: boolean
   id: IndeterminatePreprintId
   locale: SupportedLocale
   method: string
@@ -45,6 +47,7 @@ export const writeReviewAddAuthor = ({
         pipe(
           RTE.Do,
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+          RTE.let('canAddMultipleAuthors', () => canAddMultipleAuthors),
           RTE.let('locale', () => locale),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
@@ -62,6 +65,9 @@ export const writeReviewAddAuthor = ({
               ),
             state =>
               match(state)
+                .with({ form: { moreAuthors: 'yes' }, canAddMultipleAuthors: true }, ({ locale }) =>
+                  RT.of(havingProblemsPage(locale)),
+                )
                 .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleAddAuthorForm)
                 .with({ form: { moreAuthors: 'yes' } }, ({ form, preprint, locale }) =>
                   RT.of(
