@@ -1,13 +1,10 @@
-import { flow, Option, pipe, Struct } from 'effect'
+import { flow, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import { mustDeclareUseOfAi, type MustDeclareUseOfAiEnv } from '../../feature-flags.js'
-import { missingE } from '../../form.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
@@ -20,13 +17,11 @@ import { type Form, type FormStoreEnv, getForm, nextFormMatch } from '../form.js
 import { addAuthorsForm } from './add-authors-form.js'
 
 export const writeReviewAddAuthors = ({
-  body,
   id,
   locale,
   method,
   user,
 }: {
-  body: unknown
   id: IndeterminatePreprintId
   locale: SupportedLocale
   method: string
@@ -52,7 +47,6 @@ export const writeReviewAddAuthors = ({
           RTE.apS('locale', RTE.of(locale)),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
-          RTE.let('body', () => body),
           RTE.apSW('mustDeclareUseOfAi', RTE.fromReader(mustDeclareUseOfAi)),
           RTE.bindW('form', ({ preprint, user }) => getForm(user.orcid, preprint.id)),
           RTE.let(
@@ -80,7 +74,6 @@ export const writeReviewAddAuthors = ({
                   addAuthorsForm({
                     ...state,
                     authors: state.authors.value,
-                    form: { anotherAuthor: E.right(undefined) },
                     locale: state.locale,
                   }),
                 )
@@ -91,55 +84,14 @@ export const writeReviewAddAuthors = ({
   )
 
 const handleAddAuthorsForm = ({
-  authors,
-  body,
   form,
   preprint,
-  locale,
   mustDeclareUseOfAi,
 }: {
-  authors: Option.Some<RNEA.ReadonlyNonEmptyArray<NonNullable<Form['otherAuthors']>[number]>>
-  body: unknown
   form: Form
   preprint: PreprintTitle
-  locale: SupportedLocale
   mustDeclareUseOfAi: boolean
 }) =>
-  pipe(
-    E.Do,
-    E.let('anotherAuthor', () =>
-      pipe(
-        AnotherAuthorFieldD.decode(body),
-        E.altW(() => E.right('no' as const)),
-        E.mapLeft(missingE),
-      ),
-    ),
-    E.chain(fields =>
-      pipe(
-        E.Do,
-        E.apS('anotherAuthor', fields.anotherAuthor),
-        E.mapLeft(() => fields),
-      ),
-    ),
-    E.matchW(
-      error => addAuthorsForm({ authors: authors.value, form: error, preprint, locale }),
-      state =>
-        match(state)
-          .with({ anotherAuthor: 'yes' }, () =>
-            RedirectResponse({ location: format(writeReviewAddAuthorMatch.formatter, { id: preprint.id }) }),
-          )
-          .with({ anotherAuthor: 'no' }, () =>
-            RedirectResponse({
-              location: format(nextFormMatch(form, mustDeclareUseOfAi).formatter, { id: preprint.id }),
-            }),
-          )
-          .exhaustive(),
-    ),
-  )
-
-const AnotherAuthorFieldD = pipe(
-  D.struct({
-    anotherAuthor: D.literal('yes', 'no'),
-  }),
-  D.map(Struct.get('anotherAuthor')),
-)
+  RedirectResponse({
+    location: format(nextFormMatch(form, mustDeclareUseOfAi).formatter, { id: preprint.id }),
+  })

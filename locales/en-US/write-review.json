@@ -152,9 +152,6 @@
   "listFlowConcerns": {
     "message": "List concerns that would improve the overall flow or clarity but are not critical to the understanding and conclusions of the research."
   },
-  "yesIfAnotherAuthor": {
-    "message": "Select yes if you need to add another author"
-  },
   "addedAuthorCount": {
     "message": "You have added {authorCount, number} other {authorCount, plural, one {author} other {authors}}"
   },
@@ -172,9 +169,6 @@
   },
   "addAnotherAuthor": {
     "message": "Add another author"
-  },
-  "needToAddAuthor": {
-    "message": "Do you need to add another author?"
   },
   "no": {
     "message": "No"

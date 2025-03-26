@@ -1470,10 +1470,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ id }),
           RM.apS(
-            'body',
-            RM.gets(c => c.getBody()),
-          ),
-          RM.apS(
             'method',
             RM.gets(c => c.getMethod()),
           ),
