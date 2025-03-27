@@ -1,10 +1,11 @@
+import { identity } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
-import { type InvalidE, type MissingE, hasAnError } from '../form.js'
-import { html, plainText } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { hasAnError, type InvalidE, type MissingE } from '../form.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes.js'
 import type { EmailAddress } from '../types/email-address.js'
@@ -13,31 +14,28 @@ interface ChangeContactEmailAddressForm {
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const createFormPage = (form: ChangeContactEmailAddressForm, locale: SupportedLocale) => {
   const error = hasAnError(form)
+  const t = translate(locale, 'my-details')
 
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}What is your email address?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
+    title: plainText(t('whatEmailAddress')({ error: error ? identity : () => '' })),
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>${t('back')()}</span></a>`,
     main: html`
       <form method="post" action="${format(changeContactEmailAddressMatch.formatter, {})}" novalidate>
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
+                <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
                 <ul>
                   ${E.isLeft(form.emailAddress)
                     ? html`
                         <li>
                           <a href="#email-address">
                             ${match(form.emailAddress.left)
-                              .with({ _tag: 'MissingE' }, () => 'Enter your email address')
-                              .with(
-                                { _tag: 'InvalidE' },
-                                () => 'Enter an email address in the correct format, like name@example.com',
-                              )
+                              .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')({ error: () => '' }))
+                              .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')({ error: () => '' }))
                               .exhaustive()}
                           </a>
                         </li>
@@ -49,23 +47,19 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
           : ''}
 
         <div ${error ? html`class="error"` : ''}>
-          <h1><label for="email-address">What is your email address?</label></h1>
+          <h1><label for="email-address">${t('whatEmailAddress')({ error: () => '' })}</label></h1>
 
-          <p id="email-address-tip" role="note">
-            We’ll only use this to contact you about your account and PREreviews.
-          </p>
+          <p id="email-address-tip" role="note">${t('usedToContactYouAboutYourAccountAndPrereviews')()}</p>
 
           ${E.isLeft(form.emailAddress)
             ? html`
                 <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">Error:</span>
-                  ${match(form.emailAddress.left)
-                    .with({ _tag: 'MissingE' }, () => 'Enter your email address')
-                    .with(
-                      { _tag: 'InvalidE' },
-                      () => 'Enter an email address in the correct format, like name@example.com',
-                    )
-                    .exhaustive()}
+                  ${rawHtml(
+                    match(form.emailAddress.left)
+                      .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')({ error: visuallyHidden }))
+                      .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')({ error: visuallyHidden }))
+                      .exhaustive(),
+                  )}
                 </div>
               `
             : ''}
@@ -88,7 +82,7 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
           />
         </div>
 
-        <button>Save and continue</button>
+        <button>${t('saveAndContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',
@@ -96,3 +90,5 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
     js: error ? ['error-summary.js'] : [],
   })
 }
+
+const visuallyHidden = (text: string) => html`<span class="visually-hidden">${text}</span>`.toString()

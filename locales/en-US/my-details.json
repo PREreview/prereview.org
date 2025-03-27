@@ -214,5 +214,17 @@
   },
   "willNotShare": {
     "message": "We won’t share it with anyone else."
+  },
+  "whatEmailAddress": {
+    "message": "<error>Error:</error> What is your email address?"
+  },
+  "enterEmailAddressError": {
+    "message": "<error>Error:</error> Enter your email address"
+  },
+  "enterEmailAddressFormatError": {
+    "message": "<error>Error:</error> Enter an email address in the correct format, like name@example.com"
+  },
+  "usedToContactYouAboutYourAccountAndPrereviews": {
+    "message": "We’ll only use this to contact you about your account and PREreviews."
   }
 }
