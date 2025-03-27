@@ -1,5 +1,5 @@
 import { Option } from 'effect'
-import { createFormPage } from '../../src/my-details-page/change-languages-form-page.js'
+import { createFormPage } from '../../src/my-details-page/change-location-form-page.js'
 import type { NonEmptyString } from '../../src/types/string.js'
 import { expect, test } from '../base.js'
 
