@@ -16,7 +16,7 @@ import {
 } from '../contact-email-address.js'
 import { getInput, invalidE, missingE } from '../form.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import { EmailAddressC } from '../types/email-address.js'
@@ -26,13 +26,23 @@ import { createFormPage } from './change-contact-email-address-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof changeContactEmailAddress>>
 
-export const changeContactEmailAddress = ({ body, method, user }: { body: unknown; method: string; user?: User }) =>
+export const changeContactEmailAddress = ({
+  body,
+  locale,
+  method,
+  user,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  method: string
+  user?: User
+}) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.matchEW(
       error =>
         match(error)
