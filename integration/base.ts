@@ -44,7 +44,7 @@ import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Contex
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import * as FeatureFlags from '../src/feature-flags.js'
-import { GhostApi } from '../src/ghost.js'
+import { GhostApi } from '../src/GhostPage.js'
 import { rawHtml } from '../src/html.js'
 import type {
   AuthorInviteStoreEnv,
