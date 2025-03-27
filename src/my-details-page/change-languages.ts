@@ -7,7 +7,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import { deleteLanguages, getLanguages, saveLanguages } from '../languages.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import { NonEmptyStringC } from '../types/string.js'
@@ -16,13 +16,23 @@ import { createFormPage } from './change-languages-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof changeLanguages>>
 
-export const changeLanguages = ({ body, method, user }: { body: unknown; method: string; user?: User }) =>
+export const changeLanguages = ({
+  body,
+  locale,
+  method,
+  user,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  method: string
+  user?: User
+}) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.matchEW(
       error =>
         match(error)

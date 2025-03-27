@@ -9,35 +9,39 @@ import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('changeLanguagesVisibility', () => {
-  test.prop([fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user(), fc.languages()])(
-    'when there is a logged in user',
-    async (body, method, user, languages) => {
-      const actual = await _.changeLanguagesVisibility({ body, method, user })({
-        deleteLanguages: shouldNotBeCalled,
-        getLanguages: () => TE.of(languages),
-        saveLanguages: shouldNotBeCalled,
-      })()
+  test.prop([
+    fc.anything(),
+    fc.string().filter(method => method !== 'POST'),
+    fc.user(),
+    fc.supportedLocale(),
+    fc.languages(),
+  ])('when there is a logged in user', async (body, method, user, locale, languages) => {
+    const actual = await _.changeLanguagesVisibility({ body, locale, method, user })({
+      deleteLanguages: shouldNotBeCalled,
+      getLanguages: () => TE.of(languages),
+      saveLanguages: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        canonical: format(changeLanguagesVisibilityMatch.formatter, {}),
-        status: Status.OK,
-        title: expect.anything(),
-        nav: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: [],
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(changeLanguagesVisibilityMatch.formatter, {}),
+      status: Status.OK,
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'form',
+      js: [],
+    })
+  })
 
-  test.prop([fc.languagesVisibility(), fc.user(), fc.languages()])(
+  test.prop([fc.languagesVisibility(), fc.user(), fc.supportedLocale(), fc.languages()])(
     'when the form has been submitted',
-    async (visibility, user, existingLanguages) => {
+    async (visibility, user, locale, existingLanguages) => {
       const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
       const actual = await _.changeLanguagesVisibility({
         body: { languagesVisibility: visibility },
+        locale,
         method: 'POST',
         user,
       })({
@@ -58,54 +62,40 @@ describe('changeLanguagesVisibility', () => {
     },
   )
 
-  test.prop([fc.record({ languagesVisibility: fc.languagesVisibility() }), fc.user(), fc.languages()])(
-    'when the form has been submitted but the visibility cannot be saved',
-    async (body, user, languages) => {
-      const actual = await _.changeLanguagesVisibility({ body, method: 'POST', user })({
-        deleteLanguages: shouldNotBeCalled,
-        getLanguages: () => TE.of(languages),
-        saveLanguages: () => TE.left('unavailable'),
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
-  )
-
-  test.prop([fc.record({ languagesVisibility: fc.string() }, { requiredKeys: [] }), fc.user(), fc.languages()])(
-    'when the form has been submitted without setting visibility',
-    async (body, user, languages) => {
-      const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
-
-      const actual = await _.changeLanguagesVisibility({ body, method: 'POST', user })({
-        deleteLanguages: shouldNotBeCalled,
-        getLanguages: () => TE.of(languages),
-        saveLanguages,
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: format(myDetailsMatch.formatter, {}),
-      })
-      expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
-        value: languages.value,
-        visibility: 'restricted',
-      })
-    },
-  )
-
-  test.prop([fc.anything(), fc.string(), fc.user()])("there aren't languages", async (body, method, user) => {
-    const actual = await _.changeLanguagesVisibility({ body, method, user })({
+  test.prop([
+    fc.record({ languagesVisibility: fc.languagesVisibility() }),
+    fc.user(),
+    fc.supportedLocale(),
+    fc.languages(),
+  ])('when the form has been submitted but the visibility cannot be saved', async (body, user, locale, languages) => {
+    const actual = await _.changeLanguagesVisibility({ body, locale, method: 'POST', user })({
       deleteLanguages: shouldNotBeCalled,
-      getLanguages: () => TE.left('not-found'),
-      saveLanguages: shouldNotBeCalled,
+      getLanguages: () => TE.of(languages),
+      saveLanguages: () => TE.left('unavailable'),
+    })()
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
+
+  test.prop([
+    fc.record({ languagesVisibility: fc.string() }, { requiredKeys: [] }),
+    fc.user(),
+    fc.supportedLocale(),
+    fc.languages(),
+  ])('when the form has been submitted without setting visibility', async (body, user, locale, languages) => {
+    const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
+
+    const actual = await _.changeLanguagesVisibility({ body, locale, method: 'POST', user })({
+      deleteLanguages: shouldNotBeCalled,
+      getLanguages: () => TE.of(languages),
+      saveLanguages,
     })()
 
     expect(actual).toStrictEqual({
@@ -113,18 +103,42 @@ describe('changeLanguagesVisibility', () => {
       status: Status.SeeOther,
       location: format(myDetailsMatch.formatter, {}),
     })
-  })
-
-  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
-    const actual = await _.changeLanguagesVisibility({ body, method, user: undefined })({
-      deleteLanguages: shouldNotBeCalled,
-      getLanguages: shouldNotBeCalled,
-      saveLanguages: shouldNotBeCalled,
-    })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(myDetailsMatch.formatter, {}),
+    expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
+      value: languages.value,
+      visibility: 'restricted',
     })
   })
+
+  test.prop([fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
+    "there aren't languages",
+    async (body, method, user, locale) => {
+      const actual = await _.changeLanguagesVisibility({ body, locale, method, user })({
+        deleteLanguages: shouldNotBeCalled,
+        getLanguages: () => TE.left('not-found'),
+        saveLanguages: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    },
+  )
+
+  test.prop([fc.anything(), fc.string(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (body, method, locale) => {
+      const actual = await _.changeLanguagesVisibility({ body, locale, method, user: undefined })({
+        deleteLanguages: shouldNotBeCalled,
+        getLanguages: shouldNotBeCalled,
+        saveLanguages: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    },
+  )
 })

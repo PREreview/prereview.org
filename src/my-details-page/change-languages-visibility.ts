@@ -7,7 +7,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import { type Languages, getLanguages, saveLanguages } from '../languages.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -15,13 +15,23 @@ import { createFormPage } from './change-languages-visibility-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof changeLanguagesVisibility>>
 
-export const changeLanguagesVisibility = ({ body, method, user }: { body: unknown; method: string; user?: User }) =>
+export const changeLanguagesVisibility = ({
+  body,
+  locale,
+  method,
+  user,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  method: string
+  user?: User
+}) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.bindW('languages', ({ user }) => getLanguages(user.orcid)),
     RTE.matchE(
       error =>
@@ -29,7 +39,7 @@ export const changeLanguagesVisibility = ({ body, method, user }: { body: unknow
           .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
           .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
           .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
-          .with('unavailable', () => RT.of(havingProblemsPage(DefaultLocale)))
+          .with('unavailable', () => RT.of(havingProblemsPage(locale)))
           .exhaustive(),
       state =>
         match(state)
