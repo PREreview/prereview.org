@@ -11,7 +11,7 @@ import {
 } from '../contact-email-address.js'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from '../flash-message.js'
 import { html, plainText, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { showNotificationBanner } from '../notification-banner.js'
 import { templatePage } from '../page.js'
@@ -42,7 +42,10 @@ export const writeReviewNeedToVerifyEmailAddress = flow(
         RM.fromReaderTaskEitherK(({ user }) => maybeGetContactEmailAddress(user.orcid)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.apS('locale', RM.of(DefaultLocale)),
+      RM.apSW(
+        'locale',
+        RM.asks((env: { locale: SupportedLocale }) => env.locale),
+      ),
       RM.ichainW(state =>
         match(state)
           .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>

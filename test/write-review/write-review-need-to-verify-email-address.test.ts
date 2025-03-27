@@ -7,7 +7,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address.js'
-import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import {
@@ -28,10 +27,11 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     fc.connection(),
     fc.form(),
     fc.user(),
+    fc.supportedLocale(),
     fc.verifiedContactEmailAddress(),
   ])(
     'when the user has a verified email address',
-    async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress) => {
+    async (preprintId, preprintTitle, connection, newReview, user, locale, contactEmailAddress) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -41,6 +41,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
@@ -67,11 +68,12 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.form(),
     fc.user(),
+    fc.supportedLocale(),
     fc.unverifiedContactEmailAddress(),
     fc.html(),
   ])(
     'when the user needs to verify their email address',
-    async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress, page) => {
+    async (preprintId, preprintTitle, connection, newReview, user, locale, contactEmailAddress, page) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
@@ -82,6 +84,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           templatePage,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
@@ -101,7 +104,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         skipLinks: [[expect.anything(), '#main-content']],
         js: [],
         type: 'streamline',
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
@@ -113,10 +116,11 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     fc.connection({ method: fc.constant('POST') }),
     fc.form(),
     fc.user(),
+    fc.supportedLocale(),
     fc.unverifiedContactEmailAddress(),
   ])(
     'resending verification email',
-    async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress) => {
+    async (preprintId, preprintTitle, connection, newReview, user, locale, contactEmailAddress) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
       const verifyContactEmailAddressForReview = jest.fn<
@@ -129,6 +133,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview,
         }),
@@ -156,9 +161,16 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.form(), fc.user()])(
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.connection(),
+    fc.form(),
+    fc.user(),
+    fc.supportedLocale(),
+  ])(
     'when the user needs to give their email address',
-    async (preprintId, preprintTitle, connection, newReview, user) => {
+    async (preprintId, preprintTitle, connection, newReview, user, locale) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -168,6 +180,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           getContactEmailAddress: () => TE.left('not-found'),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
@@ -188,15 +201,16 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user(), fc.supportedLocale()])(
     'when there is no form',
-    async (preprintId, preprintTitle, connection, user) => {
+    async (preprintId, preprintTitle, connection, user, locale) => {
       const actual = await runMiddleware(
         _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           formStore: new Keyv(),
+          locale,
           templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
@@ -217,9 +231,9 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.html()])(
+  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.supportedLocale(), fc.html()])(
     'when the preprint cannot be loaded',
-    async (preprintId, connection, user, page) => {
+    async (preprintId, connection, user, locale, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -228,6 +242,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
+          locale,
           templatePage,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
@@ -246,15 +261,15 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.html()])(
+  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.supportedLocale(), fc.html()])(
     'when the preprint cannot be found',
-    async (preprintId, connection, user, page) => {
+    async (preprintId, connection, user, locale, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -263,6 +278,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
+          locale,
           templatePage,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
@@ -281,21 +297,22 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.supportedLocale()])(
     "when there isn't a session",
-    async (preprintId, preprintTitle, connection) => {
+    async (preprintId, preprintTitle, connection, locale) => {
       const actual = await runMiddleware(
         _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
           formStore: new Keyv(),
+          locale,
           templatePage: shouldNotBeCalled,
           verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
