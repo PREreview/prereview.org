@@ -1,5 +1,54 @@
 {
+  "slogan": {
+    "message": "Revisões abertas de preprints. Para <swoosh>todos</swoosh> os pesquisadores.",
+    "description": "Tagline used on the homepage. 'Open preprint reviews' in the 'open to the community' sense."
+  },
+  "heroText": {
+    "message": "Ofereça e receba feedback construtivo sobre preprints de uma comunidade internacional de seus pares."
+  },
+  "reviewPreprintButton": {
+    "message": "Revisar um preprint"
+  },
+  "requestReviewButton": {
+    "message": "Solicitar uma revisão"
+  },
+  "overviewUnderservedResearchersTitle": {
+    "message": "Para pesquisadores sub-representados"
+  },
+  "overviewUnderservedResearchersText": {
+    "message": "Apoiamos e empoderamos comunidades diversas e historicamente excluídas de pesquisadores (particularmente aqueles em início de carreira) para que encontrem sua voz, desenvolvam suas habilidades e se envolvam com a revisão por pares."
+  },
+  "overviewBetterWayTitle": {
+    "message": "Uma forma melhor"
+  },
+  "overviewBetterWayText": {
+    "message": "Tornando a ciência e a pesquisa mais equitativas, transparentes e colaborativas."
+  },
   "overviewBetterWayLink": {
     "message": "Nossa missão"
+  },
+  "requestsTitle": {
+    "message": "Solicitações recentes de revisão"
+  },
+  "requestsLink": {
+    "message": "Ver todas as solicitações"
+  },
+  "statisticsTitle": {
+    "message": "Estatísticas"
+  },
+  "statisticsReviews": {
+    "message": "{number, plural, one {<data>{number, number}</data> PREreview} other {<data>{number, number}</data> PREreviews}}"
+  },
+  "statisticsServers": {
+    "message": "{number, plural, one {<data>{number, number}</data> servidor de pré-impressão} other {<data>{number, number}</data> servidores de pré-impressão}}"
+  },
+  "statisticsUsers": {
+    "message": "{number, plural, one {<data>{number, number}</data> PREreviewer} other {<data>{number, number}</data> PREreviewers}}"
+  },
+  "reviewsLink": {
+    "message": "Ver todas as revisões"
+  },
+  "fundersTitle": {
+    "message": "Financiadores"
   }
 }

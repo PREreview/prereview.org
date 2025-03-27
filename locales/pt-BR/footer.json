@@ -1,0 +1,59 @@
+{
+  "chooseLanguage": {
+    "message": "Escolha seu idioma:"
+  },
+  "newsletterText": {
+    "message": "Saiba mais sobre eventos e novidades."
+  },
+  "newsletterLink": {
+    "message": "Assine nosso boletim informativo"
+  },
+  "slackText": {
+    "message": "Participe da conversa!"
+  },
+  "slackLink": {
+    "message": "Junte-se à nossa Comunidade Slack"
+  },
+  "menuDonate": {
+    "message": "Doe"
+  },
+  "menuPeople": {
+    "message": "Equipe"
+  },
+  "menuFunding": {
+    "message": "Como somos financiados"
+  },
+  "menuCodeOfConduct": {
+    "message": "Código de Conduta"
+  },
+  "menuPrivacyPolicy": {
+    "message": "Política de Privacidade"
+  },
+  "menuBlog": {
+    "message": "Blog"
+  },
+  "menuHowToUse": {
+    "message": "Como usar"
+  },
+  "contactEmail": {
+    "message": "Envie um e-mail para {address}"
+  },
+  "contactTwitter": {
+    "message": "{handle} no Twitter"
+  },
+  "contactMastodon": {
+    "message": "{handle} no Mastodon"
+  },
+  "contactLinkedIn": {
+    "message": "{handle} no LinkedIn"
+  },
+  "contactGitHub": {
+    "message": "{handle} no GitHub"
+  },
+  "zenodo": {
+    "message": "As PREreviews estão disponíveis em nossa <community>Comunidade Zenodo</community> e na <api>API Zenodo</api>."
+  },
+  "copyright": {
+    "message": "Todo o conteúdo está disponível sob licença Creative Commons <link>Atribuição 4.0 Internacional</link>, exceto onde indicado de outra forma."
+  }
+}
