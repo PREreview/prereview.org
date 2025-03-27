@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Array, String, Tuple } from 'effect'
+import { Array, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
@@ -20,11 +20,7 @@ describe('writeReviewAddAuthor', () => {
       fc.nonEmptyArray(fc.record({ name: fc.lorem(), emailAddress: fc.emailAddress() })).map(authors =>
         Tuple.make(
           {
-            authors: Array.reduce(
-              authors,
-              '',
-              (string, author) => `${string}\n${author.name} ${author.emailAddress}`,
-            ).trim(),
+            authors: Array.reduce(authors, '', (string, author) => `${string}\n${author.name} ${author.emailAddress}`),
           },
           authors,
         ),
@@ -64,8 +60,7 @@ describe('writeReviewAddAuthor', () => {
       fc.record({
         authors: fc
           .nonEmptyArray(fc.record({ name: fc.lorem(), emailAddress: fc.emailAddress() }))
-          .map(Array.reduce('', (string, author) => `${string}\n${author.name} ${author.emailAddress}`))
-          .map(String.trim),
+          .map(Array.reduce('', (string, author) => `${string}\n${author.name} ${author.emailAddress}`)),
       }),
       fc.user(),
       fc.supportedLocale(),

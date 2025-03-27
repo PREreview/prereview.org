@@ -14,6 +14,14 @@ describe('parseAuthors', () => {
         { name: 'Baz Qux', emailAddress: 'baz@example.com' },
       ],
     ],
+    [
+      'extra whitespace',
+      '  \n\n Foo   Bar    \tfoo@example.com    \n\tBaz\tQux    \t   baz@example.com\t',
+      [
+        { name: 'Foo Bar', emailAddress: 'foo@example.com' },
+        { name: 'Baz Qux', emailAddress: 'baz@example.com' },
+      ],
+    ],
   ])('with valid input (%s)', (_name, input, expected) => {
     const actual = _.parseAuthors(input)
 
@@ -28,7 +36,6 @@ describe('parseAuthors', () => {
     ['before and after', 'Foo foo@example.com Bar'],
     ['single reversed', 'foo@example.com Foo Bar'],
     ['multiple different orders', 'foo@example.com, Foo Bar\nbaz@example.com Baz Qux'],
-    ['extra whitespace', '   Foo   Bar    \tfoo@example.com    '],
     ['quote marks', '"Foo Bar" foo@example.com'],
     ['comma', 'Foo Bar,foo@example.com'],
   ])('with invalid input (%s)', (_name, input) => {
