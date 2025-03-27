@@ -7,7 +7,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import { type IsOpenForRequests, isOpenForRequests, saveOpenForRequests } from '../is-open-for-requests.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -17,10 +17,12 @@ export type Env = EnvFor<ReturnType<typeof changeOpenForRequestsVisibility>>
 
 export const changeOpenForRequestsVisibility = ({
   body,
+  locale,
   method,
   user,
 }: {
   body: unknown
+  locale: SupportedLocale
   method: string
   user?: User
 }) =>
@@ -29,7 +31,7 @@ export const changeOpenForRequestsVisibility = ({
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.bindW('openForRequests', ({ user }) => isOpenForRequests(user.orcid)),
     RTE.matchE(
       error =>
@@ -37,7 +39,7 @@ export const changeOpenForRequestsVisibility = ({
           .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
           .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
           .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
-          .with('unavailable', () => RT.of(havingProblemsPage(DefaultLocale)))
+          .with('unavailable', () => RT.of(havingProblemsPage(locale)))
           .exhaustive(),
       state =>
         match(state)
