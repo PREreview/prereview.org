@@ -2,11 +2,13 @@ import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { P, match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import type { ResearchInterests } from '../research-interests.js'
 import { PageResponse } from '../response.js'
 import { changeResearchInterestsMatch, myDetailsMatch } from '../routes.js'
 
-export const createFormPage = (researchInterests: Option.Option<ResearchInterests>) =>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const createFormPage = (researchInterests: Option.Option<ResearchInterests>, locale: SupportedLocale) =>
   PageResponse({
     title: plainText`What are your research interests?`,
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,

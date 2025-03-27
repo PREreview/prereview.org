@@ -1,11 +1,19 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import type { ResearchInterests } from '../research-interests.js'
 import { PageResponse } from '../response.js'
 import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../routes.js'
 
-export const createFormPage = ({ researchInterests }: { researchInterests: ResearchInterests }) =>
+export const createFormPage = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  locale,
+  researchInterests,
+}: {
+  locale: SupportedLocale
+  researchInterests: ResearchInterests
+}) =>
   PageResponse({
     title: plainText`Who can see your research interests?`,
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,

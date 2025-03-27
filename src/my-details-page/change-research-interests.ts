@@ -1,4 +1,4 @@
-import { flow, Option, pipe, Struct } from 'effect'
+import { Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -6,7 +6,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { deleteResearchInterests, getResearchInterests, saveResearchInterests } from '../research-interests.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
@@ -22,6 +22,7 @@ export const changeResearchInterests = ({ body, method, user }: { body: unknown;
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.matchEW(
       error =>
         match(error)
@@ -34,15 +35,24 @@ export const changeResearchInterests = ({ body, method, user }: { body: unknown;
     ),
   )
 
-const showChangeResearchInterestsForm = flow(
-  ({ user }: { user: User }) => getResearchInterests(user.orcid),
-  RTE.match(Option.none, Option.some),
-  RT.map(createFormPage),
-)
+const showChangeResearchInterestsForm = ({ locale, user }: { locale: SupportedLocale; user: User }) =>
+  pipe(
+    getResearchInterests(user.orcid),
+    RTE.match(Option.none, Option.some),
+    RT.map(researchInterests => createFormPage(researchInterests, locale)),
+  )
 
 const ChangeResearchInterestsFormD = pipe(D.struct({ researchInterests: NonEmptyStringC }))
 
-const handleChangeResearchInterestsForm = ({ body, user }: { body: unknown; user: User }) =>
+const handleChangeResearchInterestsForm = ({
+  body,
+  locale,
+  user,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  user: User
+}) =>
   pipe(
     RTE.fromEither(ChangeResearchInterestsFormD.decode(body)),
     RTE.matchE(
@@ -50,7 +60,7 @@ const handleChangeResearchInterestsForm = ({ body, user }: { body: unknown; user
         pipe(
           deleteResearchInterests(user.orcid),
           RTE.matchW(
-            () => havingProblemsPage(DefaultLocale),
+            () => havingProblemsPage(locale),
             () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
           ),
         ),
@@ -72,7 +82,7 @@ const handleChangeResearchInterestsForm = ({ body, user }: { body: unknown; user
           ),
           RTE.chain(researchInterests => saveResearchInterests(user.orcid, researchInterests)),
           RTE.matchW(
-            () => havingProblemsPage(DefaultLocale),
+            () => havingProblemsPage(locale),
             () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
           ),
         ),
