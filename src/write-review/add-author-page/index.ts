@@ -106,11 +106,13 @@ const handleAddMultipleAuthorsForm = ({
   form,
   locale,
   preprint,
+  user,
 }: {
   body: unknown
   form: Form
   locale: SupportedLocale
   preprint: PreprintTitle
+  user: User
 }) =>
   pipe(
     RTE.Do,
@@ -149,9 +151,13 @@ const handleAddMultipleAuthorsForm = ({
         E.map(({ authors }) => authors),
       ),
     })),
+    RTE.map(({ authors }) => ({ otherAuthors: [...(form.otherAuthors ?? []), ...authors.parsed] })),
+    RTE.map(updateForm(form)),
+    RTE.chainFirstW(saveForm(user.orcid, preprint.id)),
     RTE.matchW(
       error =>
         match(error)
+          .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ authors: P.any }, error =>
             addMultipleAuthorsForm({
               form: error,
@@ -161,7 +167,7 @@ const handleAddMultipleAuthorsForm = ({
             }),
           )
           .exhaustive(),
-      () => havingProblemsPage(locale),
+      () => RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
     ),
   )
 

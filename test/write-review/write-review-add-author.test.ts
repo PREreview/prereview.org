@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Array, String } from 'effect'
+import { Array, String, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
@@ -17,16 +17,22 @@ describe('writeReviewAddAuthor', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.record({
-        authors: fc
-          .nonEmptyArray(fc.record({ name: fc.lorem(), emailAddress: fc.emailAddress() }))
-          .map(Array.reduce('', (string, author) => `${string}\n${author.name} ${author.emailAddress}`))
-          .map(String.trim),
-      }),
+      fc.nonEmptyArray(fc.record({ name: fc.lorem(), emailAddress: fc.emailAddress() })).map(authors =>
+        Tuple.make(
+          {
+            authors: Array.reduce(
+              authors,
+              '',
+              (string, author) => `${string}\n${author.name} ${author.emailAddress}`,
+            ).trim(),
+          },
+          authors,
+        ),
+      ),
       fc.user(),
       fc.supportedLocale(),
       fc.completedForm({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors() }),
-    ])('when the form is completed', async (id, preprintTitle, body, user, locale, newReview) => {
+    ])('when the form is completed', async (id, preprintTitle, [body, expected], user, locale, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -43,12 +49,12 @@ describe('writeReviewAddAuthor', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
+      })
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+        otherAuthors: [...newReview.otherAuthors, ...expected],
       })
     })
 
@@ -81,12 +87,9 @@ describe('writeReviewAddAuthor', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
       })
     })
   })

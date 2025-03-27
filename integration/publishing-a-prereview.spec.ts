@@ -694,7 +694,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
   'can enter multiple authors at the same time',
-  async ({ page }, testInfo) => {
+  async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -712,8 +712,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
       .getByLabel('Enter names and email address of the other authors')
       .fill('Jean-Baptiste Botul jbbotul@example.com\nArne Saknussemm asaknussemm@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    testInfo.fail()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('You have added 2 other authors')
     await expect(page.getByRole('main')).toContainText('Name Jean-Baptiste Botul Email address jbbotul@example.com')
