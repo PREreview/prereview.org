@@ -9,13 +9,13 @@ import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-pa
 export const sendReviewActionOfferEffect = Effect.fn(function* (payload: CoarReviewActionOfferPayload) {
   const httpClient = yield* HttpClient.HttpClient
 
-  return pipe(
+  return yield* pipe(
     HttpClientRequest.post(payload.target.inbox),
     HttpClientRequest.bodyJson(payload),
     Effect.andThen(httpClient.execute),
     Effect.andThen(HttpClientResponse.filterStatusOk),
     Effect.orElseFail(() => 'unavailable' as const),
-    Effect.andThen(() => undefined),
+    Effect.andThen(() => Effect.void),
   )
 })
 

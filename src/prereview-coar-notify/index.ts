@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { flow, identity, pipe } from 'effect'
+import { Config, Effect, flow, identity, pipe } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -16,21 +16,43 @@ import type { ReviewRequests } from '../review-requests-page/index.js'
 import { reviewMatch } from '../routes.js'
 import type { FieldId } from '../types/field.js'
 import { type PreprintId, PreprintIdEquivalence } from '../types/preprint-id.js'
-import type { GenerateUuidEnv } from '../types/uuid.js'
+import { GenerateUuid, type GenerateUuidEnv } from '../types/uuid.js'
 import type { User } from '../user.js'
 import type { NewPrereview } from '../write-review/index.js'
-import { constructCoarPayload } from './construct-coar-payload.js'
+import { constructCoarPayload, constructPayload } from './construct-coar-payload.js'
 import {
   type RecentReviewRequestFromPrereviewCoarNotify,
   getRecentReviewRequests,
 } from './get-recent-review-requests.js'
 import { postNewPrereview } from './new-prereview.js'
-import { sendReviewActionOffer } from './send-review-action-offer.js'
+import { sendReviewActionOffer, sendReviewActionOfferEffect } from './send-review-action-offer.js'
 
 export interface PrereviewCoarNotifyEnv {
   readonly coarNotifyToken: string
   readonly coarNotifyUrl: URL
 }
+
+export const publishToPrereviewCoarNotifyInboxEffect = Effect.fn(function* (
+  preprint: ReviewRequestPreprintId,
+  user: User,
+  persona: 'public' | 'pseudonym',
+) {
+  const generateUuid = yield* GenerateUuid
+  const uuid = yield* generateUuid
+  const coarNotifyUrl = yield* Config.url('COAR_NOTIFY_URL')
+
+  return pipe(
+    {
+      coarNotifyUrl,
+      persona,
+      preprint,
+      user,
+      uuid,
+    },
+    constructPayload,
+    sendReviewActionOfferEffect,
+  )
+})
 
 export const publishToPrereviewCoarNotifyInbox = (
   preprint: ReviewRequestPreprintId,

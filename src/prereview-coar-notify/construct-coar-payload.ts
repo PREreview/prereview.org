@@ -18,7 +18,7 @@ interface PayloadInputs {
   uuid: Uuid
 }
 
-const constructPayload = ({ uuid, coarNotifyUrl, preprint, persona, user }: PayloadInputs) =>
+export const constructPayload = ({ uuid, coarNotifyUrl, preprint, persona, user }: PayloadInputs) =>
   ({
     id: uuid,
     '@context': ['https://www.w3.org/ns/activitystreams', 'https://purl.org/coar/notify'],
