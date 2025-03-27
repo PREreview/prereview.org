@@ -7,7 +7,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import { type Languages, getLanguages, saveLanguages } from '../languages.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -21,6 +21,7 @@ export const changeLanguagesVisibility = ({ body, method, user }: { body: unknow
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.bindW('languages', ({ user }) => getLanguages(user.orcid)),
     RTE.matchE(
       error =>
@@ -42,10 +43,12 @@ const ChangeLanguagesVisibilityFormD = pipe(D.struct({ languagesVisibility: D.li
 const handleChangeLanguagesVisibilityForm = ({
   body,
   languages,
+  locale,
   user,
 }: {
   body: unknown
   languages: Languages
+  locale: SupportedLocale
   user: User
 }) =>
   pipe(
@@ -56,7 +59,7 @@ const handleChangeLanguagesVisibilityForm = ({
         ({ languagesVisibility }) => ({ ...languages, visibility: languagesVisibility }),
         languages => saveLanguages(user.orcid, languages),
         RTE.matchW(
-          () => havingProblemsPage(DefaultLocale),
+          () => havingProblemsPage(locale),
           () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
         ),
       ),

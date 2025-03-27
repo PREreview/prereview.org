@@ -1,4 +1,4 @@
-import { flow, Option, pipe, Struct } from 'effect'
+import { Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -7,7 +7,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import { deleteLanguages, getLanguages, saveLanguages } from '../languages.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import { NonEmptyStringC } from '../types/string.js'
@@ -22,6 +22,7 @@ export const changeLanguages = ({ body, method, user }: { body: unknown; method:
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.matchEW(
       error =>
         match(error)
@@ -31,15 +32,16 @@ export const changeLanguages = ({ body, method, user }: { body: unknown; method:
     ),
   )
 
-const showChangeLanguagesForm = flow(
-  ({ user }: { user: User }) => getLanguages(user.orcid),
-  RTE.match(Option.none, Option.some),
-  RT.map(createFormPage),
-)
+const showChangeLanguagesForm = ({ locale, user }: { locale: SupportedLocale; user: User }) =>
+  pipe(
+    getLanguages(user.orcid),
+    RTE.match(Option.none, Option.some),
+    RT.map(languages => createFormPage(languages, locale)),
+  )
 
 const ChangeLanguagesFormD = pipe(D.struct({ languages: NonEmptyStringC }))
 
-const handleChangeLanguagesForm = ({ body, user }: { body: unknown; user: User }) =>
+const handleChangeLanguagesForm = ({ body, locale, user }: { body: unknown; locale: SupportedLocale; user: User }) =>
   pipe(
     RTE.fromEither(ChangeLanguagesFormD.decode(body)),
     RTE.matchE(
@@ -47,7 +49,7 @@ const handleChangeLanguagesForm = ({ body, user }: { body: unknown; user: User }
         pipe(
           deleteLanguages(user.orcid),
           RTE.matchW(
-            () => havingProblemsPage(DefaultLocale),
+            () => havingProblemsPage(locale),
             () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
           ),
         ),
@@ -69,7 +71,7 @@ const handleChangeLanguagesForm = ({ body, user }: { body: unknown; user: User }
           ),
           RTE.chain(languages => saveLanguages(user.orcid, languages)),
           RTE.matchW(
-            () => havingProblemsPage(DefaultLocale),
+            () => havingProblemsPage(locale),
             () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
           ),
         ),

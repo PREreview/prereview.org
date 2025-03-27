@@ -2,10 +2,12 @@ import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../html.js'
 import type { Languages } from '../languages.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeLanguagesVisibilityMatch, myDetailsMatch } from '../routes.js'
 
-export const createFormPage = ({ languages }: { languages: Languages }) =>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const createFormPage = ({ languages, locale }: { languages: Languages; locale: SupportedLocale }) =>
   PageResponse({
     title: plainText`Who can see your languages?`,
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,

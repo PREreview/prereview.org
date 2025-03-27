@@ -1,4 +1,5 @@
 import { Option } from 'effect'
+import { DefaultLocale } from '../../src/locales/index.js'
 import { createFormPage } from '../../src/my-details-page/change-languages-form-page.js'
 import type { NonEmptyString } from '../../src/types/string.js'
 import { expect, test } from '../base.js'
@@ -6,6 +7,7 @@ import { expect, test } from '../base.js'
 test('content looks right', async ({ showPage }) => {
   const response = createFormPage(
     Option.some({ value: 'Ut lobortis turpis et dolor tincidunt suscipit.' as NonEmptyString, visibility: 'public' }),
+    DefaultLocale,
   )
 
   const content = await showPage(response)
@@ -14,7 +16,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when empty', async ({ showPage }) => {
-  const response = createFormPage(Option.none())
+  const response = createFormPage(Option.none(), DefaultLocale)
 
   const content = await showPage(response)
 
