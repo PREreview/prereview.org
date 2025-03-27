@@ -209,10 +209,61 @@
   "showOnPublic": {
     "message": "crwdns5371:0crwdne5371:0"
   },
+  "showThemOnPublic": {
+    "message": "crwdns5393:0crwdne5393:0"
+  },
+  "saySoOnPublic": {
+    "message": "crwdns5395:0crwdne5395:0"
+  },
   "onlyPrereview": {
     "message": "crwdns5373:0crwdne5373:0"
   },
+  "noOneElseKnow": {
+    "message": "crwdns5397:0crwdne5397:0"
+  },
   "willNotShare": {
     "message": "crwdns5375:0crwdne5375:0"
+  },
+  "willNotShareThem": {
+    "message": "crwdns5399:0crwdne5399:0"
+  },
+  "whatEmailAddress": {
+    "message": "crwdns5401:0crwdne5401:0"
+  },
+  "enterEmailAddressError": {
+    "message": "crwdns5403:0crwdne5403:0"
+  },
+  "enterEmailAddressFormatError": {
+    "message": "crwdns5405:0crwdne5405:0"
+  },
+  "usedToContactYouAboutYourAccountAndPrereviews": {
+    "message": "crwdns5407:0crwdne5407:0"
+  },
+  "whatLanguages": {
+    "message": "crwdns5409:0crwdne5409:0"
+  },
+  "seeLanguages": {
+    "message": "crwdns5411:0crwdne5411:0"
+  },
+  "whereBased": {
+    "message": "crwdns5413:0crwdne5413:0"
+  },
+  "seeLocation": {
+    "message": "crwdns5415:0crwdne5415:0"
+  },
+  "happyTakeRequests": {
+    "message": "crwdns5417:0crwdne5417:0"
+  },
+  "selectHappyTakeRequestsError": {
+    "message": "crwdns5419:0crwdne5419:0"
+  },
+  "seeHappyTakeRequests": {
+    "message": "crwdns5421:0crwdne5421:0"
+  },
+  "whatResearchInterests": {
+    "message": "crwdns5423:0crwdne5423:0"
+  },
+  "seeWhatResearchInterests": {
+    "message": "crwdns5425:0crwdne5425:0"
   }
 }

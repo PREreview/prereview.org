@@ -587,6 +587,24 @@
   "whatIsYourEmail": {
     "message": "crwdns5243:0crwdne5243:0"
   },
+  "verifyEmailAddress": {
+    "message": "crwdns5381:0crwdne5381:0"
+  },
+  "important": {
+    "message": "crwdns5383:0crwdne5383:0"
+  },
+  "sentNewEmail": {
+    "message": "crwdns5385:0crwdne5385:0"
+  },
+  "howToVerifyEmailAddress": {
+    "message": "crwdns5387:0{emailAddress}crwdne5387:0"
+  },
+  "onceEmailAddressVerified": {
+    "message": "crwdns5389:0crwdne5389:0"
+  },
+  "resendEmailButton": {
+    "message": "crwdns5391:0crwdne5391:0"
+  },
   "areTheDataPresentationsWellSuited": {
     "message": "crwdns4739:0crwdne4739:0"
   },
