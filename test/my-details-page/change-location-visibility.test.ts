@@ -9,35 +9,39 @@ import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('changeLocationVisibility', () => {
-  test.prop([fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user(), fc.location()])(
-    'when there is a logged in user',
-    async (body, method, user, location) => {
-      const actual = await _.changeLocationVisibility({ body, method, user })({
-        deleteLocation: shouldNotBeCalled,
-        getLocation: () => TE.of(location),
-        saveLocation: shouldNotBeCalled,
-      })()
+  test.prop([
+    fc.anything(),
+    fc.string().filter(method => method !== 'POST'),
+    fc.user(),
+    fc.supportedLocale(),
+    fc.location(),
+  ])('when there is a logged in user', async (body, method, user, locale, location) => {
+    const actual = await _.changeLocationVisibility({ body, locale, method, user })({
+      deleteLocation: shouldNotBeCalled,
+      getLocation: () => TE.of(location),
+      saveLocation: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        canonical: format(changeLocationVisibilityMatch.formatter, {}),
-        status: Status.OK,
-        title: expect.anything(),
-        nav: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: [],
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(changeLocationVisibilityMatch.formatter, {}),
+      status: Status.OK,
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'form',
+      js: [],
+    })
+  })
 
-  test.prop([fc.locationVisibility(), fc.user(), fc.location()])(
+  test.prop([fc.locationVisibility(), fc.user(), fc.supportedLocale(), fc.location()])(
     'when the form has been submitted',
-    async (visibility, user, existingLocation) => {
+    async (visibility, user, locale, existingLocation) => {
       const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
 
       const actual = await _.changeLocationVisibility({
         body: { locationVisibility: visibility },
+        locale,
         method: 'POST',
         user,
       })({
@@ -58,54 +62,40 @@ describe('changeLocationVisibility', () => {
     },
   )
 
-  test.prop([fc.record({ locationVisibility: fc.locationVisibility() }), fc.user(), fc.location()])(
-    'when the form has been submitted but the visibility cannot be saved',
-    async (body, user, location) => {
-      const actual = await _.changeLocationVisibility({ body, method: 'POST', user })({
-        deleteLocation: shouldNotBeCalled,
-        getLocation: () => TE.of(location),
-        saveLocation: () => TE.left('unavailable'),
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
-  )
-
-  test.prop([fc.record({ locationVisibility: fc.string() }, { requiredKeys: [] }), fc.user(), fc.location()])(
-    'when the form has been submitted without setting visibility',
-    async (body, user, location) => {
-      const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
-
-      const actual = await _.changeLocationVisibility({ body, method: 'POST', user })({
-        deleteLocation: shouldNotBeCalled,
-        getLocation: () => TE.of(location),
-        saveLocation,
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: format(myDetailsMatch.formatter, {}),
-      })
-      expect(saveLocation).toHaveBeenCalledWith(user.orcid, {
-        value: location.value,
-        visibility: 'restricted',
-      })
-    },
-  )
-
-  test.prop([fc.anything(), fc.string(), fc.user()])("there isn't a location", async (body, method, user) => {
-    const actual = await _.changeLocationVisibility({ body, method, user })({
+  test.prop([
+    fc.record({ locationVisibility: fc.locationVisibility() }),
+    fc.user(),
+    fc.supportedLocale(),
+    fc.location(),
+  ])('when the form has been submitted but the visibility cannot be saved', async (body, user, locale, location) => {
+    const actual = await _.changeLocationVisibility({ body, locale, method: 'POST', user })({
       deleteLocation: shouldNotBeCalled,
-      getLocation: () => TE.left('not-found'),
-      saveLocation: shouldNotBeCalled,
+      getLocation: () => TE.of(location),
+      saveLocation: () => TE.left('unavailable'),
+    })()
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
+
+  test.prop([
+    fc.record({ locationVisibility: fc.string() }, { requiredKeys: [] }),
+    fc.user(),
+    fc.supportedLocale(),
+    fc.location(),
+  ])('when the form has been submitted without setting visibility', async (body, user, locale, location) => {
+    const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
+
+    const actual = await _.changeLocationVisibility({ body, locale, method: 'POST', user })({
+      deleteLocation: shouldNotBeCalled,
+      getLocation: () => TE.of(location),
+      saveLocation,
     })()
 
     expect(actual).toStrictEqual({
@@ -113,18 +103,42 @@ describe('changeLocationVisibility', () => {
       status: Status.SeeOther,
       location: format(myDetailsMatch.formatter, {}),
     })
-  })
-
-  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
-    const actual = await _.changeLocationVisibility({ body, method, user: undefined })({
-      deleteLocation: shouldNotBeCalled,
-      getLocation: shouldNotBeCalled,
-      saveLocation: shouldNotBeCalled,
-    })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(myDetailsMatch.formatter, {}),
+    expect(saveLocation).toHaveBeenCalledWith(user.orcid, {
+      value: location.value,
+      visibility: 'restricted',
     })
   })
+
+  test.prop([fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
+    "there isn't a location",
+    async (body, method, user, locale) => {
+      const actual = await _.changeLocationVisibility({ body, locale, method, user })({
+        deleteLocation: shouldNotBeCalled,
+        getLocation: () => TE.left('not-found'),
+        saveLocation: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    },
+  )
+
+  test.prop([fc.anything(), fc.string(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (body, method, locale) => {
+      const actual = await _.changeLocationVisibility({ body, locale, method, user: undefined })({
+        deleteLocation: shouldNotBeCalled,
+        getLocation: shouldNotBeCalled,
+        saveLocation: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    },
+  )
 })

@@ -13,9 +13,10 @@ describe('changeLocation', () => {
     fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
+    fc.supportedLocale(),
     fc.either(fc.constantFrom('not-found', 'unavailable'), fc.location()),
-  ])('when there is a logged in user', async (body, method, user, location) => {
-    const actual = await _.changeLocation({ body, method, user })({
+  ])('when there is a logged in user', async (body, method, user, locale, location) => {
+    const actual = await _.changeLocation({ body, locale, method, user })({
       deleteLocation: shouldNotBeCalled,
       getLocation: () => TE.fromEither(location),
       saveLocation: shouldNotBeCalled,
@@ -34,12 +35,12 @@ describe('changeLocation', () => {
   })
 
   describe('when the form has been submitted', () => {
-    test.prop([fc.nonEmptyString(), fc.user(), fc.location()])(
+    test.prop([fc.nonEmptyString(), fc.user(), fc.supportedLocale(), fc.location()])(
       'there is a location already',
-      async (location, user, existingLocation) => {
+      async (location, user, locale, existingLocation) => {
         const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
 
-        const actual = await _.changeLocation({ body: { location }, method: 'POST', user })({
+        const actual = await _.changeLocation({ body: { location }, locale, method: 'POST', user })({
           deleteLocation: shouldNotBeCalled,
           getLocation: () => TE.right(existingLocation),
           saveLocation,
@@ -57,51 +58,58 @@ describe('changeLocation', () => {
       },
     )
 
-    test.prop([fc.nonEmptyString(), fc.user()])("when there isn't a location already", async (location, user) => {
-      const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
+    test.prop([fc.nonEmptyString(), fc.user(), fc.supportedLocale()])(
+      "when there isn't a location already",
+      async (location, user, locale) => {
+        const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
 
-      const actual = await _.changeLocation({ body: { location }, method: 'POST', user })({
-        deleteLocation: shouldNotBeCalled,
-        getLocation: () => TE.left('not-found'),
-        saveLocation,
-      })()
+        const actual = await _.changeLocation({ body: { location }, locale, method: 'POST', user })({
+          deleteLocation: shouldNotBeCalled,
+          getLocation: () => TE.left('not-found'),
+          saveLocation,
+        })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: format(myDetailsMatch.formatter, {}),
-      })
-      expect(saveLocation).toHaveBeenCalledWith(user.orcid, { value: location, visibility: 'restricted' })
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(myDetailsMatch.formatter, {}),
+        })
+        expect(saveLocation).toHaveBeenCalledWith(user.orcid, { value: location, visibility: 'restricted' })
+      },
+    )
   })
 
   test.prop([
     fc.record({ location: fc.nonEmptyString() }),
     fc.user(),
+    fc.supportedLocale(),
     fc.either(fc.constantFrom('not-found', 'unavailable'), fc.location()),
-  ])('when the form has been submitted but the location cannot be saved', async (body, user, existingLocation) => {
-    const actual = await _.changeLocation({ body, method: 'POST', user })({
-      deleteLocation: () => TE.left('unavailable'),
-      getLocation: () => TE.fromEither(existingLocation),
-      saveLocation: () => TE.left('unavailable'),
-    })()
+  ])(
+    'when the form has been submitted but the location cannot be saved',
+    async (body, user, locale, existingLocation) => {
+      const actual = await _.changeLocation({ body, locale, method: 'POST', user })({
+        deleteLocation: () => TE.left('unavailable'),
+        getLocation: () => TE.fromEither(existingLocation),
+        saveLocation: () => TE.left('unavailable'),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
-  test.prop([fc.record({ location: fc.constant('') }, { requiredKeys: [] }), fc.user()])(
+  test.prop([fc.record({ location: fc.constant('') }, { requiredKeys: [] }), fc.user(), fc.supportedLocale()])(
     'when the form has been submitted without setting a location',
-    async (body, user) => {
+    async (body, user, locale) => {
       const deleteLocation = jest.fn<_.Env['deleteLocation']>(_ => TE.right(undefined))
 
-      const actual = await _.changeLocation({ body, method: 'POST', user })({
+      const actual = await _.changeLocation({ body, locale, method: 'POST', user })({
         deleteLocation,
         getLocation: shouldNotBeCalled,
         saveLocation: shouldNotBeCalled,
@@ -116,16 +124,19 @@ describe('changeLocation', () => {
     },
   )
 
-  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
-    const actual = await _.changeLocation({ body, method, user: undefined })({
-      deleteLocation: shouldNotBeCalled,
-      getLocation: shouldNotBeCalled,
-      saveLocation: shouldNotBeCalled,
-    })()
+  test.prop([fc.anything(), fc.string(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (body, method, locale) => {
+      const actual = await _.changeLocation({ body, locale, method, user: undefined })({
+        deleteLocation: shouldNotBeCalled,
+        getLocation: shouldNotBeCalled,
+        saveLocation: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(myDetailsMatch.formatter, {}),
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    },
+  )
 })

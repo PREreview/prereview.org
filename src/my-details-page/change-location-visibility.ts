@@ -6,7 +6,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { type Location, getLocation, saveLocation } from '../location.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
@@ -15,13 +15,23 @@ import { createFormPage } from './change-location-visibility-form-page.js'
 
 export type Env = EnvFor<ReturnType<typeof changeLocationVisibility>>
 
-export const changeLocationVisibility = ({ body, method, user }: { body: unknown; method: string; user?: User }) =>
+export const changeLocationVisibility = ({
+  body,
+  locale,
+  method,
+  user,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  method: string
+  user?: User
+}) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.bindW('location', ({ user }) => getLocation(user.orcid)),
     RTE.matchE(
       error =>
@@ -29,7 +39,7 @@ export const changeLocationVisibility = ({ body, method, user }: { body: unknown
           .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
           .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
           .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
-          .with('unavailable', () => RT.of(havingProblemsPage(DefaultLocale)))
+          .with('unavailable', () => RT.of(havingProblemsPage(locale)))
           .exhaustive(),
       state =>
         match(state)
