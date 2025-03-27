@@ -2,19 +2,20 @@ import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { P, match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import type { ResearchInterests } from '../research-interests.js'
 import { PageResponse } from '../response.js'
 import { changeResearchInterestsMatch, myDetailsMatch } from '../routes.js'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const createFormPage = (researchInterests: Option.Option<ResearchInterests>, locale: SupportedLocale) =>
   PageResponse({
-    title: plainText`What are your research interests?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
+    title: plainText(translate(locale, 'my-details', 'whatResearchInterests')()),
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
+      ><span>${translate(locale, 'my-details', 'back')()}</span></a
+    >`,
     main: html`
       <form method="post" action="${format(changeResearchInterestsMatch.formatter, {})}" novalidate>
-        <h1><label for="research-interests">What are your research interests?</label></h1>
+        <h1><label for="research-interests">${translate(locale, 'my-details', 'whatResearchInterests')()}</label></h1>
 
         <textarea name="researchInterests" id="research-interests" rows="5">
 ${match(researchInterests)
@@ -23,7 +24,7 @@ ${match(researchInterests)
             .exhaustive()}</textarea
         >
 
-        <button>Save and continue</button>
+        <button>${translate(locale, 'my-details', 'saveAndContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

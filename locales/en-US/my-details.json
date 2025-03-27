@@ -259,5 +259,11 @@
   },
   "seeHappyTakeRequests": {
     "message": "Who can see if you are open for review requests?"
+  },
+  "whatResearchInterests": {
+    "message": "What are your research interests?"
+  },
+  "seeWhatResearchInterests": {
+    "message": "Who can see your research interests?"
   }
 }
