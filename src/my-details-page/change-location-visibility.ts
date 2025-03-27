@@ -6,7 +6,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { type Location, getLocation, saveLocation } from '../location.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
@@ -21,6 +21,7 @@ export const changeLocationVisibility = ({ body, method, user }: { body: unknown
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.bindW('location', ({ user }) => getLocation(user.orcid)),
     RTE.matchE(
       error =>
@@ -41,10 +42,12 @@ const ChangeLocationVisibilityFormD = pipe(D.struct({ locationVisibility: D.lite
 
 const handleChangeLocationVisibilityForm = ({
   body,
+  locale,
   location,
   user,
 }: {
   body: unknown
+  locale: SupportedLocale
   location: Location
   user: User
 }) =>
@@ -56,7 +59,7 @@ const handleChangeLocationVisibilityForm = ({
         ({ locationVisibility }) => ({ ...location, visibility: locationVisibility }),
         location => saveLocation(user.orcid, location),
         RTE.matchW(
-          () => havingProblemsPage(DefaultLocale),
+          () => havingProblemsPage(locale),
           () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
         ),
       ),

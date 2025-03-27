@@ -1,11 +1,13 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import type { Location } from '../location.js'
 import { PageResponse } from '../response.js'
 import { changeLocationVisibilityMatch, myDetailsMatch } from '../routes.js'
 
-export const createFormPage = ({ location }: { location: Location }) =>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const createFormPage = ({ locale, location }: { locale: SupportedLocale; location: Location }) =>
   PageResponse({
     title: plainText`Who can see your location?`,
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
