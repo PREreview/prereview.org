@@ -4,6 +4,7 @@ import { Array, type DateTime, Effect, pipe } from 'effect'
 import type * as HttpCache from './HttpCache.js'
 
 const headerToIgnoreWhenDiffing = [
+  'Date',
   'Retry-After',
   'Set-Cookie',
   'X-Ratelimit-Limit',
