@@ -10,16 +10,18 @@ import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('verifyContactEmailAddress', () => {
-  test.prop([fc.user(), fc.unverifiedContactEmailAddress()])(
+  test.prop([fc.user(), fc.supportedLocale(), fc.unverifiedContactEmailAddress()])(
     'when the email address is unverified',
-    async (user, contactEmailAddress) => {
+    async (user, locale, contactEmailAddress) => {
       const getContactEmailAddress = jest.fn<_.Env['getContactEmailAddress']>(_ => TE.right(contactEmailAddress))
       const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
 
-      const actual = await _.verifyContactEmailAddress({ verify: contactEmailAddress.verificationToken, user })({
-        getContactEmailAddress,
-        saveContactEmailAddress,
-      })()
+      const actual = await _.verifyContactEmailAddress({ verify: contactEmailAddress.verificationToken, locale, user })(
+        {
+          getContactEmailAddress,
+          saveContactEmailAddress,
+        },
+      )()
 
       expect(actual).toStrictEqual({
         _tag: 'FlashMessageResponse',
@@ -34,10 +36,10 @@ describe('verifyContactEmailAddress', () => {
     },
   )
 
-  test.prop([fc.user(), fc.uuid(), fc.verifiedContactEmailAddress()])(
+  test.prop([fc.user(), fc.supportedLocale(), fc.uuid(), fc.verifiedContactEmailAddress()])(
     'when the email address is already verified',
-    async (user, verify, contactEmailAddress) => {
-      const actual = await _.verifyContactEmailAddress({ verify, user })({
+    async (user, locale, verify, contactEmailAddress) => {
+      const actual = await _.verifyContactEmailAddress({ verify, locale, user })({
         getContactEmailAddress: () => TE.right(contactEmailAddress),
         saveContactEmailAddress: shouldNotBeCalled,
       })()
@@ -53,10 +55,10 @@ describe('verifyContactEmailAddress', () => {
     },
   )
 
-  test.prop([fc.user(), fc.uuid(), fc.unverifiedContactEmailAddress()])(
+  test.prop([fc.user(), fc.supportedLocale(), fc.uuid(), fc.unverifiedContactEmailAddress()])(
     "when the verification token doesn't match",
-    async (user, verify, contactEmailAddress) => {
-      const actual = await _.verifyContactEmailAddress({ verify, user })({
+    async (user, locale, verify, contactEmailAddress) => {
+      const actual = await _.verifyContactEmailAddress({ verify, locale, user })({
         getContactEmailAddress: () => TE.right(contactEmailAddress),
         saveContactEmailAddress: shouldNotBeCalled,
       })()
@@ -72,40 +74,46 @@ describe('verifyContactEmailAddress', () => {
     },
   )
 
-  test.prop([fc.user(), fc.uuid()])('when there is no email address', async (user, verify) => {
-    const actual = await _.verifyContactEmailAddress({ verify, user })({
-      getContactEmailAddress: () => TE.left('not-found'),
-      saveContactEmailAddress: shouldNotBeCalled,
-    })()
+  test.prop([fc.user(), fc.supportedLocale(), fc.uuid()])(
+    'when there is no email address',
+    async (user, locale, verify) => {
+      const actual = await _.verifyContactEmailAddress({ verify, locale, user })({
+        getContactEmailAddress: () => TE.left('not-found'),
+        saveContactEmailAddress: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.NotFound,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
-  test.prop([fc.user(), fc.uuid()])("when the email address can't be loaded", async (user, verify) => {
-    const actual = await _.verifyContactEmailAddress({ verify, user })({
-      getContactEmailAddress: () => TE.left('unavailable'),
-      saveContactEmailAddress: shouldNotBeCalled,
-    })()
+  test.prop([fc.user(), fc.supportedLocale(), fc.uuid()])(
+    "when the email address can't be loaded",
+    async (user, locale, verify) => {
+      const actual = await _.verifyContactEmailAddress({ verify, locale, user })({
+        getContactEmailAddress: () => TE.left('unavailable'),
+        saveContactEmailAddress: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
-  test.prop([fc.uuid()])('when the user is not logged in', async verify => {
-    const actual = await _.verifyContactEmailAddress({ verify, user: undefined })({
+  test.prop([fc.uuid(), fc.supportedLocale()])('when the user is not logged in', async (verify, locale) => {
+    const actual = await _.verifyContactEmailAddress({ verify, locale, user: undefined })({
       getContactEmailAddress: shouldNotBeCalled,
       saveContactEmailAddress: shouldNotBeCalled,
     })()
