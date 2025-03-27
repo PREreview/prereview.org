@@ -2,12 +2,11 @@ import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../html.js'
 import type { IsOpenForRequests } from '../is-open-for-requests.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   locale,
   openForRequests,
 }: {
@@ -15,13 +14,15 @@ export const createFormPage = ({
   openForRequests: Extract<IsOpenForRequests, { value: true }>
 }) =>
   PageResponse({
-    title: plainText`Who can see if you are open for review requests?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
+    title: plainText(translate(locale, 'my-details', 'seeHappyTakeRequests')()),
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
+      ><span>${translate(locale, 'my-details', 'back')()}</span></a
+    >`,
     main: html`
       <form method="post" action="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}" novalidate>
         <fieldset role="group">
           <legend>
-            <h1>Who can see if you are open for review requests?</h1>
+            <h1>${translate(locale, 'my-details', 'seeHappyTakeRequests')()}</h1>
           </legend>
 
           <ol>
@@ -37,9 +38,11 @@ export const createFormPage = ({
                     .with('public', () => 'checked')
                     .otherwise(() => '')}
                 />
-                <span>Everyone</span>
+                <span>${translate(locale, 'my-details', 'everyone')()}</span>
               </label>
-              <p id="open-for-requests-visibility-tip-public" role="note">We’ll say so on your public profile.</p>
+              <p id="open-for-requests-visibility-tip-public" role="note">
+                ${translate(locale, 'my-details', 'saySoOnPublic')()}
+              </p>
             </li>
             <li>
               <label>
@@ -53,14 +56,16 @@ export const createFormPage = ({
                     .with('restricted', () => 'checked')
                     .otherwise(() => '')}
                 />
-                <span>Only PREreview</span>
+                <span>${translate(locale, 'my-details', 'onlyPrereview')()}</span>
               </label>
-              <p id="open-for-requests-visibility-tip-restricted" role="note">We won’t let anyone else know.</p>
+              <p id="open-for-requests-visibility-tip-restricted" role="note">
+                ${translate(locale, 'my-details', 'noOneElseKnow')()}
+              </p>
             </li>
           </ol>
         </fieldset>
 
-        <button>Save and continue</button>
+        <button>${translate(locale, 'my-details', 'saveAndContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

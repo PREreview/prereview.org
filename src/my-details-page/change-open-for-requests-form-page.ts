@@ -1,15 +1,14 @@
-import type { Option } from 'effect'
+import { identity, type Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../html.js'
 import type { IsOpenForRequests } from '../is-open-for-requests.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeOpenForRequestsMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   locale,
   openForRequests,
   error = false,
@@ -20,17 +19,21 @@ export const createFormPage = ({
 }) =>
   PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}Are you happy to take requests for a PREreview?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,
+    title: plainText(translate(locale, 'my-details', 'happyTakeRequests')({ error: error ? identity : () => '' })),
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
+      ><span>${translate(locale, 'my-details', 'back')()}</span></a
+    >`,
     main: html`
       <form method="post" action="${format(changeOpenForRequestsMatch.formatter, {})}" novalidate>
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
+                <h2 id="error-summary-title">${translate(locale, 'my-details', 'thereIsAProblem')()}</h2>
                 <ul>
                   <li>
-                    <a href="#open-for-requests-yes">Select yes if you are happy to take requests for a PREreview</a>
+                    <a href="#open-for-requests-yes"
+                      >${translate(locale, 'my-details', 'selectHappyTakeRequestsError')({ error: () => '' })}</a
+                    >
                   </li>
                 </ul>
               </error-summary>
@@ -43,14 +46,15 @@ export const createFormPage = ({
             ${error ? rawHtml('aria-invalid="true" aria-errormessage="open-for-requests-error"') : ''}
           >
             <legend>
-              <h1>Are you happy to take requests for a PREreview?</h1>
+              <h1>${translate(locale, 'my-details', 'happyTakeRequests')({ error: () => '' })}</h1>
             </legend>
 
             ${error
               ? html`
                   <div class="error-message" id="open-for-requests-error">
-                    <span class="visually-hidden">Error:</span>
-                    Select yes if you are happy to take requests for a PREreview
+                    ${rawHtml(
+                      translate(locale, 'my-details', 'selectHappyTakeRequestsError')({ error: visuallyHidden }),
+                    )}
                   </div>
                 `
               : ''}
@@ -67,7 +71,7 @@ export const createFormPage = ({
                       .with({ value: { value: true } }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>Yes</span>
+                  <span>${translate(locale, 'my-details', 'yes')()}</span>
                 </label>
               </li>
               <li>
@@ -80,17 +84,19 @@ export const createFormPage = ({
                       .with({ value: { value: false } }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>No</span>
+                  <span>${translate(locale, 'my-details', 'no')()}</span>
                 </label>
               </li>
             </ol>
           </fieldset>
         </div>
 
-        <button>Save and continue</button>
+        <button>${translate(locale, 'my-details', 'saveAndContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',
     canonical: format(changeOpenForRequestsMatch.formatter, {}),
     js: error ? ['error-summary.js'] : [],
   })
+
+const visuallyHidden = (text: string) => html`<span class="visually-hidden">${text}</span>`.toString()

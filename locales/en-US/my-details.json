@@ -212,8 +212,14 @@
   "showThemOnPublic": {
     "message": "We’ll show them on your public profile."
   },
+  "saySoOnPublic": {
+    "message": "We’ll say so on your public profile."
+  },
   "onlyPrereview": {
     "message": "Only PREreview"
+  },
+  "noOneElseKnow": {
+    "message": "We won’t let anyone else know."
   },
   "willNotShare": {
     "message": "We won’t share it with anyone else."
@@ -244,5 +250,14 @@
   },
   "seeLocation": {
     "message": "Who can see your location?"
+  },
+  "happyTakeRequests": {
+    "message": "<error>Error:</error> Are you happy to take requests for a PREreview?"
+  },
+  "selectHappyTakeRequestsError": {
+    "message": "<error>Error:</error> Select yes if you are happy to take requests for a PREreview"
+  },
+  "seeHappyTakeRequests": {
+    "message": "Who can see if you are open for review requests?"
   }
 }
