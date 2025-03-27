@@ -9,35 +9,39 @@ import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('changeResearchInterestsVisibility', () => {
-  test.prop([fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user(), fc.researchInterests()])(
-    'when there is a logged in user',
-    async (body, method, user, researchInterests) => {
-      const actual = await _.changeResearchInterestsVisibility({ body, method, user })({
-        deleteResearchInterests: shouldNotBeCalled,
-        getResearchInterests: () => TE.of(researchInterests),
-        saveResearchInterests: shouldNotBeCalled,
-      })()
+  test.prop([
+    fc.anything(),
+    fc.string().filter(method => method !== 'POST'),
+    fc.user(),
+    fc.supportedLocale(),
+    fc.researchInterests(),
+  ])('when there is a logged in user', async (body, method, user, locale, researchInterests) => {
+    const actual = await _.changeResearchInterestsVisibility({ body, locale, method, user })({
+      deleteResearchInterests: shouldNotBeCalled,
+      getResearchInterests: () => TE.of(researchInterests),
+      saveResearchInterests: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        canonical: format(changeResearchInterestsVisibilityMatch.formatter, {}),
-        status: Status.OK,
-        title: expect.anything(),
-        nav: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: [],
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(changeResearchInterestsVisibilityMatch.formatter, {}),
+      status: Status.OK,
+      title: expect.anything(),
+      nav: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'form',
+      js: [],
+    })
+  })
 
-  test.prop([fc.researchInterestsVisibility(), fc.user(), fc.researchInterests()])(
+  test.prop([fc.researchInterestsVisibility(), fc.user(), fc.supportedLocale(), fc.researchInterests()])(
     'when the form has been submitted',
-    async (visibility, user, existingResearchInterests) => {
+    async (visibility, user, locale, existingResearchInterests) => {
       const saveResearchInterests = jest.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
 
       const actual = await _.changeResearchInterestsVisibility({
         body: { researchInterestsVisibility: visibility },
+        locale,
         method: 'POST',
         user,
       })({
@@ -61,32 +65,37 @@ describe('changeResearchInterestsVisibility', () => {
   test.prop([
     fc.record({ researchInterestsVisibility: fc.researchInterestsVisibility() }),
     fc.user(),
+    fc.supportedLocale(),
     fc.researchInterests(),
-  ])('when the form has been submitted but the visibility cannot be saved', async (body, user, researchInterests) => {
-    const actual = await _.changeResearchInterestsVisibility({ body, method: 'POST', user })({
-      deleteResearchInterests: shouldNotBeCalled,
-      getResearchInterests: () => TE.of(researchInterests),
-      saveResearchInterests: () => TE.left('unavailable'),
-    })()
+  ])(
+    'when the form has been submitted but the visibility cannot be saved',
+    async (body, user, locale, researchInterests) => {
+      const actual = await _.changeResearchInterestsVisibility({ body, locale, method: 'POST', user })({
+        deleteResearchInterests: shouldNotBeCalled,
+        getResearchInterests: () => TE.of(researchInterests),
+        saveResearchInterests: () => TE.left('unavailable'),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
   test.prop([
     fc.record({ researchInterestsVisibility: fc.string() }, { requiredKeys: [] }),
     fc.user(),
+    fc.supportedLocale(),
     fc.researchInterests(),
-  ])('when the form has been submitted without setting visibility', async (body, user, researchInterests) => {
+  ])('when the form has been submitted without setting visibility', async (body, user, locale, researchInterests) => {
     const saveResearchInterests = jest.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
 
-    const actual = await _.changeResearchInterestsVisibility({ body, method: 'POST', user })({
+    const actual = await _.changeResearchInterestsVisibility({ body, locale, method: 'POST', user })({
       deleteResearchInterests: shouldNotBeCalled,
       getResearchInterests: () => TE.of(researchInterests),
       saveResearchInterests,
@@ -103,30 +112,36 @@ describe('changeResearchInterestsVisibility', () => {
     })
   })
 
-  test.prop([fc.anything(), fc.string(), fc.user()])("there aren't research interests", async (body, method, user) => {
-    const actual = await _.changeResearchInterestsVisibility({ body, method, user })({
-      deleteResearchInterests: shouldNotBeCalled,
-      getResearchInterests: () => TE.left('not-found'),
-      saveResearchInterests: shouldNotBeCalled,
-    })()
+  test.prop([fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
+    "there aren't research interests",
+    async (body, method, user, locale) => {
+      const actual = await _.changeResearchInterestsVisibility({ body, locale, method, user })({
+        deleteResearchInterests: shouldNotBeCalled,
+        getResearchInterests: () => TE.left('not-found'),
+        saveResearchInterests: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: Status.SeeOther,
-      location: format(myDetailsMatch.formatter, {}),
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    },
+  )
 
-  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
-    const actual = await _.changeResearchInterestsVisibility({ body, method, user: undefined })({
-      deleteResearchInterests: shouldNotBeCalled,
-      getResearchInterests: shouldNotBeCalled,
-      saveResearchInterests: shouldNotBeCalled,
-    })()
+  test.prop([fc.anything(), fc.string(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (body, method, locale) => {
+      const actual = await _.changeResearchInterestsVisibility({ body, locale, method, user: undefined })({
+        deleteResearchInterests: shouldNotBeCalled,
+        getResearchInterests: shouldNotBeCalled,
+        saveResearchInterests: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(myDetailsMatch.formatter, {}),
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    },
+  )
 })

@@ -13,9 +13,10 @@ describe('changeResearchInterests', () => {
     fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
+    fc.supportedLocale(),
     fc.either(fc.constantFrom('not-found', 'unavailable'), fc.researchInterests()),
-  ])('when there is a logged in user', async (body, method, user, researchInterests) => {
-    const actual = await _.changeResearchInterests({ body, method, user })({
+  ])('when there is a logged in user', async (body, method, user, locale, researchInterests) => {
+    const actual = await _.changeResearchInterests({ body, locale, method, user })({
       deleteResearchInterests: shouldNotBeCalled,
       getResearchInterests: () => TE.fromEither(researchInterests),
       saveResearchInterests: shouldNotBeCalled,
@@ -34,12 +35,12 @@ describe('changeResearchInterests', () => {
   })
 
   describe('when the form has been submitted', () => {
-    test.prop([fc.nonEmptyString(), fc.user(), fc.researchInterests()])(
+    test.prop([fc.nonEmptyString(), fc.user(), fc.supportedLocale(), fc.researchInterests()])(
       'there are research interests already',
-      async (researchInterests, user, existingResearchInterests) => {
+      async (researchInterests, user, locale, existingResearchInterests) => {
         const saveResearchInterests = jest.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
 
-        const actual = await _.changeResearchInterests({ body: { researchInterests }, method: 'POST', user })({
+        const actual = await _.changeResearchInterests({ body: { researchInterests }, locale, method: 'POST', user })({
           deleteResearchInterests: shouldNotBeCalled,
           getResearchInterests: () => TE.right(existingResearchInterests),
           saveResearchInterests,
@@ -57,12 +58,12 @@ describe('changeResearchInterests', () => {
       },
     )
 
-    test.prop([fc.nonEmptyString(), fc.user()])(
+    test.prop([fc.nonEmptyString(), fc.user(), fc.supportedLocale()])(
       "there aren't research interests already",
-      async (researchInterests, user) => {
+      async (researchInterests, user, locale) => {
         const saveResearchInterests = jest.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
 
-        const actual = await _.changeResearchInterests({ body: { researchInterests }, method: 'POST', user })({
+        const actual = await _.changeResearchInterests({ body: { researchInterests }, locale, method: 'POST', user })({
           deleteResearchInterests: shouldNotBeCalled,
           getResearchInterests: () => TE.left('not-found'),
           saveResearchInterests,
@@ -84,11 +85,12 @@ describe('changeResearchInterests', () => {
   test.prop([
     fc.record({ researchInterests: fc.nonEmptyString() }),
     fc.user(),
+    fc.supportedLocale(),
     fc.either(fc.constantFrom('not-found', 'unavailable'), fc.researchInterests()),
   ])(
     'when the form has been submitted but the research interests cannot be saved',
-    async (body, user, existingResearchInterests) => {
-      const actual = await _.changeResearchInterests({ body, method: 'POST', user })({
+    async (body, user, locale, existingResearchInterests) => {
+      const actual = await _.changeResearchInterests({ body, locale, method: 'POST', user })({
         deleteResearchInterests: () => TE.left('unavailable'),
         getResearchInterests: () => TE.fromEither(existingResearchInterests),
         saveResearchInterests: () => TE.left('unavailable'),
@@ -105,12 +107,12 @@ describe('changeResearchInterests', () => {
     },
   )
 
-  test.prop([fc.record({ researchInterests: fc.constant('') }, { requiredKeys: [] }), fc.user()])(
+  test.prop([fc.record({ researchInterests: fc.constant('') }, { requiredKeys: [] }), fc.user(), fc.supportedLocale()])(
     'when the form has been submitted without setting research interests',
-    async (body, user) => {
+    async (body, user, locale) => {
       const deleteResearchInterests = jest.fn<_.Env['deleteResearchInterests']>(_ => TE.right(undefined))
 
-      const actual = await _.changeResearchInterests({ body, method: 'POST', user })({
+      const actual = await _.changeResearchInterests({ body, locale, method: 'POST', user })({
         deleteResearchInterests,
         getResearchInterests: shouldNotBeCalled,
         saveResearchInterests: shouldNotBeCalled,
@@ -125,16 +127,19 @@ describe('changeResearchInterests', () => {
     },
   )
 
-  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
-    const actual = await _.changeResearchInterests({ body, method, user: undefined })({
-      deleteResearchInterests: shouldNotBeCalled,
-      getResearchInterests: shouldNotBeCalled,
-      saveResearchInterests: shouldNotBeCalled,
-    })()
+  test.prop([fc.anything(), fc.string(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (body, method, locale) => {
+      const actual = await _.changeResearchInterests({ body, locale, method, user: undefined })({
+        deleteResearchInterests: shouldNotBeCalled,
+        getResearchInterests: shouldNotBeCalled,
+        saveResearchInterests: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(myDetailsMatch.formatter, {}),
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    },
+  )
 })
