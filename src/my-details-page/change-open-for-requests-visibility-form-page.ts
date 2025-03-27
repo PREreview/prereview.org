@@ -2,10 +2,18 @@ import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../html.js'
 import type { IsOpenForRequests } from '../is-open-for-requests.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../routes.js'
 
-export const createFormPage = ({ openForRequests }: { openForRequests: Extract<IsOpenForRequests, { value: true }> }) =>
+export const createFormPage = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  locale,
+  openForRequests,
+}: {
+  locale: SupportedLocale
+  openForRequests: Extract<IsOpenForRequests, { value: true }>
+}) =>
   PageResponse({
     title: plainText`Who can see if you are open for review requests?`,
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>Back</span></a>`,

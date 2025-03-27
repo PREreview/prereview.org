@@ -4,13 +4,17 @@ import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../html.js'
 import type { IsOpenForRequests } from '../is-open-for-requests.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeOpenForRequestsMatch, myDetailsMatch } from '../routes.js'
 
 export const createFormPage = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  locale,
   openForRequests,
   error = false,
 }: {
+  locale: SupportedLocale
   openForRequests: Option.Option<IsOpenForRequests>
   error?: boolean
 }) =>

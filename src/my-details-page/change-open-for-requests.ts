@@ -12,7 +12,7 @@ import {
   isOpenForRequests,
   saveOpenForRequests,
 } from '../is-open-for-requests.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -26,6 +26,7 @@ export const changeOpenForRequests = ({ body, method, user }: { body: unknown; m
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.matchEW(
       error =>
         match(error)
@@ -36,19 +37,28 @@ export const changeOpenForRequests = ({ body, method, user }: { body: unknown; m
     ),
   )
 
-const showChangeOpenForRequestsForm = flow(
-  ({ user }: { user: User }) => isOpenForRequests(user.orcid),
-  RTE.match(Option.none, Option.some),
-  RT.map(openForRequests => createFormPage({ openForRequests })),
-)
+const showChangeOpenForRequestsForm = ({ locale, user }: { locale: SupportedLocale; user: User }) =>
+  pipe(
+    isOpenForRequests(user.orcid),
+    RTE.match(Option.none, Option.some),
+    RT.map(openForRequests => createFormPage({ locale, openForRequests })),
+  )
 
 const ChangeOpenForRequestsFormD = pipe(D.struct({ openForRequests: D.literal('yes', 'no') }))
 
-const handleChangeOpenForRequestsForm = ({ body, user }: { body: unknown; user: User }) =>
+const handleChangeOpenForRequestsForm = ({
+  body,
+  locale,
+  user,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  user: User
+}) =>
   pipe(
     RTE.fromEither(ChangeOpenForRequestsFormD.decode(body)),
     RTE.matchE(
-      () => RT.of(createFormPage({ openForRequests: Option.none(), error: true })),
+      () => RT.of(createFormPage({ locale, openForRequests: Option.none(), error: true })),
       flow(
         ({ openForRequests }) =>
           match(openForRequests)
@@ -80,7 +90,7 @@ const handleChangeOpenForRequestsForm = ({ body, user }: { body: unknown; user: 
             .exhaustive(),
         RTE.chain(openForRequests => saveOpenForRequests(user.orcid, openForRequests)),
         RTE.matchW(
-          () => havingProblemsPage(DefaultLocale),
+          () => havingProblemsPage(locale),
           () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
         ),
       ),

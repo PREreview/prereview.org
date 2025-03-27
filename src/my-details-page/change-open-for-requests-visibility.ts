@@ -7,7 +7,7 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { havingProblemsPage } from '../http-error.js'
 import { type IsOpenForRequests, isOpenForRequests, saveOpenForRequests } from '../is-open-for-requests.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import type { User } from '../user.js'
@@ -29,6 +29,7 @@ export const changeOpenForRequestsVisibility = ({
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.bindW('openForRequests', ({ user }) => isOpenForRequests(user.orcid)),
     RTE.matchE(
       error =>
@@ -55,10 +56,12 @@ const ChangeOpenForRequestsVisibilityFormD = pipe(
 
 const handleChangeOpenForRequestsVisibilityForm = ({
   body,
+  locale,
   openForRequests,
   user,
 }: {
   body: unknown
+  locale: SupportedLocale
   openForRequests: Extract<IsOpenForRequests, { value: true }>
   user: User
 }) =>
@@ -70,7 +73,7 @@ const handleChangeOpenForRequestsVisibilityForm = ({
         ({ openForRequestsVisibility }) => ({ ...openForRequests, visibility: openForRequestsVisibility }),
         openForRequests => saveOpenForRequests(user.orcid, openForRequests),
         RTE.matchW(
-          () => havingProblemsPage(DefaultLocale),
+          () => havingProblemsPage(locale),
           () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
         ),
       ),
