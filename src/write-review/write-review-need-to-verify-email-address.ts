@@ -11,7 +11,7 @@ import {
 } from '../contact-email-address.js'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from '../flash-message.js'
 import { html, plainText, sendHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { showNotificationBanner } from '../notification-banner.js'
 import { templatePage } from '../page.js'
@@ -41,6 +41,7 @@ export const writeReviewNeedToVerifyEmailAddress = flow(
         RM.fromReaderTaskEitherK(({ user }) => maybeGetContactEmailAddress(user.orcid)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
+      RM.apS('locale', RM.of(DefaultLocale)),
       RM.ichainW(state =>
         match(state)
           .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>
@@ -98,7 +99,12 @@ const resendVerificationEmail = ({
   )
 
 const showNeedToVerifyEmailAddressMessage = flow(
-  (state: { contactEmailAddress: UnverifiedContactEmailAddress; preprint: PreprintTitle; user: User }) => RM.of(state),
+  (state: {
+    contactEmailAddress: UnverifiedContactEmailAddress
+    preprint: PreprintTitle
+    locale: SupportedLocale
+    user: User
+  }) => RM.of(state),
   RM.apSW('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
   RM.chainReaderK(needToVerifyEmailAddressMessage),
   RM.ichainFirst(() => RM.status(Status.OK)),
@@ -108,11 +114,13 @@ const showNeedToVerifyEmailAddressMessage = flow(
 
 function needToVerifyEmailAddressMessage({
   contactEmailAddress,
+  locale,
   message,
   preprint,
   user,
 }: {
   contactEmailAddress: UnverifiedContactEmailAddress
+  locale: SupportedLocale
   message?: D.TypeOf<typeof FlashMessageD>
   preprint: PreprintTitle
   user: User
@@ -159,7 +167,7 @@ function needToVerifyEmailAddressMessage({
     skipLinks: [[html`Skip to main content`, '#main-content']],
     js: message ? ['notification-banner.js'] : [],
     type: 'streamline',
-    locale: DefaultLocale,
+    locale,
     user,
   })
 }
