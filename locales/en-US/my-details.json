@@ -209,11 +209,17 @@
   "showOnPublic": {
     "message": "We’ll show it on your public profile."
   },
+  "showThemOnPublic": {
+    "message": "We’ll show them on your public profile."
+  },
   "onlyPrereview": {
     "message": "Only PREreview"
   },
   "willNotShare": {
     "message": "We won’t share it with anyone else."
+  },
+  "willNotShareThem": {
+    "message": "We won’t share them with anyone else."
   },
   "whatEmailAddress": {
     "message": "<error>Error:</error> What is your email address?"
@@ -226,5 +232,11 @@
   },
   "usedToContactYouAboutYourAccountAndPrereviews": {
     "message": "We’ll only use this to contact you about your account and PREreviews."
+  },
+  "whatLanguages": {
+    "message": "What languages can you review in?"
+  },
+  "seeLanguages": {
+    "message": "Who can see your languages?"
   }
 }
