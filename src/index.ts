@@ -1,6 +1,6 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
+import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
@@ -15,6 +15,7 @@ import { Program } from './Program.js'
 import { PublicUrl } from './public-url.js'
 import * as Redis from './Redis.js'
 import * as TemplatePage from './TemplatePage.js'
+import { isPrereviewTeam } from './user.js'
 import { verifyCache } from './VerifyCache.js'
 import * as Zenodo from './Zenodo/index.js'
 
@@ -36,7 +37,7 @@ pipe(
       FeatureFlags.layerConfig({
         canAddMultipleAuthors: pipe(
           Config.withDefault(Config.boolean('CAN_ADD_MULTIPLE_AUTHORS'), false),
-          Config.map(Function.constant),
+          Config.map(canAddMultipleAuthors => user => canAddMultipleAuthors && isPrereviewTeam(user)),
         ),
         canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
