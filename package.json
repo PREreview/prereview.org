@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.9",
-    "@babel/preset-typescript": "^7.26.0",
+    "@babel/preset-typescript": "^7.27.0",
     "@csstools/postcss-global-data": "^3.0.0",
     "@fast-check/jest": "^2.0.3",
     "@ibm/plex": "^6.4.1",
