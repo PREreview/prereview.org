@@ -46,6 +46,20 @@ export function addMultipleAuthorsForm({
             <label for="authors">Enter names and email address of the other authors</label>
           </h1>
 
+          <p id="authors-tip" role="note">Put each author on their own line.</p>
+
+          <details>
+            <summary><span>Example</span></summary>
+
+            <div>
+              <pre>
+Josiah Carberry    carberry@example.com
+Minerva McGonagall mcgonagall@example.com
+</pre
+              >
+            </div>
+          </details>
+
           ${E.isLeft(form.authors)
             ? html`
                 <div class="error-message" id="authors-error">
@@ -66,6 +80,7 @@ export function addMultipleAuthorsForm({
             id="authors"
             rows="10"
             spellcheck="false"
+            aria-describedby="authors-tip"
             ${E.isLeft(form.authors) ? html`aria-invalid="true" aria-errormessage="authors-error"` : ''}
           >
 ${match(form.authors)
