@@ -238,5 +238,11 @@
   },
   "seeLanguages": {
     "message": "Who can see your languages?"
+  },
+  "whereBased": {
+    "message": "Where are you based?"
+  },
+  "seeLocation": {
+    "message": "Who can see your location?"
   }
 }
