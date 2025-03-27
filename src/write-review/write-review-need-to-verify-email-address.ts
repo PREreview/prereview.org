@@ -11,7 +11,7 @@ import {
 } from '../contact-email-address.js'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from '../flash-message.js'
 import { html, plainText, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { showNotificationBanner } from '../notification-banner.js'
 import { templatePage } from '../page.js'
@@ -23,6 +23,7 @@ import {
 } from '../routes.js'
 import { type User, getUser } from '../user.js'
 import { getForm, redirectToNextForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 const FlashMessageD = D.literal('verify-contact-email-resend')
 
@@ -125,12 +126,14 @@ function needToVerifyEmailAddressMessage({
   preprint: PreprintTitle
   user: User
 }) {
+  const t = translate(locale, 'write-review')
+
   return templatePage({
-    title: plainText`Verify your email address – PREreview of “${preprint.title}”`,
+    title: pipe(t('verifyEmailAddress')(), prereviewOfSuffix(locale, preprint.title), plainText),
     content: html`
       <nav>
         <a href="${format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>Back</span></a
+          ><span>${t('back')()}</span></a
         >
       </nav>
 
@@ -139,32 +142,29 @@ function needToVerifyEmailAddressMessage({
           .with('verify-contact-email-resend', () =>
             showNotificationBanner({
               type: 'notice',
-              title: html`Important`,
-              content: html`<p>We’ve sent you a new email.</p>`,
+              title: html`${t('important')()}`,
+              content: html`<p>${t('sentNewEmail')()}</p>`,
             }),
           )
           .with(undefined, () => '')
           .exhaustive()}
 
-        <h1>Verify your email address</h1>
+        <h1>${t('verifyEmailAddress')()}</h1>
 
-        <p>
-          Please open the email we sent to ${contactEmailAddress.value} and follow the link. You’ll then be able to
-          publish your PREreview.
-        </p>
+        <p>${t('howToVerifyEmailAddress')({ emailAddress: contactEmailAddress.value })}</p>
 
-        <p>Once your address is verified, you can close this page.</p>
+        <p>${t('onceEmailAddressVerified')()}</p>
 
         <form
           method="post"
           action="${format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id })}"
           novalidate
         >
-          <button class="secondary">Resend email</button>
+          <button class="secondary">${t('resendEmailButton')()}</button>
         </form>
       </main>
     `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
+    skipLinks: [[html`${translate(locale, 'skip-links', 'main')()}`, '#main-content']],
     js: message ? ['notification-banner.js'] : [],
     type: 'streamline',
     locale,

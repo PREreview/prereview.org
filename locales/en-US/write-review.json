@@ -587,6 +587,24 @@
   "whatIsYourEmail": {
     "message": "What is your email address?"
   },
+  "verifyEmailAddress": {
+    "message": "Verify your email address"
+  },
+  "important": {
+    "message": "Important"
+  },
+  "sentNewEmail": {
+    "message": "We’ve sent you a new email."
+  },
+  "howToVerifyEmailAddress": {
+    "message": "Please open the email we sent to {emailAddress} and follow the link. You’ll then be able to publish your PREreview."
+  },
+  "onceEmailAddressVerified": {
+    "message": "Once your address is verified, you can close this page."
+  },
+  "resendEmailButton": {
+    "message": "Resend email"
+  },
   "areTheDataPresentationsWellSuited": {
     "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
   },
