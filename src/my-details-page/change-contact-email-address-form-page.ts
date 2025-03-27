@@ -4,6 +4,7 @@ import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import { type InvalidE, type MissingE, hasAnError } from '../form.js'
 import { html, plainText } from '../html.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes.js'
 import type { EmailAddress } from '../types/email-address.js'
@@ -12,7 +13,8 @@ interface ChangeContactEmailAddressForm {
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>
 }
 
-export const createFormPage = (form: ChangeContactEmailAddressForm) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const createFormPage = (form: ChangeContactEmailAddressForm, locale: SupportedLocale) => {
   const error = hasAnError(form)
 
   return PageResponse({

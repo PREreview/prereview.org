@@ -16,7 +16,7 @@ import {
 } from '../contact-email-address.js'
 import { getInput, invalidE, missingE } from '../form.js'
 import { havingProblemsPage } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import { EmailAddressC } from '../types/email-address.js'
@@ -32,6 +32,7 @@ export const changeContactEmailAddress = ({ body, method, user }: { body: unknow
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
+    RTE.let('locale', () => DefaultLocale),
     RTE.matchEW(
       error =>
         match(error)
@@ -44,14 +45,22 @@ export const changeContactEmailAddress = ({ body, method, user }: { body: unknow
     ),
   )
 
-const showChangeContactEmailAddressForm = ({ user }: { user: User }) =>
+const showChangeContactEmailAddressForm = ({ locale, user }: { locale: SupportedLocale; user: User }) =>
   pipe(
     getContactEmailAddress(user.orcid),
     RTE.getOrElseW(() => RT.of(undefined)),
-    RT.map(emailAddress => createFormPage({ emailAddress: E.right(emailAddress?.value) })),
+    RT.map(emailAddress => createFormPage({ emailAddress: E.right(emailAddress?.value) }, locale)),
   )
 
-const handleChangeContactEmailAddressForm = ({ body, user }: { body: unknown; user: User }) =>
+const handleChangeContactEmailAddressForm = ({
+  body,
+  locale,
+  user,
+}: {
+  body: unknown
+  locale: SupportedLocale
+  user: User
+}) =>
   pipe(
     RTE.fromEither(EmailAddressFieldD.decode(body)),
     RTE.orElseW(error =>
@@ -70,7 +79,7 @@ const handleChangeContactEmailAddressForm = ({ body, user }: { body: unknown; us
       ),
     ),
     RTE.matchEW(
-      state => RT.of(createFormPage({ emailAddress: E.left(state) })),
+      state => RT.of(createFormPage({ emailAddress: E.left(state) }, locale)),
       ({ emailAddress, originalEmailAddress }) =>
         match(emailAddress)
           .returnType<
@@ -93,7 +102,7 @@ const handleChangeContactEmailAddressForm = ({ body, user }: { body: unknown; us
               RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
               RTE.chainFirstW(contactEmailAddress => verifyContactEmailAddress(user, contactEmailAddress)),
               RTE.matchW(
-                () => havingProblemsPage(DefaultLocale),
+                () => havingProblemsPage(locale),
                 () =>
                   FlashMessageResponse({
                     location: format(myDetailsMatch.formatter, {}),
@@ -102,7 +111,7 @@ const handleChangeContactEmailAddressForm = ({ body, user }: { body: unknown; us
               ),
             ),
           )
-          .with(undefined, () => RT.of(createFormPage({ emailAddress: E.left(missingE()) })))
+          .with(undefined, () => RT.of(createFormPage({ emailAddress: E.left(missingE()) }, locale)))
           .exhaustive(),
     ),
   )
