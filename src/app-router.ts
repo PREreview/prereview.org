@@ -326,6 +326,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
     | GenerateUuid
     | HttpClient.HttpClient
     | PrereviewCoarNotify.PrereviewCoarNotifyConfig
+    | Zenodo.ZenodoOrigin
   > &
   ResolvePreprintIdEnv &
   GetPreprintIdEnv &
@@ -369,13 +370,19 @@ const getRapidPrereviews = (id: PreprintId) =>
   isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
 
 const triggerRefreshOfPrereview = (id: number, user: User) =>
-  RIO.asks((env: Parameters<ReturnType<typeof refreshPrereview>>[0] & { runtime: Runtime.Runtime<never> }) => {
-    void pipe(
-      RTE.fromTask(T.delay(2000)(T.of(undefined))),
-      RTE.chainW(() => refreshPrereview(id, user)),
-      RTE.chainW(() => EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache(id))),
-    )(env)().catch(Function.constVoid)
-  })
+  RIO.asks(
+    (
+      env: Parameters<ReturnType<typeof refreshPrereview>>[0] & {
+        runtime: Runtime.Runtime<HttpClient.HttpClient | Zenodo.ZenodoOrigin>
+      },
+    ) => {
+      void pipe(
+        RTE.fromTask(T.delay(2000)(T.of(undefined))),
+        RTE.chainW(() => refreshPrereview(id, user)),
+        RTE.chainW(() => EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache(id))),
+      )(env)().catch(Function.constVoid)
+    },
+  )
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5_242_880 } })
 

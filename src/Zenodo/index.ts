@@ -43,8 +43,16 @@ export const getCommentsForPrereviewFromZenodo = (
     }),
   )
 
-export const invalidatePrereviewInCache = (prereviewId: number) =>
-  Effect.logDebug(`Should invalidate PREreview ${prereviewId} in cache`)
+export const invalidatePrereviewInCache = (
+  prereviewId: number,
+): Effect.Effect<void, never, HttpClient.HttpClient | ZenodoOrigin> =>
+  pipe(
+    getDoiForPrereview(prereviewId),
+    Effect.andThen(doi => Effect.logDebug(`Should invalidate PREreview ${prereviewId} (${doi}) in cache`)),
+    Effect.catchAll(error =>
+      Effect.logError('Unable to invalidate PREreview in cache').pipe(Effect.annotateLogs({ error, prereviewId })),
+    ),
+  )
 
 export const invalidateCommentsForPrereview = (
   prereviewId: number,
