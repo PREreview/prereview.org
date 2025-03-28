@@ -18,6 +18,17 @@ export const CachingHttpClient = (
     const cache = yield* HttpCache.HttpCache
     const revalidationQueue = yield* Queue.sliding<HttpClientRequest.HttpClientRequest>(100)
 
+    yield* pipe(
+      Queue.take(revalidationQueue),
+      Effect.tap(request =>
+        Effect.log('Should revalidate request').pipe(
+          Effect.annotateLogs({ url: request.url, urlParams: request.urlParams }),
+        ),
+      ),
+      Effect.forever,
+      Effect.forkDaemon,
+    )
+
     const cachingBehaviour = (
       request: Effect.Effect<HttpClientRequest.HttpClientRequest>,
     ): Effect.Effect<HttpClientResponse.HttpClientResponse, HttpClientError.HttpClientError> =>
