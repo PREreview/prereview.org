@@ -73,6 +73,28 @@ test("content looks right when it's freeform", async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right when generative AI was used', async ({ showPage }) => {
+  const response = publishForm(
+    preprint,
+    {
+      reviewType: 'freeform',
+      alreadyWritten: 'no',
+      review: html`<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>`,
+      persona: 'public',
+      moreAuthors: 'no',
+      generativeAiIdeas: 'yes',
+      competingInterests: 'no',
+      conduct: 'yes',
+    },
+    user,
+    locale,
+  )
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test("content looks right when there's competing interests", async ({ showPage }) => {
   const response = publishForm(
     preprint,
