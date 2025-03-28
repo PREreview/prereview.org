@@ -1,0 +1,44 @@
+{
+  "menuBlog": {
+    "message": "Blog"
+  },
+  "menuAboutUs": {
+    "message": "Sobre nós"
+  },
+  "menuPartners": {
+    "message": "Parceiros"
+  },
+  "menuDonate": {
+    "message": "Doe"
+  },
+  "menuMyDetails": {
+    "message": "Minhas informações"
+  },
+  "menuNewNotification": {
+    "message": "Nova notificação"
+  },
+  "menuLogOut": {
+    "message": "Sair"
+  },
+  "menuLogIn": {
+    "message": "Entrar"
+  },
+  "menuReviews": {
+    "message": "Avaliações"
+  },
+  "menuRequests": {
+    "message": "Solicitações"
+  },
+  "menuTrainings": {
+    "message": "Treinamentos"
+  },
+  "menuLiveReviews": {
+    "message": "Avaliações ao vivo"
+  },
+  "menuResources": {
+    "message": "Recursos"
+  },
+  "menuClubs": {
+    "message": "Clubes"
+  }
+}
