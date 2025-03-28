@@ -18,7 +18,11 @@ export const CachingHttpClient = (
     const cache = yield* HttpCache.HttpCache
     const revalidationQueue = yield* Queue.sliding<HttpClientRequest.HttpClientRequest>(100)
 
-    yield* pipe(revalidationWorker({ cache, httpClient, revalidationQueue, timeToStale }), Effect.forkDaemon)
+    yield* pipe(
+      Effect.logDebug('Starting revalidationWorker'),
+      Effect.andThen(revalidationWorker({ cache, httpClient, revalidationQueue, timeToStale })),
+      Effect.forkDaemon,
+    )
 
     const cachingBehaviour = (
       request: Effect.Effect<HttpClientRequest.HttpClientRequest>,
