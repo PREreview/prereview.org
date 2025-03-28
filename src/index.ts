@@ -11,6 +11,7 @@ import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { GhostApi } from './GhostPage.js'
 import * as Nodemailer from './nodemailer.js'
+import { PrereviewCoarNotifyConfig } from './prereview-coar-notify/index.js'
 import { Program } from './Program.js'
 import { PublicUrl } from './public-url.js'
 import * as Redis from './Redis.js'
@@ -54,6 +55,7 @@ pipe(
         Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
       ),
       Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
+      Layer.effect(PrereviewCoarNotifyConfig, Config.all({ coarNotifyUrl: Config.url('COAR_NOTIFY_URL') })),
       Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),
       Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
       Redis.layerHttpCacheConfig(Config.redacted(Config.url('HTTP_CACHE_REDIS_URI'))),

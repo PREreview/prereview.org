@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { Config, Effect, flow, identity, pipe } from 'effect'
+import { Context, Effect, flow, identity, pipe } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -32,6 +32,11 @@ export interface PrereviewCoarNotifyEnv {
   readonly coarNotifyUrl: URL
 }
 
+export class PrereviewCoarNotifyConfig extends Context.Tag('PrereviewCoarNotifyConfig')<
+  PrereviewCoarNotifyConfig,
+  { coarNotifyUrl: URL }
+>() {}
+
 export const publishToPrereviewCoarNotifyInboxEffect = Effect.fn(function* (
   preprint: ReviewRequestPreprintId,
   user: User,
@@ -39,11 +44,11 @@ export const publishToPrereviewCoarNotifyInboxEffect = Effect.fn(function* (
 ) {
   const generateUuid = yield* GenerateUuid
   const uuid = yield* generateUuid
-  const coarNotifyUrl = yield* Config.url('COAR_NOTIFY_URL')
+  const coarNotifyConfig = yield* PrereviewCoarNotifyConfig
 
   return yield* pipe(
     {
-      coarNotifyUrl,
+      coarNotifyUrl: coarNotifyConfig.coarNotifyUrl,
       persona,
       preprint,
       user,
