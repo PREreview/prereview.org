@@ -5,6 +5,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
+import { type MustDeclareUseOfAiEnv, mustDeclareUseOfAi } from '../../feature-flags.js'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
@@ -29,7 +30,10 @@ export const writeReviewCompetingInterests = ({
   locale: SupportedLocale
   method: string
   user?: User
-}): RT.ReaderTask<GetPreprintTitleEnv & FormStoreEnv, PageResponse | StreamlinePageResponse | RedirectResponse> =>
+}): RT.ReaderTask<
+  GetPreprintTitleEnv & FormStoreEnv & MustDeclareUseOfAiEnv,
+  PageResponse | StreamlinePageResponse | RedirectResponse
+> =>
   pipe(
     getPreprintTitle(id),
     RTE.matchE(
@@ -49,6 +53,7 @@ export const writeReviewCompetingInterests = ({
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.let('body', () => body),
           RTE.let('method', () => method),
+          RTE.apSW('mustDeclareUseOfAi', RTE.fromReader(mustDeclareUseOfAi)),
           RTE.matchEW(
             error =>
               RT.of(
@@ -70,11 +75,13 @@ export const writeReviewCompetingInterests = ({
 
 const showCompetingInterestsForm = ({
   form,
+  mustDeclareUseOfAi,
   preprint,
   locale,
 }: {
   form: Form
   preprint: PreprintTitle
+  mustDeclareUseOfAi: boolean
   locale: SupportedLocale
 }) =>
   competingInterestsForm(
@@ -84,23 +91,26 @@ const showCompetingInterestsForm = ({
       competingInterestsDetails: E.right(form.competingInterestsDetails),
     },
     locale,
+    mustDeclareUseOfAi,
     form.moreAuthors,
   )
 
 const showCompetingInterestsErrorForm =
-  (preprint: PreprintTitle, moreAuthors: Form['moreAuthors'], locale: SupportedLocale) =>
+  (preprint: PreprintTitle, mustDeclareUseOfAi: boolean, moreAuthors: Form['moreAuthors'], locale: SupportedLocale) =>
   (form: CompetingInterestsForm) =>
-    competingInterestsForm(preprint, form, locale, moreAuthors)
+    competingInterestsForm(preprint, form, locale, mustDeclareUseOfAi, moreAuthors)
 
 const handleCompetingInterestsForm = ({
   body,
   form,
+  mustDeclareUseOfAi,
   preprint,
   user,
   locale,
 }: {
   body: unknown
   form: Form
+  mustDeclareUseOfAi: boolean
   preprint: PreprintTitle
   user: User
   locale: SupportedLocale
@@ -127,7 +137,10 @@ const handleCompetingInterestsForm = ({
       error =>
         match(error)
           .with('form-unavailable', () => havingProblemsPage(locale))
-          .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, form.moreAuthors, locale))
+          .with(
+            { competingInterests: P.any },
+            showCompetingInterestsErrorForm(preprint, mustDeclareUseOfAi, form.moreAuthors, locale),
+          )
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
     ),

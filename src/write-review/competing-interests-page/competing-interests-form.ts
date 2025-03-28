@@ -12,6 +12,7 @@ import {
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
+  writeReviewUseOfAiMatch,
 } from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
 import type { NonEmptyString } from '../../types/string.js'
@@ -26,11 +27,16 @@ export function competingInterestsForm(
   preprint: PreprintTitle,
   form: CompetingInterestsForm,
   locale: SupportedLocale,
+  mustDeclareUseOfAi: boolean,
   moreAuthors?: 'yes' | 'yes-private' | 'no',
 ) {
   const error = hasAnError(form)
   const otherAuthors = moreAuthors !== 'no'
-  const backMatch = moreAuthors === 'yes' ? writeReviewAddAuthorsMatch : writeReviewAuthorsMatch
+  const backMatch = mustDeclareUseOfAi
+    ? writeReviewUseOfAiMatch
+    : moreAuthors === 'yes'
+      ? writeReviewAddAuthorsMatch
+      : writeReviewAuthorsMatch
   const t = translate(locale)
 
   return StreamlinePageResponse({
