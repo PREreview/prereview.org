@@ -39,6 +39,7 @@ export type ConfigEnv = Omit<
   | 'getProfileIdFromUuid'
   | 'runtime'
   | 'sendEmail'
+  | 'mustDeclareUseOfAi'
 > &
   NodemailerEnv & {
     allowSiteCrawlers: boolean
@@ -153,6 +154,7 @@ export const app = (config: ConfigEnv) => {
               getUserOnboarding: withEnv(getUserOnboarding, env),
               getPreprintTitle: withEnv(EffectToFpts.toReaderTaskEitherK(getPreprintTitle), env),
               locale,
+              mustDeclareUseOfAi: true,
               getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
               getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
               getPreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(getPreprintId), env),
