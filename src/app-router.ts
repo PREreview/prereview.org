@@ -1,3 +1,4 @@
+import type { HttpClient } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
 import { Effect, Function, Option, String, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
@@ -124,11 +125,12 @@ import type {
   ResolvePreprintIdEnv,
 } from './preprint.js'
 import {
+  type PrereviewCoarNotifyConfig,
   type PrereviewCoarNotifyEnv,
   getRecentReviewRequestsFromPrereviewCoarNotify,
   getReviewRequestsFromPrereviewCoarNotify,
   isReviewRequested,
-  publishToPrereviewCoarNotifyInbox,
+  publishToPrereviewCoarNotifyInboxEffect,
   sendPrereviewToPrereviewCoarNotifyInbox,
 } from './prereview-coar-notify/index.js'
 import { profile } from './profile-page/index.js'
@@ -145,6 +147,7 @@ import { handleResponse } from './response.js'
 import { reviewAPreprint } from './review-a-preprint-page/index.js'
 import * as ReviewPage from './review-page/index.js'
 import { reviewPage } from './review-page/index.js'
+import type { ReviewRequestPreprintId } from './review-request.js'
 import { reviewRequests } from './review-requests-page/index.js'
 import { reviewsData } from './reviews-data/index.js'
 import { reviewsPage } from './reviews-page/index.js'
@@ -246,7 +249,7 @@ import {
 } from './slack.js'
 import type * as Doi from './types/Doi.js'
 import type { PreprintId } from './types/preprint-id.js'
-import { type GenerateUuidEnv, generateUuid } from './types/uuid.js'
+import { type GenerateUuid, type GenerateUuidEnv, generateUuid } from './types/uuid.js'
 import type { GetUserOnboardingEnv } from './user-onboarding.js'
 import { type GetUserEnv, type User, maybeGetUser } from './user.js'
 import { usersData } from './users-data/index.js'
@@ -315,7 +318,15 @@ const getSlackUser = flow(
 export type RouterEnv = Keyv.AvatarStoreEnv &
   MustDeclareUseOfAiEnv &
   DoesPreprintExistEnv &
-  EffectEnv<FeatureFlags.CanAddMultipleAuthors | Locale | OpenAlex.GetCategories | ReviewPage.CommentsForReview> &
+  EffectEnv<
+    | FeatureFlags.CanAddMultipleAuthors
+    | Locale
+    | OpenAlex.GetCategories
+    | ReviewPage.CommentsForReview
+    | GenerateUuid
+    | HttpClient.HttpClient
+    | PrereviewCoarNotifyConfig
+  > &
   ResolvePreprintIdEnv &
   GetPreprintIdEnv &
   GenerateUuidEnv &
@@ -1784,7 +1795,20 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
-          publishRequest: withEnv(publishToPrereviewCoarNotifyInbox, env),
+          publishRequest: withEnv(
+            EffectToFpts.toReaderTaskEitherK(
+              (preprint: ReviewRequestPreprintId, user: User, persona: 'public' | 'pseudonym') =>
+                pipe(
+                  publishToPrereviewCoarNotifyInboxEffect,
+                  publish => publish(preprint, user, persona),
+                  Effect.tapError(error =>
+                    Effect.logError('Failed to publishRequest (COAR)').pipe(Effect.annotateLogs({ error })),
+                  ),
+                  Effect.mapError(() => 'unavailable' as const),
+                ),
+            ),
+            env,
+          ),
           saveReviewRequest: (orcid, preprint, request) =>
             withEnv(Keyv.saveReviewRequest, env)([orcid, preprint], request),
         })),
