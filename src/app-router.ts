@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
-import { Effect, Function, Option, String, flow, pipe } from 'effect'
+import { Effect, Function, Option, type Runtime, String, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -26,6 +26,7 @@ import type { EffectEnv } from './EffectToFpts.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
 import * as OpenAlex from './OpenAlex/index.js'
+import * as Zenodo from './Zenodo/index.js'
 import {
   authorInvite,
   authorInviteCheck,
@@ -368,10 +369,11 @@ const getRapidPrereviews = (id: PreprintId) =>
   isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
 
 const triggerRefreshOfPrereview = (id: number, user: User) =>
-  RIO.asks((env: Parameters<ReturnType<typeof refreshPrereview>>[0]) => {
+  RIO.asks((env: Parameters<ReturnType<typeof refreshPrereview>>[0] & { runtime: Runtime.Runtime<never> }) => {
     void pipe(
       RTE.fromTask(T.delay(2000)(T.of(undefined))),
       RTE.chainW(() => refreshPrereview(id, user)),
+      RTE.chainW(() => EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache(id))),
     )(env)().catch(Function.constVoid)
   })
 

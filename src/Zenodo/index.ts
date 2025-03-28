@@ -43,6 +43,9 @@ export const getCommentsForPrereviewFromZenodo = (
     }),
   )
 
+export const invalidatePrereviewInCache = (prereviewId: number) =>
+  Effect.logDebug(`Should invalidate PREreview ${prereviewId} in cache`)
+
 export const invalidateCommentsForPrereview = (
   prereviewId: number,
 ): Effect.Effect<
