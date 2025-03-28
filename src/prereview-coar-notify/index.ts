@@ -32,28 +32,28 @@ export interface PrereviewCoarNotifyEnv {
   readonly coarNotifyUrl: URL
 }
 
-export const publishToPrereviewCoarNotifyInboxEffect = (
+export const publishToPrereviewCoarNotifyInboxEffect = Effect.fn(function* (
   preprint: ReviewRequestPreprintId,
   user: User,
   persona: 'public' | 'pseudonym',
-) =>
-  Effect.gen(function* () {
-    const generateUuid = yield* GenerateUuid
-    const uuid = yield* generateUuid
-    const coarNotifyUrl = yield* Config.url('COAR_NOTIFY_URL')
+) {
+  const generateUuid = yield* GenerateUuid
+  const uuid = yield* generateUuid
+  const coarNotifyUrl = yield* Config.url('COAR_NOTIFY_URL')
 
-    return yield* pipe(
-      {
-        coarNotifyUrl,
-        persona,
-        preprint,
-        user,
-        uuid,
-      },
-      constructPayload,
-      sendReviewActionOfferEffect,
-    )
-  })
+  return yield* pipe(
+    {
+      coarNotifyUrl,
+      persona,
+      preprint,
+      user,
+      uuid,
+    },
+    constructPayload,
+    Effect.succeed,
+    Effect.andThen(sendReviewActionOfferEffect),
+  )
+})
 
 export const publishToPrereviewCoarNotifyInbox = (
   preprint: ReviewRequestPreprintId,
