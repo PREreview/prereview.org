@@ -93,7 +93,6 @@ interface AppFixtures {
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canAddMultipleAuthors: typeof FeatureFlags.CanAddMultipleAuthors.Service
-  mustDeclareUseOfAi: FeatureFlags.MustDeclareUseOfAiEnv['mustDeclareUseOfAi']
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
 }
@@ -1166,9 +1165,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await fs.writeFile(testInfo.outputPath('emails.json'), JSON.stringify(emails, undefined, 2))
   },
-  mustDeclareUseOfAi: async ({}, use) => {
-    await use(false)
-  },
   nodemailer: async ({ emails }, use) => {
     await use(
       nodemailer.createTransport<unknown>({
@@ -1225,7 +1221,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         userOnboardingStore,
         wasPrereviewRemoved,
         authorInviteStore,
-        mustDeclareUseOfAi,
         nodemailer,
         canAddMultipleAuthors,
       },
@@ -1256,7 +1251,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             update: updatesLegacyPrereview,
           },
           locationStore,
-          mustDeclareUseOfAi,
+          mustDeclareUseOfAi: true,
           orcidApiUrl: new URL('http://api.orcid.test/'),
           orcidOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
@@ -1911,16 +1906,6 @@ export const willPublishAComment: Fixtures<
       })
 
     await use(fetch)
-  },
-}
-
-export const mustDeclareUseOfAi: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'mustDeclareUseOfAi'>
-> = {
-  mustDeclareUseOfAi: async ({}, use) => {
-    await use(true)
   },
 }
 
