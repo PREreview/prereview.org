@@ -11,7 +11,6 @@ import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../../contact-email-address.js'
 import { detectLanguage } from '../../detect-language.js'
-import { mustDeclareUseOfAi } from '../../feature-flags.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from '../../html.js'
 import { DefaultLocale, type SupportedLocale, translate } from '../../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware.js'
@@ -57,7 +56,6 @@ export const writeReviewPublish = flow(
       ),
       RM.bind('form', ({ originalForm }) => RM.right(CompletedFormC.decode(originalForm))),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.apSW('mustDeclareUseOfAi', RM.rightReader(mustDeclareUseOfAi)),
       RM.bindW('contactEmailAddress', ({ user }) => RM.fromReaderTaskEither(maybeGetContactEmailAddress(user.orcid))),
       RM.ichainW(decideNextStep),
       RM.orElseW(error =>
@@ -87,7 +85,6 @@ const decideNextStep = (state: {
   preprint: PreprintTitle
   user: User
   locale: SupportedLocale
-  mustDeclareUseOfAi: boolean
 }) =>
   match(state)
     .returnType<
@@ -101,13 +98,10 @@ const decideNextStep = (state: {
     >()
     .with(
       P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
-      ({ originalForm, mustDeclareUseOfAi }) =>
-        RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm, mustDeclareUseOfAi)),
+      ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm)),
     )
-    .with(
-      { mustDeclareUseOfAi: true, form: P.when(E.isRight), originalForm: { generativeAiIdeas: P.optional(undefined) } },
-      ({ originalForm, mustDeclareUseOfAi }) =>
-        RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm, mustDeclareUseOfAi)),
+    .with({ form: P.when(E.isRight), originalForm: { generativeAiIdeas: P.optional(undefined) } }, ({ originalForm }) =>
+      RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm)),
     )
     .with({ contactEmailAddress: P.optional({ _tag: 'UnverifiedContactEmailAddress' }) }, () =>
       RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: state.preprint.id }))),

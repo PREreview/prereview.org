@@ -100,7 +100,7 @@ export function deleteForm(
   )
 }
 
-export const nextFormMatch = (form: Form, mustDeclareUseOfAi = false) =>
+export const nextFormMatch = (form: Form) =>
   match(form)
     .with(
       { alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
@@ -128,11 +128,7 @@ export const nextFormMatch = (form: Form, mustDeclareUseOfAi = false) =>
     .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
     .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
     .with({ moreAuthors: 'yes', otherAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
-    .with(
-      { generativeAiIdeas: P.optional(undefined) },
-      () => mustDeclareUseOfAi,
-      () => writeReviewUseOfAiMatch,
-    )
+    .with({ generativeAiIdeas: P.optional(undefined) }, () => writeReviewUseOfAiMatch)
     .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
     .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
     .otherwise(() => writeReviewPublishMatch)

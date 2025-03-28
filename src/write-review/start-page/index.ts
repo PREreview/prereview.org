@@ -3,7 +3,6 @@ import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
-import { type MustDeclareUseOfAiEnv, mustDeclareUseOfAi } from '../../feature-flags.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintEnv, getPreprint } from '../../preprint.js'
@@ -25,7 +24,7 @@ export const writeReviewStart = ({
   locale: SupportedLocale
   user?: User
 }): RT.ReaderTask<
-  GetPreprintEnv & FormStoreEnv & MustDeclareUseOfAiEnv,
+  GetPreprintEnv & FormStoreEnv,
   PageResponse | StreamlinePageResponse | RedirectResponse | LogInResponse
 > =>
   pipe(
@@ -47,7 +46,6 @@ export const writeReviewStart = ({
           ),
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.apS('locale', RTE.of(locale)),
-          RTE.apSW('mustDeclareUseOfAi', RTE.fromReader(mustDeclareUseOfAi)),
           RTE.matchW(
             error =>
               match(error)
@@ -62,12 +60,11 @@ export const writeReviewStart = ({
                 )
                 .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(locale))
                 .exhaustive(),
-            ({ form, locale, mustDeclareUseOfAi }) =>
+            ({ form, locale }) =>
               carryOnPage(
                 { id: preprint.id, language: preprint.title.language, title: preprint.title.text },
                 form,
                 locale,
-                mustDeclareUseOfAi,
               ),
           ),
         ),

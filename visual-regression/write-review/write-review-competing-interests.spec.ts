@@ -15,7 +15,6 @@ test('content looks right', async ({ showPage }) => {
       competingInterestsDetails: E.right(undefined),
     },
     locale,
-    false,
     'no',
   )
 
@@ -32,7 +31,6 @@ test('content looks right when there are other authors', async ({ showPage }) =>
       competingInterestsDetails: E.right(undefined),
     },
     locale,
-    false,
     'yes',
   )
 
@@ -49,7 +47,6 @@ test('content looks right when competing interests are missing', async ({ showPa
       competingInterestsDetails: E.right(undefined),
     },
     locale,
-    false,
     'no',
   )
 
@@ -66,7 +63,6 @@ test('content looks right when details are missing', async ({ showPage }) => {
       competingInterestsDetails: E.left(missingE()),
     },
     locale,
-    false,
     'no',
   )
 

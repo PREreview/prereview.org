@@ -29,43 +29,38 @@ describe('writeReviewAuthors', () => {
       fc.user(),
       fc.supportedLocale(),
       fc.form(),
-      fc.boolean(),
-    ])(
-      'when they have read and agreed',
-      async (preprintId, preprintTitle, connection, user, locale, newReview, mustDeclareUseOfAi) => {
-        const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    ])('when they have read and agreed', async (preprintId, preprintTitle, connection, user, locale, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const actual = await runMiddleware(
-          _.writeReviewAuthors(preprintId)({
-            formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
-            getUser: () => M.of(user),
-            locale,
-            mustDeclareUseOfAi,
-            templatePage: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+      const actual = await runMiddleware(
+        _.writeReviewAuthors(preprintId)({
+          formStore,
+          getPreprintTitle: () => TE.right(preprintTitle),
+          getUser: () => M.of(user),
+          locale,
+          templatePage: shouldNotBeCalled,
+        }),
+        connection,
+      )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
-          moreAuthors: 'yes',
-          moreAuthorsApproved: 'yes',
-          otherAuthors: newReview.otherAuthors ?? [],
-        })
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+        moreAuthors: 'yes',
+        moreAuthorsApproved: 'yes',
+        otherAuthors: newReview.otherAuthors ?? [],
+      })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
 
     test.prop([
       fc.indeterminatePreprintId(),
@@ -81,10 +76,9 @@ describe('writeReviewAuthors', () => {
       fc.supportedLocale(),
       fc.form(),
       fc.html(),
-      fc.boolean(),
     ])(
       "when they haven't read and agreed",
-      async (preprintId, preprintTitle, connection, user, locale, newReview, page, mustDeclareUseOfAi) => {
+      async (preprintId, preprintTitle, connection, user, locale, newReview, page) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
         const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
@@ -95,7 +89,6 @@ describe('writeReviewAuthors', () => {
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
             locale,
-            mustDeclareUseOfAi,
             templatePage,
           }),
           connection,
@@ -134,41 +127,36 @@ describe('writeReviewAuthors', () => {
         fc.user(),
         fc.supportedLocale(),
         fc.completedForm(),
-        fc.boolean(),
-      ])(
-        'when the form is completed',
-        async (preprintId, preprintTitle, connection, user, locale, newReview, mustDeclareUseOfAi) => {
-          const formStore = new Keyv()
-          await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+      ])('when the form is completed', async (preprintId, preprintTitle, connection, user, locale, newReview) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
-          const actual = await runMiddleware(
-            _.writeReviewAuthors(preprintId)({
-              formStore,
-              getPreprintTitle: () => TE.right(preprintTitle),
-              getUser: () => M.of(user),
-              locale,
-              mustDeclareUseOfAi,
-              templatePage: shouldNotBeCalled,
-            }),
-            connection,
-          )()
+        const actual = await runMiddleware(
+          _.writeReviewAuthors(preprintId)({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+            getUser: () => M.of(user),
+            locale,
+            templatePage: shouldNotBeCalled,
+          }),
+          connection,
+        )()
 
-          expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
-            moreAuthors: 'yes-private',
-          })
-          expect(actual).toStrictEqual(
-            E.right([
-              { type: 'setStatus', status: Status.SeeOther },
-              {
-                type: 'setHeader',
-                name: 'Location',
-                value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
-              },
-              { type: 'endResponse' },
-            ]),
-          )
-        },
-      )
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          moreAuthors: 'yes-private',
+        })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+      })
 
       test.prop([
         fc.indeterminatePreprintId(),
@@ -183,41 +171,36 @@ describe('writeReviewAuthors', () => {
         fc.user(),
         fc.supportedLocale(),
         fc.incompleteForm(),
-        fc.boolean(),
-      ])(
-        'when the form is incomplete',
-        async (preprintId, preprintTitle, connection, user, locale, newReview, mustDeclareUseOfAi) => {
-          const formStore = new Keyv()
-          await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      ])('when the form is incomplete', async (preprintId, preprintTitle, connection, user, locale, newReview) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-          const actual = await runMiddleware(
-            _.writeReviewAuthors(preprintId)({
-              formStore,
-              getPreprintTitle: () => TE.right(preprintTitle),
-              getUser: () => M.of(user),
-              locale,
-              mustDeclareUseOfAi,
-              templatePage: shouldNotBeCalled,
-            }),
-            connection,
-          )()
+        const actual = await runMiddleware(
+          _.writeReviewAuthors(preprintId)({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+            getUser: () => M.of(user),
+            locale,
+            templatePage: shouldNotBeCalled,
+          }),
+          connection,
+        )()
 
-          expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
-            moreAuthors: 'yes-private',
-          })
-          expect(actual).toStrictEqual(
-            E.right([
-              { type: 'setStatus', status: Status.SeeOther },
-              {
-                type: 'setHeader',
-                name: 'Location',
-                value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-              },
-              { type: 'endResponse' },
-            ]),
-          )
-        },
-      )
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          moreAuthors: 'yes-private',
+        })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+      })
     })
   })
 
@@ -235,39 +218,34 @@ describe('writeReviewAuthors', () => {
       fc.user(),
       fc.supportedLocale(),
       fc.completedForm(),
-      fc.boolean(),
-    ])(
-      'when the form is completed',
-      async (preprintId, preprintTitle, connection, user, locale, newReview, mustDeclareUseOfAi) => {
-        const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+    ])('when the form is completed', async (preprintId, preprintTitle, connection, user, locale, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
-        const actual = await runMiddleware(
-          _.writeReviewAuthors(preprintId)({
-            formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
-            getUser: () => M.of(user),
-            locale,
-            mustDeclareUseOfAi,
-            templatePage: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+      const actual = await runMiddleware(
+        _.writeReviewAuthors(preprintId)({
+          formStore,
+          getPreprintTitle: () => TE.right(preprintTitle),
+          getUser: () => M.of(user),
+          locale,
+          templatePage: shouldNotBeCalled,
+        }),
+        connection,
+      )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ moreAuthors: 'no' })
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ moreAuthors: 'no' })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
 
     test.prop([
       fc.indeterminatePreprintId(),
@@ -282,77 +260,67 @@ describe('writeReviewAuthors', () => {
       fc.user(),
       fc.supportedLocale(),
       fc.incompleteForm(),
-      fc.boolean(),
-    ])(
-      'when the form is incomplete',
-      async (preprintId, preprintTitle, connection, user, locale, newReview, mustDeclareUseOfAi) => {
-        const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    ])('when the form is incomplete', async (preprintId, preprintTitle, connection, user, locale, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const actual = await runMiddleware(
-          _.writeReviewAuthors(preprintId)({
-            formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
-            getUser: () => M.of(user),
-            locale,
-            mustDeclareUseOfAi,
-            templatePage: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+      const actual = await runMiddleware(
+        _.writeReviewAuthors(preprintId)({
+          formStore,
+          getPreprintTitle: () => TE.right(preprintTitle),
+          getUser: () => M.of(user),
+          locale,
+          templatePage: shouldNotBeCalled,
+        }),
+        connection,
+      )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ moreAuthors: 'no' })
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ moreAuthors: 'no' })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
   })
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection(),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.boolean(),
-  ])('when there is no form', async (preprintId, preprintTitle, connection, user, locale, mustDeclareUseOfAi) => {
-    const actual = await runMiddleware(
-      _.writeReviewAuthors(preprintId)({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-        getUser: () => M.of(user),
-        locale,
-        mustDeclareUseOfAi,
-        templatePage: shouldNotBeCalled,
-      }),
-      connection,
-    )()
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user(), fc.supportedLocale()])(
+    'when there is no form',
+    async (preprintId, preprintTitle, connection, user, locale) => {
+      const actual = await runMiddleware(
+        _.writeReviewAuthors(preprintId)({
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.right(preprintTitle),
+          getUser: () => M.of(user),
+          locale,
+          templatePage: shouldNotBeCalled,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.supportedLocale(), fc.html(), fc.boolean()])(
+  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.supportedLocale(), fc.html()])(
     'when the preprint cannot be loaded',
-    async (preprintId, connection, user, locale, page, mustDeclareUseOfAi) => {
+    async (preprintId, connection, user, locale, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -361,7 +329,6 @@ describe('writeReviewAuthors', () => {
           getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
           locale,
-          mustDeclareUseOfAi,
           templatePage,
         }),
         connection,
@@ -385,9 +352,9 @@ describe('writeReviewAuthors', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.supportedLocale(), fc.html(), fc.boolean()])(
+  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.supportedLocale(), fc.html()])(
     'when the preprint cannot be found',
-    async (preprintId, connection, user, locale, page, mustDeclareUseOfAi) => {
+    async (preprintId, connection, user, locale, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -396,7 +363,6 @@ describe('writeReviewAuthors', () => {
           getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
           locale,
-          mustDeclareUseOfAi,
           templatePage,
         }),
         connection,
@@ -420,16 +386,15 @@ describe('writeReviewAuthors', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.boolean(), fc.supportedLocale()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.supportedLocale()])(
     "when there isn't a session",
-    async (preprintId, preprintTitle, connection, mustDeclareUseOfAi, locale) => {
+    async (preprintId, preprintTitle, connection, locale) => {
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintId)({
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
           locale,
-          mustDeclareUseOfAi,
           templatePage: shouldNotBeCalled,
         }),
         connection,
@@ -464,41 +429,37 @@ describe('writeReviewAuthors', () => {
     fc.form(),
     fc.html(),
     fc.boolean(),
-  ])(
-    'without a moreAuthors',
-    async (preprintId, preprintTitle, connection, user, locale, newReview, page, mustDeclareUseOfAi) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+  ])('without a moreAuthors', async (preprintId, preprintTitle, connection, user, locale, newReview, page) => {
+    const formStore = new Keyv()
+    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-      const actual = await runMiddleware(
-        _.writeReviewAuthors(preprintId)({
-          formStore,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-          locale,
-          mustDeclareUseOfAi,
-          templatePage,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.BadRequest },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: page.toString() },
-        ]),
-      )
-      expect(templatePage).toHaveBeenCalledWith({
-        title: expect.anything(),
-        content: expect.anything(),
-        skipLinks: [[rawHtml('Skip to form'), '#form']],
-        js: ['conditional-inputs.js', 'error-summary.js'],
-        type: 'streamline',
+    const actual = await runMiddleware(
+      _.writeReviewAuthors(preprintId)({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getUser: () => M.of(user),
         locale,
-        user,
-      })
-    },
-  )
+        templatePage,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.BadRequest },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: page.toString() },
+      ]),
+    )
+    expect(templatePage).toHaveBeenCalledWith({
+      title: expect.anything(),
+      content: expect.anything(),
+      skipLinks: [[rawHtml('Skip to form'), '#form']],
+      js: ['conditional-inputs.js', 'error-summary.js'],
+      type: 'streamline',
+      locale,
+      user,
+    })
+  })
 })

@@ -8,12 +8,7 @@ import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
-import {
-  writeReviewAddAuthorsMatch,
-  writeReviewAuthorsMatch,
-  writeReviewCompetingInterestsMatch,
-  writeReviewUseOfAiMatch,
-} from '../../routes.js'
+import { writeReviewCompetingInterestsMatch, writeReviewUseOfAiMatch } from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
 import type { NonEmptyString } from '../../types/string.js'
 import { backNav, prereviewOfSuffix } from '../shared-elements.js'
@@ -27,16 +22,11 @@ export function competingInterestsForm(
   preprint: PreprintTitle,
   form: CompetingInterestsForm,
   locale: SupportedLocale,
-  mustDeclareUseOfAi: boolean,
   moreAuthors?: 'yes' | 'yes-private' | 'no',
 ) {
   const error = hasAnError(form)
   const otherAuthors = moreAuthors !== 'no'
-  const backMatch = mustDeclareUseOfAi
-    ? writeReviewUseOfAiMatch
-    : moreAuthors === 'yes'
-      ? writeReviewAddAuthorsMatch
-      : writeReviewAuthorsMatch
+  const backMatch = writeReviewUseOfAiMatch
   const t = translate(locale)
 
   return StreamlinePageResponse({

@@ -21,7 +21,6 @@ describe('writeReviewUseOfAi', () => {
       const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
-        mustDeclareUseOfAi: true,
       })()
 
       expect(actual).toStrictEqual({
@@ -43,7 +42,6 @@ describe('writeReviewUseOfAi', () => {
       const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
-        mustDeclareUseOfAi: true,
       })()
 
       expect(actual).toStrictEqual({
@@ -54,13 +52,47 @@ describe('writeReviewUseOfAi', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.user(), fc.supportedLocale()])(
-    'when the feature flag is turned off',
-    async (preprintId, preprintTitle, user, locale) => {
-      const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.supportedLocale()])(
+    "when there isn't a session",
+    async (preprintId, preprintTitle, locale) => {
+      const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user: undefined })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
-        mustDeclareUseOfAi: false,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+      })
+    },
+  )
+
+  test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()])(
+    'when the preprint cannot be loaded',
+    async (preprintId, user, locale) => {
+      const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
+        formStore: new Keyv(),
+        getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
+
+  test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()])(
+    'when the preprint is not found',
+    async (preprintId, user, locale) => {
+      const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
+        formStore: new Keyv(),
+        getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
       })()
 
       expect(actual).toStrictEqual({
@@ -73,67 +105,6 @@ describe('writeReviewUseOfAi', () => {
       })
     },
   )
-
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.boolean(), fc.supportedLocale()])(
-    "when there isn't a session",
-    async (preprintId, preprintTitle, mustDeclareUseOfAi, locale) => {
-      const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user: undefined })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-        mustDeclareUseOfAi,
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
-  )
-
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.option(fc.user(), { nil: undefined }),
-    fc.supportedLocale(),
-    fc.boolean(),
-  ])('when the preprint cannot be loaded', async (preprintId, user, locale, mustDeclareUseOfAi) => {
-    const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
-      formStore: new Keyv(),
-      getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-      mustDeclareUseOfAi,
-    })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
-
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.option(fc.user(), { nil: undefined }),
-    fc.supportedLocale(),
-    fc.boolean(),
-  ])('when the preprint is not found', async (preprintId, user, locale, mustDeclareUseOfAi) => {
-    const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
-      formStore: new Keyv(),
-      getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-      mustDeclareUseOfAi,
-    })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.NotFound,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
 })
 
 describe('writeReviewUseOfAiSubmission', () => {

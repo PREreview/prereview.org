@@ -1,5 +1,4 @@
 import { Config, type ConfigError, Context, Effect, Layer } from 'effect'
-import * as R from 'fp-ts/lib/Reader.js'
 import type { User } from './user.js'
 
 export class CanAddMultipleAuthors extends Context.Tag('CanAddMultipleAuthors')<
@@ -10,12 +9,6 @@ export class CanAddMultipleAuthors extends Context.Tag('CanAddMultipleAuthors')<
 export class CanChooseLocale extends Context.Tag('CanChooseLocale')<CanChooseLocale, boolean>() {}
 
 export class UseCrowdinInContext extends Context.Tag('UseCrowdinInContext')<UseCrowdinInContext, boolean>() {}
-
-export interface MustDeclareUseOfAiEnv {
-  mustDeclareUseOfAi: boolean
-}
-
-export const mustDeclareUseOfAi = R.asks(({ mustDeclareUseOfAi }: MustDeclareUseOfAiEnv) => mustDeclareUseOfAi)
 
 export const layer = (options: {
   canAddMultipleAuthors: typeof CanAddMultipleAuthors.Service

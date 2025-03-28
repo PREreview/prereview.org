@@ -4,7 +4,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { match } from 'ts-pattern'
-import { mustDeclareUseOfAi, type MustDeclareUseOfAiEnv } from '../../feature-flags.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
@@ -27,7 +26,7 @@ export const writeReviewAddAuthors = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  FormStoreEnv & GetPreprintTitleEnv & MustDeclareUseOfAiEnv,
+  FormStoreEnv & GetPreprintTitleEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -47,7 +46,6 @@ export const writeReviewAddAuthors = ({
           RTE.apS('locale', RTE.of(locale)),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
-          RTE.apSW('mustDeclareUseOfAi', RTE.fromReader(mustDeclareUseOfAi)),
           RTE.bindW('form', ({ preprint, user }) => getForm(user.orcid, preprint.id)),
           RTE.let(
             'authors',
@@ -83,15 +81,7 @@ export const writeReviewAddAuthors = ({
     ),
   )
 
-const handleAddAuthorsForm = ({
-  form,
-  preprint,
-  mustDeclareUseOfAi,
-}: {
-  form: Form
-  preprint: PreprintTitle
-  mustDeclareUseOfAi: boolean
-}) =>
+const handleAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
   RedirectResponse({
-    location: format(nextFormMatch(form, mustDeclareUseOfAi).formatter, { id: preprint.id }),
+    location: format(nextFormMatch(form).formatter, { id: preprint.id }),
   })

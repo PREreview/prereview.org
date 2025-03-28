@@ -71,7 +71,6 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from './email.js'
-import type { MustDeclareUseOfAiEnv } from './feature-flags.js'
 import * as FeatureFlags from './feature-flags.js'
 import type { SleepEnv } from './fetch.js'
 import { home } from './home-page/index.js'
@@ -316,7 +315,6 @@ const getSlackUser = flow(
 )
 
 export type RouterEnv = Keyv.AvatarStoreEnv &
-  MustDeclareUseOfAiEnv &
   DoesPreprintExistEnv &
   EffectEnv<
     | FeatureFlags.CanAddMultipleAuthors

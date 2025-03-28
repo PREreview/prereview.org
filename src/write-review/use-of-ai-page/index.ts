@@ -5,7 +5,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { match, P } from 'ts-pattern'
-import { mustDeclareUseOfAi, type MustDeclareUseOfAiEnv } from '../../feature-flags.js'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
@@ -25,10 +24,7 @@ export const writeReviewUseOfAi = ({
   id: IndeterminatePreprintId
   locale: SupportedLocale
   user?: User
-}): RT.ReaderTask<
-  FormStoreEnv & GetPreprintTitleEnv & MustDeclareUseOfAiEnv,
-  PageResponse | RedirectResponse | StreamlinePageResponse
-> =>
+}): RT.ReaderTask<FormStoreEnv & GetPreprintTitleEnv, PageResponse | RedirectResponse | StreamlinePageResponse> =>
   pipe(
     getPreprintTitle(id),
     RTE.matchE(
@@ -45,16 +41,6 @@ export const writeReviewUseOfAi = ({
           RTE.let('locale', () => locale),
           RTE.let('preprint', () => preprint),
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-          RTE.apSW(
-            'mustDeclareUseOfAi',
-            pipe(
-              RTE.fromReader(mustDeclareUseOfAi),
-              RTE.filterOrElse(
-                mustDeclareUseOfAi => mustDeclareUseOfAi,
-                () => 'not-found' as const,
-              ),
-            ),
-          ),
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.matchW(
             error =>
@@ -63,7 +49,6 @@ export const writeReviewUseOfAi = ({
                   RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                 )
                 .with('form-unavailable', () => havingProblemsPage(locale))
-                .with('not-found', () => pageNotFound(locale))
                 .exhaustive(),
             showUseOfAiForm,
           ),

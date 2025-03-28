@@ -35,7 +35,6 @@ describe('writeReviewCompetingInterests', () => {
     })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
-      mustDeclareUseOfAi: false,
     })()
 
     expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject(competingInterests)
@@ -69,7 +68,6 @@ describe('writeReviewCompetingInterests', () => {
     })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
-      mustDeclareUseOfAi: false,
     })()
 
     expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject(competingInterests)
@@ -86,7 +84,6 @@ describe('writeReviewCompetingInterests', () => {
       const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method: 'POST', user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
-        mustDeclareUseOfAi: false,
       })()
 
       expect(actual).toStrictEqual({
@@ -103,7 +100,6 @@ describe('writeReviewCompetingInterests', () => {
       const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-        mustDeclareUseOfAi: false,
       })()
 
       expect(actual).toStrictEqual({
@@ -123,7 +119,6 @@ describe('writeReviewCompetingInterests', () => {
       const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-        mustDeclareUseOfAi: false,
       })()
 
       expect(actual).toStrictEqual({
@@ -143,7 +138,6 @@ describe('writeReviewCompetingInterests', () => {
       const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user: undefined })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
-        mustDeclareUseOfAi: false,
       })()
 
       expect(actual).toStrictEqual({
@@ -174,7 +168,6 @@ describe('writeReviewCompetingInterests', () => {
     const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method: 'POST', user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
-      mustDeclareUseOfAi: false,
     })()
 
     expect(actual).toStrictEqual({
