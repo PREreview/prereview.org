@@ -13,12 +13,8 @@ export const CompletedFormC = pipe(
     conduct: C.literal('yes'),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     persona: C.literal('public', 'pseudonym'),
+    generativeAiIdeas: C.literal('yes', 'no'),
   }),
-  C.intersect(
-    C.partial({
-      generativeAiIdeas: C.literal('yes', 'no'),
-    }),
-  ),
   C.intersect(
     C.sum('competingInterests')({
       yes: C.struct({

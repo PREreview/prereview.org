@@ -100,9 +100,6 @@ const decideNextStep = (state: {
       P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
       ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm)),
     )
-    .with({ form: P.when(E.isRight), originalForm: { generativeAiIdeas: P.optional(undefined) } }, ({ originalForm }) =>
-      RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm)),
-    )
     .with({ contactEmailAddress: P.optional({ _tag: 'UnverifiedContactEmailAddress' }) }, () =>
       RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: state.preprint.id }))),
     )

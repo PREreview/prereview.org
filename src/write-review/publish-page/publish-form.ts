@@ -142,25 +142,22 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                     </div>
                   `
                 : ''}
-              ${typeof review.generativeAiIdeas === 'string'
-                ? html`
-                    <div>
-                      <dt><span>${t('useOfAiShort')()}</span></dt>
-                      <dd>
-                        ${match([review.generativeAiIdeas, review.moreAuthors])
-                          .with(['yes', P.union('yes', 'yes-private')], () => t('aiIdeasAuthorsStatement')())
-                          .with(['yes', 'no'], () => t('aiIdeasStatement')())
-                          .with(['no', P.string], () => t('aiNotUsed')())
-                          .exhaustive()}
-                      </dd>
-                      <dd>
-                        <a href="${format(writeReviewUseOfAiMatch.formatter, { id: preprint.id })}"
-                          >${rawHtml(t('changeUseOfAi')(visuallyHidden))}</a
-                        >
-                      </dd>
-                    </div>
-                  `
-                : ''}
+
+              <div>
+                <dt><span>${t('useOfAiShort')()}</span></dt>
+                <dd>
+                  ${match([review.generativeAiIdeas, review.moreAuthors])
+                    .with(['yes', P.union('yes', 'yes-private')], () => t('aiIdeasAuthorsStatement')())
+                    .with(['yes', 'no'], () => t('aiIdeasStatement')())
+                    .with(['no', P.string], () => t('aiNotUsed')())
+                    .exhaustive()}
+                </dd>
+                <dd>
+                  <a href="${format(writeReviewUseOfAiMatch.formatter, { id: preprint.id })}"
+                    >${rawHtml(t('changeUseOfAi')(visuallyHidden))}</a
+                  >
+                </dd>
+              </div>
 
               <div>
                 <dt><span>Competing interests</span></dt>

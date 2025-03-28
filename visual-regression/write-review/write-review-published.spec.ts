@@ -100,6 +100,7 @@ const form = {
   review: html`<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>`,
   persona: 'public',
   moreAuthors: 'no',
+  generativeAiIdeas: 'no',
   competingInterests: 'yes',
   competingInterestsDetails:
     'In dictum consequat nibh, quis dapibus justo consequat quis. Duis nec mi orci. Phasellus tincidunt erat vitae ex sollicitudin molestie. Mauris faucibus erat sit amet felis viverra aliquam. Quisque eget mattis ante. Nam volutpat mattis ante, porttitor porta magna auctor ut. Praesent id ipsum quis nisl suscipit feugiat at non enim. Duis placerat est id dui pulvinar, ac viverra tortor feugiat. Morbi auctor lobortis vestibulum. Nullam bibendum consequat mi. Proin accumsan eros ut eros hendrerit, quis congue eros hendrerit. Suspendisse ac gravida diam.' as NonEmptyString,
