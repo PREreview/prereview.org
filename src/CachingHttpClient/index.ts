@@ -18,30 +18,7 @@ export const CachingHttpClient = (
     const cache = yield* HttpCache.HttpCache
     const revalidationQueue = yield* Queue.sliding<HttpClientRequest.HttpClientRequest>(100)
 
-    yield* pipe(
-      Queue.take(revalidationQueue),
-      Effect.tap(request =>
-        Effect.logDebug('Cache revalidating request').pipe(
-          Effect.annotateLogs({ url: request.url, urlParams: request.urlParams }),
-        ),
-      ),
-      Effect.andThen(httpClient.execute),
-      Effect.tap(response =>
-        Effect.gen(function* () {
-          const timestamp = yield* DateTime.now
-          return HttpClientResponse.matchStatus(response, {
-            [Status.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
-            orElse: Function.constVoid,
-          })
-        }),
-      ),
-      Effect.tapError(error =>
-        Effect.logError('Unable to update cached response').pipe(Effect.annotateLogs({ error })),
-      ),
-      Effect.ignore,
-      Effect.forever,
-      Effect.forkDaemon,
-    )
+    yield* pipe(revalidationWorker({ cache, httpClient, revalidationQueue, timeToStale }), Effect.forkDaemon)
 
     const cachingBehaviour = (
       request: Effect.Effect<HttpClientRequest.HttpClientRequest>,
@@ -112,3 +89,36 @@ export const CachingHttpClient = (
 
 export const layer = (timeToStale: Duration.DurationInput) =>
   Layer.effect(HttpClient.HttpClient, CachingHttpClient(timeToStale))
+
+const revalidationWorker = ({
+  cache,
+  httpClient,
+  revalidationQueue,
+  timeToStale,
+}: {
+  cache: typeof HttpCache.HttpCache.Service
+  httpClient: HttpClient.HttpClient
+  revalidationQueue: Queue.Dequeue<HttpClientRequest.HttpClientRequest>
+  timeToStale: Duration.DurationInput
+}) =>
+  pipe(
+    Queue.take(revalidationQueue),
+    Effect.tap(request =>
+      Effect.logDebug('Cache revalidating request').pipe(
+        Effect.annotateLogs({ url: request.url, urlParams: request.urlParams }),
+      ),
+    ),
+    Effect.andThen(httpClient.execute),
+    Effect.tap(response =>
+      Effect.gen(function* () {
+        const timestamp = yield* DateTime.now
+        return HttpClientResponse.matchStatus(response, {
+          [Status.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
+          orElse: Function.constVoid,
+        })
+      }),
+    ),
+    Effect.tapError(error => Effect.logError('Unable to update cached response').pipe(Effect.annotateLogs({ error }))),
+    Effect.ignore,
+    Effect.forever,
+  )
