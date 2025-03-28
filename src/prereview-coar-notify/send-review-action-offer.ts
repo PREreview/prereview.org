@@ -14,7 +14,6 @@ export const sendReviewActionOfferEffect = Effect.fn(function* (payload: CoarRev
     HttpClientRequest.bodyJson(payload),
     Effect.andThen(httpClient.execute),
     Effect.andThen(HttpClientResponse.filterStatusOk),
-    Effect.orElseFail(() => 'unavailable' as const),
     Effect.andThen(() => Effect.void),
   )
 })
