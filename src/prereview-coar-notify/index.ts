@@ -16,16 +16,16 @@ import type { ReviewRequests } from '../review-requests-page/index.js'
 import { reviewMatch } from '../routes.js'
 import type { FieldId } from '../types/field.js'
 import { type PreprintId, PreprintIdEquivalence } from '../types/preprint-id.js'
-import { GenerateUuid, type GenerateUuidEnv } from '../types/uuid.js'
+import { GenerateUuid } from '../types/uuid.js'
 import type { User } from '../user.js'
 import type { NewPrereview } from '../write-review/index.js'
-import { constructCoarPayload, constructPayload } from './construct-coar-payload.js'
+import { constructPayload } from './construct-coar-payload.js'
 import {
   type RecentReviewRequestFromPrereviewCoarNotify,
   getRecentReviewRequests,
 } from './get-recent-review-requests.js'
 import { postNewPrereview } from './new-prereview.js'
-import { sendReviewActionOffer, sendReviewActionOfferEffect } from './send-review-action-offer.js'
+import { sendReviewActionOfferEffect } from './send-review-action-offer.js'
 
 export interface PrereviewCoarNotifyEnv {
   readonly coarNotifyToken: string
@@ -59,17 +59,6 @@ export const publishToPrereviewCoarNotifyInboxEffect = Effect.fn(function* (
     Effect.andThen(sendReviewActionOfferEffect),
   )
 })
-
-export const publishToPrereviewCoarNotifyInbox = (
-  preprint: ReviewRequestPreprintId,
-  user: User,
-  persona: 'public' | 'pseudonym',
-): RTE.ReaderTaskEither<F.FetchEnv & GenerateUuidEnv & PrereviewCoarNotifyEnv, 'unavailable', void> =>
-  pipe(
-    RTE.asks(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => coarNotifyUrl),
-    RTE.chainReaderIOKW(coarNotifyUrl => constructCoarPayload({ coarNotifyUrl, preprint, user, persona })),
-    RTE.chainW(sendReviewActionOffer),
-  )
 
 export const isReviewRequested = (id: PreprintId) =>
   pipe(

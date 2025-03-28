@@ -1,12 +1,10 @@
 import { toUrl } from 'doi-ts'
-import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import { match } from 'ts-pattern'
 import type { ReviewRequestPreprintId } from '../review-request.js'
 import { profileMatch } from '../routes.js'
 import { ProfileId } from '../types/index.js'
-import { generateUuid, type GenerateUuidEnv, type Uuid } from '../types/uuid.js'
+import type { Uuid } from '../types/uuid.js'
 import type { User } from '../user.js'
 import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-payload.js'
 
@@ -52,19 +50,3 @@ export const constructPayload = ({ uuid, coarNotifyUrl, preprint, persona, user 
         .exhaustive(),
     },
   }) satisfies CoarReviewActionOfferPayload
-
-export const constructCoarPayload = ({
-  coarNotifyUrl,
-  persona,
-  preprint,
-  user,
-}: {
-  coarNotifyUrl: URL
-  persona: 'public' | 'pseudonym'
-  preprint: ReviewRequestPreprintId
-  user: User
-}): RIO.ReaderIO<GenerateUuidEnv, CoarReviewActionOfferPayload> =>
-  pipe(
-    generateUuid,
-    RIO.map(uuid => constructPayload({ coarNotifyUrl, persona, preprint, user, uuid })),
-  )

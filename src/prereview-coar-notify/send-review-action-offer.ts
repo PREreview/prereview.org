@@ -1,9 +1,5 @@
 import { HttpClient, HttpClientRequest, HttpClientResponse } from '@effect/platform'
-import { Effect, identity, pipe } from 'effect'
-import * as F from 'fetch-fp-ts'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { Status } from 'hyper-ts'
-import { timeoutRequest } from '../fetch.js'
+import { Effect, pipe } from 'effect'
 import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-payload.js'
 
 export const sendReviewActionOfferEffect = Effect.fn(function* (payload: CoarReviewActionOfferPayload) {
@@ -17,17 +13,3 @@ export const sendReviewActionOfferEffect = Effect.fn(function* (payload: CoarRev
     Effect.andThen(() => Effect.void),
   )
 })
-
-export const sendReviewActionOffer = (payload: CoarReviewActionOfferPayload) =>
-  pipe(
-    payload.target.inbox,
-    F.Request('POST'),
-    F.setBody(JSON.stringify(payload), 'application/json'),
-    F.send,
-    RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
-    RTE.bimap(
-      () => 'unavailable' as const,
-      () => undefined,
-    ),
-  )
