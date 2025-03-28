@@ -124,13 +124,12 @@ import type {
   GetPreprintTitleEnv,
   ResolvePreprintIdEnv,
 } from './preprint.js'
+import * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
 import {
-  type PrereviewCoarNotifyConfig,
   type PrereviewCoarNotifyEnv,
   getRecentReviewRequestsFromPrereviewCoarNotify,
   getReviewRequestsFromPrereviewCoarNotify,
   isReviewRequested,
-  publishToPrereviewCoarNotifyInboxEffect,
   sendPrereviewToPrereviewCoarNotifyInbox,
 } from './prereview-coar-notify/index.js'
 import { profile } from './profile-page/index.js'
@@ -325,7 +324,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
     | ReviewPage.CommentsForReview
     | GenerateUuid
     | HttpClient.HttpClient
-    | PrereviewCoarNotifyConfig
+    | PrereviewCoarNotify.PrereviewCoarNotifyConfig
   > &
   ResolvePreprintIdEnv &
   GetPreprintIdEnv &
@@ -1799,7 +1798,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             EffectToFpts.toReaderTaskEitherK(
               (preprint: ReviewRequestPreprintId, user: User, persona: 'public' | 'pseudonym') =>
                 pipe(
-                  publishToPrereviewCoarNotifyInboxEffect,
+                  PrereviewCoarNotify.publishReviewRequest,
                   publish => publish(preprint, user, persona),
                   Effect.tapError(error =>
                     Effect.logError('Failed to publishRequest (COAR)').pipe(Effect.annotateLogs({ error })),

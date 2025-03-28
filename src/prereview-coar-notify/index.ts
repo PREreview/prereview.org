@@ -19,13 +19,13 @@ import { type PreprintId, PreprintIdEquivalence } from '../types/preprint-id.js'
 import { GenerateUuid } from '../types/uuid.js'
 import type { User } from '../user.js'
 import type { NewPrereview } from '../write-review/index.js'
-import { constructPayload } from './construct-coar-payload.js'
+import { constructCoarReviewActionOfferPayload } from './ConstructCoarReviewActionOfferPayload.js'
 import {
   type RecentReviewRequestFromPrereviewCoarNotify,
   getRecentReviewRequests,
 } from './get-recent-review-requests.js'
 import { postNewPrereview } from './new-prereview.js'
-import { sendReviewActionOfferEffect } from './send-review-action-offer.js'
+import { sendReviewActionOffer } from './SendReviewActionOffer.js'
 
 export interface PrereviewCoarNotifyEnv {
   readonly coarNotifyToken: string
@@ -37,7 +37,7 @@ export class PrereviewCoarNotifyConfig extends Context.Tag('PrereviewCoarNotifyC
   { coarNotifyUrl: URL }
 >() {}
 
-export const publishToPrereviewCoarNotifyInboxEffect = Effect.fn(function* (
+export const publishReviewRequest = Effect.fn(function* (
   preprint: ReviewRequestPreprintId,
   user: User,
   persona: 'public' | 'pseudonym',
@@ -54,9 +54,9 @@ export const publishToPrereviewCoarNotifyInboxEffect = Effect.fn(function* (
       user,
       uuid,
     },
-    constructPayload,
+    constructCoarReviewActionOfferPayload,
     Effect.succeed,
-    Effect.andThen(sendReviewActionOfferEffect),
+    Effect.andThen(sendReviewActionOffer),
   )
 })
 

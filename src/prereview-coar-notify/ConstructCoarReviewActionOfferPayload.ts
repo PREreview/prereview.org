@@ -6,7 +6,7 @@ import { profileMatch } from '../routes.js'
 import { ProfileId } from '../types/index.js'
 import type { Uuid } from '../types/uuid.js'
 import type { User } from '../user.js'
-import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-payload.js'
+import type { CoarReviewActionOfferPayload } from './CoarReviewActionOfferPayload.js'
 
 interface PayloadInputs {
   coarNotifyUrl: URL
@@ -16,7 +16,13 @@ interface PayloadInputs {
   uuid: Uuid
 }
 
-export const constructPayload = ({ uuid, coarNotifyUrl, preprint, persona, user }: PayloadInputs) =>
+export const constructCoarReviewActionOfferPayload = ({
+  uuid,
+  coarNotifyUrl,
+  preprint,
+  persona,
+  user,
+}: PayloadInputs) =>
   ({
     id: uuid,
     '@context': ['https://www.w3.org/ns/activitystreams', 'https://purl.org/coar/notify'],

@@ -1,4 +1,4 @@
-import type { CoarReviewActionOfferPayload } from '../../src/prereview-coar-notify/coar-review-action-offer-payload.js'
+import type { CoarReviewActionOfferPayload } from '../../src/prereview-coar-notify/CoarReviewActionOfferPayload.js'
 import type { NewPrereview } from '../../src/prereview-coar-notify/new-prereview.js'
 import * as fc from '../fc.js'
 

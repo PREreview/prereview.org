@@ -59,7 +59,7 @@ import type {
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview.js'
 import type { IsUserBlockedEnv } from '../src/log-in/index.js'
 import * as Nodemailer from '../src/nodemailer.js'
-import { PrereviewCoarNotifyConfig } from '../src/prereview-coar-notify/index.js'
+import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.js'
 import { Program } from '../src/Program.js'
 import { PublicUrl } from '../src/public-url.js'
 import * as TemplatePage from '../src/TemplatePage.js'
@@ -1293,7 +1293,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           }),
         ),
         Effect.provideService(GhostApi, { key: Redacted.make('key') }),
-        Effect.provideService(PrereviewCoarNotifyConfig, {
+        Effect.provideService(PrereviewCoarNotify.PrereviewCoarNotifyConfig, {
           coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
         }),
         Effect.provide(Nodemailer.layer(nodemailer)),
