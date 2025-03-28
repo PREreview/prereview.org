@@ -21,10 +21,24 @@ export const CachingHttpClient = (
     yield* pipe(
       Queue.take(revalidationQueue),
       Effect.tap(request =>
-        Effect.log('Should revalidate request').pipe(
+        Effect.logDebug('Cache revalidating request').pipe(
           Effect.annotateLogs({ url: request.url, urlParams: request.urlParams }),
         ),
       ),
+      Effect.andThen(httpClient.execute),
+      Effect.tap(response =>
+        Effect.gen(function* () {
+          const timestamp = yield* DateTime.now
+          return HttpClientResponse.matchStatus(response, {
+            [Status.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
+            orElse: Function.constVoid,
+          })
+        }),
+      ),
+      Effect.tapError(error =>
+        Effect.logError('Unable to update cached response').pipe(Effect.annotateLogs({ error })),
+      ),
+      Effect.ignore,
       Effect.forever,
       Effect.forkDaemon,
     )
@@ -64,22 +78,6 @@ export const CachingHttpClient = (
           } else {
             yield* Effect.logDebug('Cache stale').pipe(Effect.annotateLogs(logAnnotations))
             yield* Queue.offer(revalidationQueue, req)
-            yield* Effect.forkDaemon(
-              pipe(
-                req,
-                httpClient.execute,
-                Effect.tap(
-                  HttpClientResponse.matchStatus({
-                    [Status.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
-                    orElse: Function.constVoid,
-                  }),
-                ),
-                Effect.tapError(error =>
-                  Effect.logError('Unable to update cached response').pipe(Effect.annotateLogs({ error })),
-                ),
-                Effect.ignore,
-              ),
-            )
           }
           return response.response
         }
