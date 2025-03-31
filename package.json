@@ -19,7 +19,7 @@
     "case-anything": "^3.1.2",
     "clock-ts": "^0.1.2",
     "cloudinary": "^2.6.0",
-    "content-security-policy-builder": "^2.2.0",
+    "content-security-policy-builder": "^2.3.0",
     "cookie": "^0.7.2",
     "cookie-signature": "^1.2.2",
     "crossref-ts": "^0.1.6",
