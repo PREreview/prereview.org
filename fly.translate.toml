@@ -4,6 +4,7 @@ primary_region = "iad"
 [env]
 CAN_CHOOSE_LOCALE = "true"
 COAR_NOTIFY_URL = "https://coar-notify-sandbox.prereview.org/"
+DISABLE_LEGACY_VOLUME_BASED_CACHE = "true"
 ENVIRONMENT_LABEL = "sandbox"
 HTTP_CACHE_REDIS_URI = "redis://http-cache.internal?family=6"
 LEGACY_PREREVIEW_URL = "https://prereview2.azurewebsites.net/"
