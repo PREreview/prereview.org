@@ -4,10 +4,10 @@ import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
-import { match } from 'ts-pattern'
 import * as EffectToFpts from '../EffectToFpts.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
+import * as PreprintServers from '../PreprintServers/index.js'
 import { PageResponse } from '../response.js'
 import { reviewRequestsMatch, writeReviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
@@ -85,38 +85,7 @@ export const createPage = ({
                   <dt>${translate(locale, 'requests-list', 'requestPublished')()}</dt>
                   <dd>${renderDate(locale)(request.published)}</dd>
                   <dt>${translate(locale, 'requests-list', 'requestServer')()}</dt>
-                  <dd>
-                    ${match(request.preprint.id.type)
-                      .with('advance', () => 'Advance')
-                      .with('africarxiv', () => 'AfricArXiv Preprints')
-                      .with('arcadia-science', () => 'Arcadia Science')
-                      .with('arxiv', () => 'arXiv')
-                      .with('authorea', () => 'Authorea')
-                      .with('biorxiv', () => 'bioRxiv')
-                      .with('chemrxiv', () => 'ChemRxiv')
-                      .with('curvenote', () => 'Curvenote')
-                      .with('eartharxiv', () => 'EarthArXiv')
-                      .with('ecoevorxiv', () => 'EcoEvoRxiv')
-                      .with('edarxiv', () => 'EdArXiv')
-                      .with('engrxiv', () => 'engrXiv')
-                      .with('jxiv', () => 'Jxiv')
-                      .with('medrxiv', () => 'medRxiv')
-                      .with('metaarxiv', () => 'MetaArXiv')
-                      .with('osf', () => 'OSF')
-                      .with('osf-preprints', () => 'OSF Preprints')
-                      .with('philsci', () => 'PhilSci-Archive')
-                      .with('preprints.org', () => 'Preprints.org')
-                      .with('psyarxiv', () => 'PsyArXiv')
-                      .with('psycharchives', () => 'PsychArchives')
-                      .with('research-square', () => 'Research Square')
-                      .with('scielo', () => 'SciELO Preprints')
-                      .with('science-open', () => 'ScienceOpen Preprints')
-                      .with('socarxiv', () => 'SocArXiv')
-                      .with('techrxiv', () => 'TechRxiv')
-                      .with('verixiv', () => 'VeriXiv')
-                      .with('zenodo', () => 'Zenodo')
-                      .exhaustive()}
-                  </dd>
+                  <dd>${PreprintServers.getName(request.preprint.id)}</dd>
                 </dl>
               </article>
             </li>

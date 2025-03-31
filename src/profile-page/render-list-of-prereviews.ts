@@ -3,10 +3,10 @@ import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import rtlDetect from 'rtl-detect'
-import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
+import * as PreprintServers from '../PreprintServers/index.js'
 import { reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import type { NonEmptyString } from '../types/string.js'
@@ -91,38 +91,7 @@ export function renderListOfPrereviews(
                     <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
                     <dd>${renderDate(locale)(prereview.published)}</dd>
                     <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
-                    <dd>
-                      ${match(prereview.preprint.id.type)
-                        .with('advance', () => 'Advance')
-                        .with('africarxiv', () => 'AfricArXiv Preprints')
-                        .with('arcadia-science', () => 'Arcadia Science')
-                        .with('arxiv', () => 'arXiv')
-                        .with('authorea', () => 'Authorea')
-                        .with('biorxiv', () => 'bioRxiv')
-                        .with('chemrxiv', () => 'ChemRxiv')
-                        .with('curvenote', () => 'Curvenote')
-                        .with('eartharxiv', () => 'EarthArXiv')
-                        .with('ecoevorxiv', () => 'EcoEvoRxiv')
-                        .with('edarxiv', () => 'EdArXiv')
-                        .with('engrxiv', () => 'engrXiv')
-                        .with('jxiv', () => 'Jxiv')
-                        .with('medrxiv', () => 'medRxiv')
-                        .with('metaarxiv', () => 'MetaArXiv')
-                        .with('osf', () => 'OSF')
-                        .with('osf-preprints', () => 'OSF Preprints')
-                        .with('philsci', () => 'PhilSci-Archive')
-                        .with('preprints.org', () => 'Preprints.org')
-                        .with('psyarxiv', () => 'PsyArXiv')
-                        .with('psycharchives', () => 'PsychArchives')
-                        .with('research-square', () => 'Research Square')
-                        .with('scielo', () => 'SciELO Preprints')
-                        .with('science-open', () => 'ScienceOpen Preprints')
-                        .with('socarxiv', () => 'SocArXiv')
-                        .with('techrxiv', () => 'TechRxiv')
-                        .with('verixiv', () => 'VeriXiv')
-                        .with('zenodo', () => 'Zenodo')
-                        .exhaustive()}
-                    </dd>
+                    <dd>${PreprintServers.getName(prereview.preprint.id)}</dd>
                   </dl>
                 </article>
               </li>
