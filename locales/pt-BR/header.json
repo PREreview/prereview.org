@@ -12,10 +12,13 @@
     "message": "Doe"
   },
   "menuMyDetails": {
-    "message": "Minhas informações"
+    "message": "Meus dados"
   },
   "menuNewNotification": {
     "message": "Nova notificação"
+  },
+  "menuMyPrereviews": {
+    "message": "Minhas avaliações PREreview"
   },
   "menuLogOut": {
     "message": "Sair"

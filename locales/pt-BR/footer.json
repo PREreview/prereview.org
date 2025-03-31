@@ -51,7 +51,7 @@
     "message": "{handle} no GitHub"
   },
   "zenodo": {
-    "message": "As PREreviews estão disponíveis em nossa <community>Comunidade Zenodo</community> e na <api>API Zenodo</api>."
+    "message": "Avaliações PREreview estão disponíveis em nossa <community>Comunidade Zenodo</community> e na <api>API Zenodo</api>."
   },
   "copyright": {
     "message": "Todo o conteúdo está disponível sob licença Creative Commons <link>Atribuição 4.0 Internacional</link>, exceto onde indicado de outra forma."
