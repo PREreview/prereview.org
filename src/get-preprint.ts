@@ -2,6 +2,7 @@ import { FetchHttpClient } from '@effect/platform'
 import { Effect, flow, Match, pipe } from 'effect'
 import { DeprecatedSleepEnv } from './Context.js'
 import { getPreprintFromCrossref, type IndeterminateCrossrefPreprintId, isCrossrefPreprintDoi } from './crossref.js'
+import * as Crossref from './Crossref/index.js'
 import { getPreprintFromDatacite, type IndeterminateDatacitePreprintId, isDatacitePreprintDoi } from './datacite.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import {
@@ -15,7 +16,6 @@ import type { IndeterminatePreprintId } from './types/preprint-id.js'
 
 const getPreprintFromSource = pipe(
   Match.type<IndeterminatePreprintId>(),
-  Match.when({ type: 'ssrn' }, () => Effect.fail(new Preprint.PreprintIsUnavailable({}))),
   Match.when({ type: 'philsci' }, id =>
     Effect.gen(function* () {
       const fetch = yield* FetchHttpClient.Fetch
@@ -24,6 +24,7 @@ const getPreprintFromSource = pipe(
       return yield* FptsToEffect.readerTaskEither(getPreprintFromPhilsci(id), { fetch, ...sleep })
     }),
   ),
+  Match.when(Crossref.isCrossrefPreprintId, Crossref.getPreprintFromCrossref),
   Match.when(
     (id): id is IndeterminateCrossrefPreprintId => isCrossrefPreprintDoi(id.value),
     id =>
