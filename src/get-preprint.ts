@@ -15,6 +15,7 @@ import type { IndeterminatePreprintId } from './types/preprint-id.js'
 
 const getPreprintFromSource = pipe(
   Match.type<IndeterminatePreprintId>(),
+  Match.when({ type: 'ssrn' }, () => Effect.fail(new Preprint.PreprintIsUnavailable({}))),
   Match.when({ type: 'philsci' }, id =>
     Effect.gen(function* () {
       const fetch = yield* FetchHttpClient.Fetch

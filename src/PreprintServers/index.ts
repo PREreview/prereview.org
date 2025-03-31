@@ -28,6 +28,7 @@ export const getName = (preprintId: PreprintId) =>
     .with('scielo', () => 'SciELO Preprints')
     .with('science-open', () => 'ScienceOpen Preprints')
     .with('socarxiv', () => 'SocArXiv')
+    .with('ssrn', () => 'SSRN')
     .with('techrxiv', () => 'TechRxiv')
     .with('verixiv', () => 'VeriXiv')
     .with('zenodo', () => 'Zenodo')

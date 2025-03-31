@@ -70,6 +70,12 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   .with('scielo', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeScielo'))
                   .with('science-open', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeScienceOpen'))
                   .with('socarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeSocarxiv'))
+                  .with(
+                    'ssrn',
+                    () =>
+                      ({ doi }: { doi: string }) =>
+                        `We think the DOI ${doi} could be an SSRN preprint, but we can’t find any details.`,
+                  )
                   .with('techrxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeTechrxiv'))
                   .with('verixiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeVerixiv'))
                   .with('zenodo', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeZenodo'))

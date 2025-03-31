@@ -31,6 +31,7 @@ export type PreprintId =
   | ScieloPreprintId
   | ScienceOpenPreprintId
   | SocarxivPreprintId
+  | SsrnPreprintId
   | TechrxivPreprintId
   | VerixivPreprintId
   | ZenodoPreprintId
@@ -183,6 +184,11 @@ export interface SocarxivPreprintId {
   readonly value: Doi<'31235'>
 }
 
+export interface SsrnPreprintId {
+  readonly type: 'ssrn'
+  readonly value: Doi<'2139'>
+}
+
 export interface TechrxivPreprintId {
   readonly type: 'techrxiv'
   readonly value: Doi<'36227'>
@@ -224,6 +230,7 @@ export const isPreprintDoi: Predicate.Refinement<Doi, Extract<IndeterminatePrepr
   hasRegistrant(
     '1101',
     '1590',
+    '2139',
     '5281',
     '6084',
     '12688',
@@ -264,6 +271,7 @@ export function fromPreprintDoi(
   return match(doi)
     .when(hasRegistrant('1101'), doi => ({ type: 'biorxiv-medrxiv', value: doi }) satisfies BiorxivOrMedrxivPreprintId)
     .when(hasRegistrant('1590'), doi => ({ type: 'scielo', value: doi }) satisfies ScieloPreprintId)
+    .when(hasRegistrant('2139'), doi => ({ type: 'ssrn', value: doi }) satisfies SsrnPreprintId)
     .when(
       hasRegistrant('5281'),
       doi => ({ type: 'zenodo-africarxiv', value: doi }) satisfies ZenodoOrAfricarxivPreprintId,
