@@ -1,53 +1,47 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
-import { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Effect, flow, Match, ParseResult, pipe, Schema, Tuple } from 'effect'
+import { Array, Data, Effect, pipe, Schema, Tuple } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Doi from '../types/Doi.js'
 import * as Orcid from '../types/Orcid.js'
+import { Temporal } from '../types/index.js'
 
-const PublishedSchema = Schema.transformOrFail(
-  Schema.Struct({
-    'date-parts': Schema.Tuple(
-      Schema.Union(
-        Schema.Tuple(Schema.Number),
-        Schema.Tuple(Schema.Number, Schema.Number),
-        Schema.Tuple(Schema.Number, Schema.Number, Schema.Number),
-      ),
-    ),
-  }),
-  Schema.Union(Schema.Number, Schema.instanceOf(Temporal.PlainYearMonth), Schema.instanceOf(Temporal.PlainDate)),
+const PlainYearFromTupleSchema = Schema.transform(Schema.Tuple(Schema.Number), Schema.Number, {
+  strict: true,
+  decode: parts => parts[0],
+  encode: date => Tuple.make(date),
+})
+
+const PlainYearMonthFromTupleSchema = Schema.transform(
+  Schema.Tuple(Schema.Number, Schema.Number),
+  Temporal.PlainYearMonthFromPartsSchema,
   {
     strict: true,
-    decode: (input, _, ast) =>
-      pipe(
-        Match.value(input['date-parts'][0]),
-        Match.when([Match.number, Match.number, Match.number], input =>
-          ParseResult.try({
-            try: () =>
-              Temporal.PlainDate.from({ year: input[0], month: input[1], day: input[2] }, { overflow: 'reject' }),
-            catch: () => new ParseResult.Type(ast, input, 'Not a PlainDate'),
-          }),
-        ),
-        Match.when([Match.number, Match.number], input =>
-          ParseResult.try({
-            try: () => Temporal.PlainYearMonth.from({ year: input[0], month: input[1] }, { overflow: 'reject' }),
-            catch: () => new ParseResult.Type(ast, input, 'Not a PlainYearMonth'),
-          }),
-        ),
-        Match.when([Match.number], input => ParseResult.succeed(input[0])),
-        Match.exhaustive,
-      ),
-    encode: flow(
-      Match.value,
-      Match.when(Match.instanceOfUnsafe(Temporal.PlainDate), date =>
-        ParseResult.succeed({ 'date-parts': Tuple.make(Tuple.make(date.year, date.month, date.day)) }),
-      ),
-      Match.when(Match.instanceOfUnsafe(Temporal.PlainYearMonth), date =>
-        ParseResult.succeed({ 'date-parts': Tuple.make(Tuple.make(date.year, date.month)) }),
-      ),
-      Match.when(Match.number, date => ParseResult.succeed({ 'date-parts': Tuple.make(Tuple.make(date)) })),
-      Match.exhaustive,
+    decode: parts => ({ year: parts[0], month: parts[1] }),
+    encode: parts => Tuple.make(parts.year, parts.month),
+  },
+)
+
+const PlainDateFromTupleSchema = Schema.transform(
+  Schema.Tuple(Schema.Number, Schema.Number, Schema.Number),
+  Temporal.PlainDateFromPartsSchema,
+  {
+    strict: true,
+    decode: parts => ({ year: parts[0], month: parts[1], day: parts[2] }),
+    encode: parts => Tuple.make(parts.year, parts.month, parts.day),
+  },
+)
+
+const PublishedSchema = Schema.transform(
+  Schema.Struct({
+    'date-parts': Schema.Tuple(
+      Schema.Union(PlainYearFromTupleSchema, PlainYearMonthFromTupleSchema, PlainDateFromTupleSchema),
     ),
+  }),
+  Schema.Union(Temporal.PlainDateFromSelfSchema, Temporal.PlainYearMonthFromSelfSchema, Schema.Number),
+  {
+    strict: true,
+    decode: input => input['date-parts'][0],
+    encode: date => ({ 'date-parts': Tuple.make(date) }),
   },
 )
 

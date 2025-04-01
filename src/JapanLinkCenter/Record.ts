@@ -1,38 +1,26 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
-import { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Effect, Match, ParseResult, pipe, Schema } from 'effect'
+import { Array, Data, Effect, flow, identity, Match, pipe, Schema, Struct } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Doi from '../types/Doi.js'
+import { Temporal } from '../types/index.js'
 import * as Orcid from '../types/Orcid.js'
 
-const PublicationDateSchema = Schema.transformOrFail(
+const PublicationDateSchema = Schema.transform(
   Schema.Struct({
     year: Schema.propertySignature(Schema.NumberFromString).pipe(Schema.fromKey('publication_year')),
     month: Schema.optional(Schema.NumberFromString).pipe(Schema.fromKey('publication_month')),
     day: Schema.optional(Schema.NumberFromString).pipe(Schema.fromKey('publication_day')),
   }),
-  Schema.Union(Schema.Number, Schema.instanceOf(Temporal.PlainYearMonth), Schema.instanceOf(Temporal.PlainDate)),
+  Schema.Union(Temporal.PlainDateFromPartsSchema, Temporal.PlainYearMonthFromPartsSchema, Schema.Number),
   {
     strict: true,
-    decode: (input, _, ast) =>
-      pipe(
-        Match.value(input),
-        Match.when({ year: Match.number, month: Match.number, day: Match.number }, input =>
-          ParseResult.try({
-            try: () => Temporal.PlainDate.from(input, { overflow: 'reject' }),
-            catch: () => new ParseResult.Type(ast, input, 'Not a PlainDate'),
-          }),
-        ),
-        Match.when({ year: Match.number, month: Match.number }, input =>
-          ParseResult.try({
-            try: () => Temporal.PlainYearMonth.from(input, { overflow: 'reject' }),
-            catch: () => new ParseResult.Type(ast, input, 'Not a PlainYearMonth'),
-          }),
-        ),
-        Match.when({ year: Match.number }, input => ParseResult.succeed(input.year)),
-        Match.exhaustive,
-      ),
-    encode: date => ParseResult.succeed(typeof date === 'number' ? { year: date } : date),
+    decode: flow(
+      Match.value,
+      Match.when({ year: Match.number, month: Match.number }, identity),
+      Match.when({ year: Match.number }, Struct.get('year')),
+      Match.exhaustive,
+    ),
+    encode: date => (typeof date === 'number' ? { year: date } : date),
   },
 )
 

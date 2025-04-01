@@ -1,25 +1,11 @@
-import { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, Option, ParseResult, pipe, Schema, String } from 'effect'
+import { Array, Data, Either, Option, pipe, Schema, String } from 'effect'
 import type * as ReviewPage from '../review-page/index.js'
 import * as Doi from '../types/Doi.js'
+import { Temporal } from '../types/index.js'
 import * as Iso639 from '../types/iso639.js'
 import * as Orcid from '../types/Orcid.js'
 
 export type CommentWithoutText = Omit<ReviewPage.Comment, 'text'> & { textUrl: URL }
-
-const PlainDateSchema: Schema.Schema<Temporal.PlainDate, string> = Schema.transformOrFail(
-  Schema.String,
-  Schema.instanceOf(Temporal.PlainDate),
-  {
-    strict: true,
-    decode: (input, _, ast) =>
-      ParseResult.try({
-        try: () => Temporal.PlainDate.from(input, { overflow: 'reject' }),
-        catch: () => new ParseResult.Type(ast, input, 'Not a PlainDate'),
-      }),
-    encode: date => ParseResult.succeed(date.toString()),
-  },
-)
 
 export const ZenodoRecordForACommentSchema = Schema.Struct({
   id: Schema.Number,
@@ -44,7 +30,7 @@ export const ZenodoRecordForACommentSchema = Schema.Struct({
     license: Schema.Struct({
       id: Schema.Literal('cc-by-4.0'),
     }),
-    publication_date: PlainDateSchema,
+    publication_date: Temporal.PlainDateSchema,
   }),
 })
 
