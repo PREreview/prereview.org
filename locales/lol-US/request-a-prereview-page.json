@@ -83,6 +83,9 @@
   "doiCouldBeMetaarxiv": {
     "message": "crwdns5319:0{doi}crwdne5319:0"
   },
+  "doiCouldBeNeurolibre": {
+    "message": "crwdns5437:0{doi}crwdne5437:0"
+  },
   "doiCouldBeOsf": {
     "message": "crwdns5321:0{doi}crwdne5321:0"
   },
