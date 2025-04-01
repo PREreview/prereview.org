@@ -1,6 +1,6 @@
 import { Url, UrlParams } from '@effect/platform'
 import { type Doi, Eq as eqDoi, hasRegistrant, isDoi, parse } from 'doi-ts'
-import { Either, type Equivalence, Option, Predicate, flow } from 'effect'
+import { Either, type Equivalence, Option, Predicate, flow, pipe } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import * as FptsToEffect from '../FptsToEffect.js'
@@ -322,6 +322,10 @@ export function fromUrl(url: URL): Option.Option<IndeterminatePreprintId> {
     .with([P.union('researchsquare.com', 'assets.researchsquare.com'), P.select()], extractFromResearchSquarePath)
     .with(['preprints.scielo.org', P.select()], extractFromScieloPath)
     .with(['scienceopen.com', 'hosted-document'], () => extractFromScienceOpenQueryString(Url.urlParams(url)))
+    .with(['ssrn.com', P.select()], extractFromSsrnPath)
+    .with([P.union('download.ssrn.com', 'papers.ssrn.com'), P.string], () =>
+      extractFromSsrnQueryString(Url.urlParams(url)),
+    )
     .with(['techrxiv.org', P.select()], extractFromTechrxivPath)
     .with(['zenodo.org', P.select()], extractFromZenodoPath)
     .otherwise(Option.none)
@@ -427,6 +431,20 @@ const extractFromScieloPath = flow(
 )
 
 const extractFromScienceOpenQueryString = flow(UrlParams.getFirst('doi'), Option.andThen(parsePreprintDoi))
+
+const extractFromSsrnPath = flow(
+  decodeURIComponent,
+  Option.liftNullable(s => /^abstract=([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.2139/ssrn.${id}`, parsePreprintDoi)),
+)
+
+const extractFromSsrnQueryString = (urlParams: UrlParams.UrlParams) =>
+  pipe(
+    UrlParams.getFirst(urlParams, 'abstractid'),
+    Option.orElse(() => UrlParams.getFirst(urlParams, 'abstractId')),
+    Option.orElse(() => UrlParams.getFirst(urlParams, 'abstract_id')),
+    Option.andThen(flow(id => `10.2139/ssrn.${id}`, parsePreprintDoi)),
+  )
 
 const extractFromTechrxivPath = flow(
   decodeURIComponent,

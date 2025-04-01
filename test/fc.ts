@@ -877,6 +877,14 @@ export const ssrnPreprintId = (): fc.Arbitrary<SsrnPreprintId> =>
     value: doi(constant('2139')),
   })
 
+export const ssrnPreprintUrl = (): fc.Arbitrary<[URL, SsrnPreprintId]> =>
+  fc
+    .integer({ min: 1 })
+    .map(id => [
+      new URL(`https://ssrn.com/abstract=${id}`),
+      { type: 'ssrn', value: `10.2139/ssrn.${id}` as Doi<'2139'> },
+    ])
+
 export const verixivPreprintId = (): fc.Arbitrary<VerixivPreprintId> =>
   fc.record({
     type: constant('verixiv'),

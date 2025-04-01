@@ -624,6 +624,35 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Option.some({ type: 'socarxiv', value: doi }))
   })
 
+  test.prop([fc.ssrnPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+    examples: [
+      [[new URL('https://ssrn.com/abstract=5018989'), Doi('10.2139/ssrn.5018989')]], // advertised
+      [[new URL('https://www.ssrn.com/abstract=5018989'), Doi('10.2139/ssrn.5018989')]], // www.
+      [[new URL('http://ssrn.com/abstract=5018989'), Doi('10.2139/ssrn.5018989')]], //  // http
+      [[new URL('https://ssrn.com/abstract=5018989/'), Doi('10.2139/ssrn.5018989')]], // trailing slash
+      [[new URL('https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5018989'), Doi('10.2139/ssrn.5018989')]], // view
+      [[new URL('https://papers.ssrn.com/sol3/Delivery.cfm?abstractid=5018989'), Doi('10.2139/ssrn.5018989')]], // download
+      [
+        [
+          new URL(
+            'https://papers.ssrn.com/sol3/Delivery.cfm/20bf8675-a4d6-47aa-ad95-489d45e106a1-MECA.pdf?abstractid=5018989&mirid=1',
+          ), // download
+          Doi('10.2139/ssrn.5018989'),
+        ],
+      ],
+      [
+        [
+          new URL(
+            'https://download.ssrn.com/nsc/20bf8675-a4d6-47aa-ad95-489d45e106a1-meca.pdf?response-content-disposition=inline&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250401T095732Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&abstractId=5018989',
+          ), // open in browser
+          Doi('10.2139/ssrn.5018989'),
+        ],
+      ],
+    ],
+  })('with a SSRN URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(Option.some({ type: 'ssrn', value: doi }))
+  })
+
   test.prop([fc.techrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [
