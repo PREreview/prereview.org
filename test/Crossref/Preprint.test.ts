@@ -9,11 +9,33 @@ import { Doi } from '../../src/types/Doi.js'
 import * as fc from '../fc.js'
 
 describe('workToPreprint', () => {
-  test('can be transformed', () => {
-    const actual = Either.getOrThrow(_.workToPreprint(stubWork))
-
-    expect(actual).toStrictEqual(
-      Preprint({
+  test.each([
+    {
+      work: new Work({
+        DOI: Doi('10.2139/ssrn.5186959'),
+        resource: {
+          primary: {
+            URL: new URL('https://www.ssrn.com/abstract=5186959'),
+          },
+        },
+        title: [
+          'Enhanced Flavoprotein Autofluorescence Imaging in Rats Using a Combination of Thin Skull Window and Skull-Clearing Reagents',
+        ],
+        author: [
+          { given: 'Kazuaki', family: 'Nagasaka' },
+          { given: 'Yuto', family: 'Ogawa' },
+          { given: 'Daisuke', family: 'Ishii' },
+          { given: 'Ayane', family: 'Nagao' },
+          { given: 'Hitomi', family: 'Ikarashi' },
+          { given: 'Naofumi', family: 'Otsuru' },
+          { given: 'Hideaki', family: 'Onishi' },
+        ],
+        published: 2025,
+        'group-title': 'SSRN',
+        type: 'posted-content',
+        subtype: 'preprint',
+      }),
+      expected: Preprint({
         authors: [
           { name: 'Kazuaki Nagasaka', orcid: undefined },
           { name: 'Yuto Ogawa', orcid: undefined },
@@ -33,7 +55,11 @@ describe('workToPreprint', () => {
         },
         url: new URL('https://www.ssrn.com/abstract=5186959'),
       }),
-    )
+    },
+  ])('can be transformed ($work.DOI)', ({ work, expected }) => {
+    const actual = Either.getOrThrow(_.workToPreprint(work))
+
+    expect(actual).toStrictEqual(expected)
   })
 
   test.prop([fc.lorem(), fc.option(fc.lorem(), { nil: undefined })], {
