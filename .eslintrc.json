@@ -11,6 +11,7 @@
     "plugin:wc/best-practice",
     "prettier"
   ],
+  "reportUnusedDisableDirectives": true,
   "overrides": [
     {
       "files": ["**/*.test.ts"],

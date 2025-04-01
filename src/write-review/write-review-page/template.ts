@@ -1,6 +1,5 @@
 import { translate, type SupportedLocale } from '../../locales/index.js'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const template = (locale: SupportedLocale) =>
   `
 ${translate(locale, 'write-review', 'writeAShortSummary')()}
