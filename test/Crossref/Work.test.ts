@@ -35,9 +35,10 @@ describe('getWork', () => {
   describe('with a response', () => {
     describe('with a 200 status code', () => {
       describe('with a work', () => {
-        test.prop([fc.doi()])('returns the work', doi =>
-          Effect.gen(function* () {
-            const work = {
+        test.each([
+          [
+            Doi('10.2139/ssrn.5186959'),
+            {
               status: 'ok',
               'message-type': 'work',
               'message-version': '1.0.0',
@@ -96,38 +97,39 @@ describe('getWork', () => {
                 published: { 'date-parts': [[2025]] },
                 subtype: 'preprint',
               },
-            }
-
+            },
+            new _.Work({
+              DOI: Doi('10.2139/ssrn.5186959'),
+              resource: {
+                primary: {
+                  URL: new URL('https://www.ssrn.com/abstract=5186959'),
+                },
+              },
+              title: [
+                'Enhanced Flavoprotein Autofluorescence Imaging in Rats Using a Combination of Thin Skull Window and Skull-Clearing Reagents',
+              ],
+              author: [
+                { given: 'Kazuaki', family: 'Nagasaka' },
+                { given: 'Yuto', family: 'Ogawa' },
+                { given: 'Daisuke', family: 'Ishii' },
+                { given: 'Ayane', family: 'Nagao' },
+                { given: 'Hitomi', family: 'Ikarashi' },
+                { given: 'Naofumi', family: 'Otsuru' },
+                { given: 'Hideaki', family: 'Onishi' },
+              ],
+              published: 2025,
+              'group-title': 'SSRN',
+              type: 'posted-content',
+              subtype: 'preprint',
+            }),
+          ],
+        ])('returns the work (%s)', (doi, work, expected) =>
+          Effect.gen(function* () {
             const client = stubbedClient(() => new Response(JSON.stringify(work), { status: 200 }))
 
             const actual = yield* pipe(_.getWork(doi), Effect.provideService(HttpClient.HttpClient, client))
 
-            expect(actual).toStrictEqual(
-              new _.Work({
-                DOI: Doi('10.2139/ssrn.5186959'),
-                resource: {
-                  primary: {
-                    URL: new URL('https://www.ssrn.com/abstract=5186959'),
-                  },
-                },
-                title: [
-                  'Enhanced Flavoprotein Autofluorescence Imaging in Rats Using a Combination of Thin Skull Window and Skull-Clearing Reagents',
-                ],
-                author: [
-                  { given: 'Kazuaki', family: 'Nagasaka' },
-                  { given: 'Yuto', family: 'Ogawa' },
-                  { given: 'Daisuke', family: 'Ishii' },
-                  { given: 'Ayane', family: 'Nagao' },
-                  { given: 'Hitomi', family: 'Ikarashi' },
-                  { given: 'Naofumi', family: 'Otsuru' },
-                  { given: 'Hideaki', family: 'Onishi' },
-                ],
-                published: 2025,
-                'group-title': 'SSRN',
-                type: 'posted-content',
-                subtype: 'preprint',
-              }),
-            )
+            expect(actual).toStrictEqual(expected)
           }).pipe(EffectTest.run),
         )
       })
