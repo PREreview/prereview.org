@@ -2,23 +2,8 @@ import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Effect, Match, ParseResult, pipe, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import * as Orcid from 'orcid-id-ts'
-import * as FptsToEffect from '../FptsToEffect.js'
 import * as Doi from '../types/Doi.js'
-
-const OrcidFromUrlSchema = Schema.transformOrFail(
-  Schema.URL,
-  Schema.typeSchema(pipe(Schema.String, Schema.filter(Orcid.isOrcid))),
-  {
-    strict: true,
-    decode: (url, _, ast) =>
-      ParseResult.fromOption(
-        FptsToEffect.option(Orcid.parse(url.href)),
-        () => new ParseResult.Type(ast, url, 'Not an ORCID iD'),
-      ),
-    encode: orcid => ParseResult.succeed(Orcid.toUrl(orcid)),
-  },
-)
+import * as Orcid from '../types/Orcid.js'
 
 const PublicationDateSchema = Schema.transformOrFail(
   Schema.Struct({
@@ -74,7 +59,7 @@ export class Record extends Schema.Class<Record>('Record')({
         }),
       ),
       researcher_id_list: Schema.optionalWith(
-        Schema.Array(Schema.Struct({ id_code: OrcidFromUrlSchema, type: Schema.Literal('ORCID') })),
+        Schema.Array(Schema.Struct({ id_code: Orcid.OrcidFromUrlSchema, type: Schema.Literal('ORCID') })),
         { default: Array.empty },
       ),
     }),

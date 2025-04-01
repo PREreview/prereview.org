@@ -5,13 +5,6 @@ import { StatusCodes } from 'http-status-codes'
 import * as Doi from '../types/Doi.js'
 import * as Orcid from '../types/Orcid.js'
 
-const OrcidFromUrlSchema = Schema.transformOrFail(Schema.URL, Schema.typeSchema(Orcid.OrcidSchema), {
-  strict: true,
-  decode: (url, _, ast) =>
-    ParseResult.fromOption(Orcid.parse(url.href), () => new ParseResult.Type(ast, url, 'Not an ORCID iD')),
-  encode: orcid => ParseResult.succeed(Orcid.toUrl(orcid)),
-})
-
 const PublishedSchema = Schema.transformOrFail(
   Schema.Struct({
     'date-parts': Schema.Tuple(
@@ -69,7 +62,7 @@ export class Work extends Schema.Class<Work>('Work')({
   author: Schema.optionalWith(
     Schema.Array(
       Schema.Struct({
-        ORCID: Schema.optional(OrcidFromUrlSchema),
+        ORCID: Schema.optional(Orcid.OrcidFromUrlSchema),
         given: Schema.NonEmptyTrimmedString,
         family: Schema.NonEmptyTrimmedString,
       }),
