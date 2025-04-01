@@ -107,6 +107,9 @@
   "doiCouldBeSocarxiv": {
     "message": "crwdns5335:0{doi}crwdne5335:0"
   },
+  "doiCouldBeSsrn": {
+    "message": "crwdns5431:0{doi}crwdne5431:0"
+  },
   "doiCouldBeTechrxiv": {
     "message": "crwdns5337:0{doi}crwdne5337:0"
   },

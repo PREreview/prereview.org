@@ -104,6 +104,9 @@
   "doiCouldBeSocarxiv": {
     "message": "crwdns4928:0{doi}crwdne4928:0"
   },
+  "doiCouldBeSsrn": {
+    "message": "crwdns5427:0{doi}crwdne5427:0"
+  },
   "doiCouldBeTechrxiv": {
     "message": "crwdns4930:0{doi}crwdne4930:0"
   },
@@ -138,7 +141,7 @@
     "message": "crwdns4880:0crwdne4880:0"
   },
   "supportPreprintsFrom": {
-    "message": "crwdns4864:0crwdne4864:0"
+    "message": "crwdns5429:0crwdne5429:0"
   },
   "isAPreprint": {
     "message": "crwdns4946:0crwdne4946:0"
