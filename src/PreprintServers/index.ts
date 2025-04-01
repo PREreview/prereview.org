@@ -18,6 +18,7 @@ export const getName = (preprintId: PreprintId) =>
     .with('jxiv', () => 'Jxiv')
     .with('medrxiv', () => 'medRxiv')
     .with('metaarxiv', () => 'MetaArXiv')
+    .with('neurolibre', () => 'NeuroLibre')
     .with('osf', () => 'OSF')
     .with('osf-preprints', () => 'OSF Preprints')
     .with('philsci', () => 'PhilSci-Archive')

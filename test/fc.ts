@@ -99,6 +99,7 @@ import {
   type JxivPreprintId,
   type MedrxivPreprintId,
   type MetaarxivPreprintId,
+  type NeurolibrePreprintId,
   type OsfPreprintId,
   type OsfPreprintsPreprintId,
   type PhilsciPreprintId,
@@ -748,6 +749,12 @@ export const metaarxivPreprintUrl = (): fc.Arbitrary<[URL, MetaarxivPreprintId]>
       { type: 'metaarxiv', value: `10.31222/osf.io/${id}` as Doi<'31222'> },
     ])
 
+export const neurolibrePreprintId = (): fc.Arbitrary<NeurolibrePreprintId> =>
+  fc.record({
+    type: constant('neurolibre'),
+    value: doi(constant('55458')),
+  })
+
 export const osfPreprintId = (): fc.Arbitrary<OsfPreprintId> =>
   fc.record({
     type: constant('osf'),
@@ -945,6 +952,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
     jxivPreprintId(),
     medrxivPreprintId(),
     metaarxivPreprintId(),
+    neurolibrePreprintId(),
     osfPreprintId(),
     osfPreprintsPreprintId(),
     preprintsorgPreprintId(),
@@ -1047,6 +1055,7 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     authoreaPreprintId(),
     curvenotePreprintId(),
     jxivPreprintId(),
+    neurolibrePreprintId(),
     osfPreprintId(),
     philsciPreprintId(),
     psychArchivesPreprintId(),
