@@ -4,6 +4,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Tuple } from 'effect'
+import { Orcid } from 'orcid-id-ts'
 import * as _ from '../../src/Crossref/Work.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
@@ -272,8 +273,8 @@ describe('getWork', () => {
               author: [
                 { given: 'Evelyn', family: 'McLean' },
                 { given: 'Jane', family: 'Abdo' },
-                { given: 'Nadia', family: 'Blostein' },
-                { given: 'Nikola', family: 'Stikov' },
+                { given: 'Nadia', family: 'Blostein', ORCID: Orcid('0000-0002-1864-1899') },
+                { given: 'Nikola', family: 'Stikov', ORCID: Orcid('0000-0002-8480-5230') },
               ],
               published: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),
               'group-title': 'NeuroLibre Reproducible Preprints',

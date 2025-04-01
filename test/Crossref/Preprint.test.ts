@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either } from 'effect'
+import { Orcid } from 'orcid-id-ts'
 import * as _ from '../../src/Crossref/Preprint.js'
 import { Work } from '../../src/Crossref/Work.js'
 import { rawHtml } from '../../src/html.js'
@@ -69,8 +70,8 @@ describe('workToPreprint', () => {
         author: [
           { given: 'Evelyn', family: 'McLean' },
           { given: 'Jane', family: 'Abdo' },
-          { given: 'Nadia', family: 'Blostein' },
-          { given: 'Nikola', family: 'Stikov' },
+          { given: 'Nadia', family: 'Blostein', ORCID: Orcid('0000-0002-1864-1899') },
+          { given: 'Nikola', family: 'Stikov', ORCID: Orcid('0000-0002-8480-5230') },
         ],
         published: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),
         'group-title': 'NeuroLibre Reproducible Preprints',
@@ -81,8 +82,8 @@ describe('workToPreprint', () => {
         authors: [
           { name: 'Evelyn McLean', orcid: undefined },
           { name: 'Jane Abdo', orcid: undefined },
-          { name: 'Nadia Blostein', orcid: undefined },
-          { name: 'Nikola Stikov', orcid: undefined },
+          { name: 'Nadia Blostein', orcid: Orcid('0000-0002-1864-1899') },
+          { name: 'Nikola Stikov', orcid: Orcid('0000-0002-8480-5230') },
         ],
         id: { type: 'neurolibre', value: Doi('10.55458/neurolibre.00031') },
         posted: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),

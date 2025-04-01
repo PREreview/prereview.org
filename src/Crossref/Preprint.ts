@@ -22,7 +22,13 @@ export const workToPreprint = (
 
     const authors = yield* Array.match(work.author, {
       onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { author: work.author } })),
-      onNonEmpty: authors => Either.right(Array.map(authors, author => ({ name: `${author.given} ${author.family}` }))),
+      onNonEmpty: authors =>
+        Either.right(
+          Array.map(authors, author => ({
+            name: `${author.given} ${author.family}`,
+            orcid: author.ORCID,
+          })),
+        ),
     })
 
     const title = yield* Array.match(work.title, {
