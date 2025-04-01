@@ -11,7 +11,7 @@ import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import { collapseRequests, logFetch } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
-import { getPreprint as getPreprintUtil } from './get-preprint.js'
+import * as GetPreprint from './get-preprint.js'
 import * as GhostPage from './GhostPage.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
@@ -300,6 +300,57 @@ const commentEvents = Layer.scoped(
   ),
 )
 
+const doesPreprintExist = Layer.effect(
+  Preprint.DoesPreprintExist,
+  Effect.gen(function* () {
+    const fetch = yield* FetchHttpClient.Fetch
+    const sleep = yield* DeprecatedSleepEnv
+    const httpClient = yield* HttpClient.HttpClient
+
+    return id =>
+      pipe(
+        GetPreprint.doesPreprintExist(id),
+        Effect.provideService(HttpClient.HttpClient, httpClient),
+        Effect.provideService(FetchHttpClient.Fetch, fetch),
+        Effect.provideService(DeprecatedSleepEnv, sleep),
+      )
+  }),
+)
+
+const resolvePreprintId = Layer.effect(
+  Preprint.ResolvePreprintId,
+  Effect.gen(function* () {
+    const fetch = yield* FetchHttpClient.Fetch
+    const sleep = yield* DeprecatedSleepEnv
+    const httpClient = yield* HttpClient.HttpClient
+
+    return id =>
+      pipe(
+        GetPreprint.resolvePreprintId(id),
+        Effect.provideService(HttpClient.HttpClient, httpClient),
+        Effect.provideService(FetchHttpClient.Fetch, fetch),
+        Effect.provideService(DeprecatedSleepEnv, sleep),
+      )
+  }),
+)
+
+const getPreprintId = Layer.effect(
+  Preprint.GetPreprintId,
+  Effect.gen(function* () {
+    const fetch = yield* FetchHttpClient.Fetch
+    const sleep = yield* DeprecatedSleepEnv
+    const httpClient = yield* HttpClient.HttpClient
+
+    return id =>
+      pipe(
+        GetPreprint.getPreprintId(id),
+        Effect.provideService(HttpClient.HttpClient, httpClient),
+        Effect.provideService(FetchHttpClient.Fetch, fetch),
+        Effect.provideService(DeprecatedSleepEnv, sleep),
+      )
+  }),
+)
+
 const getPreprint = Layer.effect(
   Preprint.GetPreprint,
   Effect.gen(function* () {
@@ -309,7 +360,24 @@ const getPreprint = Layer.effect(
 
     return id =>
       pipe(
-        getPreprintUtil(id),
+        GetPreprint.getPreprint(id),
+        Effect.provideService(HttpClient.HttpClient, httpClient),
+        Effect.provideService(FetchHttpClient.Fetch, fetch),
+        Effect.provideService(DeprecatedSleepEnv, sleep),
+      )
+  }),
+)
+
+const getPreprintTitle = Layer.effect(
+  Preprint.GetPreprintTitle,
+  Effect.gen(function* () {
+    const fetch = yield* FetchHttpClient.Fetch
+    const sleep = yield* DeprecatedSleepEnv
+    const httpClient = yield* HttpClient.HttpClient
+
+    return id =>
+      pipe(
+        GetPreprint.getPreprintTitle(id),
         Effect.provideService(HttpClient.HttpClient, httpClient),
         Effect.provideService(FetchHttpClient.Fetch, fetch),
         Effect.provideService(DeprecatedSleepEnv, sleep),
@@ -372,7 +440,11 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(getPrereview)),
   Layer.provide(
     Layer.mergeAll(
+      Layer.provide(doesPreprintExist, CachingHttpClient.layer('10 minutes')),
+      Layer.provide(resolvePreprintId, CachingHttpClient.layer('10 minutes')),
+      Layer.provide(getPreprintId, CachingHttpClient.layer('10 minutes')),
       Layer.provide(getPreprint, CachingHttpClient.layer('10 minutes')),
+      Layer.provide(getPreprintTitle, CachingHttpClient.layer('10 minutes')),
       Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
       Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
       doesUserHaveAVerifiedEmailAddress,

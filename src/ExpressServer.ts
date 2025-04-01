@@ -7,7 +7,6 @@ import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConf
 import * as EffectToFpts from './EffectToFpts.js'
 import { UseCrowdinInContext } from './feature-flags.js'
 import { Nodemailer } from './nodemailer.js'
-import * as Preprint from './preprint.js'
 import { PublicUrl } from './public-url.js'
 import { DataStoreRedis } from './Redis.js'
 import { TemplatePage } from './TemplatePage.js'
@@ -24,13 +23,11 @@ export const expressServer = Effect.gen(function* () {
   const templatePage = yield* TemplatePage
   const useCrowdinInContext = yield* UseCrowdinInContext
   const secret = yield* SessionSecret
-  const getPreprint = yield* Effect.andThen(Preprint.GetPreprint, EffectToFpts.makeTaskEitherK)
 
   return app({
     clock,
     fetch,
     generateUuid,
-    getPreprint,
     nodemailer,
     publicUrl,
     secret: Redacted.value(secret),

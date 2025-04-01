@@ -117,6 +117,7 @@ import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
 import { partners } from './partners.js'
 import { preprintReviews } from './preprint-reviews-page/index.js'
+import type * as Preprint from './preprint.js'
 import type {
   DoesPreprintExistEnv,
   GetPreprintEnv,
@@ -322,6 +323,11 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
     | OpenAlex.GetCategories
     | ReviewPage.CommentsForReview
     | GenerateUuid
+    | Preprint.DoesPreprintExist
+    | Preprint.GetPreprint
+    | Preprint.GetPreprintId
+    | Preprint.GetPreprintTitle
+    | Preprint.ResolvePreprintId
     | HttpClient.HttpClient
     | PrereviewCoarNotify.PrereviewCoarNotifyConfig
     | Zenodo.ZenodoOrigin

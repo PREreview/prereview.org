@@ -64,9 +64,29 @@ export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailab
 
 export const Preprint = Data.struct<Preprint>
 
+export class DoesPreprintExist extends Context.Tag('DoesPreprintExist')<
+  DoesPreprintExist,
+  (id: IndeterminatePreprintId) => Effect.Effect<boolean, NotAPreprint | PreprintIsUnavailable>
+>() {}
+
+export class ResolvePreprintId extends Context.Tag('ResolvePreprintId')<
+  ResolvePreprintId,
+  (id: IndeterminatePreprintId) => Effect.Effect<PreprintId, NotAPreprint | PreprintIsNotFound | PreprintIsUnavailable>
+>() {}
+
+export class GetPreprintId extends Context.Tag('GetPreprintId')<
+  GetPreprintId,
+  (id: IndeterminatePreprintId) => Effect.Effect<PreprintId, PreprintIsUnavailable>
+>() {}
+
 export class GetPreprint extends Context.Tag('GetPreprint')<
   GetPreprint,
   (id: IndeterminatePreprintId) => Effect.Effect<Preprint, PreprintIsNotFound | PreprintIsUnavailable>
+>() {}
+
+export class GetPreprintTitle extends Context.Tag('GetPreprintTitle')<
+  GetPreprintTitle,
+  (id: IndeterminatePreprintId) => Effect.Effect<PreprintTitle, PreprintIsNotFound | PreprintIsUnavailable>
 >() {}
 
 export const doesPreprintExist = (id: IndeterminatePreprintId) =>
