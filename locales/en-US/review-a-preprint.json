@@ -80,6 +80,9 @@
   "doiCouldBeMetaarxiv": {
     "message": "We think the DOI {doi} could be a MetaArXiv preprint, but we can’t find any details."
   },
+  "doiCouldBeNeurolibre": {
+    "message": "We think the DOI {doi} could be a NeuroLibre preprint, but we can’t find any details."
+  },
   "doiCouldBeOsf": {
     "message": "We think the DOI {doi} could be an OSF preprint, but we can’t find any details."
   },

@@ -60,12 +60,7 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   .with('jxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeJxiv'))
                   .with('medrxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeMedrxiv'))
                   .with('metaarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeMetaarxiv'))
-                  .with(
-                    'neurolibre',
-                    () =>
-                      ({ doi }: { doi: string }) =>
-                        `We think the DOI ${doi} could be a NeuroLibre preprint, but we can’t find any details.`,
-                  )
+                  .with('neurolibre', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeNeurolibre'))
                   .with('osf', 'osf-preprints', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeOsf'))
                   .with('preprints.org', () => translate(locale, 'request-a-prereview-page', 'doiCouldBePreprintsorg'))
                   .with('psyarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBePsyarxiv'))

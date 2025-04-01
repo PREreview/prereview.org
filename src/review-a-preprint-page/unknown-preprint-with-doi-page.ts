@@ -39,12 +39,7 @@ export function createUnknownPreprintWithDoiPage(
             .with('jxiv', () => t('review-a-preprint', 'doiCouldBeJxiv'))
             .with('medrxiv', () => t('review-a-preprint', 'doiCouldBeMedrxiv'))
             .with('metaarxiv', () => t('review-a-preprint', 'doiCouldBeMetaarxiv'))
-            .with(
-              'neurolibre',
-              () =>
-                ({ doi }: { doi: string }) =>
-                  `We think the DOI ${doi} could be a NeuroLibre preprint, but we can’t find any details.`,
-            )
+            .with('neurolibre', () => t('review-a-preprint', 'doiCouldBeNeurolibre'))
             .with('osf', 'osf-preprints', () => t('review-a-preprint', 'doiCouldBeOsf'))
             .with('preprints.org', () => t('review-a-preprint', 'doiCouldBePreprintsorg'))
             .with('psyarxiv', () => t('review-a-preprint', 'doiCouldBePsyarxiv'))
