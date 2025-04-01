@@ -96,6 +96,30 @@ describe('workToPreprint', () => {
       expect(actual.cause).toStrictEqual(doi)
     },
   )
+
+  test('no authors', () => {
+    const work = new Work({
+      ...stubWork,
+      author: [],
+    })
+
+    const actual = Either.getOrThrow(Either.flip(_.workToPreprint(work)))
+
+    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+    expect(actual.cause).toStrictEqual({ author: [] })
+  })
+
+  test('no title', () => {
+    const work = new Work({
+      ...stubWork,
+      title: [],
+    })
+
+    const actual = Either.getOrThrow(Either.flip(_.workToPreprint(work)))
+
+    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+    expect(actual.cause).toStrictEqual({ title: [] })
+  })
 })
 
 const stubWork = {

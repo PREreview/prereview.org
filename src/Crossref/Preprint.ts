@@ -20,12 +20,19 @@ export const workToPreprint = (
 
     const id = { type: 'ssrn', value: doi } satisfies CrossrefPreprintId
 
-    const authors = Array.map(work.author, author => ({ name: `${author.given} ${author.family}` }))
+    const authors = yield* Array.match(work.author, {
+      onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { author: work.author } })),
+      onNonEmpty: authors => Either.right(Array.map(authors, author => ({ name: `${author.given} ${author.family}` }))),
+    })
 
-    const title = {
-      language: 'en' as const,
-      text: html`${work.title[0]}`,
-    }
+    const title = yield* Array.match(work.title, {
+      onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { title: work.title } })),
+      onNonEmpty: title =>
+        Either.right({
+          language: 'en' as const,
+          text: html`${title[0]}`,
+        }),
+    })
 
     return Preprint.Preprint({
       authors,
