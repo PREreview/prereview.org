@@ -138,7 +138,7 @@
     "message": "If the URL is correct, please <contact>get in touch</contact>."
   },
   "supportPreprintsFrom": {
-    "message": "We support preprints from Advance, AfricArXiv, Arcadia Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, Jxiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research Square, SciELO, ScienceOpen, SocArXiv, TechRxiv, VeriXiv and Zenodo."
+    "message": "We support preprints from Advance, AfricArXiv, Arcadia Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, Jxiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research Square, SciELO, ScienceOpen, SocArXiv, SSRN, TechRxiv, VeriXiv and Zenodo."
   },
   "isAPreprint": {
     "message": "If this is a preprint, please <contact>get in touch</contact>."

@@ -18,7 +18,7 @@ export const home = ({
     RT.Do,
     RT.apS('recentPrereviews', getRecentPrereviews()),
     RT.apSW('recentReviewRequests', getRecentReviewRequests()),
-    RT.let('statistics', () => ({ prereviews: 1126, servers: 27, users: 3237 })),
+    RT.let('statistics', () => ({ prereviews: 1126, servers: 28, users: 3237 })),
     RT.let('locale', () => locale),
     RT.map(createPage),
   )
