@@ -1,7 +1,7 @@
 import { Array, Either } from 'effect'
 import { html } from '../html.js'
 import * as Preprint from '../preprint.js'
-import { type CrossrefPreprintId, isCrossrefPreprintDoi } from './PreprintId.js'
+import { fromCrossrefPreprintDoi, isCrossrefPreprintDoi } from './PreprintId.js'
 import type { Work } from './Work.js'
 
 export const workToPreprint = (
@@ -18,7 +18,7 @@ export const workToPreprint = (
       return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
     }
 
-    const id = { type: 'ssrn', value: doi } satisfies CrossrefPreprintId
+    const id = fromCrossrefPreprintDoi(doi)
 
     const authors = yield* Array.match(work.author, {
       onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { author: work.author } })),

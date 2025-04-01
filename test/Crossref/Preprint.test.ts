@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
 import { Either } from 'effect'
 import * as _ from '../../src/Crossref/Preprint.js'
 import { Work } from '../../src/Crossref/Work.js'
@@ -54,6 +55,42 @@ describe('workToPreprint', () => {
           ),
         },
         url: new URL('https://www.ssrn.com/abstract=5186959'),
+      }),
+    },
+    {
+      work: new Work({
+        DOI: Doi('10.55458/neurolibre.00031'),
+        resource: {
+          primary: {
+            URL: new URL('https://neurolibre.org/papers/10.55458/neurolibre.00031'),
+          },
+        },
+        title: ['Little Science, Big Science, and Beyond: How Amateurs\nShape the Scientific Landscape'],
+        author: [
+          { given: 'Evelyn', family: 'McLean' },
+          { given: 'Jane', family: 'Abdo' },
+          { given: 'Nadia', family: 'Blostein' },
+          { given: 'Nikola', family: 'Stikov' },
+        ],
+        published: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),
+        'group-title': 'NeuroLibre Reproducible Preprints',
+        type: 'posted-content',
+        subtype: 'preprint',
+      }),
+      expected: Preprint({
+        authors: [
+          { name: 'Evelyn McLean', orcid: undefined },
+          { name: 'Jane Abdo', orcid: undefined },
+          { name: 'Nadia Blostein', orcid: undefined },
+          { name: 'Nikola Stikov', orcid: undefined },
+        ],
+        id: { type: 'neurolibre', value: Doi('10.55458/neurolibre.00031') },
+        posted: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),
+        title: {
+          language: 'en',
+          text: rawHtml('Little Science, Big Science, and Beyond: How Amateurs\nShape the Scientific Landscape'),
+        },
+        url: new URL('https://neurolibre.org/papers/10.55458/neurolibre.00031'),
       }),
     },
   ])('can be transformed ($work.DOI)', ({ work, expected }) => {
