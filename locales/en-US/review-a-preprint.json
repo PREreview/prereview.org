@@ -104,6 +104,9 @@
   "doiCouldBeSocarxiv": {
     "message": "We think the DOI {doi} could be a SocArXiv preprint, but we can’t find any details."
   },
+  "doiCouldBeSsrn": {
+    "message": "We think the DOI {doi} could be an SSRN preprint, but we can’t find any details."
+  },
   "doiCouldBeTechrxiv": {
     "message": "We think the DOI {doi} could be a TechRxiv preprint, but we can’t find any details."
   },

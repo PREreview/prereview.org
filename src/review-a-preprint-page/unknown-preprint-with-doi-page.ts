@@ -47,12 +47,7 @@ export function createUnknownPreprintWithDoiPage(
             .with('scielo', () => t('review-a-preprint', 'doiCouldBeScielo'))
             .with('science-open', () => t('review-a-preprint', 'doiCouldBeScienceOpen'))
             .with('socarxiv', () => t('review-a-preprint', 'doiCouldBeSocarxiv'))
-            .with(
-              'ssrn',
-              () =>
-                ({ doi }: { doi: string }) =>
-                  `We think the DOI ${doi} could be an SSRN preprint, but we can’t find any details.`,
-            )
+            .with('ssrn', () => t('review-a-preprint', 'doiCouldBeSsrn'))
             .with('techrxiv', () => t('review-a-preprint', 'doiCouldBeTechrxiv'))
             .with('verixiv', () => t('review-a-preprint', 'doiCouldBeVerixiv'))
             .with('zenodo', () => t('review-a-preprint', 'doiCouldBeZenodo'))
