@@ -15,4 +15,4 @@ export const isCrossrefPreprintId: {
 } = (id: IndeterminatePreprintId): id is IndeterminateCrossrefPreprintId =>
   id.type !== 'philsci' && isCrossrefPreprintDoi(id.value)
 
-const isCrossrefPreprintDoi = Doi.hasRegistrant(...crossrefDoiPrefixes)
+export const isCrossrefPreprintDoi = Doi.hasRegistrant(...crossrefDoiPrefixes)

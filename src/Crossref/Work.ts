@@ -21,7 +21,7 @@ export class Work extends Schema.Class<Work>('Work')({
     }),
   }),
   title: Schema.Tuple(Schema.String),
-  author: Schema.Array(
+  author: Schema.NonEmptyArray(
     Schema.Struct({
       given: Schema.NonEmptyTrimmedString,
       family: Schema.NonEmptyTrimmedString,
