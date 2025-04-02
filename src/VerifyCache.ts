@@ -3,8 +3,12 @@ import { Config, Effect, Inspectable, pipe } from 'effect'
 
 export const verifyCache = Effect.gen(function* () {
   const verifyCache = yield* Config.withDefault(Config.boolean('VERIFY_CACHE'), true)
+  const disableLegacyVolumeBasedCache = yield* Config.withDefault(
+    Config.boolean('DISABLE_LEGACY_VOLUME_BASED_CACHE'),
+    false,
+  )
 
-  if (!verifyCache) {
+  if (!verifyCache || disableLegacyVolumeBasedCache) {
     return yield* Effect.void
   }
 
