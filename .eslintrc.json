@@ -1,9 +1,8 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "no-comments", "require-extensions"],
+  "plugins": ["@typescript-eslint", "no-comments"],
   "extends": [
     "eslint:recommended",
-    "plugin:require-extensions/recommended",
     "plugin:@typescript-eslint/strict-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:import/recommended",
