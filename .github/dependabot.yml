@@ -46,9 +46,6 @@ updates:
       tiptap:
         patterns:
           - '@tiptap/*'
-      typescript-eslint:
-        patterns:
-          - '@typescript-eslint/*'
       web-test-runner:
         patterns:
           - '@web/dev-server'
