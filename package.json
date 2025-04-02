@@ -161,7 +161,7 @@
     "format": "prettier --ignore-unknown --check '**'",
     "format:fix": "npm run format -- --write",
     "lint:css": "stylelint '**/*.css'",
-    "lint:ts": "eslint . --max-warnings 0",
+    "lint:ts": "eslint --max-warnings 0",
     "test": "jest",
     "test:integration": "docker run --rm --volume \"$(pwd)\"/integration/snapshots:/app/integration/snapshots --volume \"$(pwd)\"/integration-results:/app/integration-results",
     "typecheck": "tsc --noEmit"
