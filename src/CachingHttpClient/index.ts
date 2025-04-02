@@ -116,9 +116,9 @@ const revalidationWorker = ({
     Effect.tap(response =>
       Effect.gen(function* () {
         const timestamp = yield* DateTime.now
-        return HttpClientResponse.matchStatus(response, {
+        return yield* HttpClientResponse.matchStatus(response, {
           [Status.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
-          orElse: Function.constVoid,
+          orElse: () => Effect.void,
         })
       }),
     ),
