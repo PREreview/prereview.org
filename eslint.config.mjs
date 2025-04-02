@@ -5,6 +5,8 @@ import pluginNoComments from 'eslint-plugin-no-comments'
 import * as pluginWc from 'eslint-plugin-wc'
 import typescriptEslint from 'typescript-eslint'
 
+pluginNoComments.rules.disallowComments.meta.schema = false
+
 export default typescriptEslint.config([
   {
     ignores: [
