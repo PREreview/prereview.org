@@ -3,24 +3,23 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 import pluginImport from 'eslint-plugin-import'
 import pluginNoComments from 'eslint-plugin-no-comments'
 import * as pluginWc from 'eslint-plugin-wc'
+import { defineConfig, globalIgnores } from 'eslint/config'
 import typescriptEslint from 'typescript-eslint'
 
 pluginNoComments.rules.disallowComments.meta.schema = false
 
-export default typescriptEslint.config([
-  {
-    ignores: [
-      '.cache/',
-      '.dev/',
-      'assets/locales/',
-      'data/',
-      'dist/',
-      'integration-results/',
-      'src/locales/',
-      '*.cjs',
-      '*.mjs',
-    ],
-  },
+export default defineConfig([
+  globalIgnores([
+    '.cache/',
+    '.dev/',
+    'assets/locales/',
+    'data/',
+    'dist/',
+    'integration-results/',
+    'src/locales/',
+    '*.cjs',
+    '*.mjs',
+  ]),
   eslintJs.configs.recommended,
   typescriptEslint.configs.strictTypeChecked,
   typescriptEslint.configs.stylisticTypeChecked,
