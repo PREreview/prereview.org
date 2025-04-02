@@ -101,7 +101,7 @@ export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(): (env: E) => E {
           const endTime = Date.now()
 
           L.debugP('Received HTTP response')({
-            url: response.url,
+            url: response.url !== '' ? response.url : url,
             method: init.method,
             status: response.status,
             headers: [...response.headers],
