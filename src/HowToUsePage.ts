@@ -3,7 +3,7 @@ import { Locale } from './Context.js'
 import { GetPageFromGhost } from './GhostPage.js'
 import { HavingProblemsPage } from './HavingProblemsPage/index.js'
 import { fixHeadingLevels, html, plainText, type Html } from './html.js'
-import { translate, type SupportedLocale } from './locales/index.js'
+import { DefaultLocale, translate, type SupportedLocale } from './locales/index.js'
 import { PageResponse } from './response.js'
 import * as Routes from './routes.js'
 
@@ -24,6 +24,7 @@ function createPage({ content, locale }: { content: Html; locale: SupportedLocal
     main: html`
       <h1>${t('how-to-use', 'howToUse')()}</h1>
 
+      ${locale !== DefaultLocale ? html`<div class="inset"><p>${t('header', 'onlyEnglish')()}</p></div>` : ''}
       ${fixHeadingLevels(1, content)}
     `,
     canonical: Routes.HowToUse,
