@@ -1,6 +1,6 @@
 import { FetchHttpClient, HttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
-import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
+import { Config, Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
@@ -424,6 +424,14 @@ const setUpFetch = Layer.effect(
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
+    const disableLegacyVolumeBasedCache = yield* Config.withDefault(
+      Config.boolean('DISABLE_LEGACY_VOLUME_BASED_CACHE'),
+      false,
+    )
+
+    if (disableLegacyVolumeBasedCache) {
+      return pipe({ fetch, ...logger }, collapseRequests()).fetch
+    }
 
     return pipe({ fetch, ...logger }, logFetch(), collapseRequests()).fetch
   }),
