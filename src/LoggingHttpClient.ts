@@ -10,7 +10,7 @@ export const loggingHttpClient = (client: HttpClient.HttpClient) =>
       }),
     ),
     HttpClient.tapRequest(request =>
-      Effect.logDebug('Sending HTTP Request').pipe(
+      Effect.logDebug('Sending HTTP request').pipe(
         Effect.annotateLogs({
           headers: Headers.redact(request.headers, 'authorization'),
           url: request.url,
