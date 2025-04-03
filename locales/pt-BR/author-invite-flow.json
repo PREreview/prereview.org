@@ -27,7 +27,8 @@
     "message": "Nome adicionado"
   },
   "whatHappensNext": {
-    "message": "Próximos passos"
+    "message": "Próximos passos",
+    "description": "Heading for details of what happens next and when; the user has completed their task and has no further actions to take."
   },
   "ableToSeePrereviewShortly": {
     "message": "Você poderá ver seu nome na avaliação PREreview em breve."
@@ -40,9 +41,6 @@
   },
   "beListed": {
     "message": "Aparecer como autor"
-  },
-  "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
-    "message": "Como você já começou, vamos para a próxima etapa para que possa continuar&nbsp;."
   },
   "continueButton": {
     "message": "Continuar"
@@ -110,23 +108,11 @@
   "whatNameWouldYouLikeToUse": {
     "message": "Que nome gostaria de usar?"
   },
-  "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
-    "message": "Você pode escolher o nome do seu perfil ORCID&nbsp; ou seu pseudônimo PREreview&nbsp;."
-  },
-  "whatIsAPrereviewPseudonym": {
-    "message": "O que é um pseudônimo PREreview&nbsp;?"
-  },
-  "pseudonymExplainer": {
-    "message": "Um <definition>pseudônimo PREreview&nbsp;</definition> é um nome alternativo que você pode usar em vez do seu nome&nbsp;real. Ele é único e combina uma cor e um animal aleatórios. Seu pseudônimo é ‘{userPseudonym}.’"
-  },
   "whyUseAPseudonym": {
     "message": "Usando seu pseudônimo, você pode contribuir com avaliações abertas de preprints sem medo de retaliação ou julgamento, que podem ocorrer ao usar seu nome real. No entanto, usar um pseudônimo mantém um certo grau de responsabilidade."
   },
   "selectTheNameYouWouldLikeToUse": {
     "message": "Selecione o nome que gostaria de usar"
-  },
-  "weWillLinkYourPrereviewToYourOrcid": {
-    "message": "Vincularemos sua avaliação PREreview ao seu iD ORCID&nbsp;."
   },
   "weWillOnlyLinkToOtherPseudonymPrereviews": {
     "message": "Vincularemos sua avaliação PREreview ao seu iD ORCID&nbsp;."

@@ -27,7 +27,8 @@
     "message": "crwdns4530:0crwdne4530:0"
   },
   "whatHappensNext": {
-    "message": "crwdns4532:0crwdne4532:0"
+    "message": "crwdns4532:0crwdne4532:0",
+    "description": "Heading for details of what happens next and when; the user has completed their task and has no further actions to take."
   },
   "ableToSeePrereviewShortly": {
     "message": "crwdns4534:0crwdne4534:0"
@@ -42,7 +43,7 @@
     "message": "crwdns4715:0crwdne4715:0"
   },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
-    "message": "crwdns4717:0crwdne4717:0"
+    "message": "crwdns5439:0crwdne5439:0"
   },
   "continueButton": {
     "message": "crwdns4719:0crwdne4719:0"
@@ -111,13 +112,13 @@
     "message": "crwdns4803:0crwdne4803:0"
   },
   "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
-    "message": "crwdns4805:0crwdne4805:0"
+    "message": "crwdns5441:0crwdne5441:0"
   },
   "whatIsAPrereviewPseudonym": {
-    "message": "crwdns4807:0crwdne4807:0"
+    "message": "crwdns5443:0crwdne5443:0"
   },
   "pseudonymExplainer": {
-    "message": "crwdns4809:0{userPseudonym}crwdne4809:0"
+    "message": "crwdns5445:0{userPseudonym}crwdne5445:0"
   },
   "whyUseAPseudonym": {
     "message": "crwdns4811:0crwdne4811:0"
@@ -126,7 +127,7 @@
     "message": "crwdns4813:0crwdne4813:0"
   },
   "weWillLinkYourPrereviewToYourOrcid": {
-    "message": "crwdns4815:0crwdne4815:0"
+    "message": "crwdns5447:0crwdne5447:0"
   },
   "weWillOnlyLinkToOtherPseudonymPrereviews": {
     "message": "crwdns4817:0crwdne4817:0"
