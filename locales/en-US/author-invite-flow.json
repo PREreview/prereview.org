@@ -27,7 +27,8 @@
     "message": "Name added"
   },
   "whatHappensNext": {
-    "message": "What happens next"
+    "message": "What happens next",
+    "description": "Heading for details of what happens next and when; the user has completed their task and has no further actions to take."
   },
   "ableToSeePrereviewShortly": {
     "message": "You’ll be able to see your name on the PREreview shortly."
