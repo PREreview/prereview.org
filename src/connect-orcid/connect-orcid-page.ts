@@ -6,9 +6,9 @@ import { connectOrcidMatch, connectOrcidStartMatch } from '../routes.js'
 
 export const connectOrcidPage = (locale: SupportedLocale) =>
   PageResponse({
-    title: plainText(translate(locale, 'connect-orcid', 'connectOrcidProfile')()),
+    title: plainText(translate(locale, 'connect-orcid', 'connectOrcidRecord')()),
     main: html`
-      <h1>${translate(locale, 'connect-orcid', 'connectOrcidProfile')()}</h1>
+      <h1>${translate(locale, 'connect-orcid', 'connectOrcidRecord')()}</h1>
 
       <p>${translate(locale, 'connect-orcid', 'canConnect')()}</p>
 

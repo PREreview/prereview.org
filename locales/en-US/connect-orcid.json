@@ -1,27 +1,27 @@
 {
-  "connectOrcidProfile": {
-    "message": "Connect your ORCID profile"
+  "connectOrcidRecord": {
+    "message": "Connect your ORCID record"
   },
   "canConnect": {
-    "message": "You can connect your PREreview profile to your ORCID profile."
+    "message": "You can connect your PREreview profile to your ORCID record."
   },
   "willAddPrereviews": {
-    "message": "We’ll add your PREreviews to your ORCID profile."
+    "message": "We’ll add your PREreviews to your ORCID record."
   },
   "beforeYouStart": {
     "message": "Before you start"
   },
   "sendYouToOrcid": {
-    "message": "We’ll send you to ORCID, where they will ask you to log in and grant PREreview access to your profile there. You may have already done these steps, and ORCID will return you to PREreview."
+    "message": "We’ll send you to ORCID, where they will ask you to log in and grant PREreview access to your record there. You may have already done these steps, and ORCID will return you to PREreview."
   },
   "startNow": {
     "message": "Start now"
   },
-  "cannotConnectProfile": {
-    "message": "Sorry, we can’t connect your profile"
+  "cannotConnectRecord": {
+    "message": "Sorry, we can’t connect your record"
   },
   "youDeniedAccess": {
-    "message": "You have denied PREreview access to your ORCID profile."
+    "message": "You have denied PREreview access to your ORCID record."
   },
   "tryAgain": {
     "message": "Please try again."
@@ -30,27 +30,27 @@
     "message": "Sorry, we’re having problems"
   },
   "unableToConnect": {
-    "message": "We’re unable to connect your profile right now."
+    "message": "We’re unable to connect your record right now."
   },
   "unableToDisconnect": {
-    "message": "We’re unable to disconnect your profile right now."
+    "message": "We’re unable to disconnect your record right now."
   },
   "tryAgainLater": {
     "message": "Please try again later."
   },
-  "disconnectOrcidProfile": {
-    "message": "Disconnect your ORCID profile"
+  "disconnectOrcidRecord": {
+    "message": "Disconnect your ORCID record"
   },
   "canDisconnect": {
-    "message": "You can disconnect your PREreview profile from your ORCID profile."
+    "message": "You can disconnect your PREreview profile from your ORCID record."
   },
   "stopAddingPrereviews": {
-    "message": "We’ll stop adding new PREreviews to your ORCID profile."
+    "message": "We’ll stop adding new PREreviews to your ORCID record."
   },
   "canReconnect": {
     "message": "You will be able to reconnect it at any time."
   },
-  "disconnectProfileButton": {
-    "message": "Disconnect profile"
+  "disconnectRecordButton": {
+    "message": "Disconnect record"
   }
 }

@@ -6,9 +6,9 @@ import { PageResponse } from '../response.js'
 export const accessDeniedMessage = (locale: SupportedLocale) =>
   PageResponse({
     status: Status.Forbidden,
-    title: plainText(translate(locale, 'connect-orcid', 'cannotConnectProfile')()),
+    title: plainText(translate(locale, 'connect-orcid', 'cannotConnectRecord')()),
     main: html`
-      <h1>${translate(locale, 'connect-orcid', 'cannotConnectProfile')()}</h1>
+      <h1>${translate(locale, 'connect-orcid', 'cannotConnectRecord')()}</h1>
 
       <p>${translate(locale, 'connect-orcid', 'youDeniedAccess')()}</p>
 

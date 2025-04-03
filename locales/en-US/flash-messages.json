@@ -24,10 +24,10 @@
     "message": "Your email address has been verified."
   },
   "messageOrcidConnected": {
-    "message": "Your ORCID profile has been connected."
+    "message": "Your ORCID record has been connected."
   },
   "messageOrcidDisconnected": {
-    "message": "Your ORCID profile has been disconnected."
+    "message": "Your ORCID record has been disconnected."
   },
   "messageSlackConnected": {
     "message": "Your Community Slack account has been connected."

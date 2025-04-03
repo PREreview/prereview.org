@@ -79,44 +79,41 @@ test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ 
   await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
 })
 
-test.extend(canLogIn).extend(areLoggedIn)(
-  'can connect my ORCID profile',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    await page.getByRole('link', { name: 'My details' }).click()
-    await page.getByRole('link', { name: 'Connect ORCID profile' }).click()
-    await page.getByRole('button', { name: 'Start now' }).click()
+test.extend(canLogIn).extend(areLoggedIn)('can connect my ORCID record', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.getByRole('link', { name: 'My details' }).click()
+  await page.getByRole('link', { name: 'Connect ORCID record' }).click()
+  await page.getByRole('button', { name: 'Start now' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
-    }
-    await expect(page.getByRole('main')).toContainText('ORCID profile Connected')
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+  }
+  await expect(page.getByRole('main')).toContainText('ORCID record Connected')
 
-    await page.reload()
+  await page.reload()
 
-    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+  await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 
-    fetch.postOnce('http://orcid.test/revoke', { status: Status.OK })
+  fetch.postOnce('http://orcid.test/revoke', { status: Status.OK })
 
-    await page.getByRole('link', { name: 'Disconnect ORCID profile' }).click()
-    await page.getByRole('button', { name: 'Disconnect profile' }).click()
+  await page.getByRole('link', { name: 'Disconnect ORCID record' }).click()
+  await page.getByRole('button', { name: 'Disconnect record' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
-    }
-    await expect(page.getByRole('link', { name: 'Connect ORCID profile' })).toBeVisible()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+  }
+  await expect(page.getByRole('link', { name: 'Connect ORCID record' })).toBeVisible()
 
-    await page.reload()
+  await page.reload()
 
-    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
-  },
-)
+  await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+})
 
 test.extend(canLogIn).extend(areLoggedIn)(
-  'have to grant access to your ORCID profile',
+  'have to grant access to your ORCID record',
   async ({ oauthServer, page }) => {
     await page.goto('/connect-orcid')
     oauthServer.service.once('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
@@ -125,7 +122,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     })
     await page.getByRole('button', { name: 'Start now' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t connect your profile')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t connect your record')
   },
 )
 

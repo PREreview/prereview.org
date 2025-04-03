@@ -20,17 +20,17 @@
   "pseudonym": {
     "message": "PREreview pseudonym"
   },
-  "orcidProfile": {
-    "message": "ORCID profile"
+  "orcidRecord": {
+    "message": "ORCID record"
   },
   "connected": {
     "message": "Connected"
   },
-  "connectOrcidProfile": {
-    "message": "Connect ORCID profile"
+  "connectOrcidRecord": {
+    "message": "Connect ORCID record"
   },
-  "disconnectOrcidProfile": {
-    "message": "Disconnect <visuallyHidden>ORCID profile</visuallyHidden>"
+  "disconnectOrcidRecord": {
+    "message": "Disconnect <visuallyHidden>ORCID record</visuallyHidden>"
   },
   "avatar": {
     "message": "Avatar"

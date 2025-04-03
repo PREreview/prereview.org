@@ -6,10 +6,10 @@ import { disconnectOrcidMatch } from '../routes.js'
 
 export const disconnectOrcidPage = (locale: SupportedLocale) =>
   PageResponse({
-    title: plainText(translate(locale, 'connect-orcid', 'disconnectOrcidProfile')()),
+    title: plainText(translate(locale, 'connect-orcid', 'disconnectOrcidRecord')()),
     main: html`
       <form method="post" action="${format(disconnectOrcidMatch.formatter, {})}" novalidate>
-        <h1>${translate(locale, 'connect-orcid', 'disconnectOrcidProfile')()}</h1>
+        <h1>${translate(locale, 'connect-orcid', 'disconnectOrcidRecord')()}</h1>
 
         <p>${translate(locale, 'connect-orcid', 'canDisconnect')()}</p>
 
@@ -17,7 +17,7 @@ export const disconnectOrcidPage = (locale: SupportedLocale) =>
 
         <p>${translate(locale, 'connect-orcid', 'canReconnect')()}</p>
 
-        <button>${translate(locale, 'connect-orcid', 'disconnectProfileButton')()}</button>
+        <button>${translate(locale, 'connect-orcid', 'disconnectRecordButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

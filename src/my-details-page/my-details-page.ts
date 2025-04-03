@@ -113,9 +113,9 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'orcidProfile')()}</span></dt>
+                <dt><span>${t('my-details', 'orcidRecord')()}</span></dt>
                 <dd>
-                  <a href="${format(connectOrcidMatch.formatter, {})}">${t('my-details', 'connectOrcidProfile')()}</a>
+                  <a href="${format(connectOrcidMatch.formatter, {})}">${t('my-details', 'connectOrcidRecord')()}</a>
                 </dd>
               </div>
             `,
@@ -124,11 +124,11 @@ export function createPage({
             Option.isSome,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'orcidProfile')()}</span></dt>
+                <dt><span>${t('my-details', 'orcidRecord')()}</span></dt>
                 <dd>${t('my-details', 'connected')()}</dd>
                 <dd>
                   <a href="${format(disconnectOrcidMatch.formatter, {})}"
-                    >${rawHtml(t('my-details', 'disconnectOrcidProfile')(visuallyHidden))}</a
+                    >${rawHtml(t('my-details', 'disconnectOrcidRecord')(visuallyHidden))}</a
                   >
                 </dd>
               </div>
