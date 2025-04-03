@@ -48,10 +48,10 @@ export function personaForm({
               <h1>${t('whatNameWouldYouLikeToUse')()}</h1>
             </legend>
 
-            <p id="persona-tip" role="note">${rawHtml(t('youCanChooseBetweenOrcidNameAndPrereviewPseudonym')())}</p>
+            <p id="persona-tip" role="note">${t('youCanChooseBetweenOrcidNameAndPrereviewPseudonym')()}</p>
 
             <details>
-              <summary><span>${rawHtml(t('whatIsAPrereviewPseudonym')())}</span></summary>
+              <summary><span>${t('whatIsAPrereviewPseudonym')()}</span></summary>
 
               <div>
                 <p>
@@ -93,7 +93,7 @@ export function personaForm({
                   />
                   <span>${user.name}</span>
                 </label>
-                <p id="persona-tip-public" role="note">${rawHtml(t('weWillLinkYourPrereviewToYourOrcid')())}</p>
+                <p id="persona-tip-public" role="note">${t('weWillLinkYourPrereviewToYourOrcid')()}</p>
               </li>
               <li>
                 <label>

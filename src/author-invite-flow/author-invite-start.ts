@@ -13,7 +13,7 @@ import {
   getAuthorInvite,
   saveAuthorInvite,
 } from '../author-invite.js'
-import { type Html, html, plainText, rawHtml } from '../html.js'
+import { type Html, html, plainText } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
 import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
@@ -111,7 +111,7 @@ function carryOnPage(inviteId: Uuid, invite: AssignedAuthorInvite, locale: Suppo
     main: html`
       <h1>${t('beListed')()}</h1>
 
-      <p>${pipe(t('asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep')(), rawHtml)}</p>
+      <p>${t('asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep')()}</p>
 
       <a href="${format(nextFormMatch(invite).formatter, { id: inviteId })}" role="button" draggable="false"
         >${t('continueButton')()}</a

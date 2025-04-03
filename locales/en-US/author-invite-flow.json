@@ -43,7 +43,7 @@
     "message": "Be listed as an author"
   },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
-    "message": "As you’ve already started, we’ll take you to the next step so you can carry&nbsp;on."
+    "message": "As you’ve already started, we’ll take you to the next step so you can carry on."
   },
   "continueButton": {
     "message": "Continue"
@@ -112,13 +112,13 @@
     "message": "What name would you like to use?"
   },
   "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
-    "message": "You can choose between the name on your ORCID&nbsp;profile or your PREreview&nbsp;pseudonym."
+    "message": "You can choose between the name on your ORCID profile or your PREreview pseudonym."
   },
   "whatIsAPrereviewPseudonym": {
-    "message": "What is a PREreview&nbsp;pseudonym?"
+    "message": "What is a PREreview pseudonym?"
   },
   "pseudonymExplainer": {
-    "message": "A <definition>PREreview&nbsp;pseudonym</definition> is an alternate name you can use instead of your real&nbsp;name. It is unique and combines a random color and animal. Your pseudonym is ‘{userPseudonym}.’"
+    "message": "A <definition>PREreview pseudonym</definition> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{userPseudonym}.’"
   },
   "whyUseAPseudonym": {
     "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability."
@@ -127,7 +127,7 @@
     "message": "Select the name that you would like to use"
   },
   "weWillLinkYourPrereviewToYourOrcid": {
-    "message": "We’ll link your PREreview to your ORCID&nbsp;iD."
+    "message": "We’ll link your PREreview to your ORCID iD."
   },
   "weWillOnlyLinkToOtherPseudonymPrereviews": {
     "message": "We’ll only link your PREreview to others that also use your pseudonym."
