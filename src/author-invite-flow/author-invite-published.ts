@@ -10,7 +10,7 @@ import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -39,9 +39,11 @@ const getPrereview = (id: number): RTE.ReaderTaskEither<GetPrereviewEnv, 'unavai
 export const authorInvitePublished = ({
   id,
   user,
+  locale,
 }: {
   id: Uuid
   user?: User
+  locale: SupportedLocale
 }): RT.ReaderTask<
   GetPrereviewEnv & GetAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
@@ -49,7 +51,7 @@ export const authorInvitePublished = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-    RTE.apS('locale', RTE.of(DefaultLocale)),
+    RTE.let('locale', () => locale),
     RTE.let('inviteId', () => id),
     RTE.bindW('invite', ({ user }) =>
       pipe(
@@ -74,9 +76,9 @@ export const authorInvitePublished = ({
           .with('no-session', () => LogInResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }))
           .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-completed', () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound(DefaultLocale))
-          .with('unavailable', () => havingProblemsPage(DefaultLocale))
-          .with('wrong-user', () => noPermissionPage(DefaultLocale))
+          .with('not-found', () => pageNotFound(locale))
+          .with('unavailable', () => havingProblemsPage(locale))
+          .with('wrong-user', () => noPermissionPage(locale))
           .exhaustive(),
       publishedPage,
     ),

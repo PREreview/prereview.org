@@ -29,11 +29,12 @@ describe('authorInvite', () => {
           title: fc.html(),
         }),
       }),
-    ])('when the invite is complete', async (inviteId, [user, invite], prereview) => {
+      fc.supportedLocale(),
+    ])('when the invite is complete', async (inviteId, [user, invite], prereview, locale) => {
       const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
       const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-      const actual = await _.authorInvitePublished({ id: inviteId, user })({
+      const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
         getAuthorInvite,
         getPrereview,
       })()
@@ -56,8 +57,9 @@ describe('authorInvite', () => {
       fc
         .user()
         .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
-    ])('when the review cannot be loaded', async (inviteId, [user, invite]) => {
-      const actual = await _.authorInvitePublished({ id: inviteId, user })({
+      fc.supportedLocale(),
+    ])('when the review cannot be loaded', async (inviteId, [user, invite], locale) => {
+      const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
         getAuthorInvite: () => TE.right(invite),
         getPrereview: () => TE.left('unavailable'),
       })()
@@ -72,28 +74,31 @@ describe('authorInvite', () => {
       })
     })
 
-    test.prop([fc.uuid(), fc.user()])('when the invite cannot be loaded', async (inviteId, user) => {
-      const actual = await _.authorInvitePublished({ id: inviteId, user })({
-        getAuthorInvite: () => TE.left('unavailable'),
-        getPrereview: shouldNotBeCalled,
-      })()
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale()])(
+      'when the invite cannot be loaded',
+      async (inviteId, user, locale) => {
+        const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
+          getAuthorInvite: () => TE.left('unavailable'),
+          getPrereview: shouldNotBeCalled,
+        })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
 
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
-      fc.string(),
-    ])('when the invite is not yet complete', async (inviteId, [user, invite]) => {
-      const actual = await _.authorInvitePublished({ id: inviteId, user })({
+      fc.supportedLocale(),
+    ])('when the invite is not yet complete', async (inviteId, [user, invite], locale) => {
+      const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
         getAuthorInvite: () => TE.right(invite),
         getPrereview: shouldNotBeCalled,
       })()
@@ -105,29 +110,31 @@ describe('authorInvite', () => {
       })
     })
 
-    test.prop([fc.uuid(), fc.user(), fc.oneof(fc.assignedAuthorInvite(), fc.completedAuthorInvite())])(
-      'when the invite is assigned to someone else',
-      async (inviteId, user, invite) => {
-        const actual = await _.authorInvitePublished({ id: inviteId, user })({
-          getAuthorInvite: () => TE.right(invite),
-          getPrereview: shouldNotBeCalled,
-        })()
+    test.prop([
+      fc.uuid(),
+      fc.user(),
+      fc.oneof(fc.assignedAuthorInvite(), fc.completedAuthorInvite()),
+      fc.supportedLocale(),
+    ])('when the invite is assigned to someone else', async (inviteId, user, invite, locale) => {
+      const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
+        getAuthorInvite: () => TE.right(invite),
+        getPrereview: shouldNotBeCalled,
+      })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.Forbidden,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      },
-    )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.Forbidden,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    })
 
-    test.prop([fc.uuid(), fc.user(), fc.openAuthorInvite()])(
+    test.prop([fc.uuid(), fc.user(), fc.openAuthorInvite(), fc.supportedLocale()])(
       'when the invite is not assigned',
-      async (inviteId, user, invite) => {
-        const actual = await _.authorInvitePublished({ id: inviteId, user })({
+      async (inviteId, user, invite, locale) => {
+        const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
           getAuthorInvite: () => TE.right(invite),
           getPrereview: shouldNotBeCalled,
         })()
@@ -140,10 +147,10 @@ describe('authorInvite', () => {
       },
     )
 
-    test.prop([fc.uuid(), fc.user(), fc.declinedAuthorInvite()])(
+    test.prop([fc.uuid(), fc.user(), fc.declinedAuthorInvite(), fc.supportedLocale()])(
       'when the invite has been declined',
-      async (inviteId, user, invite) => {
-        const actual = await _.authorInvitePublished({ id: inviteId, user })({
+      async (inviteId, user, invite, locale) => {
+        const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
           getAuthorInvite: () => TE.right(invite),
           getPrereview: shouldNotBeCalled,
         })()
@@ -156,32 +163,38 @@ describe('authorInvite', () => {
       },
     )
 
-    test.prop([fc.uuid(), fc.user()])('when the invite is not found', async (inviteId, user) => {
-      const actual = await _.authorInvitePublished({ id: inviteId, user })({
-        getAuthorInvite: () => TE.left('not-found'),
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale()])(
+      'when the invite is not found',
+      async (inviteId, user, locale) => {
+        const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
+          getAuthorInvite: () => TE.left('not-found'),
+          getPrereview: shouldNotBeCalled,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
+  })
+
+  test.prop([fc.uuid(), fc.authorInvite(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (inviteId, invite, locale) => {
+      const actual = await _.authorInvitePublished({ id: inviteId, locale })({
+        getAuthorInvite: () => TE.right(invite),
         getPrereview: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.NotFound,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'LogInResponse',
+        location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
       })
-    })
-  })
-
-  test.prop([fc.uuid(), fc.authorInvite()])('when the user is not logged in', async (inviteId, invite) => {
-    const actual = await _.authorInvitePublished({ id: inviteId })({
-      getAuthorInvite: () => TE.right(invite),
-      getPrereview: shouldNotBeCalled,
-    })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
-    })
-  })
+    },
+  )
 })

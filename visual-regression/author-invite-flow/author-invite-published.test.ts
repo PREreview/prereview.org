@@ -4,8 +4,11 @@ import { Orcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
 import { authorInvitePublished } from '../../src/author-invite-flow/index.js'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
 import { expect, test } from '../base.js'
+
+const locale = DefaultLocale
 
 test('content looks right', async ({ showPage }) => {
   const response = await authorInvitePublished({
@@ -15,6 +18,7 @@ test('content looks right', async ({ showPage }) => {
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
+    locale,
   })({
     getAuthorInvite: () => TE.right({ status: 'completed', orcid: Orcid('0000-0002-1825-0097'), review: 1234 }),
     getPrereview: () =>
