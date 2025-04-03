@@ -1,0 +1,41 @@
+{
+  "connectYourAccount": {
+    "message": "Conectar sua Conta da Comunidade Slack"
+  },
+  "youCanConnect": {
+    "message": "Você pode conectar seu perfil PREreview à sua conta da Comunidade Slack da PREreview."
+  },
+  "showOrcidOnProfile": {
+    "message": "Mostraremos seu ID ORCID no seu perfil do Slack."
+  },
+  "beforeYouStart": {
+    "message": "Antes de começar"
+  },
+  "needSlackAccount": {
+    "message": "Você precisa ter uma conta na Comunidade Slack da PREreview. Se não tiver, preencha o <link>formulário de registro</link> para criar uma."
+  },
+  "sendYouToSlack": {
+    "message": "Direcionaremos você para o Slack, onde será solicitado que você faça login na Comunidade Slack da PREreview e conceda à PREreview acesso à sua conta. Talvez você já tenha realizado essas etapas, e o Slack redicionará você à PREreview."
+  },
+  "startNow": {
+    "message": "Começar agora"
+  },
+  "cannotConnect": {
+    "message": "Desculpe, não foi possível conectar sua conta."
+  },
+  "havingProblems": {
+    "message": "Desculpe, algo deu errado"
+  },
+  "youDeniedAccess": {
+    "message": "Você negou o acesso da PREreview à sua conta da Comunidade Slack."
+  },
+  "unableToConnect": {
+    "message": "No momento, não foi possível conectar sua conta."
+  },
+  "tryAgain": {
+    "message": "Por favor, tente novamente."
+  },
+  "tryAgainLater": {
+    "message": "Por favor, tente novamente mais tarde."
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "title": {
+    "message": "Solicitações recentes de avaliação"
+  },
+  "titleWithDetails": {
+    "message": "Solicitações recentes de avaliação ({details})"
+  },
+  "pageNumber": {
+    "message": "página {page, number}"
+  },
+  "skipResults": {
+    "message": "Ir para os resultados"
+  },
+  "filterTitle": {
+    "message": "Filtrar"
+  },
+  "filterLanguageLabel": {
+    "message": "Idioma"
+  },
+  "filterLanguageAny": {
+    "message": "Qualquer idioma"
+  },
+  "filterFieldLabel": {
+    "message": "Área"
+  },
+  "filterFieldAny": {
+    "message": "Qualquer área"
+  },
+  "filterButton": {
+    "message": "Filtrar resultados"
+  },
+  "pagerNewer": {
+    "message": "Mais recentes"
+  },
+  "pagerOlder": {
+    "message": "Mais antigos"
+  },
+  "noResults": {
+    "message": "Nenhuma solicitação de revisão foi publicada até agora."
+  },
+  "appearHere": {
+    "message": "Quando forem publicadas, aparecerão aqui."
+  }
+}

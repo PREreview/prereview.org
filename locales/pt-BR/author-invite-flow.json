@@ -1,11 +1,134 @@
 {
   "checkTitle": {
-    "message": "Verifique seus dados"
+    "message": "Verificar seus dados"
   },
   "checkYourDetails": {
-    "message": "Verifique seus dados"
+    "message": "Verificar seus dados"
   },
   "yourDetails": {
     "message": "Seus dados"
+  },
+  "publishedName": {
+    "message": "Nome publicado"
+  },
+  "changeName": {
+    "message": "Alterar <visuallyHidden>nome</visuallyHidden>"
+  },
+  "nowPublish": {
+    "message": "Agora publique sua avaliação PREreview atualizada"
+  },
+  "weWillAddYourName": {
+    "message": "Vamos adicionar seu nome à lista de autores."
+  },
+  "updatePrereview": {
+    "message": "Atualizar avaliação PREreview"
+  },
+  "nameAdded": {
+    "message": "Nome adicionado"
+  },
+  "whatHappensNext": {
+    "message": "Próximos passos"
+  },
+  "ableToSeePrereviewShortly": {
+    "message": "Você poderá ver seu nome na avaliação PREreview em breve."
+  },
+  "yourDoi": {
+    "message": "Seu DOI"
+  },
+  "closeWindowOrSeePrereview": {
+    "message": "Você pode fechar esta janela ou <link>ver a avaliação PREreview</link>."
+  },
+  "beListed": {
+    "message": "Aparecer como autor"
+  },
+  "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
+    "message": "Como você já começou, vamos para a próxima etapa para que possa continuar&nbsp;."
+  },
+  "continueButton": {
+    "message": "Continuar"
+  },
+  "sorryHavingProblems": {
+    "message": "Desculpe, algo deu errado"
+  },
+  "unableToAddYourNameWorkHasBeenSaved": {
+    "message": "Não foi possível adicionar seu nome à avaliação PREreview. Salvamos seu trabalho."
+  },
+  "comeBackLater": {
+    "message": "Por favor, tente novamente mais tarde voltando a esta página."
+  },
+  "getInTouch": {
+    "message": "Se o problema persistir, por favor <link>entre em contato</link>."
+  },
+  "invitationDeclined": {
+    "message": "Convite recusado"
+  },
+  "youHaveDeclinedToAppearAsAuthor": {
+    "message": "Você se recusou a aparecer como autor nesta avaliação PREreview."
+  },
+  "youCanCloseThisWindow": {
+    "message": "Pode fechar esta janela."
+  },
+  "contactDetails": {
+    "message": "Detalhes de contato"
+  },
+  "readyToAddYourNameConfirmYourEmailFirst": {
+    "message": "Estamos prontos para adicionar seu nome à avaliação PREreview, mas primeiro precisamos confirmar seu endereço de e-mail."
+  },
+  "usedToContactYouAboutYourAccountAndPrereviews": {
+    "message": "Usaremos isto apenas para entrar em contato com você sobre sua conta e avaliações PREreview."
+  },
+  "whatEmailAddressShouldWeUse": {
+    "message": "Que endereço de e-mail devemos usar?"
+  },
+  "selectTheEmailAddressYouWouldLikeToUse": {
+    "message": "Selecione o endereço de e-mail que gostaria de usar"
+  },
+  "aDifferentOne": {
+    "message": "Outro"
+  },
+  "whatIsYourEmailAddress": {
+    "message": "Qual é seu endereço de e-mail?"
+  },
+  "error": {
+    "message": "Erro"
+  },
+  "enterYourEmailAddress": {
+    "message": "Digite seu endereço de e-mail"
+  },
+  "enterAnEmailAddressInTheCorrectFormat": {
+    "message": "Digite um endereço de e-mail no formato correto, como nome@example.com"
+  },
+  "verifyYourEmailAddress": {
+    "message": "Confirme seu endereço de e-mail"
+  },
+  "pleaseOpenLinkInEmailWeSentYou": {
+    "message": "Por favor, abra o e-mail que enviamos para {contactEmailAddress} e clique no link. Depois, você poderá adicionar seu nome à avaliação  PREreview."
+  },
+  "onceVerifiedYouCanClosePage": {
+    "message": "Quando seu endereço for verificado, você pode fechar esta página."
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "Que nome gostaria de usar?"
+  },
+  "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
+    "message": "Você pode escolher o nome do seu perfil ORCID&nbsp; ou seu pseudônimo PREreview&nbsp;."
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "O que é um pseudônimo PREreview&nbsp;?"
+  },
+  "pseudonymExplainer": {
+    "message": "Um <definition>pseudônimo PREreview&nbsp;</definition> é um nome alternativo que você pode usar em vez do seu nome&nbsp;real. Ele é único e combina uma cor e um animal aleatórios. Seu pseudônimo é ‘{userPseudonym}.’"
+  },
+  "whyUseAPseudonym": {
+    "message": "Usando seu pseudônimo, você pode contribuir com avaliações abertas de preprints sem medo de retaliação ou julgamento, que podem ocorrer ao usar seu nome real. No entanto, usar um pseudônimo mantém um certo grau de responsabilidade."
+  },
+  "selectTheNameYouWouldLikeToUse": {
+    "message": "Selecione o nome que gostaria de usar"
+  },
+  "weWillLinkYourPrereviewToYourOrcid": {
+    "message": "Vincularemos sua avaliação PREreview ao seu iD ORCID&nbsp;."
+  },
+  "weWillOnlyLinkToOtherPseudonymPrereviews": {
+    "message": "Vincularemos sua avaliação PREreview ao seu iD ORCID&nbsp;."
   }
 }

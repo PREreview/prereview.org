@@ -1,0 +1,17 @@
+{
+  "temporaryTitle": {
+    "message": "Desculpe, esta página foi temporariamente removida"
+  },
+  "permanentlyTitle": {
+    "message": "Desculpe, esta página foi removida"
+  },
+  "temporaryMessage": {
+    "message": "Estamos fazendo mudanças na PREreview e esta página foi temporariamente removida."
+  },
+  "permanentlyMessage": {
+    "message": "Estamos fazendo mudanças na PREreview e esta página foi removida."
+  },
+  "getInTouch": {
+    "message": "Se você tiver alguma dúvida ou tiver selecionado um link ou botão, por favor <link>entre em contato</link>."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "reviewTitle": {
+    "message": "Avaliação PREreview de {preprint}"
+  },
+  "reviewPublished": {
+    "message": "Revisão publicada"
+  },
+  "reviewServer": {
+    "message": "Servidor de preprints"
+  }
+}

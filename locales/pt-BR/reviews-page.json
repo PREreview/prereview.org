@@ -1,0 +1,56 @@
+{
+  "title": {
+    "message": "Avaliações PREreview recentes"
+  },
+  "titleWithDetails": {
+    "message": "Avaliações PREreview recentes ({details})"
+  },
+  "pageNumber": {
+    "message": "página {page, number}"
+  },
+  "skipResults": {
+    "message": "Ir para os resultados"
+  },
+  "filterTitle": {
+    "message": "Filtrar"
+  },
+  "filterTitleAuthorLabel": {
+    "message": "Título ou autor"
+  },
+  "filterLanguageLabel": {
+    "message": "Idioma"
+  },
+  "filterLanguageAny": {
+    "message": "Qualquer idioma"
+  },
+  "filterFieldLabel": {
+    "message": "Área"
+  },
+  "filterFieldAny": {
+    "message": "Qualquer área"
+  },
+  "filterButton": {
+    "message": "Filtrar resultados"
+  },
+  "pagerNewer": {
+    "message": "Mais recentes"
+  },
+  "pagerOlder": {
+    "message": "Mais antigos"
+  },
+  "noResults": {
+    "message": "Nenhuma avaliação PREreview foi publicada até agora."
+  },
+  "appearHere": {
+    "message": "Quando forem publicadas, aparecerão aqui."
+  },
+  "havingProblems": {
+    "message": "Desculpe, algo deu errado"
+  },
+  "unableToShow": {
+    "message": "No momento, não foi possível exibir esta página de avaliações PREreview recentes."
+  },
+  "tryAgainLater": {
+    "message": "Por favor, tente novamente mais tarde."
+  }
+}

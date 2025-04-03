@@ -1,0 +1,56 @@
+{
+  "connectOrcidProfile": {
+    "message": "Conectar seu perfil ORCID"
+  },
+  "canConnect": {
+    "message": "Você pode conectar seu perfil PREreview ao seu perfil ORCID."
+  },
+  "willAddPrereviews": {
+    "message": "Adicionaremos suas avaliações PREreview ao seu perfil ORCID."
+  },
+  "beforeYouStart": {
+    "message": "Antes de começar"
+  },
+  "sendYouToOrcid": {
+    "message": "Redirecionaremos você para a ORCID, onde será solicitado que faça login e conceda à PREreview acesso ao seu perfil. Talvez você já tenha realizado essas etapas, e a ORCID vai redirecionar você de volta à PREreview."
+  },
+  "startNow": {
+    "message": "Começar agora"
+  },
+  "cannotConnectProfile": {
+    "message": "Desculpe, não foi possível conectar seu perfil"
+  },
+  "youDeniedAccess": {
+    "message": "Você negou o acesso da PREreview ao seu perfil ORCID."
+  },
+  "tryAgain": {
+    "message": "Por favor, tente novamente."
+  },
+  "havingProblems": {
+    "message": "Desculpe, algo deu errado"
+  },
+  "unableToConnect": {
+    "message": "No momento, não foi possível conectar seu perfil."
+  },
+  "unableToDisconnect": {
+    "message": "No momento, não foi possível desconectar seu perfil."
+  },
+  "tryAgainLater": {
+    "message": "Por favor, tente novamente mais tarde."
+  },
+  "disconnectOrcidProfile": {
+    "message": "Desconectar seu perfil ORCID"
+  },
+  "canDisconnect": {
+    "message": "Você pode desconectar seu perfil PREreview do seu perfil ORCID."
+  },
+  "stopAddingPrereviews": {
+    "message": "Não adicionaremos novas avaliações PREreview ao seu perfil ORCID."
+  },
+  "canReconnect": {
+    "message": "Você poderá reconectá-lo a qualquer momento."
+  },
+  "disconnectProfileButton": {
+    "message": "Desconectar perfil"
+  }
+}
