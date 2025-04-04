@@ -1,5 +1,6 @@
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
+import { DefaultLocale } from '../../src/locales/index.js'
 import { checkPage } from '../../src/request-review-flow/check-page/check-page.js'
 import { failureMessage } from '../../src/request-review-flow/check-page/failure-message.js'
 import type { ReviewRequestPreprintId } from '../../src/review-request.js'
@@ -10,6 +11,8 @@ const preprint = {
   type: 'biorxiv',
   value: Doi('10.1101/2022.01.13.476201'),
 } satisfies ReviewRequestPreprintId
+
+const locale = DefaultLocale
 
 test('content looks right', async ({ showPage }) => {
   const response = checkPage({
@@ -23,6 +26,7 @@ test('content looks right', async ({ showPage }) => {
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
+    locale,
   })
 
   const content = await showPage(response)
@@ -42,6 +46,7 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: 'Orange Panda' as Pseudonym,
     },
+    locale,
   })
 
   const content = await showPage(response)

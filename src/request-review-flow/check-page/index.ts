@@ -47,6 +47,7 @@ export const requestReviewCheck = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.bindW('preprint', () =>
       pipe(
         getPreprintTitle(preprint),

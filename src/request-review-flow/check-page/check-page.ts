@@ -2,6 +2,7 @@ import { format } from 'fp-ts-routing'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import type { IncompleteReviewRequest, ReviewRequestPreprintId } from '../../review-request.js'
 import { profileMatch, requestReviewCheckMatch, requestReviewPersonaMatch } from '../../routes.js'
@@ -17,6 +18,7 @@ export function checkPage({
   preprint: ReviewRequestPreprintId
   reviewRequest: Required<IncompleteReviewRequest>
   user: User
+  locale: SupportedLocale
 }) {
   return StreamlinePageResponse({
     title: plainText`Check your request`,
