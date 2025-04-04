@@ -22,5 +22,83 @@
   },
   "requestPrereview": {
     "message": "crwdns5505:0crwdne5505:0"
+  },
+  "requestAPrereview": {
+    "message": "crwdns5507:0crwdne5507:0"
+  },
+  "sorryWeAreHavingProblems": {
+    "message": "crwdns5509:0crwdne5509:0"
+  },
+  "unableToPublishYourWorkWasSaved": {
+    "message": "crwdns5511:0crwdne5511:0"
+  },
+  "pleaseTryAgainLater": {
+    "message": "crwdns5513:0crwdne5513:0"
+  },
+  "ifProblemPersistsContactUs": {
+    "message": "crwdns5515:0crwdne5515:0"
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "crwdns5517:0crwdne5517:0"
+  },
+  "backToPreprint": {
+    "message": "crwdns5519:0crwdne5519:0"
+  },
+  "thereIsAProblem": {
+    "message": "crwdns5521:0crwdne5521:0"
+  },
+  "selectNameYouWouldLikeToUse": {
+    "message": "crwdns5523:0crwdne5523:0"
+  },
+  "chooseBetweenOrcidNameAndPseudonym": {
+    "message": "crwdns5525:0crwdne5525:0"
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "crwdns5527:0crwdne5527:0"
+  },
+  "prereviewPseudonymnExplainer": {
+    "message": "crwdns5529:0{pseudonym}crwdne5529:0"
+  },
+  "whyUseAPseudonym": {
+    "message": "crwdns5531:0crwdne5531:0"
+  },
+  "weWillLinkRequestToYourOrcid": {
+    "message": "crwdns5533:0crwdne5533:0"
+  },
+  "weWillLinkRequestToOthersThatUseYourPseudonymn": {
+    "message": "crwdns5535:0crwdne5535:0"
+  },
+  "requestPublished": {
+    "message": "crwdns5537:0crwdne5537:0"
+  },
+  "whatHappensNext": {
+    "message": "crwdns5539:0crwdne5539:0"
+  },
+  "whereYouCanSeeYourRequest": {
+    "message": "crwdns5541:0crwdne5541:0"
+  },
+  "youCanRequestAPrereview": {
+    "message": "crwdns5543:0{preprintTitle}crwdne5543:0"
+  },
+  "beforeYouStart": {
+    "message": "crwdns5545:0crwdne5545:0"
+  },
+  "weWillAskYouToLogInWithYourOrcid": {
+    "message": "crwdns5547:0crwdne5547:0"
+  },
+  "whatIsAnOrcid": {
+    "message": "crwdns5549:0crwdne5549:0"
+  },
+  "orcidExplainer": {
+    "message": "crwdns5551:0crwdne5551:0"
+  },
+  "startNow": {
+    "message": "crwdns5553:0crwdne5553:0"
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "crwdns5555:0crwdne5555:0"
+  },
+  "continueWord": {
+    "message": "crwdns5557:0crwdne5557:0"
   }
 }
