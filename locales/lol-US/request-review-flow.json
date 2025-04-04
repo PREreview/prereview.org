@@ -1,0 +1,26 @@
+{
+  "checkYourRequest": {
+    "message": "crwdns5491:0crwdne5491:0"
+  },
+  "back": {
+    "message": "crwdns5493:0crwdne5493:0"
+  },
+  "yourDetails": {
+    "message": "crwdns5495:0crwdne5495:0"
+  },
+  "publishedName": {
+    "message": "crwdns5497:0crwdne5497:0"
+  },
+  "changeName": {
+    "message": "crwdns5499:0crwdne5499:0"
+  },
+  "nowPublishYourRequest": {
+    "message": "crwdns5501:0crwdne5501:0"
+  },
+  "weWillShareYourRequest": {
+    "message": "crwdns5503:0crwdne5503:0"
+  },
+  "requestPrereview": {
+    "message": "crwdns5505:0crwdne5505:0"
+  }
+}
