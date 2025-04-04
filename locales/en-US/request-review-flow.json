@@ -94,5 +94,11 @@
   },
   "startNow": {
     "message": "Start now"
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "As you’ve already started, we’ll take you to the next step so you can carry on."
+  },
+  "continueWord": {
+    "message": "Continue"
   }
 }
