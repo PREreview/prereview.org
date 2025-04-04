@@ -26,6 +26,7 @@ export const requestReviewPublished = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.bindW('preprint', () =>
       pipe(
         getPreprintTitle(preprint),
@@ -53,6 +54,6 @@ export const requestReviewPublished = ({
           .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(DefaultLocale))
           .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(DefaultLocale))
           .exhaustive(),
-      state => publishedPage(state.preprint),
+      state => publishedPage(state.locale, state.preprint),
     ),
   )

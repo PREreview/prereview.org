@@ -1,10 +1,11 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import type { ReviewRequestPreprintId } from '../../review-request.js'
 import { requestReviewPublishedMatch, reviewRequestsMatch } from '../../routes.js'
 
-export const publishedPage = (preprint: ReviewRequestPreprintId) =>
+export const publishedPage = (locale: SupportedLocale, preprint: ReviewRequestPreprintId) =>
   StreamlinePageResponse({
     title: plainText`Request published`,
     main: html`
