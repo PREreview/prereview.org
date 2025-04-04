@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 . "$(which mo)"
 
@@ -30,10 +30,28 @@ compile_module() {
   mo .dev/locale-module.ts.mustache > "$target/locales/$module.ts"
 }
 
-for module in "${assetsModules[@]}"; do compile_module "assets" "$module" & done
-wait
-for module in "${srcModules[@]}"; do compile_module "src" "$module" & done
-wait
+#############################
+# Compile modules in parallel
+declare -a pids
+
+for module in "${assetsModules[@]}"; do
+  compile_module "assets" "$module" &
+  pids+=($!)
+done
+for module in "${srcModules[@]}"; do
+  compile_module "src" "$module" &
+  pids+=($!)
+done
+
+for pid in "${pids[@]}"; do
+  wait $pid || {
+    wait
+    exit 1
+  }
+done
+
+#############################
+# Compile targets
 
 compile_target() {
   target="$1"
