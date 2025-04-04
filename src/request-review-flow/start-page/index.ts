@@ -32,6 +32,7 @@ export const requestReviewStart = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.bindW('preprint', () =>
       pipe(
         getPreprintTitle(preprint),
@@ -60,7 +61,7 @@ export const requestReviewStart = ({
           .with({ reviewRequest: undefined }, state =>
             RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: state.preprint }) }),
           )
-          .with({ reviewRequest: { status: 'incomplete' } }, state => carryOnPage(state.preprint))
+          .with({ reviewRequest: { status: 'incomplete' } }, state => carryOnPage(state.locale, state.preprint))
           .with({ reviewRequest: { status: 'completed' } }, () =>
             RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: state.preprint }) }),
           )
