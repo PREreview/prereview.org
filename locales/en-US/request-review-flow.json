@@ -1,0 +1,26 @@
+{
+  "checkYourRequest": {
+    "message": "Check your request"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "yourDetails": {
+    "message": "Your details"
+  },
+  "publishedName": {
+    "message": "Published name"
+  },
+  "changeName": {
+    "message": "Change <visuallyHidden>name</visuallyHidden>"
+  },
+  "nowPublishYourRequest": {
+    "message": "Now publish your request"
+  },
+  "weWillShareYourRequest": {
+    "message": "We’ll share your request with the PREreview community."
+  },
+  "requestPrereview": {
+    "message": "Request PREreview"
+  }
+}
