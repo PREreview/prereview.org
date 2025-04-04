@@ -22,5 +22,17 @@
   },
   "requestPrereview": {
     "message": "Request PREreview"
+  },
+  "sorryWeAreHavingProblems": {
+    "message": "Sorry, we’re having problems"
+  },
+  "unableToPublishYourWorkWasSaved": {
+    "message": "We were unable to publish your request for a PREreview. We saved your work."
+  },
+  "pleaseTryAgainLater": {
+    "message": "Please try again later by coming back to this page."
+  },
+  "ifProblemPersistsContactUs": {
+    "message": "If this problem persists, please <mailtoHelp>get in touch</mailtoHelp>."
   }
 }

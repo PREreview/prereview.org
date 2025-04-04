@@ -1,20 +1,25 @@
+import { pipe } from 'effect'
 import { Status } from 'hyper-ts'
-import { html, plainText } from '../../html.js'
-import type { SupportedLocale } from '../../locales/index.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const failureMessage = (locale: SupportedLocale) =>
-  StreamlinePageResponse({
+const mailtoHelp = (text: string) => `<a href="mailto:help@prereview.org">${text}</a>`
+
+export const failureMessage = (locale: SupportedLocale) => {
+  const t = translate(locale, 'request-review-flow')
+
+  return StreamlinePageResponse({
     status: Status.ServiceUnavailable,
-    title: plainText`Sorry, we’re having problems`,
+    title: pipe(t('sorryWeAreHavingProblems')(), plainText),
     main: html`
-      <h1>Sorry, we’re having problems</h1>
+      <h1>${t('sorryWeAreHavingProblems')()}</h1>
 
-      <p>We were unable to publish your request for a PREreview. We saved your work.</p>
+      <p>${t('unableToPublishYourWorkWasSaved')()}</p>
 
-      <p>Please try again later by coming back to this page.</p>
+      <p>${t('pleaseTryAgainLater')()}</p>
 
-      <p>If this problem persists, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+      <p>${rawHtml(t('ifProblemPersistsContactUs')({ mailtoHelp }))}</p>
     `,
   })
+}
