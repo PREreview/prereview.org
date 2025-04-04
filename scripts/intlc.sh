@@ -30,8 +30,10 @@ compile_module() {
   mo .dev/locale-module.ts.mustache > "$target/locales/$module.ts"
 }
 
-for module in "${assetsModules[@]}"; do compile_module "assets" "$module"; done
-for module in "${srcModules[@]}"; do compile_module "src" "$module"; done
+for module in "${assetsModules[@]}"; do compile_module "assets" "$module" & done
+wait
+for module in "${srcModules[@]}"; do compile_module "src" "$module" & done
+wait
 
 compile_target() {
   target="$1"
