@@ -34,5 +34,35 @@
   },
   "ifProblemPersistsContactUs": {
     "message": "If this problem persists, please <mailtoHelp>get in touch</mailtoHelp>."
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "What name would you like to use?"
+  },
+  "backToPreprint": {
+    "message": "Back to preprint"
+  },
+  "thereIsAProblem": {
+    "message": "There is a problem"
+  },
+  "selectNameYouWouldLikeToUse": {
+    "message": "Select the name that you would like to use"
+  },
+  "chooseBetweenOrcidNameAndPseudonym": {
+    "message": "You can choose between the name on your ORCID profile or your PREreview pseudonym."
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "What is a PREreview pseudonym?"
+  },
+  "prereviewPseudonymnExplainer": {
+    "message": "A <definition>PREreview pseudonym</definition> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’"
+  },
+  "whyUseAPseudonym": {
+    "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability."
+  },
+  "weWillLinkRequestToYourOrcid": {
+    "message": "We’ll link your request to your ORCID iD."
+  },
+  "weWillLinkRequestToOthersThatUseYourPseudonymn": {
+    "message": "We’ll only link your request to others that also use your pseudonym."
   }
 }
