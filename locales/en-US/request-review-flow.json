@@ -87,7 +87,7 @@
     "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one."
   },
   "whatIsAnOrcid": {
-    "message": "What is an ORCID&nbsp;iD?"
+    "message": "What is an ORCID iD?"
   },
   "orcidExplainer": {
     "message": "An <orcidLinkAsDefinition>ORCID iD</orcidLinkAsDefinition> is a unique identifier that distinguishes you from everyone with the same or similar name."
