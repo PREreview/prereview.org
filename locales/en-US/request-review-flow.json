@@ -64,5 +64,14 @@
   },
   "weWillLinkRequestToOthersThatUseYourPseudonymn": {
     "message": "We’ll only link your request to others that also use your pseudonym."
+  },
+  "requestPublished": {
+    "message": "Request published"
+  },
+  "whatHappensNext": {
+    "message": "What happens next"
+  },
+  "whereYouCanSeeYourRequest": {
+    "message": "You’ll be able to see your request on our <listOfRequestsLink>list of requests</listOfRequestsLink> and <communitySlackLink>Community Slack</communitySlackLink> shortly."
   }
 }
