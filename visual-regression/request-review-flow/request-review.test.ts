@@ -1,6 +1,7 @@
 import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
+import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { requestReviewPage } from '../../src/request-review-flow/request-review-page/request-review-page.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
@@ -22,8 +23,10 @@ const user = {
   pseudonym: 'Orange Panda' as Pseudonym,
 } satisfies User
 
+const locale = DefaultLocale
+
 test('content looks right', async ({ showPage }) => {
-  const response = requestReviewPage({ preprint })
+  const response = requestReviewPage({ preprint, locale })
 
   const content = await showPage(response)
 
@@ -31,7 +34,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when a user is logged in', async ({ showPage }) => {
-  const response = requestReviewPage({ preprint, user })
+  const response = requestReviewPage({ preprint, user, locale })
 
   const content = await showPage(response)
 

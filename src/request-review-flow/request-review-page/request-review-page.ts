@@ -1,12 +1,20 @@
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import { html, plainText } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { preprintReviewsMatch, requestReviewMatch, requestReviewStartMatch } from '../../routes.js'
 import type { User } from '../../user.js'
 
-export const requestReviewPage = ({ preprint, user }: { preprint: PreprintTitle; user?: User }) =>
+export const requestReviewPage = ({
+  preprint,
+  user,
+}: {
+  preprint: PreprintTitle
+  locale: SupportedLocale
+  user?: User
+}) =>
   StreamlinePageResponse({
     title: plainText`Request a PREreview`,
     nav: html`

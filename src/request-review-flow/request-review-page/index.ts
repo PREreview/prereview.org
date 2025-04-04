@@ -26,6 +26,7 @@ export const requestReview = ({
   pipe(
     RTE.Do,
     RTE.let('user', () => user),
+    RTE.let('locale', () => DefaultLocale),
     RTE.bindW('preprint', () => getPreprintTitle(preprint)),
     RTE.bindW(
       'preprintId',
