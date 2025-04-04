@@ -11,37 +11,40 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('requestReviewStart', () => {
   describe('when the user is logged in', () => {
-    test.prop([fc.indeterminatePreprintId(), fc.user(), fc.preprintTitle({ id: fc.reviewRequestPreprintId() })])(
-      "when a request hasn't been started",
-      async (preprint, user, preprintTitle) => {
-        const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
-        const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.user(),
+      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.supportedLocale(),
+    ])("when a request hasn't been started", async (preprint, user, preprintTitle, locale) => {
+      const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
+      const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
 
-        const actual = await _.requestReviewStart({ preprint, user })({
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getReviewRequest,
-          saveReviewRequest,
-        })()
+      const actual = await _.requestReviewStart({ preprint, user, locale })({
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getReviewRequest,
+        saveReviewRequest,
+      })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: Status.SeeOther,
-          location: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
-        })
-        expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
-        expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'incomplete' })
-      },
-    )
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
+      })
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+      expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'incomplete' })
+    })
 
     test.prop([
       fc.indeterminatePreprintId(),
       fc.user(),
       fc.completedReviewRequest(),
       fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
-    ])('when a request has already been completed', async (preprint, user, reviewRequest, preprintTitle) => {
+      fc.supportedLocale(),
+    ])('when a request has already been completed', async (preprint, user, reviewRequest, preprintTitle, locale) => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.right(reviewRequest))
 
-      const actual = await _.requestReviewStart({ preprint, user })({
+      const actual = await _.requestReviewStart({ preprint, user, locale })({
         getPreprintTitle: () => TE.right(preprintTitle),
         getReviewRequest,
         saveReviewRequest: shouldNotBeCalled,
@@ -60,10 +63,11 @@ describe('requestReviewStart', () => {
       fc.user(),
       fc.incompleteReviewRequest(),
       fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
-    ])('when a request has already been started', async (preprint, user, reviewRequest, preprintTitle) => {
+      fc.supportedLocale(),
+    ])('when a request has already been started', async (preprint, user, reviewRequest, preprintTitle, locale) => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.right(reviewRequest))
 
-      const actual = await _.requestReviewStart({ preprint, user })({
+      const actual = await _.requestReviewStart({ preprint, user, locale })({
         getPreprintTitle: () => TE.right(preprintTitle),
         getReviewRequest,
         saveReviewRequest: shouldNotBeCalled,
@@ -83,16 +87,19 @@ describe('requestReviewStart', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId()])('when the user is not logged in', async preprint => {
-    const actual = await _.requestReviewStart({ preprint })({
-      getPreprintTitle: shouldNotBeCalled,
-      getReviewRequest: shouldNotBeCalled,
-      saveReviewRequest: shouldNotBeCalled,
-    })()
+  test.prop([fc.indeterminatePreprintId(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (preprint, locale) => {
+      const actual = await _.requestReviewStart({ preprint, locale })({
+        getPreprintTitle: shouldNotBeCalled,
+        getReviewRequest: shouldNotBeCalled,
+        saveReviewRequest: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(requestReviewStartMatch.formatter, { id: preprint }),
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(requestReviewStartMatch.formatter, { id: preprint }),
+      })
+    },
+  )
 })

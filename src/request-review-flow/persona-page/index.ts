@@ -7,7 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
@@ -29,11 +29,13 @@ export const requestReviewPersona = ({
   method,
   preprint,
   user,
+  locale,
 }: {
   body: unknown
   method: string
   preprint: IndeterminatePreprintId
   user?: User
+  locale: SupportedLocale
 }): RT.ReaderTask<
   GetPreprintTitleEnv & GetReviewRequestEnv & SaveReviewRequestEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
@@ -41,7 +43,7 @@ export const requestReviewPersona = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-    RTE.apS('locale', RTE.of(DefaultLocale)),
+    RTE.let('locale', () => locale),
     RTE.bindW('preprint', () =>
       pipe(
         getPreprintTitle(preprint),
@@ -73,8 +75,8 @@ export const requestReviewPersona = ({
             .with('no-session', () =>
               LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
             )
-            .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(DefaultLocale))
-            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(DefaultLocale))
+            .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(locale))
+            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(locale))
             .exhaustive(),
         ),
       state =>
@@ -114,7 +116,7 @@ const handlePersonaForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage(DefaultLocale))
+          .with('unavailable', () => havingProblemsPage(locale))
           .with({ persona: P.any }, form => personaForm({ form, preprint, user, locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: preprint }) }),

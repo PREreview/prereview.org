@@ -25,7 +25,8 @@ describe('requestReviewCheck', () => {
           fc.user(),
           fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
           fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
-        ])('when the request can be published', async (preprint, user, reviewRequest, preprintTitle) => {
+          fc.supportedLocale(),
+        ])('when the request can be published', async (preprint, user, reviewRequest, preprintTitle, locale) => {
           const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
           const publishRequest = jest.fn<_.PublishRequestEnv['publishRequest']>(_ => TE.right(undefined))
 
@@ -33,6 +34,7 @@ describe('requestReviewCheck', () => {
             method: 'POST',
             preprint,
             user,
+            locale,
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
             getReviewRequest: () => TE.right(reviewRequest),
@@ -52,7 +54,8 @@ describe('requestReviewCheck', () => {
           fc.user(),
           fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
           fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
-        ])("when the request state can't be changed", async (preprint, user, reviewRequest, preprintTitle) => {
+          fc.supportedLocale(),
+        ])("when the request state can't be changed", async (preprint, user, reviewRequest, preprintTitle, locale) => {
           const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.left('unavailable'))
           const publishRequest = jest.fn<_.PublishRequestEnv['publishRequest']>(_ => TE.right(undefined))
 
@@ -60,6 +63,7 @@ describe('requestReviewCheck', () => {
             method: 'POST',
             preprint,
             user,
+            locale,
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
             getReviewRequest: () => TE.right(reviewRequest),
@@ -84,13 +88,15 @@ describe('requestReviewCheck', () => {
           fc.user(),
           fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
           fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
-        ])('when the request can not be published', async (preprint, user, reviewRequest, preprintTitle) => {
+          fc.supportedLocale(),
+        ])('when the request can not be published', async (preprint, user, reviewRequest, preprintTitle, locale) => {
           const publishRequest = jest.fn<_.PublishRequestEnv['publishRequest']>(_ => TE.left('unavailable'))
 
           const actual = await _.requestReviewCheck({
             method: 'POST',
             preprint,
             user,
+            locale,
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
             getReviewRequest: () => TE.right(reviewRequest),
@@ -116,13 +122,15 @@ describe('requestReviewCheck', () => {
         fc.user(),
         fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
         fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
-      ])('when the form needs submitting', async (preprint, method, user, reviewRequest, preprintTitle) => {
+        fc.supportedLocale(),
+      ])('when the form needs submitting', async (preprint, method, user, reviewRequest, preprintTitle, locale) => {
         const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.right(preprintTitle))
 
         const actual = await _.requestReviewCheck({
           method,
           preprint,
           user,
+          locale,
         })({
           getPreprintTitle,
           getReviewRequest: () => TE.right(reviewRequest),
@@ -150,11 +158,13 @@ describe('requestReviewCheck', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
       fc.completedReviewRequest(),
-    ])('when the request is already complete', async (preprint, method, user, preprintTitle, reviewRequest) => {
+      fc.supportedLocale(),
+    ])('when the request is already complete', async (preprint, method, user, preprintTitle, reviewRequest, locale) => {
       const actual = await _.requestReviewCheck({
         method,
         preprint,
         user,
+        locale,
       })({
         getPreprintTitle: () => TE.right(preprintTitle),
         getReviewRequest: () => TE.right(reviewRequest),
@@ -175,11 +185,13 @@ describe('requestReviewCheck', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
       fc.incompleteReviewRequest({ persona: fc.constant(undefined) }),
-    ])("when a name hasn't been chosen", async (preprint, method, user, preprintTitle, reviewRequest) => {
+      fc.supportedLocale(),
+    ])("when a name hasn't been chosen", async (preprint, method, user, preprintTitle, reviewRequest, locale) => {
       const actual = await _.requestReviewCheck({
         method,
         preprint,
         user,
+        locale,
       })({
         getPreprintTitle: () => TE.right(preprintTitle),
         getReviewRequest: () => TE.right(reviewRequest),
@@ -199,13 +211,15 @@ describe('requestReviewCheck', () => {
       fc.string(),
       fc.user(),
       fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
-    ])("when a request hasn't been started", async (preprint, method, user, preprintTitle) => {
+      fc.supportedLocale(),
+    ])("when a request hasn't been started", async (preprint, method, user, preprintTitle, locale) => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
 
       const actual = await _.requestReviewCheck({
         method,
         preprint,
         user,
+        locale,
       })({
         getPreprintTitle: () => TE.right(preprintTitle),
         getReviewRequest,
@@ -229,13 +243,15 @@ describe('requestReviewCheck', () => {
       fc.string(),
       fc.user(),
       fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
-    ])("when the request can't be loaded", async (preprint, method, user, preprintTitle) => {
+      fc.supportedLocale(),
+    ])("when the request can't be loaded", async (preprint, method, user, preprintTitle, locale) => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('unavailable'))
 
       const actual = await _.requestReviewCheck({
         method,
         preprint,
         user,
+        locale,
       })({
         getPreprintTitle: () => TE.right(preprintTitle),
         getReviewRequest,
@@ -255,17 +271,20 @@ describe('requestReviewCheck', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.string()])('when the user is not logged in', async (preprint, method) => {
-    const actual = await _.requestReviewCheck({ method, preprint })({
-      getPreprintTitle: shouldNotBeCalled,
-      getReviewRequest: shouldNotBeCalled,
-      publishRequest: shouldNotBeCalled,
-      saveReviewRequest: shouldNotBeCalled,
-    })()
+  test.prop([fc.indeterminatePreprintId(), fc.string(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (preprint, method, locale) => {
+      const actual = await _.requestReviewCheck({ method, preprint, locale })({
+        getPreprintTitle: shouldNotBeCalled,
+        getReviewRequest: shouldNotBeCalled,
+        publishRequest: shouldNotBeCalled,
+        saveReviewRequest: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(requestReviewMatch.formatter, { id: preprint }),
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(requestReviewMatch.formatter, { id: preprint }),
+      })
+    },
+  )
 })

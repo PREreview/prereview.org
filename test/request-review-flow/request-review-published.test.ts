@@ -16,8 +16,9 @@ describe('requestReviewPublished', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
       fc.completedReviewRequest(),
-    ])('when the review has been completed', async (preprint, user, preprintTitle, reviewRequest) => {
-      const actual = await _.requestReviewPublished({ preprint, user })({
+      fc.supportedLocale(),
+    ])('when the review has been completed', async (preprint, user, preprintTitle, reviewRequest, locale) => {
+      const actual = await _.requestReviewPublished({ preprint, user, locale })({
         getReviewRequest: () => TE.right(reviewRequest),
         getPreprintTitle: () => TE.right(preprintTitle),
       })()
@@ -38,8 +39,9 @@ describe('requestReviewPublished', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
       fc.either(fc.constant('not-found'), fc.incompleteReviewRequest()),
-    ])("when the review hasn't be completed", async (preprint, user, preprintTitle, reviewRequest) => {
-      const actual = await _.requestReviewPublished({ preprint, user })({
+      fc.supportedLocale(),
+    ])("when the review hasn't be completed", async (preprint, user, preprintTitle, reviewRequest, locale) => {
+      const actual = await _.requestReviewPublished({ preprint, user, locale })({
         getReviewRequest: () => TE.fromEither(reviewRequest),
         getPreprintTitle: () => TE.right(preprintTitle),
       })()
@@ -54,38 +56,43 @@ describe('requestReviewPublished', () => {
       })
     })
 
-    test.prop([fc.indeterminatePreprintId(), fc.user(), fc.preprintTitle({ id: fc.reviewRequestPreprintId() })])(
-      "when the review can't be loaded",
-      async (preprint, user, preprintTitle) => {
-        const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('unavailable'))
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.user(),
+      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.supportedLocale(),
+    ])("when the review can't be loaded", async (preprint, user, preprintTitle, locale) => {
+      const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('unavailable'))
 
-        const actual = await _.requestReviewPublished({ preprint, user })({
-          getReviewRequest,
-          getPreprintTitle: () => TE.right(preprintTitle),
-        })()
+      const actual = await _.requestReviewPublished({ preprint, user, locale })({
+        getReviewRequest,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-        expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
-      },
-    )
-  })
-
-  test.prop([fc.indeterminatePreprintId()])('when the user is not logged in', async preprint => {
-    const actual = await _.requestReviewPublished({ preprint })({
-      getReviewRequest: shouldNotBeCalled,
-      getPreprintTitle: shouldNotBeCalled,
-    })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(requestReviewMatch.formatter, { id: preprint }),
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
     })
   })
+
+  test.prop([fc.indeterminatePreprintId(), fc.supportedLocale()])(
+    'when the user is not logged in',
+    async (preprint, locale) => {
+      const actual = await _.requestReviewPublished({ preprint, locale })({
+        getReviewRequest: shouldNotBeCalled,
+        getPreprintTitle: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(requestReviewMatch.formatter, { id: preprint }),
+      })
+    },
+  )
 })

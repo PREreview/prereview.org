@@ -4,7 +4,7 @@ import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
 import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { type GetReviewRequestEnv, isReviewRequestPreprintId, maybeGetReviewRequest } from '../../review-request.js'
@@ -16,9 +16,11 @@ import { requestReviewPage } from './request-review-page.js'
 export const requestReview = ({
   preprint,
   user,
+  locale,
 }: {
   preprint: IndeterminatePreprintId
   user?: User
+  locale: SupportedLocale
 }): RT.ReaderTask<
   GetPreprintTitleEnv & GetReviewRequestEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
@@ -26,7 +28,7 @@ export const requestReview = ({
   pipe(
     RTE.Do,
     RTE.let('user', () => user),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.bindW('preprint', () => getPreprintTitle(preprint)),
     RTE.bindW(
       'preprintId',
@@ -52,8 +54,8 @@ export const requestReview = ({
           .with('already-started', () =>
             RedirectResponse({ location: format(requestReviewStartMatch.formatter, { id: preprint }) }),
           )
-          .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(DefaultLocale))
-          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(DefaultLocale))
+          .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(locale))
+          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       requestReviewPage,
     ),
