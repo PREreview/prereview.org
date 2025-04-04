@@ -6,7 +6,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale } from '../../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
@@ -105,16 +105,18 @@ const handleForm = ({
   preprint,
   reviewRequest,
   user,
+  locale,
 }: {
   preprint: ReviewRequestPreprintId
   reviewRequest: IncompleteReviewRequest
   user: User
+  locale: SupportedLocale
 }) =>
   pipe(
     publishRequest(preprint, user, reviewRequest.persona ?? 'public'),
     RTE.chainFirstW(() => saveReviewRequest(user.orcid, preprint, { status: 'completed' })),
     RTE.matchW(
-      () => failureMessage,
+      () => failureMessage(locale),
       () => RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprint }) }),
     ),
   )

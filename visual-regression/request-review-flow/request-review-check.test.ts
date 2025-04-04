@@ -55,7 +55,7 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
 })
 
 test("content looks right when the change can't be made", async ({ showPage }) => {
-  const content = await showPage(failureMessage)
+  const content = await showPage(failureMessage(locale))
 
   await expect(content).toHaveScreenshot()
 })
