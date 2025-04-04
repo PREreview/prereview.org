@@ -23,6 +23,9 @@
   "requestPrereview": {
     "message": "Request PREreview"
   },
+  "requestAPrereview": {
+    "message": "Request a PREreview"
+  },
   "sorryWeAreHavingProblems": {
     "message": "Sorry, we’re having problems"
   },
@@ -73,5 +76,23 @@
   },
   "whereYouCanSeeYourRequest": {
     "message": "You’ll be able to see your request on our <listOfRequestsLink>list of requests</listOfRequestsLink> and <communitySlackLink>Community Slack</communitySlackLink> shortly."
+  },
+  "youCanRequestAPrereview": {
+    "message": " You can request a PREreview of {preprintTitle}. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a journal-organized peer-review report."
+  },
+  "beforeYouStart": {
+    "message": "Before you start"
+  },
+  "weWillAskYouToLogInWithYourOrcid": {
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one."
+  },
+  "whatIsAnOrcid": {
+    "message": "What is an ORCID&nbsp;iD?"
+  },
+  "orcidExplainer": {
+    "message": "An <orcidLinkAsDefinition>ORCID iD</orcidLinkAsDefinition> is a unique identifier that distinguishes you from everyone with the same or similar name."
+  },
+  "startNow": {
+    "message": "Start now"
   }
 }

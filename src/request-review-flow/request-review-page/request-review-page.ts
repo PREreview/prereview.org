@@ -1,60 +1,60 @@
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { html, plainText } from '../../html.js'
-import type { SupportedLocale } from '../../locales/index.js'
+import { html, plainText, rawHtml } from '../../html.js'
+import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { preprintReviewsMatch, requestReviewMatch, requestReviewStartMatch } from '../../routes.js'
 import type { User } from '../../user.js'
 
+const orcidLinkAsDefinition = (text: string) => `<a href="https://orcid.org/"><dfn>${text}</dfn></a>`
+
 export const requestReviewPage = ({
   preprint,
   user,
+  locale,
 }: {
   preprint: PreprintTitle
   locale: SupportedLocale
   user?: User
-}) =>
-  StreamlinePageResponse({
-    title: plainText`Request a PREreview`,
+}) => {
+  const t = translate(locale, 'request-review-flow')
+  const preprintTitle = `<cite dir="${rtlDetect.getLangDir(preprint.language)}" lang="${preprint.language}">${preprint.title.toString()}</cite>`
+
+  return StreamlinePageResponse({
+    title: pipe(t('requestAPrereview')(), plainText),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>Back to preprint</span></a
+        ><span>${t('backToPreprint')()}</span></a
       >
     `,
     main: html`
-      <h1>Request a PREreview</h1>
+      <h1>${t('requestAPrereview')()}</h1>
 
-      <p>
-        You can request a PREreview of
-        <cite dir="${rtlDetect.getLangDir(preprint.language)}" lang="${preprint.language}">${preprint.title}</cite>. A
-        PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a
-        journal-organized peer-review report.
-      </p>
+      <p>${rawHtml(t('youCanRequestAPrereview')({ preprintTitle }))}</p>
 
       ${user
         ? ''
         : html`
-            <h2>Before you start</h2>
+            <h2>${t('beforeYouStart')()}</h2>
 
-            <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
+            <p>${t('weWillAskYouToLogInWithYourOrcid')()}</p>
 
             <details>
-              <summary><span>What is an ORCID&nbsp;iD?</span></summary>
+              <summary><span>${t('whatIsAnOrcid')()}</span></summary>
 
               <div>
-                <p>
-                  An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a unique identifier that distinguishes
-                  you from everyone with the same or similar name.
-                </p>
+                <p>${rawHtml(t('orcidExplainer')({ orcidLinkAsDefinition }))} An</p>
               </div>
             </details>
           `}
 
       <a href="${format(requestReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
-        >Start now</a
+        >${t('startNow')()}</a
       >
     `,
     canonical: format(requestReviewMatch.formatter, { id: preprint.id }),
     allowRobots: false,
   })
+}
