@@ -1,27 +1,27 @@
 {
-  "connectOrcidProfile": {
-    "message": "crwdns4561:0crwdne4561:0"
+  "connectOrcidRecord": {
+    "message": "crwdns5465:0crwdne5465:0"
   },
   "canConnect": {
-    "message": "crwdns4563:0crwdne4563:0"
+    "message": "crwdns5467:0crwdne5467:0"
   },
   "willAddPrereviews": {
-    "message": "crwdns4565:0crwdne4565:0"
+    "message": "crwdns5469:0crwdne5469:0"
   },
   "beforeYouStart": {
     "message": "crwdns4567:0crwdne4567:0"
   },
   "sendYouToOrcid": {
-    "message": "crwdns4569:0crwdne4569:0"
+    "message": "crwdns5471:0crwdne5471:0"
   },
   "startNow": {
     "message": "crwdns4571:0crwdne4571:0"
   },
-  "cannotConnectProfile": {
-    "message": "crwdns4573:0crwdne4573:0"
+  "cannotConnectRecord": {
+    "message": "crwdns5473:0crwdne5473:0"
   },
   "youDeniedAccess": {
-    "message": "crwdns4575:0crwdne4575:0"
+    "message": "crwdns5475:0crwdne5475:0"
   },
   "tryAgain": {
     "message": "crwdns4577:0crwdne4577:0"
@@ -30,27 +30,27 @@
     "message": "crwdns4579:0crwdne4579:0"
   },
   "unableToConnect": {
-    "message": "crwdns4581:0crwdne4581:0"
+    "message": "crwdns5477:0crwdne5477:0"
   },
   "unableToDisconnect": {
-    "message": "crwdns4583:0crwdne4583:0"
+    "message": "crwdns5479:0crwdne5479:0"
   },
   "tryAgainLater": {
     "message": "crwdns4585:0crwdne4585:0"
   },
-  "disconnectOrcidProfile": {
-    "message": "crwdns4587:0crwdne4587:0"
+  "disconnectOrcidRecord": {
+    "message": "crwdns5481:0crwdne5481:0"
   },
   "canDisconnect": {
-    "message": "crwdns4589:0crwdne4589:0"
+    "message": "crwdns5483:0crwdne5483:0"
   },
   "stopAddingPrereviews": {
-    "message": "crwdns4591:0crwdne4591:0"
+    "message": "crwdns5485:0crwdne5485:0"
   },
   "canReconnect": {
     "message": "crwdns4593:0crwdne4593:0"
   },
-  "disconnectProfileButton": {
-    "message": "crwdns4595:0crwdne4595:0"
+  "disconnectRecordButton": {
+    "message": "crwdns5487:0crwdne5487:0"
   }
 }

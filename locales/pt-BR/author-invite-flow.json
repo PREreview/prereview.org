@@ -111,9 +111,6 @@
   "whatNameWouldYouLikeToUse": {
     "message": "Que nome gostaria de usar?"
   },
-  "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
-    "message": "Você pode escolher entre o nome do seu perfil ORCID ou seu pseudônimo PREreview."
-  },
   "whatIsAPrereviewPseudonym": {
     "message": "O que é um pseudônimo PREreview?"
   },
