@@ -7,7 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale } from '../../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
@@ -41,6 +41,7 @@ export const requestReviewPersona = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.apS('locale', RTE.of(DefaultLocale)),
     RTE.bindW('preprint', () =>
       pipe(
         getPreprintTitle(preprint),
@@ -79,8 +80,8 @@ export const requestReviewPersona = ({
       state =>
         match(state)
           .with({ method: 'POST' }, handlePersonaForm)
-          .with({ method: P.string }, ({ preprint, reviewRequest, user }) =>
-            RT.of(personaForm({ form: { persona: E.right(reviewRequest.persona) }, preprint, user })),
+          .with({ method: P.string }, ({ preprint, reviewRequest, user, locale }) =>
+            RT.of(personaForm({ form: { persona: E.right(reviewRequest.persona) }, preprint, user, locale })),
           )
           .exhaustive(),
     ),
@@ -91,11 +92,13 @@ const handlePersonaForm = ({
   reviewRequest,
   preprint,
   user,
+  locale,
 }: {
   body: unknown
   reviewRequest: IncompleteReviewRequest
   preprint: ReviewRequestPreprintId
   user: User
+  locale: SupportedLocale
 }) =>
   pipe(
     RTE.Do,
@@ -112,7 +115,7 @@ const handlePersonaForm = ({
       error =>
         match(error)
           .with('unavailable', () => havingProblemsPage(DefaultLocale))
-          .with({ persona: P.any }, form => personaForm({ form, preprint, user }))
+          .with({ persona: P.any }, form => personaForm({ form, preprint, user, locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: preprint }) }),
     ),

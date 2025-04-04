@@ -4,6 +4,7 @@ import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { type MissingE, hasAnError } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import type { ReviewRequestPreprintId } from '../../review-request.js'
 import { preprintReviewsMatch, requestReviewPersonaMatch } from '../../routes.js'
@@ -21,6 +22,7 @@ export function personaForm({
   form: PersonaForm
   preprint: ReviewRequestPreprintId
   user: User
+  locale: SupportedLocale
 }) {
   const error = hasAnError(form)
 
