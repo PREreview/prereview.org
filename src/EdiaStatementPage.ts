@@ -1,4 +1,5 @@
 import { Effect } from 'effect'
+import rtlDetect from 'rtl-detect'
 import { Locale } from './Context.js'
 import { GetPageFromGhost } from './GhostPage.js'
 import { HavingProblemsPage } from './HavingProblemsPage/index.js'
@@ -25,7 +26,7 @@ function createPage({ content, locale }: { content: Html; locale: SupportedLocal
       <h1>${t('edia-statement', 'ediaStatement')()}</h1>
 
       ${locale !== DefaultLocale ? html`<div class="inset"><p>${t('header', 'onlyEnglish')()}</p></div>` : ''}
-      ${fixHeadingLevels(1, content)}
+      <div lang="${DefaultLocale}" dir="${rtlDetect.getLangDir(locale)}">${fixHeadingLevels(1, content)}</div>
     `,
     canonical: Routes.EdiaStatement,
     current: 'edia-statement',
