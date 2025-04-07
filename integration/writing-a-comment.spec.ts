@@ -78,7 +78,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishACommen
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -191,7 +191,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -291,7 +291,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -384,7 +384,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -480,7 +480,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -567,7 +567,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -681,7 +681,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -791,7 +791,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -899,7 +899,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -1006,7 +1006,7 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
       {
         name: 'existing-comment',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
       },
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
@@ -1084,7 +1084,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a comment', async ({ ja
       {
         name: 'existing-comment',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
       },
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
@@ -1169,7 +1169,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
       {
         name: 'existing-comment',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
       },
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
@@ -1262,7 +1262,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -1373,7 +1373,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
@@ -1469,7 +1469,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
         {
           name: 'existing-comment',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.5072/zenodo.1061864"' },
+          query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
         },
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )

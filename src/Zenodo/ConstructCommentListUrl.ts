@@ -8,7 +8,7 @@ export const constructCommentListUrl = (prereviewDoi: Doi.Doi): Effect.Effect<UR
     const zenodoOrigin = yield* ZenodoOrigin
     const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoOrigin)
     const params = UrlParams.fromInput({
-      q: `related.identifier:"${prereviewDoi}"`,
+      q: `related.identifier:"${prereviewDoi}" AND related.relation:"references"`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-other',

@@ -58,7 +58,7 @@ test('can find and view a club', async ({ fetch, page }) => {
       {
         name: 'responses',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5281/zenodo.7820084"' },
+        query: { q: 'related.identifier:"10.5281/zenodo.7820084" AND related.relation:"references"' },
       },
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )

@@ -10,7 +10,7 @@ describe('ConstructCommentListUrl', () => {
     Effect.gen(function* () {
       const prereviewDoi = Doi.Doi('10.1101/12345')
       const expectedUrl =
-        'http://zenodo.test/api/communities/prereview-reviews/records?q=related.identifier%3A%2210.1101%2F12345%22&size=100&sort=publication-desc&resource_type=publication%3A%3Apublication-other&access_status=open'
+        'http://zenodo.test/api/communities/prereview-reviews/records?q=related.identifier%3A%2210.1101%2F12345%22+AND+related.relation%3A%22references%22&size=100&sort=publication-desc&resource_type=publication%3A%3Apublication-other&access_status=open'
       const result = yield* _.constructCommentListUrl(prereviewDoi)
 
       expect(result.href).toStrictEqual(expectedUrl)
