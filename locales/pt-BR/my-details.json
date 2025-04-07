@@ -45,7 +45,8 @@
     "message": "Remover <visuallyHidden>avatar</visuallyHidden>"
   },
   "slackCommunityName": {
-    "message": "Nome na comunidade Slack"
+    "message": "Nome na comunidade Slack",
+    "description": "Label for showing the name the user is using on the Community Slack"
   },
   "connectSlack": {
     "message": "Conectar conta do Slack"
