@@ -2080,6 +2080,19 @@ skip-link {
       inset: 0;
     }
 
+    &:has(> :focus-visible) {
+      &::after {
+        @media screen {
+          outline: var(--color-focus) solid var(--width-divider);
+          outline-offset: 0;
+
+          @media (forced-colors: active) {
+            outline-color: Highlight;
+          }
+        }
+      }
+    }
+
     & > .categories {
       order: -1;
       margin-block: 0 var(--space-2xs);
@@ -2097,33 +2110,16 @@ skip-link {
         text-decoration: none;
       }
 
-      &::after {
-        content: '';
-        position: absolute;
-        border: var(--width-divider) solid transparent;
-        border-radius: var(--radius-divider);
-        inset: 0;
-
-        @media screen {
-          @media (forced-colors: active) {
-            border-color: CanvasText;
-          }
-        }
-      }
-
-      &:focus-visible {
-        outline-width: 0;
-
+      @supports selector(:has(> :focus-visible)) {
         &::after {
-          @media screen {
-            border-color: var(--color-divider);
-            outline: var(--color-focus) solid var(--width-divider);
+          content: '';
+          position: absolute;
+          border-radius: var(--radius-divider);
+          inset: 0;
+        }
 
-            @media (forced-colors: active) {
-              border-color: CanvasText;
-              outline-color: Highlight;
-            }
-          }
+        &:focus-visible {
+          outline-width: 0;
         }
       }
     }
