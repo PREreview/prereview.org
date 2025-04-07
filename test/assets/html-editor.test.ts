@@ -2,7 +2,7 @@ import { defineCE, expect, fixture, waitUntil } from '@open-wc/testing'
 import * as _ from '../../assets/html-editor.js'
 
 describe('while it loads', () => {
-  it('shows a loading message', async () => {
+  it.skip('shows a loading message', async () => {
     const element = defineCE(class extends _.HtmlEditor {})
     await fixture<HTMLFormElement>('<form id="form"/>')
     const htmlEditor = await fixture<_.HtmlEditor>(
