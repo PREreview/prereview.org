@@ -14,5 +14,9 @@ export class ZenodoOrigin extends Context.Tag('ZenodoHostname')<ZenodoOrigin, UR
 export const getCommunityRecords = Effect.fn(function* (url: URL) {
   const httpClient = yield* HttpClient.HttpClient
 
-  return yield* pipe(httpClient.get(url), Effect.andThen(HttpClientResponse.schemaBodyJson(RecordsSchema)))
+  return yield* pipe(
+    httpClient.get(url),
+    Effect.andThen(HttpClientResponse.filterStatusOk),
+    Effect.andThen(HttpClientResponse.schemaBodyJson(RecordsSchema)),
+  )
 })
