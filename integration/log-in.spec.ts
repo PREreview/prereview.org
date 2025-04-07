@@ -248,13 +248,13 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)("can say if I'm o
   await page.getByRole('link', { name: 'My details' }).click()
   await page.getByRole('link', { name: 'Connect Slack account' }).click()
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByRole('link', { name: 'Enter open for review requests' }).click()
+  await page.getByRole('link', { name: 'Enter preference for review requests' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText('Open for review requests Yes Only visible to PREreview')
 
-  await page.getByRole('link', { name: 'Set open-for-review-requests visibility' }).click()
+  await page.getByRole('link', { name: 'Set preference-for-review-requests visibility' }).click()
 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
@@ -263,7 +263,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)("can say if I'm o
 
   await expect(page.getByRole('main')).toContainText('Open for review requests Yes Shown on your public profile')
 
-  await page.getByRole('link', { name: 'Change open for review requests' }).click()
+  await page.getByRole('link', { name: 'Change preference for review requests' }).click()
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 

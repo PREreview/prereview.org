@@ -254,7 +254,7 @@ export function createPage({
                     () => html`
                       <dd>
                         <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                          >${t('my-details', 'enterOpenReviewRequests')()}</a
+                          >${t('my-details', 'enterPreferenceReviewRequests')()}</a
                         >
                       </dd>
                     `,
@@ -286,12 +286,14 @@ export function createPage({
                               <ul>
                                 <li>
                                   <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                                    >${rawHtml(t('my-details', 'changeOpenReviewRequests')(visuallyHidden))}</a
+                                    >${rawHtml(t('my-details', 'changePreferenceReviewRequests')(visuallyHidden))}</a
                                   >
                                 </li>
                                 <li>
                                   <a href="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}"
-                                    >${rawHtml(t('my-details', 'setOpenReviewRequestsVisibility')(visuallyHidden))}</a
+                                    >${rawHtml(
+                                      t('my-details', 'setPreferenceReviewRequestsVisibility')(visuallyHidden),
+                                    )}</a
                                   >
                                 </li>
                               </ul>
@@ -301,7 +303,7 @@ export function createPage({
                             { value: false },
                             () => html`
                               <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                                >${rawHtml(t('my-details', 'changeOpenReviewRequests')(visuallyHidden))}</a
+                                >${rawHtml(t('my-details', 'changePreferenceReviewRequests')(visuallyHidden))}</a
                               >
                             `,
                           )

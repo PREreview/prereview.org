@@ -70,14 +70,14 @@
     "message": "Open for review requests",
     "description": "Label for if the user is open to receiving review requests"
   },
-  "enterOpenReviewRequests": {
-    "message": "Enter open for review requests"
+  "enterPreferenceReviewRequests": {
+    "message": "Enter preference for review requests"
   },
-  "changeOpenReviewRequests": {
-    "message": "Change <visuallyHidden>open for review requests</visuallyHidden>"
+  "changePreferenceReviewRequests": {
+    "message": "Change <visuallyHidden>preference for review requests</visuallyHidden>"
   },
-  "setOpenReviewRequestsVisibility": {
-    "message": "Set <visuallyHidden>open-for-review-requests</visuallyHidden> visibility"
+  "setPreferenceReviewRequestsVisibility": {
+    "message": "Set <visuallyHidden>preference-for-review-requests</visuallyHidden> visibility"
   },
   "yes": {
     "message": "Yes"
