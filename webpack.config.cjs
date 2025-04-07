@@ -111,6 +111,7 @@ module.exports = (env, argv) => ({
   },
   output: {
     assetModuleFilename: '[name].[contenthash][ext]',
+    clean: argv.mode === 'development',
     filename: '[name].[contenthash].js',
     path: path.resolve('dist', 'assets'),
     publicPath: '/',
