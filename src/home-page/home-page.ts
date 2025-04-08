@@ -25,7 +25,6 @@ import type { RecentPrereview } from './recent-prereviews.js'
 import type { RecentReviewRequest } from './recent-review-requests.js'
 
 export const createPage = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   canSeeDesignTweaks = false,
   locale,
   recentPrereviews,
@@ -41,7 +40,8 @@ export const createPage = ({
   PageResponse({
     title: plainText`PREreview: ${translate(locale, 'home-page', 'slogan')({ swoosh: identity })}`,
     main: html`
-      <div class="hero">
+      <div class="hero${canSeeDesignTweaks ? ` tweaked` : ''}">
+        ${canSeeDesignTweaks ? rawHtml('<div>') : ''}
         <h1>${rawHtml(translate(locale, 'home-page', 'slogan')({ swoosh: text => `<em>${text}</em>` }))}</h1>
         <p>${translate(locale, 'home-page', 'heroText')()}</p>
 
@@ -53,11 +53,11 @@ export const createPage = ({
             >${translate(locale, 'home-page', 'requestReviewButton')()}</a
           >
         </div>
-
+        ${canSeeDesignTweaks ? rawHtml('</div>') : ''}
         <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
       </div>
 
-      <div class="overview">
+      <div class="overview${canSeeDesignTweaks ? ` tweaked` : ''}">
         <section aria-labelledby="for-underserved-researchers-title">
           <h2 id="for-underserved-researchers-title">
             ${translate(locale, 'home-page', 'overviewUnderservedResearchersTitle')()}

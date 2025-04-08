@@ -2442,7 +2442,7 @@ skip-link {
   }
 }
 
-.hero {
+.hero:not(.tweaked) {
   display: flow-root;
 
   & h1 {
@@ -2512,6 +2512,83 @@ skip-link {
     @media (width >= 30em) {
       margin-block-start: -15%;
     }
+
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+      background-color: transparent;
+      filter: drop-shadow(0 0 0.05em CanvasText);
+      box-shadow: none;
+    }
+  }
+}
+
+.hero.tweaked {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-block-start: var(--space-s-l);
+  column-gap: var(--space-m-xl);
+  row-gap: var(--space-l);
+
+  & > div {
+    flex-basis: 15em;
+    flex-grow: 1;
+
+    > :first-child {
+      margin-block-start: 0;
+    }
+  }
+
+  & h1 {
+    text-wrap: balance;
+  }
+
+  & em {
+    display: inline-block;
+    position: relative;
+    font-style: inherit;
+
+    @media (forced-colors: none) {
+      text-shadow:
+        -1px -1px 0 var(--color-background),
+        1px -1px 0 var(--color-background),
+        -1px 1px 0 var(--color-background),
+        1px 1px 0 var(--color-background);
+
+      &::after {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        block-size: var(--space-xs);
+        background-color: var(--color-primary);
+        mask-image: url('underline.svg');
+        mask-repeat: no-repeat;
+        mask-size: 100% 100%;
+        inset-block-start: 84%;
+        inset-inline: 0;
+      }
+    }
+  }
+
+  & p {
+    font-size: var(--step-1);
+    hyphens: manual;
+  }
+
+  & :any-link:not(.button) {
+    background-color: var(--color-background);
+  }
+
+  & .button-group {
+    margin-block-start: var(--space-m-l);
+  }
+
+  & :--button {
+    font-size: var(--step-2);
+  }
+
+  & img {
+    inline-size: clamp(35%, 15vi, 55%);
 
     @media (forced-colors: active) {
       forced-color-adjust: auto;
@@ -2628,6 +2705,10 @@ skip-link {
     flex-direction: row;
     justify-content: center;
   }
+}
+
+.overview.tweaked {
+  margin-block-start: var(--space-2xl);
 }
 
 .statistics {
