@@ -1283,6 +1283,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           FeatureFlags.layer({
             canAddMultipleAuthors,
             canChooseLocale: false,
+            canSeeDesignTweaks: false,
             useCrowdinInContext: false,
           }),
         ),

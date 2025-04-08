@@ -8,17 +8,24 @@ export class CanAddMultipleAuthors extends Context.Tag('CanAddMultipleAuthors')<
 
 export class CanChooseLocale extends Context.Tag('CanChooseLocale')<CanChooseLocale, boolean>() {}
 
+export class CanSeeDesignTweaks extends Context.Tag('CanSeeDesignTweaks')<CanSeeDesignTweaks, boolean>() {}
+
 export class UseCrowdinInContext extends Context.Tag('UseCrowdinInContext')<UseCrowdinInContext, boolean>() {}
 
 export const layer = (options: {
   canAddMultipleAuthors: typeof CanAddMultipleAuthors.Service
   canChooseLocale: typeof CanChooseLocale.Service
+  canSeeDesignTweaks: typeof CanSeeDesignTweaks.Service
   useCrowdinInContext: typeof UseCrowdinInContext.Service
-}): Layer.Layer<CanAddMultipleAuthors | CanChooseLocale | UseCrowdinInContext, ConfigError.ConfigError> =>
+}): Layer.Layer<
+  CanAddMultipleAuthors | CanChooseLocale | CanSeeDesignTweaks | UseCrowdinInContext,
+  ConfigError.ConfigError
+> =>
   Layer.succeedContext(
     Context.empty().pipe(
       Context.add(CanAddMultipleAuthors, options.canAddMultipleAuthors),
       Context.add(CanChooseLocale, options.canChooseLocale),
+      Context.add(CanSeeDesignTweaks, options.canSeeDesignTweaks),
       Context.add(UseCrowdinInContext, options.useCrowdinInContext),
     ),
   )

@@ -25,11 +25,14 @@ import type { RecentPrereview } from './recent-prereviews.js'
 import type { RecentReviewRequest } from './recent-review-requests.js'
 
 export const createPage = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  canSeeDesignTweaks = false,
   locale,
   recentPrereviews,
   recentReviewRequests,
   statistics,
 }: {
+  canSeeDesignTweaks?: boolean
   locale: SupportedLocale
   recentPrereviews: ReadonlyArray<RecentPrereview>
   recentReviewRequests: ReadonlyArray<RecentReviewRequest>

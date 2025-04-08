@@ -319,6 +319,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   DoesPreprintExistEnv &
   EffectEnv<
     | FeatureFlags.CanAddMultipleAuthors
+    | FeatureFlags.CanSeeDesignTweaks
     | Locale
     | OpenAlex.GetCategories
     | ReviewPage.CommentsForReview
@@ -440,6 +441,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             'locale',
             RM.asks((env: RouterEnv) => env.locale),
           ),
+          RM.apSW('canSeeDesignTweaks', EffectToFpts.toReaderMiddleware(FeatureFlags.CanSeeDesignTweaks)),
           RM.bindW('response', RM.fromReaderTaskK(home)),
           RM.ichainW(handleResponse),
         ),
