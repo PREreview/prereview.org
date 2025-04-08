@@ -3,6 +3,7 @@ primary_region = "iad"
 
 [env]
 ALLOW_SITE_CRAWLERS = "true"
+CAN_ADD_MULTIPLE_AUTHORS = "true"
 COAR_NOTIFY_URL = "https://coar-notify.prereview.org/"
 DISABLE_LEGACY_VOLUME_BASED_CACHE = "true"
 FATHOM_SITE_ID = "FEAJEBBA"
