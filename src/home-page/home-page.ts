@@ -40,7 +40,7 @@ export const createPage = ({
   PageResponse({
     title: plainText`PREreview: ${translate(locale, 'home-page', 'slogan')({ swoosh: identity })}`,
     main: html`
-      <div class="hero${canSeeDesignTweaks ? ` tweaked` : ''}">
+      <div class="hero${canSeeDesignTweaks ? ' tweaked' : ''}">
         ${canSeeDesignTweaks ? rawHtml('<div>') : ''}
         <h1>${rawHtml(translate(locale, 'home-page', 'slogan')({ swoosh: text => `<em>${text}</em>` }))}</h1>
         <p>${translate(locale, 'home-page', 'heroText')()}</p>
@@ -57,7 +57,7 @@ export const createPage = ({
         <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
       </div>
 
-      <div class="overview${canSeeDesignTweaks ? ` tweaked` : ''}">
+      <div class="overview${canSeeDesignTweaks ? ' tweaked' : ''}">
         <section aria-labelledby="for-underserved-researchers-title">
           <h2 id="for-underserved-researchers-title">
             ${translate(locale, 'home-page', 'overviewUnderservedResearchersTitle')()}
