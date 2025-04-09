@@ -119,6 +119,8 @@ const revalidationWorker = ({
         const timestamp = yield* DateTime.now
         return yield* HttpClientResponse.matchStatus(response, {
           [Status.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
+          [Status.NotFound]: response => cache.delete(new URL(response.request.url)),
+          [Status.Gone]: response => cache.delete(new URL(response.request.url)),
           orElse: () => Effect.void,
         })
       }),
