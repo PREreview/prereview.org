@@ -357,6 +357,7 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: LegacyCompatibleN
               ),
             ),
             RTE.chainW(F.send),
+            RTE.local(timeoutRequest(5000)),
             RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
             RTE.bimap(() => 'unavailable' as const, Function.constVoid),
           ),
@@ -370,6 +371,7 @@ const resolvePreprint = flow(
   ),
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
+  RTE.local(timeoutRequest(5000)),
   RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
   RTE.chainTaskEitherKW(F.decode(LegacyPrereviewPreprintD)),
 )

@@ -337,6 +337,48 @@ test
   await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
 })
 
+test
+  .extend(updatesLegacyPrereview)
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(willPublishAReview)('might not update the legacy PREreview in time', async ({ fetch, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('With a template').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await waitForNotBusy(page)
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, I reviewed it alone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  fetch
+    .getOnce(
+      'http://prereview.test/api/v2/resolve?identifier=10.1101/2022.01.13.476201',
+      new Promise(() => setTimeout(() => ({ body: { uuid: 'e7d28fbe-013a-4987-9faa-7f44a9f7683a' } }), 5000)),
+    )
+    .postOnce(
+      {
+        url: 'http://prereview.test/api/v2/full-reviews',
+        headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
+      },
+      new Promise(() => setTimeout(() => ({ status: Status.Created }), 5000)),
+    )
+
+  await page.getByRole('button', { name: 'Publish PREreview' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+})
+
 test.extend(canLogIn).extend(areLoggedIn)(
   'can paste an already-written PREreview',
   async ({ context, javaScriptEnabled, page }) => {
