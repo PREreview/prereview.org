@@ -7,7 +7,7 @@ import {
   type HttpClientResponse,
   HttpMethod,
 } from '@effect/platform'
-import { Config, Effect, pipe, Runtime } from 'effect'
+import { Config, Effect, Either, identity, pipe, Runtime } from 'effect'
 import fetch from 'make-fetch-happen'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import { PublicUrl } from './public-url.js'
@@ -44,9 +44,9 @@ const transmogrifyHttpClient: Effect.Effect<
   return (input, init) =>
     Runtime.runPromise(
       runtime,
-      pipe(convertRequest(input, init), Effect.andThen(client.execute), Effect.andThen(convertResponse)),
+      pipe(convertRequest(input, init), Effect.andThen(client.execute), Effect.andThen(convertResponse), Effect.either),
       { signal: init?.signal ?? undefined },
-    )
+    ).then(Either.getOrThrowWith(identity))
 })
 
 const convertRequest = (
