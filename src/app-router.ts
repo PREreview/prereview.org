@@ -396,7 +396,11 @@ const publishPrereview = (newPrereview: NewPrereview) =>
     createRecordOnZenodo(newPrereview),
     RTE.chainFirstW(
       isLegacyCompatiblePrereview(newPrereview)
-        ? flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))
+        ? flow(
+            ([doi]) => doi,
+            createPrereviewOnLegacyPrereview(newPrereview),
+            RTE.altW(() => RTE.right(undefined)),
+          )
         : () => RTE.right(undefined),
     ),
     RTE.chainFirstW(([, review]) =>

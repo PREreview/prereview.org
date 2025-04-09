@@ -376,7 +376,7 @@ test
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
