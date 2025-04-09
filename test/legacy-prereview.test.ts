@@ -1,8 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import { Option } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
+import * as IO from 'fp-ts/lib/IO.js'
 import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import { rawHtml } from '../src/html.js'
@@ -703,8 +705,10 @@ describe('createPrereviewOnLegacyPrereview', () => {
           structured,
           user,
         })(reviewDoi)({
+          clock: SystemClock,
           fetch,
           legacyPrereviewApi: { app, key, url, update: true },
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual(E.right(undefined))
@@ -757,8 +761,10 @@ describe('createPrereviewOnLegacyPrereview', () => {
           structured,
           user,
         })(reviewDoi)({
+          clock: SystemClock,
           fetch,
           legacyPrereviewApi: { app, key, url, update: true },
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
@@ -795,8 +801,10 @@ describe('createPrereviewOnLegacyPrereview', () => {
           structured,
           user,
         })(reviewDoi)({
+          clock: SystemClock,
           fetch,
           legacyPrereviewApi: { app, key, url, update: true },
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
@@ -831,8 +839,10 @@ describe('createPrereviewOnLegacyPrereview', () => {
           structured,
           user,
         })(reviewDoi)({
+          clock: SystemClock,
           fetch: () => Promise.reject(error),
           legacyPrereviewApi: { app, key, url, update: true },
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
@@ -867,8 +877,10 @@ describe('createPrereviewOnLegacyPrereview', () => {
         structured,
         user,
       })(reviewDoi)({
+        clock: SystemClock,
         fetch: shouldNotBeCalled,
         legacyPrereviewApi: { app, key, url, update: false },
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))

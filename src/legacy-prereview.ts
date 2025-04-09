@@ -9,6 +9,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
+import * as L from 'logger-fp-ts'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
@@ -359,6 +360,20 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: LegacyCompatibleN
             RTE.chainW(F.send),
             RTE.local(timeoutRequest(5000)),
             RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
+            RTE.orElseFirstW(
+              RTE.fromReaderIOK(
+                flow(
+                  error => ({
+                    error: match(error)
+                      .with(P.instanceOf(Error), error => error.message)
+                      .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+                      .with({ _tag: P.string }, D.draw)
+                      .exhaustive(),
+                  }),
+                  L.errorP('Failed to create PREreview on the legacy site'),
+                ),
+              ),
+            ),
             RTE.bimap(() => 'unavailable' as const, Function.constVoid),
           ),
       }),
