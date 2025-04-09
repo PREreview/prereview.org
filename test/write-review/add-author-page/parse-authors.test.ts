@@ -31,6 +31,12 @@ describe('parseAuthors', () => {
         { name: 'Baz Qux', emailAddress: 'baz@example.com' },
       ],
     ],
+    ['comma', 'Foo Bar,foo@example.com', [{ name: 'Foo Bar', emailAddress: 'foo@example.com' }]],
+    [
+      'multiple commas',
+      ',,,,,,,Foo,Bar,,,,foo@example.com,,\n,',
+      [{ name: 'Foo Bar', emailAddress: 'foo@example.com' }],
+    ],
   ])('with valid input (%s)', (_name, input, expected) => {
     const actual = _.parseAuthors(input)
 
@@ -44,7 +50,6 @@ describe('parseAuthors', () => {
     ['multiple email addresses', 'Foo Bar foo@example.com foo2@example.com'],
     ['before and after', 'Foo foo@example.com Bar'],
     ['quote marks', '"Foo Bar" foo@example.com'],
-    ['comma', 'Foo Bar,foo@example.com'],
   ])('with invalid input (%s)', (_name, input) => {
     const actual = _.parseAuthors(input)
 

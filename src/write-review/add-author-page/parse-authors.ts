@@ -8,7 +8,7 @@ export const parseAuthors = (
 > =>
   pipe(
     String.linesIterator(authors),
-    Iterable.map(flow(String.replaceAll(/\s+/g, ' '), String.trim)),
+    Iterable.map(flow(String.replaceAll(/[,\s]+/g, ' '), String.trim)),
     Iterable.filter(String.isNonEmpty),
     Iterable.map(
       flow(
