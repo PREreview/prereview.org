@@ -69,10 +69,11 @@ export const CachingHttpClient = (
         return yield* pipe(
           req,
           httpClient.execute,
-          Effect.timeoutFail({
-            duration: '2 seconds',
-            onTimeout: () => new HttpClientError.RequestError({ request: req, reason: 'Transport', cause: 'Timeout' }),
-          }),
+          Effect.timeout('2 seconds'),
+          Effect.catchTag(
+            'TimeoutException',
+            error => new HttpClientError.RequestError({ request: req, reason: 'Transport', cause: error }),
+          ),
           Effect.tap(
             HttpClientResponse.matchStatus({
               [Status.OK]: response =>
