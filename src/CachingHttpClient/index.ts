@@ -1,7 +1,6 @@
 import { HttpClient, HttpClientError, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
 import { DateTime, Effect, Function, Layer, pipe, Queue, type Duration } from 'effect'
 import { Status } from 'hyper-ts'
-import { loggingHttpClient } from '../LoggingHttpClient.js'
 import * as HttpCache from './HttpCache.js'
 
 export * from './HttpCache.js'
@@ -14,7 +13,7 @@ export const CachingHttpClient = (
   timeToStale: Duration.DurationInput,
 ): Effect.Effect<HttpClient.HttpClient, never, HttpCache.HttpCache | HttpClient.HttpClient> =>
   Effect.gen(function* () {
-    const httpClient = yield* Effect.andThen(HttpClient.HttpClient, loggingHttpClient)
+    const httpClient = yield* HttpClient.HttpClient
     const cache = yield* HttpCache.HttpCache
     const revalidationQueue = yield* Queue.sliding<HttpClientRequest.HttpClientRequest>(100)
 

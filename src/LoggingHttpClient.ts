@@ -1,5 +1,5 @@
 import { Headers, HttpClient, HttpClientRequest, UrlParams } from '@effect/platform'
-import { Effect, FiberId, HashSet, pipe } from 'effect'
+import { Effect, FiberId, HashSet, Layer, pipe } from 'effect'
 
 export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, HttpClient.HttpClient> = Effect.gen(
   function* () {
@@ -64,3 +64,5 @@ export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
     )
   },
 )
+
+export const layer = Layer.effect(HttpClient.HttpClient, loggingHttpClient)

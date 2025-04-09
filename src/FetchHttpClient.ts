@@ -10,6 +10,7 @@ import {
 import { Config, Effect, Either, identity, pipe, Runtime } from 'effect'
 import fetch from 'make-fetch-happen'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
+import * as LoggingHttpClient from './LoggingHttpClient.js'
 import { PublicUrl } from './public-url.js'
 
 export const Fetch = FetchHttpClient.Fetch
@@ -38,7 +39,7 @@ const transmogrifyHttpClient: Effect.Effect<
   never,
   HttpClient.HttpClient | CachingHttpClient.HttpCache
 > = Effect.gen(function* () {
-  const client = yield* CachingHttpClient.CachingHttpClient('10 seconds')
+  const client = yield* Effect.provide(CachingHttpClient.CachingHttpClient('10 seconds'), LoggingHttpClient.layer)
   const runtime = yield* Effect.runtime()
 
   return (input, init) =>

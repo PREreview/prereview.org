@@ -18,6 +18,7 @@ import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
 import * as LibsqlEventStore from './LibsqlEventStore.js'
 import { DefaultLocale, translate } from './locales/index.js'
+import * as LoggingHttpClient from './LoggingHttpClient.js'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
 import * as OpenAlex from './OpenAlex/index.js'
 import { getNameFromOrcid } from './orcid.js'
@@ -469,6 +470,6 @@ export const Program = pipe(
       Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
     ),
   ),
-  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch)),
+  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch, LoggingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(Uuid.layer, Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv), MigratorLive)),
 )
