@@ -449,11 +449,11 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(getPrereview)),
   Layer.provide(
     Layer.mergeAll(
-      Layer.provide(doesPreprintExist, CachingHttpClient.layer('10 minutes')),
-      Layer.provide(resolvePreprintId, CachingHttpClient.layer('10 minutes')),
-      Layer.provide(getPreprintId, CachingHttpClient.layer('10 minutes')),
-      Layer.provide(getPreprint, CachingHttpClient.layer('10 minutes')),
-      Layer.provide(getPreprintTitle, CachingHttpClient.layer('10 minutes')),
+      Layer.provide(doesPreprintExist, CachingHttpClient.layer('1 day')),
+      Layer.provide(resolvePreprintId, CachingHttpClient.layer('1 day')),
+      Layer.provide(getPreprintId, CachingHttpClient.layer('1 day')),
+      Layer.provide(getPreprint, CachingHttpClient.layer('1 day')),
+      Layer.provide(getPreprintTitle, CachingHttpClient.layer('1 day')),
       Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
       Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
       doesUserHaveAVerifiedEmailAddress,
