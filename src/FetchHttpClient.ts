@@ -39,7 +39,10 @@ const transmogrifyHttpClient: Effect.Effect<
   never,
   HttpClient.HttpClient | CachingHttpClient.HttpCache
 > = Effect.gen(function* () {
-  const client = yield* Effect.provide(CachingHttpClient.CachingHttpClient('10 seconds'), LoggingHttpClient.layer)
+  const client = yield* Effect.provide(
+    CachingHttpClient.CachingHttpClient('10 seconds', '30 seconds'),
+    LoggingHttpClient.layer,
+  )
   const runtime = yield* Effect.runtime()
 
   return (input, init) =>
