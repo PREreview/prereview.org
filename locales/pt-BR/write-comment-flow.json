@@ -51,7 +51,7 @@
     "message": "<error>Erro:</error> Selecione o nome que você deseja usar"
   },
   "whichNameTip": {
-    "message": "Você pode escolher entre o nome no seu registro ORCID\u0000 ou seu pseudônimo PREreview."
+    "message": "Você pode escolher entre o nome no seu registro ORCID ou seu pseudônimo PREreview."
   },
   "whatIsPseudonym": {
     "message": "O que é um pseudônimo PREreview?"
