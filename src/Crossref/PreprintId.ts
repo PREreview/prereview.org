@@ -11,9 +11,9 @@ export type CrossrefPreprintId = Extract<PreprintId, { value: Doi.Doi<CrossrefDo
 export type IndeterminateCrossrefPreprintId = Extract<IndeterminatePreprintId, { value: Doi.Doi<CrossrefDoiPrefix> }>
 
 export const isCrossrefPreprintId = (id: IndeterminatePreprintId): id is IndeterminateCrossrefPreprintId =>
-  id.type !== 'philsci' && isCrossrefPreprintDoi(id.value)
+  id.type !== 'philsci' && isDoiFromSupportedPublisher(id.value)
 
-export const isCrossrefPreprintDoi = Doi.hasRegistrant(...crossrefDoiPrefixes)
+export const isDoiFromSupportedPublisher = Doi.hasRegistrant(...crossrefDoiPrefixes)
 
 export const fromCrossrefPreprintDoi = pipe(
   Match.type<Doi.Doi<CrossrefDoiPrefix>>(),
