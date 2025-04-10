@@ -1,4 +1,10 @@
-import { HttpClient, HttpClientError, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
+import {
+  HttpClient,
+  HttpClientResponse,
+  UrlParams,
+  type HttpClientError,
+  type HttpClientRequest,
+} from '@effect/platform'
 import { DateTime, Effect, Function, Layer, pipe, Queue, type Duration } from 'effect'
 import { Status } from 'hyper-ts'
 import * as HttpCache from './HttpCache.js'
@@ -68,11 +74,6 @@ export const CachingHttpClient = (
         return yield* pipe(
           req,
           httpClient.execute,
-          Effect.timeout('2 seconds'),
-          Effect.catchTag(
-            'TimeoutException',
-            error => new HttpClientError.RequestError({ request: req, reason: 'Transport', cause: error }),
-          ),
           Effect.tap(
             HttpClientResponse.matchStatus({
               [Status.OK]: response =>
