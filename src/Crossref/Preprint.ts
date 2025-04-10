@@ -1,8 +1,41 @@
 import { Array, Either } from 'effect'
 import { html } from '../html.js'
 import * as Preprint from '../preprint.js'
-import { fromCrossrefPreprintDoi, isDoiFromSupportedPublisher } from './PreprintId.js'
+import { type CrossrefPreprintId, fromCrossrefPreprintDoi, isDoiFromSupportedPublisher } from './PreprintId.js'
 import type { Work } from './Work.js'
+
+const determineCrossrefPreprintId = (work: Work): Either.Either<CrossrefPreprintId, Preprint.PreprintIsUnavailable> =>
+  Either.gen(function* () {
+    const doi = work.DOI
+
+    if (!isDoiFromSupportedPublisher(doi)) {
+      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
+    }
+
+    const indeterminateId = fromCrossrefPreprintDoi(doi)
+
+    if (indeterminateId.type !== 'biorxiv-medrxiv') {
+      return indeterminateId
+    }
+
+    const institutionName = work.institution?.[0].name
+
+    if (institutionName === 'bioRxiv') {
+      return {
+        value: indeterminateId.value,
+        type: 'biorxiv',
+      }
+    }
+
+    if (institutionName === 'medRxiv') {
+      return {
+        value: indeterminateId.value,
+        type: 'medrxiv',
+      }
+    }
+
+    return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
+  })
 
 export const workToPreprint = (
   work: Work,
@@ -12,13 +45,7 @@ export const workToPreprint = (
       yield* Either.left(new Preprint.NotAPreprint({ cause: { type: work.type, subtype: work.subtype } }))
     }
 
-    const doi = work.DOI
-
-    if (!isDoiFromSupportedPublisher(doi)) {
-      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
-    }
-
-    const id = fromCrossrefPreprintDoi(doi)
+    const id = yield* determineCrossrefPreprintId(work)
 
     const authors = yield* Array.match(work.author, {
       onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { author: work.author } })),

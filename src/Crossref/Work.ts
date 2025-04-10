@@ -63,6 +63,7 @@ export class Work extends Schema.Class<Work>('Work')({
     ),
     { default: Array.empty },
   ),
+  institution: Schema.optional(Schema.Tuple(Schema.Struct({ name: Schema.String }))),
   published: PublishedSchema,
   'group-title': Schema.optional(Schema.NonEmptyTrimmedString),
   type: Schema.NonEmptyTrimmedString,
