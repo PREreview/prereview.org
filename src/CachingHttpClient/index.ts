@@ -11,6 +11,7 @@ export const CacheTimeout = '200 millis'
 
 export const CachingHttpClient = (
   timeToStale: Duration.DurationInput,
+  requestTimeout: Duration.DurationInput = '2 seconds',
 ): Effect.Effect<HttpClient.HttpClient, never, HttpCache.HttpCache | HttpClient.HttpClient> =>
   Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient
@@ -68,7 +69,7 @@ export const CachingHttpClient = (
         return yield* pipe(
           req,
           httpClient.execute,
-          Effect.timeout('2 seconds'),
+          Effect.timeout(requestTimeout),
           Effect.catchTag(
             'TimeoutException',
             error => new HttpClientError.RequestError({ request: req, reason: 'Transport', cause: error }),
