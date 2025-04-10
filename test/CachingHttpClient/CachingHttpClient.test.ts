@@ -71,6 +71,27 @@ describe('there is no cache entry', () => {
 
   describe('the request fails', () => {
     test.prop([
+      fc.httpClientResponse({ request: fc.httpClientRequest({ method: fc.constant('GET') }) }),
+      fc.durationInput(),
+    ])('with a timeout', (response, timeToStale) =>
+      Effect.gen(function* () {
+        const cache = new Map()
+        const client = yield* pipe(
+          _.CachingHttpClient(timeToStale),
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(response, '3 seconds')),
+          Effect.provide(_.layerInMemory(cache)),
+        )
+
+        const fiber = yield* pipe(client.execute(response.request), Effect.either, Effect.fork)
+        yield* TestClock.adjust('3 seconds')
+        const actualResponse = yield* Fiber.join(fiber)
+
+        expect(actualResponse).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'RequestError' })))
+        expect(cache.size).toBe(0)
+      }).pipe(EffectTest.run),
+    )
+
+    test.prop([
       fc.httpClientRequest({ method: fc.constant('GET') }),
       fc.durationInput(),
       fc.httpClientRequestError({ reason: fc.constant('Transport') }),
