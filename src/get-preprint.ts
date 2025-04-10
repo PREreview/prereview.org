@@ -12,7 +12,11 @@ import {
 } from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './philsci.js'
 import * as Preprint from './preprint.js'
-import type { IndeterminatePreprintId } from './types/preprint-id.js'
+import type { IndeterminatePreprintId, PhilsciPreprintId } from './types/preprint-id.js'
+
+const isCrossrefPreprintIdHandledByLegacyAdapter = (
+  id: Exclude<IndeterminatePreprintId, PhilsciPreprintId>,
+): id is IndeterminateCrossrefPreprintId => isCrossrefPreprintDoi(id.value)
 
 const getPreprintFromSource = pipe(
   Match.type<IndeterminatePreprintId>(),
@@ -25,15 +29,13 @@ const getPreprintFromSource = pipe(
     }),
   ),
   Match.when(Crossref.isCrossrefPreprintId, Crossref.getPreprintFromCrossref),
-  Match.when(
-    (id): id is IndeterminateCrossrefPreprintId => isCrossrefPreprintDoi(id.value),
-    id =>
-      Effect.gen(function* () {
-        const fetch = yield* FetchHttpClient.Fetch
-        const sleep = yield* DeprecatedSleepEnv
+  Match.when(isCrossrefPreprintIdHandledByLegacyAdapter, id =>
+    Effect.gen(function* () {
+      const fetch = yield* FetchHttpClient.Fetch
+      const sleep = yield* DeprecatedSleepEnv
 
-        return yield* FptsToEffect.readerTaskEither(getPreprintFromCrossref(id), { fetch, ...sleep })
-      }),
+      return yield* FptsToEffect.readerTaskEither(getPreprintFromCrossref(id), { fetch, ...sleep })
+    }),
   ),
   Match.when(
     (id): id is IndeterminateDatacitePreprintId => isDatacitePreprintDoi(id.value),
