@@ -70,7 +70,7 @@ export class Work extends Schema.Class<Work>('Work')({
   subtype: Schema.optional(Schema.NonEmptyTrimmedString),
 }) {}
 
-const ResponseSchema = <A, I, R>(message: Schema.Schema<A, I, R>) =>
+export const ResponseSchema = <A, I, R>(message: Schema.Schema<A, I, R>) =>
   Schema.Struct({
     status: Schema.Literal('ok'),
     message,
