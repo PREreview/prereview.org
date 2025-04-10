@@ -45,6 +45,9 @@ jobs:
       - name: 'Remove empty locales'
         run: find locales -empty -type d -delete
 
+      - name: 'Remove unwanted characters'
+        run: find locales -type f -exec sed --in-place --expression='s|\\u0000||g' {} \;
+
       - name: 'Commit changes'
         uses: stefanzweifel/git-auto-commit-action@v5.1.0
         if: ${{ !env.ACT }}
