@@ -1,0 +1,8 @@
+{
+  "whichPreprint": {
+    "message": "<error>Erro:</error> Qual preprint você está avaliando?"
+  },
+  "useDoiUrl": {
+    "message": "Use o DOI ou URL do preprint."
+  }
+}

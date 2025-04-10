@@ -1,0 +1,149 @@
+{
+  "writeCommentTitle": {
+    "message": "Escrever um comentário"
+  },
+  "back": {
+    "message": "Voltar"
+  },
+  "backToPrereview": {
+    "message": "Voltar para a Avaliação PREreview"
+  },
+  "youCanWrite": {
+    "message": "Você pode escrever um comentário nesta Avaliação PREreview de {preprint}."
+  },
+  "beforeStartHeading": {
+    "message": "Antes de começar"
+  },
+  "orcidLogIn": {
+    "message": "Vamos pedir para você fazer login com seu ORCID iD. Se você não tiver um iD, você pode criar um."
+  },
+  "whatIsOrcidHeading": {
+    "message": "O que é um ORCID iD?"
+  },
+  "whatIsOrcid": {
+    "message": "Um <link>ORCID iD</link> é um identificador único que diferencia você de outras pessoas com o mesmo nome ou nome semelhante."
+  },
+  "startNowButton": {
+    "message": "Começar agora"
+  },
+  "continueButton": {
+    "message": "Continuar"
+  },
+  "saveContinueButton": {
+    "message": "Salvar e continuar"
+  },
+  "reloadPageButton": {
+    "message": "Recarregar página"
+  },
+  "carryOnMessage": {
+    "message": "Como você já começou um comentário nesta Avaliação PREreview de {preprint}, vamos para a próxima etapa para que você possa continuar."
+  },
+  "enterYourCommentTitle": {
+    "message": "<error>Erro:</error> Escreva seu comentário"
+  },
+  "errorSummaryHeading": {
+    "message": "Houve um problema"
+  },
+  "errorEnterComment": {
+    "message": "<error>Erro:</error> Digite seu comentário"
+  },
+  "errorSelectName": {
+    "message": "<error>Erro:</error> Selecione o nome que você deseja usar"
+  },
+  "whichNameTip": {
+    "message": "Você pode escolher entre o nome no seu registro ORCID\u0000 ou seu pseudônimo PREreview."
+  },
+  "whatIsPseudonym": {
+    "message": "O que é um pseudônimo PREreview?"
+  },
+  "whatIsPseudonymDefinition": {
+    "message": "Um <term>pseudônimo PREreview</term> é um nome alternativo que você pode usar em vez do seu nome real. Ele é único e combina uma cor e um animal aleatórios. Seu pseudônimo é ‘{pseudonym}’."
+  },
+  "whatIsPseudonymAccountability": {
+    "message": "Usando seu pseudônimo, você pode contribuir com avaliações abertas de preprints sem temer represálias ou julgamentos, que podem ocorrer ao usar seu nome real. No entanto, usar um pseudônimo mantém um certo grau de responsabilidade."
+  },
+  "linkToOrcidId": {
+    "message": "Vincularemos seu comentário ao seu ORCID iD."
+  },
+  "linkToPseudonym": {
+    "message": "Vincularemos seu comentário apenas a outros que também usam seu pseudônimo."
+  },
+  "competingInterestsTitle": {
+    "message": "<error>Erro:</error> Você tem algum conflito de interesse?"
+  },
+  "errorCompetingInterests": {
+    "message": "<error>Erro:</error> Selecione sim se você tiver conflito de interesse"
+  },
+  "errorCompetingInterestsDetails": {
+    "message": "<error>Erro:</error> Forneça detalhes dos seus conflitos de interesse"
+  },
+  "competingInterestsTip": {
+    "message": "Um conflito de interesse é qualquer fator que possa interferir na objetividade do comentário em uma Avaliação PREreview."
+  },
+  "examplesCompetingInterests": {
+    "message": "Exemplos"
+  },
+  "competingInterestsRelationship": {
+    "message": "Você tem uma relação pessoal com o autor do preprint."
+  },
+  "competingInterestsCompetitor": {
+    "message": "Você é rival ou concorrente do autor do preprint."
+  },
+  "competingInterestsWorkedWith": {
+    "message": "Você trabalhou recentemente com o autor do preprint."
+  },
+  "competingInterestsWorkPlace": {
+    "message": "Você trabalha no mesmo lugar em que o autor do preprint trabalha."
+  },
+  "competingInterestsCollaborate": {
+    "message": "Você colabora com o autor do preprint."
+  },
+  "competingInterestsPublishedWith": {
+    "message": "Você publicou com o autor do preprint nos últimos cinco anos."
+  },
+  "competingInterestsGrantWith": {
+    "message": "Você possui um financiamento em conjunto com o autor do preprint ou tem outros vínculos financeiros."
+  },
+  "competingInterestsCommenter": {
+    "message": "Qualquer um desses mesmos critérios se aplica à sua relação com outra pessoa que já comentou neste preprint."
+  },
+  "competingInterestsNo": {
+    "message": "Não"
+  },
+  "competingInterestsYes": {
+    "message": "Sim"
+  },
+  "competingInterestsDetailsTitle": {
+    "message": "Quais são eles?"
+  },
+  "codeOfConductTitle": {
+    "message": "<error>Erro:</error> Código de Conduta"
+  },
+  "errorFollowingCodeOfConduct": {
+    "message": "<error>Erro:</error> Confirme que você está seguindo o Código de Conduta"
+  },
+  "codeOfConductTip": {
+    "message": "Como membro da nossa comunidade, esperamos que você respeite o <link>Código de Conduta da PREreview</link>."
+  },
+  "examplesExpectedBehaviors": {
+    "message": "Exemplos de comportamentos esperados"
+  },
+  "expectedBehaviorLanguage": {
+    "message": "Usar linguagem acolhedora e inclusiva."
+  },
+  "expectedBehaviorConstructive": {
+    "message": "Fornecer feedback construtivo, ou seja, útil para quem o recebe."
+  },
+  "expectedBehaviorRespectful": {
+    "message": "Respeitar pontos de vista e experiências diferentes."
+  },
+  "expectedBehaviorGraceful": {
+    "message": "Aceitar graciosamente críticas construtivas."
+  },
+  "expectedBehaviorCommunity": {
+    "message": "Focar no que é melhor para a comunidade."
+  },
+  "expectedBehaviorEmpathy": {
+    "message": "Demonstrar empatia com os outros membros da comunidade."
+  }
+}

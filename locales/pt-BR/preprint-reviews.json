@@ -1,0 +1,137 @@
+{
+  "prereviewsOf": {
+    "message": "Avaliações PREreview de {preprint}"
+  },
+  "abstractHeading": {
+    "message": "Resumo"
+  },
+  "posted": {
+    "message": "Publicado"
+  },
+  "server": {
+    "message": "Servidor"
+  },
+  "itemId": {
+    "message": "ID do Item"
+  },
+  "readPreprint": {
+    "message": "Ler o preprint"
+  },
+  "writeAPrereview": {
+    "message": "Escrever uma Avaliação PREreview"
+  },
+  "requestAPrereview": {
+    "message": "Solicitar uma Avaliação PREreview"
+  },
+  "prereviewByOneAuthor": {
+    "message": "Avaliação PREreview de {author}"
+  },
+  "prereviewByOneAuthorInClub": {
+    "message": "Avaliação PREreview de {author} do {club}"
+  },
+  "prereviewByMultipleAuthors": {
+    "message": "Avaliação PREreview de {author} et al."
+  },
+  "prereviewByMultipleAuthorsInClub": {
+    "message": "Avaliação PREreview de {author} et al. do {club}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {{number, number} outro autor} other {{number, number} outros autores}}"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>De autoria</visuallyHidden> de {authors}"
+  },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>De autoria</visuallyHidden> de {authors} do {club}"
+  },
+  "readPrereviewByOneAuthor": {
+    "message": "Ler <visuallyHidden>a avaliação PREreview de {author}</visuallyHidden>"
+  },
+  "readPrereviewByOneAuthorInClub": {
+    "message": "Ler <visuallyHidden>a avaliação PREreview de {author} do {club}</visuallyHidden>"
+  },
+  "readPrereviewByMultipleAuthors": {
+    "message": "Ler <visuallyHidden>a avaliação PREreview de {author} et al.</visuallyHidden>"
+  },
+  "readPrereviewByMultipleAuthorsInClub": {
+    "message": "Ler <visuallyHidden>a avaliação PREreview de {author} et al. do {club}</visuallyHidden>"
+  },
+  "rapidPrereviews": {
+    "message": "{number, plural, one {{number, number} Avaliação PREreview Rápida} other {{number, number} Avaliações PREreview Rápidas}}"
+  },
+  "whereCanRapidPrereview": {
+    "message": "Onde posso preencher uma Avaliação PREreview Rápida?"
+  },
+  "rapidReplacedWith": {
+    "message": "Recentemente, substituímos as Avaliações PREreview Rápidas por <link>Avaliações PREreview Estruturadas</link>."
+  },
+  "writeStructuredPrereview": {
+    "message": "Você pode <link>escrever uma Avaliação PREreview Estruturada</link> agora."
+  },
+  "updatingRapidPrereviews": {
+    "message": "Em breve, atualizaremos Avaliações PREreview Rápidas mais antigas como estas."
+  },
+  "aggregatedRapidPreviews": {
+    "message": "Avaliações PREreview Rápidas Agregadas"
+  },
+  "question": {
+    "message": "Pergunta"
+  },
+  "yes": {
+    "message": "Sim"
+  },
+  "unsure": {
+    "message": "Não tenho certeza"
+  },
+  "na": {
+    "message": "N/A"
+  },
+  "no": {
+    "message": "Não"
+  },
+  "rapidAvailableCode": {
+    "message": "O código usado no manuscrito está disponível?"
+  },
+  "rapidAvailableData": {
+    "message": "Os dados utilizados no manuscrito estão disponíveis?"
+  },
+  "rapidCoherent": {
+    "message": "As conclusões principais são apoiadas pelos dados e pela análise?"
+  },
+  "rapidEthics": {
+    "message": "Os autores discutiram adequadamente as questões éticas?"
+  },
+  "rapidFuture": {
+    "message": "É provável que os resultados conduzam a pesquisas futuras?"
+  },
+  "rapidLimitations": {
+    "message": "O manuscrito discute limitações?"
+  },
+  "rapidMethods": {
+    "message": "Os métodos e estatísticas são apropriados para a análise?"
+  },
+  "rapidNewData": {
+    "message": "O manuscrito inclui novos dados?"
+  },
+  "rapidNovel": {
+    "message": "Os achados são inéditos?"
+  },
+  "rapidPeerReview": {
+    "message": "Você recomenda este manuscrito para revisão por pares?"
+  },
+  "rapidRecommend": {
+    "message": "Você recomendaria este manuscrito a outras pessoas?"
+  },
+  "rapidReproducibility": {
+    "message": "Detalhes suficientes são fornecidos para permitir a reprodução do estudo?"
+  },
+  "havingProblems": {
+    "message": "Desculpe, algo deu errado"
+  },
+  "unableToShow": {
+    "message": "Não foi possível exibir o preprint e suas avaliações PREreview."
+  },
+  "tryAgainLater": {
+    "message": "Por favor, tente novamente mais tarde."
+  }
+}

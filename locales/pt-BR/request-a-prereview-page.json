@@ -1,0 +1,26 @@
+{
+  "requestTitle": {
+    "message": "<error>Erro:</error> Qual preprint você gostaria que fosse avaliado?"
+  },
+  "useDoiUrl": {
+    "message": "Use o DOI ou URL do preprint."
+  },
+  "whatIsDoi": {
+    "message": "O que é um DOI?"
+  },
+  "whatIsDoiText": {
+    "message": "Um <doi>DOI</doi> é um identificador único que você pode encontrar em muitos preprints. Por exemplo, {example} ou {exampleUrl}."
+  },
+  "errorSummaryTitle": {
+    "message": "Houve um problema"
+  },
+  "errorEnterPreprint": {
+    "message": "<error>Erro:</error> Digite o DOI ou URL do preprint"
+  },
+  "dontKnowPreprint": {
+    "message": "Desculpe, não reconhecemos este preprint"
+  },
+  "notAPreprint": {
+    "message": "Desculpe, apenas aceitamos preprints"
+  }
+}

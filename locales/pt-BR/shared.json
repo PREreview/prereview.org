@@ -1,0 +1,11 @@
+{
+  "errorPrefix": {
+    "message": "Erro: "
+  },
+  "errorSummaryTitle": {
+    "message": "Houve um problema"
+  },
+  "saveAndContinue": {
+    "message": "Salvar e continuar"
+  }
+}

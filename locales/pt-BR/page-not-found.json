@@ -1,0 +1,14 @@
+{
+  "pageNotFoundTitle": {
+    "message": "Página não encontrada"
+  },
+  "checkCorrect": {
+    "message": "Se você digitou o endereço do site, verifique se está correto."
+  },
+  "checkEntire": {
+    "message": "Se você colou o endereço do site, verifique se copiou o endereço completo."
+  },
+  "contactUs": {
+    "message": "Se o endereço do site estiver correto ou se você tiver selecionado um link ou botão, por favor, <contact>entre em contato</contact>."
+  }
+}
