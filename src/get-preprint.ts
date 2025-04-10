@@ -28,7 +28,6 @@ const getPreprintFromSource = pipe(
       return yield* FptsToEffect.readerTaskEither(getPreprintFromPhilsci(id), { fetch, ...sleep })
     }),
   ),
-  Match.when(Crossref.isCrossrefPreprintId, Crossref.getPreprintFromCrossref),
   Match.when(isCrossrefPreprintIdHandledByLegacyAdapter, id =>
     Effect.gen(function* () {
       const fetch = yield* FetchHttpClient.Fetch
@@ -37,6 +36,7 @@ const getPreprintFromSource = pipe(
       return yield* FptsToEffect.readerTaskEither(getPreprintFromCrossref(id), { fetch, ...sleep })
     }),
   ),
+  Match.when(Crossref.isCrossrefPreprintId, Crossref.getPreprintFromCrossref),
   Match.when(
     (id): id is IndeterminateDatacitePreprintId => isDatacitePreprintDoi(id.value),
     id =>
