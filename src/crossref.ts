@@ -17,7 +17,6 @@ import type {
   AdvancePreprintId,
   AfricarxivOsfPreprintId,
   AuthoreaPreprintId,
-  BiorxivPreprintId,
   ChemrxivPreprintId,
   CurvenotePreprintId,
   EartharxivPreprintId,
@@ -25,7 +24,6 @@ import type {
   EdarxivPreprintId,
   EngrxivPreprintId,
   IndeterminatePreprintId,
-  MedrxivPreprintId,
   MetaarxivPreprintId,
   OsfPreprintsPreprintId,
   PreprintId,
@@ -40,7 +38,6 @@ import type {
 } from './types/preprint-id.js'
 
 const crossrefDoiPrefixes = [
-  '1101',
   '1590',
   '12688',
   '14293',
@@ -178,7 +175,6 @@ const detectLanguageForServer = ({
     .with({ type: 'advance' }, () => Option.some('en' as const))
     .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
     .with({ type: 'authorea', text: P.select() }, detectLanguage)
-    .with({ type: P.union('biorxiv', 'medrxiv') }, () => Option.some('en' as const))
     .with({ type: 'chemrxiv' }, () => Option.some('en' as const))
     .with({ type: 'curvenote' }, () => Option.some('en' as const))
     .with({ type: 'eartharxiv' }, () => Option.some('en' as const))
@@ -231,20 +227,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Authorea, Inc.'),
     }),
     D.map(work => ({ type: 'authorea', value: work.DOI }) satisfies AuthoreaPreprintId),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('1101'), 'DOI'),
-      publisher: D.literal('Cold Spring Harbor Laboratory'),
-      institution: D.fromTuple(D.struct({ name: D.literal('bioRxiv') })),
-    }),
-    D.map(
-      work =>
-        ({
-          type: 'biorxiv',
-          value: work.DOI,
-        }) satisfies BiorxivPreprintId,
-    ),
   ),
   pipe(
     D.fromStruct({
@@ -323,20 +305,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
           type: 'engrxiv',
           value: work.DOI,
         }) satisfies EngrxivPreprintId,
-    ),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('1101'), 'DOI'),
-      publisher: D.literal('Cold Spring Harbor Laboratory'),
-      institution: D.fromTuple(D.struct({ name: D.literal('medRxiv') })),
-    }),
-    D.map(
-      work =>
-        ({
-          type: 'medrxiv',
-          value: work.DOI,
-        }) satisfies MedrxivPreprintId,
     ),
   ),
   pipe(
