@@ -1,0 +1,144 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "institution": [{ "name": "bioRxiv" }],
+    "indexed": {
+      "date-parts": [[2025, 2, 6]],
+      "date-time": "2025-02-06T03:10:21Z",
+      "timestamp": 1738811421470,
+      "version": "3.37.0"
+    },
+    "posted": { "date-parts": [[2025, 2, 5]] },
+    "group-title": "Microbiology",
+    "reference-count": 0,
+    "publisher": "Cold Spring Harbor Laboratory",
+    "license": [
+      {
+        "start": { "date-parts": [[2025, 2, 5]], "date-time": "2025-02-05T00:00:00Z", "timestamp": 1738713600000 },
+        "content-version": "vor",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "accepted": { "date-parts": [[2025, 2, 5]] },
+    "abstract": "<jats:p>Shigellosis is a leading cause of diarrhoeal deaths worldwide, with<jats:italic>Shigella sonnei<\/jats:italic>increasingly implicated as a dominant agent.<jats:italic>S. sonnei<\/jats:italic>is divided into five monophyletic lineages all sharing a single O-antigen, yet most contemporary infections are caused by just a few clonal sub-lineages within globally dominant Lineage 3 that are quite distinct from the widely used Lineage 2 laboratory strain 53G. Factors underlying the success of these globally dominant lineages remain poorly understood in part due to a lack of complete genome sequences and available animal models. Here, we utilise a novel reference collection of representative Lineage 1, 2 and 3 isolates with complete genome sequences, and find that epidemiologically successful<jats:italic>S. sonnei<\/jats:italic>harbour fewer genes encoding putative immunogenic components whilst key virulence-associated regions (such as the type three secretion system and O-antigen) remain highly conserved. Using a zebrafish infection model, we discover that Lineage 3 isolates are most virulent, driven by significantly increased dissemination and a greater neutrophil response. We show that Lineage 3 isolates have increased tolerance to complement-mediated killing and acidic conditions alongside upregulated expression of group four capsule synthesis genes. Consistent with these observations, infection of primary human neutrophils revealed that Lineage 3 isolates are more tolerant of phagosomal killing. Together, our findings link the epidemiological success of<jats:italic>S. sonnei<\/jats:italic>to heightened virulence and stress tolerance and highlight zebrafish as a valuable platform to illuminate factors underlying establishment of<jats:italic>Shigella<\/jats:italic>epidemiological success.<\/jats:p>",
+    "DOI": "10.1101\/2025.02.05.636615",
+    "type": "posted-content",
+    "created": { "date-parts": [[2025, 2, 6]], "date-time": "2025-02-06T02:40:21Z", "timestamp": 1738809621000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Enhanced virulence and stress tolerance are signatures of epidemiologically successful<i>Shigella sonnei<\/i>"
+    ],
+    "prefix": "10.1101",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-2291-4105",
+        "authenticated-orcid": false,
+        "given": "Sydney L",
+        "family": "Miles",
+        "sequence": "first",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0009-0004-3966-4952",
+        "authenticated-orcid": false,
+        "given": "Dilys",
+        "family": "Santillo",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-7340-0249",
+        "authenticated-orcid": false,
+        "given": "Vincenzo",
+        "family": "Torraca",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-0289-738X",
+        "authenticated-orcid": false,
+        "given": "Ana Teresa",
+        "family": "L\u00f3pez Jim\u00e9nez",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-8600-9169",
+        "authenticated-orcid": false,
+        "given": "Claire",
+        "family": "Jenkins",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-1308-5755",
+        "authenticated-orcid": false,
+        "given": "Stephen",
+        "family": "Baker",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-5850-1949",
+        "authenticated-orcid": false,
+        "given": "Kate S",
+        "family": "Baker",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-3519-0727",
+        "authenticated-orcid": false,
+        "given": "Vanessa",
+        "family": "Sancho-Shimizu",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-3949-2471",
+        "authenticated-orcid": false,
+        "given": "Kathryn E",
+        "family": "Holt",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-7286-6503",
+        "authenticated-orcid": false,
+        "given": "Serge",
+        "family": "Mostowy",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "246",
+    "container-title": [],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https:\/\/syndication.highwire.org\/content\/doi\/10.1101\/2025.02.05.636615",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": { "date-parts": [[2025, 2, 6]], "date-time": "2025-02-06T02:40:22Z", "timestamp": 1738809622000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "http:\/\/biorxiv.org\/lookup\/doi\/10.1101\/2025.02.05.636615" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2025, 2, 5]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.1101\/2025.02.05.636615",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2025, 2, 5]] },
+    "subtype": "preprint"
+  }
+}
