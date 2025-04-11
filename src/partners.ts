@@ -60,6 +60,11 @@ export const partners = (locale: SupportedLocale) => {
           </a>
         </li>
         <li>
+          <a href="https://www.preprints.org/">
+            <img src="${assets['preprintsorg.png']}" width="774" height="140" alt="Preprints.org" />
+          </a>
+        </li>
+        <li>
           <a href="https://scielo.org/">
             <img src="${assets['scielo.svg']}" width="538" height="562" alt="SciELO" />
           </a>
