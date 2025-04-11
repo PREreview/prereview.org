@@ -1,5 +1,5 @@
 import { Array, Either } from 'effect'
-import { html } from '../html.js'
+import { sanitizeHtml } from '../html.js'
 import * as Preprint from '../preprint.js'
 import { type CrossrefPreprintId, fromCrossrefPreprintDoi, isDoiFromSupportedPublisher } from './PreprintId.js'
 import type { Work } from './Work.js'
@@ -63,7 +63,7 @@ export const workToPreprint = (
       onNonEmpty: title =>
         Either.right({
           language: 'en' as const,
-          text: html`${title[0]}`,
+          text: sanitizeHtml(title[0]),
         }),
     })
 

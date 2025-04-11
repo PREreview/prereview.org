@@ -104,7 +104,7 @@ test.each([
       title: {
         language: 'en',
         text: rawHtml(
-          'Enhanced virulence and stress tolerance are signatures of epidemiologically successful&lt;i&gt;Shigella sonnei&lt;/i&gt;',
+          'Enhanced virulence and stress tolerance are signatures of epidemiologically successful<i>Shigella sonnei</i>',
         ),
       },
       url: new URL('http://biorxiv.org/lookup/doi/10.1101/2025.02.05.636615'),
