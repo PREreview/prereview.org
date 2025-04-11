@@ -23,6 +23,12 @@
   "messageEmailVerified": {
     "message": "Seu endereço de e-mail foi confirmado."
   },
+  "messageOrcidConnected": {
+    "message": "Seu registro ORCID foi conectado."
+  },
+  "messageOrcidDisconnected": {
+    "message": "Seu registro ORCID foi desconectado."
+  },
   "messageSlackConnected": {
     "message": "Sua conta da Comunidade Slack foi conectada."
   },

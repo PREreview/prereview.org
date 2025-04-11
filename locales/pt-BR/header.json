@@ -43,5 +43,8 @@
   },
   "menuClubs": {
     "message": "Clubes"
+  },
+  "onlyEnglish": {
+    "message": "Esta página está disponível apenas em inglês."
   }
 }

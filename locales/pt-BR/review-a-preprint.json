@@ -32,6 +32,9 @@
   "doiCouldBeArcadiaScience": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint Arcadia Science, mas não conseguimos encontrar detalhes."
   },
+  "doiCouldBeArxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint arXiv, mas não conseguimos encontrar detalhes."
+  },
   "doiCouldBeAuthorea": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint Authorea, mas não conseguimos encontrar detalhes."
   },

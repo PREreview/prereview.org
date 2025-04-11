@@ -1,9 +1,27 @@
 {
+  "connectOrcidRecord": {
+    "message": "Conecte seu registro ORCID"
+  },
+  "canConnect": {
+    "message": "Você pode conectar seu perfil PREreview ao seu registro ORCID."
+  },
+  "willAddPrereviews": {
+    "message": "Vamos adicionar suas avaliações PREreview ao seu registro ORCID."
+  },
   "beforeYouStart": {
     "message": "Antes de começar"
   },
+  "sendYouToOrcid": {
+    "message": "Vamos redirecionar você para o ORCID, onde será solicitado que faça login e conceda à PREreview acesso ao seu registro. Pode ser que você já tenha realizado essas etapas; o ORCID redirecionará você de volta à PREreview."
+  },
   "startNow": {
     "message": "Começar agora"
+  },
+  "cannotConnectRecord": {
+    "message": "Desculpe, não foi possível conectar seu registro"
+  },
+  "youDeniedAccess": {
+    "message": "Você negou à PREreview o acesso ao seu registro ORCID."
   },
   "tryAgain": {
     "message": "Por favor, tente novamente."
@@ -11,10 +29,28 @@
   "havingProblems": {
     "message": "Desculpe, algo deu errado"
   },
+  "unableToConnect": {
+    "message": "Não foi possível conectar seu registro no momento."
+  },
+  "unableToDisconnect": {
+    "message": "Não foi possível desconectar seu registro no momento."
+  },
   "tryAgainLater": {
     "message": "Por favor, tente novamente mais tarde."
   },
+  "disconnectOrcidRecord": {
+    "message": "Desconectar seu registro ORCID"
+  },
+  "canDisconnect": {
+    "message": "Você pode desconectar seu perfil PREreview do seu registro ORCID."
+  },
+  "stopAddingPrereviews": {
+    "message": "Deixaremos de adicionar novas avaliações PREreview ao seu registro ORCID."
+  },
   "canReconnect": {
     "message": "Você poderá reconectá-lo a qualquer momento."
+  },
+  "disconnectRecordButton": {
+    "message": "Desconectar registro"
   }
 }

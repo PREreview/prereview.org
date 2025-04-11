@@ -17,6 +17,9 @@
   "readPreprint": {
     "message": "Ler o preprint"
   },
+  "prereviews": {
+    "message": "{number, plural, one {{number, number} Avaliação PREreview} other {{number, number} Avaliações PREreview}}"
+  },
   "writeAPrereview": {
     "message": "Escrever uma Avaliação PREreview"
   },

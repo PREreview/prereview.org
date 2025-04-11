@@ -1,4 +1,7 @@
 {
+  "devName": {
+    "message": "Dev"
+  },
   "devText": {
     "message": "Desenvolvimento local"
   },

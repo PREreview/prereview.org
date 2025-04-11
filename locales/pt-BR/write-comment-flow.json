@@ -47,6 +47,9 @@
   "errorEnterComment": {
     "message": "<error>Erro:</error> Digite seu comentário"
   },
+  "whatNameTitle": {
+    "message": "<error>Erro:</error> Que nome deseja usar?"
+  },
   "errorSelectName": {
     "message": "<error>Erro:</error> Selecione o nome que você deseja usar"
   },
