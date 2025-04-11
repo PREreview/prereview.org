@@ -1,5 +1,6 @@
 import { Array, Either } from 'effect'
 import { sanitizeHtml } from '../html.js'
+import { transformJatsToHtml } from '../jats.js'
 import * as Preprint from '../preprint.js'
 import { type CrossrefPreprintId, fromCrossrefPreprintDoi, isDoiFromSupportedPublisher } from './PreprintId.js'
 import type { Work } from './Work.js'
@@ -67,11 +68,15 @@ export const workToPreprint = (
         }),
     })
 
+    const abstract =
+      work.abstract !== undefined ? { language: 'en' as const, text: transformJatsToHtml(work.abstract) } : undefined
+
     return Preprint.Preprint({
       authors,
       id,
       posted: work.published,
       title,
+      abstract,
       url: work.resource.primary.URL,
     })
   })
