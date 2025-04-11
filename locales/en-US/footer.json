@@ -41,8 +41,8 @@
   "contactEmail": {
     "message": "Email us at {address}"
   },
-  "contactTwitter": {
-    "message": "{handle} on Twitter"
+  "contactBluesky": {
+    "message": "{handle} on Bluesky"
   },
   "contactMastodon": {
     "message": "{handle} on Mastodon"

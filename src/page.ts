@@ -391,10 +391,11 @@ export const page = ({
                         translate(
                           locale,
                           'footer',
-                          'contactTwitter',
+                          'contactBluesky',
                         )({
-                          handle: html`</span><a href="https://twitter.com/PREreview_" class="twitter" translate="no"
-                            >@PREreview_</a
+                          handle:
+                            html`</span><a href="https://bsky.app/profile/prereview.bsky.social" class="bluesky" translate="no"
+                            >@prereview.bsky.social</a
                             ><span class="visually-hidden">`.toString(),
                         }),
                       )}

@@ -146,6 +146,25 @@ summary > span {
       }
     }
 
+    &.bluesky {
+      &::before {
+        content: '';
+        margin-inline-end: 0.4ch;
+        padding-inline-end: 1.1em;
+        background-color: currentcolor;
+        mask-image: url('remixicon/icons/Logos/bluesky-fill.svg');
+        mask-repeat: no-repeat;
+        mask-origin: content-box;
+        mask-position: left 0% bottom 40%;
+        mask-size: 1.1em;
+
+        @media (forced-colors: active) {
+          forced-color-adjust: none;
+          background-color: LinkText;
+        }
+      }
+    }
+
     &.mastodon {
       &::before {
         content: '';
