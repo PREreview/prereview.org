@@ -1,3 +1,4 @@
+import { Url } from '@effect/platform'
 import { Array, Either } from 'effect'
 import { sanitizeHtml } from '../html.js'
 import { transformJatsToHtml } from '../jats.js'
@@ -77,6 +78,6 @@ export const workToPreprint = (
       posted: work.published,
       title,
       abstract,
-      url: work.resource.primary.URL,
+      url: Url.setProtocol(work.resource.primary.URL, 'https'),
     })
   })
