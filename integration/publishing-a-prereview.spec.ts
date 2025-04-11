@@ -1,5 +1,5 @@
 import { Doi } from 'doi-ts'
-import { Function } from 'effect'
+import { Duration, Function } from 'effect'
 import { Status } from 'hyper-ts'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import { Orcid } from 'orcid-id-ts'
@@ -364,14 +364,16 @@ test
   fetch
     .getOnce(
       'http://prereview.test/api/v2/resolve?identifier=10.1101/2022.01.13.476201',
-      new Promise(() => setTimeout(() => ({ body: { uuid: 'e7d28fbe-013a-4987-9faa-7f44a9f7683a' } }), 5000)),
+      { body: { uuid: 'e7d28fbe-013a-4987-9faa-7f44a9f7683a' } },
+      { delay: Duration.toMillis('5 seconds') },
     )
     .postOnce(
       {
         url: 'http://prereview.test/api/v2/full-reviews',
         headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
       },
-      new Promise(() => setTimeout(() => ({ status: Status.Created }), 5000)),
+      { status: Status.Created },
+      { delay: Duration.toMillis('5 seconds') },
     )
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
@@ -1715,7 +1717,8 @@ test('might not load the preprint in time', async ({ fetch, page }) => {
 
   fetch.get(
     'https://api.crossref.org/works/10.1101%2Fthis-should-take-too-long',
-    new Promise(() => setTimeout(() => ({ status: Status.NotFound }), 2000)),
+    { status: Status.NotFound },
+    { delay: Duration.toMillis('2.5 seconds') },
   )
 
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -1906,20 +1909,16 @@ test('might not authenticate with ORCID in time', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   fetch.postOnce(
     'http://orcid.test/token',
-    new Promise(() =>
-      setTimeout(
-        () => ({
-          status: Status.OK,
-          body: {
-            access_token: 'access-token',
-            token_type: 'Bearer',
-            name: 'Josiah Carberry',
-            orcid: '0000-0002-1825-0097',
-          },
-        }),
-        2000,
-      ),
-    ),
+    {
+      status: Status.OK,
+      body: {
+        access_token: 'access-token',
+        token_type: 'Bearer',
+        name: 'Josiah Carberry',
+        orcid: '0000-0002-1825-0097',
+      },
+    },
+    { delay: Duration.toMillis('2.5 seconds') },
   )
   await page.getByRole('button', { name: 'Start now' }).click()
 
@@ -1976,15 +1975,8 @@ test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, pag
       url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
       headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
     },
-    new Promise(() =>
-      setTimeout(
-        () => ({
-          status: Status.NotFound,
-        }),
-        2000,
-      ),
-    ),
-    { overwriteRoutes: true },
+    { status: Status.NotFound },
+    { delay: Duration.toMillis('2.5 seconds'), overwriteRoutes: true },
   )
   await page.getByRole('button', { name: 'Start now' }).click()
 

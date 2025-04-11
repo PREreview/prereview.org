@@ -1,4 +1,5 @@
 import { Doi } from 'doi-ts'
+import { Duration } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordsC } from 'zenodo-ts'
@@ -96,7 +97,8 @@ test('might not load PREreviews in time', async ({ fetch, page }) => {
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
-    new Promise(() => setTimeout(() => ({ body: RecordsC.encode({ hits: { total: 0, hits: [] } }) }), 2000)),
+    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    { delay: Duration.toMillis('2.5 seconds') },
   )
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')

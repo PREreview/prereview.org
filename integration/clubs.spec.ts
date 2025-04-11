@@ -1,3 +1,4 @@
+import { Duration } from 'effect'
 import { expect, test } from './base.js'
 
 test('can read about clubs', async ({ fetch, page }) => {
@@ -21,9 +22,8 @@ test('can read about clubs', async ({ fetch, page }) => {
 test('might not load the text in time', async ({ fetch, page }) => {
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/64637b4c07fb34a92c7f84ec', query: { key: 'key' } },
-    new Promise(() =>
-      setTimeout(() => ({ body: { pages: [{ html: '<p>Some information about clubs.</p>' }] } }), 2000),
-    ),
+    { body: { pages: [{ html: '<p>Some information about clubs.</p>' }] } },
+    { delay: Duration.toMillis('2.5 seconds') },
   )
 
   await page.goto('/clubs')
