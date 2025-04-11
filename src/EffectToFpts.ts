@@ -58,7 +58,7 @@ export const toReaderTask = <A, R>(effect: Effect.Effect<A, never, R>): RT.Reade
     RT.chainTaskK(
       ({ runtime }) =>
         () =>
-          Runtime.runPromise(runtime)(Effect.interruptible(effect)),
+          Runtime.runPromise(runtime)(effect),
     ),
   )
 

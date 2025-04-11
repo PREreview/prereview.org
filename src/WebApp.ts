@@ -200,7 +200,7 @@ const logDefects = Effect.tapDefect(cause =>
 export const WebApp = pipe(
   Router,
   HttpRouter.concat(LegacyRouter),
-  Effect.catchTag('RouteNotFound', () => ExpressHttpApp),
+  Effect.catchTag('RouteNotFound', () => Effect.interruptible(ExpressHttpApp)),
   serveStaticFiles,
   removeTrailingSlashes,
   addSecurityHeaders,
