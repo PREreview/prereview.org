@@ -1708,7 +1708,7 @@ test('when it is not a preprint', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we only support preprints')
 })
 
-test.skip('might not load the preprint in time', async ({ fetch, page }) => {
+test('might not load the preprint in time', async ({ fetch, page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/this-should-take-too-long')
