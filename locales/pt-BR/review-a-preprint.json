@@ -4,5 +4,149 @@
   },
   "useDoiUrl": {
     "message": "Use o DOI ou URL do preprint."
+  },
+  "whatIsDoi": {
+    "message": "O que é um DOI?"
+  },
+  "whatIsDoiText": {
+    "message": "Um <doi>DOI</doi> é um identificador único que você pode encontrar em muitos preprints. Por exemplo, {example} ou {exampleUrl}."
+  },
+  "errorSummaryTitle": {
+    "message": "Houve um problema"
+  },
+  "errorEnterPreprint": {
+    "message": "<error>Erro:</error> Digite o DOI ou URL do preprint"
+  },
+  "havingProblems": {
+    "message": "Desculpe, algo deu errado"
+  },
+  "dontKnowPreprint": {
+    "message": "Desculpe, não reconhecemos este preprint"
+  },
+  "doiCouldBeAdvance": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Advance, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeAfricarxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint AfricArXiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeArcadiaScience": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Arcadia Science, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeAuthorea": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Authorea, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeBiorxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint bioRxiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeBiorxivMedrxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint bioRxiv ou medRxiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeChemrxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint ChemRxiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeCurvenote": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Curvenote, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeEartharxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint EarthArXiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeEcoevorxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint EcoEvoRxiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeEdarxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint EdArXiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeEngrxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint engrXiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeJxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Jxiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeMedrxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint medRxiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeMetaarxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint MetaArXiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeNeurolibre": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint NeuroLibre, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeOsf": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint OSF, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBePreprintsorg": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Preprints.org, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBePsyarxiv": {
+    "message": "Achamos que o DOI {doi} pode ser um preprint PsyArXiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBePsycharchives": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint PsychArchives, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeResearchSquare": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Research Square, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeScielo": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint SciELO, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeScienceOpen": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint ScienceOpen, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeSocarxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint SocArXiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeSsrn": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint SSRN, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeTechrxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint TechRxiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeVerixiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint VeriXiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeZenodo": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Zenodo, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeZenodoAfricarxiv": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Zenodo ou AfricArXiv, mas não conseguimos encontrar detalhes."
+  },
+  "urlCouldBePhilsci": {
+    "message": "Acreditamos que o URL {url} pode ser um preprint PhilSci-Archive, mas não conseguimos encontrar detalhes."
+  },
+  "checkCorrectDoi": {
+    "message": "Se você digitou o DOI, verifique se está correto."
+  },
+  "checkCorrectUrl": {
+    "message": "Se você digitou o URL, verifique se está correto."
+  },
+  "checkPastedDoi": {
+    "message": "Se você colou o DOI, verifique se copiou o endereço completo."
+  },
+  "checkPastedUrl": {
+    "message": "Se você copiou o URL, verifique se copiou o endereço completo."
+  },
+  "doiIsCorrect": {
+    "message": "Se o DOI estiver correto, por favor <contact>entre em contato</contact>."
+  },
+  "urlIsCorrect": {
+    "message": "Se o URL estiver correto, por favor, <contact>entre em contato</contact>."
+  },
+  "isAPreprint": {
+    "message": "Se isso for um preprint, por favor, <contact>entre em contato</contact>."
+  },
+  "otherwiseUseDoi": {
+    "message": "Caso contrário, se o preprint tiver um DOI, tente usá-lo."
+  },
+  "unableToPublishNow": {
+    "message": "Não é possível publicar avaliações PREreview para este preprint agora."
+  },
+  "tryAgainLater": {
+    "message": "Por favor, tente novamente mais tarde."
+  },
+  "continueButton": {
+    "message": "Continuar"
+  },
+  "back": {
+    "message": "Voltar"
   }
 }

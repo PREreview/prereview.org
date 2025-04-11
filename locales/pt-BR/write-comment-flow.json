@@ -145,5 +145,110 @@
   },
   "expectedBehaviorEmpathy": {
     "message": "Demonstrar empatia com os outros membros da comunidade."
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "Exemplos de comportamentos inaceitáveis"
+  },
+  "unacceptableBehaviorAttacks": {
+    "message": "Provocações (trollagem), insultos, comentários depreciativos e ataques pessoais ou políticos."
+  },
+  "unacceptableBehaviorUnconstructive": {
+    "message": "Fornecer feedback não construtivo ou que prejudique a Avaliação PREreview."
+  },
+  "unacceptableBehaviorHarassment": {
+    "message": "Assédio público ou privado."
+  },
+  "unacceptableBehaviorConfidential": {
+    "message": "Divulgar informações confidenciais de outras pessoas, como endereço físico ou eletrônico, sem permissão explícita."
+  },
+  "unacceptableBehaviorSexual": {
+    "message": "Uso de linguagem ou imagens sexualizadas e atenção ou avanços sexuais indesejados."
+  },
+  "unacceptableBehaviorOther": {
+    "message": "Qualquer outro comportamento que possa, de forma razoável, ser considerado inadequado em um ambiente profissional."
+  },
+  "followingCodeOfConduct": {
+    "message": "Estou seguindo o Código de Conduta"
+  },
+  "contactDetailsTitle": {
+    "message": "<error>Erro:</error> Dados de contato"
+  },
+  "errorEnterEmailAddress": {
+    "message": "<error>Erro:</error> Digite seu endereço de e-mail"
+  },
+  "errorEnterValidEmailAddress": {
+    "message": "<error>Erro:</error> Digite um endereço de e-mail no formato correto, como nome@exemplo.com"
+  },
+  "needToConfirmEmailAddress": {
+    "message": "Estamos prontos para publicar seu comentário, mas primeiro precisamos confirmar seu endereço de e-mail."
+  },
+  "emailAddressUse": {
+    "message": "Usaremos seu e-mail apenas para entrar em contato sobre sua conta e o que você publicar."
+  },
+  "whatIsYourEmailAddressTitle": {
+    "message": "Qual é seu endereço de e-mail?"
+  },
+  "verifyEmailAddressTitle": {
+    "message": "Confirmar seu endereço de e-mail"
+  },
+  "howToVerifyEmailAddress": {
+    "message": "Por favor, abra o e-mail que enviamos para {emailAddress} e siga o link. Você poderá então publicar seu comentário."
+  },
+  "onceEmailAddressVerified": {
+    "message": "Depois que seu endereço for verificado, você pode fechar esta página."
+  },
+  "checkTitle": {
+    "message": "Verificar seu comentário"
+  },
+  "checkYourDetailsHeading": {
+    "message": "Seus dados"
+  },
+  "publishedNameHeading": {
+    "message": "Nome publicado"
+  },
+  "changeName": {
+    "message": "Alterar <visuallyHidden>nome</visuallyHidden>"
+  },
+  "competingInterestsHeading": {
+    "message": "Conflitos de interesse"
+  },
+  "changeCompetingInterests": {
+    "message": "Alterar <visuallyHidden>conflitos de interesse</visuallyHidden>"
+  },
+  "noCompetingInterests": {
+    "message": "O autor deste comentário declara que não possui conflitos de interesse."
+  },
+  "checkYourCommentHeading": {
+    "message": "Seu comentário"
+  },
+  "changeComment": {
+    "message": "Alterar <visuallyHidden>comentário</visuallyHidden>"
+  },
+  "nowPublishHeading": {
+    "message": "Agora publique seu comentário"
+  },
+  "nowPublishMessage": {
+    "message": "Atribuiremos um DOI (identificador permanente) ao seu comentário e o tornaremos publicamente disponível sob <license>licença CC BY 4.0</license>."
+  },
+  "publishButton": {
+    "message": "Publicar comentário"
+  },
+  "publishingTitle": {
+    "message": "Estamos publicando seu comentário"
+  },
+  "publishingSeeShortlyMessage": {
+    "message": "Você poderá ver seu comentário em breve."
+  },
+  "publishedTitle": {
+    "message": "Comentário publicado"
+  },
+  "publishedYourDoi": {
+    "message": "Seu DOI {doi}"
+  },
+  "publishedHappensNextHeading": {
+    "message": "O que acontece a seguir"
+  },
+  "publishedSeeShortlyMessage": {
+    "message": "Você poderá ver seu comentário em breve."
   }
 }

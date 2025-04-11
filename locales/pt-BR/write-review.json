@@ -1,0 +1,663 @@
+{
+  "prereviewOf": {
+    "message": "Avaliação PREreview de “{preprintTitle}”"
+  },
+  "or": {
+    "message": "ou"
+  },
+  "havingProblems": {
+    "message": "Desculpe, algo deu errado"
+  },
+  "ownPreprint": {
+    "message": "Desculpe, você não pode revisar seu próprio preprint"
+  },
+  "unableToPublish": {
+    "message": "Não foi possível publicar sua Avaliação PREreview. Salvamos seu trabalho."
+  },
+  "tryAgainLater": {
+    "message": "Por favor, tente novamente mais tarde voltando para esta página."
+  },
+  "ifNotAuthor": {
+    "message": "Se você não for autor, por favor, <contact>entre em contato</contact>."
+  },
+  "getInTouch": {
+    "message": "Se o problema persistir, por favor <contact>entre em contato</contact>."
+  },
+  "enterTheirName": {
+    "message": "Digite o nome da pessoa"
+  },
+  "enterTheirEmail": {
+    "message": "Digite o endereço de e-mail da pessoa"
+  },
+  "invalidEmail": {
+    "message": "Digite um endereço de e-mail no formato correto, como nome@exemplo.com"
+  },
+  "addAuthor": {
+    "message": "Adicionar um autor"
+  },
+  "nameInputLabel": {
+    "message": "Nome"
+  },
+  "theyWillChooseTheirName": {
+    "message": "A pessoa poderá escolher o nome publicado."
+  },
+  "emailAddress": {
+    "message": "Endereço de e-mail"
+  },
+  "useOfEmail": {
+    "message": "Usaremos o e-mail apenas para entrar em contato sobre esta avaliação PREreview."
+  },
+  "back": {
+    "message": "Voltar"
+  },
+  "howWouldYouLikeToStart": {
+    "message": "Como gostaria de iniciar sua avaliação PREreview?"
+  },
+  "selectHowToStart": {
+    "message": "Selecione como gostaria de iniciar sua avaliação PREreview"
+  },
+  "withPrompts": {
+    "message": "Com sugestões guiadas"
+  },
+  "withTemplate": {
+    "message": "Com um modelo"
+  },
+  "alreadyWritten": {
+    "message": "Já escrevi a avaliação"
+  },
+  "weWillAskQuestions": {
+    "message": "Faremos perguntas sobre o preprint para criar uma avaliação estruturada."
+  },
+  "weWillTemplate": {
+    "message": "Ofereceremos um modelo básico, mas você pode avaliar do seu jeito."
+  },
+  "pasteYourReview": {
+    "message": "<error>Erro:</error> Cole sua avaliação PREreview"
+  },
+  "writeYourReview": {
+    "message": "<error>Erro:</error> Escreva sua avaliação PREreview"
+  },
+  "thereIsAProblem": {
+    "message": "Houve um problema"
+  },
+  "selectTheNameError": {
+    "message": "Selecione o nome que deseja usar"
+  },
+  "youCanChooseBetweenNames": {
+    "message": "Você pode escolher entre o nome no seu registro ORCID ou seu pseudônimo PREreview."
+  },
+  "whatIsAPseudonym": {
+    "message": "O que é um pseudônimo PREreview?"
+  },
+  "pseudonymIsA": {
+    "message": "Um <term>pseudônimo PREreview</term> é um nome alternativo que você pode usar em vez do seu nome real. Ele é único e combina uma cor e um animal aleatórios. Seu pseudônimo é ‘{pseudonym}.’"
+  },
+  "pseudonymAccountability": {
+    "message": "Usando seu pseudônimo, você pode contribuir com avaliações abertas de preprints sem temer represálias ou julgamentos, que podem ocorrer ao usar seu nome real. No entanto, usar um pseudônimo mantém um certo grau de responsabilidade."
+  },
+  "linkToOrcidId": {
+    "message": "Vincularemos sua avaliação PREreview ao seu ORCID iD."
+  },
+  "linkToPseudonym": {
+    "message": "Vincularemos sua avaliação PREreview apenas a outras que também usam seu pseudônimo."
+  },
+  "pasteYourReviewError": {
+    "message": "<error>Erro:</error> Cole sua avaliação PREreview"
+  },
+  "enterYourReviewError": {
+    "message": "<error>Erro:</error> Insira sua avaliação PREreview"
+  },
+  "copyAndPasteReview": {
+    "message": "Copie sua avaliação PREreview e cole aqui. Faremos o possível para manter a formatação."
+  },
+  "writeReviewSupport": {
+    "message": "Queremos apoiar você na contribuição de feedbacks de alta qualidade na PREreview. Confira nossas <link>dicas e recursos para avaliadores</link>."
+  },
+  "goodBehaviorExamples": {
+    "message": "Exemplos de bom comportamento de avaliadores"
+  },
+  "goodBehaviorRespectful": {
+    "message": "Ser respeitoso com autores e seus trabalhos."
+  },
+  "goodBehaviorHumble": {
+    "message": "Ser humilde e estar ciente de como gostaria de receber feedback de outras pessoas."
+  },
+  "goodBehaviorActionable": {
+    "message": "Oferecer feedback claro, construtivo e prático que possa melhorar o preprint."
+  },
+  "reviewSectionsExamples": {
+    "message": "Exemplos de seções úteis em uma avaliação"
+  },
+  "beginSummary": {
+    "message": "Comece com um resumo da pesquisa e como ela contribui para a área de estudo."
+  },
+  "sharePositiveFeedback": {
+    "message": "Em seguida, compartilhe seu feedback positivo, incluindo os pontos fortes da abordagem e os resultados."
+  },
+  "shareConcerns": {
+    "message": "Por fim, compartilhe preocupações mais relevantes e menos críticas, com sugestões claras, construtivas e práticas para abordá-las."
+  },
+  "writeAShortSummary": {
+    "message": "Escreva um breve resumo dos principais achados da pesquisa e de como este trabalho contribuiu para o avanço da área."
+  },
+  "majorIssues": {
+    "message": "Questões principais"
+  },
+  "listSignificantConcerns": {
+    "message": "Liste preocupações significativas sobre a pesquisa, se houver."
+  },
+  "minorIssues": {
+    "message": "Questões secundárias"
+  },
+  "listFlowConcerns": {
+    "message": "Liste preocupações que melhorariam o fluxo ou a clareza geral, mas que não são críticas para a compreensão e as conclusões da pesquisa."
+  },
+  "addedAuthorCount": {
+    "message": "Você adicionou {authorCount, number} {authorCount, plural, one {outro autor} other {outros autores}}"
+  },
+  "authorNumber": {
+    "message": "Autor {number, number}"
+  },
+  "changeAuthorDetailsLink": {
+    "message": "Alterar dados de <visuallyHidden>{name}</visuallyHidden>"
+  },
+  "removeAuthor": {
+    "message": "Remover <visuallyHidden>{name}</visuallyHidden>"
+  },
+  "name": {
+    "message": "Nome"
+  },
+  "addAnotherAuthor": {
+    "message": "Adicionar outro autor"
+  },
+  "no": {
+    "message": "Não"
+  },
+  "yes": {
+    "message": "Sim"
+  },
+  "saveAndContinueButton": {
+    "message": "Salvar e continuar"
+  },
+  "continueButton": {
+    "message": "Continuar"
+  },
+  "enterName": {
+    "message": "Digite o nome da pessoa"
+  },
+  "enterEmail": {
+    "message": "Digite o endereço de e-mail da pessoa"
+  },
+  "changeAuthorDetailsHeading": {
+    "message": "Alterar detalhes de {name}"
+  },
+  "ableToChoseName": {
+    "message": "A pessoa poderá escolher o nome publicado."
+  },
+  "error": {
+    "message": "Erro"
+  },
+  "backNav": {
+    "message": "Voltar"
+  },
+  "prereviewPublishedTitle": {
+    "message": "Avaliação PREreview publicada"
+  },
+  "yourDoi": {
+    "message": "Seu DOI"
+  },
+  "whatHappensNext": {
+    "message": "O que acontece em seguida",
+    "description": "Heading for details of what happens next and when; the user has completed their task and has no further actions to take."
+  },
+  "whereYouCanSeeYourPrereview": {
+    "message": "Você poderá ver sua avaliação PREreview em breve. Também aparecerá na nossa {communitySlackLink}{isScietyPreprint, boolean, true { e {scietyLink}} false {}}."
+  },
+  "communitySlack": {
+    "message": "Comunidade Slack"
+  },
+  "opensInNewTab": {
+    "message": "abre em uma nova aba"
+  },
+  "letUsKnowAuthorDetails": {
+    "message": "Por favor, informe os dados dos outros autores (nomes e ORCID iDs), e nós os adicionaremos à avaliação PREreview. Nosso endereço de e-mail é {mailtoHelp}."
+  },
+  "sentEmailsToAuthors": {
+    "message": "Enviamos e-mails aos outros autores, convidando-os a aparecer."
+  },
+  "shareYourReview": {
+    "message": "Compartilhe sua avaliação"
+  },
+  "letCommunityKnow": {
+    "message": "Avise à comunidade que você publicou sua avaliação."
+  },
+  "writeATweet": {
+    "message": "Escreva um Tweet"
+  },
+  "shareOnLinkedin": {
+    "message": "Compartilhe no LinkedIn"
+  },
+  "listOnSciety": {
+    "message": "Liste no Sciety"
+  },
+  "howItWent": {
+    "message": "Conte-nos como foi"
+  },
+  "scheduleAnInterview": {
+    "message": "<link>Agende uma entrevista</link> com nossa equipe de produto para conversar sobre sua experiência na PREreview. Agradecemos a colaboração oferecendo uma compensação às pessoas entrevistadas!"
+  },
+  "backToPreprint": {
+    "message": "Voltar ao preprint"
+  },
+  "publishTitle": {
+    "message": "Publicar sua avaliação PREreview de “{preprintTitle}”"
+  },
+  "checkPrereview": {
+    "message": "Verificar sua avaliação PREreview"
+  },
+  "preprintDetails": {
+    "message": "Detalhes do preprint"
+  },
+  "preprintTitle": {
+    "message": "Título"
+  },
+  "preprintServer": {
+    "message": "Servidor de preprint"
+  },
+  "authorDetails": {
+    "message": "Dados do autor"
+  },
+  "yourDetails": {
+    "message": "Seus dados"
+  },
+  "yourPublishedName": {
+    "message": "Seu nome publicado"
+  },
+  "publishedName": {
+    "message": "Nome publicado"
+  },
+  "changeName": {
+    "message": "Alterar <visuallyHidden>nome</visuallyHidden>"
+  },
+  "invitedAuthors": {
+    "message": "{number, plural, one {Autor convidado} other {Autores convidados}}"
+  },
+  "changeInvitedAuthors": {
+    "message": "Alterar <visuallyHidden>autores convidados</visuallyHidden>"
+  },
+  "changeCompetingInterests": {
+    "message": "Alterar <visuallyHidden>conflitos de interesse</visuallyHidden>"
+  },
+  "changePrereview": {
+    "message": "Alterar <visuallyHidden>avaliação PREreview</visuallyHidden>"
+  },
+  "doesIntroductionExplain": {
+    "message": "A introdução explica o objetivo da pesquisa apresentada no preprint?"
+  },
+  "changeIfIntroExplains": {
+    "message": "Alterar <visuallyHidden>se a introdução explica o objetivo da pesquisa apresentada no preprint</visuallyHidden>"
+  },
+  "methodsWellSuited": {
+    "message": "Os métodos são adequados para esta pesquisa?"
+  },
+  "changeMethodsWellSuited": {
+    "message": "Alterar <visuallyHidden>se os métodos são adequados para esta pesquisa</visuallyHidden>"
+  },
+  "conclusionsSupported": {
+    "message": "As conclusões são apoiadas pelos dados?"
+  },
+  "changeConclusionsSupported": {
+    "message": "Alterar <visuallyHidden>se as conclusões são apoiadas pelos dados</visuallyHidden>"
+  },
+  "dataPresentationWellSuited": {
+    "message": "As apresentações de dados, incluindo visualizações, são adequadas para representar os dados?"
+  },
+  "changeDataPresentationWellSuited": {
+    "message": "Alterar <visuallyHidden>se as apresentações de dados são adequadas para representar os dados?</visuallyHidden>"
+  },
+  "clearDiscussion": {
+    "message": "Quão claramente os autores discutem, explicam e interpretam seus achados e possíveis próximos passos da pesquisa?"
+  },
+  "changeClearDiscussion": {
+    "message": "Alterar <visuallyHidden>quão claramente os autores discutem seus achados e próximos passos</visuallyHidden>"
+  },
+  "advanceKnowledge": {
+    "message": "É provável que o preprint contribua para o avanço do conhecimento acadêmico?"
+  },
+  "changeAdvanceKnowledge": {
+    "message": "Alterar <visuallyHidden>se é provável que o preprint contribua para o avanço do conhecimento acadêmico</visuallyHidden>"
+  },
+  "benefitFromEditing": {
+    "message": "Seria benéfico passar por uma revisão de linguagem?"
+  },
+  "changeBenefitFromEditing": {
+    "message": "Alterar <visuallyHidden>se seria benéfico passar por uma revisão de linguagem</visuallyHidden>"
+  },
+  "wouldRecommend": {
+    "message": "Você recomendaria este preprint a outras pessoas?"
+  },
+  "changeWouldRecommend": {
+    "message": "Alterar <visuallyHidden>se você recomendaria este preprint a outras pessoas</visuallyHidden>"
+  },
+  "readyForAttention": {
+    "message": "Está pronto para receber atenção de um editor, de editoras ou de um público mais amplo?"
+  },
+  "changeReadyForAttention": {
+    "message": "Alterar <visuallyHidden>se está pronto para receber atenção de um editor, de editoras ou de um público mais amplo</visuallyHidden>"
+  },
+  "nowPublish": {
+    "message": "Agora publique sua avaliação PREreview"
+  },
+  "weWillAssignLicense": {
+    "message": "Atribuiremos um DOI (identificador permanente) à sua avaliação PREreview e a tornaremos publicamente disponível sob a licença {licenseLink}."
+  },
+  "publishButton": {
+    "message": "Publicar avaliação PREreview"
+  },
+  "selectYesToRemove": {
+    "message": "Selecione sim se desejar remover {authorName}"
+  },
+  "sureYouWantToRemove": {
+    "message": "Tem certeza de que deseja remover {authorName}?"
+  },
+  "yesRemove": {
+    "message": "Sim, remover {authorName}"
+  },
+  "writeAPrereview": {
+    "message": "Escrever uma avaliação PREreview"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>De autoria</visuallyHidden> de {authors}"
+  },
+  "posted": {
+    "message": "Publicado"
+  },
+  "server": {
+    "message": "Servidor"
+  },
+  "itemId": {
+    "message": "ID do Item"
+  },
+  "youCanWriteAPrereview": {
+    "message": "Você pode escrever uma avaliação PREreview de {preprintTitle}. Uma avaliação PREreview é uma avaliação de um preprint e pode variar de algumas frases a um parecer extenso, semelhante a um parecer de revisão por pares realizado por periódicos."
+  },
+  "beforeStartHeading": {
+    "message": "Antes de começar"
+  },
+  "orcidLogIn": {
+    "message": "Vamos pedir que você faça login com seu ORCID iD. Se você não tiver um iD, pode criar um."
+  },
+  "whatIsOrcidHeading": {
+    "message": "O que é um ORCID iD?"
+  },
+  "whatIsOrcid": {
+    "message": "Um <link>ORCID iD</link> é um identificador único que diferencia você de outras pessoas com o mesmo nome ou nome semelhante."
+  },
+  "startNowButton": {
+    "message": "Começar agora"
+  },
+  "continueWord": {
+    "message": "Continuar"
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "Como você já começou uma avaliação PREreview de <cite>{preprintTitle}</cite>, vamos para a próxima etapa para que possa continuar."
+  },
+  "selectYesIfYouReviewedWithSomeoneElse": {
+    "message": "Selecione sim se você avaliou o preprint com outra pessoa"
+  },
+  "confirmOtherAuthorsHaveReadAndApproved": {
+    "message": "Confirme que os outros autores leram e aprovaram a avaliação PREreview"
+  },
+  "didYouReviewWithAnyoneElse": {
+    "message": "Você avaliou este preprint com mais alguém?"
+  },
+  "thisCanIncludePeopleWho": {
+    "message": "Isso pode incluir pessoas que contribuíram para a discussão ou redigiram a avaliação."
+  },
+  "noIReviewedAlone": {
+    "message": "Não, eu avaliei sozinho"
+  },
+  "yesButDoNotWantToBeListed": {
+    "message": "Sim, mas não querem ser listados como autores"
+  },
+  "yesAndWantToBeListed": {
+    "message": "Sim, e alguns ou todos querem ser listados como autores"
+  },
+  "theyHaveReadAndApproved": {
+    "message": "Leram e aprovaram a avaliação PREreview"
+  },
+  "useOfAi": {
+    "message": "Uso de Inteligência Artificial (IA)"
+  },
+  "useOfAiShort": {
+    "message": "Uso de IA"
+  },
+  "discloseAiIdeas": {
+    "message": "Pedimos que todos os avaliadores informem o uso de IA que tenha ajudado a gerar novas ideias para sua avaliação PREreview. Exemplos de ferramentas de IA generativa são ChatGPT e Gemini."
+  },
+  "aiEditing": {
+    "message": "Não é necessário declarar ferramentas de IA usadas apenas para edição de linguagem ou para acessibilidade, desde que as ideias em sua avaliação PREreview sejam suas."
+  },
+  "understandHowCreated": {
+    "message": "Fazemos essa solicitação para ajudar os leitores a entenderem como a avaliação foi criada: se é um feedback humano, de máquina ou uma combinação de ambos. Podemos remover avaliações cujas ideias tenham sido inteiramente geradas por IA."
+  },
+  "didYouUseAi": {
+    "message": "Você usou IA para gerar ideias para esta avaliação?"
+  },
+  "didAuthorsUseAi": {
+    "message": "Você ou algum dos outros autores usou IA para gerar ideias para essa avaliação?"
+  },
+  "selectYesIfUsedAi": {
+    "message": "Selecione sim se você usou IA para gerar ideias para esta revisão"
+  },
+  "selectYesIfAuthorsUsedAi": {
+    "message": "Selecione sim se você ou algum dos outros autores usou IA para gerar ideias para essa avaliação"
+  },
+  "aiIdeasStatement": {
+    "message": "O autor declara que usou IA generativa para desenvolver novas ideias para sua avaliação."
+  },
+  "aiIdeasAuthorsStatement": {
+    "message": "Os autores declaram que usaram IA generativa para desenvolver novas ideias para sua avaliação."
+  },
+  "aiNotUsed": {
+    "message": "Não utilizada"
+  },
+  "changeUseOfAi": {
+    "message": "Alterar <visuallyHidden>uso de IA</visuallyHidden>"
+  },
+  "whatNameToUse": {
+    "message": "Qual nome você gostaria de usar?"
+  },
+  "competingInterests": {
+    "message": "Conflitos de interesse"
+  },
+  "selectYesIfCompetingInterest": {
+    "message": "Selecione sim se você{otherAuthors, boolean, true {, ou algum dos outros autores,} false {}} possui algum conflito de interesse"
+  },
+  "competingInterestDetails": {
+    "message": "Insira detalhes dos {otherAuthors, boolean, true {the} false {your}} conflitos de interesse"
+  },
+  "doYouHaveCompetingInterests": {
+    "message": "Você{otherAuthors, boolean, true {, ou algum dos outros autores,} false {}} possui algum conflito de interesse?"
+  },
+  "discloseCompetingInterests": {
+    "message": "Solicitamos que todos os avaliadores declarem quaisquer conflitos de interesse que possam influenciar sua avaliação do preprint."
+  },
+  "whatIsCompetingInterest": {
+    "message": "Um conflito de interesse é qualquer fator que possa interferir na objetividade de uma avaliação PREreview."
+  },
+  "competingInterestsMatter": {
+    "message": "Conflitos de interesse são importantes porque podem introduzir um viés percebido ou real na avaliação do preprint. Declarar esses conflitos é essencial para garantir a transparência e manter a integridade do processo de avaliação."
+  },
+  "examples": {
+    "message": "Exemplos"
+  },
+  "conflictAuthorOfPreprint": {
+    "message": "Você é o autor do preprint"
+  },
+  "conflictPersonalRelationship": {
+    "message": "Você tem uma relação pessoal com o autor."
+  },
+  "conflictRivalOfAuthor": {
+    "message": "Você é rival ou concorrente do autor."
+  },
+  "conflictRecentlyWorkedTogether": {
+    "message": "Você trabalhou recentemente com o autor."
+  },
+  "conflictCollaborateWithAuthor": {
+    "message": "Você colabora com o autor."
+  },
+  "conflictPublishedTogether": {
+    "message": "Você publicou com o autor nos últimos cinco anos."
+  },
+  "conflictHoldGrantTogether": {
+    "message": "Você é co-beneficiário de um financiamento com o autor."
+  },
+  "whatAreThey": {
+    "message": "Quais são eles?"
+  },
+  "confirmCodeOfConduct": {
+    "message": "Confirme que você está seguindo o Código de Conduta"
+  },
+  "codeOfConduct": {
+    "message": "Código de Conduta"
+  },
+  "expectYouToAbideByCodeOfConduct": {
+    "message": "Como membro da nossa comunidade, esperamos que você respeite o <link>Código de Conduta da PREreview</link>."
+  },
+  "examplesOfExpectedBehaviour": {
+    "message": "Exemplos de comportamentos esperados"
+  },
+  "expectedBehaviourLanguage": {
+    "message": "Usar linguagem acolhedora e inclusiva."
+  },
+  "expectedBehaviourFeedback": {
+    "message": "Fornecer feedback construtivo, ou seja, útil para quem o recebe."
+  },
+  "expectedBehaviourRespect": {
+    "message": "Respeitar pontos de vista e experiências diferentes."
+  },
+  "expectedBehaviourGracefulAcceptance": {
+    "message": "Aceitar graciosamente críticas construtivas."
+  },
+  "expectedBehaviourBestOfCommunity": {
+    "message": "Focar no que é melhor para a comunidade."
+  },
+  "expectedBehaviourEmpathy": {
+    "message": "Demonstrar empatia em relação com os outros membros da comunidade."
+  },
+  "examplesOfUnacceptableBehaviour": {
+    "message": "Exemplos de comportamentos inaceitáveis"
+  },
+  "unacceptableBehaviourTrollingEtc": {
+    "message": "Provocações (trollagem), insultos, comentários depreciativos e ataques pessoais ou políticos."
+  },
+  "unacceptableBehaviourUnconstructive": {
+    "message": "Fornecer feedback não construtivo ou que prejudique a avaliação PREreview."
+  },
+  "unacceptableBehaviourHarassment": {
+    "message": "Assédio público ou privado."
+  },
+  "unacceptableBehaviourPublishingConfidentialInformation": {
+    "message": "Divulgar informações confidenciais de terceiros, como endereço físico ou eletrônico, sem permissão explícita."
+  },
+  "unacceptableBehaviourSexualisedLanguage": {
+    "message": "Uso de linguagem ou imagens sexualizadas e atenção ou avanços sexuais indesejados."
+  },
+  "unacceptableBehaviourInappropriate": {
+    "message": "Qualquer outro comportamento que possa, de forma razoável, ser considerado inadequado em um ambiente profissional."
+  },
+  "iAmFollowingCodeOfConduct": {
+    "message": "Estou seguindo o Código de Conduta"
+  },
+  "contactDetails": {
+    "message": "Dados de contato"
+  },
+  "enterEmailAddressError": {
+    "message": "Digite seu endereço de e-mail"
+  },
+  "enterEmailAddressFormatError": {
+    "message": "Digite um endereço de e-mail no formato correto, como nome@exemplo.com"
+  },
+  "confirmEmailAddress": {
+    "message": "Estamos prontos para publicar sua avaliação PREreview, mas antes precisamos confirmar seu endereço de e-mail."
+  },
+  "onlyUseContact": {
+    "message": "Usaremos o e-mail apenas para entrar em contato sobre sua conta e avaliações PREreview."
+  },
+  "whatIsYourEmail": {
+    "message": "Qual é seu endereço de e-mail?"
+  },
+  "verifyEmailAddress": {
+    "message": "Confirme seu endereço de e-mail"
+  },
+  "important": {
+    "message": "Importante"
+  },
+  "sentNewEmail": {
+    "message": "Enviamos um novo e-mail para você."
+  },
+  "howToVerifyEmailAddress": {
+    "message": "Por favor, abra o e-mail que enviamos para {emailAddress} e siga o link. Você poderá então publicar sua avaliação PREreview."
+  },
+  "onceEmailAddressVerified": {
+    "message": "Depois que seu endereço for confirmado, você pode fechar esta página."
+  },
+  "resendEmailButton": {
+    "message": "Reenviar e-mail"
+  },
+  "areTheDataPresentationsWellSuited": {
+    "message": "As apresentações de dados, incluindo visualizações, são adequadas para representar os dados?"
+  },
+  "selectIfDataPresentationsWellSuited": {
+    "message": "Selecione se as apresentações de dados são adequadas para representar os dados?"
+  },
+  "highlyAppropriateAndClear": {
+    "message": "Altamente adequadas e claras"
+  },
+  "highlyAppropriateAndClearTip": {
+    "message": "Seguem cuidadosamente as melhores práticas de acessibilidade e comunicam de forma eficaz os resultados e os principais padrões dos dados, tornando muito fácil compreendê-los ou interpretá-los."
+  },
+  "highlyAppropriateAndClearWhy": {
+    "message": "Por que são altamente adequadas e claras? (opcional)"
+  },
+  "somewhatAppropriate": {
+    "message": "Moderadamente adequadas e claras"
+  },
+  "somewhatAppropriateTip": {
+    "message": "Seguem as melhores práticas de acessibilidade e comunicam bem os resultados e principais padrões dos dados, tornando fácil compreendê-los ou interpretá-los."
+  },
+  "somewhatAppropriateWhy": {
+    "message": "Por que são moderadamente adequadas e claras? (opcional)"
+  },
+  "neitherAppropriateOrClear": {
+    "message": "Nem adequadas e claras, nem inadequadas e confusas"
+  },
+  "neitherAppropriateOrClearTip": {
+    "message": "Seguem alguns elementos das melhores práticas de acessibilidade e comunicam os resultados e padrões. Entretanto, as apresentações escolhidas não são as mais adequadas ou claras para este tipo de dado."
+  },
+  "neitherAppropriateOrClearWhy": {
+    "message": "Por que não são nem adequadas e claras, nem inadequadas e confusas? (opcional)"
+  },
+  "somewhatInappropriate": {
+    "message": "Moderadamente inadequadas ou confusas"
+  },
+  "somewhatInappropriateTip": {
+    "message": "Não seguem as melhores práticas de acessibilidade e contêm pequenas imprecisões, ambiguidades ou omissões, o que torna um pouco difícil compreender ou interpretar os dados de forma eficaz."
+  },
+  "somewhatInappropriateWhy": {
+    "message": "Por que são moderadamente inadequadas ou confusas? (opcional)"
+  },
+  "highlyInappropriate": {
+    "message": "Muito inadequadas ou confusas"
+  },
+  "highlyInappropriateTip": {
+    "message": "Apresentam barreiras significativas de acessibilidade e carecem de rotulagem adequada, escalas apropriadas ou informações contextuais relevantes, tornando muito difícil compreender ou interpretar os dados de forma eficaz."
+  },
+  "highlyInappropriateWhy": {
+    "message": "Por que elas são muito inadequadas ou confusas? (opcional)"
+  },
+  "iDoNotKnow": {
+    "message": "Não sei"
+  }
+}

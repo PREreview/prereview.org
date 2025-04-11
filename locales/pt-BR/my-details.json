@@ -66,6 +66,10 @@
   "changeEmailAddress": {
     "message": "Alterar <visuallyHidden>endereço de e-mail</visuallyHidden>"
   },
+  "openReviewRequests": {
+    "message": "Disponível para receber solicitações de avaliação",
+    "description": "Label for if the user is open to receiving review requests"
+  },
   "yes": {
     "message": "Sim"
   },
@@ -101,6 +105,10 @@
   },
   "researchInterests": {
     "message": "Interesses de pesquisa"
+  },
+  "enterResearchInterests": {
+    "message": "Digite seus interesses de pesquisa",
+    "description": "Link text to where the user will type in their research interests"
   },
   "changeResearchInterests": {
     "message": "Alterar <visuallyHidden>interesses de pesquisa</visuallyHidden>"

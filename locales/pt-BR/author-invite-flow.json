@@ -27,7 +27,7 @@
     "message": "Nome adicionado"
   },
   "whatHappensNext": {
-    "message": "Próximos passos",
+    "message": "O que acontece a seguir",
     "description": "Heading for details of what happens next and when; the user has completed their task and has no further actions to take."
   },
   "ableToSeePrereviewShortly": {
@@ -127,6 +127,6 @@
     "message": "Vincularemos sua avaliação PREreview ao seu iD ORCID."
   },
   "weWillOnlyLinkToOtherPseudonymPrereviews": {
-    "message": "Só vamos vincular sua avaliação PREreview a outras que também utilizem seu pseudônimo."
+    "message": "Vamos vincular sua avaliação PREreview apenas a outras que também utilizam o seu pseudônimo."
   }
 }
