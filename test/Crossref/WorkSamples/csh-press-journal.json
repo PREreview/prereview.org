@@ -1,0 +1,452 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 3, 18]],
+      "date-time": "2025-03-18T15:40:18Z",
+      "timestamp": 1742312418047,
+      "version": "3.40.1"
+    },
+    "reference-count": 107,
+    "publisher": "Cold Spring Harbor Laboratory",
+    "issue": "3",
+    "funder": [
+      { "name": "Portuguese Foundation for Science and Technology" },
+      {
+        "name": "FCT",
+        "award": [
+          "PTDC\/BIA-EVF\/2460\/2014",
+          "DivProtect\/0012\/2021",
+          "UIDP\/50027\/2020",
+          "PD\/BD\/132403\/2017",
+          "DivProtect\/0012\/2021",
+          "2022.07926.CEECIND",
+          "PTDC\/BIA-EVL\/31902\/2017",
+          "PD\/BD\/135026\/2017"
+        ]
+      },
+      { "name": "Earth and Life Systems Aliance" },
+      { "name": "Norwich Research Park" },
+      {
+        "name": "Spanish Ministry of Economy, Industry and Competitiveness",
+        "award": ["RYC-2015-18932", "CGL2017-87528-R AEI\/FEDER EU"]
+      },
+      { "name": "GRUPIN", "award": ["AYUD\/2021\/51314"] },
+      {
+        "DOI": "10.13039\/501100008530",
+        "name": "FEDER",
+        "doi-asserted-by": "publisher",
+        "award": ["POCI-01-0145-FEDER-029115", "FCT", "PTDC\/BIA-EVL\/29115\/2017"],
+        "id": [{ "id": "10.13039\/501100008530", "id-type": "DOI", "asserted-by": "publisher" }]
+      },
+      {
+        "DOI": "10.13039\/501100001732",
+        "name": "Danish National Research Foundation",
+        "doi-asserted-by": "publisher",
+        "award": ["DNRF143"],
+        "id": [{ "id": "10.13039\/501100001732", "id-type": "DOI", "asserted-by": "publisher" }]
+      },
+      {
+        "DOI": "10.13039\/501100008776",
+        "name": "Norwegian Environment Agency",
+        "doi-asserted-by": "publisher",
+        "award": ["18088069"],
+        "id": [{ "id": "10.13039\/501100008776", "id-type": "DOI", "asserted-by": "publisher" }]
+      },
+      { "name": "National Council of Science and Technology in Mexico", "award": ["CVU 576734"] },
+      { "name": "Institute for Nature Conservation and Forestry" }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": ["Genome Res."],
+    "accepted": { "date-parts": [[2025, 2, 6]] },
+    "published-print": { "date-parts": [[2025, 3]] },
+    "abstract": "<jats:p>Understanding how large carnivores respond to increasingly human-dominated landscapes will determine their future adaptive potential. The Iberian wolf (<jats:italic>Canis lupus signatus<\/jats:italic>), a gray wolf subspecies endemic to the Iberian Peninsula (Portugal and Spain), has uniquely persisted in human-dominated landscapes, unlike many other wolf populations that faced widespread extinction across Europe during the twentieth century. In this study, we conducted a comprehensive genome-wide analysis of 145 historical and contemporary Iberian wolf samples to investigate whether hybridization with domestic dogs resulted in genetic introgression. We identified a dog-derived block on Chromosome 2 in Iberian wolves, displaying signatures consistent with introgression and high nucleotide similarity among introgressed individuals. Additionally, our estimates place the average timing of introgression between 6100 and 3000 years ago, with low sequence divergence to dogs from the Iberian Peninsula suggesting a single local origin for the hybridization event. Using forward genetic simulations, we show that the introgressed haplotype is most likely being maintained in Iberian wolves by selection. The introgressed dog variants are located within the<jats:italic>MAST4<\/jats:italic>gene, which has been linked to neurological disorders, including cognitive and motor developmental delays, hinting at a potential role in cognitive behavior in Iberian wolves. This study uncovers a case of putative adaptive introgression from domestic dogs into wolves, offering new insights into wild canids\u2019 adaptation to human-dominated landscapes.<\/jats:p>",
+    "DOI": "10.1101\/gr.279093.124",
+    "type": "journal-article",
+    "created": { "date-parts": [[2025, 2, 14]], "date-time": "2025-02-14T20:15:17Z", "timestamp": 1739564117000 },
+    "page": "432-445",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Ancient dog introgression into the Iberian wolf genome may have facilitated adaptation to human-dominated landscapes"
+    ],
+    "prefix": "10.1101",
+    "volume": "35",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-6988-9993",
+        "authenticated-orcid": false,
+        "given": "Diana",
+        "family": "Lobo",
+        "sequence": "first",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-2964-020X",
+        "authenticated-orcid": false,
+        "given": "Hern\u00e1n E.",
+        "family": "Morales",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-5653-738X",
+        "authenticated-orcid": false,
+        "given": "Cock",
+        "family": "Van Oosterhout",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      { "given": "Jos\u00e9 Vicente", "family": "L\u00f3pez-Bao", "sequence": "additional", "affiliation": [] },
+      { "given": "Pedro", "family": "Silva", "sequence": "additional", "affiliation": [] },
+      { "given": "Luis", "family": "Llaneza", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-2716-6820",
+        "authenticated-orcid": false,
+        "given": "Carolina",
+        "family": "Pacheco",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      { "given": "Diana", "family": "Castro", "sequence": "additional", "affiliation": [] },
+      { "given": "Germ\u00e1n", "family": "Hern\u00e1ndez-Alonso", "sequence": "additional", "affiliation": [] },
+      { "given": "George", "family": "Pacheco", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-6212-0962",
+        "authenticated-orcid": false,
+        "given": "John",
+        "family": "Archer",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      { "given": "M. Thomas P.", "family": "Gilbert", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-2408-4195",
+        "authenticated-orcid": false,
+        "given": "Nuno",
+        "family": "Ferrand",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-4260-4799",
+        "authenticated-orcid": false,
+        "given": "Raquel",
+        "family": "Godinho",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "246",
+    "published-online": { "date-parts": [[2025, 2, 14]] },
+    "reference": [
+      { "key": "2025031808101137000_35.3.432.1", "doi-asserted-by": "publisher", "DOI": "10.1016\/j.cub.2022.07.004" },
+      { "key": "2025031808101137000_35.3.432.2", "doi-asserted-by": "publisher", "DOI": "10.1007\/s10963-021-09153-9" },
+      { "key": "2025031808101137000_35.3.432.3", "doi-asserted-by": "publisher", "DOI": "10.1186\/1471-2105-12-246" },
+      { "key": "2025031808101137000_35.3.432.4", "doi-asserted-by": "publisher", "DOI": "10.1101\/gr.094052.109" },
+      {
+        "key": "2025031808101137000_35.3.432.5",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/S0169-5347(01)02290-X"
+      },
+      { "key": "2025031808101137000_35.3.432.6", "doi-asserted-by": "publisher", "DOI": "10.1126\/science.1165448" },
+      { "key": "2025031808101137000_35.3.432.7", "doi-asserted-by": "publisher", "DOI": "10.1073\/pnas.1707279114" },
+      { "key": "2025031808101137000_35.3.432.8", "doi-asserted-by": "publisher", "DOI": "10.1038\/s41586-022-04824-9" },
+      {
+        "key": "2025031808101137000_35.3.432.9",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.quascirev.2023.108006"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.10",
+        "unstructured": "Boitani L . 2003. Wolf conservation and recovery. In Wolves: behavior, ecology, and conservation (ed. Mech LD , Boitani L ), pp. 317\u2013340. University of Chicago Press, Chicago."
+      },
+      { "key": "2025031808101137000_35.3.432.11", "doi-asserted-by": "publisher", "DOI": "10.1111\/mec.13252" },
+      {
+        "key": "2025031808101137000_35.3.432.12",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/bioinformatics\/btm308"
+      },
+      { "key": "2025031808101137000_35.3.432.13", "doi-asserted-by": "publisher", "DOI": "10.1086\/521987" },
+      { "key": "2025031808101137000_35.3.432.14", "doi-asserted-by": "publisher", "DOI": "10.1534\/g3.116.034678" },
+      { "key": "2025031808101137000_35.3.432.15", "doi-asserted-by": "publisher", "DOI": "10.1111\/2041-210X.12871" },
+      {
+        "key": "2025031808101137000_35.3.432.16",
+        "unstructured": "Catagnano V . 2016. \u201cAproximaci\u00f3n morfom\u00e9trica y paleogen\u00e9tica al estudio de la variabilidad de canis l. familiaris en la pen\u00ednsula ib\u00e9rica desde el neol\u00edtico hasta \u00e9poca romana y su contextualizaci\u00f3n en el \u00e1mbito del mediterr\u00e1neo occidental.\u201d PhD thesis, Universitat Aut\u00f2noma de Barcelona."
+      },
+      { "key": "2025031808101137000_35.3.432.17", "doi-asserted-by": "publisher", "DOI": "10.1126\/science.1257553" },
+      { "key": "2025031808101137000_35.3.432.18", "doi-asserted-by": "publisher", "DOI": "10.1111\/acv.12814" },
+      { "key": "2025031808101137000_35.3.432.19", "doi-asserted-by": "publisher", "DOI": "10.1002\/jbmr.4507" },
+      {
+        "key": "2025031808101137000_35.3.432.20",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/bioinformatics\/btr330"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.21",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1007\/s10531-021-02239-y"
+      },
+      { "key": "2025031808101137000_35.3.432.22", "doi-asserted-by": "publisher", "DOI": "10.1073\/pnas.1200567109" },
+      { "key": "2025031808101137000_35.3.432.23", "doi-asserted-by": "publisher", "DOI": "10.1101\/gr.197517.115" },
+      { "key": "2025031808101137000_35.3.432.24", "doi-asserted-by": "publisher", "DOI": "10.1126\/science.ade3984" },
+      { "key": "2025031808101137000_35.3.432.25", "doi-asserted-by": "publisher", "DOI": "10.1098\/rspb.2018.0819" },
+      { "key": "2025031808101137000_35.3.432.26", "doi-asserted-by": "publisher", "DOI": "10.1126\/science.aaf3161" },
+      { "key": "2025031808101137000_35.3.432.27", "doi-asserted-by": "publisher", "DOI": "10.1038\/s41576-020-0225-0" },
+      {
+        "key": "2025031808101137000_35.3.432.28",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/bioinformatics\/btx346"
+      },
+      { "key": "2025031808101137000_35.3.432.29", "doi-asserted-by": "publisher", "DOI": "10.1093\/bib\/bby044" },
+      {
+        "key": "2025031808101137000_35.3.432.30",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1111\/j.1365-294X.2011.05345.x"
+      },
+      { "key": "2025031808101137000_35.3.432.31", "doi-asserted-by": "publisher", "DOI": "10.1111\/mec.14824" },
+      { "key": "2025031808101137000_35.3.432.32", "doi-asserted-by": "publisher", "DOI": "10.1016\/j.cub.2018.08.041" },
+      { "key": "2025031808101137000_35.3.432.33", "doi-asserted-by": "publisher", "DOI": "10.1073\/pnas.1913534116" },
+      {
+        "key": "2025031808101137000_35.3.432.34",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1534\/genetics.113.160697"
+      },
+      { "key": "2025031808101137000_35.3.432.35", "doi-asserted-by": "publisher", "DOI": "10.1093\/molbev\/msy228" },
+      { "key": "2025031808101137000_35.3.432.36", "doi-asserted-by": "publisher", "DOI": "10.1038\/nature13408" },
+      {
+        "key": "2025031808101137000_35.3.432.37",
+        "unstructured": "Instituto Nacional de Estat\u00edstica Portugal. 2017. A Pen\u00ednsula Ib\u00e9rica em n\u00fameros 2016. In Pen\u00ednsula Ib\u00e9rica em n\u00fameros, pp. 12\u201323. Instituto Nacional de Estatistica, Lisbon, Portugal. https:\/\/www.ine.pt\/ine_novidades\/PIN2016\/"
+      },
+      { "key": "2025031808101137000_35.3.432.38", "doi-asserted-by": "publisher", "DOI": "10.1002\/jwmg.21238" },
+      { "key": "2025031808101137000_35.3.432.39", "doi-asserted-by": "publisher", "DOI": "10.1126\/science.aar5273" },
+      {
+        "key": "2025031808101137000_35.3.432.40",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038\/s41467-022-31697-3"
+      },
+      { "key": "2025031808101137000_35.3.432.41", "doi-asserted-by": "publisher", "DOI": "10.1093\/molbev\/msz159" },
+      {
+        "key": "2025031808101137000_35.3.432.42",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038\/s41418-020-00670-2"
+      },
+      { "key": "2025031808101137000_35.3.432.43", "doi-asserted-by": "publisher", "DOI": "10.1111\/2041-210X.12410" },
+      {
+        "key": "2025031808101137000_35.3.432.44",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.tvjl.2011.06.013"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.45",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/bioinformatics\/btr509"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.46",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/bioinformatics\/btp324"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.47",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.aquaculture.2024.740594"
+      },
+      { "key": "2025031808101137000_35.3.432.48", "doi-asserted-by": "publisher", "DOI": "10.1038\/nature04338" },
+      { "key": "2025031808101137000_35.3.432.49", "doi-asserted-by": "publisher", "DOI": "10.1186\/1479-7364-7-1" },
+      {
+        "key": "2025031808101137000_35.3.432.50",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1111\/j.1472-4642.2011.00869.x"
+      },
+      { "key": "2025031808101137000_35.3.432.51", "doi-asserted-by": "publisher", "DOI": "10.1007\/s10531-016-1134-6" },
+      { "key": "2025031808101137000_35.3.432.52", "doi-asserted-by": "publisher", "DOI": "10.1111\/mec.17171" },
+      {
+        "key": "2025031808101137000_35.3.432.53",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/gigascience\/gix049"
+      },
+      { "key": "2025031808101137000_35.3.432.54", "doi-asserted-by": "publisher", "DOI": "10.1093\/molbev\/msu269" },
+      { "key": "2025031808101137000_35.3.432.55", "doi-asserted-by": "publisher", "DOI": "10.1021\/pr2012279" },
+      { "key": "2025031808101137000_35.3.432.56", "doi-asserted-by": "publisher", "DOI": "10.1101\/gr.107524.110" },
+      {
+        "key": "2025031808101137000_35.3.432.57",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Mech LD , Boitani L . 2003. Wolves: behavior, ecology, and conservation. University of Chicago Press, Chicago.",
+        "DOI": "10.7208\/chicago\/9780226516981.001.0001"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.58",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371\/journal.pone.0156682"
+      },
+      { "key": "2025031808101137000_35.3.432.59", "doi-asserted-by": "publisher", "DOI": "10.1093\/molbev\/msx258" },
+      { "key": "2025031808101137000_35.3.432.60", "doi-asserted-by": "publisher", "DOI": "10.1111\/brv.12807" },
+      {
+        "key": "2025031808101137000_35.3.432.61",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.biocon.2010.06.018"
+      },
+      { "key": "2025031808101137000_35.3.432.62", "doi-asserted-by": "publisher", "DOI": "10.1093\/biosci\/bix022" },
+      {
+        "key": "2025031808101137000_35.3.432.63",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.biocon.2022.109639"
+      },
+      { "key": "2025031808101137000_35.3.432.64", "doi-asserted-by": "publisher", "DOI": "10.1038\/srep4" },
+      { "key": "2025031808101137000_35.3.432.65", "doi-asserted-by": "publisher", "DOI": "10.3389\/fevo.2022.970249" },
+      {
+        "key": "2025031808101137000_35.3.432.66",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/bioinformatics\/btp197"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.67",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038\/s41598-022-09711-x"
+      },
+      { "key": "2025031808101137000_35.3.432.68", "doi-asserted-by": "publisher", "DOI": "10.1073\/pnas.2010083118" },
+      {
+        "key": "2025031808101137000_35.3.432.69",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371\/journal.pgen.1002967"
+      },
+      { "key": "2025031808101137000_35.3.432.70", "doi-asserted-by": "publisher", "DOI": "10.1038\/hdy.2013.122" },
+      { "key": "2025031808101137000_35.3.432.71", "doi-asserted-by": "publisher", "DOI": "10.1111\/eva.13257" },
+      {
+        "key": "2025031808101137000_35.3.432.72",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038\/s41467-019-09373-w"
+      },
+      { "key": "2025031808101137000_35.3.432.73", "doi-asserted-by": "publisher", "DOI": "10.1086\/519795" },
+      {
+        "key": "2025031808101137000_35.3.432.74",
+        "unstructured": "R Core Team. 2017. R: a language and environment for statistical computing. R Foundation for Statistical Computing, Vienna. https:\/\/www.R-project.org\/."
+      },
+      {
+        "key": "2025031808101137000_35.3.432.75",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1146\/annurev.ecolsys.27.1.83"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.76",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.biocon.2019.04.021"
+      },
+      { "key": "2025031808101137000_35.3.432.77", "doi-asserted-by": "publisher", "DOI": "10.1111\/mec.13610" },
+      {
+        "key": "2025031808101137000_35.3.432.78",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.ajhg.2007.09.022"
+      },
+      { "key": "2025031808101137000_35.3.432.79", "doi-asserted-by": "publisher", "DOI": "10.1007\/s10592-010-0177-6" },
+      {
+        "key": "2025031808101137000_35.3.432.80",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.biocon.2016.06.022"
+      },
+      { "key": "2025031808101137000_35.3.432.81", "doi-asserted-by": "publisher", "DOI": "10.1038\/nprot.2014.063" },
+      { "key": "2025031808101137000_35.3.432.82", "doi-asserted-by": "publisher", "DOI": "10.1186\/s13104-016-1900-2" },
+      { "key": "2025031808101137000_35.3.432.83", "doi-asserted-by": "publisher", "DOI": "10.1093\/molbev\/msy031" },
+      { "key": "2025031808101137000_35.3.432.84", "doi-asserted-by": "publisher", "DOI": "10.1186\/s13059-018-1471-8" },
+      {
+        "key": "2025031808101137000_35.3.432.85",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038\/s41598-018-32369-3"
+      },
+      { "key": "2025031808101137000_35.3.432.86", "doi-asserted-by": "publisher", "DOI": "10.1098\/rspb.2020.1206" },
+      { "key": "2025031808101137000_35.3.432.87", "doi-asserted-by": "publisher", "DOI": "10.1016\/j.cub.2015.04.019" },
+      { "key": "2025031808101137000_35.3.432.88", "doi-asserted-by": "publisher", "DOI": "10.1098\/rsbl.2013.0503" },
+      { "key": "2025031808101137000_35.3.432.89", "doi-asserted-by": "publisher", "DOI": "10.1093\/molbev\/msy006" },
+      { "key": "2025031808101137000_35.3.432.90", "doi-asserted-by": "publisher", "DOI": "10.1086\/379378" },
+      { "key": "2025031808101137000_35.3.432.91", "doi-asserted-by": "publisher", "DOI": "10.1002\/ece3.1695" },
+      {
+        "key": "2025031808101137000_35.3.432.92",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1007\/s12311-020-01113-x"
+      },
+      { "key": "2025031808101137000_35.3.432.93", "doi-asserted-by": "publisher", "DOI": "10.1098\/rsbl.2017.0688" },
+      {
+        "key": "2025031808101137000_35.3.432.94",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/bioinformatics\/btq228"
+      },
+      { "key": "2025031808101137000_35.3.432.95", "doi-asserted-by": "publisher", "DOI": "10.1086\/520769" },
+      { "key": "2025031808101137000_35.3.432.96", "doi-asserted-by": "publisher", "DOI": "10.1038\/s41559-018-0777-y" },
+      {
+        "key": "2025031808101137000_35.3.432.97",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.jasrep.2016.07.011"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.98",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.mambio.2017.05.001"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.99",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371\/journal.pgen.1002316"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.100",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1046\/j.1523-1739.1999.97425.x"
+      },
+      { "key": "2025031808101137000_35.3.432.101", "doi-asserted-by": "publisher", "DOI": "10.1111\/mec.13667" },
+      { "key": "2025031808101137000_35.3.432.102", "doi-asserted-by": "publisher", "DOI": "10.1093\/molbev\/msaa113" },
+      { "key": "2025031808101137000_35.3.432.103", "doi-asserted-by": "publisher", "DOI": "10.1111\/1755-0998.12469" },
+      {
+        "key": "2025031808101137000_35.3.432.104",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1534\/genetics.114.165423"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.105",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1534\/genetics.109.106831"
+      },
+      {
+        "key": "2025031808101137000_35.3.432.106",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.3389\/fnmol.2023.1097553"
+      },
+      { "key": "2025031808101137000_35.3.432.107", "doi-asserted-by": "publisher", "DOI": "10.1186\/s12859-017-2002-4" }
+    ],
+    "container-title": ["Genome Research"],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https:\/\/syndication.highwire.org\/content\/doi\/10.1101\/gr.279093.124",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": { "date-parts": [[2025, 3, 18]], "date-time": "2025-03-18T15:11:17Z", "timestamp": 1742310677000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "http:\/\/genome.cshlp.org\/lookup\/doi\/10.1101\/gr.279093.124" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2025, 2, 14]] },
+    "references-count": 107,
+    "journal-issue": {
+      "issue": "3",
+      "published-online": { "date-parts": [[2025, 3, 18]] },
+      "published-print": { "date-parts": [[2025, 3]] }
+    },
+    "alternative-id": ["10.1101\/gr.279093.124"],
+    "URL": "https:\/\/doi.org\/10.1101\/gr.279093.124",
+    "relation": {},
+    "ISSN": ["1088-9051", "1549-5469"],
+    "issn-type": [
+      { "type": "print", "value": "1088-9051" },
+      { "type": "electronic", "value": "1549-5469" }
+    ],
+    "subject": [],
+    "published": { "date-parts": [[2025, 2, 14]] }
+  }
+}

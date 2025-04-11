@@ -173,3 +173,17 @@ test.each([
     expect(actual).toStrictEqual(expected)
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
+
+test('returns a specific error for non-Preprint work', () =>
+  Effect.gen(function* () {
+    const actual = yield* pipe(
+      FileSystem.FileSystem,
+      Effect.andThen(fs => fs.readFileString('test/Crossref/WorkSamples/csh-press-journal.json')),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Work)))),
+      Effect.andThen(Struct.get('message')),
+      Effect.andThen(workToPreprint),
+      Effect.flip,
+    )
+
+    expect(actual._tag).toStrictEqual('NotAPreprint')
+  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run))
