@@ -1,0 +1,282 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2024, 12, 15]],
+      "date-time": "2024-12-15T22:10:02Z",
+      "timestamp": 1734300602836,
+      "version": "3.30.2"
+    },
+    "posted": { "date-parts": [[2024, 12, 15]] },
+    "group-title": "NeuroLibre Reproducible Preprints",
+    "reference-count": 21,
+    "publisher": "Centre de Recherche de l'Institut Universitaire de Geriatrie de Montreal",
+    "license": [
+      {
+        "start": { "date-parts": [[2024, 12, 15]], "date-time": "2024-12-15T00:00:00Z", "timestamp": 1734220800000 },
+        "content-version": "vor",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      },
+      {
+        "start": { "date-parts": [[2024, 12, 15]], "date-time": "2024-12-15T00:00:00Z", "timestamp": 1734220800000 },
+        "content-version": "am",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      },
+      {
+        "start": { "date-parts": [[2024, 12, 15]], "date-time": "2024-12-15T00:00:00Z", "timestamp": 1734220800000 },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "DOI": "10.55458\/neurolibre.00031",
+    "type": "posted-content",
+    "created": { "date-parts": [[2024, 12, 15]], "date-time": "2024-12-15T21:32:39Z", "timestamp": 1734298359000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": ["Little Science, Big Science, and Beyond: How Amateurs\nShape the Scientific Landscape"],
+    "prefix": "10.55458",
+    "author": [
+      { "given": "Evelyn", "family": "McLean", "sequence": "first", "affiliation": [] },
+      { "given": "Jane", "family": "Abdo", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-1864-1899",
+        "authenticated-orcid": false,
+        "given": "Nadia",
+        "family": "Blostein",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-8480-5230",
+        "authenticated-orcid": false,
+        "given": "Nikola",
+        "family": "Stikov",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "34163",
+    "reference": [
+      {
+        "key": "vesalius1543humani",
+        "volume-title": "De humani corporis fabrica libri\nseptem",
+        "author": "Vesalius",
+        "year": "1543",
+        "unstructured": "Vesalius, A. (1543). De humani\ncorporis fabrica libri septem."
+      },
+      {
+        "key": "Price1963",
+        "isbn-type": "print",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.7312\/pric91844",
+        "volume-title": "Little science, big science",
+        "author": "Derek J. de Solla",
+        "year": "1963",
+        "unstructured": "Derek J. de Solla, P. (1963). Little\nscience, big science. Columbia University Press.\nhttps:\/\/doi.org\/10.7312\/pric91844",
+        "ISBN": "https:\/\/id.crossref.org\/isbn\/9780231885751"
+      },
+      {
+        "key": "zalta95",
+        "article-title": "Stanford encyclopedia of\nphilosophy",
+        "author": "Zalta",
+        "year": "1995",
+        "unstructured": "Zalta, E. N., Nodelman, U., Allen,\nC., & Perry, J. (1995). Stanford encyclopedia of philosophy.\nMetaphysics Research Lab, Center for the Study of Language;\nInformation\u00a0\u2026."
+      },
+      {
+        "key": "Williams2000",
+        "article-title": "History of science | definition, natural\nphilosophy, & development of science",
+        "author": "Williams",
+        "year": "2000",
+        "unstructured": "Williams, L. P. (2000). History of\nscience | definition, natural philosophy, & development of science.\nEncyclopedia Britannica.\nhttps:\/\/www.britannica.com\/science\/history-of-science"
+      },
+      {
+        "key": "Grantham2011",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.11126\/stanford\/9780804771856.003.0003",
+        "article-title": "The institutionalization of science in\neurope, 1650\u20131850",
+        "author": "Grantham",
+        "year": "2011",
+        "unstructured": "Grantham, G. (2011). The\ninstitutionalization of science in europe, 1650\u20131850. In G. S. Drori, J.\nW. Meyer, F. O. Ramirez, & E. Schofer (Eds.), Science in the modern\nworld polity: Institutionalization and globalization (pp. 51\u201385).\nStanford University Press.\nhttps:\/\/doi.org\/10.11126\/stanford\/9780804771856.003.0003",
+        "journal-title": "Science in the modern world polity:\nInstitutionalization and globalization"
+      },
+      {
+        "key": "Lingelbach2011",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/acprof:osobl\/9780199533091.003.0005",
+        "article-title": "The institutionalization and\nprofessionalization of history in europe and the united\nstates",
+        "author": "Lingelbach",
+        "year": "2011",
+        "unstructured": "Lingelbach, G. (2011). The\ninstitutionalization and professionalization of history in europe and\nthe united states. In S. Macintyre, J. Maiguashca, & A. P\u00f3k (Eds.),\nThe oxford history of historical writing: Volume 4: 1800-1945 (pp.\n78\u201396). Oxford University Press.\nhttps:\/\/doi.org\/10.1093\/acprof:osobl\/9780199533091.003.0005",
+        "journal-title": "The oxford history of historical writing:\nVolume 4: 1800-1945"
+      },
+      {
+        "issue": "6178",
+        "key": "Bonney2014",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126\/science.1251554",
+        "article-title": "Next steps for citizen\nscience",
+        "volume": "343",
+        "author": "Bonney",
+        "year": "2014",
+        "unstructured": "Bonney, R., Shirk, J., Phillips, T.,\nWiggins, A., Ballard, H. L., Miller-Rushing, A. J., & Parrish, J. K.\n(2014). Next steps for citizen science. Science, 343(6178), 1436\u20131437.\nhttps:\/\/doi.org\/10.1126\/science.1251554",
+        "journal-title": "Science"
+      },
+      {
+        "key": "Oberhaus2018",
+        "article-title": "Meet the anarchists making their own\nmedicine",
+        "author": "Oberhaus",
+        "year": "2018",
+        "unstructured": "Oberhaus, D. (2018). Meet the\nanarchists making their own medicine. Vice.\nhttps:\/\/www.vice.com\/en\/article\/43pngb\/how-to-make-your-own-medicine-four-thieves-vinegar-collective",
+        "journal-title": "Vice"
+      },
+      {
+        "key": "Bowler2020",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.7208\/chicago\/9780226365930.001.0001",
+        "volume-title": "Making modern science",
+        "author": "Bowler",
+        "year": "2020",
+        "unstructured": "Bowler, P. J., & Morus, I. R.\n(2020). Making modern science (Second). University of Chicago Press.\nhttps:\/\/doi.org\/10.7208\/chicago\/9780226365930.001.0001"
+      },
+      {
+        "key": "Aella2021",
+        "article-title": "Knowingless",
+        "author": "Aella",
+        "year": "2021",
+        "unstructured": "Aella. (2021). Knowingless.\nhttps:\/\/aella.substack.com\/."
+      },
+      {
+        "key": "Shields2022",
+        "article-title": "Aristotle",
+        "author": "Shields",
+        "year": "2022",
+        "unstructured": "Shields, C. (2022). Aristotle. The\nStanford Encyclopedia of Philosophy (Spring 2022 Edition), Metaphysics\nResearch Lab, Stanford University.\nhttps:\/\/plato.stanford.edu\/archives\/spr2022\/entries\/aristotle\/"
+      },
+      {
+        "key": "AccessHealthMA2022",
+        "article-title": "History | AccessHealth MA l\nCRI",
+        "author": "AccessHealth MA (formerly Community Research\nInitiative CRI)",
+        "year": "2022",
+        "unstructured": "AccessHealth MA (formerly Community\nResearch Initiative CRI). (2022). History | AccessHealth MA l CRI.\nhttps:\/\/accesshealthma.org\/about-accesshealthma\/history\/."
+      },
+      {
+        "key": "Hackett2022",
+        "article-title": "Roger bacon",
+        "author": "Hackett",
+        "year": "2022",
+        "unstructured": "Hackett, J. (2022). Roger bacon. The\nStanford Encyclopedia of Philosophy (Spring 2022 Edition), Metaphysics\nResearch Lab, Stanford University.\nhttps:\/\/plato.stanford.edu\/archives\/spr2022\/entries\/roger-bacon\/"
+      },
+      {
+        "key": "Kraut2022",
+        "article-title": "Plato",
+        "author": "Kraut",
+        "year": "2022",
+        "unstructured": "Kraut, R. (2022). Plato. The Stanford\nEncyclopedia of Philosophy (Spring 2022 Edition), Metaphysics Research\nLab, Stanford University.\nhttps:\/\/plato.stanford.edu\/archives\/spr2022\/entries\/plato\/"
+      },
+      {
+        "key": "slimemoldtimemold2023",
+        "article-title": "Archives",
+        "author": "Slime Mold Time Mold",
+        "year": "2023",
+        "unstructured": "Slime Mold Time Mold. (2023).\nArchives. https:\/\/slimemoldtimemold.com\/."
+      },
+      {
+        "key": "Rafferty2023",
+        "article-title": "Mary anning",
+        "author": "Rafferty",
+        "year": "2023",
+        "unstructured": "Rafferty, J. P. (2023). Mary anning.\nEncyclopedia Britannica.\nhttps:\/\/www.britannica.com\/biography\/Mary-Anning"
+      },
+      {
+        "key": "EthereumDesci",
+        "article-title": "Decentralized science (DeSci)",
+        "author": "Ethereum Foundation",
+        "unstructured": "Ethereum Foundation. (n.d.).\nDecentralized science (DeSci).\nhttps:\/\/ethereum.org\/en\/desci\/#further-reading."
+      },
+      {
+        "key": "FourThievesVinegar",
+        "article-title": "Four thieves vinegar collective \u2013 harm\nreduction for the living",
+        "unstructured": "Four thieves vinegar collective \u2013\nharm reduction for the living. (n.d.).\nhttps:\/\/fourthievesvinegar.org\/."
+      },
+      {
+        "key": "Karakuzu2022-nlwf",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.31219\/osf.io\/h89js",
+        "article-title": "NeuroLibre : A preprint server for\nfull-fledged reproducible neuroscience",
+        "author": "Karakuzu",
+        "year": "2022",
+        "unstructured": "Karakuzu, A., DuPre, E., Tetrel, L.,\nBermudez, P., Boudreau, M., Chin, M., Poline, J.-B., Das, S., Bellec,\nP., & Stikov, N. (2022). NeuroLibre : A preprint server for\nfull-fledged reproducible neuroscience. OSF Preprints.\nhttps:\/\/doi.org\/10.31219\/osf.io\/h89js"
+      },
+      {
+        "issue": "1",
+        "key": "Dupre2022-iro",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371\/journal.pcbi.1009651",
+        "article-title": "Beyond advertising: New infrastructures for\npublishing integrated research objects",
+        "volume": "18",
+        "author": "DuPre",
+        "year": "2022",
+        "unstructured": "DuPre, E., Holdgraf, C., Karakuzu,\nA., Tetrel, L., Bellec, P., Stikov, N., & Poline, J.-B. (2022).\nBeyond advertising: New infrastructures for publishing integrated\nresearch objects. PLOS Computational Biology, 18(1), e1009651.\nhttps:\/\/doi.org\/10.1371\/journal.pcbi.1009651",
+        "journal-title": "PLOS Computational Biology"
+      },
+      {
+        "issue": "7",
+        "key": "Harding2023-conp",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371\/journal.pcbi.1011230",
+        "article-title": "The Canadian Open Neuroscience Platform\u2014An\nopen science framework for the neuroscience community",
+        "volume": "19",
+        "author": "Harding",
+        "year": "2023",
+        "unstructured": "Harding, R. J., Bermudez, P.,\nBernier, A., Beauvais, M., Bellec, P., Hill, S., Karakuzu, A., Knoppers,\nB. M., Pavlidis, P., Poline, J.-B., Roskams, J., Stikov, N., Stone, J.,\nStrother, S., Consortium, C., & Evans, A. C. (2023). The Canadian\nOpen Neuroscience Platform\u2014An open science framework for the\nneuroscience community. PLOS Computational Biology, 19(7), 1\u201314.\nhttps:\/\/doi.org\/10.1371\/journal.pcbi.1011230",
+        "journal-title": "PLOS Computational Biology"
+      }
+    ],
+    "container-title": [],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https:\/\/preprint.neurolibre.org\/10.55458\/neurolibre.00031.pdf",
+        "content-type": "application\/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      }
+    ],
+    "deposited": { "date-parts": [[2024, 12, 15]], "date-time": "2024-12-15T21:32:41Z", "timestamp": 1734298361000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/neurolibre.org\/papers\/10.55458\/neurolibre.00031" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2024, 12, 15]] },
+    "references-count": 21,
+    "URL": "https:\/\/doi.org\/10.55458\/neurolibre.00031",
+    "relation": {
+      "is-supplemented-by": [
+        { "id-type": "doi", "id": "10.5281\/zenodo.14348880", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.5281\/zenodo.14348882", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.5281\/zenodo.14348876", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.5281\/zenodo.14348886", "asserted-by": "subject" },
+        {
+          "id-type": "uri",
+          "id": "https:\/\/github.com\/neurolibre\/neurolibre-reviews\/issues\/31",
+          "asserted-by": "subject"
+        },
+        {
+          "id-type": "uri",
+          "id": "https:\/\/preprint.neurolibre.org\/10.55458\/neurolibre.00031",
+          "asserted-by": "subject"
+        }
+      ]
+    },
+    "subject": [],
+    "published": { "date-parts": [[2024, 12, 15]] },
+    "subtype": "preprint"
+  }
+}
