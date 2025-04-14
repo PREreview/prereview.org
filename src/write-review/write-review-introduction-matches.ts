@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -33,6 +33,10 @@ export const writeReviewIntroductionMatches = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
+      RM.apSW(
+        'locale',
+        RM.asks((env: { locale: SupportedLocale }) => env.locale),
+      ),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -68,21 +72,32 @@ export const writeReviewIntroductionMatches = flow(
 )
 
 const showIntroductionMatchesForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    introductionMatchesForm(preprint, FormToFieldsE.encode(form), user, DefaultLocale),
+  RM.fromReaderK(
+    ({ form, locale, preprint, user }: { form: Form; locale: SupportedLocale; preprint: PreprintTitle; user: User }) =>
+      introductionMatchesForm(preprint, FormToFieldsE.encode(form), user, locale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showIntroductionMatchesErrorForm = (preprint: PreprintTitle, user: User) =>
+const showIntroductionMatchesErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
   flow(
-    RM.fromReaderK((form: IntroductionMatchesForm) => introductionMatchesForm(preprint, form, user, DefaultLocale)),
+    RM.fromReaderK((form: IntroductionMatchesForm) => introductionMatchesForm(preprint, form, user, locale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleIntroductionMatchesForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleIntroductionMatchesForm = ({
+  form,
+  locale,
+  preprint,
+  user,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
     RM.decodeBody(decodeFields(introductionMatchesFields)),
     RM.map(updateFormWithFields(form)),
@@ -91,7 +106,7 @@ const handleIntroductionMatchesForm = ({ form, preprint, user }: { form: Form; p
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ introductionMatches: P.any }, showIntroductionMatchesErrorForm(preprint, user))
+        .with({ introductionMatches: P.any }, showIntroductionMatchesErrorForm(preprint, user, locale))
         .exhaustive(),
     ),
   )
