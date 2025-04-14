@@ -13,5 +13,32 @@
   },
   "verifyEmailAddressButton": {
     "message": "Verify email address"
+  },
+  "beListedAsAuthor": {
+    "message": "Be listed as a PREreview author"
+  },
+  "thanksContributingReview": {
+    "message": "Thank you for contributing to a recent review of “{preprint}” published on {prereview}!"
+  },
+  "authorHasInvitedYou": {
+    "message": "{author} has invited you to appear as an author on the PREreview."
+  },
+  "beListedGoingTo": {
+    "message": "You can be listed by going to:"
+  },
+  "beListedAsAuthorButton": {
+    "message": "Be listed as an author"
+  },
+  "chooseNotToBeListedGoingTo": {
+    "message": "You can also choose not to be listed by ignoring this email or going to:"
+  },
+  "chooseNotToBeListedLink": {
+    "message": "You can also choose not to be listed by <link>declining this invitation</link> or ignoring this email."
+  },
+  "haveAnyQuestions": {
+    "message": "If you have any questions, please let us know at {emailAddress}."
+  },
+  "allTheBest": {
+    "message": "All the best,"
   }
 }

@@ -5,8 +5,8 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import rtlDetect from 'rtl-detect'
 import type { Uuid } from 'uuid-ts'
 import type { UnverifiedContactEmailAddress } from './contact-email-address.js'
-import { type Html, html, mjmlToHtml, plainText } from './html.js'
-import { type SupportedLocale, translate } from './locales/index.js'
+import { type Html, html, mjmlToHtml, plainText, rawHtml } from './html.js'
+import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
 import type { PreprintTitle } from './preprint.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import * as Routes from './routes.js'
@@ -183,6 +183,7 @@ export const createAuthorInviteEmail = (
   person: { name: NonEmptyString; emailAddress: EmailAddress },
   authorInviteId: Uuid,
   newPrereview: { author: string; preprint: PreprintTitle },
+  locale = DefaultLocale,
 ): R.Reader<PublicUrlEnv, Email> =>
   pipe(
     R.Do,
@@ -193,25 +194,25 @@ export const createAuthorInviteEmail = (
         ({
           from: { address: EmailAddress('help@prereview.org'), name: 'PREreview' },
           to: { address: person.emailAddress, name: person.name },
-          subject: 'Be listed as a PREreview author',
+          subject: translate(locale, 'email', 'beListedAsAuthor')(),
           text: `
-Hi ${person.name},
+${translate(locale, 'email', 'hiName')({ name: person.name })}
 
-Thank you for contributing to a recent review of “${plainText(newPrereview.preprint.title).toString()}” published on PREreview.org!
+${translate(locale, 'email', 'thanksContributingReview')({ preprint: plainText(newPrereview.preprint.title).toString(), prereview: 'PREreview.org' })}
 
-${newPrereview.author} has invited you to appear as an author on the PREreview.
+${translate(locale, 'email', 'authorHasInvitedYou')({ author: newPrereview.author })}
 
-You can be listed by going to:
+${translate(locale, 'email', 'beListedGoingTo')()}
 
   ${inviteUrl.href}
 
-You can also choose not to be listed by ignoring this email or going to:
+${translate(locale, 'email', 'chooseNotToBeListedGoingTo')()}
 
   ${declineUrl.href}
 
-If you have any questions, please let us know at help@prereview.org.
+${translate(locale, 'email', 'haveAnyQuestions')({ emailAddress: 'help@prereview.org' })}
 
-All the best,
+${translate(locale, 'email', 'allTheBest')()}
 PREreview
 `.trim(),
           html: mjmlToHtml(html`
@@ -220,22 +221,46 @@ PREreview
               <mj-body>
                 <mj-section>
                   <mj-column>
-                    <mj-text>Hi ${person.name},</mj-text>
+                    <mj-text>${translate(locale, 'email', 'hiName')({ name: person.name })}</mj-text>
                     <mj-text
-                      >Thank you for contributing to a recent review of “${newPrereview.preprint.title}” published on
-                      <a href="https://prereview.org/">PREreview.org</a>!
+                      >${rawHtml(
+                        translate(
+                          locale,
+                          'email',
+                          'thanksContributingReview',
+                        )({
+                          preprint: newPrereview.preprint.title.toString(),
+                          prereview: html`<a href="https://prereview.org/">PREreview.org</a>`.toString(),
+                        }),
+                      )}
                     </mj-text>
-                    <mj-text>${newPrereview.author} has invited you to appear as an author on the PREreview:</mj-text>
-                    <mj-button href="${inviteUrl.href}">Be listed as an author</mj-button>
                     <mj-text
-                      >You can also choose not to be listed by
-                      <a href="${declineUrl.href}">declining this invitation</a> or ignoring this email.
+                      >${translate(locale, 'email', 'authorHasInvitedYou')({ author: newPrereview.author })}</mj-text
+                    >
+                    <mj-button href="${inviteUrl.href}"
+                      >${translate(locale, 'email', 'beListedAsAuthorButton')()}</mj-button
+                    >
+                    <mj-text
+                      >${rawHtml(
+                        translate(
+                          locale,
+                          'email',
+                          'chooseNotToBeListedLink',
+                        )({ link: text => html`<a href="${declineUrl.href}">${text}</a>`.toString() }),
+                      )}
                     </mj-text>
                     <mj-text>
-                      If you have any questions, please let us know at
-                      <a href="mailto:help@prereview.org">help@prereview.org</a>.
+                      ${rawHtml(
+                        translate(
+                          locale,
+                          'email',
+                          'haveAnyQuestions',
+                        )({
+                          emailAddress: html`<a href="mailto:help@prereview.org">help@prereview.org</a>`.toString(),
+                        }),
+                      )}
                     </mj-text>
-                    <mj-text>All the best,<br />PREreview</mj-text>
+                    <mj-text>${translate(locale, 'email', 'allTheBest')()}<br />PREreview</mj-text>
                   </mj-column>
                 </mj-section>
               </mj-body>
