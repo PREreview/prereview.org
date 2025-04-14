@@ -49,7 +49,10 @@ export const writeReviewPublish = flow(
     pipe(
       RM.right({ preprint }),
       RM.apSW('user', getUser),
-      RM.apS('locale', RM.of(DefaultLocale)),
+      RM.apSW(
+        'locale',
+        RM.asks((env: { locale: SupportedLocale }) => env.locale),
+      ),
       RM.bindW(
         'originalForm',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),

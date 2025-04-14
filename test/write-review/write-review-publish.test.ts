@@ -9,7 +9,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
-import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes.js'
@@ -37,6 +36,7 @@ describe('writeReviewPublish', () => {
     ),
     fc.completedForm(),
     fc.user(),
+    fc.supportedLocale(),
     fc.unverifiedContactEmailAddress(),
   ])(
     'when the user needs to verify their email address',
@@ -46,6 +46,7 @@ describe('writeReviewPublish', () => {
       [connection, sessionCookie, sessionId, secret],
       newReview,
       user,
+      locale,
       contactEmailAddress,
     ) => {
       const sessionStore = new Keyv()
@@ -60,6 +61,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -99,9 +101,10 @@ describe('writeReviewPublish', () => {
     ),
     fc.completedForm(),
     fc.user(),
+    fc.supportedLocale(),
   ])(
     'when the user needs to enter an email address',
-    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newReview, user) => {
+    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newReview, user, locale) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
@@ -114,6 +117,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -154,6 +158,7 @@ describe('writeReviewPublish', () => {
     ),
     fc.completedQuestionsForm(),
     fc.user(),
+    fc.supportedLocale(),
     fc.verifiedContactEmailAddress(),
     fc.doi(),
     fc.integer(),
@@ -166,6 +171,7 @@ describe('writeReviewPublish', () => {
       [connection, sessionCookie, sessionId, secret],
       newReview,
       user,
+      locale,
       contactEmailAddress,
       reviewDoi,
       reviewId,
@@ -182,6 +188,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           publishPrereview,
           getContactEmailAddress: () => TE.right(contactEmailAddress),
@@ -238,6 +245,7 @@ describe('writeReviewPublish', () => {
     ),
     fc.completedFreeformForm(),
     fc.user(),
+    fc.supportedLocale(),
     fc.verifiedContactEmailAddress(),
     fc.doi(),
     fc.integer(),
@@ -250,6 +258,7 @@ describe('writeReviewPublish', () => {
       [connection, sessionCookie, sessionId, secret],
       newReview,
       user,
+      locale,
       contactEmailAddress,
       reviewDoi,
       reviewId,
@@ -267,6 +276,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           publishPrereview,
           secret,
@@ -322,6 +332,7 @@ describe('writeReviewPublish', () => {
     ),
     fc.incompleteForm(),
     fc.user(),
+    fc.supportedLocale(),
     fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
   ])(
     'when the form is incomplete',
@@ -331,6 +342,7 @@ describe('writeReviewPublish', () => {
       [connection, sessionCookie, sessionId, secret],
       newPrereview,
       user,
+      locale,
       contactEmailAddress,
     ) => {
       const sessionStore = new Keyv()
@@ -344,6 +356,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           formStore,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
@@ -383,9 +396,10 @@ describe('writeReviewPublish', () => {
       ),
     ),
     fc.user(),
+    fc.supportedLocale(),
   ])(
     'when there is no form',
-    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
+    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], user, locale) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
 
@@ -395,6 +409,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           formStore: new Keyv(),
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
@@ -433,10 +448,11 @@ describe('writeReviewPublish', () => {
       ),
     ),
     fc.user(),
+    fc.supportedLocale(),
     fc.html(),
   ])(
     'when the preprint cannot be loaded',
-    async (preprintId, [connection, sessionCookie, sessionId, secret], user, page) => {
+    async (preprintId, [connection, sessionCookie, sessionId, secret], user, locale, page) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
@@ -448,6 +464,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -470,7 +487,7 @@ describe('writeReviewPublish', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
@@ -489,10 +506,11 @@ describe('writeReviewPublish', () => {
       ),
     ),
     fc.user(),
+    fc.supportedLocale(),
     fc.html(),
   ])(
     'when the preprint cannot be found',
-    async (preprintId, [connection, sessionCookie, sessionId, secret], user, page) => {
+    async (preprintId, [connection, sessionCookie, sessionId, secret], user, locale, page) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
@@ -504,6 +522,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
+          locale,
           publicUrl: new URL('http://example.com'),
           publishPrereview: shouldNotBeCalled,
           secret,
@@ -526,45 +545,50 @@ describe('writeReviewPublish', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.cookieName(), fc.string()])(
-    "when there isn't a session",
-    async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
-      const actual = await runMiddleware(
-        _.writeReviewPublish(preprintId)({
-          getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.left('no-session'),
-          getUserOnboarding: shouldNotBeCalled,
-          formStore: new Keyv(),
-          publicUrl: new URL('http://example.com'),
-          publishPrereview: shouldNotBeCalled,
-          secret,
-          sessionCookie,
-          sessionStore: new Keyv(),
-          templatePage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.connection(),
+    fc.cookieName(),
+    fc.string(),
+    fc.supportedLocale(),
+  ])("when there isn't a session", async (preprintId, preprintTitle, connection, sessionCookie, secret, locale) => {
+    const actual = await runMiddleware(
+      _.writeReviewPublish(preprintId)({
+        getContactEmailAddress: shouldNotBeCalled,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getUser: () => M.left('no-session'),
+        getUserOnboarding: shouldNotBeCalled,
+        formStore: new Keyv(),
+        locale,
+        publicUrl: new URL('http://example.com'),
+        publishPrereview: shouldNotBeCalled,
+        secret,
+        sessionCookie,
+        sessionStore: new Keyv(),
+        templatePage: shouldNotBeCalled,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.SeeOther },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+  })
 
   test.prop([
     fc.indeterminatePreprintId(),
@@ -584,6 +608,7 @@ describe('writeReviewPublish', () => {
       .tuple(fc.incompleteForm(), fc.completedForm().map(CompletedFormC.encode))
       .map(parts => merge.withOptions({ mergeArrays: false }, ...parts)),
     fc.user(),
+    fc.supportedLocale(),
     fc.verifiedContactEmailAddress(),
     fc.html(),
   ])(
@@ -594,6 +619,7 @@ describe('writeReviewPublish', () => {
       [connection, sessionCookie, sessionId, secret],
       newReview,
       user,
+      locale,
       contactEmailAddress,
       page,
     ) => {
@@ -610,6 +636,7 @@ describe('writeReviewPublish', () => {
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           formStore,
+          locale,
           publicUrl: new URL('http://example.com'),
           publishPrereview: () => TE.left('unavailable'),
           secret,
@@ -633,7 +660,7 @@ describe('writeReviewPublish', () => {
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
         type: 'streamline',
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
