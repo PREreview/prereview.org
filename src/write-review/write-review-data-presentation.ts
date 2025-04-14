@@ -390,7 +390,7 @@ ${match(form.dataPresentationInappropriateUnclearDetails)
                     </div>
                   </li>
                   <li>
-                    <span>or</span>
+                    <span>${t('or')()}</span>
                     <label>
                       <input
                         name="dataPresentation"
