@@ -45,7 +45,7 @@ export const requestReviewPage = ({
               <summary><span>${t('whatIsAnOrcid')()}</span></summary>
 
               <div>
-                <p>${rawHtml(t('orcidExplainer')({ orcidLinkAsDefinition }))} An</p>
+                <p>${rawHtml(t('orcidExplainer')({ orcidLinkAsDefinition }))}</p>
               </div>
             </details>
           `}
