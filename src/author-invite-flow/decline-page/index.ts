@@ -18,7 +18,7 @@ import {
 } from '../../author-invite.js'
 import type { Html } from '../../html.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { authorInviteDeclineMatch } from '../../routes.js'
 import type { ClubId } from '../../types/club-id.js'
@@ -57,22 +57,24 @@ const getPrereview = (id: number): RTE.ReaderTaskEither<GetPrereviewEnv, 'unavai
 
 export const authorInviteDecline = ({
   id,
+  locale,
   method,
 }: {
   id: Uuid
+  locale: SupportedLocale
   method: string
 }): RT.ReaderTask<
   GetAuthorInviteEnv & GetPrereviewEnv & SaveAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   match(method)
-    .with('POST', () => handleDecline(id))
-    .otherwise(() => showDeclinePage(id))
+    .with('POST', () => handleDecline(id, locale))
+    .otherwise(() => showDeclinePage(id, locale))
 
-const showDeclinePage = (id: Uuid) =>
+const showDeclinePage = (id: Uuid, locale: SupportedLocale) =>
   pipe(
     RTE.Do,
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.let('inviteId', () => id),
     RTE.apS(
       'invite',
@@ -91,15 +93,15 @@ const showDeclinePage = (id: Uuid) =>
     RTE.matchW(
       error =>
         match(error)
-          .with('declined', () => inviteDeclinedPage(DefaultLocale, id))
-          .with('not-found', () => pageNotFound(DefaultLocale))
-          .with('unavailable', () => havingProblemsPage(DefaultLocale))
+          .with('declined', () => inviteDeclinedPage(locale, id))
+          .with('not-found', () => pageNotFound(locale))
+          .with('unavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       declinePage,
     ),
   )
 
-const handleDecline = (id: Uuid) =>
+const handleDecline = (id: Uuid, locale: SupportedLocale) =>
   pipe(
     getAuthorInvite(id),
     RTE.chainFirstW(invite =>
@@ -112,8 +114,8 @@ const handleDecline = (id: Uuid) =>
     RTE.matchW(
       error =>
         match(error)
-          .with('not-found', () => pageNotFound(DefaultLocale))
-          .with('unavailable', () => havingProblemsPage(DefaultLocale))
+          .with('not-found', () => pageNotFound(locale))
+          .with('unavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }),
     ),

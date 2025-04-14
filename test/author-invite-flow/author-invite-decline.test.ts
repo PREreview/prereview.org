@@ -12,10 +12,10 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('authorInviteDecline', () => {
   describe('when the form has been submitted', () => {
-    test.prop([fc.uuid(), fc.declinedAuthorInvite()])(
+    test.prop([fc.uuid(), fc.declinedAuthorInvite(), fc.supportedLocale()])(
       'when the invite has already been declined',
-      async (inviteId, invite) => {
-        const actual = await _.authorInviteDecline({ id: inviteId, method: 'POST' })({
+      async (inviteId, invite, locale) => {
+        const actual = await _.authorInviteDecline({ id: inviteId, locale, method: 'POST' })({
           getAuthorInvite: () => TE.right(invite),
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
@@ -30,65 +30,73 @@ describe('authorInviteDecline', () => {
     )
 
     describe('when the invite is open', () => {
-      test.prop([fc.uuid(), fc.openAuthorInvite()])('when the invite can be saved', async (inviteId, invite) => {
-        const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+      test.prop([fc.uuid(), fc.openAuthorInvite(), fc.supportedLocale()])(
+        'when the invite can be saved',
+        async (inviteId, invite, locale) => {
+          const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
-        const actual = await _.authorInviteDecline({ id: inviteId, method: 'POST' })({
-          getAuthorInvite: () => TE.right(invite),
-          getPrereview: shouldNotBeCalled,
-          saveAuthorInvite,
-        })()
+          const actual = await _.authorInviteDecline({ id: inviteId, locale, method: 'POST' })({
+            getAuthorInvite: () => TE.right(invite),
+            getPrereview: shouldNotBeCalled,
+            saveAuthorInvite,
+          })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: Status.SeeOther,
-          location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
-        })
-        expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, { status: 'declined', review: invite.review })
-      })
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: Status.SeeOther,
+            location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
+          })
+          expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, { status: 'declined', review: invite.review })
+        },
+      )
 
-      test.prop([fc.uuid(), fc.openAuthorInvite()])("when the invite can't be saved", async (inviteId, invite) => {
-        const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.left('unavailable'))
+      test.prop([fc.uuid(), fc.openAuthorInvite(), fc.supportedLocale()])(
+        "when the invite can't be saved",
+        async (inviteId, invite, locale) => {
+          const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.left('unavailable'))
 
-        const actual = await _.authorInviteDecline({ id: inviteId, method: 'POST' })({
-          getAuthorInvite: () => TE.right(invite),
-          getPrereview: shouldNotBeCalled,
-          saveAuthorInvite,
-        })()
+          const actual = await _.authorInviteDecline({ id: inviteId, locale, method: 'POST' })({
+            getAuthorInvite: () => TE.right(invite),
+            getPrereview: shouldNotBeCalled,
+            saveAuthorInvite,
+          })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-        expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, { status: 'declined', review: invite.review })
-      })
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: Status.ServiceUnavailable,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+          expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, { status: 'declined', review: invite.review })
+        },
+      )
     })
 
-    test.prop([fc.uuid(), fc.string().filter(method => method !== 'POST'), fc.declinedAuthorInvite()])(
-      'when the invite has been declined',
-      async (inviteId, method, invite) => {
-        const actual = await _.authorInviteDecline({ id: inviteId, method })({
-          getAuthorInvite: () => TE.right(invite),
-          getPrereview: shouldNotBeCalled,
-          saveAuthorInvite: shouldNotBeCalled,
-        })()
+    test.prop([
+      fc.uuid(),
+      fc.string().filter(method => method !== 'POST'),
+      fc.declinedAuthorInvite(),
+      fc.supportedLocale(),
+    ])('when the invite has been declined', async (inviteId, method, invite, locale) => {
+      const actual = await _.authorInviteDecline({ id: inviteId, locale, method })({
+        getAuthorInvite: () => TE.right(invite),
+        getPrereview: shouldNotBeCalled,
+        saveAuthorInvite: shouldNotBeCalled,
+      })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'StreamlinePageResponse',
-          canonical: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
-          status: Status.OK,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-          allowRobots: false,
-        })
-      },
-    )
+      expect(actual).toStrictEqual({
+        _tag: 'StreamlinePageResponse',
+        canonical: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
+        status: Status.OK,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+        allowRobots: false,
+      })
+    })
   })
 
   test.prop([
@@ -113,10 +121,11 @@ describe('authorInviteDecline', () => {
       structured: fc.boolean(),
       text: fc.html(),
     }),
-  ])('when the invite is open', async (inviteId, method, invite, review) => {
+    fc.supportedLocale(),
+  ])('when the invite is open', async (inviteId, method, invite, review, locale) => {
     const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(review))
 
-    const actual = await _.authorInviteDecline({ id: inviteId, method })({
+    const actual = await _.authorInviteDecline({ id: inviteId, locale, method })({
       getAuthorInvite: () => TE.right(invite),
       getPrereview,
       saveAuthorInvite: shouldNotBeCalled,
@@ -135,10 +144,10 @@ describe('authorInviteDecline', () => {
     expect(getPrereview).toHaveBeenCalledWith(invite.review)
   })
 
-  test.prop([fc.uuid(), fc.string().filter(method => method !== 'POST'), fc.openAuthorInvite()])(
+  test.prop([fc.uuid(), fc.string().filter(method => method !== 'POST'), fc.openAuthorInvite(), fc.supportedLocale()])(
     "when the review can't be loaded",
-    async (inviteId, method, invite) => {
-      const actual = await _.authorInviteDecline({ id: inviteId, method })({
+    async (inviteId, method, invite, locale) => {
+      const actual = await _.authorInviteDecline({ id: inviteId, locale, method })({
         getAuthorInvite: () => TE.right(invite),
         getPrereview: () => TE.left('unavailable'),
         saveAuthorInvite: shouldNotBeCalled,
@@ -159,8 +168,9 @@ describe('authorInviteDecline', () => {
     fc.uuid(),
     fc.string(),
     fc.authorInvite().filter(invite => invite.status !== 'open' && invite.status !== 'declined'),
-  ])('when the invite is not open or declined', async (inviteId, method, invite) => {
-    const actual = await _.authorInviteDecline({ id: inviteId, method })({
+    fc.supportedLocale(),
+  ])('when the invite is not open or declined', async (inviteId, method, invite, locale) => {
+    const actual = await _.authorInviteDecline({ id: inviteId, locale, method })({
       getAuthorInvite: () => TE.right(invite),
       getPrereview: shouldNotBeCalled,
       saveAuthorInvite: shouldNotBeCalled,
@@ -176,20 +186,23 @@ describe('authorInviteDecline', () => {
     })
   })
 
-  test.prop([fc.uuid(), fc.string()])('when the invite is not found', async (inviteId, method) => {
-    const actual = await _.authorInviteDecline({ id: inviteId, method })({
-      getAuthorInvite: () => TE.left('not-found'),
-      getPrereview: shouldNotBeCalled,
-      saveAuthorInvite: shouldNotBeCalled,
-    })()
+  test.prop([fc.uuid(), fc.string(), fc.supportedLocale()])(
+    'when the invite is not found',
+    async (inviteId, method, locale) => {
+      const actual = await _.authorInviteDecline({ id: inviteId, locale, method })({
+        getAuthorInvite: () => TE.left('not-found'),
+        getPrereview: shouldNotBeCalled,
+        saveAuthorInvite: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.NotFound,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 })
