@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -38,6 +38,10 @@ export const writeReviewMethodsAppropriate = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
+      RM.apSW(
+        'locale',
+        RM.asks((env: { locale: SupportedLocale }) => env.locale),
+      ),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -73,21 +77,32 @@ export const writeReviewMethodsAppropriate = flow(
 )
 
 const showMethodsAppropriateForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    methodsAppropriateForm(preprint, FormToFieldsE.encode(form), user, DefaultLocale),
+  RM.fromReaderK(
+    ({ form, locale, preprint, user }: { form: Form; locale: SupportedLocale; preprint: PreprintTitle; user: User }) =>
+      methodsAppropriateForm(preprint, FormToFieldsE.encode(form), user, locale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showMethodsAppropriateErrorForm = (preprint: PreprintTitle, user: User) =>
+const showMethodsAppropriateErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
   flow(
-    RM.fromReaderK((form: MethodsAppropriateForm) => methodsAppropriateForm(preprint, form, user, DefaultLocale)),
+    RM.fromReaderK((form: MethodsAppropriateForm) => methodsAppropriateForm(preprint, form, user, locale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleMethodsAppropriateForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleMethodsAppropriateForm = ({
+  form,
+  locale,
+  preprint,
+  user,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
     RM.decodeBody(decodeFields(methodsAppropriateFields)),
     RM.map(updateFormWithFields(form)),
@@ -96,7 +111,7 @@ const handleMethodsAppropriateForm = ({ form, preprint, user }: { form: Form; pr
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ methodsAppropriate: P.any }, showMethodsAppropriateErrorForm(preprint, user))
+        .with({ methodsAppropriate: P.any }, showMethodsAppropriateErrorForm(preprint, user, locale))
         .exhaustive(),
     ),
   )
