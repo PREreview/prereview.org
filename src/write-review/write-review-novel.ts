@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -38,6 +38,10 @@ export const writeReviewNovel = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
+      RM.apSW(
+        'locale',
+        RM.asks((env: { locale: SupportedLocale }) => env.locale),
+      ),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -73,21 +77,32 @@ export const writeReviewNovel = flow(
 )
 
 const showNovelForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    novelForm(preprint, FormToFieldsE.encode(form), user),
+  RM.fromReaderK(
+    ({ form, locale, preprint, user }: { form: Form; locale: SupportedLocale; preprint: PreprintTitle; user: User }) =>
+      novelForm(preprint, FormToFieldsE.encode(form), user, locale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showNovelErrorForm = (preprint: PreprintTitle, user: User) =>
+const showNovelErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
   flow(
-    RM.fromReaderK((form: NovelForm) => novelForm(preprint, form, user)),
+    RM.fromReaderK((form: NovelForm) => novelForm(preprint, form, user, locale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleNovelForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleNovelForm = ({
+  form,
+  locale,
+  preprint,
+  user,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
     RM.decodeBody(decodeFields(novelFields)),
     RM.map(updateFormWithFields(form)),
@@ -97,7 +112,7 @@ const handleNovelForm = ({ form, preprint, user }: { form: Form; preprint: Prepr
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ novel: P.any }, showNovelErrorForm(preprint, user))
+        .with({ novel: P.any }, showNovelErrorForm(preprint, user, locale))
         .exhaustive(),
     ),
   )
@@ -139,7 +154,7 @@ const FormToFieldsE: Encoder<NovelForm, Form> = {
 
 type NovelForm = Fields<typeof novelFields>
 
-function novelForm(preprint: PreprintTitle, form: NovelForm, user: User, locale = DefaultLocale) {
+function novelForm(preprint: PreprintTitle, form: NovelForm, user: User, locale: SupportedLocale) {
   const error = hasAnError(form)
   const t = translate(locale, 'write-review')
 
