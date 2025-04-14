@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -38,6 +38,10 @@ export const writeReviewReadyFullReview = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
+      RM.apSW(
+        'locale',
+        RM.asks((env: { locale: SupportedLocale }) => env.locale),
+      ),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -73,21 +77,32 @@ export const writeReviewReadyFullReview = flow(
 )
 
 const showReadyFullReviewForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    readyFullReviewForm(preprint, FormToFieldsE.encode(form), user),
+  RM.fromReaderK(
+    ({ form, locale, preprint, user }: { form: Form; locale: SupportedLocale; preprint: PreprintTitle; user: User }) =>
+      readyFullReviewForm(preprint, FormToFieldsE.encode(form), user, locale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showReadyFullReviewErrorForm = (preprint: PreprintTitle, user: User) =>
+const showReadyFullReviewErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
   flow(
-    RM.fromReaderK((form: ReadyFullReviewForm) => readyFullReviewForm(preprint, form, user)),
+    RM.fromReaderK((form: ReadyFullReviewForm) => readyFullReviewForm(preprint, form, user, locale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleReadyFullReviewForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleReadyFullReviewForm = ({
+  form,
+  locale,
+  preprint,
+  user,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
     RM.decodeBody(decodeFields(readyFullReviewFields)),
     RM.map(updateFormWithFields(form)),
@@ -96,7 +111,7 @@ const handleReadyFullReviewForm = ({ form, preprint, user }: { form: Form; prepr
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ readyFullReview: P.any }, showReadyFullReviewErrorForm(preprint, user))
+        .with({ readyFullReview: P.any }, showReadyFullReviewErrorForm(preprint, user, locale))
         .exhaustive(),
     ),
   )
@@ -132,7 +147,7 @@ const FormToFieldsE: Encoder<ReadyFullReviewForm, Form> = {
 
 type ReadyFullReviewForm = Fields<typeof readyFullReviewFields>
 
-function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm, user: User, locale = DefaultLocale) {
+function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm, user: User, locale: SupportedLocale) {
   const error = hasAnError(form)
   const t = translate(locale, 'write-review')
 
