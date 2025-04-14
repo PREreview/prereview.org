@@ -130,8 +130,8 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
               </div>
 
               <div>
-                <dt><span>Competing interests</span></dt>
-                <dd>${getCompetingInterests(review)}</dd>
+                <dt><span>${t('competingInterests')()}</span></dt>
+                <dd>${getCompetingInterests(review, locale)}</dd>
                 <dd>
                   <a href="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}"
                     >${rawHtml(t('changeCompetingInterests')(visuallyHidden))}</a
@@ -143,7 +143,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
 
           <div class="summary-card">
             <div>
-              <h2 id="review-label">Your review</h2>
+              <h2 id="review-label">${t('yourReview')()}</h2>
 
               ${review.reviewType === 'freeform'
                 ? html`
@@ -167,10 +167,10 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         <dt><span>${t('doesIntroductionExplain')()}</span></dt>
                         <dd>
                           ${match(review.introductionMatches)
-                            .with('yes', () => 'Yes')
-                            .with('partly', () => 'Partly')
-                            .with('no', () => 'No')
-                            .with('skip', () => 'I don’t know')
+                            .with('yes', () => t('yes')())
+                            .with('partly', () => t('partly')())
+                            .with('no', () => t('no')())
+                            .with('skip', () => t('iDoNotKnow')())
                             .exhaustive()}
                         </dd>
                         ${review.introductionMatches !== 'skip' && review.introductionMatchesDetails
@@ -186,12 +186,12 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         <dt><span>${t('methodsWellSuited')()}</span></dt>
                         <dd>
                           ${match(review.methodsAppropriate)
-                            .with('inappropriate', () => 'Highly inappropriate')
-                            .with('somewhat-inappropriate', () => 'Somewhat inappropriate')
-                            .with('adequate', () => 'Neither appropriate nor inappropriate')
-                            .with('mostly-appropriate', () => 'Somewhat appropriate')
-                            .with('highly-appropriate', () => 'Highly appropriate')
-                            .with('skip', () => 'I don’t know')
+                            .with('inappropriate', () => t('methodsHighlyInappropriate')())
+                            .with('somewhat-inappropriate', () => t('methodsSomewhatInappropriate')())
+                            .with('adequate', () => t('methodsNeitherAppropriateNorInappropriate')())
+                            .with('mostly-appropriate', () => t('methodsSomewhatAppropriate')())
+                            .with('highly-appropriate', () => t('methodsHighlyAppropriate')())
+                            .with('skip', () => t('iDoNotKnow')())
                             .exhaustive()}
                         </dd>
                         ${review.methodsAppropriate !== 'skip' && review.methodsAppropriateDetails
@@ -207,12 +207,12 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         <dt><span>${t('conclusionsSupported')()}</span></dt>
                         <dd>
                           ${match(review.resultsSupported)
-                            .with('not-supported', () => 'Highly unsupported')
-                            .with('partially-supported', () => 'Somewhat unsupported')
-                            .with('neutral', () => 'Neither supported nor unsupported')
-                            .with('well-supported', () => 'Somewhat supported')
-                            .with('strongly-supported', () => 'Highly supported')
-                            .with('skip', () => 'I don’t know')
+                            .with('not-supported', () => t('conclusionsHighlyUnsupported')())
+                            .with('partially-supported', () => t('conclusionsSomewhatUnsupported')())
+                            .with('neutral', () => t('conclusionsNeitherSupportedNorUnsupported')())
+                            .with('well-supported', () => t('conclusionsSomewhatSupported')())
+                            .with('strongly-supported', () => t('conclusionsHighlySupported')())
+                            .with('skip', () => t('iDoNotKnow')())
                             .exhaustive()}
                         </dd>
                         ${review.resultsSupported !== 'skip' && review.resultsSupportedDetails
@@ -228,12 +228,12 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         <dt><span>${t('dataPresentationWellSuited')()}</span></dt>
                         <dd>
                           ${match(review.dataPresentation)
-                            .with('inappropriate-unclear', () => 'Highly inappropriate or unclear')
-                            .with('somewhat-inappropriate-unclear', () => 'Somewhat inappropriate or unclear')
-                            .with('neutral', () => 'Neither appropriate and clear nor inappropriate and unclear')
-                            .with('mostly-appropriate-clear', () => 'Somewhat appropriate and clear')
-                            .with('highly-appropriate-clear', () => 'Highly appropriate and clear')
-                            .with('skip', () => 'I don’t know')
+                            .with('inappropriate-unclear', () => t('highlyInappropriate')())
+                            .with('somewhat-inappropriate-unclear', () => t('somewhatInappropriate')())
+                            .with('neutral', () => t('neitherAppropriateOrClear')())
+                            .with('mostly-appropriate-clear', () => t('somewhatAppropriate')())
+                            .with('highly-appropriate-clear', () => t('highlyAppropriateAndClear')())
+                            .with('skip', () => t('iDoNotKnow')())
                             .exhaustive()}
                         </dd>
                         ${review.dataPresentation !== 'skip' && review.dataPresentationDetails
@@ -249,12 +249,12 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         <dt><span>${t('clearDiscussion')()}</span></dt>
                         <dd>
                           ${match(review.findingsNextSteps)
-                            .with('inadequately', () => 'Very unclearly')
-                            .with('insufficiently', () => 'Somewhat unclearly')
-                            .with('adequately', () => 'Neither clearly nor unclearly')
-                            .with('clearly-insightfully', () => 'Somewhat clearly')
-                            .with('exceptionally', () => 'Very clearly')
-                            .with('skip', () => 'I don’t know')
+                            .with('inadequately', () => t('veryUnclearly')())
+                            .with('insufficiently', () => t('somewhatUnclearly')())
+                            .with('adequately', () => t('neitherClearlyNorUnclearly')())
+                            .with('clearly-insightfully', () => t('somewhatClearly')())
+                            .with('exceptionally', () => t('veryClearly')())
+                            .with('skip', () => t('iDoNotKnow')())
                             .exhaustive()}
                         </dd>
                         ${review.findingsNextSteps !== 'skip' && review.findingsNextStepsDetails
@@ -270,12 +270,12 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         <dt><span>${t('advanceKnowledge')()}</span></dt>
                         <dd>
                           ${match(review.novel)
-                            .with('no', () => 'Not at all likely')
-                            .with('limited', () => 'Not likely')
-                            .with('some', () => 'Moderately likely')
-                            .with('substantial', () => 'Somewhat likely')
-                            .with('highly', () => 'Highly likely')
-                            .with('skip', () => 'I don’t know')
+                            .with('no', () => t('advanceKnowledgeNotAtAllLikely')())
+                            .with('limited', () => t('advanceKnowledgeNotLikely')())
+                            .with('some', () => t('advanceKnowledgeModeratelyLikely')())
+                            .with('substantial', () => t('advanceKnowledgeSomewhatLikely')())
+                            .with('highly', () => t('advanceKnowledgeHighlyLikely')())
+                            .with('skip', () => t('iDoNotKnow')())
                             .exhaustive()}
                         </dd>
                         ${review.novel !== 'skip' && review.novelDetails ? html` <dd>${review.novelDetails}</dd>` : ''}
@@ -289,8 +289,8 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         <dt><span>${t('benefitFromEditing')()}</span></dt>
                         <dd>
                           ${match(review.languageEditing)
-                            .with('no', () => 'No')
-                            .with('yes', () => 'Yes')
+                            .with('no', () => t('no')())
+                            .with('yes', () => t('yes')())
                             .exhaustive()}
                         </dd>
                         ${review.languageEditingDetails ? html` <dd>${review.languageEditingDetails}</dd>` : ''}
@@ -304,9 +304,9 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         <dt><span>${t('wouldRecommend')()}</span></dt>
                         <dd>
                           ${match(review.shouldRead)
-                            .with('no', () => 'No, it’s of low quality or is majorly flawed')
-                            .with('yes-but', () => 'Yes, but it needs to be improved')
-                            .with('yes', () => 'Yes, it’s of high quality')
+                            .with('no', () => t('wouldRecommendNo')())
+                            .with('yes-but', () => t('wouldRecommendYesImproved')())
+                            .with('yes', () => t('wouldRecommendYes')())
                             .exhaustive()}
                         </dd>
                         ${review.shouldReadDetails ? html` <dd>${review.shouldReadDetails}</dd>` : ''}
@@ -320,9 +320,9 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                         <dt><span>${t('readyForAttention')()}</span></dt>
                         <dd>
                           ${match(review.readyFullReview)
-                            .with('no', () => 'No, it needs a major revision')
-                            .with('yes-changes', () => 'Yes, after minor changes')
-                            .with('yes', () => 'Yes, as it is')
+                            .with('no', () => t('readyForAttentionNo')())
+                            .with('yes-changes', () => t('readyForAttentionMinorChanges')())
+                            .with('yes', () => t('readyForAttentionYes')())
                             .exhaustive()}
                         </dd>
                         ${review.readyFullReviewDetails ? html` <dd>${review.readyFullReviewDetails}</dd>` : ''}
@@ -382,15 +382,13 @@ function formatList(
   )
 }
 
-export const getCompetingInterests = (form: CompletedForm) =>
+export const getCompetingInterests = (form: CompletedForm, locale: SupportedLocale) =>
   match(form)
     .with({ competingInterests: 'yes' }, form => form.competingInterestsDetails)
-    .with(
-      { competingInterests: 'no', moreAuthors: P.union('yes', 'yes-private') },
-      () => 'The authors declare that they have no competing interests.',
+    .with({ competingInterests: 'no', moreAuthors: P.union('yes', 'yes-private') }, () =>
+      translate(locale, 'write-review', 'competingInterestsAuthorsNo')(),
     )
-    .with(
-      { competingInterests: 'no', moreAuthors: 'no' },
-      () => 'The author declares that they have no competing interests.',
+    .with({ competingInterests: 'no', moreAuthors: 'no' }, () =>
+      translate(locale, 'write-review', 'competingInterestsNo')(),
     )
     .exhaustive()

@@ -331,7 +331,7 @@ function renderReview(form: CompletedForm) {
 
     <h2>Competing interests</h2>
 
-    <p>${getCompetingInterests(form)}</p>
+    <p>${getCompetingInterests(form, DefaultLocale)}</p>
 
     ${form.generativeAiIdeas === 'yes'
       ? html`

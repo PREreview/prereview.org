@@ -303,6 +303,9 @@
   "changePrereview": {
     "message": "Change <visuallyHidden>PREreview</visuallyHidden>"
   },
+  "yourReview": {
+    "message": "Your review"
+  },
   "doesIntroductionExplain": {
     "message": "Does the introduction explain the objective of the research presented in the preprint?"
   },
@@ -482,6 +485,12 @@
   },
   "competingInterests": {
     "message": "Competing interests"
+  },
+  "competingInterestsNo": {
+    "message": "The author declares that they have no competing interests."
+  },
+  "competingInterestsAuthorsNo": {
+    "message": "The authors declare that they have no competing interests."
   },
   "selectYesIfCompetingInterest": {
     "message": "Select yes if you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests"
