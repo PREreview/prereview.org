@@ -15,7 +15,7 @@ import {
 } from '../author-invite.js'
 import { type Html, html, plainText } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -42,9 +42,11 @@ const getPrereview = (id: number): RTE.ReaderTaskEither<GetPrereviewEnv, 'unavai
 
 export const authorInviteStart = ({
   id,
+  locale,
   user,
 }: {
   id: Uuid
+  locale: SupportedLocale
   user?: User
 }): RT.ReaderTask<
   GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
@@ -65,7 +67,7 @@ export const authorInviteStart = ({
     ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.apSW('user', RTE.fromNullable('no-session' as const)(user)),
-    RTE.apS('locale', RTE.of(DefaultLocale)),
+    RTE.let('locale', () => locale),
     RTE.chainFirstW(({ invite, user }) =>
       match(invite)
         .with({ status: 'open' }, invite => saveAuthorInvite(id, { ...invite, status: 'assigned', orcid: user.orcid }))
@@ -80,9 +82,9 @@ export const authorInviteStart = ({
         match(error)
           .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
           .with('no-session', () => LogInResponse({ location: format(authorInviteStartMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound(DefaultLocale))
-          .with('unavailable', () => havingProblemsPage(DefaultLocale))
-          .with('wrong-user', () => noPermissionPage(DefaultLocale))
+          .with('not-found', () => pageNotFound(locale))
+          .with('unavailable', () => havingProblemsPage(locale))
+          .with('wrong-user', () => noPermissionPage(locale))
           .exhaustive(),
       ({ invite, locale }) =>
         match(invite)
