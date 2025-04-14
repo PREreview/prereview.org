@@ -606,6 +606,30 @@
   "resendEmailButton": {
     "message": "Resend email"
   },
+  "selectIntroductionExplains": {
+    "message": "Select if the introduction explains the objective of the research presented in the preprint"
+  },
+  "clearlyExplainsTip": {
+    "message": "It clearly explains the objective."
+  },
+  "howIntroductionExplains": {
+    "message": "How does the introduction explain the objective? (optional)"
+  },
+  "partly": {
+    "message": "Partly"
+  },
+  "partlyTip": {
+    "message": "It mentions, but doesn’t fully explain, the objective."
+  },
+  "partlyHow": {
+    "message": "How does the introduction only partly explain the objective? (optional)"
+  },
+  "doesNotExplain": {
+    "message": "It doesn’t mention or explain the objective."
+  },
+  "doesNotExplainHow": {
+    "message": "How does the introduction not explain the objective? (optional)"
+  },
   "selectClearDiscussion": {
     "message": "Select how clearly the authors discuss their findings and next steps"
   },

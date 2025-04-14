@@ -16,14 +16,16 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
 import { writeReviewIntroductionMatchesMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewIntroductionMatches = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -67,7 +69,7 @@ export const writeReviewIntroductionMatches = flow(
 
 const showIntroductionMatchesForm = flow(
   RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    introductionMatchesForm(preprint, FormToFieldsE.encode(form), user),
+    introductionMatchesForm(preprint, FormToFieldsE.encode(form), user, DefaultLocale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -75,7 +77,7 @@ const showIntroductionMatchesForm = flow(
 
 const showIntroductionMatchesErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    RM.fromReaderK((form: IntroductionMatchesForm) => introductionMatchesForm(preprint, form, user)),
+    RM.fromReaderK((form: IntroductionMatchesForm) => introductionMatchesForm(preprint, form, user, DefaultLocale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -125,18 +127,26 @@ const FormToFieldsE: Encoder<IntroductionMatchesForm, Form> = {
 
 type IntroductionMatchesForm = Fields<typeof introductionMatchesFields>
 
-function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatchesForm, user: User) {
+function introductionMatchesForm(
+  preprint: PreprintTitle,
+  form: IntroductionMatchesForm,
+  user: User,
+  locale: SupportedLocale,
+) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return templatePage({
-    title: plainText`${
-      error ? 'Error: ' : ''
-    }Does the introduction explain the objective of the research presented in the preprint?
- – PREreview of “${preprint.title}”`,
+    title: pipe(
+      t('doesIntroductionExplain')(),
+      prereviewOfSuffix(locale, preprint.title),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
       <nav>
         <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>Back</span></a
+          ><span>${t('backNav')()}</span></a
         >
       </nav>
 
@@ -149,18 +159,14 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
+                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
                   <ul>
                     ${E.isLeft(form.introductionMatches)
                       ? html`
                           <li>
                             <a href="#introduction-matches-yes">
                               ${match(form.introductionMatches.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () =>
-                                    'Select if the introduction explains the objective of the research presented in the preprint',
-                                )
+                                .with({ _tag: 'MissingE' }, () => t('selectIntroductionExplains')())
                                 .exhaustive()}
                             </a>
                           </li>
@@ -182,19 +188,15 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
                 )}
               >
                 <legend>
-                  <h1>Does the introduction explain the objective of the research presented in the preprint?</h1>
+                  <h1>${t('doesIntroductionExplain')()}</h1>
                 </legend>
 
                 ${E.isLeft(form.introductionMatches)
                   ? html`
                       <div class="error-message" id="introduction-matches-error">
-                        <span class="visually-hidden">Error:</span>
+                        <span class="visually-hidden">${t('error')()}:</span>
                         ${match(form.introductionMatches.left)
-                          .with(
-                            { _tag: 'MissingE' },
-                            () =>
-                              'Select if the introduction explains the objective of the research presented in the preprint',
-                          )
+                          .with({ _tag: 'MissingE' }, () => t('selectIntroductionExplains')())
                           .exhaustive()}
                       </div>
                     `
@@ -214,13 +216,13 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
                           .with({ right: 'yes' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Yes</span>
+                      <span>${t('yes')()}</span>
                     </label>
-                    <p id="introduction-matches-tip-yes" role="note">It clearly explains the objective.</p>
+                    <p id="introduction-matches-tip-yes" role="note">${t('clearlyExplainsTip')()}</p>
                     <div class="conditional" id="introduction-matches-yes-control">
                       <div>
                         <label for="introduction-matches-yes-details" class="textarea"
-                          >How does the introduction explain the objective? (optional)</label
+                          >${t('howIntroductionExplains')()}</label
                         >
 
                         <textarea name="introductionMatchesYesDetails" id="introduction-matches-yes-details" rows="5">
@@ -243,16 +245,12 @@ ${match(form.introductionMatchesYesDetails)
                           .with({ right: 'partly' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Partly</span>
+                      <span>${t('partly')()}</span>
                     </label>
-                    <p id="introduction-matches-tip-partly" role="note">
-                      It mentions, but doesn’t fully explain, the objective.
-                    </p>
+                    <p id="introduction-matches-tip-partly" role="note">${t('partlyTip')()}</p>
                     <div class="conditional" id="introduction-matches-partly-control">
                       <div>
-                        <label for="introduction-matches-partly-details" class="textarea"
-                          >How does the introduction only partly explain the objective? (optional)</label
-                        >
+                        <label for="introduction-matches-partly-details" class="textarea">${t('partlyHow')()}</label>
 
                         <textarea
                           name="introductionMatchesPartlyDetails"
@@ -278,13 +276,13 @@ ${match(form.introductionMatchesPartlyDetails)
                           .with({ right: 'no' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>No</span>
+                      <span>${t('no')()}</span>
                     </label>
-                    <p id="introduction-matches-tip-no" role="note">It doesn’t mention or explain the objective.</p>
+                    <p id="introduction-matches-tip-no" role="note">${t('doesNotExplain')()}</p>
                     <div class="conditional" id="introduction-matches-no-control">
                       <div>
                         <label for="introduction-matches-no-details" class="textarea"
-                          >How does the introduction not explain the objective? (optional)</label
+                          >${t('doesNotExplainHow')()}</label
                         >
 
                         <textarea name="introductionMatchesNoDetails" id="introduction-matches-no-details" rows="5">
@@ -296,7 +294,7 @@ ${match(form.introductionMatchesNoDetails)
                     </div>
                   </li>
                   <li>
-                    <span>or</span>
+                    <span>${t('or')()}</span>
                     <label>
                       <input
                         name="introductionMatches"
@@ -306,7 +304,7 @@ ${match(form.introductionMatchesNoDetails)
                           .with({ right: 'skip' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>I don’t know</span>
+                      <span>${t('iDoNotKnow')()}</span>
                     </label>
                   </li>
                 </ol>
@@ -314,14 +312,14 @@ ${match(form.introductionMatchesNoDetails)
             </conditional-inputs>
           </div>
 
-          <button>Save and continue</button>
+          <button>${t('saveAndContinueButton')()}</button>
         </form>
       </main>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
-    locale: DefaultLocale,
+    locale,
     user,
   })
 }
