@@ -18,7 +18,7 @@ import {
 import { missingE } from '../../form.js'
 import type { Html } from '../../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
-import { DefaultLocale, type SupportedLocale } from '../../locales/index.js'
+import type { SupportedLocale } from '../../locales/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   authorInviteCheckMatch,
@@ -46,11 +46,13 @@ const getPrereview = (id: number): RTE.ReaderTaskEither<GetPrereviewEnv, 'unavai
 export const authorInvitePersona = ({
   body,
   id,
+  locale,
   method,
   user,
 }: {
   body: unknown
   id: Uuid
+  locale: SupportedLocale
   method: string
   user?: User
 }): RT.ReaderTask<
@@ -60,7 +62,7 @@ export const authorInvitePersona = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-    RTE.apS('locale', RTE.of(DefaultLocale)),
+    RTE.let('locale', () => locale),
     RTE.let('inviteId', () => id),
     RTE.bindW('invite', ({ user }) =>
       pipe(
@@ -90,9 +92,9 @@ export const authorInvitePersona = ({
             .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
             .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-            .with('not-found', () => pageNotFound(DefaultLocale))
-            .with('unavailable', () => havingProblemsPage(DefaultLocale))
-            .with('wrong-user', () => noPermissionPage(DefaultLocale))
+            .with('not-found', () => pageNotFound(locale))
+            .with('unavailable', () => havingProblemsPage(locale))
+            .with('wrong-user', () => noPermissionPage(locale))
             .exhaustive(),
         ),
       state =>
@@ -132,7 +134,7 @@ const handlePersonaForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage(DefaultLocale))
+          .with('unavailable', () => havingProblemsPage(locale))
           .with({ persona: P.any }, form => personaForm({ form, inviteId, user, locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),

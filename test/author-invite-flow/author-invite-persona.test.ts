@@ -25,6 +25,7 @@ describe('authorInvitePersona', () => {
         fc
           .user()
           .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.supportedLocale(),
         fc.record({
           preprint: fc.record({
             language: fc.languageCode(),
@@ -32,12 +33,12 @@ describe('authorInvitePersona', () => {
           }),
         }),
         fc.constantFrom('public', 'pseudonym'),
-      ])('when the persona is set', async (inviteId, [user, invite], prereview, persona) => {
+      ])('when the persona is set', async (inviteId, [user, invite], locale, prereview, persona) => {
         const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
         const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
         const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
-        const actual = await _.authorInvitePersona({ body: { persona }, id: inviteId, method: 'POST', user })({
+        const actual = await _.authorInvitePersona({ body: { persona }, id: inviteId, locale, method: 'POST', user })({
           getAuthorInvite,
           getPrereview,
           saveAuthorInvite,
@@ -58,6 +59,7 @@ describe('authorInvitePersona', () => {
         fc
           .user()
           .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.supportedLocale(),
         fc.record({
           preprint: fc.record({
             language: fc.languageCode(),
@@ -65,8 +67,8 @@ describe('authorInvitePersona', () => {
           }),
         }),
         fc.constantFrom('public', 'pseudonym'),
-      ])("when the persona can't be set", async (inviteId, [user, invite], prereview, persona) => {
-        const actual = await _.authorInvitePersona({ body: { persona }, id: inviteId, method: 'POST', user })({
+      ])("when the persona can't be set", async (inviteId, [user, invite], locale, prereview, persona) => {
+        const actual = await _.authorInvitePersona({ body: { persona }, id: inviteId, locale, method: 'POST', user })({
           getAuthorInvite: () => TE.right(invite),
           getPrereview: () => TE.right(prereview),
           saveAuthorInvite: () => TE.left('unavailable'),
@@ -86,6 +88,7 @@ describe('authorInvitePersona', () => {
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.supportedLocale(),
       fc.anything(),
       fc.record({
         preprint: fc.record({
@@ -93,8 +96,8 @@ describe('authorInvitePersona', () => {
           title: fc.html(),
         }),
       }),
-    ])('when the form is invalid', async (inviteId, [user, invite], body, prereview) => {
-      const actual = await _.authorInvitePersona({ body, id: inviteId, method: 'POST', user })({
+    ])('when the form is invalid', async (inviteId, [user, invite], locale, body, prereview) => {
+      const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method: 'POST', user })({
         getAuthorInvite: () => TE.right(invite),
         getPrereview: () => TE.right(prereview),
         saveAuthorInvite: shouldNotBeCalled,
@@ -114,6 +117,7 @@ describe('authorInvitePersona', () => {
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.supportedLocale(),
       fc.string().filter(method => method !== 'POST'),
       fc.anything(),
       fc.record({
@@ -122,11 +126,11 @@ describe('authorInvitePersona', () => {
           title: fc.html(),
         }),
       }),
-    ])('when the form needs submitting', async (inviteId, [user, invite], method, body, prereview) => {
+    ])('when the form needs submitting', async (inviteId, [user, invite], locale, method, body, prereview) => {
       const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
       const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-      const actual = await _.authorInvitePersona({ body, id: inviteId, method, user })({
+      const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
         getAuthorInvite,
         getPrereview,
         saveAuthorInvite: shouldNotBeCalled,
@@ -148,10 +152,11 @@ describe('authorInvitePersona', () => {
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.supportedLocale(),
       fc.string(),
       fc.anything(),
-    ])('when the review cannot be loaded', async (inviteId, [user, invite], method, body) => {
-      const actual = await _.authorInvitePersona({ body, id: inviteId, method, user })({
+    ])('when the review cannot be loaded', async (inviteId, [user, invite], locale, method, body) => {
+      const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
         getAuthorInvite: () => TE.right(invite),
         getPrereview: () => TE.left('unavailable'),
         saveAuthorInvite: shouldNotBeCalled,
@@ -167,10 +172,10 @@ describe('authorInvitePersona', () => {
       })
     })
 
-    test.prop([fc.uuid(), fc.user(), fc.string(), fc.anything()])(
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything()])(
       'when the invite cannot be loaded',
-      async (inviteId, user, method, body) => {
-        const actual = await _.authorInvitePersona({ body, id: inviteId, method, user })({
+      async (inviteId, user, locale, method, body) => {
+        const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
           getAuthorInvite: () => TE.left('unavailable'),
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
@@ -192,10 +197,11 @@ describe('authorInvitePersona', () => {
       fc
         .user()
         .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.supportedLocale(),
       fc.string(),
       fc.anything(),
-    ])('when the invite is already complete', async (inviteId, [user, invite], method, body) => {
-      const actual = await _.authorInvitePersona({ body, id: inviteId, method, user })({
+    ])('when the invite is already complete', async (inviteId, [user, invite], locale, method, body) => {
+      const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
         getAuthorInvite: () => TE.right(invite),
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
@@ -213,10 +219,11 @@ describe('authorInvitePersona', () => {
       fc
         .tuple(fc.user(), fc.assignedAuthorInvite())
         .filter(([user, invite]) => !eqOrcid.equals(user.orcid, invite.orcid)),
+      fc.supportedLocale(),
       fc.string(),
       fc.anything(),
-    ])('when the invite is assigned to someone else', async (inviteId, [user, invite], method, body) => {
-      const actual = await _.authorInvitePersona({ body, id: inviteId, method, user })({
+    ])('when the invite is assigned to someone else', async (inviteId, [user, invite], locale, method, body) => {
+      const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
         getAuthorInvite: () => TE.right(invite),
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
@@ -232,10 +239,10 @@ describe('authorInvitePersona', () => {
       })
     })
 
-    test.prop([fc.uuid(), fc.user(), fc.string(), fc.anything(), fc.openAuthorInvite()])(
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything(), fc.openAuthorInvite()])(
       'when the invite is not assigned',
-      async (inviteId, user, method, body, invite) => {
-        const actual = await _.authorInvitePersona({ body, id: inviteId, method, user })({
+      async (inviteId, user, locale, method, body, invite) => {
+        const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
           getAuthorInvite: () => TE.right(invite),
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
@@ -249,10 +256,10 @@ describe('authorInvitePersona', () => {
       },
     )
 
-    test.prop([fc.uuid(), fc.user(), fc.string(), fc.anything(), fc.declinedAuthorInvite()])(
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything(), fc.declinedAuthorInvite()])(
       'when the invite has been declined',
-      async (inviteId, user, method, body, invite) => {
-        const actual = await _.authorInvitePersona({ body, id: inviteId, method, user })({
+      async (inviteId, user, locale, method, body, invite) => {
+        const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
           getAuthorInvite: () => TE.right(invite),
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
@@ -266,10 +273,10 @@ describe('authorInvitePersona', () => {
       },
     )
 
-    test.prop([fc.uuid(), fc.user(), fc.string(), fc.anything()])(
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything()])(
       'when the invite is not found',
-      async (inviteId, user, method, body) => {
-        const actual = await _.authorInvitePersona({ body, id: inviteId, method, user })({
+      async (inviteId, user, locale, method, body) => {
+        const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
           getAuthorInvite: () => TE.left('not-found'),
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
@@ -287,10 +294,10 @@ describe('authorInvitePersona', () => {
     )
   })
 
-  test.prop([fc.uuid(), fc.string(), fc.anything(), fc.authorInvite()])(
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.string(), fc.anything(), fc.authorInvite()])(
     'when the user is not logged in',
-    async (inviteId, method, body, invite) => {
-      const actual = await _.authorInvitePersona({ body, id: inviteId, method })({
+    async (inviteId, locale, method, body, invite) => {
+      const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method })({
         getAuthorInvite: () => TE.right(invite),
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
