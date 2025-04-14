@@ -774,6 +774,54 @@
   "veryUnclearlyHow": {
     "message": "How is it very unclear? (optional)"
   },
+  "selectAdvanceKnowledge": {
+    "message": "Select if the preprint is likely to advance academic knowledge"
+  },
+  "advanceKnowledgeHighlyLikely": {
+    "message": "Highly likely"
+  },
+  "advanceKnowledgeHighlyLikelyTip": {
+    "message": "The preprint offers significant contributions that substantially advance or confirm understanding of the subject matter."
+  },
+  "advanceKnowledgeHighlyLikelyWhy": {
+    "message": "Why is it highly likely? (optional)"
+  },
+  "advanceKnowledgeSomewhatLikely": {
+    "message": "Somewhat likely"
+  },
+  "advanceKnowledgeSomewhatLikelyTip": {
+    "message": "The preprint contributes several noteworthy advancements or confirmations."
+  },
+  "advanceKnowledgeSomewhatLikelyWhy": {
+    "message": "Why is it somewhat likely? (optional)"
+  },
+  "advanceKnowledgeModeratelyLikely": {
+    "message": "Moderately likely"
+  },
+  "advanceKnowledgeModeratelyLikelyTip": {
+    "message": "The preprint contributes only a few advancements or confirmations to the existing body of knowledge."
+  },
+  "advanceKnowledgeModeratelyLikelyWhy": {
+    "message": "Why is it moderately likely? (optional)"
+  },
+  "advanceKnowledgeNotLikely": {
+    "message": "Not likely"
+  },
+  "advanceKnowledgeNotLikelyTip": {
+    "message": "The preprint offers no significant advancements or confirmations, though its research and conclusions may be sound."
+  },
+  "advanceKnowledgeNotLikelyWhy": {
+    "message": "Why is it not likely? (optional)"
+  },
+  "advanceKnowledgeNotAtAllLikely": {
+    "message": "Not at all likely"
+  },
+  "advanceKnowledgeNotAtAllLikelyTip": {
+    "message": "The preprint offers no significant advancements or confirmations because of its flaws."
+  },
+  "advanceKnowledgeNotAtAllLikelyWhy": {
+    "message": "Why is it not at all likely? (optional)"
+  },
   "areTheDataPresentationsWellSuited": {
     "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
   },

@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -26,9 +26,11 @@ import {
   writeReviewNovelMatch,
   writeReviewReviewTypeMatch,
 } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewNovel = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -137,16 +139,21 @@ const FormToFieldsE: Encoder<NovelForm, Form> = {
 
 type NovelForm = Fields<typeof novelFields>
 
-function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
+function novelForm(preprint: PreprintTitle, form: NovelForm, user: User, locale = DefaultLocale) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return templatePage({
-    title: plainText`${error ? 'Error: ' : ''}Is the preprint likely to advance academic knowledge?
- – PREreview of “${preprint.title}”`,
+    title: pipe(
+      t('advanceKnowledge')(),
+      prereviewOfSuffix(locale, preprint.title),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
       <nav>
         <a href="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>Back</span></a
+          ><span>${t('backNav')()}</span></a
         >
       </nav>
 
@@ -155,17 +162,14 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
+                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
                   <ul>
                     ${E.isLeft(form.novel)
                       ? html`
                           <li>
                             <a href="#novel-highly">
                               ${match(form.novel.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => 'Select if the preprint is likely to advance academic knowledge',
-                                )
+                                .with({ _tag: 'MissingE' }, () => t('selectAdvanceKnowledge')())
                                 .exhaustive()}
                             </a>
                           </li>
@@ -183,7 +187,7 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
                 ${rawHtml(E.isLeft(form.novel) ? 'aria-invalid="true" aria-errormessage="novel-error"' : '')}
               >
                 <legend>
-                  <h1>Is the preprint likely to advance academic knowledge?</h1>
+                  <h1>${t('advanceKnowledge')()}</h1>
                 </legend>
 
                 ${E.isLeft(form.novel)
@@ -191,10 +195,7 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
                       <div class="error-message" id="novel-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.novel.left)
-                          .with(
-                            { _tag: 'MissingE' },
-                            () => 'Select if the preprint is likely to advance academic knowledge',
-                          )
+                          .with({ _tag: 'MissingE' }, () => t('selectAdvanceKnowledge')())
                           .exhaustive()}
                       </div>
                     `
@@ -214,15 +215,14 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
                           .with({ right: 'highly' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Highly likely</span>
+                      <span>${t('advanceKnowledgeHighlyLikely')()}</span>
                     </label>
-                    <p id="novel-tip-highly" role="note">
-                      The preprint offers significant contributions that substantially advance or confirm understanding
-                      of the subject matter.
-                    </p>
+                    <p id="novel-tip-highly" role="note">${t('advanceKnowledgeHighlyLikelyTip')()}</p>
                     <div class="conditional" id="novel-highly-control">
                       <div>
-                        <label for="novel-highly-details" class="textarea">Why is it highly likely? (optional)</label>
+                        <label for="novel-highly-details" class="textarea"
+                          >${t('advanceKnowledgeHighlyLikelyWhy')()}</label
+                        >
 
                         <textarea name="novelHighlyDetails" id="novel-highly-details" rows="5">
 ${match(form.novelHighlyDetails)
@@ -244,15 +244,13 @@ ${match(form.novelHighlyDetails)
                           .with({ right: 'substantial' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Somewhat likely</span>
+                      <span>${t('advanceKnowledgeSomewhatLikely')()}</span>
                     </label>
-                    <p id="novel-tip-substantial" role="note">
-                      The preprint contributes several noteworthy advancements or confirmations.
-                    </p>
+                    <p id="novel-tip-substantial" role="note">${t('advanceKnowledgeSomewhatLikelyTip')()}</p>
                     <div class="conditional" id="novel-substantial-control">
                       <div>
                         <label for="novel-substantial-details" class="textarea"
-                          >Why is it somewhat likely? (optional)</label
+                          >${t('advanceKnowledgeSomewhatLikelyWhy')()}</label
                         >
 
                         <textarea name="novelSubstantialDetails" id="novel-substantial-details" rows="5">
@@ -275,15 +273,14 @@ ${match(form.novelSubstantialDetails)
                           .with({ right: 'some' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Moderately likely</span>
+                      <span>${t('advanceKnowledgeModeratelyLikely')()}</span>
                     </label>
-                    <p id="novel-tip-some" role="note">
-                      The preprint contributes only a few advancements or confirmations to the existing body of
-                      knowledge.
-                    </p>
+                    <p id="novel-tip-some" role="note">${t('advanceKnowledgeModeratelyLikelyTip')()}</p>
                     <div class="conditional" id="novel-some-control">
                       <div>
-                        <label for="novel-some-details" class="textarea">Why is it moderately likely? (optional)</label>
+                        <label for="novel-some-details" class="textarea"
+                          >${t('advanceKnowledgeModeratelyLikelyWhy')()}</label
+                        >
 
                         <textarea name="novelSomeDetails" id="novel-some-details" rows="5">
 ${match(form.novelSomeDetails)
@@ -305,15 +302,14 @@ ${match(form.novelSomeDetails)
                           .with({ right: 'limited' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Not likely</span>
+                      <span>${t('advanceKnowledgeNotLikely')()}</span>
                     </label>
-                    <p id="novel-tip-limited" role="note">
-                      The preprint offers no significant advancements or confirmations, though its research and
-                      conclusions may be sound.
-                    </p>
+                    <p id="novel-tip-limited" role="note">${t('advanceKnowledgeNotLikelyTip')()}</p>
                     <div class="conditional" id="novel-limited-control">
                       <div>
-                        <label for="novel-limited-details" class="textarea">Why is it not likely? (optional)</label>
+                        <label for="novel-limited-details" class="textarea"
+                          >${t('advanceKnowledgeNotLikelyWhy')()}</label
+                        >
 
                         <textarea name="novelLimitedDetails" id="novel-limited-details" rows="5">
 ${match(form.novelLimitedDetails)
@@ -335,14 +331,14 @@ ${match(form.novelLimitedDetails)
                           .with({ right: 'no' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Not at all likely</span>
+                      <span>${t('advanceKnowledgeNotAtAllLikely')()}</span>
                     </label>
-                    <p id="novel-tip-no" role="note">
-                      The preprint offers no significant advancements or confirmations because of its flaws.
-                    </p>
+                    <p id="novel-tip-no" role="note">${t('advanceKnowledgeNotAtAllLikelyTip')()}</p>
                     <div class="conditional" id="novel-no-control">
                       <div>
-                        <label for="novel-no-details" class="textarea">Why is it not at all likely? (optional)</label>
+                        <label for="novel-no-details" class="textarea"
+                          >${t('advanceKnowledgeNotAtAllLikelyWhy')()}</label
+                        >
 
                         <textarea name="novelNoDetails" id="novel-no-details" rows="5">
 ${match(form.novelNoDetails)
@@ -353,7 +349,7 @@ ${match(form.novelNoDetails)
                     </div>
                   </li>
                   <li>
-                    <span>or</span>
+                    <span>${t('or')()}</span>
                     <label>
                       <input
                         name="novel"
@@ -363,7 +359,7 @@ ${match(form.novelNoDetails)
                           .with({ right: 'skip' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>I don’t know</span>
+                      <span>${t('iDoNotKnow')()}</span>
                     </label>
                   </li>
                 </ol>
@@ -371,14 +367,14 @@ ${match(form.novelNoDetails)
             </conditional-inputs>
           </div>
 
-          <button>Save and continue</button>
+          <button>${t('saveAndContinueButton')()}</button>
         </form>
       </main>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
-    locale: DefaultLocale,
+    locale,
     user,
   })
 }
