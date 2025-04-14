@@ -263,7 +263,7 @@ ${match(form.languageEditingNoDetails)
                     <div class="conditional" id="language-editing-yes-control">
                       <div>
                         <label for="language-editing-yes-details" class="textarea"
-                          >${t('benefitFromEditingYesTip')()}</label
+                          >${t('benefitFromEditingYesWhy')()}</label
                         >
 
                         <textarea name="languageEditingYesDetails" id="language-editing-yes-details" rows="5">
