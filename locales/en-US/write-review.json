@@ -837,6 +837,27 @@
   "benefitFromEditingYesWhy": {
     "message": "Why would it? (optional)"
   },
+  "selectWouldRecommend": {
+    "message": "Select yes if you would recommend this preprint to others"
+  },
+  "wouldRecommendYes": {
+    "message": "Yes, it’s of high quality"
+  },
+  "wouldRecommendYesHow": {
+    "message": "How is it of high quality? (optional)"
+  },
+  "wouldRecommendYesImproved": {
+    "message": "Yes, but it needs to be improved"
+  },
+  "wouldRecommendYesImprovedWhy": {
+    "message": "What needs to be improved? (optional)"
+  },
+  "wouldRecommendNo": {
+    "message": "No, it’s of low quality or is majorly flawed"
+  },
+  "wouldRecommendNoWhy": {
+    "message": "Why wouldn’t you recommend it? (optional)"
+  },
   "areTheDataPresentationsWellSuited": {
     "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
   },

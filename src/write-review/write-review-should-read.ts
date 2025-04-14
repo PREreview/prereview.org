@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -26,9 +26,11 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
 } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewShouldRead = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -130,17 +132,21 @@ const FormToFieldsE: Encoder<ShouldReadForm, Form> = {
 
 type ShouldReadForm = Fields<typeof shouldReadFields>
 
-function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: User) {
+function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: User, locale = DefaultLocale) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return templatePage({
-    title: plainText`${error ? 'Error: ' : ''}Would you recommend this preprint to others? – PREreview of “${
-      preprint.title
-    }”`,
+    title: pipe(
+      t('wouldRecommend')(),
+      prereviewOfSuffix(locale, preprint.title),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
       <nav>
         <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>Back</span></a
+          ><span>${t('backNav')()}</span></a
         >
       </nav>
 
@@ -149,17 +155,14 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
+                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
                   <ul>
                     ${E.isLeft(form.shouldRead)
                       ? html`
                           <li>
                             <a href="#should-read-yes">
                               ${match(form.shouldRead.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => 'Select yes if you would recommend this preprint to others',
-                                )
+                                .with({ _tag: 'MissingE' }, () => t('selectWouldRecommend')())
                                 .exhaustive()}
                             </a>
                           </li>
@@ -177,15 +180,15 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
                 ${rawHtml(E.isLeft(form.shouldRead) ? 'aria-invalid="true" aria-errormessage="should-read-error"' : '')}
               >
                 <legend>
-                  <h1>Would you recommend this preprint to others?</h1>
+                  <h1>${t('wouldRecommend')()}</h1>
                 </legend>
 
                 ${E.isLeft(form.shouldRead)
                   ? html`
                       <div class="error-message" id="should-read-error">
-                        <span class="visually-hidden">Error:</span>
+                        <span class="visually-hidden">${t('error')()}:</span>
                         ${match(form.shouldRead.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select yes if you would recommend this preprint to others')
+                          .with({ _tag: 'MissingE' }, () => t('selectWouldRecommend')())
                           .exhaustive()}
                       </div>
                     `
@@ -204,13 +207,11 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
                           .with({ right: 'yes' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Yes, it’s of high quality</span>
+                      <span>${t('wouldRecommendYes')()}</span>
                     </label>
                     <div class="conditional" id="should-read-yes-control">
                       <div>
-                        <label for="should-read-yes-details" class="textarea"
-                          >How is it of high quality? (optional)</label
-                        >
+                        <label for="should-read-yes-details" class="textarea">${t('wouldRecommendYesHow')()}</label>
 
                         <textarea name="shouldReadYesDetails" id="should-read-yes-details" rows="5">
 ${match(form.shouldReadYesDetails)
@@ -231,12 +232,12 @@ ${match(form.shouldReadYesDetails)
                           .with({ right: 'yes-but' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Yes, but it needs to be improved</span>
+                      <span>${t('wouldRecommendYesImproved')()}</span>
                     </label>
                     <div class="conditional" id="should-read-yes-but-control">
                       <div>
                         <label for="should-read-yes-but-details" class="textarea"
-                          >What needs to be improved? (optional)</label
+                          >${t('wouldRecommendYesImprovedWhy')()}</label
                         >
 
                         <textarea name="shouldReadYesButDetails" id="should-read-yes-but-details" rows="5">
@@ -258,13 +259,11 @@ ${match(form.shouldReadYesButDetails)
                           .with({ right: 'no' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>No, it’s of low quality or is majorly flawed</span>
+                      <span>${t('wouldRecommendNo')()}</span>
                     </label>
                     <div class="conditional" id="should-read-no-control">
                       <div>
-                        <label for="should-read-no-details" class="textarea"
-                          >Why wouldn’t you recommend it? (optional)</label
-                        >
+                        <label for="should-read-no-details" class="textarea">${t('wouldRecommendNoWhy')()}</label>
 
                         <textarea name="shouldReadNoDetails" id="should-read-no-details" rows="5">
 ${match(form.shouldReadNoDetails)
@@ -279,14 +278,14 @@ ${match(form.shouldReadNoDetails)
             </conditional-inputs>
           </div>
 
-          <button>Save and continue</button>
+          <button>${t('saveAndContinueButton')()}</button>
         </form>
       </main>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
-    locale: DefaultLocale,
+    locale,
     user,
   })
 }
