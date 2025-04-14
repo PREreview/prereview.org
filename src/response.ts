@@ -10,7 +10,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message.js'
 import { type Html, html, rawHtml, sendHtml } from './html.js'
-import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
+import { type SupportedLocale, translate } from './locales/index.js'
 import type { OrcidOAuthEnv } from './log-in/index.js'
 import { showNotificationBanner } from './notification-banner.js'
 import { type Page, type TemplatePageEnv, templatePage } from './page.js'
@@ -129,11 +129,11 @@ export const LogInResponse = (args: Omit<LogInResponse, '_tag'>): LogInResponse 
 export function handleResponse({
   response,
   user,
-  locale = DefaultLocale,
+  locale,
 }: {
   response: Response
   user?: User
-  locale?: SupportedLocale
+  locale: SupportedLocale
 }): RM.ReaderMiddleware<
   GetUserOnboardingEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv,
   StatusOpen,

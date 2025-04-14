@@ -6,7 +6,7 @@ import { match } from 'ts-pattern'
 import { Locale } from './Context.js'
 import { HavingProblemsPage } from './HavingProblemsPage/index.js'
 import { html, plainText, rawHtml, sendHtml } from './html.js'
-import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
+import { type SupportedLocale, translate } from './locales/index.js'
 import { NoPermissionPage } from './NoPermissionPage/index.js'
 import { templatePage } from './page.js'
 import { PageNotFound } from './PageNotFound/index.js'
@@ -18,7 +18,7 @@ export function handleError(error: HttpError<typeof Status.NotFound | typeof Sta
     RM.apS('user', maybeGetUser),
     RM.apSW(
       'locale',
-      RM.asks((env: { locale?: SupportedLocale }) => env.locale ?? DefaultLocale),
+      RM.asks((env: { locale: SupportedLocale }) => env.locale),
     ),
     RM.chainReaderKW(
       match(error)

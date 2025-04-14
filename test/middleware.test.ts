@@ -3,7 +3,6 @@ import { expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/lib/Either.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
-import { DefaultLocale } from '../src/locales/index.js'
 import * as _ from '../src/middleware.js'
 import type { TemplatePageEnv } from '../src/page.js'
 import * as fc from './fc.js'
@@ -33,62 +32,58 @@ test.prop([fc.connection(), fc.string()])('movedPermanently', async (connection,
   )
 })
 
-test.prop([
-  fc.connection(),
-  fc.either(fc.constant('no-session'), fc.user()),
-  fc.option(fc.supportedLocale(), { nil: undefined }),
-  fc.html(),
-])('notFound', async (connection, user, locale, page) => {
-  const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+test.prop([fc.connection(), fc.either(fc.constant('no-session'), fc.user()), fc.supportedLocale(), fc.html()])(
+  'notFound',
+  async (connection, user, locale, page) => {
+    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-  const actual = await runMiddleware(
-    _.notFound({ getUser: () => M.fromEither(user), locale, templatePage }),
-    connection,
-  )()
+    const actual = await runMiddleware(
+      _.notFound({ getUser: () => M.fromEither(user), locale, templatePage }),
+      connection,
+    )()
 
-  expect(actual).toStrictEqual(
-    E.right([
-      { type: 'setStatus', status: Status.NotFound },
-      { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-      { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-      { type: 'setBody', body: page.toString() },
-    ]),
-  )
-  expect(templatePage).toHaveBeenCalledWith({
-    title: expect.anything(),
-    content: expect.anything(),
-    skipLinks: [[expect.anything(), '#main-content']],
-    locale: locale ?? DefaultLocale,
-    user: E.isRight(user) ? user.right : undefined,
-  })
-})
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.NotFound },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: page.toString() },
+      ]),
+    )
+    expect(templatePage).toHaveBeenCalledWith({
+      title: expect.anything(),
+      content: expect.anything(),
+      skipLinks: [[expect.anything(), '#main-content']],
+      locale,
+      user: E.isRight(user) ? user.right : undefined,
+    })
+  },
+)
 
-test.prop([
-  fc.connection(),
-  fc.either(fc.constant('no-session'), fc.user()),
-  fc.option(fc.supportedLocale(), { nil: undefined }),
-  fc.html(),
-])('serviceUnavailable', async (connection, user, locale, page) => {
-  const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+test.prop([fc.connection(), fc.either(fc.constant('no-session'), fc.user()), fc.supportedLocale(), fc.html()])(
+  'serviceUnavailable',
+  async (connection, user, locale, page) => {
+    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-  const actual = await runMiddleware(
-    _.serviceUnavailable({ getUser: () => M.fromEither(user), locale, templatePage }),
-    connection,
-  )()
+    const actual = await runMiddleware(
+      _.serviceUnavailable({ getUser: () => M.fromEither(user), locale, templatePage }),
+      connection,
+    )()
 
-  expect(actual).toStrictEqual(
-    E.right([
-      { type: 'setStatus', status: Status.ServiceUnavailable },
-      { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-      { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-      { type: 'setBody', body: page.toString() },
-    ]),
-  )
-  expect(templatePage).toHaveBeenCalledWith({
-    title: expect.anything(),
-    content: expect.anything(),
-    skipLinks: [[expect.anything(), '#main-content']],
-    locale: locale ?? DefaultLocale,
-    user: E.isRight(user) ? user.right : undefined,
-  })
-})
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: page.toString() },
+      ]),
+    )
+    expect(templatePage).toHaveBeenCalledWith({
+      title: expect.anything(),
+      content: expect.anything(),
+      skipLinks: [[expect.anything(), '#main-content']],
+      locale,
+      user: E.isRight(user) ? user.right : undefined,
+    })
+  },
+)
