@@ -606,6 +606,54 @@
   "resendEmailButton": {
     "message": "Resend email"
   },
+  "selectClearDiscussion": {
+    "message": "Select how clearly the authors discuss their findings and next steps"
+  },
+  "veryClearly": {
+    "message": "Very clearly"
+  },
+  "veryClearlyTip": {
+    "message": "They demonstrate clarity, depth, and insight in their discussion, explanation, and interpretation of their findings and potential next steps."
+  },
+  "veryClearlyHow": {
+    "message": "How is it very clear? (optional)"
+  },
+  "somewhatClearly": {
+    "message": "Somewhat clearly"
+  },
+  "somewhatClearlyTip": {
+    "message": "They provide clear and insightful discussion, explanation, and interpretation of their findings and potential next steps."
+  },
+  "somewhatClearlyHow": {
+    "message": "How is it somewhat clear? (optional)"
+  },
+  "neitherClearlyNorUnclearly": {
+    "message": "Neither clearly nor unclearly"
+  },
+  "neitherClearlyNorUnclearlyTip": {
+    "message": "They mention their findings or potential next steps, but do not address or explain them."
+  },
+  "neitherClearlyNorUnclearlyHow": {
+    "message": "How is it neither clear nor unclear? (optional)"
+  },
+  "somewhatUnclearly": {
+    "message": "Somewhat unclearly"
+  },
+  "somewhatUnclearlyTip": {
+    "message": "They provide confusing or contradictory discussion, explanation, or interpretation of their findings and potential next steps."
+  },
+  "somewhatUnclearlyHow": {
+    "message": "How is it somewhat unclear? (optional)"
+  },
+  "veryUnclearly": {
+    "message": "Very unclearly"
+  },
+  "veryUnclearlyTip": {
+    "message": "They provide incorrect or unfounded discussion, explanation, or interpretation of their findings and potential next steps."
+  },
+  "veryUnclearlyHow": {
+    "message": "How is it very unclear? (optional)"
+  },
   "areTheDataPresentationsWellSuited": {
     "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
   },

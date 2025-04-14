@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -26,9 +26,11 @@ import {
   writeReviewMatch,
   writeReviewReviewTypeMatch,
 } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewFindingsNextSteps = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -36,6 +38,7 @@ export const writeReviewFindingsNextSteps = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
+      RM.apS('locale', RM.of(DefaultLocale)),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -71,21 +74,32 @@ export const writeReviewFindingsNextSteps = flow(
 )
 
 const showFindingsNextStepsForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    findingsNextStepsForm(preprint, FormToFieldsE.encode(form), user),
+  RM.fromReaderK(
+    ({ form, locale, preprint, user }: { form: Form; locale: SupportedLocale; preprint: PreprintTitle; user: User }) =>
+      findingsNextStepsForm(preprint, FormToFieldsE.encode(form), user, locale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showFindingsNextStepsErrorForm = (preprint: PreprintTitle, user: User) =>
+const showFindingsNextStepsErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
   flow(
-    RM.fromReaderK((form: FindingsNextStepsForm) => findingsNextStepsForm(preprint, form, user)),
+    RM.fromReaderK((form: FindingsNextStepsForm) => findingsNextStepsForm(preprint, form, user, locale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleFindingsNextStepsForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleFindingsNextStepsForm = ({
+  form,
+  locale,
+  preprint,
+  user,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
     RM.decodeBody(decodeFields(findingsNextStepsFields)),
     RM.map(updateFormWithFields(form)),
@@ -94,7 +108,7 @@ const handleFindingsNextStepsForm = ({ form, preprint, user }: { form: Form; pre
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ findingsNextSteps: P.any }, showFindingsNextStepsErrorForm(preprint, user))
+        .with({ findingsNextSteps: P.any }, showFindingsNextStepsErrorForm(preprint, user, locale))
         .exhaustive(),
     ),
   )
@@ -138,18 +152,26 @@ const FormToFieldsE: Encoder<FindingsNextStepsForm, Form> = {
 
 type FindingsNextStepsForm = Fields<typeof findingsNextStepsFields>
 
-function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsForm, user: User) {
+function findingsNextStepsForm(
+  preprint: PreprintTitle,
+  form: FindingsNextStepsForm,
+  user: User,
+  locale: SupportedLocale,
+) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return templatePage({
-    title: plainText`${
-      error ? 'Error: ' : ''
-    }How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?
- – PREreview of “${preprint.title}”`,
+    title: pipe(
+      t('clearDiscussion')(),
+      prereviewOfSuffix(locale, preprint.title),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
       <nav>
         <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>Back</span></a
+          ><span>${t('backNav')()}</span></a
         >
       </nav>
 
@@ -162,17 +184,14 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
+                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
                   <ul>
                     ${E.isLeft(form.findingsNextSteps)
                       ? html`
                           <li>
                             <a href="#findings-next-steps-exceptionally">
                               ${match(form.findingsNextSteps.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => 'Select how clearly the authors discuss their findings and next steps',
-                                )
+                                .with({ _tag: 'MissingE' }, () => t('selectClearDiscussion')())
                                 .exhaustive()}
                             </a>
                           </li>
@@ -194,21 +213,15 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
                 )}
               >
                 <legend>
-                  <h1>
-                    How clearly do the authors discuss, explain, and interpret their findings and potential next steps
-                    for the research?
-                  </h1>
+                  <h1>${t('clearDiscussion')()}</h1>
                 </legend>
 
                 ${E.isLeft(form.findingsNextSteps)
                   ? html`
                       <div class="error-message" id="findings-next-steps-error">
-                        <span class="visually-hidden">Error:</span>
+                        <span class="visually-hidden">${t('error')()}:</span>
                         ${match(form.findingsNextSteps.left)
-                          .with(
-                            { _tag: 'MissingE' },
-                            () => 'Select how clearly the authors discuss their findings and next steps',
-                          )
+                          .with({ _tag: 'MissingE' }, () => t('selectClearDiscussion')())
                           .exhaustive()}
                       </div>
                     `
@@ -228,16 +241,13 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
                           .with({ right: 'exceptionally' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Very clearly</span>
+                      <span>${t('veryClearly')()}</span>
                     </label>
-                    <p id="findings-next-steps-tip-exceptionally" role="note">
-                      They demonstrate clarity, depth, and insight in their discussion, explanation, and interpretation
-                      of their findings and potential next steps.
-                    </p>
+                    <p id="findings-next-steps-tip-exceptionally" role="note">${t('veryClearlyTip')()}</p>
                     <div class="conditional" id="findings-next-steps-exceptionally-control">
                       <div>
                         <label for="findings-next-steps-exceptionally-details" class="textarea"
-                          >How is it very clear? (optional)</label
+                          >${t('veryClearlyHow')()}</label
                         >
 
                         <textarea
@@ -264,16 +274,13 @@ ${match(form.findingsNextStepsExceptionallyDetails)
                           .with({ right: 'clearly-insightfully' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Somewhat clearly</span>
+                      <span>${t('somewhatClearly')()}</span>
                     </label>
-                    <p id="findings-next-steps-tip-clearly-insightfully" role="note">
-                      They provide clear and insightful discussion, explanation, and interpretation of their findings
-                      and potential next steps.
-                    </p>
+                    <p id="findings-next-steps-tip-clearly-insightfully" role="note">${t('somewhatClearlyTip')()}</p>
                     <div class="conditional" id="findings-next-steps-clearly-insightfully-control">
                       <div>
                         <label for="findings-next-steps-clearly-insightfully-details" class="textarea"
-                          >How is it somewhat clear? (optional)</label
+                          >${t('somewhatClearlyHow')()}</label
                         >
 
                         <textarea
@@ -300,15 +307,13 @@ ${match(form.findingsNextStepsClearlyInsightfullyDetails)
                           .with({ right: 'adequately' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Neither clearly nor unclearly</span>
+                      <span>${t('neitherClearlyNorUnclearly')()}</span>
                     </label>
-                    <p id="findings-next-steps-tip-adequately" role="note">
-                      They mention their findings or potential next steps, but do not address or explain them.
-                    </p>
+                    <p id="findings-next-steps-tip-adequately" role="note">${t('neitherClearlyNorUnclearlyTip')()}</p>
                     <div class="conditional" id="findings-next-steps-adequately-control">
                       <div>
                         <label for="findings-next-steps-adequately-details" class="textarea"
-                          >How is it neither clear nor unclear? (optional)</label
+                          >${t('neitherClearlyNorUnclearlyHow')()}</label
                         >
 
                         <textarea
@@ -335,16 +340,13 @@ ${match(form.findingsNextStepsAdequatelyDetails)
                           .with({ right: 'insufficiently' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Somewhat unclearly</span>
+                      <span>${t('somewhatUnclearly')()}</span>
                     </label>
-                    <p id="findings-next-steps-tip-insufficiently" role="note">
-                      They provide confusing or contradictory discussion, explanation, or interpretation of their
-                      findings and potential next steps.
-                    </p>
+                    <p id="findings-next-steps-tip-insufficiently" role="note">${t('somewhatUnclearlyTip')()}</p>
                     <div class="conditional" id="findings-next-steps-insufficiently-control">
                       <div>
                         <label for="findings-next-steps-insufficiently-details" class="textarea"
-                          >How is it somewhat unclear? (optional)</label
+                          >${t('somewhatUnclearlyHow')()}</label
                         >
 
                         <textarea
@@ -371,16 +373,13 @@ ${match(form.findingsNextStepsInsufficientlyDetails)
                           .with({ right: 'inadequately' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Very unclearly</span>
+                      <span>${t('veryUnclearly')()}</span>
                     </label>
-                    <p id="findings-next-steps-tip-inadequately" role="note">
-                      They provide incorrect or unfounded discussion, explanation, or interpretation of their findings
-                      and potential next steps.
-                    </p>
+                    <p id="findings-next-steps-tip-inadequately" role="note">${t('veryUnclearlyTip')()}</p>
                     <div class="conditional" id="findings-next-steps-inadequately-control">
                       <div>
                         <label for="findings-next-steps-inadequately-details" class="textarea"
-                          >How is it very unclear? (optional)</label
+                          >${t('veryClearlyHow')()}</label
                         >
 
                         <textarea
@@ -396,7 +395,7 @@ ${match(form.findingsNextStepsInadequatelyDetails)
                     </div>
                   </li>
                   <li>
-                    <span>or</span>
+                    <span>${t('or')()}</span>
                     <label>
                       <input
                         name="findingsNextSteps"
@@ -406,7 +405,7 @@ ${match(form.findingsNextStepsInadequatelyDetails)
                           .with({ right: 'skip' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>I don’t know</span>
+                      <span>${t('iDoNotKnow')()}</span>
                     </label>
                   </li>
                 </ol>
@@ -414,7 +413,7 @@ ${match(form.findingsNextStepsInadequatelyDetails)
             </conditional-inputs>
           </div>
 
-          <button>Save and continue</button>
+          <button>${t('saveAndContinueButton')()}</button>
         </form>
       </main>
     `,
