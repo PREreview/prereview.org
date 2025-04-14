@@ -70,15 +70,6 @@
     "message": "Disponível para receber solicitações de avaliação",
     "description": "Label for if the user is open to receiving review requests"
   },
-  "enterOpenReviewRequests": {
-    "message": "Insira disponível para receber solicitações de avaliação"
-  },
-  "changeOpenReviewRequests": {
-    "message": "Alterar <visuallyHidden>disponível para receber solicitações de avaliação</visuallyHidden>"
-  },
-  "setOpenReviewRequestsVisibility": {
-    "message": "Definir visibilidade de <visuallyHidden>disponível para receber solicitações de avaliação</visuallyHidden>"
-  },
   "yes": {
     "message": "Sim"
   },

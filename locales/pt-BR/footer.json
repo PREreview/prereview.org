@@ -41,9 +41,6 @@
   "contactEmail": {
     "message": "Envie um e-mail para {address}"
   },
-  "contactTwitter": {
-    "message": "{handle} no Twitter"
-  },
   "contactMastodon": {
     "message": "{handle} no Mastodon"
   },

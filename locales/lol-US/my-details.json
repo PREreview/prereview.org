@@ -70,14 +70,14 @@
     "message": "crwdns4641:0crwdne4641:0",
     "description": "Label for if the user is open to receiving review requests"
   },
-  "enterOpenReviewRequests": {
-    "message": "crwdns4643:0crwdne4643:0"
+  "enterPreferenceReviewRequests": {
+    "message": "crwdns5574:0crwdne5574:0"
   },
-  "changeOpenReviewRequests": {
-    "message": "crwdns4645:0crwdne4645:0"
+  "changePreferenceReviewRequests": {
+    "message": "crwdns5576:0crwdne5576:0"
   },
-  "setOpenReviewRequestsVisibility": {
-    "message": "crwdns4647:0crwdne4647:0"
+  "setPreferenceReviewRequestsVisibility": {
+    "message": "crwdns5578:0crwdne5578:0"
   },
   "yes": {
     "message": "crwdns4649:0crwdne4649:0"

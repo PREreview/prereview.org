@@ -42,6 +42,24 @@
   "beListed": {
     "message": "crwdns4715:0crwdne4715:0"
   },
+  "invitedToAppear": {
+    "message": "crwdns5562:0crwdne5562:0"
+  },
+  "weWillAskYouToLogInWithYourOrcid": {
+    "message": "crwdns5564:0crwdne5564:0"
+  },
+  "whatIsAnOrcid": {
+    "message": "crwdns5566:0crwdne5566:0"
+  },
+  "orcidExplainer": {
+    "message": "crwdns5568:0crwdne5568:0"
+  },
+  "startNow": {
+    "message": "crwdns5570:0crwdne5570:0"
+  },
+  "beforeYouStart": {
+    "message": "crwdns5572:0crwdne5572:0"
+  },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
     "message": "crwdns5439:0crwdne5439:0"
   },

@@ -41,8 +41,8 @@
   "contactEmail": {
     "message": "crwdns1796:0{address}crwdne1796:0"
   },
-  "contactTwitter": {
-    "message": "crwdns1798:0{handle}crwdne1798:0"
+  "contactBluesky": {
+    "message": "crwdns5560:0{handle}crwdne5560:0"
   },
   "contactMastodon": {
     "message": "crwdns1800:0{handle}crwdne1800:0"
