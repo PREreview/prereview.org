@@ -606,8 +606,128 @@
   "resendEmailButton": {
     "message": "crwdns5391:0crwdne5391:0"
   },
+  "selectIntroductionExplains": {
+    "message": "crwdns5616:0crwdne5616:0"
+  },
+  "clearlyExplainsTip": {
+    "message": "crwdns5618:0crwdne5618:0"
+  },
+  "howIntroductionExplains": {
+    "message": "crwdns5620:0crwdne5620:0"
+  },
+  "partly": {
+    "message": "crwdns5622:0crwdne5622:0"
+  },
+  "partlyTip": {
+    "message": "crwdns5624:0crwdne5624:0"
+  },
+  "partlyHow": {
+    "message": "crwdns5626:0crwdne5626:0"
+  },
+  "doesNotExplain": {
+    "message": "crwdns5628:0crwdne5628:0"
+  },
+  "doesNotExplainHow": {
+    "message": "crwdns5630:0crwdne5630:0"
+  },
+  "selectMethodsWellSuited": {
+    "message": "crwdns5632:0crwdne5632:0"
+  },
   "selectClearDiscussion": {
     "message": "crwdns5584:0crwdne5584:0"
+  },
+  "methodsHighlyAppropriate": {
+    "message": "crwdns5634:0crwdne5634:0"
+  },
+  "methodsHighlyAppropriateTip": {
+    "message": "crwdns5636:0crwdne5636:0"
+  },
+  "methodsHighlyAppropriateHow": {
+    "message": "crwdns5638:0crwdne5638:0"
+  },
+  "methodsSomewhatAppropriate": {
+    "message": "crwdns5640:0crwdne5640:0"
+  },
+  "methodsSomewhatAppropriateTip": {
+    "message": "crwdns5642:0crwdne5642:0"
+  },
+  "methodsSomewhatAppropriateWhy": {
+    "message": "crwdns5644:0crwdne5644:0"
+  },
+  "methodsNeitherAppropriateNorInappropriate": {
+    "message": "crwdns5646:0crwdne5646:0"
+  },
+  "methodsNeitherAppropriateNorInappropriateTip": {
+    "message": "crwdns5648:0crwdne5648:0"
+  },
+  "methodsNeitherAppropriateNorInappropriateWhy": {
+    "message": "crwdns5650:0crwdne5650:0"
+  },
+  "methodsSomewhatInappropriate": {
+    "message": "crwdns5652:0crwdne5652:0"
+  },
+  "methodsSomewhatInappropriateTip": {
+    "message": "crwdns5654:0crwdne5654:0"
+  },
+  "methodsSomewhatInappropriateWhy": {
+    "message": "crwdns5656:0crwdne5656:0"
+  },
+  "methodsHighlyInappropriate": {
+    "message": "crwdns5658:0crwdne5658:0"
+  },
+  "methodsHighlyInappropriateTip": {
+    "message": "crwdns5660:0crwdne5660:0"
+  },
+  "methodsHighlyInappropriateWhy": {
+    "message": "crwdns5662:0crwdne5662:0"
+  },
+  "selectConclusionsSupported": {
+    "message": "crwdns5664:0crwdne5664:0"
+  },
+  "conclusionsHighlySupported": {
+    "message": "crwdns5666:0crwdne5666:0"
+  },
+  "conclusionsHighlySupportedTip": {
+    "message": "crwdns5668:0crwdne5668:0"
+  },
+  "conclusionsHighlySupportedWhy": {
+    "message": "crwdns5670:0crwdne5670:0"
+  },
+  "conclusionsSomewhatSupported": {
+    "message": "crwdns5672:0crwdne5672:0"
+  },
+  "conclusionsSomewhatSupportedTip": {
+    "message": "crwdns5674:0crwdne5674:0"
+  },
+  "conclusionsSomewhatSupportedWhy": {
+    "message": "crwdns5676:0crwdne5676:0"
+  },
+  "conclusionsNeitherSupportedNorUnsupported": {
+    "message": "crwdns5678:0crwdne5678:0"
+  },
+  "conclusionsNeitherSupportedNorUnsupportedTip": {
+    "message": "crwdns5680:0crwdne5680:0"
+  },
+  "conclusionsNeitherSupportedNorUnsupportedWhy": {
+    "message": "crwdns5682:0crwdne5682:0"
+  },
+  "conclusionsSomewhatUnsupported": {
+    "message": "crwdns5684:0crwdne5684:0"
+  },
+  "conclusionsSomewhatUnsupportedTip": {
+    "message": "crwdns5686:0crwdne5686:0"
+  },
+  "conclusionsSomewhatUnsupportedWhy": {
+    "message": "crwdns5688:0crwdne5688:0"
+  },
+  "conclusionsHighlyUnsupported": {
+    "message": "crwdns5690:0crwdne5690:0"
+  },
+  "conclusionsHighlyUnsupportedTip": {
+    "message": "crwdns5692:0crwdne5692:0"
+  },
+  "conclusionsHighlyUnsupportedWhy": {
+    "message": "crwdns5694:0crwdne5694:0"
   },
   "veryClearly": {
     "message": "crwdns5586:0crwdne5586:0"
@@ -653,6 +773,111 @@
   },
   "veryUnclearlyHow": {
     "message": "crwdns5614:0crwdne5614:0"
+  },
+  "selectAdvanceKnowledge": {
+    "message": "crwdns5696:0crwdne5696:0"
+  },
+  "advanceKnowledgeHighlyLikely": {
+    "message": "crwdns5698:0crwdne5698:0"
+  },
+  "advanceKnowledgeHighlyLikelyTip": {
+    "message": "crwdns5700:0crwdne5700:0"
+  },
+  "advanceKnowledgeHighlyLikelyWhy": {
+    "message": "crwdns5702:0crwdne5702:0"
+  },
+  "advanceKnowledgeSomewhatLikely": {
+    "message": "crwdns5704:0crwdne5704:0"
+  },
+  "advanceKnowledgeSomewhatLikelyTip": {
+    "message": "crwdns5706:0crwdne5706:0"
+  },
+  "advanceKnowledgeSomewhatLikelyWhy": {
+    "message": "crwdns5708:0crwdne5708:0"
+  },
+  "advanceKnowledgeModeratelyLikely": {
+    "message": "crwdns5710:0crwdne5710:0"
+  },
+  "advanceKnowledgeModeratelyLikelyTip": {
+    "message": "crwdns5712:0crwdne5712:0"
+  },
+  "advanceKnowledgeModeratelyLikelyWhy": {
+    "message": "crwdns5714:0crwdne5714:0"
+  },
+  "advanceKnowledgeNotLikely": {
+    "message": "crwdns5716:0crwdne5716:0"
+  },
+  "advanceKnowledgeNotLikelyTip": {
+    "message": "crwdns5718:0crwdne5718:0"
+  },
+  "advanceKnowledgeNotLikelyWhy": {
+    "message": "crwdns5720:0crwdne5720:0"
+  },
+  "advanceKnowledgeNotAtAllLikely": {
+    "message": "crwdns5722:0crwdne5722:0"
+  },
+  "advanceKnowledgeNotAtAllLikelyTip": {
+    "message": "crwdns5724:0crwdne5724:0"
+  },
+  "advanceKnowledgeNotAtAllLikelyWhy": {
+    "message": "crwdns5726:0crwdne5726:0"
+  },
+  "selectBenefitFromEditing": {
+    "message": "crwdns5728:0crwdne5728:0"
+  },
+  "benefitFromEditingNoTip": {
+    "message": "crwdns5730:0crwdne5730:0"
+  },
+  "benefitFromEditingNoWhy": {
+    "message": "crwdns5732:0crwdne5732:0"
+  },
+  "benefitFromEditingYesTip": {
+    "message": "crwdns5734:0crwdne5734:0"
+  },
+  "benefitFromEditingYesWhy": {
+    "message": "crwdns5736:0crwdne5736:0"
+  },
+  "selectWouldRecommend": {
+    "message": "crwdns5738:0crwdne5738:0"
+  },
+  "wouldRecommendYes": {
+    "message": "crwdns5740:0crwdne5740:0"
+  },
+  "wouldRecommendYesHow": {
+    "message": "crwdns5742:0crwdne5742:0"
+  },
+  "wouldRecommendYesImproved": {
+    "message": "crwdns5744:0crwdne5744:0"
+  },
+  "wouldRecommendYesImprovedWhy": {
+    "message": "crwdns5746:0crwdne5746:0"
+  },
+  "wouldRecommendNo": {
+    "message": "crwdns5748:0crwdne5748:0"
+  },
+  "wouldRecommendNoWhy": {
+    "message": "crwdns5750:0crwdne5750:0"
+  },
+  "selectReadyForAttention": {
+    "message": "crwdns5752:0crwdne5752:0"
+  },
+  "readyForAttentionYes": {
+    "message": "crwdns5754:0crwdne5754:0"
+  },
+  "readyForAttentionYesWhy": {
+    "message": "crwdns5756:0crwdne5756:0"
+  },
+  "readyForAttentionMinorChanges": {
+    "message": "crwdns5758:0crwdne5758:0"
+  },
+  "readyForAttentionMinorChangesWhy": {
+    "message": "crwdns5760:0crwdne5760:0"
+  },
+  "readyForAttentionNo": {
+    "message": "crwdns5762:0crwdne5762:0"
+  },
+  "readyForAttentionNoWhy": {
+    "message": "crwdns5764:0crwdne5764:0"
   },
   "areTheDataPresentationsWellSuited": {
     "message": "crwdns4739:0crwdne4739:0"
