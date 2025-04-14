@@ -17,7 +17,7 @@ import {
 } from '../contact-email-address.js'
 import type { Html } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
@@ -44,10 +44,12 @@ const getPrereview = (id: number): RTE.ReaderTaskEither<GetPrereviewEnv, 'unavai
 
 export const authorInviteVerifyEmailAddress = ({
   id,
+  locale,
   user,
   verify,
 }: {
   id: Uuid
+  locale: SupportedLocale
   user?: User
   verify: Uuid
 }): RT.ReaderTask<
@@ -92,16 +94,16 @@ export const authorInviteVerifyEmailAddress = ({
           .with('already-completed', () =>
             RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
           )
-          .with('already-verified', () => pageNotFound(DefaultLocale))
+          .with('already-verified', () => pageNotFound(locale))
           .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
-          .with('invalid-token', () => pageNotFound(DefaultLocale))
+          .with('invalid-token', () => pageNotFound(locale))
           .with('no-session', () =>
             LogInResponse({ location: format(authorInviteVerifyEmailAddressMatch.formatter, { id, verify }) }),
           )
           .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound(DefaultLocale))
-          .with('unavailable', () => havingProblemsPage(DefaultLocale))
-          .with('wrong-user', () => noPermissionPage(DefaultLocale))
+          .with('not-found', () => pageNotFound(locale))
+          .with('unavailable', () => havingProblemsPage(locale))
+          .with('wrong-user', () => noPermissionPage(locale))
           .exhaustive(),
       () =>
         FlashMessageResponse({
