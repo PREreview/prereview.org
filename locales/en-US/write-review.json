@@ -630,8 +630,56 @@
   "doesNotExplainHow": {
     "message": "How does the introduction not explain the objective? (optional)"
   },
+  "selectMethodsWellSuited": {
+    "message": "Select if the methods are well-suited for this research"
+  },
   "selectClearDiscussion": {
     "message": "Select how clearly the authors discuss their findings and next steps"
+  },
+  "methodsHighlyAppropriate": {
+    "message": "Highly appropriate"
+  },
+  "methodsHighlyAppropriateTip": {
+    "message": "They follow best practices throughout the research. They are rigorously executed and provide a robust foundation for drawing valid conclusions."
+  },
+  "methodsHighlyAppropriateHow": {
+    "message": "Why are they highly appropriate? (optional)"
+  },
+  "methodsSomewhatAppropriate": {
+    "message": "Somewhat appropriate"
+  },
+  "methodsSomewhatAppropriateTip": {
+    "message": "They follow best practices through most, but not all, of the research. They are well executed and provide a good foundation for drawing valid conclusions."
+  },
+  "methodsSomewhatAppropriateWhy": {
+    "message": "Why are they somewhat appropriate? (optional)"
+  },
+  "methodsNeitherAppropriateNorInappropriate": {
+    "message": "Neither appropriate nor inappropriate"
+  },
+  "methodsNeitherAppropriateNorInappropriateTip": {
+    "message": "They do not always follow best practices but give a reasonable basis for answering the research question."
+  },
+  "methodsNeitherAppropriateNorInappropriateWhy": {
+    "message": "Why are they neither appropriate nor inappropriate? (optional)"
+  },
+  "methodsSomewhatInappropriate": {
+    "message": "Somewhat inappropriate"
+  },
+  "methodsSomewhatInappropriateTip": {
+    "message": "They have certain flaws or deviations from best practices that limit the value of the information and insights they share."
+  },
+  "methodsSomewhatInappropriateWhy": {
+    "message": "Why are they somewhat inappropriate? (optional)"
+  },
+  "methodsHighlyInappropriate": {
+    "message": "Highly inappropriate"
+  },
+  "methodsHighlyInappropriateTip": {
+    "message": "They are fundamentally flawed, invalid, or inconsistent with best practices."
+  },
+  "methodsHighlyInappropriateWhy": {
+    "message": "Why are they highly inappropriate? (optional)"
   },
   "veryClearly": {
     "message": "Very clearly"

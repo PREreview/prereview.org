@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -26,9 +26,11 @@ import {
   writeReviewMethodsAppropriateMatch,
   writeReviewReviewTypeMatch,
 } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewMethodsAppropriate = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -72,7 +74,7 @@ export const writeReviewMethodsAppropriate = flow(
 
 const showMethodsAppropriateForm = flow(
   RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    methodsAppropriateForm(preprint, FormToFieldsE.encode(form), user),
+    methodsAppropriateForm(preprint, FormToFieldsE.encode(form), user, DefaultLocale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -80,7 +82,7 @@ const showMethodsAppropriateForm = flow(
 
 const showMethodsAppropriateErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    RM.fromReaderK((form: MethodsAppropriateForm) => methodsAppropriateForm(preprint, form, user)),
+    RM.fromReaderK((form: MethodsAppropriateForm) => methodsAppropriateForm(preprint, form, user, DefaultLocale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -145,17 +147,26 @@ const FormToFieldsE: Encoder<MethodsAppropriateForm, Form> = {
 
 type MethodsAppropriateForm = Fields<typeof methodsAppropriateFields>
 
-function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriateForm, user: User) {
+function methodsAppropriateForm(
+  preprint: PreprintTitle,
+  form: MethodsAppropriateForm,
+  user: User,
+  locale: SupportedLocale,
+) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return templatePage({
-    title: plainText`${error ? 'Error: ' : ''}Are the methods well-suited for this research? – PREreview of “${
-      preprint.title
-    }”`,
+    title: pipe(
+      t('methodsWellSuited')(),
+      prereviewOfSuffix(locale, preprint.title),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
       <nav>
         <a href="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>Back</span></a
+          ><span>${t('backNav')()}</span></a
         >
       </nav>
 
@@ -168,17 +179,14 @@ function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriat
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
+                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
                   <ul>
                     ${E.isLeft(form.methodsAppropriate)
                       ? html`
                           <li>
                             <a href="#methods-appropriate-highly-appropriate">
                               ${match(form.methodsAppropriate.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => 'Select if the methods are well-suited for this research',
-                                )
+                                .with({ _tag: 'MissingE' }, () => t('selectMethodsWellSuited')())
                                 .exhaustive()}
                             </a>
                           </li>
@@ -200,15 +208,15 @@ function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriat
                 )}
               >
                 <legend>
-                  <h1>Are the methods well-suited for this research?</h1>
+                  <h1>${t('methodsWellSuited')()}</h1>
                 </legend>
 
                 ${E.isLeft(form.methodsAppropriate)
                   ? html`
                       <div class="error-message" id="methods-appropriate-error">
-                        <span class="visually-hidden">Error:</span>
+                        <span class="visually-hidden">${t('error')()}:</span>
                         ${match(form.methodsAppropriate.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select if the methods are well-suited for this research')
+                          .with({ _tag: 'MissingE' }, () => t('selectMethodsWellSuited')())
                           .exhaustive()}
                       </div>
                     `
@@ -228,16 +236,15 @@ function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriat
                           .with({ right: 'highly-appropriate' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Highly appropriate</span>
+                      <span>${t('methodsHighlyAppropriate')()}</span>
                     </label>
                     <p id="methods-appropriate-tip-highly-appropriate" role="note">
-                      They follow best practices throughout the research. They are rigorously executed and provide a
-                      robust foundation for drawing valid conclusions.
+                      ${t('methodsHighlyAppropriateTip')()}
                     </p>
                     <div class="conditional" id="methods-appropriate-highly-appropriate-control">
                       <div>
                         <label for="methods-appropriate-highly-appropriate-details" class="textarea"
-                          >Why are they highly appropriate? (optional)</label
+                          >${t('methodsHighlyAppropriateHow')()}</label
                         >
 
                         <textarea
@@ -264,16 +271,15 @@ ${match(form.methodsAppropriateHighlyAppropriateDetails)
                           .with({ right: 'mostly-appropriate' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Somewhat appropriate</span>
+                      <span>${t('methodsSomewhatAppropriate')()}</span>
                     </label>
                     <p id="methods-appropriate-tip-mostly-appropriate" role="note">
-                      They follow best practices through most, but not all, of the research. They are well executed and
-                      provide a good foundation for drawing valid conclusions.
+                      ${t('methodsSomewhatAppropriateTip')()}
                     </p>
                     <div class="conditional" id="methods-appropriate-mostly-appropriate-control">
                       <div>
                         <label for="methods-appropriate-mostly-appropriate-details" class="textarea"
-                          >Why are they somewhat appropriate? (optional)</label
+                          >${t('methodsSomewhatAppropriateWhy')()}</label
                         >
 
                         <textarea
@@ -300,16 +306,15 @@ ${match(form.methodsAppropriateMostlyAppropriateDetails)
                           .with({ right: 'adequate' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Neither appropriate nor inappropriate</span>
+                      <span>${t('methodsNeitherAppropriateNorInappropriate')()}</span>
                     </label>
                     <p id="methods-appropriate-tip-adequate" role="note">
-                      They do not always follow best practices but give a reasonable basis for answering the research
-                      question.
+                      ${t('methodsNeitherAppropriateNorInappropriateTip')()}
                     </p>
                     <div class="conditional" id="methods-appropriate-adequate-control">
                       <div>
                         <label for="methods-appropriate-adequate-details" class="textarea"
-                          >Why are they neither appropriate nor inappropriate? (optional)</label
+                          >${t('methodsNeitherAppropriateNorInappropriateWhy')()}</label
                         >
 
                         <textarea
@@ -336,16 +341,15 @@ ${match(form.methodsAppropriateAdequateDetails)
                           .with({ right: 'somewhat-inappropriate' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Somewhat inappropriate</span>
+                      <span>${t('methodsSomewhatInappropriate')()}</span>
                     </label>
                     <p id="methods-appropriate-tip-somewhat-inappropriate" role="note">
-                      They have certain flaws or deviations from best practices that limit the value of the information
-                      and insights they share.
+                      ${t('methodsSomewhatInappropriateTip')()}
                     </p>
                     <div class="conditional" id="methods-appropriate-somewhat-inappropriate-control">
                       <div>
                         <label for="methods-appropriate-somewhat-inappropriate-details" class="textarea"
-                          >Why are they somewhat inappropriate? (optional)</label
+                          >${t('methodsSomewhatInappropriateWhy')()}</label
                         >
 
                         <textarea
@@ -372,15 +376,15 @@ ${match(form.methodsAppropriateSomewhatInappropriateDetails)
                           .with({ right: 'inappropriate' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Highly inappropriate</span>
+                      <span>${t('methodsHighlyInappropriate')()}</span>
                     </label>
                     <p id="methods-appropriate-tip-inappropriate" role="note">
-                      They are fundamentally flawed, invalid, or inconsistent with best practices.
+                      ${t('methodsHighlyInappropriateTip')()}
                     </p>
                     <div class="conditional" id="methods-appropriate-inappropriate-control">
                       <div>
                         <label for="methods-appropriate-inappropriate-details" class="textarea"
-                          >Why are they highly inappropriate? (optional)</label
+                          >${t('methodsHighlyInappropriateWhy')()}</label
                         >
 
                         <textarea
@@ -396,7 +400,7 @@ ${match(form.methodsAppropriateInappropriateDetails)
                     </div>
                   </li>
                   <li>
-                    <span>or</span>
+                    <span>${t('or')()}</span>
                     <label>
                       <input
                         name="methodsAppropriate"
@@ -406,7 +410,7 @@ ${match(form.methodsAppropriateInappropriateDetails)
                           .with({ right: 'skip' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>I don’t know</span>
+                      <span>${t('iDoNotKnow')()}</span>
                     </label>
                   </li>
                 </ol>
@@ -414,14 +418,14 @@ ${match(form.methodsAppropriateInappropriateDetails)
             </conditional-inputs>
           </div>
 
-          <button>Save and continue</button>
+          <button>${t('saveAndContinueButton')()}</button>
         </form>
       </main>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
-    locale: DefaultLocale,
+    locale,
     user,
   })
 }
