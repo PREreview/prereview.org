@@ -26,12 +26,12 @@ export function addMultipleAuthorsForm({
 }) {
   const error = hasAnError(form)
   const backMatch = otherAuthors ? writeReviewAddAuthorsMatch : writeReviewAuthorsMatch
-  const t = translate(locale)
+  const t = translate(locale, 'write-review')
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: pipe(
-      'Enter names and email address of the other authors',
+      t('enterNamesAndEmailAddress')(),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
@@ -39,17 +39,17 @@ export function addMultipleAuthorsForm({
     nav: backNav(locale, format(backMatch.formatter, { id: preprint.id })),
     main: html`
       <form method="post" action="${format(writeReviewAddAuthorMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error ? pipe(form, toErrorItems, errorSummary(locale)) : ''}
+        ${error ? pipe(toErrorItems(form, locale), errorSummary(locale)) : ''}
 
         <div ${rawHtml(E.isLeft(form.authors) ? 'class="error"' : '')}>
           <h1>
-            <label for="authors">Enter names and email address of the other authors</label>
+            <label for="authors">${t('enterNamesAndEmailAddress')()}</label>
           </h1>
 
-          <p id="authors-tip" role="note">Put each author on their own line.</p>
+          <p id="authors-tip" role="note">${t('enterNamesAndEmailAddressTip')()}</p>
 
           <details>
-            <summary><span>Example</span></summary>
+            <summary><span>${t('example')()}</span></summary>
 
             <div>
               <pre>
@@ -63,13 +63,10 @@ Minerva McGonagall mcgonagall@example.com
           ${E.isLeft(form.authors)
             ? html`
                 <div class="error-message" id="authors-error">
-                  <span class="visually-hidden">${t('write-review', 'error')()}:</span>
+                  <span class="visually-hidden">${t('error')()}:</span>
                   ${match(form.authors.left)
-                    .with(
-                      { _tag: 'InvalidE' },
-                      () => 'Enter the author names and email addresses in the correct format',
-                    )
-                    .with({ _tag: 'MissingE' }, () => 'Enter the author names and email addresses')
+                    .with({ _tag: 'InvalidE' }, () => t('namesAndEmailAddressInvalidFormat')())
+                    .with({ _tag: 'MissingE' }, () => t('namesAndEmailAddressMissing')())
                     .exhaustive()}
                 </div>
               `
@@ -105,14 +102,16 @@ export interface AddMultipleAuthorsForm {
   readonly authors: E.Either<InvalidE | MissingE, NonEmptyString | undefined>
 }
 
-const toErrorItems = (form: AddMultipleAuthorsForm) => html`
+const toErrorItems = (form: AddMultipleAuthorsForm, locale: SupportedLocale) => html`
   ${E.isLeft(form.authors)
     ? html`
         <li>
           <a href="#authors">
             ${match(form.authors.left)
-              .with({ _tag: 'InvalidE' }, () => 'Enter the author names and email addresses in the correct format')
-              .with({ _tag: 'MissingE' }, () => 'Enter the author names and email addresses')
+              .with({ _tag: 'InvalidE' }, () =>
+                translate(locale, 'write-review', 'namesAndEmailAddressInvalidFormat')(),
+              )
+              .with({ _tag: 'MissingE' }, () => translate(locale, 'write-review', 'namesAndEmailAddressMissing')())
               .exhaustive()}
           </a>
         </li>

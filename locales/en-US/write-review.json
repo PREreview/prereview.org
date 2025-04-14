@@ -35,6 +35,18 @@
   "addAuthor": {
     "message": "Add an author"
   },
+  "enterNamesAndEmailAddress": {
+    "message": "Enter names and email address of the other authors"
+  },
+  "enterNamesAndEmailAddressTip": {
+    "message": "Put each author on their own line."
+  },
+  "namesAndEmailAddressInvalidFormat": {
+    "message": "Enter the author names and email addresses in the correct format"
+  },
+  "namesAndEmailAddressMissing": {
+    "message": "Enter the author names and email addresses"
+  },
   "nameInputLabel": {
     "message": "Name"
   },
@@ -488,6 +500,9 @@
   },
   "competingInterestsMatter": {
     "message": "Competing interests matter because they can introduce perceived or actual bias in the evaluation of the preprint. Declaring them is crucial for ensuring transparency and maintaining the integrity of the review process."
+  },
+  "example": {
+    "message": "Example"
   },
   "examples": {
     "message": "Examples"
