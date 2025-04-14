@@ -15,7 +15,7 @@ import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.js'
 import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteDeclineMatch,
@@ -63,15 +63,17 @@ const getPrereview = (id: number): RTE.ReaderTaskEither<GetPrereviewEnv, 'unavai
 
 export const authorInvite = ({
   id,
+  locale,
   user,
 }: {
   id: Uuid
+  locale: SupportedLocale
   user?: User
 }): RT.ReaderTask<GetPrereviewEnv & GetAuthorInviteEnv, PageResponse | RedirectResponse | StreamlinePageResponse> =>
   pipe(
     RTE.Do,
     RTE.let('user', () => user),
-    RTE.let('locale', () => DefaultLocale),
+    RTE.let('locale', () => locale),
     RTE.let('inviteId', () => id),
     RTE.apS(
       'invite',
@@ -93,9 +95,9 @@ export const authorInvite = ({
       error =>
         match(error)
           .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound(DefaultLocale))
-          .with('unavailable', () => havingProblemsPage(DefaultLocale))
-          .with('wrong-user', () => noPermissionPage(DefaultLocale))
+          .with('not-found', () => pageNotFound(locale))
+          .with('unavailable', () => havingProblemsPage(locale))
+          .with('wrong-user', () => noPermissionPage(locale))
           .exhaustive(),
       state =>
         match(state)
