@@ -60,6 +60,12 @@
   "beforeYouStart": {
     "message": "crwdns5572:0crwdne5572:0"
   },
+  "declineTheInvitation": {
+    "message": "crwdns5580:0crwdne5580:0"
+  },
+  "youCanDecline": {
+    "message": "crwdns5582:0crwdne5582:0"
+  },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
     "message": "crwdns5439:0crwdne5439:0"
   },

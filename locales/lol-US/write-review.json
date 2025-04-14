@@ -606,6 +606,54 @@
   "resendEmailButton": {
     "message": "crwdns5391:0crwdne5391:0"
   },
+  "selectClearDiscussion": {
+    "message": "crwdns5584:0crwdne5584:0"
+  },
+  "veryClearly": {
+    "message": "crwdns5586:0crwdne5586:0"
+  },
+  "veryClearlyTip": {
+    "message": "crwdns5588:0crwdne5588:0"
+  },
+  "veryClearlyHow": {
+    "message": "crwdns5590:0crwdne5590:0"
+  },
+  "somewhatClearly": {
+    "message": "crwdns5592:0crwdne5592:0"
+  },
+  "somewhatClearlyTip": {
+    "message": "crwdns5594:0crwdne5594:0"
+  },
+  "somewhatClearlyHow": {
+    "message": "crwdns5596:0crwdne5596:0"
+  },
+  "neitherClearlyNorUnclearly": {
+    "message": "crwdns5598:0crwdne5598:0"
+  },
+  "neitherClearlyNorUnclearlyTip": {
+    "message": "crwdns5600:0crwdne5600:0"
+  },
+  "neitherClearlyNorUnclearlyHow": {
+    "message": "crwdns5602:0crwdne5602:0"
+  },
+  "somewhatUnclearly": {
+    "message": "crwdns5604:0crwdne5604:0"
+  },
+  "somewhatUnclearlyTip": {
+    "message": "crwdns5606:0crwdne5606:0"
+  },
+  "somewhatUnclearlyHow": {
+    "message": "crwdns5608:0crwdne5608:0"
+  },
+  "veryUnclearly": {
+    "message": "crwdns5610:0crwdne5610:0"
+  },
+  "veryUnclearlyTip": {
+    "message": "crwdns5612:0crwdne5612:0"
+  },
+  "veryUnclearlyHow": {
+    "message": "crwdns5614:0crwdne5614:0"
+  },
   "areTheDataPresentationsWellSuited": {
     "message": "crwdns4739:0crwdne4739:0"
   },
