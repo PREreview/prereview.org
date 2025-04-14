@@ -42,6 +42,24 @@
   "beListed": {
     "message": "Be listed as an author"
   },
+  "invitedToAppear": {
+    "message": "You’ve been invited to appear as an author on this PREreview."
+  },
+  "weWillAskYouToLogInWithYourOrcid": {
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one."
+  },
+  "whatIsAnOrcid": {
+    "message": "What is an ORCID iD?"
+  },
+  "orcidExplainer": {
+    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name."
+  },
+  "startNow": {
+    "message": "Start now"
+  },
+  "beforeYouStart": {
+    "message": "Before you start"
+  },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
     "message": "As you’ve already started, we’ll take you to the next step so you can carry on."
   },

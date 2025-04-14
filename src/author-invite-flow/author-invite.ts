@@ -15,7 +15,7 @@ import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
 import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteDeclineMatch,
@@ -71,6 +71,7 @@ export const authorInvite = ({
   pipe(
     RTE.Do,
     RTE.let('user', () => user),
+    RTE.let('locale', () => DefaultLocale),
     RTE.let('inviteId', () => id),
     RTE.apS(
       'invite',
@@ -108,50 +109,108 @@ export const authorInvite = ({
     ),
   )
 
-function startPage({ inviteId, review, user }: { inviteId: Uuid; review: Prereview; user?: User }) {
+function startPage({
+  inviteId,
+  locale,
+  review,
+  user,
+}: {
+  inviteId: Uuid
+  locale: SupportedLocale
+  review: Prereview
+  user?: User
+}) {
+  const t = translate(locale, 'author-invite-flow')
+
   return StreamlinePageResponse({
-    title: plainText`Be listed as an author`,
+    title: plainText(t('beListed')()),
     main: html`
-      <h1>Be listed as an author</h1>
+      <h1>${t('beListed')()}</h1>
 
       <article class="preview" tabindex="0" aria-labelledby="prereview-title">
         <header>
           <h2 id="prereview-title">
-            ${review.structured ? 'Structured ' : ''}PREreview of
-            <cite lang="${review.preprint.language}" dir="${rtlDetect.getLangDir(review.preprint.language)}"
-              >${review.preprint.title}</cite
-            >
+            ${rawHtml(
+              translate(
+                locale,
+                'review-page',
+                review.structured ? 'structuredReviewTitle' : 'reviewTitle',
+              )({
+                preprint: html`<cite
+                  lang="${review.preprint.language}"
+                  dir="${rtlDetect.getLangDir(review.preprint.language)}"
+                  >${review.preprint.title}</cite
+                >`.toString(),
+              }),
+            )}
           </h2>
 
           <div class="byline">
-            <span class="visually-hidden">Authored</span> by
-            ${pipe(
-              review.authors.named,
-              RNEA.map(displayAuthor),
-              RNEA.concatW(
-                review.authors.anonymous > 0
-                  ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
-                  : [],
-              ),
-              formatList(DefaultLocale),
+            ${rawHtml(
+              review.club
+                ? translate(
+                    locale,
+                    'review-page',
+                    'clubReviewAuthors',
+                  )({
+                    authors: pipe(
+                      review.authors.named,
+                      RNEA.map(displayAuthor),
+                      RNEA.concatW(
+                        review.authors.anonymous > 0
+                          ? [
+                              translate(
+                                locale,
+                                'review-page',
+                                'otherAuthors',
+                              )({ otherAuthors: review.authors.anonymous }),
+                            ]
+                          : [],
+                      ),
+                      formatList(locale),
+                    ).toString(),
+                    club: html`<a href="${format(clubProfileMatch.formatter, { id: review.club })}"
+                      >${getClubName(review.club)}</a
+                    >`.toString(),
+                    hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                  })
+                : translate(
+                    locale,
+                    'review-page',
+                    'reviewAuthors',
+                  )({
+                    authors: pipe(
+                      review.authors.named,
+                      RNEA.map(displayAuthor),
+                      RNEA.concatW(
+                        review.authors.anonymous > 0
+                          ? [
+                              translate(
+                                locale,
+                                'review-page',
+                                'otherAuthors',
+                              )({ otherAuthors: review.authors.anonymous }),
+                            ]
+                          : [],
+                      ),
+                      formatList(locale),
+                    ).toString(),
+                    hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                  }),
             )}
-            ${review.club
-              ? html`of the
-                  <a href="${format(clubProfileMatch.formatter, { id: review.club })}">${getClubName(review.club)}</a>`
-              : ''}
           </div>
 
           <dl>
             <div>
-              <dt>Published</dt>
-              <dd>${renderDate(DefaultLocale)(review.published)}</dd>
+              <dt>${translate(locale, 'review-page', 'published')()}</dt>
+              <dd>${renderDate(locale)(review.published)}</dd>
             </div>
             <div>
               <dt>DOI</dt>
               <dd class="doi" translate="no">${review.doi}</dd>
             </div>
             <div>
-              <dt>License</dt>
+              <dt>${translate(locale, 'review-page', 'license')()}</dt>
               <dd>
                 ${match(review.license)
                   .with(
@@ -159,7 +218,9 @@ function startPage({ inviteId, review, user }: { inviteId: Uuid; review: Prerevi
                     () => html`
                       <a href="https://creativecommons.org/licenses/by/4.0/">
                         <dfn>
-                          <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
+                          <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
+                            ><span translate="no">CC BY 4.0</span></abbr
+                          >
                         </dfn>
                       </a>
                     `,
@@ -176,36 +237,39 @@ function startPage({ inviteId, review, user }: { inviteId: Uuid; review: Prerevi
 
         ${review.addendum
           ? html`
-              <h2>Addendum</h2>
+              <h2>${translate(locale, 'review-page', 'addendumTitle')()}</h2>
 
               ${fixHeadingLevels(2, review.addendum)}
             `
           : ''}
       </article>
 
-      <p>You’ve been invited to appear as an author on this PREreview.</p>
+      <p>${t('invitedToAppear')()}</p>
 
       ${user
         ? ''
         : html`
-            <h2>Before you start</h2>
+            <h2>${t('beforeYouStart')()}</h2>
 
-            <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
+            <p>${t('weWillAskYouToLogInWithYourOrcid')()}</p>
 
             <details>
-              <summary><span>What is an ORCID&nbsp;iD?</span></summary>
+              <summary><span>${t('whatIsAnOrcid')()}</span></summary>
 
               <div>
                 <p>
-                  An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a unique identifier that distinguishes
-                  you from everyone with the same or similar name.
+                  ${rawHtml(
+                    t('orcidExplainer')({
+                      link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString(),
+                    }),
+                  )}
                 </p>
               </div>
             </details>
           `}
 
       <a href="${format(authorInviteStartMatch.formatter, { id: inviteId })}" role="button" draggable="false"
-        >Start now</a
+        >${t('startNow')()}</a
       >
     `,
     canonical: format(authorInviteMatch.formatter, { id: inviteId }),
