@@ -1,3 +1,5 @@
+import { DefaultLocale, isSupportedLocale, type SupportedLocale } from './locales/index.js'
+
 export function preventDefault(event: Event) {
   event.preventDefault()
 }
@@ -33,4 +35,10 @@ export function getTargetElement(link: HTMLAnchorElement): HTMLElement | null {
 
 export function getLang(element: HTMLElement): string {
   return element.closest('[lang]')?.getAttribute('lang') ?? ''
+}
+
+export function getLocale(element: HTMLElement): SupportedLocale {
+  const lang = getLang(element)
+
+  return isSupportedLocale(lang) ? lang : DefaultLocale
 }

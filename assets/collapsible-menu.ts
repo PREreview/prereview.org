@@ -1,5 +1,4 @@
-import { getLang } from './dom.js'
-import { DefaultLocale, isSupportedLocale } from './locales/index.js'
+import { getLocale } from './dom.js'
 
 const translateDep = import('./locales/index.js')
 
@@ -24,8 +23,7 @@ export class CollapsibleMenu extends HTMLElement {
 
     const { translate } = await translateDep
 
-    const lang = getLang(this)
-    const locale = isSupportedLocale(lang) ? lang : DefaultLocale
+    const locale = getLocale(this)
 
     button.innerText = translate(locale, 'collapsible-menu', 'menu')()
 

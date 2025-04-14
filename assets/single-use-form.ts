@@ -1,5 +1,5 @@
-import { disableButton, getLang } from './dom.js'
-import { DefaultLocale, isSupportedLocale, translate } from './locales/index.js'
+import { disableButton, getLocale } from './dom.js'
+import { translate } from './locales/index.js'
 
 export class SingleUseForm extends HTMLElement {
   static element = 'single-use-form' as const
@@ -19,8 +19,7 @@ export class SingleUseForm extends HTMLElement {
     if (form.dataset['submitted'] === 'true') {
       event.preventDefault()
     } else {
-      const lang = getLang(this)
-      const locale = isSupportedLocale(lang) ? lang : DefaultLocale
+      const locale = getLocale(this)
 
       const status = document.createElement('div')
       status.classList.add('submitting', 'visually-hidden')

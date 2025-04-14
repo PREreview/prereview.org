@@ -8,8 +8,7 @@ import numberedListIcon from 'remixicon/icons/Editor/list-ordered.svg'
 import bulletedListIcon from 'remixicon/icons/Editor/list-unordered.svg'
 import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
 import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
-import { disableButton, enableButton, getLang, preventDefault } from './dom.js'
-import { DefaultLocale, isSupportedLocale } from './locales/index.js'
+import { disableButton, enableButton, getLocale, preventDefault } from './dom.js'
 
 const translateDep = import('./locales/index.js')
 
@@ -51,8 +50,7 @@ export class HtmlEditor extends HTMLElement {
 
     const { translate } = await translateDep
 
-    const lang = getLang(this)
-    const locale = isSupportedLocale(lang) ? lang : DefaultLocale
+    const locale = getLocale(this)
 
     const status = document.createElement('div')
     status.classList.add('loading', 'visually-hidden')

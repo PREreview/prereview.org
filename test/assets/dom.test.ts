@@ -1,5 +1,6 @@
 import { expect, fixture } from '@open-wc/testing'
 import * as _ from '../../assets/dom.js'
+import { DefaultLocale } from '../../assets/locales/index.js'
 
 describe('preventDefault', () => {
   it('calls preventDefault() on an event', () => {
@@ -176,6 +177,86 @@ describe('getLang', () => {
           await fixture('<div><div><div id="element"></div></div></div>')
 
           await expect(_.getLang(document.getElementById('element')!)).to.equal('')
+        })
+      })
+    })
+  })
+})
+
+describe('getLocale', () => {
+  describe('there is a locale', () => {
+    describe('on the element', () => {
+      it('finds the locale', async () => {
+        const element = await fixture<HTMLDivElement>('<div lang="lol-US"></div>')
+
+        await expect(_.getLocale(element)).to.equal('lol-US')
+      })
+
+      describe('on the parent', () => {
+        it('finds the locale', async () => {
+          await fixture('<div lang="lol-US"><div id="element"></div></div>')
+
+          await expect(_.getLocale(document.getElementById('element')!)).to.equal('lol-US')
+        })
+      })
+
+      describe('on an ancestor', () => {
+        it('finds the locale', async () => {
+          await fixture('<div lang="lol-US"><div><div id="element"></div></div></div>')
+
+          await expect(_.getLocale(document.getElementById('element')!)).to.equal('lol-US')
+        })
+      })
+    })
+  })
+
+  describe("there isn't a locale", () => {
+    describe('on the element', () => {
+      it('returns the default locale', async () => {
+        const element = await fixture<HTMLDivElement>('<div></div>')
+
+        await expect(_.getLocale(element)).to.equal(DefaultLocale)
+      })
+
+      describe('on the parent', () => {
+        it('returns the default locale', async () => {
+          await fixture('<div><div id="element"></div></div>')
+
+          await expect(_.getLocale(document.getElementById('element')!)).to.equal(DefaultLocale)
+        })
+      })
+
+      describe('on an ancestor', () => {
+        it('returns the default locale', async () => {
+          await fixture('<div><div><div id="element"></div></div></div>')
+
+          await expect(_.getLocale(document.getElementById('element')!)).to.equal(DefaultLocale)
+        })
+      })
+    })
+  })
+
+  describe("the lang isn't a locale", () => {
+    describe('on the element', () => {
+      it('returns the default locale', async () => {
+        const element = await fixture<HTMLDivElement>('<div lang="sa"></div>')
+
+        await expect(_.getLocale(element)).to.equal(DefaultLocale)
+      })
+
+      describe('on the parent', () => {
+        it('returns the default locale', async () => {
+          await fixture('<div lang="sa"><div id="element"></div></div>')
+
+          await expect(_.getLocale(document.getElementById('element')!)).to.equal(DefaultLocale)
+        })
+      })
+
+      describe('on an ancestor', () => {
+        it('returns the default locale', async () => {
+          await fixture('<div lang="sa"><div><div id="element"></div></div></div>')
+
+          await expect(_.getLocale(document.getElementById('element')!)).to.equal(DefaultLocale)
         })
       })
     })
