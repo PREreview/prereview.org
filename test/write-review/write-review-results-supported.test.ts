@@ -7,7 +7,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
 import { rawHtml } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes.js'
@@ -40,10 +39,18 @@ describe('writeReviewResultsSupported', () => {
       ),
     ),
     fc.user(),
+    fc.supportedLocale(),
     fc.completedQuestionsForm(),
   ])(
     'when the form is completed',
-    async (preprintId, preprintTitle, [resultsSupported, resultsSupportedDetails, connection], user, newReview) => {
+    async (
+      preprintId,
+      preprintTitle,
+      [resultsSupported, resultsSupportedDetails, connection],
+      user,
+      locale,
+      newReview,
+    ) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -52,6 +59,7 @@ describe('writeReviewResultsSupported', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           templatePage: shouldNotBeCalled,
         }),
         connection,
@@ -96,10 +104,18 @@ describe('writeReviewResultsSupported', () => {
       ),
     ),
     fc.user(),
+    fc.supportedLocale(),
     fc.incompleteQuestionsForm(),
   ])(
     'when the form is incomplete',
-    async (preprintId, preprintTitle, [resultsSupported, resultsSupportedDetails, connection], user, newReview) => {
+    async (
+      preprintId,
+      preprintTitle,
+      [resultsSupported, resultsSupportedDetails, connection],
+      user,
+      locale,
+      newReview,
+    ) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -108,6 +124,7 @@ describe('writeReviewResultsSupported', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           templatePage: shouldNotBeCalled,
         }),
         connection,
@@ -131,14 +148,15 @@ describe('writeReviewResultsSupported', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user(), fc.supportedLocale()])(
     'when there is no form',
-    async (preprintId, preprintTitle, connection, user) => {
+    async (preprintId, preprintTitle, connection, user, locale) => {
       const actual = await runMiddleware(
         _.writeReviewResultsSupported(preprintId)({
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           templatePage: shouldNotBeCalled,
         }),
         connection,
@@ -158,9 +176,9 @@ describe('writeReviewResultsSupported', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.html()])(
+  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.supportedLocale(), fc.html()])(
     'when the preprint cannot be loaded',
-    async (preprintId, connection, user, page) => {
+    async (preprintId, connection, user, locale, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -168,6 +186,7 @@ describe('writeReviewResultsSupported', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
+          locale,
           templatePage,
         }),
         connection,
@@ -185,15 +204,15 @@ describe('writeReviewResultsSupported', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.html()])(
+  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.supportedLocale(), fc.html()])(
     'when the preprint cannot be found',
-    async (preprintId, connection, user, page) => {
+    async (preprintId, connection, user, locale, page) => {
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
@@ -201,6 +220,7 @@ describe('writeReviewResultsSupported', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
+          locale,
           templatePage,
         }),
         connection,
@@ -218,7 +238,7 @@ describe('writeReviewResultsSupported', () => {
         title: expect.anything(),
         content: expect.anything(),
         skipLinks: [[expect.anything(), '#main-content']],
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
@@ -232,11 +252,12 @@ describe('writeReviewResultsSupported', () => {
       method: fc.constant('POST'),
     }),
     fc.user(),
+    fc.supportedLocale(),
     fc.questionsForm(),
     fc.html(),
   ])(
     'without saying if the results are supported by the data',
-    async (preprintId, preprintTitle, connection, user, newReview, page) => {
+    async (preprintId, preprintTitle, connection, user, locale, newReview, page) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
@@ -246,6 +267,7 @@ describe('writeReviewResultsSupported', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           templatePage,
         }),
         connection,
@@ -264,7 +286,7 @@ describe('writeReviewResultsSupported', () => {
         skipLinks: [[rawHtml('Skip to form'), '#form']],
         js: ['conditional-inputs.js', 'error-summary.js'],
         type: 'streamline',
-        locale: DefaultLocale,
+        locale,
         user,
       })
     },
@@ -275,10 +297,11 @@ describe('writeReviewResultsSupported', () => {
     fc.preprintTitle(),
     fc.connection(),
     fc.user(),
+    fc.supportedLocale(),
     fc.oneof(fc.freeformForm(), fc.constant({})),
   ])(
     "when you haven't said you want to answer questions",
-    async (preprintId, preprintTitle, connection, user, newReview) => {
+    async (preprintId, preprintTitle, connection, user, locale, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -287,6 +310,7 @@ describe('writeReviewResultsSupported', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          locale,
           templatePage: shouldNotBeCalled,
         }),
         connection,
@@ -306,9 +330,9 @@ describe('writeReviewResultsSupported', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.supportedLocale()])(
     "when there isn't a session",
-    async (preprintId, preprintTitle, connection) => {
+    async (preprintId, preprintTitle, connection, locale) => {
       const formStore = new Keyv()
 
       const actual = await runMiddleware(
@@ -316,6 +340,7 @@ describe('writeReviewResultsSupported', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
+          locale,
           templatePage: shouldNotBeCalled,
         }),
         connection,
