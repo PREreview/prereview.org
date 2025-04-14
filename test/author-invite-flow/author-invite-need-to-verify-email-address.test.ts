@@ -22,6 +22,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.supportedLocale(),
       fc.record({
         preprint: fc.record({
           language: fc.languageCode(),
@@ -31,11 +32,11 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       fc.unverifiedContactEmailAddress(),
     ])(
       'when the email address needs to be verified',
-      async (inviteId, [user, invite], prereview, contactEmailAddress) => {
+      async (inviteId, [user, invite], locale, prereview, contactEmailAddress) => {
         const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
         const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-        const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, user })({
+        const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
           getAuthorInvite,
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPrereview,
@@ -58,6 +59,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.supportedLocale(),
       fc.record({
         preprint: fc.record({
           language: fc.languageCode(),
@@ -67,8 +69,8 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       fc.verifiedContactEmailAddress(),
     ])(
       'when the email address is already verified',
-      async (inviteId, [user, invite], prereview, contactEmailAddress) => {
-        const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, user })({
+      async (inviteId, [user, invite], locale, prereview, contactEmailAddress) => {
+        const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPrereview: () => TE.right(prereview),
@@ -85,14 +87,15 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.supportedLocale(),
       fc.record({
         preprint: fc.record({
           language: fc.languageCode(),
           title: fc.html(),
         }),
       }),
-    ])('when there is no email address', async (inviteId, [user, invite], prereview) => {
-      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, user })({
+    ])('when there is no email address', async (inviteId, [user, invite], locale, prereview) => {
+      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: () => TE.left('not-found'),
         getPrereview: () => TE.right(prereview),
@@ -108,8 +111,9 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
-    ])('when the review cannot be loaded', async (inviteId, [user, invite]) => {
-      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, user })({
+      fc.supportedLocale(),
+    ])('when the review cannot be loaded', async (inviteId, [user, invite], locale) => {
+      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: () => TE.left('unavailable'),
@@ -125,30 +129,34 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       })
     })
 
-    test.prop([fc.uuid(), fc.user()])('when the invite cannot be loaded', async (inviteId, user) => {
-      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, user })({
-        getAuthorInvite: () => TE.left('unavailable'),
-        getContactEmailAddress: shouldNotBeCalled,
-        getPrereview: shouldNotBeCalled,
-      })()
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale()])(
+      'when the invite cannot be loaded',
+      async (inviteId, user, locale) => {
+        const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
+          getAuthorInvite: () => TE.left('unavailable'),
+          getContactEmailAddress: shouldNotBeCalled,
+          getPrereview: shouldNotBeCalled,
+        })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
 
     test.prop([
       fc.uuid(),
       fc
         .user()
         .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
-    ])('when the invite is already complete', async (inviteId, [user, invite]) => {
-      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, user })({
+      fc.supportedLocale(),
+    ])('when the invite is already complete', async (inviteId, [user, invite], locale) => {
+      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
@@ -166,8 +174,9 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       fc
         .tuple(fc.user(), fc.assignedAuthorInvite())
         .filter(([user, invite]) => !eqOrcid.equals(user.orcid, invite.orcid)),
-    ])('when the invite is assigned to someone else', async (inviteId, [user, invite]) => {
-      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, user })({
+      fc.supportedLocale(),
+    ])('when the invite is assigned to someone else', async (inviteId, [user, invite], locale) => {
+      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
@@ -183,10 +192,10 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       })
     })
 
-    test.prop([fc.uuid(), fc.user(), fc.openAuthorInvite()])(
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.openAuthorInvite()])(
       'when the invite is not assigned',
-      async (inviteId, user, invite) => {
-        const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, user })({
+      async (inviteId, user, locale, invite) => {
+        const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
@@ -200,10 +209,10 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       },
     )
 
-    test.prop([fc.uuid(), fc.user(), fc.declinedAuthorInvite()])(
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.declinedAuthorInvite()])(
       'when the invite has been declined',
-      async (inviteId, user, invite) => {
-        const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, user })({
+      async (inviteId, user, locale, invite) => {
+        const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
@@ -217,34 +226,40 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       },
     )
 
-    test.prop([fc.uuid(), fc.user()])('when the invite is not found', async (inviteId, user) => {
-      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, user })({
-        getAuthorInvite: () => TE.left('not-found'),
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale()])(
+      'when the invite is not found',
+      async (inviteId, user, locale) => {
+        const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
+          getAuthorInvite: () => TE.left('not-found'),
+          getContactEmailAddress: shouldNotBeCalled,
+          getPrereview: shouldNotBeCalled,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
+  })
+
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.authorInvite()])(
+    'when the user is not logged in',
+    async (inviteId, locale, invite) => {
+      const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale })({
+        getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.NotFound,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'LogInResponse',
+        location: format(authorInviteMatch.formatter, { id: inviteId }),
       })
-    })
-  })
-
-  test.prop([fc.uuid(), fc.authorInvite()])('when the user is not logged in', async (inviteId, invite) => {
-    const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId })({
-      getAuthorInvite: () => TE.right(invite),
-      getContactEmailAddress: shouldNotBeCalled,
-      getPrereview: shouldNotBeCalled,
-    })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(authorInviteMatch.formatter, { id: inviteId }),
-    })
-  })
+    },
+  )
 })

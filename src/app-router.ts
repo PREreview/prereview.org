@@ -1989,6 +1989,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ id }),
           RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
           RM.bindW('response', RM.fromReaderTaskK(authorInviteNeedToVerifyEmailAddress)),
           RM.ichainW(handleResponse),
         ),
