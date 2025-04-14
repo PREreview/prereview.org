@@ -9,6 +9,7 @@ import { type Html, html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
+import * as Routes from '../../routes.js'
 import { writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../../routes.js'
 import { template } from './template.js'
 import { turndown } from './turndown.js'
@@ -64,7 +65,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
               t(
                 'write-review',
                 'writeReviewSupport',
-              )({ link: text => html`<a href="https://content.prereview.org/resources/">${text}</a>`.toString() }),
+              )({ link: text => html`<a href="${Routes.Resources}">${text}</a>`.toString() }),
             )}
           </p>
 
