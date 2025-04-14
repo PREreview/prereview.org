@@ -60,6 +60,12 @@
   "beforeYouStart": {
     "message": "Before you start"
   },
+  "declineTheInvitation": {
+    "message": "Decline the invitation"
+  },
+  "youCanDecline": {
+    "message": "You can decline this invitation and remain an anonymous author."
+  },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
     "message": "As you’ve already started, we’ll take you to the next step so you can carry on."
   },

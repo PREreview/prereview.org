@@ -12,6 +12,7 @@ import PlainDate = Temporal.PlainDate
 
 test('content looks right before declining', async ({ showPage }) => {
   const response = declinePage({
+    locale: DefaultLocale,
     inviteId: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     review: {
       authors: {

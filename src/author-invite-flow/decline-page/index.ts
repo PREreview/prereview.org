@@ -72,6 +72,7 @@ export const authorInviteDecline = ({
 const showDeclinePage = (id: Uuid) =>
   pipe(
     RTE.Do,
+    RTE.let('locale', () => DefaultLocale),
     RTE.let('inviteId', () => id),
     RTE.apS(
       'invite',
