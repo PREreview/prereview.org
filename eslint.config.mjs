@@ -135,7 +135,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['test/assets/** /*.ts'],
+    files: ['test/assets/**/*.ts'],
     rules: {
       'import/no-internal-modules': 'off',
     },
