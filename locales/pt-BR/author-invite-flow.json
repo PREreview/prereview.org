@@ -43,7 +43,7 @@
     "message": "Aparecer como autor"
   },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
-    "message": "Como você já começou, vamos levá-lo para a próxima etapa para que possa continuar."
+    "message": "Como você já começou, vamos para a próxima etapa para que possa continuar."
   },
   "continueButton": {
     "message": "Continuar"
@@ -76,7 +76,7 @@
     "message": "Estamos prontos para adicionar seu nome à avaliação PREreview, mas primeiro precisamos confirmar seu endereço de e-mail."
   },
   "usedToContactYouAboutYourAccountAndPrereviews": {
-    "message": "Usaremos isto apenas para entrar em contato com você sobre sua conta e avaliações PREreview."
+    "message": "Usaremos o e-mail apenas para entrar em contato sobre sua conta e avaliações PREreview."
   },
   "whatEmailAddressShouldWeUse": {
     "message": "Que endereço de e-mail devemos usar?"
@@ -106,7 +106,7 @@
     "message": "Por favor, abra o e-mail que enviamos para {contactEmailAddress} e clique no link. Depois, você poderá adicionar seu nome à avaliação  PREreview."
   },
   "onceVerifiedYouCanClosePage": {
-    "message": "Quando seu endereço for verificado, você pode fechar esta página."
+    "message": "Quando seu endereço for confirmado, você pode fechar esta página."
   },
   "whatNameWouldYouLikeToUse": {
     "message": "Que nome gostaria de usar?"
@@ -121,13 +121,13 @@
     "message": "Um <definition>pseudônimo PREreview</definition> é um nome alternativo que você pode usar em vez do seu nome real. Ele é único e combina uma cor e um animal aleatórios. Seu pseudônimo é ‘{userPseudonym}.’"
   },
   "whyUseAPseudonym": {
-    "message": "Usando seu pseudônimo, você pode contribuir com avaliações abertas de preprints sem medo de retaliação ou julgamento, que podem ocorrer ao usar seu nome real. No entanto, usar um pseudônimo mantém um certo grau de responsabilidade."
+    "message": "Usando seu pseudônimo, você pode contribuir com avaliações abertas de preprints sem temer represálias ou julgamentos, que podem ocorrer ao usar seu nome real. No entanto, usar um pseudônimo mantém um certo grau de responsabilidade."
   },
   "selectTheNameYouWouldLikeToUse": {
     "message": "Selecione o nome que gostaria de usar"
   },
   "weWillLinkYourPrereviewToYourOrcid": {
-    "message": "Vincularemos sua avaliação PREreview ao seu iD ORCID."
+    "message": "Vincularemos sua avaliação PREreview ao seu ORCID iD."
   },
   "weWillOnlyLinkToOtherPseudonymPrereviews": {
     "message": "Vamos vincular sua avaliação PREreview apenas a outras que também utilizam o seu pseudônimo."

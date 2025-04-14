@@ -1,0 +1,104 @@
+{
+  "checkYourRequest": {
+    "message": "Verifique sua solicitação"
+  },
+  "back": {
+    "message": "Voltar"
+  },
+  "yourDetails": {
+    "message": "Seus dados"
+  },
+  "publishedName": {
+    "message": "Nome publicado"
+  },
+  "changeName": {
+    "message": "Alterar <visuallyHidden>nome</visuallyHidden>"
+  },
+  "nowPublishYourRequest": {
+    "message": "Agora publique sua solicitação"
+  },
+  "weWillShareYourRequest": {
+    "message": "Vamos compartilhar sua solicitação com a comunidade PREreview."
+  },
+  "requestPrereview": {
+    "message": "Solicitar avaliação PREreview"
+  },
+  "requestAPrereview": {
+    "message": "Solicite uma avaliação"
+  },
+  "sorryWeAreHavingProblems": {
+    "message": "Desculpe, algo deu errado"
+  },
+  "unableToPublishYourWorkWasSaved": {
+    "message": "Não foi possível publicar sua solicitação de avaliação PREreview. Salvamos seu trabalho."
+  },
+  "pleaseTryAgainLater": {
+    "message": "Por favor, tente novamente mais tarde voltando a esta página."
+  },
+  "ifProblemPersistsContactUs": {
+    "message": "Se o problema persistir, por favor, <mailtoHelp>entre em contato</mailtoHelp>."
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "Que nome gostaria de usar?"
+  },
+  "backToPreprint": {
+    "message": "Voltar para o preprint"
+  },
+  "thereIsAProblem": {
+    "message": "Houve um problema"
+  },
+  "selectNameYouWouldLikeToUse": {
+    "message": "Selecione o nome que gostaria de usar"
+  },
+  "chooseBetweenOrcidNameAndPseudonym": {
+    "message": "Você pode escolher entre o nome no seu registro ORCID ou seu pseudônimo PREreview."
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "O que é um pseudônimo PREreview?"
+  },
+  "prereviewPseudonymnExplainer": {
+    "message": "Um <definition>pseudônimo PREreview</definition> é um nome alternativo que você pode usar em vez do seu nome real. Ele é único e combina uma cor e um animal aleatórios. Seu pseudônimo é ‘{pseudonym}.’"
+  },
+  "whyUseAPseudonym": {
+    "message": "Usando seu pseudônimo, você pode contribuir com avaliações abertas de preprints sem temer represálias ou julgamentos, que podem ocorrer ao usar seu nome real. No entanto, usar um pseudônimo mantém um certo grau de responsabilidade."
+  },
+  "weWillLinkRequestToYourOrcid": {
+    "message": "Vincularemos seu pedido ao seu ORCID iD."
+  },
+  "weWillLinkRequestToOthersThatUseYourPseudonymn": {
+    "message": "Vamos vincular sua solicitação apenas a outras que também utilizam seu pseudônimo."
+  },
+  "requestPublished": {
+    "message": "Solicitação publicada"
+  },
+  "whatHappensNext": {
+    "message": "O que acontece a seguir"
+  },
+  "whereYouCanSeeYourRequest": {
+    "message": "Você poderá ver seu pedido em nossa <listOfRequestsLink>lista de solicitações</listOfRequestsLink> e <communitySlackLink>Community Slack</communitySlackLink> em breve."
+  },
+  "youCanRequestAPrereview": {
+    "message": " Você pode solicitar uma avaliação PREreview de {preprintTitle}. Uma avaliação PREreview é uma avaliação de um preprint e pode variar de algumas frases a um parecer extenso, semelhante a um parecer de avaliação por pares realizado por periódicos."
+  },
+  "beforeYouStart": {
+    "message": "Antes de começar"
+  },
+  "weWillAskYouToLogInWithYourOrcid": {
+    "message": "Vamos pedir para você fazer login com seu ORCID iD. Se você não tiver um iD, pode criar um."
+  },
+  "whatIsAnOrcid": {
+    "message": "O que é um ORCID iD?"
+  },
+  "orcidExplainer": {
+    "message": "Um <orcidLinkAsDefinition>ORCID iD</orcidLinkAsDefinition> é um identificador único que distingue você de outras pessoas com o mesmo nome ou nome semelhante."
+  },
+  "startNow": {
+    "message": "Começar agora"
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "Como você já começou, vamos para a próxima etapa para que possa continuar."
+  },
+  "continueWord": {
+    "message": "Continuar"
+  }
+}

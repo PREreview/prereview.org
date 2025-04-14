@@ -36,9 +36,9 @@
     "message": "Sua conta da Comunidade Slack foi desconectada."
   },
   "messageAvatarChanged": {
-    "message": "Seu avatar foi alterado."
+    "message": "Sua imagem de perfil foi alterada."
   },
   "messageAvatarRemoved": {
-    "message": "Seu avatar foi removido."
+    "message": "Sua imagem de perfil foi removida."
   }
 }

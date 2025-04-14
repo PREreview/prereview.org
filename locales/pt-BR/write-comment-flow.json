@@ -21,7 +21,7 @@
     "message": "O que é um ORCID iD?"
   },
   "whatIsOrcid": {
-    "message": "Um <link>ORCID iD</link> é um identificador único que diferencia você de outras pessoas com o mesmo nome ou nome semelhante."
+    "message": "Um <link>ORCID iD</link> é um identificador único que distingue você de outras pessoas com o mesmo nome ou nome semelhante."
   },
   "startNowButton": {
     "message": "Começar agora"
@@ -75,7 +75,7 @@
     "message": "<error>Erro:</error> Você tem algum conflito de interesse?"
   },
   "errorCompetingInterests": {
-    "message": "<error>Erro:</error> Selecione sim se você tiver conflito de interesse"
+    "message": "<error>Erro:</error> Selecione sim se você tiver algum conflito de interesse"
   },
   "errorCompetingInterestsDetails": {
     "message": "<error>Erro:</error> Forneça detalhes dos seus conflitos de interesse"

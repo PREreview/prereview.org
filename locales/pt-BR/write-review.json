@@ -9,10 +9,10 @@
     "message": "Desculpe, algo deu errado"
   },
   "ownPreprint": {
-    "message": "Desculpe, você não pode revisar seu próprio preprint"
+    "message": "Desculpe, você não pode avaliar seu próprio preprint"
   },
   "unableToPublish": {
-    "message": "Não foi possível publicar sua Avaliação PREreview. Salvamos seu trabalho."
+    "message": "Não foi possível publicar sua avaliação PREreview. Salvamos seu trabalho."
   },
   "tryAgainLater": {
     "message": "Por favor, tente novamente mais tarde voltando para esta página."

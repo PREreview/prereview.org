@@ -37,13 +37,13 @@
     "message": "Estatísticas"
   },
   "statisticsReviews": {
-    "message": "{number, plural, one {<data>{number, number}</data> PREreview} other {<data>{number, number}</data> PREreviews}}"
+    "message": "{number, plural, one {<data>{number, number}</data> avaliação PREreview} other {<data>{number, number}</data> avaliações PREreview}}"
   },
   "statisticsServers": {
-    "message": "{number, plural, one {<data>{number, number}</data> servidor de pré-impressão} other {<data>{number, number}</data> servidores de pré-impressão}}"
+    "message": "{number, plural, one {<data>{number, number}</data> servidor de preprint} other {<data>{number, number}</data> servidores de preprints}}"
   },
   "statisticsUsers": {
-    "message": "{number, plural, one {<data>{number, number}</data> PREreviewer} other {<data>{number, number}</data> PREreviewers}}"
+    "message": "{number, plural, one {<data>{number, number}</data> avaliador PREreview} other {<data>{number, number}</data> avaliadores PREreview}}"
   },
   "reviewsTitle": {
     "message": "Avaliações PREreview recentes"

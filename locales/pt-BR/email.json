@@ -1,17 +1,17 @@
 {
   "verifyEmailAddressTitle": {
-    "message": "Verifique seu endereço de e-mail na PREreview"
+    "message": "Confirme seu endereço de e-mail na PREreview"
   },
   "hiName": {
     "message": "Olá {name},"
   },
   "verifyEmailAddressWithButton": {
-    "message": "Por favor, verifique seu endereço de e-mail na PREreview:"
+    "message": "Por favor, confirme seu endereço de e-mail na PREreview:"
   },
   "verifyEmailAddressGoingTo": {
-    "message": "Por favor, verifique seu endereço de e-mail na PREreview acessando {link}"
+    "message": "Por favor, confirme seu endereço de e-mail na PREreview acessando {link}"
   },
   "verifyEmailAddressButton": {
-    "message": "Verificar endereço de e-mail"
+    "message": "Confirmar endereço de e-mail"
   }
 }

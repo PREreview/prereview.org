@@ -3,7 +3,7 @@
     "message": "Anônimo"
   },
   "prereviewsTitle": {
-    "message": "Avaliação PREreview"
+    "message": "Avaliações PREreview"
   },
   "noResults": {
     "message": "{name} ainda não publicou uma Avaliação PREreview."
@@ -12,7 +12,7 @@
     "message": "Essa pessoa ainda não publicou uma Avaliação PREreview."
   },
   "appearHere": {
-    "message": "Quando ela publicar, aparecerá aqui."
+    "message": "Quando publicar, aparecerá aqui."
   },
   "slackName": {
     "message": "Nome da Comunidade Slack"
@@ -42,10 +42,10 @@
     "message": "Clubes"
   },
   "openForRequests": {
-    "message": "{name} está disponível para receber solicitações de Avaliação PREreview."
+    "message": "{name} está disponível para receber solicitações de avaliação PREreview."
   },
   "openForRequestsAnonymous": {
-    "message": "Essa pessoa está disponível para receber solicitações de Avaliação PREreview."
+    "message": "Essa pessoa está disponível para receber solicitações de avaliação PREreview."
   },
   "contactSlack": {
     "message": "É possível entrar em contato por meio da nossa <link>Comunidade Slack</link>."

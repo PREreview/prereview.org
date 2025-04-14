@@ -9,7 +9,7 @@
     "message": "{reviewers} do {club} avaliaram {preprint}"
   },
   "reviewPublished": {
-    "message": "Revisão publicada"
+    "message": "Avaliação publicada"
   },
   "reviewServer": {
     "message": "Servidor de preprints"

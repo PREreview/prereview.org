@@ -23,6 +23,15 @@
   "dontKnowPreprint": {
     "message": "Desculpe, não reconhecemos este preprint"
   },
+  "notAPreprint": {
+    "message": "Desculpe, aceitamos apenas preprints"
+  },
+  "unsupportedDoi": {
+    "message": "Desculpe, não aceitamos este DOI"
+  },
+  "unsupportedUrl": {
+    "message": "Desculpe, não aceitamos este URL"
+  },
   "doiCouldBeAdvance": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint Advance, mas não conseguimos encontrar detalhes."
   },
@@ -81,7 +90,7 @@
     "message": "Acreditamos que o DOI {doi} pode ser um preprint Preprints.org, mas não conseguimos encontrar detalhes."
   },
   "doiCouldBePsyarxiv": {
-    "message": "Achamos que o DOI {doi} pode ser um preprint PsyArXiv, mas não conseguimos encontrar detalhes."
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint PsyArXiv, mas não conseguimos encontrar detalhes."
   },
   "doiCouldBePsycharchives": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint PsychArchives, mas não conseguimos encontrar detalhes."
@@ -134,8 +143,17 @@
   "urlIsCorrect": {
     "message": "Se o URL estiver correto, por favor, <contact>entre em contato</contact>."
   },
+  "supportPreprintsFrom": {
+    "message": "Nós aceitamos preprints Advance, AfricArXiv, Arcadia Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, Jxiv, medRxiv, MetaArXiv, NeuroLibre, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research Square, SciELO, ScienceOpen, SocArXiv, SSRN, TechRxiv, VeriXiv e Zenodo."
+  },
   "isAPreprint": {
     "message": "Se isso for um preprint, por favor, <contact>entre em contato</contact>."
+  },
+  "doiIsForPreprint": {
+    "message": "Se este DOI for de um preprint em um servidor que não é aceito pela plataforma, por favor, <contact>entre em contato</contact>."
+  },
+  "urlIsForPreprint": {
+    "message": "Se este URL for de um preprint em um servidor que não é aceito pela plataforma, por favor, <contact>entre em contato</contact>."
   },
   "otherwiseUseDoi": {
     "message": "Caso contrário, se o preprint tiver um DOI, tente usá-lo."

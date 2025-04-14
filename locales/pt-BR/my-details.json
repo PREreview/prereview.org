@@ -42,7 +42,7 @@
     "message": "Alterar <visuallyHidden>imagem de perfil</visuallyHidden>"
   },
   "removeAvatar": {
-    "message": "Remover <visuallyHidden>avatar</visuallyHidden>"
+    "message": "Remover <visuallyHidden>imagem de perfil</visuallyHidden>"
   },
   "slackCommunityName": {
     "message": "Nome na comunidade Slack",
