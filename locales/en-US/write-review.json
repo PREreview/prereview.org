@@ -822,6 +822,21 @@
   "advanceKnowledgeNotAtAllLikelyWhy": {
     "message": "Why is it not at all likely? (optional)"
   },
+  "selectBenefitFromEditing": {
+    "message": "Select yes if it would benefit from language editing"
+  },
+  "benefitFromEditingNoTip": {
+    "message": "There may be minor language issues, but they do not impact clarity or understanding."
+  },
+  "benefitFromEditingNoWhy": {
+    "message": "Why wouldn’t it? (optional)"
+  },
+  "benefitFromEditingYesTip": {
+    "message": "Grammatical errors, confusing phrasing, or unclear expressions may hinder comprehension."
+  },
+  "benefitFromEditingYesWhy": {
+    "message": "Why would it? (optional)"
+  },
   "areTheDataPresentationsWellSuited": {
     "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
   },

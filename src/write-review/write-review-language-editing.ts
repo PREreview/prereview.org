@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -26,9 +26,11 @@ import {
   writeReviewNovelMatch,
   writeReviewReviewTypeMatch,
 } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewLanguageEditing = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -127,16 +129,22 @@ const FormToFieldsE: Encoder<LanguageEditingForm, Form> = {
 
 type LanguageEditingForm = Fields<typeof languageEditingFields>
 
-function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm, user: User) {
+function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm, user: User, locale = DefaultLocale) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return templatePage({
-    title: plainText`${error ? 'Error: ' : ''}Would it benefit from language editing? – PREreview of “${
-      preprint.title
-    }”`,
+    title: pipe(
+      t('benefitFromEditing')(),
+      prereviewOfSuffix(locale, preprint.title),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
       <nav>
-        <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}" class="back"><span>Back</span></a>
+        <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}" class="back"
+          ><span>${t('backNav')()}</span></a
+        >
       </nav>
 
       <main id="form">
@@ -148,17 +156,14 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
+                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
                   <ul>
                     ${E.isLeft(form.languageEditing)
                       ? html`
                           <li>
                             <a href="#language-editing-no">
                               ${match(form.languageEditing.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => 'Select yes if it would benefit from language editing',
-                                )
+                                .with({ _tag: 'MissingE' }, () => t('selectBenefitFromEditing')())
                                 .exhaustive()}
                             </a>
                           </li>
@@ -180,15 +185,15 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
                 )}
               >
                 <legend>
-                  <h1>Would it benefit from language editing?</h1>
+                  <h1>${t('benefitFromEditing')()}</h1>
                 </legend>
 
                 ${E.isLeft(form.languageEditing)
                   ? html`
                       <div class="error-message" id="language-editing-error">
-                        <span class="visually-hidden">Error:</span>
+                        <span class="visually-hidden">${t('error')()}:</span>
                         ${match(form.languageEditing.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select yes if it would benefit from language editing')
+                          .with({ _tag: 'MissingE' }, () => t('selectBenefitFromEditing')())
                           .exhaustive()}
                       </div>
                     `
@@ -208,14 +213,14 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
                           .with({ right: 'no' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>No</span>
+                      <span>${t('no')()}</span>
                     </label>
-                    <p id="language-editing-tip-no" role="note">
-                      There may be minor language issues, but they do not impact clarity or understanding.
-                    </p>
+                    <p id="language-editing-tip-no" role="note">${t('benefitFromEditingNoTip')()}</p>
                     <div class="conditional" id="language-editing-no-control">
                       <div>
-                        <label for="language-editing-no-details" class="textarea">Why wouldn’t it? (optional)</label>
+                        <label for="language-editing-no-details" class="textarea"
+                          >${t('benefitFromEditingNoWhy')()}</label
+                        >
 
                         <textarea name="languageEditingNoDetails" id="language-editing-no-details" rows="5">
 ${match(form.languageEditingNoDetails)
@@ -237,14 +242,14 @@ ${match(form.languageEditingNoDetails)
                           .with({ right: 'yes' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Yes</span>
+                      <span>${t('yes')()}</span>
                     </label>
-                    <p id="language-editing-tip-yes" role="note">
-                      Grammatical errors, confusing phrasing, or unclear expressions may hinder comprehension.
-                    </p>
+                    <p id="language-editing-tip-yes" role="note">${t('benefitFromEditingYesTip')()}</p>
                     <div class="conditional" id="language-editing-yes-control">
                       <div>
-                        <label for="language-editing-yes-details" class="textarea">Why would it? (optional)</label>
+                        <label for="language-editing-yes-details" class="textarea"
+                          >${t('benefitFromEditingYesTip')()}</label
+                        >
 
                         <textarea name="languageEditingYesDetails" id="language-editing-yes-details" rows="5">
 ${match(form.languageEditingYesDetails)
@@ -259,14 +264,14 @@ ${match(form.languageEditingYesDetails)
             </conditional-inputs>
           </div>
 
-          <button>Save and continue</button>
+          <button>${t('saveAndContinueButton')()}</button>
         </form>
       </main>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
-    locale: DefaultLocale,
+    locale,
     user,
   })
 }
