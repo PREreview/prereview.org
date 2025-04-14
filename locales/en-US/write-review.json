@@ -858,6 +858,27 @@
   "wouldRecommendNoWhy": {
     "message": "Why wouldn’t you recommend it? (optional)"
   },
+  "selectReadyForAttention": {
+    "message": "Select yes if it is ready for attention from an editor, publisher or broader audience"
+  },
+  "readyForAttentionYes": {
+    "message": "Yes, as it is"
+  },
+  "readyForAttentionYesWhy": {
+    "message": "Why is it ready? (optional)"
+  },
+  "readyForAttentionMinorChanges": {
+    "message": "Yes, after minor changes"
+  },
+  "readyForAttentionMinorChangesWhy": {
+    "message": "What needs tweaking? (optional)"
+  },
+  "readyForAttentionNo": {
+    "message": "No, it needs a major revision"
+  },
+  "readyForAttentionNoWhy": {
+    "message": "What needs to change? (optional)"
+  },
   "areTheDataPresentationsWellSuited": {
     "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
   },
