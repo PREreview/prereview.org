@@ -16,7 +16,7 @@ import {
   requiredDecoder,
 } from '../form.js'
 import { html, plainText, rawHtml, sendHtml } from '../html.js'
-import { DefaultLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
@@ -26,9 +26,11 @@ import {
   writeReviewResultsSupportedMatch,
   writeReviewReviewTypeMatch,
 } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
 import { type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import { prereviewOfSuffix } from './shared-elements.js'
 
 export const writeReviewResultsSupported = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -72,7 +74,7 @@ export const writeReviewResultsSupported = flow(
 
 const showResultsSupportedForm = flow(
   RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    resultsSupportedForm(preprint, FormToFieldsE.encode(form), user),
+    resultsSupportedForm(preprint, FormToFieldsE.encode(form), user, DefaultLocale),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -80,7 +82,7 @@ const showResultsSupportedForm = flow(
 
 const showResultsSupportedErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    RM.fromReaderK((form: ResultsSupportedForm) => resultsSupportedForm(preprint, form, user)),
+    RM.fromReaderK((form: ResultsSupportedForm) => resultsSupportedForm(preprint, form, user, DefaultLocale)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -139,16 +141,26 @@ const FormToFieldsE: Encoder<ResultsSupportedForm, Form> = {
 
 type ResultsSupportedForm = Fields<typeof resultsSupportedFields>
 
-function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedForm, user: User) {
+function resultsSupportedForm(
+  preprint: PreprintTitle,
+  form: ResultsSupportedForm,
+  user: User,
+  locale: SupportedLocale,
+) {
   const error = hasAnError(form)
+  const t = translate(locale, 'write-review')
 
   return templatePage({
-    title: plainText`${error ? 'Error: ' : ''}Are the conclusions supported by the data?
- – PREreview of “${preprint.title}”`,
+    title: pipe(
+      t('conclusionsSupported')(),
+      prereviewOfSuffix(locale, preprint.title),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     content: html`
       <nav>
         <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>Back</span></a
+          ><span>${t('backNav')()}</span></a
         >
       </nav>
 
@@ -161,14 +173,14 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
+                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
                   <ul>
                     ${E.isLeft(form.resultsSupported)
                       ? html`
                           <li>
                             <a href="#results-supported-strongly-supported">
                               ${match(form.resultsSupported.left)
-                                .with({ _tag: 'MissingE' }, () => 'Select if the conclusions are supported by the data')
+                                .with({ _tag: 'MissingE' }, () => t('selectConclusionsSupported')())
                                 .exhaustive()}
                             </a>
                           </li>
@@ -190,15 +202,15 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
                 )}
               >
                 <legend>
-                  <h1>Are the conclusions supported by the data?</h1>
+                  <h1>${t('conclusionsSupported')()}</h1>
                 </legend>
 
                 ${E.isLeft(form.resultsSupported)
                   ? html`
                       <div class="error-message" id="results-supported-error">
-                        <span class="visually-hidden">Error:</span>
+                        <span class="visually-hidden">${t('error')()}:</span>
                         ${match(form.resultsSupported.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select if the conclusions are supported by the data')
+                          .with({ _tag: 'MissingE' }, () => t('selectConclusionsSupported')())
                           .exhaustive()}
                       </div>
                     `
@@ -218,16 +230,15 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
                           .with({ right: 'strongly-supported' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Highly supported</span>
+                      <span>${t('conclusionsHighlySupported')()}</span>
                     </label>
                     <p id="results-supported-tip-strongly-supported" role="note">
-                      The conclusions are consistently thorough and provide a realistic interpretation of the data
-                      without overreaching or drawing conclusions not reflected in the results.
+                      ${t('conclusionsHighlySupportedTip')()}
                     </p>
                     <div class="conditional" id="results-supported-strongly-supported-control">
                       <div>
                         <label for="results-supported-strongly-supported-details" class="textarea"
-                          >Why are they highly supported? (optional)</label
+                          >${t('conclusionsHighlySupportedWhy')()}</label
                         >
 
                         <textarea
@@ -254,16 +265,15 @@ ${match(form.resultsSupportedStronglySupportedDetails)
                           .with({ right: 'well-supported' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Somewhat supported</span>
+                      <span>${t('conclusionsSomewhatSupported')()}</span>
                     </label>
                     <p id="results-supported-tip-well-supported" role="note">
-                      The conclusions are mostly, but not always, thorough. They provide a reasonable interpretation of
-                      the data without overreaching or adding interpretations not reflected in the results.
+                      ${t('conclusionsSomewhatSupportedTip')()}
                     </p>
                     <div class="conditional" id="results-supported-well-supported-control">
                       <div>
                         <label for="results-supported-well-supported-details" class="textarea"
-                          >Why are they somewhat supported? (optional)</label
+                          >${t('conclusionsSomewhatSupportedWhy')()}</label
                         >
 
                         <textarea
@@ -290,16 +300,15 @@ ${match(form.resultsSupportedWellSupportedDetails)
                           .with({ right: 'neutral' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Neither supported nor unsupported</span>
+                      <span>${t('conclusionsNeitherSupportedNorUnsupported')()}</span>
                     </label>
                     <p id="results-supported-tip-neutral" role="note">
-                      No conclusions have been drawn about the data, or those presented are reasonable but not well
-                      explained or justified by the authors.
+                      ${t('conclusionsNeitherSupportedNorUnsupportedTip')()}
                     </p>
                     <div class="conditional" id="results-supported-neutral-control">
                       <div>
                         <label for="results-supported-neutral-details" class="textarea"
-                          >Why are they neither supported nor unsupported? (optional)</label
+                          >${t('conclusionsNeitherSupportedNorUnsupportedWhy')()}</label
                         >
 
                         <textarea name="resultsSupportedNeutralDetails" id="results-supported-neutral-details" rows="5">
@@ -322,16 +331,15 @@ ${match(form.resultsSupportedNeutralDetails)
                           .with({ right: 'partially-supported' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Somewhat unsupported</span>
+                      <span>${t('conclusionsSomewhatUnsupported')()}</span>
                     </label>
                     <p id="results-supported-tip-partially-supported" role="note">
-                      The conclusions do not entirely address the data, or the conclusions overgeneralize and are not
-                      well-supported by the data.
+                      ${t('conclusionsSomewhatUnsupportedTip')()}
                     </p>
                     <div class="conditional" id="results-supported-partially-supported-control">
                       <div>
                         <label for="results-supported-partially-supported-details" class="textarea"
-                          >Why are they somewhat unsupported? (optional)</label
+                          >${t('conclusionsSomewhatUnsupportedWhy')()}</label
                         >
 
                         <textarea
@@ -358,15 +366,15 @@ ${match(form.resultsSupportedPartiallySupportedDetails)
                           .with({ right: 'not-supported' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Highly unsupported</span>
+                      <span>${t('conclusionsHighlyUnsupported')()}</span>
                     </label>
                     <p id="results-supported-tip-not-supported" role="note">
-                      The conclusions do not follow from the data and are unsupported or contradicted by it.
+                      ${t('conclusionsHighlyUnsupportedTip')()}
                     </p>
                     <div class="conditional" id="results-supported-not-supported-control">
                       <div>
                         <label for="results-supported-not-supported-details" class="textarea"
-                          >Why are they highly unsupported? (optional)</label
+                          >${t('conclusionsHighlyUnsupportedWhy')()}</label
                         >
 
                         <textarea
@@ -382,7 +390,7 @@ ${match(form.resultsSupportedNotSupportedDetails)
                     </div>
                   </li>
                   <li>
-                    <span>or</span>
+                    <span>${t('or')()}</span>
                     <label>
                       <input
                         name="resultsSupported"
@@ -392,7 +400,7 @@ ${match(form.resultsSupportedNotSupportedDetails)
                           .with({ right: 'skip' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>I don’t know</span>
+                      <span>${t('iDoNotKnow')()}</span>
                     </label>
                   </li>
                 </ol>
@@ -400,14 +408,14 @@ ${match(form.resultsSupportedNotSupportedDetails)
             </conditional-inputs>
           </div>
 
-          <button>Save and continue</button>
+          <button>${t('saveAndContinueButton')()}</button>
         </form>
       </main>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
-    locale: DefaultLocale,
+    locale,
     user,
   })
 }

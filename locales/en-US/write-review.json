@@ -681,6 +681,54 @@
   "methodsHighlyInappropriateWhy": {
     "message": "Why are they highly inappropriate? (optional)"
   },
+  "selectConclusionsSupported": {
+    "message": "Select if the conclusions are supported by the data"
+  },
+  "conclusionsHighlySupported": {
+    "message": "Highly supported"
+  },
+  "conclusionsHighlySupportedTip": {
+    "message": "The conclusions are consistently thorough and provide a realistic interpretation of the data without overreaching or drawing conclusions not reflected in the results."
+  },
+  "conclusionsHighlySupportedWhy": {
+    "message": "Why are they highly supported? (optional)"
+  },
+  "conclusionsSomewhatSupported": {
+    "message": "Somewhat supported"
+  },
+  "conclusionsSomewhatSupportedTip": {
+    "message": "The conclusions are mostly, but not always, thorough. They provide a reasonable interpretation of the data without overreaching or adding interpretations not reflected in the results."
+  },
+  "conclusionsSomewhatSupportedWhy": {
+    "message": "Why are they somewhat supported? (optional)"
+  },
+  "conclusionsNeitherSupportedNorUnsupported": {
+    "message": "Neither supported nor unsupported"
+  },
+  "conclusionsNeitherSupportedNorUnsupportedTip": {
+    "message": "No conclusions have been drawn about the data, or those presented are reasonable but not well explained or justified by the authors."
+  },
+  "conclusionsNeitherSupportedNorUnsupportedWhy": {
+    "message": "Why are they neither supported nor unsupported? (optional)"
+  },
+  "conclusionsSomewhatUnsupported": {
+    "message": "Somewhat unsupported"
+  },
+  "conclusionsSomewhatUnsupportedTip": {
+    "message": "The conclusions do not entirely address the data, or the conclusions overgeneralize and are not well-supported by the data."
+  },
+  "conclusionsSomewhatUnsupportedWhy": {
+    "message": "Why are they somewhat unsupported? (optional)"
+  },
+  "conclusionsHighlyUnsupported": {
+    "message": "Highly unsupported"
+  },
+  "conclusionsHighlyUnsupportedTip": {
+    "message": "The conclusions do not follow from the data and are unsupported or contradicted by it."
+  },
+  "conclusionsHighlyUnsupportedWhy": {
+    "message": "Why are they highly unsupported? (optional)"
+  },
   "veryClearly": {
     "message": "Very clearly"
   },
