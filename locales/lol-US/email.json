@@ -13,5 +13,32 @@
   },
   "verifyEmailAddressButton": {
     "message": "crwdns4374:0crwdne4374:0"
+  },
+  "beListedAsAuthor": {
+    "message": "crwdns5782:0crwdne5782:0"
+  },
+  "thanksContributingReview": {
+    "message": "crwdns5784:0{preprint}crwdnd5784:0{prereview}crwdne5784:0"
+  },
+  "authorHasInvitedYou": {
+    "message": "crwdns5786:0{author}crwdne5786:0"
+  },
+  "beListedGoingTo": {
+    "message": "crwdns5788:0crwdne5788:0"
+  },
+  "beListedAsAuthorButton": {
+    "message": "crwdns5790:0crwdne5790:0"
+  },
+  "chooseNotToBeListedGoingTo": {
+    "message": "crwdns5792:0crwdne5792:0"
+  },
+  "chooseNotToBeListedLink": {
+    "message": "crwdns5794:0crwdne5794:0"
+  },
+  "haveAnyQuestions": {
+    "message": "crwdns5796:0{emailAddress}crwdne5796:0"
+  },
+  "allTheBest": {
+    "message": "crwdns5798:0crwdne5798:0"
   }
 }

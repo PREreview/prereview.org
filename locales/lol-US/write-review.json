@@ -35,6 +35,18 @@
   "addAuthor": {
     "message": "crwdns3906:0crwdne3906:0"
   },
+  "enterNamesAndEmailAddress": {
+    "message": "crwdns5766:0crwdne5766:0"
+  },
+  "enterNamesAndEmailAddressTip": {
+    "message": "crwdns5768:0crwdne5768:0"
+  },
+  "namesAndEmailAddressInvalidFormat": {
+    "message": "crwdns5770:0crwdne5770:0"
+  },
+  "namesAndEmailAddressMissing": {
+    "message": "crwdns5772:0crwdne5772:0"
+  },
   "nameInputLabel": {
     "message": "crwdns3908:0crwdne3908:0"
   },
@@ -291,6 +303,9 @@
   "changePrereview": {
     "message": "crwdns4018:0crwdne4018:0"
   },
+  "yourReview": {
+    "message": "crwdns5774:0crwdne5774:0"
+  },
   "doesIntroductionExplain": {
     "message": "crwdns4020:0crwdne4020:0"
   },
@@ -471,6 +486,12 @@
   "competingInterests": {
     "message": "crwdns4553:0crwdne4553:0"
   },
+  "competingInterestsNo": {
+    "message": "crwdns5776:0crwdne5776:0"
+  },
+  "competingInterestsAuthorsNo": {
+    "message": "crwdns5778:0crwdne5778:0"
+  },
   "selectYesIfCompetingInterest": {
     "message": "crwdns4408:0crwdne4408:0"
   },
@@ -488,6 +509,9 @@
   },
   "competingInterestsMatter": {
     "message": "crwdns4557:0crwdne4557:0"
+  },
+  "example": {
+    "message": "crwdns5780:0crwdne5780:0"
   },
   "examples": {
     "message": "crwdns4416:0crwdne4416:0"
