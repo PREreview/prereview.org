@@ -35,6 +35,18 @@
   "addAuthor": {
     "message": "Adicionar um autor"
   },
+  "enterNamesAndEmailAddress": {
+    "message": "Digite os nomes e endereços de e-mail dos outros autores"
+  },
+  "enterNamesAndEmailAddressTip": {
+    "message": "Coloque cada autor em sua própria linha."
+  },
+  "namesAndEmailAddressInvalidFormat": {
+    "message": "Digite os nomes dos autores e endereços de e-mail no formato correto"
+  },
+  "namesAndEmailAddressMissing": {
+    "message": "Digite os nomes dos autores e endereços de e-mail"
+  },
   "nameInputLabel": {
     "message": "Nome"
   },
@@ -291,6 +303,9 @@
   "changePrereview": {
     "message": "Alterar <visuallyHidden>avaliação PREreview</visuallyHidden>"
   },
+  "yourReview": {
+    "message": "Sua avaliação"
+  },
   "doesIntroductionExplain": {
     "message": "A introdução explica o objetivo da pesquisa apresentada no preprint?"
   },
@@ -471,6 +486,12 @@
   "competingInterests": {
     "message": "Conflitos de interesse"
   },
+  "competingInterestsNo": {
+    "message": "O autor declara que não possui conflitos de interesse."
+  },
+  "competingInterestsAuthorsNo": {
+    "message": "Os autores declaram que não possuem conflitos de interesse."
+  },
   "selectYesIfCompetingInterest": {
     "message": "Selecione sim se você{otherAuthors, boolean, true {, ou algum dos outros autores,} false {}} possui algum conflito de interesse"
   },
@@ -488,6 +509,9 @@
   },
   "competingInterestsMatter": {
     "message": "Conflitos de interesse são importantes porque podem introduzir um viés percebido ou real na avaliação do preprint. Declarar esses conflitos é essencial para garantir a transparência e manter a integridade do processo de avaliação."
+  },
+  "example": {
+    "message": "Exemplo"
   },
   "examples": {
     "message": "Exemplos"
@@ -605,6 +629,81 @@
   },
   "resendEmailButton": {
     "message": "Reenviar e-mail"
+  },
+  "selectIntroductionExplains": {
+    "message": "Selecione se a introdução explica o objetivo da pesquisa apresentada no preprint"
+  },
+  "clearlyExplainsTip": {
+    "message": "Explica claramente o objetivo."
+  },
+  "howIntroductionExplains": {
+    "message": "Como a introdução explica o objetivo? (opcional)"
+  },
+  "partly": {
+    "message": "Parcialmente"
+  },
+  "partlyTip": {
+    "message": "Menciona, mas não explica completamente, o objetivo."
+  },
+  "partlyHow": {
+    "message": "Como a introdução explica o objetivo apenas parcialmente? (opcional)"
+  },
+  "doesNotExplain": {
+    "message": "Não menciona nem explica o objetivo."
+  },
+  "doesNotExplainHow": {
+    "message": "Como a introdução não explica o objetivo? (opcional)"
+  },
+  "selectMethodsWellSuited": {
+    "message": "Selecione se os métodos são adequados para esta pesquisa"
+  },
+  "selectClearDiscussion": {
+    "message": "Selecione o quão claramente os autores discutem seus achados e próximos passos"
+  },
+  "methodsHighlyAppropriate": {
+    "message": "Altamente adequados"
+  },
+  "methodsHighlyAppropriateTip": {
+    "message": "Seguem as melhores práticas ao longo da pesquisa. São rigorosamente executados e proporcionam uma base sólida para extrair conclusões válidas."
+  },
+  "methodsHighlyAppropriateHow": {
+    "message": "Por que são altamente adequados? (opcional)"
+  },
+  "methodsSomewhatAppropriate": {
+    "message": "Moderadamente adequados"
+  },
+  "methodsSomewhatAppropriateTip": {
+    "message": "Seguem as melhores práticas na maior parte, mas não em toda a pesquisa. São bem executados e proporcionam uma boa base para extrair conclusões válidas."
+  },
+  "methodsSomewhatAppropriateWhy": {
+    "message": "Por que são moderadamente adequados? (opcional)"
+  },
+  "methodsNeitherAppropriateNorInappropriate": {
+    "message": "Nem adequados, nem inadequados"
+  },
+  "methodsNeitherAppropriateNorInappropriateTip": {
+    "message": "Nem sempre seguem as melhores práticas, mas proporcionam uma base razoável para responder à pergunta da pesquisa."
+  },
+  "methodsNeitherAppropriateNorInappropriateWhy": {
+    "message": "Por que não são nem adequados nem inadequados? (opcional)"
+  },
+  "methodsSomewhatInappropriate": {
+    "message": "Moderadamente inadequados"
+  },
+  "methodsSomewhatInappropriateTip": {
+    "message": "Apresentam certas falhas ou desvios das melhores práticas que limitam o valor das informações e insights que compartilham."
+  },
+  "methodsSomewhatInappropriateWhy": {
+    "message": "Por que são moderadamente inadequados? (opcional)"
+  },
+  "methodsHighlyInappropriate": {
+    "message": "Muito inadequados"
+  },
+  "methodsHighlyInappropriateTip": {
+    "message": "São fundamentalmente falhos, inválidos ou inconsistentes com as melhores práticas."
+  },
+  "methodsHighlyInappropriateWhy": {
+    "message": "Por que são muito inadequados? (opcional)"
   },
   "areTheDataPresentationsWellSuited": {
     "message": "As apresentações de dados, incluindo visualizações, são adequadas para representar os dados?"

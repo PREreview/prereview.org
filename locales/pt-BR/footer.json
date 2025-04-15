@@ -41,6 +41,9 @@
   "contactEmail": {
     "message": "Envie um e-mail para {address}"
   },
+  "contactBluesky": {
+    "message": "{handle} no Bluesky"
+  },
   "contactMastodon": {
     "message": "{handle} no Mastodon"
   },
