@@ -13,5 +13,32 @@
   },
   "verifyEmailAddressButton": {
     "message": "Confirmar endereço de e-mail"
+  },
+  "beListedAsAuthor": {
+    "message": "Apareça como autor(a) da avaliação PREreview"
+  },
+  "thanksContributingReview": {
+    "message": "Obrigado por contribuir com uma avaliação recente de \"{preprint}\" publicada na {prereview}!"
+  },
+  "authorHasInvitedYou": {
+    "message": "{author} convidou você para aparecer como autor(a) na avaliação PREreview."
+  },
+  "beListedGoingTo": {
+    "message": "Você pode aparecer como autor(a) acessando:"
+  },
+  "beListedAsAuthorButton": {
+    "message": "Aparecer como autor(a)"
+  },
+  "chooseNotToBeListedGoingTo": {
+    "message": "Você também pode optar por não aparecer ignorando este e-mail ou acessando:"
+  },
+  "chooseNotToBeListedLink": {
+    "message": "Você também pode optar por não aparecer <link>recusando este convite</link> ou ignorando este e-mail."
+  },
+  "haveAnyQuestions": {
+    "message": "Se tiver alguma dúvida, fale conosco pelo e-mail {emailAddress}."
+  },
+  "allTheBest": {
+    "message": "Atenciosamente,"
   }
 }

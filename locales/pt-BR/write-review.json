@@ -319,10 +319,10 @@
     "message": "Alterar <visuallyHidden>se os métodos são adequados para esta pesquisa</visuallyHidden>"
   },
   "conclusionsSupported": {
-    "message": "As conclusões são apoiadas pelos dados?"
+    "message": "As conclusões são sustentadas pelos dados?"
   },
   "changeConclusionsSupported": {
-    "message": "Alterar <visuallyHidden>se as conclusões são apoiadas pelos dados</visuallyHidden>"
+    "message": "Alterar <visuallyHidden>se as conclusões são sustentadas pelos dados</visuallyHidden>"
   },
   "dataPresentationWellSuited": {
     "message": "As apresentações de dados, incluindo visualizações, são adequadas para representar os dados?"
@@ -679,7 +679,7 @@
     "message": "Por que são moderadamente adequados? (opcional)"
   },
   "methodsNeitherAppropriateNorInappropriate": {
-    "message": "Nem adequados, nem inadequados"
+    "message": "Nem adequados nem inadequados"
   },
   "methodsNeitherAppropriateNorInappropriateTip": {
     "message": "Nem sempre seguem as melhores práticas, mas proporcionam uma base razoável para responder à pergunta da pesquisa."
@@ -704,6 +704,60 @@
   },
   "methodsHighlyInappropriateWhy": {
     "message": "Por que são muito inadequados? (opcional)"
+  },
+  "selectConclusionsSupported": {
+    "message": "Selecione se as conclusões são sustentadas pelos dados"
+  },
+  "conclusionsHighlySupported": {
+    "message": "Altamente sustentadas"
+  },
+  "conclusionsHighlySupportedTip": {
+    "message": "As conclusões são consistentemente minuciosas e oferecem uma interpretação realista dos dados, sem extrapolar ou apresentar conclusões que não estejam refletidas nos resultados."
+  },
+  "conclusionsHighlySupportedWhy": {
+    "message": "Por que são altamente sustentadas? (opcional)"
+  },
+  "conclusionsSomewhatSupported": {
+    "message": "Moderadamente sustentadas"
+  },
+  "conclusionsSomewhatSupportedTip": {
+    "message": "Em sua maior parte, as conclusões são minuciosas, mas nem sempre. Oferecem uma interpretação razoável dos dados sem extrapolar ou adicionar interpretações não refletidas nos resultados."
+  },
+  "conclusionsSomewhatSupportedWhy": {
+    "message": "Por que são moderadamente sustentadas? (opcional)"
+  },
+  "conclusionsNeitherSupportedNorUnsupported": {
+    "message": "Nem sustentadas nem não sustentadas"
+  },
+  "conclusionsNeitherSupportedNorUnsupportedTip": {
+    "message": "Nenhuma conclusão foi apresentada sobre os dados, ou as que foram apresentadas são razoáveis, mas não estão bem explicadas ou justificadas pelos autores."
+  },
+  "conclusionsNeitherSupportedNorUnsupportedWhy": {
+    "message": "Por que não são nem sustentadas nem não sustentadas? (opcional)"
+  },
+  "conclusionsSomewhatUnsupported": {
+    "message": "Moderadamente não sustentadas"
+  },
+  "conclusionsSomewhatUnsupportedTip": {
+    "message": "As conclusões não abordam completamente os dados ou generalizam em excesso e não são bem sustentadas pelos dados."
+  },
+  "conclusionsSomewhatUnsupportedWhy": {
+    "message": "Por que são moderadamente não sustentadas? (opcional)"
+  },
+  "conclusionsHighlyUnsupported": {
+    "message": "Altamente não sustentadas"
+  },
+  "conclusionsHighlyUnsupportedTip": {
+    "message": "As conclusões não decorrem dos dados e não são sustentadas por eles ou são contraditórias a eles."
+  },
+  "conclusionsHighlyUnsupportedWhy": {
+    "message": "Por que são altamente não sustentadas? (opcional)"
+  },
+  "veryClearly": {
+    "message": "Muito claramente"
+  },
+  "veryClearlyTip": {
+    "message": "Demonstram clareza, profundidade e discernimento na discussão, explicação e interpretação de seus achados e possíveis próximos passos."
   },
   "areTheDataPresentationsWellSuited": {
     "message": "As apresentações de dados, incluindo visualizações, são adequadas para representar os dados?"

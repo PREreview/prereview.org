@@ -42,6 +42,30 @@
   "beListed": {
     "message": "Aparecer como autor"
   },
+  "invitedToAppear": {
+    "message": "Você foi convidado(a) para aparecer como autor(a) nesta avaliação PREreview."
+  },
+  "weWillAskYouToLogInWithYourOrcid": {
+    "message": "Vamos pedir que faça login com seu ORCID iD. Se você não tiver um iD, pode criar um."
+  },
+  "whatIsAnOrcid": {
+    "message": "O que é um ORCID iD?"
+  },
+  "orcidExplainer": {
+    "message": "Um <link>ORCID iD</link> é um identificador exclusivo que distingue você de outras pessoas com o mesmo nome ou nome semelhante."
+  },
+  "startNow": {
+    "message": "Começar agora"
+  },
+  "beforeYouStart": {
+    "message": "Antes de começar"
+  },
+  "declineTheInvitation": {
+    "message": "Recusar o convite"
+  },
+  "youCanDecline": {
+    "message": "Você pode recusar este convite e permanecer como autor anônimo."
+  },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
     "message": "Como você já começou, vamos para a próxima etapa para que possa continuar."
   },
