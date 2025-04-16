@@ -1,5 +1,8 @@
-import { Either } from 'effect'
+import { Url } from '@effect/platform'
+import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
+import { html } from '../html.js'
 import * as Preprint from '../preprint.js'
+import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
 import type { Record } from './Record.js'
 
 export const recordToPreprint = (
@@ -13,5 +16,63 @@ export const recordToPreprint = (
       yield* Either.left(new Preprint.NotAPreprint({ cause: record.types }))
     }
 
-    return yield* Either.left(new Preprint.PreprintIsUnavailable({}))
+    const id = yield* determineDatacitePreprintId(record)
+
+    const authors = yield* Array.match(record.creators, {
+      onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { creators: record.creators } })),
+      onNonEmpty: creators =>
+        Either.right(
+          Array.map(
+            creators,
+            flow(
+              Match.value,
+              Match.when({ name: Match.string }, creator => ({ name: creator.name })),
+              Match.when({ givenName: Match.string, familyName: Match.string }, creator => ({
+                name: `${creator.givenName} ${creator.familyName}`,
+              })),
+              Match.exhaustive,
+            ),
+          ),
+        ),
+    })
+
+    const title = {
+      language: 'en' as const,
+      text: html`${record.titles[0].title}`,
+    }
+
+    const posted = yield* Either.fromOption(
+      findPublishedDate(record.dates),
+      () => new Preprint.PreprintIsUnavailable({ cause: { dates: record.dates } }),
+    )
+
+    return Preprint.Preprint({
+      authors,
+      id,
+      posted,
+      title,
+      url: Url.setProtocol(record.url, 'https'),
+    })
   })
+
+const determineDatacitePreprintId = (
+  record: Record,
+): Either.Either<DatacitePreprintId, Preprint.PreprintIsUnavailable> =>
+  Either.gen(function* () {
+    const doi = record.doi
+
+    if (!isDoiFromSupportedPublisher(doi)) {
+      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
+    }
+
+    return { type: 'osf', value: doi } satisfies DatacitePreprintId
+  })
+
+const findPublishedDate = (dates: Record['dates']) =>
+  pipe(
+    Option.none(),
+    Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Submitted')),
+    Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Created')),
+    Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Issued')),
+    Option.andThen(Struct.get('date')),
+  )

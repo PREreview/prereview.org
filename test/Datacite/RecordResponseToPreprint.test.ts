@@ -2,12 +2,39 @@ import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
-import { Effect, Either, pipe, Schema, Struct } from 'effect'
+import { Temporal } from '@js-temporal/polyfill'
+import { Doi } from 'doi-ts'
+import { Effect, pipe, Schema, Struct } from 'effect'
 import { recordToPreprint } from '../../src/Datacite/Preprint.js'
 import { Record, ResponseSchema } from '../../src/Datacite/Record.js'
+import { rawHtml } from '../../src/html.js'
+import { Preprint } from '../../src/preprint.js'
 import * as EffectTest from '../EffectTest.js'
 
-test.each(['osf-project'])('can parse a DataCite record (%s)', response =>
+test.each([
+  {
+    response: 'osf-project',
+    expected: Preprint({
+      authors: [
+        { name: 'Maria Isabel Caetano Da Silva' },
+        { name: 'Eglídia Carla Figueirêdo Vidal' },
+        { name: 'Aline Sampaio Rolim De Sena' },
+        { name: 'Marina Pessoa De Farias Rodrigues' },
+        { name: 'Gabriela Duarte Bezerra' },
+        { name: 'WONESKA RODRIGUES PINHEIRO' },
+      ],
+      id: { type: 'osf', value: Doi('10.17605/osf.io/eq8bk') },
+      posted: Temporal.PlainDate.from({ year: 2023, month: 9, day: 13 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Teorias De Enfermagem Para Abordagem Familiar De Potenciais Doadores De Órgãos: revisão de escopo',
+        ),
+      },
+      url: new URL('https://osf.io/eq8bk'),
+    }),
+  },
+])('can parse a DataCite record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
@@ -15,10 +42,10 @@ test.each(['osf-project'])('can parse a DataCite record (%s)', response =>
       Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Record)))),
       Effect.andThen(Struct.get('data')),
       Effect.andThen(Struct.get('attributes')),
-      Effect.either,
+      Effect.andThen(recordToPreprint),
     )
 
-    expect(Either.isRight(actual)).toBeTruthy()
+    expect(actual).toStrictEqual(expected)
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
