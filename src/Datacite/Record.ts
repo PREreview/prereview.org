@@ -31,6 +31,10 @@ export class Record extends Schema.Class<Record>('Record')({
       dateType: Schema.NonEmptyTrimmedString,
     }),
   ),
+  types: Schema.Struct({
+    resourceType: Schema.optional(Schema.NonEmptyTrimmedString),
+    resourceTypeGeneral: Schema.optional(Schema.NonEmptyTrimmedString),
+  }),
   url: Schema.URL,
 }) {}
 
