@@ -1,5 +1,6 @@
 import { Url } from '@effect/platform'
 import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
+import { detectLanguage } from '../detect-language.js'
 import { html } from '../html.js'
 import * as Preprint from '../preprint.js'
 import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
@@ -36,10 +37,7 @@ export const recordToPreprint = (
         ),
     })
 
-    const title = {
-      language: 'en' as const,
-      text: html`${record.titles[0].title}`,
-    }
+    const title = yield* getTitle(record.titles)
 
     const posted = yield* Either.fromOption(
       findPublishedDate(record.dates),
@@ -76,3 +74,20 @@ const findPublishedDate = (dates: Record['dates']) =>
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Issued')),
     Option.andThen(Struct.get('date')),
   )
+
+const getTitle = (
+  titles: Record['titles'],
+): Either.Either<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
+  Either.gen(function* () {
+    const text = html`${titles[0].title}`
+
+    const language = yield* Either.fromOption(
+      detectLanguage(text),
+      () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
+    )
+
+    return {
+      language,
+      text,
+    }
+  })

@@ -26,7 +26,7 @@ test.each([
       id: { type: 'osf', value: Doi('10.17605/osf.io/eq8bk') },
       posted: Temporal.PlainDate.from({ year: 2023, month: 9, day: 13 }),
       title: {
-        language: 'en',
+        language: 'pt',
         text: rawHtml(
           'Teorias De Enfermagem Para Abordagem Familiar De Potenciais Doadores De Órgãos: revisão de escopo',
         ),
