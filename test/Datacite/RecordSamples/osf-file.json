@@ -1,0 +1,120 @@
+{
+  "data": {
+    "id": "10.17605/osf.io/4tsz8",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.17605/osf.io/4tsz8",
+      "prefix": "10.17605",
+      "suffix": "osf.io/4tsz8",
+      "identifiers": [{ "identifier": "https://osf.io/4tsz8", "identifierType": "URL" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "URL", "alternateIdentifier": "https://osf.io/4tsz8" }],
+      "creators": [
+        {
+          "name": "Núcleo Do Conhecimento",
+          "nameType": "Personal",
+          "affiliation": [],
+          "nameIdentifiers": [{ "nameIdentifier": "https://osf.io/p8u32", "nameIdentifierScheme": "URL" }]
+        }
+      ],
+      "titles": [{ "title": "Núcleo do Conhecimento" }],
+      "publisher": "OSF",
+      "container": {},
+      "publicationYear": 2024,
+      "subjects": [
+        { "subject": "Conhecimento Científico" },
+        { "subject": "Dr. Prof. Carla Dendask" },
+        { "subject": "Multidisciplinar" },
+        { "subject": "Pesquisa Acadêmica" },
+        { "subject": "Revista" },
+        { "subject": "Revista Online" }
+      ],
+      "contributors": [
+        {
+          "name": "Center For Open Science",
+          "nameType": "Organizational",
+          "affiliation": [],
+          "contributorType": "HostingInstitution",
+          "nameIdentifiers": [
+            { "nameIdentifier": "https://cos.io/", "nameIdentifierScheme": "URL" },
+            {
+              "schemeUri": "https://ror.org",
+              "nameIdentifier": "https://ror.org/05d5mza29",
+              "nameIdentifierScheme": "ROR"
+            }
+          ]
+        }
+      ],
+      "dates": [
+        { "date": "2024-06-18", "dateType": "Created" },
+        { "date": "2024-09-17", "dateType": "Updated" },
+        { "date": "2024", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "RPRT",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Project",
+        "resourceTypeGeneral": "Text"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Página da REVISTA CIENTÍFICA MULTIDISCIPLINAR NÚCLEO DO CONHECIMENTO",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjUvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC4xNzYwNS9PU0YuSU8vNFRTWjg8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPk7DumNsZW8gZG8gQ29uaGVjaW1lbnRvPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJVUkwiPmh0dHBzOi8vb3NmLmlvL3A4dTMyPC9uYW1lSWRlbnRpZmllcj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+TsO6Y2xlbyBkbyBDb25oZWNpbWVudG88L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+T1NGPC9wdWJsaXNoZXI+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDI0PC9wdWJsaWNhdGlvblllYXI+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3Q+Q29uaGVjaW1lbnRvIENpZW50w61maWNvPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+RHIuIFByb2YuIENhcmxhIERlbmRhc2s8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5NdWx0aWRpc2NpcGxpbmFyPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+UGVzcXVpc2EgQWNhZMOqbWljYTwvc3ViamVjdD4KICAgIDxzdWJqZWN0PlJldmlzdGE8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5SZXZpc3RhIE9ubGluZTwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxjb250cmlidXRvcnM+CiAgICA8Y29udHJpYnV0b3IgY29udHJpYnV0b3JUeXBlPSJIb3N0aW5nSW5zdGl0dXRpb24iPgogICAgICA8Y29udHJpYnV0b3JOYW1lIG5hbWVUeXBlPSJPcmdhbml6YXRpb25hbCI+Q2VudGVyIGZvciBPcGVuIFNjaWVuY2U8L2NvbnRyaWJ1dG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJVUkwiPmh0dHBzOi8vY29zLmlvLzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iUk9SIj5odHRwczovL3Jvci5vcmcvMDVkNW16YTI5PC9uYW1lSWRlbnRpZmllcj4KICAgIDwvY29udHJpYnV0b3I+CiAgPC9jb250cmlidXRvcnM+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9IkNyZWF0ZWQiPjIwMjQtMDYtMTg8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iVXBkYXRlZCI+MjAyNC0wOS0xNzwvZGF0ZT4KICA8L2RhdGVzPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iVGV4dCI+UHJvamVjdDwvcmVzb3VyY2VUeXBlPgogIDxhbHRlcm5hdGVJZGVudGlmaWVycz4KICAgIDxhbHRlcm5hdGVJZGVudGlmaWVyIGFsdGVybmF0ZUlkZW50aWZpZXJUeXBlPSJVUkwiPmh0dHBzOi8vb3NmLmlvLzR0c3o4PC9hbHRlcm5hdGVJZGVudGlmaWVyPgogIDwvYWx0ZXJuYXRlSWRlbnRpZmllcnM+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC9sZWdhbGNvZGUiPkNDLUJ5IEF0dHJpYnV0aW9uIDQuMCBJbnRlcm5hdGlvbmFsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+UMOhZ2luYSBkYSBSRVZJU1RBIENJRU5Uw41GSUNBIE1VTFRJRElTQ0lQTElOQVIgTsOaQ0xFTyBETyBDT05IRUNJTUVOVE88L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgogIDxmdW5kaW5nUmVmZXJlbmNlcy8+CiAgPHJlbGF0ZWRJZGVudGlmaWVycy8+CiAgPHJlbGF0ZWRJdGVtcy8+CjwvcmVzb3VyY2U+",
+      "url": "https://osf.io/4tsz8/",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2024-09-17T18:21:28.000Z",
+      "registered": "2024-09-17T18:21:29.000Z",
+      "published": "2024",
+      "updated": "2024-09-17T18:21:29.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cos.osf", "type": "clients" } },
+      "provider": { "data": { "id": "cos", "type": "providers" } },
+      "media": { "data": { "id": "10.17605/osf.io/4tsz8", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "data": {
+    "id": "10.17605/osf.io/eq8bk",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.17605/osf.io/eq8bk",
+      "prefix": "10.17605",
+      "suffix": "osf.io/eq8bk",
+      "identifiers": [{ "identifier": "https://osf.io/eq8bk", "identifierType": "URL" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "URL", "alternateIdentifier": "https://osf.io/eq8bk" }],
+      "creators": [
+        {
+          "name": "Da Silva, Maria Isabel Caetano",
+          "nameType": "Personal",
+          "givenName": "Maria Isabel Caetano",
+          "familyName": "Da Silva",
+          "affiliation": [],
+          "nameIdentifiers": [{ "nameIdentifier": "https://osf.io/bejuy", "nameIdentifierScheme": "URL" }]
+        },
+        {
+          "name": "Eglídia Carla Figueirêdo Vidal",
+          "nameType": "Personal",
+          "affiliation": [],
+          "nameIdentifiers": [{ "nameIdentifier": "https://osf.io/p3t8m", "nameIdentifierScheme": "URL" }]
+        },
+        {
+          "name": "De Sena, Aline Sampaio Rolim",
+          "nameType": "Personal",
+          "givenName": "Aline Sampaio Rolim",
+          "familyName": "De Sena",
+          "affiliation": [],
+          "nameIdentifiers": [{ "nameIdentifier": "https://osf.io/dh3qp", "nameIdentifierScheme": "URL" }]
+        },
+        {
+          "name": "De Farias Rodrigues, Marina Pessoa",
+          "nameType": "Personal",
+          "givenName": "Marina Pessoa",
+          "familyName": "De Farias Rodrigues",
+          "affiliation": [],
+          "nameIdentifiers": [{ "nameIdentifier": "https://osf.io/d86sz", "nameIdentifierScheme": "URL" }]
+        },
+        {
+          "name": "Bezerra, Gabriela Duarte",
+          "nameType": "Personal",
+          "givenName": "Gabriela Duarte",
+          "familyName": "Bezerra",
+          "affiliation": [],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-7472-4621",
+              "nameIdentifierScheme": "ORCID"
+            },
+            { "nameIdentifier": "https://osf.io/2xgv4", "nameIdentifierScheme": "URL" }
+          ]
+        },
+        {
+          "name": "WONESKA RODRIGUES PINHEIRO",
+          "nameType": "Personal",
+          "affiliation": [],
+          "nameIdentifiers": [{ "nameIdentifier": "https://osf.io/gcse5", "nameIdentifierScheme": "URL" }]
+        }
+      ],
+      "titles": [
+        {
+          "lang": "por",
+          "title": "Teorias De Enfermagem Para Abordagem Familiar De Potenciais Doadores De Órgãos: revisão de escopo"
+        }
+      ],
+      "publisher": "OSF",
+      "container": {},
+      "publicationYear": 2023,
+      "subjects": [
+        { "subject": "Abordagem familiar" },
+        { "subject": "Doação de órgãos" },
+        { "subject": "Entrevista" },
+        { "subject": "Morte Cerebral" },
+        { "subject": "Revisão de Escopo" },
+        { "subject": "Teorias de Enfermagem" }
+      ],
+      "contributors": [
+        {
+          "name": "Center For Open Science",
+          "nameType": "Organizational",
+          "affiliation": [],
+          "contributorType": "HostingInstitution",
+          "nameIdentifiers": [
+            { "nameIdentifier": "https://cos.io/", "nameIdentifierScheme": "URL" },
+            {
+              "schemeUri": "https://ror.org",
+              "nameIdentifier": "https://ror.org/05d5mza29",
+              "nameIdentifierScheme": "ROR"
+            }
+          ]
+        }
+      ],
+      "dates": [
+        { "date": "2023-09-13", "dateType": "Created" },
+        { "date": "2023-09-13", "dateType": "Updated" },
+        { "date": "2023", "dateType": "Issued" }
+      ],
+      "language": "pt",
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "Project",
+        "resourceTypeGeneral": "Preprint"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "lang": "por",
+          "description": "Revisão de Escopo realizada no período de novembro de 2022 a junho de 2023, que objetivou mapear na literatura quais teorias de enfermagem e estruturas conceituais podem contribuir por suas características na abordagem familiar de potenciais doadores. A revisão foi realizada nas bases de dados LILACS, SCOPUS, SciELO, MEDLINE, EMBASE e Web of science, que foram acessadas via Biblioteca Virtual em Saúde e via Pubmed, bem como, na literatura cinzenta, Google acadêmico e na lista de referência dos estudos. A amostra foi composta por 14 estudos, onde foram identificadas 9 Teorias de Enfermagem.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjQvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC4xNzYwNS9PU0YuSU8vRVE4Qks8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPk1hcmlhIElzYWJlbCBDYWV0YW5vIGRhIFNpbHZhPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJVUkwiPmh0dHBzOi8vb3NmLmlvL2JlanV5PC9uYW1lSWRlbnRpZmllcj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5FZ2zDrWRpYSBDYXJsYSBGaWd1ZWlyw6pkbyBWaWRhbDwvY3JlYXRvck5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL29zZi5pby9wM3Q4bTwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+QWxpbmUgU2FtcGFpbyBSb2xpbSBkZSBTZW5hPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJVUkwiPmh0dHBzOi8vb3NmLmlvL2RoM3FwPC9uYW1lSWRlbnRpZmllcj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5NYXJpbmEgUGVzc29hIGRlIEZhcmlhcyBSb2RyaWd1ZXM8L2NyZWF0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9IlVSTCI+aHR0cHM6Ly9vc2YuaW8vZDg2c3o8L25hbWVJZGVudGlmaWVyPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkdhYnJpZWxhIER1YXJ0ZSBCZXplcnJhPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCI+MDAwMC0wMDAyLTc0NzItNDYyMTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL29zZi5pby8yeGd2NDwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+V09ORVNLQSBST0RSSUdVRVMgUElOSEVJUk88L2NyZWF0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9IlVSTCI+aHR0cHM6Ly9vc2YuaW8vZ2NzZTU8L25hbWVJZGVudGlmaWVyPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZSB4bWw6bGFuZz0icG9yIj5UZW9yaWFzIERlIEVuZmVybWFnZW0gUGFyYSBBYm9yZGFnZW0gRmFtaWxpYXIgRGUgUG90ZW5jaWFpcyBEb2Fkb3JlcyBEZSDDk3Jnw6NvczogcmV2aXPDo28gZGUgZXNjb3BvPC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyPk9TRjwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyMzwvcHVibGljYXRpb25ZZWFyPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0PkFib3JkYWdlbSBmYW1pbGlhcjwvc3ViamVjdD4KICAgIDxzdWJqZWN0PkRvYcOnw6NvIGRlIMOzcmfDo29zPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+RW50cmV2aXN0YTwvc3ViamVjdD4KICAgIDxzdWJqZWN0Pk1vcnRlIENlcmVicmFsPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+UmV2aXPDo28gZGUgRXNjb3BvPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+VGVvcmlhcyBkZSBFbmZlcm1hZ2VtPC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGNvbnRyaWJ1dG9ycz4KICAgIDxjb250cmlidXRvciBjb250cmlidXRvclR5cGU9Ikhvc3RpbmdJbnN0aXR1dGlvbiI+CiAgICAgIDxjb250cmlidXRvck5hbWUgbmFtZVR5cGU9Ik9yZ2FuaXphdGlvbmFsIj5DZW50ZXIgZm9yIE9wZW4gU2NpZW5jZTwvY29udHJpYnV0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9IlVSTCI+aHR0cHM6Ly9jb3MuaW8vPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJST1IiPmh0dHBzOi8vcm9yLm9yZy8wNWQ1bXphMjk8L25hbWVJZGVudGlmaWVyPgogICAgPC9jb250cmlidXRvcj4KICA8L2NvbnRyaWJ1dG9ycz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQ3JlYXRlZCI+MjAyMy0wOS0xMzwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIj4yMDIzLTA5LTEzPC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPnBvcjwvbGFuZ3VhZ2U+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJQcmVwcmludCI+UHJvamVjdDwvcmVzb3VyY2VUeXBlPgogIDxhbHRlcm5hdGVJZGVudGlmaWVycz4KICAgIDxhbHRlcm5hdGVJZGVudGlmaWVyIGFsdGVybmF0ZUlkZW50aWZpZXJUeXBlPSJVUkwiPmh0dHBzOi8vb3NmLmlvL2VxOGJrPC9hbHRlcm5hdGVJZGVudGlmaWVyPgogIDwvYWx0ZXJuYXRlSWRlbnRpZmllcnM+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC9sZWdhbGNvZGUiPkNDLUJ5IEF0dHJpYnV0aW9uIDQuMCBJbnRlcm5hdGlvbmFsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCIgeG1sOmxhbmc9InBvciI+UmV2aXPDo28gZGUgRXNjb3BvIHJlYWxpemFkYSBubyBwZXLDrW9kbyBkZSBub3ZlbWJybyBkZSAyMDIyIGEganVuaG8gZGUgMjAyMywgcXVlIG9iamV0aXZvdSBtYXBlYXIgbmEgbGl0ZXJhdHVyYSBxdWFpcyB0ZW9yaWFzIGRlIGVuZmVybWFnZW0gZSBlc3RydXR1cmFzIGNvbmNlaXR1YWlzCnBvZGVtIGNvbnRyaWJ1aXIgcG9yIHN1YXMgY2FyYWN0ZXLDrXN0aWNhcyBuYSBhYm9yZGFnZW0gZmFtaWxpYXIgZGUgcG90ZW5jaWFpcyBkb2Fkb3Jlcy4gQSByZXZpc8OjbyBmb2kgcmVhbGl6YWRhIG5hcyBiYXNlcyBkZSBkYWRvcyBMSUxBQ1MsIFNDT1BVUywgU2NpRUxPLApNRURMSU5FLCBFTUJBU0UgZSBXZWIgb2Ygc2NpZW5jZSwgcXVlIGZvcmFtIGFjZXNzYWRhcyB2aWEgQmlibGlvdGVjYSBWaXJ0dWFsIGVtClNhw7pkZSBlIHZpYSBQdWJtZWQsIGJlbSBjb21vLCBuYSBsaXRlcmF0dXJhIGNpbnplbnRhLCBHb29nbGUgYWNhZMOqbWljbyBlIG5hIGxpc3RhIGRlCnJlZmVyw6puY2lhIGRvcyBlc3R1ZG9zLiBBIGFtb3N0cmEgZm9pIGNvbXBvc3RhIHBvciAxNCBlc3R1ZG9zLCBvbmRlIGZvcmFtIGlkZW50aWZpY2FkYXMKOSBUZW9yaWFzIGRlIEVuZmVybWFnZW0uPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KICA8ZnVuZGluZ1JlZmVyZW5jZXMvPgogIDxyZWxhdGVkSWRlbnRpZmllcnMvPgogIDxyZWxhdGVkSXRlbXMvPgo8L3Jlc291cmNlPg==",
+      "url": "https://osf.io/eq8bk/",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2023-09-13T01:58:23.000Z",
+      "registered": "2023-09-13T01:58:23.000Z",
+      "published": "2023",
+      "updated": "2023-09-13T01:58:24.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cos.osf", "type": "clients" } },
+      "provider": { "data": { "id": "cos", "type": "providers" } },
+      "media": { "data": { "id": "10.17605/osf.io/eq8bk", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

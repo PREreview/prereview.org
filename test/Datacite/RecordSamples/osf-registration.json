@@ -1,0 +1,124 @@
+{
+  "data": {
+    "id": "10.17605/osf.io/we58g",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.17605/osf.io/we58g",
+      "prefix": "10.17605",
+      "suffix": "osf.io/we58g",
+      "identifiers": [{ "identifier": "https://osf.io/we58g", "identifierType": "URL" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "URL", "alternateIdentifier": "https://osf.io/we58g" }],
+      "creators": [
+        {
+          "name": "Jacobsson, Magdalena",
+          "nameType": "Personal",
+          "givenName": "Magdalena",
+          "familyName": "Jacobsson",
+          "affiliation": [],
+          "nameIdentifiers": [{ "nameIdentifier": "https://osf.io/umdya", "nameIdentifierScheme": "URL" }]
+        },
+        {
+          "name": "Svensson, Patric",
+          "nameType": "Personal",
+          "givenName": "Patric",
+          "familyName": "Svensson",
+          "affiliation": [],
+          "nameIdentifiers": [{ "nameIdentifier": "https://osf.io/kzh7c", "nameIdentifierScheme": "URL" }]
+        }
+      ],
+      "titles": [
+        { "title": "A scoping review with the aim of investigating research regarding physiotherapy and drugs" }
+      ],
+      "publisher": "Open Science Framework",
+      "container": {},
+      "publicationYear": 2023,
+      "subjects": [
+        { "subject": "Rehabilitation and Therapy", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" },
+        { "subject": "Physiotherapy", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" },
+        { "subject": "Physical Therapy", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" },
+        { "subject": "Medicine and Health Sciences", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" },
+        { "subject": "Pharmaceutical Preparations", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" },
+        { "subject": "Chemicals and Drugs", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" }
+      ],
+      "contributors": [
+        {
+          "name": "Open Science Framework",
+          "nameType": "Organizational",
+          "affiliation": [],
+          "contributorType": "HostingInstitution",
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://ror.org",
+              "nameIdentifier": "https://ror.org/05d5mza29",
+              "nameIdentifierScheme": "ROR"
+            },
+            { "nameIdentifier": "https://grid.ac/institutes/grid.466501.0/", "nameIdentifierScheme": "GRID" }
+          ]
+        }
+      ],
+      "dates": [
+        { "date": "2023-03-31", "dateType": "Created" },
+        { "date": "2023-02-23", "dateType": "Updated" },
+        { "date": "2023", "dateType": "Issued" }
+      ],
+      "language": "sv",
+      "types": {
+        "ris": "RPRT",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Pre-registration",
+        "resourceTypeGeneral": "Text"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [{ "rights": "No license" }],
+      "descriptions": [
+        {
+          "description": "To examine what research exists that compares physiotherapy and drugs as treatment options with drug consumption as an outcome measure. The purpose is also to investigate whether this research highlights the results from a sustainability perspective.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjMvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC4xNzYwNS9PU0YuSU8vV0U1OEc8L2lkZW50aWZpZXI+CiAgPGFsdGVybmF0ZUlkZW50aWZpZXJzPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9IlVSTCI+aHR0cHM6Ly9vc2YuaW8vd2U1OGc8L2FsdGVybmF0ZUlkZW50aWZpZXI+CiAgPC9hbHRlcm5hdGVJZGVudGlmaWVycz4KICA8Y3JlYXRvcnM+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+TWFnZGFsZW5hIEphY29ic3NvbjwvY3JlYXRvck5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL29zZi5pby91bWR5YTwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+UGF0cmljIFN2ZW5zc29uPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJVUkwiPmh0dHBzOi8vb3NmLmlvL2t6aDdjPC9uYW1lSWRlbnRpZmllcj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+QSBzY29waW5nIHJldmlldyB3aXRoIHRoZSBhaW0gb2YgaW52ZXN0aWdhdGluZyByZXNlYXJjaCByZWdhcmRpbmcgcGh5c2lvdGhlcmFweSBhbmQgZHJ1Z3M8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+T3BlbiBTY2llbmNlIEZyYW1ld29yazwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyMzwvcHVibGljYXRpb25ZZWFyPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9ImJlcHJlc3MgRGlnaXRhbCBDb21tb25zIFRocmVlLVRpZXJlZCBUYXhvbm9teSI+UmVoYWJpbGl0YXRpb24gYW5kIFRoZXJhcHk8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJiZXByZXNzIERpZ2l0YWwgQ29tbW9ucyBUaHJlZS1UaWVyZWQgVGF4b25vbXkiPlBoeXNpb3RoZXJhcHk8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJiZXByZXNzIERpZ2l0YWwgQ29tbW9ucyBUaHJlZS1UaWVyZWQgVGF4b25vbXkiPlBoeXNpY2FsIFRoZXJhcHk8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJiZXByZXNzIERpZ2l0YWwgQ29tbW9ucyBUaHJlZS1UaWVyZWQgVGF4b25vbXkiPk1lZGljaW5lIGFuZCBIZWFsdGggU2NpZW5jZXM8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJiZXByZXNzIERpZ2l0YWwgQ29tbW9ucyBUaHJlZS1UaWVyZWQgVGF4b25vbXkiPlBoYXJtYWNldXRpY2FsIFByZXBhcmF0aW9uczwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9ImJlcHJlc3MgRGlnaXRhbCBDb21tb25zIFRocmVlLVRpZXJlZCBUYXhvbm9teSI+Q2hlbWljYWxzIGFuZCBEcnVnczwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxjb250cmlidXRvcnM+CiAgICA8Y29udHJpYnV0b3IgY29udHJpYnV0b3JUeXBlPSJIb3N0aW5nSW5zdGl0dXRpb24iPgogICAgICA8Y29udHJpYnV0b3JOYW1lIG5hbWVUeXBlPSJPcmdhbml6YXRpb25hbCI+T3BlbiBTY2llbmNlIEZyYW1ld29yazwvY29udHJpYnV0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9IlJPUiI+aHR0cHM6Ly9yb3Iub3JnLzA1ZDVtemEyOTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iR1JJRCI+aHR0cHM6Ly9ncmlkLmFjL2luc3RpdHV0ZXMvZ3JpZC40NjY1MDEuMC88L25hbWVJZGVudGlmaWVyPgogICAgPC9jb250cmlidXRvcj4KICA8L2NvbnRyaWJ1dG9ycz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQ3JlYXRlZCI+MjAyMy0wMy0zMTwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIj4yMDIzLTAyLTIzPC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPnN3ZTwvbGFuZ3VhZ2U+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJUZXh0Ij5QcmUtcmVnaXN0cmF0aW9uPC9yZXNvdXJjZVR5cGU+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzPk5vIGxpY2Vuc2U8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij5UbyBleGFtaW5lIHdoYXQgcmVzZWFyY2ggZXhpc3RzIHRoYXQgY29tcGFyZXMgcGh5c2lvdGhlcmFweSBhbmQgZHJ1Z3MgYXMgdHJlYXRtZW50IG9wdGlvbnMgd2l0aCBkcnVnIGNvbnN1bXB0aW9uIGFzIGFuIG91dGNvbWUgbWVhc3VyZS4gVGhlIHB1cnBvc2UgaXMgYWxzbyB0byBpbnZlc3RpZ2F0ZSB3aGV0aGVyIHRoaXMgcmVzZWFyY2ggaGlnaGxpZ2h0cyB0aGUgcmVzdWx0cyBmcm9tIGEgc3VzdGFpbmFiaWxpdHkgcGVyc3BlY3RpdmUuPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=",
+      "url": "https://osf.io/we58g/",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2023-03-31T08:06:13.000Z",
+      "registered": "2023-03-31T08:06:14.000Z",
+      "published": "2023",
+      "updated": "2023-03-31T08:06:17.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cos.osf", "type": "clients" } },
+      "provider": { "data": { "id": "cos", "type": "providers" } },
+      "media": { "data": { "id": "10.17605/osf.io/we58g", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}
