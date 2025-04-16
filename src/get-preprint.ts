@@ -4,6 +4,7 @@ import { DeprecatedSleepEnv } from './Context.js'
 import { getPreprintFromCrossref, type IndeterminateCrossrefPreprintId, isCrossrefPreprintDoi } from './crossref.js'
 import * as Crossref from './Crossref/index.js'
 import { getPreprintFromDatacite, type IndeterminateDatacitePreprintId, isDatacitePreprintDoi } from './datacite.js'
+import * as Datacite from './Datacite/index.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import * as JapanLinkCenter from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './philsci.js'
@@ -43,6 +44,7 @@ const getPreprintFromSource = pipe(
         return yield* FptsToEffect.readerTaskEither(getPreprintFromDatacite(id), { fetch, ...sleep })
       }),
   ),
+  Match.when(Datacite.isDatacitePreprintId, Datacite.getPreprintFromDatacite),
   Match.when(JapanLinkCenter.isJapanLinkCenterPreprintId, JapanLinkCenter.getPreprintFromJapanLinkCenter),
   Match.exhaustive,
 )
