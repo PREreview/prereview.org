@@ -19,6 +19,7 @@ export type PreprintId =
   | EdarxivPreprintId
   | EngrxivPreprintId
   | JxivPreprintId
+  | LifecycleJournalPreprintId
   | MedrxivPreprintId
   | MetaarxivPreprintId
   | NeurolibrePreprintId
@@ -37,7 +38,11 @@ export type PreprintId =
   | VerixivPreprintId
   | ZenodoPreprintId
 
-export type IndeterminatePreprintId = PreprintId | BiorxivOrMedrxivPreprintId | ZenodoOrAfricarxivPreprintId
+export type IndeterminatePreprintId =
+  | PreprintId
+  | BiorxivOrMedrxivPreprintId
+  | OsfOrLifecycleJournalPreprintId
+  | ZenodoOrAfricarxivPreprintId
 
 export interface AdvancePreprintId {
   readonly type: 'advance'
@@ -123,6 +128,11 @@ export interface EngrxivPreprintId {
 export interface JxivPreprintId {
   readonly type: 'jxiv'
   readonly value: Doi<'51094'>
+}
+
+export interface LifecycleJournalPreprintId {
+  readonly type: 'lifecycle-journal'
+  readonly value: Doi<'17605'>
 }
 
 export interface MedrxivPreprintId {
@@ -215,6 +225,11 @@ export interface BiorxivOrMedrxivPreprintId {
   readonly value: Doi<'1101'>
 }
 
+export interface OsfOrLifecycleJournalPreprintId {
+  readonly type: 'osf-lifecycle-journal'
+  readonly value: Doi<'17605'>
+}
+
 export interface ZenodoOrAfricarxivPreprintId {
   readonly type: 'zenodo-africarxiv'
   readonly value: Doi<'5281'>
@@ -286,7 +301,10 @@ export function fromPreprintDoi(
     .when(hasRegistrant('6084'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivFigsharePreprintId)
     .when(hasRegistrant('12688'), doi => ({ type: 'verixiv', value: doi }) satisfies VerixivPreprintId)
     .when(hasRegistrant('14293'), doi => ({ type: 'science-open', value: doi }) satisfies ScienceOpenPreprintId)
-    .when(hasRegistrant('17605'), doi => ({ type: 'osf', value: doi }) satisfies OsfPreprintId)
+    .when(
+      hasRegistrant('17605'),
+      doi => ({ type: 'osf-lifecycle-journal', value: doi }) satisfies OsfOrLifecycleJournalPreprintId,
+    )
     .when(hasRegistrant('21203'), doi => ({ type: 'research-square', value: doi }) satisfies ResearchSquarePreprintId)
     .when(hasRegistrant('22541'), doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId)
     .when(hasRegistrant('23668'), doi => ({ type: 'psycharchives', value: doi }) satisfies PsychArchivesPreprintId)

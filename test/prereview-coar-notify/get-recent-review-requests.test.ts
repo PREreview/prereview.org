@@ -19,7 +19,9 @@ describe('getRecentReviewRequests', () => {
           timestamp: fc.instant(),
           preprint: fc
             .indeterminatePreprintIdWithDoi()
-            .filter(id => !['biorxiv', 'medrxiv', 'zenodo', 'africarxiv'].includes(id.type)),
+            .filter(
+              id => !['biorxiv', 'medrxiv', 'osf', 'lifecycle-journal', 'zenodo', 'africarxiv'].includes(id.type),
+            ),
           fields: fc.array(fc.fieldId()),
           subfields: fc.array(fc.subfieldId()),
           language: fc.languageCode(),
@@ -56,7 +58,9 @@ describe('getRecentReviewRequests', () => {
           timestamp: fc.instant(),
           preprint: fc
             .indeterminatePreprintIdWithDoi()
-            .filter(id => !['biorxiv', 'medrxiv', 'zenodo', 'africarxiv'].includes(id.type)),
+            .filter(
+              id => !['biorxiv', 'medrxiv', 'osf', 'lifecycle-journal', 'zenodo', 'africarxiv'].includes(id.type),
+            ),
           fields: fc.array(fc.fieldId()),
           subfields: fc.array(fc.subfieldId()),
           language: fc.languageCode(),

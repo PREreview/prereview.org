@@ -79,6 +79,13 @@ export const getPreprintId = pipe(
     ),
   ),
   Match.when(
+    { type: 'osf-lifecycle-journal' },
+    flow(
+      resolvePreprintId,
+      Effect.mapError(error => new Preprint.PreprintIsUnavailable({ cause: error })),
+    ),
+  ),
+  Match.when(
     { type: 'zenodo-africarxiv' },
     flow(
       resolvePreprintId,

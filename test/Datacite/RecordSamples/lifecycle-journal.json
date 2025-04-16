@@ -1,0 +1,245 @@
+{
+  "data": {
+    "id": "10.17605/osf.io/bu3rj",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.17605/osf.io/bu3rj",
+      "prefix": "10.17605",
+      "suffix": "osf.io/bu3rj",
+      "identifiers": [{ "identifier": "https://osf.io/bu3rj", "identifierType": "URL" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "URL", "alternateIdentifier": "https://osf.io/bu3rj" }],
+      "creators": [
+        {
+          "name": "Mohiddin, Fadzliwati",
+          "nameType": "Personal",
+          "givenName": "Fadzliwati",
+          "familyName": "Mohiddin",
+          "affiliation": [],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-7332-209X",
+              "nameIdentifierScheme": "ORCID"
+            },
+            { "nameIdentifier": "https://osf.io/deqvx", "nameIdentifierScheme": "URL" }
+          ]
+        },
+        {
+          "name": "Kura, Kabiru Maitama",
+          "nameType": "Personal",
+          "givenName": "Kabiru Maitama",
+          "familyName": "Kura",
+          "affiliation": [],
+          "nameIdentifiers": [
+            { "nameIdentifier": "http://github.com/onwayami2020", "nameIdentifierScheme": "URL" },
+            {
+              "nameIdentifier": "http://scholar.google.com/citations?user=fqQj-c8AAAAJ\u0026amp;hl=en",
+              "nameIdentifierScheme": "URL"
+            },
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-7863-2604",
+              "nameIdentifierScheme": "ORCID"
+            },
+            { "nameIdentifier": "https://osf.io/s9aku", "nameIdentifierScheme": "URL" },
+            {
+              "nameIdentifier": "https://researchgate.net/profile/Kabiru-Kura?ev=hdr_xprf",
+              "nameIdentifierScheme": "URL"
+            },
+            { "nameIdentifier": "https://www.kmkura.com/", "nameIdentifierScheme": "URL" },
+            { "nameIdentifier": "https://www.linkedin.com/in/km-kura/", "nameIdentifierScheme": "URL" }
+          ]
+        },
+        {
+          "name": "Mashod, Hartini",
+          "nameType": "Personal",
+          "givenName": "Hartini",
+          "familyName": "Mashod",
+          "affiliation": [],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-7201-8961",
+              "nameIdentifierScheme": "ORCID"
+            },
+            { "nameIdentifier": "https://osf.io/6jhev", "nameIdentifierScheme": "URL" }
+          ]
+        },
+        {
+          "name": "Abubakar, Ramatu Abdulkareem",
+          "nameType": "Personal",
+          "givenName": "Ramatu Abdulkareem",
+          "familyName": "Abubakar",
+          "affiliation": [],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-6956-9885",
+              "nameIdentifierScheme": "ORCID"
+            },
+            { "nameIdentifier": "https://osf.io/7m4v8", "nameIdentifierScheme": "URL" }
+          ]
+        },
+        {
+          "name": "Salleh, Noor Maya",
+          "nameType": "Personal",
+          "givenName": "Noor Maya",
+          "familyName": "Salleh",
+          "affiliation": [],
+          "nameIdentifiers": [{ "nameIdentifier": "https://osf.io/27h8q", "nameIdentifierScheme": "URL" }]
+        },
+        {
+          "name": "Dr. Faridahwati Mohd. Shamsudin",
+          "nameType": "Personal",
+          "affiliation": [],
+          "nameIdentifiers": [{ "nameIdentifier": "https://osf.io/mxsqj", "nameIdentifierScheme": "URL" }]
+        },
+        {
+          "name": "Rosland, Shahratul Karmila",
+          "nameType": "Personal",
+          "givenName": "Shahratul Karmila",
+          "familyName": "Rosland",
+          "affiliation": [],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0009-0000-3311-5160",
+              "nameIdentifierScheme": "ORCID"
+            },
+            { "nameIdentifier": "https://osf.io/6be4q", "nameIdentifierScheme": "URL" }
+          ]
+        }
+      ],
+      "titles": [
+        {
+          "title": "Self-leadership and innovative work behaviors: Testing a parallel mediation model with goal striving and goal generation"
+        }
+      ],
+      "publisher": "Lifecycle Journal",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [
+        {
+          "subject": "Social and Behavioral Sciences",
+          "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy"
+        },
+        { "subject": "Goal Generation" },
+        { "subject": "Goal Striving" },
+        { "subject": "Goal-setting Theory" },
+        { "subject": "Innovative Work Behavior" },
+        { "subject": "Organizational Behavior" },
+        { "subject": "Parallel Mediation" },
+        { "subject": "Self-leadership" }
+      ],
+      "contributors": [
+        {
+          "name": "Center For Open Science",
+          "nameType": "Organizational",
+          "affiliation": [],
+          "contributorType": "HostingInstitution",
+          "nameIdentifiers": [
+            { "nameIdentifier": "https://cos.io/", "nameIdentifierScheme": "URL" },
+            {
+              "schemeUri": "https://ror.org",
+              "nameIdentifier": "https://ror.org/05d5mza29",
+              "nameIdentifierScheme": "ROR"
+            }
+          ]
+        }
+      ],
+      "dates": [
+        { "date": "2025-03-31", "dateType": "Created" },
+        { "date": "2025-04-05", "dateType": "Updated" },
+        { "date": "2025-04-03", "dateType": "Submitted" },
+        { "date": "2025-04-08", "dateType": "Valid" },
+        { "date": "2025", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "JOUR",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Pre-registration",
+        "resourceTypeGeneral": "JournalArticle"
+      },
+      "relatedIdentifiers": [
+        { "relationType": "IsVersionOf", "relatedIdentifier": "10.17605/osf.io/ruqsn", "relatedIdentifierType": "DOI" }
+      ],
+      "relatedItems": [
+        {
+          "titles": [
+            {
+              "title": "Self-leadership and innovative work behaviors: Testing a parallel mediation model with goal striving and goal generation"
+            }
+          ],
+          "creators": [],
+          "publisher": "OSF",
+          "contributors": [],
+          "relationType": "IsVersionOf",
+          "publicationYear": "2025",
+          "relatedItemType": "Text",
+          "relatedItemIdentifier": {
+            "relatedItemIdentifier": "10.17605/osf.io/ruqsn",
+            "relatedItemIdentifierType": "DOI"
+          }
+        }
+      ],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Outcomes Report for Kura et al.'s (2025). Self-leadership and innovative work behaviors: Testing a parallel mediation model with goal striving and goal generation.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjUvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC4xNzYwNS9PU0YuSU8vQlUzUko8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkZhZHpsaXdhdGkgTW9oaWRkaW48L2NyZWF0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIj4wMDAwLTAwMDItNzMzMi0yMDlYPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJVUkwiPmh0dHBzOi8vb3NmLmlvL2RlcXZ4PC9uYW1lSWRlbnRpZmllcj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5LYWJpcnUgTWFpdGFtYSBLdXJhPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJVUkwiPmh0dHA6Ly9naXRodWIuY29tL29ud2F5YW1pMjAyMDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwOi8vc2Nob2xhci5nb29nbGUuY29tL2NpdGF0aW9ucz91c2VyPWZxUWotYzhBQUFBSiZhbXA7YW1wO2hsPWVuPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCI+MDAwMC0wMDAxLTc4NjMtMjYwNDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL29zZi5pby9zOWFrdTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL3Jlc2VhcmNoZ2F0ZS5uZXQvcHJvZmlsZS9LYWJpcnUtS3VyYT9ldj1oZHJfeHByZjwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL3d3dy5rbWt1cmEuY29tLzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL3d3dy5saW5rZWRpbi5jb20vaW4va20ta3VyYS88L25hbWVJZGVudGlmaWVyPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkhhcnRpbmkgTWFzaG9kPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCI+MDAwMC0wMDAxLTcyMDEtODk2MTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL29zZi5pby82amhldjwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+UmFtYXR1IEFiZHVsa2FyZWVtIEFidWJha2FyPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCI+MDAwMC0wMDAxLTY5NTYtOTg4NTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL29zZi5pby83bTR2ODwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+Tm9vciBNYXlhIFNhbGxlaDwvY3JlYXRvck5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL29zZi5pby8yN2g4cTwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+RHIuIEZhcmlkYWh3YXRpIE1vaGQuIFNoYW1zdWRpbjwvY3JlYXRvck5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL29zZi5pby9teHNxajwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+U2hhaHJhdHVsIEthcm1pbGEgUm9zbGFuZDwvY3JlYXRvck5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiPjAwMDktMDAwMC0zMzExLTUxNjA8L25hbWVJZGVudGlmaWVyPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9IlVSTCI+aHR0cHM6Ly9vc2YuaW8vNmJlNHE8L25hbWVJZGVudGlmaWVyPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5TZWxmLWxlYWRlcnNoaXAgYW5kIGlubm92YXRpdmUgd29yayBiZWhhdmlvcnM6IFRlc3RpbmcgYSBwYXJhbGxlbCBtZWRpYXRpb24gbW9kZWwgd2l0aCBnb2FsIHN0cml2aW5nIGFuZCBnb2FsIGdlbmVyYXRpb248L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+TGlmZWN5Y2xlIEpvdXJuYWw8L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjU8L3B1YmxpY2F0aW9uWWVhcj4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJiZXByZXNzIERpZ2l0YWwgQ29tbW9ucyBUaHJlZS1UaWVyZWQgVGF4b25vbXkiPlNvY2lhbCBhbmQgQmVoYXZpb3JhbCBTY2llbmNlczwvc3ViamVjdD4KICAgIDxzdWJqZWN0PkdvYWwgR2VuZXJhdGlvbjwvc3ViamVjdD4KICAgIDxzdWJqZWN0PkdvYWwgU3RyaXZpbmc8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5Hb2FsLXNldHRpbmcgVGhlb3J5PC9zdWJqZWN0PgogICAgPHN1YmplY3Q+SW5ub3ZhdGl2ZSBXb3JrIEJlaGF2aW9yPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+T3JnYW5pemF0aW9uYWwgQmVoYXZpb3I8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5QYXJhbGxlbCBNZWRpYXRpb248L3N1YmplY3Q+CiAgICA8c3ViamVjdD5TZWxmLWxlYWRlcnNoaXA8L3N1YmplY3Q+CiAgPC9zdWJqZWN0cz4KICA8Y29udHJpYnV0b3JzPgogICAgPGNvbnRyaWJ1dG9yIGNvbnRyaWJ1dG9yVHlwZT0iSG9zdGluZ0luc3RpdHV0aW9uIj4KICAgICAgPGNvbnRyaWJ1dG9yTmFtZSBuYW1lVHlwZT0iT3JnYW5pemF0aW9uYWwiPkNlbnRlciBmb3IgT3BlbiBTY2llbmNlPC9jb250cmlidXRvck5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL2Nvcy5pby88L25hbWVJZGVudGlmaWVyPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9IlJPUiI+aHR0cHM6Ly9yb3Iub3JnLzA1ZDVtemEyOTwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NvbnRyaWJ1dG9yPgogIDwvY29udHJpYnV0b3JzPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJDcmVhdGVkIj4yMDI1LTAzLTMxPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiPjIwMjUtMDQtMDU8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIj4yMDI1LTA0LTAzPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlZhbGlkIj4yMDI1LTA0LTA4PC9kYXRlPgogIDwvZGF0ZXM+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJKb3VybmFsQXJ0aWNsZSI+UHJlLXJlZ2lzdHJhdGlvbjwvcmVzb3VyY2VUeXBlPgogIDxhbHRlcm5hdGVJZGVudGlmaWVycz4KICAgIDxhbHRlcm5hdGVJZGVudGlmaWVyIGFsdGVybmF0ZUlkZW50aWZpZXJUeXBlPSJVUkwiPmh0dHBzOi8vb3NmLmlvL2J1M3JqPC9hbHRlcm5hdGVJZGVudGlmaWVyPgogIDwvYWx0ZXJuYXRlSWRlbnRpZmllcnM+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC9sZWdhbGNvZGUiPkNDLUJ5IEF0dHJpYnV0aW9uIDQuMCBJbnRlcm5hdGlvbmFsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+T3V0Y29tZXMgUmVwb3J0IGZvciBLdXJhIGV0IGFsLidzICgyMDI1KS4gU2VsZi1sZWFkZXJzaGlwIGFuZCBpbm5vdmF0aXZlIHdvcmsgYmVoYXZpb3JzOiBUZXN0aW5nIGEgcGFyYWxsZWwgbWVkaWF0aW9uIG1vZGVsIHdpdGggZ29hbCBzdHJpdmluZyBhbmQgZ29hbCBnZW5lcmF0aW9uLjwvZGVzY3JpcHRpb24+CiAgPC9kZXNjcmlwdGlvbnM+CiAgPGZ1bmRpbmdSZWZlcmVuY2VzLz4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IklzVmVyc2lvbk9mIj4xMC4xNzYwNS9PU0YuSU8vUlVRU048L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxyZWxhdGVkSXRlbXM+CiAgICA8cmVsYXRlZEl0ZW0gcmVsYXRpb25UeXBlPSJJc1ZlcnNpb25PZiIgcmVsYXRlZEl0ZW1UeXBlPSJUZXh0Ij4KICAgICAgPHJlbGF0ZWRJdGVtSWRlbnRpZmllciByZWxhdGVkSXRlbUlkZW50aWZpZXJUeXBlPSJET0kiPjEwLjE3NjA1L09TRi5JTy9SVVFTTjwvcmVsYXRlZEl0ZW1JZGVudGlmaWVyPgogICAgICA8dGl0bGVzPgogICAgICAgIDx0aXRsZT5TZWxmLWxlYWRlcnNoaXAgYW5kIGlubm92YXRpdmUgd29yayBiZWhhdmlvcnM6IFRlc3RpbmcgYSBwYXJhbGxlbCBtZWRpYXRpb24gbW9kZWwgd2l0aCBnb2FsIHN0cml2aW5nIGFuZCBnb2FsIGdlbmVyYXRpb248L3RpdGxlPgogICAgICA8L3RpdGxlcz4KICAgICAgPHB1YmxpY2F0aW9uWWVhcj4yMDI1PC9wdWJsaWNhdGlvblllYXI+CiAgICAgIDxwdWJsaXNoZXI+T1NGPC9wdWJsaXNoZXI+CiAgICA8L3JlbGF0ZWRJdGVtPgogIDwvcmVsYXRlZEl0ZW1zPgo8L3Jlc291cmNlPg==",
+      "url": "https://osf.io/bu3rj/",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 1,
+      "created": "2025-04-08T22:52:07.000Z",
+      "registered": "2025-04-08T22:52:08.000Z",
+      "published": "2025",
+      "updated": "2025-04-08T22:52:22.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cos.osf", "type": "clients" } },
+      "provider": { "data": { "id": "cos", "type": "providers" } },
+      "media": { "data": { "id": "10.17605/osf.io/bu3rj", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [{ "id": "10.17605/osf.io/ruqsn", "type": "dois" }] }
+    }
+  }
+}

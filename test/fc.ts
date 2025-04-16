@@ -97,9 +97,11 @@ import {
   type EngrxivPreprintId,
   type IndeterminatePreprintId,
   type JxivPreprintId,
+  type LifecycleJournalPreprintId,
   type MedrxivPreprintId,
   type MetaarxivPreprintId,
   type NeurolibrePreprintId,
+  type OsfOrLifecycleJournalPreprintId,
   type OsfPreprintId,
   type OsfPreprintsPreprintId,
   type PhilsciPreprintId,
@@ -720,6 +722,12 @@ export const jxivPreprintUrl = (): fc.Arbitrary<[URL, JxivPreprintId]> =>
       { type: 'jxiv', value: `10.51094/jxiv.${id}` as Doi<'51094'> },
     ])
 
+export const lifecycleJournalPreprintId = (): fc.Arbitrary<LifecycleJournalPreprintId> =>
+  fc.record({
+    type: constant('lifecycle-journal'),
+    value: doi(constant('17605')),
+  })
+
 export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
   fc.record({
     type: constant('medrxiv'),
@@ -927,6 +935,12 @@ export const biorxivOrMedrxivPreprintId = (): fc.Arbitrary<BiorxivOrMedrxivPrepr
     value: doi(constant('1101')),
   })
 
+export const osfOrLifecycleJournalPreprintId = (): fc.Arbitrary<OsfOrLifecycleJournalPreprintId> =>
+  fc.record({
+    type: constant('osf-lifecycle-journal'),
+    value: doi(constant('17605')),
+  })
+
 export const zenodoOrAfricarxivPreprintId = (): fc.Arbitrary<ZenodoOrAfricarxivPreprintId> =>
   fc.record({
     type: constant('zenodo-africarxiv'),
@@ -950,6 +964,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
     edarxivPreprintId(),
     engrxivPreprintId(),
     jxivPreprintId(),
+    lifecycleJournalPreprintId(),
     medrxivPreprintId(),
     metaarxivPreprintId(),
     neurolibrePreprintId(),
@@ -972,7 +987,12 @@ export const indeterminatePreprintId = (): fc.Arbitrary<IndeterminatePreprintId>
   fc.oneof(philsciPreprintId(), indeterminatePreprintIdWithDoi())
 
 export const indeterminatePreprintIdWithDoi = (): fc.Arbitrary<Extract<IndeterminatePreprintId, { value: Doi }>> =>
-  fc.oneof(preprintIdWithDoi(), biorxivOrMedrxivPreprintId(), zenodoOrAfricarxivPreprintId())
+  fc.oneof(
+    preprintIdWithDoi(),
+    biorxivOrMedrxivPreprintId(),
+    osfOrLifecycleJournalPreprintId(),
+    zenodoOrAfricarxivPreprintId(),
+  )
 
 export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(

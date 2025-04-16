@@ -58,10 +58,16 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   .with('edarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEdarxiv'))
                   .with('engrxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEngrxiv'))
                   .with('jxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeJxiv'))
+                  .with('lifecycle-journal', () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeLifecycleJournal'),
+                  )
                   .with('medrxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeMedrxiv'))
                   .with('metaarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeMetaarxiv'))
                   .with('neurolibre', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeNeurolibre'))
                   .with('osf', 'osf-preprints', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeOsf'))
+                  .with('osf-lifecycle-journal', () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeOsfLifecycleJournal'),
+                  )
                   .with('preprints.org', () => translate(locale, 'request-a-prereview-page', 'doiCouldBePreprintsorg'))
                   .with('psyarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBePsyarxiv'))
                   .with('psycharchives', () => translate(locale, 'request-a-prereview-page', 'doiCouldBePsycharchives'))

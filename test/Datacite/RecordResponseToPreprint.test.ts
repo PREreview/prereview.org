@@ -56,18 +56,20 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['osf-file', 'osf-registration'])('returns a specific error for non-Preprint record (%s)', response =>
-  Effect.gen(function* () {
-    const actual = yield* pipe(
-      FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString(`test/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Record)))),
-      Effect.andThen(Struct.get('data')),
-      Effect.andThen(Struct.get('attributes')),
-      Effect.andThen(recordToPreprint),
-      Effect.flip,
-    )
+test.each(['lifecycle-journal', 'osf-file', 'osf-registration'])(
+  'returns a specific error for non-Preprint record (%s)',
+  response =>
+    Effect.gen(function* () {
+      const actual = yield* pipe(
+        FileSystem.FileSystem,
+        Effect.andThen(fs => fs.readFileString(`test/Datacite/RecordSamples/${response}.json`)),
+        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Record)))),
+        Effect.andThen(Struct.get('data')),
+        Effect.andThen(Struct.get('attributes')),
+        Effect.andThen(recordToPreprint),
+        Effect.flip,
+      )
 
-    expect(actual._tag).toStrictEqual('NotAPreprint')
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+      expect(actual._tag).toStrictEqual('NotAPreprint')
+    }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )

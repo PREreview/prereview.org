@@ -16,6 +16,7 @@ export const getName = (preprintId: PreprintId) =>
     .with('edarxiv', () => 'EdArXiv')
     .with('engrxiv', () => 'engrXiv')
     .with('jxiv', () => 'Jxiv')
+    .with('lifecycle-journal', () => 'Lifecycle Journal')
     .with('medrxiv', () => 'medRxiv')
     .with('metaarxiv', () => 'MetaArXiv')
     .with('neurolibre', () => 'NeuroLibre')
