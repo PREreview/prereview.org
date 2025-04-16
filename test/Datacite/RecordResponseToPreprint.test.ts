@@ -16,6 +16,12 @@ test.each([
   {
     response: 'osf-project',
     expected: Preprint({
+      abstract: {
+        language: 'pt',
+        text: rawHtml(
+          '<p>Revisão de Escopo realizada no período de novembro de 2022 a junho de 2023, que objetivou mapear na literatura quais teorias de enfermagem e estruturas conceituais podem contribuir por suas características na abordagem familiar de potenciais doadores. A revisão foi realizada nas bases de dados LILACS, SCOPUS, SciELO, MEDLINE, EMBASE e Web of science, que foram acessadas via Biblioteca Virtual em Saúde e via Pubmed, bem como, na literatura cinzenta, Google acadêmico e na lista de referência dos estudos. A amostra foi composta por 14 estudos, onde foram identificadas 9 Teorias de Enfermagem.</p>',
+        ),
+      },
       authors: [
         { name: 'Maria Isabel Caetano Da Silva', orcid: undefined },
         { name: 'Eglídia Carla Figueirêdo Vidal', orcid: undefined },

@@ -53,6 +53,12 @@ export class Record extends Schema.Class<Record>('Record')({
     resourceType: Schema.optional(Schema.NonEmptyTrimmedString),
     resourceTypeGeneral: Schema.optional(Schema.NonEmptyTrimmedString),
   }),
+  descriptions: Schema.Array(
+    Schema.Struct({
+      description: Schema.NonEmptyTrimmedString,
+      descriptionType: Schema.NonEmptyTrimmedString,
+    }),
+  ),
   url: Schema.URL,
 }) {}
 

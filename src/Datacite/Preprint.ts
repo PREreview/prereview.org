@@ -41,12 +41,15 @@ export const recordToPreprint = (
 
     const title = yield* getTitle(record.titles)
 
+    const abstract = yield* getAbstract(record.descriptions)
+
     const posted = yield* Either.fromOption(
       findPublishedDate(record.dates),
       () => new Preprint.PreprintIsUnavailable({ cause: { dates: record.dates } }),
     )
 
     return Preprint.Preprint({
+      abstract,
       authors,
       id,
       posted,
@@ -93,6 +96,28 @@ const getTitle = (
     const language = yield* Either.fromOption(
       detectLanguage(text),
       () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
+    )
+
+    return {
+      language,
+      text,
+    }
+  })
+
+const getAbstract = (
+  descriptions: Record['descriptions'],
+): Either.Either<Preprint.Preprint['abstract'], Preprint.PreprintIsUnavailable> =>
+  Either.gen(function* () {
+    const abstract = yield* Either.fromOption(
+      Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),
+      () => new Preprint.PreprintIsUnavailable({ cause: { descriptions } }),
+    )
+
+    const text = html`<p>${abstract.description}</p>`
+
+    const language = yield* Either.fromOption(
+      detectLanguage(text),
+      () => new Preprint.PreprintIsUnavailable({ cause: 'unknown abstract language' }),
     )
 
     return {
