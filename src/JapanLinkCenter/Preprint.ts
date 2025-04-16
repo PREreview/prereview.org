@@ -1,8 +1,21 @@
 import { Array, Either, Option, pipe } from 'effect'
 import { html } from '../html.js'
 import * as Preprint from '../preprint.js'
-import { isJapanLinkCenterPreprintDoi, type JapanLinkCenterPreprintId } from './PreprintId.js'
+import { isDoiFromSupportedPublisher, type JapanLinkCenterPreprintId } from './PreprintId.js'
 import type { Record } from './Record.js'
+
+const determineJapanLinkCenterPreprintId = (
+  record: Record,
+): Either.Either<JapanLinkCenterPreprintId, Preprint.PreprintIsUnavailable> =>
+  Either.gen(function* () {
+    const doi = record.doi
+
+    if (!isDoiFromSupportedPublisher(doi)) {
+      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
+    }
+
+    return { type: 'jxiv', value: doi } satisfies JapanLinkCenterPreprintId
+  })
 
 export const recordToPreprint = (
   record: Record,
@@ -12,13 +25,7 @@ export const recordToPreprint = (
       yield* Either.left(new Preprint.NotAPreprint({ cause: record.content_type }))
     }
 
-    const doi = record.doi
-
-    if (!isJapanLinkCenterPreprintDoi(doi)) {
-      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
-    }
-
-    const id = { type: 'jxiv', value: doi } satisfies JapanLinkCenterPreprintId
+    const id = yield* determineJapanLinkCenterPreprintId(record)
 
     const authors = Array.map(record.creator_list, creator => ({
       name: pipe(Array.headNonEmpty(creator.names), name =>

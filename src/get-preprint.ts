@@ -5,11 +5,7 @@ import { getPreprintFromCrossref, type IndeterminateCrossrefPreprintId, isCrossr
 import * as Crossref from './Crossref/index.js'
 import { getPreprintFromDatacite, type IndeterminateDatacitePreprintId, isDatacitePreprintDoi } from './datacite.js'
 import * as FptsToEffect from './FptsToEffect.js'
-import {
-  getPreprintFromJapanLinkCenter,
-  isJapanLinkCenterPreprintDoi,
-  type JapanLinkCenterPreprintId,
-} from './JapanLinkCenter/index.js'
+import * as JapanLinkCenter from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './philsci.js'
 import * as Preprint from './preprint.js'
 import type { IndeterminatePreprintId, PhilsciPreprintId } from './types/preprint-id.js'
@@ -47,10 +43,7 @@ const getPreprintFromSource = pipe(
         return yield* FptsToEffect.readerTaskEither(getPreprintFromDatacite(id), { fetch, ...sleep })
       }),
   ),
-  Match.when(
-    (id): id is JapanLinkCenterPreprintId => isJapanLinkCenterPreprintDoi(id.value),
-    getPreprintFromJapanLinkCenter,
-  ),
+  Match.when(JapanLinkCenter.isJapanLinkCenterPreprintId, JapanLinkCenter.getPreprintFromJapanLinkCenter),
   Match.exhaustive,
 )
 

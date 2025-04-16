@@ -5,7 +5,7 @@ import { recordToPreprint } from './Preprint.js'
 import type { JapanLinkCenterPreprintId } from './PreprintId.js'
 import { getRecord } from './Record.js'
 
-export { isJapanLinkCenterPreprintDoi, type JapanLinkCenterPreprintId } from './PreprintId.js'
+export { isJapanLinkCenterPreprintId, type JapanLinkCenterPreprintId } from './PreprintId.js'
 
 export const getPreprintFromJapanLinkCenter: (
   id: JapanLinkCenterPreprintId,
