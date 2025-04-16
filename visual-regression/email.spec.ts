@@ -149,6 +149,7 @@ test('author-invite HTML looks right', async ({ page }) => {
         language: 'en',
       },
     },
+    DefaultLocale,
   )({ publicUrl: new URL('http://example.com') })
 
   await page.setContent(email.html.toString())
@@ -174,6 +175,7 @@ test('author-invite text looks right', async ({ page }) => {
         language: 'en',
       },
     },
+    DefaultLocale,
   )({ publicUrl: new URL('http://example.com') })
 
   await page.setContent(`<pre>${email.text}</pre>`)

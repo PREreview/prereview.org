@@ -208,6 +208,7 @@ describe('writeReviewPublish', () => {
         preprint: preprintTitle,
         review: expect.anything(),
         language: Option.some('en'),
+        locale,
         structured: true,
         user,
       })
@@ -295,6 +296,7 @@ describe('writeReviewPublish', () => {
         preprint: preprintTitle,
         review: expect.stringContaining(newReview.review.toString()),
         language: expect.anything(),
+        locale,
         structured: false,
         user,
       })

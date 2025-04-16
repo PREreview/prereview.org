@@ -57,6 +57,7 @@ import type {
   UserOnboardingStoreEnv,
 } from '../src/keyv.js'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview.js'
+import { DefaultLocale } from '../src/locales/index.js'
 import type { IsUserBlockedEnv } from '../src/log-in/index.js'
 import * as Nodemailer from '../src/nodemailer.js'
 import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.js'
@@ -2034,6 +2035,7 @@ export const invitedToBeAnAuthor: Fixtures<
           title: rawHtml('The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'),
         },
       },
+      DefaultLocale,
     )({ publicUrl: new URL(String(baseURL)) })
 
     await page.setContent(email.html.toString())

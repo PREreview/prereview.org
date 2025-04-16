@@ -6,7 +6,7 @@ import rtlDetect from 'rtl-detect'
 import type { Uuid } from 'uuid-ts'
 import type { UnverifiedContactEmailAddress } from './contact-email-address.js'
 import { type Html, html, mjmlToHtml, plainText, rawHtml } from './html.js'
-import { DefaultLocale, type SupportedLocale, translate } from './locales/index.js'
+import { type SupportedLocale, translate } from './locales/index.js'
 import type { PreprintTitle } from './preprint.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import * as Routes from './routes.js'
@@ -183,7 +183,7 @@ export const createAuthorInviteEmail = (
   person: { name: NonEmptyString; emailAddress: EmailAddress },
   authorInviteId: Uuid,
   newPrereview: { author: string; preprint: PreprintTitle },
-  locale = DefaultLocale,
+  locale: SupportedLocale,
 ): R.Reader<PublicUrlEnv, Email> =>
   pipe(
     R.Do,

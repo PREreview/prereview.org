@@ -111,14 +111,15 @@ test.prop([
     author: fc.string(),
     preprint: fc.preprintTitle(),
   }),
-])('createAuthorInviteEmail', (publicUrl, person, authorInviteId, newPrereview) => {
-  const actual = _.createAuthorInviteEmail(person, authorInviteId, newPrereview)({ publicUrl })
+  fc.supportedLocale(),
+])('createAuthorInviteEmail', (publicUrl, person, authorInviteId, newPrereview, locale) => {
+  const actual = _.createAuthorInviteEmail(person, authorInviteId, newPrereview, locale)({ publicUrl })
 
   expect(actual).toStrictEqual(
     expect.objectContaining({
       from: { address: 'help@prereview.org', name: 'PREreview' },
       to: { address: person.emailAddress, name: person.name },
-      subject: 'Be listed as a PREreview author',
+      subject: translate(locale)('email', 'beListedAsAuthor')(),
     }),
   )
 })

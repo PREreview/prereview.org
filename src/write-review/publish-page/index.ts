@@ -35,6 +35,7 @@ export interface NewPrereview {
   preprint: PreprintTitle
   review: Html
   language: Option.Option<LanguageCode>
+  locale: SupportedLocale
   structured: boolean
   user: User
 }
@@ -140,6 +141,7 @@ const handlePublishForm = ({
         .with({ reviewType: 'questions' }, () => Option.some('en'))
         .with({ reviewType: 'freeform' }, form => detectLanguage(form.review))
         .exhaustive(),
+      locale,
       persona: form.persona,
       preprint,
       review: renderReview(form),
