@@ -60,7 +60,7 @@ export const publishedPage = ({
         ${form.moreAuthors === 'yes' && form.otherAuthors.length === 0
           ? html`
               <div class="inset">
-                <p>${t('write-review', 'letUsKnowAuthorDetails')({ mailtoHelp })}</p>
+                <p>${rawHtml(t('write-review', 'letUsKnowAuthorDetails')({ mailtoHelp }))}</p>
               </div>
             `
           : form.moreAuthors === 'yes' && form.otherAuthors.length > 0
