@@ -74,6 +74,9 @@
   "doiCouldBeJxiv": {
     "message": "crwdns4908:0{doi}crwdne4908:0"
   },
+  "doiCouldBeLifecycleJournal": {
+    "message": "crwdns5800:0{doi}crwdne5800:0"
+  },
   "doiCouldBeMedrxiv": {
     "message": "crwdns4910:0{doi}crwdne4910:0"
   },
@@ -85,6 +88,9 @@
   },
   "doiCouldBeOsf": {
     "message": "crwdns4914:0{doi}crwdne4914:0"
+  },
+  "doiCouldBeOsfLifecycleJournal": {
+    "message": "crwdns5802:0{doi}crwdne5802:0"
   },
   "doiCouldBePreprintsorg": {
     "message": "crwdns4916:0{doi}crwdne4916:0"
@@ -144,7 +150,7 @@
     "message": "crwdns4880:0crwdne4880:0"
   },
   "supportPreprintsFrom": {
-    "message": "crwdns5433:0crwdne5433:0"
+    "message": "crwdns5808:0crwdne5808:0"
   },
   "isAPreprint": {
     "message": "crwdns4946:0crwdne4946:0"

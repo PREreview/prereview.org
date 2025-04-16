@@ -77,6 +77,9 @@
   "doiCouldBeJxiv": {
     "message": "crwdns5315:0{doi}crwdne5315:0"
   },
+  "doiCouldBeLifecycleJournal": {
+    "message": "crwdns5804:0{doi}crwdne5804:0"
+  },
   "doiCouldBeMedrxiv": {
     "message": "crwdns5317:0{doi}crwdne5317:0"
   },
@@ -88,6 +91,9 @@
   },
   "doiCouldBeOsf": {
     "message": "crwdns5321:0{doi}crwdne5321:0"
+  },
+  "doiCouldBeOsfLifecycleJournal": {
+    "message": "crwdns5806:0{doi}crwdne5806:0"
   },
   "doiCouldBePreprintsorg": {
     "message": "crwdns5323:0{doi}crwdne5323:0"
