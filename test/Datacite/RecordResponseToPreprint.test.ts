@@ -5,6 +5,7 @@ import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema, Struct } from 'effect'
+import { Orcid } from 'orcid-id-ts'
 import { recordToPreprint } from '../../src/Datacite/Preprint.js'
 import { Record, ResponseSchema } from '../../src/Datacite/Record.js'
 import { rawHtml } from '../../src/html.js'
@@ -16,12 +17,12 @@ test.each([
     response: 'osf-project',
     expected: Preprint({
       authors: [
-        { name: 'Maria Isabel Caetano Da Silva' },
-        { name: 'Eglídia Carla Figueirêdo Vidal' },
-        { name: 'Aline Sampaio Rolim De Sena' },
-        { name: 'Marina Pessoa De Farias Rodrigues' },
-        { name: 'Gabriela Duarte Bezerra' },
-        { name: 'WONESKA RODRIGUES PINHEIRO' },
+        { name: 'Maria Isabel Caetano Da Silva', orcid: undefined },
+        { name: 'Eglídia Carla Figueirêdo Vidal', orcid: undefined },
+        { name: 'Aline Sampaio Rolim De Sena', orcid: undefined },
+        { name: 'Marina Pessoa De Farias Rodrigues', orcid: undefined },
+        { name: 'Gabriela Duarte Bezerra', orcid: Orcid('0000-0002-7472-4621') },
+        { name: 'WONESKA RODRIGUES PINHEIRO', orcid: undefined },
       ],
       id: { type: 'osf', value: Doi('10.17605/osf.io/eq8bk') },
       posted: Temporal.PlainDate.from({ year: 2023, month: 9, day: 13 }),

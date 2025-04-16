@@ -12,9 +12,27 @@ export class Record extends Schema.Class<Record>('Record')({
         Schema.Struct({
           givenName: Schema.NonEmptyTrimmedString,
           familyName: Schema.NonEmptyTrimmedString,
+          nameIdentifiers: Schema.optionalWith(
+            Schema.Array(
+              Schema.Struct({
+                nameIdentifier: Schema.NonEmptyTrimmedString,
+                nameIdentifierScheme: Schema.NonEmptyTrimmedString,
+              }),
+            ),
+            { default: Array.empty },
+          ),
         }),
         Schema.Struct({
           name: Schema.NonEmptyTrimmedString,
+          nameIdentifiers: Schema.optionalWith(
+            Schema.Array(
+              Schema.Struct({
+                nameIdentifier: Schema.NonEmptyTrimmedString,
+                nameIdentifierScheme: Schema.NonEmptyTrimmedString,
+              }),
+            ),
+            { default: Array.empty },
+          ),
         }),
       ),
     ),

@@ -3,6 +3,7 @@ import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
 import { detectLanguage } from '../detect-language.js'
 import { html } from '../html.js'
 import * as Preprint from '../preprint.js'
+import { Orcid } from '../types/index.js'
 import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
 import type { Record } from './Record.js'
 
@@ -27,9 +28,10 @@ export const recordToPreprint = (
             creators,
             flow(
               Match.value,
-              Match.when({ name: Match.string }, creator => ({ name: creator.name })),
+              Match.when({ name: Match.string }, creator => ({ name: creator.name, orcid: findOrcid(creator) })),
               Match.when({ givenName: Match.string, familyName: Match.string }, creator => ({
                 name: `${creator.givenName} ${creator.familyName}`,
+                orcid: findOrcid(creator),
               })),
               Match.exhaustive,
             ),
@@ -73,6 +75,13 @@ const findPublishedDate = (dates: Record['dates']) =>
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Created')),
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Issued')),
     Option.andThen(Struct.get('date')),
+  )
+
+const findOrcid = (creator: Record['creators'][number]) =>
+  pipe(
+    Array.findFirst(creator.nameIdentifiers, ({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID'),
+    Option.andThen(({ nameIdentifier }) => Orcid.parse(nameIdentifier)),
+    Option.getOrUndefined,
   )
 
 const getTitle = (
