@@ -759,6 +759,150 @@
   "veryClearlyTip": {
     "message": "Demonstram clareza, profundidade e discernimento na discussão, explicação e interpretação de seus achados e possíveis próximos passos."
   },
+  "veryClearlyHow": {
+    "message": "Como a discussão é muito clara? (opcional)"
+  },
+  "somewhatClearly": {
+    "message": "De forma razoavelmente clara"
+  },
+  "somewhatClearlyTip": {
+    "message": "Apresentam discussão, explicação e interpretação claras e perspicazes de seus achados e possíveis próximos passos."
+  },
+  "somewhatClearlyHow": {
+    "message": "Como a discussão é razoavelmente clara? (opcional)"
+  },
+  "neitherClearlyNorUnclearly": {
+    "message": "Nem claramente nem sem clareza"
+  },
+  "neitherClearlyNorUnclearlyTip": {
+    "message": "Mencionam seus achados ou possíveis próximos passos, mas não os abordam ou explicam."
+  },
+  "neitherClearlyNorUnclearlyHow": {
+    "message": "Como a discussão não é nem clara nem sem clareza? (opcional)"
+  },
+  "somewhatUnclearly": {
+    "message": "De forma pouco clara"
+  },
+  "somewhatUnclearlyTip": {
+    "message": "Apresentam discussão, explicação ou interpretação confusas ou contraditórias de seus achados e possíveis próximos passos."
+  },
+  "somewhatUnclearlyHow": {
+    "message": "Como a discussão é pouco clara? (opcional)"
+  },
+  "veryUnclearly": {
+    "message": "De forma muito pouco clara"
+  },
+  "veryUnclearlyTip": {
+    "message": "Apresentam discussão, explicação ou interpretação incorretas ou infundadas de seus achados e possíveis próximos passos."
+  },
+  "veryUnclearlyHow": {
+    "message": "Como a discussão é muito pouco clara? (opcional)"
+  },
+  "selectAdvanceKnowledge": {
+    "message": "Selecione se o preprint tem potencial para contribuir com o avanço do conhecimento acadêmico"
+  },
+  "advanceKnowledgeHighlyLikely": {
+    "message": "Altamente provável"
+  },
+  "advanceKnowledgeHighlyLikelyTip": {
+    "message": "O preprint oferece contribuições significativas que avançam substancialmente ou confirmam a compreensão do tema."
+  },
+  "advanceKnowledgeHighlyLikelyWhy": {
+    "message": "Por que é altamente provável? (opcional)"
+  },
+  "advanceKnowledgeSomewhatLikely": {
+    "message": "Razoavelmente provável"
+  },
+  "advanceKnowledgeSomewhatLikelyTip": {
+    "message": "O preprint contribui com diversos avanços ou confirmações relevantes."
+  },
+  "advanceKnowledgeSomewhatLikelyWhy": {
+    "message": "Por que é razoavelmente provável? (opcional)"
+  },
+  "advanceKnowledgeModeratelyLikely": {
+    "message": "Moderadamente provável"
+  },
+  "advanceKnowledgeModeratelyLikelyTip": {
+    "message": "O preprint contribui com poucos avanços ou confirmações para o corpo de conhecimento existente."
+  },
+  "advanceKnowledgeModeratelyLikelyWhy": {
+    "message": "Por que é moderadamente provável? (opcional)"
+  },
+  "advanceKnowledgeNotLikely": {
+    "message": "Improvável"
+  },
+  "advanceKnowledgeNotLikelyTip": {
+    "message": "O preprint não oferece avanços ou confirmações significativas, embora sua pesquisa e conclusões possam ser sólidas."
+  },
+  "advanceKnowledgeNotLikelyWhy": {
+    "message": "Por que é improvável? (opcional)"
+  },
+  "advanceKnowledgeNotAtAllLikely": {
+    "message": "Totalmente improvável"
+  },
+  "advanceKnowledgeNotAtAllLikelyTip": {
+    "message": "O preprint não oferece avanços ou confirmações significativas devido às suas falhas."
+  },
+  "advanceKnowledgeNotAtAllLikelyWhy": {
+    "message": "Por que é totalmente improvável? (opcional)"
+  },
+  "selectBenefitFromEditing": {
+    "message": "Selecione sim se uma revisão de linguagem seria benéfica"
+  },
+  "benefitFromEditingNoTip": {
+    "message": "Pode haver pequenos problemas de linguagem, mas não comprometem a clareza nem a compreensão."
+  },
+  "benefitFromEditingNoWhy": {
+    "message": "Por que não seria? (opcional)"
+  },
+  "benefitFromEditingYesTip": {
+    "message": "Erros gramaticais, frases confusas ou expressões pouco claras podem prejudicar a compreensão."
+  },
+  "benefitFromEditingYesWhy": {
+    "message": "Por que seria? (opcional)"
+  },
+  "selectWouldRecommend": {
+    "message": "Selecione sim se você recomendaria este preprint a outras pessoas"
+  },
+  "wouldRecommendYes": {
+    "message": "Sim, é de alta qualidade"
+  },
+  "wouldRecommendYesHow": {
+    "message": "De que forma demonstra alta qualidade? (opcional)"
+  },
+  "wouldRecommendYesImproved": {
+    "message": "Sim, mas precisa ser aprimorado"
+  },
+  "wouldRecommendYesImprovedWhy": {
+    "message": "O que precisa ser aprimorado? (opcional)"
+  },
+  "wouldRecommendNo": {
+    "message": "Não, é de baixa qualidade ou apresenta falhas graves"
+  },
+  "wouldRecommendNoWhy": {
+    "message": "Por que você não recomendaria? (opcional)"
+  },
+  "selectReadyForAttention": {
+    "message": "Selecione sim se estiver pronto para receber atenção de um editor, de editoras ou de um público mais amplo"
+  },
+  "readyForAttentionYes": {
+    "message": "Sim, tal como está"
+  },
+  "readyForAttentionYesWhy": {
+    "message": "Por que está pronto? (opcional)"
+  },
+  "readyForAttentionMinorChanges": {
+    "message": "Sim, após pequenas alterações"
+  },
+  "readyForAttentionMinorChangesWhy": {
+    "message": "O que precisa ser ajustado? (opcional)"
+  },
+  "readyForAttentionNo": {
+    "message": "Não, precisa de uma revisão substancial"
+  },
+  "readyForAttentionNoWhy": {
+    "message": "O que precisa mudar? (opcional)"
+  },
   "areTheDataPresentationsWellSuited": {
     "message": "As apresentações de dados, incluindo visualizações, são adequadas para representar os dados?"
   },
