@@ -42,7 +42,7 @@ export const createPage = ({
         'prereviewsOf',
       )({ preprint: plainText`“${preprint.title.text}”`.toString() }),
     ),
-    description: plainText`${translate(locale, 'preprint-reviews', 'authoredBy')({ authors: pipe(preprint.authors, RNEA.map(displayAuthor), formatList(locale), list => list.toString()), visuallyHidden: identity })}
+    description: plainText`${rawHtml(translate(locale, 'preprint-reviews', 'authoredBy')({ authors: pipe(preprint.authors, RNEA.map(displayAuthor), formatList(locale), list => list.toString()), visuallyHidden: identity }))}
     ${
       preprint.abstract
         ? plainText`
