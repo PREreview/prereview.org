@@ -1,0 +1,172 @@
+{
+  "data": {
+    "id": "10.17605/osf.io/bmqcw",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.17605/osf.io/bmqcw",
+      "prefix": "10.17605",
+      "suffix": "osf.io/bmqcw",
+      "identifiers": [{ "identifier": "https://osf.io/bmqcw", "identifierType": "URL" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "URL", "alternateIdentifier": "https://osf.io/bmqcw" }],
+      "creators": [
+        {
+          "name": "Hussey, Ian",
+          "nameType": "Personal",
+          "givenName": "Ian",
+          "familyName": "Hussey",
+          "affiliation": [],
+          "nameIdentifiers": [
+            { "nameIdentifier": "http://github.com/ianhussey", "nameIdentifierScheme": "URL" },
+            { "nameIdentifier": "http://mmmdata.io", "nameIdentifierScheme": "URL" },
+            {
+              "nameIdentifier": "http://scholar.google.com/citations?user=Sg6JZb0AAAAJ",
+              "nameIdentifierScheme": "URL"
+            },
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-8906-7559",
+              "nameIdentifierScheme": "ORCID"
+            },
+            { "nameIdentifier": "https://osf.io/3kzh8", "nameIdentifierScheme": "URL" }
+          ]
+        }
+      ],
+      "titles": [
+        {
+          "title": "Verification of Zhao et al (2023) ‘Effect of Acceptance and Commitment Therapy for depressive disorders: a meta-analysis’"
+        }
+      ],
+      "publisher": "Lifecycle Journal",
+      "container": {},
+      "publicationYear": 2024,
+      "subjects": [
+        { "subject": "Mental Disorders", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" },
+        { "subject": "Clinical Psychology", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" },
+        { "subject": "Psychiatry and Psychology", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" },
+        { "subject": "Medicine and Health Sciences", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" },
+        {
+          "subject": "Social and Behavioral Sciences",
+          "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy"
+        },
+        { "subject": "Psychology", "subjectScheme": "bepress Digital Commons Three-Tiered Taxonomy" },
+        {
+          "subject": "FOS: Psychology",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        },
+        { "subject": "error assessment" },
+        { "subject": "meta-analysis" },
+        { "subject": "verification report" }
+      ],
+      "contributors": [
+        {
+          "name": "Center For Open Science",
+          "nameType": "Organizational",
+          "affiliation": [],
+          "contributorType": "HostingInstitution",
+          "nameIdentifiers": [
+            { "nameIdentifier": "https://cos.io/", "nameIdentifierScheme": "URL" },
+            {
+              "schemeUri": "https://ror.org",
+              "nameIdentifier": "https://ror.org/05d5mza29",
+              "nameIdentifierScheme": "ROR"
+            }
+          ]
+        }
+      ],
+      "dates": [
+        { "date": "2025-03-09", "dateType": "Created" },
+        { "date": "2025-03-09", "dateType": "Updated" },
+        { "date": "2025-03-09", "dateType": "Submitted" },
+        { "date": "2025-03-13", "dateType": "Valid" },
+        { "date": "2024", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "Pre-registration",
+        "resourceTypeGeneral": "StudyRegistration"
+      },
+      "relatedIdentifiers": [
+        { "relationType": "IsVersionOf", "relatedIdentifier": "https://osf.io/jwcmu", "relatedIdentifierType": "URL" }
+      ],
+      "relatedItems": [
+        {
+          "titles": [
+            {
+              "title": "Verification Report of Zhao et al (2023) ‘Effect of Acceptance and Commitment Therapy for depressive disorders: a meta-analysis’"
+            }
+          ],
+          "creators": [],
+          "publisher": "OSF",
+          "contributors": [],
+          "relationType": "IsVersionOf",
+          "publicationYear": "2024",
+          "relatedItemType": "Text",
+          "relatedItemIdentifier": {
+            "relatedItemIdentifier": "https://osf.io/jwcmu",
+            "relatedItemIdentifierType": "URL"
+          }
+        }
+      ],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Verification report for Zhao et al.'s (2023) meta-analysis of ACT for depression. Three effect size extraction errors were found, some of which related to confusing SE for SD. A corrected meta-analysis shows an effect size of Hedges’ g = 0.68 - 35% smaller than that reported in the original meta-analysis.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjUvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC4xNzYwNS9PU0YuSU8vQk1RQ1c8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPklhbiBIdXNzZXk8L2NyZWF0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9IlVSTCI+aHR0cDovL2dpdGh1Yi5jb20vaWFuaHVzc2V5PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJVUkwiPmh0dHA6Ly9tbW1kYXRhLmlvPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJVUkwiPmh0dHA6Ly9zY2hvbGFyLmdvb2dsZS5jb20vY2l0YXRpb25zP3VzZXI9U2c2SlpiMEFBQUFKPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCI+MDAwMC0wMDAxLTg5MDYtNzU1OTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL29zZi5pby8za3poODwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPlZlcmlmaWNhdGlvbiBvZiBaaGFvIGV0IGFsICgyMDIzKSDigJhFZmZlY3Qgb2YgQWNjZXB0YW5jZSBhbmQgQ29tbWl0bWVudCBUaGVyYXB5IGZvciBkZXByZXNzaXZlIGRpc29yZGVyczogYSBtZXRhLWFuYWx5c2lz4oCZPC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyPkxpZmVjeWNsZSBKb3VybmFsPC9wdWJsaXNoZXI+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDI0PC9wdWJsaWNhdGlvblllYXI+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iYmVwcmVzcyBEaWdpdGFsIENvbW1vbnMgVGhyZWUtVGllcmVkIFRheG9ub215Ij5NZW50YWwgRGlzb3JkZXJzPC9zdWJqZWN0PgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iYmVwcmVzcyBEaWdpdGFsIENvbW1vbnMgVGhyZWUtVGllcmVkIFRheG9ub215Ij5DbGluaWNhbCBQc3ljaG9sb2d5PC9zdWJqZWN0PgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iYmVwcmVzcyBEaWdpdGFsIENvbW1vbnMgVGhyZWUtVGllcmVkIFRheG9ub215Ij5Qc3ljaGlhdHJ5IGFuZCBQc3ljaG9sb2d5PC9zdWJqZWN0PgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iYmVwcmVzcyBEaWdpdGFsIENvbW1vbnMgVGhyZWUtVGllcmVkIFRheG9ub215Ij5NZWRpY2luZSBhbmQgSGVhbHRoIFNjaWVuY2VzPC9zdWJqZWN0PgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iYmVwcmVzcyBEaWdpdGFsIENvbW1vbnMgVGhyZWUtVGllcmVkIFRheG9ub215Ij5Tb2NpYWwgYW5kIEJlaGF2aW9yYWwgU2NpZW5jZXM8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJiZXByZXNzIERpZ2l0YWwgQ29tbW9ucyBUaHJlZS1UaWVyZWQgVGF4b25vbXkiPlBzeWNob2xvZ3k8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5lcnJvciBhc3Nlc3NtZW50PC9zdWJqZWN0PgogICAgPHN1YmplY3Q+bWV0YS1hbmFseXNpczwvc3ViamVjdD4KICAgIDxzdWJqZWN0PnZlcmlmaWNhdGlvbiByZXBvcnQ8L3N1YmplY3Q+CiAgPC9zdWJqZWN0cz4KICA8Y29udHJpYnV0b3JzPgogICAgPGNvbnRyaWJ1dG9yIGNvbnRyaWJ1dG9yVHlwZT0iSG9zdGluZ0luc3RpdHV0aW9uIj4KICAgICAgPGNvbnRyaWJ1dG9yTmFtZSBuYW1lVHlwZT0iT3JnYW5pemF0aW9uYWwiPkNlbnRlciBmb3IgT3BlbiBTY2llbmNlPC9jb250cmlidXRvck5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iVVJMIj5odHRwczovL2Nvcy5pby88L25hbWVJZGVudGlmaWVyPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9IlJPUiI+aHR0cHM6Ly9yb3Iub3JnLzA1ZDVtemEyOTwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NvbnRyaWJ1dG9yPgogIDwvY29udHJpYnV0b3JzPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJDcmVhdGVkIj4yMDI1LTAzLTA5PC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiPjIwMjUtMDMtMDk8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIj4yMDI1LTAzLTA5PC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlZhbGlkIj4yMDI1LTAzLTEzPC9kYXRlPgogIDwvZGF0ZXM+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJTdHVkeVJlZ2lzdHJhdGlvbiI+UHJlLXJlZ2lzdHJhdGlvbjwvcmVzb3VyY2VUeXBlPgogIDxhbHRlcm5hdGVJZGVudGlmaWVycz4KICAgIDxhbHRlcm5hdGVJZGVudGlmaWVyIGFsdGVybmF0ZUlkZW50aWZpZXJUeXBlPSJVUkwiPmh0dHBzOi8vb3NmLmlvL2JtcWN3PC9hbHRlcm5hdGVJZGVudGlmaWVyPgogIDwvYWx0ZXJuYXRlSWRlbnRpZmllcnM+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC9sZWdhbGNvZGUiPkNDLUJ5IEF0dHJpYnV0aW9uIDQuMCBJbnRlcm5hdGlvbmFsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+VmVyaWZpY2F0aW9uIHJlcG9ydCBmb3IgWmhhbyBldCBhbC4ncyAoMjAyMykgbWV0YS1hbmFseXNpcyBvZiBBQ1QgZm9yIGRlcHJlc3Npb24uIFRocmVlIGVmZmVjdCBzaXplIGV4dHJhY3Rpb24gZXJyb3JzIHdlcmUgZm91bmQsIHNvbWUgb2Ygd2hpY2ggcmVsYXRlZCB0byBjb25mdXNpbmcgU0UgZm9yIFNELiBBIGNvcnJlY3RlZCBtZXRhLWFuYWx5c2lzIHNob3dzIGFuIGVmZmVjdCBzaXplIG9mIEhlZGdlc+KAmSBnID0gMC42OCAtICAzNSUgc21hbGxlciB0aGFuIHRoYXQgcmVwb3J0ZWQgaW4gdGhlIG9yaWdpbmFsIG1ldGEtYW5hbHlzaXMuIDwvZGVzY3JpcHRpb24+CiAgPC9kZXNjcmlwdGlvbnM+CiAgPGZ1bmRpbmdSZWZlcmVuY2VzLz4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iVVJMIiByZWxhdGlvblR5cGU9IklzVmVyc2lvbk9mIj5odHRwczovL29zZi5pby9qd2NtdTwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHJlbGF0ZWRJdGVtcz4KICAgIDxyZWxhdGVkSXRlbSByZWxhdGlvblR5cGU9IklzVmVyc2lvbk9mIiByZWxhdGVkSXRlbVR5cGU9IlRleHQiPgogICAgICA8cmVsYXRlZEl0ZW1JZGVudGlmaWVyIHJlbGF0ZWRJdGVtSWRlbnRpZmllclR5cGU9IlVSTCI+aHR0cHM6Ly9vc2YuaW8vandjbXU8L3JlbGF0ZWRJdGVtSWRlbnRpZmllcj4KICAgICAgPHRpdGxlcz4KICAgICAgICA8dGl0bGU+VmVyaWZpY2F0aW9uIFJlcG9ydCBvZiBaaGFvIGV0IGFsICgyMDIzKSDigJhFZmZlY3Qgb2YgQWNjZXB0YW5jZSBhbmQgQ29tbWl0bWVudCBUaGVyYXB5IGZvciBkZXByZXNzaXZlIGRpc29yZGVyczogYSBtZXRhLWFuYWx5c2lz4oCZPC90aXRsZT4KICAgICAgPC90aXRsZXM+CiAgICAgIDxwdWJsaWNhdGlvblllYXI+MjAyNDwvcHVibGljYXRpb25ZZWFyPgogICAgICA8cHVibGlzaGVyPk9TRjwvcHVibGlzaGVyPgogICAgPC9yZWxhdGVkSXRlbT4KICA8L3JlbGF0ZWRJdGVtcz4KPC9yZXNvdXJjZT4=",
+      "url": "https://osf.io/bmqcw/",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2025-03-13T22:57:32.000Z",
+      "registered": "2025-03-13T22:57:32.000Z",
+      "published": "2024",
+      "updated": "2025-03-13T22:57:38.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cos.osf", "type": "clients" } },
+      "provider": { "data": { "id": "cos", "type": "providers" } },
+      "media": { "data": { "id": "10.17605/osf.io/bmqcw", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

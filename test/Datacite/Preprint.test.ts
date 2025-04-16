@@ -156,6 +156,7 @@ const stubRecord = {
       title: 'Teorias De Enfermagem Para Abordagem Familiar De Potenciais Doadores De Órgãos: revisão de escopo',
     },
   ],
+  publisher: 'OSF',
   dates: [{ date: Temporal.PlainDate.from({ year: 2023, month: 9, day: 13 }), dateType: 'Created' }],
   types: {
     resourceType: 'Project',

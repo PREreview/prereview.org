@@ -41,6 +41,56 @@ test.each([
       url: new URL('https://osf.io/eq8bk'),
     }),
   },
+  {
+    response: 'lifecycle-journal-article',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          "<p>Outcomes Report for Kura et al.'s (2025). Self-leadership and innovative work behaviors: Testing a parallel mediation model with goal striving and goal generation.</p>",
+        ),
+      },
+      authors: [
+        { name: 'Fadzliwati Mohiddin', orcid: Orcid('0000-0002-7332-209X') },
+        { name: 'Kabiru Maitama Kura', orcid: Orcid('0000-0001-7863-2604') },
+        { name: 'Hartini Mashod', orcid: Orcid('0000-0001-7201-8961') },
+        { name: 'Ramatu Abdulkareem Abubakar', orcid: Orcid('0000-0001-6956-9885') },
+        { name: 'Noor Maya Salleh', orcid: undefined },
+        { name: 'Dr. Faridahwati Mohd. Shamsudin', orcid: undefined },
+        { name: 'Shahratul Karmila Rosland', orcid: Orcid('0009-0000-3311-5160') },
+      ],
+      id: { type: 'lifecycle-journal', value: Doi('10.17605/osf.io/bu3rj') },
+      posted: Temporal.PlainDate.from({ year: 2025, month: 4, day: 3 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Self-leadership and innovative work behaviors: Testing a parallel mediation model with goal striving and goal generation',
+        ),
+      },
+      url: new URL('https://osf.io/bu3rj'),
+    }),
+  },
+  {
+    response: 'lifecycle-journal-registration',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          "<p>Verification report for Zhao et al.'s (2023) meta-analysis of ACT for depression. Three effect size extraction errors were found, some of which related to confusing SE for SD. A corrected meta-analysis shows an effect size of Hedges’ g = 0.68 - 35% smaller than that reported in the original meta-analysis.</p>",
+        ),
+      },
+      authors: [{ name: 'Ian Hussey', orcid: Orcid('0000-0001-8906-7559') }],
+      id: { type: 'lifecycle-journal', value: Doi('10.17605/osf.io/bmqcw') },
+      posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 9 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Verification of Zhao et al (2023) ‘Effect of Acceptance and Commitment Therapy for depressive disorders: a meta-analysis’',
+        ),
+      },
+      url: new URL('https://osf.io/bmqcw'),
+    }),
+  },
 ])('can parse a DataCite record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -56,20 +106,18 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['lifecycle-journal', 'osf-file', 'osf-registration'])(
-  'returns a specific error for non-Preprint record (%s)',
-  response =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(
-        FileSystem.FileSystem,
-        Effect.andThen(fs => fs.readFileString(`test/Datacite/RecordSamples/${response}.json`)),
-        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Record)))),
-        Effect.andThen(Struct.get('data')),
-        Effect.andThen(Struct.get('attributes')),
-        Effect.andThen(recordToPreprint),
-        Effect.flip,
-      )
+test.each(['osf-file', 'osf-registration'])('returns a specific error for non-Preprint record (%s)', response =>
+  Effect.gen(function* () {
+    const actual = yield* pipe(
+      FileSystem.FileSystem,
+      Effect.andThen(fs => fs.readFileString(`test/Datacite/RecordSamples/${response}.json`)),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Record)))),
+      Effect.andThen(Struct.get('data')),
+      Effect.andThen(Struct.get('attributes')),
+      Effect.andThen(recordToPreprint),
+      Effect.flip,
+    )
 
-      expect(actual._tag).toStrictEqual('NotAPreprint')
-    }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+    expect(actual._tag).toStrictEqual('NotAPreprint')
+  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )

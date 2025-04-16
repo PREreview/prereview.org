@@ -1,7 +1,7 @@
 import { Url } from '@effect/platform'
 import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
 import { detectLanguage } from '../detect-language.js'
-import { html } from '../html.js'
+import { sanitizeHtml } from '../html.js'
 import * as Preprint from '../preprint.js'
 import { Orcid } from '../types/index.js'
 import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
@@ -11,14 +11,16 @@ export const recordToPreprint = (
   record: Record,
 ): Either.Either<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
+    const id = yield* determineDatacitePreprintId(record)
+
     if (
       record.types.resourceType?.toLowerCase() !== 'preprint' &&
-      record.types.resourceTypeGeneral?.toLowerCase() !== 'preprint'
+      record.types.resourceTypeGeneral?.toLowerCase() !== 'preprint' &&
+      (id.type !== 'lifecycle-journal' ||
+        !['journalarticle', 'studyregistration'].includes(record.types.resourceTypeGeneral?.toLowerCase() as never))
     ) {
       yield* Either.left(new Preprint.NotAPreprint({ cause: record.types }))
     }
-
-    const id = yield* determineDatacitePreprintId(record)
 
     const authors = yield* Array.match(record.creators, {
       onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { creators: record.creators } })),
@@ -68,6 +70,10 @@ const determineDatacitePreprintId = (
       return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
     }
 
+    if (record.publisher === 'Lifecycle Journal') {
+      return { type: 'lifecycle-journal', value: doi }
+    }
+
     return { type: 'osf', value: doi } satisfies DatacitePreprintId
   })
 
@@ -91,7 +97,7 @@ const getTitle = (
   titles: Record['titles'],
 ): Either.Either<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
-    const text = html`${titles[0].title}`
+    const text = sanitizeHtml(titles[0].title)
 
     const language = yield* Either.fromOption(
       detectLanguage(text),
@@ -113,7 +119,7 @@ const getAbstract = (
       () => new Preprint.PreprintIsUnavailable({ cause: { descriptions } }),
     )
 
-    const text = html`<p>${abstract.description}</p>`
+    const text = sanitizeHtml(`<p>${abstract.description}</p>`)
 
     const language = yield* Either.fromOption(
       detectLanguage(text),
