@@ -1004,7 +1004,6 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
     africarxivZenodoPreprintId(),
     arcadiaSciencePreprintId(),
     arxivPreprintId(),
-    osfPreprintId(),
     psychArchivesPreprintId(),
     zenodoPreprintId(),
   )

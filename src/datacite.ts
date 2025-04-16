@@ -22,13 +22,12 @@ import type {
   ArcadiaSciencePreprintId,
   ArxivPreprintId,
   IndeterminatePreprintId,
-  OsfPreprintId,
   PreprintId,
   PsychArchivesPreprintId,
   ZenodoPreprintId,
 } from './types/preprint-id.js'
 
-const dataciteDoiPrefixes = ['5281', '6084', '17605', '23668', '48550', '57844', '60763'] as const
+const dataciteDoiPrefixes = ['5281', '6084', '23668', '48550', '57844', '60763'] as const
 
 type DataciteDoiPrefix = (typeof dataciteDoiPrefixes)[number]
 
@@ -116,7 +115,6 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arcadia-science' }, () => Option.some('en' as const))
               .with({ type: 'arxiv' }, () => Option.some('en' as const))
-              .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
               .with({ type: 'zenodo', text: P.select() }, detectLanguage)
               .exhaustive(),
@@ -143,7 +141,6 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arcadia-science' }, () => Option.some('en' as const))
               .with({ type: 'arxiv' }, () => Option.some('en' as const))
-              .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
               .with({ type: 'zenodo', text: P.select() }, detectLanguage)
               .exhaustive(),
@@ -249,19 +246,6 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
           type: 'arxiv',
           value: work.doi,
         }) satisfies ArxivPreprintId,
-    ),
-  ),
-  pipe(
-    D.fromStruct({
-      doi: D.fromRefinement(hasRegistrant('17605'), 'DOI'),
-      publisher: D.literal('OSF'),
-    }),
-    D.map(
-      work =>
-        ({
-          type: 'osf',
-          value: work.doi,
-        }) satisfies OsfPreprintId,
     ),
   ),
   pipe(
