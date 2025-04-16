@@ -216,7 +216,7 @@ ${translate(locale, 'email', 'allTheBest')()}
 PREreview
 `.trim(),
           html: mjmlToHtml(html`
-            <mjml>
+            <mjml lang="${locale}" dir="${rtlDetect.getLangDir(locale)}">
               <mj-head>${mjmlStyle}</mj-head>
               <mj-body>
                 <mj-section>
