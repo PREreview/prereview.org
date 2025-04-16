@@ -27,7 +27,7 @@ export class Record extends Schema.Class<Record>('Record')({
   ),
   dates: Schema.NonEmptyArray(
     Schema.Struct({
-      date: Schema.Union(Schema.NumberFromString, Temporal.PlainYearMonthSchema, Temporal.PlainDateSchema),
+      date: Schema.Union(Temporal.PlainDateSchema, Temporal.PlainYearMonthSchema, Schema.NumberFromString),
       dateType: Schema.NonEmptyTrimmedString,
     }),
   ),
