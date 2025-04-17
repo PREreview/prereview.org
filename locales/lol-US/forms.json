@@ -1,0 +1,30 @@
+{
+  "backLink": {
+    "message": "crwdns5810:0crwdne5810:0",
+    "description": "Link that takes the user to the previous step in a process."
+  },
+  "errorPrefix": {
+    "message": "crwdns5812:0crwdne5812:0",
+    "description": "Prefix to give assistive-technology users context for an error message. For example, a screen-reader user would hear 'Error: Enter your name'."
+  },
+  "errorSummaryTitle": {
+    "message": "crwdns5814:0crwdne5814:0",
+    "description": "Title of the section summarising any errors a user has made."
+  },
+  "startButton": {
+    "message": "crwdns5816:0crwdne5816:0",
+    "description": "Button that allows the user to start a process."
+  },
+  "continueButton": {
+    "message": "crwdns5818:0crwdne5818:0",
+    "description": "Button that takes the user to the next step in a process but without saving any information."
+  },
+  "saveContinueButton": {
+    "message": "crwdns5820:0crwdne5820:0",
+    "description": "Button that saves the user’s information and takes them to the next step in a process."
+  },
+  "radioSeparatorLabel": {
+    "message": "crwdns5822:0crwdne5822:0",
+    "description": "Label that separates one or more of your radio options that is different from the others."
+  }
+}
