@@ -4,6 +4,9 @@ primary_region = "iad"
 [[vm]]
 size = "shared-cpu-2x"
 
+[deploy]
+strategy = "bluegreen"
+
 [env]
 CAN_ADD_MULTIPLE_AUTHORS = "true"
 CAN_CHOOSE_LOCALE = "true"
