@@ -1,6 +1,6 @@
 import { FetchHttpClient, HttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
-import { Config, Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
+import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
@@ -9,7 +9,7 @@ import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from '
 import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
-import { collapseRequests, logFetch } from './fetch.js'
+import { collapseRequests } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import * as GetPreprint from './get-preprint.js'
 import * as GhostPage from './GhostPage.js'
@@ -425,16 +425,8 @@ const setUpFetch = Layer.effect(
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
-    const disableLegacyVolumeBasedCache = yield* Config.withDefault(
-      Config.boolean('DISABLE_LEGACY_VOLUME_BASED_CACHE'),
-      false,
-    )
 
-    if (disableLegacyVolumeBasedCache) {
-      return pipe({ fetch, ...logger }, collapseRequests()).fetch
-    }
-
-    return pipe({ fetch, ...logger }, logFetch(), collapseRequests()).fetch
+    return pipe({ fetch, ...logger }, collapseRequests()).fetch
   }),
 )
 

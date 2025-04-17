@@ -44,6 +44,7 @@ import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Contex
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import * as FeatureFlags from '../src/feature-flags.js'
+import { logFetch } from '../src/fetch.js'
 import { GhostApi } from '../src/GhostPage.js'
 import { rawHtml } from '../src/html.js'
 import type {
@@ -1298,7 +1299,14 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provideService(ZenodoOrigin, new URL('http://zenodo.test/')),
         Effect.provide(CachingHttpClient.layerInMemory()),
         Effect.provide(FetchHttpClient.layer),
-        Effect.provideService(FetchHttpClient.Fetch, fetch as unknown as typeof globalThis.fetch),
+        Effect.provideServiceEffect(
+          FetchHttpClient.Fetch,
+          Effect.gen(function* () {
+            const logger = yield* DeprecatedLoggerEnv
+
+            return pipe({ fetch, ...logger }, logFetch()).fetch as unknown as typeof globalThis.fetch
+          }),
+        ),
         Effect.provide(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` })),
         Effect.provide(TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() })),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
