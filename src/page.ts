@@ -93,6 +93,14 @@ export const page = ({
               <script type="text/javascript">
                 var _jipt = []
                 _jipt.push(['project', 'prereview'])
+                _jipt.push([
+                  'before_dom_insert',
+                  function (text) {
+                    return text
+                      .replaceAll('<visuallyHidden>', '<span class="visually-hidden">')
+                      .replaceAll('</visuallyHidden>', '</span>')
+                  },
+                ])
               </script>
               <script type="text/javascript" src="https://cdn.crowdin.com/jipt/jipt.js"></script>
               <link href="${assets['crowdin.css']}" rel="stylesheet" />
