@@ -234,10 +234,10 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     joinLink: new URL('https://tally.so/r/wdPM9d'),
   },
   'bloomington-biology': {
-    name: 'IU Bloomington Biology Club',
+    name: 'IU Bloomington Biology',
     description: html`
       <p>
-        We are scientists from Indiana University (IU) Bloomington. The IU Bloomington Biology Club is associated with
+        We are scientists from Indiana University (IU) Bloomington. The IU Bloomington Biology club is associated with
         the graduate course Peer Review in the Life Sciences (BIOL-Z620). Its purpose is to formally teach graduate
         students how to peer review manuscripts in a critical and constructive way, and to promote an open access to
         science, transparency and journal-agnostic evaluation of scientific work.
