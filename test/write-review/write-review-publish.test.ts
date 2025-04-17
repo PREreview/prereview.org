@@ -1,7 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import cookieSignature from 'cookie-signature'
-import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -12,6 +11,7 @@ import { merge } from 'ts-deepmerge'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes.js'
+import { localeToIso6391 } from '../../src/types/iso639.js'
 import { UserC } from '../../src/user.js'
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
@@ -207,7 +207,7 @@ describe('writeReviewPublish', () => {
         persona: newReview.persona,
         preprint: preprintTitle,
         review: expect.anything(),
-        language: Option.some('en'),
+        language: localeToIso6391(locale),
         locale,
         structured: true,
         user,

@@ -1,6 +1,7 @@
-import { pipe, Schema } from 'effect'
-import type { LanguageCode as Iso6391Code } from 'iso-639-1'
+import { Option, pipe, Schema } from 'effect'
+import iso6391, { type LanguageCode as Iso6391Code } from 'iso-639-1'
 import type iso6393 from 'iso-639-3/to-1.json'
+import type { SupportedLocale } from '../locales/index.js'
 
 export type Iso6393Code = keyof Omit<typeof iso6393, 'hbs'>
 
@@ -12,6 +13,12 @@ export const Iso6393Schema = pipe(Schema.String, Schema.filter(iso6393Validate))
 export const iso6393To1 = (code: Iso6393Code): Iso6391Code => iso6393To1Mapping[code]
 
 export const iso6391To3 = (code: Iso6391Code): Iso6393Code => swapFn(iso6393To1Mapping)[code]
+
+export const localeToIso6391 = (locale: SupportedLocale): Option.Option<Iso6391Code> => {
+  const language = locale.split('-')[0] ?? ''
+
+  return Option.liftPredicate(language, iso6391.validate)
+}
 
 const iso6393To1Mapping = {
   aar: 'aa',
