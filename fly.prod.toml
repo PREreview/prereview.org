@@ -1,6 +1,13 @@
 app = "prereview"
 primary_region = "iad"
 
+[[vm]]
+size = "shared-cpu-2x"
+memory = "1gb"
+
+[deploy]
+strategy = "rolling"
+
 [env]
 ALLOW_SITE_CRAWLERS = "true"
 CAN_ADD_MULTIPLE_AUTHORS = "true"

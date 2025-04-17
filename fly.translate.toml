@@ -1,6 +1,12 @@
 app = "prereview-translate"
 primary_region = "iad"
 
+[[vm]]
+size = "shared-cpu-2x"
+
+[deploy]
+strategy = "rolling"
+
 [env]
 CAN_CHOOSE_LOCALE = "true"
 COAR_NOTIFY_URL = "https://coar-notify-sandbox.prereview.org/"
