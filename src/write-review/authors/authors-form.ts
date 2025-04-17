@@ -45,7 +45,7 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: Us
                 )}
               >
                 <legend>
-                  <h1>${rawHtml(t('write-review', 'didYouReviewWithAnyoneElse')())}</h1>
+                  <h1>${t('write-review', 'didYouReviewWithAnyoneElse')()}</h1>
                 </legend>
 
                 <p id="more-authors-tip" role="note">${t('write-review', 'thisCanIncludePeopleWho')()}</p>
