@@ -7,31 +7,14 @@ import {
   type HttpClientResponse,
   HttpMethod,
 } from '@effect/platform'
-import { Config, Effect, Either, identity, pipe, Runtime } from 'effect'
-import fetch from 'make-fetch-happen'
+import { Effect, Either, identity, pipe, Runtime } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as LoggingHttpClient from './LoggingHttpClient.js'
-import { PublicUrl } from './public-url.js'
 
 export const Fetch = FetchHttpClient.Fetch
 
 export const makeFetch = Effect.gen(function* () {
-  const publicUrl = yield* PublicUrl
-  const disableLegacyVolumeBasedCache = yield* Config.withDefault(
-    Config.boolean('DISABLE_LEGACY_VOLUME_BASED_CACHE'),
-    false,
-  )
-
-  if (disableLegacyVolumeBasedCache) {
-    return yield* transmogrifyHttpClient
-  }
-
-  return fetch.defaults({
-    cachePath: 'data/cache',
-    headers: {
-      'User-Agent': `PREreview (${publicUrl.href}; mailto:engineering@prereview.org)`,
-    },
-  }) as unknown as typeof globalThis.fetch
+  return yield* transmogrifyHttpClient
 })
 
 const transmogrifyHttpClient: Effect.Effect<
