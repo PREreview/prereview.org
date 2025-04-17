@@ -45,8 +45,7 @@
     "message": "crwdns4625:0crwdne4625:0"
   },
   "slackCommunityName": {
-    "message": "crwdns4627:0crwdne4627:0",
-    "description": "Label for showing the name the user is using on the Community Slack"
+    "message": "crwdns4627:0crwdne4627:0"
   },
   "connectSlack": {
     "message": "crwdns4629:0crwdne4629:0"
@@ -67,8 +66,7 @@
     "message": "crwdns4639:0crwdne4639:0"
   },
   "openReviewRequests": {
-    "message": "crwdns4641:0crwdne4641:0",
-    "description": "Label for if the user is open to receiving review requests"
+    "message": "crwdns4641:0crwdne4641:0"
   },
   "enterPreferenceReviewRequests": {
     "message": "crwdns5574:0crwdne5574:0"
@@ -116,8 +114,7 @@
     "message": "crwdns4671:0crwdne4671:0"
   },
   "enterResearchInterests": {
-    "message": "crwdns4673:0crwdne4673:0",
-    "description": "Link text to where the user will type in their research interests"
+    "message": "crwdns4673:0crwdne4673:0"
   },
   "changeResearchInterests": {
     "message": "crwdns4675:0crwdne4675:0"

@@ -45,8 +45,7 @@
     "message": "Remover <visuallyHidden>imagem de perfil</visuallyHidden>"
   },
   "slackCommunityName": {
-    "message": "Nome na comunidade Slack",
-    "description": "Label for showing the name the user is using on the Community Slack"
+    "message": "Nome na comunidade Slack"
   },
   "connectSlack": {
     "message": "Conectar conta do Slack"
@@ -67,8 +66,7 @@
     "message": "Alterar <visuallyHidden>endereço de e-mail</visuallyHidden>"
   },
   "openReviewRequests": {
-    "message": "Disponível para receber solicitações de avaliação",
-    "description": "Label for if the user is open to receiving review requests"
+    "message": "Disponível para receber solicitações de avaliação"
   },
   "enterPreferenceReviewRequests": {
     "message": "Insira preferência para solicitações de avaliação"
@@ -116,8 +114,7 @@
     "message": "Interesses de pesquisa"
   },
   "enterResearchInterests": {
-    "message": "Digite seus interesses de pesquisa",
-    "description": "Link text to where the user will type in their research interests"
+    "message": "Digite seus interesses de pesquisa"
   },
   "changeResearchInterests": {
     "message": "Alterar <visuallyHidden>interesses de pesquisa</visuallyHidden>"

@@ -219,8 +219,7 @@
     "message": "crwdns3962:0crwdne3962:0"
   },
   "whatHappensNext": {
-    "message": "crwdns3964:0crwdne3964:0",
-    "description": "Heading for details of what happens next and when; the user has completed their task and has no further actions to take."
+    "message": "crwdns3964:0crwdne3964:0"
   },
   "whereYouCanSeeYourPrereview": {
     "message": "crwdns3966:0{communitySlackLink}crwdnd3966:0{scietyLink}crwdne3966:0"

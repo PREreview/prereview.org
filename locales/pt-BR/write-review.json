@@ -219,8 +219,7 @@
     "message": "Seu DOI"
   },
   "whatHappensNext": {
-    "message": "O que acontece em seguida",
-    "description": "Heading for details of what happens next and when; the user has completed their task and has no further actions to take."
+    "message": "O que acontece em seguida"
   },
   "whereYouCanSeeYourPrereview": {
     "message": "Você poderá ver sua avaliação PREreview em breve. Também aparecerá na nossa {communitySlackLink}{isScietyPreprint, boolean, true { e {scietyLink}} false {}}."
