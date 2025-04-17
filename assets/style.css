@@ -2035,7 +2035,7 @@ skip-link {
 
   & :any-link {
     position: fixed;
-    z-index: 999;
+    z-index: 999999;
     inline-size: fit-content;
     margin-inline: auto;
     padding-block: var(--space-2xs) var(--space-xs);
