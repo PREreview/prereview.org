@@ -24,10 +24,6 @@ SLACK_UPDATE = "true"
 VERIFY_CACHE_DELAY = "2 hours"
 ZENODO_URL = "https://zenodo.org/"
 
-[mounts]
-source = "prereview_data"
-destination = "/app/data"
-
 [http_service]
 internal_port = 3000
 force_https = true
