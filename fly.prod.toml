@@ -21,7 +21,6 @@ LOG_FORMAT = "json"
 ORCID_API_URL = "https://api.orcid.org/"
 PUBLIC_URL = "https://prereview.org/"
 SLACK_UPDATE = "true"
-VERIFY_CACHE_DELAY = "2 hours"
 ZENODO_URL = "https://zenodo.org/"
 
 [http_service]

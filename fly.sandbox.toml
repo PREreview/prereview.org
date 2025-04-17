@@ -20,7 +20,6 @@ LEGACY_PREREVIEW_URL = "https://prereview2.azurewebsites.net/"
 LOG_FORMAT = "json"
 ORCID_API_URL = "https://api.orcid.org/"
 PUBLIC_URL = "https://sandbox.prereview.org/"
-VERIFY_CACHE = "false"
 ZENODO_URL = "https://sandbox.zenodo.org/"
 
 [http_service]

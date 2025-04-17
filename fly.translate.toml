@@ -18,7 +18,6 @@ LOG_FORMAT = "json"
 ORCID_API_URL = "https://api.orcid.org/"
 PUBLIC_URL = "https://translate.prereview.org/"
 USE_CROWDIN_IN_CONTEXT = "true"
-VERIFY_CACHE = "false"
 ZENODO_URL = "https://sandbox.zenodo.org/"
 
 [http_service]
