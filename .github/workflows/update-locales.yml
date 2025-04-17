@@ -48,6 +48,9 @@ jobs:
       - name: 'Remove unwanted characters'
         run: find locales -type f -exec sed --in-place --expression='s|\\u0000||g' {} \;
 
+      - name: 'Remove redundant descriptions in translations'
+        run: bash scripts/remove-description-fields-from-translations.sh
+
       - name: 'Commit changes'
         uses: stefanzweifel/git-auto-commit-action@v5.1.0
         if: ${{ !env.ACT }}
