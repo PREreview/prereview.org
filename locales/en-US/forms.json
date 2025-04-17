@@ -1,0 +1,30 @@
+{
+  "backLink": {
+    "message": "Back",
+    "description": "Link that takes the user to the previous step in a process."
+  },
+  "errorPrefix": {
+    "message": "Error",
+    "description": "Prefix to give assistive-technology users context for an error message. For example, a screen-reader user would hear 'Error: Enter your name'."
+  },
+  "errorSummaryTitle": {
+    "message": "There is a problem",
+    "description": "Title of the section summarising any errors a user has made."
+  },
+  "startButton": {
+    "message": "Start now",
+    "description": "Button that allows the user to start a process."
+  },
+  "continueButton": {
+    "message": "Continue",
+    "description": "Button that takes the user to the next step in a process but without saving any information."
+  },
+  "saveContinueButton": {
+    "message": "Save and continue",
+    "description": "Button that saves the user’s information and takes them to the next step in a process."
+  },
+  "radioSeparatorLabel": {
+    "message": "or",
+    "description": "Label that separates one or more of your radio options that is different from the others."
+  }
+}
