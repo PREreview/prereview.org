@@ -20,6 +20,7 @@ jobs:
         with:
           token: ${{ secrets.PREREVIEW_BOT_TOKEN }}
           sparse-checkout: |
+            scripts/
             locales/
             crowdin.yml
           sparse-checkout-cone-mode: false
