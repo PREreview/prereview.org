@@ -1,5 +1,6 @@
 import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
 import { Effect, Either, Layer, pipe, Schema } from 'effect'
+import _normalizeUrl from 'normalize-url'
 import {
   type CacheValue,
   HttpCache,
@@ -12,10 +13,13 @@ export type CacheKey = string
 
 export const keyForRequest = (request: HttpClientRequest.HttpClientRequest): CacheKey => {
   const url = new URL(request.url)
-  url.search = UrlParams.toString(request.urlParams)
+  url.search = pipe(UrlParams.fromInput(url.searchParams), UrlParams.appendAll(request.urlParams), UrlParams.toString)
 
-  return url.href
+  return normalizeUrl(url)
 }
+
+export const normalizeUrl = (url: URL) =>
+  _normalizeUrl(url.href, { removeTrailingSlash: false, stripHash: true, stripWWW: false })
 
 export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
   Layer.sync(HttpCache, () => {
@@ -50,6 +54,6 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
           }),
           Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
         ),
-      delete: url => Effect.succeed(cache.delete(url.href)),
+      delete: url => Effect.succeed(cache.delete(normalizeUrl(url))),
     }
   })

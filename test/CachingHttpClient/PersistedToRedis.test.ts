@@ -165,7 +165,7 @@ describe('deleteFromRedis', () => {
 
         expect(result).toStrictEqual(Either.void)
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        expect(redis.del).toHaveBeenCalledWith(url.href)
+        expect(redis.del).toHaveBeenCalledWith(_.normalizeUrl(url))
       }).pipe(EffectTest.run),
     )
   })
@@ -181,7 +181,7 @@ describe('deleteFromRedis', () => {
 
         expect(result).toStrictEqual(Either.void)
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        expect(redis.del).toHaveBeenCalledWith(url.href)
+        expect(redis.del).toHaveBeenCalledWith(_.normalizeUrl(url))
       }).pipe(EffectTest.run),
     )
   })

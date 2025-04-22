@@ -1,6 +1,6 @@
 import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
 import { Effect, Either, Layer, pipe, Schema } from 'effect'
-import normalizeUrl from 'normalize-url'
+import _normalizeUrl from 'normalize-url'
 import * as Redis from '../Redis.js'
 import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure, NoCachedResponseFound } from './HttpCache.js'
 import { serializationErrorChecking } from './SerializationErrorChecking.js'
@@ -73,7 +73,7 @@ export const deleteFromRedis =
   (redis: typeof Redis.HttpCacheRedis.Service): (typeof HttpCache.Service)['delete'] =>
   url =>
     pipe(
-      Effect.tryPromise(() => redis.del(url.href)),
+      Effect.tryPromise(() => redis.del(normalizeUrl(url))),
       Effect.asVoid,
       Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
     )
@@ -84,5 +84,8 @@ export const keyForRequest = (request: HttpClientRequest.HttpClientRequest): Cac
   const url = new URL(request.url)
   url.search = pipe(UrlParams.fromInput(url.searchParams), UrlParams.appendAll(request.urlParams), UrlParams.toString)
 
-  return normalizeUrl(url.href, { removeTrailingSlash: false, stripHash: true, stripWWW: false })
+  return normalizeUrl(url)
 }
+
+export const normalizeUrl = (url: URL) =>
+  _normalizeUrl(url.href, { removeTrailingSlash: false, stripHash: true, stripWWW: false })
