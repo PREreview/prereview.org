@@ -1,4 +1,4 @@
-import { FetchHttpClient, HttpClient } from '@effect/platform'
+import { HttpClient } from '@effect/platform'
 import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
@@ -10,6 +10,7 @@ import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import { collapseRequests } from './fetch.js'
+import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import * as GetPreprint from './get-preprint.js'
 import * as GhostPage from './GhostPage.js'
@@ -423,7 +424,7 @@ const commentsForReview = Layer.effect(
 const setUpFetch = Layer.effect(
   FetchHttpClient.Fetch,
   Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
+    const fetch = yield* FetchHttpClient.makeFetch
     const logger = yield* DeprecatedLoggerEnv
 
     return pipe({ fetch, ...logger }, collapseRequests()).fetch

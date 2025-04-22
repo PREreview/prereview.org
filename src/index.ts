@@ -7,7 +7,6 @@ import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } 
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
 import * as FeatureFlags from './feature-flags.js'
-import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { GhostApi } from './GhostPage.js'
 import * as Nodemailer from './nodemailer.js'
@@ -22,7 +21,6 @@ import * as Zenodo from './Zenodo/index.js'
 pipe(
   Program,
   Layer.launch,
-  Effect.provideServiceEffect(FetchHttpClient.Fetch, FetchHttpClient.makeFetch),
   Effect.provide(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
