@@ -463,6 +463,7 @@ export const Program = pipe(
       Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
     ),
   ),
-  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, setUpFetch, LoggingHttpClient.layer)),
+  Layer.provide(setUpFetch),
+  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(Uuid.layer, Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv), MigratorLive)),
 )
