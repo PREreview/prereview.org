@@ -77,6 +77,9 @@
   "doiCouldBeJxiv": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint Jxiv, mas não conseguimos encontrar detalhes."
   },
+  "doiCouldBeLifecycleJournal": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Lifecycle Journal, mas não conseguimos encontrar detalhes."
+  },
   "doiCouldBeMedrxiv": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint medRxiv, mas não conseguimos encontrar detalhes."
   },
@@ -88,6 +91,9 @@
   },
   "doiCouldBeOsf": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint OSF, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeOsfLifecycleJournal": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint OSF ou Lifecycle Journal, mas não conseguimos encontrar detalhes."
   },
   "doiCouldBePreprintsorg": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint Preprints.org, mas não conseguimos encontrar detalhes."

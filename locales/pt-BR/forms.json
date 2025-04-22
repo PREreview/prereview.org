@@ -1,0 +1,23 @@
+{
+  "backLink": {
+    "message": "Voltar"
+  },
+  "errorPrefix": {
+    "message": "Erro"
+  },
+  "errorSummaryTitle": {
+    "message": "Houve um problema"
+  },
+  "startButton": {
+    "message": "Começar agora"
+  },
+  "continueButton": {
+    "message": "Continuar"
+  },
+  "saveContinueButton": {
+    "message": "Salvar e continuar"
+  },
+  "radioSeparatorLabel": {
+    "message": "ou"
+  }
+}
