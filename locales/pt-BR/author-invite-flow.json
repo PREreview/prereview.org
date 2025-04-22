@@ -53,9 +53,6 @@
   "orcidExplainer": {
     "message": "Um <link>ORCID iD</link> é um identificador exclusivo que distingue você de outras pessoas com o mesmo nome ou nome semelhante."
   },
-  "startNow": {
-    "message": "Começar agora"
-  },
   "beforeYouStart": {
     "message": "Antes de começar"
   },
@@ -67,9 +64,6 @@
   },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
     "message": "Como você já começou, vamos para a próxima etapa para que possa continuar."
-  },
-  "continueButton": {
-    "message": "Continuar"
   },
   "sorryHavingProblems": {
     "message": "Desculpe, algo deu errado"
@@ -112,9 +106,6 @@
   },
   "whatIsYourEmailAddress": {
     "message": "Qual é seu endereço de e-mail?"
-  },
-  "error": {
-    "message": "Erro"
   },
   "enterYourEmailAddress": {
     "message": "Digite seu endereço de e-mail"

@@ -2,9 +2,6 @@
   "writeCommentTitle": {
     "message": "Escrever um comentário"
   },
-  "back": {
-    "message": "Voltar"
-  },
   "backToPrereview": {
     "message": "Voltar para a Avaliação PREreview"
   },
@@ -23,35 +20,11 @@
   "whatIsOrcid": {
     "message": "Um <link>ORCID iD</link> é um identificador único que distingue você de outras pessoas com o mesmo nome ou nome semelhante."
   },
-  "startNowButton": {
-    "message": "Começar agora"
-  },
-  "continueButton": {
-    "message": "Continuar"
-  },
-  "saveContinueButton": {
-    "message": "Salvar e continuar"
-  },
   "reloadPageButton": {
     "message": "Recarregar página"
   },
   "carryOnMessage": {
     "message": "Como você já começou um comentário nesta Avaliação PREreview de {preprint}, vamos para a próxima etapa para que você possa continuar."
-  },
-  "enterYourCommentTitle": {
-    "message": "<error>Erro:</error> Escreva seu comentário"
-  },
-  "errorSummaryHeading": {
-    "message": "Houve um problema"
-  },
-  "errorEnterComment": {
-    "message": "<error>Erro:</error> Digite seu comentário"
-  },
-  "whatNameTitle": {
-    "message": "<error>Erro:</error> Que nome deseja usar?"
-  },
-  "errorSelectName": {
-    "message": "<error>Erro:</error> Selecione o nome que você deseja usar"
   },
   "whichNameTip": {
     "message": "Você pode escolher entre o nome no seu registro ORCID ou seu pseudônimo PREreview."
@@ -70,15 +43,6 @@
   },
   "linkToPseudonym": {
     "message": "Vincularemos seu comentário apenas a outros que também usam seu pseudônimo."
-  },
-  "competingInterestsTitle": {
-    "message": "<error>Erro:</error> Você tem algum conflito de interesse?"
-  },
-  "errorCompetingInterests": {
-    "message": "<error>Erro:</error> Selecione sim se você tiver algum conflito de interesse"
-  },
-  "errorCompetingInterestsDetails": {
-    "message": "<error>Erro:</error> Forneça detalhes dos seus conflitos de interesse"
   },
   "competingInterestsTip": {
     "message": "Um conflito de interesse é qualquer fator que possa interferir na objetividade do comentário em uma Avaliação PREreview."
@@ -118,12 +82,6 @@
   },
   "competingInterestsDetailsTitle": {
     "message": "Quais são eles?"
-  },
-  "codeOfConductTitle": {
-    "message": "<error>Erro:</error> Código de Conduta"
-  },
-  "errorFollowingCodeOfConduct": {
-    "message": "<error>Erro:</error> Confirme que você está seguindo o Código de Conduta"
   },
   "codeOfConductTip": {
     "message": "Como membro da nossa comunidade, esperamos que você respeite o <link>Código de Conduta da PREreview</link>."
@@ -172,15 +130,6 @@
   },
   "followingCodeOfConduct": {
     "message": "Estou seguindo o Código de Conduta"
-  },
-  "contactDetailsTitle": {
-    "message": "<error>Erro:</error> Dados de contato"
-  },
-  "errorEnterEmailAddress": {
-    "message": "<error>Erro:</error> Digite seu endereço de e-mail"
-  },
-  "errorEnterValidEmailAddress": {
-    "message": "<error>Erro:</error> Digite um endereço de e-mail no formato correto, como nome@exemplo.com"
   },
   "needToConfirmEmailAddress": {
     "message": "Estamos prontos para publicar seu comentário, mas primeiro precisamos confirmar seu endereço de e-mail."

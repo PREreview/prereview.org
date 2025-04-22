@@ -14,9 +14,6 @@
   "sendYouToOrcid": {
     "message": "Vamos redirecionar você para o ORCID, onde será solicitado que faça login e conceda à PREreview acesso ao seu registro. Pode ser que você já tenha realizado essas etapas; o ORCID redirecionará você de volta à PREreview."
   },
-  "startNow": {
-    "message": "Começar agora"
-  },
   "cannotConnectRecord": {
     "message": "Desculpe, não foi possível conectar seu registro"
   },

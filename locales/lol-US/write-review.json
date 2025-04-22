@@ -2,9 +2,6 @@
   "prereviewOf": {
     "message": "crwdns4539:0{preprintTitle}crwdne4539:0"
   },
-  "or": {
-    "message": "crwdns5042:0crwdne5042:0"
-  },
   "havingProblems": {
     "message": "crwdns5060:0crwdne5060:0"
   },
@@ -59,9 +56,6 @@
   "useOfEmail": {
     "message": "crwdns3914:0crwdne3914:0"
   },
-  "back": {
-    "message": "crwdns3920:0crwdne3920:0"
-  },
   "howWouldYouLikeToStart": {
     "message": "crwdns5044:0crwdne5044:0"
   },
@@ -84,13 +78,10 @@
     "message": "crwdns5056:0crwdne5056:0"
   },
   "pasteYourReview": {
-    "message": "crwdns4974:0crwdne4974:0"
+    "message": "crwdns5878:0crwdne5878:0"
   },
   "writeYourReview": {
-    "message": "crwdns4984:0crwdne4984:0"
-  },
-  "thereIsAProblem": {
-    "message": "crwdns4976:0crwdne4976:0"
+    "message": "crwdns5880:0crwdne5880:0"
   },
   "selectTheNameError": {
     "message": "crwdns5186:0crwdne5186:0"
@@ -114,10 +105,10 @@
     "message": "crwdns5198:0crwdne5198:0"
   },
   "pasteYourReviewError": {
-    "message": "crwdns4978:0crwdne4978:0"
+    "message": "crwdns5882:0crwdne5882:0"
   },
   "enterYourReviewError": {
-    "message": "crwdns4986:0crwdne4986:0"
+    "message": "crwdns5884:0crwdne5884:0"
   },
   "copyAndPasteReview": {
     "message": "crwdns4980:0crwdne4980:0"
@@ -188,12 +179,6 @@
   "yes": {
     "message": "crwdns3940:0crwdne3940:0"
   },
-  "saveAndContinueButton": {
-    "message": "crwdns4982:0crwdne4982:0"
-  },
-  "continueButton": {
-    "message": "crwdns3942:0crwdne3942:0"
-  },
   "enterName": {
     "message": "crwdns3946:0crwdne3946:0"
   },
@@ -205,12 +190,6 @@
   },
   "ableToChoseName": {
     "message": "crwdns3952:0crwdne3952:0"
-  },
-  "error": {
-    "message": "crwdns3954:0crwdne3954:0"
-  },
-  "backNav": {
-    "message": "crwdns3958:0crwdne3958:0"
   },
   "prereviewPublishedTitle": {
     "message": "crwdns3960:0crwdne3960:0"
@@ -406,12 +385,6 @@
   },
   "whatIsOrcid": {
     "message": "crwdns4834:0crwdne4834:0"
-  },
-  "startNowButton": {
-    "message": "crwdns4836:0crwdne4836:0"
-  },
-  "continueWord": {
-    "message": "crwdns4384:0crwdne4384:0"
   },
   "asYouHaveAlreadyStarted": {
     "message": "crwdns4434:0{preprintTitle}crwdne4434:0"

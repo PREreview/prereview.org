@@ -1,7 +1,4 @@
 {
-  "requestTitle": {
-    "message": "<error>Erro:</error> Qual preprint você gostaria que fosse avaliado?"
-  },
   "useDoiUrl": {
     "message": "Use o DOI ou URL do preprint."
   },
@@ -10,12 +7,6 @@
   },
   "whatIsDoiText": {
     "message": "Um <doi>DOI</doi> é um identificador único que você pode encontrar em muitos preprints. Por exemplo, {example} ou {exampleUrl}."
-  },
-  "errorSummaryTitle": {
-    "message": "Houve um problema"
-  },
-  "errorEnterPreprint": {
-    "message": "<error>Erro:</error> Digite o DOI ou URL do preprint"
   },
   "unsupportedPreprintTitle": {
     "message": "Desculpe, não aceitamos solicitações para este preprint"
@@ -166,11 +157,5 @@
   },
   "tryDoi": {
     "message": "Caso contrário, se o preprint tiver um DOI, tente usá-lo."
-  },
-  "continueButton": {
-    "message": "Continuar"
-  },
-  "back": {
-    "message": "Voltar"
   }
 }

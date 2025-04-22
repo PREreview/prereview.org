@@ -17,9 +17,6 @@
   "sendYouToSlack": {
     "message": "Vamos redirecionar você para o Slack, onde será solicitado que faça login na Comunidade Slack da PREreview e conceda à PREreview acesso à sua conta. Talvez você já tenha realizado essas etapas; o Slack redirecionará você de volta à PREreview."
   },
-  "startNow": {
-    "message": "Começar agora"
-  },
   "cannotConnect": {
     "message": "Desculpe, não foi possível conectar sua conta."
   },

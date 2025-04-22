@@ -2,9 +2,6 @@
   "prereviewOf": {
     "message": "Avaliação PREreview de “{preprintTitle}”"
   },
-  "or": {
-    "message": "ou"
-  },
   "havingProblems": {
     "message": "Desculpe, algo deu errado"
   },
@@ -59,9 +56,6 @@
   "useOfEmail": {
     "message": "Usaremos o e-mail apenas para entrar em contato sobre esta avaliação PREreview."
   },
-  "back": {
-    "message": "Voltar"
-  },
   "howWouldYouLikeToStart": {
     "message": "Como gostaria de iniciar sua avaliação PREreview?"
   },
@@ -83,15 +77,6 @@
   "weWillTemplate": {
     "message": "Ofereceremos um modelo básico, mas você pode avaliar do seu jeito."
   },
-  "pasteYourReview": {
-    "message": "<error>Erro:</error> Cole sua avaliação PREreview"
-  },
-  "writeYourReview": {
-    "message": "<error>Erro:</error> Escreva sua avaliação PREreview"
-  },
-  "thereIsAProblem": {
-    "message": "Houve um problema"
-  },
   "selectTheNameError": {
     "message": "Selecione o nome que deseja usar"
   },
@@ -112,12 +97,6 @@
   },
   "linkToPseudonym": {
     "message": "Vincularemos sua avaliação PREreview apenas a outras que também usam seu pseudônimo."
-  },
-  "pasteYourReviewError": {
-    "message": "<error>Erro:</error> Cole sua avaliação PREreview"
-  },
-  "enterYourReviewError": {
-    "message": "<error>Erro:</error> Insira sua avaliação PREreview"
   },
   "copyAndPasteReview": {
     "message": "Copie sua avaliação PREreview e cole aqui. Faremos o possível para manter a formatação."
@@ -188,12 +167,6 @@
   "yes": {
     "message": "Sim"
   },
-  "saveAndContinueButton": {
-    "message": "Salvar e continuar"
-  },
-  "continueButton": {
-    "message": "Continuar"
-  },
   "enterName": {
     "message": "Digite o nome da pessoa"
   },
@@ -205,12 +178,6 @@
   },
   "ableToChoseName": {
     "message": "A pessoa poderá escolher o nome publicado."
-  },
-  "error": {
-    "message": "Erro"
-  },
-  "backNav": {
-    "message": "Voltar"
   },
   "prereviewPublishedTitle": {
     "message": "Avaliação PREreview publicada"
@@ -406,12 +373,6 @@
   },
   "whatIsOrcid": {
     "message": "Um <link>ORCID iD</link> é um identificador único que diferencia você de outras pessoas com o mesmo nome ou nome semelhante."
-  },
-  "startNowButton": {
-    "message": "Começar agora"
-  },
-  "continueWord": {
-    "message": "Continuar"
   },
   "asYouHaveAlreadyStarted": {
     "message": "Como você já começou uma avaliação PREreview de <cite>{preprintTitle}</cite>, vamos para a próxima etapa para que possa continuar."

@@ -44,9 +44,6 @@
   "backToPreprint": {
     "message": "Voltar para o preprint"
   },
-  "thereIsAProblem": {
-    "message": "Houve um problema"
-  },
   "selectNameYouWouldLikeToUse": {
     "message": "Selecione o nome que gostaria de usar"
   },
@@ -92,13 +89,7 @@
   "orcidExplainer": {
     "message": "Um <orcidLinkAsDefinition>ORCID iD</orcidLinkAsDefinition> é um identificador único que distingue você de outras pessoas com o mesmo nome ou nome semelhante."
   },
-  "startNow": {
-    "message": "Começar agora"
-  },
   "asYouHaveAlreadyStarted": {
     "message": "Como você já começou, vamos para a próxima etapa para que possa continuar."
-  },
-  "continueWord": {
-    "message": "Continuar"
   }
 }

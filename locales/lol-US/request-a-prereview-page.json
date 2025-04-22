@@ -1,6 +1,6 @@
 {
   "requestTitle": {
-    "message": "crwdns4512:0crwdne4512:0"
+    "message": "crwdns5852:0crwdne5852:0"
   },
   "useDoiUrl": {
     "message": "crwdns4514:0crwdne4514:0"
@@ -11,11 +11,8 @@
   "whatIsDoiText": {
     "message": "crwdns4518:0{example}crwdnd4518:0{exampleUrl}crwdne4518:0"
   },
-  "errorSummaryTitle": {
-    "message": "crwdns4520:0crwdne4520:0"
-  },
   "errorEnterPreprint": {
-    "message": "crwdns4522:0crwdne4522:0"
+    "message": "crwdns5854:0crwdne5854:0"
   },
   "unsupportedPreprintTitle": {
     "message": "crwdns4508:0crwdne4508:0"
@@ -166,11 +163,5 @@
   },
   "tryDoi": {
     "message": "crwdns4504:0crwdne4504:0"
-  },
-  "continueButton": {
-    "message": "crwdns4524:0crwdne4524:0"
-  },
-  "back": {
-    "message": "crwdns4506:0crwdne4506:0"
   }
 }

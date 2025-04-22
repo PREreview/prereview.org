@@ -146,23 +146,17 @@
   "setLanguagesVisibility": {
     "message": "crwdns4693:0crwdne4693:0"
   },
-  "back": {
-    "message": "crwdns5251:0crwdne5251:0"
-  },
   "uploadAnAvatar": {
-    "message": "crwdns5253:0crwdne5253:0"
-  },
-  "thereIsAProblem": {
-    "message": "crwdns5255:0crwdne5255:0"
+    "message": "crwdns5856:0crwdne5856:0"
   },
   "selectImageError": {
-    "message": "crwdns5257:0crwdne5257:0"
+    "message": "crwdns5858:0crwdne5858:0"
   },
   "imageTypeError": {
-    "message": "crwdns5259:0crwdne5259:0"
+    "message": "crwdns5860:0crwdne5860:0"
   },
   "imageSizeError": {
-    "message": "crwdns5261:0size={size}crwdne5261:0"
+    "message": "crwdns5862:0size={size}crwdne5862:0"
   },
   "youCanUploadAvatar": {
     "message": "crwdns5263:0size={size}crwdne5263:0"
@@ -185,17 +179,11 @@
   "removeAvatarButton": {
     "message": "crwdns5275:0crwdne5275:0"
   },
-  "saveAndContinueButton": {
-    "message": "crwdns5277:0crwdne5277:0"
-  },
   "whatCareerStage": {
-    "message": "crwdns5359:0crwdne5359:0"
+    "message": "crwdns5864:0crwdne5864:0"
   },
   "selectCareerStageError": {
-    "message": "crwdns5361:0crwdne5361:0"
-  },
-  "or": {
-    "message": "crwdns5363:0crwdne5363:0"
+    "message": "crwdns5866:0crwdne5866:0"
   },
   "preferNotToSay": {
     "message": "crwdns5365:0crwdne5365:0"
@@ -228,13 +216,13 @@
     "message": "crwdns5399:0crwdne5399:0"
   },
   "whatEmailAddress": {
-    "message": "crwdns5401:0crwdne5401:0"
+    "message": "crwdns5868:0crwdne5868:0"
   },
   "enterEmailAddressError": {
-    "message": "crwdns5403:0crwdne5403:0"
+    "message": "crwdns5870:0crwdne5870:0"
   },
   "enterEmailAddressFormatError": {
-    "message": "crwdns5405:0crwdne5405:0"
+    "message": "crwdns5872:0crwdne5872:0"
   },
   "usedToContactYouAboutYourAccountAndPrereviews": {
     "message": "crwdns5407:0crwdne5407:0"
@@ -252,10 +240,10 @@
     "message": "crwdns5415:0crwdne5415:0"
   },
   "happyTakeRequests": {
-    "message": "crwdns5417:0crwdne5417:0"
+    "message": "crwdns5874:0crwdne5874:0"
   },
   "selectHappyTakeRequestsError": {
-    "message": "crwdns5419:0crwdne5419:0"
+    "message": "crwdns5876:0crwdne5876:0"
   },
   "seeHappyTakeRequests": {
     "message": "crwdns5421:0crwdne5421:0"

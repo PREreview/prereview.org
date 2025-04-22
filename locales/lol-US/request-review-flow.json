@@ -44,9 +44,6 @@
   "backToPreprint": {
     "message": "crwdns5519:0crwdne5519:0"
   },
-  "thereIsAProblem": {
-    "message": "crwdns5521:0crwdne5521:0"
-  },
   "selectNameYouWouldLikeToUse": {
     "message": "crwdns5523:0crwdne5523:0"
   },
@@ -92,13 +89,7 @@
   "orcidExplainer": {
     "message": "crwdns5551:0crwdne5551:0"
   },
-  "startNow": {
-    "message": "crwdns5553:0crwdne5553:0"
-  },
   "asYouHaveAlreadyStarted": {
     "message": "crwdns5555:0crwdne5555:0"
-  },
-  "continueWord": {
-    "message": "crwdns5557:0crwdne5557:0"
   }
 }

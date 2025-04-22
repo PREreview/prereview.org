@@ -53,9 +53,6 @@
   "orcidExplainer": {
     "message": "crwdns5568:0crwdne5568:0"
   },
-  "startNow": {
-    "message": "crwdns5570:0crwdne5570:0"
-  },
   "beforeYouStart": {
     "message": "crwdns5572:0crwdne5572:0"
   },
@@ -67,9 +64,6 @@
   },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
     "message": "crwdns5439:0crwdne5439:0"
-  },
-  "continueButton": {
-    "message": "crwdns4719:0crwdne4719:0"
   },
   "sorryHavingProblems": {
     "message": "crwdns4721:0crwdne4721:0"
@@ -112,9 +106,6 @@
   },
   "whatIsYourEmailAddress": {
     "message": "crwdns4789:0crwdne4789:0"
-  },
-  "error": {
-    "message": "crwdns4791:0crwdne4791:0"
   },
   "enterYourEmailAddress": {
     "message": "crwdns4793:0crwdne4793:0"

@@ -146,24 +146,6 @@
   "setLanguagesVisibility": {
     "message": "Definir visibilidade de <visuallyHidden>idiomas</visuallyHidden>"
   },
-  "back": {
-    "message": "Voltar"
-  },
-  "uploadAnAvatar": {
-    "message": "<error>Erro:</error> Enviar imagem de perfil"
-  },
-  "thereIsAProblem": {
-    "message": "Há um problema"
-  },
-  "selectImageError": {
-    "message": "<error>Erro:</error> Selecionar imagem"
-  },
-  "imageTypeError": {
-    "message": "<error>Erro:</error> O arquivo selecionado deve ser AVIF, HEIC, JPG, PNG ou WebP"
-  },
-  "imageSizeError": {
-    "message": "<error>Erro:</error> O arquivo selecionado deve ter menos de {size, number} MB"
-  },
   "youCanUploadAvatar": {
     "message": "Você pode enviar uma foto ou imagem para usar como sua imagem de perfil. O arquivo selecionado deve ter menos de {size, number}&nbsp;MB."
   },
@@ -184,18 +166,6 @@
   },
   "removeAvatarButton": {
     "message": "Remover imagem de perfil"
-  },
-  "saveAndContinueButton": {
-    "message": "Salvar e continuar"
-  },
-  "whatCareerStage": {
-    "message": "<error>Erro:</error> Em que etapa de carreira você está?"
-  },
-  "selectCareerStageError": {
-    "message": "<error>Erro:</error> Selecione a etapa de carreira em que você está"
-  },
-  "or": {
-    "message": "ou"
   },
   "preferNotToSay": {
     "message": "Prefiro não dizer"
@@ -227,15 +197,6 @@
   "willNotShareThem": {
     "message": "Não compartilharemos com mais ninguém."
   },
-  "whatEmailAddress": {
-    "message": "<error>Erro:</error> Qual é seu endereço de e-mail?"
-  },
-  "enterEmailAddressError": {
-    "message": "<error>Erro:</error> Digite seu endereço de e-mail"
-  },
-  "enterEmailAddressFormatError": {
-    "message": "<error>Erro:</error> Digite um endereço de e-mail no formato correto, como nome@exemplo.com"
-  },
   "usedToContactYouAboutYourAccountAndPrereviews": {
     "message": "Usaremos apenas para entrar em contato com você sobre sua conta e avaliações PREreview."
   },
@@ -250,12 +211,6 @@
   },
   "seeLocation": {
     "message": "Quem pode ver sua localização?"
-  },
-  "happyTakeRequests": {
-    "message": "<error>Erro:</error> Você está disponível para receber solicitações de avaliação PREreview?"
-  },
-  "selectHappyTakeRequestsError": {
-    "message": "<error>Erro:</error> Selecione sim se estiver disponível para aceitar solicitações de avaliação PREreview"
   },
   "seeHappyTakeRequests": {
     "message": "Quem pode ver se você está disponível para solicitações de avaliação?"

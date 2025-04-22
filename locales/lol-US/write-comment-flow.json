@@ -2,9 +2,6 @@
   "writeCommentTitle": {
     "message": "crwdns4172:0crwdne4172:0"
   },
-  "back": {
-    "message": "crwdns4174:0crwdne4174:0"
-  },
   "backToPrereview": {
     "message": "crwdns4176:0crwdne4176:0"
   },
@@ -23,15 +20,6 @@
   "whatIsOrcid": {
     "message": "crwdns4186:0crwdne4186:0"
   },
-  "startNowButton": {
-    "message": "crwdns4188:0crwdne4188:0"
-  },
-  "continueButton": {
-    "message": "crwdns4190:0crwdne4190:0"
-  },
-  "saveContinueButton": {
-    "message": "crwdns4192:0crwdne4192:0"
-  },
   "reloadPageButton": {
     "message": "crwdns4194:0crwdne4194:0"
   },
@@ -39,19 +27,16 @@
     "message": "crwdns4196:0{preprint}crwdne4196:0"
   },
   "enterYourCommentTitle": {
-    "message": "crwdns4198:0crwdne4198:0"
-  },
-  "errorSummaryHeading": {
-    "message": "crwdns4200:0crwdne4200:0"
+    "message": "crwdns5824:0crwdne5824:0"
   },
   "errorEnterComment": {
-    "message": "crwdns4202:0crwdne4202:0"
+    "message": "crwdns5826:0crwdne5826:0"
   },
   "whatNameTitle": {
-    "message": "crwdns4204:0crwdne4204:0"
+    "message": "crwdns5828:0crwdne5828:0"
   },
   "errorSelectName": {
-    "message": "crwdns4206:0crwdne4206:0"
+    "message": "crwdns5830:0crwdne5830:0"
   },
   "whichNameTip": {
     "message": "crwdns5449:0crwdne5449:0"
@@ -72,13 +57,13 @@
     "message": "crwdns4218:0crwdne4218:0"
   },
   "competingInterestsTitle": {
-    "message": "crwdns4220:0crwdne4220:0"
+    "message": "crwdns5832:0crwdne5832:0"
   },
   "errorCompetingInterests": {
-    "message": "crwdns4222:0crwdne4222:0"
+    "message": "crwdns5834:0crwdne5834:0"
   },
   "errorCompetingInterestsDetails": {
-    "message": "crwdns4224:0crwdne4224:0"
+    "message": "crwdns5836:0crwdne5836:0"
   },
   "competingInterestsTip": {
     "message": "crwdns4490:0crwdne4490:0"
@@ -120,10 +105,10 @@
     "message": "crwdns4250:0crwdne4250:0"
   },
   "codeOfConductTitle": {
-    "message": "crwdns4252:0crwdne4252:0"
+    "message": "crwdns5838:0crwdne5838:0"
   },
   "errorFollowingCodeOfConduct": {
-    "message": "crwdns4254:0crwdne4254:0"
+    "message": "crwdns5840:0crwdne5840:0"
   },
   "codeOfConductTip": {
     "message": "crwdns4256:0crwdne4256:0"
@@ -174,13 +159,13 @@
     "message": "crwdns4286:0crwdne4286:0"
   },
   "contactDetailsTitle": {
-    "message": "crwdns4326:0crwdne4326:0"
+    "message": "crwdns5842:0crwdne5842:0"
   },
   "errorEnterEmailAddress": {
-    "message": "crwdns4328:0crwdne4328:0"
+    "message": "crwdns5844:0crwdne5844:0"
   },
   "errorEnterValidEmailAddress": {
-    "message": "crwdns4330:0crwdne4330:0"
+    "message": "crwdns5846:0crwdne5846:0"
   },
   "needToConfirmEmailAddress": {
     "message": "crwdns4332:0crwdne4332:0"
