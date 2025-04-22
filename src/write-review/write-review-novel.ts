@@ -208,7 +208,7 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User, locale:
                 ${E.isLeft(form.novel)
                   ? html`
                       <div class="error-message" id="novel-error">
-                        <span class="visually-hidden">Error:</span>
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                         ${match(form.novel.left)
                           .with({ _tag: 'MissingE' }, () => t('selectAdvanceKnowledge')())
                           .exhaustive()}

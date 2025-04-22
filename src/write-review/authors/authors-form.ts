@@ -53,7 +53,7 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: Us
                 ${E.isLeft(form.moreAuthors)
                   ? html`
                       <div class="error-message" id="more-authors-error">
-                        <span class="visually-hidden">Error:</span>
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                         ${match(form.moreAuthors.left)
                           .with({ _tag: 'MissingE' }, t('write-review', 'selectYesIfYouReviewedWithSomeoneElse'))
                           .exhaustive()}

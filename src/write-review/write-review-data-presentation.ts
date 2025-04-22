@@ -212,7 +212,7 @@ function dataPresentationForm(
                 ${E.isLeft(form.dataPresentation)
                   ? html`
                       <div class="error-message" id="data-presentation-error">
-                        <span class="visually-hidden">Error:</span>
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                         ${match(form.dataPresentation.left)
                           .with({ _tag: 'MissingE' }, t('selectIfDataPresentationsWellSuited'))
                           .exhaustive()}

@@ -70,7 +70,7 @@ export function personaForm({
             ${E.isLeft(form.persona)
               ? html`
                   <div class="error-message" id="persona-error">
-                    <span class="visually-hidden">Error:</span>
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${match(form.persona.left)
                       .with({ _tag: 'MissingE' }, t('selectTheNameYouWouldLikeToUse'))
                       .exhaustive()}

@@ -62,7 +62,7 @@ export function enterEmailAddressForm({
               ${E.isLeft(form.useInvitedAddress)
                 ? html`
                     <div class="error-message" id="use-invited-address-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                       ${match(form.useInvitedAddress.left)
                         .with({ _tag: 'MissingE' }, t('selectTheEmailAddressYouWouldLikeToUse'))
                         .exhaustive()}
