@@ -271,7 +271,7 @@ function startPage({
           `}
 
       <a href="${format(authorInviteStartMatch.formatter, { id: inviteId })}" role="button" draggable="false"
-        >${t('startNow')()}</a
+        >${translate(locale, 'forms', 'startButton')()}</a
       >
     `,
     canonical: format(authorInviteMatch.formatter, { id: inviteId }),

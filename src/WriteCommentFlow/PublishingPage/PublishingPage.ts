@@ -25,7 +25,7 @@ export const PublishingPage = ({ commentId, locale }: { commentId: Uuid.Uuid; lo
 
         <div hidden>
           <a href="${Routes.WriteCommentPublished.href({ commentId })}" class="button"
-            >${translate(locale, 'write-comment-flow', 'continueButton')()}</a
+            >${translate(locale, 'forms', 'continueButton')()}</a
           >
         </div>
       </poll-redirect>

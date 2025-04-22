@@ -161,7 +161,7 @@ function introductionMatchesForm(
     content: html`
       <nav>
         <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${t('backNav')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 
@@ -174,7 +174,7 @@ function introductionMatchesForm(
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${E.isLeft(form.introductionMatches)
                       ? html`
@@ -209,7 +209,7 @@ function introductionMatchesForm(
                 ${E.isLeft(form.introductionMatches)
                   ? html`
                       <div class="error-message" id="introduction-matches-error">
-                        <span class="visually-hidden">${t('error')()}:</span>
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                         ${match(form.introductionMatches.left)
                           .with({ _tag: 'MissingE' }, () => t('selectIntroductionExplains')())
                           .exhaustive()}
@@ -309,7 +309,7 @@ ${match(form.introductionMatchesNoDetails)
                     </div>
                   </li>
                   <li>
-                    <span>${t('or')()}</span>
+                    <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
                     <label>
                       <input
                         name="introductionMatches"
@@ -327,7 +327,7 @@ ${match(form.introductionMatchesNoDetails)
             </conditional-inputs>
           </div>
 
-          <button>${t('saveAndContinueButton')()}</button>
+          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
         </form>
       </main>
     `,

@@ -200,7 +200,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, locale: S
             ${E.isLeft(form.reviewType)
               ? html`
                   <div class="error-message" id="review-type-error">
-                    <span class="visually-hidden">${t('error')()}:</span>
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${match(form.reviewType.left)
                       .with({ _tag: 'MissingE' }, () => t('selectHowToStart')())
                       .exhaustive()}
@@ -241,7 +241,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, locale: S
                 <p id="review-type-tip-freeform" role="note">${t('weWillTemplate')()}</p>
               </li>
               <li>
-                <span>${t('or')()}</span>
+                <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
                 <label>
                   <input
                     name="reviewType"
@@ -258,7 +258,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, locale: S
           </fieldset>
         </div>
 
-        <button>${t('continueButton')()}</button>
+        <button>${translate(locale, 'forms', 'continueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

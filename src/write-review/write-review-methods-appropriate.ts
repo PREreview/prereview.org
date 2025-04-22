@@ -181,7 +181,7 @@ function methodsAppropriateForm(
     content: html`
       <nav>
         <a href="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${t('backNav')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 
@@ -194,7 +194,7 @@ function methodsAppropriateForm(
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${E.isLeft(form.methodsAppropriate)
                       ? html`
@@ -229,7 +229,7 @@ function methodsAppropriateForm(
                 ${E.isLeft(form.methodsAppropriate)
                   ? html`
                       <div class="error-message" id="methods-appropriate-error">
-                        <span class="visually-hidden">${t('error')()}:</span>
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                         ${match(form.methodsAppropriate.left)
                           .with({ _tag: 'MissingE' }, () => t('selectMethodsWellSuited')())
                           .exhaustive()}
@@ -415,7 +415,7 @@ ${match(form.methodsAppropriateInappropriateDetails)
                     </div>
                   </li>
                   <li>
-                    <span>${t('or')()}</span>
+                    <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
                     <label>
                       <input
                         name="methodsAppropriate"
@@ -433,7 +433,7 @@ ${match(form.methodsAppropriateInappropriateDetails)
             </conditional-inputs>
           </div>
 
-          <button>${t('saveAndContinueButton')()}</button>
+          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
         </form>
       </main>
     `,

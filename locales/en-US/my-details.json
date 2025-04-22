@@ -149,23 +149,17 @@
   "setLanguagesVisibility": {
     "message": "Set <visuallyHidden>languages</visuallyHidden> visibility"
   },
-  "back": {
-    "message": "Back"
-  },
   "uploadAnAvatar": {
-    "message": "<error>Error:</error> Upload an avatar"
-  },
-  "thereIsAProblem": {
-    "message": "There is a problem"
+    "message": "Upload an avatar"
   },
   "selectImageError": {
-    "message": "<error>Error:</error> Select an image"
+    "message": "Select an image"
   },
   "imageTypeError": {
-    "message": "<error>Error:</error> The selected file must be a AVIF, HEIC, JPG, PNG or WebP"
+    "message": "The selected file must be a AVIF, HEIC, JPG, PNG or WebP"
   },
   "imageSizeError": {
-    "message": "<error>Error:</error> The selected file must be smaller than {size, number} MB"
+    "message": "The selected file must be smaller than {size, number} MB"
   },
   "youCanUploadAvatar": {
     "message": "You can upload a photo or image to use as your avatar. The selected file must be smaller than {size, number} MB."
@@ -188,17 +182,11 @@
   "removeAvatarButton": {
     "message": "Remove avatar"
   },
-  "saveAndContinueButton": {
-    "message": "Save and continue"
-  },
   "whatCareerStage": {
-    "message": "<error>Error:</error> What career stage are you at?"
+    "message": "What career stage are you at?"
   },
   "selectCareerStageError": {
-    "message": "<error>Error:</error> Select which career stage you are at"
-  },
-  "or": {
-    "message": "or"
+    "message": "Select which career stage you are at"
   },
   "preferNotToSay": {
     "message": "Prefer not to say"
@@ -231,13 +219,13 @@
     "message": "We won’t share them with anyone else."
   },
   "whatEmailAddress": {
-    "message": "<error>Error:</error> What is your email address?"
+    "message": "What is your email address?"
   },
   "enterEmailAddressError": {
-    "message": "<error>Error:</error> Enter your email address"
+    "message": "Enter your email address"
   },
   "enterEmailAddressFormatError": {
-    "message": "<error>Error:</error> Enter an email address in the correct format, like name@example.com"
+    "message": "Enter an email address in the correct format, like name@example.com"
   },
   "usedToContactYouAboutYourAccountAndPrereviews": {
     "message": "We’ll only use this to contact you about your account and PREreviews."
@@ -255,10 +243,10 @@
     "message": "Who can see your location?"
   },
   "happyTakeRequests": {
-    "message": "<error>Error:</error> Are you happy to take requests for a PREreview?"
+    "message": "Are you happy to take requests for a PREreview?"
   },
   "selectHappyTakeRequestsError": {
-    "message": "<error>Error:</error> Select yes if you are happy to take requests for a PREreview"
+    "message": "Select yes if you are happy to take requests for a PREreview"
   },
   "seeHappyTakeRequests": {
     "message": "Who can see if you are open for review requests?"

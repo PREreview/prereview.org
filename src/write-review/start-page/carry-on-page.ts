@@ -32,7 +32,7 @@ export const carryOnPage = (preprint: PreprintTitle, form: Form, locale: Support
       </p>
 
       <a href="${format(nextFormMatch(form).formatter, { id: preprint.id })}" role="button" draggable="false"
-        >${t('write-review', 'continueWord')()}</a
+        >${t('forms', 'continueButton')()}</a
       >
     `,
     canonical: format(writeReviewStartMatch.formatter, { id: preprint.id }),

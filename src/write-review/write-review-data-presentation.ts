@@ -183,7 +183,7 @@ function dataPresentationForm(
     content: html`
       <nav>
         <a href="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${t('back')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 
@@ -390,7 +390,7 @@ ${match(form.dataPresentationInappropriateUnclearDetails)
                     </div>
                   </li>
                   <li>
-                    <span>${t('or')()}</span>
+                    <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
                     <label>
                       <input
                         name="dataPresentation"

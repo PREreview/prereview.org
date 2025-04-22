@@ -11,7 +11,7 @@ export const createFormPage = (languages: Option.Option<Languages>, locale: Supp
   PageResponse({
     title: plainText(translate(locale, 'my-details', 'whatLanguages')()),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'my-details', 'back')()}</span></a
+      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
     main: html`
       <form method="post" action="${format(changeLanguagesMatch.formatter, {})}" novalidate>
@@ -27,7 +27,7 @@ export const createFormPage = (languages: Option.Option<Languages>, locale: Supp
             .exhaustive()}
         />
 
-        <button>${translate(locale, 'my-details', 'saveAndContinueButton')()}</button>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

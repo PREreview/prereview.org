@@ -17,7 +17,7 @@ export const notAPreprintPage = (locale: SupportedLocale) =>
       <p>${rawHtml(translate(locale, 'request-a-prereview-page', 'isAPreprint')({ contact: mailToHelp }))}</p>
 
       <a href="${format(requestAPrereviewMatch.formatter, {})}" class="button"
-        >${translate(locale, 'request-a-prereview-page', 'back')()}</a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
   })

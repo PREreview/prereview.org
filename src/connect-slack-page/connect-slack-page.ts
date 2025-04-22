@@ -29,7 +29,7 @@ export const connectSlackPage = (locale: SupportedLocale) =>
       <p>${translate(locale, 'connect-slack-page', 'sendYouToSlack')()}</p>
 
       <a href="${format(connectSlackStartMatch.formatter, {})}" role="button" draggable="false"
-        >${translate(locale, 'connect-slack-page', 'startNow')()}</a
+        >${translate(locale, 'forms', 'startButton')()}</a
       >
     `,
   })

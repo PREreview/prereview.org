@@ -14,9 +14,6 @@
   "sendYouToOrcid": {
     "message": "We’ll send you to ORCID, where they will ask you to log in and grant PREreview access to your record there. You may have already done these steps, and ORCID will return you to PREreview."
   },
-  "startNow": {
-    "message": "Start now"
-  },
   "cannotConnectRecord": {
     "message": "Sorry, we can’t connect your record"
   },

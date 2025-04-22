@@ -1,6 +1,6 @@
 {
   "requestTitle": {
-    "message": "<error>Error:</error> Which preprint would you like reviewed?"
+    "message": "Which preprint would you like reviewed?"
   },
   "useDoiUrl": {
     "message": "Use the preprint DOI or URL."
@@ -11,11 +11,8 @@
   "whatIsDoiText": {
     "message": "A <doi>DOI</doi> is a unique identifier that you can find on many preprints. For example, {example} or {exampleUrl}."
   },
-  "errorSummaryTitle": {
-    "message": "There is a problem"
-  },
   "errorEnterPreprint": {
-    "message": "<error>Error:</error> Enter the preprint DOI or URL"
+    "message": "Enter the preprint DOI or URL"
   },
   "unsupportedPreprintTitle": {
     "message": "Sorry, we don’t support requests for this preprint"
@@ -166,11 +163,5 @@
   },
   "tryDoi": {
     "message": "Otherwise, if the preprint has a DOI, please try using that instead."
-  },
-  "continueButton": {
-    "message": "Continue"
-  },
-  "back": {
-    "message": "Back"
   }
 }

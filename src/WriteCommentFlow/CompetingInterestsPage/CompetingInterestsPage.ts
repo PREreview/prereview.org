@@ -1,9 +1,10 @@
-import { Either, Function, identity, Match, pipe } from 'effect'
+import { Either, Match, pipe } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
+import { errorPrefix } from '../../shared-translation-elements.js'
 import type { Uuid } from '../../types/index.js'
 import type * as CompetingInterestsForm from './CompetingInterestsForm.js'
 
@@ -18,16 +19,14 @@ export const CompetingInterestsPage = ({
 }) =>
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
-    title: plainText(
-      translate(
-        locale,
-        'write-comment-flow',
-        'competingInterestsTitle',
-      )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
+    title: pipe(
+      translate(locale, 'write-comment-flow', 'competingInterestsTitle')({ error: () => '' }),
+      errorPrefix(locale, form._tag === 'InvalidForm'),
+      plainText,
     ),
     nav: html`
       <a href="${Routes.WriteCommentChoosePersona.href({ commentId })}" class="back"
-        ><span>${translate(locale, 'write-comment-flow', 'back')()}</span></a
+        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
       >
     `,
     main: html`
@@ -35,7 +34,7 @@ export const CompetingInterestsPage = ({
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'write-comment-flow', 'errorSummaryHeading')()}</h2>
+                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   ${Either.isLeft(form.competingInterests)
                     ? html`
@@ -119,14 +118,13 @@ export const CompetingInterestsPage = ({
               ${form._tag === 'InvalidForm' && Either.isLeft(form.competingInterests)
                 ? html`
                     <div class="error-message" id="competing-interests-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                       ${pipe(
                         Match.value(form.competingInterests.left),
-                        Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorCompetingInterests')),
+                        Match.tag('Missing', () =>
+                          translate(locale, 'write-comment-flow', 'errorCompetingInterests')({ error: () => '' }),
+                        ),
                         Match.exhaustive,
-                        Function.apply({
-                          error: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                        }),
-                        rawHtml,
                       )}
                     </div>
                   `
@@ -180,16 +178,17 @@ export const CompetingInterestsPage = ({
                       ${form._tag === 'InvalidForm' && Either.isLeft(form.competingInterestsDetails)
                         ? html`
                             <div class="error-message" id="competing-interests-details-error">
+                              <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                               ${pipe(
                                 Match.value(form.competingInterestsDetails.left),
                                 Match.tag('Missing', () =>
-                                  translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails'),
+                                  translate(
+                                    locale,
+                                    'write-comment-flow',
+                                    'errorCompetingInterestsDetails',
+                                  )({ error: () => '' }),
                                 ),
                                 Match.exhaustive,
-                                Function.apply({
-                                  error: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                                }),
-                                rawHtml,
                               )}
                             </div>
                           `
@@ -219,7 +218,7 @@ ${pipe(
           </conditional-inputs>
         </div>
 
-        <button>${translate(locale, 'write-comment-flow', 'saveContinueButton')()}</button>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

@@ -96,7 +96,7 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
           `}
 
       <a href="${format(requestAPrereviewMatch.formatter, {})}" class="button"
-        >${translate(locale, 'request-a-prereview-page', 'back')()}</a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
   })

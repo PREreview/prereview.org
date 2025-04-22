@@ -1,4 +1,4 @@
-import { identity, type Option } from 'effect'
+import { pipe, type Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
@@ -7,6 +7,7 @@ import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeCareerStageMatch, myDetailsMatch } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 
 export const createFormPage = ({
   careerStage,
@@ -19,16 +20,20 @@ export const createFormPage = ({
 }) =>
   PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText(translate(locale, 'my-details', 'whatCareerStage')({ error: error ? identity : () => '' })),
+    title: pipe(
+      translate(locale, 'my-details', 'whatCareerStage')({ error: () => '' }),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'my-details', 'back')()}</span></a
+      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
     main: html`
       <form method="post" action="${format(changeCareerStageMatch.formatter, {})}" novalidate>
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'my-details', 'thereIsAProblem')()}</h2>
+                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   <li>
                     <a href="#career-stage-early"
@@ -49,7 +54,8 @@ export const createFormPage = ({
             ${error
               ? html`
                   <div class="error-message" id="career-stage-error">
-                    ${rawHtml(translate(locale, 'my-details', 'selectCareerStageError')({ error: visuallyHidden }))}
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                    ${rawHtml(translate(locale, 'my-details', 'selectCareerStageError')({ error: () => '' }))}
                   </div>
                 `
               : ''}
@@ -96,7 +102,7 @@ export const createFormPage = ({
                 </label>
               </li>
               <li>
-                <span>${translate(locale, 'my-details', 'or')()}</span>
+                <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
                 <label>
                   <input name="careerStage" type="radio" value="skip" />
                   <span>${translate(locale, 'my-details', 'preferNotToSay')()}</span>
@@ -106,12 +112,10 @@ export const createFormPage = ({
           </fieldset>
         </div>
 
-        <button>${translate(locale, 'my-details', 'saveAndContinueButton')()}</button>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',
     canonical: format(changeCareerStageMatch.formatter, {}),
     js: error ? ['error-summary.js'] : [],
   })
-
-const visuallyHidden = (text: string) => html`<span class="visually-hidden">${text}</span>`.toString()

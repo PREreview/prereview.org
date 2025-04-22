@@ -19,7 +19,7 @@ export const connectOrcidPage = (locale: SupportedLocale) =>
       <p>${translate(locale, 'connect-orcid', 'sendYouToOrcid')()}</p>
 
       <a href="${format(connectOrcidStartMatch.formatter, {})}" role="button" draggable="false"
-        >${translate(locale, 'connect-orcid', 'startNow')()}</a
+        >${translate(locale, 'forms', 'startButton')()}</a
       >
     `,
     canonical: format(connectOrcidMatch.formatter, {}),

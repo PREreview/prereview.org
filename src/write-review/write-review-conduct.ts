@@ -180,7 +180,7 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
               ${E.isLeft(form.conduct)
                 ? html`
                     <div class="error-message" id="conduct-error">
-                      <span class="visually-hidden">${t('write-review', 'error')()}</span>
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${match(form.conduct.left)
                         .with({ _tag: 'MissingE' }, t('write-review', 'confirmCodeOfConduct'))
                         .exhaustive()}

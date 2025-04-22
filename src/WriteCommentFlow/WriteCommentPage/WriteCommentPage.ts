@@ -164,7 +164,7 @@ export const WriteCommentPage = ({
           `}
 
       <a href="${Routes.WriteCommentStartNow.href({ id: prereview.id })}" role="button" draggable="false"
-        >${t('write-comment-flow', 'startNowButton')()}</a
+        >${t('forms', 'startButton')()}</a
       >
     `,
     canonical: Routes.WriteComment.href({ id: prereview.id }),

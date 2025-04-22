@@ -16,7 +16,7 @@ export const createFormPage = ({
   PageResponse({
     title: plainText(translate(locale, 'my-details', 'seeHappyTakeRequests')()),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'my-details', 'back')()}</span></a
+      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
     main: html`
       <form method="post" action="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}" novalidate>
@@ -65,7 +65,7 @@ export const createFormPage = ({
           </ol>
         </fieldset>
 
-        <button>${translate(locale, 'my-details', 'saveAndContinueButton')()}</button>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

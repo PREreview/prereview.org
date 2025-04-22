@@ -58,7 +58,7 @@ export function removeAuthorForm({
             ${E.isLeft(form.removeAuthor)
               ? html`
                   <div class="error-message" id="remove-author-error">
-                    <span class="visually-hidden">${t('write-review', 'error')()}</span>
+                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                     ${match(form.removeAuthor.left)
                       .with({ _tag: 'MissingE' }, () =>
                         t('write-review', 'selectYesToRemove')({ authorName: author.name }),

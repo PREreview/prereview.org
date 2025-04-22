@@ -116,7 +116,7 @@ function carryOnPage(inviteId: Uuid, invite: AssignedAuthorInvite, locale: Suppo
       <p>${t('asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep')()}</p>
 
       <a href="${format(nextFormMatch(invite).formatter, { id: inviteId })}" role="button" draggable="false"
-        >${t('continueButton')()}</a
+        >${translate(locale, 'forms', 'continueButton')()}</a
       >
     `,
     canonical: format(authorInviteStartMatch.formatter, { id: inviteId }),

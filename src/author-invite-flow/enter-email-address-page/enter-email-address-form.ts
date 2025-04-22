@@ -105,7 +105,7 @@ export function enterEmailAddressForm({
                       ${E.isLeft(form.otherEmailAddress)
                         ? html`
                             <div class="error-message" id="other-email-address-error">
-                              <span class="visually-hidden">${t('error')()}:</span>
+                              <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                               ${match(form.otherEmailAddress.left)
                                 .with({ _tag: 'MissingE' }, t('enterYourEmailAddress'))
                                 .with({ _tag: 'InvalidE' }, t('enterAnEmailAddressInTheCorrectFormat'))

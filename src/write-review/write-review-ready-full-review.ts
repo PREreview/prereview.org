@@ -161,7 +161,7 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
     content: html`
       <nav>
         <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${t('backNav')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 
@@ -174,7 +174,7 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${E.isLeft(form.readyFullReview)
                       ? html`
@@ -209,7 +209,7 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
                 ${E.isLeft(form.readyFullReview)
                   ? html`
                       <div class="error-message" id="ready-full-review-error">
-                        <span class="visually-hidden">${t('error')()}:</span>
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                         ${match(form.readyFullReview.left)
                           .with({ _tag: 'MissingE' }, () => t('selectReadyForAttention')())
                           .exhaustive()}
@@ -309,7 +309,7 @@ ${match(form.readyFullReviewNoDetails)
             </conditional-inputs>
           </div>
 
-          <button>${t('saveAndContinueButton')()}</button>
+          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
         </form>
       </main>
     `,

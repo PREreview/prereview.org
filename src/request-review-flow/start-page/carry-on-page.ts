@@ -22,7 +22,7 @@ export const carryOnPage = (locale: SupportedLocale, preprint: ReviewRequestPrep
       <p>${t('asYouHaveAlreadyStarted')()}</p>
 
       <a href="${format(requestReviewCheckMatch.formatter, { id: preprint })}" role="button" draggable="false"
-        >${t('continueWord')()}</a
+        >${translate(locale, 'forms', 'continueButton')()}</a
       >
     `,
     canonical: format(requestReviewStartMatch.formatter, { id: preprint }),

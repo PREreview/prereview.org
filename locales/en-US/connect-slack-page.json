@@ -17,9 +17,6 @@
   "sendYouToSlack": {
     "message": "We’ll send you to Slack, where they will ask you to log in to the PREreview Community Slack and grant PREreview access to your account there. You may have already done these steps, and Slack will return you to PREreview."
   },
-  "startNow": {
-    "message": "Start now"
-  },
   "cannotConnect": {
     "message": "Sorry, we can’t connect your account"
   },

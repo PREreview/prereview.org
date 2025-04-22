@@ -1,10 +1,11 @@
-import { identity } from 'effect'
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { homeMatch, requestAPrereviewMatch } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 import type * as Form from './form.js'
 
 export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: SupportedLocale) => {
@@ -13,16 +14,18 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
 
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText(t('request-a-prereview-page', 'requestTitle')({ error: error ? identity : () => '' })),
-    nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"
-      ><span>${t('request-a-prereview-page', 'back')()}</span></a
-    >`,
+    title: pipe(
+      t('request-a-prereview-page', 'requestTitle')({ error: () => '' }),
+      errorPrefix(locale, error),
+      plainText,
+    ),
+    nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
     main: html`
       <form method="post" action="${format(requestAPrereviewMatch.formatter, {})}" novalidate>
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${t('request-a-prereview-page', 'errorSummaryTitle')()}</h2>
+                <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   <li>
                     <a href="#preprint">${t('request-a-prereview-page', 'errorEnterPreprint')({ error: () => '' })}</a>
@@ -65,12 +68,8 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
           ${error
             ? html`
                 <div class="error-message" id="preprint-error">
-                  ${rawHtml(
-                    t(
-                      'request-a-prereview-page',
-                      'errorEnterPreprint',
-                    )({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
-                  )}
+                  <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                  ${t('request-a-prereview-page', 'errorEnterPreprint')({ error: () => '' })}
                 </div>
               `
             : ''}
@@ -87,7 +86,7 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
           />
         </div>
 
-        <button>${t('request-a-prereview-page', 'continueButton')()}</button>
+        <button>${t('forms', 'continueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

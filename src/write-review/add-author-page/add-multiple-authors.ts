@@ -63,7 +63,7 @@ Minerva McGonagall mcgonagall@example.com
           ${E.isLeft(form.authors)
             ? html`
                 <div class="error-message" id="authors-error">
-                  <span class="visually-hidden">${t('error')()}:</span>
+                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${match(form.authors.left)
                     .with({ _tag: 'InvalidE' }, () => t('namesAndEmailAddressInvalidFormat')())
                     .with({ _tag: 'MissingE' }, () => t('namesAndEmailAddressMissing')())

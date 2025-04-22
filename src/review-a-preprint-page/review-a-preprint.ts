@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { identity } from 'effect'
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -9,6 +9,7 @@ import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { homeMatch, reviewAPreprintMatch } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 
 export type SubmittedWhichPreprint = E.Either<InvalidE, Doi>
 export type UnsubmittedWhichPreprint = E.Right<undefined>
@@ -20,16 +21,14 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
 
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText(t('review-a-preprint', 'whichPreprint')({ error: error ? identity : () => '' })),
-    nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"
-      ><span>${t('review-a-preprint', 'back')()}</span></a
-    >`,
+    title: pipe(t('review-a-preprint', 'whichPreprint')({ error: () => '' }), errorPrefix(locale, error), plainText),
+    nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
     main: html`
       <form method="post" action="${format(reviewAPreprintMatch.formatter, {})}" novalidate>
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${t('review-a-preprint', 'errorSummaryTitle')()}</h2>
+                <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   ${E.isLeft(whichPreprint)
                     ? html`
@@ -82,10 +81,9 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
           ${error
             ? html`
                 <div class="error-message" id="preprint-error">
+                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${match(whichPreprint.left)
-                    .with({ _tag: 'InvalidE' }, () =>
-                      rawHtml(t('review-a-preprint', 'errorEnterPreprint')({ error: visuallyHidden })),
-                    )
+                    .with({ _tag: 'InvalidE' }, () => t('review-a-preprint', 'errorEnterPreprint')({ error: () => '' }))
                     .exhaustive()}
                 </div>
               `
@@ -106,7 +104,7 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
           />
         </div>
 
-        <button>${t('review-a-preprint', 'continueButton')()}</button>
+        <button>${t('forms', 'continueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',
@@ -114,5 +112,3 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
     js: error ? ['error-summary.js'] : [],
   })
 }
-
-const visuallyHidden = (s: string) => html`<span class="visually-hidden">${s}</span>`.toString()

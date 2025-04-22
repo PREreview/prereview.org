@@ -1,4 +1,4 @@
-import { identity } from 'effect'
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -8,6 +8,7 @@ import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeAvatarMatch, myDetailsMatch } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 
 export interface UploadAvatarForm {
   readonly avatar: E.Either<MissingE | WrongTypeE | TooBigE, unknown>
@@ -19,8 +20,10 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
 
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText(t('uploadAnAvatar')({ error: error ? identity : () => '' })),
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"><span>${t('back')()}</span></a>`,
+    title: pipe(t('uploadAnAvatar')({ error: () => '' }), errorPrefix(locale, error), plainText),
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
+      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+    >`,
     main: html`
       <single-use-form>
         <form
@@ -32,7 +35,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${E.isLeft(form.avatar)
                       ? html`
@@ -68,13 +71,12 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
             ${E.isLeft(form.avatar)
               ? html`
                   <div class="error-message" id="review-error">
-                    ${rawHtml(
-                      match(form.avatar.left)
-                        .with({ _tag: 'MissingE' }, () => t('selectImageError')({ error: visuallyHidden }))
-                        .with({ _tag: 'WrongTypeE' }, () => t('imageTypeError')({ error: visuallyHidden }))
-                        .with({ _tag: 'TooBigE' }, () => t('imageSizeError')({ error: visuallyHidden, size: 5 }))
-                        .exhaustive(),
-                    )}
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                    ${match(form.avatar.left)
+                      .with({ _tag: 'MissingE' }, () => t('selectImageError')({ error: () => '' }))
+                      .with({ _tag: 'WrongTypeE' }, () => t('imageTypeError')({ error: () => '' }))
+                      .with({ _tag: 'TooBigE' }, () => t('imageSizeError')({ error: () => '', size: 5 }))
+                      .exhaustive()}
                   </div>
                 `
               : ''}
@@ -89,7 +91,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
             />
           </div>
 
-          <button>${t('saveAndContinueButton')()}</button>
+          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
         </form>
       </single-use-form>
     `,
@@ -98,5 +100,3 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
     js: error ? ['error-summary.js', 'single-use-form.js'] : ['single-use-form.js'],
   })
 }
-
-const visuallyHidden = (text: string) => html`<span class="visually-hidden">${text}</span>`.toString()

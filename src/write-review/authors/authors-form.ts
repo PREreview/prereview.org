@@ -107,7 +107,7 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: Us
                         ${E.isLeft(form.moreAuthorsApproved)
                           ? html`
                               <div class="error-message" id="more-authors-approved-error">
-                                <span class="visually-hidden">${t('write-review', 'error')()}:</span>
+                                <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                                 ${match(form.moreAuthorsApproved.left)
                                   .with(
                                     { _tag: 'MissingE' },

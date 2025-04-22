@@ -168,7 +168,7 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User, locale:
     content: html`
       <nav>
         <a href="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${t('backNav')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 
@@ -177,7 +177,7 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User, locale:
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${E.isLeft(form.novel)
                       ? html`
@@ -364,7 +364,7 @@ ${match(form.novelNoDetails)
                     </div>
                   </li>
                   <li>
-                    <span>${t('or')()}</span>
+                    <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
                     <label>
                       <input
                         name="novel"
@@ -382,7 +382,7 @@ ${match(form.novelNoDetails)
             </conditional-inputs>
           </div>
 
-          <button>${t('saveAndContinueButton')()}</button>
+          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
         </form>
       </main>
     `,

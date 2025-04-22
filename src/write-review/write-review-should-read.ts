@@ -161,7 +161,7 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
     content: html`
       <nav>
         <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${t('backNav')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 
@@ -170,7 +170,7 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${E.isLeft(form.shouldRead)
                       ? html`
@@ -201,7 +201,7 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
                 ${E.isLeft(form.shouldRead)
                   ? html`
                       <div class="error-message" id="should-read-error">
-                        <span class="visually-hidden">${t('error')()}:</span>
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                         ${match(form.shouldRead.left)
                           .with({ _tag: 'MissingE' }, () => t('selectWouldRecommend')())
                           .exhaustive()}
@@ -293,7 +293,7 @@ ${match(form.shouldReadNoDetails)
             </conditional-inputs>
           </div>
 
-          <button>${t('saveAndContinueButton')()}</button>
+          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
         </form>
       </main>
     `,

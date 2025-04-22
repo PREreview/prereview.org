@@ -17,7 +17,7 @@ export const unsupportedDoiPage = (locale: SupportedLocale) =>
       <p>${rawHtml(translate(locale, 'review-a-preprint', 'doiIsForPreprint')({ contact: mailToHelp }))}</p>
 
       <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button"
-        >${translate(locale, 'review-a-preprint', 'back')()}</a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
   })

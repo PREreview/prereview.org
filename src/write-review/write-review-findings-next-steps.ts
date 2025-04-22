@@ -174,7 +174,7 @@ function findingsNextStepsForm(
     content: html`
       <nav>
         <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${t('backNav')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 
@@ -187,7 +187,7 @@ function findingsNextStepsForm(
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${E.isLeft(form.findingsNextSteps)
                       ? html`
@@ -222,7 +222,7 @@ function findingsNextStepsForm(
                 ${E.isLeft(form.findingsNextSteps)
                   ? html`
                       <div class="error-message" id="findings-next-steps-error">
-                        <span class="visually-hidden">${t('error')()}:</span>
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                         ${match(form.findingsNextSteps.left)
                           .with({ _tag: 'MissingE' }, () => t('selectClearDiscussion')())
                           .exhaustive()}
@@ -398,7 +398,7 @@ ${match(form.findingsNextStepsInadequatelyDetails)
                     </div>
                   </li>
                   <li>
-                    <span>${t('or')()}</span>
+                    <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
                     <label>
                       <input
                         name="findingsNextSteps"
@@ -416,7 +416,7 @@ ${match(form.findingsNextStepsInadequatelyDetails)
             </conditional-inputs>
           </div>
 
-          <button>${t('saveAndContinueButton')()}</button>
+          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
         </form>
       </main>
     `,

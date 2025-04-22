@@ -11,7 +11,7 @@ export const createFormPage = (researchInterests: Option.Option<ResearchInterest
   PageResponse({
     title: plainText(translate(locale, 'my-details', 'whatResearchInterests')()),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'my-details', 'back')()}</span></a
+      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
     main: html`
       <form method="post" action="${format(changeResearchInterestsMatch.formatter, {})}" novalidate>
@@ -24,7 +24,7 @@ ${match(researchInterests)
             .exhaustive()}</textarea
         >
 
-        <button>${translate(locale, 'my-details', 'saveAndContinueButton')()}</button>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

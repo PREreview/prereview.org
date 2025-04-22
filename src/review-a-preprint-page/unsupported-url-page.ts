@@ -19,7 +19,7 @@ export const unsupportedUrlPage = (locale: SupportedLocale) =>
       <p>${translate(locale, 'review-a-preprint', 'otherwiseUseDoi')()}</p>
 
       <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button"
-        >${translate(locale, 'review-a-preprint', 'back')()}</a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
   })

@@ -45,7 +45,7 @@ export const CarryOnPage = ({
       </p>
 
       <a href="${nextPage.href({ commentId })}" role="button" draggable="false"
-        >${translate(locale, 'write-comment-flow', 'continueButton')()}</a
+        >${translate(locale, 'forms', 'continueButton')()}</a
       >
     `,
     canonical: Routes.WriteCommentStartNow.href({ id: prereview.id }),

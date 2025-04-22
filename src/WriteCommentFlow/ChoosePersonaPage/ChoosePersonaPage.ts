@@ -1,9 +1,10 @@
-import { Either, Function, identity, Match, pipe } from 'effect'
+import { Either, Match, pipe } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
+import { errorPrefix } from '../../shared-translation-elements.js'
 import type { Uuid } from '../../types/index.js'
 import type { User } from '../../user.js'
 import type * as ChoosePersonaForm from './ChoosePersonaForm.js'
@@ -21,16 +22,14 @@ export const ChoosePersonaPage = ({
 }) =>
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
-    title: plainText(
-      translate(
-        locale,
-        'write-comment-flow',
-        'whatNameTitle',
-      )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
+    title: pipe(
+      translate(locale, 'write-comment-flow', 'whatNameTitle')({ error: () => '' }),
+      errorPrefix(locale, form._tag === 'InvalidForm'),
+      plainText,
     ),
     nav: html`
       <a href="${Routes.WriteCommentEnterComment.href({ commentId })}" class="back"
-        ><span>${translate(locale, 'write-comment-flow', 'back')()}</span></a
+        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
       >
     `,
     main: html`
@@ -38,7 +37,7 @@ export const ChoosePersonaPage = ({
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'write-comment-flow', 'errorSummaryHeading')()}</h2>
+                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   ${Either.isLeft(form.persona)
                     ? html`
@@ -100,12 +99,13 @@ export const ChoosePersonaPage = ({
             ${form._tag === 'InvalidForm' && Either.isLeft(form.persona)
               ? html`
                   <div class="error-message" id="persona-error">
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${pipe(
                       Match.value(form.persona.left),
-                      Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorSelectName')),
+                      Match.tag('Missing', () =>
+                        translate(locale, 'write-comment-flow', 'errorSelectName')({ error: () => '' }),
+                      ),
                       Match.exhaustive,
-                      Function.apply({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
-                      rawHtml,
                     )}
                   </div>
                 `
@@ -156,7 +156,7 @@ export const ChoosePersonaPage = ({
           </fieldset>
         </div>
 
-        <button>${translate(locale, 'write-comment-flow', 'saveContinueButton')()}</button>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

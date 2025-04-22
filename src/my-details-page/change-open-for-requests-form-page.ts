@@ -1,4 +1,4 @@
-import { identity, type Option } from 'effect'
+import { pipe, type Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
@@ -7,6 +7,7 @@ import type { IsOpenForRequests } from '../is-open-for-requests.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeOpenForRequestsMatch, myDetailsMatch } from '../routes.js'
+import { errorPrefix } from '../shared-translation-elements.js'
 
 export const createFormPage = ({
   locale,
@@ -19,16 +20,20 @@ export const createFormPage = ({
 }) =>
   PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText(translate(locale, 'my-details', 'happyTakeRequests')({ error: error ? identity : () => '' })),
+    title: pipe(
+      translate(locale, 'my-details', 'happyTakeRequests')({ error: () => '' }),
+      errorPrefix(locale, error),
+      plainText,
+    ),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'my-details', 'back')()}</span></a
+      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
     main: html`
       <form method="post" action="${format(changeOpenForRequestsMatch.formatter, {})}" novalidate>
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'my-details', 'thereIsAProblem')()}</h2>
+                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   <li>
                     <a href="#open-for-requests-yes"
@@ -52,9 +57,8 @@ export const createFormPage = ({
             ${error
               ? html`
                   <div class="error-message" id="open-for-requests-error">
-                    ${rawHtml(
-                      translate(locale, 'my-details', 'selectHappyTakeRequestsError')({ error: visuallyHidden }),
-                    )}
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                    ${translate(locale, 'my-details', 'selectHappyTakeRequestsError')({ error: () => '' })}
                   </div>
                 `
               : ''}
@@ -91,12 +95,10 @@ export const createFormPage = ({
           </fieldset>
         </div>
 
-        <button>${translate(locale, 'my-details', 'saveAndContinueButton')()}</button>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',
     canonical: format(changeOpenForRequestsMatch.formatter, {}),
     js: error ? ['error-summary.js'] : [],
   })
-
-const visuallyHidden = (text: string) => html`<span class="visually-hidden">${text}</span>`.toString()

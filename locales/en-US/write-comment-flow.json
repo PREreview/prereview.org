@@ -2,9 +2,6 @@
   "writeCommentTitle": {
     "message": "Write a comment"
   },
-  "back": {
-    "message": "Back"
-  },
   "backToPrereview": {
     "message": "Back to PREreview"
   },
@@ -23,15 +20,6 @@
   "whatIsOrcid": {
     "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name."
   },
-  "startNowButton": {
-    "message": "Start now"
-  },
-  "continueButton": {
-    "message": "Continue"
-  },
-  "saveContinueButton": {
-    "message": "Save and continue"
-  },
   "reloadPageButton": {
     "message": "Reload page"
   },
@@ -39,19 +27,16 @@
     "message": "As you’ve already started a comment on this PREreview of {preprint}, we’ll take you to the next step so you can carry on."
   },
   "enterYourCommentTitle": {
-    "message": "<error>Error:</error> Write your comment"
-  },
-  "errorSummaryHeading": {
-    "message": "There is a problem"
+    "message": "Write your comment"
   },
   "errorEnterComment": {
-    "message": "<error>Error:</error> Enter your comment"
+    "message": "Enter your comment"
   },
   "whatNameTitle": {
-    "message": "<error>Error:</error> What name would you like to use?"
+    "message": "What name would you like to use?"
   },
   "errorSelectName": {
-    "message": "<error>Error:</error> Select the name that you would like to use"
+    "message": "Select the name that you would like to use"
   },
   "whichNameTip": {
     "message": "You can choose between the name on your ORCID record or your PREreview pseudonym."
@@ -72,13 +57,13 @@
     "message": "We’ll only link your comment to others that also use your pseudonym."
   },
   "competingInterestsTitle": {
-    "message": "<error>Error:</error> Do you have any competing interests?"
+    "message": "Do you have any competing interests?"
   },
   "errorCompetingInterests": {
-    "message": "<error>Error:</error> Select yes if you have any competing interests"
+    "message": "Select yes if you have any competing interests"
   },
   "errorCompetingInterestsDetails": {
-    "message": "<error>Error:</error> Enter details of your competing interests"
+    "message": "Enter details of your competing interests"
   },
   "competingInterestsTip": {
     "message": "A competing interest is anything that could interfere with the objectivity of the comment on a PREreview."
@@ -120,10 +105,10 @@
     "message": "What are they?"
   },
   "codeOfConductTitle": {
-    "message": "<error>Error:</error> Code of Conduct"
+    "message": "Code of Conduct"
   },
   "errorFollowingCodeOfConduct": {
-    "message": "<error>Error:</error> Confirm that you are following the Code of Conduct"
+    "message": "Confirm that you are following the Code of Conduct"
   },
   "codeOfConductTip": {
     "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>."
@@ -174,13 +159,13 @@
     "message": "I’m following the Code of Conduct"
   },
   "contactDetailsTitle": {
-    "message": "<error>Error:</error> Contact details"
+    "message": "Contact details"
   },
   "errorEnterEmailAddress": {
-    "message": "<error>Error:</error> Enter your email address"
+    "message": "Enter your email address"
   },
   "errorEnterValidEmailAddress": {
-    "message": "<error>Error:</error> Enter an email address in the correct format, like name@example.com"
+    "message": "Enter an email address in the correct format, like name@example.com"
   },
   "needToConfirmEmailAddress": {
     "message": "We’re ready to publish your comment, but we need to confirm your email address first."

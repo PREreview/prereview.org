@@ -52,7 +52,7 @@ export function addAuthorForm({
           ${E.isLeft(form.name)
             ? html`
                 <div class="error-message" id="name-error">
-                  <span class="visually-hidden">${t('write-review', 'error')()}:</span>
+                  <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                   ${match(form.name.left).with({ _tag: 'MissingE' }, t('write-review', 'enterTheirName')).exhaustive()}
                 </div>
               `
@@ -81,7 +81,7 @@ export function addAuthorForm({
           ${E.isLeft(form.emailAddress)
             ? html`
                 <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">${t('write-review', 'error')()}:</span>
+                  <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                   ${match(form.emailAddress.left)
                     .with({ _tag: 'MissingE' }, t('write-review', 'enterTheirEmail'))
                     .with({ _tag: 'InvalidE' }, t('write-review', 'invalidEmail'))

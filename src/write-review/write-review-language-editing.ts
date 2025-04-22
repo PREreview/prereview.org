@@ -158,7 +158,7 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
     content: html`
       <nav>
         <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${t('backNav')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 
@@ -171,7 +171,7 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${E.isLeft(form.languageEditing)
                       ? html`
@@ -206,7 +206,7 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
                 ${E.isLeft(form.languageEditing)
                   ? html`
                       <div class="error-message" id="language-editing-error">
-                        <span class="visually-hidden">${t('error')()}:</span>
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                         ${match(form.languageEditing.left)
                           .with({ _tag: 'MissingE' }, () => t('selectBenefitFromEditing')())
                           .exhaustive()}
@@ -279,7 +279,7 @@ ${match(form.languageEditingYesDetails)
             </conditional-inputs>
           </div>
 
-          <button>${t('saveAndContinueButton')()}</button>
+          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
         </form>
       </main>
     `,

@@ -28,7 +28,7 @@ export function checkPage({
   return StreamlinePageResponse({
     title: pipe(t('checkYourRequest')(), plainText),
     nav: html`<a href="${format(requestReviewPersonaMatch.formatter, { id: preprint })}" class="back"
-      ><span>${t('back')()}</span></a
+      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
     main: html`
       <single-use-form>

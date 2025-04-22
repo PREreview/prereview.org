@@ -87,7 +87,7 @@ export function competingInterestsForm(
               ${E.isLeft(form.competingInterests)
                 ? html`
                     <div class="error-message" id="competing-interests-error">
-                      <span class="visually-hidden">${t('write-review', 'error')()}:</span>
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${match(form.competingInterests.left)
                         .with({ _tag: 'MissingE' }, () =>
                           t('write-review', 'selectYesIfCompetingInterest')({ otherAuthors }),
@@ -134,7 +134,7 @@ export function competingInterestsForm(
                       ${E.isLeft(form.competingInterestsDetails)
                         ? html`
                             <div class="error-message" id="competing-interests-details-error">
-                              <span class="visually-hidden">${t('write-review', 'error')()}:</span>
+                              <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                               ${match(form.competingInterestsDetails.left)
                                 .with({ _tag: 'MissingE' }, () =>
                                   t('write-review', 'competingInterestDetails')({ otherAuthors }),

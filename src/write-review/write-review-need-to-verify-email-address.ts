@@ -136,7 +136,7 @@ function needToVerifyEmailAddressMessage({
     content: html`
       <nav>
         <a href="${format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${t('back')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 

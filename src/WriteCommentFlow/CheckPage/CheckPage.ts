@@ -25,7 +25,7 @@ export const CheckPage = ({
   StreamlinePageResponse({
     title: plainText(translate(locale, 'write-comment-flow', 'checkTitle')()),
     nav: html` <a href="${Routes.WriteCommentCodeOfConduct.href({ commentId })}" class="back"
-      ><span>${translate(locale, 'write-comment-flow', 'back')()}</span></a
+      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
     main: html`
       <single-use-form>

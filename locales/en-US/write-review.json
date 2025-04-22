@@ -2,9 +2,6 @@
   "prereviewOf": {
     "message": "PREreview of “{preprintTitle}”"
   },
-  "or": {
-    "message": "or"
-  },
   "havingProblems": {
     "message": "Sorry, we’re having problems"
   },
@@ -59,9 +56,6 @@
   "useOfEmail": {
     "message": "We’ll only use this to contact them about this PREreview."
   },
-  "back": {
-    "message": "Back"
-  },
   "howWouldYouLikeToStart": {
     "message": "How would you like to start your PREreview?"
   },
@@ -84,13 +78,10 @@
     "message": "We’ll offer a basic template, but you can review it your way."
   },
   "pasteYourReview": {
-    "message": "<error>Error:</error> Paste your PREreview"
+    "message": "Paste your PREreview"
   },
   "writeYourReview": {
-    "message": "<error>Error:</error> Write your PREreview"
-  },
-  "thereIsAProblem": {
-    "message": "There is a problem"
+    "message": "Write your PREreview"
   },
   "selectTheNameError": {
     "message": "Select the name that you would like to use"
@@ -114,10 +105,10 @@
     "message": "We’ll only link your PREreview to others that also use your pseudonym."
   },
   "pasteYourReviewError": {
-    "message": "<error>Error:</error> Paste your PREreview"
+    "message": "Paste your PREreview"
   },
   "enterYourReviewError": {
-    "message": "<error>Error:</error> Enter your PREreview"
+    "message": "Enter your PREreview"
   },
   "copyAndPasteReview": {
     "message": "Copy your PREreview and paste it here. We’ll do our best to preserve how it looks."
@@ -188,12 +179,6 @@
   "yes": {
     "message": "Yes"
   },
-  "saveAndContinueButton": {
-    "message": "Save and continue"
-  },
-  "continueButton": {
-    "message": "Continue"
-  },
   "enterName": {
     "message": "Enter their name"
   },
@@ -205,12 +190,6 @@
   },
   "ableToChoseName": {
     "message": "They will be able to choose their published name."
-  },
-  "error": {
-    "message": "Error"
-  },
-  "backNav": {
-    "message": "Back"
   },
   "prereviewPublishedTitle": {
     "message": "PREreview published"
@@ -407,12 +386,6 @@
   },
   "whatIsOrcid": {
     "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name."
-  },
-  "startNowButton": {
-    "message": "Start now"
-  },
-  "continueWord": {
-    "message": "Continue"
   },
   "asYouHaveAlreadyStarted": {
     "message": "As you’ve already started a PREreview of <cite>{preprintTitle}</cite>, we’ll take you to the next step so you can carry on."

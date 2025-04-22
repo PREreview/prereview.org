@@ -65,7 +65,7 @@ export function useOfAiForm(
               ${E.isLeft(form.generativeAiIdeas)
                 ? html`
                     <div class="error-message" id="generative-ai-ideas-error">
-                      <span class="visually-hidden">${t('write-review', 'error')()}:</span>
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${match(form.generativeAiIdeas.left)
                         .with({ _tag: 'MissingE' }, () =>
                           t('write-review', otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),

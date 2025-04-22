@@ -65,7 +65,7 @@ export function createUnknownPreprintWithDoiPage(
 
       <p>${rawHtml(t('review-a-preprint', 'doiIsCorrect')({ contact: mailToHelp }))}</p>
 
-      <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">${t('review-a-preprint', 'back')()}</a>
+      <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">${t('forms', 'backLink')()}</a>
     `,
   })
 }

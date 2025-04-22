@@ -27,7 +27,7 @@ export const unsupportedUrlPage = (locale: SupportedLocale) =>
       <p>${translate(locale, 'request-a-prereview-page', 'tryDoi')()}</p>
 
       <a href="${format(requestAPrereviewMatch.formatter, {})}" class="button"
-        >${translate(locale, 'request-a-prereview-page', 'back')()}</a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
   })

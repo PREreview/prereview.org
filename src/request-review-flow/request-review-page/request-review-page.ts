@@ -51,7 +51,7 @@ export const requestReviewPage = ({
           `}
 
       <a href="${format(requestReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
-        >${t('startNow')()}</a
+        >${translate(locale, 'forms', 'startButton')()}</a
       >
     `,
     canonical: format(requestReviewMatch.formatter, { id: preprint.id }),

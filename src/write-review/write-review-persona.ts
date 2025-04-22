@@ -138,7 +138,7 @@ function personaForm(
             },
           )}"
           class="back"
-          ><span>${t('back')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 
@@ -147,7 +147,7 @@ function personaForm(
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${E.isLeft(form.persona)
                       ? html`
@@ -197,7 +197,7 @@ function personaForm(
               ${E.isLeft(form.persona)
                 ? html`
                     <div class="error-message" id="persona-error">
-                      <span class="visually-hidden">${t('error')()}:</span>
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                       ${match(form.persona.left)
                         .with({ _tag: 'MissingE' }, () => t('selectTheNameError')())
                         .exhaustive()}
@@ -241,7 +241,7 @@ function personaForm(
             </fieldset>
           </div>
 
-          <button>${t('saveAndContinueButton')()}</button>
+          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
         </form>
       </main>
     `,

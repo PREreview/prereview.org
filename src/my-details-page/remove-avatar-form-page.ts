@@ -10,7 +10,7 @@ export const page = (locale: SupportedLocale) =>
     status: Status.OK,
     title: plainText(translate(locale, 'my-details', 'removeYourAvatar')()),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'my-details', 'back')()}</span></a
+      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
     main: html`
       <form method="post" action="${format(removeAvatarMatch.formatter, {})}" enctype="multipart/form-data" novalidate>

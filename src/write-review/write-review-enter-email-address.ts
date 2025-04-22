@@ -181,7 +181,7 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
     content: html`
       <nav>
         <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${t('back')()}</span></a
+          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
         >
       </nav>
 
@@ -194,7 +194,7 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${t('thereIsAProblem')()}</h2>
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${E.isLeft(form.emailAddress)
                       ? html`
@@ -225,7 +225,7 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
             ${E.isLeft(form.emailAddress)
               ? html`
                   <div class="error-message" id="email-address-error">
-                    <span class="visually-hidden">${t('error')()}:</span>
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${match(form.emailAddress.left)
                       .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')())
                       .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')())
@@ -251,7 +251,7 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
             />
           </div>
 
-          <button>${t('saveAndContinueButton')()}</button>
+          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
         </form>
       </main>
     `,

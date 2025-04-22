@@ -133,7 +133,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: Us
           `}
 
       <a href="${format(writeReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
-        >${translate(locale, 'write-review', 'startNowButton')()}</a
+        >${translate(locale, 'forms', 'startButton')()}</a
       >
     `,
     canonical: format(writeReviewMatch.formatter, { id: preprint.id }),

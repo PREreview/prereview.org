@@ -1,10 +1,11 @@
-import { absurd, Either, Function, identity, Match, pipe } from 'effect'
+import { absurd, Either, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { type Html, html, plainText, rawHtml } from '../../html.js'
+import { type Html, html, plainText } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
+import { errorPrefix } from '../../shared-translation-elements.js'
 import type { Uuid } from '../../types/index.js'
 import type * as EnterCommentForm from './EnterCommentForm.js'
 import { Turndown } from './Turndown.js'
@@ -22,12 +23,10 @@ export const EnterCommentPage = ({
 }) =>
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
-    title: plainText(
-      translate(
-        locale,
-        'write-comment-flow',
-        'enterYourCommentTitle',
-      )({ error: form._tag === 'InvalidForm' ? identity : () => '' }),
+    title: pipe(
+      translate(locale, 'write-comment-flow', 'enterYourCommentTitle')({ error: () => '' }),
+      errorPrefix(locale, form._tag === 'InvalidForm'),
+      plainText,
     ),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereviewId })}" class="back"
@@ -39,7 +38,7 @@ export const EnterCommentPage = ({
         ${form._tag === 'InvalidForm'
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'write-comment-flow', 'errorSummaryHeading')()}</h2>
+                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   ${Either.isLeft(form.comment)
                     ? html`
@@ -71,12 +70,13 @@ export const EnterCommentPage = ({
           ${form._tag === 'InvalidForm' && Either.isLeft(form.comment)
             ? html`
                 <div class="error-message" id="comment-error">
+                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${pipe(
                     Match.value(form.comment.left),
-                    Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterComment')),
+                    Match.tag('Missing', () =>
+                      translate(locale, 'write-comment-flow', 'errorEnterComment')({ error: () => '' }),
+                    ),
                     Match.exhaustive,
-                    Function.apply({ error: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
-                    rawHtml,
                   )}
                 </div>
               `
@@ -114,7 +114,7 @@ ${Turndown.turndown(form.comment.toString())}</textarea
           </html-editor>
         </div>
 
-        <button>${translate(locale, 'write-comment-flow', 'saveContinueButton')()}</button>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',

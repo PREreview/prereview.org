@@ -1,4 +1,4 @@
-import { identity } from 'effect'
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -11,6 +11,7 @@ import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import { writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../../routes.js'
+import { errorPrefix } from '../../shared-translation-elements.js'
 import { template } from './template.js'
 import { turndown } from './turndown.js'
 
@@ -24,10 +25,10 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText(t('write-review', 'writeYourReview')({ error: error ? identity : () => '' })),
+    title: pipe(t('write-review', 'writeYourReview')({ error: () => '' }), errorPrefix(locale, error), plainText),
     nav: html`
       <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${t('write-review', 'backNav')()}</span></a
+        ><span>${t('forms', 'backLink')()}</span></a
       >
     `,
     main: html`
@@ -35,7 +36,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${t('write-review', 'thereIsAProblem')()}</h2>
+                <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   ${E.isLeft(form.review)
                     ? html`
@@ -96,9 +97,10 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
           ${E.isLeft(form.review)
             ? html`
                 <div class="error-message" id="review-error">
+                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${match(form.review.left)
                     .with({ _tag: P.union('MissingE', 'InvalidE') }, () =>
-                      rawHtml(t('write-review', 'enterYourReviewError')({ error: visuallyHidden })),
+                      t('write-review', 'enterYourReviewError')({ error: () => '' }),
                     )
                     .exhaustive()}
                 </div>
@@ -158,7 +160,7 @@ ${turndown.turndown(review)}</textarea
           </html-editor>
         </div>
 
-        <button>${t('write-review', 'saveAndContinueButton')()}</button>
+        <button>${t('forms', 'saveContinueButton')()}</button>
       </form>
     `,
     skipToLabel: 'form',
@@ -166,5 +168,3 @@ ${turndown.turndown(review)}</textarea
     js: error ? ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'] : ['html-editor.js', 'editor-toolbar.js'],
   })
 }
-
-const visuallyHidden = (text: string): string => html`<span class="visually-hidden">${text}</span>`.toString()
