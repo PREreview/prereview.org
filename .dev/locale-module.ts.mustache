@@ -13,11 +13,11 @@ type SupportedLocale = keyof typeof translations
 
 export type Translations = {[K in keyof typeof translations['{{defaultLocale}}']]: Types.UnionToIntersection<[]
 {{#realLocales}}
-  & Parameters<typeof translations['{{.}}'][K]>
+  & (K extends keyof typeof translations['{{.}}'] ? Parameters<typeof translations['{{.}}'][K]> : [])
 {{/realLocales}}
 > extends [] ? () => string : (x: Types.Simplify<{}
 {{#realLocales}}
-  & (Parameters<typeof translations['{{.}}'][K]> extends [] ? {} : Parameters<typeof translations['{{.}}'][K]>[0])
+  & (K extends keyof typeof translations['{{.}}'] ? Parameters<typeof translations['{{.}}'][K]> extends [] ? {} : Parameters<typeof translations['{{.}}'][K]>[0] : {})
 {{/realLocales}}
 >) => string
 }
