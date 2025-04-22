@@ -9,6 +9,13 @@ modules=$(find "locales/$defaultLocale" -name "*.json" -exec basename "{}" .json
 assetsModules=("collapsible-menu" "html-editor" "single-use-form")
 mapfile -t srcModules < <(printf "%s\n" "${modules[@]}" "${assetsModules[@]}" "${assetsModules[@]}" | sort | uniq -u)
 mapfile -t locales < <(find "locales" -maxdepth 1 -mindepth 1 -type d -exec basename "{}" \;)
+realLocales=()
+for locale in "${locales[@]}"; do
+  if [ "$locale" = "$crowdinInContextLocale" ]; then
+    continue
+  fi
+  realLocales+=("$locale")
+done
 
 compile_module() {
   target="$1"
