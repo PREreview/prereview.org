@@ -4,13 +4,14 @@ import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/connect-orcid/oauth-start.js'
 import { connectOrcidMatch } from '../../src/routes.js'
+import { OrcidLocale } from '../../src/types/index.js'
 import * as fc from '../fc.js'
 
 describe('connectOrcidStart', () => {
   test.prop([fc.oauth(), fc.origin(), fc.user(), fc.supportedLocale()])(
     'when the user is logged in',
     async (orcidOauth, publicUrl, user, locale) => {
-      const actual = await _.connectOrcidStart({ user })({ locale, orcidOauth, publicUrl })()
+      const actual = await _.connectOrcidStart({ locale, user })({ orcidOauth, publicUrl })()
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
@@ -18,6 +19,7 @@ describe('connectOrcidStart', () => {
         location: new URL(
           `?${new URLSearchParams({
             client_id: orcidOauth.clientId,
+            lang: OrcidLocale.fromSupportedLocale(locale),
             response_type: 'code',
             redirect_uri: new URL(format(connectOrcidMatch.formatter, {}), publicUrl).toString(),
             scope: '/activities/update /read-limited',
@@ -31,7 +33,7 @@ describe('connectOrcidStart', () => {
   test.prop([fc.oauth(), fc.origin(), fc.supportedLocale()])(
     'when the user is not logged in',
     async (orcidOauth, publicUrl, locale) => {
-      const actual = await _.connectOrcidStart({})({ locale, orcidOauth, publicUrl })()
+      const actual = await _.connectOrcidStart({ locale })({ orcidOauth, publicUrl })()
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',

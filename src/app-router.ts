@@ -612,11 +612,11 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.bindW('response', RM.fromReaderTaskK(connectOrcidStart)),
           RM.apSW(
             'locale',
             RM.asks((env: RouterEnv) => env.locale),
           ),
+          RM.bindW('response', RM.fromReaderTaskK(connectOrcidStart)),
           RM.ichainW(handleResponse),
         ),
       ),

@@ -13,11 +13,11 @@ import { connectOrcidMatch } from '../routes.js'
 import { OrcidLocale } from '../types/index.js'
 import type { User } from '../user.js'
 
-export const connectOrcidStart = ({ user }: { user?: User }) =>
+export const connectOrcidStart = ({ locale, user }: { locale: SupportedLocale; user?: User }) =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromEither(E.fromNullable('no-session' as const)(user))),
-    RTE.apSW('authorizationRequestUrl', RTE.fromReader(authorizationRequestUrl)),
+    RTE.apSW('authorizationRequestUrl', RTE.fromReader(authorizationRequestUrl(locale))),
     RTE.matchW(
       error =>
         match(error)
@@ -27,22 +27,23 @@ export const connectOrcidStart = ({ user }: { user?: User }) =>
     ),
   )
 
-const authorizationRequestUrl = pipe(
-  toUrl(connectOrcidMatch.formatter, {}),
-  R.chainW(redirectUri =>
-    R.asks(({ locale, orcidOauth: { authorizeUrl, clientId } }: OrcidOAuthEnv & { locale: SupportedLocale }) => {
-      return new URL(
-        `?${UrlParams.toString(
-          UrlParams.fromInput({
-            client_id: clientId,
-            lang: OrcidLocale.fromSupportedLocale(locale),
-            response_type: 'code',
-            redirect_uri: redirectUri.href,
-            scope: '/authenticate',
-          }),
-        )}`,
-        authorizeUrl,
-      )
-    }),
-  ),
-)
+const authorizationRequestUrl = (locale: SupportedLocale) =>
+  pipe(
+    toUrl(connectOrcidMatch.formatter, {}),
+    R.chainW(redirectUri =>
+      R.asks(({ orcidOauth: { authorizeUrl, clientId } }: OrcidOAuthEnv) => {
+        return new URL(
+          `?${UrlParams.toString(
+            UrlParams.fromInput({
+              client_id: clientId,
+              lang: OrcidLocale.fromSupportedLocale(locale),
+              response_type: 'code',
+              redirect_uri: redirectUri.href,
+              scope: '/authenticate',
+            }),
+          )}`,
+          authorizeUrl,
+        )
+      }),
+    ),
+  )
