@@ -33,7 +33,7 @@ jobs:
         run: scripts/fix-playwright-versions.sh
 
       - name: 'Upload assets'
-        uses: stefanzweifel/git-auto-commit-action@v5.1.0
+        uses: stefanzweifel/git-auto-commit-action@v5.2.0
         if: ${{ !env.ACT }}
         with:
           commit_message: '[dependabot skip] Fix Playwright versions'
