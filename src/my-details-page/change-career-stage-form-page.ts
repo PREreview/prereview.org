@@ -20,11 +20,7 @@ export const createFormPage = ({
 }) =>
   PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: pipe(
-      translate(locale, 'my-details', 'whatCareerStage')({ error: () => '' }),
-      errorPrefix(locale, error),
-      plainText,
-    ),
+    title: pipe(translate(locale, 'my-details', 'whatCareerStage')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
       ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
@@ -36,9 +32,7 @@ export const createFormPage = ({
                 <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   <li>
-                    <a href="#career-stage-early"
-                      >${translate(locale, 'my-details', 'selectCareerStageError')({ error: () => '' })}</a
-                    >
+                    <a href="#career-stage-early">${translate(locale, 'my-details', 'selectCareerStageError')()}</a>
                   </li>
                 </ul>
               </error-summary>
@@ -48,14 +42,14 @@ export const createFormPage = ({
         <div ${error ? rawHtml('class="error"') : ''}>
           <fieldset role="group" ${error ? rawHtml('aria-invalid="true" aria-errormessage="career-stage-error"') : ''}>
             <legend>
-              <h1>${translate(locale, 'my-details', 'whatCareerStage')({ error: () => '' })}</h1>
+              <h1>${translate(locale, 'my-details', 'whatCareerStage')()}</h1>
             </legend>
 
             ${error
               ? html`
                   <div class="error-message" id="career-stage-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${rawHtml(translate(locale, 'my-details', 'selectCareerStageError')({ error: () => '' }))}
+                    ${rawHtml(translate(locale, 'my-details', 'selectCareerStageError')())}
                   </div>
                 `
               : ''}

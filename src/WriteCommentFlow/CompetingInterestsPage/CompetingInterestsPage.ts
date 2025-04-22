@@ -20,7 +20,7 @@ export const CompetingInterestsPage = ({
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
-      translate(locale, 'write-comment-flow', 'competingInterestsTitle')({ error: () => '' }),
+      translate(locale, 'write-comment-flow', 'competingInterestsTitle')(),
       errorPrefix(locale, form._tag === 'InvalidForm'),
       plainText,
     ),
@@ -43,7 +43,7 @@ export const CompetingInterestsPage = ({
                             ${pipe(
                               Match.value(form.competingInterests.left),
                               Match.tag('Missing', () =>
-                                translate(locale, 'write-comment-flow', 'errorCompetingInterests')({ error: () => '' }),
+                                translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
                               ),
                               Match.exhaustive,
                             )}
@@ -58,11 +58,7 @@ export const CompetingInterestsPage = ({
                             ${pipe(
                               Match.value(form.competingInterestsDetails.left),
                               Match.tag('Missing', () =>
-                                translate(
-                                  locale,
-                                  'write-comment-flow',
-                                  'errorCompetingInterestsDetails',
-                                )({ error: () => '' }),
+                                translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails')(),
                               ),
                               Match.exhaustive,
                             )}
@@ -87,7 +83,7 @@ export const CompetingInterestsPage = ({
               )}
             >
               <legend>
-                <h1>${translate(locale, 'write-comment-flow', 'competingInterestsTitle')({ error: () => '' })}</h1>
+                <h1>${translate(locale, 'write-comment-flow', 'competingInterestsTitle')()}</h1>
               </legend>
 
               <p id="competing-interests-tip" role="note">
@@ -122,7 +118,7 @@ export const CompetingInterestsPage = ({
                       ${pipe(
                         Match.value(form.competingInterests.left),
                         Match.tag('Missing', () =>
-                          translate(locale, 'write-comment-flow', 'errorCompetingInterests')({ error: () => '' }),
+                          translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
                         ),
                         Match.exhaustive,
                       )}
@@ -182,11 +178,7 @@ export const CompetingInterestsPage = ({
                               ${pipe(
                                 Match.value(form.competingInterestsDetails.left),
                                 Match.tag('Missing', () =>
-                                  translate(
-                                    locale,
-                                    'write-comment-flow',
-                                    'errorCompetingInterestsDetails',
-                                  )({ error: () => '' }),
+                                  translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails')(),
                                 ),
                                 Match.exhaustive,
                               )}

@@ -21,7 +21,7 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
 
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: pipe(t('whatEmailAddress')({ error: () => '' }), errorPrefix(locale, error), plainText),
+    title: pipe(t('whatEmailAddress')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
       ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
@@ -37,8 +37,8 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
                         <li>
                           <a href="#email-address">
                             ${match(form.emailAddress.left)
-                              .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')({ error: () => '' }))
-                              .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')({ error: () => '' }))
+                              .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')())
+                              .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')())
                               .exhaustive()}
                           </a>
                         </li>
@@ -50,7 +50,7 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
           : ''}
 
         <div ${error ? html`class="error"` : ''}>
-          <h1><label for="email-address">${t('whatEmailAddress')({ error: () => '' })}</label></h1>
+          <h1><label for="email-address">${t('whatEmailAddress')()}</label></h1>
 
           <p id="email-address-tip" role="note">${t('usedToContactYouAboutYourAccountAndPrereviews')()}</p>
 
@@ -59,8 +59,8 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
                 <div class="error-message" id="email-address-error">
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${match(form.emailAddress.left)
-                    .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')({ error: () => '' }))
-                    .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')({ error: () => '' }))
+                    .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')())
+                    .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')())
                     .exhaustive()}
                 </div>
               `

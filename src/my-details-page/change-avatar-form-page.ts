@@ -20,7 +20,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
 
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: pipe(t('uploadAnAvatar')({ error: () => '' }), errorPrefix(locale, error), plainText),
+    title: pipe(t('uploadAnAvatar')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
       ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
@@ -42,9 +42,9 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
                           <li>
                             <a href="#avatar">
                               ${match(form.avatar.left)
-                                .with({ _tag: 'MissingE' }, () => t('selectImageError')({ error: () => '' }))
-                                .with({ _tag: 'WrongTypeE' }, () => t('imageTypeError')({ error: () => '' }))
-                                .with({ _tag: 'TooBigE' }, () => t('imageSizeError')({ error: () => '', size: 5 }))
+                                .with({ _tag: 'MissingE' }, () => t('selectImageError')())
+                                .with({ _tag: 'WrongTypeE' }, () => t('imageTypeError')())
+                                .with({ _tag: 'TooBigE' }, () => t('imageSizeError')({ size: 5 }))
                                 .exhaustive()}
                             </a>
                           </li>
@@ -56,7 +56,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
             : ''}
 
           <div ${rawHtml(E.isLeft(form.avatar) ? 'class="error"' : '')}>
-            <h1><label for="avatar">${t('uploadAnAvatar')({ error: () => '' })}</label></h1>
+            <h1><label for="avatar">${t('uploadAnAvatar')()}</label></h1>
 
             <p id="avatar-tip" role="note">${t('youCanUploadAvatar')({ size: 5 })}</p>
 
@@ -73,9 +73,9 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
                   <div class="error-message" id="review-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${match(form.avatar.left)
-                      .with({ _tag: 'MissingE' }, () => t('selectImageError')({ error: () => '' }))
-                      .with({ _tag: 'WrongTypeE' }, () => t('imageTypeError')({ error: () => '' }))
-                      .with({ _tag: 'TooBigE' }, () => t('imageSizeError')({ error: () => '', size: 5 }))
+                      .with({ _tag: 'MissingE' }, () => t('selectImageError')())
+                      .with({ _tag: 'WrongTypeE' }, () => t('imageTypeError')())
+                      .with({ _tag: 'TooBigE' }, () => t('imageSizeError')({ size: 5 }))
                       .exhaustive()}
                   </div>
                 `

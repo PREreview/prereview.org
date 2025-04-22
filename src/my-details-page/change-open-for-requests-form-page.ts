@@ -20,11 +20,7 @@ export const createFormPage = ({
 }) =>
   PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: pipe(
-      translate(locale, 'my-details', 'happyTakeRequests')({ error: () => '' }),
-      errorPrefix(locale, error),
-      plainText,
-    ),
+    title: pipe(translate(locale, 'my-details', 'happyTakeRequests')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
       ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
@@ -37,7 +33,7 @@ export const createFormPage = ({
                 <ul>
                   <li>
                     <a href="#open-for-requests-yes"
-                      >${translate(locale, 'my-details', 'selectHappyTakeRequestsError')({ error: () => '' })}</a
+                      >${translate(locale, 'my-details', 'selectHappyTakeRequestsError')()}</a
                     >
                   </li>
                 </ul>
@@ -51,14 +47,14 @@ export const createFormPage = ({
             ${error ? rawHtml('aria-invalid="true" aria-errormessage="open-for-requests-error"') : ''}
           >
             <legend>
-              <h1>${translate(locale, 'my-details', 'happyTakeRequests')({ error: () => '' })}</h1>
+              <h1>${translate(locale, 'my-details', 'happyTakeRequests')()}</h1>
             </legend>
 
             ${error
               ? html`
                   <div class="error-message" id="open-for-requests-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${translate(locale, 'my-details', 'selectHappyTakeRequestsError')({ error: () => '' })}
+                    ${translate(locale, 'my-details', 'selectHappyTakeRequestsError')()}
                   </div>
                 `
               : ''}

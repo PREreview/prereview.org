@@ -24,7 +24,7 @@ export const EnterCommentPage = ({
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
-      translate(locale, 'write-comment-flow', 'enterYourCommentTitle')({ error: () => '' }),
+      translate(locale, 'write-comment-flow', 'enterYourCommentTitle')(),
       errorPrefix(locale, form._tag === 'InvalidForm'),
       plainText,
     ),
@@ -47,7 +47,7 @@ export const EnterCommentPage = ({
                             ${pipe(
                               Match.value(form.comment.left),
                               Match.tag('Missing', () =>
-                                translate(locale, 'write-comment-flow', 'errorEnterComment')({ error: () => '' }),
+                                translate(locale, 'write-comment-flow', 'errorEnterComment')(),
                               ),
                               Match.exhaustive,
                             )}
@@ -63,7 +63,7 @@ export const EnterCommentPage = ({
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
           <h1>
             <label id="comment-label" for="comment"
-              >${translate(locale, 'write-comment-flow', 'enterYourCommentTitle')({ error: () => '' })}</label
+              >${translate(locale, 'write-comment-flow', 'enterYourCommentTitle')()}</label
             >
           </h1>
 
@@ -73,9 +73,7 @@ export const EnterCommentPage = ({
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${pipe(
                     Match.value(form.comment.left),
-                    Match.tag('Missing', () =>
-                      translate(locale, 'write-comment-flow', 'errorEnterComment')({ error: () => '' }),
-                    ),
+                    Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterComment')()),
                     Match.exhaustive,
                   )}
                 </div>

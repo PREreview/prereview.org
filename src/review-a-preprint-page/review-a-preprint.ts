@@ -21,7 +21,7 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
 
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: pipe(t('review-a-preprint', 'whichPreprint')({ error: () => '' }), errorPrefix(locale, error), plainText),
+    title: pipe(t('review-a-preprint', 'whichPreprint')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
     main: html`
       <form method="post" action="${format(reviewAPreprintMatch.formatter, {})}" novalidate>
@@ -35,9 +35,7 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
                         <li>
                           <a href="#preprint">
                             ${match(whichPreprint.left)
-                              .with({ _tag: 'InvalidE' }, () =>
-                                t('review-a-preprint', 'errorEnterPreprint')({ error: () => '' }),
-                              )
+                              .with({ _tag: 'InvalidE' }, () => t('review-a-preprint', 'errorEnterPreprint')())
                               .exhaustive()}
                           </a>
                         </li>
@@ -50,9 +48,7 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
 
         <div ${rawHtml(E.isLeft(whichPreprint) ? 'class="error"' : '')}>
           <h1>
-            <label id="preprint-label" for="preprint"
-              >${t('review-a-preprint', 'whichPreprint')({ error: () => '' })}</label
-            >
+            <label id="preprint-label" for="preprint">${t('review-a-preprint', 'whichPreprint')()}</label>
           </h1>
 
           <p id="preprint-tip" role="note">${t('review-a-preprint', 'useDoiUrl')()}</p>
@@ -83,7 +79,7 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
                 <div class="error-message" id="preprint-error">
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${match(whichPreprint.left)
-                    .with({ _tag: 'InvalidE' }, () => t('review-a-preprint', 'errorEnterPreprint')({ error: () => '' }))
+                    .with({ _tag: 'InvalidE' }, () => t('review-a-preprint', 'errorEnterPreprint')())
                     .exhaustive()}
                 </div>
               `

@@ -23,7 +23,7 @@ export const ChoosePersonaPage = ({
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
-      translate(locale, 'write-comment-flow', 'whatNameTitle')({ error: () => '' }),
+      translate(locale, 'write-comment-flow', 'whatNameTitle')(),
       errorPrefix(locale, form._tag === 'InvalidForm'),
       plainText,
     ),
@@ -45,9 +45,7 @@ export const ChoosePersonaPage = ({
                           <a href="#persona-public">
                             ${pipe(
                               Match.value(form.persona.left),
-                              Match.tag('Missing', () =>
-                                translate(locale, 'write-comment-flow', 'errorSelectName')({ error: () => '' }),
-                              ),
+                              Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorSelectName')()),
                               Match.exhaustive,
                             )}
                           </a>
@@ -70,7 +68,7 @@ export const ChoosePersonaPage = ({
             )}
           >
             <legend>
-              <h1>${translate(locale, 'write-comment-flow', 'whatNameTitle')({ error: () => '' })}</h1>
+              <h1>${translate(locale, 'write-comment-flow', 'whatNameTitle')()}</h1>
             </legend>
 
             <p id="persona-tip" role="note">${translate(locale, 'write-comment-flow', 'whichNameTip')()}</p>
@@ -102,9 +100,7 @@ export const ChoosePersonaPage = ({
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${pipe(
                       Match.value(form.persona.left),
-                      Match.tag('Missing', () =>
-                        translate(locale, 'write-comment-flow', 'errorSelectName')({ error: () => '' }),
-                      ),
+                      Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorSelectName')()),
                       Match.exhaustive,
                     )}
                   </div>

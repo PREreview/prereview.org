@@ -22,7 +22,7 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: pipe(t('write-review', 'pasteYourReview')({ error: () => '' }), errorPrefix(locale, error), plainText),
+    title: pipe(t('write-review', 'pasteYourReview')(), errorPrefix(locale, error), plainText),
     nav: html`
       <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -40,9 +40,7 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
                         <li>
                           <a href="#review">
                             ${match(form.review.left)
-                              .with({ _tag: 'MissingE' }, () =>
-                                t('write-review', 'pasteYourReviewError')({ error: () => '' }),
-                              )
+                              .with({ _tag: 'MissingE' }, () => t('write-review', 'pasteYourReviewError')())
                               .exhaustive()}
                           </a>
                         </li>
@@ -55,7 +53,7 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
 
         <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
           <h1>
-            <label id="review-label" for="review">${t('write-review', 'pasteYourReview')({ error: () => '' })}</label>
+            <label id="review-label" for="review">${t('write-review', 'pasteYourReview')()}</label>
           </h1>
 
           <p id="review-tip" role="note">${t('write-review', 'copyAndPasteReview')()}</p>
@@ -65,7 +63,7 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
                 <div class="error-message" id="review-error">
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${match(form.review.left)
-                    .with({ _tag: 'MissingE' }, () => t('write-review', 'pasteYourReviewError')({ error: () => '' }))
+                    .with({ _tag: 'MissingE' }, () => t('write-review', 'pasteYourReviewError')())
                     .exhaustive()}
                 </div>
               `

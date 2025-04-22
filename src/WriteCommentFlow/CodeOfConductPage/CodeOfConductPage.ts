@@ -20,7 +20,7 @@ export const CodeOfConductPage = ({
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
-      translate(locale, 'write-comment-flow', 'codeOfConductTitle')({ error: () => '' }),
+      translate(locale, 'write-comment-flow', 'codeOfConductTitle')(),
       errorPrefix(locale, form._tag === 'InvalidForm'),
       plainText,
     ),
@@ -43,11 +43,7 @@ export const CodeOfConductPage = ({
                             ${pipe(
                               Match.value(form.agree.left),
                               Match.tag('Missing', () =>
-                                translate(
-                                  locale,
-                                  'write-comment-flow',
-                                  'errorFollowingCodeOfConduct',
-                                )({ error: () => '' }),
+                                translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
                               ),
                               Match.exhaustive,
                             )}
@@ -71,7 +67,7 @@ export const CodeOfConductPage = ({
             )}
           >
             <legend>
-              <h1>${translate(locale, 'write-comment-flow', 'codeOfConductTitle')({ error: () => '' })}</h1>
+              <h1>${translate(locale, 'write-comment-flow', 'codeOfConductTitle')()}</h1>
             </legend>
 
             <p id="agree-tip" role="note">
@@ -127,7 +123,7 @@ export const CodeOfConductPage = ({
                     ${pipe(
                       Match.value(form.agree.left),
                       Match.tag('Missing', () =>
-                        translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')({ error: () => '' }),
+                        translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
                       ),
                       Match.exhaustive,
                     )}

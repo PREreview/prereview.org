@@ -20,7 +20,7 @@ export const EnterEmailAddressPage = ({
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
-      translate(locale, 'write-comment-flow', 'contactDetailsTitle')({ error: () => '' }),
+      translate(locale, 'write-comment-flow', 'contactDetailsTitle')(),
       errorPrefix(locale, form._tag === 'InvalidForm'),
       plainText,
     ),
@@ -43,14 +43,10 @@ export const EnterEmailAddressPage = ({
                             ${pipe(
                               Match.value(form.emailAddress.left),
                               Match.tag('Missing', () =>
-                                translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')({ error: () => '' }),
+                                translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')(),
                               ),
                               Match.tag('Invalid', () =>
-                                translate(
-                                  locale,
-                                  'write-comment-flow',
-                                  'errorEnterValidEmailAddress',
-                                )({ error: () => '' }),
+                                translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')(),
                               ),
                               Match.exhaustive,
                             )}
@@ -63,7 +59,7 @@ export const EnterEmailAddressPage = ({
             `
           : ''}
 
-        <h1>${translate(locale, 'write-comment-flow', 'contactDetailsTitle')({ error: () => '' })}</h1>
+        <h1>${translate(locale, 'write-comment-flow', 'contactDetailsTitle')()}</h1>
 
         <p>${translate(locale, 'write-comment-flow', 'needToConfirmEmailAddress')()}</p>
 
@@ -82,11 +78,9 @@ export const EnterEmailAddressPage = ({
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${pipe(
                     Match.value(form.emailAddress.left),
-                    Match.tag('Missing', () =>
-                      translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')({ error: () => '' }),
-                    ),
+                    Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')()),
                     Match.tag('Invalid', () =>
-                      translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')({ error: () => '' }),
+                      translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')(),
                     ),
                     Match.exhaustive,
                   )}

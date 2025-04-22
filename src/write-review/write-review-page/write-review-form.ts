@@ -25,7 +25,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: pipe(t('write-review', 'writeYourReview')({ error: () => '' }), errorPrefix(locale, error), plainText),
+    title: pipe(t('write-review', 'writeYourReview')(), errorPrefix(locale, error), plainText),
     nav: html`
       <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -44,7 +44,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
                           <a href="#review">
                             ${match(form.review.left)
                               .with({ _tag: P.union('MissingE', 'InvalidE') }, () =>
-                                t('write-review', 'enterYourReviewError')({ error: () => '' }),
+                                t('write-review', 'enterYourReviewError')(),
                               )
                               .exhaustive()}
                           </a>
@@ -58,7 +58,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
 
         <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
           <h1>
-            <label id="review-label" for="review">${t('write-review', 'writeYourReview')({ error: () => '' })}</label>
+            <label id="review-label" for="review">${t('write-review', 'writeYourReview')()}</label>
           </h1>
 
           <p id="review-tip" role="note">
@@ -99,9 +99,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
                 <div class="error-message" id="review-error">
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${match(form.review.left)
-                    .with({ _tag: P.union('MissingE', 'InvalidE') }, () =>
-                      t('write-review', 'enterYourReviewError')({ error: () => '' }),
-                    )
+                    .with({ _tag: P.union('MissingE', 'InvalidE') }, () => t('write-review', 'enterYourReviewError')())
                     .exhaustive()}
                 </div>
               `

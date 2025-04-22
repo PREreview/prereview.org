@@ -14,11 +14,7 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
 
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: pipe(
-      t('request-a-prereview-page', 'requestTitle')({ error: () => '' }),
-      errorPrefix(locale, error),
-      plainText,
-    ),
+    title: pipe(t('request-a-prereview-page', 'requestTitle')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
     main: html`
       <form method="post" action="${format(requestAPrereviewMatch.formatter, {})}" novalidate>
@@ -28,7 +24,7 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
                 <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   <li>
-                    <a href="#preprint">${t('request-a-prereview-page', 'errorEnterPreprint')({ error: () => '' })}</a>
+                    <a href="#preprint">${t('request-a-prereview-page', 'errorEnterPreprint')()}</a>
                   </li>
                 </ul>
               </error-summary>
@@ -37,9 +33,7 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
 
         <div ${rawHtml(error ? 'class="error"' : '')}>
           <h1>
-            <label id="preprint-label" for="preprint"
-              >${t('request-a-prereview-page', 'requestTitle')({ error: () => '' })}</label
-            >
+            <label id="preprint-label" for="preprint">${t('request-a-prereview-page', 'requestTitle')()}</label>
           </h1>
 
           <p id="preprint-tip" role="note">${t('request-a-prereview-page', 'useDoiUrl')()}</p>
@@ -69,7 +63,7 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
             ? html`
                 <div class="error-message" id="preprint-error">
                   <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${t('request-a-prereview-page', 'errorEnterPreprint')({ error: () => '' })}
+                  ${t('request-a-prereview-page', 'errorEnterPreprint')()}
                 </div>
               `
             : ''}
