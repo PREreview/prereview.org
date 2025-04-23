@@ -1051,6 +1051,7 @@ export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId>
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
     engrxivPreprintId(),
+    lifecycleJournalPreprintId(),
     medrxivPreprintId(),
     metaarxivPreprintId(),
     osfPreprintId(),

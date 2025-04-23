@@ -16,6 +16,7 @@ import type {
   EcoevorxivPreprintId,
   EdarxivPreprintId,
   EngrxivPreprintId,
+  LifecycleJournalPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
   OsfPreprintId,
@@ -42,6 +43,7 @@ export type ReviewRequestPreprintId =
   | EcoevorxivPreprintId
   | EdarxivPreprintId
   | EngrxivPreprintId
+  | LifecycleJournalPreprintId
   | MedrxivPreprintId
   | MetaarxivPreprintId
   | OsfPreprintId
@@ -141,6 +143,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
           'ecoevorxiv',
           'edarxiv',
           'engrxiv',
+          'lifecycle-journal',
           'medrxiv',
           'metaarxiv',
           'osf',
