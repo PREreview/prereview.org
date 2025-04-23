@@ -1030,7 +1030,12 @@ const getReviewedPreprintId = (record: Record) =>
               FptsToEffect.eitherK(UrlD.decode),
               Option.getRight,
               Option.andThen(fromUrl),
-              Option.andThen(Array.head),
+              Option.andThen(
+                Array.match({
+                  onEmpty: Option.none,
+                  onNonEmpty: ([head, ...tail]) => (tail.length === 0 ? Option.some(head) : Option.none()),
+                }),
+              ),
             ),
           )
           .otherwise(Option.none),

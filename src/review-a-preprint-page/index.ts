@@ -53,7 +53,17 @@ const DoiD = pipe(
 
 const PreprintUrlD = pipe(
   UrlD,
-  D.parse(url => E.fromOption(() => D.error(url, 'PreprintUrl'))(pipe(fromUrl(url), Array.head))),
+  D.parse(url =>
+    E.fromOption(() => D.error(url, 'PreprintUrl'))(
+      pipe(
+        fromUrl(url),
+        Array.match({
+          onEmpty: Option.none,
+          onNonEmpty: ([head, ...tail]) => (tail.length === 0 ? Option.some(head) : Option.none()),
+        }),
+      ),
+    ),
+  ),
 )
 
 const WhichPreprintD = pipe(

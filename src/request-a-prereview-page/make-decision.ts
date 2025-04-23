@@ -1,4 +1,4 @@
-import { Array, flow, identity, pipe } from 'effect'
+import { Array, Option, flow, identity, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -63,7 +63,18 @@ const extractPreprintId: (
         E.Either<Decision.ShowUnsupportedDoi | Decision.ShowUnsupportedUrl, PreprintId.IndeterminatePreprintId>
       >()
       .with(P.string, E.fromOptionK(() => Decision.ShowUnsupportedDoi)(PreprintId.parsePreprintDoi))
-      .with(P.instanceOf(URL), E.fromOptionK(() => Decision.ShowUnsupportedUrl)(flow(PreprintId.fromUrl, Array.head)))
+      .with(
+        P.instanceOf(URL),
+        E.fromOptionK(() => Decision.ShowUnsupportedUrl)(
+          flow(
+            PreprintId.fromUrl,
+            Array.match({
+              onEmpty: Option.none,
+              onNonEmpty: ([head, ...tail]) => (tail.length === 0 ? Option.some(head) : Option.none()),
+            }),
+          ),
+        ),
+      )
       .exhaustive(),
   ),
 )
