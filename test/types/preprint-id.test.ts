@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Doi, toUrl } from 'doi-ts'
-import { Option } from 'effect'
+import { Array } from 'effect'
 import * as _ from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 
@@ -82,7 +82,7 @@ describe('fromUrl', () => {
       [[new URL('http://dx.doi.org/10.1101/2021.06.18.21258689'), Doi('10.1101/2021.06.18.21258689')]],
     ],
   })('with a doi.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some(_.fromPreprintDoi(doi)))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of(_.fromPreprintDoi(doi)))
   })
 
   test.prop([fc.africarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -137,7 +137,7 @@ describe('fromUrl', () => {
       [[new URL('https://osf.io/preprints/africarxiv/grxt6/download'), Doi('10.31730/osf.io/grxt6')]], // download
     ],
   })('with an AfricArXiv URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'africarxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'africarxiv', value: doi }))
   })
 
   test.prop([fc.arxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -156,7 +156,7 @@ describe('fromUrl', () => {
       [[new URL('https://arxiv.org/pdf/1501.00001.pdf'), Doi('10.48550/arXiv.1501.00001')]], // pdf with extension
     ],
   })('with an arxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'arxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'arxiv', value: doi }))
   })
 
   test.prop([fc.authoreaPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -195,7 +195,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with an authorea.com URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'authorea', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'authorea', value: doi }))
   })
 
   test.prop([fc.biorxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -244,7 +244,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a biorxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'biorxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'biorxiv', value: doi }))
   })
 
   test.prop([fc.chemrxivPreprintUrl()], {
@@ -266,7 +266,7 @@ describe('fromUrl', () => {
       ], //image
     ],
   })('with an chemrxiv.org URL', url => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.none())
+    expect(_.fromUrl(url)).toHaveLength(0)
   })
 
   test.prop([fc.eartharxivPreprintUrl()], {
@@ -279,7 +279,7 @@ describe('fromUrl', () => {
       [new URL('https://eartharxiv.org/repository/view/5218/pdf/?file=/repository/object/5218/download/10284/')], // pdf
     ],
   })('with an eartharxiv.org URL', url => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.none())
+    expect(_.fromUrl(url)).toHaveLength(0)
   })
 
   test.prop([fc.ecoevorxivPreprintUrl()], {
@@ -292,7 +292,7 @@ describe('fromUrl', () => {
       [new URL('https://ecoevorxiv.org/repository/view/5216/pdf/?file=/repository/object/5216/download/10289/')], // pdf
     ],
   })('with an ecoevorxiv.org URL', url => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.none())
+    expect(_.fromUrl(url)).toHaveLength(0)
   })
 
   test.prop([fc.edarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -311,7 +311,7 @@ describe('fromUrl', () => {
       [[new URL('https://osf.io/preprints/edarxiv/wc6r7/download'), Doi('10.35542/osf.io/wc6r7')]], // download
     ],
   })('with an edarxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'edarxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'edarxiv', value: doi }))
   })
 
   test.prop([fc.engrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -325,7 +325,7 @@ describe('fromUrl', () => {
       [[new URL('https://engrxiv.org/preprint/download/2172/4288/3228'), Doi('10.31224/2172')]], // download
     ],
   })('with an engrxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'engrxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'engrxiv', value: doi }))
   })
 
   test.prop([fc.jxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -350,7 +350,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a Jxiv URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'jxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'jxiv', value: doi }))
   })
 
   test.prop([fc.lifecycleJournalPreprintUrl()], {
@@ -363,7 +363,7 @@ describe('fromUrl', () => {
       [new URL('https://osf.io/ngpkr?revisionId=67f92088449eb891c08a2bec')], // revisionId
     ],
   })('with an Lifecycle Journal URL', url => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.none())
+    expect(_.fromUrl(url)).toHaveLength(0)
   })
 
   test.prop([fc.medrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -425,7 +425,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a medrxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'medrxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'medrxiv', value: doi }))
   })
 
   test.prop([fc.metaarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -437,7 +437,7 @@ describe('fromUrl', () => {
       [[new URL('https://osf.io/preprints/metaarxiv/9a3rw/download'), Doi('10.31222/osf.io/9a3rw')]], // download
     ],
   })('with a MetaArXiv URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'metaarxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'metaarxiv', value: doi }))
   })
 
   test.prop([fc.osfPreprintUrl()], {
@@ -449,7 +449,7 @@ describe('fromUrl', () => {
       [new URL('https://osf.io/eq8bk/files/osfstorage/65011184767f4a2606de90c6')], // file
     ],
   })('with an OSF URL', url => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.none())
+    expect(_.fromUrl(url)).toHaveLength(0)
   })
 
   test.prop([fc.osfPreprintsPreprintUrl()], {
@@ -463,7 +463,7 @@ describe('fromUrl', () => {
       [new URL('https://osf.io/ewdn8/download?format=pdf')], // download pdf
     ],
   })('with an OSF Preprints URL', url => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.none())
+    expect(_.fromUrl(url)).toHaveLength(0)
   })
 
   test.prop([fc.philsciPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -479,7 +479,7 @@ describe('fromUrl', () => {
       [[new URL('https://philsci-archive.pitt.edu/cgi/export/21986/Text_Chicago/philsci-archive-21986.txt'), 21986]], // text citation
     ],
   })('with a philsci-archive.pitt.edu URL', ([url, id]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'philsci', value: id }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'philsci', value: id }))
   })
 
   test.prop([fc.preprintsorgPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -517,7 +517,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with an preprints.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'preprints.org', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'preprints.org', value: doi }))
   })
 
   test.prop([fc.psyarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -536,7 +536,7 @@ describe('fromUrl', () => {
       [[new URL('https://osf.io/preprints/psyarxiv/k9mn3/download'), Doi('10.31234/osf.io/k9mn3')]], // download
     ],
   })('with an psyarxiv.com URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'psyarxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'psyarxiv', value: doi }))
   })
 
   test.prop([fc.researchSquarePreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -568,7 +568,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a researchsquare.com URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'research-square', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'research-square', value: doi }))
   })
 
   test.prop([fc.scieloPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -599,7 +599,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a SciELO URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'scielo', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'scielo', value: doi }))
   })
 
   test.prop([fc.scienceOpenPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -634,7 +634,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a scienceopen.com URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'science-open', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'science-open', value: doi }))
   })
 
   test.prop([fc.socarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -646,7 +646,7 @@ describe('fromUrl', () => {
       [[new URL('https://osf.io/preprints/socarxiv/8374m/download'), Doi('10.31235/osf.io/8374m')]], // download
     ],
   })('with an SocArXiv URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'socarxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'socarxiv', value: doi }))
   })
 
   test.prop([fc.ssrnPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -675,7 +675,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a SSRN URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'ssrn', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'ssrn', value: doi }))
   })
 
   test.prop([fc.techrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -726,7 +726,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with an techrxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'techrxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'techrxiv', value: doi }))
   })
 
   test.prop([fc.zenodoPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -749,7 +749,7 @@ describe('fromUrl', () => {
       [[new URL('https://zenodo.org/record/4290795/export/json'), Doi('10.5281/zenodo.4290795')]], // export
     ],
   })('with a Zenodo URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ _tag: 'zenodo-africarxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'zenodo-africarxiv', value: doi }))
   })
 
   test.prop([fc.url()], {
@@ -760,6 +760,6 @@ describe('fromUrl', () => {
       [new URL('https://doi.org/10.1101/')], // missing suffix
     ],
   })('with a non-preprint URL', url => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.none())
+    expect(_.fromUrl(url)).toHaveLength(0)
   })
 })

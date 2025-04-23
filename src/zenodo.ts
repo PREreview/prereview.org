@@ -1026,7 +1026,12 @@ const getReviewedPreprintId = (record: Record) =>
               resource_type: 'publication-preprint',
               identifier: P.select(),
             },
-            flow(FptsToEffect.eitherK(UrlD.decode), Option.getRight, Option.flatMap(fromUrl)),
+            flow(
+              FptsToEffect.eitherK(UrlD.decode),
+              Option.getRight,
+              Option.andThen(fromUrl),
+              Option.andThen(Array.head),
+            ),
           )
           .otherwise(Option.none),
       ),

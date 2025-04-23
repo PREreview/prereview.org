@@ -1,5 +1,5 @@
 import { type Doi, isDoi, parse } from 'doi-ts'
-import { Option, flow, identity, pipe } from 'effect'
+import { Array, Option, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -53,7 +53,7 @@ const DoiD = pipe(
 
 const PreprintUrlD = pipe(
   UrlD,
-  D.parse(url => E.fromOption(() => D.error(url, 'PreprintUrl'))(fromUrl(url))),
+  D.parse(url => E.fromOption(() => D.error(url, 'PreprintUrl'))(pipe(fromUrl(url), Array.head))),
 )
 
 const WhichPreprintD = pipe(
