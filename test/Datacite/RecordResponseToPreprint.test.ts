@@ -30,7 +30,7 @@ test.each([
         { name: 'Gabriela Duarte Bezerra', orcid: Orcid('0000-0002-7472-4621') },
         { name: 'WONESKA RODRIGUES PINHEIRO', orcid: undefined },
       ],
-      id: { type: 'osf', value: Doi('10.17605/osf.io/eq8bk') },
+      id: { _tag: 'osf', value: Doi('10.17605/osf.io/eq8bk') },
       posted: Temporal.PlainDate.from({ year: 2023, month: 9, day: 13 }),
       title: {
         language: 'pt',
@@ -59,7 +59,7 @@ test.each([
         { name: 'Dr. Faridahwati Mohd. Shamsudin', orcid: undefined },
         { name: 'Shahratul Karmila Rosland', orcid: Orcid('0009-0000-3311-5160') },
       ],
-      id: { type: 'lifecycle-journal', value: Doi('10.17605/osf.io/bu3rj') },
+      id: { _tag: 'lifecycle-journal', value: Doi('10.17605/osf.io/bu3rj') },
       posted: Temporal.PlainDate.from({ year: 2025, month: 4, day: 3 }),
       title: {
         language: 'en',
@@ -80,7 +80,7 @@ test.each([
         ),
       },
       authors: [{ name: 'Ian Hussey', orcid: Orcid('0000-0001-8906-7559') }],
-      id: { type: 'lifecycle-journal', value: Doi('10.17605/osf.io/bmqcw') },
+      id: { _tag: 'lifecycle-journal', value: Doi('10.17605/osf.io/bmqcw') },
       posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 9 }),
       title: {
         language: 'en',

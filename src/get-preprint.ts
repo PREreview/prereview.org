@@ -17,7 +17,7 @@ const isCrossrefPreprintIdHandledByLegacyAdapter = (
 
 const getPreprintFromSource = pipe(
   Match.type<IndeterminatePreprintId>(),
-  Match.when({ type: 'philsci' }, id =>
+  Match.when({ _tag: 'philsci' }, id =>
     Effect.gen(function* () {
       const fetch = yield* FetchHttpClient.Fetch
       const sleep = yield* DeprecatedSleepEnv
@@ -72,21 +72,21 @@ export const resolvePreprintId = flow(
 export const getPreprintId = pipe(
   Match.type<IndeterminatePreprintId>(),
   Match.when(
-    { type: 'biorxiv-medrxiv' },
+    { _tag: 'biorxiv-medrxiv' },
     flow(
       resolvePreprintId,
       Effect.mapError(error => new Preprint.PreprintIsUnavailable({ cause: error })),
     ),
   ),
   Match.when(
-    { type: 'osf-lifecycle-journal' },
+    { _tag: 'osf-lifecycle-journal' },
     flow(
       resolvePreprintId,
       Effect.mapError(error => new Preprint.PreprintIsUnavailable({ cause: error })),
     ),
   ),
   Match.when(
-    { type: 'zenodo-africarxiv' },
+    { _tag: 'zenodo-africarxiv' },
     flow(
       resolvePreprintId,
       Effect.mapError(error => new Preprint.PreprintIsUnavailable({ cause: error })),

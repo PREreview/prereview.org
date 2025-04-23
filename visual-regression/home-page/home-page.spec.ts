@@ -48,7 +48,7 @@ const recentPrereview1 = {
   fields: ['16'],
   subfields: ['1607'],
   preprint: {
-    id: { type: 'arxiv', value: Doi('10.48550/arxiv.2402.04845') },
+    id: { _tag: 'arxiv', value: Doi('10.48550/arxiv.2402.04845') },
     language: 'en',
     title: rawHtml('AlphaFold Meets Flow Matching for Generating Protein Ensembles'),
   },
@@ -62,7 +62,7 @@ const recentPrereview2 = {
   fields: [],
   subfields: [],
   preprint: {
-    id: { type: 'scielo', value: Doi('10.1590/scielopreprints.7628') },
+    id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.7628') },
     language: 'es',
     title: rawHtml('Grado de avance en Metas Sanitarias de salud bucal infantil en la Región del Maule'),
   },
@@ -94,7 +94,7 @@ const recentPrereview3 = {
   fields: ['27'],
   subfields: ['2746'],
   preprint: {
-    id: { type: 'edarxiv', value: Doi('10.35542/osf.io/hsnke') },
+    id: { _tag: 'edarxiv', value: Doi('10.35542/osf.io/hsnke') },
     language: 'en',
     title: rawHtml('A population perspective on international students in Australian universities'),
   },
@@ -119,7 +119,7 @@ const recentPrereview4 = {
   fields: ['27', '23'],
   subfields: ['2725', '2303'],
   preprint: {
-    id: { type: 'biorxiv', value: Doi('10.1101/2023.12.21.572824') },
+    id: { _tag: 'biorxiv', value: Doi('10.1101/2023.12.21.572824') },
     language: 'en',
     title: rawHtml('Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants'),
   },
@@ -141,7 +141,7 @@ const recentPrereview5 = {
   fields: ['12', '33'],
   subfields: ['1211', '3310', '1208'],
   preprint: {
-    id: { type: 'scielo', value: Doi('10.1590/scielopreprints.7395') },
+    id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.7395') },
     language: 'pt',
     title: rawHtml('Traduções de sinais de pontuação desacompanhados em HQs'),
   },
@@ -152,7 +152,7 @@ const recentReviewRequest1 = {
   fields: ['33'],
   subfields: ['3304'],
   preprint: {
-    id: { type: 'scielo', value: Doi('10.1590/scielopreprints.8406') },
+    id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.8406') },
     language: 'pt',
     title: rawHtml('TENDÊNCIAS TEMÁTICAS DE PESQUISAS SOBRE FORMAÇÃO DE PROFESSORES: REVISÃO BIBLIOMÉTRICA'),
   },
@@ -163,7 +163,7 @@ const recentReviewRequest2 = {
   fields: [],
   subfields: [],
   preprint: {
-    id: { type: 'scielo', value: Doi('10.1590/scielopreprints.8470') },
+    id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.8470') },
     language: 'pt',
     title: rawHtml('CORPOS, SOCIEDADE E ESPAÇOS ACADÊMICOS: IDENTIDADES SUBALTERNAS E O DESAFIO DA CIDADANIA'),
   },
@@ -174,7 +174,7 @@ const recentReviewRequest3 = {
   fields: ['23', '13'],
   subfields: ['2303', '1312'],
   preprint: {
-    id: { type: 'biorxiv', value: Doi('10.1101/2024.04.20.590411') },
+    id: { _tag: 'biorxiv', value: Doi('10.1101/2024.04.20.590411') },
     language: 'en',
     title: rawHtml('A Blueprint for Broadly Effective Bacteriophage Therapy Against Bacterial Infections'),
   },
@@ -185,7 +185,7 @@ const recentReviewRequest4 = {
   fields: ['23', '36', '33'],
   subfields: ['2307', '3600', '3308'],
   preprint: {
-    id: { type: 'scielo', value: Doi('10.1590/scielopreprints.8326') },
+    id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.8326') },
     language: 'es',
     title: rawHtml('FACTORES ASOCIADOS A LA ERC-5 EN PACIENTES DE UNA EPS DEL VALLE DEL CAUCA 2018-2020'),
   },
@@ -196,7 +196,7 @@ const recentReviewRequest5 = {
   fields: ['32'],
   subfields: ['3204'],
   preprint: {
-    id: { type: 'scielo', value: Doi('10.1590/scielopreprints.7792') },
+    id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.7792') },
     language: 'pt',
     title: rawHtml('A VARIAÇÃO LEXICAL E FONOLÓGICA NA LIBRAS NA EXPRESSÃO DO CONCEITO ‘ELEVADOR’'),
   },

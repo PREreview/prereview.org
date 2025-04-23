@@ -16,7 +16,7 @@ export const recordToPreprint = (
     if (
       record.types.resourceType?.toLowerCase() !== 'preprint' &&
       record.types.resourceTypeGeneral?.toLowerCase() !== 'preprint' &&
-      (id.type !== 'lifecycle-journal' ||
+      (id._tag !== 'lifecycle-journal' ||
         !['journalarticle', 'studyregistration'].includes(record.types.resourceTypeGeneral?.toLowerCase() as never))
     ) {
       yield* Either.left(new Preprint.NotAPreprint({ cause: record.types }))
@@ -71,10 +71,10 @@ const determineDatacitePreprintId = (
     }
 
     if (record.publisher === 'Lifecycle Journal') {
-      return { type: 'lifecycle-journal', value: doi }
+      return { _tag: 'lifecycle-journal', value: doi }
     }
 
-    return { type: 'osf', value: doi } satisfies DatacitePreprintId
+    return { _tag: 'osf', value: doi } satisfies DatacitePreprintId
   })
 
 const findPublishedDate = (dates: Record['dates']) =>

@@ -1675,7 +1675,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               (id: PreprintId) =>
                 pipe(
                   match(id)
-                    .with({ type: 'philsci' }, () => RTE.of([]))
+                    .with({ _tag: 'philsci' }, () => RTE.of([]))
                     .otherwise(
                       EffectToFpts.toReaderTaskEitherK(id =>
                         pipe(OpenAlex.GetCategories, Effect.andThen(Function.apply(id.value))),

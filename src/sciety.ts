@@ -33,7 +33,7 @@ export const isScietyPreprint: Predicate.Refinement<PreprintId, PreprintIdSuppor
       .returnType<Option.Option<PreprintIdSupportedBySciety>>()
       .with(
         {
-          type: P.union(
+          _tag: P.union(
             'biorxiv',
             'edarxiv',
             'medrxiv',
@@ -47,7 +47,7 @@ export const isScietyPreprint: Predicate.Refinement<PreprintId, PreprintIdSuppor
         },
         Option.some,
       )
-      .with({ type: 'africarxiv', value: P.when(pipe(hasRegistrant('31730'))) }, Option.some)
+      .with({ _tag: 'africarxiv', value: P.when(pipe(hasRegistrant('31730'))) }, Option.some)
       .otherwise(Option.none),
 )
 

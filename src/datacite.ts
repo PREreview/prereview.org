@@ -99,7 +99,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
         ),
       ),
     ),
-    E.bindW('abstract', ({ id: { type } }) =>
+    E.bindW('abstract', ({ id: { _tag: type } }) =>
       pipe(
         work.descriptions,
         E.fromOptionK(() => 'no abstract' as const)(
@@ -128,7 +128,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
         ),
       ),
     ),
-    E.bindW('title', ({ id: { type } }) =>
+    E.bindW('title', ({ id: { _tag: type } }) =>
       pipe(
         E.right(work.titles[0].title),
         E.map(sanitizeHtml),
@@ -175,7 +175,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'africarxiv',
+          _tag: 'africarxiv',
           value: work.doi,
         }) satisfies AfricarxivUbuntunetPreprintId,
     ),
@@ -188,7 +188,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'africarxiv',
+          _tag: 'africarxiv',
           value: work.doi,
         }) satisfies AfricarxivFigsharePreprintId,
     ),
@@ -217,7 +217,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'africarxiv',
+          _tag: 'africarxiv',
           value: work.doi,
         }) satisfies AfricarxivZenodoPreprintId,
     ),
@@ -230,7 +230,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'arcadia-science',
+          _tag: 'arcadia-science',
           value: work.doi,
         }) satisfies ArcadiaSciencePreprintId,
     ),
@@ -243,7 +243,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'arxiv',
+          _tag: 'arxiv',
           value: work.doi,
         }) satisfies ArxivPreprintId,
     ),
@@ -253,7 +253,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
       doi: D.fromRefinement(hasRegistrant('23668'), 'DOI'),
       publisher: D.literal('PsychArchives', 'Leibniz Institut für Psychologie (ZPID)'),
     }),
-    D.map(work => ({ type: 'psycharchives', value: work.doi }) satisfies PsychArchivesPreprintId),
+    D.map(work => ({ _tag: 'psycharchives', value: work.doi }) satisfies PsychArchivesPreprintId),
   ),
   pipe(
     D.fromStruct({
@@ -262,7 +262,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'zenodo',
+          _tag: 'zenodo',
           value: work.doi,
         }) satisfies ZenodoPreprintId,
     ),

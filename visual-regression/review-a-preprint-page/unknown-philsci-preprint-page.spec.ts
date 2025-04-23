@@ -3,7 +3,7 @@ import { createUnknownPhilsciPreprintPage } from '../../src/review-a-preprint-pa
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
-  const response = createUnknownPhilsciPreprintPage({ type: 'philsci', value: 1234 }, DefaultLocale)
+  const response = createUnknownPhilsciPreprintPage({ _tag: 'philsci', value: 1234 }, DefaultLocale)
 
   const content = await showPage(response)
 

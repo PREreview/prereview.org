@@ -65,7 +65,7 @@ const ArxivPreprintIdC = C.make(
       const [, match] = /^arxiv-([A-z0-9.+-]+?)(?:v[0-9]+)?$/i.exec(s) ?? []
 
       if (typeof match === 'string') {
-        return D.success({ type: 'arxiv', value: `10.48550/arxiv.${match}` as Doi<'48550'> } satisfies ArxivPreprintId)
+        return D.success({ _tag: 'arxiv', value: `10.48550/arxiv.${match}` as Doi<'48550'> } satisfies ArxivPreprintId)
       }
 
       return D.failure(s, 'ID')
@@ -101,7 +101,7 @@ const PreprintPhilsciC = C.make(
       const [, match] = /^philsci-([1-9][0-9]*)$/.exec(s) ?? []
 
       if (typeof match === 'string') {
-        return D.success({ type: 'philsci', value: parseInt(match, 10) } satisfies PhilsciPreprintId)
+        return D.success({ _tag: 'philsci', value: parseInt(match, 10) } satisfies PhilsciPreprintId)
       }
 
       return D.failure(s, 'ID')
@@ -117,7 +117,7 @@ const PreprintPhilsciC = C.make(
 const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
   encode: id =>
     match(id)
-      .with({ type: 'philsci' }, PreprintPhilsciC.encode)
+      .with({ _tag: 'philsci' }, PreprintPhilsciC.encode)
       .with({ value: p.when(isDoi) }, PreprintDoiC.encode)
       .exhaustive(),
 })

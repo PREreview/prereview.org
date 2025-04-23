@@ -165,7 +165,7 @@ export const sendPrereviewToPrereviewCoarNotifyInbox = (
     RTE.apSW('prereviewUrl', RTE.rightReader(toUrl(reviewMatch.formatter, { id }))),
     RTE.let('newPrereview', ({ prereviewUrl }) => ({
       preprint: match(newPrereview.preprint.id)
-        .with({ type: 'philsci' }, () => ({}))
+        .with({ _tag: 'philsci' }, () => ({}))
         .otherwise(id => ({ doi: id.value })),
       doi,
       url: prereviewUrl,

@@ -4,7 +4,7 @@ import { unknownPreprintPage } from '../../src/request-a-prereview-page/unknown-
 import { expect, test } from '../base.js'
 
 test('content looks right with a DOI ID', async ({ showPage }) => {
-  const response = unknownPreprintPage({ type: 'biorxiv', value: Doi('10.1101/2022.01.13.476201') }, DefaultLocale)
+  const response = unknownPreprintPage({ _tag: 'biorxiv', value: Doi('10.1101/2022.01.13.476201') }, DefaultLocale)
 
   const content = await showPage(response)
 
@@ -12,7 +12,7 @@ test('content looks right with a DOI ID', async ({ showPage }) => {
 })
 
 test('content looks right with a PhilSci ID', async ({ showPage }) => {
-  const response = unknownPreprintPage({ type: 'philsci', value: 21986 }, DefaultLocale)
+  const response = unknownPreprintPage({ _tag: 'philsci', value: 21986 }, DefaultLocale)
 
   const content = await showPage(response)
 

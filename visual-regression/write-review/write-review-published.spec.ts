@@ -39,7 +39,7 @@ test('content looks right when the preprint is not on Sciety', async ({ page, sh
       form,
     },
     preprint: {
-      id: { type: 'philsci', value: 21986 },
+      id: { _tag: 'philsci', value: 21986 },
       title: html`Philosophy of Open Science`,
       language: 'en',
     },
@@ -81,7 +81,7 @@ test('content looks right when there are more authors', async ({ page, showHtml,
 
 const preprint = {
   id: {
-    type: 'biorxiv',
+    _tag: 'biorxiv',
     value: Doi('10.1101/2022.01.13.476201'),
   },
   title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,

@@ -134,7 +134,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
   return match(preprint)
     .with(
       {
-        type: P.union(
+        _tag: P.union(
           'advance',
           'arxiv',
           'biorxiv',
@@ -160,7 +160,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
       () => true,
     )
     .with(
-      { type: 'africarxiv' },
+      { _tag: 'africarxiv' },
       preprint => hasRegistrant('60763')(preprint.value),
       () => true,
     )

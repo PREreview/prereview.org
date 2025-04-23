@@ -20,7 +20,7 @@ describe('recordToPreprint', () => {
           { name: 'Miwako Honma', orcid: undefined },
           { name: 'Keiko Yamada', orcid: undefined },
         ],
-        id: { type: 'jxiv', value: Doi('10.51094/jxiv.1041') },
+        id: { _tag: 'jxiv', value: Doi('10.51094/jxiv.1041') },
         posted: Temporal.PlainDate.from('2025-01-28'),
         title: {
           language: 'en',

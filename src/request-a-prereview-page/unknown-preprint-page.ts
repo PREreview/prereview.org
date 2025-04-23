@@ -14,7 +14,7 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
     main: html`
       <h1>${translate(locale, 'request-a-prereview-page', 'dontKnowPreprint')()}</h1>
 
-      ${preprint.type === 'philsci'
+      ${preprint._tag === 'philsci'
         ? html`
             <p>
               ${rawHtml(
@@ -39,7 +39,7 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
         : html`
             <p>
               ${rawHtml(
-                match(preprint.type)
+                match(preprint._tag)
                   .with('advance', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAdvance'))
                   .with('africarxiv', () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAfricarxiv'))
                   .with('arcadia-science', () =>

@@ -99,7 +99,7 @@ export const createPage = ({
             </div>
             ${match(preprint.id)
               .with(
-                { type: 'philsci' },
+                { _tag: 'philsci' },
                 id => html`
                   <div>
                     <dt>${translate(locale, 'preprint-reviews', 'itemId')()}</dt>

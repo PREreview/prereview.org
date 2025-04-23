@@ -193,7 +193,7 @@ const PreprintPhilsciC = C.make(
       const [, match] = /^philsci-([1-9][0-9]*)$/.exec(s) ?? []
 
       if (typeof match === 'string') {
-        return D.success({ type: 'philsci', value: parseInt(match, 10) } satisfies PhilsciPreprintId)
+        return D.success({ _tag: 'philsci', value: parseInt(match, 10) } satisfies PhilsciPreprintId)
       }
 
       return D.failure(s, 'ID')
@@ -209,7 +209,7 @@ const PreprintPhilsciC = C.make(
 const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
   encode: id =>
     match(id)
-      .with({ type: 'philsci' }, PreprintPhilsciC.encode)
+      .with({ _tag: 'philsci' }, PreprintPhilsciC.encode)
       .with({ value: p.when(isDoi) }, PreprintDoiC.encode)
       .exhaustive(),
 })

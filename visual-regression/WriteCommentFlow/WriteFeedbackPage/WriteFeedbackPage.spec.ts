@@ -49,7 +49,7 @@ const prereview = new Prereview.Prereview({
   live: false,
   published: PlainDate.from('2024-03-04'),
   preprint: {
-    id: { type: 'biorxiv', value: Doi('10.1101/2023.12.21.572824') },
+    id: { _tag: 'biorxiv', value: Doi('10.1101/2023.12.21.572824') },
     title: html`Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants`,
     language: 'en',
     url: new URL('https://biorxiv.org/lookup/doi/10.1101/2023.12.21.572824'),

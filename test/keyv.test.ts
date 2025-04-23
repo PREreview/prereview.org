@@ -1998,7 +1998,7 @@ describe('getReviewRequest', () => {
     'when the key contains a review request',
     async (orcid, preprint, reviewRequest) => {
       const store = new Keyv()
-      await store.set(`${orcid}_${preprint.type}-${preprint.value}`, reviewRequest)
+      await store.set(`${orcid}_${preprint._tag}-${preprint.value}`, reviewRequest)
 
       const actual = await _.getReviewRequest([orcid, preprint])({
         reviewRequestStore: store,
@@ -2014,7 +2014,7 @@ describe('getReviewRequest', () => {
     'when the key contains something other than a review request',
     async (orcid, preprint, value) => {
       const store = new Keyv()
-      await store.set(`${orcid}_${preprint.type}-${preprint.value}`, value)
+      await store.set(`${orcid}_${preprint._tag}-${preprint.value}`, value)
 
       const actual = await _.getReviewRequest([orcid, preprint])({
         reviewRequestStore: store,
@@ -2060,7 +2060,7 @@ describe('saveReviewRequest', () => {
     'when the key contains a review request',
     async (orcid, preprint, reviewRequest) => {
       const store = new Keyv()
-      await store.set(`${orcid}_${preprint.type}-${preprint.value}`, reviewRequest)
+      await store.set(`${orcid}_${preprint._tag}-${preprint.value}`, reviewRequest)
 
       const actual = await _.saveReviewRequest(
         [orcid, preprint],
@@ -2072,7 +2072,7 @@ describe('saveReviewRequest', () => {
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(`${orcid}_${preprint.type}-${preprint.value}`)).toStrictEqual(reviewRequest)
+      expect(await store.get(`${orcid}_${preprint._tag}-${preprint.value}`)).toStrictEqual(reviewRequest)
     },
   )
 
@@ -2080,7 +2080,7 @@ describe('saveReviewRequest', () => {
     'when the key already contains something other than a review request',
     async (orcid, preprint, value, reviewRequest) => {
       const store = new Keyv()
-      await store.set(`${orcid}_${preprint.type}-${preprint.value}`, value)
+      await store.set(`${orcid}_${preprint._tag}-${preprint.value}`, value)
 
       const actual = await _.saveReviewRequest(
         [orcid, preprint],
@@ -2092,7 +2092,7 @@ describe('saveReviewRequest', () => {
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(`${orcid}_${preprint.type}-${preprint.value}`)).toStrictEqual(reviewRequest)
+      expect(await store.get(`${orcid}_${preprint._tag}-${preprint.value}`)).toStrictEqual(reviewRequest)
     },
   )
 
@@ -2111,7 +2111,7 @@ describe('saveReviewRequest', () => {
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(`${orcid}_${preprint.type}-${preprint.value}`)).toStrictEqual(reviewRequest)
+      expect(await store.get(`${orcid}_${preprint._tag}-${preprint.value}`)).toStrictEqual(reviewRequest)
     },
   )
 

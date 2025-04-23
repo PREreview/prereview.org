@@ -2,7 +2,7 @@ import { match } from 'ts-pattern'
 import type { PreprintId } from '../types/preprint-id.js'
 
 export const getName = (preprintId: PreprintId) =>
-  match(preprintId.type)
+  match(preprintId._tag)
     .with('advance', () => 'Advance')
     .with('africarxiv', () => 'AfricArXiv Preprints')
     .with('arcadia-science', () => 'Arcadia Science')

@@ -10,7 +10,7 @@ import { expect, test } from '../base.js'
 
 const preprint = {
   id: {
-    type: 'biorxiv',
+    _tag: 'biorxiv',
     value: Doi('10.1101/2022.01.13.476201'),
   },
   title: html`Cytoplasmic protein-free mRNA induces stress granules by two G3BP1/2-dependent mechanisms`,

@@ -104,7 +104,7 @@ const reviewRequest1 = {
   fields: ['33'],
   subfields: ['3304'],
   preprint: {
-    id: { type: 'scielo', value: Doi('10.1590/scielopreprints.8406') },
+    id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.8406') },
     language: 'pt',
     title: rawHtml('TENDÊNCIAS TEMÁTICAS DE PESQUISAS SOBRE FORMAÇÃO DE PROFESSORES: REVISÃO BIBLIOMÉTRICA'),
   },
@@ -115,7 +115,7 @@ const reviewRequest2 = {
   fields: [],
   subfields: [],
   preprint: {
-    id: { type: 'scielo', value: Doi('10.1590/scielopreprints.8470') },
+    id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.8470') },
     language: 'pt',
     title: rawHtml('CORPOS, SOCIEDADE E ESPAÇOS ACADÊMICOS: IDENTIDADES SUBALTERNAS E O DESAFIO DA CIDADANIA'),
   },
@@ -126,7 +126,7 @@ const reviewRequest3 = {
   fields: ['23', '13'],
   subfields: ['2303', '1312'],
   preprint: {
-    id: { type: 'biorxiv', value: Doi('10.1101/2024.04.20.590411') },
+    id: { _tag: 'biorxiv', value: Doi('10.1101/2024.04.20.590411') },
     language: 'en',
     title: rawHtml('A Blueprint for Broadly Effective Bacteriophage Therapy Against Bacterial Infections'),
   },
@@ -137,7 +137,7 @@ const reviewRequest4 = {
   fields: ['23', '36', '33'],
   subfields: ['2307', '3600', '3308'],
   preprint: {
-    id: { type: 'scielo', value: Doi('10.1590/scielopreprints.8326') },
+    id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.8326') },
     language: 'es',
     title: rawHtml('FACTORES ASOCIADOS A LA ERC-5 EN PACIENTES DE UNA EPS DEL VALLE DEL CAUCA 2018-2020'),
   },
@@ -148,7 +148,7 @@ const reviewRequest5 = {
   fields: ['32'],
   subfields: ['3204'],
   preprint: {
-    id: { type: 'scielo', value: Doi('10.1590/scielopreprints.7792') },
+    id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.7792') },
     language: 'pt',
     title: rawHtml('A VARIAÇÃO LEXICAL E FONOLÓGICA NA LIBRAS NA EXPRESSÃO DO CONCEITO ‘ELEVADOR’'),
   },

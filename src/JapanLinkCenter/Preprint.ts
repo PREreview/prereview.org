@@ -14,7 +14,7 @@ const determineJapanLinkCenterPreprintId = (
       return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
     }
 
-    return { type: 'jxiv', value: doi } satisfies JapanLinkCenterPreprintId
+    return { _tag: 'jxiv', value: doi } satisfies JapanLinkCenterPreprintId
   })
 
 export const recordToPreprint = (

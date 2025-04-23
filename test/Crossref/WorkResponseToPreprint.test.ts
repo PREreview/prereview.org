@@ -25,7 +25,7 @@ test.each([
         { name: 'Naofumi Otsuru', orcid: undefined },
         { name: 'Hideaki Onishi', orcid: undefined },
       ],
-      id: { type: 'ssrn', value: Doi('10.2139/ssrn.5186959') },
+      id: { _tag: 'ssrn', value: Doi('10.2139/ssrn.5186959') },
       posted: 2025,
       title: {
         language: 'en',
@@ -45,7 +45,7 @@ test.each([
         { name: 'Nadia Blostein', orcid: Orcid('0000-0002-1864-1899') },
         { name: 'Nikola Stikov', orcid: Orcid('0000-0002-8480-5230') },
       ],
-      id: { type: 'neurolibre', value: Doi('10.55458/neurolibre.00031') },
+      id: { _tag: 'neurolibre', value: Doi('10.55458/neurolibre.00031') },
       posted: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),
       title: {
         language: 'en',
@@ -99,7 +99,7 @@ test.each([
           orcid: Orcid('0000-0002-7286-6503'),
         },
       ],
-      id: { type: 'biorxiv', value: Doi('10.1101/2025.02.05.636615') },
+      id: { _tag: 'biorxiv', value: Doi('10.1101/2025.02.05.636615') },
       posted: Temporal.PlainDate.from({ year: 2025, month: 2, day: 5 }),
       title: {
         language: 'en',
@@ -145,7 +145,7 @@ test.each([
           orcid: Orcid('0000-0003-0745-6046'),
         },
       ],
-      id: { type: 'medrxiv', value: Doi('10.1101/2024.05.27.24307989') },
+      id: { _tag: 'medrxiv', value: Doi('10.1101/2024.05.27.24307989') },
       posted: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),
       title: {
         language: 'en',

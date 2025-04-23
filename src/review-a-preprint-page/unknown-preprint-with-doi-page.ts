@@ -22,7 +22,7 @@ export function createUnknownPreprintWithDoiPage(
 
       <p>
         ${rawHtml(
-          match(preprint.type)
+          match(preprint._tag)
             .with('advance', () => t('review-a-preprint', 'doiCouldBeAdvance'))
             .with('africarxiv', () => t('review-a-preprint', 'doiCouldBeAfricarxiv'))
             .with('arcadia-science', () => t('review-a-preprint', 'doiCouldBeArcadiaScience'))

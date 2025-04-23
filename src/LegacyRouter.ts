@@ -14,7 +14,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
       Effect.andThen(({ suffix }) =>
         movedPermanently(
           format(Routes.preprintReviewsMatch.formatter, {
-            id: { type: 'biorxiv-medrxiv', value: `10.1101/${suffix}` as Doi<'1101'> },
+            id: { _tag: 'biorxiv-medrxiv', value: `10.1101/${suffix}` as Doi<'1101'> },
           }),
         ),
       ),
@@ -28,7 +28,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
       Effect.andThen(({ suffix }) =>
         movedPermanently(
           format(Routes.preprintReviewsMatch.formatter, {
-            id: { type: 'zenodo-africarxiv', value: `10.5281/${suffix}` as Doi<'5281'> },
+            id: { _tag: 'zenodo-africarxiv', value: `10.5281/${suffix}` as Doi<'5281'> },
           }),
         ),
       ),

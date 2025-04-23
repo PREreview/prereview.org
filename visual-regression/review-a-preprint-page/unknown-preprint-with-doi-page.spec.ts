@@ -6,7 +6,7 @@ import { expect, test } from '../base.js'
 test('content looks right', async ({ showPage }) => {
   const response = createUnknownPreprintWithDoiPage(
     {
-      type: 'biorxiv-medrxiv',
+      _tag: 'biorxiv-medrxiv',
       value: Doi('10.1101/2022.01.13.476201'),
     },
     DefaultLocale,

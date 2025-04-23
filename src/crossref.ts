@@ -108,7 +108,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.P
     ),
     E.apSW('id', PreprintIdD.decode(work)),
     E.let('posted', () => findPublishedDate(work)),
-    E.bindW('abstract', ({ id: { type } }) =>
+    E.bindW('abstract', ({ id: { _tag: type } }) =>
       pipe(
         work.abstract,
         E.fromNullable('no abstract' as const),
@@ -135,7 +135,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.P
         E.bind(
           'language',
           E.fromOptionK(() => 'unknown language')(({ text }) =>
-            detectLanguageForServer({ type: preprint.id.type, text }),
+            detectLanguageForServer({ type: preprint.id._tag, text }),
           ),
         ),
       ),
@@ -168,7 +168,7 @@ const detectLanguageForServer = ({
   type,
   text,
 }: {
-  type: CrossrefPreprintId['type']
+  type: CrossrefPreprintId['_tag']
   text: Html
 }): Option.Option<LanguageCode> =>
   match({ type, text })
@@ -202,7 +202,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'advance',
+          _tag: 'advance',
           value: work.DOI,
         }) satisfies AdvancePreprintId,
     ),
@@ -216,7 +216,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'africarxiv',
+          _tag: 'africarxiv',
           value: work.DOI,
         }) satisfies AfricarxivOsfPreprintId,
     ),
@@ -226,7 +226,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       DOI: D.fromRefinement(hasRegistrant('22541'), 'DOI'),
       publisher: D.literal('Authorea, Inc.'),
     }),
-    D.map(work => ({ type: 'authorea', value: work.DOI }) satisfies AuthoreaPreprintId),
+    D.map(work => ({ _tag: 'authorea', value: work.DOI }) satisfies AuthoreaPreprintId),
   ),
   pipe(
     D.fromStruct({
@@ -236,7 +236,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'chemrxiv',
+          _tag: 'chemrxiv',
           value: work.DOI,
         }) satisfies ChemrxivPreprintId,
     ),
@@ -249,7 +249,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'curvenote',
+          _tag: 'curvenote',
           value: work.DOI,
         }) satisfies CurvenotePreprintId,
     ),
@@ -262,7 +262,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'eartharxiv',
+          _tag: 'eartharxiv',
           value: work.DOI,
         }) satisfies EartharxivPreprintId,
     ),
@@ -275,7 +275,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'ecoevorxiv',
+          _tag: 'ecoevorxiv',
           value: work.DOI,
         }) satisfies EcoevorxivPreprintId,
     ),
@@ -289,7 +289,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'edarxiv',
+          _tag: 'edarxiv',
           value: work.DOI,
         }) satisfies EdarxivPreprintId,
     ),
@@ -302,7 +302,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'engrxiv',
+          _tag: 'engrxiv',
           value: work.DOI,
         }) satisfies EngrxivPreprintId,
     ),
@@ -316,7 +316,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'metaarxiv',
+          _tag: 'metaarxiv',
           value: work.DOI,
         }) satisfies MetaarxivPreprintId,
     ),
@@ -330,7 +330,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'osf-preprints',
+          _tag: 'osf-preprints',
           value: work.DOI,
         }) satisfies OsfPreprintsPreprintId,
     ),
@@ -343,7 +343,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'preprints.org',
+          _tag: 'preprints.org',
           value: work.DOI,
         }) satisfies PreprintsorgPreprintId,
     ),
@@ -357,7 +357,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'psyarxiv',
+          _tag: 'psyarxiv',
           value: work.DOI,
         }) satisfies PsyarxivPreprintId,
     ),
@@ -370,7 +370,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'research-square',
+          _tag: 'research-square',
           value: work.DOI,
         }) satisfies ResearchSquarePreprintId,
     ),
@@ -383,7 +383,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'scielo',
+          _tag: 'scielo',
           value: work.DOI,
         }) satisfies ScieloPreprintId,
     ),
@@ -396,7 +396,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'science-open',
+          _tag: 'science-open',
           value: work.DOI,
         }) satisfies ScienceOpenPreprintId,
     ),
@@ -410,7 +410,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'socarxiv',
+          _tag: 'socarxiv',
           value: work.DOI,
         }) satisfies SocarxivPreprintId,
     ),
@@ -420,13 +420,13 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       DOI: D.fromRefinement(hasRegistrant('36227'), 'DOI'),
       publisher: D.literal('Institute of Electrical and Electronics Engineers (IEEE)'),
     }),
-    D.map(work => ({ type: 'techrxiv', value: work.DOI }) satisfies TechrxivPreprintId),
+    D.map(work => ({ _tag: 'techrxiv', value: work.DOI }) satisfies TechrxivPreprintId),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('12688'), 'DOI'),
       'group-title': D.literal('Gates Foundation'),
     }),
-    D.map(work => ({ type: 'verixiv', value: work.DOI }) satisfies VerixivPreprintId),
+    D.map(work => ({ _tag: 'verixiv', value: work.DOI }) satisfies VerixivPreprintId),
   ),
 )

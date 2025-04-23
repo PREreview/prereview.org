@@ -58,7 +58,7 @@ const preprint = {
     { name: 'Wojciech Nawrocki', orcid: Orcid('0000-0001-5124-3000') },
     { name: 'Roberta Croce', orcid: Orcid('0000-0003-3469-834X') },
   ],
-  id: { type: 'biorxiv', value: Doi('10.1101/2022.01.13.476201') },
+  id: { _tag: 'biorxiv', value: Doi('10.1101/2022.01.13.476201') },
   posted: PlainDate.from('2022-01-14'),
   abstract: {
     text: html`<p>

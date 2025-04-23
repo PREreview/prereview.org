@@ -45,7 +45,7 @@ export type IndeterminatePreprintId =
   | ZenodoOrAfricarxivPreprintId
 
 export interface AdvancePreprintId {
-  readonly type: 'advance'
+  readonly _tag: 'advance'
   readonly value: Doi<'31124'>
 }
 
@@ -56,191 +56,191 @@ export type AfricarxivPreprintId =
   | AfricarxivZenodoPreprintId
 
 export interface AfricarxivFigsharePreprintId {
-  readonly type: 'africarxiv'
+  readonly _tag: 'africarxiv'
   readonly value: Doi<'6084'>
 }
 
 export interface AfricarxivOsfPreprintId {
-  readonly type: 'africarxiv'
+  readonly _tag: 'africarxiv'
   readonly value: Doi<'31730'>
 }
 
 export interface AfricarxivUbuntunetPreprintId {
-  readonly type: 'africarxiv'
+  readonly _tag: 'africarxiv'
   readonly value: Doi<'60763'>
 }
 
 export interface AfricarxivZenodoPreprintId {
-  readonly type: 'africarxiv'
+  readonly _tag: 'africarxiv'
   readonly value: Doi<'5281'>
 }
 
 export interface ArcadiaSciencePreprintId {
-  readonly type: 'arcadia-science'
+  readonly _tag: 'arcadia-science'
   readonly value: Doi<'57844'>
 }
 
 export interface ArxivPreprintId {
-  readonly type: 'arxiv'
+  readonly _tag: 'arxiv'
   readonly value: Doi<'48550'>
 }
 
 export interface AuthoreaPreprintId {
-  readonly type: 'authorea'
+  readonly _tag: 'authorea'
   readonly value: Doi<'22541'>
 }
 
 export interface BiorxivPreprintId {
-  readonly type: 'biorxiv'
+  readonly _tag: 'biorxiv'
   readonly value: Doi<'1101'>
 }
 
 export interface ChemrxivPreprintId {
-  readonly type: 'chemrxiv'
+  readonly _tag: 'chemrxiv'
   readonly value: Doi<'26434'>
 }
 
 export interface CurvenotePreprintId {
-  readonly type: 'curvenote'
+  readonly _tag: 'curvenote'
   readonly value: Doi<'62329'>
 }
 
 export interface EartharxivPreprintId {
-  readonly type: 'eartharxiv'
+  readonly _tag: 'eartharxiv'
   readonly value: Doi<'31223'>
 }
 
 export interface EcoevorxivPreprintId {
-  readonly type: 'ecoevorxiv'
+  readonly _tag: 'ecoevorxiv'
   readonly value: Doi<'32942'>
 }
 
 export interface EdarxivPreprintId {
-  readonly type: 'edarxiv'
+  readonly _tag: 'edarxiv'
   readonly value: Doi<'35542'>
 }
 
 export interface EngrxivPreprintId {
-  readonly type: 'engrxiv'
+  readonly _tag: 'engrxiv'
   readonly value: Doi<'31224'>
 }
 
 export interface JxivPreprintId {
-  readonly type: 'jxiv'
+  readonly _tag: 'jxiv'
   readonly value: Doi<'51094'>
 }
 
 export interface LifecycleJournalPreprintId {
-  readonly type: 'lifecycle-journal'
+  readonly _tag: 'lifecycle-journal'
   readonly value: Doi<'17605'>
 }
 
 export interface MedrxivPreprintId {
-  readonly type: 'medrxiv'
+  readonly _tag: 'medrxiv'
   readonly value: Doi<'1101'>
 }
 
 export interface MetaarxivPreprintId {
-  readonly type: 'metaarxiv'
+  readonly _tag: 'metaarxiv'
   readonly value: Doi<'31222'>
 }
 
 export interface NeurolibrePreprintId {
-  readonly type: 'neurolibre'
+  readonly _tag: 'neurolibre'
   readonly value: Doi<'55458'>
 }
 
 export interface OsfPreprintId {
-  readonly type: 'osf'
+  readonly _tag: 'osf'
   readonly value: Doi<'17605'>
 }
 
 export interface OsfPreprintsPreprintId {
-  readonly type: 'osf-preprints'
+  readonly _tag: 'osf-preprints'
   readonly value: Doi<'31219'>
 }
 
 export interface PhilsciPreprintId {
-  readonly type: 'philsci'
+  readonly _tag: 'philsci'
   readonly value: number
 }
 
 export interface PreprintsorgPreprintId {
-  readonly type: 'preprints.org'
+  readonly _tag: 'preprints.org'
   readonly value: Doi<'20944'>
 }
 
 export interface PsyarxivPreprintId {
-  readonly type: 'psyarxiv'
+  readonly _tag: 'psyarxiv'
   readonly value: Doi<'31234'>
 }
 
 export interface PsychArchivesPreprintId {
-  readonly type: 'psycharchives'
+  readonly _tag: 'psycharchives'
   readonly value: Doi<'23668'>
 }
 
 export interface ResearchSquarePreprintId {
-  readonly type: 'research-square'
+  readonly _tag: 'research-square'
   readonly value: Doi<'21203'>
 }
 
 export interface ScieloPreprintId {
-  readonly type: 'scielo'
+  readonly _tag: 'scielo'
   readonly value: Doi<'1590'>
 }
 
 export interface ScienceOpenPreprintId {
-  readonly type: 'science-open'
+  readonly _tag: 'science-open'
   readonly value: Doi<'14293'>
 }
 
 export interface SocarxivPreprintId {
-  readonly type: 'socarxiv'
+  readonly _tag: 'socarxiv'
   readonly value: Doi<'31235'>
 }
 
 export interface SsrnPreprintId {
-  readonly type: 'ssrn'
+  readonly _tag: 'ssrn'
   readonly value: Doi<'2139'>
 }
 
 export interface TechrxivPreprintId {
-  readonly type: 'techrxiv'
+  readonly _tag: 'techrxiv'
   readonly value: Doi<'36227'>
 }
 
 export interface VerixivPreprintId {
-  readonly type: 'verixiv'
+  readonly _tag: 'verixiv'
   readonly value: Doi<'12688'>
 }
 
 export interface ZenodoPreprintId {
-  readonly type: 'zenodo'
+  readonly _tag: 'zenodo'
   readonly value: Doi<'5281'>
 }
 
 export interface BiorxivOrMedrxivPreprintId {
-  readonly type: 'biorxiv-medrxiv'
+  readonly _tag: 'biorxiv-medrxiv'
   readonly value: Doi<'1101'>
 }
 
 export interface OsfOrLifecycleJournalPreprintId {
-  readonly type: 'osf-lifecycle-journal'
+  readonly _tag: 'osf-lifecycle-journal'
   readonly value: Doi<'17605'>
 }
 
 export interface ZenodoOrAfricarxivPreprintId {
-  readonly type: 'zenodo-africarxiv'
+  readonly _tag: 'zenodo-africarxiv'
   readonly value: Doi<'5281'>
 }
 
 export const PreprintIdEquivalence: Equivalence.Equivalence<IndeterminatePreprintId> = (a, b) => {
-  if (a.type !== b.type) {
+  if (a._tag !== b._tag) {
     return false
   }
 
-  if (a.type === 'philsci') {
+  if (a._tag === 'philsci') {
     return a.value === b.value
   }
 
@@ -291,42 +291,42 @@ export function fromPreprintDoi(
   doi: Extract<IndeterminatePreprintId, { value: Doi }>['value'],
 ): Extract<IndeterminatePreprintId, { value: Doi }> {
   return match(doi)
-    .when(hasRegistrant('1101'), doi => ({ type: 'biorxiv-medrxiv', value: doi }) satisfies BiorxivOrMedrxivPreprintId)
-    .when(hasRegistrant('1590'), doi => ({ type: 'scielo', value: doi }) satisfies ScieloPreprintId)
-    .when(hasRegistrant('2139'), doi => ({ type: 'ssrn', value: doi }) satisfies SsrnPreprintId)
+    .when(hasRegistrant('1101'), doi => ({ _tag: 'biorxiv-medrxiv', value: doi }) satisfies BiorxivOrMedrxivPreprintId)
+    .when(hasRegistrant('1590'), doi => ({ _tag: 'scielo', value: doi }) satisfies ScieloPreprintId)
+    .when(hasRegistrant('2139'), doi => ({ _tag: 'ssrn', value: doi }) satisfies SsrnPreprintId)
     .when(
       hasRegistrant('5281'),
-      doi => ({ type: 'zenodo-africarxiv', value: doi }) satisfies ZenodoOrAfricarxivPreprintId,
+      doi => ({ _tag: 'zenodo-africarxiv', value: doi }) satisfies ZenodoOrAfricarxivPreprintId,
     )
-    .when(hasRegistrant('6084'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivFigsharePreprintId)
-    .when(hasRegistrant('12688'), doi => ({ type: 'verixiv', value: doi }) satisfies VerixivPreprintId)
-    .when(hasRegistrant('14293'), doi => ({ type: 'science-open', value: doi }) satisfies ScienceOpenPreprintId)
+    .when(hasRegistrant('6084'), doi => ({ _tag: 'africarxiv', value: doi }) satisfies AfricarxivFigsharePreprintId)
+    .when(hasRegistrant('12688'), doi => ({ _tag: 'verixiv', value: doi }) satisfies VerixivPreprintId)
+    .when(hasRegistrant('14293'), doi => ({ _tag: 'science-open', value: doi }) satisfies ScienceOpenPreprintId)
     .when(
       hasRegistrant('17605'),
-      doi => ({ type: 'osf-lifecycle-journal', value: doi }) satisfies OsfOrLifecycleJournalPreprintId,
+      doi => ({ _tag: 'osf-lifecycle-journal', value: doi }) satisfies OsfOrLifecycleJournalPreprintId,
     )
-    .when(hasRegistrant('21203'), doi => ({ type: 'research-square', value: doi }) satisfies ResearchSquarePreprintId)
-    .when(hasRegistrant('22541'), doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId)
-    .when(hasRegistrant('23668'), doi => ({ type: 'psycharchives', value: doi }) satisfies PsychArchivesPreprintId)
-    .when(hasRegistrant('26434'), doi => ({ type: 'chemrxiv', value: doi }) satisfies ChemrxivPreprintId)
-    .when(hasRegistrant('20944'), doi => ({ type: 'preprints.org', value: doi }) satisfies PreprintsorgPreprintId)
-    .when(hasRegistrant('31124'), doi => ({ type: 'advance', value: doi }) satisfies AdvancePreprintId)
-    .when(hasRegistrant('31219'), doi => ({ type: 'osf-preprints', value: doi }) satisfies OsfPreprintsPreprintId)
-    .when(hasRegistrant('31222'), doi => ({ type: 'metaarxiv', value: doi }) satisfies MetaarxivPreprintId)
-    .when(hasRegistrant('31223'), doi => ({ type: 'eartharxiv', value: doi }) satisfies EartharxivPreprintId)
-    .when(hasRegistrant('31224'), doi => ({ type: 'engrxiv', value: doi }) satisfies EngrxivPreprintId)
-    .when(hasRegistrant('31234'), doi => ({ type: 'psyarxiv', value: doi }) satisfies PsyarxivPreprintId)
-    .when(hasRegistrant('31235'), doi => ({ type: 'socarxiv', value: doi }) satisfies SocarxivPreprintId)
-    .when(hasRegistrant('31730'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivOsfPreprintId)
-    .when(hasRegistrant('32942'), doi => ({ type: 'ecoevorxiv', value: doi }) satisfies EcoevorxivPreprintId)
-    .when(hasRegistrant('35542'), doi => ({ type: 'edarxiv', value: doi }) satisfies EdarxivPreprintId)
-    .when(hasRegistrant('36227'), doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId)
-    .when(hasRegistrant('48550'), doi => ({ type: 'arxiv', value: doi }) satisfies ArxivPreprintId)
-    .when(hasRegistrant('51094'), doi => ({ type: 'jxiv', value: doi }) satisfies JxivPreprintId)
-    .when(hasRegistrant('55458'), doi => ({ type: 'neurolibre', value: doi }) satisfies NeurolibrePreprintId)
-    .when(hasRegistrant('57844'), doi => ({ type: 'arcadia-science', value: doi }) satisfies ArcadiaSciencePreprintId)
-    .when(hasRegistrant('60763'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivPreprintId)
-    .when(hasRegistrant('62329'), doi => ({ type: 'curvenote', value: doi }) satisfies CurvenotePreprintId)
+    .when(hasRegistrant('21203'), doi => ({ _tag: 'research-square', value: doi }) satisfies ResearchSquarePreprintId)
+    .when(hasRegistrant('22541'), doi => ({ _tag: 'authorea', value: doi }) satisfies AuthoreaPreprintId)
+    .when(hasRegistrant('23668'), doi => ({ _tag: 'psycharchives', value: doi }) satisfies PsychArchivesPreprintId)
+    .when(hasRegistrant('26434'), doi => ({ _tag: 'chemrxiv', value: doi }) satisfies ChemrxivPreprintId)
+    .when(hasRegistrant('20944'), doi => ({ _tag: 'preprints.org', value: doi }) satisfies PreprintsorgPreprintId)
+    .when(hasRegistrant('31124'), doi => ({ _tag: 'advance', value: doi }) satisfies AdvancePreprintId)
+    .when(hasRegistrant('31219'), doi => ({ _tag: 'osf-preprints', value: doi }) satisfies OsfPreprintsPreprintId)
+    .when(hasRegistrant('31222'), doi => ({ _tag: 'metaarxiv', value: doi }) satisfies MetaarxivPreprintId)
+    .when(hasRegistrant('31223'), doi => ({ _tag: 'eartharxiv', value: doi }) satisfies EartharxivPreprintId)
+    .when(hasRegistrant('31224'), doi => ({ _tag: 'engrxiv', value: doi }) satisfies EngrxivPreprintId)
+    .when(hasRegistrant('31234'), doi => ({ _tag: 'psyarxiv', value: doi }) satisfies PsyarxivPreprintId)
+    .when(hasRegistrant('31235'), doi => ({ _tag: 'socarxiv', value: doi }) satisfies SocarxivPreprintId)
+    .when(hasRegistrant('31730'), doi => ({ _tag: 'africarxiv', value: doi }) satisfies AfricarxivOsfPreprintId)
+    .when(hasRegistrant('32942'), doi => ({ _tag: 'ecoevorxiv', value: doi }) satisfies EcoevorxivPreprintId)
+    .when(hasRegistrant('35542'), doi => ({ _tag: 'edarxiv', value: doi }) satisfies EdarxivPreprintId)
+    .when(hasRegistrant('36227'), doi => ({ _tag: 'techrxiv', value: doi }) satisfies TechrxivPreprintId)
+    .when(hasRegistrant('48550'), doi => ({ _tag: 'arxiv', value: doi }) satisfies ArxivPreprintId)
+    .when(hasRegistrant('51094'), doi => ({ _tag: 'jxiv', value: doi }) satisfies JxivPreprintId)
+    .when(hasRegistrant('55458'), doi => ({ _tag: 'neurolibre', value: doi }) satisfies NeurolibrePreprintId)
+    .when(hasRegistrant('57844'), doi => ({ _tag: 'arcadia-science', value: doi }) satisfies ArcadiaSciencePreprintId)
+    .when(hasRegistrant('60763'), doi => ({ _tag: 'africarxiv', value: doi }) satisfies AfricarxivPreprintId)
+    .when(hasRegistrant('62329'), doi => ({ _tag: 'curvenote', value: doi }) satisfies CurvenotePreprintId)
     .exhaustive()
 }
 
@@ -369,7 +369,7 @@ const extractFromAuthoreaPath = flow(
   decodeURIComponent,
   Option.liftNullable(s => /^doi\/full\/(.+?)$/i.exec(s)?.[1]),
   Option.filter(Predicate.compose(isDoi, hasRegistrant('22541'))),
-  Option.andThen(doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId),
+  Option.andThen(doi => ({ _tag: 'authorea', value: doi }) satisfies AuthoreaPreprintId),
 )
 
 const extractFromBiorxivMedrxivPath = (type: 'biorxiv' | 'medrxiv') =>
@@ -378,7 +378,7 @@ const extractFromBiorxivMedrxivPath = (type: 'biorxiv' | 'medrxiv') =>
     Option.liftNullable(s => /(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i.exec(s)?.[1]),
     Option.andThen(suffix => `10.1101/${suffix}`),
     Option.filter(Predicate.compose(isDoi, hasRegistrant('1101'))),
-    Option.andThen(doi => ({ type, value: doi }) satisfies BiorxivPreprintId | MedrxivPreprintId),
+    Option.andThen(doi => ({ _tag: type, value: doi }) satisfies BiorxivPreprintId | MedrxivPreprintId),
   )
 
 const extractFromEdarxivPath = flow(
@@ -399,7 +399,7 @@ const extractFromFigsharePath = (type: 'africarxiv') =>
     Option.liftNullable(s => /^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i.exec(s)?.[1]),
     Option.andThen(id => `10.6084/m9.figshare.${id}.v1`),
     Option.filter(Predicate.compose(isDoi, hasRegistrant('6084'))),
-    Option.andThen(doi => ({ type, value: doi }) satisfies AfricarxivFigsharePreprintId),
+    Option.andThen(doi => ({ _tag: type, value: doi }) satisfies AfricarxivFigsharePreprintId),
   )
 
 const extractFromJxivPath = flow(
@@ -429,7 +429,7 @@ const extractFromPhilsciPath = flow(
   decodeURIComponent,
   Option.liftNullable(s => /^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
   Option.flatMap(flow(id => parseInt(id, 10), D.number.decode, FptsToEffect.either, Either.getRight)),
-  Option.andThen(id => ({ type: 'philsci', value: id }) satisfies PhilsciPreprintId),
+  Option.andThen(id => ({ _tag: 'philsci', value: id }) satisfies PhilsciPreprintId),
 )
 
 const extractFromPreprintsorgPath = flow(
@@ -476,7 +476,7 @@ const extractFromTechrxivPath = flow(
   decodeURIComponent,
   Option.liftNullable(s => /^doi\/(?:full|pdf|xml)\/(.+?)$/i.exec(s)?.[1]),
   Option.filter(Predicate.compose(isDoi, hasRegistrant('36227'))),
-  Option.andThen(doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId),
+  Option.andThen(doi => ({ _tag: 'techrxiv', value: doi }) satisfies TechrxivPreprintId),
 )
 
 const extractFromZenodoPath = flow(

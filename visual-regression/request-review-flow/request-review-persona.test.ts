@@ -16,7 +16,7 @@ const user = {
 } satisfies User
 
 const preprint = {
-  type: 'biorxiv',
+  _tag: 'biorxiv',
   value: Doi('10.1101/2022.01.13.476201'),
 } satisfies ReviewRequestPreprintId
 

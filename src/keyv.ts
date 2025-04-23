@@ -83,7 +83,7 @@ const OrcidD: Decoder<unknown, Orcid> = D.fromRefinement(isOrcid, 'ORCID')
 const OrcidE: Encoder<string, Orcid> = { encode: identity }
 
 const PreprintIdE: Encoder<string, PreprintId> = {
-  encode: preprintId => `${preprintId.type}-${preprintId.value}`,
+  encode: preprintId => `${preprintId._tag}-${preprintId.value}`,
 }
 
 const UnderscoreTupleE = flow(EN.tuple, EN.compose({ encode: values => values.join('_') }))

@@ -10,6 +10,6 @@ export type DatacitePreprintId = Extract<PreprintId, { value: Doi.Doi<DataciteDo
 export type IndeterminateDatacitePreprintId = Extract<IndeterminatePreprintId, { value: Doi.Doi<DataciteDoiPrefix> }>
 
 export const isDatacitePreprintId = (id: IndeterminatePreprintId): id is IndeterminateDatacitePreprintId =>
-  id.type !== 'philsci' && isDoiFromSupportedPublisher(id.value)
+  id._tag !== 'philsci' && isDoiFromSupportedPublisher(id.value)
 
 export const isDoiFromSupportedPublisher = Doi.hasRegistrant(...dataciteDoiPrefixes)

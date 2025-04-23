@@ -8,7 +8,7 @@ import type { Pseudonym } from '../../src/types/pseudonym.js'
 import { expect, test } from '../base.js'
 
 const preprint = {
-  type: 'biorxiv',
+  _tag: 'biorxiv',
   value: Doi('10.1101/2022.01.13.476201'),
 } satisfies ReviewRequestPreprintId
 

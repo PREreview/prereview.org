@@ -11,15 +11,15 @@ export type CrossrefPreprintId = Extract<PreprintId, { value: Doi.Doi<CrossrefDo
 export type IndeterminateCrossrefPreprintId = Extract<IndeterminatePreprintId, { value: Doi.Doi<CrossrefDoiPrefix> }>
 
 export const isCrossrefPreprintId = (id: IndeterminatePreprintId): id is IndeterminateCrossrefPreprintId =>
-  id.type !== 'philsci' && isDoiFromSupportedPublisher(id.value)
+  id._tag !== 'philsci' && isDoiFromSupportedPublisher(id.value)
 
 export const isDoiFromSupportedPublisher = Doi.hasRegistrant(...crossrefDoiPrefixes)
 
 export const fromCrossrefPreprintDoi = pipe(
   Match.type<Doi.Doi<CrossrefDoiPrefix>>(),
   Match.withReturnType<IndeterminateCrossrefPreprintId>(),
-  Match.when(Doi.hasRegistrant('1101'), value => ({ type: 'biorxiv-medrxiv', value })),
-  Match.when(Doi.hasRegistrant('2139'), value => ({ type: 'ssrn', value })),
-  Match.when(Doi.hasRegistrant('55458'), value => ({ type: 'neurolibre', value })),
+  Match.when(Doi.hasRegistrant('1101'), value => ({ _tag: 'biorxiv-medrxiv', value })),
+  Match.when(Doi.hasRegistrant('2139'), value => ({ _tag: 'ssrn', value })),
+  Match.when(Doi.hasRegistrant('55458'), value => ({ _tag: 'neurolibre', value })),
   Match.exhaustive,
 )

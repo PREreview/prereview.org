@@ -16,7 +16,7 @@ const determineCrossrefPreprintId = (work: Work): Either.Either<CrossrefPreprint
 
     const indeterminateId = fromCrossrefPreprintDoi(doi)
 
-    if (indeterminateId.type !== 'biorxiv-medrxiv') {
+    if (indeterminateId._tag !== 'biorxiv-medrxiv') {
       return indeterminateId
     }
 
@@ -25,14 +25,14 @@ const determineCrossrefPreprintId = (work: Work): Either.Either<CrossrefPreprint
     if (institutionName === 'bioRxiv') {
       return {
         value: indeterminateId.value,
-        type: 'biorxiv',
+        _tag: 'biorxiv',
       }
     }
 
     if (institutionName === 'medRxiv') {
       return {
         value: indeterminateId.value,
-        type: 'medrxiv',
+        _tag: 'medrxiv',
       }
     }
 

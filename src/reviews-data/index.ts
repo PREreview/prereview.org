@@ -50,7 +50,7 @@ const PlainDateE: E.Encoder<string, PlainDate> = StringE
 const PreprintIdE = {
   encode: id =>
     match(id)
-      .with({ type: 'philsci' }, ({ value }) => `https://philsci-archive.pitt.edu/${value}/`)
+      .with({ _tag: 'philsci' }, ({ value }) => `https://philsci-archive.pitt.edu/${value}/`)
       .with({ value: P.when(isDoi) }, ({ value }) => `doi:${value}`)
       .exhaustive(),
 } satisfies E.Encoder<string, IndeterminatePreprintId>
@@ -99,7 +99,7 @@ const isAllowed = pipe(
 
 const transform = (prereview: Prereview): TransformedPrereview => ({
   preprint: prereview.preprint,
-  server: prereview.preprint.type,
+  server: prereview.preprint._tag,
   createdAt: prereview.createdAt,
   doi: prereview.doi,
   authors: pipe(

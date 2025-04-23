@@ -33,7 +33,7 @@ test('content looks right', async ({ showPage }) => {
         license: 'CC-BY-4.0',
         preprint: {
           id: {
-            type: 'biorxiv',
+            _tag: 'biorxiv',
             value: Doi('10.1101/2022.01.13.476201'),
           },
           title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
@@ -93,7 +93,7 @@ test('content looks right when logged in', async ({ showPage }) => {
         license: 'CC-BY-4.0',
         preprint: {
           id: {
-            type: 'biorxiv',
+            _tag: 'biorxiv',
             value: Doi('10.1101/2022.01.13.476201'),
           },
           title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,

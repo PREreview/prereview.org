@@ -142,7 +142,7 @@ test('author-invite HTML looks right', async ({ page }) => {
       author: 'Jean-Baptiste Botul',
       preprint: {
         id: {
-          type: 'biorxiv',
+          _tag: 'biorxiv',
           value: Doi('10.1101/2022.01.13.476201'),
         },
         title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
@@ -168,7 +168,7 @@ test('author-invite text looks right', async ({ page }) => {
       author: 'Jean-Baptiste Botul',
       preprint: {
         id: {
-          type: 'biorxiv',
+          _tag: 'biorxiv',
           value: Doi('10.1101/2022.01.13.476201'),
         },
         title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
