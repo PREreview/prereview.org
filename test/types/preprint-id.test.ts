@@ -353,6 +353,19 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Option.some({ type: 'jxiv', value: doi }))
   })
 
+  test.prop([fc.lifecycleJournalPreprintUrl()], {
+    examples: [
+      [new URL('https://www.osf.io/ngpkr')], // www.
+      [new URL('http://osf.io/ngpkr')], // http
+      [new URL('https://osf.io/ngpkr/')], // trailing slash
+      [new URL('https://osf.io/ngpkr/files')], // files
+      [new URL('https://osf.io/ngpkr/files/osfstorage/67f92093ee1abafa7ffe2baa')], // file
+      [new URL('https://osf.io/ngpkr?revisionId=67f92088449eb891c08a2bec')], // revisionId
+    ],
+  })('with an Lifecycle Journal URL', url => {
+    expect(_.fromUrl(url)).toStrictEqual(Option.none())
+  })
+
   test.prop([fc.medrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [
@@ -427,18 +440,30 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Option.some({ type: 'metaarxiv', value: doi }))
   })
 
-  test.prop([fc.osfPreprintsPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+  test.prop([fc.osfPreprintUrl()], {
     examples: [
-      [[new URL('https://www.osf.io/ewdn8'), Doi('10.31219/osf.io/ewdn8')]], // www.
-      [[new URL('http://osf.io/ewdn8'), Doi('10.31219/osf.io/ewdn8')]], // http
-      [[new URL('https://osf.io/ewdn8/'), Doi('10.31219/osf.io/ewdn8')]], // trailing slash
-      [[new URL('https://osf.io/preprints/ewdn8'), Doi('10.31219/osf.io/ewdn8')]], // with preprints
-      [[new URL('https://osf.io/ewdn8/download'), Doi('10.31219/osf.io/ewdn8')]], // download
-      [[new URL('https://osf.io/preprints/ewdn8/download'), Doi('10.31219/osf.io/ewdn8')]], // download
-      [[new URL('https://osf.io/ewdn8/download?format=pdf'), Doi('10.31219/osf.io/ewdn8')]], // download pdf
+      [new URL('https://www.osf.io/eq8bk')], // www.
+      [new URL('http://osf.io/eq8bk')], // http
+      [new URL('https://osf.io/eq8bk/')], // trailing slash
+      [new URL('https://osf.io/eq8bk/files')], // files
+      [new URL('https://osf.io/eq8bk/files/osfstorage/65011184767f4a2606de90c6')], // file
     ],
-  })('with an OSF URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Option.some({ type: 'osf-preprints', value: doi }))
+  })('with an OSF URL', url => {
+    expect(_.fromUrl(url)).toStrictEqual(Option.none())
+  })
+
+  test.prop([fc.osfPreprintsPreprintUrl()], {
+    examples: [
+      [new URL('https://www.osf.io/ewdn8')], // www.
+      [new URL('http://osf.io/ewdn8')], // http
+      [new URL('https://osf.io/ewdn8/')], // trailing slash
+      [new URL('https://osf.io/preprints/ewdn8')], // with preprints
+      [new URL('https://osf.io/ewdn8/download')], // download
+      [new URL('https://osf.io/preprints/ewdn8/download')], // download
+      [new URL('https://osf.io/ewdn8/download?format=pdf')], // download pdf
+    ],
+  })('with an OSF Preprints URL', url => {
+    expect(_.fromUrl(url)).toStrictEqual(Option.none())
   })
 
   test.prop([fc.philsciPreprintUrl().map(([url, id]) => [url, id.value] as const)], {

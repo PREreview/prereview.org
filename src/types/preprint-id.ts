@@ -415,12 +415,12 @@ const extractFromOsfPath = flow(
   ),
   Option.andThen(([, prefix, id]) =>
     match(prefix)
-      .with('africarxiv', () => `10.31730/osf.io/${id}`)
-      .with('edarxiv', () => `10.35542/osf.io/${id}`)
-      .with('metaarxiv', () => `10.31222/osf.io/${id}`)
-      .with('psyarxiv', () => `10.31234/osf.io/${id}`)
-      .with('socarxiv', () => `10.31235/osf.io/${id}`)
-      .otherwise(() => `10.31219/osf.io/${id}`),
+      .with('africarxiv', () => Option.some(`10.31730/osf.io/${id}`))
+      .with('edarxiv', () => Option.some(`10.35542/osf.io/${id}`))
+      .with('metaarxiv', () => Option.some(`10.31222/osf.io/${id}`))
+      .with('psyarxiv', () => Option.some(`10.31234/osf.io/${id}`))
+      .with('socarxiv', () => Option.some(`10.31235/osf.io/${id}`))
+      .otherwise(() => Option.none()),
   ),
   Option.andThen(parsePreprintDoi),
 )

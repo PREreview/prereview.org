@@ -513,7 +513,6 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
     jxivPreprintUrl(),
     medrxivPreprintUrl(),
     metaarxivPreprintUrl(),
-    osfPreprintsPreprintUrl(),
     philsciPreprintUrl(),
     preprintsorgPreprintUrl(),
     psyarxivPreprintUrl(),
@@ -525,7 +524,14 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
   )
 
 export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>
-  fc.oneof(chemrxivPreprintUrl(), eartharxivPreprintUrl(), ecoevorxivPreprintUrl())
+  fc.oneof(
+    chemrxivPreprintUrl(),
+    eartharxivPreprintUrl(),
+    ecoevorxivPreprintUrl(),
+    lifecycleJournalPreprintUrl(),
+    osfPreprintUrl(),
+    osfPreprintsPreprintUrl(),
+  )
 
 export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']> =>
   crossrefPreprintId().map(id => id.value)
@@ -728,6 +734,9 @@ export const lifecycleJournalPreprintId = (): fc.Arbitrary<LifecycleJournalPrepr
     value: doi(constant('17605')),
   })
 
+export const lifecycleJournalPreprintUrl = (): fc.Arbitrary<URL> =>
+  fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => new URL(`https://osf.io/${id}`))
+
 export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
   fc.record({
     type: constant('medrxiv'),
@@ -769,19 +778,17 @@ export const osfPreprintId = (): fc.Arbitrary<OsfPreprintId> =>
     value: doi(constant('17605')),
   })
 
+export const osfPreprintUrl = (): fc.Arbitrary<URL> =>
+  fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => new URL(`https://osf.io/${id}`))
+
 export const osfPreprintsPreprintId = (): fc.Arbitrary<OsfPreprintsPreprintId> =>
   fc.record({
     type: constant('osf-preprints'),
     value: doi(constant('31219')),
   })
 
-export const osfPreprintsPreprintUrl = (): fc.Arbitrary<[URL, OsfPreprintsPreprintId]> =>
-  fc
-    .string({ unit: alphanumeric(), minLength: 1 })
-    .map(id => [
-      new URL(`https://osf.io/${id}`),
-      { type: 'osf-preprints', value: `10.31219/osf.io/${id}` as Doi<'31219'> },
-    ])
+export const osfPreprintsPreprintUrl = (): fc.Arbitrary<URL> =>
+  fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => new URL(`https://osf.io/${id}`))
 
 export const philsciPreprintId = (): fc.Arbitrary<PhilsciPreprintId> =>
   fc.record({
