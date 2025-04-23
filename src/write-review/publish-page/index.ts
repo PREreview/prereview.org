@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { type Option, flow, pipe } from 'effect'
+import { Match, type Option, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -75,11 +75,11 @@ export const writeReviewPublish = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-      .exhaustive(),
+  RM.orElseW(
+    Match.valueTags({
+      PreprintIsNotFound: () => notFound,
+      PreprintIsUnavailable: () => serviceUnavailable,
+    }),
   ),
 )
 

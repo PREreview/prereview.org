@@ -1,4 +1,4 @@
-import { Option } from 'effect'
+import { Match, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { P, match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.js'
@@ -224,13 +224,10 @@ export function createPage({
                 <dt><span>${t('my-details', 'emailAddress')()}</span></dt>
                 <dd>
                   ${contactEmailAddress.value}
-                  ${match(contactEmailAddress._tag)
-                    .with('VerifiedContactEmailAddress', () => '')
-                    .with(
-                      'UnverifiedContactEmailAddress',
-                      () => html`<small>${t('my-details', 'unverified')()}</small>`,
-                    )
-                    .exhaustive()}
+                  ${Match.valueTags(contactEmailAddress, {
+                    VerifiedContactEmailAddress: () => '',
+                    UnverifiedContactEmailAddress: () => html`<small>${t('my-details', 'unverified')()}</small>`,
+                  })}
                 </dd>
                 <dd>
                   <a href="${format(changeContactEmailAddressMatch.formatter, {})}"

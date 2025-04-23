@@ -1,4 +1,4 @@
-import { Struct, flow, pipe } from 'effect'
+import { Match, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -50,11 +50,11 @@ export const writeReviewPersona = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-      .exhaustive(),
+  RM.orElseW(
+    Match.valueTags({
+      PreprintIsNotFound: () => notFound,
+      PreprintIsUnavailable: () => serviceUnavailable,
+    }),
   ),
 )
 
@@ -153,9 +153,9 @@ function personaForm(
                       ? html`
                           <li>
                             <a href="#persona-public">
-                              ${match(form.persona.left)
-                                .with({ _tag: 'MissingE' }, () => t('selectTheNameError')())
-                                .exhaustive()}
+                              ${Match.valueTags(form.persona.left, {
+                                MissingE: () => t('selectTheNameError')(),
+                              })}
                             </a>
                           </li>
                         `
@@ -198,9 +198,9 @@ function personaForm(
                 ? html`
                     <div class="error-message" id="persona-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${match(form.persona.left)
-                        .with({ _tag: 'MissingE' }, () => t('selectTheNameError')())
-                        .exhaustive()}
+                      ${Match.valueTags(form.persona.left, {
+                        MissingE: () => t('selectTheNameError')(),
+                      })}
                     </div>
                   `
                 : ''}

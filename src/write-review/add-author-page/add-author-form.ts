@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -53,7 +53,9 @@ export function addAuthorForm({
             ? html`
                 <div class="error-message" id="name-error">
                   <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${match(form.name.left).with({ _tag: 'MissingE' }, t('write-review', 'enterTheirName')).exhaustive()}
+                  ${Match.valueTags(form.name.left, {
+                    MissingE: t('write-review', 'enterTheirName'),
+                  })}
                 </div>
               `
             : ''}
@@ -82,10 +84,10 @@ export function addAuthorForm({
             ? html`
                 <div class="error-message" id="email-address-error">
                   <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${match(form.emailAddress.left)
-                    .with({ _tag: 'MissingE' }, t('write-review', 'enterTheirEmail'))
-                    .with({ _tag: 'InvalidE' }, t('write-review', 'invalidEmail'))
-                    .exhaustive()}
+                  ${Match.valueTags(form.emailAddress.left, {
+                    MissingE: t('write-review', 'enterTheirEmail'),
+                    InvalidE: t('write-review', 'invalidEmail'),
+                  })}
                 </div>
               `
             : ''}
@@ -127,9 +129,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: AddAuthorForm) => html`
     ? html`
         <li>
           <a href="#name">
-            ${match(form.name.left)
-              .with({ _tag: 'MissingE' }, translate(locale)('write-review', 'enterTheirName'))
-              .exhaustive()}
+            ${Match.valueTags(form.name.left, {
+              MissingE: translate(locale)('write-review', 'enterTheirName'),
+            })}
           </a>
         </li>
       `
@@ -138,10 +140,10 @@ const toErrorItems = (locale: SupportedLocale) => (form: AddAuthorForm) => html`
     ? html`
         <li>
           <a href="#email-address">
-            ${match(form.emailAddress.left)
-              .with({ _tag: 'MissingE' }, translate(locale)('write-review', 'enterTheirEmail'))
-              .with({ _tag: 'InvalidE' }, translate(locale)('write-review', 'invalidEmail'))
-              .exhaustive()}
+            ${Match.valueTags(form.emailAddress.left, {
+              MissingE: translate(locale)('write-review', 'enterTheirEmail'),
+              InvalidE: translate(locale)('write-review', 'invalidEmail'),
+            })}
           </a>
         </li>
       `

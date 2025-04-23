@@ -1,4 +1,4 @@
-import { flow, identity, pipe } from 'effect'
+import { Match, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -68,11 +68,11 @@ export const writeReviewReadyFullReview = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-      .exhaustive(),
+  RM.orElseW(
+    Match.valueTags({
+      PreprintIsNotFound: () => notFound,
+      PreprintIsUnavailable: () => serviceUnavailable,
+    }),
   ),
 )
 
@@ -180,9 +180,9 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
                       ? html`
                           <li>
                             <a href="#ready-full-review-yes">
-                              ${match(form.readyFullReview.left)
-                                .with({ _tag: 'MissingE' }, () => t('selectReadyForAttention')())
-                                .exhaustive()}
+                              ${Match.valueTags(form.readyFullReview.left, {
+                                MissingE: () => t('selectReadyForAttention')(),
+                              })}
                             </a>
                           </li>
                         `
@@ -210,9 +210,9 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
                   ? html`
                       <div class="error-message" id="ready-full-review-error">
                         <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${match(form.readyFullReview.left)
-                          .with({ _tag: 'MissingE' }, () => t('selectReadyForAttention')())
-                          .exhaustive()}
+                        ${Match.valueTags(form.readyFullReview.left, {
+                          MissingE: () => t('selectReadyForAttention')(),
+                        })}
                       </div>
                     `
                   : ''}

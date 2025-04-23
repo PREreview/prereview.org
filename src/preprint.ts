@@ -98,8 +98,10 @@ export const resolvePreprintId = (id: IndeterminatePreprintId) =>
 export const getPreprintId = (id: IndeterminatePreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintId }: GetPreprintIdEnv) => getPreprintId(id)))
 
-export const getPreprint = (id: IndeterminatePreprintId) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(id)))
+export const getPreprint = (
+  id: IndeterminatePreprintId,
+): RTE.ReaderTaskEither<GetPreprintEnv, PreprintIsNotFound | PreprintIsUnavailable, Preprint> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }) => getPreprint(id)))
 
 export const getPreprintTitle = (
   id: IndeterminatePreprintId,

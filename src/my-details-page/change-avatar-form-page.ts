@@ -1,8 +1,7 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
-import { match } from 'ts-pattern'
 import { hasAnError, type MissingE, type TooBigE, type WrongTypeE } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
@@ -41,11 +40,11 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
                       ? html`
                           <li>
                             <a href="#avatar">
-                              ${match(form.avatar.left)
-                                .with({ _tag: 'MissingE' }, () => t('selectImageError')())
-                                .with({ _tag: 'WrongTypeE' }, () => t('imageTypeError')())
-                                .with({ _tag: 'TooBigE' }, () => t('imageSizeError')({ size: 5 }))
-                                .exhaustive()}
+                              ${Match.valueTags(form.avatar.left, {
+                                MissingE: () => t('selectImageError')(),
+                                WrongTypeE: () => t('imageTypeError')(),
+                                TooBigE: () => t('imageSizeError')({ size: 5 }),
+                              })}
                             </a>
                           </li>
                         `
@@ -72,11 +71,11 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
               ? html`
                   <div class="error-message" id="review-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${match(form.avatar.left)
-                      .with({ _tag: 'MissingE' }, () => t('selectImageError')())
-                      .with({ _tag: 'WrongTypeE' }, () => t('imageTypeError')())
-                      .with({ _tag: 'TooBigE' }, () => t('imageSizeError')({ size: 5 }))
-                      .exhaustive()}
+                    ${Match.valueTags(form.avatar.left, {
+                      MissingE: () => t('selectImageError')(),
+                      WrongTypeE: () => t('imageTypeError')(),
+                      TooBigE: () => t('imageSizeError')({ size: 5 }),
+                    })}
                   </div>
                 `
               : ''}

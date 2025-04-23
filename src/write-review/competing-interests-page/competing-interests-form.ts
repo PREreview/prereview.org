@@ -1,4 +1,4 @@
-import { identity, pipe } from 'effect'
+import { identity, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { StatusCodes } from 'http-status-codes'
@@ -88,11 +88,11 @@ export function competingInterestsForm(
                 ? html`
                     <div class="error-message" id="competing-interests-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${match(form.competingInterests.left)
-                        .with({ _tag: 'MissingE' }, () =>
-                          t('write-review', 'selectYesIfCompetingInterest')({ otherAuthors }),
-                        )
-                        .exhaustive()}
+
+                      ${Match.valueTags(form.competingInterests.left, {
+                        MissingE: () =>
+                          translate(locale, 'write-review', 'selectYesIfCompetingInterest')({ otherAuthors }),
+                      })}
                     </div>
                   `
                 : ''}
@@ -135,11 +135,10 @@ export function competingInterestsForm(
                         ? html`
                             <div class="error-message" id="competing-interests-details-error">
                               <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                              ${match(form.competingInterestsDetails.left)
-                                .with({ _tag: 'MissingE' }, () =>
-                                  t('write-review', 'competingInterestDetails')({ otherAuthors }),
-                                )
-                                .exhaustive()}
+                              ${Match.valueTags(form.competingInterestsDetails.left, {
+                                MissingE: () =>
+                                  translate(locale, 'write-review', 'competingInterestDetails')({ otherAuthors }),
+                              })}
                             </div>
                           `
                         : ''}
@@ -180,11 +179,9 @@ const toErrorItems = (locale: SupportedLocale, otherAuthors: boolean) => (form: 
     ? html`
         <li>
           <a href="#competing-interests-no">
-            ${match(form.competingInterests.left)
-              .with({ _tag: 'MissingE' }, () =>
-                translate(locale, 'write-review', 'selectYesIfCompetingInterest')({ otherAuthors }),
-              )
-              .exhaustive()}
+            ${Match.valueTags(form.competingInterests.left, {
+              MissingE: () => translate(locale, 'write-review', 'selectYesIfCompetingInterest')({ otherAuthors }),
+            })}
           </a>
         </li>
       `
@@ -193,11 +190,9 @@ const toErrorItems = (locale: SupportedLocale, otherAuthors: boolean) => (form: 
     ? html`
         <li>
           <a href="#competing-interests-details">
-            ${match(form.competingInterestsDetails.left)
-              .with({ _tag: 'MissingE' }, () =>
-                translate(locale, 'write-review', 'competingInterestDetails')({ otherAuthors }),
-              )
-              .exhaustive()}
+            ${Match.valueTags(form.competingInterestsDetails.left, {
+              MissingE: () => translate(locale, 'write-review', 'competingInterestDetails')({ otherAuthors }),
+            })}
           </a>
         </li>
       `

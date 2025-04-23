@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -36,10 +36,10 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
                     ? html`
                         <li>
                           <a href="#email-address">
-                            ${match(form.emailAddress.left)
-                              .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')())
-                              .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')())
-                              .exhaustive()}
+                            ${Match.valueTags(form.emailAddress.left, {
+                              MissingE: () => t('enterEmailAddressError')(),
+                              InvalidE: () => t('enterEmailAddressFormatError')(),
+                            })}
                           </a>
                         </li>
                       `
@@ -58,10 +58,10 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
             ? html`
                 <div class="error-message" id="email-address-error">
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${match(form.emailAddress.left)
-                    .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')())
-                    .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')())
-                    .exhaustive()}
+                  ${Match.valueTags(form.emailAddress.left, {
+                    MissingE: () => t('enterEmailAddressError')(),
+                    InvalidE: () => t('enterEmailAddressFormatError')(),
+                  })}
                 </div>
               `
             : ''}

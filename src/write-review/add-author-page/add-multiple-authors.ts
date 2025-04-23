@@ -1,4 +1,4 @@
-import { identity, pipe } from 'effect'
+import { identity, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -64,10 +64,10 @@ Minerva McGonagall mcgonagall@example.com
             ? html`
                 <div class="error-message" id="authors-error">
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${match(form.authors.left)
-                    .with({ _tag: 'InvalidE' }, () => t('namesAndEmailAddressInvalidFormat')())
-                    .with({ _tag: 'MissingE' }, () => t('namesAndEmailAddressMissing')())
-                    .exhaustive()}
+                  ${Match.valueTags(form.authors.left, {
+                    InvalidE: () => t('namesAndEmailAddressInvalidFormat')(),
+                    MissingE: () => t('namesAndEmailAddressMissing')(),
+                  })}
                 </div>
               `
             : ''}
@@ -107,12 +107,10 @@ const toErrorItems = (form: AddMultipleAuthorsForm, locale: SupportedLocale) => 
     ? html`
         <li>
           <a href="#authors">
-            ${match(form.authors.left)
-              .with({ _tag: 'InvalidE' }, () =>
-                translate(locale, 'write-review', 'namesAndEmailAddressInvalidFormat')(),
-              )
-              .with({ _tag: 'MissingE' }, () => translate(locale, 'write-review', 'namesAndEmailAddressMissing')())
-              .exhaustive()}
+            ${Match.valueTags(form.authors.left, {
+              InvalidE: () => translate(locale, 'write-review', 'namesAndEmailAddressInvalidFormat')(),
+              MissingE: () => translate(locale, 'write-review', 'namesAndEmailAddressMissing')(),
+            })}
           </a>
         </li>
       `

@@ -1,4 +1,4 @@
-import { Array, Option, flow, identity, pipe } from 'effect'
+import { Array, Match, Option, flow, identity, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -40,12 +40,12 @@ const resolvePreprintId = (
 > =>
   pipe(
     Preprint.resolvePreprintId(preprintId),
-    RTE.mapLeft(error =>
-      match(error)
-        .with({ _tag: 'NotAPreprint' }, () => Decision.ShowNotAPreprint)
-        .with({ _tag: 'PreprintIsNotFound' }, () => Decision.ShowUnknownPreprint(preprintId))
-        .with({ _tag: 'PreprintIsUnavailable' }, () => Decision.ShowError)
-        .exhaustive(),
+    RTE.mapLeft(
+      Match.valueTags({
+        NotAPreprint: () => Decision.ShowNotAPreprint,
+        PreprintIsNotFound: () => Decision.ShowUnknownPreprint(preprintId),
+        PreprintIsUnavailable: () => Decision.ShowError,
+      }),
     ),
   )
 

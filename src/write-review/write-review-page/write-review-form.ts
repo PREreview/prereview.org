@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -42,11 +42,10 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
                     ? html`
                         <li>
                           <a href="#review">
-                            ${match(form.review.left)
-                              .with({ _tag: P.union('MissingE', 'InvalidE') }, () =>
-                                t('write-review', 'enterYourReviewError')(),
-                              )
-                              .exhaustive()}
+                            ${Match.valueTags(form.review.left, {
+                              MissingE: () => t('write-review', 'enterYourReviewError')(),
+                              InvalidE: () => t('write-review', 'enterYourReviewError')(),
+                            })}
                           </a>
                         </li>
                       `
@@ -98,9 +97,10 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
             ? html`
                 <div class="error-message" id="review-error">
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${match(form.review.left)
-                    .with({ _tag: P.union('MissingE', 'InvalidE') }, () => t('write-review', 'enterYourReviewError')())
-                    .exhaustive()}
+                  ${Match.valueTags(form.review.left, {
+                    MissingE: () => t('write-review', 'enterYourReviewError')(),
+                    InvalidE: () => t('write-review', 'enterYourReviewError')(),
+                  })}
                 </div>
               `
             : ''}

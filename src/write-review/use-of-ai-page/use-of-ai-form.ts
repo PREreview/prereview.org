@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { StatusCodes } from 'http-status-codes'
@@ -66,11 +66,10 @@ export function useOfAiForm(
                 ? html`
                     <div class="error-message" id="generative-ai-ideas-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${match(form.generativeAiIdeas.left)
-                        .with({ _tag: 'MissingE' }, () =>
+                      ${Match.valueTags(form.generativeAiIdeas.left, {
+                        MissingE: () =>
                           t('write-review', otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
-                        )
-                        .exhaustive()}
+                      })}
                     </div>
                   `
                 : ''}
@@ -122,11 +121,10 @@ const toErrorItems = (otherAuthors: boolean, locale: SupportedLocale) => (form: 
     ? html`
         <li>
           <a href="#generative-ai-ideas-no">
-            ${match(form.generativeAiIdeas.left)
-              .with({ _tag: 'MissingE' }, () =>
+            ${Match.valueTags(form.generativeAiIdeas.left, {
+              MissingE: () =>
                 translate(locale, 'write-review', otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
-              )
-              .exhaustive()}
+            })}
           </a>
         </li>
       `

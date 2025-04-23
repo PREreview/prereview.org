@@ -1,4 +1,4 @@
-import { flow, identity, pipe } from 'effect'
+import { Match, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -68,11 +68,11 @@ export const writeReviewDataPresentation = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-      .exhaustive(),
+  RM.orElseW(
+    Match.valueTags({
+      PreprintIsNotFound: () => notFound,
+      PreprintIsUnavailable: () => serviceUnavailable,
+    }),
   ),
 )
 
@@ -213,9 +213,9 @@ function dataPresentationForm(
                   ? html`
                       <div class="error-message" id="data-presentation-error">
                         <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${match(form.dataPresentation.left)
-                          .with({ _tag: 'MissingE' }, t('selectIfDataPresentationsWellSuited'))
-                          .exhaustive()}
+                        ${Match.valueTags(form.dataPresentation.left, {
+                          MissingE: t('selectIfDataPresentationsWellSuited'),
+                        })}
                       </div>
                     `
                   : ''}
@@ -425,9 +425,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: DataPresentationForm) =
     ? html`
         <li>
           <a href="#data-presentation-highly-appropriate">
-            ${match(form.dataPresentation.left)
-              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'selectIfDataPresentationsWellSuited'))
-              .exhaustive()}
+            ${Match.valueTags(form.dataPresentation.left, {
+              MissingE: translate(locale, 'write-review', 'selectIfDataPresentationsWellSuited'),
+            })}
           </a>
         </li>
       `

@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { match } from 'ts-pattern'
@@ -54,9 +54,9 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: Us
                   ? html`
                       <div class="error-message" id="more-authors-error">
                         <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${match(form.moreAuthors.left)
-                          .with({ _tag: 'MissingE' }, t('write-review', 'selectYesIfYouReviewedWithSomeoneElse'))
-                          .exhaustive()}
+                        ${Match.valueTags(form.moreAuthors.left, {
+                          MissingE: t('write-review', 'selectYesIfYouReviewedWithSomeoneElse'),
+                        })}
                       </div>
                     `
                   : ''}
@@ -108,12 +108,9 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: Us
                           ? html`
                               <div class="error-message" id="more-authors-approved-error">
                                 <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                                ${match(form.moreAuthorsApproved.left)
-                                  .with(
-                                    { _tag: 'MissingE' },
-                                    t('write-review', 'confirmOtherAuthorsHaveReadAndApproved'),
-                                  )
-                                  .exhaustive()}
+                                ${Match.valueTags(form.moreAuthorsApproved.left, {
+                                  MissingE: translate(locale, 'write-review', 'confirmOtherAuthorsHaveReadAndApproved'),
+                                })}
                               </div>
                             `
                           : ''}
@@ -160,9 +157,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: AuthorsForm) => html`
     ? html`
         <li>
           <a href="#more-authors-no">
-            ${match(form.moreAuthors.left)
-              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'selectYesIfYouReviewedWithSomeoneElse'))
-              .exhaustive()}
+            ${Match.valueTags(form.moreAuthors.left, {
+              MissingE: translate(locale, 'write-review', 'selectYesIfYouReviewedWithSomeoneElse'),
+            })}
           </a>
         </li>
       `
@@ -171,9 +168,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: AuthorsForm) => html`
     ? html`
         <li>
           <a href="#more-authors-approved-yes">
-            ${match(form.moreAuthorsApproved.left)
-              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'confirmOtherAuthorsHaveReadAndApproved'))
-              .exhaustive()}
+            ${Match.valueTags(form.moreAuthorsApproved.left, {
+              MissingE: translate(locale, 'write-review', 'confirmOtherAuthorsHaveReadAndApproved'),
+            })}
           </a>
         </li>
       `

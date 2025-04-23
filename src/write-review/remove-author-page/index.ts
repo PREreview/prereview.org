@@ -1,4 +1,4 @@
-import { Option, Struct, flow, pipe } from 'effect'
+import { Match, Option, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -36,14 +36,11 @@ export const writeReviewRemoveAuthor = ({
 }): RT.ReaderTask<FormStoreEnv & GetPreprintTitleEnv, PageResponse | RedirectResponse | StreamlinePageResponse> =>
   pipe(
     getPreprintTitle(id),
-    RTE.matchE(
-      error =>
-        RT.of(
-          match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
-            .exhaustive(),
-        ),
+    RTE.matchEW(
+      Match.valueTags({
+        PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
+        PreprintIsUnavailable: () => RT.of(havingProblemsPage(locale)),
+      }),
       preprint =>
         pipe(
           RTE.Do,

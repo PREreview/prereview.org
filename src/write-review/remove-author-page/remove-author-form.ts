@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -59,11 +59,9 @@ export function removeAuthorForm({
               ? html`
                   <div class="error-message" id="remove-author-error">
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                    ${match(form.removeAuthor.left)
-                      .with({ _tag: 'MissingE' }, () =>
-                        t('write-review', 'selectYesToRemove')({ authorName: author.name }),
-                      )
-                      .exhaustive()}
+                    ${Match.valueTags(form.removeAuthor.left, {
+                      MissingE: () => t('write-review', 'selectYesToRemove')({ authorName: author.name }),
+                    })}
                   </div>
                 `
               : ''}
@@ -119,9 +117,9 @@ const toErrorItems = (locale: SupportedLocale, authorName: string) => (form: Rem
     ? html`
         <li>
           <a href="#remove-author-no">
-            ${match(form.removeAuthor.left)
-              .with({ _tag: 'MissingE' }, () => translate(locale, 'write-review', 'selectYesToRemove')({ authorName }))
-              .exhaustive()}
+            ${Match.valueTags(form.removeAuthor.left, {
+              MissingE: () => translate(locale, 'write-review', 'selectYesToRemove')({ authorName }),
+            })}
           </a>
         </li>
       `

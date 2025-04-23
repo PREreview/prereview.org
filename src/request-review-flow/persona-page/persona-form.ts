@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -70,9 +70,9 @@ export function personaForm({
               ? html`
                   <div class="error-message" id="persona-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${match(form.persona.left)
-                      .with({ _tag: 'MissingE' }, t('selectNameYouWouldLikeToUse'))
-                      .exhaustive()}
+                    ${Match.valueTags(form.persona.left, {
+                      MissingE: t('selectNameYouWouldLikeToUse'),
+                    })}
                   </div>
                 `
               : ''}
@@ -127,9 +127,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: PersonaForm) => html`
     ? html`
         <li>
           <a href="#persona-public">
-            ${match(form.persona.left)
-              .with({ _tag: 'MissingE' }, translate(locale, 'request-review-flow', 'selectNameYouWouldLikeToUse'))
-              .exhaustive()}
+            ${Match.valueTags(form.persona.left, {
+              MissingE: translate(locale, 'request-review-flow', 'selectNameYouWouldLikeToUse'),
+            })}
           </a>
         </li>
       `

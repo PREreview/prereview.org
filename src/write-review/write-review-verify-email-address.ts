@@ -1,4 +1,4 @@
-import { flow, pipe } from 'effect'
+import { Match, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -71,10 +71,10 @@ export const writeReviewVerifyEmailAddress = (id: IndeterminatePreprintId, verif
         ),
       ),
     ),
-    RM.orElseW(error =>
-      match(error)
-        .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-        .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-        .exhaustive(),
+    RM.orElseW(
+      Match.valueTags({
+        PreprintIsNotFound: () => notFound,
+        PreprintIsUnavailable: () => serviceUnavailable,
+      }),
     ),
   )

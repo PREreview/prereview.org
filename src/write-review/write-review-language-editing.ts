@@ -1,4 +1,4 @@
-import { flow, identity, pipe } from 'effect'
+import { Match, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -68,11 +68,11 @@ export const writeReviewLanguageEditing = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-      .exhaustive(),
+  RM.orElseW(
+    Match.valueTags({
+      PreprintIsNotFound: () => notFound,
+      PreprintIsUnavailable: () => serviceUnavailable,
+    }),
   ),
 )
 
@@ -177,9 +177,9 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
                       ? html`
                           <li>
                             <a href="#language-editing-no">
-                              ${match(form.languageEditing.left)
-                                .with({ _tag: 'MissingE' }, () => t('selectBenefitFromEditing')())
-                                .exhaustive()}
+                              ${Match.valueTags(form.languageEditing.left, {
+                                MissingE: () => t('selectBenefitFromEditing')(),
+                              })}
                             </a>
                           </li>
                         `
@@ -207,9 +207,9 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
                   ? html`
                       <div class="error-message" id="language-editing-error">
                         <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${match(form.languageEditing.left)
-                          .with({ _tag: 'MissingE' }, () => t('selectBenefitFromEditing')())
-                          .exhaustive()}
+                        ${Match.valueTags(form.languageEditing.left, {
+                          MissingE: () => t('selectBenefitFromEditing')(),
+                        })}
                       </div>
                     `
                   : ''}

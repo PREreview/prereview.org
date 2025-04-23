@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -58,7 +58,9 @@ export function changeAuthorForm({
             ? html`
                 <div class="error-message" id="name-error">
                   <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${match(form.name.left).with({ _tag: 'MissingE' }, t('write-review', 'enterName')).exhaustive()}
+                  ${Match.valueTags(form.name.left, {
+                    MissingE: t('write-review', 'enterName'),
+                  })}
                 </div>
               `
             : ''}
@@ -86,10 +88,10 @@ export function changeAuthorForm({
             ? html`
                 <div class="error-message" id="email-address-error">
                   <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${match(form.emailAddress.left)
-                    .with({ _tag: 'MissingE' }, t('write-review', 'enterEmail'))
-                    .with({ _tag: 'InvalidE' }, t('write-review', 'invalidEmail'))
-                    .exhaustive()}
+                  ${Match.valueTags(form.emailAddress.left, {
+                    MissingE: t('write-review', 'enterEmail'),
+                    InvalidE: t('write-review', 'invalidEmail'),
+                  })}
                 </div>
               `
             : ''}
@@ -130,9 +132,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: ChangeAuthorForm) => ht
     ? html`
         <li>
           <a href="#name">
-            ${match(form.name.left)
-              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'enterName'))
-              .exhaustive()}
+            ${Match.valueTags(form.name.left, {
+              MissingE: translate(locale, 'write-review', 'enterName'),
+            })}
           </a>
         </li>
       `
@@ -141,10 +143,10 @@ const toErrorItems = (locale: SupportedLocale) => (form: ChangeAuthorForm) => ht
     ? html`
         <li>
           <a href="#email-address">
-            ${match(form.emailAddress.left)
-              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'enterEmail'))
-              .with({ _tag: 'InvalidE' }, translate(locale, 'write-review', 'invalidEmail'))
-              .exhaustive()}
+            ${Match.valueTags(form.emailAddress.left, {
+              MissingE: translate(locale, 'write-review', 'enterEmail'),
+              InvalidE: translate(locale, 'write-review', 'invalidEmail'),
+            })}
           </a>
         </li>
       `

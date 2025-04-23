@@ -1,4 +1,4 @@
-import { flow, identity, pipe } from 'effect'
+import { Match, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -68,11 +68,11 @@ export const writeReviewFindingsNextSteps = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-      .exhaustive(),
+  RM.orElseW(
+    Match.valueTags({
+      PreprintIsNotFound: () => notFound,
+      PreprintIsUnavailable: () => serviceUnavailable,
+    }),
   ),
 )
 
@@ -193,9 +193,9 @@ function findingsNextStepsForm(
                       ? html`
                           <li>
                             <a href="#findings-next-steps-exceptionally">
-                              ${match(form.findingsNextSteps.left)
-                                .with({ _tag: 'MissingE' }, () => t('selectClearDiscussion')())
-                                .exhaustive()}
+                              ${Match.valueTags(form.findingsNextSteps.left, {
+                                MissingE: () => t('selectClearDiscussion')(),
+                              })}
                             </a>
                           </li>
                         `
@@ -223,9 +223,9 @@ function findingsNextStepsForm(
                   ? html`
                       <div class="error-message" id="findings-next-steps-error">
                         <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${match(form.findingsNextSteps.left)
-                          .with({ _tag: 'MissingE' }, () => t('selectClearDiscussion')())
-                          .exhaustive()}
+                        ${Match.valueTags(form.findingsNextSteps.left, {
+                          MissingE: () => t('selectClearDiscussion')(),
+                        })}
                       </div>
                     `
                   : ''}

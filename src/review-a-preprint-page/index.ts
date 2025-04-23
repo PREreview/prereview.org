@@ -1,5 +1,5 @@
 import { type Doi, isDoi, parse } from 'doi-ts'
-import { Array, Option, flow, identity, pipe } from 'effect'
+import { Array, Match, Option, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -100,16 +100,14 @@ const whichPreprint = (locale: SupportedLocale) =>
       pipe(doesPreprintExist(preprint), RTE.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(preprint)))),
     ),
     RTE.matchW(
-      error =>
-        match(error)
-          .with({ _tag: 'UnknownPreprintE', actual: P.select() }, preprint =>
-            createUnknownPreprintPage(preprint, locale),
-          )
-          .with({ _tag: 'UnsupportedDoiE' }, () => unsupportedDoiPage(locale))
-          .with({ _tag: 'UnsupportedUrlE' }, () => unsupportedUrlPage(locale))
-          .with({ _tag: 'NotAPreprint' }, () => notAPreprintPage(locale))
-          .with({ _tag: 'PreprintIsUnavailable' }, () => failureMessage(locale))
-          .otherwise(form => createPage(E.left(form), locale)),
+      Match.valueTags({
+        UnknownPreprintE: ({ actual }) => createUnknownPreprintPage(actual, locale),
+        UnsupportedDoiE: () => unsupportedDoiPage(locale),
+        UnsupportedUrlE: () => unsupportedUrlPage(locale),
+        NotAPreprint: () => notAPreprintPage(locale),
+        PreprintIsUnavailable: () => failureMessage(locale),
+        InvalidE: form => createPage(E.left(form), locale),
+      }),
       preprint => RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint }) }),
     ),
   )

@@ -1,4 +1,4 @@
-import { Struct, flow, pipe } from 'effect'
+import { Match, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -39,14 +39,11 @@ export const writeReviewReviewType = ({
 > =>
   pipe(
     getPreprint(id),
-    RTE.matchE(
-      error =>
-        RT.of(
-          match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
-            .exhaustive(),
-        ),
+    RTE.matchEW(
+      Match.valueTags({
+        PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
+        PreprintIsUnavailable: () => RT.of(havingProblemsPage(locale)),
+      }),
       preprint =>
         pipe(
           RTE.Do,
@@ -201,9 +198,9 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, locale: S
               ? html`
                   <div class="error-message" id="review-type-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${match(form.reviewType.left)
-                      .with({ _tag: 'MissingE' }, () => t('selectHowToStart')())
-                      .exhaustive()}
+                    ${Match.valueTags(form.reviewType.left, {
+                      MissingE: () => t('selectHowToStart')(),
+                    })}
                   </div>
                 `
               : ''}
@@ -272,9 +269,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: ReviewTypeForm) =>
     ? html`
         <li>
           <a href="#review-type-questions">
-            ${match(form.reviewType.left)
-              .with({ _tag: 'MissingE' }, () => translate(locale, 'write-review', 'selectHowToStart')())
-              .exhaustive()}
+            ${Match.valueTags(form.reviewType.left, {
+              MissingE: () => translate(locale, 'write-review', 'selectHowToStart')(),
+            })}
           </a>
         </li>
       `

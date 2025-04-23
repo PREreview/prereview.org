@@ -1,7 +1,6 @@
-import { flow, identity, pipe, Struct } from 'effect'
+import { flow, identity, Match, pipe, Struct } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../locales/index.js'
 import type { Response } from '../response.js'
 import type { User } from '../user.js'
@@ -26,12 +25,12 @@ export const myPrereviews = ({
       flow(Struct.get('user'), Prereviews.getMyPrereviews, RTE.chainEitherKW(NoPrereviews.ensureThereArePrereviews)),
     ),
     RTE.matchW(identity, ListOfPrereviews.ListOfPrereviews),
-    RT.map(result =>
-      match(result)
-        .with({ _tag: 'ListOfPrereviews' }, result => ListOfPrereviews.toResponse(result, locale))
-        .with({ _tag: 'NoPrereviews' }, result => NoPrereviews.toResponse(result, locale))
-        .with({ _tag: 'RequireLogIn' }, RequireLogIn.toResponse)
-        .with({ _tag: 'UnableToLoadPrereviews' }, result => UnableToLoadPrereviews.toResponse(result, locale))
-        .exhaustive(),
+    RT.map(
+      Match.valueTags({
+        ListOfPrereviews: result => ListOfPrereviews.toResponse(result, locale),
+        NoPrereviews: result => NoPrereviews.toResponse(result, locale),
+        RequireLogIn: RequireLogIn.toResponse,
+        UnableToLoadPrereviews: result => UnableToLoadPrereviews.toResponse(result, locale),
+      }),
     ),
   )

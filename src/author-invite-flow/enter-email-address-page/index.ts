@@ -1,4 +1,4 @@
-import { Option, Struct, pipe } from 'effect'
+import { Match, Option, Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
@@ -198,17 +198,16 @@ const handleEnterEmailAddressForm = ({
         .run(),
     ),
     RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
-    RTE.chainFirstW(contactEmailAddress =>
-      match(contactEmailAddress)
-        .with({ _tag: 'VerifiedContactEmailAddress' }, () => RTE.of(undefined))
-        .with({ _tag: 'UnverifiedContactEmailAddress' }, contactEmailAddress =>
+    RTE.chainFirstW(
+      Match.valueTags({
+        VerifiedContactEmailAddress: () => RTE.of(undefined),
+        UnverifiedContactEmailAddress: contactEmailAddress =>
           verifyContactEmailAddressForInvitedAuthor({
             user,
             emailAddress: contactEmailAddress,
             authorInvite: inviteId,
           }),
-        )
-        .exhaustive(),
+      }),
     ),
     RTE.matchW(
       error =>
@@ -223,17 +222,14 @@ const handleEnterEmailAddressForm = ({
             }),
           )
           .exhaustive(),
-      contactEmailAddress =>
-        match(contactEmailAddress)
-          .with({ _tag: 'VerifiedContactEmailAddress' }, () =>
-            RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
-          )
-          .with({ _tag: 'UnverifiedContactEmailAddress' }, () =>
-            RedirectResponse({
-              location: format(authorInviteNeedToVerifyEmailAddressMatch.formatter, { id: inviteId }),
-            }),
-          )
-          .exhaustive(),
+      Match.valueTags({
+        VerifiedContactEmailAddress: () =>
+          RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
+        UnverifiedContactEmailAddress: () =>
+          RedirectResponse({
+            location: format(authorInviteNeedToVerifyEmailAddressMatch.formatter, { id: inviteId }),
+          }),
+      }),
     ),
   )
 

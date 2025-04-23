@@ -1,4 +1,4 @@
-import { Option, String, Struct, flow, pipe } from 'effect'
+import { Match, Option, String, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -76,11 +76,11 @@ export const writeReviewEnterEmailAddress = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-      .exhaustive(),
+  RM.orElseW(
+    Match.valueTags({
+      PreprintIsNotFound: () => notFound,
+      PreprintIsUnavailable: () => serviceUnavailable,
+    }),
   ),
 )
 
@@ -200,10 +200,10 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
                       ? html`
                           <li>
                             <a href="#email-address">
-                              ${match(form.emailAddress.left)
-                                .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')())
-                                .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')())
-                                .exhaustive()}
+                              ${Match.valueTags(form.emailAddress.left, {
+                                MissingE: () => t('enterEmailAddressError')(),
+                                InvalidE: () => t('enterEmailAddressFormatError')(),
+                              })}
                             </a>
                           </li>
                         `
@@ -226,10 +226,10 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
               ? html`
                   <div class="error-message" id="email-address-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${match(form.emailAddress.left)
-                      .with({ _tag: 'MissingE' }, () => t('enterEmailAddressError')())
-                      .with({ _tag: 'InvalidE' }, () => t('enterEmailAddressFormatError')())
-                      .exhaustive()}
+                    ${Match.valueTags(form.emailAddress.left, {
+                      MissingE: () => t('enterEmailAddressError')(),
+                      InvalidE: () => t('enterEmailAddressFormatError')(),
+                    })}
                   </div>
                 `
               : ''}

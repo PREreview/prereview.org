@@ -1,4 +1,4 @@
-import { Struct, flow, pipe } from 'effect'
+import { Match, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -48,11 +48,11 @@ export const writeReviewConduct = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-      .exhaustive(),
+  RM.orElseW(
+    Match.valueTags({
+      PreprintIsNotFound: () => notFound,
+      PreprintIsUnavailable: () => serviceUnavailable,
+    }),
   ),
 )
 
@@ -181,9 +181,9 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
                 ? html`
                     <div class="error-message" id="conduct-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${match(form.conduct.left)
-                        .with({ _tag: 'MissingE' }, t('write-review', 'confirmCodeOfConduct'))
-                        .exhaustive()}
+                      ${Match.valueTags(form.conduct.left, {
+                        MissingE: t('write-review', 'confirmCodeOfConduct'),
+                      })}
                     </div>
                   `
                 : ''}
@@ -220,9 +220,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: CodeOfConductForm) => h
     ? html`
         <li>
           <a href="#conduct-yes">
-            ${match(form.conduct.left)
-              .with({ _tag: 'MissingE' }, translate(locale, 'write-review', 'confirmCodeOfConduct'))
-              .exhaustive()}
+            ${Match.valueTags(form.conduct.left, {
+              MissingE: translate(locale, 'write-review', 'confirmCodeOfConduct'),
+            })}
           </a>
         </li>
       `

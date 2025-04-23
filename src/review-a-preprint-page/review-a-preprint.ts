@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -34,9 +34,9 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
                     ? html`
                         <li>
                           <a href="#preprint">
-                            ${match(whichPreprint.left)
-                              .with({ _tag: 'InvalidE' }, () => t('review-a-preprint', 'errorEnterPreprint')())
-                              .exhaustive()}
+                            ${Match.valueTags(whichPreprint.left, {
+                              InvalidE: () => t('review-a-preprint', 'errorEnterPreprint')(),
+                            })}
                           </a>
                         </li>
                       `
@@ -78,9 +78,9 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
             ? html`
                 <div class="error-message" id="preprint-error">
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${match(whichPreprint.left)
-                    .with({ _tag: 'InvalidE' }, () => t('review-a-preprint', 'errorEnterPreprint')())
-                    .exhaustive()}
+                  ${Match.valueTags(whichPreprint.left, {
+                    InvalidE: () => t('review-a-preprint', 'errorEnterPreprint')(),
+                  })}
                 </div>
               `
             : ''}

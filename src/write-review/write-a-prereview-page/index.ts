@@ -1,4 +1,4 @@
-import { flow, pipe } from 'effect'
+import { Match, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -27,14 +27,11 @@ export const writeReview = ({
 }): RT.ReaderTask<GetPreprintEnv & FormStoreEnv, PageResponse | StreamlinePageResponse | RedirectResponse> =>
   pipe(
     getPreprint(id),
-    RTE.matchE(
-      error =>
-        RT.of(
-          match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => pageNotFound(locale))
-            .with({ _tag: 'PreprintIsUnavailable' }, () => havingProblemsPage(locale))
-            .exhaustive(),
-        ),
+    RTE.matchEW(
+      Match.valueTags({
+        PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
+        PreprintIsUnavailable: () => RT.of(havingProblemsPage(locale)),
+      }),
       preprint =>
         pipe(
           RTE.Do,

@@ -1,4 +1,4 @@
-import { flow, identity, pipe } from 'effect'
+import { Match, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -68,11 +68,11 @@ export const writeReviewMethodsAppropriate = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-      .exhaustive(),
+  RM.orElseW(
+    Match.valueTags({
+      PreprintIsNotFound: () => notFound,
+      PreprintIsUnavailable: () => serviceUnavailable,
+    }),
   ),
 )
 
@@ -200,9 +200,9 @@ function methodsAppropriateForm(
                       ? html`
                           <li>
                             <a href="#methods-appropriate-highly-appropriate">
-                              ${match(form.methodsAppropriate.left)
-                                .with({ _tag: 'MissingE' }, () => t('selectMethodsWellSuited')())
-                                .exhaustive()}
+                              ${Match.valueTags(form.methodsAppropriate.left, {
+                                MissingE: () => t('selectMethodsWellSuited')(),
+                              })}
                             </a>
                           </li>
                         `
@@ -230,9 +230,9 @@ function methodsAppropriateForm(
                   ? html`
                       <div class="error-message" id="methods-appropriate-error">
                         <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${match(form.methodsAppropriate.left)
-                          .with({ _tag: 'MissingE' }, () => t('selectMethodsWellSuited')())
-                          .exhaustive()}
+                        ${Match.valueTags(form.methodsAppropriate.left, {
+                          MissingE: () => t('selectMethodsWellSuited')(),
+                        })}
                       </div>
                     `
                   : ''}

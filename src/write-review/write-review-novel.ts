@@ -1,4 +1,4 @@
-import { flow, identity, pipe } from 'effect'
+import { Match, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -68,11 +68,11 @@ export const writeReviewNovel = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'PreprintIsNotFound' }, () => notFound)
-      .with({ _tag: 'PreprintIsUnavailable' }, () => serviceUnavailable)
-      .exhaustive(),
+  RM.orElseW(
+    Match.valueTags({
+      PreprintIsNotFound: () => notFound,
+      PreprintIsUnavailable: () => serviceUnavailable,
+    }),
   ),
 )
 
@@ -183,9 +183,9 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User, locale:
                       ? html`
                           <li>
                             <a href="#novel-highly">
-                              ${match(form.novel.left)
-                                .with({ _tag: 'MissingE' }, () => t('selectAdvanceKnowledge')())
-                                .exhaustive()}
+                              ${Match.valueTags(form.novel.left, {
+                                MissingE: () => t('selectAdvanceKnowledge')(),
+                              })}
                             </a>
                           </li>
                         `
@@ -209,9 +209,9 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User, locale:
                   ? html`
                       <div class="error-message" id="novel-error">
                         <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${match(form.novel.left)
-                          .with({ _tag: 'MissingE' }, () => t('selectAdvanceKnowledge')())
-                          .exhaustive()}
+                        ${Match.valueTags(form.novel.left, {
+                          MissingE: () => t('selectAdvanceKnowledge')(),
+                        })}
                       </div>
                     `
                   : ''}

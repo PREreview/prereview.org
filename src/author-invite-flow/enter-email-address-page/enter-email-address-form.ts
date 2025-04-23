@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { Status } from 'hyper-ts'
@@ -63,9 +63,9 @@ export function enterEmailAddressForm({
                 ? html`
                     <div class="error-message" id="use-invited-address-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${match(form.useInvitedAddress.left)
-                        .with({ _tag: 'MissingE' }, t('selectTheEmailAddressYouWouldLikeToUse'))
-                        .exhaustive()}
+                      ${Match.valueTags(form.useInvitedAddress.left, {
+                        MissingE: t('selectTheEmailAddressYouWouldLikeToUse'),
+                      })}
                     </div>
                   `
                 : ''}
@@ -106,10 +106,10 @@ export function enterEmailAddressForm({
                         ? html`
                             <div class="error-message" id="other-email-address-error">
                               <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                              ${match(form.otherEmailAddress.left)
-                                .with({ _tag: 'MissingE' }, t('enterYourEmailAddress'))
-                                .with({ _tag: 'InvalidE' }, t('enterAnEmailAddressInTheCorrectFormat'))
-                                .exhaustive()}
+                              ${Match.valueTags(form.otherEmailAddress.left, {
+                                MissingE: t('enterYourEmailAddress'),
+                                InvalidE: t('enterAnEmailAddressInTheCorrectFormat'),
+                              })}
                             </div>
                           `
                         : ''}
@@ -155,9 +155,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: EnterEmailAddressForm) 
       ? html`
           <li>
             <a href="#use-invited-address-yes">
-              ${match(form.useInvitedAddress.left)
-                .with({ _tag: 'MissingE' }, t('selectTheEmailAddressYouWouldLikeToUse'))
-                .exhaustive()}
+              ${Match.valueTags(form.useInvitedAddress.left, {
+                MissingE: t('selectTheEmailAddressYouWouldLikeToUse'),
+              })}
             </a>
           </li>
         `
@@ -166,10 +166,10 @@ const toErrorItems = (locale: SupportedLocale) => (form: EnterEmailAddressForm) 
       ? html`
           <li>
             <a href="#other-email-address">
-              ${match(form.otherEmailAddress.left)
-                .with({ _tag: 'MissingE' }, t('enterYourEmailAddress'))
-                .with({ _tag: 'InvalidE' }, t('enterAnEmailAddressInTheCorrectFormat'))
-                .exhaustive()}
+              ${Match.valueTags(form.otherEmailAddress.left, {
+                MissingE: t('enterYourEmailAddress'),
+                InvalidE: t('enterAnEmailAddressInTheCorrectFormat'),
+              })}
             </a>
           </li>
         `
