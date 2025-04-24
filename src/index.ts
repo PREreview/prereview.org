@@ -18,6 +18,8 @@ import * as TemplatePage from './TemplatePage.js'
 import { isPrereviewTeam } from './user.js'
 import * as Zenodo from './Zenodo/index.js'
 
+const httpCacheRedisUri = Config.url('HTTP_CACHE_REDIS_URI')
+
 pipe(
   Program,
   Layer.launch,
@@ -58,7 +60,7 @@ pipe(
       ),
       Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),
       Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
-      Redis.layerHttpCacheConfig(Config.redacted(Config.url('HTTP_CACHE_REDIS_URI'))),
+      Redis.layerHttpCacheConfig(Config.redacted(httpCacheRedisUri)),
       TemplatePage.optionsLayerConfig({
         fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
         environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
