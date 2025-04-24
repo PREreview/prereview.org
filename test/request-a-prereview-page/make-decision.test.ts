@@ -1,7 +1,12 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable, ResolvePreprintIdEnv } from '../../src/preprint.js'
+import {
+  NotAPreprint,
+  PreprintIsNotFound,
+  PreprintIsUnavailable,
+  type ResolvePreprintIdEnv,
+} from '../../src/preprint.js'
 import * as _ from '../../src/request-a-prereview-page/make-decision.js'
 import { fromPreprintDoi } from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'

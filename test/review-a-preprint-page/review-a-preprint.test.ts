@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Doi } from 'doi-ts'
+import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
