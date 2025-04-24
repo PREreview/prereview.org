@@ -32,10 +32,6 @@ export interface PreprintTitle {
   title: Html
 }
 
-export interface DoesPreprintExistEnv {
-  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<NotAPreprint | PreprintIsUnavailable, boolean>
-}
-
 export interface ResolvePreprintIdEnv {
   resolvePreprintId: (
     ...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>
@@ -64,11 +60,6 @@ export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailab
 
 export const Preprint = Data.struct<Preprint>
 
-export class DoesPreprintExist extends Context.Tag('DoesPreprintExist')<
-  DoesPreprintExist,
-  (id: IndeterminatePreprintId) => Effect.Effect<boolean, NotAPreprint | PreprintIsUnavailable>
->() {}
-
 export class ResolvePreprintId extends Context.Tag('ResolvePreprintId')<
   ResolvePreprintId,
   (
@@ -90,9 +81,6 @@ export class GetPreprintTitle extends Context.Tag('GetPreprintTitle')<
   GetPreprintTitle,
   (id: IndeterminatePreprintId) => Effect.Effect<PreprintTitle, PreprintIsNotFound | PreprintIsUnavailable>
 >() {}
-
-export const doesPreprintExist = (id: IndeterminatePreprintId) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ doesPreprintExist }: DoesPreprintExistEnv) => doesPreprintExist(id)))
 
 export const resolvePreprintId = (...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>) =>
   RTE.asksReaderTaskEither(

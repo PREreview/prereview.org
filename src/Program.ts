@@ -297,21 +297,6 @@ const commentEvents = Layer.scoped(
   ),
 )
 
-const doesPreprintExist = Layer.effect(
-  Preprint.DoesPreprintExist,
-  Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const httpClient = yield* HttpClient.HttpClient
-
-    return id =>
-      pipe(
-        GetPreprint.doesPreprintExist(id),
-        Effect.provideService(HttpClient.HttpClient, httpClient),
-        Effect.provideService(FetchHttpClient.Fetch, fetch),
-      )
-  }),
-)
-
 const resolvePreprintId = Layer.effect(
   Preprint.ResolvePreprintId,
   Effect.gen(function* () {
@@ -426,7 +411,6 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(getPrereview)),
   Layer.provide(
     Layer.mergeAll(
-      Layer.provide(doesPreprintExist, CachingHttpClient.layer('1 day')),
       Layer.provide(resolvePreprintId, CachingHttpClient.layer('1 day')),
       Layer.provide(getPreprintId, CachingHttpClient.layer('1 day')),
       Layer.provide(getPreprint, CachingHttpClient.layer('1 day')),

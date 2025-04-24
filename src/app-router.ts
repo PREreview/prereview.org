@@ -117,13 +117,7 @@ import type { TemplatePageEnv } from './page.js'
 import { partners } from './partners.js'
 import { preprintReviews } from './preprint-reviews-page/index.js'
 import type * as Preprint from './preprint.js'
-import type {
-  DoesPreprintExistEnv,
-  GetPreprintEnv,
-  GetPreprintIdEnv,
-  GetPreprintTitleEnv,
-  ResolvePreprintIdEnv,
-} from './preprint.js'
+import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
 import * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
 import {
   type PrereviewCoarNotifyEnv,
@@ -315,7 +309,6 @@ const getSlackUser = flow(
 )
 
 export type RouterEnv = Keyv.AvatarStoreEnv &
-  DoesPreprintExistEnv &
   EffectEnv<
     | FeatureFlags.CanAddMultipleAuthors
     | FeatureFlags.CanSeeDesignTweaks
@@ -323,7 +316,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
     | OpenAlex.GetCategories
     | ReviewPage.CommentsForReview
     | GenerateUuid
-    | Preprint.DoesPreprintExist
     | Preprint.GetPreprint
     | Preprint.GetPreprintId
     | Preprint.GetPreprintTitle

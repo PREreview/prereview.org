@@ -92,9 +92,3 @@ export const getPreprintId = pipe(
   ),
   Match.orElse(id => Effect.succeed(id)),
 )
-
-export const doesPreprintExist = flow(
-  resolvePreprintId,
-  Effect.andThen(true),
-  Effect.catchTag('PreprintIsNotFound', () => Effect.succeed(false)),
-)

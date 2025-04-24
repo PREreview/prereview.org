@@ -27,7 +27,6 @@ import { maybeGetUser, type User } from './user.js'
 
 export type ConfigEnv = Omit<
   RouterEnv & LegacyEnv,
-  | 'doesPreprintExist'
   | 'resolvePreprintId'
   | 'getPreprintId'
   | 'getUser'
@@ -147,10 +146,6 @@ export const app = (config: ConfigEnv) => {
             appMiddleware,
             R.local((env: ConfigEnv & L.LoggerEnv & { runtime: AppRuntime }): RouterEnv & LegacyEnv => ({
               ...env,
-              doesPreprintExist: withEnv(
-                EffectToFpts.toReaderTaskEitherK(id => Effect.andThen(Preprint.DoesPreprintExist, Function.apply(id))),
-                env,
-              ),
               getUser: () => (user ? M.of(user) : M.left('no-session')),
               getUserOnboarding: withEnv(getUserOnboarding, env),
               getPreprint: withEnv(
