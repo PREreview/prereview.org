@@ -422,15 +422,16 @@ const extractFromJxivPath = flow(
 const extractFromOsfPath = flow(
   decodeURIComponent,
   Option.liftNullable(s =>
-    /^(?:preprints\/(?:(africarxiv|edarxiv|metaarxiv|psyarxiv|socarxiv)\/)?)?([a-z0-9]+)(?:$|\/)/i.exec(s),
+    /^(?:(preprints)\/)?(?:(africarxiv|edarxiv|metaarxiv|psyarxiv|socarxiv)\/)?([a-z0-9]+)(?:$|\/)/i.exec(s),
   ),
-  Option.andThen(([, prefix, id]) =>
-    match(prefix)
-      .with('africarxiv', () => Array.of(`10.31730/osf.io/${id}`))
-      .with('edarxiv', () => Array.of(`10.35542/osf.io/${id}`))
-      .with('metaarxiv', () => Array.of(`10.31222/osf.io/${id}`))
-      .with('psyarxiv', () => Array.of(`10.31234/osf.io/${id}`))
-      .with('socarxiv', () => Array.of(`10.31235/osf.io/${id}`))
+  Option.andThen(([, preprints, server, id]) =>
+    match([preprints, server])
+      .with([P.optional('preprints'), 'africarxiv'], () => Array.of(`10.31730/osf.io/${id}`))
+      .with([P.optional('preprints'), 'edarxiv'], () => Array.of(`10.35542/osf.io/${id}`))
+      .with([P.optional('preprints'), 'metaarxiv'], () => Array.of(`10.31222/osf.io/${id}`))
+      .with([P.optional('preprints'), 'psyarxiv'], () => Array.of(`10.31234/osf.io/${id}`))
+      .with([P.optional('preprints'), 'socarxiv'], () => Array.of(`10.31235/osf.io/${id}`))
+      .with(['preprints', P.optional(undefined)], () => Array.of(`10.31219/osf.io/${id}`))
       .otherwise(() => [`10.17605/osf.io/${id}`, `10.31219/osf.io/${id}`]),
   ),
   Option.getOrElse(Array.empty),

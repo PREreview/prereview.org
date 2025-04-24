@@ -571,10 +571,7 @@ describe('fromUrl', () => {
       [
         [
           new URL('https://osf.io/preprints/ewdn8'), // with preprints
-          [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ewdn8') },
-            { _tag: 'osf-preprints', value: Doi('10.31219/osf.io/ewdn8') },
-          ],
+          [{ _tag: 'osf-preprints', value: Doi('10.31219/osf.io/ewdn8') }],
         ],
       ],
       [
@@ -589,10 +586,7 @@ describe('fromUrl', () => {
       [
         [
           new URL('https://osf.io/preprints/ewdn8/download'), // download
-          [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ewdn8') },
-            { _tag: 'osf-preprints', value: Doi('10.31219/osf.io/ewdn8') },
-          ],
+          [{ _tag: 'osf-preprints', value: Doi('10.31219/osf.io/ewdn8') }],
         ],
       ],
       [

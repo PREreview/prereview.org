@@ -530,7 +530,9 @@ export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>
     ecoevorxivPreprintUrl(),
     lifecycleJournalPreprintUrl().map(Tuple.getFirst),
     osfPreprintUrl().map(Tuple.getFirst),
-    osfPreprintsPreprintUrl().map(Tuple.getFirst),
+    osfPreprintsPreprintUrl()
+      .filter(([, ids]) => ids.length > 1)
+      .map(Tuple.getFirst),
   )
 
 export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']> =>
@@ -801,15 +803,29 @@ export const osfPreprintsPreprintId = (): fc.Arbitrary<OsfPreprintsPreprintId> =
   })
 
 export const osfPreprintsPreprintUrl = (): fc.Arbitrary<
-  [URL, [OsfOrLifecycleJournalPreprintId, OsfPreprintsPreprintId]]
+  [URL, [OsfOrLifecycleJournalPreprintId, OsfPreprintsPreprintId] | [OsfPreprintsPreprintId]]
 > =>
-  fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => [
-    new URL(`https://osf.io/${id}`),
-    [
-      { _tag: 'osf-lifecycle-journal', value: `10.17605/osf.io/${id}` as Doi<'17605'> },
-      { _tag: 'osf-preprints', value: `10.31219/osf.io/${id}` as Doi<'31219'> },
-    ],
-  ])
+  fc.oneof(
+    fc
+      .string({ unit: alphanumeric(), minLength: 1 })
+      .map(id =>
+        Tuple.make(
+          new URL(`https://osf.io/${id}`),
+          Tuple.make(
+            { _tag: 'osf-lifecycle-journal' as const, value: `10.17605/osf.io/${id}` as Doi<'17605'> },
+            { _tag: 'osf-preprints' as const, value: `10.31219/osf.io/${id}` as Doi<'31219'> },
+          ),
+        ),
+      ),
+    fc
+      .string({ unit: alphanumeric(), minLength: 1 })
+      .map(id =>
+        Tuple.make(
+          new URL(`https://osf.io/preprints/${id}`),
+          Tuple.make({ _tag: 'osf-preprints' as const, value: `10.31219/osf.io/${id}` as Doi<'31219'> }),
+        ),
+      ),
+  )
 
 export const philsciPreprintId = (): fc.Arbitrary<PhilsciPreprintId> =>
   fc.record({
