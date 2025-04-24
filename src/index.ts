@@ -18,7 +18,9 @@ import * as TemplatePage from './TemplatePage.js'
 import { isPrereviewTeam } from './user.js'
 import * as Zenodo from './Zenodo/index.js'
 
-const httpCacheRedisUri = Config.url('HTTP_CACHE_REDIS_URI')
+const httpCacheRedisUri = Config.url('HTTP_CACHE_REDIS_URI').pipe(
+  Config.orElse(() => Config.url('HTTP_CACHE_REDIS_URI_TEMPLATE')),
+)
 
 pipe(
   Program,
