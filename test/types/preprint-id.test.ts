@@ -1,7 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Doi, toUrl } from 'doi-ts'
-import { Tuple } from 'effect'
 import * as _ from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 
@@ -353,7 +352,7 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'jxiv', value: doi }))
   })
 
-  test.prop([fc.lifecycleJournalPreprintUrl().map(([url, ids]) => Tuple.make(url, [...ids]))], {
+  test.prop([fc.lifecycleJournalPreprintUrl()], {
     examples: [
       [
         [
@@ -385,13 +384,19 @@ describe('fromUrl', () => {
       [
         [
           new URL('https://osf.io/ngpkr/files'), // files
-          [],
+          [
+            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ngpkr') },
+            { _tag: 'osf-preprints', value: Doi('10.31219/osf.io/ngpkr') },
+          ],
         ],
       ],
       [
         [
           new URL('https://osf.io/ngpkr/files/osfstorage/67f92093ee1abafa7ffe2baa'), // file
-          [],
+          [
+            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ngpkr') },
+            { _tag: 'osf-preprints', value: Doi('10.31219/osf.io/ngpkr') },
+          ],
         ],
       ],
       [
@@ -482,7 +487,7 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'metaarxiv', value: doi }))
   })
 
-  test.prop([fc.osfPreprintUrl().map(([url, ids]) => Tuple.make(url, [...ids]))], {
+  test.prop([fc.osfPreprintUrl()], {
     examples: [
       [
         [
@@ -514,13 +519,19 @@ describe('fromUrl', () => {
       [
         [
           new URL('https://osf.io/eq8bk/files'), // download
-          [],
+          [
+            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/eq8bk') },
+            { _tag: 'osf-preprints', value: Doi('10.31219/osf.io/eq8bk') },
+          ],
         ],
       ],
       [
         [
           new URL('https://osf.io/eq8bk/files/osfstorage/65011184767f4a2606de90c6'), // file
-          [],
+          [
+            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/eq8bk') },
+            { _tag: 'osf-preprints', value: Doi('10.31219/osf.io/eq8bk') },
+          ],
         ],
       ],
     ],

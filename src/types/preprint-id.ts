@@ -422,7 +422,7 @@ const extractFromJxivPath = flow(
 const extractFromOsfPath = flow(
   decodeURIComponent,
   Option.liftNullable(s =>
-    /^(?:preprints\/(?:(africarxiv|edarxiv|metaarxiv|psyarxiv|socarxiv)\/)?)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s),
+    /^(?:preprints\/(?:(africarxiv|edarxiv|metaarxiv|psyarxiv|socarxiv)\/)?)?([a-z0-9]+)(?:$|\/)/i.exec(s),
   ),
   Option.andThen(([, prefix, id]) =>
     match(prefix)
