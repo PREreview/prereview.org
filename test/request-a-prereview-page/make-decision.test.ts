@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import type { Doi } from 'doi-ts'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import {
   NotAPreprint,
@@ -14,13 +15,47 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('makeDecision', () => {
   describe('when the form has been submitted', () => {
-    test.prop([
-      fc.oneof(
-        fc.preprintDoi().map(doi => [doi, fromPreprintDoi(doi)]),
-        fc.supportedPreprintUrl().map(([url, id]) => [url.href, id]),
-      ),
-      fc.reviewRequestPreprintId(),
-    ])('when the form is valid', async ([value, expected], preprintId) => {
+    test.prop(
+      [
+        fc.oneof(
+          fc.preprintDoi().map(doi => [doi.toString(), fromPreprintDoi(doi)]),
+          fc.supportedPreprintUrl().map(([url, id]) => [url.href, id]),
+        ),
+        fc.reviewRequestPreprintId(),
+      ],
+      {
+        examples: [
+          [
+            [
+              'https://doi.org/10.1101/2021.06.18.21258689', // doi.org URL
+              { _tag: 'biorxiv-medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+            ],
+            { _tag: 'medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+          ],
+          [
+            [
+              ' https://doi.org/10.1101/2021.06.18.21258689 ', // doi.org URL with whitespace
+              { _tag: 'biorxiv-medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+            ],
+            { _tag: 'medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+          ],
+          [
+            [
+              'https://www.biorxiv.org/content/10.1101/2021.06.18.21258689', // biorxiv.org URL
+              { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+            ],
+            { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+          ],
+          [
+            [
+              ' http://www.biorxiv.org/content/10.1101/2021.06.18.21258689 ', // biorxiv.org URL with whitespace
+              { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+            ],
+            { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+          ],
+        ],
+      },
+    )('when the form is valid', async ([value, expected], preprintId) => {
       const resolvePreprintId = jest.fn<ResolvePreprintIdEnv['resolvePreprintId']>(_ => TE.of(preprintId))
 
       const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({ resolvePreprintId })()
