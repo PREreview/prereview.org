@@ -502,25 +502,32 @@ export const preprintDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>[
 
 export const nonPreprintUrl = (): fc.Arbitrary<URL> => fc.oneof(url(), unsupportedPreprintUrl())
 
-export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
+export const supportedPreprintUrl = (): fc.Arbitrary<[URL, Array.NonEmptyReadonlyArray<IndeterminatePreprintId>]> =>
   fc.oneof(
-    africarxivPreprintUrl(),
-    arxivPreprintUrl(),
-    authoreaPreprintUrl(),
-    biorxivPreprintUrl(),
-    edarxivPreprintUrl(),
-    engrxivPreprintUrl(),
-    jxivPreprintUrl(),
-    medrxivPreprintUrl(),
-    metaarxivPreprintUrl(),
-    philsciPreprintUrl(),
-    preprintsorgPreprintUrl(),
-    psyarxivPreprintUrl(),
-    researchSquarePreprintUrl(),
-    scieloPreprintUrl(),
-    scienceOpenPreprintUrl(),
-    socarxivPreprintUrl(),
-    techrxivPreprintUrl(),
+    fc
+      .oneof(
+        africarxivPreprintUrl(),
+        arxivPreprintUrl(),
+        authoreaPreprintUrl(),
+        biorxivPreprintUrl(),
+        edarxivPreprintUrl(),
+        engrxivPreprintUrl(),
+        jxivPreprintUrl(),
+        medrxivPreprintUrl(),
+        metaarxivPreprintUrl(),
+        philsciPreprintUrl(),
+        preprintsorgPreprintUrl(),
+        psyarxivPreprintUrl(),
+        researchSquarePreprintUrl(),
+        scieloPreprintUrl(),
+        scienceOpenPreprintUrl(),
+        socarxivPreprintUrl(),
+        techrxivPreprintUrl(),
+      )
+      .map(([url, id]) => Tuple.make(url, Array.of(id))),
+    lifecycleJournalPreprintUrl(),
+    osfPreprintUrl(),
+    osfPreprintsPreprintUrl(),
   )
 
 export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>

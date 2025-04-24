@@ -20,7 +20,7 @@ describe('makeDecision', () => {
       [
         fc.oneof(
           fc.preprintDoi().map(doi => Tuple.make(doi.toString(), Array.of(fromPreprintDoi(doi)))),
-          fc.supportedPreprintUrl().map(([url, id]) => Tuple.make(url.href, Array.of(id))),
+          fc.supportedPreprintUrl().map(([url, id]) => Tuple.make(url.href, id)),
         ),
         fc.reviewRequestPreprintId(),
       ],
@@ -91,8 +91,8 @@ describe('makeDecision', () => {
 
     test.prop([
       fc.oneof(
-        fc.indeterminatePreprintIdWithDoi().map(id => [id.value, id] as const),
-        fc.supportedPreprintUrl().map(([url, id]) => [url.href, id] as const),
+        fc.indeterminatePreprintIdWithDoi().map(id => Tuple.make(id.value, Array.of(id))),
+        fc.supportedPreprintUrl().map(([url, id]) => Tuple.make(url.href, id)),
       ),
     ])('when the preprint is not found', async ([value, preprint]) => {
       const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({
@@ -101,7 +101,7 @@ describe('makeDecision', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'ShowUnknownPreprint',
-        preprint: expect.objectContaining({ value: preprint.value }),
+        preprint: expect.objectContaining({ value: preprint[0].value }),
       })
     })
 
