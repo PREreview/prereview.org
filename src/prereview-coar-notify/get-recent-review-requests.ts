@@ -12,7 +12,6 @@ import * as D from 'io-ts/lib/Decoder.js'
 import iso6391 from 'iso-639-1'
 import * as L from 'logger-fp-ts'
 import safeStableStringify from 'safe-stable-stringify'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from '../fetch.js'
 import { isFieldId } from '../types/field.js'
 import { parsePreprintDoi } from '../types/preprint-id.js'
 import { isSubfieldId } from '../types/subfield.js'
@@ -78,7 +77,6 @@ export const getRecentReviewRequests = flow(
   (baseUrl: URL) => new URL('/requests', baseUrl),
   F.Request('GET'),
   F.send,
-  RTE.local(flow(revalidateIfStale(), useStaleCache(), timeoutRequest(2000))),
   RTE.mapLeft(() => 'network'),
   RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
   RTE.chainTaskEitherKW(flow(F.decode(RecentReviewRequestsC), TE.mapLeft(D.draw))),

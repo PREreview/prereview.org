@@ -11,7 +11,7 @@ import type { LanguageCode } from 'iso-639-1'
 import { parse } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language.js'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { timeoutRequest, useStaleCache } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { sanitizeHtml } from './html.js'
 import * as Preprint from './preprint.js'
@@ -39,7 +39,6 @@ export const isDatacitePreprintDoi = hasRegistrant(...dataciteDoiPrefixes)
 
 export const getPreprintFromDatacite = flow(
   (id: IndeterminateDatacitePreprintId) => getWork(id.value),
-  RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainEitherKW(dataciteWorkToPreprint),

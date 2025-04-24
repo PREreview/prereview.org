@@ -14,7 +14,7 @@ import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
-import { type SleepEnv, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { timeoutRequest, useStaleCache } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { ProfileId } from './types/index.js'
 import { type IndeterminatePreprintId, type PreprintId, parsePreprintDoi } from './types/preprint-id.js'
@@ -285,7 +285,6 @@ export const getRapidPreviewsFromLegacyPrereview = (id: Extract<PreprintId, { va
     ),
     RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
     RTE.chainW(F.send),
-    RTE.local(revalidateIfStale<F.FetchEnv & LegacyPrereviewApiEnv & SleepEnv>()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
     RTE.filterOrElseW(F.hasStatus(Status.OK), identity),

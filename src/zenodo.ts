@@ -27,7 +27,6 @@ import {
   type Record,
   type UnsubmittedDeposition,
   type ZenodoAuthenticatedEnv,
-  type ZenodoEnv,
   createEmptyDeposition,
   depositionIsSubmitted,
   getCommunityRecords,
@@ -40,7 +39,7 @@ import {
   uploadFile,
 } from 'zenodo-ts'
 import { getClubByName, getClubName } from './club-details.js'
-import { type SleepEnv, reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { reloadCache, timeoutRequest, useStaleCache } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { type Html, plainText, sanitizeHtml } from './html.js'
 import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.js'
@@ -174,7 +173,6 @@ export const getRecentPrereviewsFromZenodo = ({
         getCommunityRecords('prereview-reviews'),
       ),
     ),
-    RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
     RTE.bindW(
@@ -233,7 +231,6 @@ export const getPrereviewFromZenodo = (id: number) =>
       () => 'removed' as const,
     ),
     RTE.chainW(() => getRecord(id)),
-    RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv & WasPrereviewRemovedEnv>()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
     RTE.filterOrElseW(
@@ -290,7 +287,6 @@ export const getPrereviewsForProfileFromZenodo = flow(
       access_status: 'open',
     }),
   getCommunityRecords('prereview-reviews'),
-  RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainReaderTaskKW(
@@ -323,7 +319,6 @@ export const getPrereviewsForUserFromZenodo = flow(
       access_status: 'open',
     }),
   getCommunityRecords('prereview-reviews'),
-  RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainReaderTaskKW(
@@ -356,7 +351,6 @@ export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
       access_status: 'open',
     }),
     getCommunityRecords('prereview-reviews'),
-    RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
     RTE.orElseFirstW(
@@ -392,7 +386,6 @@ export const getPrereviewsForPreprintFromZenodo = flow(
       access_status: 'open',
     }),
   getCommunityRecords('prereview-reviews'),
-  RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToPreprintPrereview))),
@@ -424,7 +417,6 @@ export const getCommentsForPrereviewFromZenodo = flow(
       access_status: 'open',
     }),
   getCommunityRecords('prereview-reviews'),
-  RTE.local(revalidateIfStale<ZenodoEnv & SleepEnv>()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToPrereviewComment))),

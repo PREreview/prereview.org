@@ -4,7 +4,6 @@ import { SystemClock } from 'clock-ts'
 import type { Fetch } from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/prereview-coar-notify/get-recent-review-requests.js'
 import { RecentReviewRequestsC } from '../../src/prereview-coar-notify/get-recent-review-requests.js'
@@ -43,59 +42,10 @@ describe('getRecentReviewRequests', () => {
       fetch,
       clock: SystemClock,
       logger: () => IO.of(undefined),
-      sleep: () => T.of(undefined),
     })()
 
     expect(result).toStrictEqual(E.right(requests))
     expect(fetch).toHaveBeenCalledWith(`${origin}requests`, expect.objectContaining({ method: 'GET' }))
-  })
-
-  test.prop([
-    fc.origin(),
-    fc
-      .array(
-        fc.record({
-          timestamp: fc.instant(),
-          preprint: fc
-            .indeterminatePreprintIdWithDoi()
-            .filter(
-              id => !['biorxiv', 'medrxiv', 'osf', 'lifecycle-journal', 'zenodo', 'africarxiv'].includes(id._tag),
-            ),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          language: fc.languageCode(),
-        }),
-      )
-      .chain(requests =>
-        fc.tuple(
-          fc.constant(requests),
-          fc.fetchResponse({
-            headers: fc.headers(fc.constant({ 'x-local-cache-status': 'stale' })),
-            status: fc.constant(Status.OK),
-            text: fc.constant(RecentReviewRequestsC.encode(requests)),
-          }),
-        ),
-      ),
-  ])('when the response is stale', async (origin, [requests, response]) => {
-    const fetch = jest.fn<Fetch>(_ => Promise.resolve(response.clone()))
-
-    const result = await _.getRecentReviewRequests(origin)({
-      fetch,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-      sleep: () => T.of(undefined),
-    })()
-
-    expect(result).toStrictEqual(E.right(requests))
-    expect(fetch).toHaveBeenCalledTimes(2)
-    expect(fetch).toHaveBeenCalledWith(
-      `${origin}requests`,
-      expect.objectContaining({ cache: 'force-cache', method: 'GET' }),
-    )
-    expect(fetch).toHaveBeenCalledWith(
-      `${origin}requests`,
-      expect.objectContaining({ cache: 'no-cache', method: 'GET' }),
-    )
   })
 
   describe('when the request fails', () => {
@@ -104,7 +54,6 @@ describe('getRecentReviewRequests', () => {
         fetch: () => Promise.reject(reason),
         clock: SystemClock,
         logger: () => IO.of(undefined),
-        sleep: () => T.of(undefined),
       })()
 
       expect(result).toStrictEqual(E.left('unavailable'))
@@ -117,7 +66,6 @@ describe('getRecentReviewRequests', () => {
           fetch: () => Promise.resolve(response),
           clock: SystemClock,
           logger: () => IO.of(undefined),
-          sleep: () => T.of(undefined),
         })()
 
         expect(result).toStrictEqual(E.left('unavailable'))

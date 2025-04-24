@@ -10,7 +10,7 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { timeoutRequest, useStaleCache } from './fetch.js'
 import { sanitizeHtml } from './html.js'
 import * as Preprint from './preprint.js'
 import type { PhilsciPreprintId } from './types/preprint-id.js'
@@ -98,7 +98,6 @@ const EprintD = pipe(
 
 export const getPreprintFromPhilsci = flow(
   (id: PhilsciPreprintId) => getEprint(id.value),
-  RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(3000)),
   RTE.chainEitherKW(eprintToPreprint),

@@ -4,12 +4,10 @@ import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/orcid.js'
 import * as fc from './fc.js'
-import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('getNameFromOrcid', () => {
   describe('when the request succeeds', () => {
@@ -39,7 +37,6 @@ describe('getNameFromOrcid', () => {
         clock: SystemClock,
         logger: () => IO.of(undefined),
         orcidApiUrl: url,
-        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right(expected))
@@ -58,7 +55,6 @@ describe('getNameFromOrcid', () => {
         }),
         logger: () => IO.of(undefined),
         orcidApiUrl: url,
-        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right(expected))
@@ -72,7 +68,6 @@ describe('getNameFromOrcid', () => {
         }),
         logger: () => IO.of(undefined),
         orcidApiUrl: url,
-        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
@@ -90,7 +85,6 @@ describe('getNameFromOrcid', () => {
         }),
         logger: () => IO.of(undefined),
         orcidApiUrl: url,
-        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
@@ -111,36 +105,8 @@ describe('getNameFromOrcid', () => {
       logger: () => IO.of(undefined),
       orcidApiUrl: url,
       orcidApiToken: token,
-      sleep: shouldNotBeCalled,
     })()
 
-    expect(fetch.done()).toBeTruthy()
-  })
-
-  test.prop([fc.origin(), fc.orcid()])('revalidates if the response is stale', async (url, orcid) => {
-    const fetch = fetchMock
-      .sandbox()
-      .getOnce(
-        (thisUrl, { cache }) => thisUrl === `${url.origin}/v3.0/${orcid}/personal-details` && cache === 'force-cache',
-        {
-          body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
-          headers: { 'X-Local-Cache-Status': 'stale' },
-        },
-      )
-      .getOnce(
-        (thisUrl, { cache }) => thisUrl === `${url.origin}/v3.0/${orcid}/personal-details` && cache === 'no-cache',
-        { throws: new Error('Network error') },
-      )
-
-    const actual = await _.getNameFromOrcid(orcid)({
-      clock: SystemClock,
-      fetch,
-      logger: () => IO.of(undefined),
-      orcidApiUrl: url,
-      sleep: () => T.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right('Daniela Saderi'))
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -164,7 +130,6 @@ describe('getNameFromOrcid', () => {
       fetch,
       logger: () => IO.of(undefined),
       orcidApiUrl: url,
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -177,7 +142,6 @@ describe('getNameFromOrcid', () => {
       fetch: () => Promise.reject('network error'),
       logger: () => IO.of(undefined),
       orcidApiUrl: url,
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))

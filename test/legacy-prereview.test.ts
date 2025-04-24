@@ -5,7 +5,6 @@ import { Option } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import * as T from 'fp-ts/lib/Task.js'
 import { Status } from 'hyper-ts'
 import { rawHtml } from '../src/html.js'
 import * as _ from '../src/legacy-prereview.js'
@@ -477,7 +476,6 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           url,
           update,
         },
-        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(
@@ -522,85 +520,6 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
   )
 
   test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintIdWithDoi()])(
-    'revalidates if the Rapid PREreviews are stale',
-    async (app, key, url, update, preprintId) => {
-      const fetch = fetchMock
-        .sandbox()
-        .getOnce(
-          (requestUrl, { cache }) =>
-            requestUrl ===
-              `${url}api/v2/preprints/doi-${encodeURIComponent(
-                preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-              )}/rapid-reviews` && cache === 'force-cache',
-          {
-            body: {
-              data: [
-                {
-                  author: { name: 'Author name' },
-                  ynNovel: 'yes',
-                  ynFuture: 'yes',
-                  ynReproducibility: 'unsure',
-                  ynMethods: 'unsure',
-                  ynCoherent: 'yes',
-                  ynLimitations: 'unsure',
-                  ynEthics: 'yes',
-                  ynNewData: 'yes',
-                  ynRecommend: 'yes',
-                  ynPeerReview: 'yes',
-                  ynAvailableCode: 'no',
-                  ynAvailableData: 'no',
-                },
-              ],
-            },
-            headers: { 'X-Local-Cache-Status': 'stale' },
-          },
-        )
-        .getOnce(
-          (requestUrl, { cache }) =>
-            requestUrl ===
-              `${url}api/v2/preprints/doi-${encodeURIComponent(
-                preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-              )}/rapid-reviews` && cache === 'no-cache',
-          { throws: new Error('Network error') },
-        )
-
-      const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
-        fetch,
-        legacyPrereviewApi: {
-          app,
-          key,
-          url,
-          update,
-        },
-        sleep: () => T.of(undefined),
-      })()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          {
-            author: { name: 'Author name', orcid: undefined },
-            questions: {
-              novel: 'yes',
-              future: 'yes',
-              reproducibility: 'unsure',
-              methods: 'unsure',
-              coherent: 'yes',
-              limitations: 'unsure',
-              ethics: 'yes',
-              newData: 'yes',
-              recommend: 'yes',
-              peerReview: 'yes',
-              availableCode: 'no',
-              availableData: 'no',
-            },
-          },
-        ]),
-      )
-      expect(fetch.done()).toBeTruthy()
-    },
-  )
-
-  test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintIdWithDoi()])(
     'when the Rapid PREreviews cannot be found',
     async (app, key, url, update, preprintId) => {
       const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
@@ -618,7 +537,6 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           url,
           update,
         },
-        sleep: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual(E.right([]))
@@ -650,7 +568,6 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
         url,
         update,
       },
-      sleep: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))

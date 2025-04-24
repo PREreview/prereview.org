@@ -9,7 +9,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, isMatching, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language.js'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { timeoutRequest, useStaleCache } from './fetch.js'
 import { type Html, sanitizeHtml } from './html.js'
 import { transformJatsToHtml } from './jats.js'
 import * as Preprint from './preprint.js'
@@ -69,7 +69,6 @@ export const isCrossrefPreprintDoi = hasRegistrant(...crossrefDoiPrefixes)
 
 export const getPreprintFromCrossref = flow(
   (id: IndeterminateCrossrefPreprintId) => getWork(id.value),
-  RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainEitherKW(workToPreprint),

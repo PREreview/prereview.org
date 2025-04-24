@@ -11,7 +11,7 @@ import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
-import { type SleepEnv, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { timeoutRequest, useStaleCache } from './fetch.js'
 import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
 
 export interface OrcidApiEnv {
@@ -60,7 +60,6 @@ const getPersonalDetails = flow(
 
 export const getNameFromOrcid = flow(
   getPersonalDetails,
-  RTE.local(revalidateIfStale<OrcidApiEnv & F.FetchEnv & SleepEnv>()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get name from ORCID')))),
