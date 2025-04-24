@@ -150,6 +150,24 @@ describe('reviewAPreprint', () => {
         })
       },
     )
+
+    test.prop([fc.supportedLocale(), fc.record({ preprint: fc.nonPreprintUrl().map(url => url.href) })])(
+      'with a non-preprint URL',
+      async (locale, body) => {
+        const actual = await _.reviewAPreprint({ body, locale, method: 'POST' })({
+          doesPreprintExist: shouldNotBeCalled,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.BadRequest,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
   })
 
   test.prop([fc.supportedLocale(), fc.record({ preprint: fc.string() }, { requiredKeys: [] })])(
