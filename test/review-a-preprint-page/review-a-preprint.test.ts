@@ -13,7 +13,6 @@ import {
 } from '../../src/preprint.js'
 import * as _ from '../../src/review-a-preprint-page/index.js'
 import { reviewAPreprintMatch, writeReviewMatch } from '../../src/routes.js'
-import { fromPreprintDoi } from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -41,42 +40,47 @@ describe('reviewAPreprint', () => {
       [
         fc.supportedLocale(),
         fc
-          .preprintDoi()
-          .chain(preprint => fc.tuple(fc.constant(preprint), fc.constant({ preprint: preprint.toString() }))),
+          .indeterminatePreprintIdWithDoi()
+          .chain(preprint => fc.tuple(fc.constant(preprint), fc.constant({ preprint: preprint.value.toString() }))),
         fc.preprintId(),
       ],
       {
         examples: [
           [
             DefaultLocale,
-            [Doi('10.1101/2021.06.18.21258689'), { preprint: 'https://doi.org/10.1101/2021.06.18.21258689' }], // doi.org URL,
-            { _tag: 'medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
-          ],
-          [
-            DefaultLocale,
-            [Doi('10.1101/2021.06.18.21258689'), { preprint: ' https://doi.org/10.1101/2021.06.18.21258689 ' }], // doi.org URL with whitespace,
+            [
+              { _tag: 'biorxiv-medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+              { preprint: 'https://doi.org/10.1101/2021.06.18.21258689' }, // doi.org URL,
+            ],
             { _tag: 'medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
           ],
           [
             DefaultLocale,
             [
-              Doi('10.1101/2021.06.18.21258689'),
-              { preprint: 'https://www.biorxiv.org/content/10.1101/2021.06.18.21258689' },
-            ], // biorxiv.org URL,
+              { _tag: 'biorxiv-medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+              { preprint: ' https://doi.org/10.1101/2021.06.18.21258689 ' }, // doi.org URL with whitespace,
+            ],
+            { _tag: 'medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+          ],
+          [
+            DefaultLocale,
+            [
+              { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+              { preprint: 'https://www.biorxiv.org/content/10.1101/2021.06.18.21258689' }, // biorxiv.org URL,
+            ],
             { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
           ],
           [
             DefaultLocale,
             [
-              Doi('10.1101/2021.06.18.21258689'),
-              { preprint: ' http://www.biorxiv.org/content/10.1101/2021.06.18.21258689 ' },
-            ], // biorxiv.org URL with whitespace,
+              { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+              { preprint: ' http://www.biorxiv.org/content/10.1101/2021.06.18.21258689 ' }, // biorxiv.org URL with whitespace,
+            ],
             { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
           ],
         ],
       },
-    )('with a preprint DOI', async (locale, [doi, body], expected) => {
-      const id = fromPreprintDoi(doi)
+    )('with a preprint DOI', async (locale, [id, body], expected) => {
       const resolvePreprintId = jest.fn<ResolvePreprintIdEnv['resolvePreprintId']>(_ => TE.of(expected))
 
       const actual = await _.reviewAPreprint({ body, locale, method: 'POST' })({ resolvePreprintId })()
@@ -86,7 +90,7 @@ describe('reviewAPreprint', () => {
         status: Status.SeeOther,
         location: format(writeReviewMatch.formatter, { id: expected }),
       })
-      expect(resolvePreprintId).toHaveBeenCalledWith(expect.objectContaining({ value: id.value }))
+      expect(resolvePreprintId).toHaveBeenCalledWith(id)
     })
 
     test.prop([fc.supportedLocale(), fc.record({ preprint: fc.preprintDoi() })])(

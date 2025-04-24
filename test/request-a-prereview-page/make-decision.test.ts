@@ -1,8 +1,9 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
+import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable, ResolvePreprintIdEnv } from '../../src/preprint.js'
 import * as _ from '../../src/request-a-prereview-page/make-decision.js'
+import { fromPreprintDoi } from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -10,16 +11,17 @@ describe('makeDecision', () => {
   describe('when the form has been submitted', () => {
     test.prop([
       fc.oneof(
-        fc.preprintDoi(),
-        fc.supportedPreprintUrl().map(([url]) => url.href),
+        fc.preprintDoi().map(doi => [doi, fromPreprintDoi(doi)]),
+        fc.supportedPreprintUrl().map(([url, id]) => [url.href, id]),
       ),
       fc.reviewRequestPreprintId(),
-    ])('when the form is valid', async (value, preprintId) => {
-      const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({
-        resolvePreprintId: () => TE.of(preprintId),
-      })()
+    ])('when the form is valid', async ([value, expected], preprintId) => {
+      const resolvePreprintId = jest.fn<ResolvePreprintIdEnv['resolvePreprintId']>(_ => TE.of(preprintId))
+
+      const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({ resolvePreprintId })()
 
       expect(actual).toStrictEqual({ _tag: 'BeginFlow', preprint: preprintId })
+      expect(resolvePreprintId).toHaveBeenCalledWith(expected)
     })
 
     test.prop([
