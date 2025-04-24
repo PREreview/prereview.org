@@ -11,12 +11,38 @@ const makeRedis = (url: Redacted.Redacted<URL>) =>
 
     const runSync = Runtime.runSync(runtime)
 
-    redis.on('connect', () => runSync(Effect.logDebug('Redis connected')))
-    redis.on('close', () => runSync(Effect.logDebug('Redis connection closed')))
-    redis.on('reconnecting', () => runSync(Effect.logInfo('Redis reconnecting')))
+    redis.on('connect', () =>
+      runSync(
+        pipe(
+          Effect.logDebug('Redis connected'),
+          Effect.annotateLogs({ host: redis.options.host, port: redis.options.port }),
+        ),
+      ),
+    )
+    redis.on('close', () =>
+      runSync(
+        pipe(
+          Effect.logDebug('Redis connection closed'),
+          Effect.annotateLogs({ host: redis.options.host, port: redis.options.port }),
+        ),
+      ),
+    )
+    redis.on('reconnecting', () =>
+      runSync(
+        pipe(
+          Effect.logInfo('Redis reconnecting'),
+          Effect.annotateLogs({ host: redis.options.host, port: redis.options.port }),
+        ),
+      ),
+    )
     redis.removeAllListeners('error')
     redis.on('error', error =>
-      runSync(pipe(Effect.logError('Redis connection error'), Effect.annotateLogs({ error: error.message }))),
+      runSync(
+        pipe(
+          Effect.logError('Redis connection error'),
+          Effect.annotateLogs({ error: error.message, host: redis.options.host, port: redis.options.port }),
+        ),
+      ),
     )
 
     return redis
