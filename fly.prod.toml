@@ -6,7 +6,7 @@ size = "shared-cpu-2x"
 memory = "1gb"
 
 [deploy]
-strategy = "rolling"
+strategy = "bluegreen"
 
 [env]
 ALLOW_SITE_CRAWLERS = "true"

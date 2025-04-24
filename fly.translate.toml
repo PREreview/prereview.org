@@ -5,7 +5,7 @@ primary_region = "iad"
 size = "shared-cpu-2x"
 
 [deploy]
-strategy = "rolling"
+strategy = "bluegreen"
 
 [env]
 CAN_CHOOSE_LOCALE = "true"
