@@ -15,7 +15,7 @@ import {
 import * as C from 'fp-ts/lib/Console.js'
 import type * as J from 'fp-ts/lib/Json.js'
 import * as L from 'logger-fp-ts'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, type DeprecatedSleepEnv } from './Context.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { decodeEnv } from './env.js'
 
@@ -27,10 +27,6 @@ export const makeDeprecatedLoggerEnv = Effect.gen(function* () {
     clock: yield* EffectToFpts.makeIO(Effect.andThen(DateTime.now, DateTime.toDate)),
     logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
   } satisfies typeof DeprecatedLoggerEnv.Service
-})
-
-export const makeDeprecatedSleepEnv = Effect.gen(function* () {
-  return { sleep: yield* EffectToFpts.makeTaskK(Effect.sleep) } satisfies typeof DeprecatedSleepEnv.Service
 })
 
 export const DeprecatedLogger = Effect.gen(function* () {

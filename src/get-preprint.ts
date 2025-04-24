@@ -1,6 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Array, Effect, flow, Match, pipe } from 'effect'
-import { DeprecatedSleepEnv } from './Context.js'
 import { getPreprintFromCrossref, type IndeterminateCrossrefPreprintId, isCrossrefPreprintDoi } from './crossref.js'
 import * as Crossref from './Crossref/index.js'
 import { getPreprintFromDatacite, type IndeterminateDatacitePreprintId, isDatacitePreprintDoi } from './datacite.js'
@@ -20,17 +19,15 @@ const getPreprintFromSource = pipe(
   Match.when({ _tag: 'philsci' }, id =>
     Effect.gen(function* () {
       const fetch = yield* FetchHttpClient.Fetch
-      const sleep = yield* DeprecatedSleepEnv
 
-      return yield* FptsToEffect.readerTaskEither(getPreprintFromPhilsci(id), { fetch, ...sleep })
+      return yield* FptsToEffect.readerTaskEither(getPreprintFromPhilsci(id), { fetch })
     }),
   ),
   Match.when(isCrossrefPreprintIdHandledByLegacyAdapter, id =>
     Effect.gen(function* () {
       const fetch = yield* FetchHttpClient.Fetch
-      const sleep = yield* DeprecatedSleepEnv
 
-      return yield* FptsToEffect.readerTaskEither(getPreprintFromCrossref(id), { fetch, ...sleep })
+      return yield* FptsToEffect.readerTaskEither(getPreprintFromCrossref(id), { fetch })
     }),
   ),
   Match.when(Crossref.isCrossrefPreprintId, Crossref.getPreprintFromCrossref),
@@ -39,9 +36,8 @@ const getPreprintFromSource = pipe(
     id =>
       Effect.gen(function* () {
         const fetch = yield* FetchHttpClient.Fetch
-        const sleep = yield* DeprecatedSleepEnv
 
-        return yield* FptsToEffect.readerTaskEither(getPreprintFromDatacite(id), { fetch, ...sleep })
+        return yield* FptsToEffect.readerTaskEither(getPreprintFromDatacite(id), { fetch })
       }),
   ),
   Match.when(Datacite.isDatacitePreprintId, Datacite.getPreprintFromDatacite),

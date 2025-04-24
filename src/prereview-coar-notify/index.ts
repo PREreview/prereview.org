@@ -7,7 +7,6 @@ import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import type { SleepEnv } from '../fetch.js'
 import type { RecentReviewRequest } from '../home-page/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
@@ -75,7 +74,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
   language?: LanguageCode
   page: number
 }): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv & SleepEnv,
+  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
   'not-found' | 'unavailable',
   ReviewRequests
 > =>
@@ -121,7 +120,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
 export const getRecentReviewRequestsFromPrereviewCoarNotify = (
   page: number,
 ): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv & SleepEnv,
+  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
   'not-found' | 'unavailable',
   ReadonlyArray<RecentReviewRequest>
 > =>

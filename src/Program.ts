@@ -5,8 +5,7 @@ import { fileURLToPath } from 'url'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
-import { DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, Locale } from './Context.js'
-import { makeDeprecatedSleepEnv } from './DeprecatedServices.js'
+import { DeprecatedLoggerEnv, ExpressConfig, Locale } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import { collapseRequests } from './fetch.js'
@@ -39,7 +38,6 @@ const getPrereview = Layer.effect(
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPreprintService = yield* Preprint.GetPreprint
-    const sleep = yield* DeprecatedSleepEnv
 
     const getPreprint = yield* EffectToFpts.makeTaskEitherK(getPreprintService)
 
@@ -48,7 +46,6 @@ const getPrereview = Layer.effect(
         FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {
           fetch,
           getPreprint,
-          ...sleep,
           wasPrereviewRemoved,
           zenodoApiKey,
           zenodoUrl,
@@ -187,7 +184,6 @@ const createRecordOnZenodoForComment = Layer.effect(
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
-    const sleep = yield* DeprecatedSleepEnv
     const publicUrl = yield* PublicUrl
 
     const env = {
@@ -198,7 +194,6 @@ const createRecordOnZenodoForComment = Layer.effect(
       publicUrl,
       zenodoApiKey,
       zenodoUrl,
-      ...sleep,
       ...logger,
     }
 
@@ -306,7 +301,6 @@ const doesPreprintExist = Layer.effect(
   Preprint.DoesPreprintExist,
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
-    const sleep = yield* DeprecatedSleepEnv
     const httpClient = yield* HttpClient.HttpClient
 
     return id =>
@@ -314,7 +308,6 @@ const doesPreprintExist = Layer.effect(
         GetPreprint.doesPreprintExist(id),
         Effect.provideService(HttpClient.HttpClient, httpClient),
         Effect.provideService(FetchHttpClient.Fetch, fetch),
-        Effect.provideService(DeprecatedSleepEnv, sleep),
       )
   }),
 )
@@ -323,14 +316,12 @@ const resolvePreprintId = Layer.effect(
   Preprint.ResolvePreprintId,
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
-    const sleep = yield* DeprecatedSleepEnv
     const httpClient = yield* HttpClient.HttpClient
 
     return flow(
       GetPreprint.resolvePreprintId,
       Effect.provideService(HttpClient.HttpClient, httpClient),
       Effect.provideService(FetchHttpClient.Fetch, fetch),
-      Effect.provideService(DeprecatedSleepEnv, sleep),
     )
   }),
 )
@@ -339,7 +330,6 @@ const getPreprintId = Layer.effect(
   Preprint.GetPreprintId,
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
-    const sleep = yield* DeprecatedSleepEnv
     const httpClient = yield* HttpClient.HttpClient
 
     return id =>
@@ -347,7 +337,6 @@ const getPreprintId = Layer.effect(
         GetPreprint.getPreprintId(id),
         Effect.provideService(HttpClient.HttpClient, httpClient),
         Effect.provideService(FetchHttpClient.Fetch, fetch),
-        Effect.provideService(DeprecatedSleepEnv, sleep),
       )
   }),
 )
@@ -356,7 +345,6 @@ const getPreprint = Layer.effect(
   Preprint.GetPreprint,
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
-    const sleep = yield* DeprecatedSleepEnv
     const httpClient = yield* HttpClient.HttpClient
 
     return id =>
@@ -364,7 +352,6 @@ const getPreprint = Layer.effect(
         GetPreprint.getPreprint(id),
         Effect.provideService(HttpClient.HttpClient, httpClient),
         Effect.provideService(FetchHttpClient.Fetch, fetch),
-        Effect.provideService(DeprecatedSleepEnv, sleep),
       )
   }),
 )
@@ -373,7 +360,6 @@ const getPreprintTitle = Layer.effect(
   Preprint.GetPreprintTitle,
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
-    const sleep = yield* DeprecatedSleepEnv
     const httpClient = yield* HttpClient.HttpClient
 
     return id =>
@@ -381,7 +367,6 @@ const getPreprintTitle = Layer.effect(
         GetPreprint.getPreprintTitle(id),
         Effect.provideService(HttpClient.HttpClient, httpClient),
         Effect.provideService(FetchHttpClient.Fetch, fetch),
-        Effect.provideService(DeprecatedSleepEnv, sleep),
       )
   }),
 )
@@ -464,5 +449,5 @@ export const Program = pipe(
   ),
   Layer.provide(setUpFetch),
   Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, LoggingHttpClient.layer)),
-  Layer.provide(Layer.mergeAll(Uuid.layer, Layer.effect(DeprecatedSleepEnv, makeDeprecatedSleepEnv), MigratorLive)),
+  Layer.provide(Layer.mergeAll(Uuid.layer, MigratorLive)),
 )

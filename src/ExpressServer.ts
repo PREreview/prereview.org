@@ -3,7 +3,7 @@ import KeyvRedis from '@keyv/redis'
 import { Duration, Effect, Redacted } from 'effect'
 import Keyv from 'keyv'
 import { app } from './app.js'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, DeprecatedSleepEnv, ExpressConfig, SessionSecret } from './Context.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { UseCrowdinInContext } from './feature-flags.js'
 import { Nodemailer } from './nodemailer.js'
@@ -16,7 +16,6 @@ export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig
   const fetch = yield* FetchHttpClient.Fetch
   const { clock } = yield* DeprecatedLoggerEnv
-  const sleep = yield* DeprecatedSleepEnv
   const nodemailer = yield* Nodemailer
   const publicUrl = yield* PublicUrl
   const generateUuid = yield* Effect.andThen(GenerateUuid, EffectToFpts.makeIO)
@@ -31,7 +30,6 @@ export const expressServer = Effect.gen(function* () {
     nodemailer,
     publicUrl,
     secret: Redacted.value(secret),
-    ...sleep,
     templatePage,
     useCrowdinInContext,
     ...config,

@@ -72,7 +72,6 @@ import {
   sendEmail,
 } from './email.js'
 import * as FeatureFlags from './feature-flags.js'
-import type { SleepEnv } from './fetch.js'
 import { home } from './home-page/index.js'
 import * as Keyv from './keyv.js'
 import {
@@ -365,7 +364,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   SlackApiUpdateEnv &
   SlackOAuthEnv &
   Keyv.SlackUserIdStoreEnv &
-  SleepEnv &
   TemplatePageEnv &
   Keyv.UserOnboardingStoreEnv &
   WasPrereviewRemovedEnv &
