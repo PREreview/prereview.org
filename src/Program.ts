@@ -326,13 +326,12 @@ const resolvePreprintId = Layer.effect(
     const sleep = yield* DeprecatedSleepEnv
     const httpClient = yield* HttpClient.HttpClient
 
-    return id =>
-      pipe(
-        GetPreprint.resolvePreprintId(id),
-        Effect.provideService(HttpClient.HttpClient, httpClient),
-        Effect.provideService(FetchHttpClient.Fetch, fetch),
-        Effect.provideService(DeprecatedSleepEnv, sleep),
-      )
+    return flow(
+      GetPreprint.resolvePreprintId,
+      Effect.provideService(HttpClient.HttpClient, httpClient),
+      Effect.provideService(FetchHttpClient.Fetch, fetch),
+      Effect.provideService(DeprecatedSleepEnv, sleep),
+    )
   }),
 )
 

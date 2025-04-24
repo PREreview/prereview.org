@@ -169,7 +169,9 @@ export const app = (config: ConfigEnv) => {
                 env,
               ),
               resolvePreprintId: withEnv(
-                EffectToFpts.toReaderTaskEitherK(id => Effect.andThen(Preprint.ResolvePreprintId, Function.apply(id))),
+                EffectToFpts.toReaderTaskEitherK((...ids) =>
+                  Effect.andThen(Preprint.ResolvePreprintId, resolvePreprintId => resolvePreprintId(...ids)),
+                ),
                 env,
               ),
               sendEmail: withEnv(sendEmailWithNodemailer, env),

@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Effect, flow, Match, pipe } from 'effect'
+import { Array, Effect, flow, Match, pipe } from 'effect'
 import { DeprecatedSleepEnv } from './Context.js'
 import { getPreprintFromCrossref, type IndeterminateCrossrefPreprintId, isCrossrefPreprintDoi } from './crossref.js'
 import * as Crossref from './Crossref/index.js'
@@ -64,10 +64,12 @@ export const getPreprintTitle = flow(
   })),
 )
 
-export const resolvePreprintId = flow(
-  getPreprintFromSource,
-  Effect.map(preprint => preprint.id),
-)
+export const resolvePreprintId = (...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>) =>
+  pipe(
+    Array.map(ids, getPreprintFromSource),
+    Effect.raceAll,
+    Effect.map(preprint => preprint.id),
+  )
 
 export const getPreprintId = pipe(
   Match.type<IndeterminatePreprintId>(),

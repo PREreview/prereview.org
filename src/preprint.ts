@@ -1,4 +1,4 @@
-import { Context, Data, type Effect } from 'effect'
+import { type Array, Context, Data, type Effect } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
@@ -38,7 +38,7 @@ export interface DoesPreprintExistEnv {
 
 export interface ResolvePreprintIdEnv {
   resolvePreprintId: (
-    id: IndeterminatePreprintId,
+    ...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>
   ) => TE.TaskEither<NotAPreprint | PreprintIsNotFound | PreprintIsUnavailable, PreprintId>
 }
 
@@ -71,7 +71,9 @@ export class DoesPreprintExist extends Context.Tag('DoesPreprintExist')<
 
 export class ResolvePreprintId extends Context.Tag('ResolvePreprintId')<
   ResolvePreprintId,
-  (id: IndeterminatePreprintId) => Effect.Effect<PreprintId, NotAPreprint | PreprintIsNotFound | PreprintIsUnavailable>
+  (
+    ...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>
+  ) => Effect.Effect<PreprintId, NotAPreprint | PreprintIsNotFound | PreprintIsUnavailable>
 >() {}
 
 export class GetPreprintId extends Context.Tag('GetPreprintId')<
@@ -92,8 +94,10 @@ export class GetPreprintTitle extends Context.Tag('GetPreprintTitle')<
 export const doesPreprintExist = (id: IndeterminatePreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ doesPreprintExist }: DoesPreprintExistEnv) => doesPreprintExist(id)))
 
-export const resolvePreprintId = (id: IndeterminatePreprintId) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ resolvePreprintId }: ResolvePreprintIdEnv) => resolvePreprintId(id)))
+export const resolvePreprintId = (...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>) =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ resolvePreprintId }: ResolvePreprintIdEnv) => resolvePreprintId(...ids)),
+  )
 
 export const getPreprintId = (id: IndeterminatePreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintId }: GetPreprintIdEnv) => getPreprintId(id)))
