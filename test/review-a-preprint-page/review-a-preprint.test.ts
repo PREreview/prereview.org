@@ -41,7 +41,10 @@ describe('reviewAPreprint', () => {
     test.prop(
       [
         fc.supportedLocale(),
-        fc.preprintDoi().map(doi => Tuple.make(doi.toString(), Array.of(fromPreprintDoi(doi)))),
+        fc.oneof(
+          fc.preprintDoi().map(doi => Tuple.make(doi.toString(), Array.of(fromPreprintDoi(doi)))),
+          fc.supportedPreprintUrl().map(([url, id]) => Tuple.make(url.href, id)),
+        ),
         fc.preprintId(),
       ],
       {
