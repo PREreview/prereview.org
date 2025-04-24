@@ -13,6 +13,7 @@ import {
 } from '../../src/preprint.js'
 import * as _ from '../../src/review-a-preprint-page/index.js'
 import { reviewAPreprintMatch, writeReviewMatch } from '../../src/routes.js'
+import { fromPreprintDoi } from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -39,9 +40,7 @@ describe('reviewAPreprint', () => {
     test.prop(
       [
         fc.supportedLocale(),
-        fc
-          .indeterminatePreprintIdWithDoi()
-          .chain(preprint => fc.tuple(fc.constant(preprint), fc.constant({ preprint: preprint.value.toString() }))),
+        fc.preprintDoi().map(doi => [fromPreprintDoi(doi), { preprint: doi.toString() }]),
         fc.preprintId(),
       ],
       {
