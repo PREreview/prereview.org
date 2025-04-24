@@ -9,7 +9,7 @@ import { P, match } from 'ts-pattern'
 import { getInput, invalidE } from '../form.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { SupportedLocale } from '../locales/index.js'
-import { type DoesPreprintExistEnv, doesPreprintExist } from '../preprint.js'
+import { type ResolvePreprintIdEnv, resolvePreprintId } from '../preprint.js'
 import { type PageResponse, RedirectResponse } from '../response.js'
 import { writeReviewMatch } from '../routes.js'
 import { type IndeterminatePreprintId, fromUrl, parsePreprintDoi } from '../types/preprint-id.js'
@@ -25,7 +25,7 @@ export const reviewAPreprint = (state: {
   body: unknown
   locale: SupportedLocale
   method: string
-}): RT.ReaderTask<DoesPreprintExistEnv, PageResponse | RedirectResponse> =>
+}): RT.ReaderTask<ResolvePreprintIdEnv, PageResponse | RedirectResponse> =>
   match(state)
     .with({ method: 'POST', body: P.select() }, whichPreprint(state.locale))
     .otherwise(() => RT.of(createPage(E.right(undefined), state.locale)))
@@ -96,8 +96,15 @@ const parseWhichPreprint = flow(
 const whichPreprint = (locale: SupportedLocale) =>
   flow(
     RTE.fromEitherK(parseWhichPreprint),
-    RTE.chainFirstW(preprint =>
-      pipe(doesPreprintExist(preprint), RTE.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(preprint)))),
+    RTE.chainW(preprint =>
+      pipe(
+        resolvePreprintId(preprint),
+        RTE.mapLeft(error =>
+          match(error)
+            .with({ _tag: 'PreprintIsNotFound' }, () => unknownPreprintE(preprint))
+            .otherwise(identity),
+        ),
+      ),
     ),
     RTE.matchW(
       error =>

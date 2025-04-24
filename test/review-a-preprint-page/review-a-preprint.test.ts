@@ -5,7 +5,12 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
 import { DefaultLocale } from '../../src/locales/index.js'
-import { NotAPreprint, PreprintIsUnavailable, type DoesPreprintExistEnv } from '../../src/preprint.js'
+import {
+  NotAPreprint,
+  PreprintIsNotFound,
+  PreprintIsUnavailable,
+  type ResolvePreprintIdEnv,
+} from '../../src/preprint.js'
 import * as _ from '../../src/review-a-preprint-page/index.js'
 import { reviewAPreprintMatch, writeReviewMatch } from '../../src/routes.js'
 import { fromPreprintDoi } from '../../src/types/preprint-id.js'
@@ -16,7 +21,7 @@ describe('reviewAPreprint', () => {
   test.prop([fc.supportedLocale(), fc.requestMethod().filter(method => method !== 'POST'), fc.anything()])(
     'with a GET request',
     async (locale, method, body) => {
-      const actual = await _.reviewAPreprint({ locale, method, body })({ doesPreprintExist: shouldNotBeCalled })()
+      const actual = await _.reviewAPreprint({ locale, method, body })({ resolvePreprintId: shouldNotBeCalled })()
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
@@ -38,16 +43,19 @@ describe('reviewAPreprint', () => {
         fc
           .preprintDoi()
           .chain(preprint => fc.tuple(fc.constant(preprint), fc.constant({ preprint: preprint.toString() }))),
+        fc.preprintId(),
       ],
       {
         examples: [
           [
             DefaultLocale,
             [Doi('10.1101/2021.06.18.21258689'), { preprint: 'https://doi.org/10.1101/2021.06.18.21258689' }], // doi.org URL,
+            { _tag: 'medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
           ],
           [
             DefaultLocale,
             [Doi('10.1101/2021.06.18.21258689'), { preprint: ' https://doi.org/10.1101/2021.06.18.21258689 ' }], // doi.org URL with whitespace,
+            { _tag: 'medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
           ],
           [
             DefaultLocale,
@@ -55,6 +63,7 @@ describe('reviewAPreprint', () => {
               Doi('10.1101/2021.06.18.21258689'),
               { preprint: 'https://www.biorxiv.org/content/10.1101/2021.06.18.21258689' },
             ], // biorxiv.org URL,
+            { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
           ],
           [
             DefaultLocale,
@@ -62,28 +71,29 @@ describe('reviewAPreprint', () => {
               Doi('10.1101/2021.06.18.21258689'),
               { preprint: ' http://www.biorxiv.org/content/10.1101/2021.06.18.21258689 ' },
             ], // biorxiv.org URL with whitespace,
+            { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
           ],
         ],
       },
-    )('with a preprint DOI', async (locale, [doi, body]) => {
+    )('with a preprint DOI', async (locale, [doi, body], expected) => {
       const id = fromPreprintDoi(doi)
-      const doesPreprintExist = jest.fn<DoesPreprintExistEnv['doesPreprintExist']>(_ => TE.of(true))
+      const resolvePreprintId = jest.fn<ResolvePreprintIdEnv['resolvePreprintId']>(_ => TE.of(expected))
 
-      const actual = await _.reviewAPreprint({ body, locale, method: 'POST' })({ doesPreprintExist })()
+      const actual = await _.reviewAPreprint({ body, locale, method: 'POST' })({ resolvePreprintId })()
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
         status: Status.SeeOther,
-        location: format(writeReviewMatch.formatter, { id }),
+        location: format(writeReviewMatch.formatter, { id: expected }),
       })
-      expect(doesPreprintExist).toHaveBeenCalledWith(expect.objectContaining({ value: id.value }))
+      expect(resolvePreprintId).toHaveBeenCalledWith(expect.objectContaining({ value: id.value }))
     })
 
     test.prop([fc.supportedLocale(), fc.record({ preprint: fc.preprintDoi() })])(
       "with a preprint DOI that doesn't exist",
       async (locale, body) => {
         const actual = await _.reviewAPreprint({ body, locale, method: 'POST' })({
-          doesPreprintExist: () => TE.of(false),
+          resolvePreprintId: () => TE.left(new PreprintIsNotFound({})),
         })()
 
         expect(actual).toStrictEqual({
@@ -101,7 +111,7 @@ describe('reviewAPreprint', () => {
       'when it is not a preprint',
       async (locale, body) => {
         const actual = await _.reviewAPreprint({ body, locale, method: 'POST' })({
-          doesPreprintExist: () => TE.left(new NotAPreprint({})),
+          resolvePreprintId: () => TE.left(new NotAPreprint({})),
         })()
 
         expect(actual).toStrictEqual({
@@ -119,7 +129,7 @@ describe('reviewAPreprint', () => {
       "when we can't see if the preprint exists",
       async (locale, body) => {
         const actual = await _.reviewAPreprint({ body, locale, method: 'POST' })({
-          doesPreprintExist: () => TE.left(new PreprintIsUnavailable({})),
+          resolvePreprintId: () => TE.left(new PreprintIsUnavailable({})),
         })()
 
         expect(actual).toStrictEqual({
@@ -137,7 +147,7 @@ describe('reviewAPreprint', () => {
       'with a non-preprint DOI',
       async (locale, body) => {
         const actual = await _.reviewAPreprint({ body, locale, method: 'POST' })({
-          doesPreprintExist: shouldNotBeCalled,
+          resolvePreprintId: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -155,7 +165,7 @@ describe('reviewAPreprint', () => {
       'with a non-preprint URL',
       async (locale, body) => {
         const actual = await _.reviewAPreprint({ body, locale, method: 'POST' })({
-          doesPreprintExist: shouldNotBeCalled,
+          resolvePreprintId: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -174,7 +184,7 @@ describe('reviewAPreprint', () => {
     'with a non-DOI',
     async (locale, body) => {
       const actual = await _.reviewAPreprint({ body, locale, method: 'POST' })({
-        doesPreprintExist: shouldNotBeCalled,
+        resolvePreprintId: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
