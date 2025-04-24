@@ -1,12 +1,6 @@
-import { Duration, Function } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import type { Json } from 'fp-ts/lib/Json.js'
-import type * as T from 'fp-ts/lib/Task.js'
 import * as L from 'logger-fp-ts'
-
-export interface SleepEnv {
-  readonly sleep: (duration: number) => T.Task<void>
-}
 
 export function useStaleCache<E extends F.FetchEnv>(): (env: E) => E {
   return env => ({ ...env, fetch: (url, init) => env.fetch(url, { cache: 'force-cache', ...init }) })
@@ -14,35 +8,6 @@ export function useStaleCache<E extends F.FetchEnv>(): (env: E) => E {
 
 export function reloadCache<E extends F.FetchEnv>(): (env: E) => E {
   return env => ({ ...env, fetch: (url, init) => env.fetch(url, { ...init, cache: 'reload' }) })
-}
-
-export function revalidateIfStale<E extends F.FetchEnv & SleepEnv>(): (env: E) => E {
-  const openRequests = new Set<string>()
-
-  return env => ({
-    ...env,
-    fetch: async (url, init) => {
-      const response = await env.fetch(url, init)
-
-      if (
-        response.headers.get('x-local-cache-status') === 'stale' &&
-        openRequests.size <= 200 &&
-        !openRequests.has(url)
-      ) {
-        openRequests.add(url)
-
-        void env
-          .sleep(Duration.toMillis(Duration.min(Duration.times('0.2 seconds', openRequests.size), '30 seconds')))()
-          .then(() => env.fetch(url, { ...init, cache: 'no-cache' }))
-          .then(response => response.text())
-          .catch(Function.constVoid)
-          .finally(() => openRequests.delete(url))
-      }
-
-      return response
-    },
-    sleep: env.sleep,
-  })
 }
 
 export function timeoutRequest<E extends F.FetchEnv>(timeout: number): (env: E) => E {
