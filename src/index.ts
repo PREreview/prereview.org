@@ -19,7 +19,12 @@ import { isPrereviewTeam } from './user.js'
 import * as Zenodo from './Zenodo/index.js'
 
 const httpCacheRedisUri = Config.url('HTTP_CACHE_REDIS_URI').pipe(
-  Config.orElse(() => Config.url('HTTP_CACHE_REDIS_URI_TEMPLATE')),
+  Config.orElse(() =>
+    Config.all({
+      uriTemplate: Config.string('HTTP_CACHE_REDIS_URI_TEMPLATE'),
+      region: Config.nonEmptyString('FLY_REGION'),
+    }).pipe(Config.map(({ uriTemplate, region }) => new URL(uriTemplate.replace('{region}', region)))),
+  ),
 )
 
 pipe(
