@@ -29,7 +29,13 @@ export const preprintReviews = ({
         RTE.Do,
         RTE.let('preprint', () => preprint),
         RTE.let('locale', () => locale),
-        RTE.apS('rapidPrereviews', getRapidPrereviews(preprint.id)),
+        RTE.apS(
+          'rapidPrereviews',
+          pipe(
+            getRapidPrereviews(preprint.id),
+            RTE.altW(() => RTE.of([])),
+          ),
+        ),
         RTE.apSW('reviews', getPrereviews(preprint.id)),
       ),
     ),

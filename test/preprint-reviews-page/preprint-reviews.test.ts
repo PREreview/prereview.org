@@ -200,12 +200,15 @@ describe('preprintReviews', () => {
     })()
 
     expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
+      _tag: 'TwoUpPageResponse',
+      canonical: format(preprintReviewsMatch.formatter, {
+        id: preprint.id,
+      }),
       title: expect.anything(),
+      description: expect.anything(),
+      h1: expect.anything(),
+      aside: expect.anything(),
       main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
     })
   })
 })
