@@ -4,7 +4,7 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, DateTime, Duration, Either, HashSet, Option, Predicate } from 'effect'
+import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Tuple } from 'effect'
 import type { Response as ExpressResponse, Request } from 'express'
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
@@ -528,9 +528,9 @@ export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>
     chemrxivPreprintUrl(),
     eartharxivPreprintUrl(),
     ecoevorxivPreprintUrl(),
-    lifecycleJournalPreprintUrl(),
-    osfPreprintUrl(),
-    osfPreprintsPreprintUrl(),
+    lifecycleJournalPreprintUrl().map(Tuple.getFirst),
+    osfPreprintUrl().map(Tuple.getFirst),
+    osfPreprintsPreprintUrl().map(Tuple.getFirst),
   )
 
 export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']> =>
@@ -734,9 +734,16 @@ export const lifecycleJournalPreprintId = (): fc.Arbitrary<LifecycleJournalPrepr
     value: doi(constant('17605')),
   })
 
-export const lifecycleJournalPreprintUrl = (): fc.Arbitrary<URL> =>
-  fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => new URL(`https://osf.io/${id}`))
-
+export const lifecycleJournalPreprintUrl = (): fc.Arbitrary<
+  [URL, [OsfOrLifecycleJournalPreprintId, OsfPreprintsPreprintId]]
+> =>
+  fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => [
+    new URL(`https://osf.io/${id}`),
+    [
+      { _tag: 'osf-lifecycle-journal', value: `10.17605/osf.io/${id}` as Doi<'17605'> },
+      { _tag: 'osf-preprints', value: `10.31219/osf.io/${id}` as Doi<'31219'> },
+    ],
+  ])
 export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
   fc.record({
     _tag: constant('medrxiv'),
@@ -778,8 +785,14 @@ export const osfPreprintId = (): fc.Arbitrary<OsfPreprintId> =>
     value: doi(constant('17605')),
   })
 
-export const osfPreprintUrl = (): fc.Arbitrary<URL> =>
-  fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => new URL(`https://osf.io/${id}`))
+export const osfPreprintUrl = (): fc.Arbitrary<[URL, [OsfOrLifecycleJournalPreprintId, OsfPreprintsPreprintId]]> =>
+  fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => [
+    new URL(`https://osf.io/${id}`),
+    [
+      { _tag: 'osf-lifecycle-journal', value: `10.17605/osf.io/${id}` as Doi<'17605'> },
+      { _tag: 'osf-preprints', value: `10.31219/osf.io/${id}` as Doi<'31219'> },
+    ],
+  ])
 
 export const osfPreprintsPreprintId = (): fc.Arbitrary<OsfPreprintsPreprintId> =>
   fc.record({
@@ -787,8 +800,16 @@ export const osfPreprintsPreprintId = (): fc.Arbitrary<OsfPreprintsPreprintId> =
     value: doi(constant('31219')),
   })
 
-export const osfPreprintsPreprintUrl = (): fc.Arbitrary<URL> =>
-  fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => new URL(`https://osf.io/${id}`))
+export const osfPreprintsPreprintUrl = (): fc.Arbitrary<
+  [URL, [OsfOrLifecycleJournalPreprintId, OsfPreprintsPreprintId]]
+> =>
+  fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => [
+    new URL(`https://osf.io/${id}`),
+    [
+      { _tag: 'osf-lifecycle-journal', value: `10.17605/osf.io/${id}` as Doi<'17605'> },
+      { _tag: 'osf-preprints', value: `10.31219/osf.io/${id}` as Doi<'31219'> },
+    ],
+  ])
 
 export const philsciPreprintId = (): fc.Arbitrary<PhilsciPreprintId> =>
   fc.record({

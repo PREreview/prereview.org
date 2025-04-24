@@ -426,15 +426,15 @@ const extractFromOsfPath = flow(
   ),
   Option.andThen(([, prefix, id]) =>
     match(prefix)
-      .with('africarxiv', () => Option.some(`10.31730/osf.io/${id}`))
-      .with('edarxiv', () => Option.some(`10.35542/osf.io/${id}`))
-      .with('metaarxiv', () => Option.some(`10.31222/osf.io/${id}`))
-      .with('psyarxiv', () => Option.some(`10.31234/osf.io/${id}`))
-      .with('socarxiv', () => Option.some(`10.31235/osf.io/${id}`))
-      .otherwise(() => Option.none()),
+      .with('africarxiv', () => Array.of(`10.31730/osf.io/${id}`))
+      .with('edarxiv', () => Array.of(`10.35542/osf.io/${id}`))
+      .with('metaarxiv', () => Array.of(`10.31222/osf.io/${id}`))
+      .with('psyarxiv', () => Array.of(`10.31234/osf.io/${id}`))
+      .with('socarxiv', () => Array.of(`10.31235/osf.io/${id}`))
+      .otherwise(() => [`10.17605/osf.io/${id}`, `10.31219/osf.io/${id}`]),
   ),
-  Option.andThen(parsePreprintDoi),
-  Array.fromOption,
+  Option.getOrElse(Array.empty),
+  Array.filterMap(parsePreprintDoi),
 )
 
 const extractFromPhilsciPath = flow(
