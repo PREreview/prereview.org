@@ -524,16 +524,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
   )
 
 export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>
-  fc.oneof(
-    chemrxivPreprintUrl(),
-    eartharxivPreprintUrl(),
-    ecoevorxivPreprintUrl(),
-    lifecycleJournalPreprintUrl().map(Tuple.getFirst),
-    osfPreprintUrl().map(Tuple.getFirst),
-    osfPreprintsPreprintUrl()
-      .filter(([, ids]) => ids.length > 1)
-      .map(Tuple.getFirst),
-  )
+  fc.oneof(chemrxivPreprintUrl(), eartharxivPreprintUrl(), ecoevorxivPreprintUrl())
 
 export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']> =>
   crossrefPreprintId().map(id => id.value)

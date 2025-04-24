@@ -1,4 +1,4 @@
-import { Array, Match, Option, flow, identity, pipe } from 'effect'
+import { Array, Either, Match, Option, flow, identity, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -32,18 +32,18 @@ export const makeDecision = ({
   )
 
 const resolvePreprintId = (
-  preprintId: PreprintId.IndeterminatePreprintId,
+  preprintIds: Array.NonEmptyReadonlyArray<PreprintId.IndeterminatePreprintId>,
 ): RTE.ReaderTaskEither<
   Preprint.ResolvePreprintIdEnv,
   Decision.ShowNotAPreprint | Decision.ShowUnknownPreprint | Decision.ShowError,
   PreprintId.PreprintId
 > =>
   pipe(
-    Preprint.resolvePreprintId(preprintId),
+    Preprint.resolvePreprintId(...preprintIds),
     RTE.mapLeft(
       Match.valueTags({
         NotAPreprint: () => Decision.ShowNotAPreprint,
-        PreprintIsNotFound: () => Decision.ShowUnknownPreprint(preprintId),
+        PreprintIsNotFound: () => Decision.ShowUnknownPreprint(Array.headNonEmpty(preprintIds)),
         PreprintIsUnavailable: () => Decision.ShowError,
       }),
     ),
@@ -53,26 +53,27 @@ const extractPreprintId: (
   body: unknown,
 ) => E.Either<
   Decision.ShowFormWithErrors | Decision.ShowUnsupportedDoi | Decision.ShowUnsupportedUrl,
-  PreprintId.IndeterminatePreprintId
+  Array.NonEmptyReadonlyArray<PreprintId.IndeterminatePreprintId>
 > = flow(
   Form.fromBody,
   E.mapLeft(Decision.ShowFormWithErrors),
   E.chainW(form =>
     match(form.value)
       .returnType<
-        E.Either<Decision.ShowUnsupportedDoi | Decision.ShowUnsupportedUrl, PreprintId.IndeterminatePreprintId>
+        E.Either<
+          Decision.ShowUnsupportedDoi | Decision.ShowUnsupportedUrl,
+          Array.NonEmptyReadonlyArray<PreprintId.IndeterminatePreprintId>
+        >
       >()
-      .with(P.string, E.fromOptionK(() => Decision.ShowUnsupportedDoi)(PreprintId.parsePreprintDoi))
+      .with(
+        P.string,
+        E.fromOptionK(() => Decision.ShowUnsupportedDoi)(flow(PreprintId.parsePreprintDoi, Option.andThen(Array.of))),
+      )
       .with(
         P.instanceOf(URL),
-        E.fromOptionK(() => Decision.ShowUnsupportedUrl)(
-          flow(
-            PreprintId.fromUrl,
-            Array.match({
-              onEmpty: Option.none,
-              onNonEmpty: ([head, ...tail]) => (tail.length === 0 ? Option.some(head) : Option.none()),
-            }),
-          ),
+        flow(
+          PreprintId.fromUrl,
+          Array.match({ onEmpty: () => Either.left(Decision.ShowUnsupportedUrl), onNonEmpty: Either.right }),
         ),
       )
       .exhaustive(),

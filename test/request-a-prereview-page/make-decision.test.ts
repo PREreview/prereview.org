@@ -1,6 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import type { Doi } from 'doi-ts'
+import { Tuple } from 'effect'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import {
   NotAPreprint,
@@ -18,8 +19,8 @@ describe('makeDecision', () => {
     test.prop(
       [
         fc.oneof(
-          fc.preprintDoi().map(doi => [doi.toString(), fromPreprintDoi(doi)]),
-          fc.supportedPreprintUrl().map(([url, id]) => [url.href, id]),
+          fc.preprintDoi().map(doi => Tuple.make(doi.toString(), Array.of(fromPreprintDoi(doi)))),
+          fc.supportedPreprintUrl().map(([url, id]) => Tuple.make(url.href, Array.of(id))),
         ),
         fc.reviewRequestPreprintId(),
       ],
@@ -28,30 +29,40 @@ describe('makeDecision', () => {
           [
             [
               'https://doi.org/10.1101/2021.06.18.21258689', // doi.org URL
-              { _tag: 'biorxiv-medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+              [{ _tag: 'biorxiv-medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> }],
             ],
             { _tag: 'medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
           ],
           [
             [
               ' https://doi.org/10.1101/2021.06.18.21258689 ', // doi.org URL with whitespace
-              { _tag: 'biorxiv-medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+              [{ _tag: 'biorxiv-medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> }],
             ],
             { _tag: 'medrxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
           ],
           [
             [
               'https://www.biorxiv.org/content/10.1101/2021.06.18.21258689', // biorxiv.org URL
-              { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+              [{ _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> }],
             ],
             { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
           ],
           [
             [
               ' http://www.biorxiv.org/content/10.1101/2021.06.18.21258689 ', // biorxiv.org URL with whitespace
-              { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+              [{ _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> }],
             ],
             { _tag: 'biorxiv', value: '10.1101/2021.06.18.21258689' as Doi<'1101'> },
+          ],
+          [
+            [
+              'https://osf.io/eq8bk/', // ambigious URL
+              [
+                { _tag: 'osf-lifecycle-journal', value: '10.17605/osf.io/eq8bk' as Doi<'17605'> },
+                { _tag: 'osf-preprints', value: '10.31219/osf.io/eq8bk' as Doi<'31219'> },
+              ],
+            ],
+            { _tag: 'osf', value: '10.17605/osf.io/eq8bk' as Doi<'17605'> },
           ],
         ],
       },
@@ -61,7 +72,7 @@ describe('makeDecision', () => {
       const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({ resolvePreprintId })()
 
       expect(actual).toStrictEqual({ _tag: 'BeginFlow', preprint: preprintId })
-      expect(resolvePreprintId).toHaveBeenCalledWith(expected)
+      expect(resolvePreprintId).toHaveBeenCalledWith(...expected)
     })
 
     test.prop([

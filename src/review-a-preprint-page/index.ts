@@ -54,21 +54,19 @@ const DoiD = pipe(
 const PreprintUrlD = pipe(
   UrlD,
   D.parse(url =>
-    E.fromOption(() => D.error(url, 'PreprintUrl'))(
-      pipe(
-        fromUrl(url),
-        Array.match({
-          onEmpty: Option.none,
-          onNonEmpty: ([head, ...tail]) => (tail.length === 0 ? Option.some(head) : Option.none()),
-        }),
-      ),
+    pipe(
+      fromUrl(url),
+      Array.match({
+        onEmpty: () => D.failure(url, 'PreprintUrl'),
+        onNonEmpty: D.success,
+      }),
     ),
   ),
 )
 
-const WhichPreprintD = pipe(
+const WhichPreprintD: D.Decoder<unknown, Array.NonEmptyReadonlyArray<IndeterminatePreprintId>> = pipe(
   D.struct({
-    preprint: D.union(DoiD, PreprintUrlD),
+    preprint: D.union(pipe(DoiD, D.map(Array.of)), PreprintUrlD),
   }),
   D.map(form => form.preprint),
 )
@@ -98,10 +96,10 @@ const whichPreprint = (locale: SupportedLocale) =>
     RTE.fromEitherK(parseWhichPreprint),
     RTE.chainW(preprint =>
       pipe(
-        resolvePreprintId(preprint),
+        resolvePreprintId(...preprint),
         RTE.mapLeft(error =>
           match(error)
-            .with({ _tag: 'PreprintIsNotFound' }, () => unknownPreprintE(preprint))
+            .with({ _tag: 'PreprintIsNotFound' }, () => unknownPreprintE(Array.headNonEmpty(preprint)))
             .otherwise(identity),
         ),
       ),
