@@ -25,6 +25,7 @@ import { getNameFromOrcid } from './orcid.js'
 import * as Preprint from './preprint.js'
 import * as Prereview from './Prereview.js'
 import { PublicUrl } from './public-url.js'
+import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.js'
 import * as ReviewPage from './review-page/index.js'
 import { Uuid } from './types/index.js'
 import { WebApp } from './WebApp.js'
@@ -431,7 +432,7 @@ export const Program = pipe(
       Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
     ),
   ),
-  Layer.provide(setUpFetch),
+  Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(Uuid.layer, MigratorLive)),
 )
