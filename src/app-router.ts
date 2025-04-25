@@ -366,7 +366,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
 const getRapidPrereviews = (id: PreprintId) =>
   isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
 
-const triggerRefreshOfPrereview = (id: number, user: User) =>
+const triggerRefreshOfPrereview = (prereviewId: number, user: User) =>
   RIO.asks(
     (
       env: Parameters<ReturnType<typeof refreshPrereview>>[0] & {
@@ -375,8 +375,8 @@ const triggerRefreshOfPrereview = (id: number, user: User) =>
     ) => {
       void pipe(
         RTE.fromTask(T.delay(2000)(T.of(undefined))),
-        RTE.chainW(() => refreshPrereview(id, user)),
-        RTE.chainW(() => EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache(id))),
+        RTE.chainW(() => refreshPrereview(prereviewId, user)),
+        RTE.chainW(() => EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache({ prereviewId, user }))),
       )(env)().catch(Function.constVoid)
     },
   )
