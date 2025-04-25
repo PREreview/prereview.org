@@ -3,6 +3,7 @@ import type * as Doi from 'doi-ts'
 import { Array, Effect, pipe } from 'effect'
 import * as CachingHttpClient from '../CachingHttpClient/index.js'
 import * as ReviewPage from '../review-page/index.js'
+import type { PreprintId } from '../types/preprint-id.js'
 import type { User } from '../user.js'
 import { addCommentText } from './AddCommentText.js'
 import { getCommunityRecords, type ZenodoOrigin } from './CommunityRecords.js'
@@ -47,13 +48,15 @@ export const getCommentsForPrereviewFromZenodo = (
 
 export const invalidatePrereviewInCache = ({
   prereviewId,
+  preprintId,
   user,
 }: {
   prereviewId: number
+  preprintId?: PreprintId
   user: User
 }): Effect.Effect<void, never, ZenodoOrigin | CachingHttpClient.HttpCache> =>
   pipe(
-    constructUrlsToInvalidatePrereview({ prereviewId, user }),
+    constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user }),
     Effect.andThen(Array.map(invalidateCacheEntry)),
     Effect.andThen(Effect.allWith({ mode: 'either', concurrency: 'unbounded' })),
     Effect.andThen(Array.getLefts),

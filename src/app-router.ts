@@ -366,7 +366,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
 const getRapidPrereviews = (id: PreprintId) =>
   isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
 
-const triggerRefreshOfPrereview = (prereviewId: number, user: User) =>
+const triggerRefreshOfPrereview = (prereviewId: number, preprintId: PreprintId | undefined, user: User) =>
   RIO.asks(
     (
       env: Parameters<ReturnType<typeof refreshPrereview>>[0] & {
@@ -376,7 +376,9 @@ const triggerRefreshOfPrereview = (prereviewId: number, user: User) =>
       void pipe(
         RTE.fromTask(T.delay(2000)(T.of(undefined))),
         RTE.chainW(() => refreshPrereview(prereviewId, user)),
-        RTE.chainW(() => EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache({ prereviewId, user }))),
+        RTE.chainW(() =>
+          EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache({ prereviewId, preprintId, user })),
+        ),
       )(env)().catch(Function.constVoid)
     },
   )
@@ -421,13 +423,15 @@ const publishPrereview = (newPrereview: NewPrereview) =>
       ),
     ),
     RTE.chainFirstReaderIOKW(([doi, review]) => sendPrereviewToPrereviewCoarNotifyInbox(newPrereview, doi, review)),
-    RTE.chainFirstReaderIOKW(([, review]) => triggerRefreshOfPrereview(review, newPrereview.user)),
+    RTE.chainFirstReaderIOKW(([, review]) =>
+      triggerRefreshOfPrereview(review, newPrereview.preprint.id, newPrereview.user),
+    ),
   )
 
 const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseudonym') =>
   pipe(
     addAuthorToRecordOnZenodo(id, user, persona),
-    RTE.chainFirstReaderIOKW(() => triggerRefreshOfPrereview(id, user)),
+    RTE.chainFirstReaderIOKW(() => triggerRefreshOfPrereview(id, undefined, user)),
   )
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(

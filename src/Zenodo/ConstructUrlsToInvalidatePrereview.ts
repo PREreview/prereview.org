@@ -1,5 +1,6 @@
 import { Url, UrlParams } from '@effect/platform'
 import { Effect } from 'effect'
+import type { PreprintId } from '../types/preprint-id.js'
 import type { User } from '../user.js'
 import { ZenodoOrigin } from './CommunityRecords.js'
 
@@ -8,6 +9,7 @@ export const constructUrlsToInvalidatePrereview = ({
   user,
 }: {
   prereviewId: number
+  preprintId: PreprintId | undefined
   user: User
 }): Effect.Effect<ReadonlyArray<URL>, never, ZenodoOrigin> =>
   Effect.all([constructUrlToRecord(prereviewId), constructUrlToListOfPrereviewsByUser(user)], {
