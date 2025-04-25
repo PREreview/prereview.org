@@ -55,7 +55,12 @@ export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
           Effect.onInterrupt(interrupters =>
             pipe(
               Effect.logDebug('HTTP request interrupted'),
-              Effect.annotateLogs({ interrupters: HashSet.toValues(HashSet.map(interrupters, FiberId.threadName)) }),
+              Effect.annotateLogs({
+                interrupters: HashSet.toValues(HashSet.map(interrupters, FiberId.threadName)),
+                url: request.url,
+                urlParams: UrlParams.toString(request.urlParams),
+                method: request.method,
+              }),
             ),
           ),
         )
