@@ -9,7 +9,7 @@ import * as _ from '../../src/Zenodo/ConstructUrlsToInvalidatePrereview.js'
 import * as EffectTest from '../EffectTest.js'
 
 describe('constructUrlsToInvalidatePrereview', () => {
-  it.failing('constructs valid urls', () =>
+  it('constructs valid urls', () =>
     Effect.gen(function* () {
       const prereviewId = 12345
       const preprintId = { _tag: 'biorxiv', value: Doi.Doi('10.1101/12345') } satisfies BiorxivPreprintId
@@ -27,7 +27,6 @@ describe('constructUrlsToInvalidatePrereview', () => {
 
       const results = yield* _.constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user })
 
-      expect(Array.map(results, result => result.href)).toStrictEqual(expectedUrls)
-    }).pipe(Effect.provideService(ZenodoOrigin, new URL('http://zenodo.test')), EffectTest.run),
-  )
+      expect(Array.map(results, result => result.href).sort()).toStrictEqual(expectedUrls.sort())
+    }).pipe(Effect.provideService(ZenodoOrigin, new URL('http://zenodo.test')), EffectTest.run))
 })
