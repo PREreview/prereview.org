@@ -52,7 +52,12 @@ export const invalidatePrereviewInCache = (
     Effect.andThen(constructUrlsToInvalidatePrereview(prereviewId)),
     Effect.andThen(Array.map(invalidateCacheEntry)),
     Effect.andThen(Effect.allWith({ mode: 'either', concurrency: 'unbounded' })),
-    Effect.asVoid,
+    Effect.andThen(Array.getLefts),
+    Effect.andThen(
+      Effect.forEach(error =>
+        Effect.logError('Unable to invalidate URL for PREreview').pipe(Effect.annotateLogs({ error, prereviewId })),
+      ),
+    ),
     Effect.catchAll(error =>
       Effect.logError('Unable to invalidate PREreview in cache').pipe(Effect.annotateLogs({ error, prereviewId })),
     ),
