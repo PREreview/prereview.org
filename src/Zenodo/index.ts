@@ -49,7 +49,7 @@ export const invalidatePrereviewInCache = (
 ): Effect.Effect<void, never, HttpClient.HttpClient | ZenodoOrigin | CachingHttpClient.HttpCache> =>
   pipe(
     getDoiForPrereview(prereviewId),
-    Effect.andThen(constructUrlsToInvalidatePrereview),
+    Effect.andThen(constructUrlsToInvalidatePrereview(prereviewId)),
     Effect.andThen(Array.map(invalidateCacheEntry)),
     Effect.andThen(Effect.allWith({ mode: 'either', concurrency: 'unbounded' })),
     Effect.asVoid,
