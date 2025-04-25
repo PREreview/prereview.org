@@ -9,7 +9,6 @@ import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as T from 'fp-ts/lib/Task.js'
 import httpErrors from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
@@ -368,12 +367,9 @@ const getRapidPrereviews = (id: PreprintId) =>
 const triggerRefreshOfPrereview = (prereviewId: number, preprintId: PreprintId | undefined, user: User) =>
   RIO.asks(
     (env: { runtime: Runtime.Runtime<HttpClient.HttpClient | Zenodo.ZenodoOrigin | CachingHttpClient.HttpCache> }) => {
-      void pipe(
-        RTE.fromTask(T.delay(2000)(T.of(undefined))),
-        RTE.chainW(() =>
-          EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache({ prereviewId, preprintId, user })),
-        ),
-      )(env)().catch(Function.constVoid)
+      void EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache({ prereviewId, preprintId, user }))(
+        env,
+      )().catch(Function.constVoid)
     },
   )
 
