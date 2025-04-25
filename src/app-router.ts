@@ -21,6 +21,7 @@ import multer, { MulterError } from 'multer'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
+import type * as CachingHttpClient from './CachingHttpClient/index.js'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
 import * as EffectToFpts from './EffectToFpts.js'
@@ -310,6 +311,7 @@ const getSlackUser = flow(
 
 export type RouterEnv = Keyv.AvatarStoreEnv &
   EffectEnv<
+    | CachingHttpClient.HttpCache
     | FeatureFlags.CanAddMultipleAuthors
     | FeatureFlags.CanSeeDesignTweaks
     | Locale
@@ -368,7 +370,7 @@ const triggerRefreshOfPrereview = (id: number, user: User) =>
   RIO.asks(
     (
       env: Parameters<ReturnType<typeof refreshPrereview>>[0] & {
-        runtime: Runtime.Runtime<HttpClient.HttpClient | Zenodo.ZenodoOrigin>
+        runtime: Runtime.Runtime<HttpClient.HttpClient | Zenodo.ZenodoOrigin | CachingHttpClient.HttpCache>
       },
     ) => {
       void pipe(

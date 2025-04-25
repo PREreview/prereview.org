@@ -1,11 +1,12 @@
 import type { HttpClient } from '@effect/platform'
 import type * as Doi from 'doi-ts'
-import { Effect, pipe } from 'effect'
+import { Array, Effect, pipe } from 'effect'
 import * as CachingHttpClient from '../CachingHttpClient/index.js'
 import * as ReviewPage from '../review-page/index.js'
 import { addCommentText } from './AddCommentText.js'
 import { getCommunityRecords, type ZenodoOrigin } from './CommunityRecords.js'
 import { constructCommentListUrl } from './ConstructCommentListUrl.js'
+import { constructUrlsToInvalidatePrereview } from './ConstructUrlsToInvalidatePrereview.js'
 import { getDoiForPrereview } from './GetDoiForPrereview.js'
 import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.js'
 
@@ -45,10 +46,13 @@ export const getCommentsForPrereviewFromZenodo = (
 
 export const invalidatePrereviewInCache = (
   prereviewId: number,
-): Effect.Effect<void, never, HttpClient.HttpClient | ZenodoOrigin> =>
+): Effect.Effect<void, never, HttpClient.HttpClient | ZenodoOrigin | CachingHttpClient.HttpCache> =>
   pipe(
     getDoiForPrereview(prereviewId),
-    Effect.andThen(doi => Effect.logDebug(`Should invalidate PREreview ${prereviewId} (${doi}) in cache`)),
+    Effect.andThen(constructUrlsToInvalidatePrereview),
+    Effect.andThen(Array.map(invalidateCacheEntry)),
+    Effect.andThen(Effect.allWith({ mode: 'either', concurrency: 'unbounded' })),
+    Effect.asVoid,
     Effect.catchAll(error =>
       Effect.logError('Unable to invalidate PREreview in cache').pipe(Effect.annotateLogs({ error, prereviewId })),
     ),
