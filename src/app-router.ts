@@ -1,11 +1,10 @@
 import type { HttpClient } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
-import { Effect, Function, Option, type Runtime, String, flow, pipe } from 'effect'
+import { Effect, Function, Option, String, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as R from 'fp-ts/lib/Reader.js'
-import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
@@ -365,13 +364,7 @@ const getRapidPrereviews = (id: PreprintId) =>
   isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
 
 const triggerRefreshOfPrereview = (prereviewId: number, preprintId: PreprintId | undefined, user: User) =>
-  RIO.asks(
-    (env: { runtime: Runtime.Runtime<HttpClient.HttpClient | Zenodo.ZenodoOrigin | CachingHttpClient.HttpCache> }) => {
-      void EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache({ prereviewId, preprintId, user }))(
-        env,
-      )().catch(Function.constVoid)
-    },
-  )
+  EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache({ prereviewId, preprintId, user }))
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5_242_880 } })
 
@@ -413,15 +406,13 @@ const publishPrereview = (newPrereview: NewPrereview) =>
       ),
     ),
     RTE.chainFirstReaderIOKW(([doi, review]) => sendPrereviewToPrereviewCoarNotifyInbox(newPrereview, doi, review)),
-    RTE.chainFirstReaderIOKW(([, review]) =>
-      triggerRefreshOfPrereview(review, newPrereview.preprint.id, newPrereview.user),
-    ),
+    RTE.chainFirstW(([, review]) => triggerRefreshOfPrereview(review, newPrereview.preprint.id, newPrereview.user)),
   )
 
 const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseudonym') =>
   pipe(
     addAuthorToRecordOnZenodo(id, user, persona),
-    RTE.chainFirstReaderIOKW(() => triggerRefreshOfPrereview(id, undefined, user)),
+    RTE.chainFirstW(() => triggerRefreshOfPrereview(id, undefined, user)),
   )
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
