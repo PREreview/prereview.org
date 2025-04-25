@@ -39,7 +39,7 @@ import {
   uploadFile,
 } from 'zenodo-ts'
 import { getClubByName, getClubName } from './club-details.js'
-import { reloadCache, timeoutRequest, useStaleCache } from './fetch.js'
+import { timeoutRequest, useStaleCache } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { type Html, plainText, sanitizeHtml } from './html.js'
 import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.js'
@@ -437,14 +437,6 @@ export const getCommentsForPrereviewFromZenodo = flow(
   ),
   RTE.mapLeft(() => 'unavailable' as const),
 )
-
-export const refreshPrereview = (id: number, user: User) =>
-  pipe(
-    getPrereviewFromZenodo(id),
-    RTE.chainFirstW(review => getPrereviewsForPreprintFromZenodo(review.preprint.id)),
-    RTE.chainFirstW(() => getPrereviewsForUserFromZenodo(user)),
-    RTE.local(reloadCache()),
-  )
 
 export const addAuthorToRecordOnZenodo = (
   id: number,

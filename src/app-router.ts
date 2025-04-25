@@ -290,7 +290,6 @@ import {
   getPrereviewsForSciety,
   getPrereviewsForUserFromZenodo,
   getRecentPrereviewsFromZenodo,
-  refreshPrereview,
 } from './zenodo.js'
 
 const isSlackUser = flow(
@@ -368,14 +367,9 @@ const getRapidPrereviews = (id: PreprintId) =>
 
 const triggerRefreshOfPrereview = (prereviewId: number, preprintId: PreprintId | undefined, user: User) =>
   RIO.asks(
-    (
-      env: Parameters<ReturnType<typeof refreshPrereview>>[0] & {
-        runtime: Runtime.Runtime<HttpClient.HttpClient | Zenodo.ZenodoOrigin | CachingHttpClient.HttpCache>
-      },
-    ) => {
+    (env: { runtime: Runtime.Runtime<HttpClient.HttpClient | Zenodo.ZenodoOrigin | CachingHttpClient.HttpCache> }) => {
       void pipe(
         RTE.fromTask(T.delay(2000)(T.of(undefined))),
-        RTE.chainW(() => refreshPrereview(prereviewId, user)),
         RTE.chainW(() =>
           EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache({ prereviewId, preprintId, user })),
         ),
