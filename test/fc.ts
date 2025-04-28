@@ -37,8 +37,10 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.js'
-import type { CrossrefPreprintId } from '../src/crossref.js'
-import type { DatacitePreprintId } from '../src/datacite.js'
+import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/crossref.js'
+import type { CrossrefPreprintId } from '../src/Crossref/PreprintId.js'
+import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/datacite.js'
+import type { DatacitePreprintId } from '../src/Datacite/PreprintId.js'
 import type { Email } from '../src/email.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
@@ -533,11 +535,17 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, Array.NonEmptyReadonl
 export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>
   fc.oneof(chemrxivPreprintUrl(), eartharxivPreprintUrl(), ecoevorxivPreprintUrl())
 
-export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']> =>
+export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value'] | LegacyCrossrefPreprintId['value']> =>
   crossrefPreprintId().map(id => id.value)
 
-export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value']> =>
+export const legacyCrossrefPreprintDoi = (): fc.Arbitrary<LegacyCrossrefPreprintId['value']> =>
+  legacyCrossrefPreprintId().map(id => id.value)
+
+export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value'] | LegacyDatacitePreprintId['value']> =>
   datacitePreprintId().map(id => id.value)
+
+export const legacyDatacitePreprintDoi = (): fc.Arbitrary<LegacyDatacitePreprintId['value']> =>
+  legacyDatacitePreprintId().map(id => id.value)
 
 export const japanLinkCenterPreprintDoi = (): fc.Arbitrary<JapanLinkCenterPreprintId['value']> =>
   japanLinkCenterPreprintId().map(id => id.value)
@@ -1036,7 +1044,17 @@ export const indeterminatePreprintIdWithDoi = (): fc.Arbitrary<Extract<Indetermi
     zenodoOrAfricarxivPreprintId(),
   )
 
-export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
+export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId | LegacyCrossrefPreprintId> =>
+  fc.oneof(
+    biorxivPreprintId(),
+    medrxivPreprintId(),
+    neurolibrePreprintId(),
+    scieloPreprintId(),
+    ssrnPreprintId(),
+    legacyCrossrefPreprintId(),
+  )
+
+export const legacyCrossrefPreprintId = (): fc.Arbitrary<LegacyCrossrefPreprintId> =>
   fc.oneof(
     advancePreprintId(),
     africarxivOsfPreprintId(),
@@ -1059,7 +1077,10 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     verixivPreprintId(),
   )
 
-export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
+export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId | LegacyDatacitePreprintId> =>
+  fc.oneof(lifecycleJournalPreprintId(), osfPreprintId(), legacyDatacitePreprintId())
+
+export const legacyDatacitePreprintId = (): fc.Arbitrary<LegacyDatacitePreprintId> =>
   fc.oneof(
     africarxivFigsharePreprintId(),
     africarxivUbuntunetPreprintId(),

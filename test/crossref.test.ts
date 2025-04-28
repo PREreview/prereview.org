@@ -9,7 +9,7 @@ import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../src/
 import * as fc from './fc.js'
 
 describe('isCrossrefPreprintDoi', () => {
-  test.prop([fc.crossrefPreprintDoi()])('with a Crossref DOI', doi => {
+  test.prop([fc.legacyCrossrefPreprintDoi()])('with a Crossref DOI', doi => {
     expect(_.isCrossrefPreprintDoi(doi)).toBe(true)
   })
 
@@ -2371,7 +2371,7 @@ describe('getPreprintFromCrossref', () => {
     })
   })
 
-  test.prop([fc.crossrefPreprintId()])('when the preprint is not found', async id => {
+  test.prop([fc.legacyCrossrefPreprintId()])('when the preprint is not found', async id => {
     const fetch = fetchMock
       .sandbox()
       .getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, { status: Status.NotFound })
@@ -2383,7 +2383,7 @@ describe('getPreprintFromCrossref', () => {
   })
 
   test.prop([
-    fc.crossrefPreprintId(),
+    fc.legacyCrossrefPreprintId(),
     fc.record(
       {
         author: fc.array(fc.record({ name: fc.string() })),
@@ -2446,7 +2446,7 @@ describe('getPreprintFromCrossref', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.crossrefPreprintId(), fc.record({ status: fc.integer(), body: fc.string() })])(
+  test.prop([fc.legacyCrossrefPreprintId(), fc.record({ status: fc.integer(), body: fc.string() })])(
     'when the preprint cannot be loaded',
     async (id, response) => {
       const fetch = fetchMock

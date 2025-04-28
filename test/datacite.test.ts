@@ -10,7 +10,7 @@ import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../src/
 import * as fc from './fc.js'
 
 describe('isDatacitePreprintDoi', () => {
-  test.prop([fc.datacitePreprintDoi()])('with a DataCite DOI', doi => {
+  test.prop([fc.legacyDatacitePreprintDoi()])('with a DataCite DOI', doi => {
     expect(_.isDatacitePreprintDoi(doi)).toBe(true)
   })
 
@@ -1323,7 +1323,7 @@ describe('getPreprintFromDatacite', () => {
     })
   })
 
-  test.prop([fc.datacitePreprintId()])('when the preprint is not found', async id => {
+  test.prop([fc.legacyDatacitePreprintId()])('when the preprint is not found', async id => {
     const fetch = fetchMock
       .sandbox()
       .getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, { status: Status.NotFound })
@@ -1499,7 +1499,7 @@ describe('getPreprintFromDatacite', () => {
     },
   )
 
-  test.prop([fc.datacitePreprintId(), fc.record({ status: fc.integer(), body: fc.string() })])(
+  test.prop([fc.legacyDatacitePreprintId(), fc.record({ status: fc.integer(), body: fc.string() })])(
     'when the preprint cannot be loaded',
     async (id, response) => {
       const fetch = fetchMock
