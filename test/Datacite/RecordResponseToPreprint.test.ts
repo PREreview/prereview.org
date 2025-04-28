@@ -91,6 +91,37 @@ test.each([
       url: new URL('https://osf.io/bmqcw'),
     }),
   },
+  {
+    response: 'arxiv',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Regarding trapped-ion microwave-frequency standards, we report on the determination of hyperfine splittings and Landé <math><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math> factors of <math><semantics><mrow><msup><mrow></mrow><mrow><mn>111</mn><mo separator="true">,</mo><mn>113</mn></mrow></msup></mrow><annotation encoding="application/x-tex">^{111,113}</annotation></semantics></math>Cd<math><semantics><mrow><msup><mrow></mrow><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">^+</annotation></semantics></math>. The hyperfine splittings of the <math><semantics><mrow><mn>5</mn><mi>p</mi><msup><mtext> </mtext><mn>2</mn></msup><msub><mi>P</mi><mrow><mn>3</mn><mi mathvariant="normal">/</mi><mn>2</mn></mrow></msub></mrow><annotation encoding="application/x-tex">5p~^2P_{3/2}</annotation></semantics></math> state of <math><semantics><mrow><msup><mrow></mrow><mrow><mn>111</mn><mo separator="true">,</mo><mn>113</mn></mrow></msup></mrow><annotation encoding="application/x-tex">^{111,113}</annotation></semantics></math>Cd<math><semantics><mrow><msup><mrow></mrow><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">^+</annotation></semantics></math> ions were measured using laser-induced fluorescence spectroscopy. The Cd<math><semantics><mrow><msup><mrow></mrow><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">^+</annotation></semantics></math> ions were confined in a linear Paul trap and sympathetically cooled by Ca<math><semantics><mrow><msup><mrow></mrow><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">^+</annotation></semantics></math> ions. Furthermore, the hyperfine splittings and Landé <math><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math> factors of the <math><semantics><mrow><mn>5</mn><mi>s</mi><msup><mtext> </mtext><mn>2</mn></msup><msub><mi>S</mi><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mn>2</mn></mrow></msub></mrow><annotation encoding="application/x-tex">5s~^2S_{1/2}</annotation></semantics></math> and <math><semantics><mrow><mn>5</mn><mi>p</mi><msup><mtext> </mtext><mn>2</mn></msup><msub><mi>P</mi><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mi mathvariant="normal">/</mi><mn>2</mn></mrow></msub></mrow><annotation encoding="application/x-tex">5p~^2P_{1/2,3/2}</annotation></semantics></math> levels of <math><semantics><mrow><msup><mrow></mrow><mrow><mn>111</mn><mo separator="true">,</mo><mn>113</mn></mrow></msup></mrow><annotation encoding="application/x-tex">^{111,113}</annotation></semantics></math>Cd<math><semantics><mrow><msup><mrow></mrow><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">^+</annotation></semantics></math> were calculated with greater accuracy using the multiconfiguration Dirac--Hartree--Fock scheme. The measured hyperfine splittings and the Dirac--Hartree--Fock calculation values were cross-checked, thereby further guaranteeing the reliability of our results. The results provided in this work can improve the signal-to-noise ratio of the clock transition and the accuracy of the second-order Zeeman shift correction, and subsequently the stability and accuracy of the microwave frequency standard based on trapped Cd<math><semantics><mrow><msup><mrow></mrow><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">^+</annotation></semantics></math> ions.</p>',
+        ),
+      },
+      authors: [
+        { name: 'J. Z. Han', orcid: undefined },
+        { name: 'R. Si', orcid: undefined },
+        { name: 'H. R. Qin', orcid: undefined },
+        { name: 'N. C. Xin', orcid: undefined },
+        { name: 'Y. T. Chen', orcid: undefined },
+        { name: 'S. N. Miao', orcid: undefined },
+        { name: 'C. Y. Chen', orcid: undefined },
+        { name: 'J. W. Zhang', orcid: undefined },
+        { name: 'L. J. Wang', orcid: undefined },
+      ],
+      id: { _tag: 'arxiv', value: Doi('10.48550/arxiv.2201.06719') },
+      posted: Temporal.PlainDate.from({ year: 2022, month: 1, day: 18 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Determination of hyperfine splittings and Landé <math><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math> factors of <math><semantics><mrow><mn>5</mn><mi>s</mi><msup><mtext> </mtext><mn>2</mn></msup><msub><mi>S</mi><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mn>2</mn></mrow></msub></mrow><annotation encoding="application/x-tex">5s~^2S_{1/2}</annotation></semantics></math> and <math><semantics><mrow><mn>5</mn><mi>p</mi><msup><mtext> </mtext><mn>2</mn></msup><msub><mi>P</mi><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mi mathvariant="normal">/</mi><mn>2</mn></mrow></msub></mrow><annotation encoding="application/x-tex">5p~^2P_{1/2,3/2}</annotation></semantics></math> states of <math><semantics><mrow><msup><mrow></mrow><mrow><mn>111</mn><mo separator="true">,</mo><mn>113</mn></mrow></msup></mrow><annotation encoding="application/x-tex">^{111,113}</annotation></semantics></math>Cd<math><semantics><mrow><msup><mrow></mrow><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">^+</annotation></semantics></math> for a microwave frequency standard',
+        ),
+      },
+      url: new URL('https://arxiv.org/abs/2201.06719'),
+    }),
+  },
 ])('can parse a DataCite record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

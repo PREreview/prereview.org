@@ -1,0 +1,183 @@
+{
+  "data": {
+    "id": "10.48550/arxiv.2201.06719",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.48550/arxiv.2201.06719",
+      "prefix": "10.48550",
+      "suffix": "arxiv.2201.06719",
+      "identifiers": [{ "identifier": "2201.06719", "identifierType": "arXiv" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "arXiv", "alternateIdentifier": "2201.06719" }],
+      "creators": [
+        {
+          "name": "Han, J. Z.",
+          "nameType": "Personal",
+          "givenName": "J. Z.",
+          "familyName": "Han",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Si, R.",
+          "nameType": "Personal",
+          "givenName": "R.",
+          "familyName": "Si",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Qin, H. R.",
+          "nameType": "Personal",
+          "givenName": "H. R.",
+          "familyName": "Qin",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Xin, N. C.",
+          "nameType": "Personal",
+          "givenName": "N. C.",
+          "familyName": "Xin",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Chen, Y. T.",
+          "nameType": "Personal",
+          "givenName": "Y. T.",
+          "familyName": "Chen",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Miao, S. N.",
+          "nameType": "Personal",
+          "givenName": "S. N.",
+          "familyName": "Miao",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Chen, C. Y.",
+          "nameType": "Personal",
+          "givenName": "C. Y.",
+          "familyName": "Chen",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Zhang, J. W.",
+          "nameType": "Personal",
+          "givenName": "J. W.",
+          "familyName": "Zhang",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Wang, L. J.",
+          "nameType": "Personal",
+          "givenName": "L. J.",
+          "familyName": "Wang",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        {
+          "title": "Determination of hyperfine splittings and Landé $g_J$ factors of $5s~^2S_{1/2}$ and $5p~^2P_{1/2,3/2}$ states of $^{111,113}$Cd$^+$ for a microwave frequency standard"
+        }
+      ],
+      "publisher": "arXiv",
+      "container": {},
+      "publicationYear": 2022,
+      "subjects": [
+        { "lang": "en", "subject": "Atomic Physics (physics.atom-ph)", "subjectScheme": "arXiv" },
+        { "subject": "FOS: Physical sciences", "subjectScheme": "Fields of Science and Technology (FOS)" },
+        {
+          "subject": "FOS: Physical sciences",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2022-01-18T03:41:47Z", "dateType": "Submitted", "dateInformation": "v1" },
+        { "date": "2022-08-17T13:37:40Z", "dateType": "Updated", "dateInformation": "v1" },
+        { "date": "2022-01", "dateType": "Available", "dateInformation": "v1" },
+        { "date": "2022", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "RPRT",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Article",
+        "resourceTypeGeneral": "Text"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsVersionOf",
+          "relatedIdentifier": "10.1103/physreva.106.012821",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": "1",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Regarding trapped-ion microwave-frequency standards, we report on the determination of hyperfine splittings and Landé $g_J$ factors of $^{111,113}$Cd$^+$. The hyperfine splittings of the $5p~^2P_{3/2}$ state of $^{111,113}$Cd$^+$ ions were measured using laser-induced fluorescence spectroscopy. The Cd$^+$ ions were confined in a linear Paul trap and sympathetically cooled by Ca$^+$ ions. Furthermore, the hyperfine splittings and Landé $g_J$ factors of the $5s~^2S_{1/2}$ and $5p~^2P_{1/2,3/2}$ levels of $^{111,113}$Cd$^+$ were calculated with greater accuracy using the multiconfiguration Dirac--Hartree--Fock scheme. The measured hyperfine splittings and the Dirac--Hartree--Fock calculation values were cross-checked, thereby further guaranteeing the reliability of our results. The results provided in this work can improve the signal-to-noise ratio of the clock transition and the accuracy of the second-order Zeeman shift correction, and subsequently the stability and accuracy of the microwave frequency standard based on trapped Cd$^+$ ions.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjMvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC40ODU1MC9BUlhJVi4yMjAxLjA2NzE5PC9pZGVudGlmaWVyPgogIDxhbHRlcm5hdGVJZGVudGlmaWVycz4KICAgIDxhbHRlcm5hdGVJZGVudGlmaWVyIGFsdGVybmF0ZUlkZW50aWZpZXJUeXBlPSJhclhpdiI+MjIwMS4wNjcxOTwvYWx0ZXJuYXRlSWRlbnRpZmllcj4KICA8L2FsdGVybmF0ZUlkZW50aWZpZXJzPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5IYW4sIEouIFouPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5KLiBaLjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5IYW48L2ZhbWlseU5hbWU+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+U2ksIFIuPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5SLjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5TaTwvZmFtaWx5TmFtZT4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5RaW4sIEguIFIuPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5ILiBSLjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5RaW48L2ZhbWlseU5hbWU+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+WGluLCBOLiBDLjwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+Ti4gQy48L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+WGluPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkNoZW4sIFkuIFQuPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5ZLiBULjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5DaGVuPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPk1pYW8sIFMuIE4uPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5TLiBOLjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5NaWFvPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkNoZW4sIEMuIFkuPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5DLiBZLjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5DaGVuPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlpoYW5nLCBKLiBXLjwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+Si4gVy48L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+Wmhhbmc8L2ZhbWlseU5hbWU+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+V2FuZywgTC4gSi48L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkwuIEouPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPldhbmc8L2ZhbWlseU5hbWU+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPkRldGVybWluYXRpb24gb2YgaHlwZXJmaW5lIHNwbGl0dGluZ3MgYW5kIExhbmTDqSAkZ19KJCBmYWN0b3JzIG9mICQ1c35eMlNfezEvMn0kIGFuZCAkNXB+XjJQX3sxLzIsMy8yfSQgc3RhdGVzIG9mICReezExMSwxMTN9JENkJF4rJCBmb3IgYSBtaWNyb3dhdmUgZnJlcXVlbmN5IHN0YW5kYXJkPC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyPmFyWGl2PC9wdWJsaXNoZXI+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDIyPC9wdWJsaWNhdGlvblllYXI+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIiBzdWJqZWN0U2NoZW1lPSJhclhpdiI+QXRvbWljIFBoeXNpY3MgKHBoeXNpY3MuYXRvbS1waCk8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJGaWVsZHMgb2YgU2NpZW5jZSBhbmQgVGVjaG5vbG9neSAoRk9TKSI+Rk9TOiBQaHlzaWNhbCBzY2llbmNlczwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJTdWJtaXR0ZWQiIGRhdGVJbmZvcm1hdGlvbj0idjEiPjIwMjItMDEtMThUMDM6NDE6NDdaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiIGRhdGVJbmZvcm1hdGlvbj0idjEiPjIwMjItMDgtMTdUMTM6Mzc6NDBaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IkF2YWlsYWJsZSIgZGF0ZUluZm9ybWF0aW9uPSJ2MSI+MjAyMi0wMTwvZGF0ZT4KICA8L2RhdGVzPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iVGV4dCI+QXJ0aWNsZTwvcmVzb3VyY2VUeXBlPgogIDxyZWxhdGVkSWRlbnRpZmllcnM+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iSXNWZXJzaW9uT2YiPjEwLjExMDMvUGh5c1JldkEuMTA2LjAxMjgyMTwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHZlcnNpb24+MTwvdmVyc2lvbj4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvIiByaWdodHNJZGVudGlmaWVyU2NoZW1lPSJTUERYIiByaWdodHNJZGVudGlmaWVyPSJDQy1CWS00LjAiPkNyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24gNC4wIEludGVybmF0aW9uYWw8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij5SZWdhcmRpbmcgdHJhcHBlZC1pb24gbWljcm93YXZlLWZyZXF1ZW5jeSBzdGFuZGFyZHMsIHdlIHJlcG9ydCBvbiB0aGUgZGV0ZXJtaW5hdGlvbiBvZiBoeXBlcmZpbmUgc3BsaXR0aW5ncyBhbmQgTGFuZMOpICRnX0okIGZhY3RvcnMgb2YgJF57MTExLDExM30kQ2QkXiskLiBUaGUgaHlwZXJmaW5lIHNwbGl0dGluZ3Mgb2YgdGhlICQ1cH5eMlBfezMvMn0kIHN0YXRlIG9mICReezExMSwxMTN9JENkJF4rJCBpb25zIHdlcmUgbWVhc3VyZWQgdXNpbmcgbGFzZXItaW5kdWNlZCBmbHVvcmVzY2VuY2Ugc3BlY3Ryb3Njb3B5LiBUaGUgQ2QkXiskIGlvbnMgd2VyZSBjb25maW5lZCBpbiBhIGxpbmVhciBQYXVsIHRyYXAgYW5kIHN5bXBhdGhldGljYWxseSBjb29sZWQgYnkgQ2EkXiskIGlvbnMuIEZ1cnRoZXJtb3JlLCB0aGUgaHlwZXJmaW5lIHNwbGl0dGluZ3MgYW5kIExhbmTDqSAkZ19KJCBmYWN0b3JzIG9mIHRoZSAkNXN+XjJTX3sxLzJ9JCBhbmQgJDVwfl4yUF97MS8yLDMvMn0kIGxldmVscyBvZiAkXnsxMTEsMTEzfSRDZCReKyQgd2VyZSBjYWxjdWxhdGVkIHdpdGggZ3JlYXRlciBhY2N1cmFjeSB1c2luZyB0aGUgbXVsdGljb25maWd1cmF0aW9uIERpcmFjLS1IYXJ0cmVlLS1Gb2NrIHNjaGVtZS4gVGhlIG1lYXN1cmVkIGh5cGVyZmluZSBzcGxpdHRpbmdzIGFuZCB0aGUgRGlyYWMtLUhhcnRyZWUtLUZvY2sgY2FsY3VsYXRpb24gdmFsdWVzIHdlcmUgY3Jvc3MtY2hlY2tlZCwgdGhlcmVieSBmdXJ0aGVyIGd1YXJhbnRlZWluZyB0aGUgcmVsaWFiaWxpdHkgb2Ygb3VyIHJlc3VsdHMuIFRoZSByZXN1bHRzIHByb3ZpZGVkIGluIHRoaXMgd29yayBjYW4gaW1wcm92ZSB0aGUgc2lnbmFsLXRvLW5vaXNlIHJhdGlvIG9mIHRoZSBjbG9jayB0cmFuc2l0aW9uIGFuZCB0aGUgYWNjdXJhY3kgb2YgdGhlIHNlY29uZC1vcmRlciBaZWVtYW4gc2hpZnQgY29ycmVjdGlvbiwgYW5kIHN1YnNlcXVlbnRseSB0aGUgc3RhYmlsaXR5IGFuZCBhY2N1cmFjeSBvZiB0aGUgbWljcm93YXZlIGZyZXF1ZW5jeSBzdGFuZGFyZCBiYXNlZCBvbiB0cmFwcGVkIENkJF4rJCBpb25zLjwvZGVzY3JpcHRpb24+CiAgPC9kZXNjcmlwdGlvbnM+CjwvcmVzb3VyY2U+",
+      "url": "https://arxiv.org/abs/2201.06719",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 1,
+      "created": "2022-01-19T03:41:27.000Z",
+      "registered": "2022-01-19T03:41:27.000Z",
+      "published": "2022",
+      "updated": "2022-08-18T01:04:35.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "arxiv.content", "type": "clients" } },
+      "provider": { "data": { "id": "arxiv", "type": "providers" } },
+      "media": { "data": { "id": "10.48550/arxiv.2201.06719", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [{ "id": "10.1103/physreva.106.012821", "type": "dois" }] }
+    }
+  }
+}

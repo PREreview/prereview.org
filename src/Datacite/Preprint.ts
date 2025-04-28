@@ -20,7 +20,8 @@ export const recordToPreprint = (
       record.types.resourceType?.toLowerCase() !== 'preprint' &&
       record.types.resourceTypeGeneral?.toLowerCase() !== 'preprint' &&
       (id._tag !== 'lifecycle-journal' ||
-        !['journalarticle', 'studyregistration'].includes(record.types.resourceTypeGeneral?.toLowerCase() as never))
+        !['journalarticle', 'studyregistration'].includes(record.types.resourceTypeGeneral?.toLowerCase() as never)) &&
+      (id._tag !== 'arxiv' || record.types.resourceTypeGeneral?.toLowerCase() !== 'text')
     ) {
       yield* Either.left(new Preprint.NotAPreprint({ cause: record.types }))
     }
@@ -146,6 +147,7 @@ const getAbstract = (
 
 const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
+    arxiv: () => Option.some('en' as const),
     'lifecycle-journal': () => Option.some('en' as const),
     osf: () => detectLanguage(text),
   })
