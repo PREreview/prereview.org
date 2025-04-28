@@ -1085,7 +1085,6 @@ export const legacyDatacitePreprintId = (): fc.Arbitrary<LegacyDatacitePreprintI
     africarxivUbuntunetPreprintId(),
     africarxivZenodoPreprintId(),
     arcadiaSciencePreprintId(),
-    arxivPreprintId(),
     psychArchivesPreprintId(),
     zenodoPreprintId(),
   )
