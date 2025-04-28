@@ -32,11 +32,9 @@ import type {
   ScienceOpenPreprintId,
   SocarxivPreprintId,
   TechrxivPreprintId,
-  VerixivPreprintId,
 } from './types/preprint-id.js'
 
 const crossrefDoiPrefixes = [
-  '12688',
   '14293',
   '21203',
   '22541',
@@ -183,7 +181,6 @@ const detectLanguageForServer = ({
     .with({ type: 'science-open', text: P.select() }, detectLanguage)
     .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
     .with({ type: 'techrxiv' }, () => Option.some('en' as const))
-    .with({ type: 'verixiv' }, () => Option.some('en' as const))
     .exhaustive()
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
@@ -388,12 +385,5 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Institute of Electrical and Electronics Engineers (IEEE)'),
     }),
     D.map(work => ({ _tag: 'techrxiv', value: work.DOI }) satisfies TechrxivPreprintId),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('12688'), 'DOI'),
-      'group-title': D.literal('Gates Foundation'),
-    }),
-    D.map(work => ({ _tag: 'verixiv', value: work.DOI }) satisfies VerixivPreprintId),
   ),
 )
