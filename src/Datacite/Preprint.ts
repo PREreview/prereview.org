@@ -1,9 +1,11 @@
 import { Url } from '@effect/platform'
 import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
+import type { LanguageCode } from 'iso-639-1'
 import { detectLanguage } from '../detect-language.js'
-import { sanitizeHtml } from '../html.js'
+import { type Html, sanitizeHtml } from '../html.js'
 import * as Preprint from '../preprint.js'
 import { Orcid } from '../types/index.js'
+import { fromPreprintDoi } from '../types/preprint-id.js'
 import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
 import type { Record } from './Record.js'
 
@@ -41,9 +43,9 @@ export const recordToPreprint = (
         ),
     })
 
-    const title = yield* getTitle(record.titles)
+    const title = yield* getTitle(record.titles, id)
 
-    const abstract = yield* getAbstract(record.descriptions)
+    const abstract = yield* getAbstract(record.descriptions, id)
 
     const posted = yield* Either.fromOption(
       findPublishedDate(record.dates),
@@ -70,11 +72,17 @@ const determineDatacitePreprintId = (
       return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
     }
 
-    if (record.publisher === 'Lifecycle Journal') {
-      return { _tag: 'lifecycle-journal', value: doi }
+    const indeterminateId = fromPreprintDoi(doi)
+
+    if (indeterminateId._tag === 'osf-lifecycle-journal') {
+      if (record.publisher === 'Lifecycle Journal') {
+        return { _tag: 'lifecycle-journal', value: doi }
+      }
+
+      return { _tag: 'osf', value: doi }
     }
 
-    return { _tag: 'osf', value: doi } satisfies DatacitePreprintId
+    return indeterminateId
   })
 
 const findPublishedDate = (dates: Record['dates']) =>
@@ -95,12 +103,13 @@ const findOrcid = (creator: Record['creators'][number]) =>
 
 const getTitle = (
   titles: Record['titles'],
+  id: DatacitePreprintId,
 ): Either.Either<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
     const text = sanitizeHtml(titles[0].title)
 
     const language = yield* Either.fromOption(
-      detectLanguage(text),
+      detectLanguageForServer({ id, text }),
       () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
     )
 
@@ -112,6 +121,7 @@ const getTitle = (
 
 const getAbstract = (
   descriptions: Record['descriptions'],
+  id: DatacitePreprintId,
 ): Either.Either<Preprint.Preprint['abstract'], Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
     const abstract = yield* Either.fromOption(
@@ -122,7 +132,7 @@ const getAbstract = (
     const text = sanitizeHtml(`<p>${abstract.description}</p>`)
 
     const language = yield* Either.fromOption(
-      detectLanguage(text),
+      detectLanguageForServer({ id, text }),
       () => new Preprint.PreprintIsUnavailable({ cause: 'unknown abstract language' }),
     )
 
@@ -130,4 +140,10 @@ const getAbstract = (
       language,
       text,
     }
+  })
+
+const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: Html }): Option.Option<LanguageCode> =>
+  Match.valueTags(id, {
+    'lifecycle-journal': () => Option.some('en' as const),
+    osf: () => detectLanguage(text),
   })
