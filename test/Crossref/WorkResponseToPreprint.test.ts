@@ -270,6 +270,38 @@ test.each([
       url: new URL('https://preprints.scielo.org/index.php/scielo/preprint/view/11386/version/12000'),
     }),
   },
+  {
+    response: 'preprintsorg.json',
+    expected: Preprint({
+      authors: [
+        {
+          name: 'Matthew T.J. Halma',
+          orcid: undefined,
+        },
+        {
+          name: 'Cristof Plothe',
+          orcid: undefined,
+        },
+        {
+          name: 'Theresa Lawrie',
+          orcid: undefined,
+        },
+      ],
+      id: { _tag: 'preprints.org', value: Doi('10.20944/preprints202303.0344.v1') },
+      posted: Temporal.PlainDate.from({ year: 2023, month: 3, day: 20 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Strategies for the Management of Spike Protein-Related Pathology'),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>In the wake of the Covid-19 crisis, a need has arisen to prevent and treat two related conditions, Covid vaccine injury and long Covid, both of which have a significant vascular component. Therefore, the management of these conditions require the development of strategies to prevent or dissolve blood clots and restore circulatory health. This review summarizes the evidence on strategies that can be applied to treat both long and vaccine injuries based on similar mechanisms of action.</p>',
+        ),
+      },
+      url: new URL('https://www.preprints.org/manuscript/202303.0344/v1'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
