@@ -162,6 +162,7 @@ const stubRecord = {
     resourceType: 'Project',
     resourceTypeGeneral: 'Preprint',
   },
+  relatedIdentifiers: [],
   descriptions: [
     {
       description:

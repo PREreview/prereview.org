@@ -1,0 +1,125 @@
+{
+  "data": {
+    "id": "10.5281/zenodo.1001813",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5281/zenodo.1001813",
+      "prefix": "10.5281",
+      "suffix": "zenodo.1001813",
+      "identifiers": [{ "identifier": "28945194", "identifierType": "PMID" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "PMID", "alternateIdentifier": "28945194" }],
+      "creators": [
+        {
+          "name": "Keine, Christian",
+          "nameType": "Personal",
+          "givenName": "Christian",
+          "familyName": "Keine",
+          "affiliation": ["Carver College of Medicine, University of Iowa, Iowa City, USA"],
+          "nameIdentifiers": [
+            { "nameIdentifier": "https://orcid.org/0000-0002-8953-2593", "nameIdentifierScheme": "ORCID" }
+          ]
+        },
+        {
+          "name": "Rübsamen, Rudolf",
+          "nameType": "Personal",
+          "givenName": "Rudolf",
+          "familyName": "Rübsamen",
+          "affiliation": ["University of Leipzig, Leipzig, Germany"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Englitz, Bernhard",
+          "nameType": "Personal",
+          "givenName": "Bernhard",
+          "familyName": "Englitz",
+          "affiliation": ["Donders Center for Neuroscience, Radboud University, Nijmegen, The Netherlands"],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        {
+          "title": "Signal Integration At Spherical Bushy Cells Enhances Representation Of Temporal Structure But Limits Its Range."
+        }
+      ],
+      "publisher": "Zenodo",
+      "container": {},
+      "publicationYear": 2017,
+      "subjects": [
+        { "subject": "Inhibition" },
+        { "subject": "Cochlear Nucleus" },
+        { "subject": "Spherical Bushy Cells" },
+        { "subject": "Stimulus reconstruction" },
+        { "subject": "Sound Localization" }
+      ],
+      "contributors": [],
+      "dates": [{ "date": "2017-09-25", "dateType": "Issued" }],
+      "language": "en",
+      "types": {
+        "ris": "JOUR",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Journal article",
+        "resourceTypeGeneral": "Text"
+      },
+      "relatedIdentifiers": [
+        { "relationType": "IsVersionOf", "relatedIdentifier": "10.5281/zenodo.1001812", "relatedIdentifierType": "DOI" }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        { "rights": "Creative Commons Attribution 4.0", "rightsUri": "https://creativecommons.org/licenses/by/4.0" },
+        { "rights": "Open Access", "rightsUri": "info:eu-repo/semantics/openAccess" }
+      ],
+      "descriptions": [
+        {
+          "description": "Neuronal inhibition is crucial for temporally precise and reproducible signaling in the auditory brainstem. We showed previously (Keine et al., 2016) that for various synthetic stimuli, spherical bushy cell (SBC) activity in the Mongolian gerbil is rendered sparser and more reliable by subtractive inhibition. Employing environmental stimuli, we demonstrate here that the inhibitory gain control becomes even more effective, keeping stimulated response rates equal to spontaneous ones. However, what are the costs of this modulation? We performed dynamic stimulus reconstructions based on neural population responses for auditory nerve (ANF) input and SBC output to assess the influence of inhibition on signal representation. Compared to ANFs, reconstructions of natural stimuli based on SBC responses were temporally more precise, but the match between acoustic and represented signal decreased. Hence, for natural sounds, inhibition at SBCs plays an even stronger role in achieving sparse and reproducible neuronal activity, while compromising general signal representation.",
+          "descriptionType": "Abstract"
+        },
+        {
+          "description": "This article has been published in eLife on September 25, 2017 [DOI: 10.7554/eLife.29639]",
+          "descriptionType": "Other"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0ndXRmLTgnPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjEvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC41MjgxL3plbm9kby4xMDAxODEzPC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+S2VpbmUsIENocmlzdGlhbjwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+Q2hyaXN0aWFuPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPktlaW5lPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHA6Ly9vcmNpZC5vcmcvIj4wMDAwLTAwMDItODk1My0yNTkzPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uPkNhcnZlciBDb2xsZWdlIG9mIE1lZGljaW5lLCBVbml2ZXJzaXR5IG9mIElvd2EsIElvd2EgQ2l0eSwgVVNBPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+UsO8YnNhbWVuLCBSdWRvbGY8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPlJ1ZG9sZjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5Sw7xic2FtZW48L2ZhbWlseU5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbj5Vbml2ZXJzaXR5IG9mIExlaXB6aWcsIExlaXB6aWcsIEdlcm1hbnk8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5FbmdsaXR6LCBCZXJuaGFyZDwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+QmVybmhhcmQ8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+RW5nbGl0ejwvZmFtaWx5TmFtZT4KICAgICAgPGFmZmlsaWF0aW9uPkRvbmRlcnMgQ2VudGVyIGZvciBOZXVyb3NjaWVuY2UsIFJhZGJvdWQgVW5pdmVyc2l0eSwgTmlqbWVnZW4sIFRoZSBOZXRoZXJsYW5kczwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPlNpZ25hbCBJbnRlZ3JhdGlvbiBBdCBTcGhlcmljYWwgQnVzaHkgQ2VsbHMgRW5oYW5jZXMgUmVwcmVzZW50YXRpb24gT2YgVGVtcG9yYWwgU3RydWN0dXJlIEJ1dCBMaW1pdHMgSXRzIFJhbmdlLjwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5aZW5vZG88L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMTc8L3B1YmxpY2F0aW9uWWVhcj4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdD5JbmhpYml0aW9uPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+Q29jaGxlYXIgTnVjbGV1czwvc3ViamVjdD4KICAgIDxzdWJqZWN0PlNwaGVyaWNhbCBCdXNoeSBDZWxsczwvc3ViamVjdD4KICAgIDxzdWJqZWN0PlN0aW11bHVzIHJlY29uc3RydWN0aW9uPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+U291bmQgTG9jYWxpemF0aW9uPC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9Iklzc3VlZCI+MjAxNy0wOS0yNTwvZGF0ZT4KICA8L2RhdGVzPgogIDxsYW5ndWFnZT5lbjwvbGFuZ3VhZ2U+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJUZXh0Ij5Kb3VybmFsIGFydGljbGU8L3Jlc291cmNlVHlwZT4KICA8YWx0ZXJuYXRlSWRlbnRpZmllcnM+CiAgICA8YWx0ZXJuYXRlSWRlbnRpZmllciBhbHRlcm5hdGVJZGVudGlmaWVyVHlwZT0iZG9pIj4xMC43NTU0L2VMaWZlLjI5NjM5PC9hbHRlcm5hdGVJZGVudGlmaWVyPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9InBtaWQiPjI4OTQ1MTk0PC9hbHRlcm5hdGVJZGVudGlmaWVyPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9InVybCI+aHR0cHM6Ly96ZW5vZG8ub3JnL3JlY29yZC8xMDAxODEzPC9hbHRlcm5hdGVJZGVudGlmaWVyPgogIDwvYWx0ZXJuYXRlSWRlbnRpZmllcnM+CiAgPHJlbGF0ZWRJZGVudGlmaWVycz4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJJc1ZlcnNpb25PZiI+MTAuNTI4MS96ZW5vZG8uMTAwMTgxMjwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8iPkNyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24gNC4wPC9yaWdodHM+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaW5mbzpldS1yZXBvL3NlbWFudGljcy9vcGVuQWNjZXNzIj5PcGVuIEFjY2VzczwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPiZsdDtwJmd0O05ldXJvbmFsIGluaGliaXRpb24gaXMgY3J1Y2lhbCBmb3IgdGVtcG9yYWxseSBwcmVjaXNlIGFuZCByZXByb2R1Y2libGUgc2lnbmFsaW5nIGluIHRoZSBhdWRpdG9yeSBicmFpbnN0ZW0uIFdlIHNob3dlZCBwcmV2aW91c2x5IChLZWluZSBldCBhbC4sIDIwMTYpIHRoYXQgZm9yIHZhcmlvdXMgc3ludGhldGljIHN0aW11bGksIHNwaGVyaWNhbCBidXNoeSBjZWxsIChTQkMpIGFjdGl2aXR5IGluIHRoZSBNb25nb2xpYW4gZ2VyYmlsIGlzIHJlbmRlcmVkIHNwYXJzZXIgYW5kIG1vcmUgcmVsaWFibGUgYnkgc3VidHJhY3RpdmUgaW5oaWJpdGlvbi4gRW1wbG95aW5nIGVudmlyb25tZW50YWwgc3RpbXVsaSwgd2UgZGVtb25zdHJhdGUgaGVyZSB0aGF0IHRoZSBpbmhpYml0b3J5IGdhaW4gY29udHJvbCBiZWNvbWVzIGV2ZW4gbW9yZSBlZmZlY3RpdmUsIGtlZXBpbmcgc3RpbXVsYXRlZCByZXNwb25zZSByYXRlcyBlcXVhbCB0byBzcG9udGFuZW91cyBvbmVzLiBIb3dldmVyLCB3aGF0IGFyZSB0aGUgY29zdHMgb2YgdGhpcyBtb2R1bGF0aW9uPyBXZSBwZXJmb3JtZWQgZHluYW1pYyBzdGltdWx1cyByZWNvbnN0cnVjdGlvbnMgYmFzZWQgb24gbmV1cmFsIHBvcHVsYXRpb24gcmVzcG9uc2VzIGZvciBhdWRpdG9yeSBuZXJ2ZSAoQU5GKSBpbnB1dCBhbmQgU0JDIG91dHB1dCB0byBhc3Nlc3MgdGhlIGluZmx1ZW5jZSBvZiBpbmhpYml0aW9uIG9uIHNpZ25hbCByZXByZXNlbnRhdGlvbi4gQ29tcGFyZWQgdG8gQU5GcywgcmVjb25zdHJ1Y3Rpb25zIG9mIG5hdHVyYWwgc3RpbXVsaSBiYXNlZCBvbiBTQkMgcmVzcG9uc2VzIHdlcmUgdGVtcG9yYWxseSBtb3JlIHByZWNpc2UsIGJ1dCB0aGUgbWF0Y2ggYmV0d2VlbiBhY291c3RpYyBhbmQgcmVwcmVzZW50ZWQgc2lnbmFsIGRlY3JlYXNlZC4gSGVuY2UsIGZvciBuYXR1cmFsIHNvdW5kcywgaW5oaWJpdGlvbiBhdCBTQkNzIHBsYXlzIGFuIGV2ZW4gc3Ryb25nZXIgcm9sZSBpbiBhY2hpZXZpbmcgc3BhcnNlIGFuZCByZXByb2R1Y2libGUgbmV1cm9uYWwgYWN0aXZpdHksIHdoaWxlIGNvbXByb21pc2luZyBnZW5lcmFsIHNpZ25hbCByZXByZXNlbnRhdGlvbi4mbHQ7L3AmZ3Q7PC9kZXNjcmlwdGlvbj4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9Ik90aGVyIj5UaGlzIGFydGljbGUgaGFzIGJlZW4gcHVibGlzaGVkIGluIGVMaWZlIG9uIFNlcHRlbWJlciAyNSwgMjAxNyBbRE9JOiAxMC43NTU0L2VMaWZlLjI5NjM5XTwvZGVzY3JpcHRpb24+CiAgPC9kZXNjcmlwdGlvbnM+CjwvcmVzb3VyY2U+Cg==",
+      "url": "https://zenodo.org/record/1001813",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": null,
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 1,
+      "created": "2017-10-04T00:02:51.000Z",
+      "registered": "2017-10-04T00:02:52.000Z",
+      "published": "2017",
+      "updated": "2020-09-19T01:10:57.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cern.zenodo", "type": "clients" } },
+      "provider": { "data": { "id": "cern", "type": "providers" } },
+      "media": { "data": { "id": "10.5281/zenodo.1001813", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [{ "id": "10.5281/zenodo.1001812", "type": "dois" }] }
+    }
+  }
+}

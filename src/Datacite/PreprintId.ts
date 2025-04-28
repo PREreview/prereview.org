@@ -1,7 +1,7 @@
 import * as Doi from 'doi-ts'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 
-const dataciteDoiPrefixes = ['17605', '48550'] as const
+const dataciteDoiPrefixes = ['5281', '17605', '48550'] as const
 
 type DataciteDoiPrefix = (typeof dataciteDoiPrefixes)[number]
 

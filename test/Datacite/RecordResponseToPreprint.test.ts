@@ -122,6 +122,47 @@ test.each([
       url: new URL('https://arxiv.org/abs/2201.06719'),
     }),
   },
+  {
+    response: 'zenodo',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>The counting functions of prime pairs are derived. The asymptotic behavior of the prime pair counting functions are also analyzed.</p>',
+        ),
+      },
+      authors: [{ name: 'Keyang Ding', orcid: undefined }],
+      id: { _tag: 'zenodo', value: Doi('10.5281/zenodo.7955181') },
+      posted: Temporal.PlainDate.from({ year: 2023, month: 5, day: 21 }),
+      title: {
+        language: 'en',
+        text: rawHtml('The Counting Functions of Prime Pairs'),
+      },
+      url: new URL('https://zenodo.org/record/7955181'),
+    }),
+  },
+  {
+    response: 'zenodo-africarxiv',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Digital tools that support Open Science practices play a key role in the seamless accumulation, archiving and dissemination of scholarly data, outcomes and conclusions. Despite their integration into Open Science practices, the providence and design of these digital tools are rarely explicitly scrutinized. This means that influential factors, such as the funding models of the parent organizations, their geographic location, and the dependency on digital infrastructures are rarely considered. Suggestions from literature and anecdotal evidence already draw attention to the impact of these factors, and raise the question of whether the Open Science ecosystem can realise the aspiration to become a truly “unlimited digital commons” in its current structure. In an online research approach, we compiled and analysed the geolocation, terms and conditions as well as funding models of 242 digital tools increasingly being used by researchers in various disciplines. Our findings indicate that design decisions and restrictions are biased towards researchers in North American and European scholarly communities. In order to make the future Open Science ecosystem inclusive and operable for researchers in all world regions including Africa, Latin America, Asia and Oceania, those should be actively included in design decision processes. Digital Open Science Tools carry the promise of enabling collaboration across disciplines, world regions and language groups through responsive design. We therefore encourage long term funding mechanisms and ethnically as well as culturally inclusive approaches serving local prerequisites and conditions to tool design and construction allowing a globally connected digital research infrastructure to evolve in a regionally balanced manner.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Louise Bezuidenhout', orcid: Orcid('0000-0003-4328-3963') },
+        { name: 'Johanna Havemann', orcid: Orcid('0000-0002-6157-1494') },
+      ],
+      id: { _tag: 'africarxiv', value: Doi('10.5281/zenodo.4290795') },
+      posted: Temporal.PlainDate.from({ year: 2020, month: 9, day: 3 }),
+      title: {
+        language: 'en',
+        text: rawHtml('The Varying Openness of Digital Open Science Tools'),
+      },
+      url: new URL('https://zenodo.org/record/4290795'),
+    }),
+  },
 ])('can parse a DataCite record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -137,18 +178,20 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['osf-file', 'osf-registration'])('returns a specific error for non-Preprint record (%s)', response =>
-  Effect.gen(function* () {
-    const actual = yield* pipe(
-      FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString(`test/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Record)))),
-      Effect.andThen(Struct.get('data')),
-      Effect.andThen(Struct.get('attributes')),
-      Effect.andThen(recordToPreprint),
-      Effect.flip,
-    )
+test.each(['osf-file', 'osf-registration', 'zenodo-journal-article'])(
+  'returns a specific error for non-Preprint record (%s)',
+  response =>
+    Effect.gen(function* () {
+      const actual = yield* pipe(
+        FileSystem.FileSystem,
+        Effect.andThen(fs => fs.readFileString(`test/Datacite/RecordSamples/${response}.json`)),
+        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Record)))),
+        Effect.andThen(Struct.get('data')),
+        Effect.andThen(Struct.get('attributes')),
+        Effect.andThen(recordToPreprint),
+        Effect.flip,
+      )
 
-    expect(actual._tag).toStrictEqual('NotAPreprint')
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+      expect(actual._tag).toStrictEqual('NotAPreprint')
+    }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )

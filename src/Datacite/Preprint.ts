@@ -2,7 +2,7 @@ import { Url } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { detectLanguage } from '../detect-language.js'
+import { detectLanguage, detectLanguageFrom } from '../detect-language.js'
 import { type Html, sanitizeHtml } from '../html.js'
 import * as Preprint from '../preprint.js'
 import { Orcid } from '../types/index.js'
@@ -84,6 +84,20 @@ const determineDatacitePreprintId = (
       return { _tag: 'osf', value: indeterminateId.value }
     }
 
+    if (indeterminateId._tag === 'zenodo-africarxiv') {
+      if (
+        Array.some(
+          record.relatedIdentifiers,
+          ({ relationType, relatedIdentifier }) =>
+            relationType === 'IsPartOf' && relatedIdentifier === 'https://zenodo.org/communities/africarxiv',
+        )
+      ) {
+        return { _tag: 'africarxiv', value: indeterminateId.value }
+      }
+
+      return { _tag: 'zenodo', value: indeterminateId.value }
+    }
+
     return indeterminateId
   })
 
@@ -147,7 +161,9 @@ const getAbstract = (
 
 const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
+    africarxiv: () => detectLanguageFrom('en', 'fr')(text),
     arxiv: () => Option.some('en' as const),
     'lifecycle-journal': () => Option.some('en' as const),
     osf: () => detectLanguage(text),
+    zenodo: () => detectLanguage(text),
   })
