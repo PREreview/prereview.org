@@ -1,0 +1,64 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 3, 19]],
+      "date-time": "2025-03-19T04:30:47Z",
+      "timestamp": 1742358647260,
+      "version": "3.40.1"
+    },
+    "posted": { "date-parts": [[2025, 3, 18]] },
+    "reference-count": 0,
+    "publisher": "FapUNIFESP (SciELO)",
+    "license": [
+      {
+        "start": { "date-parts": [[2025, 3, 18]], "date-time": "2025-03-18T00:00:00Z", "timestamp": 1742256000000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by\/4.0"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "abstract": "<jats:p>Esta investigaci\u00f3n se realiz\u00f3 en el municipio de Buesaco- Nari\u00f1o, tiene como objetivo comparar el rendimiento del cultivo de ma\u00edz (Zea ma\u00edz) en un \u00e1rea total de 448m2 con 480 pl\u00e1ntulas, con dos dosis con el prop\u00f3sito de tener un rango m\u00ednimo y uno m\u00e1ximo como referencia. Consta de cuatro Tratamientos y cuatro repeticiones, el primero Tratamiento es el testigo, el segundo la tierra de monta\u00f1a, el tercero el abono org\u00e1nico, y el cuarto el abono qu\u00edmico, en un cultivo dividido en cuatro repeticiones. Midiendo tambi\u00e9n variables como la altura, el di\u00e1metro y el \u00e1rea foliar de la planta. Obteniendo como resultados generales que las variables no presentan diferencias significativas, no obstante al ser una investigaci\u00f3n semi-experimental, los datos obtenidos solo pueden ser tomados como una aproximaci\u00f3n para entender el comportamiento de este cultivo para esta zona de la regi\u00f3n.<\/jats:p>",
+    "DOI": "10.1590\/scielopreprints.11386",
+    "type": "posted-content",
+    "created": { "date-parts": [[2025, 3, 18]], "date-time": "2025-03-18T17:28:44Z", "timestamp": 1742318924000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Respuesta del cultivo de ma\u00edz (zea mays) a la aplicaci\u00f3n de abono org\u00e1nico en la vereda Meneses, municipio de Buesaco, Nari\u00f1o, Colombia"
+    ],
+    "prefix": "10.1590",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-2731-6908",
+        "authenticated-orcid": false,
+        "given": "Luis Alejandro",
+        "family": "Andrade Dorado",
+        "sequence": "first",
+        "affiliation": []
+      },
+      { "given": "Jes\u00fas Antonio", "family": "Castillo Franco", "sequence": "additional", "affiliation": [] }
+    ],
+    "member": "530",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2025, 3, 18]], "date-time": "2025-03-18T17:28:44Z", "timestamp": 1742318924000 },
+    "score": 1,
+    "resource": {
+      "primary": { "URL": "https:\/\/preprints.scielo.org\/index.php\/scielo\/preprint\/view\/11386\/version\/12000" }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2025, 3, 18]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.1590\/scielopreprints.11386",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2025, 3, 18]] },
+    "subtype": "preprint"
+  }
+}

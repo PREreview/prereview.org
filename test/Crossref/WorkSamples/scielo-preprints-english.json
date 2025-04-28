@@ -1,0 +1,97 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 3, 11]],
+      "date-time": "2025-03-11T04:22:06Z",
+      "timestamp": 1741666926149,
+      "version": "3.38.0"
+    },
+    "posted": { "date-parts": [[2025, 3, 10]] },
+    "reference-count": 0,
+    "publisher": "FapUNIFESP (SciELO)",
+    "license": [
+      {
+        "start": { "date-parts": [[2025, 3, 10]], "date-time": "2025-03-10T00:00:00Z", "timestamp": 1741564800000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by\/4.0"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "abstract": "<jats:p>Congruence analysis is widely used to monitor structural stability through statistical analysis of differences in estimated coordinates of geodetic network points across observation epochs. Traditional methods for the identification of unstable points rely on either iterative hypothesis tests or combinatorial procedures, each with inherent limitations. To overcome these, we propose the Sequential and Combinatorial Geometry-Free Unstable Point Identification (SeqCup-Free) method, which integrates combinatorial analysis and likelihood ratio tests within a sequential framework. Unlike conventional approaches, SeqCup-Free uses observation differences instead of estimated coordinates, which removes the need for geodetic network datum definition and maintains the statistical power of hypothesis tests. Additionally, we introduce a modified version, SeqCup-Mod, which extends the method to non-nested hypothesis tests and achieves high success rates. A critical aspect of our approach is the definition of the maximum number of points considered unstable, which avoids statistical overlap while allowing the system to detect the maximum possible displacements. Results from simulations and real geodetic network data show that SeqCup-Free provides consistent and, in some cases, superior performance compared to classical and recent methods in deformation monitoring.<\/jats:p>",
+    "DOI": "10.1590\/scielopreprints.11415",
+    "type": "posted-content",
+    "created": { "date-parts": [[2025, 3, 10]], "date-time": "2025-03-10T15:54:33Z", "timestamp": 1741622073000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "SeqCup-Free: Sequential and Combinatorial Geometry-Free Identification of Unstable Points for Geodetic Deformation Monitoring"
+    ],
+    "prefix": "10.1590",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-1453-7530",
+        "authenticated-orcid": false,
+        "given": "Vinicius",
+        "family": "Rofatto",
+        "sequence": "first",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-4296-592X",
+        "authenticated-orcid": false,
+        "given": "Ivandro",
+        "family": "Klein",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      { "given": "Marcelo Tomio", "family": "Matsuoka", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-0892-9175",
+        "authenticated-orcid": false,
+        "given": "Paulo de Oliveira",
+        "family": "Camargo",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      { "given": "Mauricio Roberto", "family": "Veronez", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-7661-2447",
+        "authenticated-orcid": false,
+        "given": "Luiz Gonzaga",
+        "family": "Jr",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0009-0000-5951-4434",
+        "authenticated-orcid": false,
+        "given": "Lincon Rodrigues",
+        "family": "Silva",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "530",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2025, 3, 10]], "date-time": "2025-03-10T15:54:33Z", "timestamp": 1741622073000 },
+    "score": 1,
+    "resource": {
+      "primary": { "URL": "https:\/\/preprints.scielo.org\/index.php\/scielo\/preprint\/view\/11415\/version\/12033" }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2025, 3, 10]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.1590\/scielopreprints.11415",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2025, 3, 10]] },
+    "subtype": "preprint"
+  }
+}

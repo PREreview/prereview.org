@@ -160,6 +160,116 @@ test.each([
       url: new URL('https://medrxiv.org/lookup/doi/10.1101/2024.05.27.24307989'),
     }),
   },
+  {
+    response: 'scielo-preprints-english.json',
+    expected: Preprint({
+      authors: [
+        {
+          name: 'Vinicius Rofatto',
+          orcid: Orcid('0000-0003-1453-7530'),
+        },
+        {
+          name: 'Ivandro Klein',
+          orcid: Orcid('0000-0003-4296-592X'),
+        },
+        {
+          name: 'Marcelo Tomio Matsuoka',
+          orcid: undefined,
+        },
+        {
+          name: 'Paulo de Oliveira Camargo',
+          orcid: Orcid('0000-0003-0892-9175'),
+        },
+        {
+          name: 'Mauricio Roberto Veronez',
+          orcid: undefined,
+        },
+        {
+          name: 'Luiz Gonzaga Jr',
+          orcid: Orcid('0000-0002-7661-2447'),
+        },
+        {
+          name: 'Lincon Rodrigues Silva',
+          orcid: Orcid('0009-0000-5951-4434'),
+        },
+      ],
+      id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.11415') },
+      posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 18 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'SeqCup-Free: Sequential and Combinatorial Geometry-Free Identification of Unstable Points for Geodetic Deformation Monitoring',
+        ),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Congruence analysis is widely used to monitor structural stability through statistical analysis of differences in estimated coordinates of geodetic network points across observation epochs. Traditional methods for the identification of unstable points rely on either iterative hypothesis tests or combinatorial procedures, each with inherent limitations. To overcome these, we propose the Sequential and Combinatorial Geometry-Free Unstable Point Identification (SeqCup-Free) method, which integrates combinatorial analysis and likelihood ratio tests within a sequential framework. Unlike conventional approaches, SeqCup-Free uses observation differences instead of estimated coordinates, which removes the need for geodetic network datum definition and maintains the statistical power of hypothesis tests. Additionally, we introduce a modified version, SeqCup-Mod, which extends the method to non-nested hypothesis tests and achieves high success rates. A critical aspect of our approach is the definition of the maximum number of points considered unstable, which avoids statistical overlap while allowing the system to detect the maximum possible displacements. Results from simulations and real geodetic network data show that SeqCup-Free provides consistent and, in some cases, superior performance compared to classical and recent methods in deformation monitoring.</p>',
+        ),
+      },
+      url: new URL('https://preprints.scielo.org/index.php/scielo/preprint/view/11415/version/12033'),
+    }),
+  },
+  {
+    response: 'scielo-preprints-portuguese.json',
+    expected: Preprint({
+      authors: [
+        {
+          name: 'Elodia Honse Lebourg',
+          orcid: undefined,
+        },
+        {
+          name: 'Rosa Maria Da Exaltação Coutrim',
+          orcid: Orcid('0000-0002-9510-1263'),
+        },
+      ],
+      id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.11538') },
+      posted: Temporal.PlainDate.from({ year: 2025, month: 4, day: 11 }),
+      title: {
+        language: 'pt',
+        text: rawHtml(
+          'Experiências de socialização de jovens atingidos pelo rompimento da Barragem de Fundão (Mariana, Minas Gerais, Brasil)',
+        ),
+      },
+      abstract: {
+        language: 'pt',
+        text: rawHtml(
+          '<p>No dia 5 de novembro de 2015, o rompimento da Barragem de Fundão, operada pela Samarco Mineração e por suas controladoras, Vale e BHP, em Mariana-MG, representou o início de um desastre sem precedentes na história brasileira. Neste artigo, analisamos como foram afetados os processos de socialização de jovens dos subdistritos de Bento Rodrigues, Paracatu de Baixo e Camargos matriculados no Ensino Médio em escolas de Mariana-MG e Ouro Preto-MG. Teoricamente, o estudo se referenciou na Sociologia da Educação, na Sociologia das Juventudes e na Sociologia dos Desastres. A pesquisa foi realizada por meio de análise bibliográfica, documental e trabalho de campo, a partir de 12 entrevistas interpretadas com perfis de configuração. Constatou-se que os laços de amizade que os entrevistados mantinham nos territórios de origem foram fragilizados. Após a chegada à juventude e o ingresso no Ensino Médio, criaram novos vínculos, acessaram mais as redes sociais digitais, começaram a projetar seus futuros e suas famílias continuaram sendo uma base importante. A pandemia de COVID-19 desorganizou seus laços de sociabilidade, aumentou as interações digitais e piorou sua condição mental. Eles tiveram de conviver com preconceito e estigmatização. Para se preservarem, muitos se isolavam e não contavam que eram pessoas atingidas. Os resultados da pesquisa demonstraram que as experiências socializadoras desses jovens estavam ocorrendo em um contexto complexo e traumático que impactava negativamente suas formas de ser e estar no mundo.</p>',
+        ),
+      },
+      url: new URL('https://preprints.scielo.org/index.php/scielo/preprint/view/11538/version/12162'),
+    }),
+  },
+  {
+    response: 'scielo-preprints-spanish.json',
+    expected: Preprint({
+      authors: [
+        {
+          name: 'Luis Alejandro Andrade Dorado',
+          orcid: Orcid('0000-0002-2731-6908'),
+        },
+        {
+          name: 'Jesús Antonio Castillo Franco',
+          orcid: undefined,
+        },
+      ],
+      id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.11386') },
+      posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 18 }),
+      title: {
+        language: 'es',
+        text: rawHtml(
+          'Respuesta del cultivo de maíz (zea mays) a la aplicación de abono orgánico en la vereda Meneses, municipio de Buesaco, Nariño, Colombia',
+        ),
+      },
+      abstract: {
+        language: 'es',
+        text: rawHtml(
+          '<p>Esta investigación se realizó en el municipio de Buesaco- Nariño, tiene como objetivo comparar el rendimiento del cultivo de maíz (Zea maíz) en un área total de 448m2 con 480 plántulas, con dos dosis con el propósito de tener un rango mínimo y uno máximo como referencia. Consta de cuatro Tratamientos y cuatro repeticiones, el primero Tratamiento es el testigo, el segundo la tierra de montaña, el tercero el abono orgánico, y el cuarto el abono químico, en un cultivo dividido en cuatro repeticiones. Midiendo también variables como la altura, el diámetro y el área foliar de la planta. Obteniendo como resultados generales que las variables no presentan diferencias significativas, no obstante al ser una investigación semi-experimental, los datos obtenidos solo pueden ser tomados como una aproximación para entender el comportamiento de este cultivo para esta zona de la región.</p>',
+        ),
+      },
+      url: new URL('https://preprints.scielo.org/index.php/scielo/preprint/view/11386/version/12000'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -174,16 +284,19 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test('returns a specific error for non-Preprint work', () =>
-  Effect.gen(function* () {
-    const actual = yield* pipe(
-      FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString('test/Crossref/WorkSamples/csh-press-journal.json')),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Work)))),
-      Effect.andThen(Struct.get('message')),
-      Effect.andThen(workToPreprint),
-      Effect.flip,
-    )
+test.each(['csh-press-journal.json', 'scielo-journal.json'])(
+  'returns a specific error for non-Preprint work (%s)',
+  response =>
+    Effect.gen(function* () {
+      const actual = yield* pipe(
+        FileSystem.FileSystem,
+        Effect.andThen(fs => fs.readFileString(`test/Crossref/WorkSamples/${response}`)),
+        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Work)))),
+        Effect.andThen(Struct.get('message')),
+        Effect.andThen(workToPreprint),
+        Effect.flip,
+      )
 
-    expect(actual._tag).toStrictEqual('NotAPreprint')
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run))
+      expect(actual._tag).toStrictEqual('NotAPreprint')
+    }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+)

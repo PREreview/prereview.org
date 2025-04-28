@@ -1,6 +1,7 @@
 import { Url } from '@effect/platform'
 import { Array, Either, flow, Match, Option, pipe } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
+import { detectLanguageFrom } from '../detect-language.js'
 import { type Html, sanitizeHtml } from '../html.js'
 import { transformJatsToHtml } from '../jats.js'
 import * as Preprint from '../preprint.js'
@@ -96,10 +97,11 @@ export const workToPreprint = (
     })
   })
 
-const detectLanguageForServer = ({ id }: { id: CrossrefPreprintId; text: Html }): Option.Option<LanguageCode> =>
+const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
     biorxiv: () => Option.some('en' as const),
     medrxiv: () => Option.some('en' as const),
     neurolibre: () => Option.some('en' as const),
+    scielo: () => detectLanguageFrom('en', 'es', 'pt')(text),
     ssrn: () => Option.some('en' as const),
   })

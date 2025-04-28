@@ -1,0 +1,64 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 4, 11]],
+      "date-time": "2025-04-11T23:10:06Z",
+      "timestamp": 1744413006365,
+      "version": "3.40.4"
+    },
+    "posted": { "date-parts": [[2025, 4, 11]] },
+    "reference-count": 0,
+    "publisher": "FapUNIFESP (SciELO)",
+    "license": [
+      {
+        "start": { "date-parts": [[2025, 4, 11]], "date-time": "2025-04-11T00:00:00Z", "timestamp": 1744329600000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by\/4.0"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "abstract": "<jats:p>No dia 5 de novembro de 2015, o rompimento da Barragem de Fund\u00e3o, operada pela Samarco Minera\u00e7\u00e3o e por suas controladoras, Vale e BHP, em Mariana-MG, representou o in\u00edcio de um desastre sem precedentes na hist\u00f3ria brasileira. Neste artigo, analisamos como foram afetados os processos de socializa\u00e7\u00e3o de jovens dos subdistritos de Bento Rodrigues, Paracatu de Baixo e Camargos matriculados no Ensino M\u00e9dio em escolas de Mariana-MG e Ouro Preto-MG. Teoricamente, o estudo se referenciou na Sociologia da Educa\u00e7\u00e3o, na Sociologia das Juventudes e na Sociologia dos Desastres. A pesquisa foi realizada por meio de an\u00e1lise bibliogr\u00e1fica, documental e trabalho de campo, a partir de 12 entrevistas interpretadas com perfis de configura\u00e7\u00e3o. Constatou-se que os la\u00e7os de amizade que os entrevistados mantinham nos territ\u00f3rios de origem foram fragilizados. Ap\u00f3s a chegada \u00e0 juventude e o ingresso no Ensino M\u00e9dio, criaram novos v\u00ednculos, acessaram mais as redes sociais digitais, come\u00e7aram a projetar seus futuros e suas fam\u00edlias continuaram sendo uma base importante. A pandemia de COVID-19 desorganizou seus la\u00e7os de sociabilidade, aumentou as intera\u00e7\u00f5es digitais e piorou sua condi\u00e7\u00e3o mental. Eles tiveram de conviver com preconceito e estigmatiza\u00e7\u00e3o. Para se preservarem, muitos se isolavam e n\u00e3o contavam que eram pessoas atingidas. Os resultados da pesquisa demonstraram que as experi\u00eancias socializadoras desses jovens estavam ocorrendo em um contexto complexo e traum\u00e1tico que impactava negativamente suas formas de ser e estar no mundo.<\/jats:p>",
+    "DOI": "10.1590\/scielopreprints.11538",
+    "type": "posted-content",
+    "created": { "date-parts": [[2025, 4, 11]], "date-time": "2025-04-11T22:28:57Z", "timestamp": 1744410537000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Experi\u00eancias de socializa\u00e7\u00e3o de jovens atingidos pelo rompimento da Barragem de Fund\u00e3o (Mariana, Minas Gerais, Brasil)"
+    ],
+    "prefix": "10.1590",
+    "author": [
+      { "given": "Elodia", "family": "Honse Lebourg", "sequence": "first", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-9510-1263",
+        "authenticated-orcid": false,
+        "given": "Rosa Maria",
+        "family": "Da Exalta\u00e7\u00e3o Coutrim",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "530",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2025, 4, 11]], "date-time": "2025-04-11T22:28:57Z", "timestamp": 1744410537000 },
+    "score": 1,
+    "resource": {
+      "primary": { "URL": "https:\/\/preprints.scielo.org\/index.php\/scielo\/preprint\/view\/11538\/version\/12162" }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2025, 4, 11]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.1590\/scielopreprints.11538",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2025, 4, 11]] },
+    "subtype": "preprint"
+  }
+}
