@@ -5,6 +5,8 @@ export const PlainYearMonthFromSelfSchema = Schema.instanceOf(Temporal.PlainYear
 
 export const PlainDateFromSelfSchema = Schema.instanceOf(Temporal.PlainDate)
 
+export const InstantFromSelfSchema = Schema.instanceOf(Temporal.Instant)
+
 export const PlainYearMonthFromPartsSchema = Schema.transformOrFail(
   Schema.Struct({
     year: Schema.Number,
@@ -51,6 +53,15 @@ export const PlainDateSchema = Schema.transformOrFail(Schema.String, PlainDateFr
   decode: (parts, _, ast) =>
     ParseResult.try({
       try: () => Temporal.PlainDate.from(parts, { overflow: 'reject' }),
+      catch: () => new ParseResult.Type(ast, parts),
+    }),
+  encode: date => ParseResult.succeed(date.toString()),
+})
+
+export const InstantSchema = Schema.transformOrFail(Schema.String, InstantFromSelfSchema, {
+  decode: (parts, _, ast) =>
+    ParseResult.try({
+      try: () => Temporal.Instant.from(parts),
       catch: () => new ParseResult.Type(ast, parts),
     }),
   encode: date => ParseResult.succeed(date.toString()),

@@ -46,7 +46,12 @@ export class Record extends Schema.Class<Record>('Record')({
   publisher: Schema.NonEmptyTrimmedString,
   dates: Schema.NonEmptyArray(
     Schema.Struct({
-      date: Schema.Union(Temporal.PlainDateSchema, Temporal.PlainYearMonthSchema, Schema.NumberFromString),
+      date: Schema.Union(
+        Temporal.InstantSchema,
+        Temporal.PlainDateSchema,
+        Temporal.PlainYearMonthSchema,
+        Schema.NumberFromString,
+      ),
       dateType: Schema.NonEmptyTrimmedString,
     }),
   ),

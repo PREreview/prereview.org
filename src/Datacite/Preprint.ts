@@ -1,4 +1,5 @@
 import { Url } from '@effect/platform'
+import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { detectLanguage } from '../detect-language.js'
@@ -92,6 +93,7 @@ const findPublishedDate = (dates: Record['dates']) =>
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Created')),
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Issued')),
     Option.andThen(Struct.get('date')),
+    Option.andThen(date => (date instanceof Temporal.Instant ? date.toZonedDateTimeISO('UTC').toPlainDate() : date)),
   )
 
 const findOrcid = (creator: Record['creators'][number]) =>
