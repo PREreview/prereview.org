@@ -1,9 +1,12 @@
-import { pipe } from 'effect'
+import { Boolean } from 'effect'
 import { html, type Html } from './html.js'
 import { type SupportedLocale, translate } from './locales/index.js'
 
 export const errorPrefix = (locale: SupportedLocale, error: boolean) => (s: string) =>
-  pipe(error ? translate(locale, 'forms', 'errorPrefix')() : '', prefix => `${prefix}: ${s}`)
+  Boolean.match(error, {
+    onTrue: () => `${translate(locale, 'forms', 'errorPrefix')()}: ${s}`,
+    onFalse: () => s,
+  })
 
 export const errorSummary = (locale: SupportedLocale) => (errorItems: Html) => html`
   <error-summary aria-labelledby="error-summary-title" role="alert">
