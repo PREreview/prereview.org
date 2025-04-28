@@ -10,7 +10,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { parse } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import { detectLanguage, detectLanguageFrom } from './detect-language.js'
+import { detectLanguageFrom } from './detect-language.js'
 import { timeoutRequest, useStaleCache } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { sanitizeHtml } from './html.js'
@@ -18,15 +18,13 @@ import * as Preprint from './preprint.js'
 import type {
   AfricarxivFigsharePreprintId,
   AfricarxivUbuntunetPreprintId,
-  AfricarxivZenodoPreprintId,
   ArcadiaSciencePreprintId,
   IndeterminatePreprintId,
   PreprintId,
   PsychArchivesPreprintId,
-  ZenodoPreprintId,
 } from './types/preprint-id.js'
 
-const dataciteDoiPrefixes = ['5281', '6084', '23668', '57844', '60763'] as const
+const dataciteDoiPrefixes = ['6084', '23668', '57844', '60763'] as const
 
 type DataciteDoiPrefix = (typeof dataciteDoiPrefixes)[number]
 
@@ -113,7 +111,6 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arcadia-science' }, () => Option.some('en' as const))
               .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
-              .with({ type: 'zenodo', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
         ),
@@ -138,7 +135,6 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arcadia-science' }, () => Option.some('en' as const))
               .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
-              .with({ type: 'zenodo', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
         ),
@@ -191,35 +187,6 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
   ),
   pipe(
     D.fromStruct({
-      doi: D.fromRefinement(hasRegistrant('5281'), 'DOI'),
-      publisher: D.literal('Zenodo'),
-      relatedIdentifiers: pipe(
-        D.array(
-          D.struct({
-            relationType: D.string,
-            relatedIdentifier: D.string,
-          }),
-        ),
-        D.parse(
-          E.fromOptionK(() => D.error(undefined, 'AfricArXiv Community'))(
-            RA.findFirst(
-              ({ relationType, relatedIdentifier }) =>
-                relationType === 'IsPartOf' && relatedIdentifier === 'https://zenodo.org/communities/africarxiv',
-            ),
-          ),
-        ),
-      ),
-    }),
-    D.map(
-      work =>
-        ({
-          _tag: 'africarxiv',
-          value: work.doi,
-        }) satisfies AfricarxivZenodoPreprintId,
-    ),
-  ),
-  pipe(
-    D.fromStruct({
       doi: D.fromRefinement(hasRegistrant('57844'), 'DOI'),
       publisher: D.literal('Arcadia Science'),
     }),
@@ -237,18 +204,6 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
       publisher: D.literal('PsychArchives', 'Leibniz Institut für Psychologie (ZPID)'),
     }),
     D.map(work => ({ _tag: 'psycharchives', value: work.doi }) satisfies PsychArchivesPreprintId),
-  ),
-  pipe(
-    D.fromStruct({
-      doi: D.fromRefinement(hasRegistrant('5281'), 'DOI'),
-    }),
-    D.map(
-      work =>
-        ({
-          _tag: 'zenodo',
-          value: work.doi,
-        }) satisfies ZenodoPreprintId,
-    ),
   ),
 )
 

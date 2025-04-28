@@ -1090,10 +1090,8 @@ export const legacyDatacitePreprintId = (): fc.Arbitrary<LegacyDatacitePreprintI
   fc.oneof(
     africarxivFigsharePreprintId(),
     africarxivUbuntunetPreprintId(),
-    africarxivZenodoPreprintId(),
     arcadiaSciencePreprintId(),
     psychArchivesPreprintId(),
-    zenodoPreprintId(),
   )
 
 export const japanLinkCenterPreprintId = (): fc.Arbitrary<JapanLinkCenterPreprintId> => jxivPreprintId()
