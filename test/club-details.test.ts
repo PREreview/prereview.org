@@ -38,3 +38,20 @@ describe('isLeadFor', () => {
     expect(actual).toHaveLength(0)
   })
 })
+
+describe('isAClubLead', () => {
+  test.each([
+    ['Stephen Gabrielson', Orcid('0000-0001-9420-4466')],
+    ['Jonathon Coates', Orcid('0000-0001-9039-9219')],
+  ])('when a lead (%s)', (_name, orcid) => {
+    const actual = _.isAClubLead(orcid)
+
+    expect(actual).toBeTruthy()
+  })
+
+  test.prop([fc.orcid()])('when not a lead', orcid => {
+    const actual = _.isAClubLead(orcid)
+
+    expect(actual).toBeFalsy()
+  })
+})

@@ -33,6 +33,17 @@ export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
     ),
   )
 
+export const isAClubLead = (orcid: Orcid): boolean =>
+  pipe(
+    Struct.keys(clubs),
+    RA.some(
+      flow(
+        id => clubs[id].leads,
+        RA.some(lead => eqOrcid.equals(lead.orcid, orcid)),
+      ),
+    ),
+  )
+
 const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   'asapbio-cancer-biology': {
     name: 'ASAPbio Cancer Biology Crowd',

@@ -3,6 +3,7 @@ import { LibsqlClient } from '@effect/sql-libsql'
 import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
+import { isAClubLead } from './club-details.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
@@ -43,7 +44,10 @@ pipe(
       FeatureFlags.layerConfig({
         canAddMultipleAuthors: pipe(
           Config.withDefault(Config.boolean('CAN_ADD_MULTIPLE_AUTHORS'), false),
-          Config.map(canAddMultipleAuthors => user => canAddMultipleAuthors && isPrereviewTeam(user)),
+          Config.map(
+            canAddMultipleAuthors => user =>
+              canAddMultipleAuthors && (user ? isPrereviewTeam(user) || isAClubLead(user.orcid) : false),
+          ),
         ),
         canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
         canSeeDesignTweaks: Config.withDefault(Config.boolean('CAN_SEE_DESIGN_TWEAKS'), false),
