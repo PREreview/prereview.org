@@ -291,6 +291,9 @@ export const PreprintDoiD: D.Decoder<unknown, Extract<IndeterminatePreprintId, {
 export const parsePreprintDoi: (input: string) => Option.Option<Extract<IndeterminatePreprintId, { value: Doi }>> =
   flow(parse, FptsToEffect.option, Option.filter(isPreprintDoi), Option.map(fromPreprintDoi))
 
+export function fromPreprintDoi<D extends Extract<IndeterminatePreprintId, { value: Doi }>['value']>(
+  doi: D,
+): Extract<IndeterminatePreprintId, { value: D }>
 export function fromPreprintDoi(
   doi: Extract<IndeterminatePreprintId, { value: Doi }>['value'],
 ): Extract<IndeterminatePreprintId, { value: Doi }> {

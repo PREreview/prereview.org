@@ -6,7 +6,8 @@ import { detectLanguageFrom } from '../detect-language.js'
 import { type Html, sanitizeHtml } from '../html.js'
 import { transformJatsToHtml } from '../jats.js'
 import * as Preprint from '../preprint.js'
-import { type CrossrefPreprintId, fromCrossrefPreprintDoi, isDoiFromSupportedPublisher } from './PreprintId.js'
+import { fromPreprintDoi } from '../types/preprint-id.js'
+import { type CrossrefPreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
 import type { Work } from './Work.js'
 
 const determineCrossrefPreprintId = (work: Work): Either.Either<CrossrefPreprintId, Preprint.PreprintIsUnavailable> =>
@@ -21,7 +22,7 @@ const determineCrossrefPreprintId = (work: Work): Either.Either<CrossrefPreprint
       return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
     }
 
-    const indeterminateId = fromCrossrefPreprintDoi(doi)
+    const indeterminateId = fromPreprintDoi(doi)
 
     if (indeterminateId._tag !== 'biorxiv-medrxiv') {
       return indeterminateId
