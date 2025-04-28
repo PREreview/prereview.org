@@ -76,10 +76,10 @@ const determineDatacitePreprintId = (
 
     if (indeterminateId._tag === 'osf-lifecycle-journal') {
       if (record.publisher === 'Lifecycle Journal') {
-        return { _tag: 'lifecycle-journal', value: doi }
+        return { _tag: 'lifecycle-journal', value: indeterminateId.value }
       }
 
-      return { _tag: 'osf', value: doi }
+      return { _tag: 'osf', value: indeterminateId.value }
     }
 
     return indeterminateId
