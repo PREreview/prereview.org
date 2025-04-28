@@ -1,6 +1,7 @@
 import { Url } from '@effect/platform'
-import { Array, Either } from 'effect'
-import { sanitizeHtml } from '../html.js'
+import { Array, Either, flow, Match, Option, pipe } from 'effect'
+import type { LanguageCode } from 'iso-639-1'
+import { type Html, sanitizeHtml } from '../html.js'
 import { transformJatsToHtml } from '../jats.js'
 import * as Preprint from '../preprint.js'
 import { type CrossrefPreprintId, fromCrossrefPreprintDoi, isDoiFromSupportedPublisher } from './PreprintId.js'
@@ -62,15 +63,28 @@ export const workToPreprint = (
 
     const title = yield* Array.match(work.title, {
       onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { title: work.title } })),
-      onNonEmpty: title =>
-        Either.right({
-          language: 'en' as const,
-          text: sanitizeHtml(title[0]),
-        }),
+      onNonEmpty: flow(
+        title => Either.right({ text: sanitizeHtml(title[0]) }),
+        Either.bind('language', ({ text }) =>
+          Either.fromOption(
+            detectLanguageForServer({ id, text }),
+            () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
+          ),
+        ),
+      ),
     })
 
-    const abstract =
-      work.abstract !== undefined ? { language: 'en' as const, text: transformJatsToHtml(work.abstract) } : undefined
+    const abstract = yield* work.abstract !== undefined
+      ? pipe(
+          Either.right({ text: transformJatsToHtml(work.abstract) }),
+          Either.bind('language', ({ text }) =>
+            Either.fromOption(
+              detectLanguageForServer({ id, text }),
+              () => new Preprint.PreprintIsUnavailable({ cause: 'unknown abstract language' }),
+            ),
+          ),
+        )
+      : Either.right(undefined)
 
     return Preprint.Preprint({
       authors,
@@ -80,4 +94,12 @@ export const workToPreprint = (
       abstract,
       url: Url.setProtocol(work.resource.primary.URL, 'https'),
     })
+  })
+
+const detectLanguageForServer = ({ id }: { id: CrossrefPreprintId; text: Html }): Option.Option<LanguageCode> =>
+  Match.valueTags(id, {
+    biorxiv: () => Option.some('en' as const),
+    medrxiv: () => Option.some('en' as const),
+    neurolibre: () => Option.some('en' as const),
+    ssrn: () => Option.some('en' as const),
   })
