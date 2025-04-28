@@ -30,7 +30,6 @@ import type {
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
-  ScieloPreprintId,
   ScienceOpenPreprintId,
   SocarxivPreprintId,
   TechrxivPreprintId,
@@ -38,7 +37,6 @@ import type {
 } from './types/preprint-id.js'
 
 const crossrefDoiPrefixes = [
-  '1590',
   '12688',
   '14293',
   '20944',
@@ -185,7 +183,6 @@ const detectLanguageForServer = ({
     .with({ type: 'preprints.org' }, () => Option.some('en' as const))
     .with({ type: 'psyarxiv' }, () => Option.some('en' as const))
     .with({ type: 'research-square' }, () => Option.some('en' as const))
-    .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
     .with({ type: 'science-open', text: P.select() }, detectLanguage)
     .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
     .with({ type: 'techrxiv' }, () => Option.some('en' as const))
@@ -372,19 +369,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
           _tag: 'research-square',
           value: work.DOI,
         }) satisfies ResearchSquarePreprintId,
-    ),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('1590'), 'DOI'),
-      publisher: D.literal('FapUNIFESP (SciELO)'),
-    }),
-    D.map(
-      work =>
-        ({
-          _tag: 'scielo',
-          value: work.DOI,
-        }) satisfies ScieloPreprintId,
     ),
   ),
   pipe(
