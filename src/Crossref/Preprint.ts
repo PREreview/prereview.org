@@ -1,4 +1,5 @@
 import { Url } from '@effect/platform'
+import * as Doi from 'doi-ts'
 import { Array, Either, flow, Match, Option, pipe } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { detectLanguageFrom } from '../detect-language.js'
@@ -14,6 +15,10 @@ const determineCrossrefPreprintId = (work: Work): Either.Either<CrossrefPreprint
 
     if (!isDoiFromSupportedPublisher(doi)) {
       return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
+    }
+
+    if (Doi.hasRegistrant('12688')(doi) && work['group-title'] !== 'Gates Foundation') {
+      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
     }
 
     const indeterminateId = fromCrossrefPreprintDoi(doi)
@@ -105,4 +110,5 @@ const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: H
     'preprints.org': () => Option.some('en' as const),
     scielo: () => detectLanguageFrom('en', 'es', 'pt')(text),
     ssrn: () => Option.some('en' as const),
+    verixiv: () => Option.some('en' as const),
   })

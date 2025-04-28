@@ -1,0 +1,492 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 3, 4]],
+      "date-time": "2025-03-04T06:13:43Z",
+      "timestamp": 1741068823748,
+      "version": "3.38.0"
+    },
+    "posted": { "date-parts": [[2024, 8, 29]] },
+    "group-title": "Gates Foundation",
+    "reference-count": 32,
+    "publisher": "F1000 Research Ltd",
+    "license": [
+      {
+        "start": { "date-parts": [[2024, 8, 29]], "date-time": "2024-08-29T00:00:00Z", "timestamp": 1724889600000 },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      },
+      {
+        "start": { "date-parts": [[2024, 8, 29]], "date-time": "2024-08-29T00:00:00Z", "timestamp": 1724889600000 },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      }
+    ],
+    "funder": [
+      {
+        "DOI": "10.13039\/100000865",
+        "name": "Bill and Melinda Gates Foundation",
+        "doi-asserted-by": "publisher",
+        "award": ["INV-022192"],
+        "id": [{ "id": "10.13039\/100000865", "id-type": "DOI", "asserted-by": "publisher" }]
+      },
+      { "name": "Jean Clayton Fund - Liverpool School of Tropical Medicine", "award": ["JC0621CR02"] },
+      {
+        "DOI": "10.13039\/100000865",
+        "name": "Bill and Melinda Gates Foundation",
+        "doi-asserted-by": "publisher",
+        "award": ["INV-022192"],
+        "id": [{ "id": "10.13039\/100000865", "id-type": "DOI", "asserted-by": "publisher" }]
+      },
+      { "name": "Jean Clayton Fund - Liverpool School of Tropical Medicine", "award": ["JC0621CR02"] }
+    ],
+    "content-domain": { "domain": ["verixiv.org"], "crossmark-restriction": false },
+    "short-container-title": [],
+    "DOI": "10.12688\/verixiv.54.1",
+    "type": "posted-content",
+    "created": { "date-parts": [[2024, 8, 29]], "date-time": "2024-08-29T13:20:09Z", "timestamp": 1724937609000 },
+    "update-policy": "https:\/\/doi.org\/10.12688\/verixiv.crossmark-policy",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": ["Design and validation of a low-cost sugar-feeder for resource-poor insectaries"],
+    "prefix": "10.12688",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-0323-8896",
+        "authenticated-orcid": false,
+        "given": "Zachary Thomas",
+        "family": "Stavrou\u2013Dowd",
+        "sequence": "first",
+        "affiliation": []
+      },
+      { "given": "Clair", "family": "Rose", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-2576-7959",
+        "authenticated-orcid": false,
+        "given": "\u00c1lvaro",
+        "family": "Acosta-Serrano",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-8821-6479",
+        "authenticated-orcid": false,
+        "given": "Lee Rafuse",
+        "family": "Haines",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "2560",
+    "reference": [
+      {
+        "key": "ref3",
+        "doi-asserted-by": "publisher",
+        "first-page": "69",
+        "DOI": "10.1186\/1756-3305-5-69",
+        "article-title": "A global map of dominant malaria vectors.",
+        "volume": "5",
+        "author": "M Sinka",
+        "year": "2012",
+        "journal-title": "Parasit. Vectors."
+      },
+      {
+        "key": "ref4",
+        "doi-asserted-by": "publisher",
+        "first-page": "24900-24908",
+        "DOI": "10.1073\/pnas.2003976117",
+        "article-title": "A new malaria vector in Africa: Predicting the expansion range of Anopheles stephensi and identifying the urban populations at risk.",
+        "volume": "117",
+        "author": "M Sinka",
+        "year": "2020",
+        "journal-title": "Proc. Natl. Acad. Sci."
+      },
+      {
+        "key": "ref5",
+        "doi-asserted-by": "publisher",
+        "first-page": "207-211",
+        "DOI": "10.1038\/nature15535",
+        "article-title": "The effect of malaria control on Plasmodium falciparum in Africa between 2000 and 2015.",
+        "volume": "526",
+        "author": "S Bhatt",
+        "year": "2015",
+        "journal-title": "Nature."
+      },
+      {
+        "key": "ref6",
+        "doi-asserted-by": "publisher",
+        "first-page": "187-196",
+        "DOI": "10.1016\/j.pt.2015.11.010",
+        "article-title": "Insecticide in African Anopheles: A situation that urgent action to maintain malaria control.",
+        "volume": "32",
+        "author": "H Ranson",
+        "year": "2016",
+        "journal-title": "Trends Parasitol."
+      },
+      {
+        "key": "ref7",
+        "doi-asserted-by": "publisher",
+        "first-page": "e000211",
+        "DOI": "10.1136\/bmjgh-2016-000211",
+        "article-title": "Developing an expanded vector control toolbox for malaria elimination.",
+        "volume": "2",
+        "author": "G Killeen",
+        "year": "2017",
+        "journal-title": "BMJ Glob. Health."
+      },
+      {
+        "key": "ref8",
+        "doi-asserted-by": "publisher",
+        "first-page": "e15996",
+        "DOI": "10.1371\/journal.pone.0015996",
+        "article-title": "Natural sugar sources of Anopheles strongly impact malaria transmission potential.",
+        "volume": "6",
+        "author": "W Gu",
+        "year": "2011",
+        "journal-title": "PLoS One."
+      },
+      {
+        "key": "ref9",
+        "doi-asserted-by": "publisher",
+        "first-page": "608-612",
+        "DOI": "10.1093\/jmedent\/33.4.608",
+        "article-title": "Effects of availability on the -feeding behavior of Anopheles gambiae (Diptera: Culicidae).",
+        "volume": "33",
+        "author": "S Straif",
+        "year": "1996",
+        "journal-title": "J. Med. Entomol."
+      },
+      {
+        "key": "ref10",
+        "doi-asserted-by": "publisher",
+        "first-page": "72",
+        "DOI": "10.1186\/s12936-020-3132-0",
+        "article-title": "Large-scale field trial of Targeted Sugar Baits (ATSB) for the control of malaria vector mosquitoes in Mali, West Africa.",
+        "volume": "19",
+        "author": "M Traore",
+        "year": "2020",
+        "journal-title": "Malar. J."
+      },
+      {
+        "key": "ref11",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.3390\/ijerph14040398",
+        "article-title": "Attractive Toxic Sugar Bait (ATSB) control of mosquitoes and its impact on non-target organisms: a review.",
+        "volume": "14",
+        "author": "J Fiorenzano",
+        "year": "2017",
+        "journal-title": "Int. J. Environ. Res. Public Health."
+      },
+      {
+        "key": "ref12",
+        "doi-asserted-by": "publisher",
+        "first-page": "151",
+        "DOI": "10.1186\/s12936-021-03684-4",
+        "article-title": "Estimating the potential impact of Attractive Targeted Sugar Baits (ATSBs) as a new vector control tool for Plasmodium falciparum malaria.",
+        "volume": "20",
+        "author": "K Fraser",
+        "year": "2021",
+        "journal-title": "Malar. J."
+      },
+      {
+        "key": "ref13",
+        "doi-asserted-by": "publisher",
+        "first-page": "105256",
+        "DOI": "10.1016\/j.actatropica.2019.105256",
+        "article-title": "Efficacy of orally toxic sugar baits against contact-insecticide resistant quinquefasciatus.",
+        "volume": "202",
+        "author": "Z Gu",
+        "year": "2020",
+        "journal-title": "Acta Trop."
+      },
+      {
+        "key": "ref14",
+        "doi-asserted-by": "publisher",
+        "first-page": "e0173558",
+        "DOI": "10.1371\/journal.pone.0173558",
+        "article-title": "Control of zoonotic cutaneous leishmaniasis vector, Phlebotomus papatasi, using Toxic Sugar Baits (ATSB).",
+        "volume": "12",
+        "author": "A Saghafipour",
+        "year": "2017",
+        "journal-title": "PLoS One."
+      },
+      {
+        "key": "ref15",
+        "doi-asserted-by": "publisher",
+        "first-page": "78",
+        "DOI": "10.1186\/s13071-020-3930-9",
+        "article-title": "Ingested insecticide to control Aedes aegypti: developing a novel dried attractive toxic sugar bait device for intra-domiciliary control.",
+        "volume": "13",
+        "author": "R Sippy",
+        "year": "2020",
+        "journal-title": "Parasit. Vectors."
+      },
+      {
+        "key": "ref16",
+        "doi-asserted-by": "publisher",
+        "first-page": "209-217",
+        "DOI": "10.1111\/mve.12158",
+        "article-title": "Insecticidal sugar baits for adult biting midges.",
+        "volume": "30",
+        "author": "D Snyder",
+        "year": "2016",
+        "journal-title": "Med. Vet. Entomol."
+      },
+      {
+        "key": "ref17",
+        "doi-asserted-by": "publisher",
+        "first-page": "32",
+        "DOI": "10.1186\/s13071-016-1946-y",
+        "article-title": "Assessment of synthetic floral-based attractants and sugar baits to capture male and female Aedes aegypti (Diptera: Culicidae).",
+        "volume": "10",
+        "author": "K Fikrig",
+        "year": "2017",
+        "journal-title": "Parasit. Vectors."
+      },
+      {
+        "key": "ref18",
+        "doi-asserted-by": "publisher",
+        "first-page": "1359-1367",
+        "DOI": "10.1093\/jme\/tjz079",
+        "article-title": "Sodium ascorbate as a toxicant in Attractive Sugar Baits for of mosquitoes (Diptera: Culicidae) and flies (Diptera: Psychodidae).",
+        "volume": "56",
+        "author": "E McDermott",
+        "year": "2019",
+        "journal-title": "J. Med. Entomol."
+      },
+      {
+        "key": "ref19",
+        "doi-asserted-by": "publisher",
+        "first-page": "338",
+        "DOI": "10.1186\/s12936-017-1994-6",
+        "article-title": "The development of an ivermectin-based Toxic Sugar Bait (ATSB) to target Anopheles arabiensis.",
+        "volume": "16",
+        "author": "F Tenywa",
+        "year": "2017",
+        "journal-title": "Malar. J."
+      },
+      {
+        "key": "ref20",
+        "doi-asserted-by": "publisher",
+        "first-page": "367",
+        "DOI": "10.1186\/s12936-018-2516-x",
+        "article-title": "Field assessment of potential sugar feeding stations for disseminating bacteria in a paratransgenic approach to control malaria.",
+        "volume": "17",
+        "author": "E Bilgo",
+        "year": "2018",
+        "journal-title": "Malar. J."
+      },
+      {
+        "key": "ref21",
+        "doi-asserted-by": "publisher",
+        "first-page": "197-204",
+        "DOI": "10.1016\/j.jinsphys.2008.11.003",
+        "article-title": "Methylparaben in Anopheles gambiae s.l. sugar meals increases longevity and malaria oocyst abundance but is not a preferred diet.",
+        "volume": "55",
+        "author": "M Benedict",
+        "year": "2009",
+        "journal-title": "J. Insect Physiol."
+      },
+      {
+        "key": "ref22",
+        "doi-asserted-by": "publisher",
+        "first-page": "522",
+        "DOI": "10.1186\/s13071-019-3774-3",
+        "article-title": "Characterisation of Anopheles strains used for laboratory screening of new vector control products.",
+        "volume": "12",
+        "author": "J Williams",
+        "year": "2019",
+        "journal-title": "Parasit. Vectors."
+      },
+      {
+        "key": "ref23",
+        "doi-asserted-by": "publisher",
+        "first-page": "415-418",
+        "DOI": "10.2987\/5683.1",
+        "article-title": "Field evaluation of boric acid-and fipronil-based bait stations against adult mosquitoes.",
+        "volume": "24",
+        "author": "R Xue",
+        "year": "2008",
+        "journal-title": "J. Am. Mosq. Control Assoc."
+      },
+      {
+        "key": "ref24",
+        "doi-asserted-by": "publisher",
+        "first-page": "210",
+        "DOI": "10.1186\/1475-2875-9-210",
+        "article-title": "Successful field trial of attractive toxic sugar bait (ATSB) plant-spraying methods against malaria vectors in the Anopheles gambiae complex in Mali, West Africa.",
+        "volume": "9",
+        "author": "G M\u00fcller",
+        "year": "2010",
+        "journal-title": "Malar. J."
+      },
+      {
+        "key": "ref25",
+        "doi-asserted-by": "publisher",
+        "first-page": "265-267",
+        "DOI": "10.1093\/jee\/18.2.265a",
+        "article-title": "A method of computing the effectiveness of an insecticide.",
+        "volume": "18",
+        "author": "W Abbott",
+        "year": "1925",
+        "journal-title": "J. Econ. Entomol."
+      },
+      {
+        "key": "ref26",
+        "doi-asserted-by": "publisher",
+        "first-page": "81-88",
+        "DOI": "10.1016\/j.actatropica.2015.03.010",
+        "article-title": "Nectar protein content and attractiveness to Aedes aegypti and Culex pipiens in plants with nectar\/insect associations.",
+        "volume": "146",
+        "author": "Z Chen",
+        "year": "2015",
+        "journal-title": "Acta Trop."
+      },
+      {
+        "key": "ref27",
+        "doi-asserted-by": "publisher",
+        "first-page": "105624",
+        "DOI": "10.1016\/j.actatropica.2020.105624",
+        "article-title": "The readily transformable Impatiens walleriana efficiently attracts nectar feeding with Aedes and Culex mosquitoes in simulated outdoor garden settings in Mississippi and Florida.",
+        "volume": "210",
+        "author": "G Pruett",
+        "year": "2020",
+        "journal-title": "Acta Trop."
+      },
+      {
+        "key": "ref28",
+        "doi-asserted-by": "publisher",
+        "first-page": "29-34",
+        "DOI": "10.1016\/j.actatropica.2015.06.018",
+        "article-title": "Formulation of Toxic Sugar Bait (ATSB) with safe EPA-exempt substance significantly diminishes the Anopheles sergentii population in a desert oasis.",
+        "volume": "150",
+        "author": "E Revay",
+        "year": "2015",
+        "journal-title": "Acta Trop."
+      },
+      {
+        "key": "ref29",
+        "doi-asserted-by": "publisher",
+        "first-page": "384-390",
+        "DOI": "10.1603\/0022-2585(2008)45[384:AATMCU]2.0.CO;2",
+        "article-title": "An approach to mosquito control: using the dominant attraction of flowering Tamarix jordanis trees against Culex pipiens.",
+        "volume": "45",
+        "author": "Y Schlein",
+        "year": "2008",
+        "journal-title": "J. Med. Entomol."
+      },
+      {
+        "key": "ref30",
+        "first-page": "5-9",
+        "article-title": "Fluorescent marked mosquito offer a method for tracking and study mosquito behaviour.",
+        "volume": "4",
+        "author": "D Sarkar",
+        "year": "2017",
+        "journal-title": "J. Mosq. Res."
+      },
+      {
+        "key": "ref31",
+        "doi-asserted-by": "publisher",
+        "first-page": "4",
+        "DOI": "10.12688\/wellcomeopenres.17442.1",
+        "article-title": "Evaluation of an ivermectin-based Targeted Sugar Bait (ATSB) against Aedes aegypti in Tanzania.",
+        "volume": "7",
+        "author": "F Tenywa",
+        "year": "2022",
+        "journal-title": "Wellcome Open Res."
+      },
+      {
+        "key": "ref32",
+        "first-page": "12-14",
+        "article-title": "Monoazo dyes as probes for bulk and local viscosity \u2013 Potential applications in semi-solid foods.",
+        "volume": "23",
+        "author": "R Ludescher",
+        "year": "2012",
+        "journal-title": "Agro. Food Ind. Hi Tech."
+      },
+      {
+        "key": "ref33",
+        "article-title": "Mortality of male and female Anopheles gambiae fed sucrose solution with dye using a low-cost sugar-feeder for resource-poor insectaries.",
+        "author": "Z Stavrou-Dowd",
+        "year": "2024",
+        "journal-title": "Figshare."
+      },
+      {
+        "key": "ref34",
+        "article-title": "Mortality of male and female Anopheles gambiae fed sucrose solution of boric acid using a low-cost sugar-feeder for resource-poor insectaries.",
+        "author": "Z Stavrou-Dowd",
+        "year": "2024",
+        "journal-title": "Figshare."
+      }
+    ],
+    "container-title": [],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https:\/\/verixiv.org\/articles\/1-7\/v1\/xml",
+        "content-type": "application\/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https:\/\/verixiv.org\/articles\/1-7\/v1\/pdf",
+        "content-type": "application\/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https:\/\/verixiv.org\/articles\/1-7\/v1\/iparadigms",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": { "date-parts": [[2025, 2, 21]], "date-time": "2025-02-21T03:30:16Z", "timestamp": 1740108616000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/verixiv.org\/articles\/1-7\/v1" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2024, 8, 29]] },
+    "references-count": 32,
+    "URL": "https:\/\/doi.org\/10.12688\/verixiv.54.1",
+    "relation": {
+      "has-review": [
+        { "id-type": "doi", "id": "10.21956\/verixiv.54.r169", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.21956\/verixiv.54.r16", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.21956\/verixiv.54.r13", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.21956\/verixiv.54.r19", "asserted-by": "subject" }
+      ],
+      "is-preprint-of": [{ "id-type": "doi", "id": "10.12688\/gatesopenres.16314.1", "asserted-by": "object" }]
+    },
+    "subject": [],
+    "published": { "date-parts": [[2024, 8, 29]] },
+    "assertion": [
+      {
+        "value": "Awaiting Peer Review",
+        "URL": "https:\/\/verixiv.org\/articles\/1-7\/v1#article-reports",
+        "order": 0,
+        "name": "referee-status",
+        "label": "Referee status",
+        "group": { "name": "current-referee-status", "label": "Current Referee Status" }
+      },
+      {
+        "value": "This work was funded by the Bill and Melinda Gates Foundation under grant number INV-022192 to \u00c1lvaro Acosta-Serrano, and partially supported by the LSTM Jean Clayton Fund (Ref. JC0621CR02). The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.",
+        "order": 0,
+        "name": "grant-information",
+        "label": "Grant Information"
+      },
+      {
+        "value": "This is an open access article distributed under the terms of the Creative Commons Attribution Licence, which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.",
+        "order": 0,
+        "name": "copyright-info",
+        "label": "Copyright"
+      }
+    ],
+    "subtype": "preprint"
+  }
+}

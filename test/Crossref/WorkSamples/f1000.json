@@ -1,0 +1,646 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 4, 25]],
+      "date-time": "2025-04-25T04:20:58Z",
+      "timestamp": 1745554858150,
+      "version": "3.40.4"
+    },
+    "update-to": [
+      {
+        "updated": { "date-parts": [[2025, 4, 24]], "date-time": "2025-04-24T00:00:00Z", "timestamp": 1745452800000 },
+        "DOI": "10.12688\/f1000research.161261.1",
+        "type": "new_version",
+        "source": "publisher",
+        "label": "New version"
+      }
+    ],
+    "reference-count": 47,
+    "publisher": "F1000 Research Ltd",
+    "license": [
+      {
+        "start": { "date-parts": [[2025, 4, 24]], "date-time": "2025-04-24T00:00:00Z", "timestamp": 1745452800000 },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      }
+    ],
+    "content-domain": { "domain": ["f1000research.com"], "crossmark-restriction": false },
+    "short-container-title": ["F1000Res"],
+    "abstract": "<ns3:p>Background Natural products databases are well-structured data sources that offer new molecular development opportunities in drug discovery, agrochemistry, food, cosmetics, and several other research disciplines or chemical industries. The crescent world\u2019s interest in the development of these databases is related to the exploration of chemical diversity in geographical regions with rich biodiversity. Methods In this work, we introduce and discuss Nat-UV DB, the first natural products database from a coastal zone of Mexico. We discuss its construction, curation, and chemoinformatic characterization of their content, and chemical space coverage compared with other compound databases, like approved drugs, and other Mexican (BIOFACQUIM and UNIIQUIM databases) and the Latin American natural products database (LaNAPDB). Results Nat-UV DB comprises 227 compounds that contain 112 scaffolds, of which 52 are not present in previous natural product databases. The compounds present in Nat-UV DB have a similar size, flexibility, and polarity to previously reported natural products and approved drug datasets. Conclusions Nat-UV DB compounds have a higher structural and scaffold diversity than the approved drugs, but they have low structural and scaffold diversity in contrast with other natural products in the reference datasets. This database serves as a valuable addition to the global natural products landscape, bridging gaps in exploring biodiversity-rich regions.<\/ns3:p>",
+    "DOI": "10.12688\/f1000research.161261.2",
+    "type": "journal-article",
+    "created": { "date-parts": [[2025, 4, 24]], "date-time": "2025-04-24T16:10:08Z", "timestamp": 1745511008000 },
+    "page": "157",
+    "update-policy": "https:\/\/doi.org\/10.12688\/f1000research.crossmark-policy",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": ["Nat-UV DB: A Natural Products Database Underlying of Veracruz-Mexico"],
+    "prefix": "10.12688",
+    "volume": "14",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-7422-6059",
+        "authenticated-orcid": false,
+        "given": "Edgar",
+        "family": "L\u00f3pez-L\u00f3pez",
+        "sequence": "first",
+        "affiliation": []
+      },
+      { "given": "Ana Margarita", "family": "Hern\u00e1ndez-Segura", "sequence": "additional", "affiliation": [] },
+      { "given": "Carlos", "family": "Lara-Cuellar", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-4023-8980",
+        "authenticated-orcid": false,
+        "given": "Carolina",
+        "family": "Barrientos-Salcedo",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      { "given": "Carlos M.", "family": "Cerda-Garc\u00eda-Rojas", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-4940-1107",
+        "authenticated-orcid": false,
+        "given": "Jos\u00e9 L.",
+        "family": "Medina-Franco",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "2560",
+    "published-online": { "date-parts": [[2025, 4, 24]] },
+    "reference": [
+      {
+        "key": "ref1",
+        "doi-asserted-by": "publisher",
+        "first-page": "1101-1121",
+        "DOI": "10.1023\/B:BIOC.0000018147.54695.b3",
+        "article-title": "Endemic species of grasses in Mexico: a phytogeographic approach.",
+        "volume": "13",
+        "author": "P D\u00e1vila-Aranda",
+        "year": "2004",
+        "journal-title": "Biodivers. Conserv."
+      },
+      {
+        "key": "ref2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1007\/978-1-4614-6669-7_5",
+        "author": "C Mapes",
+        "year": "2016",
+        "journal-title": "Ethnobotany of Mexico. Ethnobiology."
+      },
+      {
+        "key": "ref3",
+        "doi-asserted-by": "publisher",
+        "first-page": "85-94",
+        "DOI": "10.1016\/S0006-3207(99)00074-9",
+        "article-title": "Geographic analysis of conservation priority: endemic birds and mammals in Veracruz, Mexico.",
+        "volume": "93",
+        "author": "A Peterson",
+        "year": "2000",
+        "journal-title": "Biol. Conserv."
+      },
+      {
+        "key": "ref4",
+        "article-title": "Informe de la situaci\u00f3n del medio ambiente en M\u00e9xico.",
+        "year": "2015"
+      },
+      {
+        "key": "ref5",
+        "doi-asserted-by": "publisher",
+        "first-page": "4660-4702",
+        "DOI": "10.1002\/ptr.7099",
+        "article-title": "Natural products: A lead for drug discovery and development.",
+        "volume": "35",
+        "author": "B Chopra",
+        "year": "2021",
+        "journal-title": "Phytother. Res."
+      },
+      {
+        "key": "ref6",
+        "doi-asserted-by": "publisher",
+        "first-page": "11-24",
+        "DOI": "10.1002\/cssc.201701847",
+        "article-title": "Natural-product-derived carbon dots: From natural products to functional materials.",
+        "volume": "11",
+        "author": "X Zhang",
+        "year": "2017",
+        "journal-title": "ChemSusChem."
+      },
+      {
+        "key": "ref7",
+        "doi-asserted-by": "publisher",
+        "first-page": "104046",
+        "DOI": "10.1016\/j.drudis.2024.104046",
+        "article-title": "Toward structure-multiple activity relationships (SMARts) using computational approaches: A polypharmacological perspective.",
+        "volume": "29",
+        "author": "E L\u00f3pez-L\u00f3pez",
+        "year": "2024",
+        "journal-title": "Drug Discov. Today."
+      },
+      {
+        "key": "ref8",
+        "doi-asserted-by": "publisher",
+        "first-page": "1202",
+        "DOI": "10.3390\/biom12091202",
+        "article-title": "Progress and impact of Latin American natural product databases.",
+        "volume": "12",
+        "author": "A G\u00f3mez-Garc\u00eda",
+        "year": "2022",
+        "journal-title": "Biomolecules."
+      },
+      {
+        "key": "ref9",
+        "doi-asserted-by": "publisher",
+        "first-page": "31",
+        "DOI": "10.3390\/biom9010031",
+        "article-title": "BIOFACQUIM: A Mexican compound database of natural products.",
+        "volume": "9",
+        "author": "B Pil\u00f3n-Jim\u00e9nez",
+        "year": "2019",
+        "journal-title": "Biomolecules."
+      },
+      { "key": "ref10", "article-title": "Lista de compuestos.", "year": "2024" },
+      {
+        "key": "ref11",
+        "doi-asserted-by": "publisher",
+        "first-page": "2599-2601",
+        "DOI": "10.1016\/S0031-9422(98)00383-5",
+        "article-title": "An anthrone from Picramnia antidesma.",
+        "volume": "49",
+        "author": "M Hernandez-Medel",
+        "year": "1998",
+        "journal-title": "Phytochemistry."
+      },
+      {
+        "key": "ref12",
+        "doi-asserted-by": "publisher",
+        "first-page": "520-531",
+        "DOI": "10.1021\/acs.jnatprod.8b00908",
+        "article-title": "Structure elucidation, conformation, and configuration of cytotoxic 6-heptyl-5,6-dihydro-2H-pyran-2-ones from hyptis species and their molecular docking to \u03b1-Tubulin.",
+        "volume": "82",
+        "author": "L Mart\u00ednez-Fructuoso",
+        "year": "2019",
+        "journal-title": "J. Nat. Prod."
+      },
+      {
+        "key": "ref13",
+        "article-title": "Obtenci\u00f3n de macrosporina a partir de Stemphylium lycopersici hongo fitopat\u00f3geno de papaya.",
+        "author": "G Mendoza Cervantes",
+        "year": "2006"
+      },
+      {
+        "key": "ref14",
+        "doi-asserted-by": "publisher",
+        "first-page": "269-280",
+        "DOI": "10.1016\/j.jep.2016.04.033",
+        "article-title": "Anti-inflammatory and toxicological evaluation of Moussonia deppeana (Schldl. & Cham) hanst and verbascoside as a main active metabolite.",
+        "volume": "187",
+        "author": "G Guti\u00e9rrez-Rebolledo",
+        "year": "2016",
+        "journal-title": "J. Ethnopharmacol."
+      },
+      {
+        "key": "ref15",
+        "doi-asserted-by": "publisher",
+        "first-page": "1096-1100",
+        "DOI": "10.1021\/np9900627",
+        "article-title": "Orizabins V\u2212VIII, tetrasaccharide glycolipids from the Mexican Scammony Root (Ipomoea orizabensis).",
+        "volume": "62",
+        "author": "B Hern\u00e1ndez-Carlos",
+        "year": "1999",
+        "journal-title": "J. Nat. Prod."
+      },
+      {
+        "key": "ref16",
+        "first-page": "79-82",
+        "article-title": "Brefeldin-A: an antiproliferative metabolite of the fungus Curvularia trifolii collected from the Veracruz coral reef system, Mexico.",
+        "volume": "60",
+        "author": "C Espinoza",
+        "year": "2016",
+        "journal-title": "J. Mex. Chem. Soc."
+      },
+      {
+        "key": "ref17",
+        "doi-asserted-by": "publisher",
+        "first-page": "489-495",
+        "DOI": "10.1007\/s11033-019-05155-1",
+        "article-title": "Identification of a huperzine A-producing endophytic fungus from Phlegmariurus taxifolius.",
+        "volume": "47",
+        "author": "O Cruz-Miranda",
+        "year": "2019",
+        "journal-title": "Mol. Biol. Rep."
+      },
+      {
+        "key": "ref18",
+        "doi-asserted-by": "publisher",
+        "first-page": "1593-1602",
+        "DOI": "10.1139\/v06-164",
+        "article-title": "Absolute configuration assignments by experimental and theoretical approaches of ent-labdane- and cis-ent-clerodane-type diterpenes isolated from Croton glabellus.",
+        "volume": "84",
+        "author": "A Garc\u00eda",
+        "year": "2006",
+        "journal-title": "Can. J. Chem."
+      },
+      {
+        "key": "ref19",
+        "doi-asserted-by": "publisher",
+        "first-page": "115817",
+        "DOI": "10.1016\/j.bmc.2020.115817",
+        "article-title": "One-step partial synthesis of (\u00b1)-asperteretone B and related hPTP1B1\u2013400 inhibitors from butyrolactone I.",
+        "volume": "28",
+        "author": "J Rivera-Ch\u00e1vez",
+        "year": "2020",
+        "journal-title": "Bioorg. Med. Chem."
+      },
+      {
+        "key": "ref20",
+        "doi-asserted-by": "publisher",
+        "first-page": "1934578X1200701",
+        "DOI": "10.1177\/1934578X1200701109",
+        "article-title": "A new monoterpenoid oxindole alkaloid from Hamelia Patens micropropagated plantlets.",
+        "volume": "7",
+        "author": "D Paniagua-Vega",
+        "year": "2012",
+        "journal-title": "Nat. Prod. Commun."
+      },
+      {
+        "key": "ref21",
+        "doi-asserted-by": "publisher",
+        "first-page": "1981-1988",
+        "DOI": "10.1016\/S0031-9422(98)00364-1",
+        "article-title": "Limonoids from Swietenia humilis and Guarea grandiflora (Meliaceae).",
+        "volume": "49",
+        "author": "A Jimenez",
+        "year": "1998",
+        "journal-title": "Phytochemistry."
+      },
+      {
+        "key": "ref22",
+        "doi-asserted-by": "publisher",
+        "first-page": "3229-3256",
+        "DOI": "10.1016\/j.bmc.2009.02.050",
+        "article-title": "Antimalarials from nature.",
+        "volume": "17",
+        "author": "K Kaur",
+        "year": "2009",
+        "journal-title": "Bioorg. Med. Chem."
+      },
+      {
+        "key": "ref23",
+        "doi-asserted-by": "publisher",
+        "first-page": "583-593",
+        "DOI": "10.1021\/np50094a019",
+        "article-title": "Structure and stereochemistry of pectinolides A-C, novel antimicrobial and cytotoxic 5,6-dihydro-\u03b1-pyrones from Hyptis pectinata.",
+        "volume": "56",
+        "author": "R Pereda-Miranda",
+        "year": "1993",
+        "journal-title": "J. Nat. Prod."
+      },
+      {
+        "key": "ref24",
+        "doi-asserted-by": "publisher",
+        "first-page": "21576",
+        "DOI": "10.1038\/s41598-023-48709-x",
+        "article-title": "Emodin exhibits anti-acne potential by inhibiting cell growth, lipogenesis, and inflammation in human SZ95 sebocytes.",
+        "volume": "13",
+        "author": "S Liu",
+        "year": "2023",
+        "journal-title": "Sci. Rep."
+      },
+      {
+        "key": "ref25",
+        "doi-asserted-by": "publisher",
+        "first-page": "372-385",
+        "DOI": "10.1016\/j.freeradbiomed.2021.06.017",
+        "article-title": "Beneficial effects of dietary supplementation with olive oil, oleic acid, or hydroxytyrosol in metabolic syndrome: Systematic review and meta-analysis.",
+        "volume": "172",
+        "author": "R Pastor",
+        "year": "2021",
+        "journal-title": "Free Radic. Biol. Med."
+      },
+      {
+        "key": "ref26",
+        "doi-asserted-by": "publisher",
+        "first-page": "82",
+        "DOI": "10.1186\/s13321-022-00661-0",
+        "article-title": "Chemoinformatics and artificial intelligence colloquium: progress and challenges in developing bioactive compounds.",
+        "volume": "14",
+        "author": "J Bajorath",
+        "year": "2022",
+        "journal-title": "J. Cheminform."
+      },
+      {
+        "key": "ref27",
+        "doi-asserted-by": "publisher",
+        "first-page": "20",
+        "DOI": "10.1186\/s13321-020-00424-9",
+        "article-title": "Review on natural products databases: where to find data in 2020.",
+        "volume": "12",
+        "author": "M Sorokina",
+        "year": "2020",
+        "journal-title": "J. Cheminform."
+      },
+      {
+        "key": "ref28",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.26434\/chemrxiv-2024-fxq2s",
+        "article-title": "COCONUT 2.0: A comprehensive overhaul and curation of the collection of open natural products database.",
+        "author": "V Nainala",
+        "year": "2024",
+        "journal-title": "ChemRxiv."
+      },
+      {
+        "key": "ref29",
+        "doi-asserted-by": "publisher",
+        "first-page": "31-36",
+        "DOI": "10.1021\/ci00057a005",
+        "article-title": "SMILES, a chemical language and information system. 1. Introduction to methodology and encoding rules.",
+        "volume": "28",
+        "author": "D Weininger",
+        "year": "1988",
+        "journal-title": "J. Chem. Inf. Model."
+      },
+      {
+        "key": "ref30",
+        "first-page": "45-49",
+        "article-title": "Review on cambridgesoft ChemBioDraw ultra 13.0 v.",
+        "volume": "5",
+        "author": "V Narayanaswamy",
+        "year": "2013",
+        "journal-title": "Int. J. Theor. Appl. Sci."
+      },
+      {
+        "key": "ref31",
+        "article-title": "Chemical computing group ULC, 910-1010 Sherbrooke St. W., Montreal, QC H3A 2R7, 2025.",
+        "year": "2024"
+      },
+      {
+        "key": "ref32",
+        "doi-asserted-by": "publisher",
+        "first-page": "D1373-D1380",
+        "DOI": "10.1093\/nar\/gkac956",
+        "article-title": "PubChem 2023 update.",
+        "volume": "51",
+        "author": "S Kim",
+        "year": "2023",
+        "journal-title": "Nucleic Acids Res."
+      },
+      {
+        "key": "ref33",
+        "doi-asserted-by": "publisher",
+        "first-page": "D1180-D1192",
+        "DOI": "10.1093\/nar\/gkad1004",
+        "article-title": "The ChEMBL database in 2023: a drug discovery platform spanning multiple bioactivity data types and time periods.",
+        "volume": "52",
+        "author": "B Zdrazil",
+        "year": "2024",
+        "journal-title": "Nucleic Acids Res."
+      },
+      {
+        "key": "ref34",
+        "doi-asserted-by": "publisher",
+        "first-page": "D1265-D1275",
+        "DOI": "10.1093\/nar\/gkad976",
+        "article-title": "DrugBank 6.0: the drugBank knowledgebase for 2024.",
+        "volume": "52",
+        "author": "C Knox",
+        "year": "2024",
+        "journal-title": "Nucleic Acids Res."
+      },
+      {
+        "key": "ref35",
+        "doi-asserted-by": "publisher",
+        "first-page": "1388",
+        "DOI": "10.3390\/ph16101388",
+        "article-title": "Navigating the chemical space and chemical multiverse of a unified Latin American natural product database: LANaPDB.",
+        "volume": "16",
+        "author": "A G\u00f3mez-Garc\u00eda",
+        "year": "2023",
+        "journal-title": "Pharmaceuticals."
+      },
+      {
+        "key": "ref36",
+        "doi-asserted-by": "publisher",
+        "first-page": "8495-8509",
+        "DOI": "10.3390\/ph16101388",
+        "article-title": "Latin American Natural Product Database (LANaPDB): An Update.",
+        "volume": "64",
+        "author": "A G\u00f3mez-Garc\u00eda",
+        "year": "2024",
+        "journal-title": "J. Chem. Inf. Model."
+      },
+      {
+        "key": "ref37",
+        "doi-asserted-by": "publisher",
+        "first-page": "2071",
+        "DOI": "10.12688\/f1000research.21540.2",
+        "article-title": "Functional group and diversity analysis of BIOFACQUIM: A Mexican natural product database.",
+        "volume": "8",
+        "author": "N S\u00e1nchez-Cruz",
+        "year": "2020",
+        "journal-title": "F1000Res."
+      },
+      {
+        "key": "ref38",
+        "doi-asserted-by": "publisher",
+        "first-page": "460-473",
+        "DOI": "10.1021\/ci500588j",
+        "article-title": "DataWarrior: An open-source program for chemistry aware data visualization and analysis.",
+        "volume": "55",
+        "author": "T Sander",
+        "year": "2015",
+        "journal-title": "J. Chem. Inf. Model."
+      },
+      {
+        "key": "ref39",
+        "doi-asserted-by": "publisher",
+        "first-page": "2887-2893",
+        "DOI": "10.1021\/jm9602928",
+        "article-title": "The properties of known drugs. 1. Molecular frameworks.",
+        "volume": "39",
+        "author": "G Bemis",
+        "year": "1996",
+        "journal-title": "J. Med. Chem."
+      },
+      {
+        "key": "ref40",
+        "doi-asserted-by": "publisher",
+        "first-page": "742-754",
+        "DOI": "10.1021\/ci100050t",
+        "article-title": "Extended-connectivity fingerprints.",
+        "volume": "50",
+        "author": "D Rogers",
+        "year": "2010",
+        "journal-title": "J. Chem. Inf. Model."
+      },
+      {
+        "key": "ref41",
+        "doi-asserted-by": "publisher",
+        "first-page": "341-354",
+        "DOI": "10.1007\/s10822-021-00399-1",
+        "article-title": "Progress on open chemoinformatic tools for expanding and exploring the chemical space.",
+        "volume": "36",
+        "author": "J Medina-Franco",
+        "year": "2021",
+        "journal-title": "J. Comput. Aided Mol. Des."
+      },
+      {
+        "key": "ref42",
+        "doi-asserted-by": "publisher",
+        "first-page": "e202400265",
+        "DOI": "10.1002\/minf.202400265",
+        "article-title": "From high dimensions to human insight: Exploring dimensionality reduction for chemical space visualization.",
+        "volume": "44",
+        "author": "A Orlov",
+        "year": "2024",
+        "journal-title": "Mol. Inform."
+      },
+      {
+        "key": "ref43",
+        "doi-asserted-by": "publisher",
+        "first-page": "335-341",
+        "DOI": "10.1080\/17460441.2019.1581170",
+        "article-title": "DataWarrior: an evaluation of the open-source drug discovery tool.",
+        "volume": "14",
+        "author": "E L\u00f3pez-L\u00f3pez",
+        "year": "2019",
+        "journal-title": "Expert Opin. Drug Discov."
+      },
+      {
+        "key": "ref44",
+        "doi-asserted-by": "publisher",
+        "first-page": "63",
+        "DOI": "10.1186\/s13321-016-0176-9",
+        "article-title": "Consensus diversity plots: a global diversity analysis of chemical libraries.",
+        "volume": "8",
+        "author": "M Gonz\u00e1lez-Medina",
+        "year": "2016",
+        "journal-title": "J. Cheminf."
+      },
+      {
+        "key": "ref45",
+        "doi-asserted-by": "publisher",
+        "first-page": "e2300056",
+        "DOI": "10.1002\/minf.202300056",
+        "article-title": "Exploring activity landscapes with extended similarity: is Tanimoto enough?",
+        "volume": "42",
+        "author": "T Dunn",
+        "year": "2023",
+        "journal-title": "Mol. Inf."
+      },
+      {
+        "key": "ref46",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.5281\/zenodo.14715820",
+        "article-title": "Zenodo: Nat-UV DB Data Availability. The datasets used in this work.",
+        "author": "J Medina-Franco",
+        "year": "2025"
+      },
+      {
+        "key": "ref47",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.5281\/zenodo.14715820",
+        "article-title": "Source code.",
+        "author": "J Medina-Franco",
+        "year": "2025",
+        "journal-title": "Archived software."
+      }
+    ],
+    "container-title": ["F1000Research"],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https:\/\/f1000research.com\/articles\/14-157\/v2\/xml",
+        "content-type": "application\/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https:\/\/f1000research.com\/articles\/14-157\/v2\/pdf",
+        "content-type": "application\/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https:\/\/f1000research.com\/articles\/14-157\/v2\/iparadigms",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": { "date-parts": [[2025, 4, 24]], "date-time": "2025-04-24T16:10:10Z", "timestamp": 1745511010000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/f1000research.com\/articles\/14-157\/v2" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2025, 4, 24]] },
+    "references-count": 47,
+    "URL": "https:\/\/doi.org\/10.12688\/f1000research.161261.2",
+    "relation": {
+      "has-version": [{ "id-type": "doi", "id": "10.12688\/f1000research.161261.1", "asserted-by": "subject" }]
+    },
+    "ISSN": ["2046-1402"],
+    "issn-type": [{ "value": "2046-1402", "type": "electronic" }],
+    "subject": [],
+    "published": { "date-parts": [[2025, 4, 24]] },
+    "assertion": [
+      {
+        "value": "Indexed",
+        "URL": "https:\/\/f1000research.com\/articles\/14-157\/v2#article-reports",
+        "order": 0,
+        "name": "referee-status",
+        "label": "Referee status",
+        "group": { "name": "current-referee-status", "label": "Current Referee Status" }
+      },
+      {
+        "value": "10.5256\/f1000research.177266.r370994, Virginia Flores-Morales, The Autonomous University of Zacatecas, Zacatecas, 20 Mar 2025, version 1, indexed",
+        "URL": "https:\/\/f1000research.com\/articles\/14-157\/v1#referee-response-370994",
+        "order": 0,
+        "name": "referee-response-370994",
+        "label": "Referee Report",
+        "group": { "name": "article-reports", "label": "Article Reports" }
+      },
+      {
+        "value": "10.5256\/f1000research.177266.r370987, David J Newman, NIH Special Volunteer, Wayne, 02 Apr 2025, version 1, indexed",
+        "URL": "https:\/\/f1000research.com\/articles\/14-157\/v1#referee-response-370987",
+        "order": 1,
+        "name": "referee-response-370987",
+        "label": "Referee Report",
+        "group": { "name": "article-reports", "label": "Article Reports" }
+      },
+      {
+        "value": "10.5256\/f1000research.177266.r370989, Kathia Maria Honorio, Universidade de Sao Paulo, S\u00e3o Paulo, State of S\u00e3o Paulo, 12 Apr 2025, version 1, indexed",
+        "URL": "https:\/\/f1000research.com\/articles\/14-157\/v1#referee-response-370989",
+        "order": 2,
+        "name": "referee-response-370989",
+        "label": "Referee Report",
+        "group": { "name": "article-reports", "label": "Article Reports" }
+      },
+      {
+        "value": "<b>Jos&eacute; L. Medina-Franco<\/b>; \n<i>Posted: 16 Apr 2025<\/i>; Dear Prof. Kathia Maria Honorio, We appreciate your valuable comments and suggestions. The second version of this revised work addresses all of them.",
+        "URL": "https:\/\/f1000research.com\/articles\/14-157\/v2#referee-comment-13756",
+        "order": 3,
+        "name": "referee-comment-13756",
+        "label": "Referee Comment",
+        "group": { "name": "article-reports", "label": "Article Reports" }
+      },
+      {
+        "value": "The author(s) declared that no grants were involved in supporting this work",
+        "order": 4,
+        "name": "grant-information",
+        "label": "Grant Information"
+      },
+      {
+        "value": "This is an open access article distributed under the terms of the Creative Commons Attribution Licence, which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.",
+        "order": 0,
+        "name": "copyright-info",
+        "label": "Copyright"
+      }
+    ]
+  }
+}

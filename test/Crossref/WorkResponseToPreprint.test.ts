@@ -212,6 +212,24 @@ test.each([
       url: new URL('https://www.preprints.org/manuscript/202303.0344/v1'),
     }),
   },
+  {
+    response: 'verixiv.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Zachary Thomas Stavrou–Dowd', orcid: Orcid('0000-0002-0323-8896') },
+        { name: 'Clair Rose', orcid: undefined },
+        { name: 'Álvaro Acosta-Serrano', orcid: Orcid('0000-0002-2576-7959') },
+        { name: 'Lee Rafuse Haines', orcid: Orcid('0000-0001-8821-6479') },
+      ],
+      id: { _tag: 'verixiv', value: Doi('10.12688/verixiv.54.1') },
+      posted: Temporal.PlainDate.from({ year: 2024, month: 8, day: 29 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Design and validation of a low-cost sugar-feeder for resource-poor insectaries'),
+      },
+      url: new URL('https://verixiv.org/articles/1-7/v1'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -226,7 +244,7 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['csh-press-journal.json', 'scielo-journal.json'])(
+test.each(['csh-press-journal.json', 'f1000.json', 'scielo-journal.json', 'wellcome-open-research.json'])(
   'returns a specific error for non-Preprint work (%s)',
   response =>
     Effect.gen(function* () {

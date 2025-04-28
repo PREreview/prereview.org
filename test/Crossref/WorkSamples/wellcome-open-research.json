@@ -1,0 +1,578 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 4, 26]],
+      "date-time": "2025-04-26T04:08:03Z",
+      "timestamp": 1745640483714,
+      "version": "3.40.4"
+    },
+    "update-to": [
+      {
+        "updated": { "date-parts": [[2025, 4, 25]], "date-time": "2025-04-25T00:00:00Z", "timestamp": 1745539200000 },
+        "DOI": "10.12688\/wellcomeopenres.18006.1",
+        "type": "new_version",
+        "source": "publisher",
+        "label": "New version"
+      }
+    ],
+    "reference-count": 36,
+    "publisher": "F1000 Research Ltd",
+    "license": [
+      {
+        "start": { "date-parts": [[2025, 4, 25]], "date-time": "2025-04-25T00:00:00Z", "timestamp": 1745539200000 },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      }
+    ],
+    "funder": [
+      {
+        "DOI": "10.13039\/100010269",
+        "name": "Wellcome Trust",
+        "doi-asserted-by": "publisher",
+        "award": ["092654"],
+        "id": [{ "id": "10.13039\/100010269", "id-type": "DOI", "asserted-by": "publisher" }]
+      },
+      {
+        "DOI": "10.13039\/100010269",
+        "name": "Wellcome Trust",
+        "doi-asserted-by": "crossref",
+        "award": ["207522"],
+        "id": [{ "id": "10.13039\/100010269", "id-type": "DOI", "asserted-by": "crossref" }]
+      }
+    ],
+    "content-domain": { "domain": ["wellcomeopenresearch.org"], "crossmark-restriction": false },
+    "short-container-title": ["Wellcome Open Res"],
+    "abstract": "<ns3:p>Introduction Effective communication is essential to delivering compassionate, high-quality nursing care. The intensive, stressful and technical environment of a new-born unit (NBU) in a low-resource setting presents communication-related challenges for nurses, with negative implications for nurse well-being, team relationships and patient care. We adapted a pre-existing communication and emotional competence course with NBU nurse managers working in Kenya, explored its\u2019 value to participants and developed a theory of change to evaluate its\u2019 potential impact. Methods 18 neonatal nurse managers from 14 county referral hospitals helped adapt and participated in a nine-month participatory training process. Training involved guided \u2018on the job\u2019 self-observation and reflection to build self-awareness, and two face-to-face skills-building workshops. The course and potential for future scale up was assessed using written responses from participant nurses (baseline questionnaires, reflective assignments, pre and post workshop questionnaires), workshop observation notes, two group discussions and nine individual in-depth interviews. Results Participants were extremely positive about the course, with many emphasizing its direct relevance and applicability to their daily work. Increased self-awareness and ability to recognize their own, colleagues\u2019 and patients\u2019 emotional triggers, together with new knowledge and practical skills, reportedly inspired nurses to change; in turn influencing their ability to provide respectful care, improving their confidence and relationships and giving them a stronger sense of professional identity. Conclusion Providing respectful care is a major challenge in low-resource, high-pressure clinical settings but there are few strategies to address this problem. The participatory training process examined addresses this challenge and has potential for positive impacts for families, individual workers and teams, including worker well-being. We present an initial theory of change to support future evaluations aimed at exploring if and how positive gains can be sustained and spread within the wider system.<\/ns3:p>",
+    "DOI": "10.12688\/wellcomeopenres.18006.2",
+    "type": "journal-article",
+    "created": { "date-parts": [[2025, 4, 25]], "date-time": "2025-04-25T16:00:10Z", "timestamp": 1745596810000 },
+    "page": "223",
+    "update-policy": "https:\/\/doi.org\/10.12688\/wellcomeopenres.crossmark-policy",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Strengthening respectful communication with patients and colleagues in neonatal units \u2014 developing and evaluating a communication and emotional competence training for nurse managers in Kenya"
+    ],
+    "prefix": "10.12688",
+    "volume": "7",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-4715-902X",
+        "authenticated-orcid": false,
+        "given": "Peris",
+        "family": "Musitia",
+        "sequence": "first",
+        "affiliation": []
+      },
+      { "given": "Mwanamvua", "family": "Boga", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-2283-321X",
+        "authenticated-orcid": false,
+        "given": "Dorothy",
+        "family": "Oluoch",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      { "given": "Ane", "family": "Haaland", "sequence": "additional", "affiliation": [] },
+      { "given": "Jacinta", "family": "Nzinga", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-7427-0826",
+        "authenticated-orcid": false,
+        "given": "Mike",
+        "family": "English",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-9522-416X",
+        "authenticated-orcid": false,
+        "given": "Sassy",
+        "family": "Molyneux",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "2560",
+    "published-online": { "date-parts": [[2025, 4, 25]] },
+    "reference": [
+      {
+        "key": "ref-1",
+        "doi-asserted-by": "publisher",
+        "first-page": "3364-72",
+        "DOI": "10.1111\/j.1365-2702.2011.03860.x",
+        "article-title": "Professional tears: developing emotional intelligence around death and dying in emergency work.",
+        "volume": "20",
+        "author": "C Bailey",
+        "year": "2011",
+        "journal-title": "J Clin Nurs."
+      },
+      {
+        "key": "ref-2",
+        "doi-asserted-by": "publisher",
+        "first-page": "159-64",
+        "DOI": "10.1136\/archdischild-2016-310710",
+        "article-title": "A pilot study of an emotional intelligence training intervention for a paediatric team.",
+        "volume": "102",
+        "author": "E Bamberger",
+        "year": "2017",
+        "journal-title": "Arch Dis Child."
+      },
+      {
+        "key": "ref-3",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1186\/s12960-019-0352-x",
+        "article-title": "Exploring the space for task shifting to support nursing on neonatal wards in Kenyan public hospitals.",
+        "volume": "17",
+        "author": "J Nzinga",
+        "year": "2019",
+        "journal-title": "Hum Resour Health."
+      },
+      {
+        "key": "ref-4",
+        "doi-asserted-by": "publisher",
+        "first-page": "365-75",
+        "DOI": "10.1177\/0269216308090770",
+        "article-title": "Effectiveness of a three-day communication skills course in changing nurses\u2019 communication skills with cancer\/palliative care patients: a randomised controlled trial.",
+        "volume": "22",
+        "author": "S Wilkinson",
+        "year": "2008",
+        "journal-title": "Palliat Med."
+      },
+      {
+        "key": "ref-5",
+        "doi-asserted-by": "publisher",
+        "first-page": "237-9",
+        "DOI": "10.1016\/j.outlook.2012.07.001",
+        "article-title": "Are we really ready for patient-centered care?",
+        "volume": "60",
+        "author": "J Disch",
+        "year": "2012",
+        "journal-title": "Nurs Outlook."
+      },
+      {
+        "key": "ref-6",
+        "doi-asserted-by": "publisher",
+        "first-page": "397-406",
+        "DOI": "10.1111\/apa.13295",
+        "article-title": "Communication skills training enhances nurses\u2019 ability to respond with empathy to parents\u2019 emotions in a neonatal Intensive Care Unit.",
+        "volume": "105",
+        "author": "K Bry",
+        "year": "2016",
+        "journal-title": "Acta Paediatr."
+      },
+      {
+        "key": "ref-7",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1186\/s12887-019-1874-z",
+        "article-title": "Communication between mothers and health workers is important for quality of newborn care: A qualitative study in neonatal units in district hospitals in South Africa.",
+        "volume": "19",
+        "author": "C Horwood",
+        "year": "2019",
+        "journal-title": "BMC Pediatr."
+      },
+      {
+        "key": "ref-8",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1136\/bmjopen-2016-014888",
+        "article-title": "The determinants and outcomes of good provider communication: a cross-sectional study in seven African countries.",
+        "volume": "7",
+        "author": "E Larson",
+        "year": "2017",
+        "journal-title": "BMJ Open."
+      },
+      {
+        "key": "ref-9",
+        "doi-asserted-by": "publisher",
+        "first-page": "51-66",
+        "DOI": "10.4135\/9781483329512.n4",
+        "article-title": "Professional communication and collaboration",
+        "author": "J Little",
+        "year": "2007"
+      },
+      {
+        "key": "ref-10",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1186\/s12889-019-7566-7",
+        "article-title": "Systematic review of burnout among healthcare providers in sub-Saharan Africa.",
+        "volume": "19",
+        "author": "B Dubale",
+        "year": "2019",
+        "journal-title": "BMC Public Health."
+      },
+      {
+        "key": "ref-11",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1186\/1748-5908-4-44",
+        "article-title": "Documenting the experiences of health workers expected to implement guidelines during an intervention study in Kenyan hospitals.",
+        "volume": "4",
+        "author": "J Nzinga",
+        "year": "2009",
+        "journal-title": "Implement Sci."
+      },
+      {
+        "key": "ref-12",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.ijans.2020.100198",
+        "article-title": "Communication in nurse-patient interaction in healthcare settings in sub-Saharan Africa: a scoping review.",
+        "volume": "12",
+        "author": "A Kwame",
+        "year": "2020",
+        "journal-title": "Int J Africa Nurs Sci."
+      },
+      {
+        "key": "ref-13",
+        "doi-asserted-by": "publisher",
+        "first-page": "19-30",
+        "DOI": "10.1136\/bmjqs-2019-009363",
+        "article-title": "Missed nursing care in newborn units: a cross-sectional direct observational study.",
+        "volume": "29",
+        "author": "D Gathara",
+        "year": "2020",
+        "journal-title": "BMJ Qual Saf."
+      },
+      {
+        "key": "ref-14",
+        "doi-asserted-by": "publisher",
+        "first-page": "135-7",
+        "DOI": "10.3109\/14767058.2011.607682",
+        "article-title": "Communication with parents in neonatal intensive care.",
+        "volume": "24 Suppl 1",
+        "author": "M Orzalesi",
+        "year": "2011",
+        "journal-title": "J Matern Fetal Neonatal Med."
+      },
+      {
+        "key": "ref-15",
+        "doi-asserted-by": "publisher",
+        "first-page": "3156-65",
+        "DOI": "10.1111\/jocn.12558",
+        "article-title": "The neonatal nurses\u2019 view of their role in emotional support of parents and its complexities.",
+        "volume": "23",
+        "author": "M Turner",
+        "year": "2014",
+        "journal-title": "J Clin Nurs."
+      },
+      {
+        "key": "ref-16",
+        "doi-asserted-by": "publisher",
+        "first-page": "18-30",
+        "DOI": "10.1177\/1206331211426056",
+        "article-title": "Hospital domestics: care work in a Kenyan hospital.",
+        "volume": "15",
+        "author": "H Brown",
+        "year": "2012",
+        "journal-title": "Sp Cult."
+      },
+      {
+        "key": "ref-17",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1186\/s12960-021-00574-3",
+        "article-title": "Training in communication skills for self-efficacy of health professionals: a systematic review.",
+        "volume": "19",
+        "author": "A  de Sousa Mata",
+        "year": "2021",
+        "journal-title": "Hum Resour Health."
+      },
+      {
+        "key": "ref-18",
+        "doi-asserted-by": "publisher",
+        "first-page": "35-44",
+        "DOI": "10.1111\/j.1365-2648.2006.03787.x",
+        "article-title": "Communication enhancement: nurse and patient satisfaction outcomes in a complex continuing care facility.",
+        "volume": "54",
+        "author": "K McGilton",
+        "year": "2006",
+        "journal-title": "J Adv Nurs."
+      },
+      {
+        "key": "ref-19",
+        "doi-asserted-by": "publisher",
+        "first-page": "27-37",
+        "DOI": "10.5681\/jcs.2013.004",
+        "article-title": "The effect of communication skills training on quality of care, self-efficacy, job satisfaction and communication skills rate of nurses in hospitals of Tabriz, Iran.",
+        "volume": "2",
+        "author": "E Khodadadi",
+        "year": "2013",
+        "journal-title": "J Caring Sci."
+      },
+      {
+        "key": "ref-20",
+        "doi-asserted-by": "publisher",
+        "first-page": "374-8",
+        "DOI": "10.1016\/j.nepr.2010.05.007",
+        "article-title": "Evaluating a nursing communication skills training course: the relationships between self-rated ability, satisfaction, and actual performance.",
+        "volume": "10",
+        "author": "B Mullan",
+        "year": "2010",
+        "journal-title": "Nurse Educ Pract."
+      },
+      {
+        "key": "ref-21",
+        "doi-asserted-by": "publisher",
+        "first-page": "36-40",
+        "DOI": "10.1016\/j.nepr.2016.04.005",
+        "article-title": "Interprofessional communication in healthcare: an integrative review.",
+        "volume": "19",
+        "author": "C Foronda",
+        "year": "2016",
+        "journal-title": "Nurse Educ Pract."
+      },
+      {
+        "key": "ref-22",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1136\/bmjopen-2020-045123",
+        "article-title": "Value of stakeholder engagement in improving newborn care in Kenya: a qualitative description of perspectives and lessons learned.",
+        "volume": "11",
+        "author": "J Nzinga",
+        "year": "2021",
+        "journal-title": "BMJ Open."
+      },
+      {
+        "key": "ref-23",
+        "doi-asserted-by": "publisher",
+        "first-page": "162-7",
+        "DOI": "10.1016\/j.pec.2014.10.022",
+        "article-title": "Teaching professional and humanistic values: suggestion for a practical and theoretical model.",
+        "volume": "98",
+        "author": "W Branch",
+        "year": "2015",
+        "journal-title": "Patient Educ Couns."
+      },
+      {
+        "key": "ref-24",
+        "doi-asserted-by": "publisher",
+        "first-page": "40-6",
+        "DOI": "10.1136\/qhc.12.1.40",
+        "article-title": "Process evaluation on quality improvement interventions.",
+        "volume": "12",
+        "author": "M Hulscher",
+        "year": "2003",
+        "journal-title": "Qual Saf Health Care."
+      },
+      {
+        "key": "ref-25",
+        "doi-asserted-by": "publisher",
+        "first-page": "184-92",
+        "DOI": "10.1093\/jamia\/ocv028",
+        "article-title": "Innovating to enhance clinical data management using non-commercial and open source solutions across a multi-center network supporting inpatient pediatric care and research in Kenya.",
+        "volume": "23",
+        "author": "T Tuti",
+        "year": "2016",
+        "journal-title": "J Am Med Inform Assoc."
+      },
+      {
+        "key": "ref-26",
+        "doi-asserted-by": "publisher",
+        "first-page": "173-87",
+        "DOI": "10.1108\/JHOM-08-2017-0203",
+        "article-title": "Hybrid clinical-managers in Kenyan hospitals: Navigating between professional, official and practical norms.",
+        "volume": "33",
+        "author": "J Nzinga",
+        "year": "2019",
+        "journal-title": "J Health Organ Manag."
+      },
+      {
+        "key": "ref-27",
+        "doi-asserted-by": "publisher",
+        "first-page": "97-100",
+        "DOI": "10.12968\/ajmw.2010.4.2.47612",
+        "article-title": "Framework analysis: a method for analysing qualitative data.",
+        "volume": "4",
+        "author": "C Furber",
+        "year": "2010",
+        "journal-title": "Afr J Midwifery Womens Health."
+      },
+      {
+        "key": "ref-28",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1186\/1471-2288-13-117",
+        "article-title": "Using the framework method for the analysis of qualitative data in multi-disciplinary health research.",
+        "volume": "13",
+        "author": "N Gale",
+        "year": "2013",
+        "journal-title": "BMC Med Res Methodol."
+      },
+      {
+        "key": "ref-29",
+        "doi-asserted-by": "publisher",
+        "first-page": "1023-1035",
+        "DOI": "10.1093\/heapol\/czab056",
+        "article-title": "An innovative leadership development initiative to support building everyday resilience in health systems.",
+        "volume": "36",
+        "author": "J Nzinga",
+        "year": "2021",
+        "journal-title": "Health Policy Plan."
+      },
+      {
+        "key": "ref-30",
+        "doi-asserted-by": "publisher",
+        "first-page": "90-7",
+        "DOI": "10.1002\/chp.21131",
+        "article-title": "Communication skills training increases self-efficacy of health care professionals.",
+        "volume": "32",
+        "author": "B N\u00f8rgaard",
+        "year": "2012",
+        "journal-title": "J Contin Educ Health Prof."
+      },
+      {
+        "key": "ref-31",
+        "doi-asserted-by": "publisher",
+        "first-page": "31-35",
+        "DOI": "10.7748\/nm.2019.e1820",
+        "article-title": "Relationship between communication skills and emotional intelligence among nurses.",
+        "volume": "26",
+        "author": "P Raeissi",
+        "year": "2019",
+        "journal-title": "Nurs Manag (Harrow)."
+      },
+      {
+        "key": "ref-32",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.5812\/semj.80275",
+        "article-title": "The relationship between emotional intelligence and communication skills in healthcare staff.",
+        "volume": "20",
+        "author": "M Amini",
+        "year": "2019",
+        "journal-title": "Shiraz E Med J."
+      },
+      {
+        "key": "ref-33",
+        "doi-asserted-by": "publisher",
+        "first-page": "595-621",
+        "DOI": "10.1007\/s10459-007-9090-2",
+        "article-title": "Reflection and reflective practice in health professions education: a systematic review.",
+        "volume": "14",
+        "author": "K Mann",
+        "year": "2009",
+        "journal-title": "Adv Health Sci Educ Theory Pract."
+      },
+      {
+        "key": "ref-34",
+        "doi-asserted-by": "publisher",
+        "first-page": "928, 931",
+        "DOI": "10.1001\/archderm.121.7.928",
+        "article-title": "Facial burning and scarring in a child.",
+        "volume": "121",
+        "author": "J Joyce",
+        "year": "1985",
+        "journal-title": "Arch Dermatol."
+      },
+      {
+        "key": "ref-35",
+        "first-page": "400-2",
+        "article-title": "Reframing clinician distress: moral injury not burnout.",
+        "volume": "36",
+        "author": "W Dean",
+        "year": "2019",
+        "journal-title": "Fed Pract."
+      },
+      {
+        "key": "ref-36",
+        "doi-asserted-by": "publisher",
+        "first-page": "836-45",
+        "DOI": "10.1016\/j.sbspro.2011.11.312",
+        "article-title": "The relationships between personality traits and students\u2019 academic achievement.",
+        "volume": "29",
+        "author": "S Hakimi",
+        "year": "2011",
+        "journal-title": "Procedia - Soc Behav Sci."
+      }
+    ],
+    "container-title": ["Wellcome Open Research"],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https:\/\/wellcomeopenresearch.org\/articles\/7-223\/v2\/xml",
+        "content-type": "application\/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https:\/\/wellcomeopenresearch.org\/articles\/7-223\/v2\/pdf",
+        "content-type": "application\/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https:\/\/wellcomeopenresearch.org\/articles\/7-223\/v2\/iparadigms",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": { "date-parts": [[2025, 4, 25]], "date-time": "2025-04-25T16:00:12Z", "timestamp": 1745596812000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/wellcomeopenresearch.org\/articles\/7-223\/v2" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2025, 4, 25]] },
+    "references-count": 36,
+    "URL": "https:\/\/doi.org\/10.12688\/wellcomeopenres.18006.2",
+    "relation": {
+      "has-version": [{ "id-type": "doi", "id": "10.12688\/wellcomeopenres.18006.1", "asserted-by": "subject" }]
+    },
+    "ISSN": ["2398-502X"],
+    "issn-type": [{ "value": "2398-502X", "type": "electronic" }],
+    "subject": [],
+    "published": { "date-parts": [[2025, 4, 25]] },
+    "assertion": [
+      {
+        "value": "Indexed",
+        "URL": "https:\/\/wellcomeopenresearch.org\/articles\/7-223\/v2#article-reports",
+        "order": 0,
+        "name": "referee-status",
+        "label": "Referee status",
+        "group": { "name": "current-referee-status", "label": "Current Referee Status" }
+      },
+      {
+        "value": "10.21956\/wellcomeopenres.19965.r58404, Anna P Ralph, Global and Tropical Health, Menzies School of Health Research, Charles Darwin University, Casuarina, Northern Territory, 28 Jul 2023, version 1, indexed",
+        "URL": "https:\/\/wellcomeopenresearch.org\/articles\/7-223\/v1#referee-response-58404",
+        "order": 0,
+        "name": "referee-response-58404",
+        "label": "Referee Report",
+        "group": { "name": "article-reports", "label": "Article Reports" }
+      },
+      {
+        "value": "<b>Sassy Molyneux<\/b>; \n<i>Posted: 27 Mar 2025<\/i>; We are very grateful for the positive and careful reviews of our paper, and for the very useful suggestions to strengthen it.&nbsp; We attach a revised copy of the paper, with the changes highlighted in yellow.&nbsp; A point by point response to each comment from the reviewers is provided below:  This is an important study addressing a fundamental clinical skill (communication) which is often taught poorly or not at all. The authors developed and implemented training on communication and emotional competence, delivered over 9 months for nurses working in neonatal care in 14 Kenyan hospitals. The training was very favourably received, and successful in eliciting improved self-reported communication styles among the trainees. Methods are sound, data are presented clearly and the conclusions are appropriate. The following questions arose in my reading of the paper.&nbsp;&nbsp; \n<b>Response \u2013 thank you<\/b>  From what I can gather, trainees met face to face with the trainer 3 times, the first being a situation analysis and the next two comprising actual training days, with a 5 month gap between the second and final workshop. How was momentum maintained in the interim? Did trainees receive feedback on their reflections that they submitted and if so, how was that provided? (phone, email). The intensity of the intervention seems \u2018light\u2019 and yet the impact seems large in that benefits of the training are well described \u2013 were there components to the training that are not clearly coming through in the methodological description? \n<b>Response \u2013 this is a really helpful clarification.&nbsp; There was regular informal interactions on the phone primarily via whatsapp, when the trainers wanted input and support from the lead trainer.&nbsp; Reflections were submitted via whatsapp\/ email to the training lead, but they were not individually discussed outside of the training days. &nbsp;&nbsp;We have now added this information into the methodological description.<\/b>  What was the retention in the course over the 9 months? How many trainees dropped out? \n<b>Response \u2013 of the 18 in-charges who began the course, two shifted departments and so 16 completed the entire process..<\/b> \n<b>We have now added this information into the methodological description.<\/b>   What language were interviews conducted in? If English, was that appropriate? \n<b>Response \u2013 the interviews were in English or Kiswahili, as preferred by the participants.&nbsp; We have now added this information into the methodological description.<\/b>  Interviews were done by a researcher independent from the one who ran the training. However to what extent do you think interview participants could speak honestly about their experience of the course, given that they knew the interviewee was a researcher on the project? \n<b>Response \u2013 there were some critiques of the course as outlined in the paper, but there is certainly some potential for interviewees to be hesitant in giving their honest views.&nbsp; We have now specifically noted this in the limitations section near the end of the discussion.<\/b>  Why are there such power differentials between nurses and patients in this context \u2013 e.g. the comment \u201cThese mothers are stubborn if you entertain them too much\u201d demonstrates 'othering' are the mothers largely a different ethnic group, or are from a different socioeconomic stratum, from the staff. What do those differences comprise, and were they specifically addressed in the training? &nbsp;\n<b>Response \u2013 There is some othering of mothers by staff, partly as a coping strategy with their high workloads, and potentially linked to many mothers being from different ethnic groups and of lower SES than the nurses.&nbsp; This was indeed a central element of the training as part of maintaining dignity and respect and changing attitudes.&nbsp; We have not added this detail only because there is so much more detail we could have also added, but it\u2019s available in the longer training material to interested readers.<\/b>  Why was the choice made to select 1-2 staff per hospital, rather than a larger cohort from a smaller number of hospitals? I imagine that impact could be diluted if there are few attendees per site, whereas a larger cohort from fewer sites might help achieve the goal of cultural change within hospitals as more staff learn and can then implement their new skills together and positively reinforce behaviour? \n<b>Response \u2013 the staff who were included were the in-charges of the NBUs, with all who were involved in the CIN network being given the opportunity to be included.&nbsp; The in-charges were targeted given the importance of mid-level managers\/leaders to the functioning of their teams.&nbsp; This had always been planned as the first step in a cascading of the training to more people within each facility through a TOT process.&nbsp; Experiences with the latter is now being written up and submitted as a separate paper.&nbsp; We have now noted this in the methodological description and the discussion section.<\/b>  In the Theory of Change, C indicates that there was diffusion of learning that occurred beyond those who attended the training \u2013 but is much evidence presented for that in this paper? (only course participants were interviewed). One participant said they hoped others might emulate their new communication style, but were there efforts made to capture whether there was in fact broader benefit beyond those staff who attended the training? &nbsp;\n<b>Response \u2013 the C in the ToC is tentative, based on the hope that this diffusion of learning might happen, especially with the cascading of care described above.&nbsp; We have emphasised how tentative this is in the discussion and Theory of Change.&nbsp; In our next paper soon to be submitted for publication, we have included perspectives from non-trained colleagues and managers.<\/b> \n<b>Typographical errors and spelling \u2013 thank you; all nine have been corrected.<\/b>",
+        "URL": "https:\/\/wellcomeopenresearch.org\/articles\/7-223\/v2#referee-comment-6091",
+        "order": 1,
+        "name": "referee-comment-6091",
+        "label": "Referee Comment",
+        "group": { "name": "article-reports", "label": "Article Reports" }
+      },
+      {
+        "value": "10.21956\/wellcomeopenres.19965.r74000, Laura Dean, Liverpool School of Tropical Medicine, Liverpool, England, 02 May 2024, version 1, indexed",
+        "URL": "https:\/\/wellcomeopenresearch.org\/articles\/7-223\/v1#referee-response-74000",
+        "order": 2,
+        "name": "referee-response-74000",
+        "label": "Referee Report",
+        "group": { "name": "article-reports", "label": "Article Reports" }
+      },
+      {
+        "value": "<b>Sassy Molyneux<\/b>; \n<i>Posted: 27 Mar 2025<\/i>; We are very grateful for the positive and careful reviews of our paper, and for the very useful suggestions to strengthen it.&nbsp; We attach a revised copy of the paper, with the changes highlighted in yellow.&nbsp; A point by point response to each comment from the reviewers is provided below. Reviewers' comments: This is a well written and compelling article that addresses a key area in health workforce skills development. The participatory adaptation and delivery of a training intervention to enhance communication and emotional competence among nurses in neonatal care is presented. The training was positively evaluated and the potential of such and intervention clearly articulated.&nbsp;  The clarifications or questions that arose for me were minimal, as follows:&nbsp; \n<b>Response \u2013 thank you<\/b>  Although the sample is relatively homogeneous, I was interested to understand if there were other characteristics that altered the impact of the intervention. For example, length of service, age, previous personal maternal health experiences, job role prior to the neonatal unit. The complexities of work related trauma and the impact of such interventions in relation to some of these characteristics may be interesting to explore in future work. Where possible, nuance in experience would also be beneficial to consider within the presentation of results here.&nbsp; &nbsp;\n<b>Response \u2013 we agree this is very important and would have been valuable to explore in more depth as part of our analyses.&nbsp; We will ensure we do so in future on-going related work.&nbsp;<\/b>  I noticed approximately 4 individuals did not complete the end line but did complete baseline data collection activities- what was the reason for this? did they not complete the course? if so why not? This is important to also understand in light of the positive findings to ensure retention in future endeavours.&nbsp; \n<b>Response \u2013 we have now provided information on this (see under reviewer 1)<\/b>  Overall, i think this is a useful article, not just in terms of supporting improvements in care within neonatal units, but with significant potential for other situations in resource constrained environments. \n<b>Response \u2013 thank you<\/b>",
+        "URL": "https:\/\/wellcomeopenresearch.org\/articles\/7-223\/v2#referee-comment-6092",
+        "order": 3,
+        "name": "referee-comment-6092",
+        "label": "Referee Comment",
+        "group": { "name": "article-reports", "label": "Article Reports" }
+      },
+      {
+        "value": "This work was supported by the Wellcome Trust through a Wellcome Core award to KEMRI-Wellcome Trust Research Programme [227396\/Z\/23\/Z], and a Senior Fellowship awarded to ME [207522\/Z\/17\/Z]; and by the NIHR (project reference: NIHR130812) using UK international development funding from the UK Government to support global health research. The views expressed in this publication are those of the author(s) and not necessarily those of the NIHR or the UK government. The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.",
+        "order": 4,
+        "name": "grant-information",
+        "label": "Grant Information"
+      },
+      {
+        "value": "This is an open access article distributed under the terms of the Creative Commons Attribution Licence, which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.",
+        "order": 0,
+        "name": "copyright-info",
+        "label": "Copyright"
+      }
+    ]
+  }
+}
