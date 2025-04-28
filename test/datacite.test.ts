@@ -1334,7 +1334,7 @@ describe('getPreprintFromDatacite', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.arxivPreprintId(), fc.instant(), fc.string()])(
+  test.prop([fc.legacyDatacitePreprintId().filter(id => id._tag !== 'arcadia-science'), fc.instant(), fc.string()])(
     'when the DOI is not for a preprint',
     async (id, posted, type) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
