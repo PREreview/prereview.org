@@ -9,6 +9,7 @@
 @import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-Bold.css');
 @import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-BoldItalic.css');
 @import url('color.css');
+@import url('grid.css');
 @import url('space.css');
 @import url('step.css');
 
@@ -278,7 +279,7 @@ body {
 
   @media screen {
     min-block-size: 100%;
-    min-inline-size: 320px;
+    min-inline-size: var(--min-viewport-size);
   }
 }
 
@@ -288,10 +289,10 @@ body {
   row-gap: var(--space-2xs);
   align-items: center;
   justify-content: space-between;
-  max-inline-size: 75rem;
+  max-inline-size: var(--grid-max-width);
   margin-inline: auto;
   padding-block: var(--space-2xs);
-  padding-inline: var(--space-s-m);
+  padding-inline: var(--grid-gutter);
   column-gap: var(--space-m);
   font-size: var(--step--1);
 
@@ -314,9 +315,9 @@ body {
 
 .contents > :not(aside, header),
 .contents > aside > * {
-  max-inline-size: 75rem;
+  max-inline-size: var(--grid-max-width);
   margin-inline: auto;
-  padding-inline: var(--space-s-m);
+  padding-inline: var(--grid-gutter);
 }
 
 body > .contents {
@@ -330,7 +331,7 @@ body > footer {
   margin-block-start: var(--space-2xl-3xl);
   margin-inline: auto;
   padding-block: var(--space-s-m);
-  padding-inline: max(var(--space-s-m), calc(var(--space-s-m) + (100vi - 75rem) / 2));
+  padding-inline: max(var(--grid-gutter), calc(var(--grid-gutter) + (100vi - var(--grid-max-width)) / 2));
   column-gap: var(--space-2xl-3xl);
   font-size: var(--step--1);
   row-gap: var(--space-xs-s);
@@ -743,7 +744,7 @@ dl {
     flex-wrap: wrap;
     max-inline-size: 100%;
     margin-block-start: var(--space-3xs-2xs);
-    column-gap: var(--space-s-m);
+    column-gap: var(--grid-gutter);
     font-size: var(--step--2);
     row-gap: var(--space-3xs);
 
@@ -2209,7 +2210,7 @@ skip-link {
   &[aria-labelledby][tabindex] {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-s-m);
+    gap: var(--grid-gutter);
     justify-content: center;
 
     & > * {
@@ -2218,7 +2219,7 @@ skip-link {
     }
 
     & article {
-      inline-size: min(95vw - var(--space-s-m) * 2, 20em);
+      inline-size: min(95vw - var(--grid-gutter) * 2, 20em);
       margin-block-start: 0;
 
       > :not(.visually-hidden, header, :--list, dl) {
@@ -2232,7 +2233,7 @@ skip-link {
 
     @media screen {
       margin-inline: calc(50% - 50vw);
-      padding-inline: var(--space-s-m);
+      padding-inline: var(--grid-gutter);
 
       @media (width < 50em) {
         flex-wrap: nowrap;
@@ -2274,12 +2275,12 @@ skip-link {
 
     & > :not(.contents) {
       inline-size: calc(50% - var(--space-m-xl));
-      margin-inline-start: calc(50% + var(--space-m-xl) - var(--space-s-m));
+      margin-inline-start: calc(50% + var(--space-m-xl) - var(--grid-gutter));
     }
 
     & > header > .navigation {
-      max-inline-size: 75rem;
-      padding-inline: var(--space-s-m);
+      max-inline-size: var(--grid-max-width);
+      padding-inline: var(--grid-gutter);
     }
 
     & > .contents {
@@ -2292,12 +2293,12 @@ skip-link {
 
       & > :not(aside) {
         inline-size: calc(100% - var(--space-m-xl));
-        margin-inline-start: calc(var(--space-m-xl) - var(--space-s-m));
+        margin-inline-start: calc(var(--space-m-xl) - var(--grid-gutter));
       }
 
       & > aside > * {
         inline-size: calc(100% - var(--space-m-xl));
-        margin-inline-end: calc(var(--space-m-xl) - var(--space-s-m));
+        margin-inline-end: calc(var(--space-m-xl) - var(--grid-gutter));
       }
 
       & > aside {
@@ -2324,8 +2325,8 @@ skip-link {
     }
 
     & > footer {
-      max-inline-size: 75rem;
-      padding-inline: var(--space-s-m);
+      max-inline-size: var(--grid-max-width);
+      padding-inline: var(--grid-gutter);
     }
   }
 }
@@ -2335,7 +2336,7 @@ skip-link {
   flex-wrap: wrap;
   align-items: center;
   padding-block: var(--space-2xs);
-  padding-inline: max(var(--space-s-m), calc(var(--space-s-m) + (100% - 75rem) / 2));
+  padding-inline: max(var(--grid-gutter), calc(var(--grid-gutter) + (100% - var(--grid-max-width)) / 2));
   column-gap: var(--space-xs-m);
   background-color: var(--color-background-alt);
   font-size: var(--step--1);
@@ -2428,7 +2429,7 @@ skip-link {
   align-items: center;
   justify-content: space-around;
   padding-inline-start: 0;
-  column-gap: var(--space-s-m);
+  column-gap: var(--grid-gutter);
   list-style-type: none;
   row-gap: var(--space-s-m);
 
@@ -2626,12 +2627,12 @@ skip-link {
   display: flex;
   flex-direction: column;
   margin-inline: calc(50% - 50vw);
-  padding-inline: var(--space-s-m);
+  padding-inline: var(--grid-gutter);
 
   & > section {
     max-inline-size: 50rem;
     padding-block: var(--space-s-m);
-    padding-inline: var(--space-s-m);
+    padding-inline: var(--grid-gutter);
     border: var(--width-divider) solid var(--color-divider);
 
     &:not(:first-child) {
@@ -2737,7 +2738,7 @@ skip-link {
 .statistics {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-s-m);
+  gap: var(--grid-gutter);
   justify-content: center;
   padding-inline-start: 0;
   list-style-type: none;

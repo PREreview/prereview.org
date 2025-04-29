@@ -60,6 +60,7 @@ module.exports = (env, argv) => ({
                     {
                       files: [
                         path.resolve('assets', 'color.css'),
+                        path.resolve('assets', 'grid.css'),
                         path.resolve('assets', 'space.css'),
                         path.resolve('assets', 'step.css'),
                       ],

@@ -1,0 +1,6 @@
+:root {
+  --grid-max-width: 75rem;
+  --grid-gutter: var(--space-s-m);
+  --grid-columns: 12;
+  --min-viewport-size: 320px;
+}
