@@ -2609,6 +2609,10 @@ skip-link {
   & img {
     inline-size: clamp(35%, 15vi, 55%);
 
+    @media (width < 40em) {
+      display: none;
+    }
+
     @media (forced-colors: active) {
       forced-color-adjust: auto;
       background-color: transparent;
