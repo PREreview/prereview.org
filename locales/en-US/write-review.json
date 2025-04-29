@@ -466,13 +466,22 @@
     "message": "The authors declare that they have no competing interests."
   },
   "selectYesIfCompetingInterest": {
-    "message": "Select yes if you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests"
+    "message": "Select yes if you have any competing interests"
+  },
+  "selectYesIfAuthorsCompetingInterest": {
+    "message": "Select yes if you, or any of the other authors, have any competing interests"
   },
   "competingInterestDetails": {
-    "message": "Enter details of {otherAuthors, boolean, true {the} false {your}} competing interests"
+    "message": "Enter details of your competing interests"
+  },
+  "authorsCompetingInterestDetails": {
+    "message": "Enter details of the competing interests"
   },
   "doYouHaveCompetingInterests": {
-    "message": "Do you{otherAuthors, boolean, true {, or any of the other authors,} false {}} have any competing interests?"
+    "message": "Do you have any competing interests?"
+  },
+  "doAuthorsHaveCompetingInterests": {
+    "message": "Do you, or any of the other authors, have any competing interests?"
   },
   "discloseCompetingInterests": {
     "message": "We ask all reviewers to disclose any competing interests that could influence their review of the preprint."
