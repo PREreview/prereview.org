@@ -188,12 +188,6 @@
   "whatHappensNext": {
     "message": "O que acontece em seguida"
   },
-  "whereYouCanSeeYourPrereview": {
-    "message": "Você poderá ver sua avaliação PREreview em breve. Também aparecerá na nossa {communitySlackLink}{isScietyPreprint, boolean, true { e {scietyLink}} false {}}."
-  },
-  "communitySlack": {
-    "message": "Comunidade Slack"
-  },
   "opensInNewTab": {
     "message": "abre em uma nova aba"
   },

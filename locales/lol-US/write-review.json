@@ -201,10 +201,10 @@
     "message": "crwdns3964:0crwdne3964:0"
   },
   "whereYouCanSeeYourPrereview": {
-    "message": "crwdns3966:0{communitySlackLink}crwdnd3966:0{scietyLink}crwdne3966:0"
+    "message": "crwdns5898:0crwdne5898:0"
   },
-  "communitySlack": {
-    "message": "crwdns3968:0crwdne3968:0"
+  "whereYouCanSeeYourPrereviewSciety": {
+    "message": "crwdns5900:0crwdne5900:0"
   },
   "opensInNewTab": {
     "message": "crwdns3970:0crwdne3970:0"
