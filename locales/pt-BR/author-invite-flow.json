@@ -51,7 +51,7 @@
     "message": "O que é um ORCID iD?"
   },
   "orcidExplainer": {
-    "message": "Um <link>ORCID iD</link> é um identificador exclusivo que distingue você de outras pessoas com o mesmo nome ou nome semelhante."
+    "message": "Um <link>ORCID iD</link> é um identificador único que distingue você de outras pessoas com o mesmo nome ou nome semelhante."
   },
   "beforeYouStart": {
     "message": "Antes de começar"
