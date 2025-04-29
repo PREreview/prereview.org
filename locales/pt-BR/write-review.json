@@ -452,15 +452,6 @@
   "competingInterestsAuthorsNo": {
     "message": "Os autores declaram que não possuem conflitos de interesse."
   },
-  "selectYesIfCompetingInterest": {
-    "message": "Selecione sim se você{otherAuthors, boolean, true {, ou algum dos outros autores,} false {}} possui algum conflito de interesse"
-  },
-  "competingInterestDetails": {
-    "message": "Insira detalhes dos {otherAuthors, boolean, true {the} false {your}} conflitos de interesse"
-  },
-  "doYouHaveCompetingInterests": {
-    "message": "Você{otherAuthors, boolean, true {, ou algum dos outros autores,} false {}} possui algum conflito de interesse?"
-  },
   "discloseCompetingInterests": {
     "message": "Solicitamos que todos os avaliadores declarem quaisquer conflitos de interesse que possam influenciar sua avaliação do preprint."
   },

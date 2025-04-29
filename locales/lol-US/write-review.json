@@ -465,13 +465,22 @@
     "message": "crwdns5778:0crwdne5778:0"
   },
   "selectYesIfCompetingInterest": {
-    "message": "crwdns4408:0crwdne4408:0"
+    "message": "crwdns5886:0crwdne5886:0"
+  },
+  "selectYesIfAuthorsCompetingInterest": {
+    "message": "crwdns5888:0crwdne5888:0"
   },
   "competingInterestDetails": {
-    "message": "crwdns4410:0{the}crwdnd4410:0{your}crwdne4410:0"
+    "message": "crwdns5890:0crwdne5890:0"
+  },
+  "authorsCompetingInterestDetails": {
+    "message": "crwdns5892:0crwdne5892:0"
   },
   "doYouHaveCompetingInterests": {
-    "message": "crwdns4412:0crwdne4412:0"
+    "message": "crwdns5894:0crwdne5894:0"
+  },
+  "doAuthorsHaveCompetingInterests": {
+    "message": "crwdns5896:0crwdne5896:0"
   },
   "discloseCompetingInterests": {
     "message": "crwdns4555:0crwdne4555:0"
