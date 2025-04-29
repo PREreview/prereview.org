@@ -4,3 +4,12 @@
   --grid-columns: 12;
   --min-viewport-size: 320px;
 }
+
+/* @link https://utopia.fyi/grid/calculator?c=336,16,1.2,1248,24,1.25,5,2,&s=0.75|0.5|0.25|0.125,1.5|2|3|4|6,2xs-s|xs-m|s-l|m-xl|m-3xl|xl-3xl&g=s,l,xl,10 */
+
+:root:has(.tweaked) {
+  --grid-max-width: 78rem;
+  --grid-gutter: var(--space-s-l, clamp(1rem, 0.2632rem + 3.5088vw, 3rem));
+  --grid-columns: 10;
+  --min-viewport-size: 336px;
+}
