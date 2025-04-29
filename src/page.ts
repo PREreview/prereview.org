@@ -63,6 +63,7 @@ export const page = ({
   publicUrl,
   canChooseLocale,
   useCrowdinInContext,
+  canSeeDesignTweaks = false,
 }: {
   page: Page
   environmentLabel?: 'dev' | 'sandbox'
@@ -70,6 +71,7 @@ export const page = ({
   publicUrl: URL
   canChooseLocale?: boolean
   useCrowdinInContext: boolean
+  canSeeDesignTweaks?: boolean
 }): Html => {
   const scripts = pipe(
     Array.dedupe(js),
@@ -132,7 +134,7 @@ export const page = ({
         <link rel="icon" href="${assets['favicon.ico']}" sizes="32x32" />
         <link rel="icon" href="${assets['favicon.svg']}" type="image/svg+xml" />
       </head>
-      <body ${rawHtml(type === 'two-up' ? `class="${type}"` : '')}>
+      <body ${rawHtml(`class="${canSeeDesignTweaks ? 'tweaked' : 'untweaked'}${type === 'two-up' ? ` ${type}` : ''}"`)}>
         ${skipLinks.length > 0
           ? html` <skip-link>${skipLinks.map(([text, link]) => html`<a href="${link}">${text}</a>`)}</skip-link>`
           : ''}

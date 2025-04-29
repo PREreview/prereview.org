@@ -2461,7 +2461,7 @@ skip-link {
   }
 }
 
-.hero:not(.tweaked) {
+.untweaked .hero {
   display: flow-root;
 
   & h1 {
@@ -2541,7 +2541,7 @@ skip-link {
   }
 }
 
-.hero.tweaked {
+.tweaked .hero {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -2730,7 +2730,7 @@ skip-link {
   }
 }
 
-.overview.tweaked {
+.tweaked .overview {
   margin-block-start: var(--space-2xl);
 }
 

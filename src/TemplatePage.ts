@@ -1,5 +1,5 @@
 import { Config, Context, Effect, Layer, Option } from 'effect'
-import { CanChooseLocale, UseCrowdinInContext } from './feature-flags.js'
+import { CanChooseLocale, CanSeeDesignTweaks, UseCrowdinInContext } from './feature-flags.js'
 import type { Html } from './html.js'
 import { type Page, page as templatePage } from './page.js'
 import { PublicUrl } from './public-url.js'
@@ -21,6 +21,7 @@ export const make = Effect.gen(function* () {
   const canChooseLocale = yield* CanChooseLocale
   const useCrowdinInContext = yield* UseCrowdinInContext
   const { fathomId, environmentLabel } = yield* TemplatePageOptions
+  const canSeeDesignTweaks = yield* CanSeeDesignTweaks
 
   return (page: Page) =>
     templatePage({
@@ -30,6 +31,7 @@ export const make = Effect.gen(function* () {
       environmentLabel: Option.getOrUndefined(environmentLabel),
       fathomId: Option.getOrUndefined(fathomId),
       publicUrl,
+      canSeeDesignTweaks,
     })
 })
 
