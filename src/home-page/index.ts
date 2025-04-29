@@ -20,7 +20,7 @@ export const home = ({
     RT.Do,
     RT.apS('recentPrereviews', getRecentPrereviews()),
     RT.apSW('recentReviewRequests', getRecentReviewRequests()),
-    RT.let('statistics', () => ({ prereviews: 1153, servers: 30, users: 3311 })),
+    RT.let('statistics', () => ({ prereviews: 1160, servers: 30, users: 3333 })),
     RT.let('locale', () => locale),
     RT.let('canSeeDesignTweaks', () => canSeeDesignTweaks),
     RT.map(createPage),
