@@ -59,7 +59,7 @@ export class Work extends Schema.Class<Work>('Work')({
       Schema.Union(
         Schema.Struct({
           ORCID: Schema.optional(Orcid.OrcidFromUrlSchema),
-          given: Schema.NonEmptyTrimmedString,
+          given: Schema.optional(Schema.NonEmptyTrimmedString),
           family: Schema.NonEmptyTrimmedString,
         }),
         Schema.Struct({

@@ -1,0 +1,319 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "institution": [{ "name": "bioRxiv" }],
+    "indexed": {
+      "date-parts": [[2025, 2, 21]],
+      "date-time": "2025-02-21T00:37:38Z",
+      "timestamp": 1740098258526,
+      "version": "3.37.3"
+    },
+    "posted": { "date-parts": [[2023, 7, 6]] },
+    "group-title": "Molecular Biology",
+    "reference-count": 32,
+    "publisher": "Cold Spring Harbor Laboratory",
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "accepted": { "date-parts": [[2023, 7, 6]] },
+    "abstract": "<jats:title>Abstract<\/jats:title><jats:p>The<jats:italic>TFE3<\/jats:italic>fusion gene, byproduct of Xp11.2 translocation, is the diagnostic marker for translocation renal cell carcinoma (tRCC). Absence of any clinically recognized therapy for tRCC, pressing a need to create novel and efficient therapeutic approaches. Previous studies shown that stabilization of the G-quadruplex structure in oncogenes suppresses their expression machinery. To combat the oncogenesis caused by fusion genes, our objective is to locate and stabilize the G-quadruplex structure within the<jats:italic>PRCC-TFE3<\/jats:italic>fusion gene. Using the Quadruplex- forming G Rich Sequences (QGRS) mapper and the Non-B DNA motif search tool (nBMST) online server, we found putative G-quadruplex forming sequences (PQS) in the<jats:italic>PRCC-TFE3<\/jats:italic>fusion gene. Circular dichroism demonstrating a parallel G-quadruplex in the targeted sequence. Fluorescence and UV-vis spectroscopy results suggest that pyridostatin binds to this newly discovered G-quadruplex. The PCR stop assay, as well as transcriptional or translational inhibition by PQS, revealed that stable G-quadruplex formation affects biological processes. Confocal microscopy of HEK293T cells transfected with the fusion transcript confirmed G- quadruplexes formation in cell. This investigation may shed light on G-quadruplex\u2019s functions in fusion genes and may help in the development of therapies specifically targeted against fusion oncogenes, which would enhance the capability of current tRCC therapy approach.<\/jats:p>",
+    "DOI": "10.1101\/2023.07.06.547934",
+    "type": "posted-content",
+    "created": { "date-parts": [[2023, 7, 7]], "date-time": "2023-07-07T04:31:34Z", "timestamp": 1688704294000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 2,
+    "title": [
+      "Exploring G-quadruplex structure in<i>PRCC-TFE3<\/i>fusion Oncogene: Plausible use as anti cancer therapy for translocation Renal cell carcinoma (tRCC)"
+    ],
+    "prefix": "10.1101",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-5719-6572",
+        "authenticated-orcid": false,
+        "family": "Neha",
+        "sequence": "first",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-9857-4277",
+        "authenticated-orcid": false,
+        "given": "Parimal",
+        "family": "Das",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "246",
+    "reference": [
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.1",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1159\/000098080"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038\/sj.onc.1206686"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.3",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038\/sj.onc.1201394"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.4",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/hmg\/5.9.1333"
+      },
+      {
+        "issue": "10",
+        "key": "2023071205280729000_2023.07.06.547934v1.5",
+        "first-page": "4130",
+        "article-title": "Fusion of a novel gene, RCC17, to the TFE3 gene in t (X; 17)(p11. 2; q25. 3)- bearing papillary renal cell carcinomas",
+        "volume": "61",
+        "year": "2001",
+        "journal-title": "Cancer research"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.6",
+        "doi-asserted-by": "crossref",
+        "first-page": "190",
+        "DOI": "10.1016\/j.humpath.2017.02.022",
+        "article-title": "SFPQ\/PSF-TFE3 renal cell carcinoma: a clinicopathologic study emphasizing extended morphology and reviewing the differences between SFPQ-TFE3 RCC and the corresponding mesenchymal neoplasm despite an identical gene fusion",
+        "volume": "63",
+        "year": "2017",
+        "journal-title": "Human pathology"
+      },
+      {
+        "issue": "5",
+        "key": "2023071205280729000_2023.07.06.547934v1.7",
+        "doi-asserted-by": "crossref",
+        "first-page": "663",
+        "DOI": "10.1097\/PAS.0000000000000837",
+        "article-title": "Xp11 translocation renal cell carcinomas (RCCs) with RBM10-TFE3 gene fusion demonstrating melanotic features and overlapping morphology with t (6; 11) RCC",
+        "volume": "41",
+        "year": "2017",
+        "journal-title": "The American journal of surgical pathology"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.8",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1097\/PAS.0b013e3181a9cd6c"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.9",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/S0002-9440(10)61684-7"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.10",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1002\/gcc.22073"
+      },
+      {
+        "issue": "3",
+        "key": "2023071205280729000_2023.07.06.547934v1.11",
+        "doi-asserted-by": "crossref",
+        "first-page": "630",
+        "DOI": "10.1016\/j.bbagen.2017.11.011",
+        "article-title": "G-quadruplex structure at intron 2 of TFE3 and its role in Xp11. 2 translocation and splicing",
+        "volume": "1862",
+        "year": "2018",
+        "journal-title": "Biochimica et Biophysica Acta (BBA)-General Subjects"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.12",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038\/sj.onc.1204056"
+      },
+      {
+        "issue": "12",
+        "key": "2023071205280729000_2023.07.06.547934v1.13",
+        "doi-asserted-by": "crossref",
+        "first-page": "129719",
+        "DOI": "10.1016\/j.bbagen.2020.129719",
+        "article-title": "Dual role of G-quadruplex in translocation renal cell carcinoma: Exploring plausible Cancer therapeutic innovation",
+        "volume": "1864",
+        "year": "2020",
+        "journal-title": "Biochimica et Biophysica Acta (BBA)-General Subjects"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.14",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371\/journal.pone.0205660"
+      },
+      {
+        "issue": "9",
+        "key": "2023071205280729000_2023.07.06.547934v1.15",
+        "doi-asserted-by": "crossref",
+        "first-page": "7474",
+        "DOI": "10.1039\/C5RA17390F",
+        "article-title": "Targeting human telomeric G-quadruplex DNA with curcumin and its synthesized analogues under molecular crowding conditions",
+        "volume": "6",
+        "year": "2016",
+        "journal-title": "RSC advances"
+      },
+      {
+        "issue": "4",
+        "key": "2023071205280729000_2023.07.06.547934v1.16",
+        "doi-asserted-by": "crossref",
+        "first-page": "218",
+        "DOI": "10.1038\/nchembio864",
+        "article-title": "An RNA G- quadruplex in the 5\u2032 UTR of the NRAS proto-oncogene modulates translation",
+        "volume": "3",
+        "year": "2007",
+        "journal-title": "Nature chemical biology"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.17",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016\/j.ymeth.2007.02.009"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.18",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Lakowicz, J. R . (Ed.). (2006). Principles of fluorescence spectroscopy. Boston, MA: springer US.",
+        "DOI": "10.1007\/978-0-387-46312-4"
+      },
+      {
+        "issue": "3",
+        "key": "2023071205280729000_2023.07.06.547934v1.19",
+        "doi-asserted-by": "crossref",
+        "first-page": "182",
+        "DOI": "10.1038\/nchem.1548",
+        "article-title": "Quantitative visualization of DNA G-quadruplex structures in human cells",
+        "volume": "5",
+        "year": "2013",
+        "journal-title": "Nature chemistry"
+      },
+      {
+        "issue": "1",
+        "key": "2023071205280729000_2023.07.06.547934v1.20",
+        "doi-asserted-by": "crossref",
+        "first-page": "75",
+        "DOI": "10.1038\/nchem.1805",
+        "article-title": "Visualization and selective chemical targeting of RNA G-quadruplex structures in the cytoplasm of human cells",
+        "volume": "6",
+        "year": "2014",
+        "journal-title": "Nature chemistry"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.21",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1021\/bi401451q"
+      },
+      {
+        "issue": "12",
+        "key": "2023071205280729000_2023.07.06.547934v1.22",
+        "doi-asserted-by": "crossref",
+        "first-page": "5867",
+        "DOI": "10.1039\/c1cs15067g",
+        "article-title": "The application of DNA and RNA G- quadruplexes to therapeutic medicines",
+        "volume": "40",
+        "year": "2011",
+        "journal-title": "Chemical Society Reviews"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.23",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Kejnovsk\u00e1, I. , Ren\u010diuk, D. , Palack\u00fd, J. , & Vorl\u00ed\u010dkov\u00e1, M . (2019). CD Study of the G- Quadruplex Conformation. In G-Quadruplex Nucleic Acids (pp. 25\u201344). Humana, New York, NY.",
+        "DOI": "10.1007\/978-1-4939-9666-7_2"
+      },
+      {
+        "issue": "9",
+        "key": "2023071205280729000_2023.07.06.547934v1.24",
+        "first-page": "1957",
+        "article-title": "The G-quadruplex DNA stabilizing drug pyridostatin promotes DNA damage and downregulates transcription of Brca1 in neurons",
+        "volume": "9",
+        "year": "2017",
+        "journal-title": "Aging (Albany NY"
+      },
+      {
+        "issue": "12",
+        "key": "2023071205280729000_2023.07.06.547934v1.25",
+        "doi-asserted-by": "crossref",
+        "first-page": "1095",
+        "DOI": "10.1038\/nchem.842",
+        "article-title": "Small-molecule- mediated G-quadruplex isolation from human cells",
+        "volume": "2",
+        "year": "2010",
+        "journal-title": "Nature chemistry"
+      },
+      {
+        "issue": "1",
+        "key": "2023071205280729000_2023.07.06.547934v1.26",
+        "first-page": "17",
+        "article-title": "UV melting of GLquadruplexes",
+        "volume": "37",
+        "year": "2009",
+        "journal-title": "Current protocols in nucleic acid chemistry"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.27",
+        "doi-asserted-by": "crossref",
+        "unstructured": "A. Papadopoulou , R.J. Green , R.A. Frazier , Interaction of flavonoids with bovineserum albumin: a fluorescence quenching study, J. Agric. Food Chem. 53(2005) 158\u2013163.",
+        "DOI": "10.1021\/jf048693g"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.28",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/nar\/27.2.537"
+      },
+      {
+        "issue": "16",
+        "key": "2023071205280729000_2023.07.06.547934v1.29",
+        "doi-asserted-by": "crossref",
+        "first-page": "2898",
+        "DOI": "10.2174\/0929867325666171229132619",
+        "article-title": "The interplay between G-quadruplex and transcription",
+        "volume": "26",
+        "year": "2019",
+        "journal-title": "Current medicinal chemistry"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.30",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1261\/rna.1001708"
+      },
+      {
+        "key": "2023071205280729000_2023.07.06.547934v1.31",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093\/nar\/gku290"
+      },
+      {
+        "issue": "12",
+        "key": "2023071205280729000_2023.07.06.547934v1.32",
+        "doi-asserted-by": "crossref",
+        "first-page": "6650",
+        "DOI": "10.1021\/jf200907x",
+        "article-title": "Characterizing the interaction between tartrazine and two serum albumins by a hybrid spectroscopic approach",
+        "volume": "59",
+        "year": "2011",
+        "journal-title": "Journal of agricultural and food chemistry"
+      }
+    ],
+    "container-title": [],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https:\/\/syndication.highwire.org\/content\/doi\/10.1101\/2023.07.06.547934",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": { "date-parts": [[2023, 7, 12]], "date-time": "2023-07-12T12:40:05Z", "timestamp": 1689165605000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "http:\/\/biorxiv.org\/lookup\/doi\/10.1101\/2023.07.06.547934" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2023, 7, 6]] },
+    "references-count": 32,
+    "URL": "https:\/\/doi.org\/10.1101\/2023.07.06.547934",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2023, 7, 6]] },
+    "subtype": "preprint"
+  }
+}

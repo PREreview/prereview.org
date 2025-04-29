@@ -274,6 +274,30 @@ test.each([
       url: new URL('http://biorxiv.org/lookup/doi/10.1101/2025.04.10.647997'),
     }),
   },
+  {
+    response: 'biorxiv-family-name-only.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Neha', orcid: Orcid('0000-0002-5719-6572') },
+        { name: 'Parimal Das', orcid: Orcid('0000-0002-9857-4277') },
+      ],
+      id: { _tag: 'biorxiv', value: Doi('10.1101/2023.07.06.547934') },
+      posted: Temporal.PlainDate.from({ year: 2023, month: 7, day: 6 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Exploring G-quadruplex structure in<i>PRCC-TFE3</i>fusion Oncogene: Plausible use as anti cancer therapy for translocation Renal cell carcinoma (tRCC)',
+        ),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>The<i>TFE3</i>fusion gene, byproduct of Xp11.2 translocation, is the diagnostic marker for translocation renal cell carcinoma (tRCC). Absence of any clinically recognized therapy for tRCC, pressing a need to create novel and efficient therapeutic approaches. Previous studies shown that stabilization of the G-quadruplex structure in oncogenes suppresses their expression machinery. To combat the oncogenesis caused by fusion genes, our objective is to locate and stabilize the G-quadruplex structure within the<i>PRCC-TFE3</i>fusion gene. Using the Quadruplex- forming G Rich Sequences (QGRS) mapper and the Non-B DNA motif search tool (nBMST) online server, we found putative G-quadruplex forming sequences (PQS) in the<i>PRCC-TFE3</i>fusion gene. Circular dichroism demonstrating a parallel G-quadruplex in the targeted sequence. Fluorescence and UV-vis spectroscopy results suggest that pyridostatin binds to this newly discovered G-quadruplex. The PCR stop assay, as well as transcriptional or translational inhibition by PQS, revealed that stable G-quadruplex formation affects biological processes. Confocal microscopy of HEK293T cells transfected with the fusion transcript confirmed G- quadruplexes formation in cell. This investigation may shed light on G-quadruplex’s functions in fusion genes and may help in the development of therapies specifically targeted against fusion oncogenes, which would enhance the capability of current tRCC therapy approach.</p>',
+        ),
+      },
+      url: new URL('http://biorxiv.org/lookup/doi/2023.07.06.547934'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

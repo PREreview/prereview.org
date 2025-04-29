@@ -69,6 +69,10 @@ export const workToPreprint = (
                 name: `${author.given} ${author.family}`,
                 orcid: author.ORCID,
               })),
+              Match.when({ family: Match.string }, author => ({
+                name: author.family,
+                orcid: author.ORCID,
+              })),
               Match.when({ name: Match.string }, author => ({
                 name: author.name,
                 orcid: undefined,
