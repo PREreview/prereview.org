@@ -54,15 +54,7 @@ export const publishedPage = ({
           ${rawHtml(
             isScietyPreprint(preprint.id)
               ? t('write-review', 'whereYouCanSeeYourPrereviewSciety')({ communitySlack, sciety })
-              : t(
-                  'write-review',
-                  'whereYouCanSeeYourPrereview',
-                )({
-                  communitySlack,
-                  communitySlackLink: communitySlack('Community Slack'),
-                  scietyLink: '',
-                  isScietyPreprint: false,
-                }),
+              : t('write-review', 'whereYouCanSeeYourPrereview')({ communitySlack }),
           )}
         </p>
 
