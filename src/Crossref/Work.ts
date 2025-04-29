@@ -98,4 +98,7 @@ export const getWork = (doi: Doi.Doi): Effect.Effect<Work, WorkIsNotFound | Work
       ParseError: error => new WorkIsUnavailable({ cause: error }),
       ResponseError: error => new WorkIsUnavailable({ cause: error }),
     }),
+    Effect.tapErrorTag('WorkIsUnavailable', error =>
+      Effect.logError('Failed to get work from Crossref').pipe(Effect.annotateLogs({ error })),
+    ),
   )

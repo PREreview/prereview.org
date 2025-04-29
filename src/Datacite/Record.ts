@@ -104,4 +104,7 @@ export const getRecord = (
       ParseError: error => new RecordIsUnavailable({ cause: error }),
       ResponseError: error => new RecordIsUnavailable({ cause: error }),
     }),
+    Effect.tapErrorTag('RecordIsUnavailable', error =>
+      Effect.logError('Failed to get record from DataCite').pipe(Effect.annotateLogs({ error })),
+    ),
   )
