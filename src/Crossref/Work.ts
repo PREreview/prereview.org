@@ -56,11 +56,16 @@ export class Work extends Schema.Class<Work>('Work')({
   abstract: Schema.optional(Schema.String),
   author: Schema.optionalWith(
     Schema.Array(
-      Schema.Struct({
-        ORCID: Schema.optional(Orcid.OrcidFromUrlSchema),
-        given: Schema.NonEmptyTrimmedString,
-        family: Schema.NonEmptyTrimmedString,
-      }),
+      Schema.Union(
+        Schema.Struct({
+          ORCID: Schema.optional(Orcid.OrcidFromUrlSchema),
+          given: Schema.NonEmptyTrimmedString,
+          family: Schema.NonEmptyTrimmedString,
+        }),
+        Schema.Struct({
+          name: Schema.NonEmptyTrimmedString,
+        }),
+      ),
     ),
     { default: Array.empty },
   ),

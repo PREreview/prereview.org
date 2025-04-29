@@ -230,6 +230,50 @@ test.each([
       url: new URL('https://verixiv.org/articles/1-7/v1'),
     }),
   },
+  {
+    response: 'biorxiv-group-author.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Gina M. Many', orcid: Orcid('0000-0003-4779-1690') },
+        { name: 'Tyler J Sagendorf', orcid: Orcid('0000-0003-1552-4870') },
+        { name: 'Hugh Mitchell', orcid: undefined },
+        { name: 'James A Sanford', orcid: Orcid('0000-0001-7901-5579') },
+        { name: 'Samuel Cohen', orcid: undefined },
+        { name: 'Ravi Misra', orcid: undefined },
+        { name: 'Igor Estevao', orcid: undefined },
+        { name: 'Ivo Díaz Ludovico', orcid: undefined },
+        { name: 'David A Gaul', orcid: Orcid('0000-0002-9308-1895') },
+        { name: 'Malene E Lindholm', orcid: Orcid('0000-0002-5763-7833') },
+        { name: 'Mereena Ushakumary', orcid: undefined },
+        { name: 'James Pino', orcid: undefined },
+        { name: 'Nicholas Musi', orcid: undefined },
+        { name: 'Jia Nie', orcid: undefined },
+        { name: 'Facundo M Fernández', orcid: Orcid('0000-0002-0302-2534') },
+        { name: 'Eric A Ortlund', orcid: Orcid('0000-0001-8855-3029') },
+        { name: 'Karyn A. Esser', orcid: Orcid('0000-0002-5791-1441') },
+        { name: 'Sue C Bodine', orcid: undefined },
+        { name: 'Simon Schenk', orcid: undefined },
+        { name: 'Geremy Clair', orcid: undefined },
+        { name: 'Joshua N Adkins', orcid: Orcid('0000-0003-0399-0700') },
+        { name: 'The MoTrPAC Study Group', orcid: undefined },
+      ],
+      id: { _tag: 'biorxiv', value: Doi('10.1101/2025.04.10.647997') },
+      posted: Temporal.PlainDate.from({ year: 2025, month: 4, day: 16 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Sexually distinct multi-omic responses to progressive endurance exercise training in the rat lung—Findings from MoTrPAC',
+        ),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Despite the lungs being essential for ventilation and aerobic exercise capacity, conventionally the lungs are not thought to adapt to exercise training. Endurance exercise is key to pulmonary rehabilitation programs, which also displays sex-specific differences in therapeutic efficacy. Given the molecular underpinnings of sex-specific lung adaptations to endurance exercise are uncharacterized, we used a multi-omics approach to study sex differences in the lungs of 6-month-old Fischer 344 rats in response to an 8 week progressive endurance treadmill training protocol. This was accomplished by reannotating publicly accessible data from the Molecular Transducers of Physical Activity Consortium (MoTrPAC) and integrating newly-analyzed acetylome data to assess multi-omic sex differences in sedentary and progressively trained states. Female rats displayed enrichment in immune-related features and pathways at the transcriptome and proteome level that were maintained with training. Conversely, in the male rat lung there was an overall decrease in immune pathways following 8 weeks of training. Sexually conserved responses to training included increased enrichment in transcriptomic pathways related to type I alveoli and proteomic pathways related to cilia, and decreased mitochondrial protein acetylation. In both sexes, features known to be enriched in lung diseases were attenuated with training. Together our findings provide novel insight into sex specific responses to endurance exercise training in the rat lung and may offer translational insight into sex-specific differences in lung disease pathogenesis and treatment.</p>',
+        ),
+      },
+      url: new URL('http://biorxiv.org/lookup/doi/10.1101/2025.04.10.647997'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

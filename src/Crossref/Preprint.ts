@@ -61,10 +61,21 @@ export const workToPreprint = (
       onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { author: work.author } })),
       onNonEmpty: authors =>
         Either.right(
-          Array.map(authors, author => ({
-            name: `${author.given} ${author.family}`,
-            orcid: author.ORCID,
-          })),
+          Array.map(
+            authors,
+            flow(
+              Match.value,
+              Match.when({ given: Match.string }, author => ({
+                name: `${author.given} ${author.family}`,
+                orcid: author.ORCID,
+              })),
+              Match.when({ name: Match.string }, author => ({
+                name: author.name,
+                orcid: undefined,
+              })),
+              Match.exhaustive,
+            ),
+          ),
         ),
     })
 
