@@ -84,7 +84,7 @@ export function competingInterestsForm(
                 <h2>
                   ${otherAuthors
                     ? t('write-review', 'doAuthorsHaveCompetingInterests')()
-                    : t('write-review', 'doYouHaveCompetingInterests')({ otherAuthors })}
+                    : t('write-review', 'doYouHaveCompetingInterests')()}
                 </h2>
               </legend>
 
@@ -97,7 +97,7 @@ export function competingInterestsForm(
                         MissingE: () =>
                           otherAuthors
                             ? translate(locale, 'write-review', 'selectYesIfAuthorsCompetingInterest')()
-                            : translate(locale, 'write-review', 'selectYesIfCompetingInterest')({ otherAuthors }),
+                            : translate(locale, 'write-review', 'selectYesIfCompetingInterest')(),
                       })}
                     </div>
                   `
@@ -145,7 +145,7 @@ export function competingInterestsForm(
                                 MissingE: () =>
                                   otherAuthors
                                     ? translate(locale, 'write-review', 'authorsCompetingInterestDetails')()
-                                    : translate(locale, 'write-review', 'competingInterestDetails')({ otherAuthors }),
+                                    : translate(locale, 'write-review', 'competingInterestDetails')(),
                               })}
                             </div>
                           `
@@ -191,7 +191,7 @@ const toErrorItems = (locale: SupportedLocale, otherAuthors: boolean) => (form: 
               MissingE: () =>
                 otherAuthors
                   ? translate(locale, 'write-review', 'selectYesIfAuthorsCompetingInterest')()
-                  : translate(locale, 'write-review', 'selectYesIfCompetingInterest')({ otherAuthors }),
+                  : translate(locale, 'write-review', 'selectYesIfCompetingInterest')(),
             })}
           </a>
         </li>
@@ -205,7 +205,7 @@ const toErrorItems = (locale: SupportedLocale, otherAuthors: boolean) => (form: 
               MissingE: () =>
                 otherAuthors
                   ? translate(locale, 'write-review', 'authorsCompetingInterestDetails')()
-                  : translate(locale, 'write-review', 'competingInterestDetails')({ otherAuthors }),
+                  : translate(locale, 'write-review', 'competingInterestDetails')(),
             })}
           </a>
         </li>
