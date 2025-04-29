@@ -1,8 +1,14 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
-import { Array, Data, Effect, pipe, Schema } from 'effect'
+import { Array, Data, Effect, Function, pipe, Schema, String } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Doi from '../types/Doi.js'
 import { Temporal } from '../types/index.js'
+
+const EmptyStringAsUndefinedSchema = Schema.transform(Schema.Literal(''), Schema.Undefined, {
+  strict: true,
+  decode: Function.constUndefined,
+  encode: Function.constant(String.empty),
+})
 
 export class Record extends Schema.Class<Record>('Record')({
   doi: Doi.DoiSchema,
@@ -56,7 +62,7 @@ export class Record extends Schema.Class<Record>('Record')({
     }),
   ),
   types: Schema.Struct({
-    resourceType: Schema.optional(Schema.NonEmptyTrimmedString),
+    resourceType: Schema.optional(Schema.Union(Schema.NonEmptyTrimmedString, EmptyStringAsUndefinedSchema)),
     resourceTypeGeneral: Schema.optional(Schema.NonEmptyTrimmedString),
   }),
   relatedIdentifiers: Schema.Array(

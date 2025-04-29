@@ -163,6 +163,46 @@ test.each([
       url: new URL('https://zenodo.org/record/4290795'),
     }),
   },
+  {
+    response: 'zenodo-empty-resource-type',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          "<p>Abstract\n\nAdvancements in mass spectrometry (MS) instrumentation—including higher resolution, faster scan speeds, increased throughput, and improved sensitivity—along with the growing adoption of imaging and ion mobility, have dramatically increased the volume and complexity of data produced in fields like proteomics, metabolomics, and lipidomics. While these technologies unlock new possibilities, they also present significant challenges in data management, storage, and accessibility. Existing formats, such as the XML-based community standards mzML and imzML, struggle to meet the demands of modern MS workflows due to their large file sizes, slow data access, and limited metadata support. Vendor-specific formats, while optimized for proprietary instruments, lack interoperability, comprehensive metadata support and long-term archival reliability.\n\nThis white paper lays the groundwork for mzPeak, a next-generation data format designed to address these challenges and support high-throughput, multi-dimensional MS workflows. By adopting a hybrid model that combines efficient binary storage for numerical data and human-readable metadata storage, mzPeak will reduce file sizes, accelerate data access, and offer a scalable, adaptable solution for evolving MS technologies.\n\nFor researchers, mzPeak will enable faster (random) data access, enhanced interoperability across platforms, and seamless support for complex workflows, including ion mobility and imaging. Its design will ensure data is managed in compliance with regulatory standards, essential for applications such as precision medicine and chemical safety, where long-term data integrity and accessibility are critical.\n\nFor vendors, mzPeak provides a streamlined, open alternative to proprietary formats, reducing the burden of regulatory compliance while aligning with the industry's push for transparency and standardization. By offering a high-performance, interoperable solution, mzPeak positions vendors to meet customer demands for sustainable data management tools which will be able to handle emerging and future data types and workflows.\n\nmzPeak aspires to become the cornerstone of MS data management, empowering researchers, vendors, and developers to innovate and collaborate more effectively. We invite the MS community to join the discussion on PREreview.org and collaborate in developing and adopting mzPeak to meet the challenges of today and tomorrow.</p>",
+        ),
+      },
+      authors: [
+        { name: 'Tim Van Den Bossche', orcid: Orcid('0000-0002-5916-2587') },
+        { name: 'Samuel Wein', orcid: Orcid('0000-0002-8923-6874') },
+        { name: 'Theodore Alexandrov', orcid: Orcid('0000-0001-9464-6125') },
+        { name: 'Aivett Bilbao', orcid: Orcid('0000-0003-2985-8249') },
+        { name: 'Wout Bittremieux', orcid: Orcid('0000-0002-3105-1359') },
+        { name: 'Matt Chambers', orcid: Orcid('0000-0002-7299-4783') },
+        { name: 'Eric Deutsch', orcid: Orcid('0000-0001-8732-0928') },
+        { name: 'Andrew Dowsey', orcid: Orcid('0000-0002-7404-9128') },
+        { name: 'Helge Hecht', orcid: Orcid('0000-0001-6744-996X') },
+        { name: 'Joshua Klein', orcid: Orcid('0000-0003-1279-6838') },
+        { name: 'Michael Knierman', orcid: Orcid('0000-0001-7427-2269') },
+        { name: 'Robert Moritz', orcid: Orcid('0000-0002-3216-9447') },
+        { name: 'Elliott J. Price', orcid: Orcid('0000-0001-5691-7000') },
+        { name: 'James Shofstahl', orcid: Orcid('0000-0001-5968-1742') },
+        { name: 'Julian Uszkoreit', orcid: Orcid('0000-0001-7522-4007') },
+        { name: 'Juan Antonio Vizcaino', orcid: Orcid('0000-0002-3905-4335') },
+        { name: 'Mingxun Wang', orcid: Orcid('0000-0001-7647-6097') },
+        { name: 'Oliver Kohlbacher', orcid: Orcid('0000-0003-1739-4598') },
+      ],
+      id: { _tag: 'zenodo', value: Doi('10.5281/zenodo.14928694') },
+      posted: Temporal.PlainDate.from({ year: 2025, month: 2, day: 26 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Seeking community input for: mzPeak - a modern, scalable, and interoperable mass spectrometry data format for the future',
+        ),
+      },
+      url: new URL('https://zenodo.org/doi/10.5281/zenodo.14928694'),
+    }),
+  },
 ])('can parse a DataCite record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

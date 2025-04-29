@@ -1,0 +1,256 @@
+{
+  "data": {
+    "id": "10.5281/zenodo.14928694",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5281/zenodo.14928694",
+      "prefix": "10.5281",
+      "suffix": "zenodo.14928694",
+      "identifiers": [{ "identifier": "oai:zenodo.org:14928694", "identifierType": "oai" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "oai", "alternateIdentifier": "oai:zenodo.org:14928694" }],
+      "creators": [
+        {
+          "name": "Van Den Bossche, Tim",
+          "nameType": "Personal",
+          "givenName": "Tim",
+          "familyName": "Van Den Bossche",
+          "affiliation": ["VIB - UGent Center for Medical Biotechnology"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-5916-2587", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Wein, Samuel",
+          "nameType": "Personal",
+          "givenName": "Samuel",
+          "familyName": "Wein",
+          "affiliation": ["OpenMS Inc", "University of Tübingen"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-8923-6874", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Alexandrov, Theodore",
+          "nameType": "Personal",
+          "givenName": "Theodore",
+          "familyName": "Alexandrov",
+          "affiliation": [
+            "European Molecular Biology Laboratory",
+            "University of California San Diego Skaggs School of Pharmacy and Pharmaceutical Sciences"
+          ],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-9464-6125", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Bilbao, Aivett",
+          "nameType": "Personal",
+          "givenName": "Aivett",
+          "familyName": "Bilbao",
+          "affiliation": ["Pacific Northwest National Laboratory"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0003-2985-8249", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Bittremieux, Wout",
+          "nameType": "Personal",
+          "givenName": "Wout",
+          "familyName": "Bittremieux",
+          "affiliation": ["University of California, San Diego", "University of Antwerp"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-3105-1359", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Chambers, Matt",
+          "nameType": "Personal",
+          "givenName": "Matt",
+          "familyName": "Chambers",
+          "affiliation": ["University of Washington"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-7299-4783", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Deutsch, Eric",
+          "nameType": "Personal",
+          "givenName": "Eric",
+          "familyName": "Deutsch",
+          "affiliation": ["Institute for Systems Biology"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-8732-0928", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Dowsey, Andrew",
+          "nameType": "Personal",
+          "givenName": "Andrew",
+          "familyName": "Dowsey",
+          "affiliation": ["University of Bristol", "The Alan Turing Institute"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-7404-9128", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Hecht, Helge",
+          "nameType": "Personal",
+          "givenName": "Helge",
+          "familyName": "Hecht",
+          "affiliation": ["RECETOX"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-6744-996X", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Klein, Joshua",
+          "nameType": "Personal",
+          "givenName": "Joshua",
+          "familyName": "Klein",
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0003-1279-6838", "nameIdentifierScheme": "ORCID" }],
+          "affiliation": []
+        },
+        {
+          "name": "Knierman, Michael",
+          "nameType": "Personal",
+          "givenName": "Michael",
+          "familyName": "Knierman",
+          "affiliation": ["Eli Lilly (United States)"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-7427-2269", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Moritz, Robert",
+          "nameType": "Personal",
+          "givenName": "Robert",
+          "familyName": "Moritz",
+          "affiliation": ["Institute for Systems Biology"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-3216-9447", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Price, Elliott J.",
+          "nameType": "Personal",
+          "givenName": "Elliott J.",
+          "familyName": "Price",
+          "affiliation": ["RECETOX"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-5691-7000", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Shofstahl, James",
+          "nameType": "Personal",
+          "givenName": "James",
+          "familyName": "Shofstahl",
+          "affiliation": ["Thermo Fisher Scientific Inc"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-5968-1742", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Uszkoreit, Julian",
+          "nameType": "Personal",
+          "givenName": "Julian",
+          "familyName": "Uszkoreit",
+          "affiliation": ["Ruhr University Bochum"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-7522-4007", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Vizcaino, Juan Antonio",
+          "nameType": "Personal",
+          "givenName": "Juan Antonio",
+          "familyName": "Vizcaino",
+          "affiliation": ["European Bioinformatics Institute"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-3905-4335", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Wang, Mingxun",
+          "nameType": "Personal",
+          "givenName": "Mingxun",
+          "familyName": "Wang",
+          "affiliation": ["University of California, Riverside"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-7647-6097", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Kohlbacher, Oliver",
+          "nameType": "Personal",
+          "givenName": "Oliver",
+          "familyName": "Kohlbacher",
+          "affiliation": ["University of Tübingen"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0003-1739-4598", "nameIdentifierScheme": "ORCID" }]
+        }
+      ],
+      "titles": [
+        {
+          "title": "Seeking community input for: mzPeak - a modern, scalable, and interoperable mass spectrometry data format for the future"
+        }
+      ],
+      "publisher": "Zenodo",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [],
+      "contributors": [],
+      "dates": [{ "date": "2025-02-26", "dateType": "Issued" }],
+      "language": null,
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "",
+        "resourceTypeGeneral": "Preprint"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsVersionOf",
+          "relatedIdentifier": "10.5281/zenodo.14928693",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Abstract\n\nAdvancements in mass spectrometry (MS) instrumentation—including higher resolution, faster scan speeds, increased throughput, and improved sensitivity—along with the growing adoption of imaging and ion mobility, have dramatically increased the volume and complexity of data produced in fields like proteomics, metabolomics, and lipidomics. While these technologies unlock new possibilities, they also present significant challenges in data management, storage, and accessibility. Existing formats, such as the XML-based community standards mzML and imzML, struggle to meet the demands of modern MS workflows due to their large file sizes, slow data access, and limited metadata support. Vendor-specific formats, while optimized for proprietary instruments, lack interoperability, comprehensive metadata support and long-term archival reliability.\n\nThis white paper lays the groundwork for mzPeak, a next-generation data format designed to address these challenges and support high-throughput, multi-dimensional MS workflows. By adopting a hybrid model that combines efficient binary storage for numerical data and human-readable metadata storage, mzPeak will reduce file sizes, accelerate data access, and offer a scalable, adaptable solution for evolving MS technologies.\n\nFor researchers, mzPeak will enable faster (random) data access, enhanced interoperability across platforms, and seamless support for complex workflows, including ion mobility and imaging. Its design will ensure data is managed in compliance with regulatory standards, essential for applications such as precision medicine and chemical safety, where long-term data integrity and accessibility are critical.\n\nFor vendors, mzPeak provides a streamlined, open alternative to proprietary formats, reducing the burden of regulatory compliance while aligning with the industry's push for transparency and standardization. By offering a high-performance, interoperable solution, mzPeak positions vendors to meet customer demands for sustainable data management tools which will be able to handle emerging and future data types and workflows.\n\nmzPeak aspires to become the cornerstone of MS data management, empowering researchers, vendors, and developers to innovate and collaborate more effectively. We invite the MS community to join the discussion on PREreview.org and collaborate in developing and adopting mzPeak to meet the challenges of today and tomorrow.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTI4MS9aRU5PRE8uMTQ5Mjg2OTQ8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlZhbiBEZW4gQm9zc2NoZSwgVGltPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5UaW08L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+VmFuIERlbiBCb3NzY2hlPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAyLTU5MTYtMjU4NzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbj5WSUIgLSBVR2VudCBDZW50ZXIgZm9yIE1lZGljYWwgQmlvdGVjaG5vbG9neTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+V2VpbiwgU2FtdWVsPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5TYW11ZWw8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+V2VpbjwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMi04OTIzLTY4NzQ8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24+T3Blbk1TIEluYzwvYWZmaWxpYXRpb24+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wM2Exa3d6NDgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5Vbml2ZXJzaXR5IG9mIFTDvGJpbmdlbjwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+QWxleGFuZHJvdiwgVGhlb2RvcmU8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPlRoZW9kb3JlPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkFsZXhhbmRyb3Y8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iIj4wMDAwLTAwMDEtOTQ2NC02MTI1PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA1MDU4OWUzOSIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiPkV1cm9wZWFuIE1vbGVjdWxhciBCaW9sb2d5IExhYm9yYXRvcnk8L2FmZmlsaWF0aW9uPgogICAgICA8YWZmaWxpYXRpb24+VW5pdmVyc2l0eSBvZiBDYWxpZm9ybmlhIFNhbiBEaWVnbyBTa2FnZ3MgU2Nob29sIG9mIFBoYXJtYWN5IGFuZCBQaGFybWFjZXV0aWNhbCBTY2llbmNlczwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+QmlsYmFvLCBBaXZldHQ8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkFpdmV0dDwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5CaWxiYW88L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iIj4wMDAwLTAwMDMtMjk4NS04MjQ5PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA1aDk5MjMwNyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiPlBhY2lmaWMgTm9ydGh3ZXN0IE5hdGlvbmFsIExhYm9yYXRvcnk8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkJpdHRyZW1pZXV4LCBXb3V0PC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5Xb3V0PC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkJpdHRyZW1pZXV4PC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAyLTMxMDUtMTM1OTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMTY4cjN3NDgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5Vbml2ZXJzaXR5IG9mIENhbGlmb3JuaWEsIFNhbiBEaWVnbzwvYWZmaWxpYXRpb24+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMDh4NTdiMDUiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5Vbml2ZXJzaXR5IG9mIEFudHdlcnA8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkNoYW1iZXJzLCBNYXR0PC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5NYXR0PC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkNoYW1iZXJzPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAyLTcyOTktNDc4MzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMGN2eGIxNDUiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5Vbml2ZXJzaXR5IG9mIFdhc2hpbmd0b248L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkRldXRzY2gsIEVyaWM8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkVyaWM8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+RGV1dHNjaDwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMS04NzMyLTA5Mjg8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDJ0cGd3MzAzIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiI+SW5zdGl0dXRlIGZvciBTeXN0ZW1zIEJpb2xvZ3k8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkRvd3NleSwgQW5kcmV3PC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5BbmRyZXc8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+RG93c2V5PC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAyLTc0MDQtOTEyODwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNTI0c3AyNTciIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5Vbml2ZXJzaXR5IG9mIEJyaXN0b2w8L2FmZmlsaWF0aW9uPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDM1ZGtkYjU1IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiI+VGhlIEFsYW4gVHVyaW5nIEluc3RpdHV0ZTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+SGVjaHQsIEhlbGdlPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5IZWxnZTwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5IZWNodDwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMS02NzQ0LTk5Nlg8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDMyaHpxaDIyIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiI+UkVDRVRPWDwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+S2xlaW4sIEpvc2h1YTwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+Sm9zaHVhPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPktsZWluPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAzLTEyNzktNjgzODwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+S25pZXJtYW4sIE1pY2hhZWw8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPk1pY2hhZWw8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+S25pZXJtYW48L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iIj4wMDAwLTAwMDEtNzQyNy0yMjY5PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAxcWF0MzI4OSIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiPkVsaSBMaWxseSAoVW5pdGVkIFN0YXRlcyk8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPk1vcml0eiwgUm9iZXJ0PC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5Sb2JlcnQ8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+TW9yaXR6PC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAyLTMyMTYtOTQ0NzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMnRwZ3czMDMiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5JbnN0aXR1dGUgZm9yIFN5c3RlbXMgQmlvbG9neTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+UHJpY2UsIEVsbGlvdHQgSi48L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkVsbGlvdHQgSi48L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+UHJpY2U8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iIj4wMDAwLTAwMDEtNTY5MS03MDAwPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAzMmh6cWgyMiIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiPlJFQ0VUT1g8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlNob2ZzdGFobCwgSmFtZXM8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkphbWVzPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPlNob2ZzdGFobDwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMS01OTY4LTE3NDI8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24+VGhlcm1vIEZpc2hlciBTY2llbnRpZmljIEluYzwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+VXN6a29yZWl0LCBKdWxpYW48L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkp1bGlhbjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5Vc3prb3JlaXQ8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iIj4wMDAwLTAwMDEtNzUyMi00MDA3PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA0dHNrMjY0NCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiPlJ1aHIgVW5pdmVyc2l0eSBCb2NodW08L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlZpemNhaW5vLCBKdWFuIEFudG9uaW88L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkp1YW4gQW50b25pbzwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5WaXpjYWlubzwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMi0zOTA1LTQzMzU8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDJjYXRzczUyIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiI+RXVyb3BlYW4gQmlvaW5mb3JtYXRpY3MgSW5zdGl0dXRlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5XYW5nLCBNaW5neHVuPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5NaW5neHVuPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPldhbmc8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iIj4wMDAwLTAwMDEtNzY0Ny02MDk3PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAzbmF3aHY0MyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiPlVuaXZlcnNpdHkgb2YgQ2FsaWZvcm5pYSwgUml2ZXJzaWRlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5Lb2hsYmFjaGVyLCBPbGl2ZXI8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPk9saXZlcjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5Lb2hsYmFjaGVyPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAzLTE3MzktNDU5ODwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wM2Exa3d6NDgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5Vbml2ZXJzaXR5IG9mIFTDvGJpbmdlbjwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPlNlZWtpbmcgY29tbXVuaXR5IGlucHV0IGZvcjogbXpQZWFrIC0gYSBtb2Rlcm4sIHNjYWxhYmxlLCBhbmQgaW50ZXJvcGVyYWJsZSBtYXNzIHNwZWN0cm9tZXRyeSBkYXRhIGZvcm1hdCBmb3IgdGhlIGZ1dHVyZTwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5aZW5vZG88L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjU8L3B1YmxpY2F0aW9uWWVhcj4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IlByZXByaW50Ii8+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9Iklzc3VlZCI+MjAyNS0wMi0yNjwvZGF0ZT4KICA8L2RhdGVzPgogIDxhbHRlcm5hdGVJZGVudGlmaWVycz4KICAgIDxhbHRlcm5hdGVJZGVudGlmaWVyIGFsdGVybmF0ZUlkZW50aWZpZXJUeXBlPSJvYWkiPm9haTp6ZW5vZG8ub3JnOjE0OTI4Njk0PC9hbHRlcm5hdGVJZGVudGlmaWVyPgogIDwvYWx0ZXJuYXRlSWRlbnRpZmllcnM+CiAgPHJlbGF0ZWRJZGVudGlmaWVycz4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJJc1ZlcnNpb25PZiI+MTAuNTI4MS96ZW5vZG8uMTQ5Mjg2OTM8L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxzaXplcy8+CiAgPGZvcm1hdHMvPgogIDx2ZXJzaW9uLz4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnkvNC4wL2xlZ2FsY29kZSIgcmlnaHRzSWRlbnRpZmllcj0iY2MtYnktNC4wIiByaWdodHNJZGVudGlmaWVyU2NoZW1lPSJzcGR4Ij5DcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIDQuMCBJbnRlcm5hdGlvbmFsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+QWJzdHJhY3QKCkFkdmFuY2VtZW50cyBpbiBtYXNzIHNwZWN0cm9tZXRyeSAoTVMpIGluc3RydW1lbnRhdGlvbuKAlGluY2x1ZGluZyBoaWdoZXIgcmVzb2x1dGlvbiwgZmFzdGVyIHNjYW4gc3BlZWRzLCBpbmNyZWFzZWQgdGhyb3VnaHB1dCwgYW5kIGltcHJvdmVkIHNlbnNpdGl2aXR54oCUYWxvbmcgd2l0aCB0aGUgZ3Jvd2luZyBhZG9wdGlvbiBvZiBpbWFnaW5nIGFuZCBpb24gbW9iaWxpdHksIGhhdmUgZHJhbWF0aWNhbGx5IGluY3JlYXNlZCB0aGUgdm9sdW1lIGFuZCBjb21wbGV4aXR5IG9mIGRhdGEgcHJvZHVjZWQgaW4gZmllbGRzIGxpa2UgcHJvdGVvbWljcywgbWV0YWJvbG9taWNzLCBhbmQgbGlwaWRvbWljcy4gV2hpbGUgdGhlc2UgdGVjaG5vbG9naWVzIHVubG9jayBuZXcgcG9zc2liaWxpdGllcywgdGhleSBhbHNvIHByZXNlbnQgc2lnbmlmaWNhbnQgY2hhbGxlbmdlcyBpbiBkYXRhIG1hbmFnZW1lbnQsIHN0b3JhZ2UsIGFuZCBhY2Nlc3NpYmlsaXR5LiBFeGlzdGluZyBmb3JtYXRzLCBzdWNoIGFzIHRoZSBYTUwtYmFzZWQgY29tbXVuaXR5IHN0YW5kYXJkcyBtek1MIGFuZCBpbXpNTCwgc3RydWdnbGUgdG8gbWVldCB0aGUgZGVtYW5kcyBvZiBtb2Rlcm4gTVMgd29ya2Zsb3dzIGR1ZSB0byB0aGVpciBsYXJnZSBmaWxlIHNpemVzLCBzbG93IGRhdGEgYWNjZXNzLCBhbmQgbGltaXRlZCBtZXRhZGF0YSBzdXBwb3J0LiBWZW5kb3Itc3BlY2lmaWMgZm9ybWF0cywgd2hpbGUgb3B0aW1pemVkIGZvciBwcm9wcmlldGFyeSBpbnN0cnVtZW50cywgbGFjayBpbnRlcm9wZXJhYmlsaXR5LCBjb21wcmVoZW5zaXZlIG1ldGFkYXRhIHN1cHBvcnQgYW5kIGxvbmctdGVybSBhcmNoaXZhbCByZWxpYWJpbGl0eS4KClRoaXMgd2hpdGUgcGFwZXIgbGF5cyB0aGUgZ3JvdW5kd29yayBmb3IgbXpQZWFrLCBhIG5leHQtZ2VuZXJhdGlvbiBkYXRhIGZvcm1hdCBkZXNpZ25lZCB0byBhZGRyZXNzIHRoZXNlIGNoYWxsZW5nZXMgYW5kIHN1cHBvcnQgaGlnaC10aHJvdWdocHV0LCBtdWx0aS1kaW1lbnNpb25hbCBNUyB3b3JrZmxvd3MuIEJ5IGFkb3B0aW5nIGEgaHlicmlkIG1vZGVsIHRoYXQgY29tYmluZXMgZWZmaWNpZW50IGJpbmFyeSBzdG9yYWdlIGZvciBudW1lcmljYWwgZGF0YSBhbmQgaHVtYW4tcmVhZGFibGUgbWV0YWRhdGEgc3RvcmFnZSwgbXpQZWFrIHdpbGwgcmVkdWNlIGZpbGUgc2l6ZXMsIGFjY2VsZXJhdGUgZGF0YSBhY2Nlc3MsIGFuZCBvZmZlciBhIHNjYWxhYmxlLCBhZGFwdGFibGUgc29sdXRpb24gZm9yIGV2b2x2aW5nIE1TIHRlY2hub2xvZ2llcy4KCkZvciByZXNlYXJjaGVycywgbXpQZWFrIHdpbGwgZW5hYmxlIGZhc3RlciAocmFuZG9tKSBkYXRhIGFjY2VzcywgZW5oYW5jZWQgaW50ZXJvcGVyYWJpbGl0eSBhY3Jvc3MgcGxhdGZvcm1zLCBhbmQgc2VhbWxlc3Mgc3VwcG9ydCBmb3IgY29tcGxleCB3b3JrZmxvd3MsIGluY2x1ZGluZyBpb24gbW9iaWxpdHkgYW5kIGltYWdpbmcuIEl0cyBkZXNpZ24gd2lsbCBlbnN1cmUgZGF0YSBpcyBtYW5hZ2VkIGluIGNvbXBsaWFuY2Ugd2l0aCByZWd1bGF0b3J5IHN0YW5kYXJkcywgZXNzZW50aWFsIGZvciBhcHBsaWNhdGlvbnMgc3VjaCBhcyBwcmVjaXNpb24gbWVkaWNpbmUgYW5kIGNoZW1pY2FsIHNhZmV0eSwgd2hlcmUgbG9uZy10ZXJtIGRhdGEgaW50ZWdyaXR5IGFuZCBhY2Nlc3NpYmlsaXR5IGFyZSBjcml0aWNhbC4KCkZvciB2ZW5kb3JzLCBtelBlYWsgcHJvdmlkZXMgYSBzdHJlYW1saW5lZCwgb3BlbiBhbHRlcm5hdGl2ZSB0byBwcm9wcmlldGFyeSBmb3JtYXRzLCByZWR1Y2luZyB0aGUgYnVyZGVuIG9mIHJlZ3VsYXRvcnkgY29tcGxpYW5jZSB3aGlsZSBhbGlnbmluZyB3aXRoIHRoZSBpbmR1c3RyeSdzIHB1c2ggZm9yIHRyYW5zcGFyZW5jeSBhbmQgc3RhbmRhcmRpemF0aW9uLiBCeSBvZmZlcmluZyBhIGhpZ2gtcGVyZm9ybWFuY2UsIGludGVyb3BlcmFibGUgc29sdXRpb24sIG16UGVhayBwb3NpdGlvbnMgdmVuZG9ycyB0byBtZWV0IGN1c3RvbWVyIGRlbWFuZHMgZm9yIHN1c3RhaW5hYmxlIGRhdGEgbWFuYWdlbWVudCB0b29scyB3aGljaCB3aWxsIGJlIGFibGUgdG8gaGFuZGxlIGVtZXJnaW5nIGFuZCBmdXR1cmUgZGF0YSB0eXBlcyBhbmQgd29ya2Zsb3dzLgoKbXpQZWFrIGFzcGlyZXMgdG8gYmVjb21lIHRoZSBjb3JuZXJzdG9uZSBvZiBNUyBkYXRhIG1hbmFnZW1lbnQsIGVtcG93ZXJpbmcgcmVzZWFyY2hlcnMsIHZlbmRvcnMsIGFuZCBkZXZlbG9wZXJzIHRvIGlubm92YXRlIGFuZCBjb2xsYWJvcmF0ZSBtb3JlIGVmZmVjdGl2ZWx5LiBXZSBpbnZpdGUgdGhlIE1TIGNvbW11bml0eSB0byBqb2luIHRoZSBkaXNjdXNzaW9uIG9uIFBSRXJldmlldy5vcmcgYW5kIGNvbGxhYm9yYXRlIGluIGRldmVsb3BpbmcgYW5kIGFkb3B0aW5nIG16UGVhayB0byBtZWV0IHRoZSBjaGFsbGVuZ2VzIG9mIHRvZGF5IGFuZCB0b21vcnJvdy48L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPgo=",
+      "url": "https://zenodo.org/doi/10.5281/zenodo.14928694",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "api",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 8,
+      "citationsOverTime": [{ "year": "2025", "total": 8 }],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 1,
+      "created": "2025-02-26T07:39:07.000Z",
+      "registered": "2025-02-26T07:39:07.000Z",
+      "published": "2025",
+      "updated": "2025-03-18T07:44:33.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cern.zenodo", "type": "clients" } },
+      "provider": { "data": { "id": "cern", "type": "providers" } },
+      "media": { "data": { "id": "10.5281/zenodo.14928694", "type": "media" } },
+      "references": { "data": [] },
+      "citations": {
+        "data": [
+          { "id": "10.5281/zenodo.14959489", "type": "dois" },
+          { "id": "10.5281/zenodo.14959490", "type": "dois" },
+          { "id": "10.5281/zenodo.14966956", "type": "dois" },
+          { "id": "10.5281/zenodo.14966957", "type": "dois" },
+          { "id": "10.5281/zenodo.15039990", "type": "dois" },
+          { "id": "10.5281/zenodo.15039989", "type": "dois" },
+          { "id": "10.5281/zenodo.15043709", "type": "dois" },
+          { "id": "10.5281/zenodo.15043710", "type": "dois" }
+        ]
+      },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [{ "id": "10.5281/zenodo.14928693", "type": "dois" }] }
+    }
+  }
+}
