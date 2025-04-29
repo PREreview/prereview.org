@@ -202,10 +202,10 @@
     "description": "Heading for details of what happens next and when; the user has completed their task and has no further actions to take."
   },
   "whereYouCanSeeYourPrereview": {
-    "message": "You’ll be able to see your PREreview shortly. It’ll also appear on our {communitySlackLink}{isScietyPreprint, boolean, true { and {scietyLink}} false {}}."
+    "message": "You’ll be able to see your PREreview shortly. It’ll also appear on our <communitySlack>Community Slack</communitySlack>."
   },
-  "communitySlack": {
-    "message": "Community Slack"
+  "whereYouCanSeeYourPrereviewSciety": {
+    "message": "You’ll be able to see your PREreview shortly. It’ll also appear on our <communitySlack>Community Slack</communitySlack> and <sciety>Sciety</sciety>."
   },
   "opensInNewTab": {
     "message": "opens in a new tab"

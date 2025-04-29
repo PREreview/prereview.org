@@ -23,12 +23,14 @@ export const publishedPage = ({
 }) => {
   const t = translate(locale)
   const opensInNewTab = t('write-review', 'opensInNewTab')()
-  const communitySlackLink = html`<a href="https://bit.ly/PREreview-Slack" target="_blank" rel="noopener noreferrer"
-    >${t('write-review', 'communitySlack')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
-  >`.toString()
-  const scietyLink = html`<a href="https://sciety.org/" target="_blank" rel="noopener noreferrer"
-    >Sciety<span class="visually-hidden"> (${opensInNewTab})</span></a
-  >`.toString()
+  const communitySlack = (text: string) =>
+    html`<a href="https://bit.ly/PREreview-Slack" target="_blank" rel="noopener noreferrer"
+      >${text}<span class="visually-hidden"> (${opensInNewTab})</span></a
+    >`.toString()
+  const sciety = (text: string) =>
+    html`<a href="https://sciety.org/" target="_blank" rel="noopener noreferrer"
+      >${text}<span class="visually-hidden"> (${opensInNewTab})</span></a
+    >`.toString()
   const mailtoHelp = html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
     >help@prereview.org<span class="visually-hidden"> (${opensInNewTab})</span></a
   >`.toString()
@@ -50,10 +52,17 @@ export const publishedPage = ({
 
         <p>
           ${rawHtml(
-            t(
-              'write-review',
-              'whereYouCanSeeYourPrereview',
-            )({ communitySlackLink, scietyLink, isScietyPreprint: isScietyPreprint(preprint.id) }),
+            isScietyPreprint(preprint.id)
+              ? t('write-review', 'whereYouCanSeeYourPrereviewSciety')({ communitySlack, sciety })
+              : t(
+                  'write-review',
+                  'whereYouCanSeeYourPrereview',
+                )({
+                  communitySlack,
+                  communitySlackLink: communitySlack('Community Slack'),
+                  scietyLink: '',
+                  isScietyPreprint: false,
+                }),
           )}
         </p>
 
