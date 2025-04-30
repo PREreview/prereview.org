@@ -10,7 +10,7 @@ import {
   Path,
 } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
-import { Cause, Config, Duration, Effect, flow, Layer, Option, pipe, Redacted, Schema } from 'effect'
+import { Array, Cause, Config, Duration, Effect, flow, HashSet, Layer, Option, pipe, Redacted, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Express, ExpressConfig, FlashMessage, Locale, SessionSecret } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
@@ -165,11 +165,15 @@ const getLoggedInUser = HttpMiddleware.make(app =>
 )
 
 const removeLocaleFromPathForRouting = HttpMiddleware.make(
-  Effect.updateService(HttpServerRequest.HttpServerRequest, request =>
-    request.modify({
-      url: request.url.replace(/^\/en-US\//, '/').replace(/^\/pt-BR\//, '/'),
-    }),
-  ),
+  Effect.updateService(HttpServerRequest.HttpServerRequest, request => {
+    const parts = request.url.split('/')
+    if (!HashSet.has(SupportedLocales, parts[1])) {
+      return request
+    }
+    return request.modify({
+      url: pipe(parts, Array.remove(1), Array.join('/')),
+    })
+  }),
 )
 
 const getLocale = HttpMiddleware.make(app =>
