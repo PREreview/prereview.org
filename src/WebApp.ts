@@ -79,7 +79,7 @@ const logRequest = HttpMiddleware.make(app =>
     const request = yield* HttpServerRequest.HttpServerRequest
     const publicUrl = yield* PublicUrl
 
-    const url = new URL(request.url, publicUrl)
+    const url = new URL(`${publicUrl.origin}${request.url}`)
 
     if (url.pathname === '/health') {
       return yield* app
