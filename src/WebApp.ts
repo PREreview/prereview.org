@@ -169,6 +169,9 @@ const getLocale = HttpMiddleware.make(app =>
     const canChooseLocale = yield* CanChooseLocale
     const useCrowdinInContext = yield* UseCrowdinInContext
 
+    const request = yield* HttpServerRequest.HttpServerRequest
+    console.log('>>>>', request.url)
+
     if (useCrowdinInContext) {
       return yield* Effect.provideService(app, Locale, CrowdinInContextLocale)
     }
