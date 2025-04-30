@@ -164,13 +164,18 @@ const getLoggedInUser = HttpMiddleware.make(app =>
   }),
 )
 
+const handleLocaleInPath = HttpMiddleware.make(
+  Effect.updateService(HttpServerRequest.HttpServerRequest, request =>
+    request.modify({
+      url: request.url.replace(/^\/en-us\//, '/'),
+    }),
+  ),
+)
+
 const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const canChooseLocale = yield* CanChooseLocale
     const useCrowdinInContext = yield* UseCrowdinInContext
-
-    const request = yield* HttpServerRequest.HttpServerRequest
-    console.log('>>>>', request.url)
 
     if (useCrowdinInContext) {
       return yield* Effect.provideService(app, Locale, CrowdinInContextLocale)
@@ -211,6 +216,7 @@ export const WebApp = pipe(
   getFlashMessage,
   getLoggedInUser,
   getLocale,
+  handleLocaleInPath,
   logRequest,
   logDefects,
   HttpServer.serve(flow(HttpMiddleware.logger, annotateLogsWithRequestId)),
