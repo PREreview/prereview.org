@@ -248,7 +248,7 @@ export const handlePageResponse = ({
           .with(P.string, canonical =>
             R.asks(
               ({ publicUrl }: PublicUrlEnv) =>
-                new URL(`${publicUrl.origin}${encodeURI(canonical).replace(/^([^/])/, '/$1')}`).href,
+                new URL(`${publicUrl.origin}/${locale}${encodeURI(canonical).replace(/^([^/])/, '/$1')}`).href,
             ),
           )
           .with(undefined, R.of)
