@@ -48,7 +48,11 @@ export const ExpressHttpApp: HttpApp.Default<
           return next()
         }
 
-        next(error)
+        if (res.headersSent) {
+          return next(error)
+        }
+
+        resume(Effect.die(error))
       }) satisfies ErrorRequestHandler)(nodeRequest, nodeResponse)
   })
 })
