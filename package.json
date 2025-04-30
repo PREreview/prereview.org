@@ -64,8 +64,8 @@
     "zenodo-ts": "^0.1.22"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.26.9",
-    "@babel/preset-typescript": "^7.27.0",
+    "@babel/preset-env": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
     "@csstools/postcss-global-data": "^3.0.0",
     "@fast-check/jest": "^2.1.1",
     "@ibm/plex": "^6.4.1",
