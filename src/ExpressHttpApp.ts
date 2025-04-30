@@ -19,6 +19,7 @@ export const ExpressHttpApp: HttpApp.Default<
   const runtime = yield* Effect.runtime<AppContext>()
 
   const nodeRequest = NodeHttpServerRequest.toIncomingMessage(request)
+  nodeRequest.url = request.url
   const nodeResponse = NodeHttpServerRequest.toServerResponse(request)
   const locale = yield* Locale
   const user = yield* Effect.serviceOption(LoggedInUser)

@@ -164,10 +164,10 @@ const getLoggedInUser = HttpMiddleware.make(app =>
   }),
 )
 
-const handleLocaleInPath = HttpMiddleware.make(
+const removeLocaleFromPathForRouting = HttpMiddleware.make(
   Effect.updateService(HttpServerRequest.HttpServerRequest, request =>
     request.modify({
-      url: request.url.replace(/^\/en-us\//, '/'),
+      url: request.url.replace(/^\/en-US\//, '/').replace(/^\/pt-BR\//, '/'),
     }),
   ),
 )
@@ -183,6 +183,18 @@ const getLocale = HttpMiddleware.make(app =>
 
     if (!canChooseLocale) {
       return yield* Effect.provideService(app, Locale, DefaultLocale)
+    }
+
+    const localeFromPath = yield* pipe(
+      HttpServerRequest.HttpServerRequest,
+      Effect.andThen(request => request.url),
+      Effect.andThen(path => path.split('/')[1]),
+      Effect.andThen(Schema.decodeUnknown(Schema.Literal(...SupportedLocales))),
+      Effect.orElseSucceed(() => undefined),
+    )
+
+    if (localeFromPath) {
+      return yield* Effect.provideService(app, Locale, localeFromPath)
     }
 
     const locale = yield* pipe(
@@ -215,8 +227,8 @@ export const WebApp = pipe(
   addXRobotsTagHeader,
   getFlashMessage,
   getLoggedInUser,
+  removeLocaleFromPathForRouting,
   getLocale,
-  handleLocaleInPath,
   logRequest,
   logDefects,
   HttpServer.serve(flow(HttpMiddleware.logger, annotateLogsWithRequestId)),
