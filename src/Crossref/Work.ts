@@ -59,11 +59,11 @@ export class Work extends Schema.Class<Work>('Work')({
       Schema.Union(
         Schema.Struct({
           ORCID: Schema.optional(Orcid.OrcidFromUrlSchema),
-          given: Schema.optional(Schema.NonEmptyTrimmedString),
-          family: Schema.NonEmptyTrimmedString,
+          given: Schema.optional(Schema.compose(Schema.Trim, Schema.NonEmptyString)),
+          family: Schema.compose(Schema.Trim, Schema.NonEmptyString),
         }),
         Schema.Struct({
-          name: Schema.NonEmptyTrimmedString,
+          name: Schema.compose(Schema.Trim, Schema.NonEmptyString),
         }),
       ),
     ),
@@ -71,9 +71,9 @@ export class Work extends Schema.Class<Work>('Work')({
   ),
   institution: Schema.optional(Schema.Tuple(Schema.Struct({ name: Schema.String }))),
   published: PublishedSchema,
-  'group-title': Schema.optional(Schema.NonEmptyTrimmedString),
-  type: Schema.NonEmptyTrimmedString,
-  subtype: Schema.optional(Schema.NonEmptyTrimmedString),
+  'group-title': Schema.optional(Schema.compose(Schema.Trim, Schema.NonEmptyString)),
+  type: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+  subtype: Schema.optional(Schema.compose(Schema.Trim, Schema.NonEmptyString)),
 }) {}
 
 export const ResponseSchema = <A, I, R>(message: Schema.Schema<A, I, R>) =>

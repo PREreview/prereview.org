@@ -1,0 +1,220 @@
+{
+  "data": {
+    "id": "10.5281/zenodo.14788393",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5281/zenodo.14788393",
+      "prefix": "10.5281",
+      "suffix": "zenodo.14788393",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Zou, Zhi Kai",
+          "nameType": "Personal",
+          "givenName": "Zhi Kai",
+          "familyName": "Zou",
+          "nameIdentifiers": [{ "nameIdentifier": "0009-0000-4279-1064", "nameIdentifierScheme": "ORCID" }],
+          "affiliation": []
+        }
+      ],
+      "titles": [
+        { "title": "Space-Time-Entropy Mapping and Mass-Gravity-SU(3) Nexus-preprint" },
+        { "title": "A thermodynamic time definition based on the Law of entropy increase", "titleType": "Subtitle" },
+        {
+          "title": "A speculative concretized framework for understanding relativity and quantum field theory",
+          "titleType": "Subtitle"
+        }
+      ],
+      "publisher": "Zenodo",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [
+        {
+          "subject": "Space-Time-Entropy Mapping;Discrete Spacetime;Thermodynamic Time Arrow;Multiplicative Entropy; Space elementary quanta(SEQ);Mass-Gravity-SU(3) mechanism"
+        }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2025-04-20", "dateType": "Issued" },
+        { "date": "2025-04-20", "dateType": "Updated" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "",
+        "resourceTypeGeneral": "Preprint"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15073804",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15086720",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15208165",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15178714",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15009237",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15048612",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15128141",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.14788394",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15099012",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.14934318",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.14991700",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15005633",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15104903",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15026289",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.15193461",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasVersion",
+          "relatedIdentifier": "10.5281/zenodo.14835679",
+          "relatedIdentifierType": "DOI"
+        },
+        { "relationType": "HasVersion", "relatedIdentifier": "10.5281/zenodo.15251735", "relatedIdentifierType": "DOI" }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Main Timeline of Updates (Incomplete):\n\n\n\n\n\n [Created February 2, 2025], (1)The time-entropy mapping ;(2)the multiplicative analytic expression of entropy ; (3)the formula of action in disctret system;(4) the explanation of SEQ's spin-induced parity violation; (5)SEQ-dark matter; SEQ ground state energy-dark energy; (6)whole time-local time definition;the basic physical quantities in SEQ framework; (7)spontaneous entropy increase principle; (8)matter as a part of spacetime, proposed in this paper were uploaded to Zenodo  https://doi.org/10.5281/zenodo.14788394 . \n\n\n [Created March 8, 2025] (1)Our theoretical prediction regarding the magnetic moment difference between positrons and electrons;(2)Gravitation and proper time dilation mechanism, (3)the explanation of the singularity paradox of black holes, (4)Spatial Arrangement Matrix Representation of Electrons with substructure,(5)Derivation of the Inverse Square Law of Gravitation in Discrete Systems,(6)Relationship Between Positron Scarcity and Spin of SEQ Ground State,(7)Mechanism of Equivalent Gravitational Field Generated by Metric Variation Due to Object Motion,(8)Annihilation and Decay of Microscopic Particles,(9)Conjecture on experiment of Muon Decay and other content were formally archived on Zenodo , https://doi.org/10.5281/zenodo.14991700 .\n\n [Created March 14, 2025] (1)The explanation of cosmological constant that corresponds to the ground-state energy of  SEQ , (2)dark matter arising from the SEQ density; (3)Gravitational effect of dark matter; (4) representation of Electric Charge; (5)and the table of  understanding on general relativity from SEQ framework  were updated on   https://doi.org/10.5281/zenodo.15026289\n\n[Created March 19, 2025](1)Key work regarding the relationship between mass-gravity-SU(3) color interaction(the role and physical image of The 8 generators of SU(3) mechanism); (2)the origin of mass; (3)the specific mechanism of time dilation, (4)corresponding explanations bridging general relativity and quantum field theory;(5) the definition of whole time, local time,poper time, relative time; (6) the speculative Diagram of Proton's Internal multi-layer Structure with Quarks and Gluons  (7)relative time (8)the explanation of wave-particle duality in SEQ framework (9)Quark asymptotic freedom and color confinement originated from nonlinear variations in compression-tensile tensions among SEQs  were subsequently uploaded to Zenodo on https://doi.org/10.5281/zenodo.15048612 in the appendix table2.\n\n[Created March 26, 2025 ] the detailed explanation about essence of gravitation-origin of mass- understanding SU(3) were updated on https://doi.org/10.5281/zenodo.15088556 . \n\n[Created April 11, 2025] (1)Detailed Correspondence with Newton's law of universal gravitation and(2) Correspondence with Newton's First Law—the Law of Inertia were uploaded to Zenodo on  https://doi.org/10.5281/zenodo.15193461\n\n[Created April 20, 2025](1)Derivation of the Mass-Energy Equation in the SEQ Model(Dimensional Analysis of the Release of Spatial Elastic Potential Energy as Gravitational Waves at Light Speed in section 10.6);(2)Demonstration why matter is part of spacetime---Substantiation of the matter-spacetime unity hypothesis and other content were  uploaded to Zenodo on https://doi.org/10.5281/zenodo.15251735\n\n[Created March 23, 2025]Primordial Gravitational Waves as a Viable Explanation of The observation of z=0.5 Gradient Reversal in DESI  https://doi.org/10.5281/zenodo.15070645 \n\n\nThe preprints versions archived on Zenodo are under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.\n\nWhen referencing any component of this research, please cite using the specific DOI of the relevant article or the newest version. Thanks.\n\nAll upload timestamps are permanently visible in the bottom-right corner of each Zenodo version page - (Technical metadata) .\n\n \n\n \n\nThis model establishes a rigorous time-entropy mapping that promotes:(i) entropy from a phenomenological emergent property to a fundamental dynamical variable governing system evolution;(ii) time from a passive background parameter to an active operator encoding entropic gradient flows.The resulting framework provides analytically tractable indices for characterizing non-equilibrium dynamics.\n\nCore contribution:\n\n\n\n3D matrix representation of time and entropy in space\n\nSpace transformation-Time-Entropy Mapping Model \n\nMass-Gravity-SU(3) Triad based on Quantum Field Theory \n\nTime and local time-proper time definition aligning with Relativity\n\nAnalytical formula of Action Derives action from SEQ wave conduction\n\nPhysical Image of Equivalent Gravitational Field Mechanism  \n\nprovide an entropy coordinate for computer physics simulation\n\n\n ",
+          "descriptionType": "Abstract"
+        },
+        {
+          "lang": "eng",
+          "description": "Abstract: This paper presents a discrete spacetime model where: (i) Time emerges as discrete entropy-increasing steps, with the universe evolving through state transitions of a Space Elementary Quantum (SEQ) network; entropy is calculated via multiplicative energy distributions across SEQ network.  (ii) SU(3) mediates local space compression through 3D modulation and axis transformations, maintaining spherical symmetry. This compression induces isotropic gravitational fields via external space stretching. (iii) The essence of mass is the storage of gravitational (spatial elastic) potential energy under the interaction of SU(3) corresponding to the compression of space. (iv)The framework provides a concrete mechanism for time dilation: local compression or stretching of SEQ modulates transformation frequency, directly linking gravitational/kinematic effects to observable time dilation phenomena. (v)The model predicts a falsifiable signature: a measurable difference between positron and electron magnetic moments, arising from their opposite chiral coupling to the fixed-spin SEQ ground state.\n\n \n\nKeywords:Space-Time-Entropy Mapping;Discrete Spacetime;Thermodynamic Time Arrow;Multiplicative Entropy; Space elementary quanta(SEQ);Mass-Gravity-SU(3) mechanism;",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTI4MS9aRU5PRE8uMTQ3ODgzOTM8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlpvdSwgWmhpIEthaTwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+WmhpIEthaTwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5ab3U8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iIj4wMDA5LTAwMDAtNDI3OS0xMDY0PC9uYW1lSWRlbnRpZmllcj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+U3BhY2UtVGltZS1FbnRyb3B5IE1hcHBpbmcgYW5kIE1hc3MtR3Jhdml0eS1TVSgzKSBOZXh1cy1wcmVwcmludDwvdGl0bGU+CiAgICA8dGl0bGUgdGl0bGVUeXBlPSJTdWJ0aXRsZSI+QSB0aGVybW9keW5hbWljIHRpbWUgZGVmaW5pdGlvbiBiYXNlZCBvbiB0aGUgTGF3IG9mIGVudHJvcHkgaW5jcmVhc2U8L3RpdGxlPgogICAgPHRpdGxlIHRpdGxlVHlwZT0iU3VidGl0bGUiPkEgc3BlY3VsYXRpdmUgY29uY3JldGl6ZWQgZnJhbWV3b3JrIGZvciB1bmRlcnN0YW5kaW5nIHJlbGF0aXZpdHkgYW5kIHF1YW50dW0gZmllbGQgdGhlb3J5PC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyPlplbm9kbzwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyNTwvcHVibGljYXRpb25ZZWFyPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iUHJlcHJpbnQiLz4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdD5TcGFjZS1UaW1lLUVudHJvcHkgTWFwcGluZztEaXNjcmV0ZSBTcGFjZXRpbWU7VGhlcm1vZHluYW1pYyBUaW1lIEFycm93O011bHRpcGxpY2F0aXZlIEVudHJvcHk7IFNwYWNlIGVsZW1lbnRhcnkgcXVhbnRhKFNFUSk7TWFzcy1HcmF2aXR5LVNVKDMpIG1lY2hhbmlzbTwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJJc3N1ZWQiPjIwMjUtMDQtMjA8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iVXBkYXRlZCI+MjAyNS0wNC0yMDwvZGF0ZT4KICA8L2RhdGVzPgogIDxyZWxhdGVkSWRlbnRpZmllcnM+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iSGFzVmVyc2lvbiI+MTAuNTI4MS96ZW5vZG8uMTUwNzM4MDQ8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9Ikhhc1ZlcnNpb24iPjEwLjUyODEvemVub2RvLjE1MDg2NzIwPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJIYXNWZXJzaW9uIj4xMC41MjgxL3plbm9kby4xNTIwODE2NTwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iSGFzVmVyc2lvbiI+MTAuNTI4MS96ZW5vZG8uMTUxNzg3MTQ8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9Ikhhc1ZlcnNpb24iPjEwLjUyODEvemVub2RvLjE1MDA5MjM3PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJIYXNWZXJzaW9uIj4xMC41MjgxL3plbm9kby4xNTA0ODYxMjwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iSGFzVmVyc2lvbiI+MTAuNTI4MS96ZW5vZG8uMTUxMjgxNDE8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9Ikhhc1ZlcnNpb24iPjEwLjUyODEvemVub2RvLjE0Nzg4Mzk0PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJIYXNWZXJzaW9uIj4xMC41MjgxL3plbm9kby4xNTA5OTAxMjwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iSGFzVmVyc2lvbiI+MTAuNTI4MS96ZW5vZG8uMTQ5MzQzMTg8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9Ikhhc1ZlcnNpb24iPjEwLjUyODEvemVub2RvLjE0OTkxNzAwPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJIYXNWZXJzaW9uIj4xMC41MjgxL3plbm9kby4xNTAwNTYzMzwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iSGFzVmVyc2lvbiI+MTAuNTI4MS96ZW5vZG8uMTUxMDQ5MDM8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9Ikhhc1ZlcnNpb24iPjEwLjUyODEvemVub2RvLjE1MDI2Mjg5PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJIYXNWZXJzaW9uIj4xMC41MjgxL3plbm9kby4xNTE5MzQ2MTwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iSGFzVmVyc2lvbiI+MTAuNTI4MS96ZW5vZG8uMTQ4MzU2Nzk8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9Ikhhc1ZlcnNpb24iPjEwLjUyODEvemVub2RvLjE1MjUxNzM1PC9yZWxhdGVkSWRlbnRpZmllcj4KICA8L3JlbGF0ZWRJZGVudGlmaWVycz4KICA8c2l6ZXMvPgogIDxmb3JtYXRzLz4KICA8dmVyc2lvbi8+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC9sZWdhbGNvZGUiIHJpZ2h0c0lkZW50aWZpZXI9ImNjLWJ5LTQuMCIgcmlnaHRzSWRlbnRpZmllclNjaGVtZT0ic3BkeCI+Q3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiA0LjAgSW50ZXJuYXRpb25hbDwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPk1haW4gVGltZWxpbmUgb2YgVXBkYXRlcyAoSW5jb21wbGV0ZSk6CgoKCgoKwqBbQ3JlYXRlZCBGZWJydWFyeSAyLCAyMDI1XSwgKDEpVGhlIHRpbWUtZW50cm9weSBtYXBwaW5nIDsoMil0aGUgbXVsdGlwbGljYXRpdmUgYW5hbHl0aWMgZXhwcmVzc2lvbiBvZiBlbnRyb3B5IDsgKDMpdGhlIGZvcm11bGEgb2YgYWN0aW9uIGluIGRpc2N0cmV0IHN5c3RlbTsoNCkgdGhlIGV4cGxhbmF0aW9uIG9mIFNFUSdzIHNwaW4taW5kdWNlZCBwYXJpdHkgdmlvbGF0aW9uOyAoNSlTRVEtZGFyayBtYXR0ZXI7IFNFUSBncm91bmQgc3RhdGUgZW5lcmd5LWRhcmsgZW5lcmd5OyAoNil3aG9sZSB0aW1lLWxvY2FsIHRpbWUgZGVmaW5pdGlvbjt0aGUgYmFzaWMgcGh5c2ljYWwgcXVhbnRpdGllcyBpbiBTRVEgZnJhbWV3b3JrOyAoNylzcG9udGFuZW91cyBlbnRyb3B5IGluY3JlYXNlIHByaW5jaXBsZTsgKDgpbWF0dGVyIGFzIGEgcGFydCBvZiBzcGFjZXRpbWUsIHByb3Bvc2VkIGluIHRoaXMgcGFwZXIgd2VyZSB1cGxvYWRlZCB0byBaZW5vZG/CoCBodHRwczovL2RvaS5vcmcvMTAuNTI4MS96ZW5vZG8uMTQ3ODgzOTQgLsKgCgoKwqBbQ3JlYXRlZCBNYXJjaCA4LCAyMDI1XSAoMSlPdXIgdGhlb3JldGljYWwgcHJlZGljdGlvbiByZWdhcmRpbmcgdGhlIG1hZ25ldGljIG1vbWVudCBkaWZmZXJlbmNlIGJldHdlZW4gcG9zaXRyb25zIGFuZCBlbGVjdHJvbnM7KDIpR3Jhdml0YXRpb24gYW5kIHByb3BlciB0aW1lIGRpbGF0aW9uIG1lY2hhbmlzbSwgKDMpdGhlIGV4cGxhbmF0aW9uIG9mIHRoZSBzaW5ndWxhcml0eSBwYXJhZG94IG9mIGJsYWNrIGhvbGVzLCAoNClTcGF0aWFsIEFycmFuZ2VtZW50IE1hdHJpeCBSZXByZXNlbnRhdGlvbiBvZiBFbGVjdHJvbnMgd2l0aCBzdWJzdHJ1Y3R1cmUsKDUpRGVyaXZhdGlvbiBvZiB0aGUgSW52ZXJzZSBTcXVhcmUgTGF3IG9mIEdyYXZpdGF0aW9uIGluIERpc2NyZXRlIFN5c3RlbXMsKDYpUmVsYXRpb25zaGlwIEJldHdlZW4gUG9zaXRyb24gU2NhcmNpdHkgYW5kIFNwaW4gb2YgU0VRIEdyb3VuZCBTdGF0ZSwoNylNZWNoYW5pc20gb2YgRXF1aXZhbGVudCBHcmF2aXRhdGlvbmFsIEZpZWxkIEdlbmVyYXRlZCBieSBNZXRyaWMgVmFyaWF0aW9uIER1ZSB0byBPYmplY3QgTW90aW9uLCg4KUFubmloaWxhdGlvbiBhbmQgRGVjYXkgb2YgTWljcm9zY29waWMgUGFydGljbGVzLCg5KUNvbmplY3R1cmUgb24gZXhwZXJpbWVudCBvZiBNdW9uIERlY2F5IGFuZCBvdGhlciBjb250ZW50IHdlcmUgZm9ybWFsbHkgYXJjaGl2ZWQgb24gWmVub2RvICwgaHR0cHM6Ly9kb2kub3JnLzEwLjUyODEvemVub2RvLjE0OTkxNzAwIC4KCsKgW0NyZWF0ZWQgTWFyY2ggMTQsIDIwMjVdICgxKVRoZSBleHBsYW5hdGlvbiBvZiBjb3Ntb2xvZ2ljYWwgY29uc3RhbnQgdGhhdCBjb3JyZXNwb25kcyB0byB0aGUgZ3JvdW5kLXN0YXRlIGVuZXJneSBvZsKgIFNFUSAsICgyKWRhcmsgbWF0dGVyIGFyaXNpbmcgZnJvbSB0aGUgU0VRIGRlbnNpdHk7ICgzKUdyYXZpdGF0aW9uYWwgZWZmZWN0IG9mIGRhcmsgbWF0dGVyOyAoNCkgcmVwcmVzZW50YXRpb24gb2YgRWxlY3RyaWMgQ2hhcmdlOyAoNSlhbmQgdGhlIHRhYmxlIG9mIMKgdW5kZXJzdGFuZGluZyBvbiBnZW5lcmFsIHJlbGF0aXZpdHkgZnJvbSBTRVEgZnJhbWV3b3JrwqAgd2VyZSB1cGRhdGVkIG9uwqAgwqBodHRwczovL2RvaS5vcmcvMTAuNTI4MS96ZW5vZG8uMTUwMjYyODkKCltDcmVhdGVkIE1hcmNoIDE5LCAyMDI1XSgxKUtleSB3b3JrIHJlZ2FyZGluZyB0aGUgcmVsYXRpb25zaGlwIGJldHdlZW4gbWFzcy1ncmF2aXR5LVNVKDMpIGNvbG9yIGludGVyYWN0aW9uKHRoZSByb2xlIGFuZCBwaHlzaWNhbCBpbWFnZSBvZiBUaGUgOCBnZW5lcmF0b3JzIG9mIFNVKDMpIG1lY2hhbmlzbSk7ICgyKXRoZSBvcmlnaW4gb2YgbWFzczsgKDMpdGhlIHNwZWNpZmljIG1lY2hhbmlzbSBvZiB0aW1lIGRpbGF0aW9uLCAoNCljb3JyZXNwb25kaW5nIGV4cGxhbmF0aW9ucyBicmlkZ2luZyBnZW5lcmFsIHJlbGF0aXZpdHkgYW5kIHF1YW50dW0gZmllbGQgdGhlb3J5Oyg1KSB0aGUgZGVmaW5pdGlvbiBvZiB3aG9sZSB0aW1lLCBsb2NhbCB0aW1lLHBvcGVyIHRpbWUsIHJlbGF0aXZlIHRpbWU7ICg2KSB0aGUgc3BlY3VsYXRpdmUgRGlhZ3JhbSBvZiBQcm90b24ncyBJbnRlcm5hbCBtdWx0aS1sYXllciBTdHJ1Y3R1cmUgd2l0aCBRdWFya3MgYW5kIEdsdW9ucyDCoCg3KXJlbGF0aXZlIHRpbWUgKDgpdGhlIGV4cGxhbmF0aW9uIG9mIHdhdmUtcGFydGljbGUgZHVhbGl0eSBpbiBTRVEgZnJhbWV3b3JrICg5KVF1YXJrIGFzeW1wdG90aWMgZnJlZWRvbSBhbmQgY29sb3IgY29uZmluZW1lbnQgb3JpZ2luYXRlZCBmcm9tIG5vbmxpbmVhciB2YXJpYXRpb25zIGluIGNvbXByZXNzaW9uLXRlbnNpbGUgdGVuc2lvbnMgYW1vbmcgU0VRc8KgIHdlcmUgc3Vic2VxdWVudGx5IHVwbG9hZGVkIHRvIFplbm9kbyBvbiBodHRwczovL2RvaS5vcmcvMTAuNTI4MS96ZW5vZG8uMTUwNDg2MTIgaW4gdGhlIGFwcGVuZGl4IHRhYmxlMi4KCltDcmVhdGVkIE1hcmNoIDI2LCAyMDI1IF0gdGhlIGRldGFpbGVkIGV4cGxhbmF0aW9uIGFib3V0IGVzc2VuY2Ugb2YgZ3Jhdml0YXRpb24tb3JpZ2luIG9mIG1hc3MtIHVuZGVyc3RhbmRpbmcgU1UoMykgd2VyZSB1cGRhdGVkIG9uIGh0dHBzOi8vZG9pLm9yZy8xMC41MjgxL3plbm9kby4xNTA4ODU1NiAuwqAKCltDcmVhdGVkIEFwcmlsIDExLCAyMDI1XSAoMSlEZXRhaWxlZCBDb3JyZXNwb25kZW5jZSB3aXRoIE5ld3RvbidzIGxhdyBvZiB1bml2ZXJzYWwgZ3Jhdml0YXRpb24gYW5kKDIpIENvcnJlc3BvbmRlbmNlIHdpdGggTmV3dG9uJ3MgRmlyc3QgTGF34oCUdGhlIExhdyBvZiBJbmVydGlhIHdlcmUgdXBsb2FkZWQgdG8gWmVub2RvIG9uwqDCoGh0dHBzOi8vZG9pLm9yZy8xMC41MjgxL3plbm9kby4xNTE5MzQ2MQoKW0NyZWF0ZWQgQXByaWwgMjAsIDIwMjVdKDEpRGVyaXZhdGlvbiBvZiB0aGUgTWFzcy1FbmVyZ3kgRXF1YXRpb24gaW4gdGhlIFNFUSBNb2RlbChEaW1lbnNpb25hbCBBbmFseXNpcyBvZiB0aGUgUmVsZWFzZSBvZiBTcGF0aWFsIEVsYXN0aWMgUG90ZW50aWFsIEVuZXJneSBhcyBHcmF2aXRhdGlvbmFsIFdhdmVzIGF0IExpZ2h0IFNwZWVkIGluIHNlY3Rpb24gMTAuNik7KDIpRGVtb25zdHJhdGlvbiB3aHkgbWF0dGVyIGlzIHBhcnQgb2Ygc3BhY2V0aW1lLS0tU3Vic3RhbnRpYXRpb24gb2YgdGhlIG1hdHRlci1zcGFjZXRpbWUgdW5pdHkgaHlwb3RoZXNpcyBhbmQgb3RoZXIgY29udGVudCB3ZXJlwqAgdXBsb2FkZWQgdG8gWmVub2RvIG9uwqBodHRwczovL2RvaS5vcmcvMTAuNTI4MS96ZW5vZG8uMTUyNTE3MzUKCltDcmVhdGVkIE1hcmNoIDIzLCAyMDI1XVByaW1vcmRpYWwgR3Jhdml0YXRpb25hbCBXYXZlcyBhcyBhIFZpYWJsZSBFeHBsYW5hdGlvbiBvZiBUaGUgb2JzZXJ2YXRpb24gb2Ygej0wLjUgR3JhZGllbnQgUmV2ZXJzYWwgaW4gREVTSSDCoGh0dHBzOi8vZG9pLm9yZy8xMC41MjgxL3plbm9kby4xNTA3MDY0NcKgCgoKVGhlIHByZXByaW50cyB2ZXJzaW9ucyBhcmNoaXZlZCBvbiBaZW5vZG8gYXJlIHVuZGVyIHRoZSBDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIDQuMCBJbnRlcm5hdGlvbmFsIChDQyBCWSA0LjApIGxpY2Vuc2UuCgpXaGVuIHJlZmVyZW5jaW5nIGFueSBjb21wb25lbnQgb2YgdGhpcyByZXNlYXJjaCwgcGxlYXNlIGNpdGUgdXNpbmcgdGhlIHNwZWNpZmljIERPSSBvZiB0aGUgcmVsZXZhbnQgYXJ0aWNsZSBvciB0aGUgbmV3ZXN0IHZlcnNpb24uIFRoYW5rcy4KCkFsbCB1cGxvYWQgdGltZXN0YW1wcyBhcmUgcGVybWFuZW50bHkgdmlzaWJsZSBpbiB0aGUgYm90dG9tLXJpZ2h0IGNvcm5lciBvZiBlYWNoIFplbm9kbyB2ZXJzaW9uIHBhZ2UgLSAoVGVjaG5pY2FsIG1ldGFkYXRhKSAuCgrCoAoKwqAKClRoaXMgbW9kZWwgZXN0YWJsaXNoZXMgYSByaWdvcm91cyB0aW1lLWVudHJvcHkgbWFwcGluZyB0aGF0IHByb21vdGVzOihpKSBlbnRyb3B5IGZyb20gYSBwaGVub21lbm9sb2dpY2FsIGVtZXJnZW50IHByb3BlcnR5IHRvIGEgZnVuZGFtZW50YWwgZHluYW1pY2FsIHZhcmlhYmxlIGdvdmVybmluZyBzeXN0ZW0gZXZvbHV0aW9uOyhpaSkgdGltZSBmcm9tIGEgcGFzc2l2ZSBiYWNrZ3JvdW5kIHBhcmFtZXRlciB0byBhbiBhY3RpdmUgb3BlcmF0b3IgZW5jb2RpbmcgZW50cm9waWMgZ3JhZGllbnQgZmxvd3MuVGhlIHJlc3VsdGluZyBmcmFtZXdvcmsgcHJvdmlkZXMgYW5hbHl0aWNhbGx5IHRyYWN0YWJsZSBpbmRpY2VzIGZvciBjaGFyYWN0ZXJpemluZyBub24tZXF1aWxpYnJpdW0gZHluYW1pY3MuCgpDb3JlIGNvbnRyaWJ1dGlvbjoKCgoKM0QgbWF0cml4IHJlcHJlc2VudGF0aW9uIG9mIHRpbWUgYW5kIGVudHJvcHkgaW4gc3BhY2UKClNwYWNlIHRyYW5zZm9ybWF0aW9uLVRpbWUtRW50cm9weSBNYXBwaW5nIE1vZGVswqAKCk1hc3MtR3Jhdml0eS1TVSgzKSBUcmlhZCBiYXNlZCBvbiBRdWFudHVtIEZpZWxkIFRoZW9yecKgCgpUaW1lIGFuZCBsb2NhbCB0aW1lLXByb3BlciB0aW1lIGRlZmluaXRpb24gYWxpZ25pbmcgd2l0aCBSZWxhdGl2aXR5CgpBbmFseXRpY2FsIGZvcm11bGEgb2YgQWN0aW9uIERlcml2ZXMgYWN0aW9uIGZyb20gU0VRIHdhdmUgY29uZHVjdGlvbgoKUGh5c2ljYWwgSW1hZ2Ugb2YgRXF1aXZhbGVudCBHcmF2aXRhdGlvbmFsIEZpZWxkIE1lY2hhbmlzbSDCoAoKcHJvdmlkZSBhbiBlbnRyb3B5IGNvb3JkaW5hdGUgZm9yIGNvbXB1dGVyIHBoeXNpY3Mgc2ltdWxhdGlvbgoKCsKgPC9kZXNjcmlwdGlvbj4KICAgIDxkZXNjcmlwdGlvbiB4bWw6bGFuZz0iZW5nIiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij5BYnN0cmFjdDrCoFRoaXMgcGFwZXIgcHJlc2VudHMgYSBkaXNjcmV0ZSBzcGFjZXRpbWUgbW9kZWwgd2hlcmU6IChpKSBUaW1lIGVtZXJnZXMgYXMgZGlzY3JldGUgZW50cm9weS1pbmNyZWFzaW5nIHN0ZXBzLCB3aXRoIHRoZSB1bml2ZXJzZSBldm9sdmluZyB0aHJvdWdoIHN0YXRlIHRyYW5zaXRpb25zIG9mIGEgU3BhY2UgRWxlbWVudGFyeSBRdWFudHVtIChTRVEpIG5ldHdvcms7IGVudHJvcHkgaXMgY2FsY3VsYXRlZCB2aWEgbXVsdGlwbGljYXRpdmUgZW5lcmd5IGRpc3RyaWJ1dGlvbnMgYWNyb3NzIFNFUcKgbmV0d29yay4gwqAoaWkpIFNVKDMpIG1lZGlhdGVzIGxvY2FsIHNwYWNlIGNvbXByZXNzaW9uIHRocm91Z2ggM0QgbW9kdWxhdGlvbiBhbmQgYXhpcyB0cmFuc2Zvcm1hdGlvbnMsIG1haW50YWluaW5nIHNwaGVyaWNhbCBzeW1tZXRyeS4gVGhpcyBjb21wcmVzc2lvbiBpbmR1Y2VzIGlzb3Ryb3BpYyBncmF2aXRhdGlvbmFsIGZpZWxkcyB2aWEgZXh0ZXJuYWwgc3BhY2Ugc3RyZXRjaGluZy7CoChpaWkpIFRoZSBlc3NlbmNlIG9mIG1hc3MgaXMgdGhlIHN0b3JhZ2Ugb2YgZ3Jhdml0YXRpb25hbCAoc3BhdGlhbCBlbGFzdGljKSBwb3RlbnRpYWwgZW5lcmd5IHVuZGVyIHRoZSBpbnRlcmFjdGlvbiBvZiBTVSgzKSBjb3JyZXNwb25kaW5nIHRvIHRoZSBjb21wcmVzc2lvbiBvZiBzcGFjZS4gKGl2KVRoZSBmcmFtZXdvcmsgcHJvdmlkZXMgYSBjb25jcmV0ZSBtZWNoYW5pc20gZm9yIHRpbWUgZGlsYXRpb246IGxvY2FsIGNvbXByZXNzaW9uIG9yIHN0cmV0Y2hpbmcgb2YgU0VRIG1vZHVsYXRlcyB0cmFuc2Zvcm1hdGlvbiBmcmVxdWVuY3ksIGRpcmVjdGx5IGxpbmtpbmcgZ3Jhdml0YXRpb25hbC9raW5lbWF0aWMgZWZmZWN0cyB0byBvYnNlcnZhYmxlIHRpbWUgZGlsYXRpb24gcGhlbm9tZW5hLiAodilUaGUgbW9kZWwgcHJlZGljdHMgYSBmYWxzaWZpYWJsZSBzaWduYXR1cmU6IGEgbWVhc3VyYWJsZSBkaWZmZXJlbmNlIGJldHdlZW4gcG9zaXRyb24gYW5kIGVsZWN0cm9uIG1hZ25ldGljIG1vbWVudHMsIGFyaXNpbmcgZnJvbSB0aGVpciBvcHBvc2l0ZSBjaGlyYWwgY291cGxpbmcgdG8gdGhlIGZpeGVkLXNwaW4gU0VRIGdyb3VuZCBzdGF0ZS4KCsKgCgpLZXl3b3JkczpTcGFjZS1UaW1lLUVudHJvcHkgTWFwcGluZztEaXNjcmV0ZSBTcGFjZXRpbWU7VGhlcm1vZHluYW1pYyBUaW1lIEFycm93O011bHRpcGxpY2F0aXZlIEVudHJvcHk7IFNwYWNlIGVsZW1lbnRhcnkgcXVhbnRhKFNFUSk7TWFzcy1HcmF2aXR5LVNVKDMpIG1lY2hhbmlzbTs8L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPgo=",
+      "url": "https://zenodo.org/doi/10.5281/zenodo.14788393",
+      "contentUrl": null,
+      "metadataVersion": 61,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "api",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 20,
+      "versionOfCount": 0,
+      "created": "2025-02-02T07:59:02.000Z",
+      "registered": "2025-02-02T07:59:02.000Z",
+      "published": "2025",
+      "updated": "2025-04-28T03:53:42.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cern.zenodo", "type": "clients" } },
+      "provider": { "data": { "id": "cern", "type": "providers" } },
+      "media": { "data": { "id": "10.5281/zenodo.14788393", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": {
+        "data": [
+          { "id": "10.5281/zenodo.14788394", "type": "dois" },
+          { "id": "10.5281/zenodo.14835679", "type": "dois" },
+          { "id": "10.5281/zenodo.14934318", "type": "dois" },
+          { "id": "10.5281/zenodo.14991700", "type": "dois" },
+          { "id": "10.5281/zenodo.15005633", "type": "dois" },
+          { "id": "10.5281/zenodo.15009237", "type": "dois" },
+          { "id": "10.5281/zenodo.15026289", "type": "dois" },
+          { "id": "10.5281/zenodo.15048612", "type": "dois" },
+          { "id": "10.5281/zenodo.15073804", "type": "dois" },
+          { "id": "10.5281/zenodo.15086720", "type": "dois" },
+          { "id": "10.5281/zenodo.15099012", "type": "dois" },
+          { "id": "10.5281/zenodo.15104903", "type": "dois" },
+          { "id": "10.5281/zenodo.15128141", "type": "dois" },
+          { "id": "10.5281/zenodo.15178714", "type": "dois" },
+          { "id": "10.5281/zenodo.15193461", "type": "dois" },
+          { "id": "10.5281/zenodo.15208165", "type": "dois" },
+          { "id": "10.5281/zenodo.15220497", "type": "dois" },
+          { "id": "10.5281/zenodo.15220498", "type": "dois" },
+          { "id": "10.5281/zenodo.15251735", "type": "dois" },
+          { "id": "10.5281/zenodo.15266066", "type": "dois" }
+        ]
+      },
+      "versionOf": { "data": [] }
+    }
+  }
+}

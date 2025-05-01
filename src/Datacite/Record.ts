@@ -4,11 +4,15 @@ import { StatusCodes } from 'http-status-codes'
 import * as Doi from '../types/Doi.js'
 import { Temporal } from '../types/index.js'
 
-const EmptyStringAsUndefinedSchema = Schema.transform(Schema.Literal(''), Schema.Undefined, {
-  strict: true,
-  decode: Function.constUndefined,
-  encode: Function.constant(String.empty),
-})
+const EmptyStringAsUndefinedSchema = Schema.transform(
+  Schema.compose(Schema.Trim, Schema.Literal('')),
+  Schema.Undefined,
+  {
+    strict: true,
+    decode: Function.constUndefined,
+    encode: Function.constant(String.empty),
+  },
+)
 
 export class Record extends Schema.Class<Record>('Record')({
   doi: Doi.DoiSchema,
@@ -16,25 +20,25 @@ export class Record extends Schema.Class<Record>('Record')({
     Schema.Array(
       Schema.Union(
         Schema.Struct({
-          givenName: Schema.NonEmptyTrimmedString,
-          familyName: Schema.NonEmptyTrimmedString,
+          givenName: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+          familyName: Schema.compose(Schema.Trim, Schema.NonEmptyString),
           nameIdentifiers: Schema.optionalWith(
             Schema.Array(
               Schema.Struct({
-                nameIdentifier: Schema.NonEmptyTrimmedString,
-                nameIdentifierScheme: Schema.NonEmptyTrimmedString,
+                nameIdentifier: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+                nameIdentifierScheme: Schema.compose(Schema.Trim, Schema.NonEmptyString),
               }),
             ),
             { default: Array.empty },
           ),
         }),
         Schema.Struct({
-          name: Schema.NonEmptyTrimmedString,
+          name: Schema.compose(Schema.Trim, Schema.NonEmptyString),
           nameIdentifiers: Schema.optionalWith(
             Schema.Array(
               Schema.Struct({
-                nameIdentifier: Schema.NonEmptyTrimmedString,
-                nameIdentifierScheme: Schema.NonEmptyTrimmedString,
+                nameIdentifier: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+                nameIdentifierScheme: Schema.compose(Schema.Trim, Schema.NonEmptyString),
               }),
             ),
             { default: Array.empty },
@@ -46,10 +50,10 @@ export class Record extends Schema.Class<Record>('Record')({
   ),
   titles: Schema.NonEmptyArray(
     Schema.Struct({
-      title: Schema.NonEmptyTrimmedString,
+      title: Schema.compose(Schema.Trim, Schema.NonEmptyString),
     }),
   ),
-  publisher: Schema.NonEmptyTrimmedString,
+  publisher: Schema.compose(Schema.Trim, Schema.NonEmptyString),
   dates: Schema.NonEmptyArray(
     Schema.Struct({
       date: Schema.Union(
@@ -58,23 +62,25 @@ export class Record extends Schema.Class<Record>('Record')({
         Temporal.PlainYearMonthSchema,
         Schema.NumberFromString,
       ),
-      dateType: Schema.NonEmptyTrimmedString,
+      dateType: Schema.compose(Schema.Trim, Schema.NonEmptyString),
     }),
   ),
   types: Schema.Struct({
-    resourceType: Schema.optional(Schema.Union(Schema.NonEmptyTrimmedString, EmptyStringAsUndefinedSchema)),
-    resourceTypeGeneral: Schema.optional(Schema.NonEmptyTrimmedString),
+    resourceType: Schema.optional(
+      Schema.Union(Schema.compose(Schema.Trim, Schema.NonEmptyString), EmptyStringAsUndefinedSchema),
+    ),
+    resourceTypeGeneral: Schema.optional(Schema.compose(Schema.Trim, Schema.NonEmptyString)),
   }),
   relatedIdentifiers: Schema.Array(
     Schema.Struct({
-      relationType: Schema.NonEmptyTrimmedString,
-      relatedIdentifier: Schema.NonEmptyTrimmedString,
+      relationType: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+      relatedIdentifier: Schema.compose(Schema.Trim, Schema.NonEmptyString),
     }),
   ),
   descriptions: Schema.Array(
     Schema.Struct({
-      description: Schema.NonEmptyTrimmedString,
-      descriptionType: Schema.NonEmptyTrimmedString,
+      description: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+      descriptionType: Schema.compose(Schema.Trim, Schema.NonEmptyString),
     }),
   ),
   url: Schema.URL,
