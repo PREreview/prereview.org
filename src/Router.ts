@@ -252,9 +252,15 @@ function toHttpServerResponse(
     }
 
     const locale = yield* Locale
+    const publicUrl = yield* PublicUrl
     const templatePage = yield* TemplatePage
     const user = yield* Effect.serviceOption(LoggedInUser)
     const message = yield* Effect.serviceOption(FlashMessage)
+
+    const canonical = pipe(
+      Option.fromNullable(response.canonical),
+      Option.map(canonical => new URL(`${publicUrl.origin}${encodeURI(canonical).replace(/^([^/])/, '/$1')}`)),
+    )
 
     return yield* pipe(
       templatePage(
@@ -270,6 +276,10 @@ function toHttpServerResponse(
         onNone: () => identity,
         onSome: () =>
           HttpServerResponse.unsafeSetCookie('flash-message', '', { expires: new Date(1), httpOnly: true, path: '/' }),
+      }),
+      Option.match(canonical, {
+        onNone: () => identity,
+        onSome: canonical => HttpServerResponse.setHeader('Link', `<${canonical.href}>; rel="canonical"`),
       }),
     )
   })
