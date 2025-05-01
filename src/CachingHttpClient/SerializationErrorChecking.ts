@@ -11,6 +11,7 @@ const headerToIgnoreWhenDiffing = [
   'X-Ratelimit-Remaining',
   'X-Ratelimit-Reset',
   'X-Request-Id',
+  'X-Runtime',
 ]
 
 const ignoreHeaders = (headers: Headers.Headers) => Array.reduce(headerToIgnoreWhenDiffing, headers, Headers.remove)
