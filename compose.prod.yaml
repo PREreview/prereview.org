@@ -11,7 +11,7 @@ services:
       - .env
     environment:
       - REDIS_URI=redis://redis:6379
-      - HTTP_CACHE_REDIS_URI=redis://redis:6379
+      - HTTP_CACHE_REDIS_URI=redis://redis-cache:6379
       - SMTP_URI=smtp://mailcatcher:1025
     ports:
       - 3000:3000
