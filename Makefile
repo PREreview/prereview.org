@@ -35,6 +35,16 @@ start-app: .env node_modules start-services src/manifest.json
 start:
 	watchexec --restart --watch assets --watch locales --ignore assets/locales/ -- make start-app
 
+start-app: .env node_modules start-services src/manifest.json
+	docker run 
+	REDIS_URI=redis://$(shell docker compose port redis 6379) \
+	HTTP_CACHE_REDIS_URI=redis://$(shell docker compose port redis 6379) \
+	SMTP_URI=smtp://$(shell docker compose port mailcatcher 1025) \
+  npx tsx watch --clear-screen=false --include=src/manifest.json --require dotenv/config src/index.ts
+
+prod: .env
+	docker compose -f compose.yaml -f compose.prod.yaml up
+
 .dev/server.crt .dev/server.key: SHELL := /usr/bin/env bash
 .dev/server.crt .dev/server.key: .env
 	source .env && mkcert -install -cert-file .dev/server.crt -key-file .dev/server.key $$(echo $${PUBLIC_URL} | awk -F[/:] '{print $$4}')
