@@ -1,2 +1,2 @@
 node: node /app/dist/index.js
-http-cache-replica: ./redis-server --replicaof redis 6379
+http-cache-replica: ./redis-server --replicaof redis-cache 6379
