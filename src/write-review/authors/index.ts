@@ -1,7 +1,6 @@
 import { Match, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as I from 'fp-ts/lib/Identity.js'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -90,14 +89,13 @@ const handleAuthorsForm = ({
   pipe(
     RM.decodeBody(body =>
       pipe(
-        I.Do,
-        I.let('moreAuthors', () => pipe(MoreAuthorsFieldD.decode(body), E.mapLeft(missingE))),
-        I.let('moreAuthorsApproved', ({ moreAuthors }) =>
+        E.Do,
+        E.let('moreAuthors', () => pipe(MoreAuthorsFieldD.decode(body), E.mapLeft(missingE))),
+        E.let('moreAuthorsApproved', ({ moreAuthors }) =>
           match(moreAuthors)
             .with({ right: 'yes' }, () => pipe(MoreAuthorsApprovedFieldD.decode(body), E.mapLeft(missingE)))
             .otherwise(() => E.right(undefined)),
         ),
-        E.right,
       ),
     ),
     RM.chainEitherK(fields =>

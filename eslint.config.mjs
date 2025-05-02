@@ -75,7 +75,7 @@ export default defineConfig([
         'error',
         {
           allow: [
-            'fp-ts/lib/!(Array|boolean|Eq|function|NonEmptyArray|Option|Ord|Ordering|Predicate|ReadonlyNonEmptyArray|ReadonlyRecord|ReadonlySet|ReadonlyTuple|Refinement|string).js',
+            'fp-ts/lib/!(Array|boolean|Eq|function|Identity|NonEmptyArray|Option|Ord|Ordering|Predicate|ReadonlyNonEmptyArray|ReadonlyRecord|ReadonlySet|ReadonlyTuple|Refinement|string).js',
             'io-ts/lib/*',
             'iso-639-3/to-*.json',
             'http-proxy-middleware/dist/types',

@@ -2,7 +2,6 @@ import textClipper from '@arendjr/text-clipper'
 import { isDoi, toUrl } from 'doi-ts'
 import { Array, flow, identity, pipe, String, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as I from 'fp-ts/lib/Identity.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { match, P, P as p } from 'ts-pattern'
@@ -317,17 +316,15 @@ function showRapidPrereviews(
               'recommend',
               'peerReview',
             ] as Array.NonEmptyReadonlyArray<keyof RapidPrereview['questions']>,
-            Array.map(
-              flow(
-                I.bindTo('question'),
-                I.bind('answers', ({ question }) => ({
-                  yes: countRapidPrereviewResponses(rapidPrereviews, question, 'yes'),
-                  unsure: countRapidPrereviewResponses(rapidPrereviews, question, 'unsure'),
-                  na: countRapidPrereviewResponses(rapidPrereviews, question, 'na'),
-                  no: countRapidPrereviewResponses(rapidPrereviews, question, 'no'),
-                })),
-              ),
-            ),
+            Array.map(question => ({
+              question,
+              answers: {
+                yes: countRapidPrereviewResponses(rapidPrereviews, question, 'yes'),
+                unsure: countRapidPrereviewResponses(rapidPrereviews, question, 'unsure'),
+                na: countRapidPrereviewResponses(rapidPrereviews, question, 'na'),
+                no: countRapidPrereviewResponses(rapidPrereviews, question, 'no'),
+              },
+            })),
             Array.map(
               ({ question, answers }) => html`
                 <tr>
