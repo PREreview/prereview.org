@@ -14,4 +14,4 @@ services:
       - HTTP_CACHE_REDIS_URI=redis://redis:6379
       - SMTP_URI=smtp://mailcatcher:1025
     ports:
-      - 8080:3000
+      - 3000:3000
