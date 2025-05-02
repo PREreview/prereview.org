@@ -1,8 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
-import { Context, Data, type Effect } from 'effect'
+import { type Array, Context, Data, type Effect } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
@@ -12,7 +11,7 @@ import PlainDate = Temporal.PlainDate
 
 export interface Comment {
   authors: {
-    named: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: Orcid }>
   }
   doi: Doi
   id: number

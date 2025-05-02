@@ -1,10 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
-import { pipe } from 'effect'
+import { type Array, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
@@ -31,7 +30,7 @@ import PlainDate = Temporal.PlainDate
 export interface Prereview {
   addendum?: Html
   authors: {
-    named: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: Orcid }>
     anonymous: number
   }
   club?: ClubId

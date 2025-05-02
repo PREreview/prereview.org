@@ -1,6 +1,5 @@
-import { pipe } from 'effect'
+import { pipe, type Array } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { Status } from 'hyper-ts'
 import { html, plainText, rawHtml } from '../../html.js'
 import { translate, type SupportedLocale } from '../../locales/index.js'
@@ -22,7 +21,7 @@ export function addAuthorsForm({
   preprint,
   locale,
 }: {
-  authors: ReadonlyNonEmptyArray<{ name: NonEmptyString; emailAddress: EmailAddress }>
+  authors: Array.NonEmptyReadonlyArray<{ name: NonEmptyString; emailAddress: EmailAddress }>
   preprint: PreprintTitle
   locale: SupportedLocale
 }) {

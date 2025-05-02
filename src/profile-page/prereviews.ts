@@ -1,7 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { pipe } from 'effect'
+import { type Array, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
@@ -16,7 +15,7 @@ import PlainDate = Temporal.PlainDate
 export type Prereviews = ReadonlyArray<{
   readonly id: number
   readonly club?: ClubId
-  readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
+  readonly reviewers: Array.NonEmptyReadonlyArray<string>
   readonly published: PlainDate
   readonly fields: ReadonlyArray<FieldId>
   readonly subfields: ReadonlyArray<SubfieldId>

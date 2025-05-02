@@ -9,7 +9,6 @@ import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import httpErrors, { type HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
@@ -124,7 +123,7 @@ export const getPrereviewsForSciety = pipe(
   RTE.chain(
     flow(
       records => Math.ceil(records.hits.total / 100),
-      RNEA.makeBy(i => getPrereviewsPageForSciety(i + 1)),
+      Array.makeBy(i => getPrereviewsPageForSciety(i + 1)),
       RTE.sequenceArray,
       RTE.map(RA.flatten),
     ),
@@ -177,14 +176,21 @@ export const getRecentPrereviewsFromZenodo = ({
     RTE.local(timeoutRequest(2000)),
     RTE.bindW(
       'hits',
-      RTE.fromOptionK(() => 'not-found' as const)(({ records }) => RNEA.fromReadonlyArray(records.hits.hits)),
+      RTE.fromOptionK(() => 'not-found' as const)(({ records }) =>
+        Option.liftPredicate(records.hits.hits, Array.isNonEmptyReadonlyArray),
+      ),
     ),
     RTE.bindW(
       'recentPrereviews',
       flow(
         ({ hits }) => hits,
         RT.traverseArray(recordToRecentPrereview),
-        RT.map(flow(RA.rights, E.fromOptionK(() => 'unavailable' as const)(RNEA.fromReadonlyArray))),
+        RT.map(
+          flow(
+            RA.rights,
+            E.fromOptionK(() => 'unavailable' as const)(Option.liftPredicate(Array.isNonEmptyReadonlyArray)),
+          ),
+        ),
       ),
     ),
     flow(
@@ -873,7 +879,7 @@ function recordToRecentPrereview(
       sequenceS(RTE.ApplyPar)({
         club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         id: RTE.right(record.id),
-        reviewers: RTE.right(pipe(record.metadata.creators, RNEA.map(Struct.get('name')))),
+        reviewers: RTE.right(Array.map(FptsToEffect.array(record.metadata.creators), Struct.get('name'))),
         published: RTE.right(
           toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),
@@ -895,10 +901,10 @@ const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
 )
 
 function getAuthors(record: Record | InProgressDeposition): Prereview['authors'] {
-  const [named, last] = RNEA.unappend(record.metadata.creators)
+  const [named, last] = Array.unappend(FptsToEffect.array(record.metadata.creators))
 
-  if (!RA.isNonEmpty(named)) {
-    return { named: record.metadata.creators, anonymous: 0 }
+  if (!Array.isNonEmptyReadonlyArray(named)) {
+    return { named: FptsToEffect.array(record.metadata.creators), anonymous: 0 }
   }
 
   const anonymous = pipe(
@@ -912,7 +918,7 @@ function getAuthors(record: Record | InProgressDeposition): Prereview['authors']
 
   return match(anonymous)
     .with(P.number.positive(), anonymous => ({ named, anonymous }))
-    .otherwise(() => ({ named: record.metadata.creators, anonymous: 0 }))
+    .otherwise(() => ({ named: FptsToEffect.array(record.metadata.creators), anonymous: 0 }))
 }
 
 function isInCommunity(record: Record) {

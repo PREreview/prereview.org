@@ -1,10 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
-import { flow, pipe } from 'effect'
+import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
@@ -37,7 +36,7 @@ import PlainDate = Temporal.PlainDate
 export interface Prereview {
   addendum?: Html
   authors: {
-    named: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: Orcid }>
     anonymous: number
   }
   club?: ClubId
@@ -157,8 +156,8 @@ function startPage({
                   )({
                     authors: pipe(
                       review.authors.named,
-                      RNEA.map(displayAuthor),
-                      RNEA.concatW(
+                      Array.map(displayAuthor),
+                      Array.appendAll(
                         review.authors.anonymous > 0
                           ? [
                               translate(
@@ -183,8 +182,8 @@ function startPage({
                   )({
                     authors: pipe(
                       review.authors.named,
-                      RNEA.map(displayAuthor),
-                      RNEA.concatW(
+                      Array.map(displayAuthor),
+                      Array.appendAll(
                         review.authors.anonymous > 0
                           ? [
                               translate(
@@ -295,11 +294,11 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`${item}`.toString()),
+    Array.map(item => html`${item}`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

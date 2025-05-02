@@ -1,7 +1,6 @@
-import { flow, Number, Order, pipe, String, Tuple } from 'effect'
+import { Array, flow, Number, Order, pipe, String, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import * as EffectToFpts from '../EffectToFpts.js'
@@ -143,11 +142,12 @@ const title = ({
   language,
   locale,
 }: Pick<ReviewRequests, 'currentPage' | 'field' | 'language'> & { locale: SupportedLocale }) => {
-  const details = RA.append(translate(locale, 'review-requests-page', 'pageNumber')({ page: currentPage }))(
+  const details = Array.append(
     [
       field ? getFieldName(field, locale) : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
     ].filter(String.isString),
+    translate(locale, 'review-requests-page', 'pageNumber')({ page: currentPage }),
   )
 
   return plainText(
@@ -223,7 +223,7 @@ function StringOrder(...args: ConstructorParameters<typeof Intl.Collator>): Orde
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
   return flow(list => formatter.format(list), rawHtml)

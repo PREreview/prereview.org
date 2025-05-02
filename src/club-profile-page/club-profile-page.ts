@@ -1,7 +1,6 @@
-import { flow, pipe } from 'effect'
+import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import type { Club } from '../club-details.js'
@@ -56,7 +55,7 @@ export function createPage({
         <dd>
           ${pipe(
             club.leads,
-            RNEA.map(
+            Array.map(
               lead =>
                 html`<a
                   href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(lead.orcid) })}"
@@ -107,7 +106,7 @@ export function createPage({
                           )({
                             reviewers: pipe(
                               prereview.reviewers,
-                              RNEA.map(name => html`<b>${name}</b>`),
+                              Array.map(name => html`<b>${name}</b>`),
                               formatList(locale),
                               String,
                             ),
@@ -153,11 +152,11 @@ export function createPage({
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`${item}`.toString()),
+    Array.map(item => html`${item}`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

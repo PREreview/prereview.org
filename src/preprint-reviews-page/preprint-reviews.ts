@@ -1,11 +1,8 @@
 import textClipper from '@arendjr/text-clipper'
 import { isDoi, toUrl } from 'doi-ts'
-import { flow, identity, pipe, String, Struct } from 'effect'
+import { Array, flow, identity, pipe, String, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as I from 'fp-ts/lib/Identity.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { match, P, P as p } from 'ts-pattern'
@@ -42,7 +39,7 @@ export const createPage = ({
         'prereviewsOf',
       )({ preprint: plainText`“${preprint.title.text}”`.toString() }),
     ),
-    description: plainText`${rawHtml(translate(locale, 'preprint-reviews', 'authoredBy')({ authors: pipe(preprint.authors, RNEA.map(displayAuthor), formatList(locale), list => list.toString()), visuallyHidden: identity }))}
+    description: plainText`${rawHtml(translate(locale, 'preprint-reviews', 'authoredBy')({ authors: pipe(preprint.authors, Array.map(displayAuthor), formatList(locale), list => list.toString()), visuallyHidden: identity }))}
     ${
       preprint.abstract
         ? plainText`
@@ -82,7 +79,7 @@ export const createPage = ({
                 'preprint-reviews',
                 'authoredBy',
               )({
-                authors: pipe(preprint.authors, RNEA.map(displayAuthor), formatList(locale), list => list.toString()),
+                authors: pipe(preprint.authors, Array.map(displayAuthor), formatList(locale), list => list.toString()),
                 visuallyHidden,
               }),
             )}
@@ -134,13 +131,10 @@ export const createPage = ({
       </article>
     `,
     main: html`
-      ${pipe(
-        rapidPrereviews,
-        RA.matchW(
-          () => '',
-          rapidPrereviews => showRapidPrereviews(rapidPrereviews, preprint, locale),
-        ),
-      )}
+      ${Array.match(rapidPrereviews, {
+        onEmpty: () => '',
+        onNonEmpty: rapidPrereviews => showRapidPrereviews(rapidPrereviews, preprint, locale),
+      })}
 
       <h2>${translate(locale, 'preprint-reviews', 'prereviews')({ number: reviews.length })}</h2>
 
@@ -190,8 +184,8 @@ function showReview(review: Prereview, locale: SupportedLocale) {
           <div class="byline">
             ${pipe(
               review.authors.named,
-              RNEA.map(Struct.get('name')),
-              RNEA.concatW(
+              Array.map(Struct.get('name')),
+              Array.appendAll(
                 review.authors.anonymous > 0
                   ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
                   : [],
@@ -246,7 +240,7 @@ function showReview(review: Prereview, locale: SupportedLocale) {
 }
 
 function showRapidPrereviews(
-  rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview>,
+  rapidPrereviews: Array.NonEmptyReadonlyArray<RapidPrereview>,
   preprint: Preprint,
   locale: SupportedLocale,
 ): Html {
@@ -260,7 +254,7 @@ function showRapidPrereviews(
         t('authoredBy')({
           authors: pipe(
             rapidPrereviews,
-            RNEA.map(flow(Struct.get('author'), displayAuthor)),
+            Array.map(flow(Struct.get('author'), displayAuthor)),
             formatList(locale),
             list => list.toString(),
           ),
@@ -322,8 +316,8 @@ function showRapidPrereviews(
               'availableCode',
               'recommend',
               'peerReview',
-            ] as ReadonlyNonEmptyArray<keyof RapidPrereview['questions']>,
-            RNEA.map(
+            ] as Array.NonEmptyReadonlyArray<keyof RapidPrereview['questions']>,
+            Array.map(
               flow(
                 I.bindTo('question'),
                 I.bind('answers', ({ question }) => ({
@@ -334,7 +328,7 @@ function showRapidPrereviews(
                 })),
               ),
             ),
-            RNEA.map(
+            Array.map(
               ({ question, answers }) => html`
                 <tr>
                   <th scope="row">${t(`rapid${String.capitalize(question)}`)()}</th>
@@ -388,11 +382,11 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`${item}`.toString()),
+    Array.map(item => html`${item}`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

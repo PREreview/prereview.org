@@ -1,5 +1,5 @@
+import type { Array } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
@@ -9,7 +9,7 @@ import type { PreprintId } from '../types/preprint-id.js'
 
 export interface Prereview {
   authors: {
-    named: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: Orcid }>
     anonymous: number
   }
   club?: ClubId

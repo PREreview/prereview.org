@@ -1,6 +1,6 @@
 import { type Work, getWork } from 'crossref-ts'
 import { type Doi, hasRegistrant } from 'doi-ts'
-import { Option, String, flow, pipe } from 'effect'
+import { Array, Option, String, flow, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
@@ -96,7 +96,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.P
             }))
             .exhaustive(),
         ),
-        E.fromPredicate(RA.isNonEmpty, () => 'no authors'),
+        E.fromPredicate(Array.isNonEmptyReadonlyArray, () => 'no authors'),
       ),
     ),
     E.apSW('id', PreprintIdD.decode(work)),

@@ -1,7 +1,6 @@
+import { Array } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import type { ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { html, plainText } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
@@ -18,7 +17,10 @@ export const NoPrereviews: NoPrereviews = {
 
 export const ensureThereArePrereviews: (
   prereviews: ReadonlyArray<Prereview>,
-) => E.Either<NoPrereviews, ReadonlyNonEmptyArray<Prereview>> = E.fromPredicate(RA.isNonEmpty, () => NoPrereviews)
+) => E.Either<NoPrereviews, Array.NonEmptyReadonlyArray<Prereview>> = E.fromPredicate(
+  Array.isNonEmptyReadonlyArray,
+  () => NoPrereviews,
+)
 
 export const toResponse: (NoPrereviews: NoPrereviews, locale: SupportedLocale) => PageResponse = (
   noPrereviews,

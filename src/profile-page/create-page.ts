@@ -1,7 +1,5 @@
-import { flow, pipe } from 'effect'
+import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { P, match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
@@ -112,14 +110,14 @@ function renderContentForOrcid(
                 </div>
               `
             : ''}
-          ${RA.isNonEmpty(clubs)
+          ${Array.isNonEmptyReadonlyArray(clubs)
             ? html`
                 <div>
                   <dt><span>${translate(locale, 'profile-page', 'clubs')()}</span></dt>
                   <dd>
                     ${pipe(
                       clubs,
-                      RNEA.map(
+                      Array.map(
                         club =>
                           html`<a href="${format(clubProfileMatch.formatter, { id: club })}">${getClubName(club)}</a>`,
                       ),
@@ -178,11 +176,11 @@ function renderContentForPseudonym({ name, prereviews }: PseudonymProfile, local
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`${item}`.toString()),
+    Array.map(item => html`${item}`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

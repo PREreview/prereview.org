@@ -78,7 +78,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             }))
             .exhaustive(),
         ),
-        E.fromPredicate(RA.isNonEmpty, () => 'no authors'),
+        E.fromPredicate(Array.isNonEmptyReadonlyArray, () => 'no authors'),
       ),
     ),
     E.apSW('id', PreprintIdD.decode(work)),

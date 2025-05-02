@@ -1,8 +1,7 @@
 import { toUrl } from 'doi-ts'
-import { flow, identity, pipe, Struct } from 'effect'
+import { Array, flow, identity, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
@@ -46,8 +45,8 @@ export const createPage = ({
           )({
             authors: pipe(
               review.authors.named,
-              RNEA.map(displayAuthor),
-              RNEA.concatW(
+              Array.map(displayAuthor),
+              Array.appendAll(
                 review.authors.anonymous > 0
                   ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
                   : [],
@@ -64,8 +63,8 @@ export const createPage = ({
           )({
             authors: pipe(
               review.authors.named,
-              RNEA.map(displayAuthor),
-              RNEA.concatW(
+              Array.map(displayAuthor),
+              Array.appendAll(
                 review.authors.anonymous > 0
                   ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
                   : [],
@@ -116,8 +115,8 @@ export const createPage = ({
                 )({
                   authors: pipe(
                     review.authors.named,
-                    RNEA.map(displayAuthor),
-                    RNEA.concatW(
+                    Array.map(displayAuthor),
+                    Array.appendAll(
                       review.authors.anonymous > 0
                         ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
                         : [],
@@ -136,8 +135,8 @@ export const createPage = ({
                 )({
                   authors: pipe(
                     review.authors.named,
-                    RNEA.map(displayAuthor),
-                    RNEA.concatW(
+                    Array.map(displayAuthor),
+                    Array.appendAll(
                       review.authors.anonymous > 0
                         ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
                         : [],
@@ -207,7 +206,7 @@ export const createPage = ({
               html`<ol class="cards">
                 ${pipe(
                   comments,
-                  RNEA.map(
+                  Array.map(
                     item => html`
                       <li>
                         <article aria-labelledby="comment-${item.id}-title">
@@ -218,7 +217,7 @@ export const createPage = ({
                                 'review-page',
                                 'commentItemTitle',
                               )({
-                                author: pipe(RNEA.head(item.authors.named), Struct.get('name')),
+                                author: pipe(Array.headNonEmpty(item.authors.named), Struct.get('name')),
                                 authors: item.authors.named.length,
                               })}
                             </h3>
@@ -232,7 +231,7 @@ export const createPage = ({
                                 )({
                                   authors: pipe(
                                     item.authors.named,
-                                    RNEA.map(displayAuthor),
+                                    Array.map(displayAuthor),
                                     formatList(locale),
                                   ).toString(),
                                   hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
@@ -310,11 +309,11 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`${item}`.toString()),
+    Array.map(item => html`${item}`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

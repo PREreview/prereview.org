@@ -1,7 +1,6 @@
-import { flow, Number, Order, pipe, String, Tuple } from 'effect'
+import { Array, flow, Number, Order, pipe, String, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { getClubName } from '../club-details.js'
@@ -32,7 +31,7 @@ export const createPage = (
       <ol class="cards" id="results">
         ${pipe(
           recentPrereviews,
-          RNEA.map(
+          Array.map(
             prereview => html`
               <li>
                 <article>
@@ -140,12 +139,13 @@ const title = ({
   locale,
   query,
 }: Pick<RecentPrereviews, 'currentPage' | 'field' | 'language' | 'query'> & { locale: SupportedLocale }) => {
-  const details = RA.append(translate(locale, 'reviews-page', 'pageNumber')({ page: currentPage }))(
+  const details = Array.append(
     [
       query,
       field ? getFieldName(field, locale) : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
     ].filter(String.isString),
+    translate(locale, 'reviews-page', 'pageNumber')({ page: currentPage }),
   )
 
   return plainText(
@@ -228,11 +228,11 @@ function StringOrder(...args: ConstructorParameters<typeof Intl.Collator>): Orde
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`<b>${item}</b>`.toString()),
+    Array.map(item => html`<b>${item}</b>`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

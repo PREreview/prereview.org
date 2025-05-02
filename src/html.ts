@@ -1,4 +1,4 @@
-import { type Predicate, pipe } from 'effect'
+import { Array, type Predicate, pipe } from 'effect'
 import { decode } from 'html-entities'
 import { type HeadersOpen, MediaType, type ResponseEnded } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'

@@ -1,6 +1,5 @@
-import { flow, pipe } from 'effect'
+import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { Status } from 'hyper-ts'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
@@ -60,8 +59,8 @@ export const declinePage = ({
                     )({
                       authors: pipe(
                         review.authors.named,
-                        RNEA.map(displayAuthor),
-                        RNEA.concatW(
+                        Array.map(displayAuthor),
+                        Array.appendAll(
                           review.authors.anonymous > 0
                             ? [
                                 translate(
@@ -86,8 +85,8 @@ export const declinePage = ({
                     )({
                       authors: pipe(
                         review.authors.named,
-                        RNEA.map(displayAuthor),
-                        RNEA.concatW(
+                        Array.map(displayAuthor),
+                        Array.appendAll(
                           review.authors.anonymous > 0
                             ? [
                                 translate(
@@ -177,11 +176,11 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`${item}`.toString()),
+    Array.map(item => html`${item}`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

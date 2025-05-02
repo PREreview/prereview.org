@@ -1,6 +1,5 @@
 import { Array, Equal, flow, type Option, pipe, type Record, Struct } from 'effect'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { Eq as eqOrcid, Orcid } from 'orcid-id-ts'
 import { type Html, html } from './html.js'
 import type { ClubId } from './types/club-id.js'
@@ -9,7 +8,7 @@ import { EmailAddress } from './types/email-address.js'
 export interface Club {
   readonly name: string
   readonly description: Html
-  readonly leads: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid: Orcid }>
+  readonly leads: Array.NonEmptyReadonlyArray<{ name: string; orcid: Orcid }>
   readonly contact?: EmailAddress
   readonly joinLink?: URL
 }

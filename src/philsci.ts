@@ -1,11 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { flow, identity, pipe } from 'effect'
+import { Array, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { isNonEmpty } from 'fp-ts/lib/ReadonlyArray.js'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
@@ -26,7 +24,7 @@ const JsonD = {
     ),
 }
 
-const ReadonlyNonEmptyArrayD = flow(D.array, D.readonly, D.refine(isNonEmpty, 'NonEmptyArray'))
+const NonEmptyReadonlyArrayD = flow(D.array, D.readonly, D.refine(Array.isNonEmptyReadonlyArray, 'NonEmptyArray'))
 
 const UrlD = pipe(
   D.string,
@@ -68,7 +66,7 @@ const EprintD = pipe(
         type: D.string,
         eprintid: D.number,
         datestamp: PlainDateD,
-        creators: ReadonlyNonEmptyArrayD(
+        creators: NonEmptyReadonlyArrayD(
           pipe(
             D.struct({
               name: D.struct({
@@ -136,13 +134,10 @@ function eprintToPreprint(eprint: D.TypeOf<typeof EprintD>): E.Either<D.DecodeEr
       () => 'not a preprint',
     ),
     E.let('authors', () =>
-      pipe(
-        eprint.creators,
-        RNEA.map(author => ({
-          name: `${author.name.given} ${author.name.family}`,
-          orcid: author.orcid ?? undefined,
-        })),
-      ),
+      Array.map(eprint.creators, author => ({
+        name: `${author.name.given} ${author.name.family}`,
+        orcid: author.orcid ?? undefined,
+      })),
     ),
     E.let('id', () => ({ _tag: 'philsci', value: eprint.eprintid }) satisfies PhilsciPreprintId),
     E.let('posted', () => eprint.date ?? eprint.datestamp),

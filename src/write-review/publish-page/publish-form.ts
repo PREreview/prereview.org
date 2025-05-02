@@ -1,7 +1,5 @@
-import { flow, pipe, Struct } from 'effect'
+import { Array, flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { match, P } from 'ts-pattern'
@@ -99,11 +97,11 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                 </dd>
               </div>
 
-              ${review.moreAuthors === 'yes' && RA.isNonEmpty(review.otherAuthors)
+              ${review.moreAuthors === 'yes' && Array.isNonEmptyReadonlyArray(review.otherAuthors)
                 ? html`
                     <div>
                       <dt><span>${t('invitedAuthors')({ number: review.otherAuthors.length })}</span></dt>
-                      <dd>${pipe(review.otherAuthors, RNEA.map(Struct.get('name')), formatList(locale))}</dd>
+                      <dd>${pipe(review.otherAuthors, Array.map(Struct.get('name')), formatList(locale))}</dd>
                       <dd>
                         <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
                           >${rawHtml(t('changeInvitedAuthors')(visuallyHidden))}</a
@@ -372,11 +370,11 @@ export function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) 
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`${item}`.toString()),
+    Array.map(item => html`${item}`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

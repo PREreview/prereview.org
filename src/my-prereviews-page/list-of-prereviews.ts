@@ -1,6 +1,5 @@
-import { flow, pipe } from 'effect'
+import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import rtlDetect from 'rtl-detect'
 import { html, plainText, rawHtml, type Html } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
@@ -17,7 +16,7 @@ export type { Prereview } from './prereviews.js'
 
 export interface ListOfPrereviews {
   readonly _tag: 'ListOfPrereviews'
-  readonly prereviews: RNEA.ReadonlyNonEmptyArray<Prereview>
+  readonly prereviews: Array.NonEmptyReadonlyArray<Prereview>
   readonly user: User
 }
 
@@ -62,7 +61,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: Suppo
                     )({
                       reviewers: pipe(
                         prereview.reviewers,
-                        RNEA.map(name => html`<b>${name}</b>`),
+                        Array.map(name => html`<b>${name}</b>`),
                         formatList(locale),
                       ).toString(),
                       preprint: html`<cite
@@ -102,11 +101,11 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: Suppo
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`${item}`.toString()),
+    Array.map(item => html`${item}`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

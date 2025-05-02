@@ -7,6 +7,7 @@ import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
+import * as FptsToEffect from '../FptsToEffect.js'
 import type { RecentReviewRequest } from '../home-page/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
@@ -111,6 +112,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
                 ),
               ),
             ),
+            RTE.map(FptsToEffect.array),
           ),
         ),
       ),

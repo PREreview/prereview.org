@@ -6,7 +6,7 @@ import * as O from 'fp-ts/lib/Option.js' // eslint-disable-line import/no-intern
 import type { Reader } from 'fp-ts/lib/Reader.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
+import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js' // eslint-disable-line import/no-internal-modules
 import type * as T from 'fp-ts/lib/Task.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 
