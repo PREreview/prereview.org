@@ -43,7 +43,7 @@ start-app: .env node_modules start-services src/manifest.json
   npx tsx watch --clear-screen=false --include=src/manifest.json --require dotenv/config src/index.ts
 
 prod: .env
-	docker compose -f compose.yaml -f compose.prod.yaml up
+	docker compose -f compose.yaml -f compose.prod.yaml up --build
 
 .dev/server.crt .dev/server.key: SHELL := /usr/bin/env bash
 .dev/server.crt .dev/server.key: .env

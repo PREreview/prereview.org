@@ -84,10 +84,18 @@ COPY playwright.config.ts .
 ENTRYPOINT ["npx", "playwright", "test"]
 
 #
+# Stage: Build hivemind
+#
+FROM golang AS hivemind
+RUN go install github.com/DarthSim/hivemind@v1.1.0
+
+#
 # Stage: Production environment
 #
 FROM node AS prod
 ENV NODE_ENV=production
+
+COPY --from=hivemind /go/bin/hivemind /app/
 
 RUN apt-get update && apt-get install --yes \
   wget \
@@ -103,4 +111,6 @@ HEALTHCHECK --interval=5s --timeout=1s \
 EXPOSE 3000
 USER node
 
-CMD ["node", "dist/index.js"]
+COPY Procfile .
+ENTRYPOINT [ "./hivemind" ]
+# CMD ["node", "dist/index.js"]
