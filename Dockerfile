@@ -89,6 +89,7 @@ ENTRYPOINT ["npx", "playwright", "test"]
 FROM golang AS hivemind
 RUN go install github.com/DarthSim/hivemind@v1.1.0
 
+FROM redis AS redis
 #
 # Stage: Production environment
 #
@@ -99,18 +100,17 @@ COPY --from=hivemind /go/bin/hivemind /app/
 
 RUN apt-get update && apt-get install --yes \
   wget \
-  redis \
   && rm --recursive --force /var/lib/apt/lists/*
 
 RUN mkdir data && chown node:node data && echo '{"type": "module"}' > /app/package.json
 COPY --from=npm-prod /app/node_modules/ node_modules/
 COPY --from=build-prod /app/dist/ dist/
+COPY --from=redis /usr/local/bin/redis-server .
 
 HEALTHCHECK --interval=5s --timeout=1s \
   CMD wget --quiet --tries=1 --spider http://localhost:3000/health || exit 1
 
 EXPOSE 3000
-USER node
 
 COPY Procfile .
 ENTRYPOINT [ "./hivemind" ]
