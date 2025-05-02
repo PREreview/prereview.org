@@ -99,6 +99,7 @@ COPY --from=hivemind /go/bin/hivemind /app/
 
 RUN apt-get update && apt-get install --yes \
   wget \
+  redis \
   && rm --recursive --force /var/lib/apt/lists/*
 
 RUN mkdir data && chown node:node data && echo '{"type": "module"}' > /app/package.json
