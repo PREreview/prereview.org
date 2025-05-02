@@ -1,10 +1,8 @@
-import { flow, Match, Option, pipe } from 'effect'
+import { Array, flow, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { match } from 'ts-pattern'
-import * as FptsToEffect from '../../FptsToEffect.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { getPreprintTitle, type GetPreprintTitleEnv, type PreprintTitle } from '../../preprint.js'
@@ -48,7 +46,7 @@ export const writeReviewAddAuthors = ({
             'authors',
             flow(
               Option.liftNullable(({ form }) => form.otherAuthors),
-              Option.flatMap(FptsToEffect.optionK(RNEA.fromReadonlyArray)),
+              Option.filter(Array.isNonEmptyReadonlyArray),
             ),
           ),
           RTE.matchW(

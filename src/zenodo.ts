@@ -903,7 +903,7 @@ function getAuthors(record: Record | InProgressDeposition): Prereview['authors']
 
   const anonymous = pipe(
     Option.fromNullable(/^([1-9][0-9]*) other authors?$/.exec(last.name)),
-    Option.flatMap(FptsToEffect.optionK(RA.lookup(1))),
+    Option.flatMap(Array.get(1)),
     Option.match({
       onNone: () => 0,
       onSome: number => parseInt(number, 10),
@@ -954,14 +954,14 @@ const getReviewSubfields = flow(
 )
 
 const getReviewClub = flow(
-  (record: Record) => record.metadata.contributors ?? [],
-  FptsToEffect.optionK(RA.findFirstMap(flow(Struct.get('name'), getClubByName))),
+  Option.liftNullable((record: Record) => record.metadata.contributors),
+  Option.flatMap(Array.findFirst(flow(Struct.get('name'), getClubByName))),
 )
 
 const getReviewUrl = flow(
   Option.liftPredicate(isOpenRecord),
   Option.map(record => record.files),
-  Option.flatMap(FptsToEffect.optionK(RA.findFirst(file => file.key.endsWith('.html')))),
+  Option.flatMap(Array.findFirst(file => file.key.endsWith('.html'))),
   Option.map(file => file.links.self),
 )
 

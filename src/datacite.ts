@@ -1,7 +1,7 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { type Work, getWork } from 'datacite-ts'
 import { type Doi, hasRegistrant } from 'doi-ts'
-import { Option, flow, identity, pipe } from 'effect'
+import { Array, Option, flow, identity, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
@@ -146,7 +146,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
 
 const findOrcid = flow(
   (person: Extract<Work['creators'][number], { nameIdentifiers: ReadonlyArray<unknown> }>) => person.nameIdentifiers,
-  FptsToEffect.optionK(RA.findFirst(({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID')),
+  Array.findFirst(({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID'),
   Option.flatMap(({ nameIdentifier }) => FptsToEffect.option(parse(nameIdentifier))),
   Option.getOrUndefined,
 )
@@ -154,9 +154,9 @@ const findOrcid = flow(
 const findPublishedDate = (dates: Work['dates']) =>
   pipe(
     Option.none(),
-    Option.orElse(() => pipe(dates, FptsToEffect.optionK(RA.findFirst(({ dateType }) => dateType === 'Submitted')))),
-    Option.orElse(() => pipe(dates, FptsToEffect.optionK(RA.findFirst(({ dateType }) => dateType === 'Created')))),
-    Option.orElse(() => pipe(dates, FptsToEffect.optionK(RA.findFirst(({ dateType }) => dateType === 'Issued')))),
+    Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Submitted')),
+    Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Created')),
+    Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Issued')),
   )
 
 const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(

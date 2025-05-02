@@ -1,4 +1,4 @@
-import { Match, Option, Struct, flow, pipe } from 'effect'
+import { Array, Match, Option, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -7,7 +7,6 @@ import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
-import * as FptsToEffect from '../../FptsToEffect.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
@@ -65,7 +64,7 @@ export const writeReviewRemoveAuthor = ({
             RTE.fromOptionK(() => 'no-author' as const)(
               flow(
                 Option.liftNullable(({ form }) => form.otherAuthors),
-                Option.flatMap(FptsToEffect.optionK(RA.lookup(number - 1))),
+                Option.flatMap(Array.get(number - 1)),
               ),
             ),
           ),

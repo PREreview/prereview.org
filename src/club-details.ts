@@ -1,8 +1,7 @@
-import { Equal, flow, type Option, pipe, type Record, Struct } from 'effect'
+import { Array, Equal, flow, type Option, pipe, type Record, Struct } from 'effect'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import { Eq as eqOrcid, Orcid } from 'orcid-id-ts'
-import * as FptsToEffect from './FptsToEffect.js'
 import { type Html, html } from './html.js'
 import type { ClubId } from './types/club-id.js'
 import { EmailAddress } from './types/email-address.js'
@@ -20,7 +19,10 @@ export const getClubDetails = (id: ClubId) => clubs[id]
 export const getClubName = (id: ClubId) => clubs[id].name
 
 export const getClubByName = (name: string): Option.Option<ClubId> =>
-  pipe(Struct.keys(clubs), FptsToEffect.optionK(RA.findFirst(id => Equal.equals(clubs[id].name, name))))
+  pipe(
+    Struct.keys(clubs),
+    Array.findFirst(id => Equal.equals(clubs[id].name, name)),
+  )
 
 export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
   pipe(

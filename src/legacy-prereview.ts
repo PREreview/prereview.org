@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Boolean, Function, Option, Struct, flow, identity, pipe } from 'effect'
+import { Array, Boolean, Function, Option, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -15,7 +15,6 @@ import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
 import { timeoutRequest, useStaleCache } from './fetch.js'
-import * as FptsToEffect from './FptsToEffect.js'
 import { ProfileId } from './types/index.js'
 import { type IndeterminatePreprintId, type PreprintId, parsePreprintDoi } from './types/preprint-id.js'
 import { PseudonymC, isPseudonym } from './types/pseudonym.js'
@@ -244,8 +243,7 @@ export const getPseudonymFromLegacyPrereview = (orcid: Orcid) =>
     RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
     RTE.chainOptionK(() => 'unknown-pseudonym' as unknown)(
       flow(
-        ({ data }) => data.personas,
-        FptsToEffect.optionK(RA.findFirst(Struct.get('isAnonymous'))),
+        ({ data }) => Array.findFirst(data.personas, Struct.get('isAnonymous')),
         Option.map(Struct.get('name')),
         Option.filter(isPseudonym),
       ),
