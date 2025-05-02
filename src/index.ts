@@ -1,6 +1,6 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
+import { Config, Effect, Layer, Logger, LogLevel, pipe, Redacted, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import { isAClubLead } from './club-details.js'
@@ -72,6 +72,7 @@ pipe(
       Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),
       Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
       Redis.layerHttpCacheConfig(Config.redacted(httpCacheRedisUri)),
+      Redis.layerHttpCacheInMemoryReplica(Redacted.make(new URL('redis://localhost:6379'))),
       TemplatePage.optionsLayerConfig({
         fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
         environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),

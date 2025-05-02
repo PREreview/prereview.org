@@ -8,13 +8,14 @@ import { serializationErrorChecking } from './SerializationErrorChecking.js'
 export const layerPersistedToRedis = Layer.effect(
   HttpCache,
   Effect.gen(function* () {
-    const redis = yield* Redis.HttpCacheRedis
+    const externalRedisMaster = yield* Redis.HttpCacheRedis
+    const inMemoryRedisReplica = yield* Redis.HttpCacheRedisInMemoryReplica
 
     return pipe(
       {
-        get: getFromRedis(redis),
-        set: writeToRedis(redis),
-        delete: deleteFromRedis(redis),
+        get: getFromRedis(inMemoryRedisReplica),
+        set: writeToRedis(externalRedisMaster),
+        delete: deleteFromRedis(externalRedisMaster),
       },
       serializationErrorChecking,
     )

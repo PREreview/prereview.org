@@ -74,7 +74,14 @@ export const layerDataStoreConfig = (options: Config.Config.Wrap<Parameters<type
 
 export class HttpCacheRedis extends Context.Tag('HttpCacheRedis')<HttpCacheRedis, IoRedis>() {}
 
+export class HttpCacheRedisInMemoryReplica extends Context.Tag('HttpCacheRedisInMemoryReplica')<
+  HttpCacheRedisInMemoryReplica,
+  IoRedis
+>() {}
+
 const layerHttpCache = flow(redisLifecycle, Layer.effect(HttpCacheRedis))
+
+export const layerHttpCacheInMemoryReplica = flow(redisLifecycle, Layer.effect(HttpCacheRedisInMemoryReplica))
 
 export const layerHttpCacheConfig = (options: Config.Config.Wrap<Parameters<typeof layerHttpCache>[0]>) =>
   Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layerHttpCache))
