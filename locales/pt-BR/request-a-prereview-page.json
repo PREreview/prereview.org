@@ -1,4 +1,7 @@
 {
+  "requestTitle": {
+    "message": "Qual preprint você gostaria de revisar?"
+  },
   "useDoiUrl": {
     "message": "Use o DOI ou URL do preprint."
   },
@@ -7,6 +10,9 @@
   },
   "whatIsDoiText": {
     "message": "Um <doi>DOI</doi> é um identificador único que você pode encontrar em muitos preprints. Por exemplo, {example} ou {exampleUrl}."
+  },
+  "errorEnterPreprint": {
+    "message": "Insira o DOI ou URL do preprint"
   },
   "unsupportedPreprintTitle": {
     "message": "Desculpe, não aceitamos solicitações para este preprint"

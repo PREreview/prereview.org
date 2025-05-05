@@ -146,6 +146,18 @@
   "setLanguagesVisibility": {
     "message": "Definir visibilidade de <visuallyHidden>idiomas</visuallyHidden>"
   },
+  "uploadAnAvatar": {
+    "message": "Carregar uma imagem de perfil"
+  },
+  "selectImageError": {
+    "message": "Selecione uma imagem"
+  },
+  "imageTypeError": {
+    "message": "O arquivo selecionado deve ser AVIF, HEIC, JPG, PNG ou WebP"
+  },
+  "imageSizeError": {
+    "message": "O arquivo selecionado deve ser menor que {size, number} MB"
+  },
   "youCanUploadAvatar": {
     "message": "Você pode enviar uma foto ou imagem para usar como sua imagem de perfil. O arquivo selecionado deve ter menos de {size, number}&nbsp;MB."
   },
@@ -166,6 +178,12 @@
   },
   "removeAvatarButton": {
     "message": "Remover imagem de perfil"
+  },
+  "whatCareerStage": {
+    "message": "Em qual etapa da carreira você está?"
+  },
+  "selectCareerStageError": {
+    "message": "Selecione em que etapa da carreira você está"
   },
   "preferNotToSay": {
     "message": "Prefiro não dizer"
@@ -197,6 +215,15 @@
   "willNotShareThem": {
     "message": "Não compartilharemos com mais ninguém."
   },
+  "whatEmailAddress": {
+    "message": "Qual é seu endereço de e-mail?"
+  },
+  "enterEmailAddressError": {
+    "message": "Digite seu endereço de e-mail"
+  },
+  "enterEmailAddressFormatError": {
+    "message": "Digite um endereço de e-mail no formato correto, como nome@exemplo.com"
+  },
   "usedToContactYouAboutYourAccountAndPrereviews": {
     "message": "Usaremos apenas para entrar em contato com você sobre sua conta e avaliações PREreview."
   },
@@ -211,6 +238,12 @@
   },
   "seeLocation": {
     "message": "Quem pode ver sua localização?"
+  },
+  "happyTakeRequests": {
+    "message": "Você está disponível para receber solicitações de avaliação PREreview?"
+  },
+  "selectHappyTakeRequestsError": {
+    "message": "Selecione sim se estiver disponível para receber solicitações de avaliação PREreview"
   },
   "seeHappyTakeRequests": {
     "message": "Quem pode ver se você está disponível para solicitações de avaliação?"

@@ -77,6 +77,12 @@
   "weWillTemplate": {
     "message": "Ofereceremos um modelo básico, mas você pode avaliar do seu jeito."
   },
+  "pasteYourReview": {
+    "message": "Cole sua avaliação PREreview"
+  },
+  "writeYourReview": {
+    "message": "Escreva sua avaliação PREreview"
+  },
   "selectTheNameError": {
     "message": "Selecione o nome que deseja usar"
   },
@@ -97,6 +103,12 @@
   },
   "linkToPseudonym": {
     "message": "Vincularemos sua avaliação PREreview apenas a outras que também usam seu pseudônimo."
+  },
+  "pasteYourReviewError": {
+    "message": "Cole sua avaliação PREreview"
+  },
+  "enterYourReviewError": {
+    "message": "Insira sua avaliação PREreview"
   },
   "copyAndPasteReview": {
     "message": "Copie sua avaliação PREreview e cole aqui. Faremos o possível para manter a formatação."
@@ -187,6 +199,12 @@
   },
   "whatHappensNext": {
     "message": "O que acontece em seguida"
+  },
+  "whereYouCanSeeYourPrereview": {
+    "message": "Você poderá ver sua avaliação PREreview em breve. Também aparecerá na nossa <communitySlack>Comunidade Slack</communitySlack>."
+  },
+  "whereYouCanSeeYourPrereviewSciety": {
+    "message": "Você poderá ver sua avaliação PREreview em breve. Também aparecerá na nossa <communitySlack>Comunidade Slack</communitySlack> e <sciety>Sciety</sciety>."
   },
   "opensInNewTab": {
     "message": "abre em uma nova aba"
@@ -445,6 +463,24 @@
   },
   "competingInterestsAuthorsNo": {
     "message": "Os autores declaram que não possuem conflitos de interesse."
+  },
+  "selectYesIfCompetingInterest": {
+    "message": "Selecione sim se você tiver algum conflito de interesse"
+  },
+  "selectYesIfAuthorsCompetingInterest": {
+    "message": "Selecione sim se você, ou algum dos outros autores, tiver algum conflito de interesse"
+  },
+  "competingInterestDetails": {
+    "message": "Forneça detalhes dos seus conflitos de interesse"
+  },
+  "authorsCompetingInterestDetails": {
+    "message": "Forneça detalhes dos conflitos de interesse"
+  },
+  "doYouHaveCompetingInterests": {
+    "message": "Você tem algum conflito de interesse?"
+  },
+  "doAuthorsHaveCompetingInterests": {
+    "message": "Você, ou algum dos outros autores, tem algum conflito de interesse?"
   },
   "discloseCompetingInterests": {
     "message": "Solicitamos que todos os avaliadores declarem quaisquer conflitos de interesse que possam influenciar sua avaliação do preprint."

@@ -26,6 +26,18 @@
   "carryOnMessage": {
     "message": "Como você já começou um comentário nesta Avaliação PREreview de {preprint}, vamos para a próxima etapa para que você possa continuar."
   },
+  "enterYourCommentTitle": {
+    "message": "Escreva seu comentário"
+  },
+  "errorEnterComment": {
+    "message": "Digite seu comentário"
+  },
+  "whatNameTitle": {
+    "message": "Qual nome você gostaria de usar?"
+  },
+  "errorSelectName": {
+    "message": "Selecione o nome que deseja usar"
+  },
   "whichNameTip": {
     "message": "Você pode escolher entre o nome no seu registro ORCID ou seu pseudônimo PREreview."
   },
@@ -43,6 +55,15 @@
   },
   "linkToPseudonym": {
     "message": "Vincularemos seu comentário apenas a outros que também usam seu pseudônimo."
+  },
+  "competingInterestsTitle": {
+    "message": "Você tem algum conflito de interesse?"
+  },
+  "errorCompetingInterests": {
+    "message": "Selecione sim se você tiver algum conflito de interesse"
+  },
+  "errorCompetingInterestsDetails": {
+    "message": "Forneça detalhes dos seus conflitos de interesse"
   },
   "competingInterestsTip": {
     "message": "Um conflito de interesse é qualquer fator que possa interferir na objetividade do comentário em uma Avaliação PREreview."
@@ -82,6 +103,12 @@
   },
   "competingInterestsDetailsTitle": {
     "message": "Quais são eles?"
+  },
+  "codeOfConductTitle": {
+    "message": "Código de Conduta"
+  },
+  "errorFollowingCodeOfConduct": {
+    "message": "Confirme se você está seguindo o Código de Conduta"
   },
   "codeOfConductTip": {
     "message": "Como membro da nossa comunidade, esperamos que você respeite o <link>Código de Conduta da PREreview</link>."
@@ -130,6 +157,15 @@
   },
   "followingCodeOfConduct": {
     "message": "Estou seguindo o Código de Conduta"
+  },
+  "contactDetailsTitle": {
+    "message": "Dados de contato"
+  },
+  "errorEnterEmailAddress": {
+    "message": "Digite seu endereço de e-mail"
+  },
+  "errorEnterValidEmailAddress": {
+    "message": "Digite um endereço de e-mail no formato correto, como nome@exemplo.com"
   },
   "needToConfirmEmailAddress": {
     "message": "Estamos prontos para publicar seu comentário, mas primeiro precisamos confirmar seu endereço de e-mail."
