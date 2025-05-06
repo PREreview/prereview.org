@@ -12,11 +12,7 @@ import * as CachingHttpClient from './CachingHttpClient/index.js'
 
 export const Fetch = FetchHttpClient.Fetch
 
-export const makeFetch = Effect.gen(function* () {
-  return yield* transmogrifyHttpClient
-})
-
-const transmogrifyHttpClient: Effect.Effect<
+export const makeFetch: Effect.Effect<
   typeof globalThis.fetch,
   never,
   HttpClient.HttpClient | CachingHttpClient.HttpCache
