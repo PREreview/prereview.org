@@ -23,12 +23,6 @@ export const CachingHttpClient = (
     const cache = yield* HttpCache.HttpCache
     const revalidationQueue = yield* RevalidationQueue
 
-    yield* pipe(
-      Effect.logDebug('Starting revalidationWorker'),
-      Effect.andThen(revalidationWorker({ cache, httpClient, revalidationQueue })),
-      Effect.forkDaemon,
-    )
-
     const cachingBehaviour = (
       request: Effect.Effect<HttpClientRequest.HttpClientRequest>,
     ): Effect.Effect<HttpClientResponse.HttpClientResponse, HttpClientError.HttpClientError> =>
@@ -101,19 +95,12 @@ export const CachingHttpClient = (
 export const layer = (...args: Parameters<typeof CachingHttpClient>) =>
   Layer.effect(HttpClient.HttpClient, CachingHttpClient(...args))
 
-const revalidationWorker = ({
-  cache,
-  httpClient,
-  revalidationQueue,
-}: {
-  cache: typeof HttpCache.HttpCache.Service
-  httpClient: HttpClient.HttpClient
-  revalidationQueue: Queue.Dequeue<{
-    request: HttpClientRequest.HttpClientRequest
-    timeToStale: Duration.DurationInput
-  }>
-}) =>
-  pipe(
+const revalidationWorker = Effect.gen(function* () {
+  const cache = yield* HttpCache.HttpCache
+  const revalidationQueue = yield* RevalidationQueue
+  const httpClient = yield* HttpClient.HttpClient
+
+  yield* pipe(
     Queue.take(revalidationQueue),
     Effect.tap(({ request }) =>
       Effect.logDebug('Cache revalidating request').pipe(
@@ -136,6 +123,14 @@ const revalidationWorker = ({
     Effect.ignore,
     Effect.forever,
   )
+})
+
+export const layerRevalidationWorker = Layer.scopedDiscard(
+  Effect.acquireReleaseInterruptible(
+    pipe(Effect.logDebug('Revalidation worker started'), Effect.andThen(revalidationWorker)),
+    () => Effect.logDebug('Revalidation worker stopped'),
+  ),
+)
 
 export const layerRevalidationQueue = Layer.scoped(
   RevalidationQueue,

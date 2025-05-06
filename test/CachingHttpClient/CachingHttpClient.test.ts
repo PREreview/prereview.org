@@ -183,7 +183,7 @@ describe('there is a cache entry', () => {
         Effect.gen(function* () {
           const client = yield* pipe(
             _.CachingHttpClient(timeToStale),
-            Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse, '30 seconds')),
+            Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
             Effect.provide(_.layerInMemory(cache)),
           )
 
@@ -202,9 +202,16 @@ describe('there is a cache entry', () => {
           'updates the cached value',
           request =>
             Effect.gen(function* () {
+              yield* pipe(
+                Layer.launch(_.layerRevalidationWorker),
+                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+                Effect.provide(_.layerInMemory(cache)),
+                Effect.fork,
+              )
+
               const client = yield* pipe(
                 _.CachingHttpClient(timeToStale),
-                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+                Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
                 Effect.provide(_.layerInMemory(cache)),
               )
 
@@ -229,9 +236,16 @@ describe('there is a cache entry', () => {
                 throw new Error('failed to set cache value')
               }
 
+              yield* pipe(
+                Layer.launch(_.layerRevalidationWorker),
+                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+                Effect.provide(_.layerInMemory(cache)),
+                Effect.fork,
+              )
+
               const client = yield* pipe(
                 _.CachingHttpClient(timeToStale),
-                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+                Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
                 Effect.provide(_.layerInMemory(cache)),
               )
 
@@ -254,16 +268,24 @@ describe('there is a cache entry', () => {
         test.prop([
           fc.httpClientRequest({ method: fc.constant('GET'), url: fc.constant(url) }),
           fc.constantFrom(StatusCodes.NOT_FOUND, StatusCodes.GONE),
-        ])('deletes the cached value', (request, status) =>
+          fc.httpClientResponse(),
+        ])('deletes the cached value', (request, status, expectedResponse) =>
           Effect.gen(function* () {
             const newResponse = HttpClientResponse.fromWeb(
               HttpClientRequest.get(url),
               new Response('new response body', { headers: [['foo', 'bar']], status }),
             )
 
+            yield* pipe(
+              Layer.launch(_.layerRevalidationWorker),
+              Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+              Effect.provide(_.layerInMemory(cache)),
+              Effect.fork,
+            )
+
             const client = yield* pipe(
               _.CachingHttpClient(timeToStale),
-              Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+              Effect.provideService(HttpClient.HttpClient, stubbedClient(expectedResponse)),
               Effect.provide(_.layerInMemory(cache)),
             )
 
@@ -273,7 +295,7 @@ describe('there is a cache entry', () => {
 
             const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(request)
 
-            expect(responseFromCacheFollowingServingOfStaleEntry.status).toStrictEqual(status)
+            expect(responseFromCacheFollowingServingOfStaleEntry).toStrictEqual(expectedResponse)
           }).pipe(Effect.provide(_.layerRevalidationQueue), EffectTest.run),
         )
       })
@@ -293,9 +315,16 @@ describe('there is a cache entry', () => {
               throw new Error('failed to delete cache value')
             }
 
+            yield* pipe(
+              Layer.launch(_.layerRevalidationWorker),
+              Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+              Effect.provide(_.layerInMemory(cache)),
+              Effect.fork,
+            )
+
             const client = yield* pipe(
               _.CachingHttpClient(timeToStale),
-              Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+              Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
               Effect.provide(_.layerInMemory(cache)),
             )
 
@@ -317,9 +346,16 @@ describe('there is a cache entry', () => {
       describe('when no response is received', () => {
         test.prop([fc.httpClientRequestError({ reason: fc.constant('Transport') })])('ignores the failure', error =>
           Effect.gen(function* () {
+            yield* pipe(
+              Layer.launch(_.layerRevalidationWorker),
+              Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
+              Effect.provide(_.layerInMemory(cache)),
+              Effect.fork,
+            )
+
             const client = yield* pipe(
               _.CachingHttpClient(timeToStale),
-              Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
+              Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
               Effect.provide(_.layerInMemory(cache)),
             )
 
@@ -346,9 +382,16 @@ describe('there is a cache entry', () => {
           }),
         ])('ignores the failure', response =>
           Effect.gen(function* () {
+            yield* pipe(
+              Layer.launch(_.layerRevalidationWorker),
+              Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
+              Effect.provide(_.layerInMemory(cache)),
+              Effect.fork,
+            )
+
             const client = yield* pipe(
               _.CachingHttpClient(timeToStale),
-              Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
+              Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
               Effect.provide(_.layerInMemory(cache)),
             )
 

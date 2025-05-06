@@ -407,7 +407,7 @@ const MigratorLive = LibsqlMigrator.layer({
 })
 
 export const Program = pipe(
-  Layer.mergeAll(WebApp, Comments.ReactToCommentEvents),
+  Layer.mergeAll(WebApp, Comments.ReactToCommentEvents, CachingHttpClient.layerRevalidationWorker),
   Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment)),
   Layer.provide(Layer.mergeAll(getPrereview)),
   Layer.provide(
