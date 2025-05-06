@@ -387,6 +387,25 @@ test.each([
       url: new URL('https://osf.io/ny6h2'),
     }),
   },
+  {
+    response: 'osf-preprints.json',
+    expected: Preprint({
+      authors: [{ name: 'Tran Duc Hung Long', orcid: undefined }],
+      id: { _tag: 'osf-preprints', value: Doi('10.31219/osf.io/t9gbj') },
+      posted: Temporal.PlainDate.from({ year: 2021, month: 10, day: 11 }),
+      title: {
+        language: 'vi',
+        text: rawHtml('Quy hoạch di sản: Một góc nhìn từ Hội An'),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>This article takes a look at the state of preservation in Hoi An, which is a world heritage and a famous tourist attraction in central Vietnam.</p>',
+        ),
+      },
+      url: new URL('https://osf.io/t9gbj'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

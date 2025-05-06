@@ -124,6 +124,7 @@ const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: H
     medrxiv: () => Option.some('en' as const),
     metaarxiv: () => Option.some('en' as const),
     neurolibre: () => Option.some('en' as const),
+    'osf-preprints': () => detectLanguage(text),
     'preprints.org': () => Option.some('en' as const),
     'research-square': () => Option.some('en' as const),
     scielo: () => detectLanguageFrom('en', 'es', 'pt')(text),

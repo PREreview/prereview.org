@@ -1,7 +1,18 @@
 import * as Doi from 'doi-ts'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 
-const crossrefDoiPrefixes = ['1101', '1590', '2139', '12688', '20944', '21203', '31222', '31235', '55458'] as const
+const crossrefDoiPrefixes = [
+  '1101',
+  '1590',
+  '2139',
+  '12688',
+  '20944',
+  '21203',
+  '31219',
+  '31222',
+  '31235',
+  '55458',
+] as const
 
 type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
 
