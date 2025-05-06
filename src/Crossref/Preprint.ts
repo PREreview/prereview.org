@@ -2,7 +2,7 @@ import { Url } from '@effect/platform'
 import * as Doi from 'doi-ts'
 import { Array, Either, flow, Match, Option, pipe } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { detectLanguageFrom } from '../detect-language.js'
+import { detectLanguage, detectLanguageFrom } from '../detect-language.js'
 import { type Html, sanitizeHtml } from '../html.js'
 import { transformJatsToHtml } from '../jats.js'
 import * as Preprint from '../preprint.js'
@@ -127,6 +127,7 @@ const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: H
     'preprints.org': () => Option.some('en' as const),
     'research-square': () => Option.some('en' as const),
     scielo: () => detectLanguageFrom('en', 'es', 'pt')(text),
+    socarxiv: () => detectLanguage(text),
     ssrn: () => Option.some('en' as const),
     verixiv: () => Option.some('en' as const),
   })

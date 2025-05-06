@@ -368,6 +368,25 @@ test.each([
       url: new URL('https://osf.io/9a3rw'),
     }),
   },
+  {
+    response: 'socarxiv.json',
+    expected: Preprint({
+      authors: [{ name: 'Paula Sequeiros', orcid: Orcid('0000-0003-2069-5631') }],
+      id: { _tag: 'socarxiv', value: Doi('10.31235/osf.io/ny6h2') },
+      posted: Temporal.PlainDate.from({ year: 2022, month: 11, day: 26 }),
+      title: {
+        language: 'pt',
+        text: rawHtml('Um tambor sámi restituído: culturas originárias europeias e colonialismo no Ártico'),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>The restitution of a Sámi drum confiscated in 1691 in Karasjok, present-day  Norway, was made in early 2022. This good incorporates historical meaning, culture and own values as well as marks of colonization and inequalities in Sápmi. It can talk about the long coloniality and racist invisibilization in the far north of Europe and about the historical resistances and current processes for justice andreparation. A bibliographical synthesis is presented on the Eurocentric invention of races operated from the center of Europe in which it aimed particularly at the Sámi populations, their lands and cultures, with colonial, patriarchal and capacitist demarcations. Possible lines of intervention and reconfiguration of the work on biographical and bibliographical sources that sustain, encourage anddisseminate the incorporation of knowledge inherited and to be passed on by originary cultures with recognition and justice.</p>',
+        ),
+      },
+      url: new URL('https://osf.io/ny6h2'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
