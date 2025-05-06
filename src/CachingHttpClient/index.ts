@@ -16,11 +16,14 @@ export const CachingHttpClient = (
   Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient
     const cache = yield* HttpCache.HttpCache
-    const revalidationQueue = yield* Queue.sliding<HttpClientRequest.HttpClientRequest>(100)
+    const revalidationQueue = yield* Queue.sliding<{
+      request: HttpClientRequest.HttpClientRequest
+      timeToStale: Duration.DurationInput
+    }>(100)
 
     yield* pipe(
       Effect.logDebug('Starting revalidationWorker'),
-      Effect.andThen(revalidationWorker({ cache, httpClient, revalidationQueue, timeToStale })),
+      Effect.andThen(revalidationWorker({ cache, httpClient, revalidationQueue })),
       Effect.forkDaemon,
     )
 
@@ -59,7 +62,7 @@ export const CachingHttpClient = (
             yield* Effect.logDebug('Cache hit').pipe(Effect.annotateLogs(logAnnotations))
           } else {
             yield* Effect.logDebug('Cache stale').pipe(Effect.annotateLogs(logAnnotations))
-            yield* Queue.offer(revalidationQueue, req)
+            yield* Queue.offer(revalidationQueue, { request: req, timeToStale })
           }
           return response.response
         }
@@ -100,22 +103,23 @@ const revalidationWorker = ({
   cache,
   httpClient,
   revalidationQueue,
-  timeToStale,
 }: {
   cache: typeof HttpCache.HttpCache.Service
   httpClient: HttpClient.HttpClient
-  revalidationQueue: Queue.Dequeue<HttpClientRequest.HttpClientRequest>
-  timeToStale: Duration.DurationInput
+  revalidationQueue: Queue.Dequeue<{
+    request: HttpClientRequest.HttpClientRequest
+    timeToStale: Duration.DurationInput
+  }>
 }) =>
   pipe(
     Queue.take(revalidationQueue),
-    Effect.tap(request =>
+    Effect.tap(({ request }) =>
       Effect.logDebug('Cache revalidating request').pipe(
         Effect.annotateLogs({ url: request.url, urlParams: request.urlParams }),
       ),
     ),
-    Effect.andThen(httpClient.execute),
-    Effect.tap(response =>
+    Effect.bind('response', ({ request }) => httpClient.execute(request)),
+    Effect.tap(({ response, timeToStale }) =>
       Effect.gen(function* () {
         const timestamp = yield* DateTime.now
         return yield* HttpClientResponse.matchStatus(response, {
