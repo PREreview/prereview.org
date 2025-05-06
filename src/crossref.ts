@@ -28,7 +28,6 @@ import type {
   OsfPreprintsPreprintId,
   PreprintId,
   PsyarxivPreprintId,
-  ResearchSquarePreprintId,
   ScienceOpenPreprintId,
   SocarxivPreprintId,
   TechrxivPreprintId,
@@ -36,7 +35,6 @@ import type {
 
 const crossrefDoiPrefixes = [
   '14293',
-  '21203',
   '22541',
   '26434',
   '31124',
@@ -177,7 +175,6 @@ const detectLanguageForServer = ({
     .with({ type: 'metaarxiv' }, () => Option.some('en' as const))
     .with({ type: 'osf-preprints', text: P.select() }, detectLanguage)
     .with({ type: 'psyarxiv' }, () => Option.some('en' as const))
-    .with({ type: 'research-square' }, () => Option.some('en' as const))
     .with({ type: 'science-open', text: P.select() }, detectLanguage)
     .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
     .with({ type: 'techrxiv' }, () => Option.some('en' as const))
@@ -337,19 +334,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
           _tag: 'psyarxiv',
           value: work.DOI,
         }) satisfies PsyarxivPreprintId,
-    ),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('21203'), 'DOI'),
-      institution: D.fromTuple(D.struct({ name: D.literal('Research Square') })),
-    }),
-    D.map(
-      work =>
-        ({
-          _tag: 'research-square',
-          value: work.DOI,
-        }) satisfies ResearchSquarePreprintId,
     ),
   ),
   pipe(
