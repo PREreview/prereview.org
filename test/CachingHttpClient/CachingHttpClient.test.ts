@@ -196,23 +196,25 @@ describe('there is a cache entry', () => {
 
     describe('cached response can be revalidated', () => {
       describe('able to cache it', () => {
-        test.prop([fc.httpClientRequest()])('updates the cached value', request =>
-          Effect.gen(function* () {
-            const client = yield* pipe(
-              _.CachingHttpClient(timeToStale),
-              Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
-              Effect.provide(_.layerInMemory(cache)),
-            )
+        test.prop([fc.httpClientRequest({ method: fc.constant('GET'), url: fc.constant(url) })])(
+          'updates the cached value',
+          request =>
+            Effect.gen(function* () {
+              const client = yield* pipe(
+                _.CachingHttpClient(timeToStale),
+                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
+                Effect.provide(_.layerInMemory(cache)),
+              )
 
-            yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
-            yield* client.execute(request)
-            yield* TestClock.adjust('1 seconds')
-            const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(request)
+              yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
+              yield* client.execute(request)
+              yield* TestClock.adjust('1 seconds')
+              const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(request)
 
-            expect(responseFromCacheFollowingServingOfStaleEntry.status).toStrictEqual(newResponse.status)
-            expect(responseFromCacheFollowingServingOfStaleEntry.headers).toStrictEqual(newResponse.headers)
-            expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(yield* newResponse.text)
-          }).pipe(EffectTest.run),
+              expect(responseFromCacheFollowingServingOfStaleEntry.status).toStrictEqual(newResponse.status)
+              expect(responseFromCacheFollowingServingOfStaleEntry.headers).toStrictEqual(newResponse.headers)
+              expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(yield* newResponse.text)
+            }).pipe(EffectTest.run),
         )
       })
 
