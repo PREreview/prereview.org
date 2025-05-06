@@ -434,5 +434,5 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, LoggingHttpClient.layer)),
-  Layer.provide(Layer.mergeAll(Uuid.layer, MigratorLive)),
+  Layer.provide(Layer.mergeAll(Uuid.layer, MigratorLive, CachingHttpClient.layerRevalidationQueue)),
 )

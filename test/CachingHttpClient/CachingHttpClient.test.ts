@@ -1,7 +1,7 @@
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { beforeEach, describe, expect } from '@jest/globals'
-import { Duration, Effect, Either, Fiber, pipe, TestClock } from 'effect'
+import { Duration, Effect, Either, Fiber, Layer, pipe, Queue, TestClock } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as _ from '../../src/CachingHttpClient/index.js'
 import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.js'
@@ -27,6 +27,8 @@ const shouldNotBeCalledHttpClient: HttpClient.HttpClient.With<HttpClientError.Ht
   Effect.succeed,
 )
 
+const emptyQueue = Layer.effect(_.RevalidationQueue, Queue.bounded(0))
+
 describe('there is no cache entry', () => {
   describe('the request succeeds', () => {
     test.prop([
@@ -47,7 +49,7 @@ describe('there is no cache entry', () => {
         const actualResponse = yield* client.execute(response.request)
         expect(actualResponse).toStrictEqual(response)
         expect(cache.size).toBe(1)
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(emptyQueue), EffectTest.run),
     )
 
     test.prop([fc.httpClientResponse(), fc.error(), fc.durationInput()])(
@@ -65,7 +67,7 @@ describe('there is no cache entry', () => {
           )
           const actualResponse = yield* client.execute(response.request)
           expect(actualResponse).toStrictEqual(response)
-        }).pipe(EffectTest.run),
+        }).pipe(Effect.provide(emptyQueue), EffectTest.run),
     )
   })
 
@@ -88,7 +90,7 @@ describe('there is no cache entry', () => {
 
         expect(actualResponse).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'RequestError' })))
         expect(cache.size).toBe(0)
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(emptyQueue), EffectTest.run),
     )
 
     test.prop([
@@ -108,7 +110,7 @@ describe('there is no cache entry', () => {
 
         expect(actualResponse).toStrictEqual(Either.left(error))
         expect(cache.size).toBe(0)
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(emptyQueue), EffectTest.run),
     )
 
     test.prop([
@@ -127,7 +129,7 @@ describe('there is no cache entry', () => {
 
         expect(actualResponse).toStrictEqual(response)
         expect(cache.size).toBe(0)
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(emptyQueue), EffectTest.run),
     )
   })
 })
@@ -155,7 +157,7 @@ describe('there is a cache entry', () => {
         Effect.provide(_.layerInMemory(cache)),
       )
       yield* clientToPopulateCache.get(url)
-    }).pipe(EffectTest.run),
+    }).pipe(Effect.provide(emptyQueue), EffectTest.run),
   )
 
   describe('the cached response is fresh', () => {
@@ -171,7 +173,7 @@ describe('there is a cache entry', () => {
         expect(responseFromFreshCache.status).toStrictEqual(originalResponse.status)
         expect(responseFromFreshCache.headers).toStrictEqual(originalResponse.headers)
         expect(yield* responseFromFreshCache.text).toStrictEqual(yield* originalResponse.text)
-      }).pipe(EffectTest.run))
+      }).pipe(Effect.provide(emptyQueue), EffectTest.run))
   })
 
   describe('the cached response is stale', () => {
@@ -191,7 +193,7 @@ describe('there is a cache entry', () => {
           expect(responseFromStaleCache.status).toStrictEqual(originalResponse.status)
           expect(responseFromStaleCache.headers).toStrictEqual(originalResponse.headers)
           expect(yield* responseFromStaleCache.text).toStrictEqual(yield* originalResponse.text)
-        }).pipe(EffectTest.run),
+        }).pipe(Effect.provide(_.layerRevalidationQueue), EffectTest.run),
     )
 
     describe('cached response can be revalidated', () => {
@@ -214,7 +216,7 @@ describe('there is a cache entry', () => {
               expect(responseFromCacheFollowingServingOfStaleEntry.status).toStrictEqual(newResponse.status)
               expect(responseFromCacheFollowingServingOfStaleEntry.headers).toStrictEqual(newResponse.headers)
               expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(yield* newResponse.text)
-            }).pipe(EffectTest.run),
+            }).pipe(Effect.provide(_.layerRevalidationQueue), EffectTest.run),
         )
       })
 
@@ -242,7 +244,7 @@ describe('there is a cache entry', () => {
               expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
                 yield* originalResponse.text,
               )
-            }).pipe(EffectTest.run),
+            }).pipe(Effect.provide(_.layerRevalidationQueue), EffectTest.run),
         )
       })
     })
@@ -272,7 +274,7 @@ describe('there is a cache entry', () => {
             const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(request)
 
             expect(responseFromCacheFollowingServingOfStaleEntry.status).toStrictEqual(status)
-          }).pipe(EffectTest.run),
+          }).pipe(Effect.provide(_.layerRevalidationQueue), EffectTest.run),
         )
       })
 
@@ -306,7 +308,7 @@ describe('there is a cache entry', () => {
             expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
               yield* originalResponse.text,
             )
-          }).pipe(EffectTest.run),
+          }).pipe(Effect.provide(_.layerRevalidationQueue), EffectTest.run),
         )
       })
     })
@@ -330,7 +332,7 @@ describe('there is a cache entry', () => {
             expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
               yield* originalResponse.text,
             )
-          }).pipe(EffectTest.run),
+          }).pipe(Effect.provide(_.layerRevalidationQueue), EffectTest.run),
         )
       })
 
@@ -359,7 +361,7 @@ describe('there is a cache entry', () => {
             expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
               yield* originalResponse.text,
             )
-          }).pipe(EffectTest.run),
+          }).pipe(Effect.provide(_.layerRevalidationQueue), EffectTest.run),
         )
       })
     })
@@ -385,7 +387,7 @@ describe('getting from the cache is too slow', () => {
         const actualResponse = yield* Fiber.join(fiber)
 
         expect(actualResponse).toStrictEqual(response)
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(emptyQueue), EffectTest.run),
   )
 })
 
@@ -410,6 +412,6 @@ describe('with a non-GET request', () => {
       const actualResponse = yield* client.execute(response.request)
 
       expect(actualResponse).toStrictEqual(response)
-    }).pipe(EffectTest.run),
+    }).pipe(Effect.provide(emptyQueue), EffectTest.run),
   )
 })

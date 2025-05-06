@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientError, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
-import { DateTime, Effect, Function, Layer, pipe, Queue, type Duration } from 'effect'
+import { Context, DateTime, Effect, flow, Function, Layer, pipe, Queue, type Duration } from 'effect'
 import { Status } from 'hyper-ts'
 import * as HttpCache from './HttpCache.js'
 
@@ -9,17 +9,19 @@ export { layerPersistedToRedis } from './PersistedToRedis.js'
 
 export const CacheTimeout = '200 millis'
 
+export class RevalidationQueue extends Context.Tag('RevalidationQueue')<
+  RevalidationQueue,
+  Queue.Queue<{ request: HttpClientRequest.HttpClientRequest; timeToStale: Duration.DurationInput }>
+>() {}
+
 export const CachingHttpClient = (
   timeToStale: Duration.DurationInput,
   requestTimeout: Duration.DurationInput = '2 seconds',
-): Effect.Effect<HttpClient.HttpClient, never, HttpCache.HttpCache | HttpClient.HttpClient> =>
+): Effect.Effect<HttpClient.HttpClient, never, HttpCache.HttpCache | HttpClient.HttpClient | RevalidationQueue> =>
   Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient
     const cache = yield* HttpCache.HttpCache
-    const revalidationQueue = yield* Queue.sliding<{
-      request: HttpClientRequest.HttpClientRequest
-      timeToStale: Duration.DurationInput
-    }>(100)
+    const revalidationQueue = yield* RevalidationQueue
 
     yield* pipe(
       Effect.logDebug('Starting revalidationWorker'),
@@ -134,3 +136,14 @@ const revalidationWorker = ({
     Effect.ignore,
     Effect.forever,
   )
+
+export const layerRevalidationQueue = Layer.scoped(
+  RevalidationQueue,
+  Effect.acquireRelease(
+    pipe(
+      Queue.sliding<{ request: HttpClientRequest.HttpClientRequest; timeToStale: Duration.DurationInput }>(100),
+      Effect.tap(Effect.logDebug('Revalidation queue started')),
+    ),
+    flow(Queue.shutdown, Effect.tap(Effect.logDebug('Revalidation queue stopped'))),
+  ),
+)
