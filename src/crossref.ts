@@ -28,7 +28,6 @@ import type {
   PreprintId,
   PsyarxivPreprintId,
   ScienceOpenPreprintId,
-  SocarxivPreprintId,
   TechrxivPreprintId,
 } from './types/preprint-id.js'
 
@@ -41,7 +40,6 @@ const crossrefDoiPrefixes = [
   '31223',
   '31224',
   '31234',
-  '31235',
   '31730',
   '32942',
   '35542',
@@ -173,7 +171,6 @@ const detectLanguageForServer = ({
     .with({ type: 'osf-preprints', text: P.select() }, detectLanguage)
     .with({ type: 'psyarxiv' }, () => Option.some('en' as const))
     .with({ type: 'science-open', text: P.select() }, detectLanguage)
-    .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
     .with({ type: 'techrxiv' }, () => Option.some('en' as const))
     .exhaustive()
 
@@ -330,20 +327,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
           _tag: 'science-open',
           value: work.DOI,
         }) satisfies ScienceOpenPreprintId,
-    ),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('31235'), 'DOI'),
-      publisher: D.literal('Center for Open Science'),
-      'group-title': D.literal('SocArXiv'),
-    }),
-    D.map(
-      work =>
-        ({
-          _tag: 'socarxiv',
-          value: work.DOI,
-        }) satisfies SocarxivPreprintId,
     ),
   ),
   pipe(
