@@ -398,7 +398,9 @@ const setUpFetch = Layer.effect(
     const logger = yield* DeprecatedLoggerEnv
 
     return pipe({ fetch, ...logger }, collapseRequests()).fetch
-  }),
+  }).pipe(
+    Effect.provideServiceEffect(HttpClient.HttpClient, CachingHttpClient.CachingHttpClient('10 seconds', '30 seconds')),
+  ),
 )
 
 const MigratorLive = LibsqlMigrator.layer({

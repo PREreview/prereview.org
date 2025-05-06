@@ -8,16 +8,11 @@ import {
   HttpMethod,
 } from '@effect/platform'
 import { Effect, Either, identity, pipe, Runtime } from 'effect'
-import * as CachingHttpClient from './CachingHttpClient/index.js'
 
 export const Fetch = FetchHttpClient.Fetch
 
-export const makeFetch: Effect.Effect<
-  typeof globalThis.fetch,
-  never,
-  HttpClient.HttpClient | CachingHttpClient.HttpCache
-> = Effect.gen(function* () {
-  const client = yield* CachingHttpClient.CachingHttpClient('10 seconds', '30 seconds')
+export const makeFetch: Effect.Effect<typeof globalThis.fetch, never, HttpClient.HttpClient> = Effect.gen(function* () {
+  const client = yield* HttpClient.HttpClient
   const runtime = yield* Effect.runtime()
 
   return (input, init) =>
