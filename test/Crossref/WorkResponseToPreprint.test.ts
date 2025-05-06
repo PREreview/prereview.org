@@ -346,6 +346,28 @@ test.each([
       url: new URL('https://www.researchsquare.com/article/rs-2/v2'),
     }),
   },
+  {
+    response: 'metaarxiv.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Garret Christensen', orcid: undefined },
+        { name: 'Edward Miguel', orcid: undefined },
+      ],
+      id: { _tag: 'metaarxiv', value: Doi('10.31222/osf.io/9a3rw') },
+      posted: Temporal.PlainDate.from({ year: 2017, month: 3, day: 3 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Transparency, Reproducibility, and the Credibility of Economics Research'),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>There is growing interest in enhancing research transparency and reproducibility in economics and other scientific fields. We survey existing work on these topics within economics, and discuss the evidence suggesting that publication bias, inability to replicate, and specification searching remain widespread in the discipline. We next discuss recent progress in this area, including through improved research design, study registration and pre-analysis plans, disclosure standards, and open sharing of data and materials, drawing on experiences in both economics and other social sciences. We discuss areas where consensus is emerging on new practices, as well as approaches that remain controversial, and speculate about the most effective ways to make economics research more credible in the future.</p>',
+        ),
+      },
+      url: new URL('https://osf.io/9a3rw'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
