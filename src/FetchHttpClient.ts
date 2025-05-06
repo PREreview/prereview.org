@@ -1,7 +1,7 @@
 import {
   FetchHttpClient,
   HttpBody,
-  type HttpClient,
+  HttpClient,
   type HttpClientError,
   HttpClientRequest,
   type HttpClientResponse,
@@ -27,7 +27,15 @@ const transmogrifyHttpClient: Effect.Effect<
   return (input, init) =>
     Runtime.runPromise(
       runtime,
-      pipe(convertRequest(input, init), Effect.andThen(client.execute), Effect.andThen(convertResponse), Effect.either),
+      pipe(
+        convertRequest(input, init),
+        Effect.andThen(
+          (['error', 'manual'].includes(init?.redirect ?? 'follow') ? client : HttpClient.followRedirects(client))
+            .execute,
+        ),
+        Effect.andThen(convertResponse),
+        Effect.either,
+      ),
       { signal: init?.signal ?? undefined },
     ).then(Either.getOrThrowWith(identity))
 })
