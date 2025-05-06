@@ -93,8 +93,8 @@ export const CachingHttpClient = (
     return HttpClient.makeWith(cachingBehaviour, Effect.succeed)
   })
 
-export const layer = (timeToStale: Duration.DurationInput) =>
-  Layer.effect(HttpClient.HttpClient, CachingHttpClient(timeToStale))
+export const layer = (...args: Parameters<typeof CachingHttpClient>) =>
+  Layer.effect(HttpClient.HttpClient, CachingHttpClient(...args))
 
 const revalidationWorker = ({
   cache,
