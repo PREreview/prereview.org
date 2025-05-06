@@ -24,7 +24,6 @@ import type {
   EdarxivPreprintId,
   EngrxivPreprintId,
   IndeterminatePreprintId,
-  MetaarxivPreprintId,
   OsfPreprintsPreprintId,
   PreprintId,
   PsyarxivPreprintId,
@@ -39,7 +38,6 @@ const crossrefDoiPrefixes = [
   '26434',
   '31124',
   '31219',
-  '31222',
   '31223',
   '31224',
   '31234',
@@ -172,7 +170,6 @@ const detectLanguageForServer = ({
     .with({ type: 'ecoevorxiv' }, () => Option.some('en' as const))
     .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
     .with({ type: 'engrxiv' }, () => Option.some('en' as const))
-    .with({ type: 'metaarxiv' }, () => Option.some('en' as const))
     .with({ type: 'osf-preprints', text: P.select() }, detectLanguage)
     .with({ type: 'psyarxiv' }, () => Option.some('en' as const))
     .with({ type: 'science-open', text: P.select() }, detectLanguage)
@@ -292,20 +289,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
           _tag: 'engrxiv',
           value: work.DOI,
         }) satisfies EngrxivPreprintId,
-    ),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('31222'), 'DOI'),
-      publisher: D.literal('Center for Open Science'),
-      'group-title': D.literal('MetaArXiv'),
-    }),
-    D.map(
-      work =>
-        ({
-          _tag: 'metaarxiv',
-          value: work.DOI,
-        }) satisfies MetaarxivPreprintId,
     ),
   ),
   pipe(
