@@ -1050,6 +1050,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId | LegacyCr
     medrxivPreprintId(),
     neurolibrePreprintId(),
     preprintsorgPreprintId(),
+    researchSquarePreprintId(),
     scieloPreprintId(),
     ssrnPreprintId(),
     verixivPreprintId(),

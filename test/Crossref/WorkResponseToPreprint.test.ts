@@ -298,6 +298,54 @@ test.each([
       url: new URL('http://biorxiv.org/lookup/doi/2023.07.06.547934'),
     }),
   },
+
+  {
+    response: 'research-square.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Shaun Treweek', orcid: Orcid('0000-0002-7239-7241') },
+        { name: 'Simon Bevan', orcid: undefined },
+        { name: 'Peter Bower', orcid: undefined },
+        { name: 'Matthias Briel', orcid: undefined },
+        { name: 'Marion Campbell', orcid: undefined },
+        { name: 'Jacquie Christie', orcid: undefined },
+        { name: 'Clive Collett', orcid: undefined },
+        { name: 'Seonaidh Cotton', orcid: undefined },
+        { name: 'Declan Devane', orcid: undefined },
+        { name: 'Adel El Feky', orcid: undefined },
+        { name: 'Sandra Galvin', orcid: undefined },
+        { name: 'Heidi Gardner', orcid: undefined },
+        { name: 'Katie Gillies', orcid: undefined },
+        { name: 'Kerenza Hood', orcid: undefined },
+        { name: 'Jan Jansen', orcid: undefined },
+        { name: 'Roberta Littleford', orcid: undefined },
+        { name: 'Adwoa Parker', orcid: undefined },
+        { name: 'Craig Ramsay', orcid: undefined },
+        { name: 'Lynne Restrup', orcid: undefined },
+        { name: 'Frank Sullivan', orcid: undefined },
+        { name: 'David Torgerson', orcid: undefined },
+        { name: 'Liz Tremain', orcid: undefined },
+        { name: 'Erik von Elm', orcid: undefined },
+        { name: 'Matthew Westmore', orcid: undefined },
+        { name: 'Hywel Williams', orcid: undefined },
+        { name: 'Paula R Williamson', orcid: undefined },
+        { name: 'Mike Clarke', orcid: undefined },
+      ],
+      id: { _tag: 'research-square', value: Doi('10.21203/rs.1.1/v2') },
+      posted: Temporal.PlainDate.from({ year: 2019, month: 10, day: 9 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Trial Forge Guidance 2: How to decide if a further Study Within A Trial (SWAT) is needed'),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '\n        <p>The evidence base available to trialists to support trial process decisions– e.g. how best to recruit and retain participants, how to collect data or how to share the results with participants – is thin. One way to fill gaps in evidence is to run Studies Within A Trial, or SWATs. These are self-contained research studies embedded within a host trial that aim to evaluate or explore alternative ways of delivering or organising a particular trial process. SWATs are increasingly being supported by funders and considered by trialists, especially in the UK and Ireland. At some point, increasing SWAT evidence will lead funders and trialists to ask : given the current body of evidence for a SWAT, do we need a further evaluation in a another host trial? A framework for answering such a question is needed to avoid SWATs themselves contributing to research waste. This paper presents criteria on when enough evidence is available for SWATs that use randomised allocation to compare different interventions.</p>',
+        ),
+      },
+      url: new URL('https://www.researchsquare.com/article/rs-2/v2'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
