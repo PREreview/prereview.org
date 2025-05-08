@@ -8,16 +8,17 @@ import {
   Path,
 } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
-import { Array, Cause, Config, Duration, Effect, Layer, Option, pipe, Redacted, Schema } from 'effect'
+import { Cause, Config, Duration, Effect, Layer, Option, pipe, Redacted, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import { ExpressConfig, FlashMessage, Locale, SessionSecret } from './Context.js'
-import { CanChooseLocale, UseCrowdinInContext } from './feature-flags.js'
-import { CrowdinInContextLocale, DefaultLocale, SupportedLocales } from './locales/index.js'
-import { PublicUrl } from './public-url.js'
-import { FlashMessageSchema } from './response.js'
-import { securityHeaders } from './securityHeaders.js'
-import { Uuid } from './types/index.js'
-import { LoggedInUser, UserSchema } from './user.js'
+import { ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.js'
+import { CanChooseLocale, UseCrowdinInContext } from '../feature-flags.js'
+import { CrowdinInContextLocale, DefaultLocale, SupportedLocales } from '../locales/index.js'
+import { PublicUrl } from '../public-url.js'
+import { FlashMessageSchema } from '../response.js'
+import { securityHeaders } from '../securityHeaders.js'
+import { Uuid } from '../types/index.js'
+import { LoggedInUser, UserSchema } from '../user.js'
+import { removeLocaleFromPath } from './removeLocaleFromPath.js'
 
 export const { logger } = HttpMiddleware
 
@@ -164,16 +165,6 @@ export const removeLocaleFromPathForRouting = HttpMiddleware.make(
     request.modify({ url: removeLocaleFromPath(request.url) }),
   ),
 )
-
-const removeLocaleFromPath = (path: string): string => {
-  const parts = path.split('/')
-
-  if (parts[1] !== DefaultLocale.toLowerCase()) {
-    return path
-  }
-
-  return pipe(parts, Array.remove(1), Array.join('/'))
-}
 
 export const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
