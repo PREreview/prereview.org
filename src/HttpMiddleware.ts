@@ -160,16 +160,20 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
 )
 
 export const removeLocaleFromPathForRouting = HttpMiddleware.make(
-  Effect.updateService(HttpServerRequest.HttpServerRequest, request => {
-    const parts = request.url.split('/')
-    if (parts[1] !== DefaultLocale.toLowerCase()) {
-      return request
-    }
-    return request.modify({
-      url: pipe(parts, Array.remove(1), Array.join('/')),
-    })
-  }),
+  Effect.updateService(HttpServerRequest.HttpServerRequest, request =>
+    request.modify({ url: removeLocaleFromPath(request.url) }),
+  ),
 )
+
+const removeLocaleFromPath = (path: string): string => {
+  const parts = path.split('/')
+
+  if (parts[1] !== DefaultLocale.toLowerCase()) {
+    return path
+  }
+
+  return pipe(parts, Array.remove(1), Array.join('/'))
+}
 
 export const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
