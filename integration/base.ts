@@ -94,6 +94,7 @@ interface AppFixtures {
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canAddMultipleAuthors: typeof FeatureFlags.CanAddMultipleAuthors.Service
+  canChooseLocale: typeof FeatureFlags.CanChooseLocale.Service
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
 }
@@ -107,6 +108,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   canAddMultipleAuthors: async ({}, use) => {
     await use(() => false)
+  },
+  canChooseLocale: async ({}, use) => {
+    await use(false)
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
@@ -1224,6 +1228,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         authorInviteStore,
         nodemailer,
         canAddMultipleAuthors,
+        canChooseLocale,
       },
       use,
       testInfo,
@@ -1283,7 +1288,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provide(
           FeatureFlags.layer({
             canAddMultipleAuthors,
-            canChooseLocale: false,
+            canChooseLocale,
             canSeeDesignTweaks: false,
             useCrowdinInContext: false,
           }),
@@ -2053,6 +2058,17 @@ export const canAddMultipleAuthors: Fixtures<
 > = {
   canAddMultipleAuthors: async ({}, use) => {
     await use(() => true)
+  },
+}
+
+export const canChooseLocale: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canChooseLocale'>,
+  Record<never, never>
+> = {
+  canChooseLocale: async ({}, use) => {
+    await use(true)
   },
 }
 
