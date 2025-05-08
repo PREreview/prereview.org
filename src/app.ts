@@ -128,7 +128,7 @@ export const app = (config: ConfigEnv) => {
 
         next()
       })
-      .use(LocaleCookie.setLocaleCookieInExpress)
+      .use(LocaleCookie.setLocaleCookieInExpress(locale))
       .use((req, res, next) => {
         res.setHeaders(new Headers(securityHeaders(config.publicUrl.protocol, config.useCrowdinInContext)))
         res.removeHeader('X-Powered-By')
