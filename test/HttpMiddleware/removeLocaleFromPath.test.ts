@@ -6,7 +6,7 @@ describe('removeLocaleFromPath', () => {
     ['/', '/'],
     ['/en-us', '/'],
     ['/en-us/', '/'],
-    // ['/en-us?foo=bar', '/?foo=bar'],
+    ['/en-us?foo=bar', '/?foo=bar'],
     ['/?foo=bar', '/?foo=bar'],
     ['/about', '/about'],
     ['/en-us/about', '/about'],
