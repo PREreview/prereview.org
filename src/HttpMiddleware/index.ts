@@ -42,7 +42,7 @@ export const serveStaticFiles = HttpMiddleware.make(app =>
 
     const path = yield* Path.Path
 
-    const filePath = path.resolve(import.meta.dirname, '..', 'dist', 'assets', request.url.slice(1))
+    const filePath = path.resolve(import.meta.dirname, '..', '..', 'dist', 'assets', request.url.slice(1))
 
     if (!(yield* isFile(filePath))) {
       return yield* app
