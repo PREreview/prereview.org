@@ -188,7 +188,8 @@ export const getLocale = HttpMiddleware.make(app =>
     )
 
     if (typeof localeFromPath === 'string') {
-      yield* Effect.logDebug('Locale from path').pipe(Effect.annotateLogs({ localeFromPath }))
+      const response = yield* Effect.provideService(app, Locale, DefaultLocale)
+      return yield* pipe(response, HttpServerResponse.setCookie('locale', DefaultLocale, { path: '/' }))
     }
 
     const locale = yield* pipe(
