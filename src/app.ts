@@ -13,6 +13,8 @@ import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
+// eslint-disable-next-line import/no-internal-modules
+import * as LocaleCookie from './HttpMiddleware/LocaleCookie.js'
 import { PageNotFound } from './PageNotFound/index.js'
 import { type RouterEnv, routes } from './app-router.js'
 import { getUserOnboarding } from './keyv.js'
@@ -126,11 +128,7 @@ export const app = (config: ConfigEnv) => {
 
         next()
       })
-      .use((req, res, next) => {
-        res.cookie('locale', locale)
-
-        next()
-      })
+      .use(LocaleCookie.setLocaleCookieInExpress)
       .use((req, res, next) => {
         res.setHeaders(new Headers(securityHeaders(config.publicUrl.protocol, config.useCrowdinInContext)))
         res.removeHeader('X-Powered-By')
