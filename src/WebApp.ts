@@ -12,6 +12,7 @@ export const WebApp = pipe(
   Router,
   HttpRouter.concat(LegacyRouter),
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(ExpressHttpApp)),
+  HttpMiddleware.removeLocaleFromPathForRouting,
   HttpMiddleware.serveStaticFiles,
   HttpMiddleware.removeTrailingSlashes,
   HttpMiddleware.addSecurityHeaders,

@@ -8,7 +8,7 @@ import {
   Path,
 } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
-import { Cause, Config, Duration, Effect, Layer, Option, pipe, Redacted, Schema } from 'effect'
+import { Array, Cause, Config, Duration, Effect, Layer, Option, pipe, Redacted, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { ExpressConfig, FlashMessage, Locale, SessionSecret } from './Context.js'
 import { CanChooseLocale, UseCrowdinInContext } from './feature-flags.js'
@@ -155,6 +155,18 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
     return yield* Option.match(session, {
       onNone: () => app,
       onSome: ({ user }) => Effect.provideService(app, LoggedInUser, user),
+    })
+  }),
+)
+
+export const removeLocaleFromPathForRouting = HttpMiddleware.make(
+  Effect.updateService(HttpServerRequest.HttpServerRequest, request => {
+    const parts = request.url.split('/')
+    if (parts[1] !== DefaultLocale.toLowerCase()) {
+      return request
+    }
+    return request.modify({
+      url: pipe(parts, Array.remove(1), Array.join('/')),
     })
   }),
 )
