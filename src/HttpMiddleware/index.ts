@@ -12,7 +12,7 @@ import { Cause, Config, Duration, Effect, Layer, Option, pipe, Redacted, Schema 
 import { StatusCodes } from 'http-status-codes'
 import { ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.js'
 import { CanChooseLocale, UseCrowdinInContext } from '../feature-flags.js'
-import { CrowdinInContextLocale, DefaultLocale, SupportedLocales } from '../locales/index.js'
+import { CrowdinInContextLocale, DefaultLocale } from '../locales/index.js'
 import { PublicUrl } from '../public-url.js'
 import { FlashMessageSchema } from '../response.js'
 import { securityHeaders } from '../securityHeaders.js'
@@ -193,11 +193,7 @@ export const getLocale = HttpMiddleware.make(app =>
       return yield* pipe(response, LocaleCookie.setLocaleCookie(DefaultLocale))
     }
 
-    const locale = yield* pipe(
-      HttpServerRequest.schemaCookies(Schema.Struct({ locale: Schema.Literal(...SupportedLocales) })),
-      Effect.andThen(({ locale }) => locale),
-      Effect.orElseSucceed(() => DefaultLocale),
-    )
+    const locale = yield* LocaleCookie.getLocaleFromCookie
 
     return yield* Effect.provideService(app, Locale, locale)
   }),
