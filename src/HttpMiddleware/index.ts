@@ -18,6 +18,7 @@ import { FlashMessageSchema } from '../response.js'
 import { securityHeaders } from '../securityHeaders.js'
 import { Uuid } from '../types/index.js'
 import { LoggedInUser, UserSchema } from '../user.js'
+import * as LocaleCookie from './LocaleCookie.js'
 import { removeLocaleFromPath } from './removeLocaleFromPath.js'
 
 export const { logger } = HttpMiddleware
@@ -189,7 +190,7 @@ export const getLocale = HttpMiddleware.make(app =>
 
     if (typeof localeFromPath === 'string') {
       const response = yield* Effect.provideService(app, Locale, DefaultLocale)
-      return yield* pipe(response, HttpServerResponse.setCookie('locale', DefaultLocale, { path: '/' }))
+      return yield* pipe(response, LocaleCookie.setLocaleCookie(DefaultLocale))
     }
 
     const locale = yield* pipe(
