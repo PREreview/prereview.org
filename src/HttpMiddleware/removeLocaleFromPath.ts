@@ -8,5 +8,5 @@ export const removeLocaleFromPath = (path: string): string => {
     return path
   }
 
-  return pipe(parts, Array.remove(1), Array.join('/'))
+  return pipe(parts, Array.remove(0), Array.remove(0), Array.join('/'), path => `/${path}`)
 }

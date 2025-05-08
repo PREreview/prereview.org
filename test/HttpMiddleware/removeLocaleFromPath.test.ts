@@ -4,7 +4,7 @@ import * as _ from '../../src/HttpMiddleware/removeLocaleFromPath.js'
 describe('removeLocaleFromPath', () => {
   it.each([
     ['/', '/'],
-    // ['/en-us', '/'],
+    ['/en-us', '/'],
     ['/en-us/', '/'],
     // ['/en-us?foo=bar', '/?foo=bar'],
     ['/?foo=bar', '/?foo=bar'],
