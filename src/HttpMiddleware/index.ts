@@ -179,6 +179,18 @@ export const getLocale = HttpMiddleware.make(app =>
       return yield* Effect.provideService(app, Locale, DefaultLocale)
     }
 
+    const localeFromPath = yield* pipe(
+      HttpServerRequest.HttpServerRequest,
+      Effect.andThen(request => request.url),
+      Effect.andThen(path => path.split('/')[1]),
+      Effect.andThen(Schema.decodeUnknown(Schema.Literal(DefaultLocale.toLowerCase()))),
+      Effect.orElseSucceed(() => undefined),
+    )
+
+    if (typeof localeFromPath === 'string') {
+      yield* Effect.logDebug('Locale from path').pipe(Effect.annotateLogs({ localeFromPath }))
+    }
+
     const locale = yield* pipe(
       HttpServerRequest.schemaCookies(Schema.Struct({ locale: Schema.Literal(...SupportedLocales) })),
       Effect.andThen(({ locale }) => locale),
