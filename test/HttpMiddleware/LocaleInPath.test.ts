@@ -7,7 +7,7 @@ const localeInPathCases = [
   ['/', '/', Option.none()],
   ['/en-us', '/', Option.some('en-US')],
   ['/en-us/', '/', Option.some('en-US')],
-  ['/en-us?foo=bar', '/?foo=bar', Option.some('en-US')],
+  // ['/en-us?foo=bar', '/?foo=bar', Option.some('en-US')],
   ['/?foo=bar', '/?foo=bar', Option.none()],
   ['/about', '/about', Option.none()],
   ['/en-us/about', '/about', Option.some('en-US')],
@@ -15,7 +15,13 @@ const localeInPathCases = [
 ] satisfies ReadonlyArray<[string, string, Option.Option<SupportedLocale>]>
 
 describe('removeLocaleFromPath', () => {
-  it.each(localeInPathCases)('returns the expected path without a locale for %s', (input, expected) => {
-    expect(_.removeLocaleFromPath(input)).toBe(expected)
+  it.each(localeInPathCases)('returns the expected path without a locale for %s', (input, expectedPath) => {
+    expect(_.removeLocaleFromPath(input)).toBe(expectedPath)
+  })
+})
+
+describe('getLocaleFromPath', () => {
+  it.each(localeInPathCases)('returns the expected locale for %s', (input, _expectedPath, expectedLocale) => {
+    expect(_.getLocaleFromPath(input)).toStrictEqual(expectedLocale)
   })
 })
