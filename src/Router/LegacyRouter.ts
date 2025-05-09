@@ -3,7 +3,7 @@ import type { Doi } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import * as Routes from './routes.js'
+import * as Routes from '../routes.js'
 
 export const LegacyRouter = HttpRouter.fromIterable([
   HttpRouter.makeRoute(

@@ -3,8 +3,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import * as _ from '../src/LegacyRouter.js'
-import * as EffectTest from './EffectTest.js'
+import * as _ from '../../src/Router/LegacyRouter.js'
+import * as EffectTest from '../EffectTest.js'
 
 describe('LegacyRouter', () => {
   test.each([

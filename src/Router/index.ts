@@ -39,6 +39,7 @@ import { OrcidLocale } from '../types/index.js'
 import { LoggedInUser } from '../user.js'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.js'
 import * as ConstructPageUrls from './ConstructPageUrls.js'
+import { LegacyRouter } from './LegacyRouter.js'
 
 export type { PageUrls } from './ConstructPageUrls.js'
 
@@ -218,6 +219,7 @@ export const Router = pipe(
     ),
   ),
   HttpRouter.get('/robots.txt', HttpServerResponse.text('User-agent: *\nAllow: /')),
+  HttpRouter.concat(LegacyRouter),
 )
 
 function toHttpServerResponse(

@@ -1,16 +1,14 @@
-import { HttpRouter, HttpServer } from '@effect/platform'
+import { HttpServer } from '@effect/platform'
 import { Effect, flow, Layer, pipe } from 'effect'
 import { Express } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
 import * as HttpMiddleware from './HttpMiddleware/index.js'
-import { LegacyRouter } from './LegacyRouter.js'
 import { Router } from './Router/index.js'
 import * as TemplatePage from './TemplatePage.js'
 
 export const WebApp = pipe(
   Router,
-  HttpRouter.concat(LegacyRouter),
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(ExpressHttpApp)),
   HttpMiddleware.removeLocaleFromPathForRouting,
   HttpMiddleware.serveStaticFiles,
