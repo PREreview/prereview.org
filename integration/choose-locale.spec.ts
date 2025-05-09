@@ -37,5 +37,9 @@ test.extend(canChooseLocale)(
     await page.getByRole('link', { name: 'Sobre nós' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Sobre nós')
+
+    await page.getByRole('link', { name: 'English (US)' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('About')
   },
 )
