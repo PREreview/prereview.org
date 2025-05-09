@@ -22,7 +22,13 @@ export const removeLocaleFromPath = (pathAndQuerystring: string): string => {
 }
 
 export const getLocaleFromPath = (pathAndQuerystring: string): Option.Option<SupportedLocale> => {
-  const parts = pathAndQuerystring.split('/')
+  const path = pathAndQuerystring.split('?')[0]
+  if (path === undefined) {
+    return Option.none()
+  }
+
+  const parts = path.split('/')
+
   if (parts[1] !== DefaultLocale.toLowerCase()) {
     return Option.none()
   }
