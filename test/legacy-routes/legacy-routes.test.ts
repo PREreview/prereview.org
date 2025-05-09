@@ -519,10 +519,6 @@ describe('legacyRoutes', () => {
   })
 
   test.each([
-    ['/admin'],
-    ['/api'],
-    ['/api/docs'],
-    ['/api/openapi.json'],
     ['/communities/africarxiv'],
     ['/communities/africarxiv?page=2'],
     ['/communities/africarxiv?page=2&limit=10&offset=0&search='],
@@ -534,13 +530,6 @@ describe('legacyRoutes', () => {
     ['/community-settings/6abac91b-1bd6-4178-8c72-38695c2e9680'],
     ['/community-settings/c36edcca-ba95-475d-a851-ad0f277ac99d'],
     ['/events/434b46a1-0c52-4a09-9802-bddc16873b88'],
-    ['/prereviewers'],
-    ['/prereviewers?page=1'],
-    [
-      '/prereviewers?badges=Reviewer+Trainee%2CPREreview+V1&sort=dateJoined&page=2&limit=10&offset=10&communities=Photosynthesis',
-    ],
-    ['/settings/api'],
-    ['/settings/drafts'],
   ])('removed page for %s', async path => {
     const actual = await runMiddleware(
       _.legacyRoutes({
@@ -558,39 +547,6 @@ describe('legacyRoutes', () => {
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.NotFound },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, public' },
-        { type: 'setHeader', name: 'Vary', value: 'Cookie' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: 'page-content' },
-      ]),
-    )
-  })
-
-  test.each([
-    ['/dashboard'],
-    ['/dashboard?page=2'],
-    ['/dashboard?search=covid-19&page=2&limit=10&offset=0'],
-    ['/dashboard/new'],
-    ['/dashboard/new?page=2'],
-    ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
-    ['/extension'],
-  ])('removed page for %s', async path => {
-    const actual = await runMiddleware(
-      _.legacyRoutes({
-        getPreprintIdFromUuid: shouldNotBeCalled,
-        getProfileIdFromUuid: shouldNotBeCalled,
-        getUser: () => M.left('no-session'),
-        getUserOnboarding: shouldNotBeCalled,
-        locale: DefaultLocale,
-        publicUrl: new URL('http://example.com'),
-        templatePage: () => rawHtml('page-content'),
-      }),
-      new ExpressConnection(createRequest({ path }), createResponse()),
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.Gone },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, public' },
         { type: 'setHeader', name: 'Vary', value: 'Cookie' },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },

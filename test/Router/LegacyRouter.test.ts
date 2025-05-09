@@ -4,6 +4,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
+import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import * as OrcidOauth from '../../src/OrcidOauth.js'
 import { PublicUrl } from '../../src/public-url.js'
@@ -80,6 +81,70 @@ describe('LegacyRouter', () => {
       Effect.provideService(Locale, DefaultLocale),
       Effect.provide(
         OrcidOauth.layer({ url: new URL('http://orcid.test'), clientId: 'id', clientSecret: Redacted.make('secret') }),
+      ),
+      Effect.provideService(PublicUrl, new URL('http://example.com')),
+      EffectTest.run,
+    ),
+  )
+
+  test.each([
+    ['/admin'],
+    ['/api'],
+    ['/api/docs'],
+    ['/api/openapi.json'],
+    ['/prereviewers'],
+    ['/prereviewers?page=1'],
+    [
+      '/prereviewers?badges=Reviewer+Trainee%2CPREreview+V1&sort=dateJoined&page=2&limit=10&offset=10&communities=Photosynthesis',
+    ],
+    ['/settings/api'],
+    ['/settings/drafts'],
+  ])('removed page for %s', path =>
+    Effect.gen(function* () {
+      const request = HttpServerRequest.fromWeb(new Request(`http://localhost${path}`))
+
+      const response = yield* Effect.provideService(_.LegacyRouter, HttpServerRequest.HttpServerRequest, request)
+
+      expect(response.status).toStrictEqual(StatusCodes.NOT_FOUND)
+    }).pipe(
+      Effect.provideService(TemplatePage, () => rawHtml('page-content')),
+      Effect.provideService(Locale, DefaultLocale),
+      Effect.provide(
+        OrcidOauth.layer({
+          url: new URL('http://orcid.test'),
+          clientId: 'id',
+          clientSecret: Redacted.make('secret'),
+        }),
+      ),
+      Effect.provideService(PublicUrl, new URL('http://example.com')),
+      EffectTest.run,
+    ),
+  )
+
+  test.each([
+    ['/dashboard'],
+    ['/dashboard?page=2'],
+    ['/dashboard?search=covid-19&page=2&limit=10&offset=0'],
+    ['/dashboard/new'],
+    ['/dashboard/new?page=2'],
+    ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
+    ['/extension'],
+  ])('removed page for %s', path =>
+    Effect.gen(function* () {
+      const request = HttpServerRequest.fromWeb(new Request(`http://localhost${path}`))
+
+      const response = yield* Effect.provideService(_.LegacyRouter, HttpServerRequest.HttpServerRequest, request)
+
+      expect(response.status).toStrictEqual(StatusCodes.GONE)
+    }).pipe(
+      Effect.provideService(TemplatePage, () => rawHtml('page-content')),
+      Effect.provideService(Locale, DefaultLocale),
+      Effect.provide(
+        OrcidOauth.layer({
+          url: new URL('http://orcid.test'),
+          clientId: 'id',
+          clientSecret: Redacted.make('secret'),
+        }),
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
       EffectTest.run,

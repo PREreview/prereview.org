@@ -66,6 +66,7 @@ export const toHttpServerResponse = (
         }),
       ).toString(),
       HttpServerResponse.html,
+      HttpServerResponse.setStatus(response._tag === 'TwoUpPageResponse' ? StatusCodes.OK : response.status),
       Option.match(message, {
         onNone: () => identity,
         onSome: () =>

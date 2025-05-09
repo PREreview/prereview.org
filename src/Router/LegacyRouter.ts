@@ -3,8 +3,11 @@ import type { Doi } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
+import { Locale } from '../Context.js'
 import { RedirectResponse } from '../response.js'
 import * as Routes from '../routes.js'
+import { removedForNowPage } from './RemovedForNowPage.js'
+import { removedPermanentlyPage } from './RemovedPermanentlyPage.js'
 import * as Response from './Response.js'
 
 const MakeRoute = <E, R>(
@@ -15,6 +18,10 @@ const MakeRoute = <E, R>(
 
 const MakeStaticRoute = (method: HttpMethod.HttpMethod | '*', path: `/${string}`, response: Response.Response) =>
   HttpRouter.makeRoute(method, path, Response.toHttpServerResponse(response))
+
+const showRemovedPermanentlyMessage = Effect.andThen(Locale, removedPermanentlyPage)
+
+const showRemovedForNowMessage = Effect.andThen(Locale, removedForNowPage)
 
 export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute(
@@ -45,15 +52,22 @@ export const LegacyRouter = HttpRouter.fromIterable([
       ),
     ),
   ),
+  MakeRoute('*', '/admin', showRemovedForNowMessage),
+  MakeRoute('*', '/api', showRemovedForNowMessage),
+  MakeRoute('*', '/api/docs', showRemovedForNowMessage),
+  MakeRoute('*', '/api/openapi.json', showRemovedForNowMessage),
   MakeStaticRoute('*', '/blog', movedPermanently('https://content.prereview.org/')),
   MakeStaticRoute('*', '/coc', movedPermanently(Routes.CodeOfConduct)),
   MakeStaticRoute('*', '/communities', movedPermanently(Routes.Clubs)),
+  MakeRoute('*', '/dashboard', showRemovedPermanentlyMessage),
+  MakeRoute('*', '/dashboard/new', showRemovedPermanentlyMessage),
   MakeStaticRoute('*', '/docs/about', movedPermanently(Routes.AboutUs)),
   MakeStaticRoute('*', '/docs/codeofconduct', movedPermanently(Routes.CodeOfConduct)),
   MakeStaticRoute('*', '/docs/code_of_conduct', movedPermanently(Routes.CodeOfConduct)),
   MakeStaticRoute('*', '/docs/resources', movedPermanently(Routes.Resources)),
   MakeStaticRoute('*', '/edi-statement', movedPermanently(Routes.EdiaStatement)),
   MakeStaticRoute('*', '/edia', movedPermanently(Routes.EdiaStatement)),
+  MakeRoute('*', '/extension', showRemovedPermanentlyMessage),
   MakeStaticRoute('*', '/find-a-preprint', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
   MakeRoute(
     '*',
@@ -67,7 +81,10 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeStaticRoute('*', '/logout', movedPermanently(format(Routes.logOutMatch.formatter, {}))),
   MakeStaticRoute('*', '/preprint-journal-clubs', movedPermanently(Routes.LiveReviews)),
   MakeStaticRoute('*', '/prereview.org', movedPermanently(format(Routes.homeMatch.formatter, {}))),
+  MakeRoute('*', '/prereviewers', showRemovedForNowMessage),
   MakeStaticRoute('*', '/reviews/new', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
+  MakeRoute('*', '/settings/api', showRemovedForNowMessage),
+  MakeRoute('*', '/settings/drafts', showRemovedForNowMessage),
   MakeStaticRoute('*', '/signup', movedPermanently(format(Routes.logInMatch.formatter, {}))),
   MakeRoute(
     '*',

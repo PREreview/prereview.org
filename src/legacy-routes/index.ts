@@ -31,7 +31,6 @@ import { UuidC } from '../types/uuid.js'
 import type { GetUserOnboardingEnv } from '../user-onboarding.js'
 import { type GetUserEnv, maybeGetUser } from '../user.js'
 import { removedForNowPage } from './removed-for-now-page.js'
-import { removedPermanentlyPage } from './removed-permanently-page.js'
 
 export type LegacyEnv = GetPreprintIdFromUuidEnv &
   GetProfileIdFromUuidEnv &
@@ -129,22 +128,6 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(({ personaUuid }) => redirectToProfile(personaUuid)),
     ),
     pipe(
-      pipe(P.lit('admin'), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('api'), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('api'), P.then(P.lit('docs')), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('api'), P.then(P.lit('openapi.json')), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
       pipe(P.lit('communities'), P.then(P.str('communityName')), P.then(query(C.partial({}))), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
     ),
@@ -157,20 +140,8 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
-      pipe(P.lit('dashboard'), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(() => showRemovedPermanentlyMessage),
-    ),
-    pipe(
-      pipe(P.lit('dashboard'), P.then(P.lit('new')), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(() => showRemovedPermanentlyMessage),
-    ),
-    pipe(
       pipe(P.lit('events'), P.then(type('eventUuid', UuidC)), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('extension'), P.then(P.end)).parser,
-      P.map(() => showRemovedPermanentlyMessage),
     ),
     pipe(
       pipe(
@@ -209,18 +180,6 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(({ preprintUuid }) => redirectToPreprintReviews(preprintUuid)),
     ),
     pipe(
-      pipe(P.lit('prereviewers'), P.then(query(C.record(C.string))), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('settings'), P.then(P.lit('api')), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('settings'), P.then(P.lit('drafts')), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
       pipe(P.lit('validate'), P.then(type('preprintUuid', UuidC)), P.then(P.end)).parser,
       P.map(({ preprintUuid }) => redirectToPreprintReviews(preprintUuid)),
     ),
@@ -232,17 +191,6 @@ export const legacyRoutes = pipe(
   route(legacyRouter, Function.constant(new httpErrors.NotFound())),
   RM.fromMiddleware,
   RM.iflatten,
-)
-
-const showRemovedPermanentlyMessage = pipe(
-  RM.of({}),
-  RM.apS('user', maybeGetUser),
-  RM.apSW(
-    'locale',
-    RM.asks((env: LegacyEnv) => env.locale),
-  ),
-  RM.bindW('response', ({ locale }) => RM.of(removedPermanentlyPage(locale))),
-  RM.ichainW(handlePageResponse),
 )
 
 const showRemovedForNowMessage = pipe(
