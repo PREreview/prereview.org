@@ -30,8 +30,6 @@ test.extend(canChooseLocale)(
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('About')
 
-    testInfo.fail()
-
     await page.goto('/pt-br')
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
