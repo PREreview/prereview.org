@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
-import * as _ from '../../src/HttpMiddleware/removeLocaleFromPath.js'
+import * as _ from '../../src/HttpMiddleware/LocaleInPath.js'
 
 describe('removeLocaleFromPath', () => {
   it.each([

@@ -19,7 +19,7 @@ import { securityHeaders } from '../securityHeaders.js'
 import { Uuid } from '../types/index.js'
 import { LoggedInUser, UserSchema } from '../user.js'
 import * as LocaleCookie from './LocaleCookie.js'
-import { removeLocaleFromPath } from './removeLocaleFromPath.js'
+import * as LocaleInPath from './LocaleInPath.js'
 
 export const { logger } = HttpMiddleware
 
@@ -163,7 +163,7 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
 
 export const removeLocaleFromPathForRouting = HttpMiddleware.make(
   Effect.updateService(HttpServerRequest.HttpServerRequest, request =>
-    request.modify({ url: removeLocaleFromPath(request.url) }),
+    request.modify({ url: LocaleInPath.removeLocaleFromPath(request.url) }),
   ),
 )
 
@@ -183,8 +183,7 @@ export const getLocale = HttpMiddleware.make(app =>
     const localeFromPath = yield* pipe(
       HttpServerRequest.HttpServerRequest,
       Effect.andThen(request => request.url),
-      Effect.andThen(path => path.split('/')[1]),
-      Effect.andThen(Schema.decodeUnknown(Schema.Literal(DefaultLocale.toLowerCase()))),
+      Effect.andThen(LocaleInPath.getLocaleFromPath),
       Effect.orElseSucceed(() => undefined),
     )
 
