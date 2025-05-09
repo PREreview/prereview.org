@@ -1,4 +1,4 @@
-import { Array, String, Tuple, pipe } from 'effect'
+import { Array, HashMap, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import rtlDetect from 'rtl-detect'
@@ -59,7 +59,7 @@ export interface TemplatePageEnv {
 export const templatePage = (page: Page) => R.asks(({ templatePage }: TemplatePageEnv) => templatePage(page))
 
 export const page = ({
-  page: { locale, title, description, type, content, skipLinks = [], current, js = [], user, userOnboarding },
+  page: { locale, title, description, type, content, skipLinks = [], current, js = [], user, userOnboarding, pageUrls },
   environmentLabel,
   fathomId,
   publicUrl,
@@ -293,41 +293,80 @@ export const page = ({
                       <div>
                         <span>${translate(locale, 'footer', 'chooseLanguage')()}</span>
 
-                        <locale-picker>
-                          <ul>
-                            ${pipe(
-                              Array.fromIterable(UserSelectableLocales),
-                              Array.map(supportedLocale =>
-                                Tuple.make(
-                                  supportedLocale,
-                                  new Intl.DisplayNames(supportedLocale, {
-                                    type: 'language',
-                                    languageDisplay: 'standard',
-                                    style: 'short',
-                                  }).of(supportedLocale) ?? supportedLocale,
-                                ),
-                              ),
-                              Array.sortWith(
-                                ([, b]) => b,
-                                (a, b) => String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
-                              ),
-                              Array.map(
-                                ([code, name]) => html`
-                                  <li>
-                                    <a
-                                      href="#"
-                                      lang="${code}"
-                                      hreflang="${code}"
-                                      data-locale="${code}"
-                                      ${locale === code ? html`aria-current="true"` : ''}
-                                      >${name}</a
-                                    >
-                                  </li>
-                                `,
-                              ),
-                            )}
-                          </ul>
-                        </locale-picker>
+                        ${pageUrls
+                          ? html`
+                              <ul>
+                                ${pipe(
+                                  Array.fromIterable(UserSelectableLocales),
+                                  Array.map(supportedLocale =>
+                                    Tuple.make(
+                                      supportedLocale,
+                                      new Intl.DisplayNames(supportedLocale, {
+                                        type: 'language',
+                                        languageDisplay: 'standard',
+                                        style: 'short',
+                                      }).of(supportedLocale) ?? supportedLocale,
+                                    ),
+                                  ),
+                                  Array.sortWith(
+                                    ([, b]) => b,
+                                    (a, b) =>
+                                      String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                                  ),
+                                  Array.map(
+                                    ([code, name]) => html`
+                                      <li>
+                                        <a
+                                          href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
+                                          lang="${code}"
+                                          hreflang="${code}"
+                                          ${locale === code ? html`aria-current="true"` : ''}
+                                          >${name}</a
+                                        >
+                                      </li>
+                                    `,
+                                  ),
+                                )}
+                              </ul>
+                            `
+                          : html`
+                              <locale-picker>
+                                <ul>
+                                  ${pipe(
+                                    Array.fromIterable(UserSelectableLocales),
+                                    Array.map(supportedLocale =>
+                                      Tuple.make(
+                                        supportedLocale,
+                                        new Intl.DisplayNames(supportedLocale, {
+                                          type: 'language',
+                                          languageDisplay: 'standard',
+                                          style: 'short',
+                                        }).of(supportedLocale) ?? supportedLocale,
+                                      ),
+                                    ),
+                                    Array.sortWith(
+                                      ([, b]) => b,
+                                      (a, b) =>
+                                        String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                                    ),
+                                    Array.map(
+                                      ([code, name]) => html`
+                                        <li>
+                                          <a
+                                            href="#"
+                                            lang="${code}"
+                                            hreflang="${code}"
+                                            data-locale="${code}"
+                                            ${locale === code ? html`aria-current="true"` : ''}
+                                            >${name}</a
+                                          >
+                                        </li>
+                                      `,
+                                    ),
+                                  )}
+                                </ul>
+                              </locale-picker>
+                            `}
                       </div>
                     `
                   : ''}
