@@ -6,6 +6,7 @@ import type { SupportedLocale } from '../../src/locales/index.js'
 const localeInPathCases = [
   ['/', '/', Option.none()],
   ['/en-us', '/', Option.some('en-US')],
+  ['/en-US', '/en-US', Option.none()],
   // ['/pt-br', '/', Option.some('pt-BR')],
   ['/en-us/', '/', Option.some('en-US')],
   // ['/pt-br/', '/', Option.some('pt-BR')],
