@@ -29,5 +29,15 @@ test.extend(canChooseLocale)(
     await page.getByRole('link', { name: 'About' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('About')
+
+    testInfo.fail()
+
+    await page.goto('/pt-br')
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
+
+    await page.getByRole('link', { name: 'Sobre nós' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Sobre nós')
   },
 )
