@@ -1,10 +1,16 @@
 import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect } from 'effect'
+import { Effect, Redacted } from 'effect'
 import { StatusCodes } from 'http-status-codes'
+import { Locale } from '../../src/Context.js'
+import { DefaultLocale } from '../../src/locales/index.js'
+import * as OrcidOauth from '../../src/OrcidOauth.js'
+import { PublicUrl } from '../../src/public-url.js'
 import * as _ from '../../src/Router/LegacyRouter.js'
+import { TemplatePage } from '../../src/TemplatePage.js'
 import * as EffectTest from '../EffectTest.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('LegacyRouter', () => {
   test.each([
@@ -69,6 +75,14 @@ describe('LegacyRouter', () => {
       const response = yield* Effect.provideService(_.LegacyRouter, HttpServerRequest.HttpServerRequest, request)
 
       expect(response).toStrictEqual(HttpServerResponse.redirect(expected, { status: StatusCodes.MOVED_PERMANENTLY }))
-    }).pipe(EffectTest.run),
+    }).pipe(
+      Effect.provideService(TemplatePage, shouldNotBeCalled),
+      Effect.provideService(Locale, DefaultLocale),
+      Effect.provide(
+        OrcidOauth.layer({ url: new URL('http://orcid.test'), clientId: 'id', clientSecret: Redacted.make('secret') }),
+      ),
+      Effect.provideService(PublicUrl, new URL('http://example.com')),
+      EffectTest.run,
+    ),
   )
 })

@@ -12,6 +12,8 @@ import { OrcidLocale } from '../types/index.js'
 import { LoggedInUser } from '../user.js'
 import * as ConstructPageUrls from './ConstructPageUrls.js'
 
+export type { Response } from '../response.js'
+
 export const toHttpServerResponse = (
   response: Response,
 ): Effect.Effect<
