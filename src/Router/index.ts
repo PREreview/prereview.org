@@ -1,45 +1,30 @@
-import {
-  Cookies,
-  type HttpMethod,
-  HttpMiddleware,
-  HttpRouter,
-  HttpServerRequest,
-  HttpServerResponse,
-  UrlParams,
-} from '@effect/platform'
+import { type HttpMethod, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Effect, flow, identity, Option, pipe, Record } from 'effect'
-import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
 import { ClubsPage } from '../ClubsPage.js'
 import { CodeOfConductPage } from '../CodeOfConductPage.js'
-import { ExpressConfig, FlashMessage, Locale } from '../Context.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
 import { FundingPage } from '../FundingPage.js'
 import { HowToUsePage } from '../HowToUsePage.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
 import { PeoplePage } from '../PeoplePage.js'
 import { PrivacyPolicyPage } from '../PrivacyPolicyPage.js'
-import { PublicUrl } from '../public-url.js'
 import { DataStoreRedis } from '../Redis.js'
 import { ResourcesPage } from '../ResourcesPage.js'
-import {
-  type FlashMessageResponse,
-  type LogInResponse,
-  type PageResponse,
-  type RedirectResponse,
-  type StreamlinePageResponse,
-  toPage,
-  type TwoUpPageResponse,
+import type {
+  FlashMessageResponse,
+  LogInResponse,
+  PageResponse,
+  RedirectResponse,
+  StreamlinePageResponse,
+  TwoUpPageResponse,
 } from '../response.js'
 import * as Routes from '../routes.js'
-import { TemplatePage } from '../TemplatePage.js'
 import { TrainingsPage } from '../TrainingsPage.js'
-import { OrcidLocale } from '../types/index.js'
-import { LoggedInUser } from '../user.js'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.js'
-import * as ConstructPageUrls from './ConstructPageUrls.js'
 import { LegacyRouter } from './LegacyRouter.js'
+import * as Response from './Response.js'
 
 export type { PageUrls } from './ConstructPageUrls.js'
 
@@ -57,7 +42,7 @@ const MakeRoute = <A, E, R>(
   HttpRouter.makeRoute(
     method,
     route.path,
-    pipe(HttpRouter.schemaParams(route.schema), Effect.andThen(handler), Effect.andThen(toHttpServerResponse)),
+    pipe(HttpRouter.schemaParams(route.schema), Effect.andThen(handler), Effect.andThen(Response.toHttpServerResponse)),
   )
 
 const MakeStaticRoute = <E, R>(
@@ -68,7 +53,7 @@ const MakeStaticRoute = <E, R>(
     E,
     R
   >,
-) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, toHttpServerResponse))
+) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
 
 const WriteCommentFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.WriteComment, WriteCommentFlow.WriteCommentPage),
@@ -221,104 +206,3 @@ export const Router = pipe(
   HttpRouter.get('/robots.txt', HttpServerResponse.text('User-agent: *\nAllow: /')),
   HttpRouter.concat(LegacyRouter),
 )
-
-function toHttpServerResponse(
-  response:
-    | PageResponse
-    | StreamlinePageResponse
-    | TwoUpPageResponse
-    | RedirectResponse
-    | LogInResponse
-    | FlashMessageResponse,
-): Effect.Effect<
-  HttpServerResponse.HttpServerResponse,
-  never,
-  Locale | TemplatePage | ExpressConfig | PublicUrl | HttpServerRequest.HttpServerRequest
-> {
-  return Effect.gen(function* () {
-    if (response._tag === 'RedirectResponse') {
-      return yield* HttpServerResponse.redirect(response.location, { status: response.status })
-    }
-
-    if (response._tag === 'FlashMessageResponse') {
-      return yield* HttpServerResponse.redirect(response.location, {
-        status: StatusCodes.SEE_OTHER,
-        cookies: Cookies.fromIterable([
-          Cookies.unsafeMakeCookie('flash-message', response.message, { httpOnly: true, path: '/' }),
-        ]),
-      })
-    }
-
-    if (response._tag === 'LogInResponse') {
-      const publicUrl = yield* PublicUrl
-
-      const location = yield* generateAuthorizationRequestUrl({
-        scope: '/authenticate',
-        state: new URL(`${publicUrl.origin}${response.location}`).href,
-      })
-
-      return yield* HttpServerResponse.redirect(location, { status: StatusCodes.MOVED_TEMPORARILY })
-    }
-
-    const locale = yield* Locale
-    const publicUrl = yield* PublicUrl
-    const templatePage = yield* TemplatePage
-    const user = yield* Effect.serviceOption(LoggedInUser)
-    const message = yield* Effect.serviceOption(FlashMessage)
-    const request = yield* HttpServerRequest.HttpServerRequest
-
-    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, request.url)
-
-    return yield* pipe(
-      templatePage(
-        toPage({
-          locale,
-          message: Option.getOrUndefined(message),
-          pageUrls,
-          response,
-          user: Option.getOrUndefined(user),
-        }),
-      ).toString(),
-      HttpServerResponse.html,
-      Option.match(message, {
-        onNone: () => identity,
-        onSome: () =>
-          HttpServerResponse.unsafeSetCookie('flash-message', '', { expires: new Date(1), httpOnly: true, path: '/' }),
-      }),
-      Option.match(pageUrls.canonical, {
-        onNone: () => identity,
-        onSome: canonical => HttpServerResponse.setHeader('Link', `<${canonical.href}>; rel="canonical"`),
-      }),
-    )
-  })
-}
-
-function generateAuthorizationRequestUrl({
-  scope,
-  state,
-}: {
-  scope: string
-  state?: string
-}): Effect.Effect<URL, never, ExpressConfig | Locale | PublicUrl> {
-  return Effect.gen(function* () {
-    const { orcidOauth } = yield* ExpressConfig
-    const publicUrl = yield* PublicUrl
-    const locale = yield* Locale
-
-    const redirectUri = new URL(
-      `${publicUrl.origin}${format(Routes.orcidCodeMatch.formatter, { code: 'code', state: 'state' })}`,
-    )
-    redirectUri.search = ''
-
-    const query = UrlParams.fromInput({
-      client_id: orcidOauth.clientId,
-      lang: OrcidLocale.fromSupportedLocale(locale),
-      response_type: 'code',
-      redirect_uri: redirectUri.href,
-      scope,
-      state,
-    })
-
-    return new URL(`${orcidOauth.authorizeUrl}?${UrlParams.toString(query)}`)
-  })
-}

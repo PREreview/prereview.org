@@ -1,0 +1,107 @@
+import { Cookies, HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
+import { Effect, identity, Option, pipe } from 'effect'
+import { format } from 'fp-ts-routing'
+import { StatusCodes } from 'http-status-codes'
+import { ExpressConfig, FlashMessage, Locale } from '../Context.js'
+import { TemplatePage } from '../TemplatePage.js'
+import { PublicUrl } from '../public-url.js'
+import { toPage, type Response } from '../response.js'
+import * as Routes from '../routes.js'
+import { OrcidLocale } from '../types/index.js'
+import { LoggedInUser } from '../user.js'
+import * as ConstructPageUrls from './ConstructPageUrls.js'
+
+export const toHttpServerResponse = (
+  response: Response,
+): Effect.Effect<
+  HttpServerResponse.HttpServerResponse,
+  never,
+  Locale | TemplatePage | ExpressConfig | PublicUrl | HttpServerRequest.HttpServerRequest
+> => {
+  return Effect.gen(function* () {
+    if (response._tag === 'RedirectResponse') {
+      return yield* HttpServerResponse.redirect(response.location, { status: response.status })
+    }
+
+    if (response._tag === 'FlashMessageResponse') {
+      return yield* HttpServerResponse.redirect(response.location, {
+        status: StatusCodes.SEE_OTHER,
+        cookies: Cookies.fromIterable([
+          Cookies.unsafeMakeCookie('flash-message', response.message, { httpOnly: true, path: '/' }),
+        ]),
+      })
+    }
+
+    if (response._tag === 'LogInResponse') {
+      const publicUrl = yield* PublicUrl
+
+      const location = yield* generateAuthorizationRequestUrl({
+        scope: '/authenticate',
+        state: new URL(`${publicUrl.origin}${response.location}`).href,
+      })
+
+      return yield* HttpServerResponse.redirect(location, { status: StatusCodes.MOVED_TEMPORARILY })
+    }
+
+    const locale = yield* Locale
+    const publicUrl = yield* PublicUrl
+    const templatePage = yield* TemplatePage
+    const user = yield* Effect.serviceOption(LoggedInUser)
+    const message = yield* Effect.serviceOption(FlashMessage)
+    const request = yield* HttpServerRequest.HttpServerRequest
+
+    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, request.url)
+
+    return yield* pipe(
+      templatePage(
+        toPage({
+          locale,
+          message: Option.getOrUndefined(message),
+          pageUrls,
+          response,
+          user: Option.getOrUndefined(user),
+        }),
+      ).toString(),
+      HttpServerResponse.html,
+      Option.match(message, {
+        onNone: () => identity,
+        onSome: () =>
+          HttpServerResponse.unsafeSetCookie('flash-message', '', { expires: new Date(1), httpOnly: true, path: '/' }),
+      }),
+      Option.match(pageUrls.canonical, {
+        onNone: () => identity,
+        onSome: canonical => HttpServerResponse.setHeader('Link', `<${canonical.href}>; rel="canonical"`),
+      }),
+    )
+  })
+}
+
+function generateAuthorizationRequestUrl({
+  scope,
+  state,
+}: {
+  scope: string
+  state?: string
+}): Effect.Effect<URL, never, ExpressConfig | Locale | PublicUrl> {
+  return Effect.gen(function* () {
+    const { orcidOauth } = yield* ExpressConfig
+    const publicUrl = yield* PublicUrl
+    const locale = yield* Locale
+
+    const redirectUri = new URL(
+      `${publicUrl.origin}${format(Routes.orcidCodeMatch.formatter, { code: 'code', state: 'state' })}`,
+    )
+    redirectUri.search = ''
+
+    const query = UrlParams.fromInput({
+      client_id: orcidOauth.clientId,
+      lang: OrcidLocale.fromSupportedLocale(locale),
+      response_type: 'code',
+      redirect_uri: redirectUri.href,
+      scope,
+      state,
+    })
+
+    return new URL(`${orcidOauth.authorizeUrl}?${UrlParams.toString(query)}`)
+  })
+}
