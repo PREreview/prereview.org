@@ -60,6 +60,7 @@ import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview.js'
 import { DefaultLocale } from '../src/locales/index.js'
 import type { IsUserBlockedEnv } from '../src/log-in/index.js'
 import * as Nodemailer from '../src/nodemailer.js'
+import { OrcidOauth } from '../src/OrcidOauth.js'
 import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.js'
 import { Program } from '../src/Program.js'
 import { PublicUrl } from '../src/public-url.js'
@@ -1298,6 +1299,13 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Nodemailer.layer(nodemailer),
             Layer.succeed(FetchHttpClient.Fetch, fetch as typeof globalThis.fetch),
             Layer.succeed(GhostApi, { key: Redacted.make('key') }),
+            Layer.succeed(OrcidOauth, {
+              authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
+              clientId: 'client-id',
+              clientSecret: Redacted.make('client-secret'),
+              revokeUrl: new URL('http://orcid.test/revoke'),
+              tokenUrl: new URL('http://orcid.test/token'),
+            }),
             Layer.succeed(PrereviewCoarNotify.PrereviewCoarNotifyConfig, {
               coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
             }),

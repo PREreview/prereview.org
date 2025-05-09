@@ -7,6 +7,7 @@ import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } 
 import * as EffectToFpts from './EffectToFpts.js'
 import { UseCrowdinInContext } from './feature-flags.js'
 import { Nodemailer } from './nodemailer.js'
+import { OrcidOauth } from './OrcidOauth.js'
 import { PublicUrl } from './public-url.js'
 import { DataStoreRedis } from './Redis.js'
 import { TemplatePage } from './TemplatePage.js'
@@ -40,6 +41,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
   const redis = yield* DataStoreRedis
   const env = yield* DeprecatedEnvVars
   const loggerEnv = yield* DeprecatedLoggerEnv
+  const orcidOauth = yield* OrcidOauth
 
   const createKeyvStore = () => new KeyvRedis(redis).on('error', () => undefined)
 
@@ -75,11 +77,8 @@ export const ExpressConfigLive = Effect.gen(function* () {
     orcidApiUrl: env.ORCID_API_URL,
     orcidApiToken: env.ORCID_API_READ_PUBLIC_TOKEN,
     orcidOauth: {
-      authorizeUrl: new URL(`${env.ORCID_URL.origin}/oauth/authorize`),
-      clientId: env.ORCID_CLIENT_ID,
-      clientSecret: env.ORCID_CLIENT_SECRET,
-      revokeUrl: new URL(`${env.ORCID_URL.origin}/oauth/revoke`),
-      tokenUrl: new URL(`${env.ORCID_URL.origin}/oauth/token`),
+      ...orcidOauth,
+      clientSecret: Redacted.value(orcidOauth.clientSecret),
     },
     orcidTokenStore: new Keyv({ emitErrors: false, namespace: 'orcid-token', store: createKeyvStore() }),
     redis,

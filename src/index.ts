@@ -11,6 +11,7 @@ import * as FeatureFlags from './feature-flags.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { GhostApi } from './GhostPage.js'
 import * as Nodemailer from './nodemailer.js'
+import * as OrcidOauth from './OrcidOauth.js'
 import * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
 import { Program } from './Program.js'
 import { PublicUrl } from './public-url.js'
@@ -70,6 +71,11 @@ pipe(
         Config.all({ coarNotifyUrl: Config.url('COAR_NOTIFY_URL') }),
       ),
       Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),
+      OrcidOauth.layerConfig({
+        url: Config.withDefault(Config.url('ORCID_URL'), new URL('https://orcid.org/')),
+        clientId: Config.string('ORCID_CLIENT_ID'),
+        clientSecret: Config.redacted('ORCID_CLIENT_SECRET'),
+      }),
       Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
       Redis.layerHttpCacheConfig(Config.redacted(httpCacheRedisUri)),
       TemplatePage.optionsLayerConfig({

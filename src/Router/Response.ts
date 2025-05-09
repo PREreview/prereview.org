@@ -2,7 +2,8 @@ import { Cookies, HttpServerRequest, HttpServerResponse, UrlParams } from '@effe
 import { Effect, identity, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { ExpressConfig, FlashMessage, Locale } from '../Context.js'
+import { FlashMessage, Locale } from '../Context.js'
+import { OrcidOauth } from '../OrcidOauth.js'
 import { TemplatePage } from '../TemplatePage.js'
 import { PublicUrl } from '../public-url.js'
 import { toPage, type Response } from '../response.js'
@@ -16,7 +17,7 @@ export const toHttpServerResponse = (
 ): Effect.Effect<
   HttpServerResponse.HttpServerResponse,
   never,
-  Locale | TemplatePage | ExpressConfig | PublicUrl | HttpServerRequest.HttpServerRequest
+  Locale | TemplatePage | OrcidOauth | PublicUrl | HttpServerRequest.HttpServerRequest
 > => {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
@@ -82,9 +83,9 @@ function generateAuthorizationRequestUrl({
 }: {
   scope: string
   state?: string
-}): Effect.Effect<URL, never, ExpressConfig | Locale | PublicUrl> {
+}): Effect.Effect<URL, never, OrcidOauth | Locale | PublicUrl> {
   return Effect.gen(function* () {
-    const { orcidOauth } = yield* ExpressConfig
+    const orcidOauth = yield* OrcidOauth
     const publicUrl = yield* PublicUrl
     const locale = yield* Locale
 
