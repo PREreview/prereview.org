@@ -38,6 +38,7 @@ import { TrainingsPage } from '../TrainingsPage.js'
 import { OrcidLocale } from '../types/index.js'
 import { LoggedInUser } from '../user.js'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.js'
+import * as ConstructPageUrls from './ConstructPageUrls.js'
 
 const MakeRoute = <A, E, R>(
   method: HttpMethod.HttpMethod,
@@ -257,10 +258,7 @@ function toHttpServerResponse(
     const user = yield* Effect.serviceOption(LoggedInUser)
     const message = yield* Effect.serviceOption(FlashMessage)
 
-    const canonical = pipe(
-      Option.fromNullable(response.canonical),
-      Option.map(canonical => new URL(`${publicUrl.origin}${encodeURI(canonical).replace(/^([^/])/, '/$1')}`)),
-    )
+    const canonical = ConstructPageUrls.canonical(response, publicUrl.origin)
 
     return yield* pipe(
       templatePage(
