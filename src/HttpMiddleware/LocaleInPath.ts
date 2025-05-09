@@ -1,5 +1,5 @@
 import { Array, HashSet, Option, pipe, String } from 'effect'
-import { DefaultLocale, SupportedLocales, type SupportedLocale } from '../locales/index.js'
+import { SupportedLocales, type SupportedLocale } from '../locales/index.js'
 
 export const removeLocaleFromPath = (pathAndQuerystring: string): string => {
   const [path, queryParams] = pathAndQuerystring.split('?')
@@ -31,8 +31,11 @@ export const getLocaleFromPath = (pathAndQuerystring: string): Option.Option<Sup
 
   const parts = path.split('/')
 
-  if (parts[1] !== DefaultLocale.toLowerCase()) {
-    return Option.none()
+  for (const supportedLocale of SupportedLocales) {
+    if (parts[1] === supportedLocale.toLowerCase()) {
+      return Option.some(supportedLocale)
+    }
   }
-  return Option.some(DefaultLocale)
+
+  return Option.none()
 }
