@@ -1,5 +1,5 @@
-import { HashMap, Option, pipe } from 'effect'
-import type { SupportedLocale } from '../locales/index.js'
+import { HashMap, HashSet, Option, pipe, Tuple } from 'effect'
+import { SupportedLocales, type SupportedLocale } from '../locales/index.js'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../response.js'
 
 export interface PageUrls {
@@ -10,7 +10,6 @@ export interface PageUrls {
 export const constructPageUrls = (
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse,
   appOrigin: string,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   pathAndQueryString: string,
 ): PageUrls =>
   pipe(
@@ -18,6 +17,10 @@ export const constructPageUrls = (
     Option.map(canonical => new URL(`${appOrigin}${encodeURI(canonical).replace(/^([^/])/, '/$1')}`)),
     canonical => ({
       canonical,
-      localeUrls: HashMap.empty(),
+      localeUrls: pipe(
+        SupportedLocales,
+        HashSet.map(locale => Tuple.make(locale, new URL(`${appOrigin}/${locale.toLowerCase()}${pathAndQueryString}`))),
+        HashMap.fromIterable,
+      ),
     }),
   )

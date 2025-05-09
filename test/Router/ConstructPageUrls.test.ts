@@ -6,8 +6,8 @@ import type { PageResponse } from '../../src/response.js'
 
 describe('constructPageUrls', () => {
   describe('localeUrls', () => {
-    it.failing('constructs a url for each supported locale', () => {
-      const pageUrls = constructPageUrls({} as unknown as PageResponse, '', '/')
+    it('constructs a url for each supported locale', () => {
+      const pageUrls = constructPageUrls({} as unknown as PageResponse, 'http://example.com', '/')
 
       expect(HashMap.size(pageUrls.localeUrls)).toBe(HashSet.size(SupportedLocales))
       expect(HashMap.unsafeGet(pageUrls.localeUrls, 'en-US').pathname).toStrictEqual(expect.stringMatching(/^\/en-us/))
