@@ -10,6 +10,8 @@ export interface PageUrls {
 export const constructPageUrls = (
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse,
   appOrigin: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  pathAndQueryString: string,
 ): PageUrls =>
   pipe(
     Option.fromNullable(response.canonical),

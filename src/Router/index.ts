@@ -228,7 +228,11 @@ function toHttpServerResponse(
     | RedirectResponse
     | LogInResponse
     | FlashMessageResponse,
-): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage | ExpressConfig | PublicUrl> {
+): Effect.Effect<
+  HttpServerResponse.HttpServerResponse,
+  never,
+  Locale | TemplatePage | ExpressConfig | PublicUrl | HttpServerRequest.HttpServerRequest
+> {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
       return yield* HttpServerResponse.redirect(response.location, { status: response.status })
@@ -259,8 +263,9 @@ function toHttpServerResponse(
     const templatePage = yield* TemplatePage
     const user = yield* Effect.serviceOption(LoggedInUser)
     const message = yield* Effect.serviceOption(FlashMessage)
+    const request = yield* HttpServerRequest.HttpServerRequest
 
-    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin)
+    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, request.url)
 
     return yield* pipe(
       templatePage(
