@@ -5,7 +5,7 @@ import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
 import * as HttpMiddleware from './HttpMiddleware/index.js'
 import { LegacyRouter } from './LegacyRouter.js'
-import { Router } from './Router.js'
+import { Router } from './Router/index.js'
 import * as TemplatePage from './TemplatePage.js'
 
 export const WebApp = pipe(

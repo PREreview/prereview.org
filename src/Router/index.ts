@@ -10,19 +10,19 @@ import {
 import { Effect, flow, identity, Option, pipe, Record } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { AboutUsPage } from './AboutUsPage/index.js'
-import { ClubsPage } from './ClubsPage.js'
-import { CodeOfConductPage } from './CodeOfConductPage.js'
-import { ExpressConfig, FlashMessage, Locale } from './Context.js'
-import { EdiaStatementPage } from './EdiaStatementPage.js'
-import { FundingPage } from './FundingPage.js'
-import { HowToUsePage } from './HowToUsePage.js'
-import { LiveReviewsPage } from './LiveReviewsPage.js'
-import { PeoplePage } from './PeoplePage.js'
-import { PrivacyPolicyPage } from './PrivacyPolicyPage.js'
-import { PublicUrl } from './public-url.js'
-import { DataStoreRedis } from './Redis.js'
-import { ResourcesPage } from './ResourcesPage.js'
+import { AboutUsPage } from '../AboutUsPage/index.js'
+import { ClubsPage } from '../ClubsPage.js'
+import { CodeOfConductPage } from '../CodeOfConductPage.js'
+import { ExpressConfig, FlashMessage, Locale } from '../Context.js'
+import { EdiaStatementPage } from '../EdiaStatementPage.js'
+import { FundingPage } from '../FundingPage.js'
+import { HowToUsePage } from '../HowToUsePage.js'
+import { LiveReviewsPage } from '../LiveReviewsPage.js'
+import { PeoplePage } from '../PeoplePage.js'
+import { PrivacyPolicyPage } from '../PrivacyPolicyPage.js'
+import { PublicUrl } from '../public-url.js'
+import { DataStoreRedis } from '../Redis.js'
+import { ResourcesPage } from '../ResourcesPage.js'
 import {
   type FlashMessageResponse,
   type LogInResponse,
@@ -31,13 +31,13 @@ import {
   type StreamlinePageResponse,
   toPage,
   type TwoUpPageResponse,
-} from './response.js'
-import * as Routes from './routes.js'
-import { TemplatePage } from './TemplatePage.js'
-import { TrainingsPage } from './TrainingsPage.js'
-import { OrcidLocale } from './types/index.js'
-import { LoggedInUser } from './user.js'
-import * as WriteCommentFlow from './WriteCommentFlow/index.js'
+} from '../response.js'
+import * as Routes from '../routes.js'
+import { TemplatePage } from '../TemplatePage.js'
+import { TrainingsPage } from '../TrainingsPage.js'
+import { OrcidLocale } from '../types/index.js'
+import { LoggedInUser } from '../user.js'
+import * as WriteCommentFlow from '../WriteCommentFlow/index.js'
 
 const MakeRoute = <A, E, R>(
   method: HttpMethod.HttpMethod,
