@@ -1,5 +1,5 @@
-import { Array, Option, pipe } from 'effect'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { Array, HashSet, Option, pipe, String } from 'effect'
+import { DefaultLocale, SupportedLocales, type SupportedLocale } from '../locales/index.js'
 
 export const removeLocaleFromPath = (pathAndQuerystring: string): string => {
   const [path, queryParams] = pathAndQuerystring.split('?')
@@ -8,7 +8,9 @@ export const removeLocaleFromPath = (pathAndQuerystring: string): string => {
   }
   const parts = path.split('/')
 
-  if (parts[1] !== DefaultLocale.toLowerCase()) {
+  const lowerCaseSupportedLocales = HashSet.map(SupportedLocales, String.toLowerCase)
+
+  if (!HashSet.has(lowerCaseSupportedLocales, parts[1])) {
     return pathAndQuerystring
   }
 
