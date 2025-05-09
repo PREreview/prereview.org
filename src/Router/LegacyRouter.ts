@@ -59,6 +59,27 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeStaticRoute('*', '/blog', movedPermanently('https://content.prereview.org/')),
   MakeStaticRoute('*', '/coc', movedPermanently(Routes.CodeOfConduct)),
   MakeStaticRoute('*', '/communities', movedPermanently(Routes.Clubs)),
+  MakeRoute(
+    '*',
+    '/communities/:communityName',
+    Effect.andThen(
+      HttpRouter.schemaParams(Schema.Struct({ communityName: Schema.NonEmptyString })),
+      showRemovedForNowMessage,
+    ),
+  ),
+  MakeRoute(
+    '*',
+    '/communities/:communityName/new',
+    Effect.andThen(
+      HttpRouter.schemaParams(Schema.Struct({ communityName: Schema.NonEmptyString })),
+      showRemovedForNowMessage,
+    ),
+  ),
+  MakeRoute(
+    '*',
+    '/community-settings/:communityUuid',
+    Effect.andThen(HttpRouter.schemaParams(Schema.Struct({ communityUuid: Schema.UUID })), showRemovedForNowMessage),
+  ),
   MakeRoute('*', '/dashboard', showRemovedPermanentlyMessage),
   MakeRoute('*', '/dashboard/new', showRemovedPermanentlyMessage),
   MakeStaticRoute('*', '/docs/about', movedPermanently(Routes.AboutUs)),
@@ -67,6 +88,11 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeStaticRoute('*', '/docs/resources', movedPermanently(Routes.Resources)),
   MakeStaticRoute('*', '/edi-statement', movedPermanently(Routes.EdiaStatement)),
   MakeStaticRoute('*', '/edia', movedPermanently(Routes.EdiaStatement)),
+  MakeRoute(
+    '*',
+    '/events/:eventUuid',
+    Effect.andThen(HttpRouter.schemaParams(Schema.Struct({ eventUuid: Schema.UUID })), showRemovedForNowMessage),
+  ),
   MakeRoute('*', '/extension', showRemovedPermanentlyMessage),
   MakeStaticRoute('*', '/find-a-preprint', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
   MakeRoute(

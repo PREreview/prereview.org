@@ -7,7 +7,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import { ExpressConnection } from 'hyper-ts/lib/express.js'
 import { createRequest, createResponse } from 'node-mocks-http'
-import { rawHtml } from '../../src/html.js'
 import * as _ from '../../src/legacy-routes/index.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
@@ -516,42 +515,5 @@ describe('legacyRoutes', () => {
         user: E.isRight(user) ? user.right : undefined,
       })
     })
-  })
-
-  test.each([
-    ['/communities/africarxiv'],
-    ['/communities/africarxiv?page=2'],
-    ['/communities/africarxiv?page=2&limit=10&offset=0&search='],
-    ['/communities/africarxiv/new'],
-    ['/communities/eLifeAmbassadors'],
-    ['/communities/eLifeAmbassadors?page=2'],
-    ['/communities/eLifeAmbassadors?page=2&limit=10&offset=0&search='],
-    ['/communities/eLifeAmbassadors/new'],
-    ['/community-settings/6abac91b-1bd6-4178-8c72-38695c2e9680'],
-    ['/community-settings/c36edcca-ba95-475d-a851-ad0f277ac99d'],
-    ['/events/434b46a1-0c52-4a09-9802-bddc16873b88'],
-  ])('removed page for %s', async path => {
-    const actual = await runMiddleware(
-      _.legacyRoutes({
-        getPreprintIdFromUuid: shouldNotBeCalled,
-        getProfileIdFromUuid: shouldNotBeCalled,
-        getUser: () => M.left('no-session'),
-        getUserOnboarding: shouldNotBeCalled,
-        locale: DefaultLocale,
-        publicUrl: new URL('http://example.com'),
-        templatePage: () => rawHtml('page-content'),
-      }),
-      new ExpressConnection(createRequest({ path }), createResponse()),
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.NotFound },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, public' },
-        { type: 'setHeader', name: 'Vary', value: 'Cookie' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: 'page-content' },
-      ]),
-    )
   })
 })

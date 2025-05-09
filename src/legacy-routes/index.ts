@@ -17,7 +17,6 @@ import type { SupportedLocale } from '../locales/index.js'
 import { movedPermanently, notFound, serviceUnavailable } from '../middleware.js'
 import type { TemplatePageEnv } from '../page.js'
 import type { PublicUrlEnv } from '../public-url.js'
-import { handlePageResponse } from '../response.js'
 import { preprintReviewsMatch, profileMatch, writeReviewReviewTypeMatch } from '../routes.js'
 import {
   type ArxivPreprintId,
@@ -29,8 +28,7 @@ import {
 import type { ProfileId } from '../types/profile-id.js'
 import { UuidC } from '../types/uuid.js'
 import type { GetUserOnboardingEnv } from '../user-onboarding.js'
-import { type GetUserEnv, maybeGetUser } from '../user.js'
-import { removedForNowPage } from './removed-for-now-page.js'
+import type { GetUserEnv } from '../user.js'
 
 export type LegacyEnv = GetPreprintIdFromUuidEnv &
   GetProfileIdFromUuidEnv &
@@ -128,22 +126,6 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(({ personaUuid }) => redirectToProfile(personaUuid)),
     ),
     pipe(
-      pipe(P.lit('communities'), P.then(P.str('communityName')), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('communities'), P.then(P.str('communityName')), P.then(P.lit('new')), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('community-settings'), P.then(type('communityUuid', UuidC)), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
-      pipe(P.lit('events'), P.then(type('eventUuid', UuidC)), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
-    ),
-    pipe(
       pipe(
         P.lit('preprints'),
         P.then(type('preprintId', PreprintIdC)),
@@ -193,17 +175,6 @@ export const legacyRoutes = pipe(
   RM.iflatten,
 )
 
-const showRemovedForNowMessage = pipe(
-  RM.of({}),
-  RM.apS('user', maybeGetUser),
-  RM.apSW(
-    'locale',
-    RM.asks((env: LegacyEnv) => env.locale),
-  ),
-  RM.bindW('response', ({ locale }) => RM.of(removedForNowPage(locale))),
-  RM.ichainW(handlePageResponse),
-)
-
 const redirectToPreprintReviews = flow(
   RM.fromReaderTaskEitherK(getPreprintIdFromUuid),
   RM.ichainMiddlewareK(id => movedPermanently(P.format(preprintReviewsMatch.formatter, { id }))),
@@ -225,18 +196,6 @@ const redirectToProfile = flow(
       .exhaustive(),
   ),
 )
-
-// https://github.com/gcanti/fp-ts-routing/pull/64
-function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
-  return new P.Match(
-    new P.Parser(r =>
-      Option.map(Option.getRight(FptsToEffect.either(codec.decode(r.query))), query =>
-        Tuple.make(query, new P.Route(r.parts, {})),
-      ),
-    ),
-    new P.Formatter((r, query) => new P.Route(r.parts, codec.encode(query))),
-  )
-}
 
 function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Match<Record<K, A>> {
   return new P.Match(
