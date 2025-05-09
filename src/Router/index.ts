@@ -258,7 +258,7 @@ function toHttpServerResponse(
     const user = yield* Effect.serviceOption(LoggedInUser)
     const message = yield* Effect.serviceOption(FlashMessage)
 
-    const canonical = ConstructPageUrls.canonical(response, publicUrl.origin)
+    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin)
 
     return yield* pipe(
       templatePage(
@@ -275,7 +275,7 @@ function toHttpServerResponse(
         onSome: () =>
           HttpServerResponse.unsafeSetCookie('flash-message', '', { expires: new Date(1), httpOnly: true, path: '/' }),
       }),
-      Option.match(canonical, {
+      Option.match(pageUrls.canonical, {
         onNone: () => identity,
         onSome: canonical => HttpServerResponse.setHeader('Link', `<${canonical.href}>; rel="canonical"`),
       }),
