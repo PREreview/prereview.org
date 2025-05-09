@@ -40,6 +40,8 @@ import { LoggedInUser } from '../user.js'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.js'
 import * as ConstructPageUrls from './ConstructPageUrls.js'
 
+export type { PageUrls } from './ConstructPageUrls.js'
+
 const MakeRoute = <A, E, R>(
   method: HttpMethod.HttpMethod,
   route: Routes.Route<A>,
@@ -265,6 +267,7 @@ function toHttpServerResponse(
         toPage({
           locale,
           message: Option.getOrUndefined(message),
+          pageUrls,
           response,
           user: Option.getOrUndefined(user),
         }),

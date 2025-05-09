@@ -15,6 +15,7 @@ import type { OrcidOAuthEnv } from './log-in/index.js'
 import { showNotificationBanner } from './notification-banner.js'
 import { type Page, type TemplatePageEnv, templatePage } from './page.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
+import type * as Router from './Router/index.js'
 import { orcidCodeMatch } from './routes.js'
 import { isCacheable } from './status-code.js'
 import { type GetUserOnboardingEnv, type UserOnboarding, maybeGetUserOnboarding } from './user-onboarding.js'
@@ -171,6 +172,7 @@ export const toPage = ({
   locale,
   message,
   userOnboarding,
+  pageUrls,
   response,
   user,
 }: {
@@ -178,6 +180,7 @@ export const toPage = ({
   message?: D.TypeOf<typeof FlashMessageD>
   userOnboarding?: UserOnboarding
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse
+  pageUrls?: Router.PageUrls
   user?: User | undefined
 }): Page =>
   response._tag === 'TwoUpPageResponse'
@@ -197,6 +200,7 @@ export const toPage = ({
           [html`Skip to PREreviews`, '#prereviews'],
         ],
         js: message ? (['notification-banner.js'] as const) : [],
+        pageUrls,
         type: 'two-up',
         user,
         userOnboarding,
@@ -216,6 +220,7 @@ export const toPage = ({
         ],
         current: response.current,
         js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
+        pageUrls,
         type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
         user,
         userOnboarding,

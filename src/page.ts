@@ -6,6 +6,7 @@ import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
 import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from './locales/index.js'
 import assets from './manifest.json' with { type: 'json' }
+import type * as Router from './Router/index.js'
 import * as Routes from './routes.js'
 import {
   homeMatch,
@@ -48,6 +49,7 @@ export interface Page {
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'collapsible-menu.js' | 'skip-link.js'>>
   readonly user?: User
   readonly userOnboarding?: UserOnboarding
+  readonly pageUrls?: Router.PageUrls
 }
 
 export interface TemplatePageEnv {

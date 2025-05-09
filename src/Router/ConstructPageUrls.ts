@@ -1,7 +1,7 @@
 import { Option, pipe } from 'effect'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../response.js'
 
-interface PageUrls {
+export interface PageUrls {
   canonical: Option.Option<URL>
 }
 
