@@ -1,9 +1,9 @@
-import { removedForNowPage } from '../../src/legacy-routes/removed-for-now-page.js'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { removedPermanentlyPage } from '../../src/Router/RemovedPermanentlyPage.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
-  const content = await showPage(removedForNowPage(DefaultLocale))
+  const content = await showPage(removedPermanentlyPage(DefaultLocale))
 
   await expect(content).toHaveScreenshot()
 })
