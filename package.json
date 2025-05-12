@@ -7,10 +7,10 @@
   "type": "module",
   "dependencies": {
     "@arendjr/text-clipper": "npm:@jsr/arendjr__text-clipper@^3.0.0",
-    "@effect/platform": "^0.80.18",
-    "@effect/platform-node": "^0.77.6",
+    "@effect/platform": "^0.82.0",
+    "@effect/platform-node": "^0.80.0",
     "@effect/sql": "^0.33.6",
-    "@effect/sql-libsql": "^0.23.18",
+    "@effect/sql-libsql": "^0.25.0",
     "@hapi/address": "^5.1.1",
     "@js-temporal/polyfill": "^0.5.1",
     "@keyv/redis": "^3.0.1",
