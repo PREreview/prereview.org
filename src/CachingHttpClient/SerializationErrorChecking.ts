@@ -1,6 +1,6 @@
 import { Headers, type HttpClientRequest, type HttpClientResponse, Url, UrlParams } from '@effect/platform'
 import { diff } from 'deep-object-diff'
-import { Array, type DateTime, Effect, pipe } from 'effect'
+import { type DateTime, Effect, pipe } from 'effect'
 import type * as HttpCache from './HttpCache.js'
 
 const headerToIgnoreWhenDiffing = [
@@ -14,8 +14,6 @@ const headerToIgnoreWhenDiffing = [
   'X-Runtime',
 ]
 
-const ignoreHeaders = (headers: Headers.Headers) => Array.reduce(headerToIgnoreWhenDiffing, headers, Headers.remove)
-
 const diffResponses = (
   responseA: HttpClientResponse.HttpClientResponse,
   responseB: HttpClientResponse.HttpClientResponse,
@@ -23,12 +21,12 @@ const diffResponses = (
   Effect.gen(function* () {
     const diffableA = {
       status: responseA.status,
-      headers: { ...pipe(responseA.headers, ignoreHeaders) },
+      headers: Headers.remove(responseA.headers, headerToIgnoreWhenDiffing),
       body: yield* responseA.text,
     }
     const diffableB = {
       status: responseB.status,
-      headers: { ...pipe(responseB.headers, ignoreHeaders) },
+      headers: Headers.remove(responseB.headers, headerToIgnoreWhenDiffing),
       body: yield* responseB.text,
     }
     return diff(diffableA, diffableB)
