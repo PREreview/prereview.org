@@ -168,7 +168,7 @@ export const app = (config: ConfigEnv) => {
               ),
               resolvePreprintId: withEnv(
                 EffectToFpts.toReaderTaskEitherK((...ids) =>
-                  Effect.andThen(Preprint.ResolvePreprintId, resolvePreprintId => resolvePreprintId(...ids)),
+                  Effect.andThen(Preprint.ResolvePreprintId, Function.apply(...ids)),
                 ),
                 env,
               ),

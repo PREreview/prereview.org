@@ -1472,7 +1472,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.bindW(
             'canAddMultipleAuthors',
             EffectToFpts.toReaderMiddlewareK(({ user }) =>
-              Effect.andThen(FeatureFlags.CanAddMultipleAuthors, canAddMultipleAuthors => canAddMultipleAuthors(user)),
+              Effect.andThen(FeatureFlags.CanAddMultipleAuthors, Function.apply(user)),
             ),
           ),
           RM.bindW('response', RM.fromReaderTaskK(writeReviewAddAuthor)),
@@ -1820,7 +1820,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               (preprint: ReviewRequestPreprintId, user: User, persona: 'public' | 'pseudonym') =>
                 pipe(
                   PrereviewCoarNotify.publishReviewRequest,
-                  publish => publish(preprint, user, persona),
+                  Function.apply(preprint, user, persona),
                   Effect.tapError(error =>
                     Effect.logError('Failed to publishRequest (COAR)').pipe(Effect.annotateLogs({ error })),
                   ),
