@@ -1,7 +1,7 @@
 import { Match, Option, String, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
@@ -12,11 +12,11 @@ import {
   verifyContactEmailAddressForReview,
 } from '../contact-email-address.js'
 import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form.js'
-import { html, plainText, sendHtml } from '../html.js'
+import { html, plainText } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
-import { templatePage } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
+import { StreamlinePageResponse, handlePageResponse } from '../response.js'
 import {
   writeReviewConductMatch,
   writeReviewEnterEmailAddressMatch,
@@ -96,24 +96,30 @@ const showEnterEmailAddressForm = ({
   user: User
 }) =>
   pipe(
-    RM.rightReader(createFormPage(preprint, user, { emailAddress: E.right(contactEmailAddress?.value) }, locale)),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareK(sendHtml),
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS('response', RM.of(createFormPage(preprint, { emailAddress: E.right(contactEmailAddress?.value) }, locale))),
+    RM.ichainW(handlePageResponse),
   )
 
 const showEnterEmailAddressErrorForm = ({
+  form,
   locale,
   preprint,
   user,
 }: {
+  form: EnterEmailAddressForm
   locale: SupportedLocale
   preprint: PreprintTitle
   user: User
 }) =>
-  flow(
-    RM.fromReaderK((form: EnterEmailAddressForm) => createFormPage(preprint, user, form, locale)),
-    RM.ichainFirst(() => RM.status(Status.BadRequest)),
-    RM.ichainMiddlewareK(sendHtml),
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS('response', RM.of(createFormPage(preprint, form, locale))),
+    RM.ichainW(handlePageResponse),
   )
 
 const handleEnterEmailAddressForm = ({
@@ -155,7 +161,7 @@ const handleEnterEmailAddressForm = ({
         RM.orElseW(() => serviceUnavailable),
       ),
     ),
-    RM.orElseW(showEnterEmailAddressErrorForm({ locale, preprint, user })),
+    RM.orElseW(form => showEnterEmailAddressErrorForm({ form, locale, preprint, user })),
   )
 
 const EmailAddressFieldD = pipe(
@@ -167,98 +173,91 @@ interface EnterEmailAddressForm {
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>
 }
 
-function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAddressForm, locale: SupportedLocale) {
+function createFormPage(preprint: PreprintTitle, form: EnterEmailAddressForm, locale: SupportedLocale) {
   const error = hasAnError(form)
   const t = translate(locale, 'write-review')
 
-  return templatePage({
+  return StreamlinePageResponse({
+    status: error ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
       t('contactDetails')(),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),
-    content: html`
-      <nav>
-        <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
-        >
-      </nav>
+    nav: html`<a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back"
+      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+    >`,
+    main: html`
+      <form
+        method="post"
+        action="${format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id })}"
+        novalidate
+      >
+        ${error
+          ? html`
+              <error-summary aria-labelledby="error-summary-title" role="alert">
+                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                <ul>
+                  ${E.isLeft(form.emailAddress)
+                    ? html`
+                        <li>
+                          <a href="#email-address">
+                            ${Match.valueTags(form.emailAddress.left, {
+                              MissingE: () => t('enterEmailAddressError')(),
+                              InvalidE: () => t('enterEmailAddressFormatError')(),
+                            })}
+                          </a>
+                        </li>
+                      `
+                    : ''}
+                </ul>
+              </error-summary>
+            `
+          : ''}
 
-      <main id="form">
-        <form
-          method="post"
-          action="${format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id })}"
-          novalidate
-        >
-          ${error
+        <h1>${t('contactDetails')()}</h1>
+
+        <p>${t('confirmEmailAddress')()}</p>
+
+        <p>${t('onlyUseContact')()}</p>
+
+        <div ${error ? html`class="error"` : ''}>
+          <h2><label for="email-address">${t('whatIsYourEmail')()}</label></h2>
+
+          ${E.isLeft(form.emailAddress)
             ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                  <ul>
-                    ${E.isLeft(form.emailAddress)
-                      ? html`
-                          <li>
-                            <a href="#email-address">
-                              ${Match.valueTags(form.emailAddress.left, {
-                                MissingE: () => t('enterEmailAddressError')(),
-                                InvalidE: () => t('enterEmailAddressFormatError')(),
-                              })}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
+                <div class="error-message" id="email-address-error">
+                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                  ${Match.valueTags(form.emailAddress.left, {
+                    MissingE: () => t('enterEmailAddressError')(),
+                    InvalidE: () => t('enterEmailAddressFormatError')(),
+                  })}
+                </div>
               `
             : ''}
 
-          <h1>${t('contactDetails')()}</h1>
+          <input
+            name="emailAddress"
+            id="email-address"
+            type="text"
+            inputmode="email"
+            spellcheck="false"
+            autocomplete="email"
+            ${match(form.emailAddress)
+              .with({ right: P.select(P.string) }, value => html`value="${value}"`)
+              .with({ right: undefined }, () => '')
+              .with({ left: { _tag: 'MissingE' } }, () => '')
+              .with({ left: { _tag: 'InvalidE', actual: P.select() } }, value => html`value="${value}"`)
+              .exhaustive()}
+            ${E.isLeft(form.emailAddress) ? html`aria-invalid="true" aria-errormessage="email-address-error"` : ''}
+          />
+        </div>
 
-          <p>${t('confirmEmailAddress')()}</p>
-
-          <p>${t('onlyUseContact')()}</p>
-
-          <div ${error ? html`class="error"` : ''}>
-            <h2><label for="email-address">${t('whatIsYourEmail')()}</label></h2>
-
-            ${E.isLeft(form.emailAddress)
-              ? html`
-                  <div class="error-message" id="email-address-error">
-                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.emailAddress.left, {
-                      MissingE: () => t('enterEmailAddressError')(),
-                      InvalidE: () => t('enterEmailAddressFormatError')(),
-                    })}
-                  </div>
-                `
-              : ''}
-
-            <input
-              name="emailAddress"
-              id="email-address"
-              type="text"
-              inputmode="email"
-              spellcheck="false"
-              autocomplete="email"
-              ${match(form.emailAddress)
-                .with({ right: P.select(P.string) }, value => html`value="${value}"`)
-                .with({ right: undefined }, () => '')
-                .with({ left: { _tag: 'MissingE' } }, () => '')
-                .with({ left: { _tag: 'InvalidE', actual: P.select() } }, value => html`value="${value}"`)
-                .exhaustive()}
-              ${E.isLeft(form.emailAddress) ? html`aria-invalid="true" aria-errormessage="email-address-error"` : ''}
-            />
-          </div>
-
-          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
-        </form>
-      </main>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
+      </form>
     `,
     js: error ? ['error-summary.js'] : [],
-    skipLinks: [[html`${translate(locale, 'skip-links', 'form')()}`, '#form']],
-    type: 'streamline',
-    locale,
-    user,
+    skipToLabel: 'form',
   })
 }
