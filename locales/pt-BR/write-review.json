@@ -596,12 +596,6 @@
   "verifyEmailAddress": {
     "message": "Confirme seu endereço de e-mail"
   },
-  "important": {
-    "message": "Importante"
-  },
-  "sentNewEmail": {
-    "message": "Enviamos um novo e-mail para você."
-  },
   "howToVerifyEmailAddress": {
     "message": "Por favor, abra o e-mail que enviamos para {emailAddress} e siga o link. Você poderá então publicar sua avaliação PREreview."
   },

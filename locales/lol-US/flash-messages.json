@@ -20,6 +20,9 @@
   "messageVerifyEmail": {
     "message": "crwdns1756:0crwdne1756:0"
   },
+  "messageVerifyEmailResend": {
+    "message": "crwdns5902:0crwdne5902:0"
+  },
   "messageEmailVerified": {
     "message": "crwdns1758:0crwdne1758:0"
   },
