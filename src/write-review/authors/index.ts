@@ -1,17 +1,20 @@
 import { Match, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
+import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
-import { sendHtml } from '../../html.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware.js'
+import type { TemplatePageEnv } from '../../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
+import type { PublicUrlEnv } from '../../public-url.js'
+import { handlePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes.js'
-import { type User, getUser } from '../../user.js'
+import type { GetUserOnboardingEnv } from '../../user-onboarding.js'
+import { type GetUserEnv, type User, getUser } from '../../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from '../form.js'
 import { type AuthorsForm, authorsForm } from './authors-form.js'
 
@@ -51,28 +54,51 @@ export const writeReviewAuthors = flow(
   ),
 )
 
-const showAuthorsForm = flow(
-  RM.fromReaderK(
-    ({ form, preprint, user, locale }: { form: Form; preprint: PreprintTitle; user: User; locale: SupportedLocale }) =>
-      authorsForm(
-        preprint,
-        {
-          moreAuthors: E.right(form.moreAuthors),
-          moreAuthorsApproved: E.right(form.moreAuthorsApproved),
-        },
-        user,
-        locale,
+const showAuthorsForm = ({
+  form,
+  preprint,
+  user,
+  locale,
+}: {
+  form: Form
+  preprint: PreprintTitle
+  user: User
+  locale: SupportedLocale
+}) =>
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS(
+      'response',
+      RM.of(
+        authorsForm(
+          preprint,
+          { moreAuthors: E.right(form.moreAuthors), moreAuthorsApproved: E.right(form.moreAuthorsApproved) },
+          locale,
+        ),
       ),
-  ),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+    ),
+    RM.ichainW(handlePageResponse),
+  )
 
-const showAuthorsErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
-  flow(
-    RM.fromReaderK((form: AuthorsForm) => authorsForm(preprint, form, user, locale)),
-    RM.ichainFirst(() => RM.status(Status.BadRequest)),
-    RM.ichainMiddlewareK(sendHtml),
+const showAuthorsErrorForm = ({
+  form,
+  preprint,
+  user,
+  locale,
+}: {
+  form: AuthorsForm
+  preprint: PreprintTitle
+  user: User
+  locale: SupportedLocale
+}) =>
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS('response', RM.of(authorsForm(preprint, form, locale))),
+    RM.ichainW(handlePageResponse),
   )
 
 const handleAuthorsForm = ({
@@ -119,8 +145,17 @@ const handleAuthorsForm = ({
     ),
     RM.orElseW(error =>
       match(error)
+        .returnType<
+          RM.ReaderMiddleware<
+            GetUserEnv & GetUserOnboardingEnv & { locale: SupportedLocale } & PublicUrlEnv & TemplatePageEnv,
+            StatusOpen,
+            ResponseEnded,
+            never,
+            void
+          >
+        >()
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ moreAuthors: P.any }, showAuthorsErrorForm(preprint, user, locale))
+        .with({ moreAuthors: P.any }, form => showAuthorsErrorForm({ form, preprint, locale, user }))
         .exhaustive(),
     ),
   )
