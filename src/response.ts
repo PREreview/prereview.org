@@ -157,6 +157,7 @@ export const FlashMessageSchema = Schema.Literal(
   'logged-in',
   'blocked',
   'verify-contact-email',
+  'verify-contact-email-resend',
   'contact-email-verified',
   'orcid-connected',
   'orcid-disconnected',
@@ -369,7 +370,7 @@ const handleRedirectResponse = ({
     M.ichain(() => M.end()),
   )
 
-const handleFlashMessageResponse = ({
+export const handleFlashMessageResponse = ({
   response,
 }: {
   response: FlashMessageResponse
@@ -422,6 +423,13 @@ function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>, locale: Suppo
         type: 'notice',
         title: rawHtml(translate(locale, 'flash-messages', 'titleImportant')()),
         content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageVerifyEmail')())}</p>`,
+      }),
+    )
+    .with('verify-contact-email-resend', () =>
+      showNotificationBanner({
+        type: 'notice',
+        title: rawHtml(translate(locale, 'flash-messages', 'titleImportant')()),
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageVerifyEmailResend')())}</p>`,
       }),
     )
     .with('contact-email-verified', () =>
