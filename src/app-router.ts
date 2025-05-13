@@ -1409,7 +1409,26 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       writeReviewIntroductionMatchesMatch.parser,
-      P.map(({ id }) => writeReviewIntroductionMatches(id)),
+      P.map(
+        flow(
+          RM.of,
+          RM.apS(
+            'body',
+            RM.gets(c => c.getBody()),
+          ),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW('response', RM.fromReaderTaskK(writeReviewIntroductionMatches)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       writeReviewMethodsAppropriateMatch.parser,
