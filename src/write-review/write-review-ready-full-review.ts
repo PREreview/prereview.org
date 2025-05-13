@@ -1,7 +1,8 @@
 import { Match, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
+import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Encoder } from 'io-ts/lib/Encoder.js'
@@ -15,11 +16,13 @@ import {
   optionalDecoder,
   requiredDecoder,
 } from '../form.js'
-import { html, plainText, rawHtml, sendHtml } from '../html.js'
+import { html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
-import { templatePage } from '../page.js'
+import type { TemplatePageEnv } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
+import type { PublicUrlEnv } from '../public-url.js'
+import { StreamlinePageResponse, handlePageResponse } from '../response.js'
 import {
   writeReviewMatch,
   writeReviewReadyFullReviewMatch,
@@ -28,7 +31,8 @@ import {
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
-import { type User, getUser } from '../user.js'
+import type { GetUserOnboardingEnv } from '../user-onboarding.js'
+import { type GetUserEnv, type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
 
@@ -76,20 +80,42 @@ export const writeReviewReadyFullReview = flow(
   ),
 )
 
-const showReadyFullReviewForm = flow(
-  RM.fromReaderK(
-    ({ form, locale, preprint, user }: { form: Form; locale: SupportedLocale; preprint: PreprintTitle; user: User }) =>
-      readyFullReviewForm(preprint, FormToFieldsE.encode(form), user, locale),
-  ),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showReadyFullReviewForm = ({
+  form,
+  locale,
+  preprint,
+  user,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS('response', RM.of(readyFullReviewForm(preprint, FormToFieldsE.encode(form), locale))),
+    RM.ichainW(handlePageResponse),
+  )
 
-const showReadyFullReviewErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
-  flow(
-    RM.fromReaderK((form: ReadyFullReviewForm) => readyFullReviewForm(preprint, form, user, locale)),
-    RM.ichainFirst(() => RM.status(Status.BadRequest)),
-    RM.ichainMiddlewareK(sendHtml),
+const showReadyFullReviewErrorForm = ({
+  form,
+  preprint,
+  user,
+  locale,
+}: {
+  form: ReadyFullReviewForm
+  preprint: PreprintTitle
+  user: User
+  locale: SupportedLocale
+}) =>
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS('response', RM.of(readyFullReviewForm(preprint, form, locale))),
+    RM.ichainW(handlePageResponse),
   )
 
 const handleReadyFullReviewForm = ({
@@ -110,8 +136,17 @@ const handleReadyFullReviewForm = ({
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
+        .returnType<
+          RM.ReaderMiddleware<
+            GetUserEnv & GetUserOnboardingEnv & { locale: SupportedLocale } & PublicUrlEnv & TemplatePageEnv,
+            StatusOpen,
+            ResponseEnded,
+            never,
+            void
+          >
+        >()
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ readyFullReview: P.any }, showReadyFullReviewErrorForm(preprint, user, locale))
+        .with({ readyFullReview: P.any }, form => showReadyFullReviewErrorForm({ form, preprint, user, locale }))
         .exhaustive(),
     ),
   )
@@ -147,176 +182,165 @@ const FormToFieldsE: Encoder<ReadyFullReviewForm, Form> = {
 
 type ReadyFullReviewForm = Fields<typeof readyFullReviewFields>
 
-function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm, user: User, locale: SupportedLocale) {
+function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm, locale: SupportedLocale) {
   const error = hasAnError(form)
   const t = translate(locale, 'write-review')
 
-  return templatePage({
+  return StreamlinePageResponse({
+    status: error ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
       t('readyForAttention')(),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),
-    content: html`
-      <nav>
-        <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
-        >
-      </nav>
+    nav: html`
+      <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" class="back"
+        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >
+    `,
+    main: html`
+      <form method="post" action="${format(writeReviewReadyFullReviewMatch.formatter, { id: preprint.id })}" novalidate>
+        ${error
+          ? html`
+              <error-summary aria-labelledby="error-summary-title" role="alert">
+                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                <ul>
+                  ${E.isLeft(form.readyFullReview)
+                    ? html`
+                        <li>
+                          <a href="#ready-full-review-yes">
+                            ${Match.valueTags(form.readyFullReview.left, {
+                              MissingE: () => t('selectReadyForAttention')(),
+                            })}
+                          </a>
+                        </li>
+                      `
+                    : ''}
+                </ul>
+              </error-summary>
+            `
+          : ''}
 
-      <main id="form">
-        <form
-          method="post"
-          action="${format(writeReviewReadyFullReviewMatch.formatter, { id: preprint.id })}"
-          novalidate
-        >
-          ${error
-            ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                  <ul>
-                    ${E.isLeft(form.readyFullReview)
-                      ? html`
-                          <li>
-                            <a href="#ready-full-review-yes">
-                              ${Match.valueTags(form.readyFullReview.left, {
-                                MissingE: () => t('selectReadyForAttention')(),
-                              })}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
-              `
-            : ''}
+        <div ${rawHtml(E.isLeft(form.readyFullReview) ? 'class="error"' : '')}>
+          <conditional-inputs>
+            <fieldset
+              role="group"
+              ${rawHtml(
+                E.isLeft(form.readyFullReview) ? 'aria-invalid="true" aria-errormessage="ready-full-review-error"' : '',
+              )}
+            >
+              <legend>
+                <h1>${t('readyForAttention')()}</h1>
+              </legend>
 
-          <div ${rawHtml(E.isLeft(form.readyFullReview) ? 'class="error"' : '')}>
-            <conditional-inputs>
-              <fieldset
-                role="group"
-                ${rawHtml(
-                  E.isLeft(form.readyFullReview)
-                    ? 'aria-invalid="true" aria-errormessage="ready-full-review-error"'
-                    : '',
-                )}
-              >
-                <legend>
-                  <h1>${t('readyForAttention')()}</h1>
-                </legend>
+              ${E.isLeft(form.readyFullReview)
+                ? html`
+                    <div class="error-message" id="ready-full-review-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.readyFullReview.left, {
+                        MissingE: () => t('selectReadyForAttention')(),
+                      })}
+                    </div>
+                  `
+                : ''}
 
-                ${E.isLeft(form.readyFullReview)
-                  ? html`
-                      <div class="error-message" id="ready-full-review-error">
-                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.readyFullReview.left, {
-                          MissingE: () => t('selectReadyForAttention')(),
-                        })}
-                      </div>
-                    `
-                  : ''}
+              <ol>
+                <li>
+                  <label>
+                    <input
+                      name="readyFullReview"
+                      id="ready-full-review-yes"
+                      type="radio"
+                      value="yes"
+                      aria-controls="ready-full-review-yes-control"
+                      ${match(form.readyFullReview)
+                        .with({ right: 'yes' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('readyForAttentionYes')()}</span>
+                  </label>
+                  <div class="conditional" id="ready-full-review-yes-control">
+                    <div>
+                      <label for="ready-full-review-yes-details" class="textarea"
+                        >${t('readyForAttentionYesWhy')()}</label
+                      >
 
-                <ol>
-                  <li>
-                    <label>
-                      <input
-                        name="readyFullReview"
-                        id="ready-full-review-yes"
-                        type="radio"
-                        value="yes"
-                        aria-controls="ready-full-review-yes-control"
-                        ${match(form.readyFullReview)
-                          .with({ right: 'yes' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('readyForAttentionYes')()}</span>
-                    </label>
-                    <div class="conditional" id="ready-full-review-yes-control">
-                      <div>
-                        <label for="ready-full-review-yes-details" class="textarea"
-                          >${t('readyForAttentionYesWhy')()}</label
-                        >
-
-                        <textarea name="readyFullReviewYesDetails" id="ready-full-review-yes-details" rows="5">
+                      <textarea name="readyFullReviewYesDetails" id="ready-full-review-yes-details" rows="5">
 ${match(form.readyFullReviewYesDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="readyFullReview"
-                        type="radio"
-                        value="yes-changes"
-                        aria-controls="ready-full-review-yes-changes-control"
-                        ${match(form.readyFullReview)
-                          .with({ right: 'yes-changes' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('readyForAttentionMinorChanges')()}</span>
-                    </label>
-                    <div class="conditional" id="ready-full-review-yes-changes-control">
-                      <div>
-                        <label for="ready-full-review-yes-changes-details" class="textarea"
-                          >${t('readyForAttentionMinorChangesWhy')()}</label
-                        >
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="readyFullReview"
+                      type="radio"
+                      value="yes-changes"
+                      aria-controls="ready-full-review-yes-changes-control"
+                      ${match(form.readyFullReview)
+                        .with({ right: 'yes-changes' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('readyForAttentionMinorChanges')()}</span>
+                  </label>
+                  <div class="conditional" id="ready-full-review-yes-changes-control">
+                    <div>
+                      <label for="ready-full-review-yes-changes-details" class="textarea"
+                        >${t('readyForAttentionMinorChangesWhy')()}</label
+                      >
 
-                        <textarea
-                          name="readyFullReviewYesChangesDetails"
-                          id="ready-full-review-yes-changes-details"
-                          rows="5"
-                        >
+                      <textarea
+                        name="readyFullReviewYesChangesDetails"
+                        id="ready-full-review-yes-changes-details"
+                        rows="5"
+                      >
 ${match(form.readyFullReviewYesChangesDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="readyFullReview"
-                        type="radio"
-                        value="no"
-                        aria-controls="ready-full-review-no-control"
-                        ${match(form.readyFullReview)
-                          .with({ right: 'no' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('readyForAttentionNo')()}</span>
-                    </label>
-                    <div class="conditional" id="ready-full-review-no-control">
-                      <div>
-                        <label for="ready-full-review-no-details" class="textarea"
-                          >${t('readyForAttentionNoWhy')()}</label
-                        >
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="readyFullReview"
+                      type="radio"
+                      value="no"
+                      aria-controls="ready-full-review-no-control"
+                      ${match(form.readyFullReview)
+                        .with({ right: 'no' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('readyForAttentionNo')()}</span>
+                  </label>
+                  <div class="conditional" id="ready-full-review-no-control">
+                    <div>
+                      <label for="ready-full-review-no-details" class="textarea"
+                        >${t('readyForAttentionNoWhy')()}</label
+                      >
 
-                        <textarea name="readyFullReviewNoDetails" id="ready-full-review-no-details" rows="5">
+                      <textarea name="readyFullReviewNoDetails" id="ready-full-review-no-details" rows="5">
 ${match(form.readyFullReviewNoDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                </ol>
-              </fieldset>
-            </conditional-inputs>
-          </div>
+                  </div>
+                </li>
+              </ol>
+            </fieldset>
+          </conditional-inputs>
+        </div>
 
-          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
-        </form>
-      </main>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
+      </form>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
-    skipLinks: [[html`Skip to form`, '#form']],
-    type: 'streamline',
-    locale,
-    user,
+    skipToLabel: 'form',
   })
 }
