@@ -273,6 +273,23 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Timo Betz', orcid: Orcid('0000-0002-1548-0655') }],
   },
+  'elife-ambassadors': {
+    name: 'eLife Community Ambassadors',
+    description: html`
+      <p>
+        eLife Ambassadors are a global cohort of early-career researchers dedicated to transforming research culture
+        worldwide. We strive to drive change toward open science and responsible research assessment, and advocate for
+        equity and integrity in research.
+      </p>
+      <p>
+        eLife Ambassadors are interested in peer review, open science and curating research. Our purpose is to ensure
+        Early-Career researchers have a voice and presence in open science, responsible research assessment as well as
+        promoting equity and integrity in research.
+      </p>
+    `,
+    leads: [{ name: 'Elise Bateman', orcid: Orcid('0009-0008-9450-3341') }],
+    contact: EmailAddress('community@elifesciences.org'),
+  },
   emerge: {
     name: 'EMERGE, A Matrix for Ethnographic Collaboration and Practice',
     description: html`

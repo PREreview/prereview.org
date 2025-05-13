@@ -18,6 +18,7 @@ export const clubIds = [
   'bios2',
   'bloomington-biology',
   'cara',
+  'elife-ambassadors',
   'emerge',
   'etymos-analytica',
   'hhmi-training-pilot',
