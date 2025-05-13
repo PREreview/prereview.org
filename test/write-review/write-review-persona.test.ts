@@ -6,7 +6,6 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
-import { rawHtml } from '../../src/html.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes.js'
@@ -40,6 +39,8 @@ describe('writeReviewPersona', () => {
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          getUserOnboarding: shouldNotBeCalled,
+          publicUrl: new URL('http://example.com'),
           locale,
           templatePage: shouldNotBeCalled,
         }),
@@ -84,6 +85,8 @@ describe('writeReviewPersona', () => {
           locale,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          getUserOnboarding: shouldNotBeCalled,
+          publicUrl: new URL('http://example.com'),
           templatePage: shouldNotBeCalled,
         }),
         connection,
@@ -112,6 +115,8 @@ describe('writeReviewPersona', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          getUserOnboarding: shouldNotBeCalled,
+          publicUrl: new URL('http://example.com'),
           locale,
           templatePage: shouldNotBeCalled,
         }),
@@ -142,6 +147,8 @@ describe('writeReviewPersona', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
           getUser: () => M.of(user),
+          getUserOnboarding: shouldNotBeCalled,
+          publicUrl: new URL('http://example.com'),
           locale,
           templatePage,
         }),
@@ -176,6 +183,8 @@ describe('writeReviewPersona', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
           getUser: () => M.of(user),
+          getUserOnboarding: shouldNotBeCalled,
+          publicUrl: new URL('http://example.com'),
           locale,
           templatePage,
         }),
@@ -208,7 +217,9 @@ describe('writeReviewPersona', () => {
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
+          getUserOnboarding: shouldNotBeCalled,
           locale,
+          publicUrl: new URL('http://example.com'),
           templatePage: shouldNotBeCalled,
         }),
         connection,
@@ -249,6 +260,8 @@ describe('writeReviewPersona', () => {
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
         getUser: () => M.of(user),
+        getUserOnboarding: () => TE.left('unavailable'),
+        publicUrl: new URL('http://example.com'),
         locale,
         templatePage,
       }),
@@ -258,6 +271,7 @@ describe('writeReviewPersona', () => {
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.BadRequest },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: page.toString() },
       ]),
@@ -265,7 +279,7 @@ describe('writeReviewPersona', () => {
     expect(templatePage).toHaveBeenCalledWith({
       title: expect.anything(),
       content: expect.anything(),
-      skipLinks: [[rawHtml('Skip to form'), '#form']],
+      skipLinks: [[expect.anything(), '#form']],
       js: ['error-summary.js'],
       type: 'streamline',
       locale,
