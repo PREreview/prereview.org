@@ -1,22 +1,20 @@
 import { type Doi, isDoi } from 'doi-ts'
-import { Function, Option, Tuple, flow, pipe } from 'effect'
+import { Option, Tuple, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
+import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import httpErrors from 'http-errors'
-import type { ResponseEnded, StatusOpen } from 'hyper-ts'
-import { route } from 'hyper-ts-routing'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
+import { StatusCodes } from 'http-status-codes'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { match, P as p } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import * as FptsToEffect from '../FptsToEffect.js'
+import { havingProblemsPage, pageNotFound } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
-import { movedPermanently, notFound, serviceUnavailable } from '../middleware.js'
-import type { TemplatePageEnv } from '../page.js'
-import type { PublicUrlEnv } from '../public-url.js'
+import { RedirectResponse, type Response } from '../response.js'
 import { preprintReviewsMatch, profileMatch, writeReviewReviewTypeMatch } from '../routes.js'
 import {
   type ArxivPreprintId,
@@ -27,15 +25,8 @@ import {
 } from '../types/preprint-id.js'
 import type { ProfileId } from '../types/profile-id.js'
 import { UuidC } from '../types/uuid.js'
-import type { GetUserOnboardingEnv } from '../user-onboarding.js'
-import type { GetUserEnv } from '../user.js'
 
-export type LegacyEnv = GetPreprintIdFromUuidEnv &
-  GetProfileIdFromUuidEnv &
-  GetUserEnv &
-  GetUserOnboardingEnv &
-  PublicUrlEnv &
-  TemplatePageEnv & { locale: SupportedLocale }
+export type LegacyEnv = GetPreprintIdFromUuidEnv & GetProfileIdFromUuidEnv & { locale: SupportedLocale }
 
 export interface GetPreprintIdFromUuidEnv {
   getPreprintIdFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', IndeterminatePreprintId>
@@ -119,7 +110,7 @@ const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
       .exhaustive(),
 })
 
-const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
+const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, Response>> = pipe(
   [
     pipe(
       pipe(P.lit('about'), P.then(type('personaUuid', UuidC)), P.then(P.end)).parser,
@@ -133,17 +124,23 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
         P.then(P.lit('already-written')),
         P.then(P.end),
       ).parser,
-      P.map(
-        RM.fromMiddlewareK(({ preprintId }) =>
-          movedPermanently(P.format(writeReviewReviewTypeMatch.formatter, { id: preprintId })),
+      P.map(({ preprintId }) =>
+        RT.of(
+          RedirectResponse({
+            status: StatusCodes.MOVED_PERMANENTLY,
+            location: P.format(writeReviewReviewTypeMatch.formatter, { id: preprintId }),
+          }),
         ),
       ),
     ),
     pipe(
       pipe(P.lit('preprints'), P.then(type('preprintId', ArxivPreprintIdC)), P.then(P.end)).parser,
-      P.map(
-        RM.fromMiddlewareK(({ preprintId }) =>
-          movedPermanently(P.format(preprintReviewsMatch.formatter, { id: preprintId })),
+      P.map(({ preprintId }) =>
+        RT.of(
+          RedirectResponse({
+            status: StatusCodes.MOVED_PERMANENTLY,
+            location: P.format(preprintReviewsMatch.formatter, { id: preprintId }),
+          }),
         ),
       ),
     ),
@@ -169,31 +166,54 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
   concatAll(P.getParserMonoid()),
 )
 
-export const legacyRoutes = pipe(
-  route(legacyRouter, Function.constant(new httpErrors.NotFound())),
-  RM.fromMiddleware,
-  RM.iflatten,
+export const legacyRoutes: (
+  url: string,
+) => RTE.ReaderTaskEither<LegacyEnv, httpErrors.HttpError<StatusCodes.NOT_FOUND>, Response> = flow(
+  Option.liftThrowable(url => P.Route.parse(url)),
+  Option.andThen(FptsToEffect.optionK(legacyRouter.run)),
+  Option.match({
+    onNone: () => RTE.left(new httpErrors.NotFound()),
+    onSome: ([response]) => RTE.rightReaderTask(response),
+  }),
 )
 
 const redirectToPreprintReviews = flow(
-  RM.fromReaderTaskEitherK(getPreprintIdFromUuid),
-  RM.ichainMiddlewareK(id => movedPermanently(P.format(preprintReviewsMatch.formatter, { id }))),
-  RM.orElseW(error =>
-    match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
-      .exhaustive(),
+  getPreprintIdFromUuid,
+  RTE.matchEW(
+    error =>
+      RT.asks(({ locale }: { locale: SupportedLocale }) =>
+        match(error)
+          .with('not-found', () => pageNotFound(locale))
+          .with('unavailable', () => havingProblemsPage(locale))
+          .exhaustive(),
+      ),
+    id =>
+      RT.of(
+        RedirectResponse({
+          status: StatusCodes.MOVED_PERMANENTLY,
+          location: P.format(preprintReviewsMatch.formatter, { id }),
+        }),
+      ),
   ),
 )
 
 const redirectToProfile = flow(
-  RM.fromReaderTaskEitherK(getProfileIdFromUuid),
-  RM.ichainMiddlewareK(profile => movedPermanently(P.format(profileMatch.formatter, { profile }))),
-  RM.orElseW(error =>
-    match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
-      .exhaustive(),
+  getProfileIdFromUuid,
+  RTE.matchEW(
+    error =>
+      RT.asks(({ locale }: { locale: SupportedLocale }) =>
+        match(error)
+          .with('not-found', () => pageNotFound(locale))
+          .with('unavailable', () => havingProblemsPage(locale))
+          .exhaustive(),
+      ),
+    profile =>
+      RT.of(
+        RedirectResponse({
+          status: StatusCodes.MOVED_PERMANENTLY,
+          location: P.format(profileMatch.formatter, { profile }),
+        }),
+      ),
   ),
 )
 

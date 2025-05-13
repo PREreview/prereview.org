@@ -50,7 +50,19 @@ export type ConfigEnv = Omit<
 
 const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, ResponseEnded, never, void> = pipe(
   routes,
-  RM.orElseW(() => legacyRoutes),
+  RM.orElseW(() =>
+    pipe(
+      RM.gets(c => c.getOriginalUrl()),
+      RM.chainReaderTaskEitherK(legacyRoutes),
+      RM.bindTo('response'),
+      RM.apSW('user', maybeGetUser),
+      RM.apSW(
+        'locale',
+        RM.asks((env: RouterEnv) => env.locale),
+      ),
+      RM.ichainW(handleResponse),
+    ),
+  ),
   RM.orElseW(error =>
     match(error)
       .with({ status: 404 }, () =>
