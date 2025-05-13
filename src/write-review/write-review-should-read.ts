@@ -1,7 +1,8 @@
 import { Match, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
+import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Encoder } from 'io-ts/lib/Encoder.js'
@@ -15,11 +16,13 @@ import {
   optionalDecoder,
   requiredDecoder,
 } from '../form.js'
-import { html, plainText, rawHtml, sendHtml } from '../html.js'
+import { html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
-import { templatePage } from '../page.js'
+import type { TemplatePageEnv } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
+import type { PublicUrlEnv } from '../public-url.js'
+import { StreamlinePageResponse, handlePageResponse } from '../response.js'
 import {
   writeReviewLanguageEditingMatch,
   writeReviewMatch,
@@ -28,7 +31,8 @@ import {
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
-import { type User, getUser } from '../user.js'
+import type { GetUserOnboardingEnv } from '../user-onboarding.js'
+import { type GetUserEnv, type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
 
@@ -76,20 +80,42 @@ export const writeReviewShouldRead = flow(
   ),
 )
 
-const showShouldReadForm = flow(
-  RM.fromReaderK(
-    ({ form, locale, preprint, user }: { form: Form; locale: SupportedLocale; preprint: PreprintTitle; user: User }) =>
-      shouldReadForm(preprint, FormToFieldsE.encode(form), user, locale),
-  ),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showShouldReadForm = ({
+  form,
+  locale,
+  preprint,
+  user,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS('response', RM.of(shouldReadForm(preprint, FormToFieldsE.encode(form), locale))),
+    RM.ichainW(handlePageResponse),
+  )
 
-const showShouldReadErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
-  flow(
-    RM.fromReaderK((form: ShouldReadForm) => shouldReadForm(preprint, form, user, locale)),
-    RM.ichainFirst(() => RM.status(Status.BadRequest)),
-    RM.ichainMiddlewareK(sendHtml),
+const showShouldReadErrorForm = ({
+  form,
+  preprint,
+  user,
+  locale,
+}: {
+  form: ShouldReadForm
+  preprint: PreprintTitle
+  user: User
+  locale: SupportedLocale
+}) =>
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS('response', RM.of(shouldReadForm(preprint, form, locale))),
+    RM.ichainW(handlePageResponse),
   )
 
 const handleShouldReadForm = ({
@@ -110,8 +136,17 @@ const handleShouldReadForm = ({
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
+        .returnType<
+          RM.ReaderMiddleware<
+            GetUserEnv & GetUserOnboardingEnv & { locale: SupportedLocale } & PublicUrlEnv & TemplatePageEnv,
+            StatusOpen,
+            ResponseEnded,
+            never,
+            void
+          >
+        >()
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ shouldRead: P.any }, showShouldReadErrorForm(preprint, user, locale))
+        .with({ shouldRead: P.any }, form => showShouldReadErrorForm({ form, preprint, user, locale }))
         .exhaustive(),
     ),
   )
@@ -147,160 +182,155 @@ const FormToFieldsE: Encoder<ShouldReadForm, Form> = {
 
 type ShouldReadForm = Fields<typeof shouldReadFields>
 
-function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: User, locale: SupportedLocale) {
+function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, locale: SupportedLocale) {
   const error = hasAnError(form)
   const t = translate(locale, 'write-review')
 
-  return templatePage({
+  return StreamlinePageResponse({
+    status: error ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
       t('wouldRecommend')(),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),
-    content: html`
-      <nav>
-        <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
-        >
-      </nav>
+    nav: html`
+      <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}" class="back"
+        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >
+    `,
+    main: html`
+      <form method="post" action="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" novalidate>
+        ${error
+          ? html`
+              <error-summary aria-labelledby="error-summary-title" role="alert">
+                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                <ul>
+                  ${E.isLeft(form.shouldRead)
+                    ? html`
+                        <li>
+                          <a href="#should-read-yes">
+                            ${Match.valueTags(form.shouldRead.left, {
+                              MissingE: () => t('selectWouldRecommend')(),
+                            })}
+                          </a>
+                        </li>
+                      `
+                    : ''}
+                </ul>
+              </error-summary>
+            `
+          : ''}
 
-      <main id="form">
-        <form method="post" action="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" novalidate>
-          ${error
-            ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                  <ul>
-                    ${E.isLeft(form.shouldRead)
-                      ? html`
-                          <li>
-                            <a href="#should-read-yes">
-                              ${Match.valueTags(form.shouldRead.left, {
-                                MissingE: () => t('selectWouldRecommend')(),
-                              })}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
-              `
-            : ''}
+        <div ${rawHtml(E.isLeft(form.shouldRead) ? 'class="error"' : '')}>
+          <conditional-inputs>
+            <fieldset
+              role="group"
+              ${rawHtml(E.isLeft(form.shouldRead) ? 'aria-invalid="true" aria-errormessage="should-read-error"' : '')}
+            >
+              <legend>
+                <h1>${t('wouldRecommend')()}</h1>
+              </legend>
 
-          <div ${rawHtml(E.isLeft(form.shouldRead) ? 'class="error"' : '')}>
-            <conditional-inputs>
-              <fieldset
-                role="group"
-                ${rawHtml(E.isLeft(form.shouldRead) ? 'aria-invalid="true" aria-errormessage="should-read-error"' : '')}
-              >
-                <legend>
-                  <h1>${t('wouldRecommend')()}</h1>
-                </legend>
+              ${E.isLeft(form.shouldRead)
+                ? html`
+                    <div class="error-message" id="should-read-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.shouldRead.left, {
+                        MissingE: () => t('selectWouldRecommend')(),
+                      })}
+                    </div>
+                  `
+                : ''}
 
-                ${E.isLeft(form.shouldRead)
-                  ? html`
-                      <div class="error-message" id="should-read-error">
-                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.shouldRead.left, {
-                          MissingE: () => t('selectWouldRecommend')(),
-                        })}
-                      </div>
-                    `
-                  : ''}
+              <ol>
+                <li>
+                  <label>
+                    <input
+                      name="shouldRead"
+                      id="should-read-yes"
+                      type="radio"
+                      value="yes"
+                      aria-controls="should-read-yes-control"
+                      ${match(form.shouldRead)
+                        .with({ right: 'yes' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('wouldRecommendYes')()}</span>
+                  </label>
+                  <div class="conditional" id="should-read-yes-control">
+                    <div>
+                      <label for="should-read-yes-details" class="textarea">${t('wouldRecommendYesHow')()}</label>
 
-                <ol>
-                  <li>
-                    <label>
-                      <input
-                        name="shouldRead"
-                        id="should-read-yes"
-                        type="radio"
-                        value="yes"
-                        aria-controls="should-read-yes-control"
-                        ${match(form.shouldRead)
-                          .with({ right: 'yes' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('wouldRecommendYes')()}</span>
-                    </label>
-                    <div class="conditional" id="should-read-yes-control">
-                      <div>
-                        <label for="should-read-yes-details" class="textarea">${t('wouldRecommendYesHow')()}</label>
-
-                        <textarea name="shouldReadYesDetails" id="should-read-yes-details" rows="5">
+                      <textarea name="shouldReadYesDetails" id="should-read-yes-details" rows="5">
 ${match(form.shouldReadYesDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="shouldRead"
-                        type="radio"
-                        value="yes-but"
-                        aria-controls="should-read-yes-but-control"
-                        ${match(form.shouldRead)
-                          .with({ right: 'yes-but' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('wouldRecommendYesImproved')()}</span>
-                    </label>
-                    <div class="conditional" id="should-read-yes-but-control">
-                      <div>
-                        <label for="should-read-yes-but-details" class="textarea"
-                          >${t('wouldRecommendYesImprovedWhy')()}</label
-                        >
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="shouldRead"
+                      type="radio"
+                      value="yes-but"
+                      aria-controls="should-read-yes-but-control"
+                      ${match(form.shouldRead)
+                        .with({ right: 'yes-but' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('wouldRecommendYesImproved')()}</span>
+                  </label>
+                  <div class="conditional" id="should-read-yes-but-control">
+                    <div>
+                      <label for="should-read-yes-but-details" class="textarea"
+                        >${t('wouldRecommendYesImprovedWhy')()}</label
+                      >
 
-                        <textarea name="shouldReadYesButDetails" id="should-read-yes-but-details" rows="5">
+                      <textarea name="shouldReadYesButDetails" id="should-read-yes-but-details" rows="5">
 ${match(form.shouldReadYesButDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="shouldRead"
-                        type="radio"
-                        value="no"
-                        aria-controls="should-read-no-control"
-                        ${match(form.shouldRead)
-                          .with({ right: 'no' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('wouldRecommendNo')()}</span>
-                    </label>
-                    <div class="conditional" id="should-read-no-control">
-                      <div>
-                        <label for="should-read-no-details" class="textarea">${t('wouldRecommendNoWhy')()}</label>
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="shouldRead"
+                      type="radio"
+                      value="no"
+                      aria-controls="should-read-no-control"
+                      ${match(form.shouldRead)
+                        .with({ right: 'no' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('wouldRecommendNo')()}</span>
+                  </label>
+                  <div class="conditional" id="should-read-no-control">
+                    <div>
+                      <label for="should-read-no-details" class="textarea">${t('wouldRecommendNoWhy')()}</label>
 
-                        <textarea name="shouldReadNoDetails" id="should-read-no-details" rows="5">
+                      <textarea name="shouldReadNoDetails" id="should-read-no-details" rows="5">
 ${match(form.shouldReadNoDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                </ol>
-              </fieldset>
-            </conditional-inputs>
-          </div>
+                  </div>
+                </li>
+              </ol>
+            </fieldset>
+          </conditional-inputs>
+        </div>
 
-          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
-        </form>
-      </main>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
+      </form>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
-    skipLinks: [[html`Skip to form`, '#form']],
-    type: 'streamline',
-    locale,
-    user,
+    skipToLabel: 'form',
   })
 }
