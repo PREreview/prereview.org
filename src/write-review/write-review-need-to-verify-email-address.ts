@@ -10,7 +10,7 @@ import {
   verifyContactEmailAddressForReview,
 } from '../contact-email-address.js'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from '../flash-message.js'
-import { html, plainText, sendHtml } from '../html.js'
+import { html, plainText, rawHtml, sendHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
 import { showNotificationBanner } from '../notification-banner.js'
@@ -145,8 +145,8 @@ function needToVerifyEmailAddressMessage({
           .with('verify-contact-email-resend', () =>
             showNotificationBanner({
               type: 'notice',
-              title: html`${t('important')()}`,
-              content: html`<p>${t('sentNewEmail')()}</p>`,
+              title: html`${translate(locale, 'flash-messages', 'titleImportant')()}`,
+              content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageVerifyEmailResend')())}</p>`,
             }),
           )
           .with(undefined, () => '')

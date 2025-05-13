@@ -20,6 +20,9 @@
   "messageVerifyEmail": {
     "message": "We’re sending you an email. Please open it and follow the link to verify your address."
   },
+  "messageVerifyEmailResend": {
+    "message": "We’ve sent you a new email."
+  },
   "messageEmailVerified": {
     "message": "Your email address has been verified."
   },
