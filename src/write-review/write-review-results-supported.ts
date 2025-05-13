@@ -1,7 +1,8 @@
 import { Match, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
+import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Encoder } from 'io-ts/lib/Encoder.js'
@@ -15,11 +16,13 @@ import {
   optionalDecoder,
   requiredDecoder,
 } from '../form.js'
-import { html, plainText, rawHtml, sendHtml } from '../html.js'
+import { html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
-import { templatePage } from '../page.js'
+import type { TemplatePageEnv } from '../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
+import type { PublicUrlEnv } from '../public-url.js'
+import { StreamlinePageResponse, handlePageResponse } from '../response.js'
 import {
   writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
@@ -28,7 +31,8 @@ import {
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import { NonEmptyStringC } from '../types/string.js'
-import { type User, getUser } from '../user.js'
+import type { GetUserOnboardingEnv } from '../user-onboarding.js'
+import { type GetUserEnv, type User, getUser } from '../user.js'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
 
@@ -76,20 +80,42 @@ export const writeReviewResultsSupported = flow(
   ),
 )
 
-const showResultsSupportedForm = flow(
-  RM.fromReaderK(
-    ({ form, locale, preprint, user }: { form: Form; locale: SupportedLocale; preprint: PreprintTitle; user: User }) =>
-      resultsSupportedForm(preprint, FormToFieldsE.encode(form), user, locale),
-  ),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showResultsSupportedForm = ({
+  form,
+  locale,
+  preprint,
+  user,
+}: {
+  form: Form
+  locale: SupportedLocale
+  preprint: PreprintTitle
+  user: User
+}) =>
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS('response', RM.of(resultsSupportedForm(preprint, FormToFieldsE.encode(form), locale))),
+    RM.ichainW(handlePageResponse),
+  )
 
-const showResultsSupportedErrorForm = (preprint: PreprintTitle, user: User, locale: SupportedLocale) =>
-  flow(
-    RM.fromReaderK((form: ResultsSupportedForm) => resultsSupportedForm(preprint, form, user, locale)),
-    RM.ichainFirst(() => RM.status(Status.BadRequest)),
-    RM.ichainMiddlewareK(sendHtml),
+const showResultsSupportedErrorForm = ({
+  form,
+  preprint,
+  user,
+  locale,
+}: {
+  form: ResultsSupportedForm
+  preprint: PreprintTitle
+  user: User
+  locale: SupportedLocale
+}) =>
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS('response', RM.of(resultsSupportedForm(preprint, form, locale))),
+    RM.ichainW(handlePageResponse),
   )
 
 const handleResultsSupportedForm = ({
@@ -111,8 +137,17 @@ const handleResultsSupportedForm = ({
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
+        .returnType<
+          RM.ReaderMiddleware<
+            GetUserEnv & GetUserOnboardingEnv & { locale: SupportedLocale } & PublicUrlEnv & TemplatePageEnv,
+            StatusOpen,
+            ResponseEnded,
+            never,
+            void
+          >
+        >()
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ resultsSupported: P.any }, showResultsSupportedErrorForm(preprint, user, locale))
+        .with({ resultsSupported: P.any }, form => showResultsSupportedErrorForm({ form, preprint, user, locale }))
         .exhaustive(),
     ),
   )
@@ -156,281 +191,267 @@ const FormToFieldsE: Encoder<ResultsSupportedForm, Form> = {
 
 type ResultsSupportedForm = Fields<typeof resultsSupportedFields>
 
-function resultsSupportedForm(
-  preprint: PreprintTitle,
-  form: ResultsSupportedForm,
-  user: User,
-  locale: SupportedLocale,
-) {
+function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedForm, locale: SupportedLocale) {
   const error = hasAnError(form)
   const t = translate(locale, 'write-review')
 
-  return templatePage({
+  return StreamlinePageResponse({
+    status: error ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
     title: pipe(
       t('conclusionsSupported')(),
       prereviewOfSuffix(locale, preprint.title),
       errorPrefix(locale, error),
       plainText,
     ),
-    content: html`
-      <nav>
-        <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}" class="back"
-          ><span>${translate(locale, 'forms', 'backLink')()}</span></a
-        >
-      </nav>
+    nav: html`
+      <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}" class="back"
+        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >
+    `,
+    main: html`
+      <form
+        method="post"
+        action="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}"
+        novalidate
+      >
+        ${error
+          ? html`
+              <error-summary aria-labelledby="error-summary-title" role="alert">
+                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                <ul>
+                  ${E.isLeft(form.resultsSupported)
+                    ? html`
+                        <li>
+                          <a href="#results-supported-strongly-supported">
+                            ${Match.valueTags(form.resultsSupported.left, {
+                              MissingE: () => t('selectConclusionsSupported')(),
+                            })}
+                          </a>
+                        </li>
+                      `
+                    : ''}
+                </ul>
+              </error-summary>
+            `
+          : ''}
 
-      <main id="form">
-        <form
-          method="post"
-          action="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}"
-          novalidate
-        >
-          ${error
-            ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                  <ul>
-                    ${E.isLeft(form.resultsSupported)
-                      ? html`
-                          <li>
-                            <a href="#results-supported-strongly-supported">
-                              ${Match.valueTags(form.resultsSupported.left, {
-                                MissingE: () => t('selectConclusionsSupported')(),
-                              })}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
-              `
-            : ''}
+        <div ${rawHtml(E.isLeft(form.resultsSupported) ? 'class="error"' : '')}>
+          <conditional-inputs>
+            <fieldset
+              role="group"
+              ${rawHtml(
+                E.isLeft(form.resultsSupported)
+                  ? 'aria-invalid="true" aria-errormessage="results-supported-error"'
+                  : '',
+              )}
+            >
+              <legend>
+                <h1>${t('conclusionsSupported')()}</h1>
+              </legend>
 
-          <div ${rawHtml(E.isLeft(form.resultsSupported) ? 'class="error"' : '')}>
-            <conditional-inputs>
-              <fieldset
-                role="group"
-                ${rawHtml(
-                  E.isLeft(form.resultsSupported)
-                    ? 'aria-invalid="true" aria-errormessage="results-supported-error"'
-                    : '',
-                )}
-              >
-                <legend>
-                  <h1>${t('conclusionsSupported')()}</h1>
-                </legend>
+              ${E.isLeft(form.resultsSupported)
+                ? html`
+                    <div class="error-message" id="results-supported-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.resultsSupported.left, {
+                        MissingE: () => t('selectConclusionsSupported')(),
+                      })}
+                    </div>
+                  `
+                : ''}
 
-                ${E.isLeft(form.resultsSupported)
-                  ? html`
-                      <div class="error-message" id="results-supported-error">
-                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.resultsSupported.left, {
-                          MissingE: () => t('selectConclusionsSupported')(),
-                        })}
-                      </div>
-                    `
-                  : ''}
+              <ol>
+                <li>
+                  <label>
+                    <input
+                      name="resultsSupported"
+                      id="results-supported-strongly-supported"
+                      type="radio"
+                      value="strongly-supported"
+                      aria-describedby="results-supported-tip-strongly-supported"
+                      aria-controls="results-supported-strongly-supported-control"
+                      ${match(form.resultsSupported)
+                        .with({ right: 'strongly-supported' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('conclusionsHighlySupported')()}</span>
+                  </label>
+                  <p id="results-supported-tip-strongly-supported" role="note">
+                    ${t('conclusionsHighlySupportedTip')()}
+                  </p>
+                  <div class="conditional" id="results-supported-strongly-supported-control">
+                    <div>
+                      <label for="results-supported-strongly-supported-details" class="textarea"
+                        >${t('conclusionsHighlySupportedWhy')()}</label
+                      >
 
-                <ol>
-                  <li>
-                    <label>
-                      <input
-                        name="resultsSupported"
-                        id="results-supported-strongly-supported"
-                        type="radio"
-                        value="strongly-supported"
-                        aria-describedby="results-supported-tip-strongly-supported"
-                        aria-controls="results-supported-strongly-supported-control"
-                        ${match(form.resultsSupported)
-                          .with({ right: 'strongly-supported' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('conclusionsHighlySupported')()}</span>
-                    </label>
-                    <p id="results-supported-tip-strongly-supported" role="note">
-                      ${t('conclusionsHighlySupportedTip')()}
-                    </p>
-                    <div class="conditional" id="results-supported-strongly-supported-control">
-                      <div>
-                        <label for="results-supported-strongly-supported-details" class="textarea"
-                          >${t('conclusionsHighlySupportedWhy')()}</label
-                        >
-
-                        <textarea
-                          name="resultsSupportedStronglySupportedDetails"
-                          id="results-supported-strongly-supported-details"
-                          rows="5"
-                        >
+                      <textarea
+                        name="resultsSupportedStronglySupportedDetails"
+                        id="results-supported-strongly-supported-details"
+                        rows="5"
+                      >
 ${match(form.resultsSupportedStronglySupportedDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="resultsSupported"
-                        type="radio"
-                        value="well-supported"
-                        aria-describedby="results-supported-tip-well-supported"
-                        aria-controls="results-supported-well-supported-control"
-                        ${match(form.resultsSupported)
-                          .with({ right: 'well-supported' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('conclusionsSomewhatSupported')()}</span>
-                    </label>
-                    <p id="results-supported-tip-well-supported" role="note">
-                      ${t('conclusionsSomewhatSupportedTip')()}
-                    </p>
-                    <div class="conditional" id="results-supported-well-supported-control">
-                      <div>
-                        <label for="results-supported-well-supported-details" class="textarea"
-                          >${t('conclusionsSomewhatSupportedWhy')()}</label
-                        >
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="resultsSupported"
+                      type="radio"
+                      value="well-supported"
+                      aria-describedby="results-supported-tip-well-supported"
+                      aria-controls="results-supported-well-supported-control"
+                      ${match(form.resultsSupported)
+                        .with({ right: 'well-supported' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('conclusionsSomewhatSupported')()}</span>
+                  </label>
+                  <p id="results-supported-tip-well-supported" role="note">${t('conclusionsSomewhatSupportedTip')()}</p>
+                  <div class="conditional" id="results-supported-well-supported-control">
+                    <div>
+                      <label for="results-supported-well-supported-details" class="textarea"
+                        >${t('conclusionsSomewhatSupportedWhy')()}</label
+                      >
 
-                        <textarea
-                          name="resultsSupportedWellSupportedDetails"
-                          id="results-supported-well-supported-details"
-                          rows="5"
-                        >
+                      <textarea
+                        name="resultsSupportedWellSupportedDetails"
+                        id="results-supported-well-supported-details"
+                        rows="5"
+                      >
 ${match(form.resultsSupportedWellSupportedDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="resultsSupported"
-                        type="radio"
-                        value="neutral"
-                        aria-describedby="results-supported-tip-neutral"
-                        aria-controls="results-supported-neutral-control"
-                        ${match(form.resultsSupported)
-                          .with({ right: 'neutral' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('conclusionsNeitherSupportedNorUnsupported')()}</span>
-                    </label>
-                    <p id="results-supported-tip-neutral" role="note">
-                      ${t('conclusionsNeitherSupportedNorUnsupportedTip')()}
-                    </p>
-                    <div class="conditional" id="results-supported-neutral-control">
-                      <div>
-                        <label for="results-supported-neutral-details" class="textarea"
-                          >${t('conclusionsNeitherSupportedNorUnsupportedWhy')()}</label
-                        >
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="resultsSupported"
+                      type="radio"
+                      value="neutral"
+                      aria-describedby="results-supported-tip-neutral"
+                      aria-controls="results-supported-neutral-control"
+                      ${match(form.resultsSupported)
+                        .with({ right: 'neutral' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('conclusionsNeitherSupportedNorUnsupported')()}</span>
+                  </label>
+                  <p id="results-supported-tip-neutral" role="note">
+                    ${t('conclusionsNeitherSupportedNorUnsupportedTip')()}
+                  </p>
+                  <div class="conditional" id="results-supported-neutral-control">
+                    <div>
+                      <label for="results-supported-neutral-details" class="textarea"
+                        >${t('conclusionsNeitherSupportedNorUnsupportedWhy')()}</label
+                      >
 
-                        <textarea name="resultsSupportedNeutralDetails" id="results-supported-neutral-details" rows="5">
+                      <textarea name="resultsSupportedNeutralDetails" id="results-supported-neutral-details" rows="5">
 ${match(form.resultsSupportedNeutralDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="resultsSupported"
-                        type="radio"
-                        value="partially-supported"
-                        aria-describedby="results-supported-tip-partially-supported"
-                        aria-controls="results-supported-partially-supported-control"
-                        ${match(form.resultsSupported)
-                          .with({ right: 'partially-supported' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('conclusionsSomewhatUnsupported')()}</span>
-                    </label>
-                    <p id="results-supported-tip-partially-supported" role="note">
-                      ${t('conclusionsSomewhatUnsupportedTip')()}
-                    </p>
-                    <div class="conditional" id="results-supported-partially-supported-control">
-                      <div>
-                        <label for="results-supported-partially-supported-details" class="textarea"
-                          >${t('conclusionsSomewhatUnsupportedWhy')()}</label
-                        >
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="resultsSupported"
+                      type="radio"
+                      value="partially-supported"
+                      aria-describedby="results-supported-tip-partially-supported"
+                      aria-controls="results-supported-partially-supported-control"
+                      ${match(form.resultsSupported)
+                        .with({ right: 'partially-supported' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('conclusionsSomewhatUnsupported')()}</span>
+                  </label>
+                  <p id="results-supported-tip-partially-supported" role="note">
+                    ${t('conclusionsSomewhatUnsupportedTip')()}
+                  </p>
+                  <div class="conditional" id="results-supported-partially-supported-control">
+                    <div>
+                      <label for="results-supported-partially-supported-details" class="textarea"
+                        >${t('conclusionsSomewhatUnsupportedWhy')()}</label
+                      >
 
-                        <textarea
-                          name="resultsSupportedPartiallySupportedDetails"
-                          id="results-supported-partially-supported-details"
-                          rows="5"
-                        >
+                      <textarea
+                        name="resultsSupportedPartiallySupportedDetails"
+                        id="results-supported-partially-supported-details"
+                        rows="5"
+                      >
 ${match(form.resultsSupportedPartiallySupportedDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="resultsSupported"
-                        type="radio"
-                        value="not-supported"
-                        aria-describedby="results-supported-tip-not-supported"
-                        aria-controls="results-supported-not-supported-control"
-                        ${match(form.resultsSupported)
-                          .with({ right: 'not-supported' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('conclusionsHighlyUnsupported')()}</span>
-                    </label>
-                    <p id="results-supported-tip-not-supported" role="note">
-                      ${t('conclusionsHighlyUnsupportedTip')()}
-                    </p>
-                    <div class="conditional" id="results-supported-not-supported-control">
-                      <div>
-                        <label for="results-supported-not-supported-details" class="textarea"
-                          >${t('conclusionsHighlyUnsupportedWhy')()}</label
-                        >
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="resultsSupported"
+                      type="radio"
+                      value="not-supported"
+                      aria-describedby="results-supported-tip-not-supported"
+                      aria-controls="results-supported-not-supported-control"
+                      ${match(form.resultsSupported)
+                        .with({ right: 'not-supported' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('conclusionsHighlyUnsupported')()}</span>
+                  </label>
+                  <p id="results-supported-tip-not-supported" role="note">${t('conclusionsHighlyUnsupportedTip')()}</p>
+                  <div class="conditional" id="results-supported-not-supported-control">
+                    <div>
+                      <label for="results-supported-not-supported-details" class="textarea"
+                        >${t('conclusionsHighlyUnsupportedWhy')()}</label
+                      >
 
-                        <textarea
-                          name="resultsSupportedNotSupportedDetails"
-                          id="results-supported-not-supported-details"
-                          rows="5"
-                        >
+                      <textarea
+                        name="resultsSupportedNotSupportedDetails"
+                        id="results-supported-not-supported-details"
+                        rows="5"
+                      >
 ${match(form.resultsSupportedNotSupportedDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
+                          .with({ right: P.select(P.string) }, identity)
+                          .otherwise(() => '')}</textarea
+                      >
                     </div>
-                  </li>
-                  <li>
-                    <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
-                    <label>
-                      <input
-                        name="resultsSupported"
-                        type="radio"
-                        value="skip"
-                        ${match(form.resultsSupported)
-                          .with({ right: 'skip' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>${t('iDoNotKnow')()}</span>
-                    </label>
-                  </li>
-                </ol>
-              </fieldset>
-            </conditional-inputs>
-          </div>
+                  </div>
+                </li>
+                <li>
+                  <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
+                  <label>
+                    <input
+                      name="resultsSupported"
+                      type="radio"
+                      value="skip"
+                      ${match(form.resultsSupported)
+                        .with({ right: 'skip' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>${t('iDoNotKnow')()}</span>
+                  </label>
+                </li>
+              </ol>
+            </fieldset>
+          </conditional-inputs>
+        </div>
 
-          <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
-        </form>
-      </main>
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
+      </form>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
-    skipLinks: [[html`Skip to form`, '#form']],
-    type: 'streamline',
-    locale,
-    user,
+    skipToLabel: 'form',
   })
 }
