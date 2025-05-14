@@ -636,7 +636,7 @@ describe('writeReviewPublish', () => {
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
-          getUserOnboarding: shouldNotBeCalled,
+          getUserOnboarding: () => TE.left('unavailable'),
           formStore,
           locale,
           publicUrl: new URL('http://example.com'),
@@ -652,6 +652,7 @@ describe('writeReviewPublish', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: page.toString() },
         ]),
@@ -660,7 +661,8 @@ describe('writeReviewPublish', () => {
       expect(templatePage).toHaveBeenCalledWith({
         title: expect.anything(),
         content: expect.anything(),
-        skipLinks: [[expect.anything(), '#main-content']],
+        skipLinks: [[expect.anything(), '#main']],
+        js: [],
         type: 'streamline',
         locale,
         user,

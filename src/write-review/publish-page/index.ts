@@ -4,6 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
+import { StatusCodes } from 'http-status-codes'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -11,13 +12,13 @@ import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../../contact-email-address.js'
 import { detectLanguage } from '../../detect-language.js'
-import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from '../../html.js'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware.js'
-import { type TemplatePageEnv, templatePage } from '../../page.js'
+import type { TemplatePageEnv } from '../../page.js'
 import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import type { PublicUrlEnv } from '../../public-url.js'
-import { handlePageResponse } from '../../response.js'
+import { StreamlinePageResponse, handlePageResponse } from '../../response.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import { localeToIso6391 } from '../../types/iso639.js'
@@ -191,11 +192,14 @@ const publishPrereview = (newPrereview: NewPrereview) =>
     RTE.fromTaskEitherK(({ publishPrereview }: PublishPrereviewEnv) => publishPrereview(newPrereview)),
   )
 
-const showFailureMessage = flow(
-  RM.fromReaderK(failureMessage),
-  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showFailureMessage = (user: User, locale: SupportedLocale) =>
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('locale', RM.of(locale)),
+    RM.apS('response', RM.of(failureMessage(locale))),
+    RM.ichainW(handlePageResponse),
+  )
 
 function renderReview(form: CompletedForm, locale: SupportedLocale) {
   const t = translate(locale, 'write-review')
@@ -352,26 +356,21 @@ function renderReview(form: CompletedForm, locale: SupportedLocale) {
       : ''} `
 }
 
-function failureMessage(user: User, locale: SupportedLocale) {
+function failureMessage(locale: SupportedLocale) {
   const t = translate(locale, 'write-review')
 
-  return templatePage({
+  return StreamlinePageResponse({
     title: plainText(t('havingProblems')()),
-    content: html`
-      <main id="main-content">
-        <h1>${t('havingProblems')()}</h1>
+    status: StatusCodes.SERVICE_UNAVAILABLE,
+    main: html`
+      <h1>${t('havingProblems')()}</h1>
 
-        <p>${t('unableToPublish')()}</p>
+      <p>${t('unableToPublish')()}</p>
 
-        <p>${t('tryAgainLater')()}</p>
+      <p>${t('tryAgainLater')()}</p>
 
-        <p>${rawHtml(t('getInTouch')({ contact: mailToHelp }))}</p>
-      </main>
+      <p>${rawHtml(t('getInTouch')({ contact: mailToHelp }))}</p>
     `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    type: 'streamline',
-    locale,
-    user,
   })
 }
 
