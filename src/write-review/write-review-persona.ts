@@ -1,19 +1,17 @@
-import { Match, Struct, flow, pipe } from 'effect'
+import { Match, Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
+import * as RT from 'fp-ts/lib/ReaderTask.js'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { StatusCodes } from 'http-status-codes'
-import type { ResponseEnded, StatusOpen } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
+import { havingProblemsPage, pageNotFound } from '../http-error.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
-import type { TemplatePageEnv } from '../page.js'
-import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
-import type { PublicUrlEnv } from '../public-url.js'
-import { StreamlinePageResponse, handlePageResponse } from '../response.js'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../preprint.js'
+import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   writeReviewMatch,
   writeReviewPersonaMatch,
@@ -21,46 +19,58 @@ import {
   writeReviewReviewMatch,
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
-import type { GetUserOnboardingEnv } from '../user-onboarding.js'
-import { type GetUserEnv, type User, getUser } from '../user.js'
-import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
+import type { IndeterminatePreprintId } from '../types/preprint-id.js'
+import type { User } from '../user.js'
+import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
 
-export const writeReviewPersona = flow(
-  RM.fromReaderTaskEitherK(getPreprintTitle),
-  RM.ichainW(preprint =>
-    pipe(
-      RM.right({ preprint }),
-      RM.apS('user', getUser),
-      RM.bindW(
-        'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
-      ),
-      RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.apSW(
-        'locale',
-        RM.asks((env: { locale: SupportedLocale }) => env.locale),
-      ),
-      RM.ichainW(state => match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(showPersonaForm)),
-      RM.orElseW(error =>
-        match(error)
-          .with(
-            'no-form',
-            'no-session',
-            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
-          )
-          .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
-          .exhaustive(),
-      ),
+export const writeReviewPersona = ({
+  body,
+  id,
+  locale,
+  method,
+  user,
+}: {
+  body: unknown
+  id: IndeterminatePreprintId
+  locale: SupportedLocale
+  method: string
+  user?: User
+}): RT.ReaderTask<GetPreprintTitleEnv & FormStoreEnv, PageResponse | RedirectResponse | StreamlinePageResponse> =>
+  pipe(
+    getPreprintTitle(id),
+    RTE.matchEW(
+      Match.valueTags({
+        PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
+        PreprintIsUnavailable: () => RT.of(havingProblemsPage(locale)),
+      }),
+      preprint =>
+        pipe(
+          RTE.Do,
+          RTE.let('locale', () => locale),
+          RTE.let('preprint', () => preprint),
+          RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+          RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
+          RTE.let('method', () => method),
+          RTE.let('body', () => body),
+          RTE.matchE(
+            error =>
+              RT.of(
+                match(error)
+                  .with('no-form', 'no-session', () =>
+                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .with('form-unavailable', () => havingProblemsPage(locale))
+                  .exhaustive(),
+              ),
+            state =>
+              match(state)
+                .with({ method: 'POST' }, handlePersonaForm)
+                .otherwise(state => RT.of(showPersonaForm(state))),
+          ),
+        ),
     ),
-  ),
-  RM.orElseW(
-    Match.valueTags({
-      PreprintIsNotFound: () => notFound,
-      PreprintIsUnavailable: () => serviceUnavailable,
-    }),
-  ),
-)
+  )
 
 const showPersonaForm = ({
   form,
@@ -72,14 +82,7 @@ const showPersonaForm = ({
   locale: SupportedLocale
   preprint: PreprintTitle
   user: User
-}) =>
-  pipe(
-    RM.of({}),
-    RM.apS('user', RM.of(user)),
-    RM.apS('locale', RM.of(locale)),
-    RM.apS('response', RM.of(personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, user, locale))),
-    RM.ichainW(handlePageResponse),
-  )
+}) => personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, user, locale)
 
 const showPersonaErrorForm = ({
   form,
@@ -93,54 +96,41 @@ const showPersonaErrorForm = ({
   user: User
   originalForm: Form
   locale: SupportedLocale
-}) =>
-  pipe(
-    RM.of({}),
-    RM.apS('user', RM.of(user)),
-    RM.apS('locale', RM.of(locale)),
-    RM.apS('response', RM.of(personaForm(preprint, form, originalForm.reviewType, user, locale))),
-    RM.ichainW(handlePageResponse),
-  )
+}) => personaForm(preprint, form, originalForm.reviewType, user, locale)
 
 const handlePersonaForm = ({
+  body,
   form,
   locale,
   preprint,
   user,
 }: {
+  body: unknown
   form: Form
   locale: SupportedLocale
   preprint: PreprintTitle
   user: User
 }) =>
   pipe(
-    RM.decodeBody(body => E.right({ persona: pipe(PersonaFieldD.decode(body), E.mapLeft(missingE)) })),
-    RM.chainEitherK(fields =>
+    RTE.right({ persona: pipe(PersonaFieldD.decode(body), E.mapLeft(missingE)) }),
+    RTE.chainEitherK(fields =>
       pipe(
         E.Do,
         E.apS('persona', fields.persona),
         E.mapLeft(() => fields),
       ),
     ),
-    RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
-    RM.orElseW(error =>
-      match(error)
-        .returnType<
-          RM.ReaderMiddleware<
-            GetUserEnv & GetUserOnboardingEnv & { locale: SupportedLocale } & PublicUrlEnv & TemplatePageEnv,
-            StatusOpen,
-            ResponseEnded,
-            never,
-            void
-          >
-        >()
-        .with('form-unavailable', () => serviceUnavailable)
-        .with({ persona: P.any }, thisForm =>
-          showPersonaErrorForm({ form: thisForm, preprint, user, originalForm: form, locale }),
-        )
-        .exhaustive(),
+    RTE.map(updateForm(form)),
+    RTE.chainFirstW(saveForm(user.orcid, preprint.id)),
+    RTE.matchW(
+      error =>
+        match(error)
+          .with('form-unavailable', () => havingProblemsPage(locale))
+          .with({ persona: P.any }, thisForm =>
+            showPersonaErrorForm({ form: thisForm, preprint, user, originalForm: form, locale }),
+          )
+          .exhaustive(),
+      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
     ),
   )
 
