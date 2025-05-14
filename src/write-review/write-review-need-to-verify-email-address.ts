@@ -1,141 +1,124 @@
-import { Match, flow, pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { ResponseEnded, StatusOpen } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
-import { P, match } from 'ts-pattern'
+import * as RT from 'fp-ts/lib/ReaderTask.js'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import { match } from 'ts-pattern'
 import {
+  type GetContactEmailAddressEnv,
   type UnverifiedContactEmailAddress,
   type VerifyContactEmailAddressForReviewEnv,
   maybeGetContactEmailAddress,
   verifyContactEmailAddressForReview,
 } from '../contact-email-address.js'
 import { html, plainText } from '../html.js'
+import { havingProblemsPage, pageNotFound } from '../http-error.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
-import type { TemplatePageEnv } from '../page.js'
-import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
-import type { PublicUrlEnv } from '../public-url.js'
-import {
-  FlashMessageResponse,
-  StreamlinePageResponse,
-  handleFlashMessageResponse,
-  handlePageResponse,
-} from '../response.js'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../preprint.js'
+import { FlashMessageResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
 } from '../routes.js'
-import type { GetUserOnboardingEnv } from '../user-onboarding.js'
-import { type GetUserEnv, type User, getUser } from '../user.js'
-import { getForm, redirectToNextForm } from './form.js'
+import type { IndeterminatePreprintId } from '../types/preprint-id.js'
+import type { User } from '../user.js'
+import { type FormStoreEnv, getForm, nextFormMatch } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
 
-export const writeReviewNeedToVerifyEmailAddress = flow(
-  RM.fromReaderTaskEitherK(getPreprintTitle),
-  RM.ichainW(preprint =>
-    pipe(
-      RM.right({ preprint }),
-      RM.apS('user', getUser),
-      RM.bindW(
-        'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
-      ),
-      RM.bindW(
-        'contactEmailAddress',
-        RM.fromReaderTaskEitherK(({ user }) => maybeGetContactEmailAddress(user.orcid)),
-      ),
-      RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.apSW(
-        'locale',
-        RM.asks((env: { locale: SupportedLocale }) => env.locale),
-      ),
-      RM.ichainW(state =>
-        match(state)
-          .returnType<
-            RM.ReaderMiddleware<
-              GetUserEnv &
-                GetUserOnboardingEnv & { locale: SupportedLocale } & PublicUrlEnv &
-                TemplatePageEnv &
-                VerifyContactEmailAddressForReviewEnv,
-              StatusOpen,
-              ResponseEnded,
-              never,
-              void
-            >
-          >()
-          .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>
-            RM.fromMiddleware(redirectToNextForm(preprint.id)(state.form)),
-          )
-          .with(
-            { contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' }, method: 'POST' },
-            resendVerificationEmail,
-          )
-          .with({ contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' } }, showNeedToVerifyEmailAddressMessage)
-          .with({ contactEmailAddress: undefined }, () =>
-            RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id }))),
-          )
-          .exhaustive(),
-      ),
-      RM.orElseW(error =>
-        match(error)
-          .with(
-            'no-form',
-            'no-session',
-            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
-          )
-          .with('unavailable', 'form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
-          .exhaustive(),
-      ),
+export const writeReviewNeedToVerifyEmailAddress = ({
+  id,
+  locale,
+  method,
+  user,
+}: {
+  id: IndeterminatePreprintId
+  locale: SupportedLocale
+  method: string
+  user?: User
+}): RT.ReaderTask<
+  GetContactEmailAddressEnv & GetPreprintTitleEnv & FormStoreEnv & VerifyContactEmailAddressForReviewEnv,
+  PageResponse | RedirectResponse | FlashMessageResponse | StreamlinePageResponse
+> =>
+  pipe(
+    getPreprintTitle(id),
+    RTE.matchEW(
+      Match.valueTags({
+        PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
+        PreprintIsUnavailable: () => RT.of(havingProblemsPage(locale)),
+      }),
+      preprint =>
+        pipe(
+          RTE.Do,
+          RTE.let('locale', () => locale),
+          RTE.let('preprint', () => preprint),
+          RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+          RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
+          RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
+          RTE.let('method', () => method),
+          RTE.matchEW(
+            error =>
+              RT.of(
+                match(error)
+                  .with('no-form', 'no-session', () =>
+                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .with('form-unavailable', 'unavailable', () => havingProblemsPage(locale))
+                  .exhaustive(),
+              ),
+            state =>
+              match(state)
+                .returnType<
+                  RT.ReaderTask<
+                    VerifyContactEmailAddressForReviewEnv,
+                    PageResponse | RedirectResponse | FlashMessageResponse | StreamlinePageResponse
+                  >
+                >()
+                .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>
+                  RT.of(
+                    RedirectResponse({ location: format(nextFormMatch(state.form).formatter, { id: preprint.id }) }),
+                  ),
+                )
+                .with(
+                  { contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' }, method: 'POST' },
+                  resendVerificationEmail,
+                )
+                .with({ contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' } }, state =>
+                  RT.of(needToVerifyEmailAddressMessage(state)),
+                )
+                .with({ contactEmailAddress: undefined }, () =>
+                  RT.of(
+                    RedirectResponse({
+                      location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id }),
+                    }),
+                  ),
+                )
+                .exhaustive(),
+          ),
+        ),
     ),
-  ),
-  RM.orElseW(
-    Match.valueTags({
-      PreprintIsNotFound: () => notFound,
-      PreprintIsUnavailable: () => serviceUnavailable,
-    }),
-  ),
-)
+  )
 
 const resendVerificationEmail = ({
   contactEmailAddress,
-  preprint,
-  user,
-}: {
-  contactEmailAddress: UnverifiedContactEmailAddress
-  preprint: PreprintTitle
-  user: User
-}) =>
-  pipe(
-    RM.fromReaderTaskEither(verifyContactEmailAddressForReview(user, contactEmailAddress, preprint.id)),
-    RM.map(() =>
-      FlashMessageResponse({
-        message: 'verify-contact-email-resend',
-        location: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id }),
-      }),
-    ),
-    RM.bindTo('response'),
-    RM.ichainMiddlewareKW(handleFlashMessageResponse),
-    RM.orElseW(() => serviceUnavailable),
-  )
-
-const showNeedToVerifyEmailAddressMessage = ({
-  contactEmailAddress,
-  preprint,
   locale,
+  preprint,
   user,
 }: {
   contactEmailAddress: UnverifiedContactEmailAddress
-  preprint: PreprintTitle
   locale: SupportedLocale
+  preprint: PreprintTitle
   user: User
 }) =>
   pipe(
-    RM.of({}),
-    RM.apS('user', RM.of(user)),
-    RM.apS('locale', RM.of(locale)),
-    RM.apS('response', RM.of(needToVerifyEmailAddressMessage({ contactEmailAddress, locale, preprint }))),
-    RM.ichainW(handlePageResponse),
+    verifyContactEmailAddressForReview(user, contactEmailAddress, preprint.id),
+    RTE.matchW(
+      () => havingProblemsPage(locale),
+      () =>
+        FlashMessageResponse({
+          message: 'verify-contact-email-resend',
+          location: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id }),
+        }),
+    ),
   )
 
 function needToVerifyEmailAddressMessage({
