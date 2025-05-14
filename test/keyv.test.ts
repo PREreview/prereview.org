@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
-import { Struct } from 'effect'
+import { Record, Struct } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import Keyv from 'keyv'
@@ -2197,45 +2197,46 @@ describe('addToSession', () => {
 })
 
 describe('popFromSession', () => {
-  test.prop([fc.string(), fc.dictionary(fc.lorem(), fc.string()), fc.lorem(), fc.string()])(
-    'when the session contains the key',
-    async (sessionId, session, key, value) => {
-      const store = new Keyv()
-      await store.set(sessionId, { ...session, [key]: value })
+  test.prop([
+    fc.string(),
+    fc.tuple(fc.dictionary(fc.lorem(), fc.string()), fc.lorem()).filter(([session, key]) => !Record.has(session, key)),
+    fc.string(),
+  ])('when the session contains the key', async (sessionId, [session, key], value) => {
+    const store = new Keyv()
+    await store.set(sessionId, { ...session, [key]: value })
 
-      const actual = await _.popFromSession(
-        sessionId,
-        key,
-      )({
-        sessionStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+    const actual = await _.popFromSession(
+      sessionId,
+      key,
+    )({
+      sessionStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
-      expect(actual).toStrictEqual(E.right(value))
-      expect(await store.get(sessionId)).toStrictEqual(session)
-    },
-  )
+    expect(actual).toStrictEqual(E.right(value))
+    expect(await store.get(sessionId)).toStrictEqual(session)
+  })
 
-  test.prop([fc.string(), fc.dictionary(fc.lorem(), fc.string()), fc.lorem()])(
-    'when the key is not found in the session',
-    async (sessionId, session, key) => {
-      const store = new Keyv()
-      await store.set(sessionId, session)
+  test.prop([
+    fc.string(),
+    fc.tuple(fc.dictionary(fc.lorem(), fc.string()), fc.lorem()).filter(([session, key]) => !Record.has(session, key)),
+  ])('when the key is not found in the session', async (sessionId, [session, key]) => {
+    const store = new Keyv()
+    await store.set(sessionId, session)
 
-      const actual = await _.popFromSession(
-        sessionId,
-        key,
-      )({
-        sessionStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+    const actual = await _.popFromSession(
+      sessionId,
+      key,
+    )({
+      sessionStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(await store.get(sessionId)).toStrictEqual(session)
-    },
-  )
+    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(await store.get(sessionId)).toStrictEqual(session)
+  })
 
   test.prop([fc.string(), fc.lorem()])('when the session is not found', async (sessionId, key) => {
     const store = new Keyv()
