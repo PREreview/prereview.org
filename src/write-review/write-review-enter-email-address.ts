@@ -1,22 +1,26 @@
 import { Match, Option, String, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
+import * as RT from 'fp-ts/lib/ReaderTask.js'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { StatusCodes } from 'http-status-codes'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import {
+  type GetContactEmailAddressEnv,
+  type SaveContactEmailAddressEnv,
   UnverifiedContactEmailAddress,
+  type VerifyContactEmailAddressForReviewEnv,
   maybeGetContactEmailAddress,
   saveContactEmailAddress,
   verifyContactEmailAddressForReview,
 } from '../contact-email-address.js'
 import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form.js'
 import { html, plainText } from '../html.js'
+import { havingProblemsPage, pageNotFound } from '../http-error.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
-import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
-import { StreamlinePageResponse, handlePageResponse } from '../response.js'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../preprint.js'
+import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   writeReviewConductMatch,
   writeReviewEnterEmailAddressMatch,
@@ -25,143 +29,127 @@ import {
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import { type EmailAddress, EmailAddressC } from '../types/email-address.js'
-import { generateUuid } from '../types/uuid.js'
-import { type User, getUser } from '../user.js'
-import { getForm, redirectToNextForm } from './form.js'
+import type { IndeterminatePreprintId } from '../types/preprint-id.js'
+import { type GenerateUuidEnv, generateUuid } from '../types/uuid.js'
+import type { User } from '../user.js'
+import { type FormStoreEnv, getForm, nextFormMatch } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
 
-export const writeReviewEnterEmailAddress = flow(
-  RM.fromReaderTaskEitherK(getPreprintTitle),
-  RM.ichainW(preprint =>
-    pipe(
-      RM.right({ preprint }),
-      RM.apS('user', getUser),
-      RM.bindW(
-        'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
-      ),
-      RM.bindW(
-        'contactEmailAddress',
-        RM.fromReaderTaskEitherK(({ user }) => maybeGetContactEmailAddress(user.orcid)),
-      ),
-      RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.apSW(
-        'locale',
-        RM.asks((env: { locale: SupportedLocale }) => env.locale),
-      ),
-      RM.ichainW(state =>
-        match(state)
-          .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>
-            RM.fromMiddleware(redirectToNextForm(preprint.id)(state.form)),
-          )
-          .with(
-            { contactEmailAddress: P.union({ _tag: 'UnverifiedContactEmailAddress' }, undefined), method: 'POST' },
-            handleEnterEmailAddressForm,
-          )
-          .with(
-            { contactEmailAddress: P.union({ _tag: 'UnverifiedContactEmailAddress' }, undefined) },
-            showEnterEmailAddressForm,
-          )
-          .exhaustive(),
-      ),
-      RM.orElseW(error =>
-        match(error)
-          .with(
-            'no-form',
-            'no-session',
-            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
-          )
-          .with('unavailable', 'form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
-          .exhaustive(),
-      ),
+export const writeReviewEnterEmailAddress = ({
+  body,
+  id,
+  locale,
+  method,
+  user,
+}: {
+  body: unknown
+  id: IndeterminatePreprintId
+  locale: SupportedLocale
+  method: string
+  user?: User
+}): RT.ReaderTask<
+  GenerateUuidEnv &
+    GetContactEmailAddressEnv &
+    SaveContactEmailAddressEnv &
+    VerifyContactEmailAddressForReviewEnv &
+    GetPreprintTitleEnv &
+    FormStoreEnv,
+  PageResponse | RedirectResponse | StreamlinePageResponse
+> =>
+  pipe(
+    getPreprintTitle(id),
+    RTE.matchEW(
+      Match.valueTags({
+        PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
+        PreprintIsUnavailable: () => RT.of(havingProblemsPage(locale)),
+      }),
+      preprint =>
+        pipe(
+          RTE.Do,
+          RTE.let('locale', () => locale),
+          RTE.let('preprint', () => preprint),
+          RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+          RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
+          RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
+          RTE.let('method', () => method),
+          RTE.let('body', () => body),
+          RTE.matchEW(
+            error =>
+              RT.of(
+                match(error)
+                  .with('no-form', 'no-session', () =>
+                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .with('form-unavailable', 'unavailable', () => havingProblemsPage(locale))
+                  .exhaustive(),
+              ),
+            state =>
+              match(state)
+                .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>
+                  RT.of(
+                    RedirectResponse({ location: format(nextFormMatch(state.form).formatter, { id: preprint.id }) }),
+                  ),
+                )
+                .with(
+                  {
+                    contactEmailAddress: P.union({ _tag: 'UnverifiedContactEmailAddress' }, undefined),
+                    method: 'POST',
+                  },
+                  handleEnterEmailAddressForm,
+                )
+                .with({ contactEmailAddress: P.union({ _tag: 'UnverifiedContactEmailAddress' }, undefined) }, state =>
+                  RT.of(showEnterEmailAddressForm(state)),
+                )
+                .exhaustive(),
+          ),
+        ),
     ),
-  ),
-  RM.orElseW(
-    Match.valueTags({
-      PreprintIsNotFound: () => notFound,
-      PreprintIsUnavailable: () => serviceUnavailable,
-    }),
-  ),
-)
+  )
 
 const showEnterEmailAddressForm = ({
   contactEmailAddress,
   locale,
   preprint,
-  user,
 }: {
   contactEmailAddress?: UnverifiedContactEmailAddress
   locale: SupportedLocale
   preprint: PreprintTitle
-  user: User
-}) =>
-  pipe(
-    RM.of({}),
-    RM.apS('user', RM.of(user)),
-    RM.apS('locale', RM.of(locale)),
-    RM.apS('response', RM.of(createFormPage(preprint, { emailAddress: E.right(contactEmailAddress?.value) }, locale))),
-    RM.ichainW(handlePageResponse),
-  )
-
-const showEnterEmailAddressErrorForm = ({
-  form,
-  locale,
-  preprint,
-  user,
-}: {
-  form: EnterEmailAddressForm
-  locale: SupportedLocale
-  preprint: PreprintTitle
-  user: User
-}) =>
-  pipe(
-    RM.of({}),
-    RM.apS('user', RM.of(user)),
-    RM.apS('locale', RM.of(locale)),
-    RM.apS('response', RM.of(createFormPage(preprint, form, locale))),
-    RM.ichainW(handlePageResponse),
-  )
+}) => createFormPage(preprint, { emailAddress: E.right(contactEmailAddress?.value) }, locale)
 
 const handleEnterEmailAddressForm = ({
+  body,
   locale,
   preprint,
   user,
 }: {
+  body: unknown
   locale: SupportedLocale
   preprint: PreprintTitle
   user: User
 }) =>
   pipe(
-    RM.decodeBody(E.right),
-    RM.chainEitherK(
-      flow(
-        EmailAddressFieldD.decode,
-        E.mapLeft(error => ({
-          emailAddress: match(getInput('emailAddress')(error))
-            .returnType<E.Either<MissingE | InvalidE, never>>()
-            .with(P.union(P.when(Option.isNone), { value: '' }), () => pipe(missingE(), E.left))
-            .with({ value: P.select() }, flow(invalidE, E.left))
-            .exhaustive(),
-        })),
-      ),
+    RTE.fromEither(EmailAddressFieldD.decode(body)),
+    RTE.mapLeft(error => ({
+      emailAddress: match(getInput('emailAddress')(error))
+        .returnType<E.Either<MissingE | InvalidE, never>>()
+        .with(P.union(P.when(Option.isNone), { value: '' }), () => pipe(missingE(), E.left))
+        .with({ value: P.select() }, flow(invalidE, E.left))
+        .exhaustive(),
+    })),
+    RTE.bindTo('value'),
+    RTE.apS('verificationToken', RTE.rightReaderIO(generateUuid)),
+    RTE.map(({ value, verificationToken }) => new UnverifiedContactEmailAddress({ value, verificationToken })),
+    RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
+    RTE.chainFirstW(contactEmailAddress => verifyContactEmailAddressForReview(user, contactEmailAddress, preprint.id)),
+    RTE.matchW(
+      error =>
+        match(error)
+          .with('unavailable', () => havingProblemsPage(locale))
+          .with({ emailAddress: P.any }, form => createFormPage(preprint, form, locale))
+          .exhaustive(),
+      () =>
+        RedirectResponse({ location: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id }) }),
     ),
-    RM.ichainW(emailAddress =>
-      pipe(
-        RM.fromReaderIO(generateUuid),
-        RM.map(verificationToken => new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken })),
-        RM.chainFirstReaderTaskEitherKW(contactEmailAddress =>
-          saveContactEmailAddress(user.orcid, contactEmailAddress),
-        ),
-        RM.chainFirstReaderTaskEitherKW(contactEmailAddress =>
-          verifyContactEmailAddressForReview(user, contactEmailAddress, preprint.id),
-        ),
-        RM.ichainMiddlewareK(() =>
-          seeOther(format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id })),
-        ),
-        RM.orElseW(() => serviceUnavailable),
-      ),
-    ),
-    RM.orElseW(form => showEnterEmailAddressErrorForm({ form, locale, preprint, user })),
   )
 
 const EmailAddressFieldD = pipe(
