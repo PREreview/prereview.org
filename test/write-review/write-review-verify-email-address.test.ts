@@ -1,50 +1,32 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware.js'
+import { StatusCodes } from 'http-status-codes'
 import Keyv from 'keyv'
 import {
   VerifiedContactEmailAddress,
   type GetContactEmailAddressEnv,
   type SaveContactEmailAddressEnv,
 } from '../../src/contact-email-address.js'
-import type { TemplatePageEnv } from '../../src/page.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../../src/routes.js'
-import { OrcidLocale } from '../../src/types/index.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
-import { runMiddleware } from '../middleware.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 import * as fc from './fc.js'
 
 describe('writeReviewVerifyEmailAddress', () => {
   test.prop([
-    fc.oauth(),
-    fc.origin(),
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
-    fc.connection(),
     fc.form(),
     fc.user(),
     fc.supportedLocale(),
     fc.unverifiedContactEmailAddress(),
   ])(
     'when the email address is unverified',
-    async (
-      orcidOauth,
-      publicUrl,
-      preprintId,
-      preprintTitle,
-      connection,
-      newReview,
-      user,
-      locale,
-      contactEmailAddress,
-    ) => {
+    async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
       const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
@@ -54,36 +36,23 @@ describe('writeReviewVerifyEmailAddress', () => {
         TE.right(undefined),
       )
 
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          contactEmailAddress.verificationToken,
-        )({
-          formStore,
-          getContactEmailAddress,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.fromEither(E.right(user)),
-          locale,
-          orcidOauth,
-          publicUrl,
-          saveContactEmailAddress,
-          templatePage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+      const actual = await _.writeReviewVerifyEmailAddress({
+        id: preprintId,
+        locale,
+        user,
+        verify: contactEmailAddress.verificationToken,
+      })({
+        formStore,
+        getContactEmailAddress,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        saveContactEmailAddress,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-          },
-          { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'contact-email-verified' },
-          { type: 'endResponse' },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'FlashMessageResponse',
+        location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+        message: 'contact-email-verified',
+      })
       expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
       expect(saveContactEmailAddress).toHaveBeenCalledWith(
         user.orcid,
@@ -93,494 +62,190 @@ describe('writeReviewVerifyEmailAddress', () => {
   )
 
   test.prop([
-    fc.oauth(),
-    fc.origin(),
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
-    fc.connection(),
     fc.form(),
     fc.user(),
     fc.supportedLocale(),
     fc.verifiedContactEmailAddress(),
     fc.uuid(),
-    fc.html(),
   ])(
     'when the email address is already verified',
-    async (
-      orcidOauth,
-      publicUrl,
-      preprintId,
-      preprintTitle,
-      connection,
-      newReview,
-      user,
-      locale,
-      contactEmailAddress,
-      id,
-      page,
-    ) => {
+    async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, verify) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          id,
-        )({
-          formStore,
-          getContactEmailAddress: () => TE.right(contactEmailAddress),
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-          locale,
-          orcidOauth,
-          publicUrl,
-          saveContactEmailAddress: shouldNotBeCalled,
-          templatePage,
-        }),
-        connection,
-      )()
+      const actual = await _.writeReviewVerifyEmailAddress({ id: preprintId, locale, user, verify })({
+        formStore,
+        getContactEmailAddress: () => TE.right(contactEmailAddress),
+        getPreprintTitle: () => TE.right(preprintTitle),
+        saveContactEmailAddress: shouldNotBeCalled,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: page.toString() },
-        ]),
-      )
-      expect(templatePage).toHaveBeenCalledWith({
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.NOT_FOUND,
         title: expect.anything(),
-        content: expect.anything(),
-        skipLinks: [[expect.anything(), '#main-content']],
-        locale,
-        user,
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
       })
     },
   )
 
   test.prop([
-    fc.oauth(),
-    fc.origin(),
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
-    fc.connection(),
     fc.form(),
     fc.user(),
     fc.supportedLocale(),
     fc.unverifiedContactEmailAddress(),
     fc.uuid(),
-    fc.html(),
   ])(
     "when the verification token doesn't match",
-    async (
-      orcidOauth,
-      publicUrl,
-      preprintId,
-      preprintTitle,
-      connection,
-      newReview,
-      user,
-      locale,
-      contactEmailAddress,
-      id,
-      page,
-    ) => {
+    async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, verify) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          id,
-        )({
-          formStore,
-          getContactEmailAddress: () => TE.right(contactEmailAddress),
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-          locale,
-          orcidOauth,
-          publicUrl,
-          saveContactEmailAddress: shouldNotBeCalled,
-          templatePage,
-        }),
-        connection,
-      )()
+      const actual = await _.writeReviewVerifyEmailAddress({ id: preprintId, locale, user, verify })({
+        formStore,
+        getContactEmailAddress: () => TE.right(contactEmailAddress),
+        getPreprintTitle: () => TE.right(preprintTitle),
+        saveContactEmailAddress: shouldNotBeCalled,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: page.toString() },
-        ]),
-      )
-      expect(templatePage).toHaveBeenCalledWith({
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.NOT_FOUND,
         title: expect.anything(),
-        content: expect.anything(),
-        skipLinks: [[expect.anything(), '#main-content']],
-        locale,
-        user,
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
       })
     },
   )
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection(),
-    fc.form(),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.uuid(),
-    fc.html(),
-  ])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.form(), fc.user(), fc.supportedLocale(), fc.uuid()])(
     'when there is no email address',
-    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, locale, id, page) => {
+    async (preprintId, preprintTitle, newReview, user, locale, verify) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          id,
-        )({
-          formStore,
-          getContactEmailAddress: () => TE.left('not-found'),
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-          locale,
-          orcidOauth,
-          publicUrl,
-          saveContactEmailAddress: shouldNotBeCalled,
-          templatePage,
-        }),
-        connection,
-      )()
+      const actual = await _.writeReviewVerifyEmailAddress({ id: preprintId, locale, user, verify })({
+        formStore,
+        getContactEmailAddress: () => TE.left('not-found'),
+        getPreprintTitle: () => TE.right(preprintTitle),
+        saveContactEmailAddress: shouldNotBeCalled,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: page.toString() },
-        ]),
-      )
-      expect(templatePage).toHaveBeenCalledWith({
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.NOT_FOUND,
         title: expect.anything(),
-        content: expect.anything(),
-        skipLinks: [[expect.anything(), '#main-content']],
-        locale,
-        user,
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
       })
     },
   )
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection(),
-    fc.form(),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.uuid(),
-    fc.html(),
-  ])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.form(), fc.user(), fc.supportedLocale(), fc.uuid()])(
     "when the email address can't be loaded",
-    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, locale, id, page) => {
+    async (preprintId, preprintTitle, newReview, user, locale, verify) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          id,
-        )({
-          formStore,
-          getContactEmailAddress: () => TE.left('unavailable'),
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-          locale,
-          orcidOauth,
-          publicUrl,
-          saveContactEmailAddress: shouldNotBeCalled,
-          templatePage,
-        }),
-        connection,
-      )()
+      const actual = await _.writeReviewVerifyEmailAddress({ id: preprintId, locale, user, verify })({
+        formStore,
+        getContactEmailAddress: () => TE.left('unavailable'),
+        getPreprintTitle: () => TE.right(preprintTitle),
+        saveContactEmailAddress: shouldNotBeCalled,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: page.toString() },
-        ]),
-      )
-      expect(templatePage).toHaveBeenCalledWith({
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.SERVICE_UNAVAILABLE,
         title: expect.anything(),
-        content: expect.anything(),
-        skipLinks: [[expect.anything(), '#main-content']],
-        locale,
-        user,
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
       })
     },
   )
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection(),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.uuid(),
-  ])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.user(), fc.supportedLocale(), fc.uuid()])(
     'when there is no form',
-    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, user, locale, id) => {
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          id,
-        )({
-          formStore: new Keyv(),
-          getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-          locale,
-          orcidOauth,
-          publicUrl,
-          saveContactEmailAddress: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+    async (preprintId, preprintTitle, user, locale, verify) => {
+      const actual = await _.writeReviewVerifyEmailAddress({ id: preprintId, locale, user, verify })({
+        formStore: new Keyv(),
+        getContactEmailAddress: shouldNotBeCalled,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        saveContactEmailAddress: shouldNotBeCalled,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: StatusCodes.SEE_OTHER,
+        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+      })
     },
   )
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.indeterminatePreprintId(),
-    fc.connection(),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.uuid(),
-    fc.html(),
-  ])(
+  test.prop([fc.indeterminatePreprintId(), fc.user(), fc.supportedLocale(), fc.uuid()])(
     'when the preprint cannot be loaded',
-    async (orcidOauth, publicUrl, preprintId, connection, user, locale, id, page) => {
-      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+    async (preprintId, user, locale, verify) => {
+      const actual = await _.writeReviewVerifyEmailAddress({ id: preprintId, locale, user, verify })({
+        formStore: new Keyv(),
+        getContactEmailAddress: shouldNotBeCalled,
+        getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
+        saveContactEmailAddress: shouldNotBeCalled,
+      })()
 
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          id,
-        )({
-          formStore: new Keyv(),
-          getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-          getUser: () => M.of(user),
-          locale,
-          orcidOauth,
-          publicUrl,
-          saveContactEmailAddress: shouldNotBeCalled,
-          templatePage,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: page.toString() },
-        ]),
-      )
-      expect(templatePage).toHaveBeenCalledWith({
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.SERVICE_UNAVAILABLE,
         title: expect.anything(),
-        content: expect.anything(),
-        skipLinks: [[expect.anything(), '#main-content']],
-        locale,
-        user,
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
       })
     },
   )
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.indeterminatePreprintId(),
-    fc.connection(),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.uuid(),
-    fc.html(),
-  ])(
+  test.prop([fc.indeterminatePreprintId(), fc.user(), fc.supportedLocale(), fc.uuid()])(
     'when the preprint cannot be found',
-    async (orcidOauth, publicUrl, preprintId, connection, user, locale, id, page) => {
-      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+    async (preprintId, user, locale, verify) => {
+      const actual = await _.writeReviewVerifyEmailAddress({ id: preprintId, locale, user, verify })({
+        formStore: new Keyv(),
+        getContactEmailAddress: shouldNotBeCalled,
+        getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
+        saveContactEmailAddress: shouldNotBeCalled,
+      })()
 
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          id,
-        )({
-          formStore: new Keyv(),
-          getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-          getUser: () => M.of(user),
-          locale,
-          orcidOauth,
-          publicUrl,
-          saveContactEmailAddress: shouldNotBeCalled,
-          templatePage,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: page.toString() },
-        ]),
-      )
-      expect(templatePage).toHaveBeenCalledWith({
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.NOT_FOUND,
         title: expect.anything(),
-        content: expect.anything(),
-        skipLinks: [[expect.anything(), '#main-content']],
-        locale,
-        user,
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
       })
     },
   )
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection(),
-    fc.supportedLocale(),
-    fc.uuid(),
-  ])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.supportedLocale(), fc.uuid()])(
     'when the user is not logged in',
-    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, locale, id) => {
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          id,
-        )({
-          formStore: new Keyv(),
-          getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.left('no-session'),
-          locale,
-          orcidOauth,
-          publicUrl,
-          saveContactEmailAddress: shouldNotBeCalled,
-          templatePage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+    async (preprintId, preprintTitle, locale, verify) => {
+      const actual = await _.writeReviewVerifyEmailAddress({ id: preprintId, locale, user: undefined, verify })({
+        formStore: new Keyv(),
+        getContactEmailAddress: shouldNotBeCalled,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        saveContactEmailAddress: shouldNotBeCalled,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Found },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                lang: OrcidLocale.fromSupportedLocale(locale),
-                client_id: orcidOauth.clientId,
-                response_type: 'code',
-                redirect_uri: new URL('/orcid', publicUrl).toString(),
-                scope: '/authenticate',
-                state: new URL(
-                  format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprintTitle.id, verify: id }),
-                  publicUrl,
-                ).toString(),
-              }).toString()}`,
-              orcidOauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
-
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection(),
-    fc.supportedLocale(),
-    fc.uuid(),
-    fc.error(),
-    fc.html(),
-  ])(
-    "when the user can't be loaded",
-    async (orcidOauth, publicUrl, preprintId, preprintTitle, connection, locale, id, error, page) => {
-      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
-
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          id,
-        )({
-          formStore: new Keyv(),
-          getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.left(error),
-          locale,
-          orcidOauth,
-          publicUrl,
-          saveContactEmailAddress: shouldNotBeCalled,
-          templatePage,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: page.toString() },
-        ]),
-      )
-      expect(templatePage).toHaveBeenCalledWith({
-        title: expect.anything(),
-        content: expect.anything(),
-        skipLinks: [[expect.anything(), '#main-content']],
-        locale,
-        user: undefined,
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprintTitle.id, verify }),
       })
     },
   )
