@@ -255,10 +255,7 @@ export const make: Effect.Effect<
               resourceType: 'Comment',
             }),
           ),
-          Effect.catchTags({
-            SqlError: error => new EventStore.FailedToCommitEvent({ cause: error }),
-            ParseError: error => new EventStore.FailedToCommitEvent({ cause: error }),
-          }),
+          Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
         )
 
   return { getAllEvents, getEvents, commitEvents }

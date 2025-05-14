@@ -79,10 +79,7 @@ export const getRecord = (
     ),
     Effect.andThen(HttpClientResponse.schemaBodyJson(ResponseSchema(Record))),
     Effect.andThen(body => body.data),
-    Effect.catchTags({
-      ParseError: error => new RecordIsUnavailable({ cause: error }),
-      ResponseError: error => new RecordIsUnavailable({ cause: error }),
-    }),
+    Effect.catchTag('ParseError', 'ResponseError', error => new RecordIsUnavailable({ cause: error })),
     Effect.tapErrorTag('RecordIsUnavailable', error =>
       Effect.logError('Failed to get record from Japan Link Center').pipe(Effect.annotateLogs({ error })),
     ),

@@ -57,11 +57,12 @@ export const makeHandleCommentCommand: Effect.Effect<
         Effect.andThen(Effect.forEach(event => PubSub.publish(commentEvents, { commentId, event }))),
       )
     }).pipe(
-      Effect.catchTags({
-        FailedToCommitEvent: cause => new UnableToHandleCommand({ cause }),
-        FailedToGetEvents: cause => new UnableToHandleCommand({ cause }),
-        ResourceHasChanged: cause => new UnableToHandleCommand({ cause }),
-      }),
+      Effect.catchTag(
+        'FailedToCommitEvent',
+        'FailedToGetEvents',
+        'ResourceHasChanged',
+        cause => new UnableToHandleCommand({ cause }),
+      ),
     )
 })
 

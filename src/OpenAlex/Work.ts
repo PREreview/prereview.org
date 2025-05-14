@@ -47,10 +47,7 @@ export const getWorkByDoi = (
       }),
     ),
     Effect.andThen(HttpClientResponse.schemaBodyJson(WorkSchema)),
-    Effect.catchTags({
-      ParseError: error => new WorkIsUnavailable({ cause: error }),
-      ResponseError: error => new WorkIsUnavailable({ cause: error }),
-    }),
+    Effect.catchTag('ParseError', 'ResponseError', error => new WorkIsUnavailable({ cause: error })),
     Effect.tapErrorTag('WorkIsUnavailable', error =>
       Effect.logError('Failed to get work from OpenAlex').pipe(Effect.annotateLogs({ error })),
     ),
