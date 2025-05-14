@@ -17,7 +17,7 @@ import { PublicUrl } from '../public-url.js'
 import { FlashMessageSchema } from '../response.js'
 import { securityHeaders } from '../securityHeaders.js'
 import { Uuid } from '../types/index.js'
-import { LoggedInUser, UserSchema } from '../user.js'
+import { LoggedInUser, SessionId, UserSchema } from '../user.js'
 import * as LocaleCookie from './LocaleCookie.js'
 import * as LocaleInPath from './LocaleInPath.js'
 
@@ -143,20 +143,31 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
     const secret = yield* SessionSecret
     const { sessionCookie, sessionStore } = yield* ExpressConfig
 
-    const session = yield* pipe(
+    const sessionId = yield* pipe(
       HttpServerRequest.schemaCookies(
         Schema.Struct({ session: pipe(Schema.propertySignature(Schema.String), Schema.fromKey(sessionCookie)) }),
       ),
       Effect.andThen(({ session }) => cookieSignature.unsign(session, Redacted.value(secret))),
       Effect.andThen(Schema.decodeUnknown(Uuid.UuidSchema)),
-      Effect.andThen(sessionId => sessionStore.get(sessionId)),
-      Effect.andThen(Schema.decodeUnknown(Schema.Struct({ user: UserSchema }))),
       Effect.option,
     )
 
-    return yield* Option.match(session, {
+    return yield* Option.match(sessionId, {
       onNone: () => app,
-      onSome: ({ user }) => Effect.provideService(app, LoggedInUser, user),
+      onSome: sessionId =>
+        Effect.gen(function* () {
+          const session = yield* pipe(
+            Effect.tryPromise(() => sessionStore.get(sessionId)),
+            Effect.andThen(Schema.decodeUnknown(Schema.Struct({ user: UserSchema }))),
+            Effect.option,
+          )
+
+          return yield* Option.match(session, {
+            onNone: () => app,
+            onSome: ({ user }) =>
+              Effect.provideService(Effect.provideService(app, LoggedInUser, user), SessionId, sessionId),
+          })
+        }),
     })
   }),
 )

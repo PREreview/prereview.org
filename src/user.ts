@@ -14,6 +14,8 @@ export type User = C.TypeOf<typeof UserC>
 
 export class LoggedInUser extends Context.Tag('User')<LoggedInUser, User>() {}
 
+export class SessionId extends Context.Tag('SessionId')<SessionId, string>() {}
+
 export interface GetUserEnv {
   getUser: () => M.Middleware<StatusOpen, StatusOpen, 'no-session' | Error, User>
 }

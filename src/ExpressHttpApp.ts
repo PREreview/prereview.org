@@ -7,7 +7,7 @@ import type { LogEntry } from 'logger-fp-ts'
 import * as L from 'logging-ts/lib/IO.js'
 import type { AppContext } from './app.js'
 import { DeprecatedLoggerEnv, Express, Locale } from './Context.js'
-import { LoggedInUser } from './user.js'
+import { LoggedInUser, SessionId } from './user.js'
 
 export const ExpressHttpApp: HttpApp.Default<
   ConfigError.ConfigError,
@@ -22,6 +22,7 @@ export const ExpressHttpApp: HttpApp.Default<
   nodeRequest.url = request.url
   const nodeResponse = NodeHttpServerRequest.toServerResponse(request)
   const locale = yield* Locale
+  const sessionId = yield* Effect.serviceOption(SessionId)
   const user = yield* Effect.serviceOption(LoggedInUser)
   const logAnnotations = yield* Effect.logAnnotations
 
@@ -43,7 +44,15 @@ export const ExpressHttpApp: HttpApp.Default<
     )
 
     express()
-      .use(expressApp({ locale, logger, runtime, user: Option.getOrUndefined(user) }))
+      .use(
+        expressApp({
+          locale,
+          logger,
+          runtime,
+          sessionId: Option.getOrUndefined(sessionId),
+          user: Option.getOrUndefined(user),
+        }),
+      )
       .use(((error, req, res, next) => {
         if (error instanceof Error && 'code' in error && error.code === 'ERR_HTTP_HEADERS_SENT') {
           return next()

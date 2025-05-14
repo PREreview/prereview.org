@@ -1,6 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import cookieSignature from 'cookie-signature'
-import { Effect, Function, Option, String, flow, pipe } from 'effect'
+import { Effect, Function, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -231,6 +230,7 @@ import {
   writeReviewVerifyEmailAddressMatch,
 } from './routes.js'
 import { type ScietyListEnv, scietyList } from './sciety-list/index.js'
+import type { AddToSessionEnv, PopFromSessionEnv } from './session.js'
 import type { SlackUserId } from './slack-user-id.js'
 import {
   type SlackApiEnv,
@@ -357,6 +357,8 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   Keyv.SlackUserIdStoreEnv &
   TemplatePageEnv &
   Keyv.UserOnboardingStoreEnv &
+  AddToSessionEnv &
+  PopFromSessionEnv &
   WasPrereviewRemovedEnv &
   ZenodoAuthenticatedEnv
 
@@ -674,12 +676,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       connectSlackStartMatch.parser,
       P.map(() => connectSlackStart),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          signValue: value => cookieSignature.sign(value, env.secret),
-        })),
-      ),
     ),
     pipe(
       connectSlackCodeMatch.parser,
@@ -695,7 +691,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               ),
             env,
           ),
-          unsignValue: value => Option.liftPredicate(String.isString)(cookieSignature.unsign(value, env.secret)),
         })),
       ),
     ),

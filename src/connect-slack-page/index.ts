@@ -1,6 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import cookie from 'cookie'
-import { HashSet, type Option, Record, String, Struct, flow, identity, pipe } from 'effect'
+import { HashSet, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -20,6 +19,7 @@ import type { TemplatePageEnv } from '../page.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
 import { handlePageResponse } from '../response.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../routes.js'
+import { addToSession, popFromSession } from '../session.js'
 import { saveSlackUserId } from '../slack-user-id.js'
 import { isSlackUser } from '../slack-user.js'
 import { NonEmptyStringC } from '../types/string.js'
@@ -32,18 +32,6 @@ import { failureMessage } from './failure-message.js'
 export interface SlackOAuthEnv {
   slackOauth: Omit<OAuthEnv['oauth'], 'redirectUri'>
 }
-
-export interface SignValueEnv {
-  signValue: (value: string) => string
-}
-
-export interface UnsignValueEnv {
-  unsignValue: (value: string) => Option.Option<string>
-}
-
-const signValue = (value: string) => R.asks(({ signValue }: SignValueEnv) => signValue(value))
-
-const unsignValue = (value: string) => R.asks(({ unsignValue }: UnsignValueEnv) => unsignValue(value))
 
 const authorizationRequestUrl = (state: string) =>
   pipe(
@@ -135,16 +123,12 @@ export const connectSlackStart = pipe(
   RM.apS('user', getUser),
   RM.apSW('state', RM.fromReaderIO(generateUuid)),
   RM.bindW(
-    'signedState',
-    RM.fromReaderK(({ state }) => signValue(state)),
-  ),
-  RM.bindW(
     'authorizationRequestUrl',
     RM.fromReaderK(({ state }) => authorizationRequestUrl(state)),
   ),
+  RM.chainFirstReaderTaskEitherKW(({ state }) => addToSession('slack-state', state)),
   RM.ichainFirst(() => RM.status(Status.SeeOther)),
   RM.ichainFirst(({ authorizationRequestUrl }) => RM.header('Location', authorizationRequestUrl.href)),
-  RM.ichainFirst(({ signedState }) => RM.cookie('slack-state', signedState, { httpOnly: true })),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichain(() => RM.end()),
   RM.orElseW(error =>
@@ -159,7 +143,7 @@ export const connectSlackStart = pipe(
         >
       >()
       .with('no-session', () => logInAndRedirect(connectSlackMatch.formatter, {}))
-      .with(P.instanceOf(Error), () => serviceUnavailable)
+      .with('unavailable', P.instanceOf(Error), () => serviceUnavailable)
       .exhaustive(),
   ),
 )
@@ -196,11 +180,7 @@ export const connectSlackCode = flow(
   RM.apSW('user', getUser),
   RM.chainFirstW(({ state }) =>
     pipe(
-      RM.decodeHeader('Cookie', D.string.decode),
-      RM.mapLeft(() => 'no-cookie' as const),
-      RM.chainOptionK(() => 'no-cookie' as const)(flow(cookie.parse, Record.get('slack-state'))),
-      RM.chainReaderKW(unsignValue),
-      RM.chainEitherK(E.fromOption(() => 'no-cookie' as const)),
+      RM.fromReaderTaskEither(popFromSession('slack-state')),
       RM.filterOrElseW(
         expectedState => state === expectedState,
         () => 'invalid-state' as const,
@@ -216,7 +196,6 @@ export const connectSlackCode = flow(
     }),
   ),
   RM.ichain(() => RM.redirect(format(myDetailsMatch.formatter, {}))),
-  RM.ichainFirst(() => RM.clearCookie('slack-state', { httpOnly: true })),
   flow(
     RM.ichainMiddlewareKW(() => setFlashMessage('slack-connected')),
     RM.ichainFirst(() => RM.closeHeaders()),

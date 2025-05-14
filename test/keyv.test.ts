@@ -2134,3 +2134,140 @@ describe('saveReviewRequest', () => {
     },
   )
 })
+
+describe('addToSession', () => {
+  test.prop([fc.string(), fc.dictionary(fc.lorem(), fc.string()), fc.lorem(), fc.string()])(
+    'when there is a session',
+    async (sessionId, session, key, value) => {
+      const store = new Keyv()
+      await store.set(sessionId, session)
+
+      const actual = await _.addToSession(
+        sessionId,
+        key,
+        value,
+      )({
+        sessionStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(sessionId)).toStrictEqual({ ...session, [key]: value })
+    },
+  )
+
+  test.prop([fc.string(), fc.lorem(), fc.string()])('when the session is not set', async (sessionId, key, value) => {
+    const store = new Keyv()
+
+    const actual = await _.addToSession(
+      sessionId,
+      key,
+      value,
+    )({
+      sessionStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(await store.has(sessionId)).toBeFalsy()
+  })
+
+  test.prop([fc.string(), fc.json(), fc.string(), fc.json(), fc.anything()])(
+    'when the session cannot be accessed',
+    async (sessionId, session, key, value, error) => {
+      const store = new Keyv()
+      await store.set(sessionId, session)
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.addToSession(
+        sessionId,
+        key,
+        value,
+      )({
+        sessionStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
+
+describe('popFromSession', () => {
+  test.prop([fc.string(), fc.dictionary(fc.lorem(), fc.string()), fc.lorem(), fc.string()])(
+    'when the session contains the key',
+    async (sessionId, session, key, value) => {
+      const store = new Keyv()
+      await store.set(sessionId, { ...session, [key]: value })
+
+      const actual = await _.popFromSession(
+        sessionId,
+        key,
+      )({
+        sessionStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.right(value))
+      expect(await store.get(sessionId)).toStrictEqual(session)
+    },
+  )
+
+  test.prop([fc.string(), fc.dictionary(fc.lorem(), fc.string()), fc.lorem()])(
+    'when the key is not found in the session',
+    async (sessionId, session, key) => {
+      const store = new Keyv()
+      await store.set(sessionId, session)
+
+      const actual = await _.popFromSession(
+        sessionId,
+        key,
+      )({
+        sessionStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(await store.get(sessionId)).toStrictEqual(session)
+    },
+  )
+
+  test.prop([fc.string(), fc.lorem()])('when the session is not found', async (sessionId, key) => {
+    const store = new Keyv()
+
+    const actual = await _.popFromSession(
+      sessionId,
+      key,
+    )({
+      sessionStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+
+  test.prop([fc.string(), fc.lorem(), fc.anything()])(
+    'when the session cannot be accessed',
+    async (sessionId, key, error) => {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
+
+      const actual = await _.popFromSession(
+        sessionId,
+        key,
+      )({
+        sessionStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})

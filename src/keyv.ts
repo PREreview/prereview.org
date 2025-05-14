@@ -3,6 +3,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import type { SessionEnv } from 'hyper-ts-session'
 import type { Decoder } from 'io-ts/lib/Decoder.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Encoder } from 'io-ts/lib/Encoder.js'
@@ -397,6 +398,32 @@ export const saveReviewRequest = flow(
   setKey(UnderscoreTupleE(OrcidE, PreprintIdE), ReviewRequestC),
   RTE.local((env: ReviewRequestStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.reviewRequestStore })),
 )
+
+export const addToSession = (sessionId: string, key: string, value: Json) =>
+  pipe(
+    getKey(EN.id<string>(), D.UnknownRecord)(sessionId),
+    RTE.mapLeft(() => 'unavailable' as const),
+    RTE.chain(session =>
+      setKey(EN.id<string>(), EN.id<Record<string, unknown>>())(sessionId, { ...session, [key]: value }),
+    ),
+    RTE.local((env: Pick<SessionEnv, 'sessionStore'> & L.LoggerEnv) => ({ ...env, keyv: env.sessionStore })),
+  )
+
+export const popFromSession = (sessionId: string, key: string) =>
+  pipe(
+    getKey(EN.id<string>(), D.UnknownRecord)(sessionId),
+    RTE.bindTo('session'),
+    RTE.bindW(
+      'value',
+      RTE.fromNullableK('unavailable' as const)(({ session }) => session[key] as Json),
+    ),
+    RTE.mapLeft(() => 'unavailable' as const),
+    RTE.chainFirst(({ session }) =>
+      setKey(EN.id<string>(), EN.id<Record<string, unknown>>())(sessionId, { ...session, [key]: undefined }),
+    ),
+    RTE.map(({ value }) => value),
+    RTE.local((env: Pick<SessionEnv, 'sessionStore'> & L.LoggerEnv) => ({ ...env, keyv: env.sessionStore })),
+  )
 
 async function toArray<T>(asyncIterator: AsyncIterable<T>): Promise<ReadonlyArray<T>> {
   const array = []

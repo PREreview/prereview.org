@@ -3,6 +3,7 @@ import express from 'express'
 import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
@@ -13,6 +14,7 @@ import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
+import * as Keyv from './keyv.js'
 // eslint-disable-next-line import/no-internal-modules
 import * as LocaleCookie from './HttpMiddleware/LocaleCookie.js'
 import { PageNotFound } from './PageNotFound/index.js'
@@ -41,6 +43,8 @@ export type ConfigEnv = Omit<
   | 'getProfileIdFromUuid'
   | 'runtime'
   | 'sendEmail'
+  | 'addToSession'
+  | 'popFromSession'
 > &
   NodemailerEnv & {
     allowSiteCrawlers: boolean
@@ -123,11 +127,13 @@ export const app = (config: ConfigEnv) => {
     locale,
     logger,
     runtime,
+    sessionId,
     user,
   }: {
     locale: SupportedLocale
     logger: L.Logger
     runtime: AppRuntime
+    sessionId?: string
     user?: User
   }) => {
     return express()
@@ -161,6 +167,13 @@ export const app = (config: ConfigEnv) => {
             appMiddleware,
             R.local((env: ConfigEnv & L.LoggerEnv & { runtime: AppRuntime }): RouterEnv & LegacyEnv => ({
               ...env,
+              addToSession: withEnv(
+                (key: string, value: Json) =>
+                  typeof sessionId === 'string'
+                    ? Keyv.addToSession(sessionId, key, value)
+                    : RTE.left('unavailable' as const),
+                env,
+              ),
               getUser: () => (user ? M.of(user) : M.left('no-session')),
               getUserOnboarding: withEnv(getUserOnboarding, env),
               getPreprint: withEnv(
@@ -176,6 +189,13 @@ export const app = (config: ConfigEnv) => {
               getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
               getPreprintId: withEnv(
                 EffectToFpts.toReaderTaskEitherK(id => Effect.andThen(Preprint.GetPreprintId, Function.apply(id))),
+                env,
+              ),
+              popFromSession: withEnv(
+                (key: string) =>
+                  typeof sessionId === 'string'
+                    ? Keyv.popFromSession(sessionId, key)
+                    : RTE.left('unavailable' as const),
                 env,
               ),
               resolvePreprintId: withEnv(
