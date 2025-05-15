@@ -1,12 +1,10 @@
 import { Function, flow, pipe } from 'effect'
 import type { Json } from 'fp-ts/lib/Json.js'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import safeStableStringify from 'safe-stable-stringify'
-import { match } from 'ts-pattern'
 import { getClubName } from '../club-details.js'
 import type { ScietyListEnv } from '../sciety-list/index.js'
 import { type ClubId, clubIds } from '../types/club-id.js'
@@ -42,24 +40,16 @@ const ClubsE = ReadonlyArrayE(ClubE)
 
 const isAllowed = (authorizationHeader: string) =>
   pipe(
-    RM.ask<ScietyListEnv>(),
-    RM.chainEitherK(env => D.literal(`Bearer ${env.scietyListToken}`).decode(authorizationHeader)),
-    RM.bimap(() => 'forbidden' as const, Function.constVoid),
+    RTE.ask<ScietyListEnv>(),
+    RTE.chainEitherK(env => D.literal(`Bearer ${env.scietyListToken}`).decode(authorizationHeader)),
+    RTE.bimap(() => 'forbidden' as const, Function.constVoid),
   )
 
-export const clubsData = (authorizationHeader: string) =>
+export const clubsData = (authorizationHeader: string): RTE.ReaderTaskEither<ScietyListEnv, 'forbidden', string> =>
   pipe(
     authorizationHeader,
     isAllowed,
-    RM.map(getClubs),
-    RM.map(ClubsE.encode),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainFirst(() => RM.contentType('application/json')),
-    RM.ichainFirst(() => RM.closeHeaders()),
-    RM.ichain(clubs => RM.send(JsonE.encode(clubs))),
-    RM.orElseW(error =>
-      match(error)
-        .with('forbidden', () => pipe(RM.status(Status.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)))
-        .exhaustive(),
-    ),
+    RTE.map(getClubs),
+    RTE.map(ClubsE.encode),
+    RTE.map(clubs => JsonE.encode(clubs)),
   )

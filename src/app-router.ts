@@ -8,7 +8,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import httpErrors from 'http-errors'
-import type { ResponseEnded, StatusOpen } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
 import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -2540,7 +2540,16 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(() =>
         pipe(
           RM.decodeHeader('Authorization', input => (typeof input === 'string' ? E.right(input) : E.right(''))),
-          RM.ichainW(clubsData),
+          RM.chainReaderTaskEitherK(clubsData),
+          RM.ichainFirst(() => RM.status(Status.OK)),
+          RM.ichainFirst(() => RM.contentType('application/json')),
+          RM.ichainFirst(() => RM.closeHeaders()),
+          RM.ichainW(RM.send),
+          RM.orElseW(error =>
+            match(error)
+              .with('forbidden', () => pipe(RM.status(Status.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)))
+              .exhaustive(),
+          ),
         ),
       ),
     ),
