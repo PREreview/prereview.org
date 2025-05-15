@@ -1,17 +1,13 @@
 import { isDoi } from 'doi-ts'
 import { flow, identity, pipe } from 'effect'
-import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import type { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither.js'
 import { getAssignSemigroup } from 'fp-ts/lib/struct.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware.js'
 import * as C from 'io-ts/lib/Codec.js'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import { setFlashMessage } from '../flash-message.js'
 import { RawHtmlC } from '../html.js'
 import {
   writeReviewAuthorsMatch,
@@ -132,17 +128,6 @@ export const nextFormMatch = (form: Form) =>
     .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
     .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
     .otherwise(() => writeReviewPublishMatch)
-
-export const redirectToNextForm = (preprint: PreprintId, flashMessage?: string) =>
-  flow(
-    nextFormMatch,
-    match => M.of(format(match.formatter, { id: preprint })),
-    M.ichainFirst(() => M.status(Status.SeeOther)),
-    M.ichain(location => M.header('Location', location)),
-    M.ichain(() => (typeof flashMessage === 'string' ? setFlashMessage(flashMessage) : M.of(undefined))),
-    M.ichain(() => M.closeHeaders()),
-    M.ichain(() => M.end()),
-  )
 
 export const FormC = pipe(
   C.partial({
