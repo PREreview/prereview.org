@@ -111,7 +111,6 @@ import {
 import { myPrereviews } from './my-prereviews-page/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
-import { partners } from './partners.js'
 import { preprintReviews } from './preprint-reviews-page/index.js'
 import type * as Preprint from './preprint.js'
 import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
@@ -133,7 +132,7 @@ import {
   requestReviewPublished,
   requestReviewStart,
 } from './request-review-flow/index.js'
-import { type Response, handleResponse } from './response.js'
+import { handleResponse } from './response.js'
 import { reviewAPreprint } from './review-a-preprint-page/index.js'
 import * as ReviewPage from './review-page/index.js'
 import { reviewPage } from './review-page/index.js'
@@ -182,7 +181,6 @@ import {
   myPrereviewsMatch,
   orcidCodeMatch,
   orcidErrorMatch,
-  partnersMatch,
   preprintReviewsMatch,
   profileMatch,
   removeAvatarMatch,
@@ -416,16 +414,6 @@ const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseud
     addAuthorToRecordOnZenodo(id, user, persona),
     RTE.chainFirstW(() => triggerRefreshOfPrereview(id, undefined, user)),
   )
-
-export const routerWithoutHyperTs = pipe(
-  [
-    pipe(
-      partnersMatch.parser,
-      P.map(() => RT.asks((env: { locale: SupportedLocale }) => partners(env.locale))),
-    ),
-  ],
-  concatAll(P.getParserMonoid()),
-) satisfies P.Parser<RT.ReaderTask<never, Response>>
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [

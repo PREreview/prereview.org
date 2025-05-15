@@ -1,28 +1,15 @@
-import {
-  type HttpMethod,
-  HttpMiddleware,
-  HttpRouter,
-  HttpServerError,
-  HttpServerRequest,
-  HttpServerResponse,
-} from '@effect/platform'
-import { Effect, Either, flow, identity, Option, pipe, Record, Tuple } from 'effect'
-import { Route } from 'fp-ts-routing'
+import { type HttpMethod, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { Effect, flow, identity, Option, pipe, Record } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
-import { routerWithoutHyperTs } from '../app-router.js'
 import { ClubsPage } from '../ClubsPage.js'
 import { CodeOfConductPage } from '../CodeOfConductPage.js'
-import { Locale } from '../Context.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
-import * as FptsToEffect from '../FptsToEffect.js'
 import { FundingPage } from '../FundingPage.js'
 import { HowToUsePage } from '../HowToUsePage.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
-import type { OrcidOauth } from '../OrcidOauth.js'
 import { PeoplePage } from '../PeoplePage.js'
 import { PrivacyPolicyPage } from '../PrivacyPolicyPage.js'
-import type { PublicUrl } from '../public-url.js'
 import { DataStoreRedis } from '../Redis.js'
 import { ResourcesPage } from '../ResourcesPage.js'
 import type {
@@ -34,10 +21,10 @@ import type {
   TwoUpPageResponse,
 } from '../response.js'
 import * as Routes from '../routes.js'
-import type { TemplatePage } from '../TemplatePage.js'
 import { TrainingsPage } from '../TrainingsPage.js'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.js'
 import { LegacyRouter } from './LegacyRouter.js'
+import { nonEffectRouter } from './NonEffectRouter.js'
 import * as Response from './Response.js'
 
 export type { PageUrls } from './ConstructPageUrls.js'
@@ -164,34 +151,6 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.WriteCommentPublishing, WriteCommentFlow.PublishingPage),
   MakeRoute('GET', Routes.WriteCommentPublished, WriteCommentFlow.PublishedPage),
 ])
-
-const nonEffectHandler: HttpRouter.Route.Handler<
-  HttpServerError.RouteNotFound,
-  Locale | TemplatePage | OrcidOauth | PublicUrl
-> = Effect.gen(function* () {
-  const request = yield* HttpServerRequest.HttpServerRequest
-
-  const route = yield* Either.try({
-    try: () => Route.parse(request.url),
-    catch: () => new HttpServerError.RouteNotFound({ request }),
-  })
-
-  const locale = yield* Locale
-  const env = { locale }
-
-  return yield* pipe(
-    FptsToEffect.option(routerWithoutHyperTs.run(route)),
-    Option.map(Tuple.getFirst),
-    Effect.andThen(readerTask => FptsToEffect.readerTask(readerTask, env)),
-    Effect.andThen(Response.toHttpServerResponse),
-    Effect.mapError(() => new HttpServerError.RouteNotFound({ request })),
-  )
-})
-
-const nonEffectRouter: HttpRouter.HttpRouter<
-  HttpServerError.RouteNotFound,
-  Locale | TemplatePage | OrcidOauth | PublicUrl
-> = HttpRouter.fromIterable([HttpRouter.makeRoute('*', '*', nonEffectHandler)])
 
 export const Router = pipe(
   HttpRouter.fromIterable([
