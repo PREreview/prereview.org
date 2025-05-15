@@ -2,31 +2,32 @@ import type { Doi } from 'doi-ts'
 import { Match, type Option, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
+import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { StatusCodes } from 'http-status-codes'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
-import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../../contact-email-address.js'
+import {
+  type ContactEmailAddress,
+  type GetContactEmailAddressEnv,
+  maybeGetContactEmailAddress,
+} from '../../contact-email-address.js'
 import { detectLanguage } from '../../detect-language.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
+import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware.js'
-import type { TemplatePageEnv } from '../../page.js'
-import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
-import type { PublicUrlEnv } from '../../public-url.js'
-import { StreamlinePageResponse, handlePageResponse } from '../../response.js'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
+import { RedirectResponse, type Response, StreamlinePageResponse } from '../../response.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../routes.js'
 import type { AddToSessionEnv } from '../../session.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import { localeToIso6391 } from '../../types/iso639.js'
+import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
 import type { NonEmptyString } from '../../types/string.js'
-import type { GetUserOnboardingEnv } from '../../user-onboarding.js'
-import { type User, getUser } from '../../user.js'
+import type { User } from '../../user.js'
 import { type CompletedForm, CompletedFormC } from '../completed-form.js'
-import { type Form, type FormStoreEnv, deleteForm, getForm, redirectToNextForm, saveForm } from '../form.js'
+import { type Form, type FormStoreEnv, deleteForm, getForm, nextFormMatch, saveForm } from '../form.js'
 import { storeInformationForWriteReviewPublishedPage } from '../published-review.js'
 import { getCompetingInterests, publishForm } from './publish-form.js'
 
@@ -46,43 +47,52 @@ export interface PublishPrereviewEnv {
   publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<'unavailable', [Doi, number]>
 }
 
-export const writeReviewPublish = flow(
-  RM.fromReaderTaskEitherK(getPreprintTitle),
-  RM.ichainW(preprint =>
-    pipe(
-      RM.right({ preprint }),
-      RM.apSW('user', getUser),
-      RM.apSW(
-        'locale',
-        RM.asks((env: { locale: SupportedLocale }) => env.locale),
-      ),
-      RM.bindW(
-        'originalForm',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
-      ),
-      RM.bind('form', ({ originalForm }) => RM.right(CompletedFormC.decode(originalForm))),
-      RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.bindW('contactEmailAddress', ({ user }) => RM.fromReaderTaskEither(maybeGetContactEmailAddress(user.orcid))),
-      RM.ichainW(decideNextStep),
-      RM.orElseW(error =>
-        match(error)
-          .with(
-            'no-form',
-            'no-session',
-            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
-          )
-          .with('form-unavailable', P.instanceOf(Error), 'unavailable', () => serviceUnavailable)
-          .exhaustive(),
-      ),
+export const writeReviewPublish = ({
+  id,
+  locale,
+  method,
+  user,
+}: {
+  id: IndeterminatePreprintId
+  locale: SupportedLocale
+  method: string
+  user?: User
+}): RT.ReaderTask<
+  GetContactEmailAddressEnv & GetPreprintTitleEnv & FormStoreEnv & PublishPrereviewEnv & AddToSessionEnv,
+  Response
+> =>
+  pipe(
+    getPreprintTitle(id),
+    RTE.matchEW(
+      Match.valueTags({
+        PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
+        PreprintIsUnavailable: () => RT.of(havingProblemsPage(locale)),
+      }),
+      preprint =>
+        pipe(
+          RTE.Do,
+          RTE.let('preprint', () => preprint),
+          RTE.apS('user', pipe(RTE.fromNullable('no-session' as const)(user))),
+          RTE.let('locale', () => locale),
+          RTE.bindW('originalForm', ({ user }) => getForm(user.orcid, preprint.id)),
+          RTE.let('form', ({ originalForm }) => CompletedFormC.decode(originalForm)),
+          RTE.let('method', () => method),
+          RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
+          RTE.matchEW(
+            error =>
+              RT.of(
+                match(error)
+                  .with('no-form', 'no-session', () =>
+                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .with('form-unavailable', P.instanceOf(Error), 'unavailable', () => havingProblemsPage(locale))
+                  .exhaustive(),
+              ),
+            decideNextStep,
+          ),
+        ),
     ),
-  ),
-  RM.orElseW(
-    Match.valueTags({
-      PreprintIsNotFound: () => notFound,
-      PreprintIsUnavailable: () => serviceUnavailable,
-    }),
-  ),
-)
+  )
 
 const decideNextStep = (state: {
   contactEmailAddress?: ContactEmailAddress
@@ -93,31 +103,20 @@ const decideNextStep = (state: {
   locale: SupportedLocale
 }) =>
   match(state)
-    .returnType<
-      RM.ReaderMiddleware<
-        GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv & FormStoreEnv & PublishPrereviewEnv & AddToSessionEnv,
-        StatusOpen,
-        ResponseEnded,
-        never,
-        void
-      >
-    >()
     .with(
       P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
-      ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm)),
+      ({ originalForm, preprint }) =>
+        RT.of(RedirectResponse({ location: format(nextFormMatch(originalForm).formatter, { id: preprint.id }) })),
     )
     .with({ contactEmailAddress: P.optional({ _tag: 'UnverifiedContactEmailAddress' }) }, () =>
-      RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: state.preprint.id }))),
+      RT.of(
+        RedirectResponse({ location: format(writeReviewEnterEmailAddressMatch.formatter, { id: state.preprint.id }) }),
+      ),
     )
     .with({ method: 'POST', form: P.when(E.isRight) }, ({ form, ...state }) =>
       handlePublishForm({ ...state, form: form.right }),
     )
-    .with({ form: P.when(E.isRight) }, ({ form, ...state }) =>
-      showPublishForm({
-        ...state,
-        form: form.right,
-      }),
-    )
+    .with({ form: P.when(E.isRight) }, ({ form, ...state }) => RT.of(showPublishForm({ ...state, form: form.right })))
     .exhaustive()
 
 const handlePublishForm = ({
@@ -134,8 +133,8 @@ const handlePublishForm = ({
   user: User
 }) =>
   pipe(
-    RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.id)),
-    RM.map(() => ({
+    deleteForm(user.orcid, preprint.id),
+    RTE.map(() => ({
       conduct: form.conduct,
       otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
       language: match(form)
@@ -150,7 +149,7 @@ const handlePublishForm = ({
       structured: form.reviewType === 'questions',
       user,
     })),
-    RM.chainReaderTaskEitherKW(
+    RTE.chain(
       flow(
         publishPrereview,
         RTE.orElseFirstW(error =>
@@ -160,12 +159,11 @@ const handlePublishForm = ({
         ),
       ),
     ),
-    RM.chainFirstReaderTaskEitherKW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
-    RM.ichainFirst(() => RM.status(Status.SeeOther)),
-    RM.ichainFirst(() => RM.header('Location', format(writeReviewPublishedMatch.formatter, { id: preprint.id }))),
-    RM.ichain(() => RM.closeHeaders()),
-    RM.ichain(() => RM.end()),
-    RM.orElseW(() => showFailureMessage(user, locale)),
+    RTE.chainFirstW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
+    RTE.matchW(
+      () => failureMessage(locale),
+      () => RedirectResponse({ location: format(writeReviewPublishedMatch.formatter, { id: preprint.id }) }),
+    ),
   )
 
 const showPublishForm = ({
@@ -178,27 +176,11 @@ const showPublishForm = ({
   preprint: PreprintTitle
   user: User
   locale: SupportedLocale
-}) =>
-  pipe(
-    RM.of({}),
-    RM.apS('user', RM.of(user)),
-    RM.apS('locale', RM.of(locale)),
-    RM.apS('response', RM.of(publishForm(preprint, form, user, locale))),
-    RM.ichainW(handlePageResponse),
-  )
+}) => publishForm(preprint, form, user, locale)
 
 const publishPrereview = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ publishPrereview }: PublishPrereviewEnv) => publishPrereview(newPrereview)),
-  )
-
-const showFailureMessage = (user: User, locale: SupportedLocale) =>
-  pipe(
-    RM.of({}),
-    RM.apS('user', RM.of(user)),
-    RM.apS('locale', RM.of(locale)),
-    RM.apS('response', RM.of(failureMessage(locale))),
-    RM.ichainW(handlePageResponse),
   )
 
 function renderReview(form: CompletedForm, locale: SupportedLocale) {
