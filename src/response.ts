@@ -1,14 +1,14 @@
 import { Schema, Struct, flow, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
-import { type HeadersOpen, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import { type HeadersOpen, MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message.js'
-import { type Html, html, rawHtml, sendHtml } from './html.js'
+import { type Html, html, rawHtml } from './html.js'
 import { type SupportedLocale, translate } from './locales/index.js'
 import type { OrcidOAuthEnv } from './log-in/index.js'
 import { showNotificationBanner } from './notification-banner.js'
@@ -494,6 +494,14 @@ function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R
       }),
     },
   })
+}
+
+function sendHtml(html: Html): M.Middleware<HeadersOpen, ResponseEnded, never, void> {
+  return pipe(
+    M.contentType(MediaType.textHTML),
+    M.ichainFirst(() => M.closeHeaders()),
+    M.ichain(() => M.send(html.toString())),
+  )
 }
 
 // https://github.com/Microsoft/TypeScript/issues/25760#issuecomment-614417742

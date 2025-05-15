@@ -1,7 +1,5 @@
 import { Array, type Predicate, pipe } from 'effect'
 import { decode } from 'html-entities'
-import { type HeadersOpen, MediaType, type ResponseEnded } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import katex from 'katex'
@@ -180,14 +178,6 @@ export function plainText(
   return decode(
     stripTags(mathmlToTex((isTemplateStringsArray(input) ? html(input, ...placeholders) : input).toString())),
   ) as unknown as PlainText
-}
-
-export function sendHtml(html: Html): M.Middleware<HeadersOpen, ResponseEnded, never, void> {
-  return pipe(
-    M.contentType(MediaType.textHTML),
-    M.ichainFirst(() => M.closeHeaders()),
-    M.ichain(() => M.send(html.toString())),
-  )
 }
 
 export const RawHtmlC = C.make(
