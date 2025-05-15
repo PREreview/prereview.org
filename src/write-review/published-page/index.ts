@@ -1,13 +1,12 @@
 import { Match, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { P, match } from 'ts-pattern'
-import { sendHtml } from '../../html.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { notFound, seeOther, serviceUnavailable } from '../../middleware.js'
 import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { toUrl } from '../../public-url.js'
+import { handlePageResponse } from '../../response.js'
 import { reviewMatch, writeReviewMatch } from '../../routes.js'
 import { type User, getUser } from '../../user.js'
 import { type PublishedReview, popPublishedReview } from '../published-review.js'
@@ -59,7 +58,6 @@ const showSuccessMessage = ({
   pipe(
     RM.of({ review, preprint, user, locale }),
     RM.apS('url', RM.rightReader(toUrl(reviewMatch.formatter, { id: review.id }))),
-    RM.chainReaderKW(publishedPage),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareKW(sendHtml),
+    RM.bind('response', args => RM.of(publishedPage(args))),
+    RM.ichainW(handlePageResponse),
   )

@@ -1,20 +1,17 @@
 import { Doi } from 'doi-ts'
-import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { EmailAddress } from '../../src/types/email-address.js'
-import type { Pseudonym } from '../../src/types/pseudonym.js'
 import type { NonEmptyString } from '../../src/types/string.js'
-import type { User } from '../../src/user.js'
 import type { CompletedForm } from '../../src/write-review/completed-form.js'
 import { publishedPage } from '../../src/write-review/published-page/published-page.js'
 import { expect, test } from '../base.js'
 
 const locale = DefaultLocale
 
-test('content looks right', async ({ page, showHtml, templatePage }) => {
-  const pageHtml = publishedPage({
+test('content looks right', async ({ showPage }) => {
+  const response = publishedPage({
     review: {
       doi: Doi('10.5281/zenodo.10779310'),
       id: 10779310,
@@ -22,17 +19,16 @@ test('content looks right', async ({ page, showHtml, templatePage }) => {
     },
     preprint,
     url: new URL('http://example.com/review'),
-    user,
     locale,
-  })({ templatePage })
+  })
 
-  await showHtml(pageHtml)
+  const content = await showPage(response)
 
-  await expect(page.locator('.contents')).toHaveScreenshot()
+  await expect(content).toHaveScreenshot()
 })
 
-test('content looks right when the preprint is not on Sciety', async ({ page, showHtml, templatePage }) => {
-  const pageHtml = publishedPage({
+test('content looks right when the preprint is not on Sciety', async ({ showPage }) => {
+  const response = publishedPage({
     review: {
       doi: Doi('10.5281/zenodo.10779310'),
       id: 10779310,
@@ -44,17 +40,16 @@ test('content looks right when the preprint is not on Sciety', async ({ page, sh
       language: 'en',
     },
     url: new URL('http://example.com/review'),
-    user,
     locale,
-  })({ templatePage })
+  })
 
-  await showHtml(pageHtml)
+  const content = await showPage(response)
 
-  await expect(page.locator('.contents')).toHaveScreenshot()
+  await expect(content).toHaveScreenshot()
 })
 
-test('content looks right when there are more authors', async ({ page, showHtml, templatePage }) => {
-  const pageHtml = publishedPage({
+test('content looks right when there are more authors', async ({ showPage }) => {
+  const response = publishedPage({
     review: {
       doi: Doi('10.5281/zenodo.10779310'),
       id: 10779310,
@@ -70,13 +65,12 @@ test('content looks right when there are more authors', async ({ page, showHtml,
     },
     preprint,
     url: new URL('http://example.com/review'),
-    user,
     locale,
-  })({ templatePage })
+  })
 
-  await showHtml(pageHtml)
+  const content = await showPage(response)
 
-  await expect(page.locator('.contents')).toHaveScreenshot()
+  await expect(content).toHaveScreenshot()
 })
 
 const preprint = {
@@ -87,12 +81,6 @@ const preprint = {
   title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
   language: 'en',
 } satisfies PreprintTitle
-
-const user = {
-  name: 'Josiah Carberry',
-  orcid: Orcid('0000-0002-1825-0097'),
-  pseudonym: 'Orange Panda' as Pseudonym,
-} satisfies User
 
 const form = {
   reviewType: 'freeform',
