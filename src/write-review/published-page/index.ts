@@ -10,7 +10,7 @@ import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import { toUrl } from '../../public-url.js'
 import { reviewMatch, writeReviewMatch } from '../../routes.js'
 import { type User, getUser } from '../../user.js'
-import { type PublishedReview, getPublishedReview, removePublishedReview } from '../published-review.js'
+import { type PublishedReview, popPublishedReview } from '../published-review.js'
 import { publishedPage } from './published-page.js'
 
 export const writeReviewPublished = flow(
@@ -19,7 +19,7 @@ export const writeReviewPublished = flow(
     pipe(
       RM.right({ preprint }),
       RM.apSW('user', getUser),
-      RM.apSW('review', getPublishedReview),
+      RM.bindW('review', () => RM.fromReaderTaskEither(popPublishedReview)),
       RM.apSW(
         'locale',
         RM.asks((env: { locale: SupportedLocale }) => env.locale),
@@ -61,6 +61,5 @@ const showSuccessMessage = ({
     RM.apS('url', RM.rightReader(toUrl(reviewMatch.formatter, { id: review.id }))),
     RM.chainReaderKW(publishedPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainFirstW(() => removePublishedReview),
     RM.ichainMiddlewareKW(sendHtml),
   )
