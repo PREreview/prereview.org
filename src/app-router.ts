@@ -242,7 +242,7 @@ import type * as Doi from './types/Doi.js'
 import type { PreprintId } from './types/preprint-id.js'
 import { type GenerateUuid, type GenerateUuidEnv, generateUuid } from './types/uuid.js'
 import type { GetUserOnboardingEnv } from './user-onboarding.js'
-import { type GetUserEnv, type User, maybeGetUser } from './user.js'
+import type { User } from './user.js'
 import { usersData } from './users-data/index.js'
 import {
   type FormStoreEnv,
@@ -327,7 +327,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
   GetPreprintTitleEnv &
-  GetUserEnv &
   GetUserOnboardingEnv &
   Keyv.AuthorInviteStoreEnv &
   Keyv.CareerStageStoreEnv &
@@ -339,7 +338,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   IsUserBlockedEnv &
   Keyv.LanguagesStoreEnv &
   LegacyPrereviewApiEnv &
-  Keyv.LocationStoreEnv & { locale: SupportedLocale } & L.LoggerEnv &
+  Keyv.LocationStoreEnv & { locale: SupportedLocale; user?: User } & L.LoggerEnv &
   OrcidApiEnv &
   Keyv.OrcidTokenStoreEnv &
   OrcidOAuthEnv &
@@ -360,6 +359,8 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   PopFromSessionEnv &
   WasPrereviewRemovedEnv &
   ZenodoAuthenticatedEnv
+
+const maybeGetUser = RM.asks((env: RouterEnv) => env.user)
 
 const getRapidPrereviews = (id: PreprintId) =>
   isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])

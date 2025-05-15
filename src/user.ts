@@ -1,8 +1,5 @@
-import { Context, Data, Effect, flow, Option, pipe, Record, Schema } from 'effect'
+import { Context, Data, Effect, flow, Option, Record, Schema } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
-import type { StatusOpen } from 'hyper-ts'
-import type * as M from 'hyper-ts/lib/Middleware.js'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
@@ -15,20 +12,6 @@ export type User = C.TypeOf<typeof UserC>
 export class LoggedInUser extends Context.Tag('User')<LoggedInUser, User>() {}
 
 export class SessionId extends Context.Tag('SessionId')<SessionId, string>() {}
-
-export interface GetUserEnv {
-  getUser: () => M.Middleware<StatusOpen, StatusOpen, 'no-session' | Error, User>
-}
-
-export const getUser = pipe(
-  RM.ask<GetUserEnv>(),
-  RM.chainMiddlewareK(({ getUser }) => getUser()),
-)
-
-export const maybeGetUser = pipe(
-  getUser,
-  RM.orElseW(() => RM.of(undefined)),
-)
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 

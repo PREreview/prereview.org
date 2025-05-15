@@ -6,7 +6,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { toRequestHandler } from 'hyper-ts/lib/express.js'
 import type { Redis } from 'ioredis'
@@ -27,7 +26,7 @@ import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
 import * as Preprint from './preprint.js'
 import { handleResponse } from './response.js'
 import { securityHeaders } from './securityHeaders.js'
-import { maybeGetUser, type User } from './user.js'
+import type { User } from './user.js'
 
 export type ConfigEnv = Omit<
   RouterEnv & LegacyEnv,
@@ -59,7 +58,10 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
       RM.gets(c => c.getOriginalUrl()),
       RM.chainReaderTaskEitherK(legacyRoutes),
       RM.bindTo('response'),
-      RM.apSW('user', maybeGetUser),
+      RM.apSW(
+        'user',
+        RM.asks((env: RouterEnv) => env.user),
+      ),
       RM.apSW(
         'locale',
         RM.asks((env: RouterEnv) => env.locale),
@@ -72,7 +74,10 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
       .with({ status: 404 }, () =>
         pipe(
           RM.of({}),
-          RM.apS('user', maybeGetUser),
+          RM.apS(
+            'user',
+            RM.asks((env: RouterEnv) => env.user),
+          ),
           RM.apS(
             'locale',
             RM.asks((env: RouterEnv) => env.locale),
@@ -174,7 +179,7 @@ export const app = (config: ConfigEnv) => {
                     : RTE.left('unavailable' as const),
                 env,
               ),
-              getUser: () => (user ? M.of(user) : M.left('no-session')),
+              user,
               getUserOnboarding: withEnv(getUserOnboarding, env),
               getPreprint: withEnv(
                 EffectToFpts.toReaderTaskEitherK(id => Effect.andThen(Preprint.GetPreprint, Function.apply(id))),
