@@ -190,21 +190,10 @@ export const connectSlackCode = flow(
   RM.orElseW(() => showFailureMessage),
 )
 
-export const connectSlackError = (error: string) =>
+export const connectSlackError = ({ error, locale }: { error: string; locale: SupportedLocale }): Response =>
   match(error)
-    .with('access_denied', () => showAccessDeniedMessage)
-    .otherwise(() => showFailureMessage)
-
-const showAccessDeniedMessage = pipe(
-  RM.of({}),
-  RM.apS('user', maybeGetUser),
-  RM.apSW(
-    'locale',
-    RM.asks((env: { locale: SupportedLocale }) => env.locale),
-  ),
-  RM.bind('response', ({ locale }) => RM.of(accessDeniedMessage(locale))),
-  RM.ichainW(handlePageResponse),
-)
+    .with('access_denied', () => accessDeniedMessage(locale))
+    .otherwise(() => failureMessage(locale))
 
 const showFailureMessage = pipe(
   RM.of({}),

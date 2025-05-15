@@ -440,82 +440,29 @@ describe('connectSlackCode', () => {
 })
 
 describe('connectSlackError', () => {
-  test.prop([
-    fc.either(fc.oneof(fc.error(), fc.constant('no-session')), fc.user()),
-    fc.userOnboarding(),
-    fc.supportedLocale(),
-    fc.connection(),
-    fc.html(),
-  ])('with an access_denied error', async (user, userOnboarding, locale, connection, page) => {
-    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+  test.prop([fc.supportedLocale()])('with an access_denied error', locale => {
+    const actual = _.connectSlackError({ error: 'access_denied', locale })
 
-    const actual = await runMiddleware(
-      _.connectSlackError('access_denied')({
-        getUser: () => M.fromEither(user),
-        getUserOnboarding: () => TE.right(userOnboarding),
-        locale,
-        publicUrl: new URL('http://example.com'),
-        templatePage,
-      }),
-      connection,
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.Forbidden },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: page.toString() },
-      ]),
-    )
-    expect(templatePage).toHaveBeenCalledWith({
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: StatusCodes.FORBIDDEN,
       title: expect.anything(),
-      content: expect.anything(),
-      skipLinks: [[expect.anything(), '#main']],
+      main: expect.anything(),
+      skipToLabel: 'main',
       js: [],
-      locale,
-      user: E.isRight(user) ? user.right : undefined,
-      userOnboarding: E.isRight(user) ? userOnboarding : undefined,
     })
   })
 
-  test.prop([
-    fc.either(fc.oneof(fc.error(), fc.constant('no-session')), fc.user()),
-    fc.userOnboarding(),
-    fc.supportedLocale(),
-    fc.string(),
-    fc.connection(),
-    fc.html(),
-  ])('with an unknown error', async (user, userOnboarding, locale, error, connection, page) => {
-    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+  test.prop([fc.supportedLocale(), fc.string()])('with an unknown error', (locale, error) => {
+    const actual = _.connectSlackError({ error, locale })
 
-    const actual = await runMiddleware(
-      _.connectSlackError(error)({
-        getUser: () => M.fromEither(user),
-        getUserOnboarding: () => TE.right(userOnboarding),
-        locale,
-        publicUrl: new URL('http://example.com'),
-        templatePage,
-      }),
-      connection,
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: page.toString() },
-      ]),
-    )
-    expect(templatePage).toHaveBeenCalledWith({
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: StatusCodes.SERVICE_UNAVAILABLE,
       title: expect.anything(),
-      content: expect.anything(),
-      skipLinks: [[expect.anything(), '#main']],
+      main: expect.anything(),
+      skipToLabel: 'main',
       js: [],
-      locale,
-      user: E.isRight(user) ? user.right : undefined,
-      userOnboarding: E.isRight(user) ? userOnboarding : undefined,
     })
   })
 })
