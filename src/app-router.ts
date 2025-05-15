@@ -133,7 +133,7 @@ import {
   requestReviewPublished,
   requestReviewStart,
 } from './request-review-flow/index.js'
-import { handleResponse } from './response.js'
+import { type Response, handleResponse } from './response.js'
 import { reviewAPreprint } from './review-a-preprint-page/index.js'
 import * as ReviewPage from './review-page/index.js'
 import { reviewPage } from './review-page/index.js'
