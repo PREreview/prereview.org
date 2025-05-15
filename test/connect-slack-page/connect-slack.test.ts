@@ -4,6 +4,7 @@ import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { StatusCodes } from 'http-status-codes'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import Keyv from 'keyv'
@@ -14,161 +15,65 @@ import type { AddToSessionEnv, PopFromSessionEnv } from '../../src/session.js'
 import type { EditSlackUserIdEnv } from '../../src/slack-user-id.js'
 import { OrcidLocale } from '../../src/types/index.js'
 import type { GenerateUuidEnv } from '../../src/types/uuid.js'
-import type { GetUserOnboardingEnv } from '../../src/user-onboarding.js'
 import * as fc from '../fc.js'
 import { runMiddleware } from '../middleware.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('connectSlack', () => {
   describe('when the user is logged in', () => {
-    test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.connection(), fc.userOnboarding(), fc.html()])(
-      'when the Slack is not already connected',
-      async (orcidOauth, user, locale, connection, userOnboarding, page) => {
-        const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
-        const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+    test.prop([fc.user(), fc.supportedLocale()])('when the Slack is not already connected', async (user, locale) => {
+      const actual = await _.connectSlack({ locale, user })({
+        isSlackUser: () => TE.right(false),
+      })()
 
-        const actual = await runMiddleware(
-          _.connectSlack({
-            isSlackUser: () => TE.right(false),
-            getUser: () => M.of(user),
-            getUserOnboarding,
-            locale,
-            orcidOauth,
-            publicUrl: new URL('http://example.com'),
-            templatePage,
-          }),
-          connection,
-        )()
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.OK,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    })
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.OK },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, private' },
-            { type: 'setHeader', name: 'Vary', value: 'Cookie' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: page.toString() },
-          ]),
-        )
+    test.prop([fc.user(), fc.supportedLocale()])('when the Slack is connected', async (user, locale) => {
+      const actual = await _.connectSlack({ locale, user })({
+        isSlackUser: () => TE.right(true),
+      })()
 
-        expect(getUserOnboarding).toHaveBeenCalledWith(user.orcid)
-        expect(templatePage).toHaveBeenCalledWith({
-          title: expect.anything(),
-          content: expect.anything(),
-          skipLinks: [[expect.anything(), '#main']],
-          js: [],
-          locale,
-          user,
-          userOnboarding,
-        })
-      },
-    )
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: StatusCodes.SEE_OTHER,
+        location: format(connectSlackStartMatch.formatter, {}),
+      })
+    })
 
-    test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.connection()])(
-      'when the Slack is connected',
-      async (orcidOauth, user, locale, connection) => {
-        const actual = await runMiddleware(
-          _.connectSlack({
-            isSlackUser: () => TE.right(true),
-            getUser: () => M.of(user),
-            getUserOnboarding: shouldNotBeCalled,
-            locale,
-            orcidOauth,
-            publicUrl: new URL('http://example.com'),
-            templatePage: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+    test.prop([fc.user(), fc.supportedLocale()])("when the Slack user can't be loaded", async (user, locale) => {
+      const actual = await _.connectSlack({ locale, user })({
+        isSlackUser: () => TE.left('unavailable'),
+      })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: format(connectSlackStartMatch.formatter, {}),
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
-
-    test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.connection(), fc.html()])(
-      "when the Slack user can't be loaded",
-      async (orcidOauth, user, locale, connection, page) => {
-        const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
-
-        const actual = await runMiddleware(
-          _.connectSlack({
-            isSlackUser: () => TE.left('unavailable'),
-            getUser: () => M.of(user),
-            getUserOnboarding: shouldNotBeCalled,
-            locale,
-            orcidOauth,
-            publicUrl: new URL('http://example.com'),
-            templatePage,
-          }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: page.toString() },
-          ]),
-        )
-        expect(templatePage).toHaveBeenCalledWith({
-          title: expect.anything(),
-          content: expect.anything(),
-          skipLinks: [[expect.anything(), '#main-content']],
-          locale,
-          user,
-        })
-      },
-    )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.SERVICE_UNAVAILABLE,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    })
   })
 
-  test.prop([fc.oauth(), fc.origin(), fc.supportedLocale(), fc.connection()])(
-    'when the user is not logged in',
-    async (orcidOauth, publicUrl, locale, connection) => {
-      const actual = await runMiddleware(
-        _.connectSlack({
-          isSlackUser: shouldNotBeCalled,
-          getUser: () => M.left('no-session'),
-          getUserOnboarding: shouldNotBeCalled,
-          locale,
-          orcidOauth,
-          publicUrl,
-          templatePage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+  test.prop([fc.supportedLocale()])('when the user is not logged in', async locale => {
+    const actual = await _.connectSlack({ locale, user: undefined })({
+      isSlackUser: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Found },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                lang: OrcidLocale.fromSupportedLocale(locale),
-                client_id: orcidOauth.clientId,
-                response_type: 'code',
-                redirect_uri: new URL('/orcid', publicUrl).toString(),
-                scope: '/authenticate',
-                state: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
-              }).toString()}`,
-              orcidOauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'LogInResponse',
+      location: format(connectSlackMatch.formatter, {}),
+    })
+  })
 })
 
 describe('connectSlackStart', () => {

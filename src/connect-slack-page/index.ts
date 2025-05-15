@@ -5,6 +5,7 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
+import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -12,16 +13,17 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { setFlashMessage } from '../flash-message.js'
+import { havingProblemsPage } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
 import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in/index.js'
-import { seeOther, serviceUnavailable } from '../middleware.js'
+import { serviceUnavailable } from '../middleware.js'
 import type { TemplatePageEnv } from '../page.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
-import { handlePageResponse } from '../response.js'
+import { LogInResponse, RedirectResponse, type Response, handlePageResponse } from '../response.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../routes.js'
 import { addToSession, popFromSession } from '../session.js'
 import { saveSlackUserId } from '../slack-user-id.js'
-import { isSlackUser } from '../slack-user.js'
+import { type IsSlackUserEnv, isSlackUser } from '../slack-user.js'
 import { NonEmptyStringC } from '../types/string.js'
 import { generateUuid } from '../types/uuid.js'
 import { type GetUserEnv, type User, getUser, maybeGetUser } from '../user.js'
@@ -81,42 +83,33 @@ const exchangeAuthorizationCode = (code: string) =>
     RTE.chainTaskEitherKW(F.decode(SlackUserTokenD)),
   )
 
-export const connectSlack = pipe(
-  RM.of({}),
-  RM.apS('user', getUser),
-  RM.apSW(
-    'locale',
-    RM.asks((env: { locale: SupportedLocale }) => env.locale),
-  ),
-  RM.bindW(
-    'isSlackUser',
-    RM.fromReaderTaskEitherK(({ user }) => isSlackUser(user.orcid)),
-  ),
-  RM.ichainW(state =>
-    match(state)
-      .with(
-        { isSlackUser: true },
-        RM.fromMiddlewareK(() => seeOther(format(connectSlackStartMatch.formatter, {}))),
-      )
-      .with({ isSlackUser: false }, showConnectSlackPage)
-      .exhaustive(),
-  ),
-  RM.orElseW(error =>
-    match(error)
-      .returnType<
-        RM.ReaderMiddleware<
-          GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv & { locale: SupportedLocale },
-          StatusOpen,
-          ResponseEnded,
-          never,
-          void
-        >
-      >()
-      .with('no-session', () => logInAndRedirect(connectSlackMatch.formatter, {}))
-      .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
-      .exhaustive(),
-  ),
-)
+export const connectSlack = ({
+  locale,
+  user,
+}: {
+  locale: SupportedLocale
+  user?: User
+}): RT.ReaderTask<IsSlackUserEnv, Response> =>
+  pipe(
+    RTE.Do,
+    RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.let('locale', () => locale),
+    RTE.bindW('isSlackUser', ({ user }) => isSlackUser(user.orcid)),
+    RTE.matchW(
+      error =>
+        match(error)
+          .with('no-session', () => LogInResponse({ location: format(connectSlackMatch.formatter, {}) }))
+          .with('unavailable', () => havingProblemsPage(locale))
+          .exhaustive(),
+      state =>
+        match(state)
+          .with({ isSlackUser: true }, () =>
+            RedirectResponse({ location: format(connectSlackStartMatch.formatter, {}) }),
+          )
+          .with({ locale: P.select(), isSlackUser: false }, connectSlackPage)
+          .exhaustive(),
+    ),
+  )
 
 export const connectSlackStart = pipe(
   RM.of({}),
@@ -208,12 +201,6 @@ export const connectSlackError = (error: string) =>
   match(error)
     .with('access_denied', () => showAccessDeniedMessage)
     .otherwise(() => showFailureMessage)
-
-const showConnectSlackPage = flow(
-  ({ locale, user }: { locale: SupportedLocale; user: User }) => RM.of({ locale, user }),
-  RM.bind('response', ({ locale }) => RM.of(connectSlackPage(locale))),
-  RM.ichainW(handlePageResponse),
-)
 
 const showAccessDeniedMessage = pipe(
   RM.of({}),
