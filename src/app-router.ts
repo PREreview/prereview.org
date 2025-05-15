@@ -2537,7 +2537,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       clubsDataMatch.parser,
-      P.map(() => clubsData),
+      P.map(() =>
+        pipe(
+          RM.decodeHeader('Authorization', input => (typeof input === 'string' ? E.right(input) : E.right(''))),
+          RM.ichainW(clubsData),
+        ),
+      ),
     ),
     pipe(
       reviewsDataMatch.parser,
