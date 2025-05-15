@@ -418,17 +418,13 @@ const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseud
   )
 
 export const routerWithoutHyperTs = pipe(
-  partnersMatch.parser,
-  P.map(() =>
+  [
     pipe(
-      RT.of({}),
-      RT.apSW(
-        'locale',
-        RT.asks((env: { locale: SupportedLocale }) => env.locale),
-      ),
-      RT.map(({ locale }) => partners(locale)),
+      partnersMatch.parser,
+      P.map(() => RT.asks((env: { locale: SupportedLocale }) => partners(env.locale))),
     ),
-  ),
+  ],
+  concatAll(P.getParserMonoid()),
 ) satisfies P.Parser<RT.ReaderTask<never, Response>>
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
