@@ -10,7 +10,7 @@ import { Effect, Either, flow, identity, Option, pipe, Record, Tuple } from 'eff
 import { Route } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
-import { type RouterEnv, routerWithoutHyperTs } from '../app-router.js'
+import { routerWithoutHyperTs } from '../app-router.js'
 import { ClubsPage } from '../ClubsPage.js'
 import { CodeOfConductPage } from '../CodeOfConductPage.js'
 import { Locale } from '../Context.js'
@@ -177,7 +177,7 @@ const nonEffectHandler: HttpRouter.Route.Handler<
   })
 
   const locale = yield* Locale
-  const env = { locale } as RouterEnv
+  const env = { locale }
 
   return yield* pipe(
     FptsToEffect.option(routerWithoutHyperTs.run(route)),

@@ -417,19 +417,19 @@ const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseud
     RTE.chainFirstW(() => triggerRefreshOfPrereview(id, undefined, user)),
   )
 
-export const routerWithoutHyperTs: P.Parser<RT.ReaderTask<RouterEnv, Response>> = pipe(
+export const routerWithoutHyperTs = pipe(
   partnersMatch.parser,
   P.map(() =>
     pipe(
       RT.of({}),
       RT.apSW(
         'locale',
-        RT.asks((env: RouterEnv) => env.locale),
+        RT.asks((env: { locale: SupportedLocale }) => env.locale),
       ),
       RT.map(({ locale }) => partners(locale)),
     ),
   ),
-)
+) satisfies P.Parser<RT.ReaderTask<never, Response>>
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
