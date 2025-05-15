@@ -9,21 +9,19 @@ import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { MediaType, Status } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import { setFlashMessage } from '../flash-message.js'
 import { havingProblemsPage } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
-import { LogInResponse, RedirectResponse, type Response, handlePageResponse } from '../response.js'
+import { FlashMessageResponse, LogInResponse, RedirectResponse, type Response } from '../response.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../routes.js'
-import { type AddToSessionEnv, addToSession, popFromSession } from '../session.js'
-import { saveSlackUserId } from '../slack-user-id.js'
+import { type AddToSessionEnv, type PopFromSessionEnv, addToSession, popFromSession } from '../session.js'
+import { type EditSlackUserIdEnv, saveSlackUserId } from '../slack-user-id.js'
 import { type IsSlackUserEnv, isSlackUser } from '../slack-user.js'
 import { NonEmptyStringC } from '../types/string.js'
 import { type GenerateUuidEnv, generateUuid } from '../types/uuid.js'
-import { type User, getUser, maybeGetUser } from '../user.js'
+import type { User } from '../user.js'
 import { accessDeniedMessage } from './access-denied-message.js'
 import { connectSlackPage } from './connect-slack-page.js'
 import { failureMessage } from './failure-message.js'
@@ -161,47 +159,47 @@ const SlackUserTokenD = pipe(
   ),
 )
 
-export const connectSlackCode = flow(
-  (code: string, state: string) => RM.of({ code, state }),
-  RM.apSW('user', getUser),
-  RM.chainFirstW(({ state }) =>
-    pipe(
-      RM.fromReaderTaskEither(popFromSession('slack-state')),
-      RM.filterOrElseW(
-        expectedState => state === expectedState,
-        () => 'invalid-state' as const,
+export const connectSlackCode = ({
+  code,
+  locale,
+  state,
+  user,
+}: {
+  code: string
+  locale: SupportedLocale
+  state: string
+  user?: User
+}): RT.ReaderTask<F.FetchEnv & PopFromSessionEnv & PublicUrlEnv & SlackOAuthEnv & EditSlackUserIdEnv, Response> =>
+  pipe(
+    RTE.Do,
+    RTE.let('code', () => code),
+    RTE.let('locale', () => locale),
+    RTE.let('state', () => state),
+    RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.chainFirstW(({ state }) =>
+      pipe(
+        popFromSession('slack-state'),
+        RTE.filterOrElseW(
+          expectedState => state === expectedState,
+          () => 'invalid-state' as const,
+        ),
       ),
     ),
-  ),
-  RM.bindW('slackUser', RM.fromReaderTaskEitherK(flow(Struct.get('code'), exchangeAuthorizationCode))),
-  RM.chainFirstReaderTaskEitherKW(({ user, slackUser }) =>
-    saveSlackUserId(user.orcid, {
-      userId: slackUser.authed_user.id,
-      accessToken: slackUser.authed_user.access_token,
-      scopes: slackUser.authed_user.scope,
-    }),
-  ),
-  RM.ichain(() => RM.redirect(format(myDetailsMatch.formatter, {}))),
-  flow(
-    RM.ichainMiddlewareKW(() => setFlashMessage('slack-connected')),
-    RM.ichainFirst(() => RM.closeHeaders()),
-    RM.ichainFirst(() => RM.end()),
-  ),
-  RM.orElseW(() => showFailureMessage),
-)
+    RTE.bindW('slackUser', flow(Struct.get('code'), exchangeAuthorizationCode)),
+    RTE.chainFirstW(({ user, slackUser }) =>
+      saveSlackUserId(user.orcid, {
+        userId: slackUser.authed_user.id,
+        accessToken: slackUser.authed_user.access_token,
+        scopes: slackUser.authed_user.scope,
+      }),
+    ),
+    RTE.matchW(
+      () => havingProblemsPage(locale),
+      () => FlashMessageResponse({ message: 'slack-connected', location: format(myDetailsMatch.formatter, {}) }),
+    ),
+  )
 
 export const connectSlackError = ({ error, locale }: { error: string; locale: SupportedLocale }): Response =>
   match(error)
     .with('access_denied', () => accessDeniedMessage(locale))
     .otherwise(() => failureMessage(locale))
-
-const showFailureMessage = pipe(
-  RM.of({}),
-  RM.apS('user', maybeGetUser),
-  RM.apSW(
-    'locale',
-    RM.asks((env: { locale: SupportedLocale }) => env.locale),
-  ),
-  RM.bind('response', ({ locale }) => RM.of(failureMessage(locale))),
-  RM.ichainW(handlePageResponse),
-)

@@ -701,7 +701,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       connectSlackCodeMatch.parser,
-      P.map(({ code, state }) => connectSlackCode(code, state)),
+      P.map(
+        flow(
+          RM.of,
+          RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW('response', RM.fromReaderTaskK(connectSlackCode)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
