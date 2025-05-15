@@ -417,7 +417,19 @@ const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseud
     RTE.chainFirstW(() => triggerRefreshOfPrereview(id, undefined, user)),
   )
 
-export const routerWithoutHyperTs: P.Parser<RT.ReaderTask<RouterEnv, Response>> = P.zero()
+export const routerWithoutHyperTs: P.Parser<RT.ReaderTask<RouterEnv, Response>> = pipe(
+  partnersMatch.parser,
+  P.map(() =>
+    pipe(
+      RT.of({}),
+      RT.apSW(
+        'locale',
+        RT.asks((env: RouterEnv) => env.locale),
+      ),
+      RT.map(({ locale }) => partners(locale)),
+    ),
+  ),
+)
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -482,21 +494,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getRecentPrereviews: withEnv(getRecentPrereviewsFromZenodo, env),
         })),
-      ),
-    ),
-    pipe(
-      partnersMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bind('response', ({ locale }) => RM.of(partners(locale))),
-          RM.ichainW(handleResponse),
-        ),
       ),
     ),
     pipe(
