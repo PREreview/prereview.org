@@ -1,4 +1,11 @@
-import { type HttpMethod, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import {
+  type HttpMethod,
+  HttpMiddleware,
+  HttpRouter,
+  HttpServerError,
+  HttpServerRequest,
+  HttpServerResponse,
+} from '@effect/platform'
 import { Effect, flow, identity, Option, pipe, Record } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
@@ -151,6 +158,15 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.WriteCommentPublished, WriteCommentFlow.PublishedPage),
 ])
 
+const nonEffectHandler: HttpRouter.Route.Handler<HttpServerError.RouteNotFound, never> = Effect.gen(function* () {
+  const request = yield* HttpServerRequest.HttpServerRequest
+  return yield* new HttpServerError.RouteNotFound({ request })
+})
+
+const nonEffectRouter: HttpRouter.HttpRouter<HttpServerError.RouteNotFound> = HttpRouter.fromIterable([
+  HttpRouter.makeRoute('*', '*', nonEffectHandler),
+])
+
 export const Router = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage),
@@ -205,4 +221,5 @@ export const Router = pipe(
   ),
   HttpRouter.get('/robots.txt', HttpServerResponse.text('User-agent: *\nAllow: /')),
   HttpRouter.concat(LegacyRouter),
+  HttpRouter.concat(nonEffectRouter),
 )
