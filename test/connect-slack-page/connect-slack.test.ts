@@ -13,7 +13,6 @@ import type { TemplatePageEnv } from '../../src/page.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../src/routes.js'
 import type { AddToSessionEnv, PopFromSessionEnv } from '../../src/session.js'
 import type { EditSlackUserIdEnv } from '../../src/slack-user-id.js'
-import { OrcidLocale } from '../../src/types/index.js'
 import type { GenerateUuidEnv } from '../../src/types/uuid.js'
 import * as fc from '../fc.js'
 import { runMiddleware } from '../middleware.js'
@@ -77,90 +76,53 @@ describe('connectSlack', () => {
 })
 
 describe('connectSlackStart', () => {
-  test.prop([fc.oauth(), fc.oauth(), fc.supportedLocale(), fc.origin(), fc.uuid(), fc.user(), fc.connection()])(
+  test.prop([fc.oauth(), fc.supportedLocale(), fc.origin(), fc.uuid(), fc.user()])(
     'when the user is logged in',
-    async (orcidOauth, slackOauth, locale, publicUrl, uuid, user, connection) => {
+    async (slackOauth, locale, publicUrl, uuid, user) => {
       const generateUuid = jest.fn<GenerateUuidEnv['generateUuid']>(() => uuid)
       const addToSession = jest.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
 
-      const actual = await runMiddleware(
-        _.connectSlackStart({
-          addToSession,
-          generateUuid,
-          getUser: () => M.of(user),
-          locale,
-          orcidOauth,
-          publicUrl,
-          slackOauth,
-          templatePage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+      const actual = await _.connectSlackStart({ locale, user })({
+        addToSession,
+        generateUuid,
+        publicUrl,
+        slackOauth,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                client_id: slackOauth.clientId,
-                response_type: 'code',
-                redirect_uri: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
-                user_scope: 'users.profile:read,users.profile:write',
-                state: uuid,
-                team: 'T057XMB3EGH',
-              }).toString()}`,
-              slackOauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: StatusCodes.SEE_OTHER,
+        location: new URL(
+          `?${new URLSearchParams({
+            client_id: slackOauth.clientId,
+            response_type: 'code',
+            redirect_uri: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
+            user_scope: 'users.profile:read,users.profile:write',
+            state: uuid,
+            team: 'T057XMB3EGH',
+          }).toString()}`,
+          slackOauth.authorizeUrl,
+        ),
+      })
       expect(generateUuid).toHaveBeenCalledTimes(1)
       expect(addToSession).toHaveBeenCalledWith('slack-state', uuid)
     },
   )
 
-  test.prop([fc.oauth(), fc.oauth(), fc.supportedLocale(), fc.origin(), fc.connection()])(
+  test.prop([fc.oauth(), fc.supportedLocale(), fc.origin()])(
     'when the user is not logged in',
-    async (orcidOauth, slackOauth, locale, publicUrl, connection) => {
-      const actual = await runMiddleware(
-        _.connectSlackStart({
-          addToSession: shouldNotBeCalled,
-          generateUuid: shouldNotBeCalled,
-          getUser: () => M.left('no-session'),
-          locale,
-          orcidOauth,
-          publicUrl,
-          slackOauth,
-          templatePage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+    async (slackOauth, locale, publicUrl) => {
+      const actual = await _.connectSlackStart({ locale, user: undefined })({
+        addToSession: shouldNotBeCalled,
+        generateUuid: shouldNotBeCalled,
+        publicUrl,
+        slackOauth,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Found },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                lang: OrcidLocale.fromSupportedLocale(locale),
-                client_id: orcidOauth.clientId,
-                response_type: 'code',
-                redirect_uri: new URL('/orcid', publicUrl).toString(),
-                scope: '/authenticate',
-                state: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
-              }).toString()}`,
-              orcidOauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'LogInResponse',
+        location: format(connectSlackMatch.formatter, {}),
+      })
     },
   )
 })

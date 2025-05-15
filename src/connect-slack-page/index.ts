@@ -7,7 +7,7 @@ import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import { MediaType, Status } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -15,18 +15,15 @@ import { P, match } from 'ts-pattern'
 import { setFlashMessage } from '../flash-message.js'
 import { havingProblemsPage } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
-import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in/index.js'
-import { serviceUnavailable } from '../middleware.js'
-import type { TemplatePageEnv } from '../page.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
 import { LogInResponse, RedirectResponse, type Response, handlePageResponse } from '../response.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../routes.js'
-import { addToSession, popFromSession } from '../session.js'
+import { type AddToSessionEnv, addToSession, popFromSession } from '../session.js'
 import { saveSlackUserId } from '../slack-user-id.js'
 import { type IsSlackUserEnv, isSlackUser } from '../slack-user.js'
 import { NonEmptyStringC } from '../types/string.js'
-import { generateUuid } from '../types/uuid.js'
-import { type GetUserEnv, type User, getUser, maybeGetUser } from '../user.js'
+import { type GenerateUuidEnv, generateUuid } from '../types/uuid.js'
+import { type User, getUser, maybeGetUser } from '../user.js'
 import { accessDeniedMessage } from './access-denied-message.js'
 import { connectSlackPage } from './connect-slack-page.js'
 import { failureMessage } from './failure-message.js'
@@ -111,35 +108,31 @@ export const connectSlack = ({
     ),
   )
 
-export const connectSlackStart = pipe(
-  RM.of({}),
-  RM.apS('user', getUser),
-  RM.apSW('state', RM.fromReaderIO(generateUuid)),
-  RM.bindW(
-    'authorizationRequestUrl',
-    RM.fromReaderK(({ state }) => authorizationRequestUrl(state)),
-  ),
-  RM.chainFirstReaderTaskEitherKW(({ state }) => addToSession('slack-state', state)),
-  RM.ichainFirst(() => RM.status(Status.SeeOther)),
-  RM.ichainFirst(({ authorizationRequestUrl }) => RM.header('Location', authorizationRequestUrl.href)),
-  RM.ichainFirst(() => RM.closeHeaders()),
-  RM.ichain(() => RM.end()),
-  RM.orElseW(error =>
-    match(error)
-      .returnType<
-        RM.ReaderMiddleware<
-          GetUserEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv & { locale: SupportedLocale },
-          StatusOpen,
-          ResponseEnded,
-          never,
-          void
-        >
-      >()
-      .with('no-session', () => logInAndRedirect(connectSlackMatch.formatter, {}))
-      .with('unavailable', P.instanceOf(Error), () => serviceUnavailable)
-      .exhaustive(),
-  ),
-)
+export const connectSlackStart = ({
+  locale,
+  user,
+}: {
+  locale: SupportedLocale
+  user?: User
+}): RT.ReaderTask<GenerateUuidEnv & PublicUrlEnv & SlackOAuthEnv & AddToSessionEnv, Response> =>
+  pipe(
+    RTE.Do,
+    RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.bind('state', () => RTE.rightReaderIO(generateUuid)),
+    RTE.bindW(
+      'authorizationRequestUrl',
+      RTE.fromReaderK(({ state }) => authorizationRequestUrl(state)),
+    ),
+    RTE.chainFirstW(({ state }) => addToSession('slack-state', state)),
+    RTE.matchW(
+      error =>
+        match(error)
+          .with('no-session', () => LogInResponse({ location: format(connectSlackMatch.formatter, {}) }))
+          .with('unavailable', P.instanceOf(Error), () => havingProblemsPage(locale))
+          .exhaustive(),
+      ({ authorizationRequestUrl }) => RedirectResponse({ location: authorizationRequestUrl }),
+    ),
+  )
 
 const JsonD = {
   decode: (s: string) =>

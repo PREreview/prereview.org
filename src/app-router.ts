@@ -686,7 +686,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       connectSlackStartMatch.parser,
-      P.map(() => connectSlackStart),
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW('response', RM.fromReaderTaskK(connectSlackStart)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       connectSlackCodeMatch.parser,
