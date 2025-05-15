@@ -2,7 +2,7 @@ import { HttpRouter, HttpServerError, HttpServerRequest } from '@effect/platform
 import { Effect, Either, Option, pipe, Tuple } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import * as RT from 'fp-ts/lib/ReaderTask.js'
+import * as T from 'fp-ts/lib/Task.js'
 import { Locale } from '../Context.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { SupportedLocale } from '../locales/index.js'
@@ -25,12 +25,12 @@ const nonEffectHandler: HttpRouter.Route.Handler<
   })
 
   const locale = yield* Locale
-  const env = { locale }
+  const env = { locale } satisfies Env
 
   return yield* pipe(
-    FptsToEffect.option(routerWithoutHyperTs.run(route)),
+    FptsToEffect.option(routerWithoutHyperTs(env).run(route)),
     Option.map(Tuple.getFirst),
-    Effect.andThen(readerTask => FptsToEffect.readerTask(readerTask, env)),
+    Effect.andThen(FptsToEffect.task),
     Effect.andThen(Response.toHttpServerResponse),
     Effect.mapError(() => new HttpServerError.RouteNotFound({ request })),
   )
@@ -41,12 +41,17 @@ export const nonEffectRouter: HttpRouter.HttpRouter<
   Locale | TemplatePage | OrcidOauth | PublicUrl
 > = HttpRouter.fromIterable([HttpRouter.makeRoute('*', '*', nonEffectHandler)])
 
-const routerWithoutHyperTs = pipe(
-  [
-    pipe(
-      Routes.partnersMatch.parser,
-      P.map(() => RT.asks((env: { locale: SupportedLocale }) => partners(env.locale))),
-    ),
-  ],
-  concatAll(P.getParserMonoid()),
-) satisfies P.Parser<RT.ReaderTask<never, Response.Response>>
+interface Env {
+  locale: SupportedLocale
+}
+
+const routerWithoutHyperTs = (env: Env) =>
+  pipe(
+    [
+      pipe(
+        Routes.partnersMatch.parser,
+        P.map(() => T.of(partners(env.locale))),
+      ),
+    ],
+    concatAll(P.getParserMonoid()),
+  ) satisfies P.Parser<T.Task<Response.Response>>
