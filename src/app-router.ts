@@ -417,6 +417,8 @@ const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseud
     RTE.chainFirstW(() => triggerRefreshOfPrereview(id, undefined, user)),
   )
 
+export const routerWithoutHyperTs: P.Parser<RT.ReaderTask<RouterEnv, Response>> = P.zero()
+
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(

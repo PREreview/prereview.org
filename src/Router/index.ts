@@ -6,12 +6,15 @@ import {
   HttpServerRequest,
   HttpServerResponse,
 } from '@effect/platform'
-import { Effect, flow, identity, Option, pipe, Record } from 'effect'
+import { Effect, Either, flow, identity, Option, pipe, Record, Tuple } from 'effect'
+import { Route } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
+import { routerWithoutHyperTs } from '../app-router.js'
 import { ClubsPage } from '../ClubsPage.js'
 import { CodeOfConductPage } from '../CodeOfConductPage.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
+import * as FptsToEffect from '../FptsToEffect.js'
 import { FundingPage } from '../FundingPage.js'
 import { HowToUsePage } from '../HowToUsePage.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
@@ -160,7 +163,20 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
 
 const nonEffectHandler: HttpRouter.Route.Handler<HttpServerError.RouteNotFound, never> = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
-  return yield* new HttpServerError.RouteNotFound({ request })
+
+  const route = yield* Either.try({
+    try: () => Route.parse(request.url),
+    catch: () => new HttpServerError.RouteNotFound({ request }),
+  })
+
+  return yield* pipe(
+    FptsToEffect.option(routerWithoutHyperTs.run(route)),
+    Option.map(Tuple.getFirst),
+    Option.match({
+      onSome: () => HttpServerResponse.empty(),
+      onNone: () => new HttpServerError.RouteNotFound({ request }),
+    }),
+  )
 })
 
 const nonEffectRouter: HttpRouter.HttpRouter<HttpServerError.RouteNotFound> = HttpRouter.fromIterable([
