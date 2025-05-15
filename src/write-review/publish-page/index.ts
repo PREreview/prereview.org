@@ -6,7 +6,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { StatusCodes } from 'http-status-codes'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
@@ -20,6 +19,7 @@ import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
 import type { PublicUrlEnv } from '../../public-url.js'
 import { StreamlinePageResponse, handlePageResponse } from '../../response.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../routes.js'
+import type { AddToSessionEnv } from '../../session.js'
 import type { EmailAddress } from '../../types/email-address.js'
 import { localeToIso6391 } from '../../types/iso639.js'
 import type { NonEmptyString } from '../../types/string.js'
@@ -95,7 +95,7 @@ const decideNextStep = (state: {
   match(state)
     .returnType<
       RM.ReaderMiddleware<
-        GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv & FormStoreEnv & PublishPrereviewEnv & SessionEnv,
+        GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv & FormStoreEnv & PublishPrereviewEnv & AddToSessionEnv,
         StatusOpen,
         ResponseEnded,
         never,
@@ -160,9 +160,9 @@ const handlePublishForm = ({
         ),
       ),
     ),
+    RM.chainFirstReaderTaskEitherKW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
     RM.ichainFirst(() => RM.status(Status.SeeOther)),
     RM.ichainFirst(() => RM.header('Location', format(writeReviewPublishedMatch.formatter, { id: preprint.id }))),
-    RM.ichainW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
     RM.ichain(() => RM.closeHeaders()),
     RM.ichain(() => RM.end()),
     RM.orElseW(() => showFailureMessage(user, locale)),

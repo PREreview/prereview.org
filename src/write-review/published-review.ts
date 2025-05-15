@@ -7,6 +7,7 @@ import { getSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
+import { addToSession } from '../session.js'
 import { type CompletedForm, CompletedFormC } from './completed-form.js'
 import { FormC } from './form.js'
 
@@ -28,11 +29,7 @@ const getPublishedReviewFromSession: (session: JsonRecord) => E.Either<'no-publi
 )
 
 export const storeInformationForWriteReviewPublishedPage = (doi: Doi, id: number, form: CompletedForm) =>
-  pipe(
-    getSession<HeadersOpen>(),
-    RM.map(Record.set<string, string, JsonRecord>('published-review', PublishedReviewC.encode({ doi, id, form }))),
-    RM.chainW(storeSession),
-  )
+  addToSession('published-review', PublishedReviewC.encode({ doi, id, form }))
 
 export const getPublishedReview = pipe(getSession(), RM.chainEitherKW(getPublishedReviewFromSession))
 
