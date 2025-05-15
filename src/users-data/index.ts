@@ -3,13 +3,10 @@ import { flow, Function, pipe } from 'effect'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import type { Orcid } from 'orcid-id-ts'
 import safeStableStringify from 'safe-stable-stringify'
-import { match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.js'
 import type { Location } from '../location.js'
 import type { ScietyListEnv } from '../sciety-list/index.js'
@@ -48,26 +45,14 @@ const UserE = pipe(
 
 const UsersE = ReadonlyArrayE(UserE)
 
-const isAllowed = pipe(
-  RM.ask<ScietyListEnv>(),
-  RM.chain(env => RM.decodeHeader('Authorization', D.literal(`Bearer ${env.scietyListToken}`).decode)),
-  RM.bimap(() => 'forbidden' as const, Function.constVoid),
-)
+const isAllowed = (authorizationHeader: string) =>
+  pipe(
+    RTE.ask<ScietyListEnv>(),
+    RTE.chainEitherK(env => D.literal(`Bearer ${env.scietyListToken}`).decode(authorizationHeader)),
+    RTE.bimap(() => 'forbidden' as const, Function.constVoid),
+  )
 
-export const usersData = pipe(
-  isAllowed,
-  RM.chainReaderTaskEitherKW(getUsers),
-  RM.map(UsersE.encode),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainFirst(() => RM.contentType('application/json')),
-  RM.ichainFirst(() => RM.closeHeaders()),
-  RM.ichain(users => RM.send(JsonE.encode(users))),
-  RM.orElseW(error =>
-    match(error)
-      .with('unavailable', () =>
-        pipe(RM.status(Status.ServiceUnavailable), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
-      )
-      .with('forbidden', () => pipe(RM.status(Status.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)))
-      .exhaustive(),
-  ),
-)
+export const usersData = (
+  authorizationHeader: string,
+): RTE.ReaderTaskEither<ScietyListEnv & GetUsersEnv, 'forbidden' | 'unavailable', string> =>
+  pipe(authorizationHeader, isAllowed, RTE.chainW(getUsers), RTE.map(UsersE.encode), RTE.map(JsonE.encode))

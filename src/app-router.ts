@@ -2508,7 +2508,24 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       usersDataMatch.parser,
-      P.map(() => usersData),
+      P.map(() =>
+        pipe(
+          RM.decodeHeader('Authorization', input => (typeof input === 'string' ? E.right(input) : E.right(''))),
+          RM.chainReaderTaskEitherK(usersData),
+          RM.ichainFirst(() => RM.status(Status.OK)),
+          RM.ichainFirst(() => RM.contentType('application/json')),
+          RM.ichainFirst(() => RM.closeHeaders()),
+          RM.ichainW(RM.send),
+          RM.orElseW(error =>
+            match(error)
+              .with('unavailable', () =>
+                pipe(RM.status(Status.ServiceUnavailable), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
+              )
+              .with('forbidden', () => pipe(RM.status(Status.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)))
+              .exhaustive(),
+          ),
+        ),
+      ),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
