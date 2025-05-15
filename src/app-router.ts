@@ -2002,7 +2002,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       writeReviewPublishedMatch.parser,
-      P.map(({ id }) => writeReviewPublished(id)),
+      P.map(
+        flow(
+          RM.of,
+          RM.apS('user', maybeGetUser),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW('response', RM.fromReaderTaskK(writeReviewPublished)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       reviewRequestsMatch.parser,

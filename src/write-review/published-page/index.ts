@@ -1,48 +1,58 @@
-import { Match, flow, pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
-import { P, match } from 'ts-pattern'
+import * as R from 'fp-ts/lib/Reader.js'
+import * as RT from 'fp-ts/lib/ReaderTask.js'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import { match } from 'ts-pattern'
+import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
-import { notFound, seeOther, serviceUnavailable } from '../../middleware.js'
-import { type PreprintTitle, getPreprintTitle } from '../../preprint.js'
-import { toUrl } from '../../public-url.js'
-import { handlePageResponse } from '../../response.js'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
+import { type PublicUrlEnv, toUrl } from '../../public-url.js'
+import { RedirectResponse, type Response } from '../../response.js'
 import { reviewMatch, writeReviewMatch } from '../../routes.js'
-import { type User, getUser } from '../../user.js'
+import type { PopFromSessionEnv } from '../../session.js'
+import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
+import type { User } from '../../user.js'
 import { type PublishedReview, popPublishedReview } from '../published-review.js'
 import { publishedPage } from './published-page.js'
 
-export const writeReviewPublished = flow(
-  RM.fromReaderTaskEitherK(getPreprintTitle),
-  RM.ichainW(preprint =>
-    pipe(
-      RM.right({ preprint }),
-      RM.apSW('user', getUser),
-      RM.bindW('review', () => RM.fromReaderTaskEither(popPublishedReview)),
-      RM.apSW(
-        'locale',
-        RM.asks((env: { locale: SupportedLocale }) => env.locale),
-      ),
-      RM.ichainW(showSuccessMessage),
-      RM.orElseW(error =>
-        match(error)
-          .with(
-            'no-session',
-            'no-published-review',
-            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
-          )
-          .with(P.instanceOf(Error), () => serviceUnavailable)
-          .exhaustive(),
-      ),
+export const writeReviewPublished = ({
+  id,
+  locale,
+  user,
+}: {
+  id: IndeterminatePreprintId
+  locale: SupportedLocale
+  user?: User
+}): RT.ReaderTask<GetPreprintTitleEnv & PopFromSessionEnv & PublicUrlEnv, Response> =>
+  pipe(
+    getPreprintTitle(id),
+    RTE.matchEW(
+      Match.valueTags({
+        PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
+        PreprintIsUnavailable: () => RT.of(havingProblemsPage(locale)),
+      }),
+      preprint =>
+        pipe(
+          RTE.Do,
+          RTE.let('preprint', () => preprint),
+          RTE.apS('user', pipe(RTE.fromNullable('no-session' as const)(user))),
+          RTE.let('locale', () => locale),
+          RTE.bindW('review', () => popPublishedReview),
+          RTE.matchEW(
+            error =>
+              RT.of(
+                match(error)
+                  .with('no-published-review', 'no-session', () =>
+                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .exhaustive(),
+              ),
+            RT.fromReaderK(showSuccessMessage),
+          ),
+        ),
     ),
-  ),
-  RM.orElseW(
-    Match.valueTags({
-      PreprintIsNotFound: () => notFound,
-      PreprintIsUnavailable: () => serviceUnavailable,
-    }),
-  ),
-)
+  )
 
 const showSuccessMessage = ({
   review,
@@ -56,8 +66,7 @@ const showSuccessMessage = ({
   locale: SupportedLocale
 }) =>
   pipe(
-    RM.of({ review, preprint, user, locale }),
-    RM.apS('url', RM.rightReader(toUrl(reviewMatch.formatter, { id: review.id }))),
-    RM.bind('response', args => RM.of(publishedPage(args))),
-    RM.ichainW(handlePageResponse),
+    R.of({ review, preprint, user, locale }),
+    R.apS('url', toUrl(reviewMatch.formatter, { id: review.id })),
+    R.map(publishedPage),
   )
