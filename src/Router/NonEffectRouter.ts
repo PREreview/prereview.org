@@ -4,6 +4,7 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as T from 'fp-ts/lib/Task.js'
 import { Locale } from '../Context.js'
+import * as FeatureFlags from '../feature-flags.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { SupportedLocale } from '../locales/index.js'
 import type { OrcidOauth } from '../OrcidOauth.js'
@@ -15,7 +16,7 @@ import * as Response from './Response.js'
 
 const nonEffectHandler: HttpRouter.Route.Handler<
   HttpServerError.RouteNotFound,
-  Locale | TemplatePage | OrcidOauth | PublicUrl
+  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.CanSeeDesignTweaks
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -25,7 +26,8 @@ const nonEffectHandler: HttpRouter.Route.Handler<
   })
 
   const locale = yield* Locale
-  const env = { locale } satisfies Env
+  const canSeeDesignTweaks = yield* FeatureFlags.CanSeeDesignTweaks
+  const env = { locale, canSeeDesignTweaks } satisfies Env
 
   return yield* pipe(
     FptsToEffect.option(routerWithoutHyperTs(env).run(route)),
@@ -38,11 +40,12 @@ const nonEffectHandler: HttpRouter.Route.Handler<
 
 export const nonEffectRouter: HttpRouter.HttpRouter<
   HttpServerError.RouteNotFound,
-  Locale | TemplatePage | OrcidOauth | PublicUrl
+  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.CanSeeDesignTweaks
 > = HttpRouter.fromIterable([HttpRouter.makeRoute('*', '*', nonEffectHandler)])
 
 interface Env {
   locale: SupportedLocale
+  canSeeDesignTweaks: typeof FeatureFlags.CanSeeDesignTweaks.Service
 }
 
 const routerWithoutHyperTs = (env: Env) =>
