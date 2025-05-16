@@ -42,3 +42,17 @@ export function getLocale(element: HTMLElement): SupportedLocale {
 
   return isSupportedLocale(lang) ? lang : DefaultLocale
 }
+
+export function getFocusableElements(element: ParentNode): ReadonlyArray<HTMLElement> {
+  return Array.from(
+    element.querySelectorAll<HTMLElement>(
+      ':any-link:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])',
+    ),
+  ).filter(otherElement => otherElement.offsetWidth > 0 || otherElement.offsetHeight > 0)
+}
+
+export function nextFocusableElement(element: HTMLElement): HTMLElement | undefined {
+  const focusableElements = getFocusableElements(document)
+
+  return focusableElements[focusableElements.indexOf(element) + 1]
+}

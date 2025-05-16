@@ -245,6 +245,97 @@ export const page = ({
                       <button aria-controls="navigation" aria-expanded="false" hidden><span>Menu</span></button>
                     </expander-button>
                   </div>
+
+                  <div id="navigation" class="menu" hidden>
+                    <div>
+                      <h3>Get involved</h3>
+                      <ul>
+                        <li>
+                          <a href="${format(Routes.reviewsMatch.formatter, {})}"
+                            >${translate(locale, 'header', 'menuReviews')()}</a
+                          >
+                          <p>See preprints with a PREreview.</p>
+                        </li>
+                        <li>
+                          <a href="${format(Routes.reviewRequestsMatch.formatter, {})}"
+                            >${translate(locale, 'header', 'menuRequests')()}</a
+                          >
+                          <p>Help an author by reviewing their preprint.</p>
+                        </li>
+                        <li>
+                          <a href="${Routes.Clubs}">${translate(locale, 'header', 'menuClubs')()}</a>
+                          <p>Connect with like-minded peers.</p>
+                        </li>
+                        <li>
+                          <a href="${Routes.Trainings}">${translate(locale, 'header', 'menuTrainings')()}</a>
+                          <p>Learn about ethical and constructive peer review.</p>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3>Find out more</h3>
+                      <ul>
+                        <li>
+                          <a href="https://content.prereview.org/">${translate(locale, 'header', 'menuBlog')()}</a>
+                        </li>
+                        <li>
+                          <a href="${Routes.AboutUs}">${translate(locale, 'header', 'menuAboutUs')()}</a>
+                        </li>
+                        <li>
+                          <a href="${format(Routes.partnersMatch.formatter, {})}"
+                            >${translate(locale, 'header', 'menuPartners')()}</a
+                          >
+                        </li>
+                        <li>
+                          <a href="https://donorbox.org/prereview">${translate(locale, 'header', 'menuDonate')()}</a>
+                        </li>
+                        <li>
+                          <a href="${Routes.LiveReviews}">${translate(locale, 'header', 'menuLiveReviews')()}</a>
+                        </li>
+                        <li>
+                          <a href="${Routes.Resources}">${translate(locale, 'header', 'menuResources')()}</a>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3>My account</h3>
+                      <ul>
+                        ${user
+                          ? html` <li>
+                                <a href="${format(Routes.myDetailsMatch.formatter, {})}"
+                                  >${translate(
+                                    locale,
+                                    'header',
+                                    'menuMyDetails',
+                                  )()}${userOnboarding?.seenMyDetailsPage === false
+                                    ? html` <span role="status"
+                                        ><span class="visually-hidden"
+                                          >${translate(locale, 'header', 'menuNewNotification')()}</span
+                                        ></span
+                                      >`
+                                    : ''}</a
+                                >
+                              </li>
+                              <li>
+                                <a href="${format(Routes.myPrereviewsMatch.formatter, {})}"
+                                  >${translate(locale, 'header', 'menuMyPrereviews')()}</a
+                                >
+                              </li>
+                              <li>
+                                <a href="${format(Routes.logOutMatch.formatter, {})}"
+                                  >${translate(locale, 'header', 'menuLogOut')()}</a
+                                >
+                              </li>`
+                          : html` <li>
+                              <a href="${format(Routes.logInMatch.formatter, {})}"
+                                >${translate(locale, 'header', 'menuLogIn')()}</a
+                              >
+                            </li>`}
+                      </ul>
+                    </div>
+                  </div>
                 </nav>
               `
             : html`

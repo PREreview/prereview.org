@@ -2404,13 +2404,27 @@ skip-link {
 }
 
 .menu {
-  display: flex;
+  &:not([hidden]) {
+    display: flex;
+  }
+
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   padding-block: var(--space-m-l);
   column-gap: var(--space-xs-m);
   row-gap: var(--space-m-l);
+
+  header & {
+    padding-inline: max(var(--grid-gutter), calc(var(--grid-gutter) + (100% - var(--grid-max-width)) / 2));
+    background-color: var(--color-background-alt);
+    border-block: var(--width-divider) solid transparent;
+    font-size: var(--step--1);
+
+    @media (width >= 30em) {
+      font-size: var(--step-0);
+    }
+  }
 
   & > div {
     flex-basis: 10em;
