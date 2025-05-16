@@ -21,6 +21,7 @@ module.exports = (env, argv) => ({
     crowdin: path.resolve('assets', 'crowdin.css'),
     'editor-toolbar': path.resolve('assets', 'editor-toolbar.ts'),
     'error-summary': path.resolve('assets', 'error-summary.ts'),
+    'expander-button': path.resolve('assets', 'expander-button.ts'),
     'favicon.ico': path.resolve('assets', 'favicon.ico'),
     'favicon.svg': path.resolve('assets', 'favicon.svg'),
     'html-editor': path.resolve('assets', 'html-editor.ts'),

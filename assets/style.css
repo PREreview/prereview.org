@@ -1334,6 +1334,10 @@ label {
   }
 }
 
+expander-button {
+  display: contents;
+}
+
 :--expander-button {
   block-size: var(--space-l);
   padding: var(--space-4xs-3xs);

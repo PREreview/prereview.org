@@ -47,7 +47,7 @@ export interface Page {
     | 'review-requests'
     | 'reviews'
     | 'trainings'
-  readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'collapsible-menu.js' | 'skip-link.js'>>
+  readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'collapsible-menu.js' | 'expander-button.js' | 'skip-link.js'>>
   readonly user?: User
   readonly userOnboarding?: UserOnboarding
   readonly pageUrls?: Router.PageUrls
@@ -80,6 +80,7 @@ export const page = ({
     Array.dedupe(js),
     Array.appendAll(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
     Array.appendAll(type !== 'streamline' ? ['collapsible-menu.js' as const] : []),
+    Array.appendAll(type !== 'streamline' ? ['expander-button.js' as const] : []),
   )
 
   return html`
@@ -236,7 +237,10 @@ export const page = ({
             ${canSeeDesignTweaks
               ? html`
                   <nav>
-                    <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}>Menu</a>
+                    <expander-button>
+                      <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}>Menu</a>
+                      <button aria-controls="navigation" aria-expanded="false" hidden>Menu</button>
+                    </expander-button>
                   </nav>
                 `
               : type !== 'streamline'
