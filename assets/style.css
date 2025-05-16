@@ -339,6 +339,23 @@ body > footer {
 
   & > div {
     flex-basis: 100%;
+
+    &:has(ul) {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: var(--space-2xs);
+    }
+
+    ul {
+      display: inline-flex;
+      flex-wrap: wrap;
+      column-gap: var(--space-2xs);
+      row-gap: var(--space-3xs-2xs);
+    }
+
+    li:not(:first-child) {
+      margin-block-start: 0;
+    }
   }
 
   & ul {
@@ -2834,29 +2851,5 @@ skip-link {
   @media (width >= 50em) {
     margin-inline-start: var(--space-xs);
     float: inline-end;
-  }
-}
-
-locale-picker {
-  div:has(&) {
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: var(--space-2xs);
-  }
-
-  :--list {
-    display: inline-flex;
-    flex-wrap: wrap;
-    margin-block-start: 0;
-    padding-inline-start: var(--space-xs);
-    column-gap: var(--space-2xs);
-    list-style-type: none;
-    row-gap: var(--space-3xs-2xs);
-
-    & li {
-      &:not(:first-child) {
-        margin-block-start: 0;
-      }
-    }
   }
 }
