@@ -2398,6 +2398,78 @@ skip-link {
   }
 }
 
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-block: var(--space-m-l);
+  column-gap: var(--space-xs-m);
+  row-gap: var(--space-m-l);
+
+  & > div {
+    flex-basis: 10em;
+    flex-grow: 1;
+
+    &:has(li > p) {
+      flex-basis: 20em;
+    }
+
+    & > :first-child {
+      margin-block-start: 0;
+    }
+  }
+
+  :--list {
+    padding-inline-start: 0;
+    list-style-type: none;
+  }
+
+  li {
+    position: relative;
+
+    &:has(> p) {
+      :any-link {
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+        }
+      }
+    }
+
+    &:not(:first-child) {
+      margin-block-start: var(--space-3xs);
+    }
+
+    p {
+      margin-block-start: 0;
+      font-size: var(--step--1);
+    }
+  }
+
+  & :any-link {
+    position: relative;
+    color: inherit;
+
+    @media screen {
+      & > [role='status']:last-child {
+        position: absolute;
+        padding: 0.25em;
+        transform: translate(-50%, -50%);
+        inset-block-start: 0;
+        inset-inline-start: 100%;
+        border-radius: 50%;
+        background-color: var(--color-primary);
+
+        @media (forced-colors: active) {
+          background-color: LinkText;
+        }
+      }
+    }
+  }
+}
+
 .phase-banner {
   display: inline-flex;
   flex-wrap: wrap;
