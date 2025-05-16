@@ -70,7 +70,6 @@ import {
   sendEmail,
 } from './email.js'
 import * as FeatureFlags from './feature-flags.js'
-import { home } from './home-page/index.js'
 import * as Keyv from './keyv.js'
 import {
   type LegacyPrereviewApiEnv,
@@ -117,7 +116,6 @@ import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePrep
 import * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
 import {
   type PrereviewCoarNotifyEnv,
-  getRecentReviewRequestsFromPrereviewCoarNotify,
   getReviewRequestsFromPrereviewCoarNotify,
   isReviewRequested,
   sendPrereviewToPrereviewCoarNotifyInbox,
@@ -174,7 +172,6 @@ import {
   connectSlackStartMatch,
   disconnectOrcidMatch,
   disconnectSlackMatch,
-  homeMatch,
   logInMatch,
   logOutMatch,
   myDetailsMatch,
@@ -417,46 +414,6 @@ const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseud
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
-    pipe(
-      homeMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.apSW('canSeeDesignTweaks', EffectToFpts.toReaderMiddleware(FeatureFlags.CanSeeDesignTweaks)),
-          RM.bindW('response', RM.fromReaderTaskK(home)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getRecentPrereviews: withEnv(
-            () =>
-              pipe(
-                getRecentPrereviewsFromZenodo({ page: 1 }),
-                RTE.matchW(
-                  () => RA.empty,
-                  ({ recentPrereviews }) => recentPrereviews,
-                ),
-              ),
-            env,
-          ),
-          getRecentReviewRequests: withEnv(
-            () =>
-              pipe(
-                getRecentReviewRequestsFromPrereviewCoarNotify(1),
-                RTE.getOrElseW(() => RT.of(RA.empty)),
-              ),
-            env,
-          ),
-        })),
-      ),
-    ),
     pipe(
       reviewsMatch.parser,
       P.map(({ field, language, page, query }) =>

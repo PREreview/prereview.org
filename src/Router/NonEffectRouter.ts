@@ -74,6 +74,15 @@ const routerWithoutHyperTs = (env: Env) =>
         Routes.partnersMatch.parser,
         P.map(() => T.of(partners(env.locale))),
       ),
+      pipe(
+        Routes.homeMatch.parser,
+        P.map(() =>
+          home({ canSeeDesignTweaks: env.featureFlags.canSeeDesignTweaks, locale: env.locale })({
+            getRecentPrereviews: () => env.prereviews.getFiveMostRecent,
+            getRecentReviewRequests: () => env.reviewRequests.getFiveMostRecent,
+          }),
+        ),
+      ),
     ],
     concatAll(P.getParserMonoid()),
   ) satisfies P.Parser<T.Task<Response.Response>>
