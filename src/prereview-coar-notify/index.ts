@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { Context, Effect, flow, identity, pipe } from 'effect'
+import { Context, Effect, flow, identity, pipe, Redacted } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -34,7 +34,7 @@ export interface PrereviewCoarNotifyEnv {
 
 export class PrereviewCoarNotifyConfig extends Context.Tag('PrereviewCoarNotifyConfig')<
   PrereviewCoarNotifyConfig,
-  { coarNotifyUrl: URL }
+  { coarNotifyToken: Redacted.Redacted; coarNotifyUrl: URL }
 >() {}
 
 export const publishReviewRequest = Effect.fn(function* (

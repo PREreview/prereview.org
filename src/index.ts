@@ -68,7 +68,10 @@ pipe(
       Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
       Layer.effect(
         PrereviewCoarNotify.PrereviewCoarNotifyConfig,
-        Config.all({ coarNotifyUrl: Config.url('COAR_NOTIFY_URL') }),
+        Config.all({
+          coarNotifyToken: Config.redacted('COAR_NOTIFY_TOKEN'),
+          coarNotifyUrl: Config.url('COAR_NOTIFY_URL'),
+        }),
       ),
       Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),
       OrcidOauth.layerConfig({
