@@ -9,6 +9,7 @@ import * as FptsToEffect from '../FptsToEffect.js'
 import type { SupportedLocale } from '../locales/index.js'
 import type { OrcidOauth } from '../OrcidOauth.js'
 import { partners } from '../partners.js'
+import * as Prereviews from '../Prereviews/index.js'
 import type { PublicUrl } from '../public-url.js'
 import * as Routes from '../routes.js'
 import type { TemplatePage } from '../TemplatePage.js'
@@ -16,7 +17,7 @@ import * as Response from './Response.js'
 
 const nonEffectHandler: HttpRouter.Route.Handler<
   HttpServerError.RouteNotFound,
-  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.FeatureFlags
+  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.FeatureFlags | Prereviews.Prereviews
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -27,7 +28,8 @@ const nonEffectHandler: HttpRouter.Route.Handler<
 
   const locale = yield* Locale
   const featureFlags = yield* FeatureFlags.FeatureFlags
-  const env = { locale, featureFlags } satisfies Env
+  const prereviews = yield* Prereviews.Prereviews
+  const env = { locale, featureFlags, prereviews } satisfies Env
 
   return yield* pipe(
     FptsToEffect.option(routerWithoutHyperTs(env).run(route)),
@@ -40,12 +42,13 @@ const nonEffectHandler: HttpRouter.Route.Handler<
 
 export const nonEffectRouter: HttpRouter.HttpRouter<
   HttpServerError.RouteNotFound,
-  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.FeatureFlags
+  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.FeatureFlags | Prereviews.Prereviews
 > = HttpRouter.fromIterable([HttpRouter.makeRoute('*', '*', nonEffectHandler)])
 
 interface Env {
   locale: SupportedLocale
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
+  prereviews: typeof Prereviews.Prereviews.Service
 }
 
 const routerWithoutHyperTs = (env: Env) =>

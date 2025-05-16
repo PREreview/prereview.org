@@ -24,6 +24,7 @@ import * as OpenAlex from './OpenAlex/index.js'
 import { getNameFromOrcid } from './orcid.js'
 import * as Preprint from './preprint.js'
 import * as Prereview from './Prereview.js'
+import * as Prereviews from './Prereviews/index.js'
 import { PublicUrl } from './public-url.js'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.js'
 import * as ReviewPage from './review-page/index.js'
@@ -409,7 +410,7 @@ const MigratorLive = LibsqlMigrator.layer({
 export const Program = pipe(
   Layer.mergeAll(WebApp, Comments.ReactToCommentEvents, CachingHttpClient.layerRevalidationWorker),
   Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment)),
-  Layer.provide(Layer.mergeAll(getPrereview)),
+  Layer.provide(Layer.mergeAll(getPrereview, Prereviews.layer)),
   Layer.provide(
     Layer.mergeAll(
       Layer.provide(resolvePreprintId, CachingHttpClient.layer('1 day')),
