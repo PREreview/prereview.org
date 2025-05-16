@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { Context, Effect, flow, identity, pipe, Redacted } from 'effect'
+import { Context, Effect, type Redacted, flow, identity, pipe } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
