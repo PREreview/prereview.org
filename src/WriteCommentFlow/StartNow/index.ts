@@ -3,7 +3,7 @@ import * as Comments from '../../Comments/index.js'
 import { Locale } from '../../Context.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
-import { GetPrereview } from '../../Prereview.js'
+import * as Prereviews from '../../Prereviews/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
@@ -19,7 +19,7 @@ export const StartNow = ({
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   | Uuid.GenerateUuid
-  | GetPrereview
+  | Prereviews.Prereviews
   | Comments.HandleCommentCommand
   | Comments.GetNextExpectedCommandForUser
   | Comments.GetNextExpectedCommandForUserOnAComment
@@ -28,9 +28,9 @@ export const StartNow = ({
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
-    const getPrereview = yield* GetPrereview
+    const prereviews = yield* Prereviews.Prereviews
 
-    const prereview = yield* getPrereview(id)
+    const prereview = yield* prereviews.getPrereview(id)
 
     const getNextExpectedCommandForUser = yield* Comments.GetNextExpectedCommandForUser
 
