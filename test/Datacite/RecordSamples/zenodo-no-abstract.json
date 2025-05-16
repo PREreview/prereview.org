@@ -1,0 +1,138 @@
+{
+  "data": {
+    "id": "10.5281/zenodo.15399868",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5281/zenodo.15399868",
+      "prefix": "10.5281",
+      "suffix": "zenodo.15399868",
+      "identifiers": [{ "identifier": "oai:zenodo.org:15399868", "identifierType": "oai" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "oai", "alternateIdentifier": "oai:zenodo.org:15399868" }],
+      "creators": [
+        {
+          "name": "Garside, Daniel",
+          "nameType": "Personal",
+          "givenName": "Daniel",
+          "familyName": "Garside",
+          "affiliation": ["Digital Research Academy"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-4579-003X", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Corneli, Joseph",
+          "nameType": "Personal",
+          "givenName": "Joseph",
+          "familyName": "Corneli",
+          "affiliation": ["Oxford Brookes University", "Hyperreal Enterprises Ltd."],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0003-1330-4698", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Fisher, Jane",
+          "nameType": "Personal",
+          "givenName": "Jane",
+          "familyName": "Fisher",
+          "affiliation": ["AdvanSci Research Consulting Sweden"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-3780-901X", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Mavromanoli, Anna",
+          "nameType": "Personal",
+          "givenName": "Anna",
+          "familyName": "Mavromanoli",
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-8833-2859", "nameIdentifierScheme": "ORCID" }],
+          "affiliation": []
+        },
+        {
+          "name": "Pradhan, Pallab",
+          "nameType": "Personal",
+          "givenName": "Pallab",
+          "familyName": "Pradhan",
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-7862-9998", "nameIdentifierScheme": "ORCID" }],
+          "affiliation": []
+        },
+        {
+          "name": "Bearman, Nick",
+          "nameType": "Personal",
+          "givenName": "Nick",
+          "familyName": "Bearman",
+          "affiliation": ["Independent Researcher", "University College London, Department of Geography"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-8396-4061", "nameIdentifierScheme": "ORCID" }]
+        }
+      ],
+      "titles": [{ "title": "Envisioning the Future of Research: 10 changes for Open Research" }],
+      "publisher": "Zenodo",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [],
+      "contributors": [],
+      "dates": [{ "date": "2025-05-14", "dateType": "Issued" }],
+      "language": null,
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "",
+        "resourceTypeGeneral": "Preprint"
+      },
+      "relatedIdentifiers": [
+        { "relationType": "Continues", "relatedIdentifier": "10.53962/znvv-1p7c", "relatedIdentifierType": "DOI" },
+        {
+          "relationType": "IsVersionOf",
+          "relatedIdentifier": "10.5281/zenodo.15399867",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTI4MS9aRU5PRE8uMTUzOTk4Njg8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkdhcnNpZGUsIERhbmllbDwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+RGFuaWVsPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkdhcnNpZGU8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iIj4wMDAwLTAwMDItNDU3OS0wMDNYPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uPkRpZ2l0YWwgUmVzZWFyY2ggQWNhZGVteTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+Q29ybmVsaSwgSm9zZXBoPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5Kb3NlcGg8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+Q29ybmVsaTwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMy0xMzMwLTQ2OTg8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDR2MnR3ajY1IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiI+T3hmb3JkIEJyb29rZXMgVW5pdmVyc2l0eTwvYWZmaWxpYXRpb24+CiAgICAgIDxhZmZpbGlhdGlvbj5IeXBlcnJlYWwgRW50ZXJwcmlzZXMgTHRkLjwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+RmlzaGVyLCBKYW5lPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5KYW5lPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkZpc2hlcjwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMi0zNzgwLTkwMVg8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24+QWR2YW5TY2kgUmVzZWFyY2ggQ29uc3VsdGluZyBTd2VkZW48L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPk1hdnJvbWFub2xpLCBBbm5hPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5Bbm5hPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPk1hdnJvbWFub2xpPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAxLTg4MzMtMjg1OTwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+UHJhZGhhbiwgUGFsbGFiPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5QYWxsYWI8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+UHJhZGhhbjwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMi03ODYyLTk5OTg8L25hbWVJZGVudGlmaWVyPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkJlYXJtYW4sIE5pY2s8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPk5pY2s8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+QmVhcm1hbjwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMi04Mzk2LTQwNjE8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24+SW5kZXBlbmRlbnQgUmVzZWFyY2hlcjwvYWZmaWxpYXRpb24+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9ImVkbW86MjkzMyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJPVEhFUiI+VW5pdmVyc2l0eSBDb2xsZWdlIExvbmRvbiwgRGVwYXJ0bWVudCBvZiBHZW9ncmFwaHk8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5FbnZpc2lvbmluZyB0aGUgRnV0dXJlIG9mIFJlc2VhcmNoOiAxMCBjaGFuZ2VzIGZvciBPcGVuIFJlc2VhcmNoPC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyPlplbm9kbzwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyNTwvcHVibGljYXRpb25ZZWFyPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iUHJlcHJpbnQiLz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDI1LTA1LTE0PC9kYXRlPgogIDwvZGF0ZXM+CiAgPGFsdGVybmF0ZUlkZW50aWZpZXJzPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9Im9haSI+b2FpOnplbm9kby5vcmc6MTUzOTk4Njg8L2FsdGVybmF0ZUlkZW50aWZpZXI+CiAgPC9hbHRlcm5hdGVJZGVudGlmaWVycz4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IkNvbnRpbnVlcyI+MTAuNTM5NjIvem52di0xcDdjPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJJc1ZlcnNpb25PZiI+MTAuNTI4MS96ZW5vZG8uMTUzOTk4Njc8L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxzaXplcy8+CiAgPGZvcm1hdHMvPgogIDx2ZXJzaW9uLz4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnkvNC4wL2xlZ2FsY29kZSIgcmlnaHRzSWRlbnRpZmllcj0iY2MtYnktNC4wIiByaWdodHNJZGVudGlmaWVyU2NoZW1lPSJzcGR4Ij5DcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIDQuMCBJbnRlcm5hdGlvbmFsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0Pgo8L3Jlc291cmNlPgo=",
+      "url": "https://zenodo.org/doi/10.5281/zenodo.15399868",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "api",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 1,
+      "created": "2025-05-15T18:27:04.000Z",
+      "registered": "2025-05-15T18:27:05.000Z",
+      "published": "2025",
+      "updated": "2025-05-15T19:01:56.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cern.zenodo", "type": "clients" } },
+      "provider": { "data": { "id": "cern", "type": "providers" } },
+      "media": { "data": { "id": "10.5281/zenodo.15399868", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [{ "id": "10.5281/zenodo.15399867", "type": "dois" }] }
+    }
+  }
+}

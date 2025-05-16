@@ -141,10 +141,13 @@ const getAbstract = (
   id: DatacitePreprintId,
 ): Either.Either<Preprint.Preprint['abstract'], Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
-    const abstract = yield* Either.fromOption(
+    const abstract = Option.getOrUndefined(
       Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),
-      () => new Preprint.PreprintIsUnavailable({ cause: { descriptions } }),
     )
+
+    if (!abstract) {
+      return undefined
+    }
 
     const text = sanitizeHtml(`<p>${abstract.description}</p>`)
 

@@ -69,21 +69,6 @@ describe('recordToPreprint', () => {
     expect(actual.cause).toStrictEqual('unknown title language')
   })
 
-  test.prop([fc.array(fc.record({ description: fc.lorem(), descriptionType: fc.lorem() }))])(
-    'no abstract',
-    descriptions => {
-      const record = new Record({
-        ...stubRecord,
-        descriptions,
-      })
-
-      const actual = Either.getOrThrow(Either.flip(_.recordToPreprint(record)))
-
-      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-      expect(actual.cause).toStrictEqual({ descriptions })
-    },
-  )
-
   test('abstract language unknown', () => {
     const record = new Record({
       ...stubRecord,

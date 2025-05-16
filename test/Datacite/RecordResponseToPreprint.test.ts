@@ -222,6 +222,27 @@ test.each([
       url: new URL('https://zenodo.org/doi/10.5281/zenodo.14788393'),
     }),
   },
+  {
+    response: 'zenodo-no-abstract',
+    expected: Preprint({
+      abstract: undefined,
+      authors: [
+        { name: 'Daniel Garside', orcid: Orcid('0000-0002-4579-003X') },
+        { name: 'Joseph Corneli', orcid: Orcid('0000-0003-1330-4698') },
+        { name: 'Jane Fisher', orcid: Orcid('0000-0002-3780-901X') },
+        { name: 'Anna Mavromanoli', orcid: Orcid('0000-0001-8833-2859') },
+        { name: 'Pallab Pradhan', orcid: Orcid('0000-0002-7862-9998') },
+        { name: 'Nick Bearman', orcid: Orcid('0000-0002-8396-4061') },
+      ],
+      id: { _tag: 'zenodo', value: Doi('10.5281/zenodo.15399868') },
+      posted: Temporal.PlainDate.from({ year: 2025, month: 5, day: 14 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Envisioning the Future of Research: 10 changes for Open Research'),
+      },
+      url: new URL('https://zenodo.org/doi/10.5281/zenodo.15399868'),
+    }),
+  },
 ])('can parse a DataCite record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
