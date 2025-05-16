@@ -17,6 +17,7 @@ import { PublicUrl } from '../public-url.js'
 import { FlashMessageSchema } from '../response.js'
 import { securityHeaders } from '../securityHeaders.js'
 import { Uuid } from '../types/index.js'
+import { UserOnboardingService } from '../user-onboarding.js'
 import { LoggedInUser, SessionId, UserSchema } from '../user.js'
 import * as LocaleCookie from './LocaleCookie.js'
 import * as LocaleInPath from './LocaleInPath.js'
@@ -141,7 +142,7 @@ export const getFlashMessage = HttpMiddleware.make(app =>
 export const getLoggedInUser = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const secret = yield* SessionSecret
-    const { sessionCookie, sessionStore } = yield* ExpressConfig
+    const { sessionCookie, sessionStore, userOnboardingStore } = yield* ExpressConfig
 
     const sessionId = yield* pipe(
       HttpServerRequest.schemaCookies(
@@ -165,7 +166,20 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
           return yield* Option.match(session, {
             onNone: () => app,
             onSome: ({ user }) =>
-              Effect.provideService(Effect.provideService(app, LoggedInUser, user), SessionId, sessionId),
+              Effect.gen(function* () {
+                const userOnboarding = yield* pipe(
+                  Effect.tryPromise(() => userOnboardingStore.get(user.orcid)),
+                  Effect.andThen(Schema.decodeUnknown(Schema.Struct({ seenMyDetailsPage: Schema.Boolean }))),
+                  Effect.orElseSucceed(() => ({ seenMyDetailsPage: false })),
+                )
+
+                return yield* pipe(
+                  app,
+                  Effect.provideService(SessionId, sessionId),
+                  Effect.provideService(LoggedInUser, user),
+                  Effect.provideService(UserOnboardingService, userOnboarding),
+                )
+              }),
           })
         }),
     })

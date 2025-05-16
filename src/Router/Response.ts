@@ -9,6 +9,7 @@ import { PublicUrl } from '../public-url.js'
 import { toPage, type Response } from '../response.js'
 import * as Routes from '../routes.js'
 import { OrcidLocale } from '../types/index.js'
+import { UserOnboardingService } from '../user-onboarding.js'
 import { LoggedInUser } from '../user.js'
 import * as ConstructPageUrls from './ConstructPageUrls.js'
 
@@ -50,6 +51,7 @@ export const toHttpServerResponse = (
     const publicUrl = yield* PublicUrl
     const templatePage = yield* TemplatePage
     const user = yield* Effect.serviceOption(LoggedInUser)
+    const userOnboarding = yield* Effect.serviceOption(UserOnboardingService)
     const message = yield* Effect.serviceOption(FlashMessage)
     const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -62,6 +64,7 @@ export const toHttpServerResponse = (
           message: Option.getOrUndefined(message),
           pageUrls,
           response,
+          userOnboarding: Option.getOrUndefined(userOnboarding),
           user: Option.getOrUndefined(user),
         }),
       ).toString(),
