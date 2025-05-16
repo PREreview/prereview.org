@@ -285,6 +285,7 @@ export const pageResponse = ({
         'home',
         'how-to-use',
         'live-reviews',
+        'menu',
         'my-details',
         'partners',
         'people',
@@ -301,8 +302,12 @@ export const pageResponse = ({
     main: html(),
     js: fc.array(
       js().filter(
-        (js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'collapsible-menu.js' | 'skip-link.js'> =>
-          !['collapsible-menu.js', 'skip-link.js'].includes(js),
+        (
+          js,
+        ): js is Exclude<
+          EndsWith<keyof typeof assets, '.js'>,
+          'collapsible-menu.js' | 'expander-button.js' | 'skip-link.js'
+        > => !['collapsible-menu.js', 'expander-button.js', 'skip-link.js'].includes(js),
       ),
     ),
   })
@@ -329,6 +334,7 @@ export const streamlinePageResponse = ({
         'home',
         'how-to-use',
         'live-reviews',
+        'menu',
         'my-details',
         'partners',
         'people',
@@ -345,8 +351,12 @@ export const streamlinePageResponse = ({
     main: html(),
     js: fc.array(
       js().filter(
-        (js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'collapsible-menu.js' | 'skip-link.js'> =>
-          !['collapsible-menu.js', 'skip-link.js'].includes(js),
+        (
+          js,
+        ): js is Exclude<
+          EndsWith<keyof typeof assets, '.js'>,
+          'collapsible-menu.js' | 'expander-button.js' | 'skip-link.js'
+        > => !['collapsible-menu.js', 'expander-button.js', 'skip-link.js'].includes(js),
       ),
     ),
     allowRobots: allowRobots ?? fc.option(constant(false), { nil: undefined }),
