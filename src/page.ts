@@ -227,69 +227,80 @@ export const page = ({
               : ''}
           </div>
 
-          <div class="header">
-            <div class="logo">
-              <a href="${format(homeMatch.formatter, {})}" ${current === 'home' ? html`aria-current="page"` : ''}>
-                <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
-              </a>
-            </div>
+          ${canSeeDesignTweaks
+            ? html`
+                <nav>
+                  <div class="header">
+                    <div class="logo">
+                      <a
+                        href="${format(homeMatch.formatter, {})}"
+                        ${current === 'home' ? html`aria-current="page"` : ''}
+                      >
+                        <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
+                      </a>
+                    </div>
 
-            ${canSeeDesignTweaks
-              ? html`
-                  <nav>
                     <expander-button>
                       <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}>Menu</a>
-                      <button aria-controls="navigation" aria-expanded="false" hidden>Menu</button>
+                      <button aria-controls="navigation" aria-expanded="false" hidden><span>Menu</span></button>
                     </expander-button>
-                  </nav>
-                `
-              : type !== 'streamline'
-                ? html`
-                    <collapsible-menu>
-                      <nav>
-                        <ul>
-                          <li>
-                            <a
-                              href="${format(reviewsMatch.formatter, {})}"
-                              ${current === 'reviews' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuReviews')()}</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="${format(reviewRequestsMatch.formatter, {})}"
-                              ${current === 'review-requests' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuRequests')()}</a
-                            >
-                          </li>
-                          <li>
-                            <a href="${Routes.Trainings}" ${current === 'trainings' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuTrainings')()}</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="${Routes.LiveReviews}"
-                              ${current === 'live-reviews' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuLiveReviews')()}</a
-                            >
-                          </li>
-                          <li>
-                            <a href="${Routes.Resources}" ${current === 'resources' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuResources')()}</a
-                            >
-                          </li>
-                          <li>
-                            <a href="${Routes.Clubs}" ${current === 'clubs' ? html`aria-current="page"` : ''}
-                              >${translate(locale, 'header', 'menuClubs')()}</a
-                            >
-                          </li>
-                        </ul>
-                      </nav>
-                    </collapsible-menu>
-                  `
-                : ''}
-          </div>
+                  </div>
+                </nav>
+              `
+            : html`
+                <div class="header">
+                  <div class="logo">
+                    <a href="${format(homeMatch.formatter, {})}" ${current === 'home' ? html`aria-current="page"` : ''}>
+                      <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
+                    </a>
+                  </div>
+
+                  ${type !== 'streamline'
+                    ? html` <collapsible-menu>
+                        <nav>
+                          <ul>
+                            <li>
+                              <a
+                                href="${format(reviewsMatch.formatter, {})}"
+                                ${current === 'reviews' ? html`aria-current="page"` : ''}
+                                >${translate(locale, 'header', 'menuReviews')()}</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                href="${format(reviewRequestsMatch.formatter, {})}"
+                                ${current === 'review-requests' ? html`aria-current="page"` : ''}
+                                >${translate(locale, 'header', 'menuRequests')()}</a
+                              >
+                            </li>
+                            <li>
+                              <a href="${Routes.Trainings}" ${current === 'trainings' ? html`aria-current="page"` : ''}
+                                >${translate(locale, 'header', 'menuTrainings')()}</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                href="${Routes.LiveReviews}"
+                                ${current === 'live-reviews' ? html`aria-current="page"` : ''}
+                                >${translate(locale, 'header', 'menuLiveReviews')()}</a
+                              >
+                            </li>
+                            <li>
+                              <a href="${Routes.Resources}" ${current === 'resources' ? html`aria-current="page"` : ''}
+                                >${translate(locale, 'header', 'menuResources')()}</a
+                              >
+                            </li>
+                            <li>
+                              <a href="${Routes.Clubs}" ${current === 'clubs' ? html`aria-current="page"` : ''}
+                                >${translate(locale, 'header', 'menuClubs')()}</a
+                              >
+                            </li>
+                          </ul>
+                        </nav>
+                      </collapsible-menu>`
+                    : ''}
+                </div>
+              `}
         </header>
 
         <div class="contents">${content}</div>
