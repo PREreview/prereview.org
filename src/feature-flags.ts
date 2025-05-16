@@ -1,6 +1,16 @@
 import { Config, type ConfigError, Context, Effect, Layer } from 'effect'
 import type { User } from './user.js'
 
+export class FeatureFlags extends Context.Tag('FeatureFlags')<
+  FeatureFlags,
+  {
+    canAddMultipleAuthors: (user?: User) => boolean
+    canChooseLocale: boolean
+    canSeeDesignTweaks: boolean
+    useCrowdinInContext: boolean
+  }
+>() {}
+
 export class CanAddMultipleAuthors extends Context.Tag('CanAddMultipleAuthors')<
   CanAddMultipleAuthors,
   (user?: User) => boolean
@@ -18,7 +28,7 @@ export const layer = (options: {
   canSeeDesignTweaks: typeof CanSeeDesignTweaks.Service
   useCrowdinInContext: typeof UseCrowdinInContext.Service
 }): Layer.Layer<
-  CanAddMultipleAuthors | CanChooseLocale | CanSeeDesignTweaks | UseCrowdinInContext,
+  CanAddMultipleAuthors | CanChooseLocale | CanSeeDesignTweaks | UseCrowdinInContext | FeatureFlags,
   ConfigError.ConfigError
 > =>
   Layer.succeedContext(
@@ -27,6 +37,7 @@ export const layer = (options: {
       Context.add(CanChooseLocale, options.canChooseLocale),
       Context.add(CanSeeDesignTweaks, options.canSeeDesignTweaks),
       Context.add(UseCrowdinInContext, options.useCrowdinInContext),
+      Context.add(FeatureFlags, options),
     ),
   )
 

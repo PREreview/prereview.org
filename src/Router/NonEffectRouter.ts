@@ -16,7 +16,7 @@ import * as Response from './Response.js'
 
 const nonEffectHandler: HttpRouter.Route.Handler<
   HttpServerError.RouteNotFound,
-  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.CanSeeDesignTweaks
+  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.FeatureFlags
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -26,8 +26,8 @@ const nonEffectHandler: HttpRouter.Route.Handler<
   })
 
   const locale = yield* Locale
-  const canSeeDesignTweaks = yield* FeatureFlags.CanSeeDesignTweaks
-  const env = { locale, canSeeDesignTweaks } satisfies Env
+  const featureFlags = yield* FeatureFlags.FeatureFlags
+  const env = { locale, featureFlags } satisfies Env
 
   return yield* pipe(
     FptsToEffect.option(routerWithoutHyperTs(env).run(route)),
@@ -40,12 +40,12 @@ const nonEffectHandler: HttpRouter.Route.Handler<
 
 export const nonEffectRouter: HttpRouter.HttpRouter<
   HttpServerError.RouteNotFound,
-  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.CanSeeDesignTweaks
+  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.FeatureFlags
 > = HttpRouter.fromIterable([HttpRouter.makeRoute('*', '*', nonEffectHandler)])
 
 interface Env {
   locale: SupportedLocale
-  canSeeDesignTweaks: typeof FeatureFlags.CanSeeDesignTweaks.Service
+  featureFlags: typeof FeatureFlags.FeatureFlags.Service
 }
 
 const routerWithoutHyperTs = (env: Env) =>
