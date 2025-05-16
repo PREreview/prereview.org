@@ -28,6 +28,7 @@ import * as Prereviews from './Prereviews/index.js'
 import { PublicUrl } from './public-url.js'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.js'
 import * as ReviewPage from './review-page/index.js'
+import * as ReviewRequests from './ReviewRequests/index.js'
 import { Uuid } from './types/index.js'
 import { WebApp } from './WebApp.js'
 import { createCommentOnZenodo, getPrereviewFromZenodo, publishDepositionOnZenodo } from './zenodo.js'
@@ -410,7 +411,7 @@ const MigratorLive = LibsqlMigrator.layer({
 export const Program = pipe(
   Layer.mergeAll(WebApp, Comments.ReactToCommentEvents, CachingHttpClient.layerRevalidationWorker),
   Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment)),
-  Layer.provide(Layer.mergeAll(getPrereview, Prereviews.layer)),
+  Layer.provide(Layer.mergeAll(getPrereview, Prereviews.layer, ReviewRequests.layer)),
   Layer.provide(
     Layer.mergeAll(
       Layer.provide(resolvePreprintId, CachingHttpClient.layer('1 day')),

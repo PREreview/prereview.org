@@ -6,18 +6,26 @@ import * as T from 'fp-ts/lib/Task.js'
 import { Locale } from '../Context.js'
 import * as FeatureFlags from '../feature-flags.js'
 import * as FptsToEffect from '../FptsToEffect.js'
+import { home } from '../home-page/index.js'
 import type { SupportedLocale } from '../locales/index.js'
 import type { OrcidOauth } from '../OrcidOauth.js'
 import { partners } from '../partners.js'
 import * as Prereviews from '../Prereviews/index.js'
 import type { PublicUrl } from '../public-url.js'
+import * as ReviewRequests from '../ReviewRequests/index.js'
 import * as Routes from '../routes.js'
 import type { TemplatePage } from '../TemplatePage.js'
 import * as Response from './Response.js'
 
 const nonEffectHandler: HttpRouter.Route.Handler<
   HttpServerError.RouteNotFound,
-  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.FeatureFlags | Prereviews.Prereviews
+  | Locale
+  | TemplatePage
+  | OrcidOauth
+  | PublicUrl
+  | FeatureFlags.FeatureFlags
+  | Prereviews.Prereviews
+  | ReviewRequests.ReviewRequests
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -29,7 +37,8 @@ const nonEffectHandler: HttpRouter.Route.Handler<
   const locale = yield* Locale
   const featureFlags = yield* FeatureFlags.FeatureFlags
   const prereviews = yield* Prereviews.Prereviews
-  const env = { locale, featureFlags, prereviews } satisfies Env
+  const reviewRequests = yield* ReviewRequests.ReviewRequests
+  const env = { locale, featureFlags, prereviews, reviewRequests } satisfies Env
 
   return yield* pipe(
     FptsToEffect.option(routerWithoutHyperTs(env).run(route)),
@@ -42,13 +51,20 @@ const nonEffectHandler: HttpRouter.Route.Handler<
 
 export const nonEffectRouter: HttpRouter.HttpRouter<
   HttpServerError.RouteNotFound,
-  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.FeatureFlags | Prereviews.Prereviews
+  | Locale
+  | TemplatePage
+  | OrcidOauth
+  | PublicUrl
+  | FeatureFlags.FeatureFlags
+  | Prereviews.Prereviews
+  | ReviewRequests.ReviewRequests
 > = HttpRouter.fromIterable([HttpRouter.makeRoute('*', '*', nonEffectHandler)])
 
 interface Env {
   locale: SupportedLocale
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
   prereviews: typeof Prereviews.Prereviews.Service
+  reviewRequests: typeof ReviewRequests.ReviewRequests.Service
 }
 
 const routerWithoutHyperTs = (env: Env) =>
