@@ -1,4 +1,4 @@
-import { HttpRouter, HttpServerError, HttpServerRequest } from '@effect/platform'
+import { HttpServerError, HttpServerRequest, type HttpServerResponse } from '@effect/platform'
 import { Effect, Either, Option, pipe, Tuple } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -17,8 +17,10 @@ import * as Routes from '../routes.js'
 import type { TemplatePage } from '../TemplatePage.js'
 import * as Response from './Response.js'
 
-const nonEffectHandler: HttpRouter.Route.Handler<
+export const nonEffectRouter: Effect.Effect<
+  HttpServerResponse.HttpServerResponse,
   HttpServerError.RouteNotFound,
+  | HttpServerRequest.HttpServerRequest
   | Locale
   | TemplatePage
   | OrcidOauth
@@ -48,17 +50,6 @@ const nonEffectHandler: HttpRouter.Route.Handler<
     Effect.mapError(() => new HttpServerError.RouteNotFound({ request })),
   )
 })
-
-export const nonEffectRouter: HttpRouter.HttpRouter<
-  HttpServerError.RouteNotFound,
-  | Locale
-  | TemplatePage
-  | OrcidOauth
-  | PublicUrl
-  | FeatureFlags.FeatureFlags
-  | Prereviews.Prereviews
-  | ReviewRequests.ReviewRequests
-> = HttpRouter.fromIterable([HttpRouter.makeRoute('*', '*', nonEffectHandler)])
 
 interface Env {
   locale: SupportedLocale
