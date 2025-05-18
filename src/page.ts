@@ -247,16 +247,27 @@ export const page = ({
                     </expander-button>
                     ${pageUrls
                       ? html`
-                          <a
-                            href="${Routes.ChooseLocale}"
-                            ${current === 'choose-locale' ? html`aria-current="page"` : ''}
-                            class="locale"
-                            >${new Intl.DisplayNames(locale, {
-                              type: 'language',
-                              languageDisplay: 'standard',
-                              style: 'narrow',
-                            }).of(locale.split('-')[0] ?? locale) ?? locale}</a
-                          >
+                          <expander-button>
+                            <a
+                              href="${Routes.ChooseLocale}"
+                              ${current === 'choose-locale' ? html`aria-current="page"` : ''}
+                              class="locale"
+                              >${new Intl.DisplayNames(locale, {
+                                type: 'language',
+                                languageDisplay: 'standard',
+                                style: 'narrow',
+                              }).of(locale.split('-')[0] ?? locale) ?? locale}</a
+                            >
+                            <button aria-controls="locale" aria-expanded="false" hidden>
+                              <span class="locale"
+                                >${new Intl.DisplayNames(locale, {
+                                  type: 'language',
+                                  languageDisplay: 'standard',
+                                  style: 'narrow',
+                                }).of(locale.split('-')[0] ?? locale) ?? locale}</span
+                              >
+                            </button>
+                          </expander-button>
                         `
                       : ''}
                   </div>
@@ -351,6 +362,49 @@ export const page = ({
                       </ul>
                     </div>
                   </div>
+
+                  ${pageUrls
+                    ? html`
+                        <div id="locale" class="menu" hidden>
+                          <div class="locales">
+                            <h3>Choose your language</h3>
+                            <ul>
+                              ${pipe(
+                                Array.fromIterable(UserSelectableLocales),
+                                Array.map(supportedLocale =>
+                                  Tuple.make(
+                                    supportedLocale,
+                                    new Intl.DisplayNames(supportedLocale, {
+                                      type: 'language',
+                                      languageDisplay: 'standard',
+                                      style: 'short',
+                                    }).of(supportedLocale) ?? supportedLocale,
+                                  ),
+                                ),
+                                Array.sortWith(
+                                  ([, b]) => b,
+                                  (a, b) =>
+                                    String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                                ),
+                                Array.map(
+                                  ([code, name]) => html`
+                                    <li>
+                                      <a
+                                        href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
+                                        lang="${code}"
+                                        hreflang="${code}"
+                                        ${locale === code ? html`aria-current="true"` : ''}
+                                        >${name}</a
+                                      >
+                                    </li>
+                                  `,
+                                ),
+                              )}
+                            </ul>
+                          </div>
+                        </div>
+                      `
+                    : ''}
                 </nav>
               `
             : html`

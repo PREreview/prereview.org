@@ -1507,11 +1507,23 @@ expander-button {
       &::before {
         mask-image: url('remixicon/icons/Arrows/arrow-down-s-line.svg');
       }
+
+      &.locale {
+        &::before {
+          mask-image: url('remixicon/icons/Business/global-line.svg');
+        }
+      }
     }
 
     :is([aria-expanded='true']) > & {
       &::before {
         mask-image: url('remixicon/icons/Arrows/arrow-up-s-line.svg');
+      }
+
+      &.locale {
+        &::before {
+          mask-image: url('remixicon/icons/Business/global-fill.svg');
+        }
       }
     }
   }
