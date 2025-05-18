@@ -250,7 +250,12 @@ export const page = ({
                           <a
                             href="${Routes.ChooseLocale}"
                             ${current === 'choose-locale' ? html`aria-current="page"` : ''}
-                            >Language</a
+                            class="locale"
+                            >${new Intl.DisplayNames(locale, {
+                              type: 'language',
+                              languageDisplay: 'standard',
+                              style: 'narrow',
+                            }).of(locale.split('-')[0] ?? locale) ?? locale}</a
                           >
                         `
                       : ''}
