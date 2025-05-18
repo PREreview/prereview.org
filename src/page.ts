@@ -30,6 +30,7 @@ export interface Page {
   readonly skipLinks?: ReadonlyArray<[Html, string]>
   readonly current?:
     | 'about-us'
+    | 'choose-locale'
     | 'clubs'
     | 'code-of-conduct'
     | 'edia-statement'
@@ -244,6 +245,15 @@ export const page = ({
                       <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}>Menu</a>
                       <button aria-controls="navigation" aria-expanded="false" hidden><span>Menu</span></button>
                     </expander-button>
+                    ${pageUrls
+                      ? html`
+                          <a
+                            href="${Routes.ChooseLocale}"
+                            ${current === 'choose-locale' ? html`aria-current="page"` : ''}
+                            >Language</a
+                          >
+                        `
+                      : ''}
                   </div>
 
                   <div id="navigation" class="menu" hidden>

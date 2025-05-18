@@ -23,6 +23,7 @@ export interface Route<A extends { readonly [K in keyof A]: unknown }> {
 }
 
 export const AboutUs = '/about'
+export const ChooseLocale = '/choose-language'
 export const Menu = '/menu'
 export const PrivacyPolicy = '/privacy-policy'
 export const Trainings = '/trainings'

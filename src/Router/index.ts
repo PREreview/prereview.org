@@ -2,6 +2,7 @@ import { type HttpMethod, HttpMiddleware, HttpRouter, HttpServerRequest, HttpSer
 import { Effect, flow, identity, Option, pipe, Record } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
+import { ChooseLocalePage } from '../ChooseLocalePage/index.js'
 import { ClubsPage } from '../ClubsPage.js'
 import { CodeOfConductPage } from '../CodeOfConductPage.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
@@ -156,6 +157,7 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
 export const Router = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage),
+    MakeStaticRoute('GET', Routes.ChooseLocale, ChooseLocalePage),
     MakeStaticRoute('GET', Routes.Clubs, ClubsPage),
     MakeStaticRoute('GET', Routes.CodeOfConduct, CodeOfConductPage),
     MakeStaticRoute('GET', Routes.EdiaStatement, EdiaStatementPage),
