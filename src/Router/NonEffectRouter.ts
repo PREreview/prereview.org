@@ -1,5 +1,5 @@
 import { Headers, HttpMethod, HttpServerError, HttpServerRequest, type HttpServerResponse } from '@effect/platform'
-import { Effect, Either, Match, Option, pipe, Record, type Runtime, String, Tuple } from 'effect'
+import { Effect, Either, flow, Match, Option, pipe, Record, type Runtime, String, Tuple } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as T from 'fp-ts/lib/Task.js'
@@ -16,6 +16,7 @@ import * as Prereviews from '../Prereviews/index.js'
 import type { PublicUrl } from '../public-url.js'
 import { requestAPrereview } from '../request-a-prereview-page/index.js'
 import { reviewAPreprint } from '../review-a-preprint-page/index.js'
+import { CommentsForReview, reviewPage } from '../review-page/index.js'
 import * as ReviewRequests from '../ReviewRequests/index.js'
 import * as Routes from '../routes.js'
 import type { TemplatePage } from '../TemplatePage.js'
@@ -33,6 +34,7 @@ export const nonEffectRouter: Effect.Effect<
   | Preprints.Preprints
   | Prereviews.Prereviews
   | ReviewRequests.ReviewRequests
+  | CommentsForReview
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -47,6 +49,7 @@ export const nonEffectRouter: Effect.Effect<
   const preprints = yield* Preprints.Preprints
   const prereviews = yield* Prereviews.Prereviews
   const reviewRequests = yield* ReviewRequests.ReviewRequests
+  const commentsForReview = yield* CommentsForReview
 
   const body = yield* Effect.if(HttpMethod.hasBody(request.method), {
     onTrue: () =>
@@ -62,6 +65,7 @@ export const nonEffectRouter: Effect.Effect<
 
   const env = {
     body,
+    commentsForReview,
     locale,
     featureFlags,
     method: request.method,
@@ -82,6 +86,7 @@ export const nonEffectRouter: Effect.Effect<
 
 interface Env {
   body: unknown
+  commentsForReview: typeof CommentsForReview.Service
   locale: SupportedLocale
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
   method: HttpMethod.HttpMethod
@@ -120,6 +125,25 @@ const routerWithoutHyperTs = (env: Env) =>
         P.map(() =>
           reviewAPreprint({ body: env.body, method: env.method, locale: env.locale })({
             resolvePreprintId: EffectToFpts.toTaskEitherK(env.preprints.resolvePreprintId, env.runtime),
+          }),
+        ),
+      ),
+      pipe(
+        Routes.reviewMatch.parser,
+        P.map(({ id }) =>
+          reviewPage({ id, locale: env.locale })({
+            getComments: EffectToFpts.toTaskEitherK(env.commentsForReview.get, env.runtime),
+            getPrereview: EffectToFpts.toTaskEitherK(
+              flow(
+                env.prereviews.getPrereview,
+                Effect.catchTags({
+                  PrereviewIsNotFound: () => Effect.fail('not-found' as const),
+                  PrereviewIsUnavailable: () => Effect.fail('unavailable' as const),
+                  PrereviewWasRemoved: () => Effect.fail('removed' as const),
+                }),
+              ),
+              env.runtime,
+            ),
           }),
         ),
       ),

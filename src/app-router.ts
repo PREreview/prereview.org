@@ -130,8 +130,6 @@ import {
   requestReviewStart,
 } from './request-review-flow/index.js'
 import { handleResponse } from './response.js'
-import * as ReviewPage from './review-page/index.js'
-import { reviewPage } from './review-page/index.js'
 import type { ReviewRequestPreprintId } from './review-request.js'
 import { reviewRequests } from './review-requests-page/index.js'
 import { reviewsData } from './reviews-data/index.js'
@@ -184,7 +182,6 @@ import {
   requestReviewPersonaMatch,
   requestReviewPublishedMatch,
   requestReviewStartMatch,
-  reviewMatch,
   reviewRequestsMatch,
   reviewsDataMatch,
   reviewsMatch,
@@ -229,7 +226,6 @@ import {
   getUserFromSlack,
   removeOrcidFromSlackProfile,
 } from './slack.js'
-import type * as Doi from './types/Doi.js'
 import type { PreprintId } from './types/preprint-id.js'
 import { type GenerateUuid, type GenerateUuidEnv, generateUuid } from './types/uuid.js'
 import type { GetUserOnboardingEnv } from './user-onboarding.js'
@@ -303,7 +299,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
     | FeatureFlags.CanSeeDesignTweaks
     | Locale
     | OpenAlex.GetCategories
-    | ReviewPage.CommentsForReview
     | GenerateUuid
     | Preprint.GetPreprint
     | Preprint.GetPreprintId
@@ -714,36 +709,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getPrereviews: withEnv(getPrereviewsForPreprintFromZenodo, env),
           getRapidPrereviews: withEnv(getRapidPrereviews, env),
-        })),
-      ),
-    ),
-    pipe(
-      reviewMatch.parser,
-      P.map(
-        flow(
-          RM.of,
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(reviewPage)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getComments: withEnv(
-            EffectToFpts.toReaderTaskEitherK((id: Doi.Doi) =>
-              pipe(
-                ReviewPage.CommentsForReview,
-                Effect.andThen(commentsForReview => commentsForReview.get(id)),
-              ),
-            ),
-            env,
-          ),
-          getPrereview: withEnv(getPrereviewFromZenodo, env),
         })),
       ),
     ),
