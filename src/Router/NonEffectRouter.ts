@@ -11,6 +11,7 @@ import { home } from '../home-page/index.js'
 import type { SupportedLocale } from '../locales/index.js'
 import type { OrcidOauth } from '../OrcidOauth.js'
 import { partners } from '../partners.js'
+import * as Preprints from '../Preprints/index.js'
 import * as Prereviews from '../Prereviews/index.js'
 import type { PublicUrl } from '../public-url.js'
 import * as ReviewRequests from '../ReviewRequests/index.js'
@@ -20,13 +21,14 @@ import * as Response from './Response.js'
 
 export const nonEffectRouter: Effect.Effect<
   HttpServerResponse.HttpServerResponse,
-  HttpServerError.RouteNotFound,
+  HttpServerError.RouteNotFound | HttpServerError.RequestError,
   | HttpServerRequest.HttpServerRequest
   | Locale
   | TemplatePage
   | OrcidOauth
   | PublicUrl
   | FeatureFlags.FeatureFlags
+  | Preprints.Preprints
   | Prereviews.Prereviews
   | ReviewRequests.ReviewRequests
 > = Effect.gen(function* () {
@@ -40,9 +42,10 @@ export const nonEffectRouter: Effect.Effect<
   const runtime = yield* Effect.runtime()
   const locale = yield* Locale
   const featureFlags = yield* FeatureFlags.FeatureFlags
+  const preprints = yield* Preprints.Preprints
   const prereviews = yield* Prereviews.Prereviews
   const reviewRequests = yield* ReviewRequests.ReviewRequests
-  const env = { locale, featureFlags, prereviews, reviewRequests, runtime } satisfies Env
+  const env = { locale, featureFlags, preprints, prereviews, reviewRequests, runtime } satisfies Env
 
   return yield* pipe(
     FptsToEffect.option(routerWithoutHyperTs(env).run(route)),
@@ -56,6 +59,7 @@ export const nonEffectRouter: Effect.Effect<
 interface Env {
   locale: SupportedLocale
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
+  preprints: typeof Preprints.Preprints.Service
   prereviews: typeof Prereviews.Prereviews.Service
   reviewRequests: typeof ReviewRequests.ReviewRequests.Service
   runtime: Runtime.Runtime<never>
