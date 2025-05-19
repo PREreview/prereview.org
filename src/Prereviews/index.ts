@@ -1,8 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Effect, flow, Layer, Match, pipe } from 'effect'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as T from 'fp-ts/lib/Task.js'
+import { Array, Context, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { DeprecatedLoggerEnv, ExpressConfig } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
@@ -35,7 +33,7 @@ export interface RecentPrereview {
 export class Prereviews extends Context.Tag('Prereviews')<
   Prereviews,
   {
-    getFiveMostRecent: T.Task<ReadonlyArray<RecentPrereview>>
+    getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPrereview>>
     getPrereview: (
       id: number,
     ) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
@@ -53,15 +51,16 @@ export const layer = Layer.effect(
 
     return {
       getFiveMostRecent: pipe(
-        getRecentPrereviewsFromZenodo({ page: 1 }),
-        RTE.matchW(Array.empty, ({ recentPrereviews }) => recentPrereviews),
-      )({
-        fetch,
-        getPreprintTitle,
-        ...logger,
-        zenodoApiKey,
-        zenodoUrl,
-      }),
+        FptsToEffect.readerTaskEither(getRecentPrereviewsFromZenodo({ page: 1 }), {
+          fetch,
+          getPreprintTitle,
+          ...logger,
+          zenodoApiKey,
+          zenodoUrl,
+        }),
+        Effect.map(Struct.get('recentPrereviews')),
+        Effect.orElseSucceed(Array.empty),
+      ),
       getPrereview: id =>
         pipe(
           FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {

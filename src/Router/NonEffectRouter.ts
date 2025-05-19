@@ -1,9 +1,10 @@
 import { HttpServerError, HttpServerRequest, type HttpServerResponse } from '@effect/platform'
-import { Effect, Either, Option, pipe, Tuple } from 'effect'
+import { Effect, Either, Option, pipe, type Runtime, Tuple } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as T from 'fp-ts/lib/Task.js'
 import { Locale } from '../Context.js'
+import * as EffectToFpts from '../EffectToFpts.js'
 import * as FeatureFlags from '../feature-flags.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { home } from '../home-page/index.js'
@@ -36,11 +37,12 @@ export const nonEffectRouter: Effect.Effect<
     catch: () => new HttpServerError.RouteNotFound({ request }),
   })
 
+  const runtime = yield* Effect.runtime()
   const locale = yield* Locale
   const featureFlags = yield* FeatureFlags.FeatureFlags
   const prereviews = yield* Prereviews.Prereviews
   const reviewRequests = yield* ReviewRequests.ReviewRequests
-  const env = { locale, featureFlags, prereviews, reviewRequests } satisfies Env
+  const env = { locale, featureFlags, prereviews, reviewRequests, runtime } satisfies Env
 
   return yield* pipe(
     FptsToEffect.option(routerWithoutHyperTs(env).run(route)),
@@ -56,6 +58,7 @@ interface Env {
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
   prereviews: typeof Prereviews.Prereviews.Service
   reviewRequests: typeof ReviewRequests.ReviewRequests.Service
+  runtime: Runtime.Runtime<never>
 }
 
 const routerWithoutHyperTs = (env: Env) =>
@@ -69,8 +72,8 @@ const routerWithoutHyperTs = (env: Env) =>
         Routes.homeMatch.parser,
         P.map(() =>
           home({ canSeeDesignTweaks: env.featureFlags.canSeeDesignTweaks, locale: env.locale })({
-            getRecentPrereviews: () => env.prereviews.getFiveMostRecent,
-            getRecentReviewRequests: () => env.reviewRequests.getFiveMostRecent,
+            getRecentPrereviews: () => EffectToFpts.toTask(env.prereviews.getFiveMostRecent, env.runtime),
+            getRecentReviewRequests: () => EffectToFpts.toTask(env.reviewRequests.getFiveMostRecent, env.runtime),
           }),
         ),
       ),

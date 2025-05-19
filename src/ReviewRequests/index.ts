@@ -1,12 +1,10 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Context, Effect, Layer, pipe, Redacted } from 'effect'
-import * as RT from 'fp-ts/lib/ReaderTask.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as T from 'fp-ts/lib/Task.js'
 import type { LanguageCode } from 'iso-639-1'
 import { DeprecatedLoggerEnv } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
+import * as FptsToEffect from '../FptsToEffect.js'
 import type { Html } from '../html.js'
 import * as Preprint from '../preprint.js'
 import {
@@ -33,7 +31,7 @@ export interface ReviewRequest {
 export class ReviewRequests extends Context.Tag('ReviewRequests')<
   ReviewRequests,
   {
-    getFiveMostRecent: T.Task<ReadonlyArray<ReviewRequest>>
+    getFiveMostRecent: Effect.Effect<ReadonlyArray<ReviewRequest>>
   }
 >() {}
 
@@ -47,15 +45,15 @@ export const layer = Layer.effect(
 
     return {
       getFiveMostRecent: pipe(
-        getRecentReviewRequestsFromPrereviewCoarNotify(1),
-        RTE.getOrElseW(() => RT.of(Array.empty())),
-      )({
-        ...coarNotify,
-        coarNotifyToken: Redacted.value(coarNotify.coarNotifyToken),
-        fetch,
-        getPreprintTitle,
-        ...logger,
-      }),
+        FptsToEffect.readerTaskEither(getRecentReviewRequestsFromPrereviewCoarNotify(1), {
+          ...coarNotify,
+          coarNotifyToken: Redacted.value(coarNotify.coarNotifyToken),
+          fetch,
+          getPreprintTitle,
+          ...logger,
+        }),
+        Effect.orElseSucceed(Array.empty),
+      ),
     }
   }),
 )

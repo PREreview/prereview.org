@@ -55,12 +55,13 @@ export const toReaderTaskK =
 export const toReaderTask = <A, R>(effect: Effect.Effect<A, never, R>): RT.ReaderTask<EffectEnv<R>, A> =>
   pipe(
     RT.ask<EffectEnv<R>>(),
-    RT.chainTaskK(
-      ({ runtime }) =>
-        () =>
-          Runtime.runPromise(runtime)(effect),
-    ),
+    RT.chainTaskK(({ runtime }) => toTask(effect, runtime)),
   )
+
+export const toTask =
+  <A, R>(effect: Effect.Effect<A, never, R>, runtime: Runtime.Runtime<R>): T.Task<A> =>
+  () =>
+    Runtime.runPromise(runtime)(effect)
 
 export const toReaderIO = <A, R>(effect: Effect.Effect<A, never, R>): RIO.ReaderIO<EffectEnv<R>, A> =>
   pipe(

@@ -18,7 +18,7 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 const constructPrereviewsService = (
   getPrereview: typeof Prereviews.Prereviews.Service.getPrereview,
 ): typeof Prereviews.Prereviews.Service => ({
-  getFiveMostRecent: shouldNotBeCalled,
+  getFiveMostRecent: Effect.sync(shouldNotBeCalled),
   getPrereview,
 })
 
