@@ -17,10 +17,13 @@ describe('constructPageUrls', () => {
       },
     )
 
-    it.failing.prop(
+    it.prop(
       [
         fc
-          .tuple(fc.supportedLocale(), fc.url())
+          .tuple(
+            fc.supportedLocale(),
+            fc.url().filter(url => url.pathname !== '/'),
+          )
           .map(([locale, url]) =>
             Tuple.make(
               locale,

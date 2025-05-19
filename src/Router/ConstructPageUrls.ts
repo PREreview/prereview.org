@@ -19,7 +19,12 @@ export const constructPageUrls = (
       canonical,
       localeUrls: pipe(
         SupportedLocales,
-        HashSet.map(locale => Tuple.make(locale, new URL(`${appOrigin}/${locale.toLowerCase()}${pathAndQueryString}`))),
+        HashSet.map(locale =>
+          Tuple.make(
+            locale,
+            new URL(`${appOrigin}/${locale.toLowerCase()}${pathAndQueryString.replace(/^\/(?=\?|$)/, '')}`),
+          ),
+        ),
         HashMap.fromIterable,
       ),
     }),
