@@ -1,6 +1,6 @@
 import { FetchHttpClient, HttpClient } from '@effect/platform'
 import { type Array, Context, Effect, flow, Layer } from 'effect'
-import { getPreprint, resolvePreprintId } from '../get-preprint.js'
+import { getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId } from '../get-preprint.js'
 import type * as Preprint from '../preprint.js'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 
@@ -10,6 +10,10 @@ export class Preprints extends Context.Tag('Preprints')<
     getPreprint: (
       id: IndeterminatePreprintId,
     ) => Effect.Effect<Preprint.Preprint, Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable>
+    getPreprintId: (id: IndeterminatePreprintId) => Effect.Effect<PreprintId, Preprint.PreprintIsUnavailable>
+    getPreprintTitle: (
+      id: IndeterminatePreprintId,
+    ) => Effect.Effect<Preprint.PreprintTitle, Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable>
     resolvePreprintId: (
       ...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>
     ) => Effect.Effect<PreprintId, Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable>
@@ -25,6 +29,16 @@ export const layer = Layer.effect(
     return {
       getPreprint: flow(
         getPreprint,
+        Effect.provideService(HttpClient.HttpClient, httpClient),
+        Effect.provideService(FetchHttpClient.Fetch, fetch),
+      ),
+      getPreprintId: flow(
+        getPreprintId,
+        Effect.provideService(HttpClient.HttpClient, httpClient),
+        Effect.provideService(FetchHttpClient.Fetch, fetch),
+      ),
+      getPreprintTitle: flow(
+        getPreprintTitle,
         Effect.provideService(HttpClient.HttpClient, httpClient),
         Effect.provideService(FetchHttpClient.Fetch, fetch),
       ),
