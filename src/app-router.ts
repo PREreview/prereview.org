@@ -122,7 +122,6 @@ import {
 } from './prereview-coar-notify/index.js'
 import { profile } from './profile-page/index.js'
 import type { PublicUrlEnv } from './public-url.js'
-import { requestAPrereview } from './request-a-prereview-page/index.js'
 import {
   requestReview,
   requestReviewCheck,
@@ -181,7 +180,6 @@ import {
   preprintReviewsMatch,
   profileMatch,
   removeAvatarMatch,
-  requestAPrereviewMatch,
   requestReviewCheckMatch,
   requestReviewMatch,
   requestReviewPersonaMatch,
@@ -1989,29 +1987,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getReviewRequests: withEnv(getReviewRequestsFromPrereviewCoarNotify, env),
         })),
-      ),
-    ),
-    pipe(
-      requestAPrereviewMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.apS(
-            'body',
-            RM.gets(c => c.getBody()),
-          ),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.apSW('user', maybeGetUser),
-          RM.bindW('response', RM.fromReaderTaskK(requestAPrereview)),
-          RM.ichainW(handleResponse),
-        ),
       ),
     ),
     pipe(

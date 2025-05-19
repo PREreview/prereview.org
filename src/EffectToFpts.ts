@@ -45,6 +45,19 @@ export const toReaderTaskEitherK =
 export const toReaderTaskEither = <A, E, R>(effect: Effect.Effect<A, E, R>): RTE.ReaderTaskEither<EffectEnv<R>, E, A> =>
   toReaderTask(Effect.either(effect))
 
+export const toTaskEitherK =
+  <A extends ReadonlyArray<unknown>, B, E, R>(
+    f: (...a: A) => Effect.Effect<B, E, R>,
+    runtime: Runtime.Runtime<R>,
+  ): ((...a: A) => TE.TaskEither<E, B>) =>
+  (...a) =>
+    toTaskEither(f(...a), runtime)
+
+export const toTaskEither = <A, E, R>(
+  effect: Effect.Effect<A, E, R>,
+  runtime: Runtime.Runtime<R>,
+): TE.TaskEither<E, A> => toTask(Effect.either(effect), runtime)
+
 export const toReaderTaskK =
   <A extends ReadonlyArray<unknown>, B, R>(
     f: (...a: A) => Effect.Effect<B, never, R>,
