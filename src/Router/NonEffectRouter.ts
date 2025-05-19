@@ -11,6 +11,7 @@ import { home } from '../home-page/index.js'
 import type { SupportedLocale } from '../locales/index.js'
 import type { OrcidOauth } from '../OrcidOauth.js'
 import { partners } from '../partners.js'
+import { preprintReviews } from '../preprint-reviews-page/index.js'
 import * as Preprints from '../Preprints/index.js'
 import * as Prereviews from '../Prereviews/index.js'
 import type { PublicUrl } from '../public-url.js'
@@ -112,6 +113,30 @@ const routerWithoutHyperTs = pipe(
             getRecentPrereviews: () => EffectToFpts.toTask(env.prereviews.getFiveMostRecent, env.runtime),
             getRecentReviewRequests: () => EffectToFpts.toTask(env.reviewRequests.getFiveMostRecent, env.runtime),
           }),
+      ),
+    ),
+    pipe(
+      Routes.preprintReviewsMatch.parser,
+      P.map(
+        ({ id }) =>
+          (env: Env) =>
+            preprintReviews({ id, locale: env.locale })({
+              getPreprint: EffectToFpts.toTaskEitherK(env.preprints.getPreprint, env.runtime),
+              getPrereviews: EffectToFpts.toTaskEitherK(
+                flow(
+                  env.prereviews.getForPreprint,
+                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable')),
+                ),
+                env.runtime,
+              ),
+              getRapidPrereviews: EffectToFpts.toTaskEitherK(
+                flow(
+                  env.prereviews.getRapidPrereviewsForPreprint,
+                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable')),
+                ),
+                env.runtime,
+              ),
+            }),
       ),
     ),
     pipe(

@@ -1,18 +1,20 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
+import { Array, Context, Data, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { DeprecatedLoggerEnv, ExpressConfig } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { Html } from '../html.js'
+import { getRapidPreviewsFromLegacyPrereview, isLegacyCompatiblePreprint } from '../legacy-prereview.js'
+import type { Prereview as PreprintPrereview, RapidPrereview } from '../preprint-reviews-page/index.js'
 import * as Preprint from '../preprint.js'
 import { Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from '../Prereview.js'
 import type { ClubId } from '../types/club-id.js'
 import type { FieldId } from '../types/field.js'
 import type { PreprintId } from '../types/preprint-id.js'
 import type { SubfieldId } from '../types/subfield.js'
-import { getPrereviewFromZenodo, getRecentPrereviewsFromZenodo } from '../zenodo.js'
+import { getPrereviewFromZenodo, getPrereviewsForPreprintFromZenodo, getRecentPrereviewsFromZenodo } from '../zenodo.js'
 
 import PlainDate = Temporal.PlainDate
 
@@ -30,10 +32,16 @@ export interface RecentPrereview {
   }
 }
 
+export class PrereviewsAreUnavailable extends Data.TaggedError('PrereviewsAreUnavailable') {}
+
 export class Prereviews extends Context.Tag('Prereviews')<
   Prereviews,
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPrereview>>
+    getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, PrereviewsAreUnavailable>
+    getRapidPrereviewsForPreprint: (
+      id: PreprintId,
+    ) => Effect.Effect<ReadonlyArray<RapidPrereview>, PrereviewsAreUnavailable>
     getPrereview: (
       id: number,
     ) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
@@ -43,7 +51,7 @@ export class Prereviews extends Context.Tag('Prereviews')<
 export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
-    const { wasPrereviewRemoved, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
+    const { legacyPrereviewApi, wasPrereviewRemoved, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPreprintTitle = yield* pipe(Preprint.GetPreprintTitle, Effect.andThen(EffectToFpts.makeTaskEitherK))
@@ -61,6 +69,35 @@ export const layer = Layer.effect(
         Effect.map(Struct.get('recentPrereviews')),
         Effect.orElseSucceed(Array.empty),
       ),
+      getForPreprint: id =>
+        pipe(
+          FptsToEffect.readerTaskEither(getPrereviewsForPreprintFromZenodo(id), {
+            fetch,
+            zenodoApiKey,
+            zenodoUrl,
+            ...logger,
+          }),
+          Effect.mapError(() => new PrereviewsAreUnavailable()),
+        ),
+      getRapidPrereviewsForPreprint: id =>
+        pipe(
+          Effect.succeed(id),
+          Effect.filterOrFail(isLegacyCompatiblePreprint, () => 'not-compatible' as const),
+          Effect.andThen(id =>
+            FptsToEffect.readerTaskEither(getRapidPreviewsFromLegacyPrereview(id), {
+              fetch,
+              legacyPrereviewApi,
+            }),
+          ),
+          Effect.catchAll(
+            flow(
+              Match.value,
+              Match.when('not-compatible', () => Effect.sync(Array.empty)),
+              Match.when('unavailable', () => new PrereviewsAreUnavailable()),
+              Match.exhaustive,
+            ),
+          ),
+        ),
       getPrereview: id =>
         pipe(
           FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {

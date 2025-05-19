@@ -76,9 +76,7 @@ import {
   createPrereviewOnLegacyPrereview,
   createUserOnLegacyPrereview,
   getPseudonymFromLegacyPrereview,
-  getRapidPreviewsFromLegacyPrereview,
   getUsersFromLegacyPrereview,
-  isLegacyCompatiblePreprint,
   isLegacyCompatiblePrereview,
 } from './legacy-prereview.js'
 import type { SupportedLocale } from './locales/index.js'
@@ -110,7 +108,6 @@ import {
 import { myPrereviews } from './my-prereviews-page/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
-import { preprintReviews } from './preprint-reviews-page/index.js'
 import type * as Preprint from './preprint.js'
 import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
 import * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
@@ -174,7 +171,6 @@ import {
   myPrereviewsMatch,
   orcidCodeMatch,
   orcidErrorMatch,
-  preprintReviewsMatch,
   profileMatch,
   removeAvatarMatch,
   requestReviewCheckMatch,
@@ -269,7 +265,6 @@ import {
   createRecordOnZenodo,
   getPrereviewFromZenodo,
   getPrereviewsForClubFromZenodo,
-  getPrereviewsForPreprintFromZenodo,
   getPrereviewsForProfileFromZenodo,
   getPrereviewsForSciety,
   getPrereviewsForUserFromZenodo,
@@ -347,9 +342,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   ZenodoAuthenticatedEnv
 
 const maybeGetUser = RM.asks((env: RouterEnv) => env.user)
-
-const getRapidPrereviews = (id: PreprintId) =>
-  isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
 
 const triggerRefreshOfPrereview = (prereviewId: number, preprintId: PreprintId | undefined, user: User) =>
   EffectToFpts.toReaderTaskEither(Zenodo.invalidatePrereviewInCache({ prereviewId, preprintId, user }))
@@ -687,28 +679,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             env,
           ),
           isSlackUser: withEnv(isSlackUser, env),
-        })),
-      ),
-    ),
-    pipe(
-      preprintReviewsMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(preprintReviews)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getPrereviews: withEnv(getPrereviewsForPreprintFromZenodo, env),
-          getRapidPrereviews: withEnv(getRapidPrereviews, env),
         })),
       ),
     ),
