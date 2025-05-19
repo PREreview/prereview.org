@@ -210,5 +210,5 @@ export const Router = pipe(
   ),
   HttpRouter.get('/robots.txt', HttpServerResponse.text('User-agent: *\nAllow: /')),
   HttpRouter.concat(LegacyRouter),
-  Effect.catchTag('RouteNotFound', () => nonEffectRouter),
+  Effect.catchTag('RouteNotFound', () => Effect.interruptible(nonEffectRouter)),
 )
