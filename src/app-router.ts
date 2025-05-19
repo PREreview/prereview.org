@@ -130,7 +130,6 @@ import {
   requestReviewStart,
 } from './request-review-flow/index.js'
 import { handleResponse } from './response.js'
-import { reviewAPreprint } from './review-a-preprint-page/index.js'
 import * as ReviewPage from './review-page/index.js'
 import { reviewPage } from './review-page/index.js'
 import type { ReviewRequestPreprintId } from './review-request.js'
@@ -185,7 +184,6 @@ import {
   requestReviewPersonaMatch,
   requestReviewPublishedMatch,
   requestReviewStartMatch,
-  reviewAPreprintMatch,
   reviewMatch,
   reviewRequestsMatch,
   reviewsDataMatch,
@@ -433,29 +431,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getRecentPrereviews: withEnv(getRecentPrereviewsFromZenodo, env),
         })),
-      ),
-    ),
-    pipe(
-      reviewAPreprintMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS(
-            'body',
-            RM.gets(c => c.getBody()),
-          ),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(reviewAPreprint)),
-          RM.ichainW(handleResponse),
-        ),
       ),
     ),
     pipe(

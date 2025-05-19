@@ -15,6 +15,7 @@ import * as Preprints from '../Preprints/index.js'
 import * as Prereviews from '../Prereviews/index.js'
 import type { PublicUrl } from '../public-url.js'
 import { requestAPrereview } from '../request-a-prereview-page/index.js'
+import { reviewAPreprint } from '../review-a-preprint-page/index.js'
 import * as ReviewRequests from '../ReviewRequests/index.js'
 import * as Routes from '../routes.js'
 import type { TemplatePage } from '../TemplatePage.js'
@@ -110,6 +111,14 @@ const routerWithoutHyperTs = (env: Env) =>
         Routes.requestAPrereviewMatch.parser,
         P.map(() =>
           requestAPrereview({ body: env.body, method: env.method, locale: env.locale })({
+            resolvePreprintId: EffectToFpts.toTaskEitherK(env.preprints.resolvePreprintId, env.runtime),
+          }),
+        ),
+      ),
+      pipe(
+        Routes.reviewAPreprintMatch.parser,
+        P.map(() =>
+          reviewAPreprint({ body: env.body, method: env.method, locale: env.locale })({
             resolvePreprintId: EffectToFpts.toTaskEitherK(env.preprints.resolvePreprintId, env.runtime),
           }),
         ),
