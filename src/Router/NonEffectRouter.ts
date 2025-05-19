@@ -1,5 +1,5 @@
-import { HttpServerError, HttpServerRequest, type HttpServerResponse } from '@effect/platform'
-import { Effect, Either, Option, pipe, type Runtime, Tuple } from 'effect'
+import { Headers, HttpMethod, HttpServerError, HttpServerRequest, type HttpServerResponse } from '@effect/platform'
+import { Effect, Either, Match, Option, pipe, Record, type Runtime, String, Tuple } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as T from 'fp-ts/lib/Task.js'
@@ -45,7 +45,29 @@ export const nonEffectRouter: Effect.Effect<
   const preprints = yield* Preprints.Preprints
   const prereviews = yield* Prereviews.Prereviews
   const reviewRequests = yield* ReviewRequests.ReviewRequests
-  const env = { locale, featureFlags, preprints, prereviews, reviewRequests, runtime } satisfies Env
+
+  const body = yield* Effect.if(HttpMethod.hasBody(request.method), {
+    onTrue: () =>
+      pipe(
+        Match.value(Option.getOrElse(Headers.get(request.headers, 'Content-Type'), () => 'application/octet-stream')),
+        Match.when(String.includes('application/x-www-form-urlencoded'), () =>
+          Effect.andThen(request.urlParamsBody, Record.fromEntries),
+        ),
+        Match.orElse(() => Effect.void),
+      ),
+    onFalse: () => Effect.void,
+  })
+
+  const env = {
+    body,
+    locale,
+    featureFlags,
+    method: request.method,
+    preprints,
+    prereviews,
+    reviewRequests,
+    runtime,
+  } satisfies Env
 
   return yield* pipe(
     FptsToEffect.option(routerWithoutHyperTs(env).run(route)),
@@ -57,8 +79,10 @@ export const nonEffectRouter: Effect.Effect<
 })
 
 interface Env {
+  body: unknown
   locale: SupportedLocale
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
+  method: HttpMethod.HttpMethod
   preprints: typeof Preprints.Preprints.Service
   prereviews: typeof Prereviews.Prereviews.Service
   reviewRequests: typeof ReviewRequests.ReviewRequests.Service
