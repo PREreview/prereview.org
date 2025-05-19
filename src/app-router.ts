@@ -130,7 +130,6 @@ import { handleResponse } from './response.js'
 import type { ReviewRequestPreprintId } from './review-request.js'
 import { reviewRequests } from './review-requests-page/index.js'
 import { reviewsData } from './reviews-data/index.js'
-import { reviewsPage } from './reviews-page/index.js'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -180,7 +179,6 @@ import {
   requestReviewStartMatch,
   reviewRequestsMatch,
   reviewsDataMatch,
-  reviewsMatch,
   scietyListMatch,
   usersDataMatch,
   verifyContactEmailAddressMatch,
@@ -268,7 +266,6 @@ import {
   getPrereviewsForProfileFromZenodo,
   getPrereviewsForSciety,
   getPrereviewsForUserFromZenodo,
-  getRecentPrereviewsFromZenodo,
 } from './zenodo.js'
 
 const isSlackUser = flow(
@@ -397,29 +394,6 @@ const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseud
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
-    pipe(
-      reviewsMatch.parser,
-      P.map(({ field, language, page, query }) =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', ({ locale }) =>
-            RM.fromReaderTask(reviewsPage({ field, language, locale, page: page ?? 1, query })),
-          ),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getRecentPrereviews: withEnv(getRecentPrereviewsFromZenodo, env),
-        })),
-      ),
-    ),
     pipe(
       logInMatch.parser,
       P.map(() => logIn),

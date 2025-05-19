@@ -10,9 +10,11 @@ import { getRapidPreviewsFromLegacyPrereview, isLegacyCompatiblePreprint } from 
 import type { Prereview as PreprintPrereview, RapidPrereview } from '../preprint-reviews-page/index.js'
 import * as Preprint from '../preprint.js'
 import { Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from '../Prereview.js'
+import type { RecentPrereviews } from '../reviews-page/index.js'
 import type { ClubId } from '../types/club-id.js'
 import type { FieldId } from '../types/field.js'
 import type { PreprintId } from '../types/preprint-id.js'
+import type { NonEmptyString } from '../types/string.js'
 import type { SubfieldId } from '../types/subfield.js'
 import { getPrereviewFromZenodo, getPrereviewsForPreprintFromZenodo, getRecentPrereviewsFromZenodo } from '../zenodo.js'
 
@@ -34,6 +36,8 @@ export interface RecentPrereview {
 
 export class PrereviewsAreUnavailable extends Data.TaggedError('PrereviewsAreUnavailable') {}
 
+export class PrereviewsPageNotFound extends Data.TaggedError('PrereviewsPageNotFound') {}
+
 export class Prereviews extends Context.Tag('Prereviews')<
   Prereviews,
   {
@@ -45,6 +49,12 @@ export class Prereviews extends Context.Tag('Prereviews')<
     getPrereview: (
       id: number,
     ) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
+    search: (args: {
+      field?: FieldId
+      language?: LanguageCode
+      page: number
+      query?: NonEmptyString
+    }) => Effect.Effect<RecentPrereviews, PrereviewsAreUnavailable | PrereviewsPageNotFound>
   }
 >() {}
 
@@ -126,6 +136,24 @@ export const layer = Layer.effect(
                 id,
               }),
           }),
+        ),
+      search: args =>
+        pipe(
+          FptsToEffect.readerTaskEither(getRecentPrereviewsFromZenodo(args), {
+            fetch,
+            getPreprintTitle,
+            ...logger,
+            zenodoApiKey,
+            zenodoUrl,
+          }),
+          Effect.mapError(
+            flow(
+              Match.value,
+              Match.when('not-found', () => new PrereviewsPageNotFound()),
+              Match.when('unavailable', () => new PrereviewsAreUnavailable()),
+              Match.exhaustive,
+            ),
+          ),
         ),
     }
   }),

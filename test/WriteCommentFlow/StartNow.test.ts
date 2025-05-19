@@ -22,6 +22,7 @@ const constructPrereviewsService = (
   getForPreprint: () => Effect.sync(shouldNotBeCalled),
   getRapidPrereviewsForPreprint: () => Effect.sync(shouldNotBeCalled),
   getPrereview,
+  search: () => Effect.sync(shouldNotBeCalled),
 })
 
 describe('StartNow', () => {

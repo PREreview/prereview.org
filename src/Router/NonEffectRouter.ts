@@ -19,6 +19,7 @@ import { requestAPrereview } from '../request-a-prereview-page/index.js'
 import { reviewAPreprint } from '../review-a-preprint-page/index.js'
 import { CommentsForReview, reviewPage } from '../review-page/index.js'
 import * as ReviewRequests from '../ReviewRequests/index.js'
+import { reviewsPage } from '../reviews-page/index.js'
 import * as Routes from '../routes.js'
 import type { TemplatePage } from '../TemplatePage.js'
 import * as Response from './Response.js'
@@ -171,6 +172,25 @@ const routerWithoutHyperTs = pipe(
                     PrereviewIsNotFound: () => Effect.fail('not-found' as const),
                     PrereviewIsUnavailable: () => Effect.fail('unavailable' as const),
                     PrereviewWasRemoved: () => Effect.fail('removed' as const),
+                  }),
+                ),
+                env.runtime,
+              ),
+            }),
+      ),
+    ),
+    pipe(
+      Routes.reviewsMatch.parser,
+      P.map(
+        ({ field, language, page, query }) =>
+          (env: Env) =>
+            reviewsPage({ field, language, locale: env.locale, page: page ?? 1, query })({
+              getRecentPrereviews: EffectToFpts.toTaskEitherK(
+                flow(
+                  env.prereviews.search,
+                  Effect.catchTags({
+                    PrereviewsPageNotFound: () => Effect.fail('not-found' as const),
+                    PrereviewsAreUnavailable: () => Effect.fail('unavailable' as const),
                   }),
                 ),
                 env.runtime,
