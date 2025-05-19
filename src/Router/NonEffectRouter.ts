@@ -43,6 +43,14 @@ export const nonEffectRouter: Effect.Effect<
     catch: () => new HttpServerError.RouteNotFound({ request }),
   })
 
+  const handler = yield* pipe(
+    FptsToEffect.option(routerWithoutHyperTs.run(route)),
+    Effect.mapBoth({
+      onSuccess: Tuple.getFirst,
+      onFailure: () => new HttpServerError.RouteNotFound({ request }),
+    }),
+  )
+
   const runtime = yield* Effect.runtime()
   const locale = yield* Locale
   const featureFlags = yield* FeatureFlags.FeatureFlags
@@ -75,13 +83,7 @@ export const nonEffectRouter: Effect.Effect<
     runtime,
   } satisfies Env
 
-  return yield* pipe(
-    FptsToEffect.option(routerWithoutHyperTs(env).run(route)),
-    Option.map(Tuple.getFirst),
-    Effect.andThen(FptsToEffect.task),
-    Effect.andThen(Response.toHttpServerResponse),
-    Effect.mapError(() => new HttpServerError.RouteNotFound({ request })),
-  )
+  return yield* pipe(FptsToEffect.task(handler(env)), Effect.andThen(Response.toHttpServerResponse))
 })
 
 interface Env {
@@ -96,57 +98,61 @@ interface Env {
   runtime: Runtime.Runtime<never>
 }
 
-const routerWithoutHyperTs = (env: Env) =>
-  pipe(
-    [
-      pipe(
-        Routes.partnersMatch.parser,
-        P.map(() => T.of(partners(env.locale))),
-      ),
-      pipe(
-        Routes.homeMatch.parser,
-        P.map(() =>
+const routerWithoutHyperTs = pipe(
+  [
+    pipe(
+      Routes.partnersMatch.parser,
+      P.map(() => (env: Env) => T.of(partners(env.locale))),
+    ),
+    pipe(
+      Routes.homeMatch.parser,
+      P.map(
+        () => (env: Env) =>
           home({ canSeeDesignTweaks: env.featureFlags.canSeeDesignTweaks, locale: env.locale })({
             getRecentPrereviews: () => EffectToFpts.toTask(env.prereviews.getFiveMostRecent, env.runtime),
             getRecentReviewRequests: () => EffectToFpts.toTask(env.reviewRequests.getFiveMostRecent, env.runtime),
           }),
-        ),
       ),
-      pipe(
-        Routes.requestAPrereviewMatch.parser,
-        P.map(() =>
+    ),
+    pipe(
+      Routes.requestAPrereviewMatch.parser,
+      P.map(
+        () => (env: Env) =>
           requestAPrereview({ body: env.body, method: env.method, locale: env.locale })({
             resolvePreprintId: EffectToFpts.toTaskEitherK(env.preprints.resolvePreprintId, env.runtime),
           }),
-        ),
       ),
-      pipe(
-        Routes.reviewAPreprintMatch.parser,
-        P.map(() =>
+    ),
+    pipe(
+      Routes.reviewAPreprintMatch.parser,
+      P.map(
+        () => (env: Env) =>
           reviewAPreprint({ body: env.body, method: env.method, locale: env.locale })({
             resolvePreprintId: EffectToFpts.toTaskEitherK(env.preprints.resolvePreprintId, env.runtime),
           }),
-        ),
       ),
-      pipe(
-        Routes.reviewMatch.parser,
-        P.map(({ id }) =>
-          reviewPage({ id, locale: env.locale })({
-            getComments: EffectToFpts.toTaskEitherK(env.commentsForReview.get, env.runtime),
-            getPrereview: EffectToFpts.toTaskEitherK(
-              flow(
-                env.prereviews.getPrereview,
-                Effect.catchTags({
-                  PrereviewIsNotFound: () => Effect.fail('not-found' as const),
-                  PrereviewIsUnavailable: () => Effect.fail('unavailable' as const),
-                  PrereviewWasRemoved: () => Effect.fail('removed' as const),
-                }),
+    ),
+    pipe(
+      Routes.reviewMatch.parser,
+      P.map(
+        ({ id }) =>
+          (env: Env) =>
+            reviewPage({ id, locale: env.locale })({
+              getComments: EffectToFpts.toTaskEitherK(env.commentsForReview.get, env.runtime),
+              getPrereview: EffectToFpts.toTaskEitherK(
+                flow(
+                  env.prereviews.getPrereview,
+                  Effect.catchTags({
+                    PrereviewIsNotFound: () => Effect.fail('not-found' as const),
+                    PrereviewIsUnavailable: () => Effect.fail('unavailable' as const),
+                    PrereviewWasRemoved: () => Effect.fail('removed' as const),
+                  }),
+                ),
+                env.runtime,
               ),
-              env.runtime,
-            ),
-          }),
-        ),
+            }),
       ),
-    ],
-    concatAll(P.getParserMonoid()),
-  ) satisfies P.Parser<T.Task<Response.Response>>
+    ),
+  ],
+  concatAll(P.getParserMonoid()),
+) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
