@@ -412,7 +412,14 @@ const MigratorLive = LibsqlMigrator.layer({
 export const Program = pipe(
   Layer.mergeAll(WebApp, Comments.ReactToCommentEvents, CachingHttpClient.layerRevalidationWorker),
   Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment)),
-  Layer.provide(Layer.mergeAll(getPrereview, Preprints.layer, Prereviews.layer, ReviewRequests.layer)),
+  Layer.provide(
+    Layer.mergeAll(
+      getPrereview,
+      Layer.provide(Preprints.layer, CachingHttpClient.layer('1 day')),
+      Prereviews.layer,
+      ReviewRequests.layer,
+    ),
+  ),
   Layer.provide(
     Layer.mergeAll(
       Layer.provide(resolvePreprintId, CachingHttpClient.layer('1 day')),
