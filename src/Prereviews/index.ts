@@ -16,7 +16,13 @@ import type { FieldId } from '../types/field.js'
 import type { PreprintId } from '../types/preprint-id.js'
 import type { NonEmptyString } from '../types/string.js'
 import type { SubfieldId } from '../types/subfield.js'
-import { getPrereviewFromZenodo, getPrereviewsForPreprintFromZenodo, getRecentPrereviewsFromZenodo } from '../zenodo.js'
+import type { User } from '../user.js'
+import {
+  getPrereviewFromZenodo,
+  getPrereviewsForPreprintFromZenodo,
+  getPrereviewsForUserFromZenodo,
+  getRecentPrereviewsFromZenodo,
+} from '../zenodo.js'
 
 import PlainDate = Temporal.PlainDate
 
@@ -43,6 +49,7 @@ export class Prereviews extends Context.Tag('Prereviews')<
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPrereview>>
     getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, PrereviewsAreUnavailable>
+    getForUser: (user: User) => Effect.Effect<ReadonlyArray<RecentPrereview>, PrereviewsAreUnavailable>
     getRapidPrereviewsForPreprint: (
       id: PreprintId,
     ) => Effect.Effect<ReadonlyArray<RapidPrereview>, PrereviewsAreUnavailable>
@@ -83,6 +90,17 @@ export const layer = Layer.effect(
         pipe(
           FptsToEffect.readerTaskEither(getPrereviewsForPreprintFromZenodo(id), {
             fetch,
+            zenodoApiKey,
+            zenodoUrl,
+            ...logger,
+          }),
+          Effect.mapError(() => new PrereviewsAreUnavailable()),
+        ),
+      getForUser: user =>
+        pipe(
+          FptsToEffect.readerTaskEither(getPrereviewsForUserFromZenodo(user), {
+            fetch,
+            getPreprintTitle,
             zenodoApiKey,
             zenodoUrl,
             ...logger,

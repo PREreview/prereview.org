@@ -9,6 +9,7 @@ import * as FeatureFlags from '../feature-flags.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { home } from '../home-page/index.js'
 import type { SupportedLocale } from '../locales/index.js'
+import { myPrereviews } from '../my-prereviews-page/index.js'
 import type { OrcidOauth } from '../OrcidOauth.js'
 import { partners } from '../partners.js'
 import { preprintReviews } from '../preprint-reviews-page/index.js'
@@ -22,6 +23,7 @@ import * as ReviewRequests from '../ReviewRequests/index.js'
 import { reviewsPage } from '../reviews-page/index.js'
 import * as Routes from '../routes.js'
 import type { TemplatePage } from '../TemplatePage.js'
+import { LoggedInUser, type User } from '../user.js'
 import * as Response from './Response.js'
 
 export const nonEffectRouter: Effect.Effect<
@@ -55,6 +57,7 @@ export const nonEffectRouter: Effect.Effect<
 
   const runtime = yield* Effect.runtime()
   const locale = yield* Locale
+  const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
   const featureFlags = yield* FeatureFlags.FeatureFlags
   const preprints = yield* Preprints.Preprints
   const prereviews = yield* Prereviews.Prereviews
@@ -77,6 +80,7 @@ export const nonEffectRouter: Effect.Effect<
     body,
     commentsForReview,
     locale,
+    loggedInUser: Option.getOrUndefined(loggedInUser),
     featureFlags,
     method: request.method,
     preprints,
@@ -92,6 +96,7 @@ interface Env {
   body: unknown
   commentsForReview: typeof CommentsForReview.Service
   locale: SupportedLocale
+  loggedInUser: User | undefined
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
   method: HttpMethod.HttpMethod
   preprints: typeof Preprints.Preprints.Service
@@ -113,6 +118,21 @@ const routerWithoutHyperTs = pipe(
           home({ canSeeDesignTweaks: env.featureFlags.canSeeDesignTweaks, locale: env.locale })({
             getRecentPrereviews: () => EffectToFpts.toTask(env.prereviews.getFiveMostRecent, env.runtime),
             getRecentReviewRequests: () => EffectToFpts.toTask(env.reviewRequests.getFiveMostRecent, env.runtime),
+          }),
+      ),
+    ),
+    pipe(
+      Routes.myPrereviewsMatch.parser,
+      P.map(
+        () => (env: Env) =>
+          myPrereviews({ locale: env.locale, user: env.loggedInUser })({
+            getMyPrereviews: EffectToFpts.toTaskEitherK(
+              flow(
+                env.prereviews.getForUser,
+                Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable')),
+              ),
+              env.runtime,
+            ),
           }),
       ),
     ),

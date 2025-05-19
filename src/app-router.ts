@@ -105,7 +105,6 @@ import {
   removeAvatar,
   verifyContactEmailAddress,
 } from './my-details-page/index.js'
-import { myPrereviews } from './my-prereviews-page/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
 import type * as Preprint from './preprint.js'
@@ -167,7 +166,6 @@ import {
   logInMatch,
   logOutMatch,
   myDetailsMatch,
-  myPrereviewsMatch,
   orcidCodeMatch,
   orcidErrorMatch,
   profileMatch,
@@ -265,7 +263,6 @@ import {
   getPrereviewsForClubFromZenodo,
   getPrereviewsForProfileFromZenodo,
   getPrereviewsForSciety,
-  getPrereviewsForUserFromZenodo,
 } from './zenodo.js'
 
 const isSlackUser = flow(
@@ -653,27 +650,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             env,
           ),
           isSlackUser: withEnv(isSlackUser, env),
-        })),
-      ),
-    ),
-    pipe(
-      myPrereviewsMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(myPrereviews)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getMyPrereviews: withEnv(getPrereviewsForUserFromZenodo, env),
         })),
       ),
     ),

@@ -20,6 +20,7 @@ const constructPrereviewsService = (
 ): typeof Prereviews.Prereviews.Service => ({
   getFiveMostRecent: Effect.sync(shouldNotBeCalled),
   getForPreprint: () => Effect.sync(shouldNotBeCalled),
+  getForUser: () => Effect.sync(shouldNotBeCalled),
   getRapidPrereviewsForPreprint: () => Effect.sync(shouldNotBeCalled),
   getPrereview,
   search: () => Effect.sync(shouldNotBeCalled),
