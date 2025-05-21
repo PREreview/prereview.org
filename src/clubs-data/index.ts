@@ -1,14 +1,17 @@
+import type { Temporal } from '@js-temporal/polyfill'
 import { Function, Schema, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { getClubName } from '../club-details.js'
+import { getClubAddedDate, getClubName } from '../club-details.js'
 import type { ScietyListEnv } from '../sciety-list/index.js'
 import { type ClubId, clubIds } from '../types/club-id.js'
+import { PlainDateSchema } from '../types/Temporal.js'
 
 interface Club {
   id: ClubId
   name: string
+  added: Temporal.PlainDate
 }
 
 const getClubs = (): ReadonlyArray<Club> =>
@@ -17,12 +20,14 @@ const getClubs = (): ReadonlyArray<Club> =>
     RA.map(id => ({
       id,
       name: getClubName(id),
+      added: getClubAddedDate(id),
     })),
   )
 
 const ClubSchema = Schema.Struct({
   id: Schema.String,
   name: Schema.String,
+  added: PlainDateSchema,
 })
 
 const ClubsSchema = Schema.Array(ClubSchema)

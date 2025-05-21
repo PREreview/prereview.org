@@ -21,6 +21,8 @@ export const getClubDetails = (id: ClubId) => clubs[id]
 
 export const getClubName = (id: ClubId) => clubs[id].name
 
+export const getClubAddedDate = (id: ClubId) => clubs[id].added
+
 export const getClubByName = (name: string): Option.Option<ClubId> =>
   pipe(
     Struct.keys(clubs),
