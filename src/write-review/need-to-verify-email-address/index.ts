@@ -9,21 +9,25 @@ import {
   type VerifyContactEmailAddressForReviewEnv,
   maybeGetContactEmailAddress,
   verifyContactEmailAddressForReview,
-} from '../contact-email-address.js'
-import { html, plainText } from '../html.js'
-import { havingProblemsPage, pageNotFound } from '../http-error.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
-import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../preprint.js'
-import { FlashMessageResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
+} from '../../contact-email-address.js'
+import { havingProblemsPage, pageNotFound } from '../../http-error.js'
+import type { SupportedLocale } from '../../locales/index.js'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
+import {
+  FlashMessageResponse,
+  type PageResponse,
+  RedirectResponse,
+  type StreamlinePageResponse,
+} from '../../response.js'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
-} from '../routes.js'
-import type { IndeterminatePreprintId } from '../types/preprint-id.js'
-import type { User } from '../user.js'
-import { type FormStoreEnv, getForm, nextFormMatch } from './form.js'
-import { prereviewOfSuffix } from './shared-elements.js'
+} from '../../routes.js'
+import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
+import type { User } from '../../user.js'
+import { type FormStoreEnv, getForm, nextFormMatch } from '../form.js'
+import { needToVerifyEmailAddressMessage } from './need-to-verify-email-address-message.js'
 
 export const writeReviewNeedToVerifyEmailAddress = ({
   id,
@@ -120,39 +124,3 @@ const resendVerificationEmail = ({
         }),
     ),
   )
-
-function needToVerifyEmailAddressMessage({
-  contactEmailAddress,
-  locale,
-  preprint,
-}: {
-  contactEmailAddress: UnverifiedContactEmailAddress
-  locale: SupportedLocale
-  preprint: PreprintTitle
-}) {
-  const t = translate(locale, 'write-review')
-
-  return StreamlinePageResponse({
-    title: pipe(t('verifyEmailAddress')(), prereviewOfSuffix(locale, preprint.title), plainText),
-    nav: html`
-      <a href="${format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
-      >
-    `,
-    main: html`
-      <h1>${t('verifyEmailAddress')()}</h1>
-
-      <p>${t('howToVerifyEmailAddress')({ emailAddress: contactEmailAddress.value })}</p>
-
-      <p>${t('onceEmailAddressVerified')()}</p>
-
-      <form
-        method="post"
-        action="${format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id })}"
-        novalidate
-      >
-        <button class="secondary">${t('resendEmailButton')()}</button>
-      </form>
-    `,
-  })
-}
