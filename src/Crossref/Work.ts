@@ -1,9 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Array, Data, Effect, pipe, Schema, Tuple } from 'effect'
 import { StatusCodes } from 'http-status-codes'
-import * as Doi from '../types/Doi.js'
-import * as Orcid from '../types/Orcid.js'
-import { Temporal } from '../types/index.js'
+import { Doi, Orcid, Temporal } from '../types/index.js'
 
 const PlainYearFromTupleSchema = Schema.transform(Schema.Tuple(Schema.Number), Schema.Number, {
   strict: true,

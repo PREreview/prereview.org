@@ -1,8 +1,6 @@
 import { Schema } from 'effect'
 import { rawHtml, type Html } from '../html.js'
-import * as Doi from '../types/Doi.js'
-import { NonEmptyString } from '../types/index.js'
-import * as Orcid from '../types/Orcid.js'
+import { Doi, NonEmptyString, Orcid } from '../types/index.js'
 
 const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.Object, {
   strict: true,

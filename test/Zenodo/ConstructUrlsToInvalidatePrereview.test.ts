@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals'
 import { Array, Effect } from 'effect'
 import { Orcid } from 'orcid-id-ts'
-import * as Doi from '../../src/types/Doi.js'
+import { Doi } from '../../src/types/index.js'
 import type { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
 import { ZenodoOrigin } from '../../src/Zenodo/CommunityRecords.js'

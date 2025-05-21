@@ -4,8 +4,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import * as FptsToEffect from './FptsToEffect.js'
-import { Pseudonym } from './types/index.js'
-import * as Orcid from './types/Orcid.js'
+import { Orcid, Pseudonym } from './types/index.js'
 
 export type User = C.TypeOf<typeof UserC>
 

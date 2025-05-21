@@ -1,3 +1,4 @@
+export * as Doi from './Doi.js'
 export * as EmailAddress from './email-address.js'
 export * as Orcid from './Orcid.js'
 export * as OrcidLocale from './OrcidLocale.js'

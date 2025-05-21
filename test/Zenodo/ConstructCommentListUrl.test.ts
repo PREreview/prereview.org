@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals'
 import { Effect } from 'effect'
 import { ZenodoOrigin } from '../../src/Zenodo/CommunityRecords.js'
 import * as _ from '../../src/Zenodo/ConstructCommentListUrl.js'
-import * as Doi from '../../src/types/Doi.js'
+import { Doi } from '../../src/types/index.js'
 import * as EffectTest from '../EffectTest.js'
 
 describe('ConstructCommentListUrl', () => {

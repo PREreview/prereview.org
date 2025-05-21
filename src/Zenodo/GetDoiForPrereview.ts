@@ -1,6 +1,6 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Effect, pipe, Schema } from 'effect'
-import * as Doi from '../types/Doi.js'
+import { Doi } from '../types/index.js'
 import { ZenodoOrigin } from './CommunityRecords.js'
 
 const RecordSchema = Schema.Struct({
