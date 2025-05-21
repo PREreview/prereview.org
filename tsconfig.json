@@ -2,8 +2,7 @@
   "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
     "allowJs": true,
-    "lib": ["dom", "dom.iterable", "es2023"],
-    "module": "nodenext",
+    "lib": ["dom", "dom.iterable", "es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
     "resolveJsonModule": true,
