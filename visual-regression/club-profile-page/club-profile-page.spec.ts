@@ -41,6 +41,7 @@ const club1 = {
       cancer.
     </p>
   `,
+  added: PlainDate.from('2024-01-02'),
   leads: [
     { name: 'Arpita Ghosh', orcid: Orcid('0009-0003-2106-3270') },
     { name: 'Garima Jain', orcid: Orcid('0000-0002-8079-9611') },
@@ -59,6 +60,7 @@ const club2 = {
       cancer.
     </p>
   `,
+  added: PlainDate.from('2025-02-03'),
   leads: [{ name: 'Arpita Ghosh', orcid: Orcid('0009-0003-2106-3270') }],
 } satisfies Club
 
