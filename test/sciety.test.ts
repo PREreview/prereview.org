@@ -63,13 +63,13 @@ test.prop(
     examples: [
       [
         [
-          { _tag: 'biorxiv', value: Doi('10.1101/journal/pone.0011111') } as _.PreprintIdSupportedBySciety,
+          { _tag: 'biorxiv', value: Doi('10.1101/journal/pone.0011111') } satisfies _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/journal/pone.0011111',
         ],
       ],
       [
         [
-          { _tag: 'biorxiv', value: Doi('10.1101/456#789') } as _.PreprintIdSupportedBySciety,
+          { _tag: 'biorxiv', value: Doi('10.1101/456#789') } satisfies _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/456%23789',
         ],
       ],
@@ -78,25 +78,25 @@ test.prop(
           {
             _tag: 'biorxiv',
             value: Doi('10.1101/(SICI)1096-8644(199808)106:4<483::AID-AJPA4>3.0.CO;2-K'),
-          } as _.PreprintIdSupportedBySciety,
+          } satisfies _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/(SICI)1096-8644(199808)106:4%3C483::AID-AJPA4%3E3.0.CO;2-K',
         ],
       ],
       [
         [
-          { _tag: 'biorxiv', value: Doi('10.1101/./') } as _.PreprintIdSupportedBySciety,
+          { _tag: 'biorxiv', value: Doi('10.1101/./') } satisfies _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/.%2F',
         ],
       ],
       [
         [
-          { _tag: 'biorxiv', value: Doi('10.1101/../') } as _.PreprintIdSupportedBySciety,
+          { _tag: 'biorxiv', value: Doi('10.1101/../') } satisfies _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/..%2F',
         ],
       ],
       [
         [
-          { _tag: 'biorxiv', value: Doi('10.1101/\\') } as _.PreprintIdSupportedBySciety,
+          { _tag: 'biorxiv', value: Doi('10.1101/\\') } satisfies _.PreprintIdSupportedBySciety,
           'https://sciety.org/articles/activity/10.1101/%5C',
         ],
       ],
