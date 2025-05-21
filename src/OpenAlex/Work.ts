@@ -1,9 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { type Doi, toUrl } from 'doi-ts'
-import { Data, Effect, Equivalence, flow, pipe, Schema, String, Struct } from 'effect'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
+import { Array, Data, Effect, Equivalence, flow, pipe, Schema, String, Struct } from 'effect'
 import { Status } from 'hyper-ts'
-import * as EffectToFpTs from '../EffectToFpts.js'
 
 export type Work = typeof WorkSchema.Type
 
@@ -56,12 +54,12 @@ export const getWorkByDoi = (
 const UrlEquivalence: Equivalence.Equivalence<URL> = Equivalence.mapInput(String.Equivalence, url => url.href)
 
 export const getCategories: (work: Work) => ReadonlyArray<{ id: URL; display_name: string }> = flow(
-  work => work.topics,
-  RA.flatMap(topic => [
+  Struct.get('topics'),
+  Array.flatMap(topic => [
     { id: topic.id, display_name: topic.display_name },
     { id: topic.subfield.id, display_name: topic.subfield.display_name },
     { id: topic.field.id, display_name: topic.field.display_name },
     { id: topic.domain.id, display_name: topic.domain.display_name },
   ]),
-  RA.uniq(EffectToFpTs.eq(Equivalence.mapInput(UrlEquivalence, Struct.get('id')))),
+  Array.dedupeWith(Equivalence.mapInput(UrlEquivalence, Struct.get('id'))),
 )
