@@ -1,4 +1,4 @@
-import { type Array, Context, Data, type Effect } from 'effect'
+import { type Array, Data } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -58,28 +58,6 @@ export class PreprintIsNotFound extends Data.TaggedError('PreprintIsNotFound')<{
 export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailable')<{ cause?: unknown }> {}
 
 export const Preprint = Data.struct<Preprint>
-
-export class ResolvePreprintId extends Context.Tag('ResolvePreprintId')<
-  ResolvePreprintId,
-  (
-    ...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>
-  ) => Effect.Effect<PreprintId, NotAPreprint | PreprintIsNotFound | PreprintIsUnavailable>
->() {}
-
-export class GetPreprintId extends Context.Tag('GetPreprintId')<
-  GetPreprintId,
-  (id: IndeterminatePreprintId) => Effect.Effect<PreprintId, PreprintIsUnavailable>
->() {}
-
-export class GetPreprint extends Context.Tag('GetPreprint')<
-  GetPreprint,
-  (id: IndeterminatePreprintId) => Effect.Effect<Preprint, PreprintIsNotFound | PreprintIsUnavailable>
->() {}
-
-export class GetPreprintTitle extends Context.Tag('GetPreprintTitle')<
-  GetPreprintTitle,
-  (id: IndeterminatePreprintId) => Effect.Effect<PreprintTitle, PreprintIsNotFound | PreprintIsUnavailable>
->() {}
 
 export const resolvePreprintId = (...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>) =>
   RTE.asksReaderTaskEither(

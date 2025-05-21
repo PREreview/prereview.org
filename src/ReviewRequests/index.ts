@@ -6,7 +6,7 @@ import { DeprecatedLoggerEnv } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { Html } from '../html.js'
-import * as Preprint from '../preprint.js'
+import * as Preprints from '../Preprints/index.js'
 import {
   getRecentReviewRequestsFromPrereviewCoarNotify,
   PrereviewCoarNotifyConfig,
@@ -40,7 +40,7 @@ export const layer = Layer.effect(
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
-    const getPreprintTitle = yield* pipe(Preprint.GetPreprintTitle, Effect.andThen(EffectToFpts.makeTaskEitherK))
+    const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
     const coarNotify = yield* PrereviewCoarNotifyConfig
 
     return {

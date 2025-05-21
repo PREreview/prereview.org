@@ -8,7 +8,7 @@ import * as FptsToEffect from '../FptsToEffect.js'
 import type { Html } from '../html.js'
 import { getRapidPreviewsFromLegacyPrereview, isLegacyCompatiblePreprint } from '../legacy-prereview.js'
 import type { Prereview as PreprintPrereview, RapidPrereview } from '../preprint-reviews-page/index.js'
-import * as Preprint from '../preprint.js'
+import * as Preprints from '../Preprints/index.js'
 import { Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from '../Prereview.js'
 import type { RecentPrereviews } from '../reviews-page/index.js'
 import type { ClubId } from '../types/club-id.js'
@@ -74,8 +74,8 @@ export const layer = Layer.effect(
     const { legacyPrereviewApi, wasPrereviewRemoved, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
-    const getPreprintTitle = yield* pipe(Preprint.GetPreprintTitle, Effect.andThen(EffectToFpts.makeTaskEitherK))
-    const getPreprint = yield* pipe(Preprint.GetPreprint, Effect.andThen(EffectToFpts.makeTaskEitherK))
+    const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
+    const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
 
     return {
       getFiveMostRecent: pipe(

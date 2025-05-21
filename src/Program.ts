@@ -11,7 +11,6 @@ import { createContactEmailAddressVerificationEmailForComment } from './email.js
 import { collapseRequests } from './fetch.js'
 import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
-import * as GetPreprint from './get-preprint.js'
 import * as GhostPage from './GhostPage.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
@@ -22,7 +21,6 @@ import * as LoggingHttpClient from './LoggingHttpClient.js'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
 import * as OpenAlex from './OpenAlex/index.js'
 import { getNameFromOrcid } from './orcid.js'
-import * as Preprint from './preprint.js'
 import * as Preprints from './Preprints/index.js'
 import * as Prereview from './Prereview.js'
 import * as Prereviews from './Prereviews/index.js'
@@ -41,9 +39,8 @@ const getPrereview = Layer.effect(
     const { wasPrereviewRemoved, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
-    const getPreprintService = yield* Preprint.GetPreprint
 
-    const getPreprint = yield* EffectToFpts.makeTaskEitherK(getPreprintService)
+    const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
 
     return id =>
       pipe(
@@ -301,65 +298,6 @@ const commentEvents = Layer.scoped(
   ),
 )
 
-const resolvePreprintId = Layer.effect(
-  Preprint.ResolvePreprintId,
-  Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const httpClient = yield* HttpClient.HttpClient
-
-    return flow(
-      GetPreprint.resolvePreprintId,
-      Effect.provideService(HttpClient.HttpClient, httpClient),
-      Effect.provideService(FetchHttpClient.Fetch, fetch),
-    )
-  }),
-)
-
-const getPreprintId = Layer.effect(
-  Preprint.GetPreprintId,
-  Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const httpClient = yield* HttpClient.HttpClient
-
-    return id =>
-      pipe(
-        GetPreprint.getPreprintId(id),
-        Effect.provideService(HttpClient.HttpClient, httpClient),
-        Effect.provideService(FetchHttpClient.Fetch, fetch),
-      )
-  }),
-)
-
-const getPreprint = Layer.effect(
-  Preprint.GetPreprint,
-  Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const httpClient = yield* HttpClient.HttpClient
-
-    return id =>
-      pipe(
-        GetPreprint.getPreprint(id),
-        Effect.provideService(HttpClient.HttpClient, httpClient),
-        Effect.provideService(FetchHttpClient.Fetch, fetch),
-      )
-  }),
-)
-
-const getPreprintTitle = Layer.effect(
-  Preprint.GetPreprintTitle,
-  Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const httpClient = yield* HttpClient.HttpClient
-
-    return id =>
-      pipe(
-        GetPreprint.getPreprintTitle(id),
-        Effect.provideService(HttpClient.HttpClient, httpClient),
-        Effect.provideService(FetchHttpClient.Fetch, fetch),
-      )
-  }),
-)
-
 const getCategories = Layer.effect(
   OpenAlex.GetCategories,
   Effect.gen(function* () {
@@ -412,20 +350,10 @@ const MigratorLive = LibsqlMigrator.layer({
 export const Program = pipe(
   Layer.mergeAll(WebApp, Comments.ReactToCommentEvents, CachingHttpClient.layerRevalidationWorker),
   Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment)),
+  Layer.provide(Layer.mergeAll(getPrereview, Prereviews.layer, ReviewRequests.layer)),
   Layer.provide(
     Layer.mergeAll(
-      getPrereview,
       Layer.provide(Preprints.layer, CachingHttpClient.layer('1 day')),
-      Prereviews.layer,
-      ReviewRequests.layer,
-    ),
-  ),
-  Layer.provide(
-    Layer.mergeAll(
-      Layer.provide(resolvePreprintId, CachingHttpClient.layer('1 day')),
-      Layer.provide(getPreprintId, CachingHttpClient.layer('1 day')),
-      Layer.provide(getPreprint, CachingHttpClient.layer('1 day')),
-      Layer.provide(getPreprintTitle, CachingHttpClient.layer('1 day')),
       Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
       Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
       doesUserHaveAVerifiedEmailAddress,

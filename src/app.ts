@@ -1,4 +1,4 @@
-import { Effect, Function, pipe, type Runtime } from 'effect'
+import { Function, pipe, type Runtime } from 'effect'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
@@ -17,13 +17,13 @@ import * as Keyv from './keyv.js'
 // eslint-disable-next-line import/no-internal-modules
 import * as LocaleCookie from './HttpMiddleware/LocaleCookie.js'
 import { PageNotFound } from './PageNotFound/index.js'
+import * as Preprints from './Preprints/index.js'
 import { type RouterEnv, routes } from './app-router.js'
 import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
 import type { SupportedLocale } from './locales/index.js'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
-import * as Preprint from './preprint.js'
 import { handleResponse } from './response.js'
 import { securityHeaders } from './securityHeaders.js'
 import type { User } from './user.js'
@@ -90,7 +90,7 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
   ),
 )
 
-export type AppContext = Runtime.Runtime.Context<RouterEnv['runtime']>
+export type AppContext = Runtime.Runtime.Context<RouterEnv['runtime']> | Preprints.Preprints
 
 type AppRuntime = Runtime.Runtime<AppContext>
 
@@ -181,21 +181,12 @@ export const app = (config: ConfigEnv) => {
               ),
               user,
               getUserOnboarding: withEnv(getUserOnboarding, env),
-              getPreprint: withEnv(
-                EffectToFpts.toReaderTaskEitherK(id => Effect.andThen(Preprint.GetPreprint, Function.apply(id))),
-                env,
-              ),
-              getPreprintTitle: withEnv(
-                EffectToFpts.toReaderTaskEitherK(id => Effect.andThen(Preprint.GetPreprintTitle, Function.apply(id))),
-                env,
-              ),
+              getPreprint: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprint), env),
+              getPreprintTitle: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprintTitle), env),
               locale,
               getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
               getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
-              getPreprintId: withEnv(
-                EffectToFpts.toReaderTaskEitherK(id => Effect.andThen(Preprint.GetPreprintId, Function.apply(id))),
-                env,
-              ),
+              getPreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprintId), env),
               popFromSession: withEnv(
                 (key: string) =>
                   typeof sessionId === 'string'
@@ -203,12 +194,7 @@ export const app = (config: ConfigEnv) => {
                     : RTE.left('unavailable' as const),
                 env,
               ),
-              resolvePreprintId: withEnv(
-                EffectToFpts.toReaderTaskEitherK((...ids) =>
-                  Effect.andThen(Preprint.ResolvePreprintId, Function.apply(...ids)),
-                ),
-                env,
-              ),
+              resolvePreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.resolvePreprintId), env),
               sendEmail: withEnv(sendEmailWithNodemailer, env),
             })),
             R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: AppRuntime } => ({

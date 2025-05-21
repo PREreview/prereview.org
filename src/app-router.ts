@@ -107,7 +107,6 @@ import {
 } from './my-details-page/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
-import type * as Preprint from './preprint.js'
 import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
 import * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
 import {
@@ -289,10 +288,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
     | Locale
     | OpenAlex.GetCategories
     | GenerateUuid
-    | Preprint.GetPreprint
-    | Preprint.GetPreprintId
-    | Preprint.GetPreprintTitle
-    | Preprint.ResolvePreprintId
     | HttpClient.HttpClient
     | PrereviewCoarNotify.PrereviewCoarNotifyConfig
     | Zenodo.ZenodoOrigin
