@@ -6,7 +6,7 @@
     "message": "{reviewers} reviewed {preprint}"
   },
   "clubReviewText": {
-    "message": "{reviewers} of the {club} reviewed {preprint}"
+    "message": "{reviewers} of {club} reviewed {preprint}"
   },
   "reviewPublished": {
     "message": "Review published"

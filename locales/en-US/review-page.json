@@ -21,7 +21,7 @@
     "message": "<hide>Authored</hide> by {authors}"
   },
   "clubReviewAuthors": {
-    "message": "<hide>Authored</hide> by {authors} of the {club}"
+    "message": "<hide>Authored</hide> by {authors} of {club}"
   },
   "otherAuthors": {
     "message": "{otherAuthors, plural, one {{otherAuthors, number} other author} other {{otherAuthors, number} other authors}}"

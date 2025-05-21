@@ -12,7 +12,7 @@
     "message": "PREreviews"
   },
   "noResults": {
-    "message": "The {name} hasn’t published a PREreview yet."
+    "message": "{name} hasn’t published a PREreview yet."
   },
   "appearHere": {
     "message": "When they do, it’ll appear here."
