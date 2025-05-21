@@ -96,6 +96,10 @@ export default defineConfig([
         'error',
         { allow: ['\\* @deprecated', 'eslint', 'https://', 'Do', 'Unfortunately', 'Refs'] },
       ],
+      'no-restricted-syntax': [
+        'error',
+        { selector: 'ImportDeclaration[specifiers.length = 0]', message: 'Empty imports are not allowed' },
+      ],
       'object-shorthand': 'error',
       quotes: ['error', 'single', { avoidEscape: true }],
       'wc/no-child-traversal-in-connectedcallback': 'off',

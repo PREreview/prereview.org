@@ -10,7 +10,6 @@ import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch }
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
-import {} from '../middleware.js'
 import * as fc from './fc.js'
 
 describe('writeReviewFindingsNextSteps', () => {
