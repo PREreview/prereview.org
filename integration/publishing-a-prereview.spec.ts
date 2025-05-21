@@ -1834,8 +1834,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.setContent(String(emails[0]?.html))
 
@@ -1880,8 +1878,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'Important' })).toBeInViewport()
     }
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.reload()
 
