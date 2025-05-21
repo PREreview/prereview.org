@@ -1,4 +1,4 @@
-import { Config, Context, Effect, Layer } from 'effect'
+import { Config, Context, Effect, Layer, Struct } from 'effect'
 import type { User } from './user.js'
 
 export class FeatureFlags extends Context.Tag('FeatureFlags')<
@@ -11,32 +11,22 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
   }
 >() {}
 
-export class CanAddMultipleAuthors extends Context.Tag('CanAddMultipleAuthors')<
-  CanAddMultipleAuthors,
-  (user?: User) => boolean
->() {}
+export const canAddMultipleAuthors = Effect.fn(function* (
+  ...args: Parameters<(typeof FeatureFlags.Service)['canAddMultipleAuthors']>
+) {
+  const featureFlags = yield* FeatureFlags
 
-export class CanChooseLocale extends Context.Tag('CanChooseLocale')<CanChooseLocale, boolean>() {}
+  return featureFlags.canAddMultipleAuthors(...args)
+})
 
-export class CanSeeDesignTweaks extends Context.Tag('CanSeeDesignTweaks')<CanSeeDesignTweaks, boolean>() {}
+export const canChooseLocale = Effect.andThen(FeatureFlags, Struct.get('canChooseLocale'))
 
-export class UseCrowdinInContext extends Context.Tag('UseCrowdinInContext')<UseCrowdinInContext, boolean>() {}
+export const canSeeDesignTweaks = Effect.andThen(FeatureFlags, Struct.get('canSeeDesignTweaks'))
 
-export const layer = (options: {
-  canAddMultipleAuthors: typeof CanAddMultipleAuthors.Service
-  canChooseLocale: typeof CanChooseLocale.Service
-  canSeeDesignTweaks: typeof CanSeeDesignTweaks.Service
-  useCrowdinInContext: typeof UseCrowdinInContext.Service
-}): Layer.Layer<CanAddMultipleAuthors | CanChooseLocale | CanSeeDesignTweaks | UseCrowdinInContext | FeatureFlags> =>
-  Layer.succeedContext(
-    Context.empty().pipe(
-      Context.add(CanAddMultipleAuthors, options.canAddMultipleAuthors),
-      Context.add(CanChooseLocale, options.canChooseLocale),
-      Context.add(CanSeeDesignTweaks, options.canSeeDesignTweaks),
-      Context.add(UseCrowdinInContext, options.useCrowdinInContext),
-      Context.add(FeatureFlags, options),
-    ),
-  )
+export const useCrowdinInContext = Effect.andThen(FeatureFlags, Struct.get('useCrowdinInContext'))
+
+export const layer = (options: typeof FeatureFlags.Service): Layer.Layer<FeatureFlags> =>
+  Layer.succeed(FeatureFlags, options)
 
 export const layerConfig = (options: Config.Config.Wrap<Parameters<typeof layer>[0]>) =>
   Layer.unwrapEffect(Effect.map(Config.unwrap(options), layer))

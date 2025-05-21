@@ -94,8 +94,8 @@ interface AppFixtures {
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
-  canAddMultipleAuthors: typeof FeatureFlags.CanAddMultipleAuthors.Service
-  canChooseLocale: typeof FeatureFlags.CanChooseLocale.Service
+  canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
+  canChooseLocale: (typeof FeatureFlags.FeatureFlags.Service)['canChooseLocale']
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
 }

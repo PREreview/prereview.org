@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
 import { Locale } from '../Context.js'
-import { FeatureFlags } from '../feature-flags.js'
+import * as FeatureFlags from '../feature-flags.js'
 import { PageNotFound } from '../PageNotFound/index.js'
 import { UserOnboardingService } from '../user-onboarding.js'
 import { LoggedInUser } from '../user.js'
@@ -10,9 +10,8 @@ export const MenuPage = Effect.gen(function* () {
   const locale = yield* Locale
   const user = yield* Effect.serviceOption(LoggedInUser)
   const userOnboarding = yield* Effect.serviceOption(UserOnboardingService)
-  const featureFlags = yield* FeatureFlags
 
-  if (!featureFlags.canSeeDesignTweaks) {
+  if (!(yield* FeatureFlags.canSeeDesignTweaks)) {
     return yield* PageNotFound
   }
 

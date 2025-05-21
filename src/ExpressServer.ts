@@ -5,7 +5,7 @@ import Keyv from 'keyv'
 import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
-import { UseCrowdinInContext } from './feature-flags.js'
+import * as FeatureFlags from './feature-flags.js'
 import { Nodemailer } from './nodemailer.js'
 import { OrcidOauth } from './OrcidOauth.js'
 import { PublicUrl } from './public-url.js'
@@ -21,7 +21,7 @@ export const expressServer = Effect.gen(function* () {
   const publicUrl = yield* PublicUrl
   const generateUuid = yield* Effect.andThen(GenerateUuid, EffectToFpts.makeIO)
   const templatePage = yield* TemplatePage
-  const useCrowdinInContext = yield* UseCrowdinInContext
+  const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
   const secret = yield* SessionSecret
 
   return app({

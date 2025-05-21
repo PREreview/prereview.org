@@ -1,5 +1,5 @@
 import { Config, Context, Effect, Layer, Option } from 'effect'
-import { CanChooseLocale, CanSeeDesignTweaks, UseCrowdinInContext } from './feature-flags.js'
+import * as FeatureFlags from './feature-flags.js'
 import type { Html } from './html.js'
 import { type Page, page as templatePage } from './page.js'
 import { PublicUrl } from './public-url.js'
@@ -18,10 +18,10 @@ export class TemplatePageOptions extends Context.Tag('TemplatePageOptions')<
 
 export const make = Effect.gen(function* () {
   const publicUrl = yield* PublicUrl
-  const canChooseLocale = yield* CanChooseLocale
-  const useCrowdinInContext = yield* UseCrowdinInContext
+  const canChooseLocale = yield* FeatureFlags.canChooseLocale
+  const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
   const { fathomId, environmentLabel } = yield* TemplatePageOptions
-  const canSeeDesignTweaks = yield* CanSeeDesignTweaks
+  const canSeeDesignTweaks = yield* FeatureFlags.canSeeDesignTweaks
 
   return (page: Page) =>
     templatePage({

@@ -283,8 +283,7 @@ const getSlackUser = flow(
 export type RouterEnv = Keyv.AvatarStoreEnv &
   EffectEnv<
     | CachingHttpClient.HttpCache
-    | FeatureFlags.CanAddMultipleAuthors
-    | FeatureFlags.CanSeeDesignTweaks
+    | FeatureFlags.FeatureFlags
     | Locale
     | OpenAlex.GetCategories
     | GenerateUuid
@@ -1512,9 +1511,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ),
           RM.bindW(
             'canAddMultipleAuthors',
-            EffectToFpts.toReaderMiddlewareK(({ user }) =>
-              Effect.andThen(FeatureFlags.CanAddMultipleAuthors, Function.apply(user)),
-            ),
+            EffectToFpts.toReaderMiddlewareK(({ user }) => FeatureFlags.canAddMultipleAuthors(user)),
           ),
           RM.bindW('response', RM.fromReaderTaskK(writeReviewAddAuthor)),
           RM.ichainW(handleResponse),

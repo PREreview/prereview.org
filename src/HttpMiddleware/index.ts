@@ -11,7 +11,7 @@ import cookieSignature from 'cookie-signature'
 import { Cause, Config, Duration, Effect, Layer, Option, pipe, Redacted, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.js'
-import { CanChooseLocale, UseCrowdinInContext } from '../feature-flags.js'
+import * as FeatureFlags from '../feature-flags.js'
 import { CrowdinInContextLocale, DefaultLocale } from '../locales/index.js'
 import { PublicUrl } from '../public-url.js'
 import { FlashMessageSchema } from '../response.js'
@@ -100,7 +100,7 @@ export const addSecurityHeaders = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const publicUrl = yield* PublicUrl
     const response = yield* app
-    const useCrowdinInContext = yield* UseCrowdinInContext
+    const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
 
     return HttpServerResponse.setHeaders(response, securityHeaders(publicUrl.protocol, useCrowdinInContext))
   }),
@@ -194,8 +194,8 @@ export const removeLocaleFromPathForRouting = HttpMiddleware.make(
 
 export const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
-    const canChooseLocale = yield* CanChooseLocale
-    const useCrowdinInContext = yield* UseCrowdinInContext
+    const canChooseLocale = yield* FeatureFlags.canChooseLocale
+    const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
 
     if (useCrowdinInContext) {
       return yield* Effect.provideService(app, Locale, CrowdinInContextLocale)
