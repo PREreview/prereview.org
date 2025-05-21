@@ -701,11 +701,11 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page
-    .getByRole('article', { name: 'PREreview by Jingfang Hao et al. of the ASAPbio Metabolism Crowd' })
-    .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al. of the ASAPbio Metabolism Crowd' })
+    .getByRole('article', { name: 'PREreview by Jingfang Hao et al. of ASAPbio Metabolism Crowd' })
+    .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al. of ASAPbio Metabolism Crowd' })
     .click()
 
-  await expect(page.getByRole('main')).toContainText('of the ASAPbio Metabolism Crowd')
+  await expect(page.getByRole('main')).toContainText('of ASAPbio Metabolism Crowd')
 })
 
 test('can view a recent review', async ({ fetch, page }) => {
@@ -860,11 +860,11 @@ test("can view a recent review that's part of a club", async ({ fetch, page }) =
   await page
     .getByRole('region', { name: 'Recent PREreviews' })
     .getByRole('link', {
-      name: 'Jaeyoung Oh of the ASAPbio Metabolism Crowd reviewed The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+      name: 'Jaeyoung Oh of ASAPbio Metabolism Crowd reviewed The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
     })
     .click()
 
-  await expect(page.getByRole('main')).toContainText('of the ASAPbio Metabolism Crowd')
+  await expect(page.getByRole('main')).toContainText('of ASAPbio Metabolism Crowd')
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
 })
 
@@ -1040,11 +1040,11 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
 
   await page
     .getByRole('link', {
-      name: 'Jaeyoung Oh of the ASAPbio Metabolism Crowd reviewed The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+      name: 'Jaeyoung Oh of ASAPbio Metabolism Crowd reviewed The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
     })
     .click()
 
-  await expect(page.getByRole('main')).toContainText('of the ASAPbio Metabolism Crowd')
+  await expect(page.getByRole('main')).toContainText('of ASAPbio Metabolism Crowd')
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
 })
 
