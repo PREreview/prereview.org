@@ -5,7 +5,6 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { StatusCodes } from 'http-status-codes'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import {
@@ -14,11 +13,11 @@ import {
   maybeGetContactEmailAddress,
 } from '../../contact-email-address.js'
 import { detectLanguage } from '../../detect-language.js'
-import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
+import { type Html, fixHeadingLevels, html } from '../../html.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
-import { RedirectResponse, type Response, StreamlinePageResponse } from '../../response.js'
+import { RedirectResponse, type Response } from '../../response.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../routes.js'
 import type { AddToSessionEnv } from '../../session.js'
 import type { EmailAddress } from '../../types/email-address.js'
@@ -29,6 +28,7 @@ import type { User } from '../../user.js'
 import { type CompletedForm, CompletedFormC } from '../completed-form.js'
 import { type Form, type FormStoreEnv, deleteForm, getForm, nextFormMatch, saveForm } from '../form.js'
 import { storeInformationForWriteReviewPublishedPage } from '../published-review.js'
+import { failureMessage } from './failure-message.js'
 import { getCompetingInterests, publishForm } from './publish-form.js'
 
 export interface NewPrereview {
@@ -337,23 +337,3 @@ function renderReview(form: CompletedForm, locale: SupportedLocale) {
         `
       : ''} `
 }
-
-function failureMessage(locale: SupportedLocale) {
-  const t = translate(locale, 'write-review')
-
-  return StreamlinePageResponse({
-    title: plainText(t('havingProblems')()),
-    status: StatusCodes.SERVICE_UNAVAILABLE,
-    main: html`
-      <h1>${t('havingProblems')()}</h1>
-
-      <p>${t('unableToPublish')()}</p>
-
-      <p>${t('tryAgainLater')()}</p>
-
-      <p>${rawHtml(t('getInTouch')({ contact: mailToHelp }))}</p>
-    `,
-  })
-}
-
-const mailToHelp = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()
