@@ -20,9 +20,6 @@
   "whatIsOrcid": {
     "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de todas las demás personas con el mismo nombre o similar."
   },
-  "reloadPageButton": {
-    "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de todas las demás personas con el mismo nombre o similar."
-  },
   "carryOnMessage": {
     "message": "Como ya has comenzado un comentario en este PREreview del {preprint}, te llevaremos al siguiente paso para que puedas continuar.{preprint}."
   },
