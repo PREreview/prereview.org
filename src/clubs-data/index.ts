@@ -1,10 +1,7 @@
-import { Function, flow, pipe } from 'effect'
-import type { Json } from 'fp-ts/lib/Json.js'
+import { Function, Schema, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as E from 'io-ts/lib/Encoder.js'
-import safeStableStringify from 'safe-stable-stringify'
 import { getClubName } from '../club-details.js'
 import type { ScietyListEnv } from '../sciety-list/index.js'
 import { type ClubId, clubIds } from '../types/club-id.js'
@@ -23,20 +20,12 @@ const getClubs = (): ReadonlyArray<Club> =>
     })),
   )
 
-const JsonE: E.Encoder<string, Json> = { encode: safeStableStringify }
+const ClubSchema = Schema.Struct({
+  id: Schema.String,
+  name: Schema.String,
+})
 
-const StringE: E.Encoder<string, string | { toString: () => string }> = { encode: String }
-
-const ReadonlyArrayE = flow(E.array, E.readonly)
-
-const ClubE = pipe(
-  E.struct({
-    id: StringE,
-    name: StringE,
-  }),
-) satisfies E.Encoder<unknown, Club>
-
-const ClubsE = ReadonlyArrayE(ClubE)
+const ClubsSchema = Schema.Array(ClubSchema)
 
 const isAllowed = (authorizationHeader: string) =>
   pipe(
@@ -46,10 +35,4 @@ const isAllowed = (authorizationHeader: string) =>
   )
 
 export const clubsData = (authorizationHeader: string): RTE.ReaderTaskEither<ScietyListEnv, 'forbidden', string> =>
-  pipe(
-    authorizationHeader,
-    isAllowed,
-    RTE.map(getClubs),
-    RTE.map(ClubsE.encode),
-    RTE.map(clubs => JsonE.encode(clubs)),
-  )
+  pipe(authorizationHeader, isAllowed, RTE.map(getClubs), RTE.map(Schema.encodeSync(Schema.parseJson(ClubsSchema))))
