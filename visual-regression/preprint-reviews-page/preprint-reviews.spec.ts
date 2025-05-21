@@ -5,7 +5,7 @@ import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { Prereview, RapidPrereview } from '../../src/preprint-reviews-page/index.js'
 import { createPage } from '../../src/preprint-reviews-page/preprint-reviews.js'
-import type { Preprint } from '../../src/preprint.js'
+import { Preprint } from '../../src/preprint.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
@@ -52,7 +52,7 @@ test('content looks right with rapid PREreviews', async ({ showTwoUpPage }) => {
   await expect(aside).toHaveScreenshot()
 })
 
-const preprint = {
+const preprint = Preprint({
   authors: [
     { name: 'Xin Liu' },
     { name: 'Wojciech Nawrocki', orcid: Orcid('0000-0001-5124-3000') },
@@ -83,7 +83,7 @@ const preprint = {
     language: 'en',
   },
   url: new URL('https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201'),
-} satisfies Preprint
+})
 
 const prereview1 = {
   id: 11062553,

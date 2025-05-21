@@ -237,7 +237,7 @@ const form = ({
           </option>
           ${pipe(
             fieldIds,
-            RA.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, string]),
+            RA.map(field => Tuple.make(field, getFieldName(field, locale))),
             RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond))),
             RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
           )}

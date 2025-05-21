@@ -25,7 +25,7 @@ export const GetNextExpectedCommandForUser =
     const [commentId, comment] = pipe(
       Array.reduce(
         events,
-        {} as Record.ReadonlyRecord<Uuid.Uuid, ReadonlyArray<CommentEvent>>,
+        Record.empty<Uuid.Uuid, ReadonlyArray<CommentEvent>>(),
         (candidates, { event, resourceId }) =>
           pipe(
             Record.modifyOption(candidates, resourceId, Array.append(event)),

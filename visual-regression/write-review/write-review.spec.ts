@@ -3,7 +3,7 @@ import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import type { Preprint } from '../../src/preprint.js'
+import { Preprint } from '../../src/preprint.js'
 import type { Pseudonym } from '../../src/types/pseudonym.js'
 import type { User } from '../../src/user.js'
 import { startPage } from '../../src/write-review/write-a-prereview-page/write-a-prereview-page.js'
@@ -27,7 +27,7 @@ test('content looks right when logged in', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const preprint = {
+const preprint = Preprint({
   authors: [
     { name: 'Xin Liu' },
     { name: 'Wojciech Nawrocki', orcid: Orcid('0000-0001-5124-3000') },
@@ -58,7 +58,7 @@ const preprint = {
     language: 'en',
   },
   url: new URL('https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201'),
-} satisfies Preprint
+})
 
 const user = {
   name: 'Josiah Carberry',
