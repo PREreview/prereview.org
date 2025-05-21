@@ -8,13 +8,12 @@ import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
-import { parse } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { detectLanguageFrom } from './detect-language.js'
 import { timeoutRequest, useStaleCache } from './fetch.js'
-import * as FptsToEffect from './FptsToEffect.js'
 import { sanitizeHtml } from './html.js'
 import * as Preprint from './preprint.js'
+import { Orcid } from './types/index.js'
 import type {
   AfricarxivFigsharePreprintId,
   AfricarxivUbuntunetPreprintId,
@@ -147,7 +146,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
 const findOrcid = flow(
   (person: Extract<Work['creators'][number], { nameIdentifiers: ReadonlyArray<unknown> }>) => person.nameIdentifiers,
   Array.findFirst(({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID'),
-  Option.flatMap(({ nameIdentifier }) => FptsToEffect.option(parse(nameIdentifier))),
+  Option.flatMap(({ nameIdentifier }) => Orcid.parse(nameIdentifier)),
   Option.getOrUndefined,
 )
 
