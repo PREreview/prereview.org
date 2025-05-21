@@ -43,7 +43,7 @@ import {
 import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
-import * as FeatureFlags from '../src/feature-flags.js'
+import * as FeatureFlags from '../src/FeatureFlags.js'
 import { GhostApi } from '../src/GhostPage.js'
 import { rawHtml } from '../src/html.js'
 import type {

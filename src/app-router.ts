@@ -22,6 +22,7 @@ import type * as CachingHttpClient from './CachingHttpClient/index.js'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
 import * as EffectToFpts from './EffectToFpts.js'
+import * as FeatureFlags from './FeatureFlags.js'
 import { withEnv } from './Fpts.js'
 import * as OpenAlex from './OpenAlex/index.js'
 import * as Zenodo from './Zenodo/index.js'
@@ -69,7 +70,6 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from './email.js'
-import * as FeatureFlags from './feature-flags.js'
 import * as Keyv from './keyv.js'
 import {
   type LegacyPrereviewApiEnv,

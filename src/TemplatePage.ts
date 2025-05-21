@@ -1,5 +1,5 @@
 import { Config, Context, Effect, Layer, Option } from 'effect'
-import * as FeatureFlags from './feature-flags.js'
+import * as FeatureFlags from './FeatureFlags.js'
 import type { Html } from './html.js'
 import { type Page, page as templatePage } from './page.js'
 import { PublicUrl } from './public-url.js'

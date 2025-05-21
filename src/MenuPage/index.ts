@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
 import { Locale } from '../Context.js'
-import * as FeatureFlags from '../feature-flags.js'
+import * as FeatureFlags from '../FeatureFlags.js'
 import { PageNotFound } from '../PageNotFound/index.js'
 import { UserOnboardingService } from '../user-onboarding.js'
 import { LoggedInUser } from '../user.js'
