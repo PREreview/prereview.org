@@ -1,4 +1,4 @@
-import { Config, type ConfigError, Context, Effect, Layer } from 'effect'
+import { Config, Context, Effect, Layer } from 'effect'
 import type { User } from './user.js'
 
 export class FeatureFlags extends Context.Tag('FeatureFlags')<
@@ -27,10 +27,7 @@ export const layer = (options: {
   canChooseLocale: typeof CanChooseLocale.Service
   canSeeDesignTweaks: typeof CanSeeDesignTweaks.Service
   useCrowdinInContext: typeof UseCrowdinInContext.Service
-}): Layer.Layer<
-  CanAddMultipleAuthors | CanChooseLocale | CanSeeDesignTweaks | UseCrowdinInContext | FeatureFlags,
-  ConfigError.ConfigError
-> =>
+}): Layer.Layer<CanAddMultipleAuthors | CanChooseLocale | CanSeeDesignTweaks | UseCrowdinInContext | FeatureFlags> =>
   Layer.succeedContext(
     Context.empty().pipe(
       Context.add(CanAddMultipleAuthors, options.canAddMultipleAuthors),
