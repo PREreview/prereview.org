@@ -11,9 +11,6 @@
   "prereviews": {
     "message": "Avaliações PREreview"
   },
-  "noResults": {
-    "message": "{name} ainda não publicou uma avaliação PREreview."
-  },
   "appearHere": {
     "message": "Quando publicar, ela aparecerá aqui."
   },

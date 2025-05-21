@@ -20,9 +20,6 @@
   "reviewAuthors": {
     "message": "<hide>De autoria</hide> de {authors}"
   },
-  "clubReviewAuthors": {
-    "message": "<hide>De autoria</hide> de {authors} do {club}"
-  },
   "otherAuthors": {
     "message": "{otherAuthors, plural, one {{otherAuthors, number} outro autor} other {{otherAuthors, number} outros autores}}"
   },

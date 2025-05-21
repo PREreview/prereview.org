@@ -29,14 +29,8 @@
   "prereviewByOneAuthor": {
     "message": "PREreview de {author}"
   },
-  "prereviewByOneAuthorInClub": {
-    "message": "PREreview de {author} del {club}"
-  },
   "prereviewByMultipleAuthors": {
     "message": "PREreview de {author} y colaboradores/as"
-  },
-  "prereviewByMultipleAuthorsInClub": {
-    "message": "PREreview de {author} colaboradores/as del {club}"
   },
   "otherAuthors": {
     "message": "{number, plural, one {{number, number} other author} other {{number, number} otros/as autores/as}}"
@@ -44,20 +38,11 @@
   "authoredBy": {
     "message": "<visuallyHidden>Escrito</visuallyHidden> por {authors}"
   },
-  "authoredByInClub": {
-    "message": "<visuallyHidden>Escrito</visuallyHidden> por {authors} del {club}"
-  },
   "readPrereviewByOneAuthor": {
     "message": "Leer <visuallyHidden>la PREreview de {author}</visuallyHidden>"
   },
-  "readPrereviewByOneAuthorInClub": {
-    "message": "Leer <visuallyHidden>la PREreview de {author} del {club}</visuallyHidden>"
-  },
   "readPrereviewByMultipleAuthors": {
     "message": "Leer <visuallyHidden>la PREreview de {author} y colaboradores/as</visuallyHidden>"
-  },
-  "readPrereviewByMultipleAuthorsInClub": {
-    "message": "Leer <visuallyHidden>la PREreview de {author} y colaboradores del {club}</visuallyHidden>"
   },
   "rapidPrereviews": {
     "message": "{number, plural, one {{number, number} Rapid PREreview} other {{number, number} Rapid PREreviews}}"

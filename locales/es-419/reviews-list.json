@@ -5,9 +5,6 @@
   "reviewText": {
     "message": "{reviewers} revisaron {preprint}"
   },
-  "clubReviewText": {
-    "message": "{reviewers} del {club} revisaron {preprint}"
-  },
   "reviewPublished": {
     "message": "Revisión publicada"
   },

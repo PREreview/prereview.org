@@ -5,9 +5,6 @@
   "reviewText": {
     "message": "{reviewers} avaliou {preprint}"
   },
-  "clubReviewText": {
-    "message": "{reviewers} do {club} avaliaram {preprint}"
-  },
   "reviewPublished": {
     "message": "Avaliação publicada"
   },

@@ -8,6 +8,9 @@
   "clubReviewText": {
     "message": "crwdns2124:0{reviewers}crwdnd2124:0{club}crwdnd2124:0{preprint}crwdne2124:0"
   },
+  "otherAuthors": {
+    "message": "crwdns5904:0number={number}crwdnd5904:0number={number}crwdnd5904:0number={number}crwdne5904:0"
+  },
   "reviewPublished": {
     "message": "crwdns2126:0crwdne2126:0"
   },
