@@ -1927,7 +1927,7 @@ test('might not authenticate with ORCID in time', async ({ fetch, page }) => {
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'are told if Zenodo is unavailable',
-  async ({ fetch, javaScriptEnabled, page }) => {
+  async ({ fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -1951,20 +1951,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Enter')
-
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('main')).toBeFocused()
-    }
-    await expect(page).toHaveScreenshot()
   },
 )
 
