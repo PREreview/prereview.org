@@ -1,0 +1,62 @@
+{
+  "chooseLanguage": {
+    "message": "Elige tu idioma:"
+  },
+  "newsletterText": {
+    "message": "Infórmate sobre los próximos eventos y actualizaciones."
+  },
+  "newsletterLink": {
+    "message": "Suscríbete a nuestro boletín"
+  },
+  "slackText": {
+    "message": "¡Únete a la conversación!"
+  },
+  "slackLink": {
+    "message": "Únete a nuestra Comunidad de Slack"
+  },
+  "menuDonate": {
+    "message": "Donar"
+  },
+  "menuPeople": {
+    "message": "Equipo"
+  },
+  "menuFunding": {
+    "message": "Cómo nos financiamos"
+  },
+  "menuCodeOfConduct": {
+    "message": "Código de conducta"
+  },
+  "menuEdiaStatement": {
+    "message": "Declaración de equidad, diversidad, inclusión y accesibilidad (EDIA)"
+  },
+  "menuPrivacyPolicy": {
+    "message": "Política de privacidad"
+  },
+  "menuBlog": {
+    "message": "Blog"
+  },
+  "menuHowToUse": {
+    "message": "Cómo usar"
+  },
+  "contactEmail": {
+    "message": "Escríbenos a {address}"
+  },
+  "contactBluesky": {
+    "message": "{handle} en Bluesky"
+  },
+  "contactMastodon": {
+    "message": "{handle} en Mastodon"
+  },
+  "contactLinkedIn": {
+    "message": "{handle} en LinkedIn"
+  },
+  "contactGitHub": {
+    "message": "{handle} en GitHub"
+  },
+  "zenodo": {
+    "message": "Hay PREreviews disponibles en nuestra <community>Comunidad Zenodo</community> y en la <api>API de Zenodo</api>."
+  },
+  "copyright": {
+    "message": "Todo el contenido está disponible bajo una licencia de Creative Commons <link>Atribución 4.0 Internacional</link>, salvo que se indique lo contrario."
+  }
+}

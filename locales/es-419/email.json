@@ -1,0 +1,44 @@
+{
+  "verifyEmailAddressTitle": {
+    "message": "Verifica tu dirección de correo electrónico en PREreview"
+  },
+  "hiName": {
+    "message": "Hola {name},"
+  },
+  "verifyEmailAddressWithButton": {
+    "message": "Por favor, verifica tu dirección de correo electrónico en PREreview:"
+  },
+  "verifyEmailAddressGoingTo": {
+    "message": "Por favor, verifica tu dirección de correo electrónico en PREreview yendo a {link}"
+  },
+  "verifyEmailAddressButton": {
+    "message": "Verificar dirección de correo electrónico"
+  },
+  "beListedAsAuthor": {
+    "message": "Aparecer como autor de PREreview"
+  },
+  "thanksContributingReview": {
+    "message": "Gracias por contribuir a la revisión reciente de “{preprint}” publicada en {prereview}!"
+  },
+  "authorHasInvitedYou": {
+    "message": "{author} te ha invitado a aparecer como autor/a en la PREreview."
+  },
+  "beListedGoingTo": {
+    "message": "Para aparecer como autor/a, dirígete a:"
+  },
+  "beListedAsAuthorButton": {
+    "message": "Aparecer como autor"
+  },
+  "chooseNotToBeListedGoingTo": {
+    "message": "También puedes optar por no aparecer ignorando este correo o dirigiéndote a:"
+  },
+  "chooseNotToBeListedLink": {
+    "message": "También puedes optar por no aparecer <link>rechazando esta invitación</link> o ignorando este correo."
+  },
+  "haveAnyQuestions": {
+    "message": "Si tienes alguna pregunta, infórmanos en {emailAddress}."
+  },
+  "allTheBest": {
+    "message": "Atentamente,"
+  }
+}

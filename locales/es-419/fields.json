@@ -1,0 +1,80 @@
+{
+  "field11": {
+    "message": "Ciencias agrícolas y biológicas"
+  },
+  "field12": {
+    "message": "Artes y humanidades"
+  },
+  "field13": {
+    "message": "Bioquímica, genética y biología molecular"
+  },
+  "field14": {
+    "message": "Negocios, Administración y Contabilidad"
+  },
+  "field15": {
+    "message": "Ingeniería Química"
+  },
+  "field16": {
+    "message": "Química"
+  },
+  "field17": {
+    "message": "Ciencias de Computación"
+  },
+  "field18": {
+    "message": "Ciencias de la Decisión"
+  },
+  "field19": {
+    "message": "Ciencias de la Tierra y Planetarias"
+  },
+  "field20": {
+    "message": "Economía, Econometría y Finanzas"
+  },
+  "field21": {
+    "message": "Energía"
+  },
+  "field22": {
+    "message": "Ingeniería"
+  },
+  "field23": {
+    "message": "Ciencias Ambientales"
+  },
+  "field24": {
+    "message": "Inmunología y Microbiología"
+  },
+  "field25": {
+    "message": "Ciencia de Materiales"
+  },
+  "field26": {
+    "message": "Matemáticas"
+  },
+  "field27": {
+    "message": "Medicina"
+  },
+  "field28": {
+    "message": "Neurociencia"
+  },
+  "field29": {
+    "message": "Enfermería"
+  },
+  "field30": {
+    "message": "Farmacología, Toxicología y Farmacéutica"
+  },
+  "field31": {
+    "message": "Física y Astronomía"
+  },
+  "field32": {
+    "message": "Psicología"
+  },
+  "field33": {
+    "message": "Ciencias Sociales"
+  },
+  "field34": {
+    "message": "Veterinaria"
+  },
+  "field35": {
+    "message": "Odontología"
+  },
+  "field36": {
+    "message": "Profesiones de la Salud"
+  }
+}

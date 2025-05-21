@@ -1,0 +1,242 @@
+{
+  "writeCommentTitle": {
+    "message": "Escribir un comentario"
+  },
+  "backToPrereview": {
+    "message": "Volver a PREreview"
+  },
+  "youCanWrite": {
+    "message": "Puedes escribir un comentario en esta PREreview de {preprint}."
+  },
+  "beforeStartHeading": {
+    "message": "Antes de comenzar"
+  },
+  "orcidLogIn": {
+    "message": "Te pediremos que inicies sesión con tu iD de ORCID. Si no tienes un iD, puedes crear uno."
+  },
+  "whatIsOrcidHeading": {
+    "message": "¿Qué es un ORCID iD?"
+  },
+  "whatIsOrcid": {
+    "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de todas las demás personas con el mismo nombre o similar."
+  },
+  "reloadPageButton": {
+    "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de todas las demás personas con el mismo nombre o similar."
+  },
+  "carryOnMessage": {
+    "message": "Como ya has comenzado un comentario en este PREreview del {preprint}, te llevaremos al siguiente paso para que puedas continuar.{preprint}."
+  },
+  "enterYourCommentTitle": {
+    "message": "Escribir tu comentario"
+  },
+  "errorEnterComment": {
+    "message": "Ingresar tu comentario"
+  },
+  "whatNameTitle": {
+    "message": "¿Qué nombre te gustaría usar?"
+  },
+  "errorSelectName": {
+    "message": "Seleccionar el nombre que te gustaría usar"
+  },
+  "whichNameTip": {
+    "message": "Puedes elegir entre el nombre en tu registro ORCID o tu seudónimo de PREreview."
+  },
+  "whatIsPseudonym": {
+    "message": "¿Qué es un seudónimo de PREreview?"
+  },
+  "whatIsPseudonymDefinition": {
+    "message": "Un <term>seudónimo de PREreview</term> es un nombre alternativo que puedes usar en lugar de tu nombre verdadero. Es único y combina en forma aleatoria un color y un animal. Tu seudónimo es ‘{pseudonym}’."
+  },
+  "whatIsPseudonymAccountability": {
+    "message": "Puedes contribuir a la revisión abierta de preprints utilizando tu seudónimo sin temor a las represalias o censuras que pudieran ocurrir al usar tu nombre verdadero. Sin embargo, aún con el uso de un seudónimo existe cierto grado de responsabilidad."
+  },
+  "linkToOrcidId": {
+    "message": "Vincularemos tu comentario a tu ORCID iD."
+  },
+  "linkToPseudonym": {
+    "message": "Solo vincularemos tu comentario a otros que también usen tu seudónimo."
+  },
+  "competingInterestsTitle": {
+    "message": "¿Tienes algún conflicto de intereses?"
+  },
+  "errorCompetingInterests": {
+    "message": "Selecciona sí, si tienes algún conflicto de intereses"
+  },
+  "errorCompetingInterestsDetails": {
+    "message": "Ingresa los detalles de tu conflicto de intereses"
+  },
+  "competingInterestsTip": {
+    "message": "Un conflicto de intereses es cualquier cosa que pueda interferir con la objetividad del comentario en un PREreview."
+  },
+  "examplesCompetingInterests": {
+    "message": "Ejemplos"
+  },
+  "competingInterestsRelationship": {
+    "message": "Tienes una relación personal con el/la autor/a del preprint."
+  },
+  "competingInterestsCompetitor": {
+    "message": "Eres rival o competidor/a del/la autor/a del preprint."
+  },
+  "competingInterestsWorkedWith": {
+    "message": "Has trabajado recientemente con el/la autor/a del preprint."
+  },
+  "competingInterestsWorkPlace": {
+    "message": "Trabajas en el mismo lugar que el/la autor/a del preprint."
+  },
+  "competingInterestsCollaborate": {
+    "message": "Colaboras con el/la autor/a del preprint."
+  },
+  "competingInterestsPublishedWith": {
+    "message": "Has publicado con el/la autor/a del preprint en los últimos cinco años."
+  },
+  "competingInterestsGrantWith": {
+    "message": "Tienes una subvención con el/la autor/a del preprint o tienes otros lazos financieros."
+  },
+  "competingInterestsCommenter": {
+    "message": "Cualquiera de estos mismos criterios es válido también entre ti y otra persona que ya ha publicado un comentario sobre este preprint."
+  },
+  "competingInterestsNo": {
+    "message": "No"
+  },
+  "competingInterestsYes": {
+    "message": "Sí"
+  },
+  "competingInterestsDetailsTitle": {
+    "message": "¿Cuáles son?"
+  },
+  "codeOfConductTitle": {
+    "message": "Código de conducta"
+  },
+  "errorFollowingCodeOfConduct": {
+    "message": "Confirma que te adhieres al Código de Conducta"
+  },
+  "codeOfConductTip": {
+    "message": "Como integrante de nuestra comunidad, esperamos que cumplas con el <link>Código de conducta de PREreview</link>."
+  },
+  "examplesExpectedBehaviors": {
+    "message": "Ejemplos de conducta esperada"
+  },
+  "expectedBehaviorLanguage": {
+    "message": "Usar un lenguaje cordial e inclusivo."
+  },
+  "expectedBehaviorConstructive": {
+    "message": "Ofrecer retroalimentación que sea constructiva, es decir, útil para quien sea es dirigida."
+  },
+  "expectedBehaviorRespectful": {
+    "message": "Respetar los diferentes puntos de vista y experiencias."
+  },
+  "expectedBehaviorGraceful": {
+    "message": "Acepta las críticas constructivas."
+  },
+  "expectedBehaviorCommunity": {
+    "message": "Enfocarse en lo qué es mejor para la comunidad."
+  },
+  "expectedBehaviorEmpathy": {
+    "message": "Mostrar empatía hacia otros/as integrantes de la comunidad."
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "Ejemplos de conducta inaceptable"
+  },
+  "unacceptableBehaviorAttacks": {
+    "message": "Comentarios provocativos, ofensivos o despectivos, y ataques personales o políticos."
+  },
+  "unacceptableBehaviorUnconstructive": {
+    "message": "Ofrecer una retroalimentación no constructiva o perturbadora en un PREreview."
+  },
+  "unacceptableBehaviorHarassment": {
+    "message": "Acoso público o privado."
+  },
+  "unacceptableBehaviorConfidential": {
+    "message": "Publicar datos confidenciales de otras personas, como una dirección física o de correo electrónico, sin permiso explícito."
+  },
+  "unacceptableBehaviorSexual": {
+    "message": "Uso de lenguaje o imágenes sexualizadas y atención o insinuaciones sexuales no deseados."
+  },
+  "unacceptableBehaviorOther": {
+    "message": "Otra conducta que podría razonablemente considerarse inapropiada en un entorno profesional."
+  },
+  "followingCodeOfConduct": {
+    "message": "Estoy cumpliendo con el Código de conducta"
+  },
+  "contactDetailsTitle": {
+    "message": "Datos de contacto"
+  },
+  "errorEnterEmailAddress": {
+    "message": "Ingresar tu dirección de correo electrónico"
+  },
+  "errorEnterValidEmailAddress": {
+    "message": "Ingresar una dirección de correo electrónico en el formato correcto, como nombre@ejemplo.com"
+  },
+  "needToConfirmEmailAddress": {
+    "message": "Estamos listos/as para publicar tu comentario, pero primero necesitamos confirmar tu dirección de correo electrónico."
+  },
+  "emailAddressUse": {
+    "message": "Solo usaremos esto para contactarte sobre tu cuenta y lo que publiques."
+  },
+  "whatIsYourEmailAddressTitle": {
+    "message": "¿Cuál es tu dirección de correo electrónico?"
+  },
+  "verifyEmailAddressTitle": {
+    "message": "Verifica tu dirección de correo electrónico"
+  },
+  "howToVerifyEmailAddress": {
+    "message": "Favor de abrir el correo electrónico que enviamos a {emailAddress} y seguir el enlace. Posteriormente, podrás publicar tu comentario."
+  },
+  "onceEmailAddressVerified": {
+    "message": "Una vez que verifiques tu dirección, podrás cerrar esta página."
+  },
+  "checkTitle": {
+    "message": "Verificar tu comentario"
+  },
+  "checkYourDetailsHeading": {
+    "message": "Tus datos"
+  },
+  "publishedNameHeading": {
+    "message": "Nombre publicado"
+  },
+  "changeName": {
+    "message": "Cambiar <visuallyHidden>nombre</visuallyHidden>"
+  },
+  "competingInterestsHeading": {
+    "message": "Conflicto de intereses"
+  },
+  "changeCompetingInterests": {
+    "message": "Cambiar <visuallyHidden>conflicto de intereses</visuallyHidden>"
+  },
+  "noCompetingInterests": {
+    "message": "El/la autor/a de este comentario declara que no tiene conflicto de intereses."
+  },
+  "checkYourCommentHeading": {
+    "message": "Tu comentario"
+  },
+  "changeComment": {
+    "message": "Cambiar <visuallyHidden>comentario</visuallyHidden>"
+  },
+  "nowPublishHeading": {
+    "message": "Ahora publica tu comentario"
+  },
+  "nowPublishMessage": {
+    "message": "Asignaremos a tu comentario un DOI (un identificador permanente) y lo pondremos a disposición del público bajo una <license>licencia CC BY 4.0</license>."
+  },
+  "publishButton": {
+    "message": "Publicar comentario"
+  },
+  "publishingTitle": {
+    "message": "Estamos publicando tu comentario"
+  },
+  "publishingSeeShortlyMessage": {
+    "message": "Podrás ver tu comentario en breve."
+  },
+  "publishedTitle": {
+    "message": "Comentario publicado"
+  },
+  "publishedYourDoi": {
+    "message": "Tu DOI {doi}"
+  },
+  "publishedHappensNextHeading": {
+    "message": "Qué pasa a continuación"
+  },
+  "publishedSeeShortlyMessage": {
+    "message": "Podrás ver tu comentario en breve."
+  }
+}

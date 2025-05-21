@@ -1,0 +1,50 @@
+{
+  "menuBlog": {
+    "message": "Blog"
+  },
+  "menuAboutUs": {
+    "message": "Quiénes somos"
+  },
+  "menuPartners": {
+    "message": "Colaboradores"
+  },
+  "menuDonate": {
+    "message": "Donar"
+  },
+  "menuMyDetails": {
+    "message": "Mis detalles"
+  },
+  "menuNewNotification": {
+    "message": "Nueva notificación"
+  },
+  "menuMyPrereviews": {
+    "message": "Mis PREreviews"
+  },
+  "menuLogOut": {
+    "message": "Cerrar sesión"
+  },
+  "menuLogIn": {
+    "message": "Iniciar sesión"
+  },
+  "menuReviews": {
+    "message": "Revisiones"
+  },
+  "menuRequests": {
+    "message": "Solicitudes"
+  },
+  "menuTrainings": {
+    "message": "Capacitaciones"
+  },
+  "menuLiveReviews": {
+    "message": "Revisiones en vivo"
+  },
+  "menuResources": {
+    "message": "Recursos"
+  },
+  "menuClubs": {
+    "message": "Clubs"
+  },
+  "onlyEnglish": {
+    "message": "Esta página solo está disponible en inglés."
+  }
+}

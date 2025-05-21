@@ -1,0 +1,14 @@
+{
+  "requestTitle": {
+    "message": "Revisión solicitada para {preprint}"
+  },
+  "requestText": {
+    "message": "Se solicitó una revisión para {preprint}"
+  },
+  "requestPublished": {
+    "message": "Solicitud publicada"
+  },
+  "requestServer": {
+    "message": "Servidor de preprint"
+  }
+}

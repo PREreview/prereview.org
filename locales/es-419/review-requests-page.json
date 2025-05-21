@@ -1,0 +1,44 @@
+{
+  "title": {
+    "message": "Solicitudes de revisión recientes"
+  },
+  "titleWithDetails": {
+    "message": "Solicitudes de revisión recientes ({details})"
+  },
+  "pageNumber": {
+    "message": "página {page, number}"
+  },
+  "skipResults": {
+    "message": "Saltar a los resultados"
+  },
+  "filterTitle": {
+    "message": "Filtrar"
+  },
+  "filterLanguageLabel": {
+    "message": "Idioma"
+  },
+  "filterLanguageAny": {
+    "message": "Cualquiera"
+  },
+  "filterFieldLabel": {
+    "message": "Campo"
+  },
+  "filterFieldAny": {
+    "message": "Cualquiera"
+  },
+  "filterButton": {
+    "message": "Filtrar resultados"
+  },
+  "pagerNewer": {
+    "message": "Más nuevo"
+  },
+  "pagerOlder": {
+    "message": "Más antiguo"
+  },
+  "noResults": {
+    "message": "Aún no se han publicado solicitudes de revisión."
+  },
+  "appearHere": {
+    "message": "Cuando se publiquen, aparecerán aquí."
+  }
+}

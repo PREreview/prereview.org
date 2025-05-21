@@ -1,0 +1,257 @@
+{
+  "myDetails": {
+    "message": "Mis detalles"
+  },
+  "welcomeToPrereview": {
+    "message": "¡Bienvenido/a a PREreview! Puedes usar esta página para ayudar a autores/as, editores/as y otros/as PREreviewers a conocer más sobre tus intereses, tu trabajo y tu actividad de revisión."
+  },
+  "onlyYouCanSee": {
+    "message": "Solo tú puedes ver esta página. Tienes dos páginas de perfil que todo mundo puede ver:"
+  },
+  "viewPublicProfile": {
+    "message": "Ver perfil público"
+  },
+  "viewPseudonymProfile": {
+    "message": "Ver perfil seudónimo"
+  },
+  "name": {
+    "message": "Nombre"
+  },
+  "pseudonym": {
+    "message": "Seudónimo de PREreview"
+  },
+  "orcidRecord": {
+    "message": "Registro ORCID"
+  },
+  "connected": {
+    "message": "Conectado/a"
+  },
+  "connectOrcidRecord": {
+    "message": "Conectar registro ORCID"
+  },
+  "disconnectOrcidRecord": {
+    "message": "Desconectar <visuallyHidden>registro ORCID</visuallyHidden>"
+  },
+  "avatar": {
+    "message": "Avatar"
+  },
+  "uploadAvatar": {
+    "message": "Subir avatar"
+  },
+  "changeAvatar": {
+    "message": "Cambiar <visuallyHidden>avatar</visuallyHidden>"
+  },
+  "removeAvatar": {
+    "message": "Eliminar <visuallyHidden>avatar</visuallyHidden>"
+  },
+  "slackCommunityName": {
+    "message": "Nombre en la Comunidad de Slack"
+  },
+  "connectSlack": {
+    "message": "Conectar cuenta de Slack"
+  },
+  "disconnectSlack": {
+    "message": "Desconectar <visuallyHidden>cuenta de Slack</visuallyHidden>"
+  },
+  "emailAddress": {
+    "message": "Dirección de correo electrónico"
+  },
+  "enterEmailAddress": {
+    "message": "Ingresar la dirección de correo electrónico"
+  },
+  "unverified": {
+    "message": "No se ha verificado"
+  },
+  "changeEmailAddress": {
+    "message": "Cambiar <visuallyHidden>dirección de correo electrónico</visuallyHidden>"
+  },
+  "openReviewRequests": {
+    "message": "Disponible para solicitudes de revisión"
+  },
+  "enterPreferenceReviewRequests": {
+    "message": "Ingresar preferencias para solicitudes de revisión"
+  },
+  "changePreferenceReviewRequests": {
+    "message": "Cambiar <visuallyHidden>preferencias para solicitudes de revisión</visuallyHidden>"
+  },
+  "setPreferenceReviewRequestsVisibility": {
+    "message": "Configurar la visibilidad de <visuallyHidden>preferencia-para-solicitudes-de-revisión</visuallyHidden>"
+  },
+  "yes": {
+    "message": "Sí"
+  },
+  "no": {
+    "message": "No"
+  },
+  "shownPublic": {
+    "message": "Aparece en tu perfil público"
+  },
+  "restricted": {
+    "message": "Visible solo para PREreview"
+  },
+  "careerStage": {
+    "message": "Etapa de la carrera"
+  },
+  "enterCareerStage": {
+    "message": "Ingresar la etapa de la carrera"
+  },
+  "changeCareerStage": {
+    "message": "Cambiar <visuallyHidden>etapa de la carrera</visuallyHidden>"
+  },
+  "setCareerStageVisibility": {
+    "message": "Configurar la visibilidad de <visuallyHidden>etapa de la carrera</visuallyHidden>"
+  },
+  "early": {
+    "message": "Temprana"
+  },
+  "mid": {
+    "message": "Media"
+  },
+  "late": {
+    "message": "Avanzada"
+  },
+  "researchInterests": {
+    "message": "Intereses de investigación"
+  },
+  "enterResearchInterests": {
+    "message": "Ingresar tus campos de interés"
+  },
+  "changeResearchInterests": {
+    "message": "Cambiar <visuallyHidden>campos de interés</visuallyHidden>"
+  },
+  "setResearchInterestsVisibility": {
+    "message": "Configurar la visibilidad de <visuallyHidden>intereses-de-investigación</visuallyHidden>"
+  },
+  "location": {
+    "message": "Ubicación"
+  },
+  "enterLocation": {
+    "message": "Ingresar ubicación"
+  },
+  "changeLocation": {
+    "message": "Cambiar <visuallyHidden>ubicación</visuallyHidden>"
+  },
+  "setLocationVisibility": {
+    "message": "Configurar visibilidad de <visuallyHidden>ubicación</visuallyHidden>"
+  },
+  "languages": {
+    "message": "Idiomas"
+  },
+  "enterLanguages": {
+    "message": "Ingresar idiomas"
+  },
+  "changeLanguages": {
+    "message": "Cambiar <visuallyHidden>idiomas</visuallyHidden>"
+  },
+  "setLanguagesVisibility": {
+    "message": "Configurar visibilidad de <visuallyHidden>idiomas</visuallyHidden>"
+  },
+  "uploadAnAvatar": {
+    "message": "Subir un avatar"
+  },
+  "selectImageError": {
+    "message": "Seleccionar una imagen"
+  },
+  "imageTypeError": {
+    "message": "El archivo seleccionado debe ser AVIF, HEIC, JPG, PNG o WebP"
+  },
+  "imageSizeError": {
+    "message": "El archivo seleccionado debe ser menor de {size, number} MB"
+  },
+  "youCanUploadAvatar": {
+    "message": "Puedes subir una foto o imagen para usar como tu avatar. El archivo seleccionado debe ser menor que {size, number} MB."
+  },
+  "whereWillItShow": {
+    "message": "¿Dónde se mostrará?"
+  },
+  "showOnPublicProfile": {
+    "message": "Mostraremos tu avatar en tu perfil público."
+  },
+  "removeYourAvatar": {
+    "message": "Eliminar tu avatar"
+  },
+  "removeAvatarFromProfile": {
+    "message": "Eliminaremos tu avatar de tu perfil."
+  },
+  "canUploadNewOne": {
+    "message": "Podrás subir uno nuevo en cualquier momento."
+  },
+  "removeAvatarButton": {
+    "message": "Eliminar avatar"
+  },
+  "whatCareerStage": {
+    "message": "¿En qué etapa de la carrera estás?"
+  },
+  "selectCareerStageError": {
+    "message": "Seleccione en qué etapa de la carrera te encuentras"
+  },
+  "preferNotToSay": {
+    "message": "Prefiero no decir"
+  },
+  "seeCareerStage": {
+    "message": "¿Quién puede ver en qué etapa de la carrera te encuentras?"
+  },
+  "everyone": {
+    "message": "Todo mundo"
+  },
+  "showOnPublic": {
+    "message": "Aparecerá en tu perfil público."
+  },
+  "showThemOnPublic": {
+    "message": "Aparecerán en tu perfil público."
+  },
+  "saySoOnPublic": {
+    "message": "Lo indicaremos en tu perfil público."
+  },
+  "onlyPrereview": {
+    "message": "Sólo PREreview"
+  },
+  "noOneElseKnow": {
+    "message": "No lo compartiremos con nadie más."
+  },
+  "willNotShare": {
+    "message": "No se compartirá con nadie más."
+  },
+  "willNotShareThem": {
+    "message": "No se compartirán con nadie más."
+  },
+  "whatEmailAddress": {
+    "message": "¿Cuál es tu dirección de correo electrónico?"
+  },
+  "enterEmailAddressError": {
+    "message": "Ingresa tu dirección de correo electrónico"
+  },
+  "enterEmailAddressFormatError": {
+    "message": "Ingresa una dirección de correo electrónico en el formato correcto, como nombre@ejemplo.com"
+  },
+  "usedToContactYouAboutYourAccountAndPrereviews": {
+    "message": "Solo usaremos esto para contactarte en relación a tu cuenta y PREreviews."
+  },
+  "whatLanguages": {
+    "message": "¿En qué idiomas puedes revisar?"
+  },
+  "seeLanguages": {
+    "message": "¿Quién puede ver tus idiomas?"
+  },
+  "whereBased": {
+    "message": "¿Dónde estás ubicado/a?"
+  },
+  "seeLocation": {
+    "message": "¿Quién puede ver tu ubicación?"
+  },
+  "happyTakeRequests": {
+    "message": "¿Estás dispuesto/a a recibir solicitudes para una PREreview?"
+  },
+  "selectHappyTakeRequestsError": {
+    "message": "Selecciona sí si estás dispuesto/a a recibir solicitudes para una PREreview"
+  },
+  "seeHappyTakeRequests": {
+    "message": "¿Quién puede ver si estás disponibles para solicitudes de revisión?"
+  },
+  "whatResearchInterests": {
+    "message": "¿Cuáles son tus campos de interés en la investigación?"
+  },
+  "seeWhatResearchInterests": {
+    "message": "¿Quién puede ver tus campos de interés en la investigación?"
+  }
+}

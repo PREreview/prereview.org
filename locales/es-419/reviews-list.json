@@ -1,0 +1,17 @@
+{
+  "reviewTitle": {
+    "message": "PREreview de {preprint}"
+  },
+  "reviewText": {
+    "message": "{reviewers} revisaron {preprint}"
+  },
+  "clubReviewText": {
+    "message": "{reviewers} del {club} revisaron {preprint}"
+  },
+  "reviewPublished": {
+    "message": "Revisión publicada"
+  },
+  "reviewServer": {
+    "message": "Servidor de preprint"
+  }
+}

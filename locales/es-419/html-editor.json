@@ -1,0 +1,41 @@
+{
+  "loading": {
+    "message": "Cargando"
+  },
+  "bold": {
+    "message": "Negrita"
+  },
+  "italic": {
+    "message": "Cursiva"
+  },
+  "subscript": {
+    "message": "Subíndice"
+  },
+  "superscript": {
+    "message": "Superíndice"
+  },
+  "link": {
+    "message": "Enlace"
+  },
+  "headingLevel1": {
+    "message": "Encabezado nivel 1"
+  },
+  "headingLevel2": {
+    "message": "Encabezado nivel 2"
+  },
+  "headingLevel3": {
+    "message": "Encabezado nivel 3"
+  },
+  "bulletedList": {
+    "message": "Lista con viñetas"
+  },
+  "numberedList": {
+    "message": "Lista numerada"
+  },
+  "formatting": {
+    "message": "Formato"
+  },
+  "enterAUrl": {
+    "message": "Ingresar una URL"
+  }
+}

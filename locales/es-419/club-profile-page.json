@@ -1,0 +1,23 @@
+{
+  "clubLeads": {
+    "message": "Dirigentes del club"
+  },
+  "contactClub": {
+    "message": "Contactar al club"
+  },
+  "joinClub": {
+    "message": "Unirte al club"
+  },
+  "prereviews": {
+    "message": "PREreviews"
+  },
+  "noResults": {
+    "message": "{name} no ha publicado una PREreview aún."
+  },
+  "appearHere": {
+    "message": "Cuando lo haga, aparecerá aquí."
+  },
+  "card": {
+    "message": "{names} revisó/revisaron {title}"
+  }
+}

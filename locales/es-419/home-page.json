@@ -1,0 +1,56 @@
+{
+  "slogan": {
+    "message": "Revisiones abiertas de preprints. Para <swoosh>todos/as</swoosh> los/as investigadores/as."
+  },
+  "heroText": {
+    "message": "Proporciona y recibe comentarios constructivos sobre preprints de una comunidad internacional de pares."
+  },
+  "reviewPreprintButton": {
+    "message": "Revisar un preprint"
+  },
+  "requestReviewButton": {
+    "message": "Solicitar una revisión"
+  },
+  "overviewUnderservedResearchersTitle": {
+    "message": "Para investigadores(as) con dificultades de acceso"
+  },
+  "overviewUnderservedResearchersText": {
+    "message": "Brindamos apoyo y fomentamos la participación de comunidades investigadores/as diversas e históricamente excluidas (particularmente quienes están en etapas tempranas de su carrera) para que puedan encontrar su voz, capacitarse y participar en la revisión por pares."
+  },
+  "overviewBetterWayTitle": {
+    "message": "Una mejor manera"
+  },
+  "overviewBetterWayText": {
+    "message": "Haciendo la ciencia y la academia más equitativas, transparentes y colaborativas."
+  },
+  "overviewBetterWayLink": {
+    "message": "Nuestra misión"
+  },
+  "requestsTitle": {
+    "message": "Solicitudes de revisión recientes"
+  },
+  "requestsLink": {
+    "message": "Ver todas las solicitudes"
+  },
+  "statisticsTitle": {
+    "message": "Estadísticas"
+  },
+  "statisticsReviews": {
+    "message": "{number, plural, one {<data>{number, number}</data> PREreview} other {<data>{number, number}</data> PREreviews}}"
+  },
+  "statisticsServers": {
+    "message": "{number, plural, one {<data>{number, number}</data> servidor de preprint} other {<data>{number, number}</data> servidores de preprint}}"
+  },
+  "statisticsUsers": {
+    "message": "{number, plural, one {<data>{number, number}</data> PREreviewer} other {<data>{number, number}</data> PREreviewers}}"
+  },
+  "reviewsTitle": {
+    "message": "PREreviews recientes"
+  },
+  "reviewsLink": {
+    "message": "Ver todas las revisiones"
+  },
+  "fundersTitle": {
+    "message": "Fondos"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "havingProblems": {
+    "message": "Lo siento, estamos teniendo problemas"
+  },
+  "cannotLogYouIn": {
+    "message": "Lo siento, no podemos iniciar sesión"
+  },
+  "unableToLogYouIn": {
+    "message": "No podemos iniciar sesión por el momento."
+  },
+  "youDeniedAccess": {
+    "message": "Has denegado a PREreview el acceso a tu ORCID iD."
+  },
+  "tryAgainLater": {
+    "message": "Favor de intentar de nuevo más tarde."
+  },
+  "tryAgain": {
+    "message": "Favor de intentar de nuevo."
+  }
+}

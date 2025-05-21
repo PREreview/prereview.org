@@ -1,0 +1,26 @@
+{
+  "disconnectSlackAccount": {
+    "message": "Desconectar tu cuenta de Comunidad de Slack"
+  },
+  "youCanDisconnect": {
+    "message": "Puedes desconectar tu perfil de PREreview de tu cuenta en la Comunidad de Slack de PREreview."
+  },
+  "removeOrcidId": {
+    "message": "Eliminaremos tu identificador digital ORCID [ORCID iD] de tu perfil de Slack."
+  },
+  "canReconnect": {
+    "message": "Podrás reconectar en cualquier momento."
+  },
+  "disconnectAccountButton": {
+    "message": "Desconectar cuenta"
+  },
+  "havingProblems": {
+    "message": "Disculpa, estamos teniendo problemas"
+  },
+  "unableToDisconnect": {
+    "message": "No podemos desconectar tu cuenta en este momento."
+  },
+  "tryAgainLater": {
+    "message": "Favor de intentarlo de nuevo más tarde."
+  }
+}

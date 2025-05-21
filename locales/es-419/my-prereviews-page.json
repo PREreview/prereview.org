@@ -1,0 +1,32 @@
+{
+  "myPrereviews": {
+    "message": "Mis PREreviews"
+  },
+  "onlyYouCanSee": {
+    "message": "Solo tú puedes ver esta página. Tienes dos páginas de perfil que todo mundo puede ver:"
+  },
+  "viewPublicProfile": {
+    "message": "Ver perfil público"
+  },
+  "viewPseudonymProfile": {
+    "message": "Ver perfil pseudónimo"
+  },
+  "notPublished": {
+    "message": "Aún no has publicado una PREreview."
+  },
+  "appearHere": {
+    "message": "Cuando lo hagas, aparecerá aquí."
+  },
+  "reviewAPreprint": {
+    "message": "Revisar un preprint"
+  },
+  "havingProblems": {
+    "message": "Lo sentimos, estamos teniendo problemas"
+  },
+  "unableToShow": {
+    "message": "No podemos mostrar tus PREreviews ahora."
+  },
+  "tryAgainLater": {
+    "message": "Favor de intentar de nuevo más tarde."
+  }
+}

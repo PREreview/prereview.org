@@ -1,0 +1,149 @@
+{
+  "checkTitle": {
+    "message": "Verificar tus detalles"
+  },
+  "checkYourDetails": {
+    "message": "Verificar tus detalles"
+  },
+  "yourDetails": {
+    "message": "Tus detalles"
+  },
+  "publishedName": {
+    "message": "Nombre publicado"
+  },
+  "changeName": {
+    "message": "Cambiar <visuallyHidden>nombre</visuallyHidden>"
+  },
+  "nowPublish": {
+    "message": "Publicar ahora tu PREreview actualizada"
+  },
+  "weWillAddYourName": {
+    "message": "Agregaremos tu nombre a la lista de autores/as."
+  },
+  "updatePrereview": {
+    "message": "Actualizar PREreview"
+  },
+  "nameAdded": {
+    "message": "Nombre agregado"
+  },
+  "whatHappensNext": {
+    "message": "Qué sucede a continuación"
+  },
+  "ableToSeePrereviewShortly": {
+    "message": "En breve podrás ver tu nombre en la PREreview."
+  },
+  "yourDoi": {
+    "message": "Tu DOI"
+  },
+  "closeWindowOrSeePrereview": {
+    "message": "Puedes cerrar esta ventana, o <link>ver la PREreview</link>."
+  },
+  "beListed": {
+    "message": "Figurar en la lista de autores/as"
+  },
+  "invitedToAppear": {
+    "message": "Has sido invitado/a a figurar como autor/a en esta PREreview."
+  },
+  "weWillAskYouToLogInWithYourOrcid": {
+    "message": "Te pediremos que inicies sesión con tu ORCID iD. Si no tienes un iD, puedes crear uno."
+  },
+  "whatIsAnOrcid": {
+    "message": "¿Qué es un ORCID iD?"
+  },
+  "orcidExplainer": {
+    "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de todas las personas con el mismo nombre o nombre similar."
+  },
+  "beforeYouStart": {
+    "message": "Antes de iniciar"
+  },
+  "declineTheInvitation": {
+    "message": "Rechazar la invitación"
+  },
+  "youCanDecline": {
+    "message": "Puedes rechazar esta invitación y seguir siendo autor/a anónimo/a."
+  },
+  "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
+    "message": "Como ya has comenzado, te llevaremos al siguiente paso para que puedas continuar."
+  },
+  "sorryHavingProblems": {
+    "message": "Lo sentimos, estamos teniendo problemas"
+  },
+  "unableToAddYourNameWorkHasBeenSaved": {
+    "message": "No pudimos añadir tu nombre a la PREreview. Guardamos tu trabajo."
+  },
+  "comeBackLater": {
+    "message": "Por favor de intentar de nuevo más tarde volviendo a esta página."
+  },
+  "getInTouch": {
+    "message": "Si este problema persiste, por favor <link>contáctanos</link>."
+  },
+  "invitationDeclined": {
+    "message": "Invitación rechazada"
+  },
+  "youHaveDeclinedToAppearAsAuthor": {
+    "message": "Has rechazado aparecer como autor/a en esta PREreview."
+  },
+  "youCanCloseThisWindow": {
+    "message": "Puedes cerrar esta ventana."
+  },
+  "contactDetails": {
+    "message": "Detalles de contacto"
+  },
+  "readyToAddYourNameConfirmYourEmailFirst": {
+    "message": "Estamos listos/as para agregar tu nombre a la PREreview, pero antes necesitamos confirmar tu dirección de correo electrónico."
+  },
+  "usedToContactYouAboutYourAccountAndPrereviews": {
+    "message": "Solo usaremos esto para contactarte acerca de tu cuenta y las PREreviews."
+  },
+  "whatEmailAddressShouldWeUse": {
+    "message": "¿Qué dirección de correo electrónico deberíamos usar?"
+  },
+  "selectTheEmailAddressYouWouldLikeToUse": {
+    "message": "Selecciona la dirección de correo electrónico que deseas usar"
+  },
+  "aDifferentOne": {
+    "message": "Otra diferente"
+  },
+  "whatIsYourEmailAddress": {
+    "message": "¿Cuál es tu dirección de correo electrónico?"
+  },
+  "enterYourEmailAddress": {
+    "message": "Ingresa tu dirección de correo electrónico"
+  },
+  "enterAnEmailAddressInTheCorrectFormat": {
+    "message": "Ingresa una dirección de correo electrónico en el formato correcto, como nombre@ejemplo.com"
+  },
+  "verifyYourEmailAddress": {
+    "message": "Verificar tu dirección de correo electrónico"
+  },
+  "pleaseOpenLinkInEmailWeSentYou": {
+    "message": "Por favor, abre el correo electrónico que enviamos a {contactEmailAddress} y sigue el enlace. Después podrás añadir tu nombre a la PREreview."
+  },
+  "onceVerifiedYouCanClosePage": {
+    "message": "Una vez que tu dirección sea verificada, podrás cerrar esta página."
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "¿Qué nombre te gustaría usar?"
+  },
+  "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
+    "message": "Puedes elegir entre el nombre en tu registro ORCID o tu seudónimo de PREreview."
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "¿Qué es un seudónimo de PREreview?"
+  },
+  "pseudonymExplainer": {
+    "message": "Un <definition>seudónimo de PREreview</definition> es un nombre alternativo que puedes usar en lugar de tu nombre verdadero. Es único y combina de forma aleatoria un color y un animal. Tu seudónimo es ‘{userPseudonym}’."
+  },
+  "whyUseAPseudonym": {
+    "message": "Al usar tu seudónimo, puedes contribuir a la revisión abierta de un preprint sin temor a represalias o censuras que pueden ocurrir al usar tu nombre verdadero. Sin embargo, aún el uso de un seudónimo mantiene cierto grado de responsabilidad."
+  },
+  "selectTheNameYouWouldLikeToUse": {
+    "message": "Selecciona el nombre que deseas usar"
+  },
+  "weWillLinkYourPrereviewToYourOrcid": {
+    "message": "Vincularemos tu PREreview a tu identificador ORCID."
+  },
+  "weWillOnlyLinkToOtherPseudonymPrereviews": {
+    "message": "Solo vincularemos tu PREreview con otras que también usen tu seudónimo."
+  }
+}
