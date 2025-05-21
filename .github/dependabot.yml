@@ -31,6 +31,8 @@ updates:
         patterns:
           - '@effect/*'
           - 'effect'
+        exclude-patterns:
+          - '@effect/language-service'
       fast-check:
         patterns:
           - '@fast-check/*'

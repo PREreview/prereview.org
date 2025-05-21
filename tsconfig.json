@@ -5,6 +5,7 @@
     "lib": ["dom", "dom.iterable", "es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
+    "plugins": [{ "name": "@effect/language-service" }],
     "resolveJsonModule": true,
     "types": ["mocha"]
   },
