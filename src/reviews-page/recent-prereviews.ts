@@ -21,7 +21,10 @@ export interface RecentPrereviews {
   readonly recentPrereviews: Array.NonEmptyReadonlyArray<{
     readonly club?: ClubId
     readonly id: number
-    readonly reviewers: Array.NonEmptyReadonlyArray<string>
+    readonly reviewers: {
+      named: Array.NonEmptyReadonlyArray<string>
+      anonymous: number
+    }
     readonly published: PlainDate
     readonly fields: ReadonlyArray<FieldId>
     readonly subfields: ReadonlyArray<SubfieldId>

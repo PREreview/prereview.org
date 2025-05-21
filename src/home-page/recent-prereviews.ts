@@ -14,7 +14,10 @@ import PlainDate = Temporal.PlainDate
 export interface RecentPrereview {
   readonly id: number
   readonly club?: ClubId
-  readonly reviewers: Array.NonEmptyReadonlyArray<string>
+  readonly reviewers: {
+    readonly named: Array.NonEmptyReadonlyArray<string>
+    readonly anonymous: number
+  }
   readonly published: PlainDate
   readonly fields: ReadonlyArray<FieldId>
   readonly subfields: ReadonlyArray<SubfieldId>

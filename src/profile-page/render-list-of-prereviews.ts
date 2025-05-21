@@ -47,7 +47,18 @@ export function renderListOfPrereviews(
                           )({
                             club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
                             reviewers: pipe(
-                              prereview.reviewers,
+                              prereview.reviewers.named,
+                              Array.appendAll(
+                                prereview.reviewers.anonymous > 0
+                                  ? [
+                                      translate(
+                                        locale,
+                                        'reviews-list',
+                                        'otherAuthors',
+                                      )({ number: prereview.reviewers.anonymous }),
+                                    ]
+                                  : [],
+                              ),
                               Array.map(name => html`<b>${name}</b>`),
                               formatList(locale),
                             ).toString(),
@@ -63,7 +74,18 @@ export function renderListOfPrereviews(
                             'reviewText',
                           )({
                             reviewers: pipe(
-                              prereview.reviewers,
+                              prereview.reviewers.named,
+                              Array.appendAll(
+                                prereview.reviewers.anonymous > 0
+                                  ? [
+                                      translate(
+                                        locale,
+                                        'reviews-list',
+                                        'otherAuthors',
+                                      )({ number: prereview.reviewers.anonymous }),
+                                    ]
+                                  : [],
+                              ),
                               Array.map(name => html`<b>${name}</b>`),
                               formatList(locale),
                             ).toString(),

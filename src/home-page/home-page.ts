@@ -251,7 +251,21 @@ export const createPage = ({
                                   'clubReviewText',
                                 )({
                                   club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
-                                  reviewers: formatList(locale)(prereview.reviewers).toString(),
+                                  reviewers: pipe(
+                                    prereview.reviewers.named,
+                                    Array.appendAll(
+                                      prereview.reviewers.anonymous > 0
+                                        ? [
+                                            translate(
+                                              locale,
+                                              'reviews-list',
+                                              'otherAuthors',
+                                            )({ number: prereview.reviewers.anonymous }),
+                                          ]
+                                        : [],
+                                    ),
+                                    formatList(locale),
+                                  ).toString(),
                                   preprint: html`<cite
                                     dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
                                     lang="${prereview.preprint.language}"
@@ -263,7 +277,21 @@ export const createPage = ({
                                   'reviews-list',
                                   'reviewText',
                                 )({
-                                  reviewers: formatList(locale)(prereview.reviewers).toString(),
+                                  reviewers: pipe(
+                                    prereview.reviewers.named,
+                                    Array.appendAll(
+                                      prereview.reviewers.anonymous > 0
+                                        ? [
+                                            translate(
+                                              locale,
+                                              'reviews-list',
+                                              'otherAuthors',
+                                            )({ number: prereview.reviewers.anonymous }),
+                                          ]
+                                        : [],
+                                    ),
+                                    formatList(locale),
+                                  ).toString(),
                                   preprint: html`<cite
                                     dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
                                     lang="${prereview.preprint.language}"

@@ -185,9 +185,7 @@ function showReview(review: Prereview, locale: SupportedLocale) {
               review.authors.named,
               Array.map(Struct.get('name')),
               Array.appendAll(
-                review.authors.anonymous > 0
-                  ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
-                  : [],
+                review.authors.anonymous > 0 ? [t('otherAuthors')({ number: review.authors.anonymous })] : [],
               ),
               formatList(locale),
               list => list.toString(),

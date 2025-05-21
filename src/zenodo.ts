@@ -879,7 +879,9 @@ function recordToRecentPrereview(
       sequenceS(RTE.ApplyPar)({
         club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         id: RTE.right(record.id),
-        reviewers: RTE.right(Array.map(FptsToEffect.array(record.metadata.creators), Struct.get('name'))),
+        reviewers: RTE.right(
+          pipe(getAuthors(record), Struct.evolve({ named: authors => Array.map(authors, Struct.get('name')) })),
+        ),
         published: RTE.right(
           toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),
