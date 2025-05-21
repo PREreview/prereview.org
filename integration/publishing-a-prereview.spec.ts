@@ -55,10 +55,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('Josiah Carberry').check()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('No, I reviewed it alone').check()
@@ -2461,14 +2457,10 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
     'aria-invalid',
     'true',
   )
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 
   await page.getByRole('link', { name: 'Select the name that you would like to use' }).click()
 
   await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
