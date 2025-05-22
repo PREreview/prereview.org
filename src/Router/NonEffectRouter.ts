@@ -34,6 +34,7 @@ import * as Routes from '../routes.js'
 import { SlackApiConfig } from '../slack.js'
 import type { TemplatePage } from '../TemplatePage.js'
 import { LoggedInUser, type User } from '../user.js'
+import { MyDetailsRouter } from './NonEffectMyDetailsRouter.js'
 import * as Response from './Response.js'
 
 export const nonEffectRouter: Effect.Effect<
@@ -275,6 +276,7 @@ const routerWithoutHyperTs = pipe(
             }),
       ),
     ),
+    MyDetailsRouter,
   ],
   concatAll(P.getParserMonoid()),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
