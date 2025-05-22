@@ -1,14 +1,40 @@
-import { Headers, HttpMethod, HttpServerError, HttpServerRequest, type HttpServerResponse } from '@effect/platform'
-import { Effect, Either, flow, Match, Option, pipe, Record, type Runtime, String, Tuple } from 'effect'
+import {
+  FetchHttpClient,
+  Headers,
+  HttpMethod,
+  HttpServerError,
+  HttpServerRequest,
+  type HttpServerResponse,
+} from '@effect/platform'
+import {
+  Config,
+  Effect,
+  Either,
+  flow,
+  Match,
+  Option,
+  pipe,
+  Record,
+  Redacted,
+  type Runtime,
+  String,
+  Tuple,
+} from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as T from 'fp-ts/lib/Task.js'
-import { Locale } from '../Context.js'
+import { getSlackUser } from '../app-router.js'
+import { type CloudinaryApiEnv, getAvatarFromCloudinary } from '../cloudinary.js'
+import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
 import * as FeatureFlags from '../FeatureFlags.js'
+import { withEnv } from '../Fpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
+import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { home } from '../home-page/index.js'
+import * as Keyv from '../keyv.js'
 import type { SupportedLocale } from '../locales/index.js'
+import { myDetails } from '../my-details-page/index.js'
 import { myPrereviews } from '../my-prereviews-page/index.js'
 import type { OrcidOauth } from '../OrcidOauth.js'
 import { partners } from '../partners.js'
@@ -22,6 +48,7 @@ import { CommentsForReview, reviewPage } from '../review-page/index.js'
 import * as ReviewRequests from '../ReviewRequests/index.js'
 import { reviewsPage } from '../reviews-page/index.js'
 import * as Routes from '../routes.js'
+import type { SlackApiEnv } from '../slack.js'
 import type { TemplatePage } from '../TemplatePage.js'
 import { LoggedInUser, type User } from '../user.js'
 import * as Response from './Response.js'
@@ -39,6 +66,9 @@ export const nonEffectRouter: Effect.Effect<
   | Prereviews.Prereviews
   | ReviewRequests.ReviewRequests
   | CommentsForReview
+  | DeprecatedLoggerEnv
+  | FetchHttpClient.Fetch
+  | ExpressConfig
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -55,14 +85,39 @@ export const nonEffectRouter: Effect.Effect<
     }),
   )
 
+  const expressConfig = yield* ExpressConfig
   const runtime = yield* Effect.runtime()
+  const logger = yield* DeprecatedLoggerEnv
+  const fetch = yield* FetchHttpClient.Fetch
+
   const locale = yield* Locale
   const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
+
+  const slackApiToken = yield* Config.redacted('SLACK_API_TOKEN')
+  const cloudinaryApi = yield* Config.all({
+    cloudName: Config.succeed('prereview'),
+    key: Config.redacted('CLOUDINARY_API_KEY'),
+    secret: Config.redacted('CLOUDINARY_API_SECRET'),
+  })
   const featureFlags = yield* FeatureFlags.FeatureFlags
+
   const preprints = yield* Preprints.Preprints
   const prereviews = yield* Prereviews.Prereviews
   const reviewRequests = yield* ReviewRequests.ReviewRequests
   const commentsForReview = yield* CommentsForReview
+  const users = {
+    avatarStore: expressConfig.avatarStore,
+    contactEmailAddressStore: expressConfig.avatarStore,
+    userOnboardingStore: expressConfig.userOnboardingStore,
+    orcidTokenStore: expressConfig.orcidTokenStore,
+    slackUserIdStore: expressConfig.slackUserIdStore,
+    isOpenForRequestsStore: expressConfig.isOpenForRequestsStore,
+    careerStageStore: expressConfig.careerStageStore,
+    researchInterestsStore: expressConfig.researchInterestsStore,
+    locationStore: expressConfig.locationStore,
+    languagesStore: expressConfig.languagesStore,
+    authorInviteStore: expressConfig.authorInviteStore,
+  }
 
   const body = yield* Effect.if(HttpMethod.hasBody(request.method), {
     onTrue: () =>
@@ -87,10 +142,19 @@ export const nonEffectRouter: Effect.Effect<
     prereviews,
     reviewRequests,
     runtime,
+    logger,
+    fetch,
+    slackApiToken: Redacted.value(slackApiToken),
+    cloudinaryApi: {
+      cloudName: cloudinaryApi.cloudName,
+      key: Redacted.value(cloudinaryApi.key),
+      secret: Redacted.value(cloudinaryApi.secret),
+    },
+    users,
   } satisfies Env
 
   return yield* pipe(FptsToEffect.task(handler(env)), Effect.andThen(Response.toHttpServerResponse))
-})
+}).pipe(Effect.catchTag('ConfigError', () => pipe(HavingProblemsPage, Effect.andThen(Response.toHttpServerResponse))))
 
 interface Env {
   body: unknown
@@ -103,6 +167,22 @@ interface Env {
   prereviews: typeof Prereviews.Prereviews.Service
   reviewRequests: typeof ReviewRequests.ReviewRequests.Service
   runtime: Runtime.Runtime<never>
+  logger: typeof DeprecatedLoggerEnv.Service
+  users: {
+    userOnboardingStore: Keyv.Keyv
+    orcidTokenStore: Keyv.Keyv
+    avatarStore: Keyv.Keyv
+    contactEmailAddressStore: Keyv.Keyv
+    slackUserIdStore: Keyv.Keyv
+    isOpenForRequestsStore: Keyv.Keyv
+    careerStageStore: Keyv.Keyv
+    researchInterestsStore: Keyv.Keyv
+    locationStore: Keyv.Keyv
+    languagesStore: Keyv.Keyv
+  }
+  cloudinaryApi: CloudinaryApiEnv['cloudinaryApi']
+  slackApiToken: SlackApiEnv['slackApiToken']
+  fetch: typeof globalThis.fetch
 }
 
 const routerWithoutHyperTs = pipe(
@@ -118,6 +198,60 @@ const routerWithoutHyperTs = pipe(
           home({ canSeeDesignTweaks: env.featureFlags.canSeeDesignTweaks, locale: env.locale })({
             getRecentPrereviews: () => EffectToFpts.toTask(env.prereviews.getFiveMostRecent, env.runtime),
             getRecentReviewRequests: () => EffectToFpts.toTask(env.reviewRequests.getFiveMostRecent, env.runtime),
+          }),
+      ),
+    ),
+    pipe(
+      Routes.myDetailsMatch.parser,
+      P.map(
+        () => (env: Env) =>
+          myDetails({ locale: env.locale, user: env.loggedInUser })({
+            getUserOnboarding: withEnv(Keyv.getUserOnboarding, {
+              userOnboardingStore: env.users.userOnboardingStore,
+              ...env.logger,
+            }),
+            getOrcidToken: withEnv(Keyv.getOrcidToken, {
+              orcidTokenStore: env.users.orcidTokenStore,
+              ...env.logger,
+            }),
+            getAvatar: withEnv(getAvatarFromCloudinary, {
+              getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
+              cloudinaryApi: env.cloudinaryApi,
+            }),
+            getSlackUser: withEnv(getSlackUser, {
+              ...env.logger,
+              slackUserIdStore: env.users.slackUserIdStore,
+              slackApiToken: env.slackApiToken,
+              fetch: env.fetch,
+            }),
+            getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, {
+              contactEmailAddressStore: env.users.contactEmailAddressStore,
+              ...env.logger,
+            }),
+            isOpenForRequests: withEnv(Keyv.isOpenForRequests, {
+              isOpenForRequestsStore: env.users.isOpenForRequestsStore,
+              ...env.logger,
+            }),
+            getCareerStage: withEnv(Keyv.getCareerStage, {
+              careerStageStore: env.users.careerStageStore,
+              ...env.logger,
+            }),
+            getResearchInterests: withEnv(Keyv.getResearchInterests, {
+              researchInterestsStore: env.users.researchInterestsStore,
+              ...env.logger,
+            }),
+            getLocation: withEnv(Keyv.getLocation, {
+              locationStore: env.users.locationStore,
+              ...env.logger,
+            }),
+            getLanguages: withEnv(Keyv.getLanguages, {
+              languagesStore: env.users.languagesStore,
+              ...env.logger,
+            }),
+            saveUserOnboarding: withEnv(Keyv.saveUserOnboarding, {
+              userOnboardingStore: env.users.userOnboardingStore,
+              ...env.logger,
+            }),
           }),
       ),
     ),

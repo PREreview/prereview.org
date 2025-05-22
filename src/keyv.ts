@@ -27,6 +27,8 @@ import { NonEmptyStringC } from './types/string.js'
 import { UuidC } from './types/uuid.js'
 import { type UserOnboarding, UserOnboardingC } from './user-onboarding.js'
 
+export { type Keyv } from 'keyv'
+
 export interface AuthorInviteStoreEnv {
   authorInviteStore: Keyv
 }

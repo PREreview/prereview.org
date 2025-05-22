@@ -101,7 +101,6 @@ import {
   changeOpenForRequestsVisibility,
   changeResearchInterests,
   changeResearchInterestsVisibility,
-  myDetails,
   removeAvatar,
   verifyContactEmailAddress,
 } from './my-details-page/index.js'
@@ -164,7 +163,6 @@ import {
   disconnectSlackMatch,
   logInMatch,
   logOutMatch,
-  myDetailsMatch,
   orcidCodeMatch,
   orcidErrorMatch,
   profileMatch,
@@ -275,7 +273,7 @@ const isSlackUser = flow(
   ),
 )
 
-const getSlackUser = flow(
+export const getSlackUser = flow(
   Keyv.getSlackUserId,
   RTE.chainW(({ userId }) => getUserFromSlack(userId)),
 )
@@ -644,36 +642,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             env,
           ),
           isSlackUser: withEnv(isSlackUser, env),
-        })),
-      ),
-    ),
-    pipe(
-      myDetailsMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(myDetails)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getAvatar: withEnv(getAvatarFromCloudinary, { ...env, getCloudinaryAvatar: withEnv(Keyv.getAvatar, env) }),
-          getCareerStage: withEnv(Keyv.getCareerStage, env),
-          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
-          getLanguages: withEnv(Keyv.getLanguages, env),
-          getLocation: withEnv(Keyv.getLocation, env),
-          getOrcidToken: withEnv(Keyv.getOrcidToken, env),
-          getResearchInterests: withEnv(Keyv.getResearchInterests, env),
-          getSlackUser: withEnv(getSlackUser, env),
-          isOpenForRequests: withEnv(Keyv.isOpenForRequests, env),
-          saveUserOnboarding: withEnv(Keyv.saveUserOnboarding, env),
         })),
       ),
     ),
