@@ -51,7 +51,10 @@ export const toHttpServerResponse = (
     const publicUrl = yield* PublicUrl
     const templatePage = yield* TemplatePage
     const user = yield* Effect.serviceOption(LoggedInUser)
-    const userOnboarding = yield* Effect.serviceOption(UserOnboardingService)
+    const userOnboarding = yield* Effect.if(response._tag === 'PageResponse' && response.current === 'my-details', {
+      onFalse: () => Effect.serviceOption(UserOnboardingService),
+      onTrue: () => Effect.succeedNone,
+    })
     const message = yield* Effect.serviceOption(FlashMessage)
     const request = yield* HttpServerRequest.HttpServerRequest
 
