@@ -3,10 +3,10 @@
     "message": "PREreview of {preprint}"
   },
   "reviewText": {
-    "message": "{reviewers} reviewed {preprint}"
+    "message": "{numberOfReviewers, plural, one {{reviewers} reviewed {preprint}} other {{reviewers} reviewed {preprint}}}"
   },
   "clubReviewText": {
-    "message": "{reviewers} of {club} reviewed {preprint}"
+    "message": "{numberOfReviewers, plural, one {{reviewers} of {club} reviewed {preprint}} other {{reviewers} of {club} reviewed {preprint}}}"
   },
   "otherAuthors": {
     "message": "{number, plural, one {{number, number} other author} other {{number, number} other authors}}"

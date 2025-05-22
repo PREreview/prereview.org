@@ -59,6 +59,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: Suppo
                       'reviews-list',
                       'reviewText',
                     )({
+                      numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
                       reviewers: pipe(
                         prereview.reviewers.named,
                         Array.appendAll(

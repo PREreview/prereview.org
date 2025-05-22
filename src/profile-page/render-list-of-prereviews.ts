@@ -46,6 +46,7 @@ export function renderListOfPrereviews(
                             'clubReviewText',
                           )({
                             club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
+                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
                             reviewers: pipe(
                               prereview.reviewers.named,
                               Array.appendAll(
@@ -73,6 +74,7 @@ export function renderListOfPrereviews(
                             'reviews-list',
                             'reviewText',
                           )({
+                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
                             reviewers: pipe(
                               prereview.reviewers.named,
                               Array.appendAll(

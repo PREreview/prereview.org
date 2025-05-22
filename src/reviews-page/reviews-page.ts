@@ -44,6 +44,7 @@ export const createPage = (
                             'clubReviewText',
                           )({
                             club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
+                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
                             reviewers: pipe(
                               prereview.reviewers.named,
                               Array.appendAll(
@@ -70,6 +71,7 @@ export const createPage = (
                             'reviews-list',
                             'reviewText',
                           )({
+                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
                             reviewers: pipe(
                               prereview.reviewers.named,
                               Array.appendAll(
