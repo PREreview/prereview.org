@@ -569,7 +569,7 @@ export const page = ({
                   >
                 </div>
 
-                <ul aria-label="Support links">
+                <ul aria-label="${translate(locale, 'footer', 'menuHeading')()}">
                   <li><a href="https://donorbox.org/prereview">${translate(locale, 'footer', 'menuDonate')()}</a></li>
                   <li>
                     <a href="${Routes.People}" ${current === 'people' ? html`aria-current="page"` : ''}
@@ -604,7 +604,7 @@ export const page = ({
                   </li>
                 </ul>
 
-                <ul class="contacts" aria-label="Contact us">
+                <ul class="contacts" aria-label="${translate(locale, 'footer', 'contactHeading')()}">
                   <li>
                     <span class="visually-hidden">
                       ${rawHtml(

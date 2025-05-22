@@ -2,6 +2,10 @@
   "prereviewsOf": {
     "message": "PREreviews of {preprint}"
   },
+  "preprintDetails": {
+    "message": "Preprint details",
+    "description": "Heading for details of a preprint, such as its title and abstract."
+  },
   "abstractHeading": {
     "message": "Abstract"
   },

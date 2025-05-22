@@ -14,6 +14,10 @@
   "slackLink": {
     "message": "Join our Slack Community"
   },
+  "menuHeading": {
+    "message": "Support links",
+    "description": "Heading for a list of links about PREreview, such as its Code of Conduct and Privacy Policy."
+  },
   "menuDonate": {
     "message": "Donate"
   },
@@ -37,6 +41,10 @@
   },
   "menuHowToUse": {
     "message": "How to use"
+  },
+  "contactHeading": {
+    "message": "Contact us",
+    "description": "Heading for a list of ways to contact PREreview."
   },
   "contactEmail": {
     "message": "Email us at {address}"

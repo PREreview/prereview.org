@@ -191,7 +191,13 @@ export const toPage = ({
         content: html`
           <h1 class="visually-hidden">${response.h1}</h1>
 
-          <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
+          <aside
+            id="preprint-details"
+            tabindex="0"
+            aria-label="${translate(locale, 'preprint-reviews', 'preprintDetails')()}"
+          >
+            ${response.aside}
+          </aside>
 
           <main id="prereviews">${message ? showFlashMessage(message, locale) : ''} ${response.main}</main>
         `,
