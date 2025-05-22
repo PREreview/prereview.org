@@ -48,7 +48,7 @@ import { CommentsForReview, reviewPage } from '../review-page/index.js'
 import * as ReviewRequests from '../ReviewRequests/index.js'
 import { reviewsPage } from '../reviews-page/index.js'
 import * as Routes from '../routes.js'
-import type { SlackApiEnv } from '../slack.js'
+import { SlackApiConfig, type SlackApiEnv } from '../slack.js'
 import type { TemplatePage } from '../TemplatePage.js'
 import { LoggedInUser, type User } from '../user.js'
 import * as Response from './Response.js'
@@ -69,6 +69,7 @@ export const nonEffectRouter: Effect.Effect<
   | DeprecatedLoggerEnv
   | FetchHttpClient.Fetch
   | ExpressConfig
+  | SlackApiConfig
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -93,7 +94,7 @@ export const nonEffectRouter: Effect.Effect<
   const locale = yield* Locale
   const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
 
-  const slackApiToken = yield* Config.redacted('SLACK_API_TOKEN')
+  const slackApiConfig = yield* SlackApiConfig
   const cloudinaryApi = yield* Config.all({
     cloudName: Config.succeed('prereview'),
     key: Config.redacted('CLOUDINARY_API_KEY'),
@@ -144,7 +145,7 @@ export const nonEffectRouter: Effect.Effect<
     runtime,
     logger,
     fetch,
-    slackApiToken: Redacted.value(slackApiToken),
+    slackApiToken: Redacted.value(slackApiConfig.apiToken),
     cloudinaryApi: {
       cloudName: cloudinaryApi.cloudName,
       key: Redacted.value(cloudinaryApi.key),

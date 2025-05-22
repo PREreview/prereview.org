@@ -1,4 +1,4 @@
-import { Boolean, flow, Function, pipe } from 'effect'
+import { Boolean, Context, flow, Function, pipe, type Redacted } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -15,6 +15,8 @@ import { timeoutRequest } from './fetch.js'
 import type { SlackUserId } from './slack-user-id.js'
 import type { SlackUser } from './slack-user.js'
 import { NonEmptyStringC } from './types/string.js'
+
+export class SlackApiConfig extends Context.Tag('SlackApiConfig')<SlackApiConfig, { apiToken: Redacted.Redacted }>() {}
 
 export interface SlackApiEnv {
   slackApiToken: string

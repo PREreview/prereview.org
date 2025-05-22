@@ -64,6 +64,7 @@ import { OrcidOauth } from '../src/OrcidOauth.js'
 import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.js'
 import { Program } from '../src/Program.js'
 import { PublicUrl } from '../src/public-url.js'
+import { SlackApiConfig } from '../src/slack.js'
 import * as TemplatePage from '../src/TemplatePage.js'
 import { EmailAddress } from '../src/types/email-address.js'
 import type { NonEmptyString } from '../src/types/string.js'
@@ -1299,6 +1300,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Nodemailer.layer(nodemailer),
             Layer.succeed(FetchHttpClient.Fetch, fetch as typeof globalThis.fetch),
             Layer.succeed(GhostApi, { key: Redacted.make('key') }),
+            Layer.succeed(SlackApiConfig, { apiToken: Redacted.make('') }),
             Layer.succeed(OrcidOauth, {
               authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
               clientId: 'client-id',

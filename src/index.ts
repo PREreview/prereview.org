@@ -16,6 +16,7 @@ import * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
 import { Program } from './Program.js'
 import { PublicUrl } from './public-url.js'
 import * as Redis from './Redis.js'
+import { SlackApiConfig } from './slack.js'
 import * as TemplatePage from './TemplatePage.js'
 import { isPrereviewTeam } from './user.js'
 import * as Zenodo from './Zenodo/index.js'
@@ -66,6 +67,7 @@ pipe(
         Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
       ),
       Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
+      Layer.effect(SlackApiConfig, Config.all({ apiToken: Config.redacted('SLACK_API_TOKEN') })),
       Layer.effect(
         PrereviewCoarNotify.PrereviewCoarNotifyConfig,
         Config.all({
