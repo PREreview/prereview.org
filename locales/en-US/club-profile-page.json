@@ -16,8 +16,5 @@
   },
   "appearHere": {
     "message": "When they do, it’ll appear here."
-  },
-  "card": {
-    "message": "{names} reviewed {title}"
   }
 }
