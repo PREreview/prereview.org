@@ -3,6 +3,7 @@ import { LibsqlClient } from '@effect/sql-libsql'
 import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
+import { CloudinaryApiConfig } from './cloudinary.js'
 import { isAClubLead } from './club-details.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
@@ -68,6 +69,14 @@ pipe(
       ),
       Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
       Layer.effect(SlackApiConfig, Config.all({ apiToken: Config.redacted('SLACK_API_TOKEN') })),
+      Layer.effect(
+        CloudinaryApiConfig,
+        Config.all({
+          cloudName: Config.succeed('prereview'),
+          key: Config.redacted('CLOUDINARY_API_KEY'),
+          secret: Config.redacted('CLOUDINARY_API_SECRET'),
+        }),
+      ),
       Layer.effect(
         PrereviewCoarNotify.PrereviewCoarNotifyConfig,
         Config.all({

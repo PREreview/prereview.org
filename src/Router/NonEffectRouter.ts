@@ -6,31 +6,17 @@ import {
   HttpServerRequest,
   type HttpServerResponse,
 } from '@effect/platform'
-import {
-  Config,
-  Effect,
-  Either,
-  flow,
-  Match,
-  Option,
-  pipe,
-  Record,
-  Redacted,
-  type Runtime,
-  String,
-  Tuple,
-} from 'effect'
+import { Effect, Either, flow, Match, Option, pipe, Record, Redacted, type Runtime, String, Tuple } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as T from 'fp-ts/lib/Task.js'
 import { getSlackUser } from '../app-router.js'
-import { type CloudinaryApiEnv, getAvatarFromCloudinary } from '../cloudinary.js'
+import { CloudinaryApiConfig, getAvatarFromCloudinary } from '../cloudinary.js'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { withEnv } from '../Fpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
-import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { home } from '../home-page/index.js'
 import * as Keyv from '../keyv.js'
 import type { SupportedLocale } from '../locales/index.js'
@@ -70,6 +56,7 @@ export const nonEffectRouter: Effect.Effect<
   | FetchHttpClient.Fetch
   | ExpressConfig
   | SlackApiConfig
+  | CloudinaryApiConfig
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -95,11 +82,7 @@ export const nonEffectRouter: Effect.Effect<
   const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
 
   const slackApiConfig = yield* SlackApiConfig
-  const cloudinaryApi = yield* Config.all({
-    cloudName: Config.succeed('prereview'),
-    key: Config.redacted('CLOUDINARY_API_KEY'),
-    secret: Config.redacted('CLOUDINARY_API_SECRET'),
-  })
+  const cloudinaryApiConfig = yield* CloudinaryApiConfig
   const featureFlags = yield* FeatureFlags.FeatureFlags
 
   const preprints = yield* Preprints.Preprints
@@ -146,16 +129,12 @@ export const nonEffectRouter: Effect.Effect<
     logger,
     fetch,
     slackApiConfig,
-    cloudinaryApi: {
-      cloudName: cloudinaryApi.cloudName,
-      key: Redacted.value(cloudinaryApi.key),
-      secret: Redacted.value(cloudinaryApi.secret),
-    },
+    cloudinaryApiConfig,
     users,
   } satisfies Env
 
   return yield* pipe(FptsToEffect.task(handler(env)), Effect.andThen(Response.toHttpServerResponse))
-}).pipe(Effect.catchTag('ConfigError', () => pipe(HavingProblemsPage, Effect.andThen(Response.toHttpServerResponse))))
+})
 
 interface Env {
   body: unknown
@@ -181,7 +160,7 @@ interface Env {
     locationStore: Keyv.Keyv
     languagesStore: Keyv.Keyv
   }
-  cloudinaryApi: CloudinaryApiEnv['cloudinaryApi']
+  cloudinaryApiConfig: typeof CloudinaryApiConfig.Service
   slackApiConfig: typeof SlackApiConfig.Service
   fetch: typeof globalThis.fetch
 }
@@ -217,7 +196,11 @@ const routerWithoutHyperTs = pipe(
             }),
             getAvatar: withEnv(getAvatarFromCloudinary, {
               getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
-              cloudinaryApi: env.cloudinaryApi,
+              cloudinaryApi: {
+                cloudName: env.cloudinaryApiConfig.cloudName,
+                key: Redacted.value(env.cloudinaryApiConfig.key),
+                secret: Redacted.value(env.cloudinaryApiConfig.secret),
+              },
             }),
             getSlackUser: withEnv(getSlackUser, {
               ...env.logger,

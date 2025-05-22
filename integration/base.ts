@@ -35,6 +35,7 @@ import {
 import type { ConfigEnv } from '../src/app.js'
 import { AuthorInviteC } from '../src/author-invite.js'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.js'
+import { CloudinaryApiConfig } from '../src/cloudinary.js'
 import {
   ContactEmailAddressC,
   UnverifiedContactEmailAddress,
@@ -1301,6 +1302,11 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Layer.succeed(FetchHttpClient.Fetch, fetch as typeof globalThis.fetch),
             Layer.succeed(GhostApi, { key: Redacted.make('key') }),
             Layer.succeed(SlackApiConfig, { apiToken: Redacted.make('') }),
+            Layer.succeed(CloudinaryApiConfig, {
+              cloudName: 'prereview',
+              key: Redacted.make('key'),
+              secret: Redacted.make('app'),
+            }),
             Layer.succeed(OrcidOauth, {
               authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
               clientId: 'client-id',
