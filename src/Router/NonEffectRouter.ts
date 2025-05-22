@@ -48,7 +48,7 @@ import { CommentsForReview, reviewPage } from '../review-page/index.js'
 import * as ReviewRequests from '../ReviewRequests/index.js'
 import { reviewsPage } from '../reviews-page/index.js'
 import * as Routes from '../routes.js'
-import { SlackApiConfig, type SlackApiEnv } from '../slack.js'
+import { SlackApiConfig } from '../slack.js'
 import type { TemplatePage } from '../TemplatePage.js'
 import { LoggedInUser, type User } from '../user.js'
 import * as Response from './Response.js'
@@ -145,7 +145,7 @@ export const nonEffectRouter: Effect.Effect<
     runtime,
     logger,
     fetch,
-    slackApiToken: Redacted.value(slackApiConfig.apiToken),
+    slackApiConfig,
     cloudinaryApi: {
       cloudName: cloudinaryApi.cloudName,
       key: Redacted.value(cloudinaryApi.key),
@@ -182,7 +182,7 @@ interface Env {
     languagesStore: Keyv.Keyv
   }
   cloudinaryApi: CloudinaryApiEnv['cloudinaryApi']
-  slackApiToken: SlackApiEnv['slackApiToken']
+  slackApiConfig: typeof SlackApiConfig.Service
   fetch: typeof globalThis.fetch
 }
 
@@ -222,7 +222,7 @@ const routerWithoutHyperTs = pipe(
             getSlackUser: withEnv(getSlackUser, {
               ...env.logger,
               slackUserIdStore: env.users.slackUserIdStore,
-              slackApiToken: env.slackApiToken,
+              slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
               fetch: env.fetch,
             }),
             getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, {
