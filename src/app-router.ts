@@ -90,7 +90,6 @@ import {
 } from './log-in/index.js'
 import {
   changeAvatar,
-  changeCareerStage,
   changeCareerStageVisibility,
   changeContactEmailAddress,
   changeLanguages,
@@ -138,7 +137,6 @@ import {
   authorInviteStartMatch,
   authorInviteVerifyEmailAddressMatch,
   changeAvatarMatch,
-  changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
   changeContactEmailAddressMatch,
   changeLanguagesMatch,
@@ -716,37 +714,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             getCloudinaryAvatar: withEnv(Keyv.getAvatar, env),
           }),
           getAvatar: withEnv(getAvatarFromCloudinary, { ...env, getCloudinaryAvatar: withEnv(Keyv.getAvatar, env) }),
-        })),
-      ),
-    ),
-    pipe(
-      changeCareerStageMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS(
-            'body',
-            RM.gets(c => c.getBody()),
-          ),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(changeCareerStage)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          deleteCareerStage: withEnv(Keyv.deleteCareerStage, env),
-          getCareerStage: withEnv(Keyv.getCareerStage, env),
-          saveCareerStage: withEnv(Keyv.saveCareerStage, env),
         })),
       ),
     ),

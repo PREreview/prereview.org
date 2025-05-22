@@ -6,7 +6,7 @@ import { getSlackUser } from '../app-router.js'
 import { getAvatarFromCloudinary } from '../cloudinary.js'
 import { withEnv } from '../Fpts.js'
 import * as Keyv from '../keyv.js'
-import { myDetails } from '../my-details-page/index.js'
+import { changeCareerStage, myDetails } from '../my-details-page/index.js'
 import * as Routes from '../routes.js'
 import type { Env } from './NonEffectRouter.js'
 import type * as Response from './Response.js'
@@ -66,6 +66,26 @@ export const MyDetailsRouter = pipe(
             }),
             saveUserOnboarding: withEnv(Keyv.saveUserOnboarding, {
               userOnboardingStore: env.users.userOnboardingStore,
+              ...env.logger,
+            }),
+          }),
+      ),
+    ),
+    pipe(
+      Routes.changeCareerStageMatch.parser,
+      P.map(
+        () => (env: Env) =>
+          changeCareerStage({ body: env.body, method: env.method, locale: env.locale, user: env.loggedInUser })({
+            getCareerStage: withEnv(Keyv.getCareerStage, {
+              careerStageStore: env.users.careerStageStore,
+              ...env.logger,
+            }),
+            deleteCareerStage: withEnv(Keyv.deleteCareerStage, {
+              careerStageStore: env.users.careerStageStore,
+              ...env.logger,
+            }),
+            saveCareerStage: withEnv(Keyv.saveCareerStage, {
+              careerStageStore: env.users.careerStageStore,
               ...env.logger,
             }),
           }),
