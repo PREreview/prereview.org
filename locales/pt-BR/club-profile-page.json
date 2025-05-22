@@ -13,8 +13,5 @@
   },
   "appearHere": {
     "message": "Quando publicar, ela aparecerá aqui."
-  },
-  "card": {
-    "message": "{names} avaliou {title}"
   }
 }

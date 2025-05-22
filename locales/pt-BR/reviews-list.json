@@ -2,9 +2,6 @@
   "reviewTitle": {
     "message": "Avaliação PREreview de {preprint}"
   },
-  "reviewText": {
-    "message": "{reviewers} avaliou {preprint}"
-  },
   "reviewPublished": {
     "message": "Avaliação publicada"
   },

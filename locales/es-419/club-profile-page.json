@@ -13,8 +13,5 @@
   },
   "appearHere": {
     "message": "Cuando lo haga, aparecerá aquí."
-  },
-  "card": {
-    "message": "{names} revisó/revisaron {title}"
   }
 }
