@@ -14,6 +14,9 @@
   "slackLink": {
     "message": "crwdns1778:0crwdne1778:0"
   },
+  "menuHeading": {
+    "message": "crwdns5910:0crwdne5910:0"
+  },
   "menuDonate": {
     "message": "crwdns1780:0crwdne1780:0"
   },
@@ -37,6 +40,9 @@
   },
   "menuHowToUse": {
     "message": "crwdns1794:0crwdne1794:0"
+  },
+  "contactHeading": {
+    "message": "crwdns5912:0crwdne5912:0"
   },
   "contactEmail": {
     "message": "crwdns1796:0{address}crwdne1796:0"
