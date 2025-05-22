@@ -6,21 +6,18 @@ import {
   HttpServerRequest,
   type HttpServerResponse,
 } from '@effect/platform'
-import { Effect, Either, flow, Match, Option, pipe, Record, Redacted, type Runtime, String, Tuple } from 'effect'
+import { Effect, Either, flow, Match, Option, pipe, Record, type Runtime, String, Tuple } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as T from 'fp-ts/lib/Task.js'
-import { getSlackUser } from '../app-router.js'
-import { CloudinaryApiConfig, getAvatarFromCloudinary } from '../cloudinary.js'
+import { CloudinaryApiConfig } from '../cloudinary.js'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
 import * as FeatureFlags from '../FeatureFlags.js'
-import { withEnv } from '../Fpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { home } from '../home-page/index.js'
-import * as Keyv from '../keyv.js'
+import type * as Keyv from '../keyv.js'
 import type { SupportedLocale } from '../locales/index.js'
-import { myDetails } from '../my-details-page/index.js'
 import { myPrereviews } from '../my-prereviews-page/index.js'
 import type { OrcidOauth } from '../OrcidOauth.js'
 import { partners } from '../partners.js'
@@ -136,7 +133,7 @@ export const nonEffectRouter: Effect.Effect<
   return yield* pipe(FptsToEffect.task(handler(env)), Effect.andThen(Response.toHttpServerResponse))
 })
 
-interface Env {
+export interface Env {
   body: unknown
   commentsForReview: typeof CommentsForReview.Service
   locale: SupportedLocale
@@ -178,64 +175,6 @@ const routerWithoutHyperTs = pipe(
           home({ canSeeDesignTweaks: env.featureFlags.canSeeDesignTweaks, locale: env.locale })({
             getRecentPrereviews: () => EffectToFpts.toTask(env.prereviews.getFiveMostRecent, env.runtime),
             getRecentReviewRequests: () => EffectToFpts.toTask(env.reviewRequests.getFiveMostRecent, env.runtime),
-          }),
-      ),
-    ),
-    pipe(
-      Routes.myDetailsMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          myDetails({ locale: env.locale, user: env.loggedInUser })({
-            getUserOnboarding: withEnv(Keyv.getUserOnboarding, {
-              userOnboardingStore: env.users.userOnboardingStore,
-              ...env.logger,
-            }),
-            getOrcidToken: withEnv(Keyv.getOrcidToken, {
-              orcidTokenStore: env.users.orcidTokenStore,
-              ...env.logger,
-            }),
-            getAvatar: withEnv(getAvatarFromCloudinary, {
-              getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
-              cloudinaryApi: {
-                cloudName: env.cloudinaryApiConfig.cloudName,
-                key: Redacted.value(env.cloudinaryApiConfig.key),
-                secret: Redacted.value(env.cloudinaryApiConfig.secret),
-              },
-            }),
-            getSlackUser: withEnv(getSlackUser, {
-              ...env.logger,
-              slackUserIdStore: env.users.slackUserIdStore,
-              slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
-              fetch: env.fetch,
-            }),
-            getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, {
-              contactEmailAddressStore: env.users.contactEmailAddressStore,
-              ...env.logger,
-            }),
-            isOpenForRequests: withEnv(Keyv.isOpenForRequests, {
-              isOpenForRequestsStore: env.users.isOpenForRequestsStore,
-              ...env.logger,
-            }),
-            getCareerStage: withEnv(Keyv.getCareerStage, {
-              careerStageStore: env.users.careerStageStore,
-              ...env.logger,
-            }),
-            getResearchInterests: withEnv(Keyv.getResearchInterests, {
-              researchInterestsStore: env.users.researchInterestsStore,
-              ...env.logger,
-            }),
-            getLocation: withEnv(Keyv.getLocation, {
-              locationStore: env.users.locationStore,
-              ...env.logger,
-            }),
-            getLanguages: withEnv(Keyv.getLanguages, {
-              languagesStore: env.users.languagesStore,
-              ...env.logger,
-            }),
-            saveUserOnboarding: withEnv(Keyv.saveUserOnboarding, {
-              userOnboardingStore: env.users.userOnboardingStore,
-              ...env.logger,
-            }),
           }),
       ),
     ),
