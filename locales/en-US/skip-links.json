@@ -7,5 +7,13 @@
   },
   "prereview": {
     "message": "Skip to PREreview"
+  },
+  "preprintDetails": {
+    "message": "Skip to preprint details",
+    "description": "Link that takes the user straight to details about a preprint, such as its title and abstract."
+  },
+  "prereviews": {
+    "message": "Skip to PREreviews",
+    "description": "Link that takes the user straight to a list of PREreviews for a preprint."
   }
 }

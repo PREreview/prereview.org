@@ -196,8 +196,8 @@ export const toPage = ({
           <main id="prereviews">${message ? showFlashMessage(message, locale) : ''} ${response.main}</main>
         `,
         skipLinks: [
-          [html`Skip to preprint details`, '#preprint-details'],
-          [html`Skip to PREreviews`, '#prereviews'],
+          [rawHtml(translate(locale, 'skip-links', 'preprintDetails')()), '#preprint-details'],
+          [rawHtml(translate(locale, 'skip-links', 'prereviews')()), '#prereviews'],
         ],
         js: message ? (['notification-banner.js'] as const) : [],
         pageUrls,
