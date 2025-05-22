@@ -89,7 +89,7 @@ export const nonEffectRouter: Effect.Effect<
   const commentsForReview = yield* CommentsForReview
   const users = {
     avatarStore: expressConfig.avatarStore,
-    contactEmailAddressStore: expressConfig.avatarStore,
+    contactEmailAddressStore: expressConfig.contactEmailAddressStore,
     userOnboardingStore: expressConfig.userOnboardingStore,
     orcidTokenStore: expressConfig.orcidTokenStore,
     slackUserIdStore: expressConfig.slackUserIdStore,
