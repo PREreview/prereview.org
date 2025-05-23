@@ -148,10 +148,11 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, PgCli
                   `.raw,
                     Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
                   )
+                  console.log(results)
 
-                  if (results.rowsAffected !== 1) {
-                    yield* new EventStore.ResourceHasChanged()
-                  }
+                  // if (results.rowsAffected !== 1) {
+                  //   yield* new EventStore.ResourceHasChanged()
+                  // }
 
                   return
                 }
@@ -183,9 +184,10 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, PgCli
                   Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
                 )
 
-                if (results.rowsAffected !== 1) {
-                  yield* new EventStore.ResourceHasChanged()
-                }
+                console.log(results)
+                // if (results.rowsAffected !== 1) {
+                //   yield* new EventStore.ResourceHasChanged()
+                // }
               }),
               Effect.andThen(() =>
                 Effect.reduce(events, lastKnownVersion, (lastKnownVersion, event) =>
@@ -230,13 +232,14 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, PgCli
                             resource_id = ${encoded.resource_id}
                             AND resource_version >= ${encoded.resource_version}
                         )
-                    `.raw,
+                    `,
                       Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
                     )
 
-                    if (results.rowsAffected !== 1) {
-                      yield* new EventStore.ResourceHasChanged()
-                    }
+                    console.log(results)
+                    // if (results.rowsAffected !== 1) {
+                    //   yield* new EventStore.ResourceHasChanged()
+                    // }
 
                     return newResourceVersion
                   }),
@@ -270,7 +273,7 @@ const EventsTable = Schema.transformOrFail(
   Schema.Struct({
     eventId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('event_id')),
     resourceId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('resource_id')),
-    resourceVersion: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('resource_version')),
+    resourceVersion: Schema.propertySignature(Schema.NumberFromString).pipe(Schema.fromKey('resource_version')),
     eventTimestamp: Schema.propertySignature(Schema.DateTimeUtc).pipe(Schema.fromKey('event_timestamp')),
     eventType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('event_type')),
     payload: Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
@@ -301,4 +304,4 @@ const EventsTable = Schema.transformOrFail(
   },
 )
 
-const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })
+const LibsqlResults = Schema.Array(Schema.String)
