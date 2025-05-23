@@ -18,9 +18,9 @@ services:
       - 6379:6379
   cockroachdb:
     image: cockroachdb/cockroach
-    command: start-single-node
+    command: ['start-single-node', '--insecure']
     ports:
       - 8080:8080
+      - 26257:26257
     environment:
       - COCKROACH_USER=prereview
-      - COCKROACH_PASSWORD=password

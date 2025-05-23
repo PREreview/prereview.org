@@ -1,5 +1,6 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
+import { PgClient } from '@effect/sql-pg'
 import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
@@ -99,6 +100,18 @@ pipe(
       Layer.effect(PublicUrl, Config.url('PUBLIC_URL')),
       Layer.effect(SessionSecret, Config.redacted('SECRET')),
       Layer.effect(Zenodo.ZenodoOrigin, Config.url('ZENODO_URL')),
+    ),
+  ),
+  Effect.provide(
+    Layer.mergeAll(
+      PgClient.layer({
+        host: 'localhost',
+        port: 26257,
+        username: 'prereview',
+        database: 'defaultdb',
+      }),
+      Layer.effectDiscard(Effect.logDebug('Cockroach Database connected')),
+      Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Cockroach Database disconnected'))),
     ),
   ),
   Logger.withMinimumLogLevel(LogLevel.Debug),
