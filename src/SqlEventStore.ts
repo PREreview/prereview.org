@@ -109,23 +109,21 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, PgCli
     const commitEvents: EventStore.EventStore['commitEvents'] =
       (resourceId, lastKnownVersion) =>
       (...events) =>
-        sql
-          .withTransaction(
-            pipe(
-              Effect.gen(function* () {
-                const encoded = yield* Schema.encode(ResourcesTable)({
-                  id: resourceId,
-                  type: 'Comment',
-                  version: lastKnownVersion,
-                })
+        pipe(
+          Effect.gen(function* () {
+            const encoded = yield* Schema.encode(ResourcesTable)({
+              id: resourceId,
+              type: 'Comment',
+              version: lastKnownVersion,
+            })
 
-                const encodedNewVersion = yield* Schema.encode(ResourcesTable.fields.version)(
-                  lastKnownVersion + events.length,
-                )
+            const encodedNewVersion = yield* Schema.encode(ResourcesTable.fields.version)(
+              lastKnownVersion + events.length,
+            )
 
-                if (lastKnownVersion === 0) {
-                  const results = yield* pipe(
-                    sql`
+            if (lastKnownVersion === 0) {
+              const results = yield* pipe(
+                sql`
                     INSERT INTO
                       resources (
                         id,
@@ -145,19 +143,17 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, PgCli
                         WHERE
                           id = ${encoded.id}
                       )
-                  `.raw,
-                    Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
-                  )
-                  console.log(results)
+                  `,
+              )
 
-                  // if (results.rowsAffected !== 1) {
-                  //   yield* new EventStore.ResourceHasChanged()
-                  // }
+              if (results.count !== 1) {
+                yield* new EventStore.ResourceHasChanged()
+              }
 
-                  return
-                }
+              return
+            }
 
-                const rows = yield* sql`
+            const rows = yield* sql`
                 SELECT
                   id,
                   type
@@ -168,12 +164,12 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, PgCli
                   AND type = ${encoded.type}
               `
 
-                if (rows.length !== 1) {
-                  yield* new EventStore.FailedToCommitEvent({})
-                }
+            if (rows.length !== 1) {
+              yield* new EventStore.FailedToCommitEvent({})
+            }
 
-                const results = yield* pipe(
-                  sql`
+            const results = yield* pipe(
+              sql`
                   UPDATE resources
                   SET
                     version = ${encodedNewVersion}
@@ -181,31 +177,29 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, PgCli
                     id = ${encoded.id}
                     AND version = ${encoded.version}
                 `.raw,
-                  Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
-                )
+            )
 
-                console.log(results)
-                // if (results.rowsAffected !== 1) {
-                //   yield* new EventStore.ResourceHasChanged()
-                // }
-              }),
-              Effect.andThen(() =>
-                Effect.reduce(events, lastKnownVersion, (lastKnownVersion, event) =>
-                  Effect.gen(function* () {
-                    const newResourceVersion = lastKnownVersion + 1
-                    const eventId = yield* generateUuid
-                    const eventTimestamp = yield* DateTime.now
+            if (results.count !== 1) {
+              yield* new EventStore.ResourceHasChanged()
+            }
+          }),
+          Effect.andThen(() =>
+            Effect.reduce(events, lastKnownVersion, (lastKnownVersion, event) =>
+              Effect.gen(function* () {
+                const newResourceVersion = lastKnownVersion + 1
+                const eventId = yield* generateUuid
+                const eventTimestamp = yield* DateTime.now
 
-                    const encoded = yield* Schema.encode(EventsTable)({
-                      eventId,
-                      resourceId,
-                      resourceVersion: newResourceVersion,
-                      eventTimestamp,
-                      event,
-                    })
+                const encoded = yield* Schema.encode(EventsTable)({
+                  eventId,
+                  resourceId,
+                  resourceVersion: newResourceVersion,
+                  eventTimestamp,
+                  event,
+                })
 
-                    const results = yield* pipe(
-                      sql`
+                const results = yield* pipe(
+                  sql`
                       INSERT INTO
                         events (
                           event_id,
@@ -233,30 +227,26 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, PgCli
                             AND resource_version >= ${encoded.resource_version}
                         )
                     `,
-                      Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
-                    )
+                )
 
-                    console.log(results)
-                    // if (results.rowsAffected !== 1) {
-                    //   yield* new EventStore.ResourceHasChanged()
-                    // }
+                if (results.count !== 1) {
+                  yield* new EventStore.ResourceHasChanged()
+                }
 
-                    return newResourceVersion
-                  }),
-                ),
-              ),
-            ),
-          )
-          .pipe(
-            Effect.tapError(error =>
-              Effect.annotateLogs(Effect.logError('Unable to commit events'), {
-                error,
-                resourceId,
-                resourceType: 'Comment',
+                return newResourceVersion
               }),
             ),
-            Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
-          )
+          ),
+        ).pipe(
+          Effect.tapError(error =>
+            Effect.annotateLogs(Effect.logError('Unable to commit events'), {
+              error,
+              resourceId,
+              resourceType: 'Comment',
+            }),
+          ),
+          Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
+        )
 
     return { getAllEvents, getEvents, commitEvents }
   })
@@ -303,5 +293,3 @@ const EventsTable = Schema.transformOrFail(
       }),
   },
 )
-
-const LibsqlResults = Schema.Array(Schema.String)
