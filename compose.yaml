@@ -16,3 +16,11 @@ services:
     image: redis
     ports:
       - 6379:6379
+  cockroachdb:
+    image: cockroachdb/cockroach
+    command: start-single-node
+    ports:
+      - 8080:8080
+    environment:
+      - COCKROACH_USER=prereview
+      - COCKROACH_PASSWORD=password
