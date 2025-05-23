@@ -1,7 +1,6 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
-import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
-import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
+import { Config, Effect, Layer, Logger, LogLevel, pipe } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import { CloudinaryApiConfig } from './cloudinary.js'
@@ -57,17 +56,6 @@ pipe(
         canSeeDesignTweaks: Config.withDefault(Config.boolean('CAN_SEE_DESIGN_TWEAKS'), false),
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
       }),
-      Layer.mergeAll(
-        LibsqlClient.layerConfig({
-          url: Schema.Config(
-            'LIBSQL_URL',
-            Schema.Union(Schema.TemplateLiteral('file:', Schema.String), Schema.Literal(':memory:'), Schema.URL),
-          ),
-          authToken: Config.withDefault(Config.redacted('LIBSQL_AUTH_TOKEN'), undefined),
-        }),
-        Layer.effectDiscard(Effect.logDebug('Database connected')),
-        Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
-      ),
       Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
       Layer.effect(SlackApiConfig, Config.all({ apiToken: Config.redacted('SLACK_API_TOKEN') })),
       Layer.effect(

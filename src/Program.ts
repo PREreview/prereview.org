@@ -1,5 +1,5 @@
 import { HttpClient } from '@effect/platform'
-import { LibsqlMigrator } from '@effect/sql-libsql'
+import { PgMigrator } from '@effect/sql-pg'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import { fileURLToPath } from 'url'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
@@ -15,7 +15,7 @@ import * as GhostPage from './GhostPage.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
-import * as LibsqlEventStore from './LibsqlEventStore.js'
+import * as SqlEventStore from './LibsqlEventStore.js'
 import { DefaultLocale, translate } from './locales/index.js'
 import * as LoggingHttpClient from './LoggingHttpClient.js'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
@@ -342,8 +342,8 @@ const setUpFetch = Layer.effect(
   }),
 ).pipe(Layer.provide(CachingHttpClient.layer('10 seconds', '30 seconds')))
 
-const MigratorLive = LibsqlMigrator.layer({
-  loader: LibsqlMigrator.fromFileSystem(fileURLToPath(new URL('migrations', import.meta.url))),
+const MigratorLive = PgMigrator.layer({
+  loader: PgMigrator.fromFileSystem(fileURLToPath(new URL('migrations', import.meta.url))),
   schemaDirectory: 'src/migrations',
 })
 
@@ -371,6 +371,6 @@ export const Program = pipe(
     ),
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
-  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, LoggingHttpClient.layer)),
-  Layer.provide(Layer.mergeAll(Uuid.layer, MigratorLive, CachingHttpClient.layerRevalidationQueue)),
+  Layer.provide(Layer.mergeAll(commentEvents, SqlEventStore.layer, LoggingHttpClient.layer)),
+  Layer.provide(Layer.mergeAll(Uuid.layer, CachingHttpClient.layerRevalidationQueue)),
 )
