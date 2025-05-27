@@ -1,5 +1,5 @@
 import { Cookies, HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
-import { Effect, identity, Option, pipe } from 'effect'
+import { Boolean, Effect, identity, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { FlashMessage, Locale } from '../Context.js'
@@ -57,6 +57,7 @@ export const toHttpServerResponse = (
     })
     const message = yield* Effect.serviceOption(FlashMessage)
     const request = yield* HttpServerRequest.HttpServerRequest
+    const allowRobots = response._tag === 'StreamlinePageResponse' ? response.allowRobots !== false : true
 
     const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, request.url)
 
@@ -81,6 +82,10 @@ export const toHttpServerResponse = (
       Option.match(pageUrls.canonical, {
         onNone: () => identity,
         onSome: canonical => HttpServerResponse.setHeader('Link', `<${canonical.href}>; rel="canonical"`),
+      }),
+      Boolean.match(allowRobots, {
+        onFalse: () => HttpServerResponse.setHeader('X-Robots-Tag', 'none, noarchive'),
+        onTrue: () => identity,
       }),
     )
   })
