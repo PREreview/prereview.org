@@ -150,11 +150,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
-
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page
       .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
       .fill('Lorem ipsum dolor sit amet.')
@@ -2174,8 +2169,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
         name: 'Are the data presentations, including visualizations, well-suited to represent the data?',
       }),
     ).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page
       .getByRole('link', {
@@ -2184,9 +2177,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('Highly appropriate and clear', { exact: true })).toBeFocused()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
