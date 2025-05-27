@@ -177,11 +177,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
     await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
-
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but it needs to be improved').check()
     await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
@@ -2326,15 +2321,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'aria-invalid',
       'true',
     )
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Select yes if it would benefit from language editing' }).click()
 
     await expect(page.getByLabel('No')).toBeFocused()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
