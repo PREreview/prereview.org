@@ -9,7 +9,7 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import { P, match } from 'ts-pattern'
 import {
   type FieldDecoders,
-  type Fields,
+  type MissingE,
   type ValidFields,
   decodeFields,
   hasAnError,
@@ -29,7 +29,7 @@ import {
 } from '../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../shared-translation-elements.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from '../types/string.js'
 import type { User } from '../user.js'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
@@ -172,7 +172,23 @@ const FormToFieldsE: Encoder<DataPresentationForm, Form> = {
   }),
 }
 
-type DataPresentationForm = Fields<typeof dataPresentationFields>
+interface DataPresentationForm {
+  readonly dataPresentation: E.Either<
+    MissingE,
+    | 'inappropriate-unclear'
+    | 'somewhat-inappropriate-unclear'
+    | 'neutral'
+    | 'mostly-appropriate-clear'
+    | 'highly-appropriate-clear'
+    | 'skip'
+    | undefined
+  >
+  readonly dataPresentationInappropriateUnclearDetails: E.Either<never, NonEmptyString | undefined>
+  readonly dataPresentationSomewhatInappropriateUnclearDetails: E.Either<never, NonEmptyString | undefined>
+  readonly dataPresentationNeutralDetails: E.Either<never, NonEmptyString | undefined>
+  readonly dataPresentationMostlyAppropriateClearDetails: E.Either<never, NonEmptyString | undefined>
+  readonly dataPresentationHighlyAppropriateClearDetails: E.Either<never, NonEmptyString | undefined>
+}
 
 function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationForm, locale: SupportedLocale) {
   const error = hasAnError(form)
