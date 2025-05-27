@@ -9,7 +9,7 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import { P, match } from 'ts-pattern'
 import {
   type FieldDecoders,
-  type Fields,
+  type MissingE,
   type ValidFields,
   decodeFields,
   hasAnError,
@@ -29,7 +29,7 @@ import {
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from '../types/string.js'
 import type { User } from '../user.js'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
@@ -170,7 +170,23 @@ const FormToFieldsE: Encoder<MethodsAppropriateForm, Form> = {
   }),
 }
 
-type MethodsAppropriateForm = Fields<typeof methodsAppropriateFields>
+interface MethodsAppropriateForm {
+  readonly methodsAppropriate: E.Either<
+    MissingE,
+    | 'inappropriate'
+    | 'somewhat-inappropriate'
+    | 'adequate'
+    | 'mostly-appropriate'
+    | 'highly-appropriate'
+    | 'skip'
+    | undefined
+  >
+  readonly methodsAppropriateInappropriateDetails: E.Either<never, NonEmptyString | undefined>
+  readonly methodsAppropriateSomewhatInappropriateDetails: E.Either<never, NonEmptyString | undefined>
+  readonly methodsAppropriateAdequateDetails: E.Either<never, NonEmptyString | undefined>
+  readonly methodsAppropriateMostlyAppropriateDetails: E.Either<never, NonEmptyString | undefined>
+  readonly methodsAppropriateHighlyAppropriateDetails: E.Either<never, NonEmptyString | undefined>
+}
 
 function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriateForm, locale: SupportedLocale) {
   const error = hasAnError(form)
