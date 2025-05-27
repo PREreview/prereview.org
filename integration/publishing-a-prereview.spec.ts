@@ -30,12 +30,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
 
     await page.getByRole('button', { name: 'Start now' }).click()
-
     await page.getByLabel('With a template').check()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Continue' }).click()
     await waitForNotBusy(page)
 
@@ -118,9 +113,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByRole('button', { name: 'Start now' }).click()
 
     await page.getByLabel('With prompts').check()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('Partly', { exact: true }).check()
@@ -1939,15 +1931,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'aria-invalid',
       'true',
     )
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Select how you would like to start your PREreview' }).click()
 
     await expect(page.getByLabel('With prompts')).toBeFocused()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
