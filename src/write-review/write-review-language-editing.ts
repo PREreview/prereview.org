@@ -9,7 +9,7 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import { P, match } from 'ts-pattern'
 import {
   type FieldDecoders,
-  type Fields,
+  type MissingE,
   type ValidFields,
   decodeFields,
   hasAnError,
@@ -29,7 +29,7 @@ import {
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from '../types/string.js'
 import type { User } from '../user.js'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
@@ -152,7 +152,11 @@ const FormToFieldsE: Encoder<LanguageEditingForm, Form> = {
   }),
 }
 
-type LanguageEditingForm = Fields<typeof languageEditingFields>
+interface LanguageEditingForm {
+  readonly languageEditing: E.Either<MissingE, 'no' | 'yes' | undefined>
+  readonly languageEditingNoDetails: E.Either<never, NonEmptyString | undefined>
+  readonly languageEditingYesDetails: E.Either<never, NonEmptyString | undefined>
+}
 
 function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm, locale: SupportedLocale) {
   const error = hasAnError(form)
