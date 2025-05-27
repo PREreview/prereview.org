@@ -40,7 +40,7 @@ describe('writeReview', () => {
         })()
 
         expect(actual).toStrictEqual({
-          _tag: 'StreamlinePageResponse',
+          _tag: 'PageResponse',
           canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
           status: Status.OK,
           title: expect.anything(),
@@ -84,7 +84,7 @@ describe('writeReview', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
+        _tag: 'PageResponse',
         canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
         status: Status.OK,
         title: expect.anything(),

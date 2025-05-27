@@ -4,7 +4,7 @@ import rtlDetect from 'rtl-detect'
 import { html, plainText, rawHtml } from '../../html.js'
 import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
-import { StreamlinePageResponse } from '../../response.js'
+import { PageResponse } from '../../response.js'
 import { preprintReviewsMatch, requestReviewMatch, requestReviewStartMatch } from '../../routes.js'
 import type { User } from '../../user.js'
 
@@ -22,7 +22,7 @@ export const requestReviewPage = ({
   const t = translate(locale, 'request-review-flow')
   const preprintTitle = `<cite dir="${rtlDetect.getLangDir(preprint.language)}" lang="${preprint.language}">${preprint.title.toString()}</cite>`
 
-  return StreamlinePageResponse({
+  return PageResponse({
     title: pipe(t('requestAPrereview')(), plainText),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"

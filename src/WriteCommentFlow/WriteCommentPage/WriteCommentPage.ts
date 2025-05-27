@@ -5,7 +5,7 @@ import { getClubName } from '../../club-details.js'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import type { Prereview } from '../../Prereview.js'
-import { StreamlinePageResponse } from '../../response.js'
+import { PageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import { renderDate } from '../../time.js'
 import type { User } from '../../user.js'
@@ -21,7 +21,7 @@ export const WriteCommentPage = ({
 }) => {
   const t = translate(locale)
 
-  return StreamlinePageResponse({
+  return PageResponse({
     title: plainText(t('write-comment-flow', 'writeCommentTitle')()),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"

@@ -55,7 +55,7 @@ test('content looks right', async ({ showPage }) => {
       }),
   })()
 
-  if (response._tag !== 'StreamlinePageResponse') {
+  if (response._tag !== 'PageResponse') {
     throw new Error('incorrect page response')
   }
 
@@ -115,7 +115,7 @@ test('content looks right when logged in', async ({ showPage }) => {
       }),
   })()
 
-  if (response._tag !== 'StreamlinePageResponse') {
+  if (response._tag !== 'PageResponse') {
     throw new Error('incorrect page response')
   }
 

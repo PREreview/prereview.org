@@ -3,7 +3,7 @@ import rtlDetect from 'rtl-detect'
 import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import type { Prereview } from '../../Prereview.js'
-import { StreamlinePageResponse } from '../../response.js'
+import { PageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 
@@ -18,7 +18,7 @@ export const CarryOnPage = ({
   prereview: Prereview
   locale: SupportedLocale
 }) =>
-  StreamlinePageResponse({
+  PageResponse({
     title: plainText(translate(locale, 'write-comment-flow', 'writeCommentTitle')()),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"

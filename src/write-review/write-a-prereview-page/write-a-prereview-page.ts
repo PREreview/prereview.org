@@ -7,13 +7,13 @@ import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../htm
 import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { Preprint } from '../../preprint.js'
 import * as PreprintServers from '../../PreprintServers/index.js'
-import { StreamlinePageResponse } from '../../response.js'
+import { PageResponse } from '../../response.js'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../routes.js'
 import { renderDate } from '../../time.js'
 import type { User } from '../../user.js'
 
 export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: User) =>
-  StreamlinePageResponse({
+  PageResponse({
     title: plainText(translate(locale, 'write-review', 'writeAPrereview')()),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"

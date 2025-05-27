@@ -16,7 +16,7 @@ export const StartNow = ({
 }: {
   id: number
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
+  Response.PageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   | Uuid.GenerateUuid
   | Prereviews.Prereviews

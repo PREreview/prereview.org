@@ -6,7 +6,7 @@ import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
+import { LogInResponse, type PageResponse, RedirectResponse } from '../../response.js'
 import {
   type GetReviewRequestEnv,
   type SaveReviewRequestEnv,
@@ -29,7 +29,7 @@ export const requestReviewStart = ({
   locale: SupportedLocale
 }): RT.ReaderTask<
   GetPreprintTitleEnv & GetReviewRequestEnv & SaveReviewRequestEnv,
-  LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
+  LogInResponse | PageResponse | RedirectResponse
 > =>
   pipe(
     RTE.Do,

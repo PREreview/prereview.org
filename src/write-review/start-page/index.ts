@@ -6,7 +6,7 @@ import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintEnv, getPreprint } from '../../preprint.js'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
+import { LogInResponse, type PageResponse, RedirectResponse } from '../../response.js'
 import { writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../routes.js'
 import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
 import type { User } from '../../user.js'
@@ -23,10 +23,7 @@ export const writeReviewStart = ({
   id: IndeterminatePreprintId
   locale: SupportedLocale
   user?: User
-}): RT.ReaderTask<
-  GetPreprintEnv & FormStoreEnv,
-  PageResponse | StreamlinePageResponse | RedirectResponse | LogInResponse
-> =>
+}): RT.ReaderTask<GetPreprintEnv & FormStoreEnv, PageResponse | RedirectResponse | LogInResponse> =>
   pipe(
     getPreprint(id),
     RTE.matchEW(

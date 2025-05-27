@@ -74,7 +74,7 @@ describe('requestReviewStart', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
+        _tag: 'PageResponse',
         canonical: format(requestReviewStartMatch.formatter, { id: preprintTitle.id }),
         status: Status.OK,
         title: expect.anything(),

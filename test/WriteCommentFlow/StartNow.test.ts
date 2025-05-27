@@ -121,7 +121,7 @@ describe('StartNow', () => {
           const actual = yield* _.StartNow({ id })
 
           expect(actual).toStrictEqual({
-            _tag: 'StreamlinePageResponse',
+            _tag: 'PageResponse',
             canonical: Routes.WriteCommentStartNow.href({ id: prereview.id }),
             status: StatusCodes.OK,
             title: expect.anything(),

@@ -14,7 +14,7 @@ export const WriteCommentPage = ({
 }: {
   id: number
 }): Effect.Effect<
-  Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse,
+  Response.PageResponse | Response.RedirectResponse,
   never,
   Comments.GetNextExpectedCommandForUser | GetPrereview | Locale
 > =>

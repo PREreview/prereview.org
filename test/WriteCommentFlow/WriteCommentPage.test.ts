@@ -22,7 +22,7 @@ describe('WriteCommentPage', () => {
             const actual = yield* _.WriteCommentPage({ id })
 
             expect(actual).toStrictEqual({
-              _tag: 'StreamlinePageResponse',
+              _tag: 'PageResponse',
               canonical: Routes.WriteComment.href({ id: prereview.id }),
               status: StatusCodes.OK,
               title: expect.anything(),
@@ -72,7 +72,7 @@ describe('WriteCommentPage', () => {
           const actual = yield* _.WriteCommentPage({ id })
 
           expect(actual).toStrictEqual({
-            _tag: 'StreamlinePageResponse',
+            _tag: 'PageResponse',
             canonical: Routes.WriteComment.href({ id: prereview.id }),
             status: StatusCodes.OK,
             title: expect.anything(),

@@ -35,7 +35,7 @@ test('content looks right when already started', async ({ showPage }) => {
     saveAuthorInvite: () => TE.left('unavailable'),
   })()
 
-  if (response._tag !== 'StreamlinePageResponse') {
+  if (response._tag !== 'PageResponse') {
     throw new Error('incorrect page response')
   }
 

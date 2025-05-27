@@ -15,7 +15,7 @@ import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
-import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
+import { PageResponse, RedirectResponse } from '../response.js'
 import {
   authorInviteDeclineMatch,
   authorInviteMatch,
@@ -68,7 +68,7 @@ export const authorInvite = ({
   id: Uuid
   locale: SupportedLocale
   user?: User
-}): RT.ReaderTask<GetPrereviewEnv & GetAuthorInviteEnv, PageResponse | RedirectResponse | StreamlinePageResponse> =>
+}): RT.ReaderTask<GetPrereviewEnv & GetAuthorInviteEnv, PageResponse | RedirectResponse> =>
   pipe(
     RTE.Do,
     RTE.let('user', () => user),
@@ -123,7 +123,7 @@ function startPage({
 }) {
   const t = translate(locale, 'author-invite-flow')
 
-  return StreamlinePageResponse({
+  return PageResponse({
     title: plainText(t('beListed')()),
     main: html`
       <h1>${t('beListed')()}</h1>

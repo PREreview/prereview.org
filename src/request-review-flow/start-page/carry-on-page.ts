@@ -2,14 +2,14 @@ import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../html.js'
 import { translate, type SupportedLocale } from '../../locales/index.js'
-import { StreamlinePageResponse } from '../../response.js'
+import { PageResponse } from '../../response.js'
 import type { ReviewRequestPreprintId } from '../../review-request.js'
 import { preprintReviewsMatch, requestReviewCheckMatch, requestReviewStartMatch } from '../../routes.js'
 
 export const carryOnPage = (locale: SupportedLocale, preprint: ReviewRequestPreprintId) => {
   const t = translate(locale, 'request-review-flow')
 
-  return StreamlinePageResponse({
+  return PageResponse({
     title: pipe(t('requestAPrereview')(), plainText),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back"

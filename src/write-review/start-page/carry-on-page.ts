@@ -3,7 +3,7 @@ import rtlDetect from 'rtl-detect'
 import { html, plainText, rawHtml } from '../../html.js'
 import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
-import { StreamlinePageResponse } from '../../response.js'
+import { PageResponse } from '../../response.js'
 import { preprintReviewsMatch, writeReviewStartMatch } from '../../routes.js'
 import { nextFormMatch, type Form } from '../form.js'
 
@@ -12,7 +12,7 @@ const cite = (lang: PreprintTitle['language']) => (text: string) =>
 
 export const carryOnPage = (preprint: PreprintTitle, form: Form, locale: SupportedLocale) => {
   const t = translate(locale)
-  return StreamlinePageResponse({
+  return PageResponse({
     title: plainText`${t('write-review', 'writeAPrereview')()}`,
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"

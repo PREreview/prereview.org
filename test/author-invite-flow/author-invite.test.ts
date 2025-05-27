@@ -50,7 +50,7 @@ describe('authorInvite', () => {
     })()
 
     expect(actual).toStrictEqual({
-      _tag: 'StreamlinePageResponse',
+      _tag: 'PageResponse',
       canonical: format(authorInviteMatch.formatter, { id: inviteId }),
       status: Status.OK,
       title: expect.anything(),
@@ -97,7 +97,7 @@ describe('authorInvite', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
+        _tag: 'PageResponse',
         canonical: format(authorInviteMatch.formatter, { id: inviteId }),
         status: Status.OK,
         title: expect.anything(),

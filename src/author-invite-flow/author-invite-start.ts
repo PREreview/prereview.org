@@ -16,7 +16,7 @@ import {
 import { type Html, html, plainText } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
-import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -50,7 +50,7 @@ export const authorInviteStart = ({
   user?: User
 }): RT.ReaderTask<
   GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
-  LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
+  LogInResponse | PageResponse | RedirectResponse
 > =>
   pipe(
     RTE.Do,
@@ -108,7 +108,7 @@ function nextFormMatch(invite: AssignedAuthorInvite) {
 
 function carryOnPage(inviteId: Uuid, invite: AssignedAuthorInvite, locale: SupportedLocale) {
   const t = translate(locale, 'author-invite-flow')
-  return StreamlinePageResponse({
+  return PageResponse({
     title: pipe(t('beListed')(), plainText),
     main: html`
       <h1>${t('beListed')()}</h1>
