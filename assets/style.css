@@ -313,14 +313,14 @@ body {
   padding-inline: var(--grid-gutter);
   font-size: var(--step--1);
 
-  .untweaked & {
+  header:has(.navigation > nav) & {
     flex-wrap: wrap;
     row-gap: var(--space-2xs);
     padding-block: var(--space-2xs);
     column-gap: var(--space-m);
   }
 
-  .tweaked & {
+  header :not(:has(.navigation > nav)) & {
     @media (width >= 30em) {
       font-size: var(--step-0);
     }
@@ -330,7 +330,7 @@ body {
     flex-grow: 1;
     padding-block: calc(var(--space-s-m) - var(--space-2xs));
 
-    .tweaked & {
+    header:not(:has(.navigation > nav)) & {
       margin-inline-end: var(--space-2xs-s);
     }
 
@@ -347,7 +347,7 @@ body {
   & :any-link {
     color: currentcolor;
 
-    .tweaked :not(.logo) > & {
+    header:not(:has(.navigation > nav)) :not(.logo) > & {
       margin-inline: var(--space-2xs-s);
     }
   }
@@ -363,7 +363,7 @@ body {
 body > .contents {
   flex-grow: 1;
 
-  .tweaked & {
+  body:not(:has(.navigation > nav)) & {
     margin-block-start: var(--space-s-m);
   }
 }
@@ -1382,7 +1382,7 @@ expander-button {
   display: contents;
 }
 
-.untweaked :--expander-button {
+:not(expander-button) > :--expander-button {
   block-size: var(--space-l);
   padding: var(--space-4xs-3xs);
   padding-inline: 0 0.4ch;
@@ -1435,7 +1435,7 @@ expander-button {
   }
 }
 
-.tweaked :--expander-button {
+expander-button > :--expander-button {
   position: relative;
   padding-block: 0;
   padding-inline: var(--space-2xs-s);
