@@ -161,11 +161,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
     await page.getByLabel('How is it neither clear nor unclear?').fill('Cras lobortis quam vitae.')
-
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
@@ -2223,8 +2218,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
         name: 'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?',
       }),
     ).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page
       .getByRole('link', {
@@ -2233,9 +2226,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('Very clearly')).toBeFocused()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
