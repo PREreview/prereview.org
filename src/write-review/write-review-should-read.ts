@@ -9,7 +9,7 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import { P, match } from 'ts-pattern'
 import {
   type FieldDecoders,
-  type Fields,
+  type MissingE,
   type ValidFields,
   decodeFields,
   hasAnError,
@@ -29,7 +29,7 @@ import {
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from '../types/string.js'
 import type { User } from '../user.js'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
@@ -155,7 +155,12 @@ const FormToFieldsE: Encoder<ShouldReadForm, Form> = {
   }),
 }
 
-type ShouldReadForm = Fields<typeof shouldReadFields>
+interface ShouldReadForm {
+  readonly shouldRead: E.Either<MissingE, 'no' | 'yes-but' | 'yes' | undefined>
+  readonly shouldReadNoDetails: E.Either<never, NonEmptyString | undefined>
+  readonly shouldReadYesButDetails: E.Either<never, NonEmptyString | undefined>
+  readonly shouldReadYesDetails: E.Either<never, NonEmptyString | undefined>
+}
 
 function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, locale: SupportedLocale) {
   const error = hasAnError(form)
