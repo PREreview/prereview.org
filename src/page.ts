@@ -65,7 +65,7 @@ export const page = ({
   environmentLabel,
   fathomId,
   publicUrl,
-  canChooseLocale,
+  canChooseLocale = false,
   useCrowdinInContext,
   canSeeDesignTweaks = false,
 }: {
@@ -120,9 +120,7 @@ export const page = ({
           ),
         )}
         ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
-        ${canChooseLocale === true
-          ? html`<script src="${assets['locale-picker.js'].path}" type="module"></script>`
-          : ''}
+        ${canChooseLocale ? html`<script src="${assets['locale-picker.js'].path}" type="module"></script>` : ''}
         ${typeof fathomId === 'string'
           ? html` <script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
           : ''}
@@ -494,7 +492,7 @@ export const page = ({
                   <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
                 </div>
 
-                ${canChooseLocale === true
+                ${canChooseLocale
                   ? html`
                       <div>
                         <span>${translate(locale, 'footer', 'chooseLanguage')()}</span>
