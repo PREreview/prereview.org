@@ -8,6 +8,7 @@ import { RecordC, RecordsC, type Record as ZenodoRecord } from 'zenodo-ts'
 import {
   areLoggedIn,
   canAddMultipleAuthors,
+  canChooseLocale,
   canLogIn,
   expect,
   hasAVerifiedEmailAddress,
@@ -95,6 +96,16 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
   },
 )
+
+test.extend(canChooseLocale)('can choose a locale before starting', async ({ javaScriptEnabled, page }, testInfo) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+
+  await page.getByRole('link', { name: 'português (Brasil)' }).click()
+
+  testInfo.fail(!javaScriptEnabled)
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Escrever uma avaliação PREreview')
+})
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a question-based PREreview',

@@ -1,5 +1,5 @@
 import { Status } from 'hyper-ts'
-import { areLoggedIn, canLogIn, expect, test } from './base.js'
+import { areLoggedIn, canChooseLocale, canLogIn, expect, test } from './base.js'
 
 test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
   await page.goto('/')
@@ -22,6 +22,16 @@ test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
   await page.getByRole('button', { name: 'Request PREreview' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
+})
+
+test.extend(canChooseLocale)('can choose a locale before starting', async ({ javaScriptEnabled, page }, testInfo) => {
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+
+  await page.getByRole('link', { name: 'português (Brasil)' }).click()
+
+  testInfo.fail(!javaScriptEnabled)
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Solicite uma avaliação')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can request a PREreview using a pseudonym', async ({ fetch, page }) => {

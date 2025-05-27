@@ -1,4 +1,5 @@
 import {
+  canChooseLocale,
   canLogIn,
   expect,
   hasAVerifiedEmailAddress,
@@ -25,6 +26,21 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
     await page.getByRole('button', { name: 'Update PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Name added')
+  },
+)
+
+test.extend(invitedToBeAnAuthor).extend(canChooseLocale)(
+  'can choose a locale before starting',
+  async ({ javaScriptEnabled, page }, testInfo) => {
+    const opener = page.waitForEvent('popup')
+    await page.getByRole('link', { name: 'Be listed as an author' }).click()
+    page = await opener
+
+    await page.getByRole('link', { name: 'português (Brasil)' }).click()
+
+    testInfo.fail(!javaScriptEnabled)
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Aparecer como autor')
   },
 )
 
