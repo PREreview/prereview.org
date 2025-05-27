@@ -9,7 +9,7 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import { P, match } from 'ts-pattern'
 import {
   type FieldDecoders,
-  type Fields,
+  type MissingE,
   type ValidFields,
   decodeFields,
   hasAnError,
@@ -24,7 +24,7 @@ import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../
 import { writeReviewIntroductionMatchesMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from '../types/string.js'
 import type { User } from '../user.js'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
@@ -150,7 +150,12 @@ const FormToFieldsE: Encoder<IntroductionMatchesForm, Form> = {
   }),
 }
 
-type IntroductionMatchesForm = Fields<typeof introductionMatchesFields>
+interface IntroductionMatchesForm {
+  readonly introductionMatches: E.Either<MissingE, 'yes' | 'partly' | 'no' | 'skip' | undefined>
+  readonly introductionMatchesYesDetails: E.Either<never, NonEmptyString | undefined>
+  readonly introductionMatchesPartlyDetails: E.Either<never, NonEmptyString | undefined>
+  readonly introductionMatchesNoDetails: E.Either<never, NonEmptyString | undefined>
+}
 
 function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatchesForm, locale: SupportedLocale) {
   const error = hasAnError(form)
