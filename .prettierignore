@@ -3,7 +3,6 @@
 /.vscode/
 /data/
 /dist/
-/integration/snapshots/
 /integration-results/
 /src/locales/
 /src/manifest.json

@@ -65,7 +65,7 @@ test-fast: node_modules src/manifest.json
 	FAST_CHECK_NUM_RUNS=10 npx jest --onlyChanged
 
 test-integration: test-integration-image
-	docker run --rm --volume "$$(pwd)"/integration/snapshots:/app/integration/snapshots --volume "$$(pwd)"/integration-results:/app/integration-results --volume "$$(pwd)"/visual-regression/snapshots:/app/visual-regression/snapshots ${INTEGRATION_TEST_IMAGE_TAG} ${TEST} ${ARGS}
+	docker run --rm --volume "$$(pwd)"/integration-results:/app/integration-results --volume "$$(pwd)"/visual-regression/snapshots:/app/visual-regression/snapshots ${INTEGRATION_TEST_IMAGE_TAG} ${TEST} ${ARGS}
 
 update-snapshots: ARGS=--update-snapshots
 update-snapshots: test-integration

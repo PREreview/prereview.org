@@ -80,7 +80,6 @@ export default defineConfig({
         { ...env, name: `${env.name} (no JavaScript)`, use: { ...env.use, javaScriptEnabled: false } },
       ]),
   ],
-  snapshotDir: path.resolve('integration', 'snapshots'),
   testDir: 'integration',
   use: {
     javaScriptEnabled: true,
