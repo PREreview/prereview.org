@@ -9,7 +9,7 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import { P, match } from 'ts-pattern'
 import {
   type FieldDecoders,
-  type Fields,
+  type MissingE,
   type ValidFields,
   decodeFields,
   hasAnError,
@@ -29,7 +29,7 @@ import {
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from '../types/string.js'
 import type { User } from '../user.js'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
@@ -154,7 +154,14 @@ const FormToFieldsE: Encoder<NovelForm, Form> = {
   }),
 }
 
-type NovelForm = Fields<typeof novelFields>
+interface NovelForm {
+  readonly novel: E.Either<MissingE, 'no' | 'limited' | 'some' | 'substantial' | 'highly' | 'skip' | undefined>
+  readonly novelNoDetails: E.Either<never, NonEmptyString | undefined>
+  readonly novelLimitedDetails: E.Either<never, NonEmptyString | undefined>
+  readonly novelSomeDetails: E.Either<never, NonEmptyString | undefined>
+  readonly novelSubstantialDetails: E.Either<never, NonEmptyString | undefined>
+  readonly novelHighlyDetails: E.Either<never, NonEmptyString | undefined>
+}
 
 function novelForm(preprint: PreprintTitle, form: NovelForm, locale: SupportedLocale) {
   const error = hasAnError(form)
