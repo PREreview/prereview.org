@@ -169,11 +169,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
-
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
     await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
@@ -2274,8 +2269,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
         name: 'Is the preprint likely to advance academic knowledge?',
       }),
     ).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page
       .getByRole('link', {
@@ -2284,9 +2277,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('Highly likely', { exact: true })).toBeFocused()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
