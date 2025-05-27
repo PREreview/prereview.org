@@ -244,7 +244,7 @@ export const page = ({
                             <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}>Menu</a>
                             <button aria-controls="navigation" aria-expanded="false" hidden><span>Menu</span></button>
                           </expander-button>
-                          ${pageUrls
+                          ${canChooseLocale && pageUrls
                             ? html`
                                 <expander-button>
                                   <a
@@ -381,7 +381,7 @@ export const page = ({
                           </div>
                         </div>
 
-                        ${pageUrls
+                        ${canChooseLocale && pageUrls
                           ? html`
                               <div id="locale" class="menu" hidden>
                                 <div class="locales">
