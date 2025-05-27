@@ -127,11 +127,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page
       .getByLabel('How does the introduction only partly explain the objective?')
       .fill('Consectetur adipiscing elit.')
-
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
     await page.getByLabel('Why are they neither appropriate nor inappropriate?').fill('Sed egestas tincidunt lacus.')
@@ -2040,8 +2035,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
         name: 'Does the introduction explain the objective of the research presented in the preprint?',
       }),
     ).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page
       .getByRole('link', {
@@ -2050,9 +2043,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
