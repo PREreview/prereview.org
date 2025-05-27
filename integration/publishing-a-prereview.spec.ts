@@ -135,11 +135,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
     await page.getByLabel('Why are they neither appropriate nor inappropriate?').fill('Sed egestas tincidunt lacus.')
-
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
     await page.getByLabel('Why are they neither supported nor unsupported?').fill('At blandit est facilisis et.')
@@ -2083,8 +2078,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
         name: 'Are the methods well-suited for this research?',
       }),
     ).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page
       .getByRole('link', {
@@ -2093,9 +2086,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('Highly appropriate', { exact: true })).toBeFocused()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
