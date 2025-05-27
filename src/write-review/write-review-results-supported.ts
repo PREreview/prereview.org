@@ -9,7 +9,7 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import { P, match } from 'ts-pattern'
 import {
   type FieldDecoders,
-  type Fields,
+  type MissingE,
   type ValidFields,
   decodeFields,
   hasAnError,
@@ -29,7 +29,7 @@ import {
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from '../types/string.js'
 import type { User } from '../user.js'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
@@ -163,7 +163,17 @@ const FormToFieldsE: Encoder<ResultsSupportedForm, Form> = {
   }),
 }
 
-type ResultsSupportedForm = Fields<typeof resultsSupportedFields>
+interface ResultsSupportedForm {
+  readonly resultsSupported: E.Either<
+    MissingE,
+    'not-supported' | 'partially-supported' | 'neutral' | 'well-supported' | 'strongly-supported' | 'skip' | undefined
+  >
+  readonly resultsSupportedNotSupportedDetails: E.Either<never, NonEmptyString | undefined>
+  readonly resultsSupportedPartiallySupportedDetails: E.Either<never, NonEmptyString | undefined>
+  readonly resultsSupportedNeutralDetails: E.Either<never, NonEmptyString | undefined>
+  readonly resultsSupportedWellSupportedDetails: E.Either<never, NonEmptyString | undefined>
+  readonly resultsSupportedStronglySupportedDetails: E.Either<never, NonEmptyString | undefined>
+}
 
 function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedForm, locale: SupportedLocale) {
   const error = hasAnError(form)
