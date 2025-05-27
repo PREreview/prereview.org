@@ -57,7 +57,7 @@ export const toHttpServerResponse = (
     })
     const message = yield* Effect.serviceOption(FlashMessage)
     const request = yield* HttpServerRequest.HttpServerRequest
-    const allowRobots = response._tag === 'StreamlinePageResponse' ? response.allowRobots !== false : true
+    const allowRobots = response._tag !== 'TwoUpPageResponse' ? response.allowRobots !== false : true
 
     const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, request.url)
 

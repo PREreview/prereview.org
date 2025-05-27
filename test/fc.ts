@@ -261,9 +261,11 @@ export const supportedLocale = (): fc.Arbitrary<SupportedLocale> =>
   constantFrom(...Array.fromIterable(SupportedLocales))
 
 export const pageResponse = ({
+  allowRobots,
   canonical,
   status,
 }: {
+  allowRobots?: fc.Arbitrary<PageResponse['allowRobots']>
   canonical?: fc.Arbitrary<PageResponse['canonical']>
   status?: fc.Arbitrary<PageResponse['status']>
 } = {}): fc.Arbitrary<PageResponse> =>
@@ -310,6 +312,7 @@ export const pageResponse = ({
         > => !['collapsible-menu.js', 'expander-button.js', 'skip-link.js'].includes(js),
       ),
     ),
+    allowRobots: allowRobots ?? fc.option(constant(false), { nil: undefined }),
   })
 
 export const streamlinePageResponse = ({

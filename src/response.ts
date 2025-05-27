@@ -40,6 +40,7 @@ export interface PageResponse {
   readonly skipToLabel: 'form' | 'main' | 'prereview'
   readonly extraSkipLink?: [Html, string]
   readonly js: Required<Page>['js']
+  readonly allowRobots?: false
 }
 
 export interface StreamlinePageResponse {
@@ -292,7 +293,7 @@ export const handlePageResponse = ({
     ),
     RM.ichainFirst(() =>
       RM.fromMiddleware(
-        match(response._tag === 'StreamlinePageResponse' ? response.allowRobots : undefined)
+        match(response.allowRobots)
           .with(false, () => M.header('X-Robots-Tag', 'none, noarchive'))
           .with(undefined, M.of<HeadersOpen>)
           .exhaustive(),
