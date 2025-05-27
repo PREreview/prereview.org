@@ -9,7 +9,7 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import { P, match } from 'ts-pattern'
 import {
   type FieldDecoders,
-  type Fields,
+  type MissingE,
   type ValidFields,
   decodeFields,
   hasAnError,
@@ -29,7 +29,7 @@ import {
 } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from '../types/string.js'
 import type { User } from '../user.js'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 import { prereviewOfSuffix } from './shared-elements.js'
@@ -163,7 +163,17 @@ const FormToFieldsE: Encoder<FindingsNextStepsForm, Form> = {
   }),
 }
 
-type FindingsNextStepsForm = Fields<typeof findingsNextStepsFields>
+interface FindingsNextStepsForm {
+  readonly findingsNextSteps: E.Either<
+    MissingE,
+    'inadequately' | 'insufficiently' | 'adequately' | 'clearly-insightfully' | 'exceptionally' | 'skip' | undefined
+  >
+  readonly findingsNextStepsInadequatelyDetails: E.Either<never, NonEmptyString | undefined>
+  readonly findingsNextStepsInsufficientlyDetails: E.Either<never, NonEmptyString | undefined>
+  readonly findingsNextStepsAdequatelyDetails: E.Either<never, NonEmptyString | undefined>
+  readonly findingsNextStepsClearlyInsightfullyDetails: E.Either<never, NonEmptyString | undefined>
+  readonly findingsNextStepsExceptionallyDetails: E.Either<never, NonEmptyString | undefined>
+}
 
 function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsForm, locale: SupportedLocale) {
   const error = hasAnError(form)
