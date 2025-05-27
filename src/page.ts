@@ -81,7 +81,7 @@ export const page = ({
     Array.dedupe(js),
     Array.appendAll(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
     Array.appendAll(type !== 'streamline' ? ['collapsible-menu.js' as const] : []),
-    Array.appendAll(canSeeDesignTweaks ? ['expander-button.js' as const] : []),
+    Array.appendAll(canSeeDesignTweaks && type !== 'streamline' ? ['expander-button.js' as const] : []),
   )
 
   return html`
@@ -240,169 +240,191 @@ export const page = ({
                         <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
                       </a>
                     </div>
-
-                    <expander-button>
-                      <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}>Menu</a>
-                      <button aria-controls="navigation" aria-expanded="false" hidden><span>Menu</span></button>
-                    </expander-button>
-                    ${pageUrls
+                    ${type !== 'streamline'
                       ? html`
                           <expander-button>
-                            <a
-                              href="${Routes.ChooseLocale}"
-                              ${current === 'choose-locale' ? html`aria-current="page"` : ''}
-                              class="locale"
-                              >${new Intl.DisplayNames(locale, {
-                                type: 'language',
-                                languageDisplay: 'standard',
-                                style: 'narrow',
-                              }).of(locale.split('-')[0] ?? locale) ?? locale}</a
-                            >
-                            <button aria-controls="locale" aria-expanded="false" hidden>
-                              <span class="locale"
-                                >${new Intl.DisplayNames(locale, {
-                                  type: 'language',
-                                  languageDisplay: 'standard',
-                                  style: 'narrow',
-                                }).of(locale.split('-')[0] ?? locale) ?? locale}</span
-                              >
-                            </button>
+                            <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}>Menu</a>
+                            <button aria-controls="navigation" aria-expanded="false" hidden><span>Menu</span></button>
                           </expander-button>
-                        `
-                      : ''}
-                  </div>
-
-                  <div id="navigation" class="menu" hidden>
-                    <div>
-                      <h3>Get involved</h3>
-                      <ul>
-                        <li>
-                          <a href="${format(Routes.reviewsMatch.formatter, {})}"
-                            >${translate(locale, 'header', 'menuReviews')()}</a
-                          >
-                          <p>See preprints with a PREreview.</p>
-                        </li>
-                        <li>
-                          <a href="${format(Routes.reviewRequestsMatch.formatter, {})}"
-                            >${translate(locale, 'header', 'menuRequests')()}</a
-                          >
-                          <p>Help an author by reviewing their preprint.</p>
-                        </li>
-                        <li>
-                          <a href="${Routes.Clubs}">${translate(locale, 'header', 'menuClubs')()}</a>
-                          <p>Connect with like-minded peers.</p>
-                        </li>
-                        <li>
-                          <a href="${Routes.Trainings}">${translate(locale, 'header', 'menuTrainings')()}</a>
-                          <p>Learn about ethical and constructive peer review.</p>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div>
-                      <h3>Find out more</h3>
-                      <ul>
-                        <li>
-                          <a href="https://content.prereview.org/">${translate(locale, 'header', 'menuBlog')()}</a>
-                        </li>
-                        <li>
-                          <a href="${Routes.AboutUs}">${translate(locale, 'header', 'menuAboutUs')()}</a>
-                        </li>
-                        <li>
-                          <a href="${format(Routes.partnersMatch.formatter, {})}"
-                            >${translate(locale, 'header', 'menuPartners')()}</a
-                          >
-                        </li>
-                        <li>
-                          <a href="https://donorbox.org/prereview">${translate(locale, 'header', 'menuDonate')()}</a>
-                        </li>
-                        <li>
-                          <a href="${Routes.LiveReviews}">${translate(locale, 'header', 'menuLiveReviews')()}</a>
-                        </li>
-                        <li>
-                          <a href="${Routes.Resources}">${translate(locale, 'header', 'menuResources')()}</a>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div>
-                      <h3>My account</h3>
-                      <ul>
-                        ${user
-                          ? html` <li>
-                                <a href="${format(Routes.myDetailsMatch.formatter, {})}"
-                                  >${translate(
-                                    locale,
-                                    'header',
-                                    'menuMyDetails',
-                                  )()}${userOnboarding?.seenMyDetailsPage === false
-                                    ? html` <span role="status"
-                                        ><span class="visually-hidden"
-                                          >${translate(locale, 'header', 'menuNewNotification')()}</span
-                                        ></span
-                                      >`
-                                    : ''}</a
-                                >
-                              </li>
-                              <li>
-                                <a href="${format(Routes.myPrereviewsMatch.formatter, {})}"
-                                  >${translate(locale, 'header', 'menuMyPrereviews')()}</a
-                                >
-                              </li>
-                              <li>
-                                <a href="${format(Routes.logOutMatch.formatter, {})}"
-                                  >${translate(locale, 'header', 'menuLogOut')()}</a
-                                >
-                              </li>`
-                          : html` <li>
-                              <a href="${format(Routes.logInMatch.formatter, {})}"
-                                >${translate(locale, 'header', 'menuLogIn')()}</a
-                              >
-                            </li>`}
-                      </ul>
-                    </div>
-                  </div>
-
-                  ${pageUrls
-                    ? html`
-                        <div id="locale" class="menu" hidden>
-                          <div class="locales">
-                            <h3>Choose your language</h3>
-                            <ul>
-                              ${pipe(
-                                Array.fromIterable(UserSelectableLocales),
-                                Array.map(supportedLocale =>
-                                  Tuple.make(
-                                    supportedLocale,
-                                    new Intl.DisplayNames(supportedLocale, {
+                          ${pageUrls
+                            ? html`
+                                <expander-button>
+                                  <a
+                                    href="${Routes.ChooseLocale}"
+                                    ${current === 'choose-locale' ? html`aria-current="page"` : ''}
+                                    class="locale"
+                                    >${new Intl.DisplayNames(locale, {
                                       type: 'language',
                                       languageDisplay: 'standard',
-                                      style: 'short',
-                                    }).of(supportedLocale) ?? supportedLocale,
-                                  ),
-                                ),
-                                Array.sortWith(
-                                  ([, b]) => b,
-                                  (a, b) =>
-                                    String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
-                                ),
-                                Array.map(
-                                  ([code, name]) => html`
-                                    <li>
-                                      <a
-                                        href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
-                                        lang="${code}"
-                                        hreflang="${code}"
-                                        ${locale === code ? html`aria-current="true"` : ''}
-                                        >${name}</a
+                                      style: 'narrow',
+                                    }).of(locale.split('-')[0] ?? locale) ?? locale}</a
+                                  >
+                                  <button aria-controls="locale" aria-expanded="false" hidden>
+                                    <span class="locale"
+                                      >${new Intl.DisplayNames(locale, {
+                                        type: 'language',
+                                        languageDisplay: 'standard',
+                                        style: 'narrow',
+                                      }).of(locale.split('-')[0] ?? locale) ?? locale}</span
+                                    >
+                                  </button>
+                                </expander-button>
+                              `
+                            : ''}
+                        `
+                      : html`
+                          ${user
+                            ? html` <a href="${format(logOutMatch.formatter, {})}"
+                                >${translate(locale, 'header', 'menuLogOut')()}</a
+                              >`
+                            : ''}
+                          ${!user && current === 'home'
+                            ? html` <a href="${format(logInMatch.formatter, {})}"
+                                >${translate(locale, 'header', 'menuLogIn')()}</a
+                              >`
+                            : ''}
+                        `}
+                  </div>
+
+                  ${type !== 'streamline'
+                    ? html`
+                        <div id="navigation" class="menu" hidden>
+                          <div>
+                            <h3>Get involved</h3>
+                            <ul>
+                              <li>
+                                <a href="${format(Routes.reviewsMatch.formatter, {})}"
+                                  >${translate(locale, 'header', 'menuReviews')()}</a
+                                >
+                                <p>See preprints with a PREreview.</p>
+                              </li>
+                              <li>
+                                <a href="${format(Routes.reviewRequestsMatch.formatter, {})}"
+                                  >${translate(locale, 'header', 'menuRequests')()}</a
+                                >
+                                <p>Help an author by reviewing their preprint.</p>
+                              </li>
+                              <li>
+                                <a href="${Routes.Clubs}">${translate(locale, 'header', 'menuClubs')()}</a>
+                                <p>Connect with like-minded peers.</p>
+                              </li>
+                              <li>
+                                <a href="${Routes.Trainings}">${translate(locale, 'header', 'menuTrainings')()}</a>
+                                <p>Learn about ethical and constructive peer review.</p>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <div>
+                            <h3>Find out more</h3>
+                            <ul>
+                              <li>
+                                <a href="https://content.prereview.org/"
+                                  >${translate(locale, 'header', 'menuBlog')()}</a
+                                >
+                              </li>
+                              <li>
+                                <a href="${Routes.AboutUs}">${translate(locale, 'header', 'menuAboutUs')()}</a>
+                              </li>
+                              <li>
+                                <a href="${format(Routes.partnersMatch.formatter, {})}"
+                                  >${translate(locale, 'header', 'menuPartners')()}</a
+                                >
+                              </li>
+                              <li>
+                                <a href="https://donorbox.org/prereview"
+                                  >${translate(locale, 'header', 'menuDonate')()}</a
+                                >
+                              </li>
+                              <li>
+                                <a href="${Routes.LiveReviews}">${translate(locale, 'header', 'menuLiveReviews')()}</a>
+                              </li>
+                              <li>
+                                <a href="${Routes.Resources}">${translate(locale, 'header', 'menuResources')()}</a>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <div>
+                            <h3>My account</h3>
+                            <ul>
+                              ${user
+                                ? html` <li>
+                                      <a href="${format(Routes.myDetailsMatch.formatter, {})}"
+                                        >${translate(
+                                          locale,
+                                          'header',
+                                          'menuMyDetails',
+                                        )()}${userOnboarding?.seenMyDetailsPage === false
+                                          ? html` <span role="status"
+                                              ><span class="visually-hidden"
+                                                >${translate(locale, 'header', 'menuNewNotification')()}</span
+                                              ></span
+                                            >`
+                                          : ''}</a
                                       >
                                     </li>
-                                  `,
-                                ),
-                              )}
+                                    <li>
+                                      <a href="${format(Routes.myPrereviewsMatch.formatter, {})}"
+                                        >${translate(locale, 'header', 'menuMyPrereviews')()}</a
+                                      >
+                                    </li>
+                                    <li>
+                                      <a href="${format(Routes.logOutMatch.formatter, {})}"
+                                        >${translate(locale, 'header', 'menuLogOut')()}</a
+                                      >
+                                    </li>`
+                                : html` <li>
+                                    <a href="${format(Routes.logInMatch.formatter, {})}"
+                                      >${translate(locale, 'header', 'menuLogIn')()}</a
+                                    >
+                                  </li>`}
                             </ul>
                           </div>
                         </div>
+
+                        ${pageUrls
+                          ? html`
+                              <div id="locale" class="menu" hidden>
+                                <div class="locales">
+                                  <h3>Choose your language</h3>
+                                  <ul>
+                                    ${pipe(
+                                      Array.fromIterable(UserSelectableLocales),
+                                      Array.map(supportedLocale =>
+                                        Tuple.make(
+                                          supportedLocale,
+                                          new Intl.DisplayNames(supportedLocale, {
+                                            type: 'language',
+                                            languageDisplay: 'standard',
+                                            style: 'short',
+                                          }).of(supportedLocale) ?? supportedLocale,
+                                        ),
+                                      ),
+                                      Array.sortWith(
+                                        ([, b]) => b,
+                                        (a, b) =>
+                                          String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                                      ),
+                                      Array.map(
+                                        ([code, name]) => html`
+                                          <li>
+                                            <a
+                                              href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
+                                              lang="${code}"
+                                              hreflang="${code}"
+                                              ${locale === code ? html`aria-current="true"` : ''}
+                                              >${name}</a
+                                            >
+                                          </li>
+                                        `,
+                                      ),
+                                    )}
+                                  </ul>
+                                </div>
+                              </div>
+                            `
+                          : ''}
                       `
                     : ''}
                 </nav>
