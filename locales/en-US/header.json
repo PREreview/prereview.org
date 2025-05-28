@@ -1,4 +1,16 @@
 {
+  "menu": {
+    "message": "Menu"
+  },
+  "getInvolved": {
+    "message": "Get involved"
+  },
+  "findOutMore": {
+    "message": "Find out more"
+  },
+  "myAccount": {
+    "message": "My account"
+  },
   "menuBlog": {
     "message": "Blog"
   },
@@ -29,11 +41,20 @@
   "menuReviews": {
     "message": "Reviews"
   },
+  "menuReviewsHint": {
+    "message": "See preprints with a PREreview."
+  },
   "menuRequests": {
     "message": "Requests"
   },
+  "menuRequestsHint": {
+    "message": "Help an author by reviewing their preprint."
+  },
   "menuTrainings": {
     "message": "Trainings"
+  },
+  "menuTrainingsHint": {
+    "message": "Learn about ethical and constructive peer review."
   },
   "menuLiveReviews": {
     "message": "Live Reviews"
@@ -43,6 +64,9 @@
   },
   "menuClubs": {
     "message": "Clubs"
+  },
+  "menuClubsHint": {
+    "message": "Connect with like-minded peers."
   },
   "onlyEnglish": {
     "message": "This page is only available in English."

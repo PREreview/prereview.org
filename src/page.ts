@@ -154,8 +154,12 @@ export const page = ({
               ${type !== 'streamline'
                 ? html`
                     <expander-button>
-                      <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}>Menu</a>
-                      <button aria-controls="navigation" aria-expanded="false" hidden><span>Menu</span></button>
+                      <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}
+                        >${translate(locale, 'header', 'menu')()}</a
+                      >
+                      <button aria-controls="navigation" aria-expanded="false" hidden>
+                        <span>${translate(locale, 'header', 'menu')()}</span>
+                      </button>
                     </expander-button>
                     ${canChooseLocale && pageUrls
                       ? html`
@@ -201,7 +205,7 @@ export const page = ({
               ? html`
                   <div id="navigation" class="menu" hidden>
                     <div>
-                      <h3>Get involved</h3>
+                      <h3>${translate(locale, 'header', 'getInvolved')()}</h3>
                       <ul>
                         <li>
                           <a
@@ -209,7 +213,7 @@ export const page = ({
                             ${current === 'reviews' ? html`aria-current="page"` : ''}
                             >${translate(locale, 'header', 'menuReviews')()}</a
                           >
-                          <p>See preprints with a PREreview.</p>
+                          <p>${translate(locale, 'header', 'menuReviewsHint')()}</p>
                         </li>
                         <li>
                           <a
@@ -217,25 +221,25 @@ export const page = ({
                             ${current === 'review-requests' ? html`aria-current="page"` : ''}
                             >${translate(locale, 'header', 'menuRequests')()}</a
                           >
-                          <p>Help an author by reviewing their preprint.</p>
+                          <p>${translate(locale, 'header', 'menuRequestsHint')()}</p>
                         </li>
                         <li>
                           <a href="${Routes.Clubs}" ${current === 'clubs' ? html`aria-current="page"` : ''}
                             >${translate(locale, 'header', 'menuClubs')()}</a
                           >
-                          <p>Connect with like-minded peers.</p>
+                          <p>${translate(locale, 'header', 'menuClubsHint')()}</p>
                         </li>
                         <li>
                           <a href="${Routes.Trainings}" ${current === 'trainings' ? html`aria-current="page"` : ''}
                             >${translate(locale, 'header', 'menuTrainings')()}</a
                           >
-                          <p>Learn about ethical and constructive peer review.</p>
+                          <p>${translate(locale, 'header', 'menuTrainingsHint')()}</p>
                         </li>
                       </ul>
                     </div>
 
                     <div>
-                      <h3>Find out more</h3>
+                      <h3>${translate(locale, 'header', 'findOutMore')()}</h3>
                       <ul>
                         <li>
                           <a href="https://content.prereview.org/">${translate(locale, 'header', 'menuBlog')()}</a>
@@ -269,7 +273,7 @@ export const page = ({
                     </div>
 
                     <div>
-                      <h3>My account</h3>
+                      <h3>${translate(locale, 'header', 'myAccount')()}</h3>
                       <ul>
                         ${user
                           ? html` <li>

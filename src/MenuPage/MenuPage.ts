@@ -19,35 +19,35 @@ export const createMenuPage = ({
   const t = translate(locale, 'header')
 
   return PageResponse({
-    title: plainText('Menu'),
+    title: plainText(t('menu')()),
     main: html`
-      <h1 class="visually-hidden">Menu</h1>
+      <h1 class="visually-hidden">${t('menu')()}</h1>
 
       <div class="menu">
         <div>
-          <h3>Get involved</h3>
+          <h3>${t('getInvolved')()}</h3>
           <ul>
             <li>
               <a href="${format(Routes.reviewsMatch.formatter, {})}">${t('menuReviews')()}</a>
-              <p>See preprints with a PREreview.</p>
+              <p>${t('menuReviewsHint')()}</p>
             </li>
             <li>
               <a href="${format(Routes.reviewRequestsMatch.formatter, {})}">${t('menuRequests')()}</a>
-              <p>Help an author by reviewing their preprint.</p>
+              <p>${t('menuRequestsHint')()}</p>
             </li>
             <li>
               <a href="${Routes.Clubs}">${t('menuClubs')()}</a>
-              <p>Connect with like-minded peers.</p>
+              <p>${t('menuClubsHint')()}</p>
             </li>
             <li>
               <a href="${Routes.Trainings}">${t('menuTrainings')()}</a>
-              <p>Learn about ethical and constructive peer review.</p>
+              <p>${t('menuTrainingsHint')()}</p>
             </li>
           </ul>
         </div>
 
         <div>
-          <h3>Find out more</h3>
+          <h3>${t('findOutMore')()}</h3>
           <ul>
             <li>
               <a href="https://content.prereview.org/">${t('menuBlog')()}</a>
@@ -71,7 +71,7 @@ export const createMenuPage = ({
         </div>
 
         <div>
-          <h3>My account</h3>
+          <h3>${t('myAccount')()}</h3>
           <ul>
             ${Option.match(user, {
               onSome: () =>
