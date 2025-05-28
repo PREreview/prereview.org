@@ -3,7 +3,7 @@ import { Option } from 'effect'
 import * as _ from '../../src/HttpMiddleware/DetectLocale.js'
 
 describe('detectLocale', () => {
-  it.failing.each([
+  it.each([
     ['en-US,es;q=0.6,en;q=0.8,*;q=0.1', 'en-US'],
     ['en-US', 'en-US'],
     ['en-US-posix', 'en-US'],
