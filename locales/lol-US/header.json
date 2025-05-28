@@ -1,4 +1,19 @@
 {
+  "menu": {
+    "message": "crwdns5920:0crwdne5920:0"
+  },
+  "getInvolved": {
+    "message": "crwdns5922:0crwdne5922:0"
+  },
+  "findOutMore": {
+    "message": "crwdns5924:0crwdne5924:0"
+  },
+  "chooseLanguage": {
+    "message": "crwdns5936:0crwdne5936:0"
+  },
+  "myAccount": {
+    "message": "crwdns5926:0crwdne5926:0"
+  },
   "menuBlog": {
     "message": "crwdns1810:0crwdne1810:0"
   },
@@ -29,11 +44,20 @@
   "menuReviews": {
     "message": "crwdns1828:0crwdne1828:0"
   },
+  "menuReviewsHint": {
+    "message": "crwdns5928:0crwdne5928:0"
+  },
   "menuRequests": {
     "message": "crwdns1830:0crwdne1830:0"
   },
+  "menuRequestsHint": {
+    "message": "crwdns5930:0crwdne5930:0"
+  },
   "menuTrainings": {
     "message": "crwdns1832:0crwdne1832:0"
+  },
+  "menuTrainingsHint": {
+    "message": "crwdns5932:0crwdne5932:0"
   },
   "menuLiveReviews": {
     "message": "crwdns1834:0crwdne1834:0"
@@ -43,6 +67,9 @@
   },
   "menuClubs": {
     "message": "crwdns1838:0crwdne1838:0"
+  },
+  "menuClubsHint": {
+    "message": "crwdns5934:0crwdne5934:0"
   },
   "onlyEnglish": {
     "message": "crwdns5489:0crwdne5489:0"
