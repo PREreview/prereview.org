@@ -38,7 +38,7 @@ export interface Page {
     | 'review-requests'
     | 'reviews'
     | 'trainings'
-  readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'collapsible-menu.js' | 'expander-button.js' | 'skip-link.js'>>
+  readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'expander-button.js' | 'skip-link.js'>>
   readonly user?: User
   readonly userOnboarding?: UserOnboarding
   readonly pageUrls?: Router.PageUrls

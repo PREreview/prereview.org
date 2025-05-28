@@ -304,12 +304,8 @@ export const pageResponse = ({
     main: html(),
     js: fc.array(
       js().filter(
-        (
-          js,
-        ): js is Exclude<
-          EndsWith<keyof typeof assets, '.js'>,
-          'collapsible-menu.js' | 'expander-button.js' | 'skip-link.js'
-        > => !['collapsible-menu.js', 'expander-button.js', 'skip-link.js'].includes(js),
+        (js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'expander-button.js' | 'skip-link.js'> =>
+          !['expander-button.js', 'skip-link.js'].includes(js),
       ),
     ),
     allowRobots: allowRobots ?? fc.option(constant(false), { nil: undefined }),
@@ -354,12 +350,8 @@ export const streamlinePageResponse = ({
     main: html(),
     js: fc.array(
       js().filter(
-        (
-          js,
-        ): js is Exclude<
-          EndsWith<keyof typeof assets, '.js'>,
-          'collapsible-menu.js' | 'expander-button.js' | 'skip-link.js'
-        > => !['collapsible-menu.js', 'expander-button.js', 'skip-link.js'].includes(js),
+        (js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'expander-button.js' | 'skip-link.js'> =>
+          !['expander-button.js', 'skip-link.js'].includes(js),
       ),
     ),
     allowRobots: allowRobots ?? fc.option(constant(false), { nil: undefined }),
