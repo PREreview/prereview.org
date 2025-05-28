@@ -1,6 +1,8 @@
 import { canChooseLocale, expect, test } from './base.js'
 
 test.extend(canChooseLocale)('can choose a locale through picker and path', async ({ fetch, page }) => {
+  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+
   await page.goto('/')
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
@@ -14,6 +16,7 @@ test.extend(canChooseLocale)('can choose a locale through picker and path', asyn
     { body: { pages: [{ html: '<p>Some information about us.</p>' }] } },
   )
 
+  await menu.click()
   await page.getByRole('link', { name: 'Sobre nós' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Sobre nós')
@@ -22,6 +25,7 @@ test.extend(canChooseLocale)('can choose a locale through picker and path', asyn
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
 
+  await menu.click()
   await page.getByRole('link', { name: 'About' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('About')
@@ -30,6 +34,7 @@ test.extend(canChooseLocale)('can choose a locale through picker and path', asyn
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
 
+  await menu.click()
   await page.getByRole('link', { name: 'Sobre nós' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Sobre nós')

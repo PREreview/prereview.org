@@ -1,7 +1,9 @@
 import { Duration } from 'effect'
 import { expect, test } from './base.js'
 
-test('can read about clubs', async ({ fetch, page }) => {
+test('can read about clubs', async ({ fetch, javaScriptEnabled, page }) => {
+  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+
   await page.goto('/')
 
   fetch.getOnce(
@@ -9,14 +11,16 @@ test('can read about clubs', async ({ fetch, page }) => {
     { body: { pages: [{ html: '<p>Some information about clubs.</p>' }] } },
   )
 
-  await page.addLocatorHandler(page.getByRole('button', { name: 'Menu', expanded: false }), async () => {
-    await page.getByRole('button', { name: 'Menu' }).click()
-  })
-
+  await menu.click()
   await page.getByRole('link', { name: 'Clubs' }).click()
 
   await expect(page.getByRole('main')).toContainText('Some information about clubs.')
-  await expect(page.getByRole('link', { name: 'Clubs' })).toHaveAttribute('aria-current', 'page')
+
+  if (javaScriptEnabled) {
+    await menu.click()
+
+    await expect(page.getByRole('link', { name: 'Clubs' })).toHaveAttribute('aria-current', 'page')
+  }
 })
 
 test('might not load the text in time', async ({ fetch, page }) => {

@@ -344,17 +344,18 @@ test('can view a recent request', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
 })
 
-test('can view an older request', async ({ page }) => {
+test('can view an older request', async ({ javaScriptEnabled, page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'See all requests' }).click()
 
-  await page.addLocatorHandler(page.getByRole('button', { name: 'Menu', expanded: false }), async () => {
-    await page.getByRole('button', { name: 'Menu' }).click()
-  })
-
   await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent review requests')
-  await expect(page.getByRole('link', { name: 'Requests', exact: true })).toHaveAttribute('aria-current', 'page')
+
+  if (javaScriptEnabled) {
+    await page.getByRole('button', { name: 'Menu' }).click()
+
+    await expect(page.getByRole('link', { name: 'Requests', exact: true })).toHaveAttribute('aria-current', 'page')
+  }
 
   await page
     .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })

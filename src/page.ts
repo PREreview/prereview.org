@@ -2,22 +2,12 @@ import { Array, HashMap, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import rtlDetect from 'rtl-detect'
-import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html.js'
 import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from './locales/index.js'
 import assets from './manifest.json' with { type: 'json' }
 import type * as Router from './Router/index.js'
 import * as Routes from './routes.js'
-import {
-  homeMatch,
-  logInMatch,
-  logOutMatch,
-  myDetailsMatch,
-  myPrereviewsMatch,
-  partnersMatch,
-  reviewRequestsMatch,
-  reviewsMatch,
-} from './routes.js'
+import { homeMatch, logInMatch, logOutMatch } from './routes.js'
 import type { UserOnboarding } from './user-onboarding.js'
 import type { User } from './user.js'
 
@@ -80,11 +70,7 @@ export const page = ({
   const scripts = pipe(
     Array.dedupe(js),
     Array.appendAll(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
-    Array.appendAll(
-      type !== 'streamline'
-        ? [canSeeDesignTweaks ? ('expander-button.js' as const) : ('collapsible-menu.js' as const)]
-        : [],
-    ),
+    Array.appendAll(type !== 'streamline' ? ['expander-button.js' as const] : []),
   )
 
   return html`
@@ -146,370 +132,229 @@ export const page = ({
           : ''}
 
         <header>
-          <div class="navigation">
-            ${environmentLabel
-              ? html`
+          ${environmentLabel
+            ? html`
+                <div class="navigation">
                   <div class="phase-banner">
                     <strong class="tag">${translate(locale, 'environment', `${environmentLabel}Name`)()}</strong>
                     <span>${translate(locale, 'environment', `${environmentLabel}Text`)()}</span>
                   </div>
-                `
-              : ''}
-            ${(user || type !== 'streamline') && !canSeeDesignTweaks
+                </div>
+              `
+            : ''}
+
+          <nav>
+            <div class="header">
+              <div class="logo">
+                <a href="${format(homeMatch.formatter, {})}" ${current === 'home' ? html`aria-current="page"` : ''}>
+                  <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
+                </a>
+              </div>
+
+              ${type !== 'streamline'
+                ? html`
+                    <expander-button>
+                      <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}>Menu</a>
+                      <button aria-controls="navigation" aria-expanded="false" hidden><span>Menu</span></button>
+                    </expander-button>
+                    ${canChooseLocale && pageUrls
+                      ? html`
+                          <expander-button>
+                            <a
+                              href="${Routes.ChooseLocale}"
+                              ${current === 'choose-locale' ? html`aria-current="page"` : ''}
+                              class="locale"
+                              >${new Intl.DisplayNames(locale, {
+                                type: 'language',
+                                languageDisplay: 'standard',
+                                style: 'narrow',
+                              }).of(locale.split('-')[0] ?? locale) ?? locale}</a
+                            >
+                            <button aria-controls="locale" aria-expanded="false" hidden>
+                              <span class="locale"
+                                >${new Intl.DisplayNames(locale, {
+                                  type: 'language',
+                                  languageDisplay: 'standard',
+                                  style: 'narrow',
+                                }).of(locale.split('-')[0] ?? locale) ?? locale}</span
+                              >
+                            </button>
+                          </expander-button>
+                        `
+                      : ''}
+                  `
+                : html`
+                    ${user
+                      ? html` <a href="${format(logOutMatch.formatter, {})}"
+                          >${translate(locale, 'header', 'menuLogOut')()}</a
+                        >`
+                      : ''}
+                    ${!user && current === 'home'
+                      ? html` <a href="${format(logInMatch.formatter, {})}"
+                          >${translate(locale, 'header', 'menuLogIn')()}</a
+                        >`
+                      : ''}
+                  `}
+            </div>
+
+            ${type !== 'streamline'
               ? html`
-                  <nav>
-                    <ul>
-                      ${type !== 'streamline'
-                        ? html`
-                            <li>
-                              <a href="https://content.prereview.org/">${translate(locale, 'header', 'menuBlog')()}</a>
-                            </li>
-                            <li>
-                              <a href="${Routes.AboutUs}" ${current === 'about-us' ? html`aria-current="page"` : ''}
-                                >${translate(locale, 'header', 'menuAboutUs')()}</a
-                              >
-                            </li>
-                            <li>
-                              <a
-                                href="${format(partnersMatch.formatter, {})}"
-                                ${current === 'partners' ? html`aria-current="page"` : ''}
-                                >${translate(locale, 'header', 'menuPartners')()}</a
-                              >
-                            </li>
-                            <li>
-                              <a href="https://donorbox.org/prereview"
-                                >${translate(locale, 'header', 'menuDonate')()}</a
-                              >
-                            </li>
-                          `
-                        : ''}
-                      ${user && type !== 'streamline'
-                        ? html` <li>
-                              <a
-                                href="${format(myDetailsMatch.formatter, {})}"
-                                ${current === 'my-details' ? html`aria-current="page"` : ''}
-                                >${translate(locale, 'header', 'menuMyDetails')()}${match(userOnboarding)
-                                  .with(
-                                    { seenMyDetailsPage: false },
-                                    () =>
-                                      html` <span role="status"
+                  <div id="navigation" class="menu" hidden>
+                    <div>
+                      <h3>Get involved</h3>
+                      <ul>
+                        <li>
+                          <a
+                            href="${format(Routes.reviewsMatch.formatter, {})}"
+                            ${current === 'reviews' ? html`aria-current="page"` : ''}
+                            >${translate(locale, 'header', 'menuReviews')()}</a
+                          >
+                          <p>See preprints with a PREreview.</p>
+                        </li>
+                        <li>
+                          <a
+                            href="${format(Routes.reviewRequestsMatch.formatter, {})}"
+                            ${current === 'review-requests' ? html`aria-current="page"` : ''}
+                            >${translate(locale, 'header', 'menuRequests')()}</a
+                          >
+                          <p>Help an author by reviewing their preprint.</p>
+                        </li>
+                        <li>
+                          <a href="${Routes.Clubs}" ${current === 'clubs' ? html`aria-current="page"` : ''}
+                            >${translate(locale, 'header', 'menuClubs')()}</a
+                          >
+                          <p>Connect with like-minded peers.</p>
+                        </li>
+                        <li>
+                          <a href="${Routes.Trainings}" ${current === 'trainings' ? html`aria-current="page"` : ''}
+                            >${translate(locale, 'header', 'menuTrainings')()}</a
+                          >
+                          <p>Learn about ethical and constructive peer review.</p>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3>Find out more</h3>
+                      <ul>
+                        <li>
+                          <a href="https://content.prereview.org/">${translate(locale, 'header', 'menuBlog')()}</a>
+                        </li>
+                        <li>
+                          <a href="${Routes.AboutUs}" ${current === 'about-us' ? html`aria-current="page"` : ''}
+                            >${translate(locale, 'header', 'menuAboutUs')()}</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="${format(Routes.partnersMatch.formatter, {})}"
+                            ${current === 'partners' ? html`aria-current="page"` : ''}
+                            >${translate(locale, 'header', 'menuPartners')()}</a
+                          >
+                        </li>
+                        <li>
+                          <a href="https://donorbox.org/prereview">${translate(locale, 'header', 'menuDonate')()}</a>
+                        </li>
+                        <li>
+                          <a href="${Routes.LiveReviews}" ${current === 'live-reviews' ? html`aria-current="page"` : ''}
+                            >${translate(locale, 'header', 'menuLiveReviews')()}</a
+                          >
+                        </li>
+                        <li>
+                          <a href="${Routes.Resources}" ${current === 'resources' ? html`aria-current="page"` : ''}
+                            >${translate(locale, 'header', 'menuResources')()}</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3>My account</h3>
+                      <ul>
+                        ${user
+                          ? html` <li>
+                                <a
+                                  href="${format(Routes.myDetailsMatch.formatter, {})}"
+                                  ${current === 'my-details' ? html`aria-current="page"` : ''}
+                                  >${translate(
+                                    locale,
+                                    'header',
+                                    'menuMyDetails',
+                                  )()}${userOnboarding?.seenMyDetailsPage === false
+                                    ? html` <span role="status"
                                         ><span class="visually-hidden"
                                           >${translate(locale, 'header', 'menuNewNotification')()}</span
                                         ></span
-                                      >`,
-                                  )
-                                  .otherwise(() => '')}</a
-                              >
-                            </li>
-                            <li>
-                              <a
-                                href="${format(myPrereviewsMatch.formatter, {})}"
-                                ${current === 'my-prereviews' ? html`aria-current="page"` : ''}
-                                >${translate(locale, 'header', 'menuMyPrereviews')()}</a
-                              >
-                            </li>`
-                        : ''}
-                      ${user
-                        ? html` <li>
-                            <a href="${format(logOutMatch.formatter, {})}"
-                              >${translate(locale, 'header', 'menuLogOut')()}</a
-                            >
-                          </li>`
-                        : ''}
-                      ${!user && current === 'home'
-                        ? html` <li>
-                            <a href="${format(logInMatch.formatter, {})}"
-                              >${translate(locale, 'header', 'menuLogIn')()}</a
-                            >
-                          </li>`
-                        : ''}
-                    </ul>
-                  </nav>
-                `
-              : ''}
-          </div>
-
-          ${canSeeDesignTweaks
-            ? html`
-                <nav>
-                  <div class="header">
-                    <div class="logo">
-                      <a
-                        href="${format(homeMatch.formatter, {})}"
-                        ${current === 'home' ? html`aria-current="page"` : ''}
-                      >
-                        <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
-                      </a>
-                    </div>
-                    ${type !== 'streamline'
-                      ? html`
-                          <expander-button>
-                            <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}>Menu</a>
-                            <button aria-controls="navigation" aria-expanded="false" hidden><span>Menu</span></button>
-                          </expander-button>
-                          ${canChooseLocale && pageUrls
-                            ? html`
-                                <expander-button>
-                                  <a
-                                    href="${Routes.ChooseLocale}"
-                                    ${current === 'choose-locale' ? html`aria-current="page"` : ''}
-                                    class="locale"
-                                    >${new Intl.DisplayNames(locale, {
-                                      type: 'language',
-                                      languageDisplay: 'standard',
-                                      style: 'narrow',
-                                    }).of(locale.split('-')[0] ?? locale) ?? locale}</a
-                                  >
-                                  <button aria-controls="locale" aria-expanded="false" hidden>
-                                    <span class="locale"
-                                      >${new Intl.DisplayNames(locale, {
-                                        type: 'language',
-                                        languageDisplay: 'standard',
-                                        style: 'narrow',
-                                      }).of(locale.split('-')[0] ?? locale) ?? locale}</span
-                                    >
-                                  </button>
-                                </expander-button>
-                              `
-                            : ''}
-                        `
-                      : html`
-                          ${user
-                            ? html` <a href="${format(logOutMatch.formatter, {})}"
-                                >${translate(locale, 'header', 'menuLogOut')()}</a
-                              >`
-                            : ''}
-                          ${!user && current === 'home'
-                            ? html` <a href="${format(logInMatch.formatter, {})}"
+                                      >`
+                                    : ''}</a
+                                >
+                              </li>
+                              <li>
+                                <a
+                                  href="${format(Routes.myPrereviewsMatch.formatter, {})}"
+                                  ${current === 'my-prereviews' ? html`aria-current="page"` : ''}
+                                  >${translate(locale, 'header', 'menuMyPrereviews')()}</a
+                                >
+                              </li>
+                              <li>
+                                <a href="${format(Routes.logOutMatch.formatter, {})}"
+                                  >${translate(locale, 'header', 'menuLogOut')()}</a
+                                >
+                              </li>`
+                          : html` <li>
+                              <a href="${format(Routes.logInMatch.formatter, {})}"
                                 >${translate(locale, 'header', 'menuLogIn')()}</a
-                              >`
-                            : ''}
-                        `}
+                              >
+                            </li>`}
+                      </ul>
+                    </div>
                   </div>
 
-                  ${type !== 'streamline'
+                  ${canChooseLocale && pageUrls
                     ? html`
-                        <div id="navigation" class="menu" hidden>
-                          <div>
-                            <h3>Get involved</h3>
+                        <div id="locale" class="menu" hidden>
+                          <div class="locales">
+                            <h3>Choose your language</h3>
                             <ul>
-                              <li>
-                                <a
-                                  href="${format(Routes.reviewsMatch.formatter, {})}"
-                                  ${current === 'reviews' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuReviews')()}</a
-                                >
-                                <p>See preprints with a PREreview.</p>
-                              </li>
-                              <li>
-                                <a
-                                  href="${format(Routes.reviewRequestsMatch.formatter, {})}"
-                                  ${current === 'review-requests' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuRequests')()}</a
-                                >
-                                <p>Help an author by reviewing their preprint.</p>
-                              </li>
-                              <li>
-                                <a href="${Routes.Clubs}" ${current === 'clubs' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuClubs')()}</a
-                                >
-                                <p>Connect with like-minded peers.</p>
-                              </li>
-                              <li>
-                                <a
-                                  href="${Routes.Trainings}"
-                                  ${current === 'trainings' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuTrainings')()}</a
-                                >
-                                <p>Learn about ethical and constructive peer review.</p>
-                              </li>
-                            </ul>
-                          </div>
-
-                          <div>
-                            <h3>Find out more</h3>
-                            <ul>
-                              <li>
-                                <a href="https://content.prereview.org/"
-                                  >${translate(locale, 'header', 'menuBlog')()}</a
-                                >
-                              </li>
-                              <li>
-                                <a href="${Routes.AboutUs}" ${current === 'about-us' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuAboutUs')()}</a
-                                >
-                              </li>
-                              <li>
-                                <a
-                                  href="${format(Routes.partnersMatch.formatter, {})}"
-                                  ${current === 'partners' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuPartners')()}</a
-                                >
-                              </li>
-                              <li>
-                                <a href="https://donorbox.org/prereview"
-                                  >${translate(locale, 'header', 'menuDonate')()}</a
-                                >
-                              </li>
-                              <li>
-                                <a
-                                  href="${Routes.LiveReviews}"
-                                  ${current === 'live-reviews' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuLiveReviews')()}</a
-                                >
-                              </li>
-                              <li>
-                                <a
-                                  href="${Routes.Resources}"
-                                  ${current === 'resources' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuResources')()}</a
-                                >
-                              </li>
-                            </ul>
-                          </div>
-
-                          <div>
-                            <h3>My account</h3>
-                            <ul>
-                              ${user
-                                ? html` <li>
-                                      <a
-                                        href="${format(Routes.myDetailsMatch.formatter, {})}"
-                                        ${current === 'my-details' ? html`aria-current="page"` : ''}
-                                        >${translate(
-                                          locale,
-                                          'header',
-                                          'menuMyDetails',
-                                        )()}${userOnboarding?.seenMyDetailsPage === false
-                                          ? html` <span role="status"
-                                              ><span class="visually-hidden"
-                                                >${translate(locale, 'header', 'menuNewNotification')()}</span
-                                              ></span
-                                            >`
-                                          : ''}</a
-                                      >
-                                    </li>
+                              ${pipe(
+                                Array.fromIterable(UserSelectableLocales),
+                                Array.map(supportedLocale =>
+                                  Tuple.make(
+                                    supportedLocale,
+                                    new Intl.DisplayNames(supportedLocale, {
+                                      type: 'language',
+                                      languageDisplay: 'standard',
+                                      style: 'short',
+                                    }).of(supportedLocale) ?? supportedLocale,
+                                  ),
+                                ),
+                                Array.sortWith(
+                                  ([, b]) => b,
+                                  (a, b) =>
+                                    String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                                ),
+                                Array.map(
+                                  ([code, name]) => html`
                                     <li>
                                       <a
-                                        href="${format(Routes.myPrereviewsMatch.formatter, {})}"
-                                        ${current === 'my-prereviews' ? html`aria-current="page"` : ''}
-                                        >${translate(locale, 'header', 'menuMyPrereviews')()}</a
+                                        href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
+                                        lang="${code}"
+                                        hreflang="${code}"
+                                        ${locale === code ? html`aria-current="true"` : ''}
+                                        >${name}</a
                                       >
                                     </li>
-                                    <li>
-                                      <a href="${format(Routes.logOutMatch.formatter, {})}"
-                                        >${translate(locale, 'header', 'menuLogOut')()}</a
-                                      >
-                                    </li>`
-                                : html` <li>
-                                    <a href="${format(Routes.logInMatch.formatter, {})}"
-                                      >${translate(locale, 'header', 'menuLogIn')()}</a
-                                    >
-                                  </li>`}
+                                  `,
+                                ),
+                              )}
                             </ul>
                           </div>
                         </div>
-
-                        ${canChooseLocale && pageUrls
-                          ? html`
-                              <div id="locale" class="menu" hidden>
-                                <div class="locales">
-                                  <h3>Choose your language</h3>
-                                  <ul>
-                                    ${pipe(
-                                      Array.fromIterable(UserSelectableLocales),
-                                      Array.map(supportedLocale =>
-                                        Tuple.make(
-                                          supportedLocale,
-                                          new Intl.DisplayNames(supportedLocale, {
-                                            type: 'language',
-                                            languageDisplay: 'standard',
-                                            style: 'short',
-                                          }).of(supportedLocale) ?? supportedLocale,
-                                        ),
-                                      ),
-                                      Array.sortWith(
-                                        ([, b]) => b,
-                                        (a, b) =>
-                                          String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
-                                      ),
-                                      Array.map(
-                                        ([code, name]) => html`
-                                          <li>
-                                            <a
-                                              href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
-                                              lang="${code}"
-                                              hreflang="${code}"
-                                              ${locale === code ? html`aria-current="true"` : ''}
-                                              >${name}</a
-                                            >
-                                          </li>
-                                        `,
-                                      ),
-                                    )}
-                                  </ul>
-                                </div>
-                              </div>
-                            `
-                          : ''}
                       `
                     : ''}
-                </nav>
-              `
-            : html`
-                <div class="header">
-                  <div class="logo">
-                    <a href="${format(homeMatch.formatter, {})}" ${current === 'home' ? html`aria-current="page"` : ''}>
-                      <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
-                    </a>
-                  </div>
-
-                  ${type !== 'streamline'
-                    ? html` <collapsible-menu>
-                        <nav>
-                          <ul>
-                            <li>
-                              <a
-                                href="${format(reviewsMatch.formatter, {})}"
-                                ${current === 'reviews' ? html`aria-current="page"` : ''}
-                                >${translate(locale, 'header', 'menuReviews')()}</a
-                              >
-                            </li>
-                            <li>
-                              <a
-                                href="${format(reviewRequestsMatch.formatter, {})}"
-                                ${current === 'review-requests' ? html`aria-current="page"` : ''}
-                                >${translate(locale, 'header', 'menuRequests')()}</a
-                              >
-                            </li>
-                            <li>
-                              <a href="${Routes.Trainings}" ${current === 'trainings' ? html`aria-current="page"` : ''}
-                                >${translate(locale, 'header', 'menuTrainings')()}</a
-                              >
-                            </li>
-                            <li>
-                              <a
-                                href="${Routes.LiveReviews}"
-                                ${current === 'live-reviews' ? html`aria-current="page"` : ''}
-                                >${translate(locale, 'header', 'menuLiveReviews')()}</a
-                              >
-                            </li>
-                            <li>
-                              <a href="${Routes.Resources}" ${current === 'resources' ? html`aria-current="page"` : ''}
-                                >${translate(locale, 'header', 'menuResources')()}</a
-                              >
-                            </li>
-                            <li>
-                              <a href="${Routes.Clubs}" ${current === 'clubs' ? html`aria-current="page"` : ''}
-                                >${translate(locale, 'header', 'menuClubs')()}</a
-                              >
-                            </li>
-                          </ul>
-                        </nav>
-                      </collapsible-menu>`
-                    : ''}
-                </div>
-              `}
+                `
+              : ''}
+          </nav>
         </header>
 
         <div class="contents">${content}</div>

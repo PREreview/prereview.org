@@ -5,7 +5,9 @@ import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base.js'
 
-test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ fetch, page }) => {
+test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ fetch, javaScriptEnabled, page }) => {
+  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+
   await page.goto('/')
 
   fetch.get(
@@ -112,10 +114,16 @@ test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ 
     },
   )
 
+  await menu.click()
   await page.getByRole('link', { name: 'My PREreviews' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('My PREreviews')
-  await expect(page.getByRole('link', { name: 'My PREreviews' })).toHaveAttribute('aria-current', 'page')
+
+  if (javaScriptEnabled) {
+    await menu.click()
+
+    await expect(page.getByRole('link', { name: 'My PREreviews' })).toHaveAttribute('aria-current', 'page')
+  }
 
   fetch
     .getOnce('http://zenodo.test/api/records/7747129', {
@@ -868,7 +876,7 @@ test("can view a recent review that's part of a club", async ({ fetch, page }) =
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
 })
 
-test('can view an older review', async ({ fetch, page }) => {
+test('can view an older review', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: Doi('10.5072/zenodo.1061863'),
     conceptrecid: 1061863,
@@ -940,14 +948,15 @@ test('can view an older review', async ({ fetch, page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
-  await page.addLocatorHandler(page.getByRole('button', { name: 'Menu', expanded: false }), async () => {
-    await page.getByRole('button', { name: 'Menu' }).click()
-  })
-
   await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent PREreviews')
-  await expect(page.getByRole('link', { name: 'Reviews', exact: true })).toHaveAttribute('aria-current', 'page')
   await expect(page.getByRole('link', { name: 'Older' })).toHaveAttribute('rel', 'next')
+
+  if (javaScriptEnabled) {
+    await page.getByRole('button', { name: 'Menu' }).click()
+
+    await expect(page.getByRole('link', { name: 'Reviews', exact: true })).toHaveAttribute('aria-current', 'page')
+  }
 
   await page.getByRole('link', { name: 'Older' }).click()
 
