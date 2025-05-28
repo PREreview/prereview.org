@@ -291,23 +291,33 @@ export const page = ({
                             <h3>Get involved</h3>
                             <ul>
                               <li>
-                                <a href="${format(Routes.reviewsMatch.formatter, {})}"
+                                <a
+                                  href="${format(Routes.reviewsMatch.formatter, {})}"
+                                  ${current === 'reviews' ? html`aria-current="page"` : ''}
                                   >${translate(locale, 'header', 'menuReviews')()}</a
                                 >
                                 <p>See preprints with a PREreview.</p>
                               </li>
                               <li>
-                                <a href="${format(Routes.reviewRequestsMatch.formatter, {})}"
+                                <a
+                                  href="${format(Routes.reviewRequestsMatch.formatter, {})}"
+                                  ${current === 'review-requests' ? html`aria-current="page"` : ''}
                                   >${translate(locale, 'header', 'menuRequests')()}</a
                                 >
                                 <p>Help an author by reviewing their preprint.</p>
                               </li>
                               <li>
-                                <a href="${Routes.Clubs}">${translate(locale, 'header', 'menuClubs')()}</a>
+                                <a href="${Routes.Clubs}" ${current === 'clubs' ? html`aria-current="page"` : ''}
+                                  >${translate(locale, 'header', 'menuClubs')()}</a
+                                >
                                 <p>Connect with like-minded peers.</p>
                               </li>
                               <li>
-                                <a href="${Routes.Trainings}">${translate(locale, 'header', 'menuTrainings')()}</a>
+                                <a
+                                  href="${Routes.Trainings}"
+                                  ${current === 'trainings' ? html`aria-current="page"` : ''}
+                                  >${translate(locale, 'header', 'menuTrainings')()}</a
+                                >
                                 <p>Learn about ethical and constructive peer review.</p>
                               </li>
                             </ul>
@@ -322,10 +332,14 @@ export const page = ({
                                 >
                               </li>
                               <li>
-                                <a href="${Routes.AboutUs}">${translate(locale, 'header', 'menuAboutUs')()}</a>
+                                <a href="${Routes.AboutUs}" ${current === 'about-us' ? html`aria-current="page"` : ''}
+                                  >${translate(locale, 'header', 'menuAboutUs')()}</a
+                                >
                               </li>
                               <li>
-                                <a href="${format(Routes.partnersMatch.formatter, {})}"
+                                <a
+                                  href="${format(Routes.partnersMatch.formatter, {})}"
+                                  ${current === 'partners' ? html`aria-current="page"` : ''}
                                   >${translate(locale, 'header', 'menuPartners')()}</a
                                 >
                               </li>
@@ -335,10 +349,18 @@ export const page = ({
                                 >
                               </li>
                               <li>
-                                <a href="${Routes.LiveReviews}">${translate(locale, 'header', 'menuLiveReviews')()}</a>
+                                <a
+                                  href="${Routes.LiveReviews}"
+                                  ${current === 'live-reviews' ? html`aria-current="page"` : ''}
+                                  >${translate(locale, 'header', 'menuLiveReviews')()}</a
+                                >
                               </li>
                               <li>
-                                <a href="${Routes.Resources}">${translate(locale, 'header', 'menuResources')()}</a>
+                                <a
+                                  href="${Routes.Resources}"
+                                  ${current === 'resources' ? html`aria-current="page"` : ''}
+                                  >${translate(locale, 'header', 'menuResources')()}</a
+                                >
                               </li>
                             </ul>
                           </div>
@@ -348,7 +370,9 @@ export const page = ({
                             <ul>
                               ${user
                                 ? html` <li>
-                                      <a href="${format(Routes.myDetailsMatch.formatter, {})}"
+                                      <a
+                                        href="${format(Routes.myDetailsMatch.formatter, {})}"
+                                        ${current === 'my-details' ? html`aria-current="page"` : ''}
                                         >${translate(
                                           locale,
                                           'header',
@@ -363,7 +387,9 @@ export const page = ({
                                       >
                                     </li>
                                     <li>
-                                      <a href="${format(Routes.myPrereviewsMatch.formatter, {})}"
+                                      <a
+                                        href="${format(Routes.myPrereviewsMatch.formatter, {})}"
+                                        ${current === 'my-prereviews' ? html`aria-current="page"` : ''}
                                         >${translate(locale, 'header', 'menuMyPrereviews')()}</a
                                       >
                                     </li>
