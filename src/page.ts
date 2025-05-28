@@ -80,8 +80,11 @@ export const page = ({
   const scripts = pipe(
     Array.dedupe(js),
     Array.appendAll(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
-    Array.appendAll(type !== 'streamline' ? ['collapsible-menu.js' as const] : []),
-    Array.appendAll(canSeeDesignTweaks && type !== 'streamline' ? ['expander-button.js' as const] : []),
+    Array.appendAll(
+      type !== 'streamline'
+        ? [canSeeDesignTweaks ? ('expander-button.js' as const) : ('collapsible-menu.js' as const)]
+        : [],
+    ),
   )
 
   return html`
