@@ -318,7 +318,7 @@ export const page = ({
                     ? html`
                         <div id="locale" class="menu" hidden>
                           <div class="locales">
-                            <h3>Choose your language</h3>
+                            <h3>${translate(locale, 'header', 'chooseLanguage')()}</h3>
                             <ul>
                               ${pipe(
                                 Array.fromIterable(UserSelectableLocales),
