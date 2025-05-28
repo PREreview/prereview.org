@@ -1,10 +1,8 @@
 import { Array, flow, Number, Order, pipe, String, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { getClubName } from '../club-details.js'
-import * as EffectToFpts from '../EffectToFpts.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import * as PreprintServers from '../PreprintServers/index.js'
@@ -29,93 +27,91 @@ export const createPage = (
       ${form({ field, language, locale, query })}
 
       <ol class="cards" id="results">
-        ${pipe(
+        ${Array.map(
           recentPrereviews,
-          Array.map(
-            prereview => html`
-              <li>
-                <article>
-                  <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                    ${rawHtml(
-                      prereview.club
-                        ? translate(
-                            locale,
-                            'reviews-list',
-                            'clubReviewText',
-                          )({
-                            club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
-                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                            reviewers: pipe(
-                              prereview.reviewers.named,
-                              Array.appendAll(
-                                prereview.reviewers.anonymous > 0
-                                  ? [
-                                      translate(
-                                        locale,
-                                        'reviews-list',
-                                        'otherAuthors',
-                                      )({ number: prereview.reviewers.anonymous }),
-                                    ]
-                                  : [],
-                              ),
-                              formatList(locale),
-                            ).toString(),
-                            preprint: html`<cite
-                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                              lang="${prereview.preprint.language}"
-                              >${prereview.preprint.title}</cite
-                            >`.toString(),
-                          })
-                        : translate(
-                            locale,
-                            'reviews-list',
-                            'reviewText',
-                          )({
-                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                            reviewers: pipe(
-                              prereview.reviewers.named,
-                              Array.appendAll(
-                                prereview.reviewers.anonymous > 0
-                                  ? [
-                                      translate(
-                                        locale,
-                                        'reviews-list',
-                                        'otherAuthors',
-                                      )({ number: prereview.reviewers.anonymous }),
-                                    ]
-                                  : [],
-                              ),
-                              formatList(locale),
-                            ).toString(),
-                            preprint: html`<cite
-                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                              lang="${prereview.preprint.language}"
-                              >${prereview.preprint.title}</cite
-                            >`.toString(),
-                          }),
-                    )}
-                  </a>
+          prereview => html`
+            <li>
+              <article>
+                <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                  ${rawHtml(
+                    prereview.club
+                      ? translate(
+                          locale,
+                          'reviews-list',
+                          'clubReviewText',
+                        )({
+                          club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
+                          numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                          reviewers: pipe(
+                            prereview.reviewers.named,
+                            Array.appendAll(
+                              prereview.reviewers.anonymous > 0
+                                ? [
+                                    translate(
+                                      locale,
+                                      'reviews-list',
+                                      'otherAuthors',
+                                    )({ number: prereview.reviewers.anonymous }),
+                                  ]
+                                : [],
+                            ),
+                            formatList(locale),
+                          ).toString(),
+                          preprint: html`<cite
+                            dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                            lang="${prereview.preprint.language}"
+                            >${prereview.preprint.title}</cite
+                          >`.toString(),
+                        })
+                      : translate(
+                          locale,
+                          'reviews-list',
+                          'reviewText',
+                        )({
+                          numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                          reviewers: pipe(
+                            prereview.reviewers.named,
+                            Array.appendAll(
+                              prereview.reviewers.anonymous > 0
+                                ? [
+                                    translate(
+                                      locale,
+                                      'reviews-list',
+                                      'otherAuthors',
+                                    )({ number: prereview.reviewers.anonymous }),
+                                  ]
+                                : [],
+                            ),
+                            formatList(locale),
+                          ).toString(),
+                          preprint: html`<cite
+                            dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                            lang="${prereview.preprint.language}"
+                            >${prereview.preprint.title}</cite
+                          >`.toString(),
+                        }),
+                  )}
+                </a>
 
-                  ${prereview.subfields.length > 0
-                    ? html`
-                        <ul class="categories">
-                          ${prereview.subfields.map(
-                            subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
-                          )}
-                        </ul>
-                      `
-                    : ''}
+                ${prereview.subfields.length > 0
+                  ? html`
+                      <ul class="categories">
+                        ${prereview.subfields.map(
+                          subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
+                        )}
+                      </ul>
+                    `
+                  : ''}
 
-                  <dl>
-                    <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
-                    <dd>${renderDate(locale)(prereview.published)}</dd>
-                    <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
-                    <dd>${PreprintServers.getName(prereview.preprint.id)}</dd>
-                  </dl>
-                </article>
-              </li>
-            `,
-          ),
+                <dl>
+                  <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
+                  <dd>${renderDate(locale)(prereview.published)}</dd>
+                  <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
+                  <dd>${PreprintServers.getName(prereview.preprint.id)}</dd>
+                </dl>
+              </article>
+            </li>
+          `,
         )}
       </ol>
 
@@ -217,12 +213,12 @@ const form = ({
           </option>
           ${pipe(
             ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
-            RA.map(
+            Array.map(
               language =>
                 [language, new Intl.DisplayNames(locale, { type: 'language' }).of(language) ?? language] as const,
             ),
-            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond))),
-            RA.map(
+            Array.sort<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond)),
+            Array.map(
               ([code, name]) =>
                 html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
             ),
@@ -239,9 +235,11 @@ const form = ({
           </option>
           ${pipe(
             fieldIds,
-            RA.map(field => Tuple.make(field, getFieldName(field, locale))),
-            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond))),
-            RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
+            Array.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, string]),
+            Array.sort<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond)),
+            Array.map(
+              ([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`,
+            ),
           )}
         </select>
       </div>

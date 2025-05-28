@@ -1,9 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { flow, Function, pipe } from 'effect'
+import { Array, flow, Function, pipe } from 'effect'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
@@ -103,8 +102,8 @@ const transform = (prereview: Prereview): TransformedPrereview => ({
   doi: prereview.doi,
   authors: pipe(
     prereview.authors,
-    RA.filter(author => author.orcid !== undefined || isPseudonym(author.name)),
-    RA.map(author => ({
+    Array.filter(author => author.orcid !== undefined || isPseudonym(author.name)),
+    Array.map(author => ({
       author: author.orcid ?? author.name,
       authorType: author.orcid === undefined ? 'pseudonym' : 'public',
     })),
@@ -123,7 +122,7 @@ export const reviewsData = (
     authorizationHeader,
     isAllowed,
     RTE.chainW(getPrereviews),
-    RTE.map(RA.map(transform)),
+    RTE.map(Array.map(transform)),
     RTE.map(PrereviewsE.encode),
     RTE.map(JsonE.encode),
   )

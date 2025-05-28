@@ -1,9 +1,8 @@
 import type { Doi } from 'doi-ts'
-import { Context, Effect, type Redacted, flow, identity, pipe } from 'effect'
+import { Array, Context, Effect, type Redacted, flow, identity, pipe } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
@@ -63,7 +62,7 @@ export const publishReviewRequest = Effect.fn(function* (
 export const isReviewRequested = (id: PreprintId) =>
   pipe(
     RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
-    RTE.map(RA.some(request => PreprintIdEquivalence(request.preprint, id))),
+    RTE.map(Array.some(request => PreprintIdEquivalence(request.preprint, id))),
   )
 
 export const getReviewRequestsFromPrereviewCoarNotify = ({
@@ -81,9 +80,9 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
 > =>
   pipe(
     RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
-    RTE.map(field ? RA.filter(request => request.fields.includes(field)) : identity),
-    RTE.map(language ? RA.filter(request => request.language === language) : identity),
-    RTE.map(RA.chunksOf(5)),
+    RTE.map(field ? Array.filter(request => request.fields.includes(field)) : identity),
+    RTE.map(language ? Array.filter(request => request.language === language) : identity),
+    RTE.map(Array.chunksOf(5)),
     RTE.chainW(pages =>
       pipe(
         RTE.Do,
@@ -94,7 +93,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
         RTE.apS(
           'reviewRequests',
           pipe(
-            RTE.fromOption(() => 'not-found' as const)(RA.lookup(page - 1, pages)),
+            RTE.fromOption(() => 'not-found' as const)(Array.get(pages, page - 1)),
             RTE.chainW(
               RTE.traverseReadonlyNonEmptyArrayWithIndex((_, { timestamp, preprint, fields, subfields }) =>
                 pipe(
@@ -128,7 +127,7 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
 > =>
   pipe(
     RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
-    RTE.chainOptionKW(() => 'not-found' as const)(flow(RA.chunksOf(5), RA.lookup(page - 1))),
+    RTE.chainOptionKW(() => 'not-found' as const)(flow(Array.chunksOf(5), Array.get(page - 1))),
     RTE.chainW(
       RTE.traverseArray(({ timestamp, preprint, fields, subfields }: RecentReviewRequestFromPrereviewCoarNotify) =>
         pipe(

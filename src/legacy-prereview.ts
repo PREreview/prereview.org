@@ -6,7 +6,6 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
@@ -267,7 +266,7 @@ export const getUsersFromLegacyPrereview = () =>
       () => 'unavailable' as const,
       flow(
         response => response.data,
-        RA.map(user => ({ orcid: user.orcid, timestamp: user.createdAt })),
+        Array.map(user => ({ orcid: user.orcid, timestamp: user.createdAt })),
       ),
     ),
   )
@@ -290,7 +289,7 @@ export const getRapidPreviewsFromLegacyPrereview = (id: Extract<PreprintId, { va
     RTE.map(
       flow(
         Struct.get('data'),
-        RA.map(results => ({
+        Array.map(results => ({
           author: { name: results.author.name, orcid: results.author.orcid },
           questions: {
             availableCode: results.ynAvailableCode,

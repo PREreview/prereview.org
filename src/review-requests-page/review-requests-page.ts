@@ -1,9 +1,7 @@
 import { Array, flow, Number, Order, pipe, String, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
-import * as EffectToFpts from '../EffectToFpts.js'
 import { type Html, html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import * as PreprintServers from '../PreprintServers/index.js'
@@ -182,12 +180,12 @@ const form = ({
           </option>
           ${pipe(
             ['en', 'pt', 'es'] satisfies ReadonlyArray<LanguageCode>,
-            RA.map(
+            Array.map(
               language =>
                 [language, new Intl.DisplayNames(locale, { type: 'language' }).of(language) ?? language] as const,
             ),
-            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond))),
-            RA.map(
+            Array.sort<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond)),
+            Array.map(
               ([code, name]) =>
                 html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,
             ),
@@ -204,9 +202,11 @@ const form = ({
           </option>
           ${pipe(
             fieldIds,
-            RA.map(field => Tuple.make(field, getFieldName(field, locale))),
-            RA.sort(EffectToFpts.ord<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond))),
-            RA.map(([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`),
+            Array.map(field => Tuple.make(field, getFieldName(field, locale))),
+            Array.sort<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond)),
+            Array.map(
+              ([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`,
+            ),
           )}
         </select>
       </div>

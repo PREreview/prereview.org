@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import type { Doi } from 'doi-ts'
-import { Tuple } from 'effect'
+import { Array, Tuple } from 'effect'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import {
   NotAPreprint,

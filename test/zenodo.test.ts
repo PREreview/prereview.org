@@ -8,7 +8,6 @@ import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Status } from 'hyper-ts'
@@ -3883,7 +3882,7 @@ describe('createRecordOnZenodo', () => {
 ${newPrereview.review.toString()}`,
                   ...(requested ? { keywords: ['Requested PREreview'] } : {}),
                   ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
-                  ...(RA.isNonEmpty(subjects)
+                  ...(Array.isNonEmptyArray(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
                     : {}),
                   related_identifiers: [
@@ -4046,7 +4045,7 @@ ${newPrereview.review.toString()}`,
                     String.isString,
                   ),
                   ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
-                  ...(RA.isNonEmpty(subjects)
+                  ...(Array.isNonEmptyArray(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
                     : {}),
                   related_identifiers: [
@@ -4203,7 +4202,7 @@ ${newPrereview.review.toString()}`,
 ${newPrereview.review.toString()}`,
                   ...(requested ? { keywords: ['Requested PREreview'] } : {}),
                   ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
-                  ...(RA.isNonEmpty(subjects)
+                  ...(Array.isNonEmptyArray(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
                     : {}),
                   related_identifiers: [
@@ -4358,7 +4357,7 @@ ${newPrereview.review.toString()}`,
                     String.isString,
                   ),
                   ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
-                  ...(RA.isNonEmpty(subjects)
+                  ...(Array.isNonEmptyArray(subjects)
                     ? { subjects: subjects.map(({ id, name }) => ({ term: name, identifier: id.href, scheme: 'url' })) }
                     : {}),
                   related_identifiers: [

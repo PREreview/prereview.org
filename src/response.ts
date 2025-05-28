@@ -1,6 +1,5 @@
-import { Schema, Struct, flow, pipe } from 'effect'
+import { Array, Schema, Struct, flow, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { type HeadersOpen, MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/lib/Middleware.js'
@@ -89,7 +88,7 @@ export const PageResponse = (
 ): PageResponse => ({
   _tag: 'PageResponse',
   status: Status.OK,
-  js: RA.empty,
+  js: Array.empty(),
   skipToLabel: 'main',
   ...args,
 })
@@ -99,7 +98,7 @@ export const StreamlinePageResponse = (
 ): StreamlinePageResponse => ({
   _tag: 'StreamlinePageResponse',
   status: Status.OK,
-  js: RA.empty,
+  js: Array.empty(),
   skipToLabel: 'main',
   ...args,
 })

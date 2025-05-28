@@ -1,12 +1,11 @@
 import type { HttpClient } from '@effect/platform'
-import { Effect, Function, flow, pipe } from 'effect'
+import { Array, Effect, Function, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import httpErrors from 'http-errors'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
@@ -1724,7 +1723,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                     ),
                   RTE.match(
                     () => [],
-                    RA.map(category => ({ id: category.id, name: category.display_name })),
+                    Array.map(category => ({ id: category.id, name: category.display_name })),
                   ),
                 ),
               env,
@@ -2241,7 +2240,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                 RTE.map(({ users, careerStages, locations }) =>
                   pipe(
                     users,
-                    RA.map(user => ({
+                    Array.map(user => ({
                       ...user,
                       careerStage: careerStages[user.orcid]?.value,
                       location: locations[user.orcid]?.value,

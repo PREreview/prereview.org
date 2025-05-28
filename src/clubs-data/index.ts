@@ -1,7 +1,6 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Function, Schema, pipe } from 'effect'
+import { Array, Function, Schema, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { getClubAddedDate, getClubName } from '../club-details.js'
 import type { ScietyListEnv } from '../sciety-list/index.js'
@@ -17,7 +16,7 @@ interface Club {
 const getClubs = (): ReadonlyArray<Club> =>
   pipe(
     clubIds,
-    RA.map(id => ({
+    Array.map(id => ({
       id,
       name: getClubName(id),
       added: getClubAddedDate(id),

@@ -3,7 +3,6 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE, missingE } from '../../form.js'
@@ -146,7 +145,9 @@ const handleChangeAuthorForm = ({
         RTE.Do,
         RTE.apS(
           'otherAuthors',
-          RTE.fromOption(() => 'form-unavailable' as const)(RA.updateAt(number - 1, author)(form.otherAuthors ?? [])),
+          RTE.fromOption(() => 'form-unavailable' as const)(
+            Array.replaceOption(form.otherAuthors ?? [], number - 1, author),
+          ),
         ),
         RTE.map(updateForm(form)),
         RTE.chainFirst(saveForm(user.orcid, preprint.id)),

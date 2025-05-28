@@ -1,7 +1,6 @@
 import { toUrl } from 'doi-ts'
 import { Array, flow, identity, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
@@ -198,95 +197,92 @@ export const createPage = ({
           >${translate(locale, 'review-page', 'writeCommentButton')()}</a
         >
 
-        ${pipe(
-          comments,
-          RA.match(
-            () => html`<p>${translate(locale, 'review-page', 'noComments')()}</p>`,
-            comments =>
-              html`<ol class="cards">
-                ${pipe(
-                  comments,
-                  Array.map(
-                    item => html`
-                      <li>
-                        <article aria-labelledby="comment-${item.id}-title">
-                          <header>
-                            <h3 class="visually-hidden" id="comment-${item.id}-title">
-                              ${translate(
+        ${Array.match(comments, {
+          onEmpty: () => html`<p>${translate(locale, 'review-page', 'noComments')()}</p>`,
+          onNonEmpty: comments =>
+            html`<ol class="cards">
+              ${pipe(
+                comments,
+                Array.map(
+                  item => html`
+                    <li>
+                      <article aria-labelledby="comment-${item.id}-title">
+                        <header>
+                          <h3 class="visually-hidden" id="comment-${item.id}-title">
+                            ${translate(
+                              locale,
+                              'review-page',
+                              'commentItemTitle',
+                            )({
+                              author: pipe(Array.headNonEmpty(item.authors.named), Struct.get('name')),
+                              authors: item.authors.named.length,
+                            })}
+                          </h3>
+
+                          <div class="byline">
+                            ${rawHtml(
+                              translate(
                                 locale,
                                 'review-page',
-                                'commentItemTitle',
+                                'commentItemAuthors',
                               )({
-                                author: pipe(Array.headNonEmpty(item.authors.named), Struct.get('name')),
-                                authors: item.authors.named.length,
-                              })}
-                            </h3>
-
-                            <div class="byline">
-                              ${rawHtml(
-                                translate(
-                                  locale,
-                                  'review-page',
-                                  'commentItemAuthors',
-                                )({
-                                  authors: pipe(
-                                    item.authors.named,
-                                    Array.map(displayAuthor),
-                                    formatList(locale),
-                                  ).toString(),
-                                  hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                                }),
-                              )}
-                            </div>
-
-                            <dl>
-                              <div>
-                                <dt>${translate(locale, 'review-page', 'published')()}</dt>
-                                <dd>${renderDate(locale)(item.published)}</dd>
-                              </div>
-                              <div>
-                                <dt>DOI</dt>
-                                <dd>
-                                  <a href="${toUrl(item.doi).href}" class="doi" translate="no">${item.doi}</a>
-                                </dd>
-                              </div>
-                              <div>
-                                <dt>${translate(locale, 'review-page', 'license')()}</dt>
-                                <dd>
-                                  ${match(item.license)
-                                    .with(
-                                      'CC-BY-4.0',
-                                      () => html`
-                                        <a href="https://creativecommons.org/licenses/by/4.0/">
-                                          <dfn>
-                                            <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
-                                              ><span translate="no">CC BY 4.0</span></abbr
-                                            >
-                                          </dfn>
-                                        </a>
-                                      `,
-                                    )
-                                    .exhaustive()}
-                                </dd>
-                              </div>
-                            </dl>
-                          </header>
-
-                          <div
-                            ${item.language
-                              ? html`lang="${item.language}" dir="${rtlDetect.getLangDir(item.language)}"`
-                              : ''}
-                          >
-                            ${fixHeadingLevels(3, item.text)}
+                                authors: pipe(
+                                  item.authors.named,
+                                  Array.map(displayAuthor),
+                                  formatList(locale),
+                                ).toString(),
+                                hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                              }),
+                            )}
                           </div>
-                        </article>
-                      </li>
-                    `,
-                  ),
-                )}
-              </ol>`,
-          ),
-        )}
+
+                          <dl>
+                            <div>
+                              <dt>${translate(locale, 'review-page', 'published')()}</dt>
+                              <dd>${renderDate(locale)(item.published)}</dd>
+                            </div>
+                            <div>
+                              <dt>DOI</dt>
+                              <dd>
+                                <a href="${toUrl(item.doi).href}" class="doi" translate="no">${item.doi}</a>
+                              </dd>
+                            </div>
+                            <div>
+                              <dt>${translate(locale, 'review-page', 'license')()}</dt>
+                              <dd>
+                                ${match(item.license)
+                                  .with(
+                                    'CC-BY-4.0',
+                                    () => html`
+                                      <a href="https://creativecommons.org/licenses/by/4.0/">
+                                        <dfn>
+                                          <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
+                                            ><span translate="no">CC BY 4.0</span></abbr
+                                          >
+                                        </dfn>
+                                      </a>
+                                    `,
+                                  )
+                                  .exhaustive()}
+                              </dd>
+                            </div>
+                          </dl>
+                        </header>
+
+                        <div
+                          ${item.language
+                            ? html`lang="${item.language}" dir="${rtlDetect.getLangDir(item.language)}"`
+                            : ''}
+                        >
+                          ${fixHeadingLevels(3, item.text)}
+                        </div>
+                      </article>
+                    </li>
+                  `,
+                ),
+              )}
+            </ol>`,
+        })}
       </article>
     `,
     skipToLabel: 'prereview',

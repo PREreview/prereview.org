@@ -3,7 +3,6 @@ import { type Doi, hasRegistrant } from 'doi-ts'
 import { Array, Option, String, flow, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -77,7 +76,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.P
       'authors',
       pipe(
         work.author,
-        RA.map(author =>
+        Array.map(author =>
           match(author)
             .with({ name: P.string }, author => ({
               name: author.name,
@@ -88,7 +87,10 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.P
             }))
             .exhaustive(),
         ),
-        E.fromPredicate(Array.isNonEmptyReadonlyArray, () => 'no authors'),
+        E.fromPredicate(
+          authors => Array.isNonEmptyReadonlyArray(authors),
+          () => 'no authors',
+        ),
       ),
     ),
     E.apSW('id', PreprintIdD.decode(work)),
@@ -114,7 +116,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.P
     E.bindW('title', preprint =>
       pipe(
         work.title,
-        E.fromOptionK(() => 'no title')(RA.head),
+        E.fromOptionK(() => 'no title')(Array.head),
         E.map(sanitizeHtml),
         E.bindTo('text'),
         E.bind(

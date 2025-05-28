@@ -8,7 +8,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import httpErrors, { type HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
@@ -106,9 +105,13 @@ const getPrereviewsPageForSciety = flow(
       access_status: 'open',
     }),
   getCommunityRecords('prereview-reviews'),
-  RTE.map(records => RA.chunksOf(20)(records.hits.hits)),
-  RTE.chainReaderTaskKW(RT.traverseSeqArray(flow(RT.traverseArray(recordToScietyPrereview), RT.map(RA.rights)))),
-  RTE.bimap(() => 'unavailable' as const, RA.flatten),
+  RTE.map(records => Array.chunksOf(20)(records.hits.hits)),
+  RTE.chainReaderTaskKW(
+    RT.traverseSeqArray(
+      flow(RT.traverseArray(recordToScietyPrereview), RT.map(Array.map(FptsToEffect.either)), RT.map(Array.getRights)),
+    ),
+  ),
+  RTE.bimap(() => 'unavailable' as const, Array.flatten),
 )
 
 export const getPrereviewsForSciety = pipe(
@@ -125,7 +128,7 @@ export const getPrereviewsForSciety = pipe(
       records => Math.ceil(records.hits.total / 100),
       Array.makeBy(i => getPrereviewsPageForSciety(i + 1)),
       RTE.sequenceArray,
-      RTE.map(RA.flatten),
+      RTE.map(Array.flatten),
     ),
   ),
 )
@@ -187,8 +190,11 @@ export const getRecentPrereviewsFromZenodo = ({
         RT.traverseArray(recordToRecentPrereview),
         RT.map(
           flow(
-            RA.rights,
-            E.fromOptionK(() => 'unavailable' as const)(Option.liftPredicate(Array.isNonEmptyReadonlyArray)),
+            Array.map(FptsToEffect.either),
+            Array.getRights,
+            E.fromOptionK(() => 'unavailable' as const)(
+              Option.liftPredicate(prereviews => Array.isNonEmptyReadonlyArray(prereviews)),
+            ),
           ),
         ),
       ),
@@ -296,7 +302,12 @@ export const getPrereviewsForProfileFromZenodo = flow(
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainReaderTaskKW(
-    flow(records => records.hits.hits, RT.traverseArray(recordToRecentPrereview), RT.map(RA.rights)),
+    flow(
+      records => records.hits.hits,
+      RT.traverseArray(recordToRecentPrereview),
+      RT.map(Array.map(FptsToEffect.either)),
+      RT.map(Array.getRights),
+    ),
   ),
   RTE.orElseFirstW(
     RTE.fromReaderIOK(
@@ -328,7 +339,12 @@ export const getPrereviewsForUserFromZenodo = flow(
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainReaderTaskKW(
-    flow(records => records.hits.hits, RT.traverseArray(recordToRecentPrereview), RT.map(RA.rights)),
+    flow(
+      records => records.hits.hits,
+      RT.traverseArray(recordToRecentPrereview),
+      RT.map(Array.map(FptsToEffect.either)),
+      RT.map(Array.getRights),
+    ),
   ),
   RTE.orElseFirstW(
     RTE.fromReaderIOK(
@@ -374,11 +390,16 @@ export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
       ),
     ),
     RTE.chainReaderTaskKW(
-      flow(records => records.hits.hits, RT.traverseArray(recordToRecentPrereview), RT.map(RA.rights)),
+      flow(
+        records => records.hits.hits,
+        RT.traverseArray(recordToRecentPrereview),
+        RT.map(Array.map(FptsToEffect.either)),
+        RT.map(Array.getRights),
+      ),
     ),
     RTE.bimap(
       () => 'unavailable' as const,
-      RA.filter(recentPrereview => recentPrereview.club === club),
+      Array.filter(recentPrereview => recentPrereview.club === club),
     ),
   )
 
@@ -940,8 +961,8 @@ function isOpen(record: Record) {
 }
 
 const getReviewFields = flow(
-  (record: Record) => record.metadata.subjects ?? [],
-  RA.filterMap(
+  (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
+  Array.filterMap(
     flow(
       Struct.get('identifier'),
       Option.liftNullable(identifier => (/^https:\/\/openalex\.org\/fields\/(.+)$/.exec(identifier) ?? [])[1]),
@@ -951,8 +972,8 @@ const getReviewFields = flow(
 )
 
 const getReviewSubfields = flow(
-  (record: Record) => record.metadata.subjects ?? [],
-  RA.filterMap(
+  (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
+  Array.filterMap(
     flow(
       Struct.get('identifier'),
       Option.liftNullable(identifier => (/^https:\/\/openalex\.org\/subfields\/(.+)$/.exec(identifier) ?? [])[1]),

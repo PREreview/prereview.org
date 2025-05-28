@@ -3,7 +3,6 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../form.js'
@@ -125,7 +124,9 @@ const handleRemoveAuthorForm = ({
             RTE.Do,
             RTE.apS(
               'otherAuthors',
-              RTE.fromOption(() => 'form-unavailable' as const)(RA.deleteAt(number - 1)(form.otherAuthors ?? [])),
+              RTE.fromOption(() => 'form-unavailable' as const)(
+                Array.removeOption(form.otherAuthors ?? [], number - 1),
+              ),
             ),
             RTE.map(updateForm(form)),
             RTE.chainFirst(saveForm(user.orcid, preprint.id)),

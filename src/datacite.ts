@@ -4,7 +4,6 @@ import { type Doi, hasRegistrant } from 'doi-ts'
 import { Array, Option, flow, identity, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -62,7 +61,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
       'authors',
       pipe(
         work.creators,
-        RA.map(author =>
+        Array.map(author =>
           match(author)
             .with({ givenName: P.string, familyName: P.string }, author => ({
               name: `${author.givenName} ${author.familyName}`,
@@ -77,7 +76,10 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             }))
             .exhaustive(),
         ),
-        E.fromPredicate(Array.isNonEmptyReadonlyArray, () => 'no authors'),
+        E.fromPredicate(
+          authors => Array.isNonEmptyReadonlyArray(authors),
+          () => 'no authors',
+        ),
       ),
     ),
     E.apSW('id', PreprintIdD.decode(work)),
@@ -98,7 +100,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
       pipe(
         work.descriptions,
         E.fromOptionK(() => 'no abstract' as const)(
-          RA.findFirst(({ descriptionType }) => descriptionType === 'Abstract'),
+          Array.findFirst(({ descriptionType }) => descriptionType === 'Abstract'),
         ),
         E.map(({ description }) => sanitizeHtml(`<p>${description}</p>`)),
         E.bindTo('text'),

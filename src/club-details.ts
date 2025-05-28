@@ -1,6 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Equal, flow, type Option, pipe, type Record, Struct } from 'effect'
-import * as RA from 'fp-ts/lib/ReadonlyArray.js'
 import { Eq as eqOrcid, Orcid } from 'orcid-id-ts'
 import { type Html, html } from './html.js'
 import type { ClubId } from './types/club-id.js'
@@ -32,10 +31,10 @@ export const getClubByName = (name: string): Option.Option<ClubId> =>
 export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
   pipe(
     Struct.keys(clubs),
-    RA.filter(
+    Array.filter(
       flow(
         id => clubs[id].leads,
-        RA.some(lead => eqOrcid.equals(lead.orcid, orcid)),
+        Array.some(lead => eqOrcid.equals(lead.orcid, orcid)),
       ),
     ),
   )
@@ -43,10 +42,10 @@ export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
 export const isAClubLead = (orcid: Orcid): boolean =>
   pipe(
     Struct.keys(clubs),
-    RA.some(
+    Array.some(
       flow(
         id => clubs[id].leads,
-        RA.some(lead => eqOrcid.equals(lead.orcid, orcid)),
+        Array.some(lead => eqOrcid.equals(lead.orcid, orcid)),
       ),
     ),
   )
