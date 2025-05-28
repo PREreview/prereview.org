@@ -320,7 +320,7 @@ body {
     column-gap: var(--space-m);
   }
 
-  header :not(:has(.navigation > nav)) & {
+  header:not(:has(.navigation > nav)) & {
     @media (width >= 30em) {
       font-size: var(--step-0);
     }
