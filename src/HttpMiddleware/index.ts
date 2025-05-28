@@ -217,9 +217,13 @@ export const getLocale = HttpMiddleware.make(app =>
       return yield* pipe(response, LocaleCookie.setLocaleCookie(localeFromPath))
     }
 
-    const locale = yield* LocaleCookie.getLocaleFromCookie
+    const locale = yield* Effect.andThen(LocaleCookie.getLocaleFromCookie, Option.getOrUndefined)
 
-    return yield* Effect.provideService(app, Locale, locale)
+    if (typeof locale === 'string') {
+      return yield* Effect.provideService(app, Locale, locale)
+    }
+
+    return yield* Effect.provideService(app, Locale, DefaultLocale)
   }),
 )
 
