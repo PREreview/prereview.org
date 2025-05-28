@@ -67,7 +67,7 @@ test.extend(canChooseLocale).extend({ locale: 'pt-PT' })(
     testInfo.fail()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
-    await expect(page.getByRole('link', { name: 'português (Brasil)' })).toHaveAttribute('aria-current', 'page')
+    await expect(page.getByRole('link', { name: 'português (Brasil)' })).toHaveAttribute('aria-current', 'true')
 
     await page.getByRole('link', { name: 'English (US)' }).click()
 
