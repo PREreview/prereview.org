@@ -313,26 +313,14 @@ body {
   padding-inline: var(--grid-gutter);
   font-size: var(--step--1);
 
-  header:has(.navigation > nav) & {
-    flex-wrap: wrap;
-    row-gap: var(--space-2xs);
-    padding-block: var(--space-2xs);
-    column-gap: var(--space-m);
-  }
-
-  header:not(:has(.navigation > nav)) & {
-    @media (width >= 30em) {
-      font-size: var(--step-0);
-    }
+  @media (width >= 30em) {
+    font-size: var(--step-0);
   }
 
   & > .logo {
     flex-grow: 1;
+    margin-inline-end: var(--space-2xs-s);
     padding-block: calc(var(--space-s-m) - var(--space-2xs));
-
-    header:not(:has(.navigation > nav)) & {
-      margin-inline-end: var(--space-2xs-s);
-    }
 
     & > a {
       display: block;
@@ -347,7 +335,7 @@ body {
   & :any-link {
     color: currentcolor;
 
-    header:not(:has(.navigation > nav)) :not(.logo) > & {
+    :not(.logo) > & {
       margin-inline: var(--space-2xs-s);
     }
   }
@@ -362,10 +350,7 @@ body {
 
 body > .contents {
   flex-grow: 1;
-
-  body:not(:has(.navigation > nav)) & {
-    margin-block-start: var(--space-s-m);
-  }
+  margin-block-start: var(--space-s-m);
 }
 
 body > footer {
@@ -529,12 +514,8 @@ nav {
     margin-block-start: var(--space-2xs);
   }
 
-  :not(.contents, .header, .navigation, section, header) > & {
+  :not(.contents, .header, section, header) > & {
     margin-block-start: var(--space-m);
-  }
-
-  :--expander-button:not([hidden]) + & {
-    flex-basis: 100%;
   }
 }
 
@@ -2503,38 +2484,6 @@ skip-link {
   background-color: var(--color-background-alt);
   font-size: var(--step--1);
   row-gap: var(--space-xs-s);
-
-  & nav {
-    display: flex;
-    flex-grow: 1;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-
-    & :--list {
-      justify-content: flex-end;
-    }
-  }
-
-  & :any-link {
-    position: relative;
-    color: inherit;
-
-    @media screen {
-      & > [role='status']:last-child {
-        position: absolute;
-        padding: 0.25em;
-        transform: translate(-50%, -50%);
-        inset-block-start: 0;
-        inset-inline-start: 100%;
-        border-radius: 50%;
-        background-color: var(--color-primary);
-
-        @media (forced-colors: active) {
-          background-color: LinkText;
-        }
-      }
-    }
-  }
 
   @media screen {
     @media (forced-colors: active) {
