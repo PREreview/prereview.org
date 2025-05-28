@@ -44,36 +44,26 @@ test.extend(canChooseLocale)('can choose a locale through picker and path', asyn
   await expect(page.getByRole('heading', { level: 1 })).toContainText('About')
 })
 
-test.extend(canChooseLocale).extend({ locale: 'pt-BR' })(
-  'with a Brazilian-Portuguese browser',
-  async ({ page }, testInfo) => {
-    await page.goto('/')
+test.extend(canChooseLocale).extend({ locale: 'pt-BR' })('with a Brazilian-Portuguese browser', async ({ page }) => {
+  await page.goto('/')
 
-    testInfo.fail()
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
+  await page.getByRole('link', { name: 'English (US)' }).click()
 
-    await page.getByRole('link', { name: 'English (US)' }).click()
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
+})
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
-  },
-)
+test.extend(canChooseLocale).extend({ locale: 'pt-PT' })('with a European-Portuguese browser', async ({ page }) => {
+  await page.goto('/')
 
-test.extend(canChooseLocale).extend({ locale: 'pt-PT' })(
-  'with a European-Portuguese browser',
-  async ({ page }, testInfo) => {
-    await page.goto('/')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
+  await expect(page.getByRole('link', { name: 'português (Brasil)' })).toHaveAttribute('aria-current', 'true')
 
-    testInfo.fail()
+  await page.getByRole('link', { name: 'English (US)' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
-    await expect(page.getByRole('link', { name: 'português (Brasil)' })).toHaveAttribute('aria-current', 'true')
-
-    await page.getByRole('link', { name: 'English (US)' }).click()
-
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
-  },
-)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
+})
 
 test.extend(canChooseLocale).extend({ locale: 'is' })('with an Icelandic browser', async ({ page }) => {
   await page.goto('/')

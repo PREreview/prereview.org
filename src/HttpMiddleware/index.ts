@@ -19,6 +19,7 @@ import { securityHeaders } from '../securityHeaders.js'
 import { Uuid } from '../types/index.js'
 import { UserOnboardingService } from '../user-onboarding.js'
 import { LoggedInUser, SessionId, UserSchema } from '../user.js'
+import { detectLocale } from './DetectLocale.js'
 import * as LocaleCookie from './LocaleCookie.js'
 import * as LocaleInPath from './LocaleInPath.js'
 
@@ -223,7 +224,17 @@ export const getLocale = HttpMiddleware.make(app =>
       return yield* Effect.provideService(app, Locale, locale)
     }
 
-    return yield* Effect.provideService(app, Locale, DefaultLocale)
+    const request = yield* HttpServerRequest.HttpServerRequest
+
+    const detectedLocale = pipe(
+      Headers.get(request.headers, 'Accept-Language'),
+      Option.andThen(detectLocale),
+      Option.getOrElse(() => DefaultLocale),
+    )
+
+    const response = yield* Effect.provideService(app, Locale, detectedLocale)
+
+    return yield* pipe(response, LocaleCookie.setLocaleCookie(detectedLocale))
   }),
 )
 
