@@ -134,11 +134,9 @@ export const page = ({
         <header>
           ${environmentLabel
             ? html`
-                <div class="navigation">
-                  <div class="phase-banner">
-                    <strong class="tag">${translate(locale, 'environment', `${environmentLabel}Name`)()}</strong>
-                    <span>${translate(locale, 'environment', `${environmentLabel}Text`)()}</span>
-                  </div>
+                <div class="environment">
+                  <strong class="tag">${translate(locale, 'environment', `${environmentLabel}Name`)()}</strong>
+                  <span>${translate(locale, 'environment', `${environmentLabel}Text`)()}</span>
                 </div>
               `
             : ''}
