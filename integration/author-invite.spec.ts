@@ -75,6 +75,19 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
   },
 )
 
+test.extend(canLogIn).extend(invitedToBeAnAuthor)(
+  'can choose a locale before declining an invite',
+  async ({ page }, testInfo) => {
+    await page.getByRole('link', { name: 'declining this invitation' }).click()
+
+    testInfo.skip()
+
+    await page.getByRole('link', { name: 'português (Brasil)' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recusar o convite')
+  },
+)
+
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor)(
   'can change the name after previewing',
   async ({ page }) => {
