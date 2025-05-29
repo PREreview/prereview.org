@@ -134,6 +134,7 @@ export const nonEffectRouter: Effect.Effect<
     users,
     authorInviteStore: expressConfig.authorInviteStore,
     formStore: expressConfig.formStore,
+    reviewRequestStore: expressConfig.reviewRequestStore,
   } satisfies Env
 
   return yield* pipe(FptsToEffect.task(handler(env)), Effect.andThen(Response.toHttpServerResponse))
@@ -165,6 +166,7 @@ export interface Env {
   }
   authorInviteStore: Keyv.Keyv
   formStore: Keyv.Keyv
+  reviewRequestStore: Keyv.Keyv
   cloudinaryApiConfig: typeof CloudinaryApiConfig.Service
   slackApiConfig: typeof SlackApiConfig.Service
   fetch: typeof globalThis.fetch

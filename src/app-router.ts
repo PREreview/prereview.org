@@ -114,7 +114,6 @@ import {
 import { profile } from './profile-page/index.js'
 import type { PublicUrlEnv } from './public-url.js'
 import {
-  requestReview,
   requestReviewCheck,
   requestReviewPersona,
   requestReviewPublished,
@@ -163,7 +162,6 @@ import {
   profileMatch,
   removeAvatarMatch,
   requestReviewCheckMatch,
-  requestReviewMatch,
   requestReviewPersonaMatch,
   requestReviewPublishedMatch,
   requestReviewStartMatch,
@@ -1753,27 +1751,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getReviewRequests: withEnv(getReviewRequestsFromPrereviewCoarNotify, env),
-        })),
-      ),
-    ),
-    pipe(
-      requestReviewMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ preprint: id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(requestReview)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
         })),
       ),
     ),
