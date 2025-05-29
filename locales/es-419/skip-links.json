@@ -7,5 +7,11 @@
   },
   "prereview": {
     "message": "Saltar a PREreview"
+  },
+  "preprintDetails": {
+    "message": "Saltar a detalles del preprint"
+  },
+  "prereviews": {
+    "message": "Saltar a PREreviews"
   }
 }

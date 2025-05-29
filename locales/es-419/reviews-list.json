@@ -2,6 +2,12 @@
   "reviewTitle": {
     "message": "PREreview de {preprint}"
   },
+  "reviewText": {
+    "message": "{numberOfReviewers, plural, one {{reviewers} revisó {preprint}} other {{reviewers} revisaron {preprint}}}"
+  },
+  "clubReviewText": {
+    "message": "{numberOfReviewers, plural, one {{reviewers} de {club} revisó {preprint}} other {{reviewers} de {club} revisaron {preprint}}}"
+  },
   "reviewPublished": {
     "message": "Revisión publicada"
   },
