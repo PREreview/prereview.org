@@ -26,7 +26,6 @@ import { withEnv } from './Fpts.js'
 import * as OpenAlex from './OpenAlex/index.js'
 import * as Zenodo from './Zenodo/index.js'
 import {
-  authorInvite,
   authorInviteCheck,
   authorInviteDecline,
   authorInviteEnterEmailAddress,
@@ -129,7 +128,6 @@ import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
-  authorInviteMatch,
   authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
@@ -1909,34 +1907,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
-        })),
-      ),
-    ),
-    pipe(
-      authorInviteMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(authorInvite)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
-          getPrereview: withEnv(
-            flow(
-              getPrereviewFromZenodo,
-              RTE.mapLeft(() => 'unavailable' as const),
-            ),
-            env,
-          ),
         })),
       ),
     ),

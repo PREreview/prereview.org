@@ -35,6 +35,7 @@ import { SlackApiConfig } from '../../slack.js'
 import type { TemplatePage } from '../../TemplatePage.js'
 import { LoggedInUser, type User } from '../../user.js'
 import * as Response from '../Response.js'
+import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.js'
 import { MyDetailsRouter } from './MyDetailsRouter.js'
 
 export const nonEffectRouter: Effect.Effect<
@@ -129,6 +130,7 @@ export const nonEffectRouter: Effect.Effect<
     slackApiConfig,
     cloudinaryApiConfig,
     users,
+    authorInviteStore: expressConfig.authorInviteStore,
   } satisfies Env
 
   return yield* pipe(FptsToEffect.task(handler(env)), Effect.andThen(Response.toHttpServerResponse))
@@ -158,6 +160,7 @@ export interface Env {
     locationStore: Keyv.Keyv
     languagesStore: Keyv.Keyv
   }
+  authorInviteStore: Keyv.Keyv
   cloudinaryApiConfig: typeof CloudinaryApiConfig.Service
   slackApiConfig: typeof SlackApiConfig.Service
   fetch: typeof globalThis.fetch
@@ -276,6 +279,7 @@ const routerWithoutHyperTs = pipe(
             }),
       ),
     ),
+    AuthorInviteFlowRouter,
     MyDetailsRouter,
   ],
   concatAll(P.getParserMonoid()),

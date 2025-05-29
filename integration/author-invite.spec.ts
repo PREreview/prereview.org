@@ -29,20 +29,15 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
   },
 )
 
-test.extend(invitedToBeAnAuthor).extend(canChooseLocale)(
-  'can choose a locale before starting',
-  async ({ javaScriptEnabled, page }, testInfo) => {
-    const opener = page.waitForEvent('popup')
-    await page.getByRole('link', { name: 'Be listed as an author' }).click()
-    page = await opener
+test.extend(invitedToBeAnAuthor).extend(canChooseLocale)('can choose a locale before starting', async ({ page }) => {
+  const opener = page.waitForEvent('popup')
+  await page.getByRole('link', { name: 'Be listed as an author' }).click()
+  page = await opener
 
-    await page.getByRole('link', { name: 'português (Brasil)' }).click()
+  await page.getByRole('link', { name: 'português (Brasil)' }).click()
 
-    testInfo.fail(!javaScriptEnabled)
-
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Aparecer como autor')
-  },
-)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Aparecer como autor')
+})
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
   'can accept an invite using a pseudonym',
