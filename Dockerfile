@@ -89,6 +89,10 @@ ENTRYPOINT ["npx", "playwright", "test"]
 FROM golang AS hivemind
 RUN go install github.com/DarthSim/hivemind@v1.1.0
 
+#
+# Stage: Build Redis
+#
+FROM redis:8.0.1 AS redis
 
 #
 # Stage: Production environment
@@ -105,6 +109,7 @@ RUN mkdir data && chown node:node data && echo '{"type": "module"}' > /app/packa
 COPY --from=npm-prod /app/node_modules/ node_modules/
 COPY --from=build-prod /app/dist/ dist/
 COPY .dev/Procfile /app/
+COPY --from=redis /usr/local/bin/redis-server /app/
 
 HEALTHCHECK --interval=5s --timeout=1s \
   CMD wget --quiet --tries=1 --spider http://localhost:3000/health || exit 1
