@@ -37,6 +37,7 @@ import { LoggedInUser, type User } from '../../user.js'
 import * as Response from '../Response.js'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.js'
 import { MyDetailsRouter } from './MyDetailsRouter.js'
+import { RequestReviewFlowRouter } from './RequestReviewFlowRouter.js'
 import { WriteReviewRouter } from './WriteReviewRouter.js'
 
 export const nonEffectRouter: Effect.Effect<
@@ -284,6 +285,7 @@ const routerWithoutHyperTs = pipe(
     ),
     AuthorInviteFlowRouter,
     MyDetailsRouter,
+    RequestReviewFlowRouter,
     WriteReviewRouter,
   ],
   concatAll(P.getParserMonoid()),
