@@ -62,7 +62,7 @@ function renderContentForOrcid(
         <dl class="summary-list">
           <div>
             <dt><span>ORCID iD</span></dt>
-            <dd><a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a></dd>
+            <dd><a href="https://orcid.org/${orcid}" class="orcid-id">${orcid}</a></dd>
           </div>
 
           ${slackUser

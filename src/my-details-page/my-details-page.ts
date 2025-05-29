@@ -100,7 +100,7 @@ export function createPage({
 
         <div>
           <dt><span>ORCID iD</span></dt>
-          <dd><span class="orcid">${user.orcid}</span></dd>
+          <dd><span class="orcid-id">${user.orcid}</span></dd>
         </div>
 
         <div>

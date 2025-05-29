@@ -426,7 +426,8 @@ body > footer {
   }
 }
 
-.orcid {
+.orcid,
+.orcid-id {
   &:any-link {
     color: inherit;
 
@@ -459,6 +460,10 @@ body > footer {
       background-image: none;
     }
   }
+}
+
+.orcid-id {
+  text-wrap: nowrap;
 }
 
 .slack {
