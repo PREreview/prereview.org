@@ -26,7 +26,7 @@ import * as Routes from '../routes.js'
 import { TrainingsPage } from '../TrainingsPage.js'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.js'
 import { LegacyRouter } from './LegacyRouter.js'
-import { nonEffectRouter } from './NonEffectRouter.js'
+import { nonEffectRouter } from './NonEffectRouter/index.js'
 import * as Response from './Response.js'
 
 export type { PageUrls } from './ConstructPageUrls.js'
