@@ -37,6 +37,7 @@ import { LoggedInUser, type User } from '../../user.js'
 import * as Response from '../Response.js'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.js'
 import { MyDetailsRouter } from './MyDetailsRouter.js'
+import { WriteReviewRouter } from './WriteReviewRouter.js'
 
 export const nonEffectRouter: Effect.Effect<
   HttpServerResponse.HttpServerResponse,
@@ -281,6 +282,7 @@ const routerWithoutHyperTs = pipe(
     ),
     AuthorInviteFlowRouter,
     MyDetailsRouter,
+    WriteReviewRouter,
   ],
   concatAll(P.getParserMonoid()),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
