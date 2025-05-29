@@ -183,7 +183,6 @@ import {
   writeReviewFindingsNextStepsMatch,
   writeReviewIntroductionMatchesMatch,
   writeReviewLanguageEditingMatch,
-  writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
   writeReviewNovelMatch,
@@ -218,7 +217,6 @@ import { usersData } from './users-data/index.js'
 import {
   type FormStoreEnv,
   type NewPrereview,
-  writeReview,
   writeReviewAddAuthor,
   writeReviewAddAuthors,
   writeReviewAuthors,
@@ -1092,21 +1090,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           getPrereviews: withEnv(getPrereviewsForClubFromZenodo, env),
         })),
-      ),
-    ),
-    pipe(
-      writeReviewMatch.parser,
-      P.map(
-        flow(
-          RM.of,
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(writeReview)),
-          RM.ichainW(handleResponse),
-        ),
       ),
     ),
     pipe(
