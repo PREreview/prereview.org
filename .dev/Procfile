@@ -1,0 +1,1 @@
+node: node /app/dist/index.js
