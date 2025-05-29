@@ -3,6 +3,7 @@ import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
 
 export type OrcidLocale = (typeof OrcidLocales)[number]
 
+// https://info.orcid.org/ufaqs/what-display-languages-does-orcid-support/
 export const OrcidLocales = [
   'ar',
   'cs',
