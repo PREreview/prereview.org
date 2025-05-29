@@ -1,4 +1,4 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image
+.PHONY: check clean start start-app start-services format lint-css lint-ts prod typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -34,6 +34,9 @@ start-app: .env node_modules start-services src/manifest.json
 
 start:
 	watchexec --restart --watch assets --watch locales --watch .env --ignore assets/locales/ -- make start-app
+
+prod: .env
+	docker compose up app
 
 .dev/server.crt .dev/server.key: SHELL := /usr/bin/env bash
 .dev/server.crt .dev/server.key: .env
