@@ -36,7 +36,7 @@ start:
 	watchexec --restart --watch assets --watch locales --watch .env --ignore assets/locales/ -- make start-app
 
 prod: .env
-	docker compose up app
+	docker compose up --build
 
 .dev/server.crt .dev/server.key: SHELL := /usr/bin/env bash
 .dev/server.crt .dev/server.key: .env
