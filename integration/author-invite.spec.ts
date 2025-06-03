@@ -70,7 +70,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
   },
 )
 
-test.extend(canLogIn).extend(invitedToBeAnAuthor)(
+test.extend(canChooseLocale).extend(invitedToBeAnAuthor)(
   'can choose a locale before declining an invite',
   async ({ page }, testInfo) => {
     await page.getByRole('link', { name: 'declining this invitation' }).click()
