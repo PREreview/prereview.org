@@ -487,6 +487,33 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'metaarxiv', value: doi }))
   })
 
+  test.prop([fc.neurolibrePreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+    examples: [
+      [[new URL('https://www.neurolibre.org/papers/10.55458/neurolibre.00031'), Doi('10.55458/neurolibre.00031')]], // www.
+      [[new URL('http://neurolibre.org/papers/10.55458/neurolibre.00031'), Doi('10.55458/neurolibre.00031')]], // www.
+      [[new URL('http://neurolibre.org/papers/10.55458/neurolibre.00031/'), Doi('10.55458/neurolibre.00031')]], // trailing slash
+      [[new URL('http://neurolibre.org/papers/10.55458/neurolibre.00031/'), Doi('10.55458/neurolibre.00031')]], // trailing slash
+      [[new URL('https://preprint.neurolibre.org/10.55458/neurolibre.00031/'), Doi('10.55458/neurolibre.00031')]], // living preprint
+      [
+        [
+          new URL('https://preprint.neurolibre.org/10.55458/neurolibre.00031/figure-1'), // figure
+          Doi('10.55458/neurolibre.00031'),
+        ],
+      ],
+      [[new URL('https://preprint.neurolibre.org/10.55458/neurolibre.00031.pdf'), Doi('10.55458/neurolibre.00031')]], // pdf
+      [
+        [
+          new URL(
+            'https://preprint.neurolibre.org/10.55458/neurolibre.00031/build/figure_1-6a6420a891b472b9c278b2d7c3d9f6f5.ipynb',
+          ), // download notebook
+          Doi('10.55458/neurolibre.00031'),
+        ],
+      ],
+    ],
+  })('with an neurolibre.org URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'neurolibre', value: doi }))
+  })
+
   test.prop([fc.osfPreprintUrl()], {
     examples: [
       [
