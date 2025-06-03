@@ -1,2 +1,2 @@
 node: node /app/dist/index.js
-http-cache-replica: ./redis-server
+http-cache-replica: ./redis-server --save ""
