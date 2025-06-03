@@ -17,21 +17,7 @@ export const AuthorInviteFlowRouter = pipe(
       P.map(
         ({ id }) =>
           (env: Env) =>
-            authorInvite({ id, locale: env.locale, user: env.loggedInUser })({
-              getPrereview: EffectToFpts.toTaskEitherK(
-                flow(
-                  env.prereviews.getPrereview,
-                  Effect.catchTag('PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved', () =>
-                    Effect.fail('unavailable' as const),
-                  ),
-                ),
-                env.runtime,
-              ),
-              getAuthorInvite: withEnv(Keyv.getAuthorInvite, {
-                authorInviteStore: env.authorInviteStore,
-                ...env.logger,
-              }),
-            }),
+            authorInvite({ id, locale: env.locale, user: env.loggedInUser }),
       ),
     ),
     pipe(
@@ -39,27 +25,31 @@ export const AuthorInviteFlowRouter = pipe(
       P.map(
         ({ id }) =>
           (env: Env) =>
-            authorInviteDecline({ id, locale: env.locale, method: env.method })({
-              getPrereview: EffectToFpts.toTaskEitherK(
-                flow(
-                  env.prereviews.getPrereview,
-                  Effect.catchTag('PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved', () =>
-                    Effect.fail('unavailable' as const),
-                  ),
-                ),
-                env.runtime,
-              ),
-              getAuthorInvite: withEnv(Keyv.getAuthorInvite, {
-                authorInviteStore: env.authorInviteStore,
-                ...env.logger,
-              }),
-              saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, {
-                authorInviteStore: env.authorInviteStore,
-                ...env.logger,
-              }),
-            }),
+            authorInviteDecline({ id, locale: env.locale, method: env.method }),
       ),
     ),
   ],
   concatAll(P.getParserMonoid()),
+  P.map(
+    handler => (env: Env) =>
+      handler(env)({
+        getPrereview: EffectToFpts.toTaskEitherK(
+          flow(
+            env.prereviews.getPrereview,
+            Effect.catchTag('PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved', () =>
+              Effect.fail('unavailable' as const),
+            ),
+          ),
+          env.runtime,
+        ),
+        getAuthorInvite: withEnv(Keyv.getAuthorInvite, {
+          authorInviteStore: env.authorInviteStore,
+          ...env.logger,
+        }),
+        saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, {
+          authorInviteStore: env.authorInviteStore,
+          ...env.logger,
+        }),
+      }),
+  ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
