@@ -27,7 +27,6 @@ import * as OpenAlex from './OpenAlex/index.js'
 import * as Zenodo from './Zenodo/index.js'
 import {
   authorInviteCheck,
-  authorInviteDecline,
   authorInviteEnterEmailAddress,
   authorInviteNeedToVerifyEmailAddress,
   authorInvitePersona,
@@ -125,7 +124,6 @@ import { reviewRequests } from './review-requests-page/index.js'
 import { reviewsData } from './reviews-data/index.js'
 import {
   authorInviteCheckMatch,
-  authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
   authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePersonaMatch,
@@ -1867,39 +1865,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
-        })),
-      ),
-    ),
-    pipe(
-      authorInviteDeclineMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ id }),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(authorInviteDecline)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
-          getPrereview: withEnv(
-            flow(
-              getPrereviewFromZenodo,
-              RTE.mapLeft(() => 'unavailable' as const),
-            ),
-            env,
-          ),
-          saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, env),
         })),
       ),
     ),

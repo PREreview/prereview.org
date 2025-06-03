@@ -2,7 +2,7 @@ import { Effect, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import { authorInvite } from '../../author-invite-flow/index.js'
+import { authorInvite, authorInviteDecline } from '../../author-invite-flow/index.js'
 import * as EffectToFpts from '../../EffectToFpts.js'
 import { withEnv } from '../../Fpts.js'
 import * as Keyv from '../../keyv.js'
@@ -28,6 +28,32 @@ export const AuthorInviteFlowRouter = pipe(
                 env.runtime,
               ),
               getAuthorInvite: withEnv(Keyv.getAuthorInvite, {
+                authorInviteStore: env.authorInviteStore,
+                ...env.logger,
+              }),
+            }),
+      ),
+    ),
+    pipe(
+      Routes.authorInviteDeclineMatch.parser,
+      P.map(
+        ({ id }) =>
+          (env: Env) =>
+            authorInviteDecline({ id, locale: env.locale, method: env.method })({
+              getPrereview: EffectToFpts.toTaskEitherK(
+                flow(
+                  env.prereviews.getPrereview,
+                  Effect.catchTag('PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved', () =>
+                    Effect.fail('unavailable' as const),
+                  ),
+                ),
+                env.runtime,
+              ),
+              getAuthorInvite: withEnv(Keyv.getAuthorInvite, {
+                authorInviteStore: env.authorInviteStore,
+                ...env.logger,
+              }),
+              saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, {
                 authorInviteStore: env.authorInviteStore,
                 ...env.logger,
               }),
