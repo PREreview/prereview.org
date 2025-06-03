@@ -132,7 +132,7 @@ describe('authorInviteDecline', () => {
     })()
 
     expect(actual).toStrictEqual({
-      _tag: 'StreamlinePageResponse',
+      _tag: 'PageResponse',
       canonical: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
       status: Status.OK,
       title: expect.anything(),
