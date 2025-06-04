@@ -92,7 +92,7 @@ RUN go install github.com/DarthSim/hivemind@v1.1.0
 #
 # Stage: Build Redis
 #
-FROM redis:8.0.1 AS redis
+FROM redis:8.0.2 AS redis
 
 #
 # Stage: Production environment
