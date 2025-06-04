@@ -196,7 +196,7 @@ const routerWithoutHyperTs = pipe(
             getMyPrereviews: EffectToFpts.toTaskEitherK(
               flow(
                 env.prereviews.getForUser,
-                Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable')),
+                Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
               ),
               env.runtime,
             ),
@@ -213,14 +213,14 @@ const routerWithoutHyperTs = pipe(
               getPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
                   env.prereviews.getForPreprint,
-                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable')),
+                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
                 ),
                 env.runtime,
               ),
               getRapidPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
                   env.prereviews.getRapidPrereviewsForPreprint,
-                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable')),
+                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
                 ),
                 env.runtime,
               ),
