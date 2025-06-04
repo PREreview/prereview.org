@@ -11,19 +11,9 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
   }
 >() {}
 
-export const canAddMultipleAuthors = Effect.fn(function* (
-  ...args: Parameters<(typeof FeatureFlags.Service)['canAddMultipleAuthors']>
-) {
-  const featureFlags = yield* FeatureFlags
+export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct.get('canAddMultipleAuthors'))
 
-  return featureFlags.canAddMultipleAuthors(...args)
-})
-
-export const canChooseLocale = Effect.andThen(FeatureFlags, Struct.get('canChooseLocale'))
-
-export const canSeeDesignTweaks = Effect.andThen(FeatureFlags, Struct.get('canSeeDesignTweaks'))
-
-export const useCrowdinInContext = Effect.andThen(FeatureFlags, Struct.get('useCrowdinInContext'))
+export const { canChooseLocale, canSeeDesignTweaks, useCrowdinInContext } = Effect.serviceConstants(FeatureFlags)
 
 export const layer = (options: typeof FeatureFlags.Service): Layer.Layer<FeatureFlags> =>
   Layer.succeed(FeatureFlags, options)

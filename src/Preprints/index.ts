@@ -26,33 +26,7 @@ export class Preprints extends Context.Tag('Preprints')<
   }
 >() {}
 
-export const getPreprint = Effect.fn(function* (...args: Parameters<(typeof Preprints.Service)['getPreprint']>) {
-  const preprints = yield* Preprints
-
-  return yield* preprints.getPreprint(...args)
-})
-
-export const getPreprintId = Effect.fn(function* (...args: Parameters<(typeof Preprints.Service)['getPreprintId']>) {
-  const preprints = yield* Preprints
-
-  return yield* preprints.getPreprintId(...args)
-})
-
-export const getPreprintTitle = Effect.fn(function* (
-  ...args: Parameters<(typeof Preprints.Service)['getPreprintTitle']>
-) {
-  const preprints = yield* Preprints
-
-  return yield* preprints.getPreprintTitle(...args)
-})
-
-export const resolvePreprintId = Effect.fn(function* (
-  ...args: Parameters<(typeof Preprints.Service)['resolvePreprintId']>
-) {
-  const preprints = yield* Preprints
-
-  return yield* preprints.resolvePreprintId(...args)
-})
+export const { getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId } = Effect.serviceFunctions(Preprints)
 
 export const layer = Layer.effect(
   Preprints,
