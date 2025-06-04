@@ -45,6 +45,9 @@ updates:
         patterns:
           - 'stylelint'
           - 'stylelint-*'
+      swc:
+        patterns:
+          - '@swc/*'
       tiptap:
         patterns:
           - '@tiptap/*'
