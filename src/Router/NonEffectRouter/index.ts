@@ -50,7 +50,6 @@ export const nonEffectRouter: Effect.Effect<
   | PublicUrl
   | FeatureFlags.FeatureFlags
   | Preprints.Preprints
-  | Prereviews.Prereviews
   | CommentsForReview
   | DeprecatedLoggerEnv
   | FetchHttpClient.Fetch
@@ -87,7 +86,6 @@ export const nonEffectRouter: Effect.Effect<
   const featureFlags = yield* FeatureFlags.FeatureFlags
 
   const preprints = yield* Preprints.Preprints
-  const prereviews = yield* Prereviews.Prereviews
   const commentsForReview = yield* CommentsForReview
   const users = {
     avatarStore: expressConfig.avatarStore,
@@ -123,7 +121,6 @@ export const nonEffectRouter: Effect.Effect<
     featureFlags,
     method: request.method,
     preprints,
-    prereviews,
     runtime,
     logger,
     fetch,
@@ -146,8 +143,7 @@ export interface Env {
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
   method: HttpMethod.HttpMethod
   preprints: typeof Preprints.Preprints.Service
-  prereviews: typeof Prereviews.Prereviews.Service
-  runtime: Runtime.Runtime<ReviewRequests.ReviewRequests>
+  runtime: Runtime.Runtime<Prereviews.Prereviews | ReviewRequests.ReviewRequests>
   logger: typeof DeprecatedLoggerEnv.Service
   users: {
     userOnboardingStore: Keyv.Keyv
@@ -180,7 +176,7 @@ const routerWithoutHyperTs = pipe(
       P.map(
         () => (env: Env) =>
           home({ canSeeDesignTweaks: env.featureFlags.canSeeDesignTweaks, locale: env.locale })({
-            getRecentPrereviews: () => EffectToFpts.toTask(env.prereviews.getFiveMostRecent, env.runtime),
+            getRecentPrereviews: () => EffectToFpts.toTask(Prereviews.getFiveMostRecent, env.runtime),
             getRecentReviewRequests: () => EffectToFpts.toTask(ReviewRequests.getFiveMostRecent, env.runtime),
           }),
       ),
@@ -192,7 +188,7 @@ const routerWithoutHyperTs = pipe(
           myPrereviews({ locale: env.locale, user: env.loggedInUser })({
             getMyPrereviews: EffectToFpts.toTaskEitherK(
               flow(
-                env.prereviews.getForUser,
+                Prereviews.getForUser,
                 Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
               ),
               env.runtime,
@@ -209,14 +205,14 @@ const routerWithoutHyperTs = pipe(
               getPreprint: EffectToFpts.toTaskEitherK(env.preprints.getPreprint, env.runtime),
               getPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
-                  env.prereviews.getForPreprint,
+                  Prereviews.getForPreprint,
                   Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
                 ),
                 env.runtime,
               ),
               getRapidPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
-                  env.prereviews.getRapidPrereviewsForPreprint,
+                  Prereviews.getRapidPrereviewsForPreprint,
                   Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
                 ),
                 env.runtime,
@@ -251,7 +247,7 @@ const routerWithoutHyperTs = pipe(
               getComments: EffectToFpts.toTaskEitherK(env.commentsForReview.get, env.runtime),
               getPrereview: EffectToFpts.toTaskEitherK(
                 flow(
-                  env.prereviews.getPrereview,
+                  Prereviews.getPrereview,
                   Effect.catchTags({
                     PrereviewIsNotFound: () => Effect.fail('not-found' as const),
                     PrereviewIsUnavailable: () => Effect.fail('unavailable' as const),
@@ -271,7 +267,7 @@ const routerWithoutHyperTs = pipe(
             reviewsPage({ field, language, locale: env.locale, page: page ?? 1, query })({
               getRecentPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
-                  env.prereviews.search,
+                  Prereviews.search,
                   Effect.catchTags({
                     PrereviewsPageNotFound: () => Effect.fail('not-found' as const),
                     PrereviewsAreUnavailable: () => Effect.fail('unavailable' as const),

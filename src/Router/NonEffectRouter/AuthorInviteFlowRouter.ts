@@ -6,6 +6,7 @@ import { authorInvite, authorInviteDecline } from '../../author-invite-flow/inde
 import * as EffectToFpts from '../../EffectToFpts.js'
 import { withEnv } from '../../Fpts.js'
 import * as Keyv from '../../keyv.js'
+import * as Prereviews from '../../Prereviews/index.js'
 import * as Routes from '../../routes.js'
 import type * as Response from '../Response.js'
 import type { Env } from './index.js'
@@ -35,7 +36,7 @@ export const AuthorInviteFlowRouter = pipe(
       handler(env)({
         getPrereview: EffectToFpts.toTaskEitherK(
           flow(
-            env.prereviews.getPrereview,
+            Prereviews.getPrereview,
             Effect.catchTag('PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved', () =>
               Effect.fail('unavailable' as const),
             ),

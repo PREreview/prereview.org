@@ -68,6 +68,11 @@ export class Prereviews extends Context.Tag('Prereviews')<
   }
 >() {}
 
+export const { getFiveMostRecent } = Effect.serviceConstants(Prereviews)
+
+export const { getForPreprint, getForUser, getRapidPrereviewsForPreprint, getPrereview, search } =
+  Effect.serviceFunctions(Prereviews)
+
 export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {

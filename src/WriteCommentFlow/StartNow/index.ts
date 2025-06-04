@@ -28,9 +28,7 @@ export const StartNow = ({
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
-    const prereviews = yield* Prereviews.Prereviews
-
-    const prereview = yield* prereviews.getPrereview(id)
+    const prereview = yield* Prereviews.getPrereview(id)
 
     const getNextExpectedCommandForUser = yield* Comments.GetNextExpectedCommandForUser
 
