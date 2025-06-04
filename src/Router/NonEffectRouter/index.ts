@@ -51,13 +51,13 @@ export const nonEffectRouter: Effect.Effect<
   | FeatureFlags.FeatureFlags
   | Preprints.Preprints
   | Prereviews.Prereviews
-  | ReviewRequests.ReviewRequests
   | CommentsForReview
   | DeprecatedLoggerEnv
   | FetchHttpClient.Fetch
   | ExpressConfig
   | SlackApiConfig
   | CloudinaryApiConfig
+  | Runtime.Runtime.Context<Env['runtime']>
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -75,7 +75,7 @@ export const nonEffectRouter: Effect.Effect<
   )
 
   const expressConfig = yield* ExpressConfig
-  const runtime = yield* Effect.runtime<ReviewRequests.ReviewRequests>()
+  const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
   const logger = yield* DeprecatedLoggerEnv
   const fetch = yield* FetchHttpClient.Fetch
 
