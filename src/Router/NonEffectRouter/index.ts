@@ -75,7 +75,7 @@ export const nonEffectRouter: Effect.Effect<
   )
 
   const expressConfig = yield* ExpressConfig
-  const runtime = yield* Effect.runtime()
+  const runtime = yield* Effect.runtime<ReviewRequests.ReviewRequests>()
   const logger = yield* DeprecatedLoggerEnv
   const fetch = yield* FetchHttpClient.Fetch
 
@@ -88,7 +88,6 @@ export const nonEffectRouter: Effect.Effect<
 
   const preprints = yield* Preprints.Preprints
   const prereviews = yield* Prereviews.Prereviews
-  const reviewRequests = yield* ReviewRequests.ReviewRequests
   const commentsForReview = yield* CommentsForReview
   const users = {
     avatarStore: expressConfig.avatarStore,
@@ -125,7 +124,6 @@ export const nonEffectRouter: Effect.Effect<
     method: request.method,
     preprints,
     prereviews,
-    reviewRequests,
     runtime,
     logger,
     fetch,
@@ -149,8 +147,7 @@ export interface Env {
   method: HttpMethod.HttpMethod
   preprints: typeof Preprints.Preprints.Service
   prereviews: typeof Prereviews.Prereviews.Service
-  reviewRequests: typeof ReviewRequests.ReviewRequests.Service
-  runtime: Runtime.Runtime<never>
+  runtime: Runtime.Runtime<ReviewRequests.ReviewRequests>
   logger: typeof DeprecatedLoggerEnv.Service
   users: {
     userOnboardingStore: Keyv.Keyv
@@ -184,7 +181,7 @@ const routerWithoutHyperTs = pipe(
         () => (env: Env) =>
           home({ canSeeDesignTweaks: env.featureFlags.canSeeDesignTweaks, locale: env.locale })({
             getRecentPrereviews: () => EffectToFpts.toTask(env.prereviews.getFiveMostRecent, env.runtime),
-            getRecentReviewRequests: () => EffectToFpts.toTask(env.reviewRequests.getFiveMostRecent, env.runtime),
+            getRecentReviewRequests: () => EffectToFpts.toTask(ReviewRequests.getFiveMostRecent, env.runtime),
           }),
       ),
     ),

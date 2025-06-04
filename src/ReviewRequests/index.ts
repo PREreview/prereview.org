@@ -1,6 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Effect, Layer, pipe, Redacted } from 'effect'
+import { Array, Context, Effect, Layer, pipe, Redacted, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { DeprecatedLoggerEnv } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
@@ -34,6 +34,8 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
     getFiveMostRecent: Effect.Effect<ReadonlyArray<ReviewRequest>>
   }
 >() {}
+
+export const getFiveMostRecent = Effect.andThen(ReviewRequests, Struct.get('getFiveMostRecent'))
 
 export const layer = Layer.effect(
   ReviewRequests,
