@@ -39,7 +39,7 @@
     "message": "Desconectar tu registro ORCID"
   },
   "canDisconnect": {
-    "message": "Puedes desconectar tu perfil de PREreview de tu registro en ORCID."
+    "message": "Puedes desconectar tu perfil de PREreview de tu registro ORCID."
   },
   "stopAddingPrereviews": {
     "message": "Dejaremos de añadir nuevas PREreviews a tu registro en ORCID."

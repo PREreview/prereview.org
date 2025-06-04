@@ -8,9 +8,6 @@
   "ownPreprint": {
     "message": "Lo sentimos, no puedes revisar tu propio preprint"
   },
-  "unableToPublish": {
-    "message": "No fuimos capaces de publicar tu PREreview. Guardamos tu trabajo."
-  },
   "tryAgainLater": {
     "message": "Por favor intentar de nuevo más tarde regresando a esta página."
   },
@@ -36,7 +33,7 @@
     "message": "Ingresa nombres y dirección de correo electrónico de los/las otros/as autores/as"
   },
   "enterNamesAndEmailAddressTip": {
-    "message": "Pon a cada autor/a en su propia línea."
+    "message": "Agrega a cada autor/a en su propia línea."
   },
   "namesAndEmailAddressInvalidFormat": {
     "message": "Ingresa los nombres y correos electrónicos de los/las autores/as en el formato correcto"

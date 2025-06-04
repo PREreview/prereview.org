@@ -132,13 +132,13 @@
     "message": "Si escribiste el DOI, verifica que sea correcto."
   },
   "checkCorrectUrl": {
-    "message": "Si escribiste el URL, verifica que sea correcto."
+    "message": "Si escribiste la URL, verifica que sea correcto."
   },
   "checkPastedDoi": {
     "message": "Si pegaste el DOI, verifica que hayas copiado la dirección completa."
   },
   "checkPastedUrl": {
-    "message": "Si pegaste el URL, verifica que hayas copiado la dirección completa."
+    "message": "Si pegaste la URL, verifica que hayas copiado la dirección completa."
   },
   "doiIsCorrect": {
     "message": "Si el DOI es correcto, favor de <contact>contactarnos</contact>."
