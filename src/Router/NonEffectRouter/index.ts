@@ -49,7 +49,6 @@ export const nonEffectRouter: Effect.Effect<
   | OrcidOauth
   | PublicUrl
   | FeatureFlags.FeatureFlags
-  | Preprints.Preprints
   | CommentsForReview
   | DeprecatedLoggerEnv
   | FetchHttpClient.Fetch
@@ -85,7 +84,6 @@ export const nonEffectRouter: Effect.Effect<
   const cloudinaryApiConfig = yield* CloudinaryApiConfig
   const featureFlags = yield* FeatureFlags.FeatureFlags
 
-  const preprints = yield* Preprints.Preprints
   const commentsForReview = yield* CommentsForReview
   const users = {
     avatarStore: expressConfig.avatarStore,
@@ -120,7 +118,6 @@ export const nonEffectRouter: Effect.Effect<
     loggedInUser: Option.getOrUndefined(loggedInUser),
     featureFlags,
     method: request.method,
-    preprints,
     runtime,
     logger,
     fetch,
@@ -142,8 +139,7 @@ export interface Env {
   loggedInUser: User | undefined
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
   method: HttpMethod.HttpMethod
-  preprints: typeof Preprints.Preprints.Service
-  runtime: Runtime.Runtime<Prereviews.Prereviews | ReviewRequests.ReviewRequests>
+  runtime: Runtime.Runtime<Preprints.Preprints | Prereviews.Prereviews | ReviewRequests.ReviewRequests>
   logger: typeof DeprecatedLoggerEnv.Service
   users: {
     userOnboardingStore: Keyv.Keyv
@@ -202,7 +198,7 @@ const routerWithoutHyperTs = pipe(
         ({ id }) =>
           (env: Env) =>
             preprintReviews({ id, locale: env.locale })({
-              getPreprint: EffectToFpts.toTaskEitherK(env.preprints.getPreprint, env.runtime),
+              getPreprint: EffectToFpts.toTaskEitherK(Preprints.getPreprint, env.runtime),
               getPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
                   Prereviews.getForPreprint,
@@ -225,7 +221,7 @@ const routerWithoutHyperTs = pipe(
       P.map(
         () => (env: Env) =>
           requestAPrereview({ body: env.body, method: env.method, locale: env.locale })({
-            resolvePreprintId: EffectToFpts.toTaskEitherK(env.preprints.resolvePreprintId, env.runtime),
+            resolvePreprintId: EffectToFpts.toTaskEitherK(Preprints.resolvePreprintId, env.runtime),
           }),
       ),
     ),
@@ -234,7 +230,7 @@ const routerWithoutHyperTs = pipe(
       P.map(
         () => (env: Env) =>
           reviewAPreprint({ body: env.body, method: env.method, locale: env.locale })({
-            resolvePreprintId: EffectToFpts.toTaskEitherK(env.preprints.resolvePreprintId, env.runtime),
+            resolvePreprintId: EffectToFpts.toTaskEitherK(Preprints.resolvePreprintId, env.runtime),
           }),
       ),
     ),

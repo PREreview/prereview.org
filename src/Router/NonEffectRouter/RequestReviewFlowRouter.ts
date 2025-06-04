@@ -5,6 +5,7 @@ import type * as T from 'fp-ts/lib/Task.js'
 import * as EffectToFpts from '../../EffectToFpts.js'
 import { withEnv } from '../../Fpts.js'
 import * as Keyv from '../../keyv.js'
+import * as Preprints from '../../Preprints/index.js'
 import { requestReview } from '../../request-review-flow/index.js'
 import * as Routes from '../../routes.js'
 import type * as Response from '../Response.js'
@@ -17,7 +18,7 @@ const routes: Array<P.Parser<(env: Env) => T.Task<Response.Response>>> = [
       ({ id }) =>
         (env: Env) =>
           requestReview({ locale: env.locale, preprint: id, user: env.loggedInUser })({
-            getPreprintTitle: EffectToFpts.toTaskEitherK(env.preprints.getPreprintTitle, env.runtime),
+            getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
             getReviewRequest: (orcid, preprint) =>
               withEnv(Keyv.getReviewRequest, {
                 reviewRequestStore: env.reviewRequestStore,
