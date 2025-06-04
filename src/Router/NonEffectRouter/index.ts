@@ -6,10 +6,11 @@ import {
   HttpServerRequest,
   type HttpServerResponse,
 } from '@effect/platform'
-import { Effect, Either, flow, Match, Option, pipe, Record, type Runtime, String, Tuple } from 'effect'
+import { Effect, Either, flow, Match, Option, pipe, Record, Redacted, type Runtime, String, Tuple } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as T from 'fp-ts/lib/Task.js'
+import type * as CachingHttpClient from '../../CachingHttpClient/index.js'
 import { CloudinaryApiConfig } from '../../cloudinary.js'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../../Context.js'
 import * as EffectToFpts from '../../EffectToFpts.js'
@@ -19,12 +20,13 @@ import { home } from '../../home-page/index.js'
 import type * as Keyv from '../../keyv.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { myPrereviews } from '../../my-prereviews-page/index.js'
+import { Nodemailer } from '../../nodemailer.js'
 import type { OrcidOauth } from '../../OrcidOauth.js'
 import { partners } from '../../partners.js'
 import { preprintReviews } from '../../preprint-reviews-page/index.js'
 import * as Preprints from '../../Preprints/index.js'
 import * as Prereviews from '../../Prereviews/index.js'
-import type { PublicUrl } from '../../public-url.js'
+import { PublicUrl } from '../../public-url.js'
 import { requestAPrereview } from '../../request-a-prereview-page/index.js'
 import { reviewAPreprint } from '../../review-a-preprint-page/index.js'
 import { CommentsForReview, reviewPage } from '../../review-page/index.js'
@@ -33,7 +35,9 @@ import { reviewsPage } from '../../reviews-page/index.js'
 import * as Routes from '../../routes.js'
 import { SlackApiConfig } from '../../slack.js'
 import type { TemplatePage } from '../../TemplatePage.js'
+import type { GenerateUuid } from '../../types/uuid.js'
 import { LoggedInUser, type User } from '../../user.js'
+import { ZenodoOrigin } from '../../Zenodo/index.js'
 import * as Response from '../Response.js'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.js'
 import { MyDetailsRouter } from './MyDetailsRouter.js'
@@ -55,6 +59,7 @@ export const nonEffectRouter: Effect.Effect<
   | ExpressConfig
   | SlackApiConfig
   | CloudinaryApiConfig
+  | Nodemailer
   | Runtime.Runtime.Context<Env['runtime']>
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
@@ -76,12 +81,15 @@ export const nonEffectRouter: Effect.Effect<
   const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
   const logger = yield* DeprecatedLoggerEnv
   const fetch = yield* FetchHttpClient.Fetch
+  const publicUrl = yield* PublicUrl
+  const nodemailer = yield* Nodemailer
 
   const locale = yield* Locale
   const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
 
   const slackApiConfig = yield* SlackApiConfig
   const cloudinaryApiConfig = yield* CloudinaryApiConfig
+  const zenodoOrigin = yield* ZenodoOrigin
   const featureFlags = yield* FeatureFlags.FeatureFlags
 
   const commentsForReview = yield* CommentsForReview
@@ -121,12 +129,18 @@ export const nonEffectRouter: Effect.Effect<
     runtime,
     logger,
     fetch,
+    publicUrl,
     slackApiConfig,
     cloudinaryApiConfig,
+    zenodoApiConfig: {
+      key: Redacted.make(expressConfig.zenodoApiKey),
+      origin: zenodoOrigin,
+    },
     users,
     authorInviteStore: expressConfig.authorInviteStore,
     formStore: expressConfig.formStore,
     reviewRequestStore: expressConfig.reviewRequestStore,
+    nodemailer,
   } satisfies Env
 
   return yield* pipe(FptsToEffect.task(handler(env)), Effect.andThen(Response.toHttpServerResponse))
@@ -138,8 +152,16 @@ export interface Env {
   locale: SupportedLocale
   loggedInUser: User | undefined
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
+  publicUrl: typeof PublicUrl.Service
   method: HttpMethod.HttpMethod
-  runtime: Runtime.Runtime<Preprints.Preprints | Prereviews.Prereviews | ReviewRequests.ReviewRequests>
+  runtime: Runtime.Runtime<
+    | CachingHttpClient.HttpCache
+    | GenerateUuid
+    | Preprints.Preprints
+    | Prereviews.Prereviews
+    | ReviewRequests.ReviewRequests
+    | ZenodoOrigin
+  >
   logger: typeof DeprecatedLoggerEnv.Service
   users: {
     userOnboardingStore: Keyv.Keyv
@@ -158,7 +180,12 @@ export interface Env {
   reviewRequestStore: Keyv.Keyv
   cloudinaryApiConfig: typeof CloudinaryApiConfig.Service
   slackApiConfig: typeof SlackApiConfig.Service
+  zenodoApiConfig: {
+    key: Redacted.Redacted
+    origin: typeof ZenodoOrigin.Service
+  }
   fetch: typeof globalThis.fetch
+  nodemailer: typeof Nodemailer.Service
 }
 
 const routerWithoutHyperTs = pipe(

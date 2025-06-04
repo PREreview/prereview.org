@@ -25,15 +25,6 @@ import * as FeatureFlags from './FeatureFlags.js'
 import { withEnv } from './Fpts.js'
 import * as OpenAlex from './OpenAlex/index.js'
 import * as Zenodo from './Zenodo/index.js'
-import {
-  authorInviteCheck,
-  authorInviteEnterEmailAddress,
-  authorInviteNeedToVerifyEmailAddress,
-  authorInvitePersona,
-  authorInvitePublished,
-  authorInviteStart,
-  authorInviteVerifyEmailAddress,
-} from './author-invite-flow/index.js'
 import { type OpenAuthorInvite, createAuthorInvite } from './author-invite.js'
 import {
   type CloudinaryApiEnv,
@@ -62,7 +53,6 @@ import { disconnectSlack } from './disconnect-slack-page/index.js'
 import {
   type SendEmailEnv,
   createAuthorInviteEmail,
-  createContactEmailAddressVerificationEmailForInvitedAuthor,
   sendContactEmailAddressVerificationEmail,
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
@@ -123,13 +113,6 @@ import type { ReviewRequestPreprintId } from './review-request.js'
 import { reviewRequests } from './review-requests-page/index.js'
 import { reviewsData } from './reviews-data/index.js'
 import {
-  authorInviteCheckMatch,
-  authorInviteEnterEmailAddressMatch,
-  authorInviteNeedToVerifyEmailAddressMatch,
-  authorInvitePersonaMatch,
-  authorInvitePublishedMatch,
-  authorInviteStartMatch,
-  authorInviteVerifyEmailAddressMatch,
   changeAvatarMatch,
   changeCareerStageVisibilityMatch,
   changeContactEmailAddressMatch,
@@ -243,9 +226,7 @@ import {
 } from './write-review/index.js'
 import {
   type WasPrereviewRemovedEnv,
-  addAuthorToRecordOnZenodo,
   createRecordOnZenodo,
-  getPrereviewFromZenodo,
   getPrereviewsForClubFromZenodo,
   getPrereviewsForProfileFromZenodo,
   getPrereviewsForSciety,
@@ -362,12 +343,6 @@ const publishPrereview = (newPrereview: NewPrereview) =>
     ),
     RTE.chainFirstReaderIOKW(([doi, review]) => sendPrereviewToPrereviewCoarNotifyInbox(newPrereview, doi, review)),
     RTE.chainFirstW(([, review]) => triggerRefreshOfPrereview(review, newPrereview.preprint.id, newPrereview.user)),
-  )
-
-const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseudonym') =>
-  pipe(
-    addAuthorToRecordOnZenodo(id, user, persona),
-    RTE.chainFirstW(() => triggerRefreshOfPrereview(id, undefined, user)),
   )
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
@@ -1865,240 +1840,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
-        })),
-      ),
-    ),
-    pipe(
-      authorInviteStartMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(authorInviteStart)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
-          getPrereview: withEnv(
-            flow(
-              getPrereviewFromZenodo,
-              RTE.mapLeft(() => 'unavailable' as const),
-            ),
-            env,
-          ),
-          saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, env),
-        })),
-      ),
-    ),
-    pipe(
-      authorInviteEnterEmailAddressMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ id }),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'body',
-            RM.gets(c => c.getBody()),
-          ),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(authorInviteEnterEmailAddress)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
-          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
-          getPrereview: withEnv(
-            flow(
-              getPrereviewFromZenodo,
-              RTE.mapLeft(() => 'unavailable' as const),
-            ),
-            env,
-          ),
-          saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, env),
-          verifyContactEmailAddressForInvitedAuthor: withEnv(
-            flow(RTE.fromReaderK(createContactEmailAddressVerificationEmailForInvitedAuthor), RTE.chainW(sendEmail)),
-            env,
-          ),
-        })),
-      ),
-    ),
-    pipe(
-      authorInviteNeedToVerifyEmailAddressMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(authorInviteNeedToVerifyEmailAddress)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
-          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
-          getPrereview: withEnv(
-            flow(
-              getPrereviewFromZenodo,
-              RTE.mapLeft(() => 'unavailable' as const),
-            ),
-            env,
-          ),
-        })),
-      ),
-    ),
-    pipe(
-      authorInviteVerifyEmailAddressMatch.parser,
-      P.map(({ id, verify }) =>
-        pipe(
-          RM.of({ id, verify }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(authorInviteVerifyEmailAddress)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
-          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
-          getPrereview: withEnv(
-            flow(
-              getPrereviewFromZenodo,
-              RTE.mapLeft(() => 'unavailable' as const),
-            ),
-            env,
-          ),
-          saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, env),
-        })),
-      ),
-    ),
-    pipe(
-      authorInvitePersonaMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ id }),
-          RM.apS('user', maybeGetUser),
-          RM.apS(
-            'body',
-            RM.gets(c => c.getBody()),
-          ),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(authorInvitePersona)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
-          getPrereview: withEnv(
-            flow(
-              getPrereviewFromZenodo,
-              RTE.mapLeft(() => 'unavailable' as const),
-            ),
-            env,
-          ),
-          saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, env),
-        })),
-      ),
-    ),
-    pipe(
-      authorInviteCheckMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(authorInviteCheck)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          addAuthorToPrereview: withEnv(addAuthorToPrereview, env),
-          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
-          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
-          getPrereview: withEnv(
-            flow(
-              getPrereviewFromZenodo,
-              RTE.mapLeft(() => 'unavailable' as const),
-            ),
-            env,
-          ),
-          saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, env),
-        })),
-      ),
-    ),
-    pipe(
-      authorInvitePublishedMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(authorInvitePublished)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
-          getPrereview: withEnv(
-            flow(
-              getPrereviewFromZenodo,
-              RTE.mapLeft(() => 'unavailable' as const),
-            ),
-            env,
-          ),
         })),
       ),
     ),
