@@ -28,6 +28,8 @@ services:
     extra_hosts:
       - 'host.docker.internal:host-gateway'
   redis:
-    image: redis
+    build:
+      context: .
+      target: redis
     ports:
       - 6379:6379
