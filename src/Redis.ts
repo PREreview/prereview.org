@@ -77,11 +77,12 @@ export class HttpCacheRedis extends Context.Tag('HttpCacheRedis')<
   { primary: IoRedis; readonlyFallback: IoRedis }
 >() {}
 
-const layerHttpCache = flow(
-  redisLifecycle,
-  Effect.andThen(redis => ({ primary: redis, readonlyFallback: redis })),
-  Layer.effect(HttpCacheRedis),
-)
+const layerHttpCache = ({ primaryUri }: { primaryUri: Redacted.Redacted<URL> }) =>
+  pipe(
+    redisLifecycle(primaryUri),
+    Effect.andThen(redis => ({ primary: redis, readonlyFallback: redis })),
+    Layer.effect(HttpCacheRedis),
+  )
 
 export const layerHttpCacheConfig = (options: Config.Config.Wrap<Parameters<typeof layerHttpCache>[0]>) =>
   Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layerHttpCache))

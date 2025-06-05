@@ -91,7 +91,11 @@ pipe(
         clientSecret: Config.redacted('ORCID_CLIENT_SECRET'),
       }),
       Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
-      Redis.layerHttpCacheConfig(Config.redacted(httpCacheRedisUri)),
+      Redis.layerHttpCacheConfig(
+        Config.all({
+          primaryUri: Config.redacted(httpCacheRedisUri),
+        }),
+      ),
       TemplatePage.optionsLayerConfig({
         fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
         environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
