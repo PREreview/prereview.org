@@ -6,10 +6,11 @@ import {
   HttpServerRequest,
   type HttpServerResponse,
 } from '@effect/platform'
-import { Effect, Either, flow, Match, Option, pipe, Record, type Runtime, String, Tuple } from 'effect'
+import { Effect, Either, flow, Match, Option, pipe, Record, Redacted, type Runtime, String, Tuple } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as T from 'fp-ts/lib/Task.js'
+import type * as CachingHttpClient from '../../CachingHttpClient/index.js'
 import { CloudinaryApiConfig } from '../../cloudinary.js'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../../Context.js'
 import * as EffectToFpts from '../../EffectToFpts.js'
@@ -19,12 +20,13 @@ import { home } from '../../home-page/index.js'
 import type * as Keyv from '../../keyv.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { myPrereviews } from '../../my-prereviews-page/index.js'
+import { Nodemailer } from '../../nodemailer.js'
 import type { OrcidOauth } from '../../OrcidOauth.js'
 import { partners } from '../../partners.js'
 import { preprintReviews } from '../../preprint-reviews-page/index.js'
 import * as Preprints from '../../Preprints/index.js'
 import * as Prereviews from '../../Prereviews/index.js'
-import type { PublicUrl } from '../../public-url.js'
+import { PublicUrl } from '../../public-url.js'
 import { requestAPrereview } from '../../request-a-prereview-page/index.js'
 import { reviewAPreprint } from '../../review-a-preprint-page/index.js'
 import { CommentsForReview, reviewPage } from '../../review-page/index.js'
@@ -33,10 +35,13 @@ import { reviewsPage } from '../../reviews-page/index.js'
 import * as Routes from '../../routes.js'
 import { SlackApiConfig } from '../../slack.js'
 import type { TemplatePage } from '../../TemplatePage.js'
+import type { GenerateUuid } from '../../types/uuid.js'
 import { LoggedInUser, type User } from '../../user.js'
+import { ZenodoOrigin } from '../../Zenodo/index.js'
 import * as Response from '../Response.js'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.js'
 import { MyDetailsRouter } from './MyDetailsRouter.js'
+import { RequestReviewFlowRouter } from './RequestReviewFlowRouter.js'
 import { WriteReviewRouter } from './WriteReviewRouter.js'
 
 export const nonEffectRouter: Effect.Effect<
@@ -48,15 +53,14 @@ export const nonEffectRouter: Effect.Effect<
   | OrcidOauth
   | PublicUrl
   | FeatureFlags.FeatureFlags
-  | Preprints.Preprints
-  | Prereviews.Prereviews
-  | ReviewRequests.ReviewRequests
   | CommentsForReview
   | DeprecatedLoggerEnv
   | FetchHttpClient.Fetch
   | ExpressConfig
   | SlackApiConfig
   | CloudinaryApiConfig
+  | Nodemailer
+  | Runtime.Runtime.Context<Env['runtime']>
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -74,20 +78,20 @@ export const nonEffectRouter: Effect.Effect<
   )
 
   const expressConfig = yield* ExpressConfig
-  const runtime = yield* Effect.runtime()
+  const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
   const logger = yield* DeprecatedLoggerEnv
   const fetch = yield* FetchHttpClient.Fetch
+  const publicUrl = yield* PublicUrl
+  const nodemailer = yield* Nodemailer
 
   const locale = yield* Locale
   const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
 
   const slackApiConfig = yield* SlackApiConfig
   const cloudinaryApiConfig = yield* CloudinaryApiConfig
+  const zenodoOrigin = yield* ZenodoOrigin
   const featureFlags = yield* FeatureFlags.FeatureFlags
 
-  const preprints = yield* Preprints.Preprints
-  const prereviews = yield* Prereviews.Prereviews
-  const reviewRequests = yield* ReviewRequests.ReviewRequests
   const commentsForReview = yield* CommentsForReview
   const users = {
     avatarStore: expressConfig.avatarStore,
@@ -122,16 +126,21 @@ export const nonEffectRouter: Effect.Effect<
     loggedInUser: Option.getOrUndefined(loggedInUser),
     featureFlags,
     method: request.method,
-    preprints,
-    prereviews,
-    reviewRequests,
     runtime,
     logger,
     fetch,
+    publicUrl,
     slackApiConfig,
     cloudinaryApiConfig,
+    zenodoApiConfig: {
+      key: Redacted.make(expressConfig.zenodoApiKey),
+      origin: zenodoOrigin,
+    },
     users,
     authorInviteStore: expressConfig.authorInviteStore,
+    formStore: expressConfig.formStore,
+    reviewRequestStore: expressConfig.reviewRequestStore,
+    nodemailer,
   } satisfies Env
 
   return yield* pipe(FptsToEffect.task(handler(env)), Effect.andThen(Response.toHttpServerResponse))
@@ -143,11 +152,16 @@ export interface Env {
   locale: SupportedLocale
   loggedInUser: User | undefined
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
+  publicUrl: typeof PublicUrl.Service
   method: HttpMethod.HttpMethod
-  preprints: typeof Preprints.Preprints.Service
-  prereviews: typeof Prereviews.Prereviews.Service
-  reviewRequests: typeof ReviewRequests.ReviewRequests.Service
-  runtime: Runtime.Runtime<never>
+  runtime: Runtime.Runtime<
+    | CachingHttpClient.HttpCache
+    | GenerateUuid
+    | Preprints.Preprints
+    | Prereviews.Prereviews
+    | ReviewRequests.ReviewRequests
+    | ZenodoOrigin
+  >
   logger: typeof DeprecatedLoggerEnv.Service
   users: {
     userOnboardingStore: Keyv.Keyv
@@ -162,9 +176,16 @@ export interface Env {
     languagesStore: Keyv.Keyv
   }
   authorInviteStore: Keyv.Keyv
+  formStore: Keyv.Keyv
+  reviewRequestStore: Keyv.Keyv
   cloudinaryApiConfig: typeof CloudinaryApiConfig.Service
   slackApiConfig: typeof SlackApiConfig.Service
+  zenodoApiConfig: {
+    key: Redacted.Redacted
+    origin: typeof ZenodoOrigin.Service
+  }
   fetch: typeof globalThis.fetch
+  nodemailer: typeof Nodemailer.Service
 }
 
 const routerWithoutHyperTs = pipe(
@@ -178,8 +199,8 @@ const routerWithoutHyperTs = pipe(
       P.map(
         () => (env: Env) =>
           home({ canSeeDesignTweaks: env.featureFlags.canSeeDesignTweaks, locale: env.locale })({
-            getRecentPrereviews: () => EffectToFpts.toTask(env.prereviews.getFiveMostRecent, env.runtime),
-            getRecentReviewRequests: () => EffectToFpts.toTask(env.reviewRequests.getFiveMostRecent, env.runtime),
+            getRecentPrereviews: () => EffectToFpts.toTask(Prereviews.getFiveMostRecent, env.runtime),
+            getRecentReviewRequests: () => EffectToFpts.toTask(ReviewRequests.getFiveMostRecent, env.runtime),
           }),
       ),
     ),
@@ -190,8 +211,8 @@ const routerWithoutHyperTs = pipe(
           myPrereviews({ locale: env.locale, user: env.loggedInUser })({
             getMyPrereviews: EffectToFpts.toTaskEitherK(
               flow(
-                env.prereviews.getForUser,
-                Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable')),
+                Prereviews.getForUser,
+                Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
               ),
               env.runtime,
             ),
@@ -204,18 +225,18 @@ const routerWithoutHyperTs = pipe(
         ({ id }) =>
           (env: Env) =>
             preprintReviews({ id, locale: env.locale })({
-              getPreprint: EffectToFpts.toTaskEitherK(env.preprints.getPreprint, env.runtime),
+              getPreprint: EffectToFpts.toTaskEitherK(Preprints.getPreprint, env.runtime),
               getPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
-                  env.prereviews.getForPreprint,
-                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable')),
+                  Prereviews.getForPreprint,
+                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
                 ),
                 env.runtime,
               ),
               getRapidPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
-                  env.prereviews.getRapidPrereviewsForPreprint,
-                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable')),
+                  Prereviews.getRapidPrereviewsForPreprint,
+                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
                 ),
                 env.runtime,
               ),
@@ -227,7 +248,7 @@ const routerWithoutHyperTs = pipe(
       P.map(
         () => (env: Env) =>
           requestAPrereview({ body: env.body, method: env.method, locale: env.locale })({
-            resolvePreprintId: EffectToFpts.toTaskEitherK(env.preprints.resolvePreprintId, env.runtime),
+            resolvePreprintId: EffectToFpts.toTaskEitherK(Preprints.resolvePreprintId, env.runtime),
           }),
       ),
     ),
@@ -236,7 +257,7 @@ const routerWithoutHyperTs = pipe(
       P.map(
         () => (env: Env) =>
           reviewAPreprint({ body: env.body, method: env.method, locale: env.locale })({
-            resolvePreprintId: EffectToFpts.toTaskEitherK(env.preprints.resolvePreprintId, env.runtime),
+            resolvePreprintId: EffectToFpts.toTaskEitherK(Preprints.resolvePreprintId, env.runtime),
           }),
       ),
     ),
@@ -249,7 +270,7 @@ const routerWithoutHyperTs = pipe(
               getComments: EffectToFpts.toTaskEitherK(env.commentsForReview.get, env.runtime),
               getPrereview: EffectToFpts.toTaskEitherK(
                 flow(
-                  env.prereviews.getPrereview,
+                  Prereviews.getPrereview,
                   Effect.catchTags({
                     PrereviewIsNotFound: () => Effect.fail('not-found' as const),
                     PrereviewIsUnavailable: () => Effect.fail('unavailable' as const),
@@ -269,7 +290,7 @@ const routerWithoutHyperTs = pipe(
             reviewsPage({ field, language, locale: env.locale, page: page ?? 1, query })({
               getRecentPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
-                  env.prereviews.search,
+                  Prereviews.search,
                   Effect.catchTags({
                     PrereviewsPageNotFound: () => Effect.fail('not-found' as const),
                     PrereviewsAreUnavailable: () => Effect.fail('unavailable' as const),
@@ -282,6 +303,7 @@ const routerWithoutHyperTs = pipe(
     ),
     AuthorInviteFlowRouter,
     MyDetailsRouter,
+    RequestReviewFlowRouter,
     WriteReviewRouter,
   ],
   concatAll(P.getParserMonoid()),

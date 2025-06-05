@@ -9,13 +9,6 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts'],
   moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' },
   transform: {
-    '^.+\\.[jt]s$': [
-      'ts-jest',
-      {
-        diagnostics: false,
-        isolatedModules: true,
-        useESM: true,
-      },
-    ],
+    '^.+\\.[jt]s$': '@swc/jest',
   },
 }

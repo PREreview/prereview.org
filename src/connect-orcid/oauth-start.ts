@@ -39,7 +39,7 @@ const authorizationRequestUrl = (locale: SupportedLocale) =>
               lang: OrcidLocale.fromSupportedLocale(locale),
               response_type: 'code',
               redirect_uri: redirectUri.href,
-              scope: '/authenticate',
+              scope: '/activities/update /read-limited',
             }),
           )}`,
           authorizeUrl,

@@ -1,4 +1,19 @@
 {
+  "menu": {
+    "message": "Menu"
+  },
+  "getInvolved": {
+    "message": "Participe"
+  },
+  "findOutMore": {
+    "message": "Saiba mais"
+  },
+  "chooseLanguage": {
+    "message": "Escolha seu idioma"
+  },
+  "myAccount": {
+    "message": "Minha conta"
+  },
   "menuBlog": {
     "message": "Blog"
   },
@@ -29,11 +44,20 @@
   "menuReviews": {
     "message": "Avaliações"
   },
+  "menuReviewsHint": {
+    "message": "Veja preprints com uma avaliação PREreview."
+  },
   "menuRequests": {
     "message": "Solicitações"
   },
+  "menuRequestsHint": {
+    "message": "Revise um preprint e ajude quem elaborou o trabalho."
+  },
   "menuTrainings": {
     "message": "Treinamentos"
+  },
+  "menuTrainingsHint": {
+    "message": "Saiba mais sobre revisões por pares éticas e construtivas."
   },
   "menuLiveReviews": {
     "message": "Avaliações ao vivo"
@@ -43,6 +67,9 @@
   },
   "menuClubs": {
     "message": "Clubes"
+  },
+  "menuClubsHint": {
+    "message": "Conecte-se com colegas com interesses em comum."
   },
   "onlyEnglish": {
     "message": "Esta página está disponível apenas em inglês."

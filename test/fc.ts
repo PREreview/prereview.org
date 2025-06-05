@@ -522,6 +522,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, Array.NonEmptyReadonl
         jxivPreprintUrl(),
         medrxivPreprintUrl(),
         metaarxivPreprintUrl(),
+        neurolibrePreprintUrl(),
         philsciPreprintUrl(),
         preprintsorgPreprintUrl(),
         psyarxivPreprintUrl(),
@@ -791,6 +792,14 @@ export const neurolibrePreprintId = (): fc.Arbitrary<NeurolibrePreprintId> =>
     _tag: constant('neurolibre'),
     value: doi(constant('55458')),
   })
+
+export const neurolibrePreprintUrl = (): fc.Arbitrary<[URL, NeurolibrePreprintId]> =>
+  fc
+    .string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), minLength: 1 })
+    .map(id => [
+      new URL(`https://neurolibre.org/papers/10.55458/neurolibre.${id}`),
+      { _tag: 'neurolibre', value: `10.55458/neurolibre.${id}` as Doi<'55458'> },
+    ])
 
 export const osfPreprintId = (): fc.Arbitrary<OsfPreprintId> =>
   fc.record({
@@ -1125,6 +1134,7 @@ export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId>
     lifecycleJournalPreprintId(),
     medrxivPreprintId(),
     metaarxivPreprintId(),
+    neurolibrePreprintId(),
     osfPreprintId(),
     osfPreprintsPreprintId(),
     preprintsorgPreprintId(),
@@ -1145,7 +1155,6 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     authoreaPreprintId(),
     curvenotePreprintId(),
     jxivPreprintId(),
-    neurolibrePreprintId(),
     philsciPreprintId(),
     psychArchivesPreprintId(),
     scienceOpenPreprintId(),

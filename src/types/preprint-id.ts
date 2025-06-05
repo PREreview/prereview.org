@@ -348,6 +348,7 @@ export function fromUrl(url: URL): ReadonlyArray<IndeterminatePreprintId> {
     .with(['engrxiv.org', P.select()], extractFromEngrxivPath)
     .with(['jxiv.jst.go.jp', P.select()], extractFromJxivPath)
     .with(['medrxiv.org', P.select()], extractFromBiorxivMedrxivPath('medrxiv'))
+    .with([P.union('neurolibre.org', 'preprint.neurolibre.org'), P.select()], extractFromNeurolibrePath)
     .with(['osf.io', P.select()], extractFromOsfPath)
     .with(['philsci-archive.pitt.edu', P.select()], extractFromPhilsciPath)
     .with(['preprints.org', P.select()], extractFromPreprintsorgPath)
@@ -419,6 +420,13 @@ const extractFromJxivPath = flow(
   decodeURIComponent,
   Option.liftNullable(s => /^index\.php\/jxiv\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.51094/jxiv.${id}`, parsePreprintDoi)),
+  Array.fromOption,
+)
+
+const extractFromNeurolibrePath = flow(
+  decodeURIComponent,
+  Option.liftNullable(s => /^(?:papers\/)?10.55458\/neurolibre\.([0-9]+)(?:\/|\.|$)/.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.55458/neurolibre.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 

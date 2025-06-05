@@ -35,6 +35,8 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
   }
 >() {}
 
+export const { getFiveMostRecent } = Effect.serviceConstants(ReviewRequests)
+
 export const layer = Layer.effect(
   ReviewRequests,
   Effect.gen(function* () {

@@ -79,8 +79,13 @@ export const toTask =
 export const toReaderIO = <A, R>(effect: Effect.Effect<A, never, R>): RIO.ReaderIO<EffectEnv<R>, A> =>
   pipe(
     RIO.ask<EffectEnv<R>>(),
-    RIO.map(({ runtime }) => Runtime.runSync(runtime)(effect)),
+    RIO.chainIOK(({ runtime }) => toIO(effect, runtime)),
   )
+
+export const toIO =
+  <A, R>(effect: Effect.Effect<A, never, R>, runtime: Runtime.Runtime<R>): IO.IO<A> =>
+  () =>
+    Runtime.runSync(runtime)(effect)
 
 export const makeTaskEitherK = <A extends ReadonlyArray<unknown>, B, E, R>(
   f: (...a: A) => Effect.Effect<B, E, R>,

@@ -19,6 +19,7 @@ import type {
   LifecycleJournalPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
+  NeurolibrePreprintId,
   OsfPreprintId,
   OsfPreprintsPreprintId,
   PreprintId,
@@ -46,6 +47,7 @@ export type ReviewRequestPreprintId =
   | LifecycleJournalPreprintId
   | MedrxivPreprintId
   | MetaarxivPreprintId
+  | NeurolibrePreprintId
   | OsfPreprintId
   | OsfPreprintsPreprintId
   | PreprintsorgPreprintId
@@ -146,6 +148,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
           'lifecycle-journal',
           'medrxiv',
           'metaarxiv',
+          'neurolibre',
           'osf',
           'osf-preprints',
           'preprints.org',

@@ -8,7 +8,7 @@ import type { Uuid } from 'uuid-ts'
 import { getClubName } from '../../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
-import { StreamlinePageResponse } from '../../response.js'
+import { PageResponse } from '../../response.js'
 import { authorInviteDeclineMatch, clubProfileMatch, profileMatch } from '../../routes.js'
 import { renderDate } from '../../time.js'
 import { ProfileId } from '../../types/index.js'
@@ -24,7 +24,7 @@ export const declinePage = ({
   locale: SupportedLocale
   review: Prereview
 }) =>
-  StreamlinePageResponse({
+  PageResponse({
     status: Status.OK,
     title: plainText(translate(locale, 'author-invite-flow', 'declineTheInvitation')()),
     main: html`

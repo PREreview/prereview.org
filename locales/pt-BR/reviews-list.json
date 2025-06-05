@@ -2,6 +2,15 @@
   "reviewTitle": {
     "message": "Avaliação PREreview de {preprint}"
   },
+  "reviewText": {
+    "message": "{numberOfReviewers, plural, one {{reviewers} revisou {preprint}} other {{reviewers} revisaram {preprint}}}"
+  },
+  "clubReviewText": {
+    "message": "{numberOfReviewers, plural, one {{reviewers} do {club} revisou {preprint}} other {{reviewers} do {club} revisaram {preprint}}}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {{number, number} outro autor} other {{number, number} outros autores}}"
+  },
   "reviewPublished": {
     "message": "Avaliação publicada"
   },

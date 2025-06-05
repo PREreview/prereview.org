@@ -204,7 +204,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               access_status: 'open',
               q: `${
                 field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : ''
-              }${field && language ? ' AND ' : ''}${language ? `language:"${iso6391To3(language)}"` : ''}${(field || language) && query ? ' AND ' : ''}${query ? `(title:(${query}) OR metadata.creators.person_or_org.name:(${query}))` : ''}`,
+              }${field && language ? ' AND ' : ''}${language ? `language:"${iso6391To3(language)}"` : ''}${(field || language) && query ? ' AND ' : ''}${query ? `(title:"${query}"~5 OR metadata.creators.person_or_org.name:"${query}"~5)` : ''}`,
             },
           },
           {

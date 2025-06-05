@@ -6,7 +6,7 @@
     "message": "Puedes conectar tu perfil de PREreview a tu cuenta en la Comunidad de Slack de PREreview."
   },
   "showOrcidOnProfile": {
-    "message": "Mostraremos tu identificador digital de ORCID [ORCID iD] en tu perfil de Slack."
+    "message": "Mostraremos ORCID iD en tu perfil de Slack."
   },
   "beforeYouStart": {
     "message": "Antes de iniciar"

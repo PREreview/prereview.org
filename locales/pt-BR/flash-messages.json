@@ -20,6 +20,9 @@
   "messageVerifyEmail": {
     "message": "Enviamos um e-mail para você. Por favor, abra o e-mail e clique no link para confirmar seu endereço."
   },
+  "messageVerifyEmailResend": {
+    "message": "Enviamos um novo e-mail para você."
+  },
   "messageEmailVerified": {
     "message": "Seu endereço de e-mail foi confirmado."
   },

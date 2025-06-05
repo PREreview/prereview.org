@@ -393,6 +393,10 @@ body > footer {
     list-style-type: none;
   }
 
+  & > ul {
+    max-inline-size: 30ch;
+  }
+
   & li:not(:first-child) {
     margin-block-start: var(--space-3xs);
   }

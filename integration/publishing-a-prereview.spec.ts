@@ -92,12 +92,10 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
   },
 )
 
-test.extend(canChooseLocale)('can choose a locale before starting', async ({ javaScriptEnabled, page }, testInfo) => {
+test.extend(canChooseLocale)('can choose a locale before starting', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
 
   await page.getByRole('link', { name: 'português (Brasil)' }).click()
-
-  testInfo.fail(!javaScriptEnabled)
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Escrever uma avaliação PREreview')
 })
