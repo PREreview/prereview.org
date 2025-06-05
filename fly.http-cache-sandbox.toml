@@ -10,10 +10,4 @@ cpu_kind = 'shared'
 cpus = 1
 
 [experimental]
-exec = [
-	"redis-server",
-	"--maxmemory",
-	"100mb",
-	"--maxmemory-policy",
-	"allkeys-lru",
-]
+exec = ["redis-server", "--maxmemory", "100mb", "--maxmemory-policy", "allkeys-lru"]
