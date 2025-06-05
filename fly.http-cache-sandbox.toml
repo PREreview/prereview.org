@@ -1,0 +1,10 @@
+app = 'http-cache-sandbox'
+primary_region = 'iad'
+
+[build]
+image = 'redis:7.4.2-alpine'
+
+[[vm]]
+memory = '256mb'
+cpu_kind = 'shared'
+cpus = 1
