@@ -14,16 +14,16 @@ export const layerPersistedToRedis = Layer.effect(
     return pipe(
       {
         get: request =>
-          Effect.if(redis.status === 'ready', {
-            onTrue: () => getFromRedis(redis)(request),
+          Effect.if(redis.primary.status === 'ready', {
+            onTrue: () => getFromRedis(redis.primary)(request),
             onFalse: () =>
               pipe(
-                new InternalHttpCacheFailure({ cause: `Redis is ${redis.status}` }),
+                new InternalHttpCacheFailure({ cause: `Redis is ${redis.primary.status}` }),
                 Effect.tapError(() => Effect.logWarning('Redis unavailable')),
               ),
           }),
-        set: writeToRedis(redis),
-        delete: deleteFromRedis(redis),
+        set: writeToRedis(redis.primary),
+        delete: deleteFromRedis(redis.primary),
       },
       serializationErrorChecking,
     )
