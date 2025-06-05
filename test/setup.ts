@@ -7,7 +7,7 @@ if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
   fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })
 }
 
-expect.addEqualityTesters([effectEquals])
+expect.addEqualityTesters([effectEquals, urlEquals])
 
 function effectEquals(this: TesterContext, a: unknown, b: unknown, customTesters: Array<Tester>) {
   if (!Equal.isEqual(a) || !Equal.isEqual(b)) {
@@ -23,4 +23,12 @@ function effectEquals(this: TesterContext, a: unknown, b: unknown, customTesters
         customTesters.filter(t => t !== effectEquals),
       ),
   )
+}
+
+function urlEquals(this: TesterContext, a: unknown, b: unknown, customTesters: Array<Tester>) {
+  if (!(a instanceof URL) || !(b instanceof URL)) {
+    return undefined
+  }
+
+  return this.equals(a.href, b.href, customTesters)
 }
