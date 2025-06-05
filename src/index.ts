@@ -94,6 +94,7 @@ pipe(
       Redis.layerHttpCacheConfig(
         Config.all({
           primaryUri: Config.redacted(httpCacheRedisUri),
+          readonlyFallbackUri: Config.redacted(httpCacheRedisUri),
         }),
       ),
       TemplatePage.optionsLayerConfig({
