@@ -98,7 +98,7 @@ test.each([
         { name: 'Renato Polimanti', orcid: Orcid('0000-0003-0745-6046') },
       ],
       id: { _tag: 'medrxiv', value: Doi('10.1101/2024.05.27.24307989') },
-      posted: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),
+      posted: Temporal.PlainDate.from({ year: 2024, month: 5, day: 28 }),
       title: {
         language: 'en',
         text: rawHtml('Brain-wide pleiotropy investigation of alcohol drinking and tobacco smoking behaviors'),
@@ -125,7 +125,7 @@ test.each([
         { name: 'Lincon Rodrigues Silva', orcid: Orcid('0009-0000-5951-4434') },
       ],
       id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.11415') },
-      posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 18 }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 10 }),
       title: {
         language: 'en',
         text: rawHtml(
