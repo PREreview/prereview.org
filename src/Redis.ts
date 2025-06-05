@@ -72,11 +72,14 @@ export const layerDataStore = flow(redisLifecycle, Layer.effect(DataStoreRedis))
 export const layerDataStoreConfig = (options: Config.Config.Wrap<Parameters<typeof layerDataStore>[0]>) =>
   Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layerDataStore))
 
-export class HttpCacheRedis extends Context.Tag('HttpCacheRedis')<HttpCacheRedis, { primary: IoRedis }>() {}
+export class HttpCacheRedis extends Context.Tag('HttpCacheRedis')<
+  HttpCacheRedis,
+  { primary: IoRedis; readonlyFallback: IoRedis }
+>() {}
 
 const layerHttpCache = flow(
   redisLifecycle,
-  Effect.andThen(redis => ({ primary: redis })),
+  Effect.andThen(redis => ({ primary: redis, readonlyFallback: redis })),
   Layer.effect(HttpCacheRedis),
 )
 
