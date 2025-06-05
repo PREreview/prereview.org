@@ -14,6 +14,9 @@
   "slackLink": {
     "message": "Junte-se à nossa Comunidade Slack"
   },
+  "menuHeading": {
+    "message": "Links úteis"
+  },
   "menuDonate": {
     "message": "Doe"
   },
@@ -37,6 +40,9 @@
   },
   "menuHowToUse": {
     "message": "Como usar"
+  },
+  "contactHeading": {
+    "message": "Fale conosco"
   },
   "contactEmail": {
     "message": "Envie um e-mail para {address}"

@@ -2,6 +2,9 @@
   "prereviewsOf": {
     "message": "Avaliações PREreview de {preprint}"
   },
+  "preprintDetails": {
+    "message": "Detalhes do preprint"
+  },
   "abstractHeading": {
     "message": "Resumo"
   },
