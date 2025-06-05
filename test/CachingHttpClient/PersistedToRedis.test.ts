@@ -2,18 +2,18 @@ import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform
 import { it } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Cause, DateTime, Effect, Either, Schema } from 'effect'
+import type { Redis as IoRedis } from 'ioredis'
 import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.js'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.js'
-import type * as Redis from '../../src/Redis.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('getFromRedis', () => {
   const stubbedRedisReturning = (value: string | null) =>
     ({
-      get: (() => Promise.resolve(value)) satisfies (typeof Redis.HttpCacheRedis.Service)['get'],
-      del: jest.fn(() => Promise.resolve(1)) satisfies (typeof Redis.HttpCacheRedis.Service)['del'],
-    }) as unknown as typeof Redis.HttpCacheRedis.Service
+      get: (() => Promise.resolve(value)) satisfies IoRedis['get'],
+      del: jest.fn(() => Promise.resolve(1)) satisfies IoRedis['del'],
+    }) as unknown as IoRedis
 
   describe('there is a value for a given key', () => {
     describe('the value can be read', () => {
@@ -76,8 +76,8 @@ describe('getFromRedis', () => {
     it.prop([fc.httpClientRequest(), fc.anything()])('returns an error', (request, error) =>
       Effect.gen(function* () {
         const redis = {
-          get: (() => Promise.reject(error)) satisfies (typeof Redis.HttpCacheRedis.Service)['get'],
-        } as unknown as typeof Redis.HttpCacheRedis.Service
+          get: (() => Promise.reject(error)) satisfies IoRedis['get'],
+        } as unknown as IoRedis
 
         const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
@@ -92,8 +92,8 @@ describe('getFromRedis', () => {
 describe('writeToRedis', () => {
   const stubbedRedis = () =>
     ({
-      set: jest.fn(() => Promise.resolve('OK' as const)) satisfies (typeof Redis.HttpCacheRedis.Service)['set'],
-    }) as unknown as typeof Redis.HttpCacheRedis.Service
+      set: jest.fn(() => Promise.resolve('OK' as const)) satisfies IoRedis['set'],
+    }) as unknown as IoRedis
 
   describe('the value can be written', () => {
     it.prop([
@@ -140,8 +140,8 @@ describe('writeToRedis', () => {
       (response, staleAt, error) =>
         Effect.gen(function* () {
           const redis = {
-            set: (() => Promise.reject<'OK'>(error)) satisfies (typeof Redis.HttpCacheRedis.Service)['set'],
-          } as unknown as typeof Redis.HttpCacheRedis.Service
+            set: (() => Promise.reject<'OK'>(error)) satisfies IoRedis['set'],
+          } as unknown as IoRedis
 
           const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
 
@@ -158,8 +158,8 @@ describe('deleteFromRedis', () => {
     it.prop([fc.url()])('succeeds', url =>
       Effect.gen(function* () {
         const redis = {
-          del: jest.fn(() => Promise.resolve(1)) satisfies (typeof Redis.HttpCacheRedis.Service)['del'],
-        } as unknown as typeof Redis.HttpCacheRedis.Service
+          del: jest.fn(() => Promise.resolve(1)) satisfies IoRedis['del'],
+        } as unknown as IoRedis
 
         const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
 
@@ -174,8 +174,8 @@ describe('deleteFromRedis', () => {
     it.prop([fc.url()])('succeeds', url =>
       Effect.gen(function* () {
         const redis = {
-          del: jest.fn(() => Promise.resolve(0)) satisfies (typeof Redis.HttpCacheRedis.Service)['del'],
-        } as unknown as typeof Redis.HttpCacheRedis.Service
+          del: jest.fn(() => Promise.resolve(0)) satisfies IoRedis['del'],
+        } as unknown as IoRedis
 
         const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
 
@@ -190,8 +190,8 @@ describe('deleteFromRedis', () => {
     it.prop([fc.url(), fc.anything()])('returns an error', (url, error) =>
       Effect.gen(function* () {
         const redis = {
-          del: (() => Promise.reject(error)) satisfies (typeof Redis.HttpCacheRedis.Service)['del'],
-        } as unknown as typeof Redis.HttpCacheRedis.Service
+          del: (() => Promise.reject(error)) satisfies IoRedis['del'],
+        } as unknown as IoRedis
 
         const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
 
