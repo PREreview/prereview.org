@@ -31,7 +31,7 @@ describe('getAvatarFromCloudinary', () => {
     expect(actual).toStrictEqual(
       E.right(
         new URL(
-          `https://res.cloudinary.com/${cloudinaryApi.cloudName}/image/upload/c_thumb,f_auto,g_face,h_300,q_auto,w_300,z_0.666/${imageId}`,
+          `https://res.cloudinary.com/${cloudinaryApi.cloudName}/image/upload/c_thumb,f_auto,g_face,h_300,q_auto,w_300,z_0.666/prereview-profile/${imageId}`,
         ),
       ),
     )

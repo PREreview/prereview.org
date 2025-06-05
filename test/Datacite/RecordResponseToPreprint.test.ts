@@ -38,7 +38,7 @@ test.each([
           'Teorias De Enfermagem Para Abordagem Familiar De Potenciais Doadores De Órgãos: revisão de escopo',
         ),
       },
-      url: new URL('https://osf.io/eq8bk'),
+      url: new URL('https://osf.io/eq8bk/'),
     }),
   },
   {
@@ -67,7 +67,7 @@ test.each([
           'Self-leadership and innovative work behaviors: Testing a parallel mediation model with goal striving and goal generation',
         ),
       },
-      url: new URL('https://osf.io/bu3rj'),
+      url: new URL('https://osf.io/bu3rj/'),
     }),
   },
   {
@@ -88,7 +88,7 @@ test.each([
           'Verification of Zhao et al (2023) ‘Effect of Acceptance and Commitment Therapy for depressive disorders: a meta-analysis’',
         ),
       },
-      url: new URL('https://osf.io/bmqcw'),
+      url: new URL('https://osf.io/bmqcw/'),
     }),
   },
   {

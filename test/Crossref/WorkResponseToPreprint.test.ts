@@ -271,7 +271,7 @@ test.each([
           '<p>Despite the lungs being essential for ventilation and aerobic exercise capacity, conventionally the lungs are not thought to adapt to exercise training. Endurance exercise is key to pulmonary rehabilitation programs, which also displays sex-specific differences in therapeutic efficacy. Given the molecular underpinnings of sex-specific lung adaptations to endurance exercise are uncharacterized, we used a multi-omics approach to study sex differences in the lungs of 6-month-old Fischer 344 rats in response to an 8 week progressive endurance treadmill training protocol. This was accomplished by reannotating publicly accessible data from the Molecular Transducers of Physical Activity Consortium (MoTrPAC) and integrating newly-analyzed acetylome data to assess multi-omic sex differences in sedentary and progressively trained states. Female rats displayed enrichment in immune-related features and pathways at the transcriptome and proteome level that were maintained with training. Conversely, in the male rat lung there was an overall decrease in immune pathways following 8 weeks of training. Sexually conserved responses to training included increased enrichment in transcriptomic pathways related to type I alveoli and proteomic pathways related to cilia, and decreased mitochondrial protein acetylation. In both sexes, features known to be enriched in lung diseases were attenuated with training. Together our findings provide novel insight into sex specific responses to endurance exercise training in the rat lung and may offer translational insight into sex-specific differences in lung disease pathogenesis and treatment.</p>',
         ),
       },
-      url: new URL('http://biorxiv.org/lookup/doi/10.1101/2025.04.10.647997'),
+      url: new URL('https://biorxiv.org/lookup/doi/10.1101/2025.04.10.647997'),
     }),
   },
   {
@@ -295,10 +295,9 @@ test.each([
           '<p>The<i>TFE3</i>fusion gene, byproduct of Xp11.2 translocation, is the diagnostic marker for translocation renal cell carcinoma (tRCC). Absence of any clinically recognized therapy for tRCC, pressing a need to create novel and efficient therapeutic approaches. Previous studies shown that stabilization of the G-quadruplex structure in oncogenes suppresses their expression machinery. To combat the oncogenesis caused by fusion genes, our objective is to locate and stabilize the G-quadruplex structure within the<i>PRCC-TFE3</i>fusion gene. Using the Quadruplex- forming G Rich Sequences (QGRS) mapper and the Non-B DNA motif search tool (nBMST) online server, we found putative G-quadruplex forming sequences (PQS) in the<i>PRCC-TFE3</i>fusion gene. Circular dichroism demonstrating a parallel G-quadruplex in the targeted sequence. Fluorescence and UV-vis spectroscopy results suggest that pyridostatin binds to this newly discovered G-quadruplex. The PCR stop assay, as well as transcriptional or translational inhibition by PQS, revealed that stable G-quadruplex formation affects biological processes. Confocal microscopy of HEK293T cells transfected with the fusion transcript confirmed G- quadruplexes formation in cell. This investigation may shed light on G-quadruplex’s functions in fusion genes and may help in the development of therapies specifically targeted against fusion oncogenes, which would enhance the capability of current tRCC therapy approach.</p>',
         ),
       },
-      url: new URL('http://biorxiv.org/lookup/doi/2023.07.06.547934'),
+      url: new URL('https://biorxiv.org/lookup/doi/10.1101/2023.07.06.547934'),
     }),
   },
-
   {
     response: 'research-square.json',
     expected: Preprint({
