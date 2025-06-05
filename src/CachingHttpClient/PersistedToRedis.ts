@@ -1,5 +1,6 @@
 import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
 import { Effect, Either, Layer, pipe, Schema } from 'effect'
+import type { Redis as IoRedis } from 'ioredis'
 import _normalizeUrl from 'normalize-url'
 import * as Redis from '../Redis.js'
 import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure, NoCachedResponseFound } from './HttpCache.js'
@@ -30,7 +31,7 @@ export const layerPersistedToRedis = Layer.effect(
 )
 
 export const getFromRedis =
-  (redis: typeof Redis.HttpCacheRedis.Service): (typeof HttpCache.Service)['get'] =>
+  (redis: IoRedis): (typeof HttpCache.Service)['get'] =>
   request =>
     pipe(
       Effect.tryPromise(() => redis.get(keyForRequest(request))),
@@ -56,7 +57,7 @@ export const getFromRedis =
     )
 
 export const writeToRedis =
-  (redis: typeof Redis.HttpCacheRedis.Service): (typeof HttpCache.Service)['set'] =>
+  (redis: IoRedis): (typeof HttpCache.Service)['set'] =>
   (response, staleAt) =>
     pipe(
       Effect.gen(function* () {
@@ -78,7 +79,7 @@ export const writeToRedis =
     )
 
 export const deleteFromRedis =
-  (redis: typeof Redis.HttpCacheRedis.Service): (typeof HttpCache.Service)['delete'] =>
+  (redis: IoRedis): (typeof HttpCache.Service)['delete'] =>
   url =>
     pipe(
       Effect.tryPromise(() => redis.del(normalizeUrl(url))),
