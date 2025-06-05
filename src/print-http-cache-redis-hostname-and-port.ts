@@ -11,7 +11,10 @@ const httpCacheRedisUri = Config.url('HTTP_CACHE_REDIS_URI').pipe(
 
 const program = pipe(
   httpCacheRedisUri,
-  Effect.tapBoth({ onSuccess: uri => Console.log(`${uri.hostname} ${uri.port}`), onFailure: Console.log }),
+  Effect.tapBoth({
+    onSuccess: uri => Console.log(`${uri.hostname} ${uri.port !== '' ? uri.port : '6379'}`),
+    onFailure: Console.log,
+  }),
 )
 
 const result = Effect.runSyncExit(program)
