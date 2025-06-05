@@ -8,3 +8,12 @@ image = 'redis:7.4.2-alpine'
 memory = '256mb'
 cpu_kind = 'shared'
 cpus = 1
+
+[experimental]
+exec = [
+	"redis-server",
+	"--maxmemory",
+	"100mb",
+	"--maxmemory-policy",
+	"allkeys-lru",
+]
