@@ -70,7 +70,10 @@ pipe(
       Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
       Layer.effect(
         SlackApiConfig,
-        Config.all({ apiToken: Config.redacted('SLACK_API_TOKEN'), apiUpdate: Config.boolean('SLACK_UPDATE') }),
+        Config.all({
+          apiToken: Config.redacted('SLACK_API_TOKEN'),
+          apiUpdate: Config.withDefault(Config.boolean('SLACK_UPDATE'), false),
+        }),
       ),
       Layer.effect(
         CloudinaryApiConfig,
