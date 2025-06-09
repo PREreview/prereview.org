@@ -14,12 +14,15 @@ import type { RecentPrereviews } from '../reviews-page/index.js'
 import type { ClubId } from '../types/club-id.js'
 import type { FieldId } from '../types/field.js'
 import type { PreprintId } from '../types/preprint-id.js'
+import type { ProfileId } from '../types/profile-id.js'
 import type { NonEmptyString } from '../types/string.js'
 import type { SubfieldId } from '../types/subfield.js'
 import type { User } from '../user.js'
 import {
   getPrereviewFromZenodo,
+  getPrereviewsForClubFromZenodo,
   getPrereviewsForPreprintFromZenodo,
+  getPrereviewsForProfileFromZenodo,
   getPrereviewsForUserFromZenodo,
   getRecentPrereviewsFromZenodo,
 } from '../zenodo.js'
@@ -51,7 +54,9 @@ export class Prereviews extends Context.Tag('Prereviews')<
   Prereviews,
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPrereview>>
+    getForClub: (id: ClubId) => Effect.Effect<ReadonlyArray<RecentPrereview>, PrereviewsAreUnavailable>
     getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, PrereviewsAreUnavailable>
+    getForProfile: (profile: ProfileId) => Effect.Effect<ReadonlyArray<RecentPrereview>, PrereviewsAreUnavailable>
     getForUser: (user: User) => Effect.Effect<ReadonlyArray<RecentPrereview>, PrereviewsAreUnavailable>
     getRapidPrereviewsForPreprint: (
       id: PreprintId,
@@ -70,8 +75,15 @@ export class Prereviews extends Context.Tag('Prereviews')<
 
 export const { getFiveMostRecent } = Effect.serviceConstants(Prereviews)
 
-export const { getForPreprint, getForUser, getRapidPrereviewsForPreprint, getPrereview, search } =
-  Effect.serviceFunctions(Prereviews)
+export const {
+  getForClub,
+  getForPreprint,
+  getForProfile,
+  getForUser,
+  getRapidPrereviewsForPreprint,
+  getPrereview,
+  search,
+} = Effect.serviceFunctions(Prereviews)
 
 export const layer = Layer.effect(
   Prereviews,
@@ -94,10 +106,32 @@ export const layer = Layer.effect(
         Effect.map(Struct.get('recentPrereviews')),
         Effect.orElseSucceed(Array.empty),
       ),
+      getForClub: id =>
+        pipe(
+          FptsToEffect.readerTaskEither(getPrereviewsForClubFromZenodo(id), {
+            fetch,
+            getPreprintTitle,
+            zenodoApiKey,
+            zenodoUrl,
+            ...logger,
+          }),
+          Effect.mapError(() => new PrereviewsAreUnavailable()),
+        ),
       getForPreprint: id =>
         pipe(
           FptsToEffect.readerTaskEither(getPrereviewsForPreprintFromZenodo(id), {
             fetch,
+            zenodoApiKey,
+            zenodoUrl,
+            ...logger,
+          }),
+          Effect.mapError(() => new PrereviewsAreUnavailable()),
+        ),
+      getForProfile: profile =>
+        pipe(
+          FptsToEffect.readerTaskEither(getPrereviewsForProfileFromZenodo(profile), {
+            fetch,
+            getPreprintTitle,
             zenodoApiKey,
             zenodoUrl,
             ...logger,

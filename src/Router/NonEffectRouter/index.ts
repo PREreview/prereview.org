@@ -10,33 +10,42 @@ import {
 import { Effect, Either, flow, Match, Option, pipe, Record, Redacted, type Runtime, String, Tuple } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
+import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as T from 'fp-ts/lib/Task.js'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.js'
-import { CloudinaryApiConfig } from '../../cloudinary.js'
+import { CloudinaryApiConfig, getAvatarFromCloudinary } from '../../cloudinary.js'
+import { clubProfile } from '../../club-profile-page/index.js'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../../Context.js'
 import * as EffectToFpts from '../../EffectToFpts.js'
 import * as FeatureFlags from '../../FeatureFlags.js'
+import { withEnv } from '../../Fpts.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
 import { home } from '../../home-page/index.js'
-import type * as Keyv from '../../keyv.js'
+import * as Keyv from '../../keyv.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { myPrereviews } from '../../my-prereviews-page/index.js'
 import { Nodemailer } from '../../nodemailer.js'
 import type * as OpenAlex from '../../OpenAlex/index.js'
+import { getNameFromOrcid } from '../../orcid.js'
 import { OrcidOauth } from '../../OrcidOauth.js'
 import { partners } from '../../partners.js'
 import { preprintReviews } from '../../preprint-reviews-page/index.js'
 import * as Preprints from '../../Preprints/index.js'
-import { PrereviewCoarNotifyConfig } from '../../prereview-coar-notify/index.js'
+import {
+  getReviewRequestsFromPrereviewCoarNotify,
+  PrereviewCoarNotifyConfig,
+} from '../../prereview-coar-notify/index.js'
 import * as Prereviews from '../../Prereviews/index.js'
+import { profile } from '../../profile-page/index.js'
 import { PublicUrl } from '../../public-url.js'
 import { requestAPrereview } from '../../request-a-prereview-page/index.js'
 import { reviewAPreprint } from '../../review-a-preprint-page/index.js'
 import { CommentsForReview, reviewPage } from '../../review-page/index.js'
+import { reviewRequests } from '../../review-requests-page/index.js'
 import * as ReviewRequests from '../../ReviewRequests/index.js'
 import { reviewsPage } from '../../reviews-page/index.js'
 import * as Routes from '../../routes.js'
-import { SlackApiConfig } from '../../slack.js'
+import { getUserFromSlack, SlackApiConfig } from '../../slack.js'
 import type { TemplatePage } from '../../TemplatePage.js'
 import type { GenerateUuid } from '../../types/uuid.js'
 import { LoggedInUser, SessionId, type User } from '../../user.js'
@@ -147,6 +156,10 @@ export const nonEffectRouter: Effect.Effect<
     },
     slackApiConfig,
     cloudinaryApiConfig,
+    orcidApiConfig: {
+      url: expressConfig.orcidApiUrl,
+      token: typeof expressConfig.orcidApiToken === 'string' ? Redacted.make(expressConfig.orcidApiToken) : undefined,
+    },
     zenodoApiConfig: {
       key: Redacted.make(expressConfig.zenodoApiKey),
       origin: zenodoOrigin,
@@ -214,6 +227,10 @@ export interface Env {
     tokenUrl: URL
   }
   cloudinaryApiConfig: typeof CloudinaryApiConfig.Service
+  orcidApiConfig: {
+    url: URL
+    token?: Redacted.Redacted
+  }
   slackApiConfig: typeof SlackApiConfig.Service
   zenodoApiConfig: {
     key: Redacted.Redacted
@@ -235,6 +252,25 @@ const routerWithoutHyperTs = pipe(
     pipe(
       Routes.partnersMatch.parser,
       P.map(() => (env: Env) => T.of(partners(env.locale))),
+    ),
+    pipe(
+      Routes.clubProfileMatch.parser,
+      P.map(
+        ({ id }) =>
+          (env: Env) =>
+            clubProfile(
+              id,
+              env.locale,
+            )({
+              getPrereviews: EffectToFpts.toTaskEitherK(
+                flow(
+                  Prereviews.getForClub,
+                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
+                ),
+                env.runtime,
+              ),
+            }),
+      ),
     ),
     pipe(
       Routes.homeMatch.parser,
@@ -282,6 +318,68 @@ const routerWithoutHyperTs = pipe(
                 ),
                 env.runtime,
               ),
+            }),
+      ),
+    ),
+    pipe(
+      Routes.profileMatch.parser,
+      P.map(
+        ({ profile: id }) =>
+          (env: Env) =>
+            profile({ locale: env.locale, profile: id })({
+              getAvatar: withEnv(getAvatarFromCloudinary, {
+                getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
+                cloudinaryApi: {
+                  cloudName: env.cloudinaryApiConfig.cloudName,
+                  key: Redacted.value(env.cloudinaryApiConfig.key),
+                  secret: Redacted.value(env.cloudinaryApiConfig.secret),
+                },
+              }),
+              getCareerStage: withEnv(Keyv.getCareerStage, {
+                careerStageStore: env.users.careerStageStore,
+                ...env.logger,
+              }),
+              getLanguages: withEnv(Keyv.getLanguages, {
+                languagesStore: env.users.languagesStore,
+                ...env.logger,
+              }),
+              getLocation: withEnv(Keyv.getLocation, {
+                locationStore: env.users.locationStore,
+                ...env.logger,
+              }),
+              getName: withEnv(getNameFromOrcid, {
+                fetch: env.fetch,
+                orcidApiToken: env.orcidApiConfig.token ? Redacted.value(env.orcidApiConfig.token) : undefined,
+                orcidApiUrl: env.orcidApiConfig.url,
+                ...env.logger,
+              }),
+              getPrereviews: EffectToFpts.toTaskEitherK(
+                flow(
+                  Prereviews.getForProfile,
+                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
+                ),
+                env.runtime,
+              ),
+              getResearchInterests: withEnv(Keyv.getResearchInterests, {
+                researchInterestsStore: env.users.researchInterestsStore,
+                ...env.logger,
+              }),
+              getSlackUser: withEnv(
+                flow(
+                  Keyv.getSlackUserId,
+                  RTE.chainW(({ userId }) => getUserFromSlack(userId)),
+                ),
+                {
+                  ...env.logger,
+                  slackUserIdStore: env.users.slackUserIdStore,
+                  slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
+                  fetch: env.fetch,
+                },
+              ),
+              isOpenForRequests: withEnv(Keyv.isOpenForRequests, {
+                isOpenForRequestsStore: env.users.isOpenForRequestsStore,
+                ...env.logger,
+              }),
             }),
       ),
     ),
@@ -340,6 +438,22 @@ const routerWithoutHyperTs = pipe(
                 ),
                 env.runtime,
               ),
+            }),
+      ),
+    ),
+    pipe(
+      Routes.reviewRequestsMatch.parser,
+      P.map(
+        ({ field, language, page }) =>
+          (env: Env) =>
+            reviewRequests({ field, language, locale: env.locale, page: page ?? 1 })({
+              getReviewRequests: withEnv(getReviewRequestsFromPrereviewCoarNotify, {
+                coarNotifyToken: Redacted.value(env.prereviewCoarNotifyConfig.coarNotifyToken),
+                coarNotifyUrl: env.prereviewCoarNotifyConfig.coarNotifyUrl,
+                fetch: env.fetch,
+                getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
+                ...env.logger,
+              }),
             }),
       ),
     ),

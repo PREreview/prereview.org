@@ -1,5 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import { Array, Function, flow, pipe } from 'effect'
+import { Array, Function, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -23,8 +23,7 @@ import type * as FeatureFlags from './FeatureFlags.js'
 import { withEnv } from './Fpts.js'
 import type * as OpenAlex from './OpenAlex/index.js'
 import type * as Zenodo from './Zenodo/index.js'
-import { type CloudinaryApiEnv, getAvatarFromCloudinary, saveAvatarOnCloudinary } from './cloudinary.js'
-import { clubProfile } from './club-profile-page/index.js'
+import { type CloudinaryApiEnv, saveAvatarOnCloudinary } from './cloudinary.js'
 import { clubsData } from './clubs-data/index.js'
 import type { OrcidOAuthEnv as ConnectOrcidOAuthEnv } from './connect-orcid/index.js'
 import type { SlackOAuthEnv } from './connect-slack-page/index.js'
@@ -46,49 +45,34 @@ import {
   logOut,
 } from './log-in/index.js'
 import { changeAvatar } from './my-details-page/index.js'
-import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
+import type { OrcidApiEnv } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
 import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
 import type * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
-import { type PrereviewCoarNotifyEnv, getReviewRequestsFromPrereviewCoarNotify } from './prereview-coar-notify/index.js'
-import { profile } from './profile-page/index.js'
+import type { PrereviewCoarNotifyEnv } from './prereview-coar-notify/index.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { handleResponse } from './response.js'
-import { reviewRequests } from './review-requests-page/index.js'
 import { reviewsData } from './reviews-data/index.js'
 import {
   changeAvatarMatch,
-  clubProfileMatch,
   clubsDataMatch,
   logInMatch,
   logOutMatch,
   orcidCodeMatch,
   orcidErrorMatch,
-  profileMatch,
-  reviewRequestsMatch,
   reviewsDataMatch,
   scietyListMatch,
   usersDataMatch,
 } from './routes.js'
 import { type ScietyListEnv, scietyList } from './sciety-list/index.js'
 import type { AddToSessionEnv, PopFromSessionEnv } from './session.js'
-import { type SlackApiEnv, type SlackApiUpdateEnv, getUserFromSlack } from './slack.js'
+import type { SlackApiEnv, SlackApiUpdateEnv } from './slack.js'
 import type { GenerateUuid, GenerateUuidEnv } from './types/uuid.js'
 import type { GetUserOnboardingEnv } from './user-onboarding.js'
 import type { User } from './user.js'
 import { usersData } from './users-data/index.js'
 import type { FormStoreEnv } from './write-review/index.js'
-import {
-  type WasPrereviewRemovedEnv,
-  getPrereviewsForClubFromZenodo,
-  getPrereviewsForProfileFromZenodo,
-  getPrereviewsForSciety,
-} from './zenodo.js'
-
-const getSlackUser = flow(
-  Keyv.getSlackUserId,
-  RTE.chainW(({ userId }) => getUserFromSlack(userId)),
-)
+import { type WasPrereviewRemovedEnv, getPrereviewsForSciety } from './zenodo.js'
 
 export type RouterEnv = Keyv.AvatarStoreEnv &
   EffectEnv<
@@ -230,77 +214,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             getCloudinaryAvatar: withEnv(Keyv.getAvatar, env),
             saveCloudinaryAvatar: withEnv(Keyv.saveAvatar, env),
           }),
-        })),
-      ),
-    ),
-    pipe(
-      profileMatch.parser,
-      P.map(
-        flow(
-          RM.of,
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(profile)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getAvatar: withEnv(getAvatarFromCloudinary, { ...env, getCloudinaryAvatar: withEnv(Keyv.getAvatar, env) }),
-          getCareerStage: withEnv(Keyv.getCareerStage, env),
-          getLanguages: withEnv(Keyv.getLanguages, env),
-          getLocation: withEnv(Keyv.getLocation, env),
-          getName: withEnv(getNameFromOrcid, env),
-          getPrereviews: withEnv(getPrereviewsForProfileFromZenodo, env),
-          getResearchInterests: withEnv(Keyv.getResearchInterests, env),
-          getSlackUser: withEnv(getSlackUser, env),
-          isOpenForRequests: withEnv(Keyv.isOpenForRequests, env),
-        })),
-      ),
-    ),
-    pipe(
-      clubProfileMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({}),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', ({ locale }) => RM.fromReaderTask(clubProfile(id, locale))),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getPrereviews: withEnv(getPrereviewsForClubFromZenodo, env),
-        })),
-      ),
-    ),
-    pipe(
-      reviewRequestsMatch.parser,
-      P.map(({ field, language, page }) =>
-        pipe(
-          RM.of({ field, language, page: page ?? 1 }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(reviewRequests)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getReviewRequests: withEnv(getReviewRequestsFromPrereviewCoarNotify, env),
         })),
       ),
     ),
