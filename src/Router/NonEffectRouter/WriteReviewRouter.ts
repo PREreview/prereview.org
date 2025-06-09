@@ -9,20 +9,23 @@ import { writeReview } from '../../write-review/index.js'
 import type * as Response from '../Response.js'
 import type { Env } from './index.js'
 
-const routes: Array<P.Parser<(env: Env) => T.Task<Response.Response>>> = [
-  pipe(
-    Routes.writeReviewMatch.parser,
-    P.map(
-      ({ id }) =>
-        (env: Env) =>
-          writeReview({ id, locale: env.locale, user: env.loggedInUser })({
-            formStore: env.formStore,
-            getPreprint: EffectToFpts.toTaskEitherK(Preprints.getPreprint, env.runtime),
-          }),
+export const WriteReviewRouter = pipe(
+  [
+    pipe(
+      Routes.writeReviewMatch.parser,
+      P.map(
+        ({ id }) =>
+          (env: Env) =>
+            writeReview({ id, locale: env.locale, user: env.loggedInUser }),
+      ),
     ),
+  ],
+  concatAll(P.getParserMonoid()),
+  P.map(
+    handler => (env: Env) =>
+      handler(env)({
+        formStore: env.formStore,
+        getPreprint: EffectToFpts.toTaskEitherK(Preprints.getPreprint, env.runtime),
+      }),
   ),
-]
-
-export const WriteReviewRouter = pipe(routes, concatAll(P.getParserMonoid())) satisfies P.Parser<
-  (env: Env) => T.Task<Response.Response>
->
+) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
