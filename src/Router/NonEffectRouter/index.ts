@@ -21,10 +21,12 @@ import type * as Keyv from '../../keyv.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { myPrereviews } from '../../my-prereviews-page/index.js'
 import { Nodemailer } from '../../nodemailer.js'
+import type * as OpenAlex from '../../OpenAlex/index.js'
 import type { OrcidOauth } from '../../OrcidOauth.js'
 import { partners } from '../../partners.js'
 import { preprintReviews } from '../../preprint-reviews-page/index.js'
 import * as Preprints from '../../Preprints/index.js'
+import { PrereviewCoarNotifyConfig } from '../../prereview-coar-notify/index.js'
 import * as Prereviews from '../../Prereviews/index.js'
 import { PublicUrl } from '../../public-url.js'
 import { requestAPrereview } from '../../request-a-prereview-page/index.js'
@@ -36,7 +38,7 @@ import * as Routes from '../../routes.js'
 import { SlackApiConfig } from '../../slack.js'
 import type { TemplatePage } from '../../TemplatePage.js'
 import type { GenerateUuid } from '../../types/uuid.js'
-import { LoggedInUser, type User } from '../../user.js'
+import { LoggedInUser, SessionId, type User } from '../../user.js'
 import { ZenodoOrigin } from '../../Zenodo/index.js'
 import * as Response from '../Response.js'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.js'
@@ -59,6 +61,7 @@ export const nonEffectRouter: Effect.Effect<
   | ExpressConfig
   | SlackApiConfig
   | CloudinaryApiConfig
+  | PrereviewCoarNotifyConfig
   | Nodemailer
   | Runtime.Runtime.Context<Env['runtime']>
 > = Effect.gen(function* () {
@@ -86,9 +89,11 @@ export const nonEffectRouter: Effect.Effect<
 
   const locale = yield* Locale
   const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
+  const sessionId = yield* Effect.serviceOption(SessionId)
 
   const slackApiConfig = yield* SlackApiConfig
   const cloudinaryApiConfig = yield* CloudinaryApiConfig
+  const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
   const zenodoOrigin = yield* ZenodoOrigin
   const featureFlags = yield* FeatureFlags.FeatureFlags
 
@@ -124,6 +129,7 @@ export const nonEffectRouter: Effect.Effect<
     commentsForReview,
     locale,
     loggedInUser: Option.getOrUndefined(loggedInUser),
+    sessionId: Option.getOrUndefined(sessionId),
     featureFlags,
     method: request.method,
     runtime,
@@ -136,10 +142,18 @@ export const nonEffectRouter: Effect.Effect<
       key: Redacted.make(expressConfig.zenodoApiKey),
       origin: zenodoOrigin,
     },
+    prereviewCoarNotifyConfig,
+    legacyPrereviewApiConfig: {
+      app: expressConfig.legacyPrereviewApi.app,
+      key: Redacted.make(expressConfig.legacyPrereviewApi.key),
+      url: expressConfig.legacyPrereviewApi.url,
+      update: expressConfig.legacyPrereviewApi.update,
+    },
     users,
     authorInviteStore: expressConfig.authorInviteStore,
     formStore: expressConfig.formStore,
     reviewRequestStore: expressConfig.reviewRequestStore,
+    sessionStore: expressConfig.sessionStore,
     nodemailer,
   } satisfies Env
 
@@ -151,12 +165,14 @@ export interface Env {
   commentsForReview: typeof CommentsForReview.Service
   locale: SupportedLocale
   loggedInUser: User | undefined
+  sessionId?: string
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
   publicUrl: typeof PublicUrl.Service
   method: HttpMethod.HttpMethod
   runtime: Runtime.Runtime<
     | CachingHttpClient.HttpCache
     | GenerateUuid
+    | OpenAlex.GetCategories
     | Preprints.Preprints
     | Prereviews.Prereviews
     | ReviewRequests.ReviewRequests
@@ -178,11 +194,19 @@ export interface Env {
   authorInviteStore: Keyv.Keyv
   formStore: Keyv.Keyv
   reviewRequestStore: Keyv.Keyv
+  sessionStore: Keyv.Keyv
   cloudinaryApiConfig: typeof CloudinaryApiConfig.Service
   slackApiConfig: typeof SlackApiConfig.Service
   zenodoApiConfig: {
     key: Redacted.Redacted
     origin: typeof ZenodoOrigin.Service
+  }
+  prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
+  legacyPrereviewApiConfig: {
+    app: string
+    key: Redacted.Redacted
+    url: URL
+    update: boolean
   }
   fetch: typeof globalThis.fetch
   nodemailer: typeof Nodemailer.Service
