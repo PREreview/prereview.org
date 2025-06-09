@@ -11,24 +11,27 @@ import * as Routes from '../../routes.js'
 import type * as Response from '../Response.js'
 import type { Env } from './index.js'
 
-const routes: Array<P.Parser<(env: Env) => T.Task<Response.Response>>> = [
-  pipe(
-    Routes.requestReviewMatch.parser,
-    P.map(
-      ({ id }) =>
-        (env: Env) =>
-          requestReview({ locale: env.locale, preprint: id, user: env.loggedInUser })({
-            getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
-            getReviewRequest: (orcid, preprint) =>
-              withEnv(Keyv.getReviewRequest, {
-                reviewRequestStore: env.reviewRequestStore,
-                ...env.logger,
-              })([orcid, preprint]),
-          }),
+export const RequestReviewFlowRouter = pipe(
+  [
+    pipe(
+      Routes.requestReviewMatch.parser,
+      P.map(
+        ({ id }) =>
+          (env: Env) =>
+            requestReview({ locale: env.locale, preprint: id, user: env.loggedInUser }),
+      ),
     ),
+  ],
+  concatAll(P.getParserMonoid()),
+  P.map(
+    handler => (env: Env) =>
+      handler(env)({
+        getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
+        getReviewRequest: (orcid, preprint) =>
+          withEnv(Keyv.getReviewRequest, { reviewRequestStore: env.reviewRequestStore, ...env.logger })([
+            orcid,
+            preprint,
+          ]),
+      }),
   ),
-]
-
-export const RequestReviewFlowRouter = pipe(routes, concatAll(P.getParserMonoid())) satisfies P.Parser<
-  (env: Env) => T.Task<Response.Response>
->
+) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
