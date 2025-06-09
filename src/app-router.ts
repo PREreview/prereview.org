@@ -85,7 +85,7 @@ import {
   getPrereviewsForSciety,
 } from './zenodo.js'
 
-export const getSlackUser = flow(
+const getSlackUser = flow(
   Keyv.getSlackUserId,
   RTE.chainW(({ userId }) => getUserFromSlack(userId)),
 )

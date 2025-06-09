@@ -7,7 +7,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import { getSlackUser } from '../../app-router.js'
 import { getAvatarFromCloudinary, removeAvatarFromCloudinary } from '../../cloudinary.js'
 import {
   connectOrcid,
@@ -41,7 +40,7 @@ import {
 import { sendEmailWithNodemailer } from '../../nodemailer.js'
 import * as Routes from '../../routes.js'
 import type { SlackUserId } from '../../slack-user-id.js'
-import { addOrcidToSlackProfile, removeOrcidFromSlackProfile } from '../../slack.js'
+import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from '../../slack.js'
 import { GenerateUuid } from '../../types/uuid.js'
 import type * as Response from '../Response.js'
 import type { Env } from './index.js'
@@ -326,12 +325,18 @@ export const MyDetailsRouter = pipe(
             secret: Redacted.value(env.cloudinaryApiConfig.secret),
           },
         }),
-        getSlackUser: withEnv(getSlackUser, {
-          ...env.logger,
-          slackUserIdStore: env.users.slackUserIdStore,
-          slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
-          fetch: env.fetch,
-        }),
+        getSlackUser: withEnv(
+          flow(
+            Keyv.getSlackUserId,
+            RTE.chainW(({ userId }) => getUserFromSlack(userId)),
+          ),
+          {
+            ...env.logger,
+            slackUserIdStore: env.users.slackUserIdStore,
+            slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
+            fetch: env.fetch,
+          },
+        ),
         getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, {
           contactEmailAddressStore: env.users.contactEmailAddressStore,
           ...env.logger,
