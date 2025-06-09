@@ -39,6 +39,7 @@ export const clubIds = [
   'rr-id-student-reviewer-club',
   'sg-biofilms-microbiome',
   'snl-semantics',
+  'sun-bioinformatics',
   'surrey-microbiology',
   'tsl-preprint-club',
 ] as const

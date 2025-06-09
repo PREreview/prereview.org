@@ -711,6 +711,25 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       { name: 'Gabriella Liuzzi', orcid: Orcid('0000-0001-8960-5601') },
     ],
   },
+  'sun-bioinformatics': {
+    name: 'SUN Bioinformatics Journal Club',
+    description: html`
+      <p>
+        The Bioinformatics group is located at the Tygerberg campus of Stellenbosch University and belongs to the
+        Faculty of Health and Medical Sciences.
+      </p>
+      <p>
+        The Bioinformatics Journal club intends to provide a platform for the students and different research groups in
+        the faculty to present projects, discuss publications and
+      </p>
+    `,
+    added: PlainDate.from('2025-06-09'),
+    leads: [
+      { name: 'Gian van der Spuy', orcid: Orcid('0000-0002-9067-5903') },
+      { name: 'Elizna Maasdorp', orcid: Orcid('0000-0002-3402-169X') },
+      { name: 'Abhinav Sharma', orcid: Orcid('0000-0002-6402-6993') },
+    ],
+  },
   'surrey-microbiology': {
     name: 'University of Surrey Microbiology Journal Club',
     description: html`
