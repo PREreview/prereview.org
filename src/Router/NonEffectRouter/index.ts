@@ -1,6 +1,7 @@
 import {
   FetchHttpClient,
   Headers,
+  type HttpClient,
   HttpMethod,
   HttpServerError,
   HttpServerRequest,
@@ -180,8 +181,10 @@ export interface Env {
   runtime: Runtime.Runtime<
     | CachingHttpClient.HttpCache
     | GenerateUuid
+    | HttpClient.HttpClient
     | OpenAlex.GetCategories
     | Preprints.Preprints
+    | PrereviewCoarNotifyConfig
     | Prereviews.Prereviews
     | ReviewRequests.ReviewRequests
     | ZenodoOrigin

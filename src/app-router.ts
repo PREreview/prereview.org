@@ -1,5 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import { Array, Effect, Function, flow, pipe } from 'effect'
+import { Array, Function, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -19,7 +19,6 @@ import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import type * as CachingHttpClient from './CachingHttpClient/index.js'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
-import * as EffectToFpts from './EffectToFpts.js'
 import type * as FeatureFlags from './FeatureFlags.js'
 import { withEnv } from './Fpts.js'
 import type * as OpenAlex from './OpenAlex/index.js'
@@ -50,18 +49,11 @@ import { changeAvatar } from './my-details-page/index.js'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
 import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
-import * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
+import type * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
 import { type PrereviewCoarNotifyEnv, getReviewRequestsFromPrereviewCoarNotify } from './prereview-coar-notify/index.js'
 import { profile } from './profile-page/index.js'
 import type { PublicUrlEnv } from './public-url.js'
-import {
-  requestReviewCheck,
-  requestReviewPersona,
-  requestReviewPublished,
-  requestReviewStart,
-} from './request-review-flow/index.js'
 import { handleResponse } from './response.js'
-import type { ReviewRequestPreprintId } from './review-request.js'
 import { reviewRequests } from './review-requests-page/index.js'
 import { reviewsData } from './reviews-data/index.js'
 import {
@@ -73,10 +65,6 @@ import {
   orcidCodeMatch,
   orcidErrorMatch,
   profileMatch,
-  requestReviewCheckMatch,
-  requestReviewPersonaMatch,
-  requestReviewPublishedMatch,
-  requestReviewStartMatch,
   reviewRequestsMatch,
   reviewsDataMatch,
   scietyListMatch,
@@ -313,122 +301,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getReviewRequests: withEnv(getReviewRequestsFromPrereviewCoarNotify, env),
-        })),
-      ),
-    ),
-    pipe(
-      requestReviewStartMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ preprint: id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(requestReviewStart)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
-          saveReviewRequest: (orcid, preprint, request) =>
-            withEnv(Keyv.saveReviewRequest, env)([orcid, preprint], request),
-        })),
-      ),
-    ),
-    pipe(
-      requestReviewPersonaMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ preprint: id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.apS(
-            'body',
-            RM.gets(c => c.getBody()),
-          ),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(requestReviewPersona)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
-          saveReviewRequest: (orcid, preprint, request) =>
-            withEnv(Keyv.saveReviewRequest, env)([orcid, preprint], request),
-        })),
-      ),
-    ),
-    pipe(
-      requestReviewCheckMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ preprint: id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(requestReviewCheck)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
-          publishRequest: withEnv(
-            EffectToFpts.toReaderTaskEitherK(
-              (preprint: ReviewRequestPreprintId, user: User, persona: 'public' | 'pseudonym') =>
-                pipe(
-                  PrereviewCoarNotify.publishReviewRequest,
-                  Function.apply(preprint, user, persona),
-                  Effect.tapError(error =>
-                    Effect.logError('Failed to publishRequest (COAR)').pipe(Effect.annotateLogs({ error })),
-                  ),
-                  Effect.mapError(() => 'unavailable' as const),
-                ),
-            ),
-            env,
-          ),
-          saveReviewRequest: (orcid, preprint, request) =>
-            withEnv(Keyv.saveReviewRequest, env)([orcid, preprint], request),
-        })),
-      ),
-    ),
-    pipe(
-      requestReviewPublishedMatch.parser,
-      P.map(({ id }) =>
-        pipe(
-          RM.of({ preprint: id }),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(requestReviewPublished)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
         })),
       ),
     ),
