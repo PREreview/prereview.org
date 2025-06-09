@@ -68,7 +68,10 @@ pipe(
         Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
       ),
       Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
-      Layer.effect(SlackApiConfig, Config.all({ apiToken: Config.redacted('SLACK_API_TOKEN') })),
+      Layer.effect(
+        SlackApiConfig,
+        Config.all({ apiToken: Config.redacted('SLACK_API_TOKEN'), apiUpdate: Config.boolean('SLACK_UPDATE') }),
+      ),
       Layer.effect(
         CloudinaryApiConfig,
         Config.all({

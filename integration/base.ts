@@ -1301,7 +1301,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Nodemailer.layer(nodemailer),
             Layer.succeed(FetchHttpClient.Fetch, fetch as typeof globalThis.fetch),
             Layer.succeed(GhostApi, { key: Redacted.make('key') }),
-            Layer.succeed(SlackApiConfig, { apiToken: Redacted.make('') }),
+            Layer.succeed(SlackApiConfig, { apiToken: Redacted.make(''), apiUpdate: true }),
             Layer.succeed(CloudinaryApiConfig, {
               cloudName: 'prereview',
               key: Redacted.make('key'),

@@ -22,7 +22,7 @@ import type { SupportedLocale } from '../../locales/index.js'
 import { myPrereviews } from '../../my-prereviews-page/index.js'
 import { Nodemailer } from '../../nodemailer.js'
 import type * as OpenAlex from '../../OpenAlex/index.js'
-import type { OrcidOauth } from '../../OrcidOauth.js'
+import { OrcidOauth } from '../../OrcidOauth.js'
 import { partners } from '../../partners.js'
 import { preprintReviews } from '../../preprint-reviews-page/index.js'
 import * as Preprints from '../../Preprints/index.js'
@@ -94,6 +94,7 @@ export const nonEffectRouter: Effect.Effect<
   const slackApiConfig = yield* SlackApiConfig
   const cloudinaryApiConfig = yield* CloudinaryApiConfig
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
+  const orcidOauth = yield* OrcidOauth
   const zenodoOrigin = yield* ZenodoOrigin
   const featureFlags = yield* FeatureFlags.FeatureFlags
 
@@ -136,6 +137,13 @@ export const nonEffectRouter: Effect.Effect<
     logger,
     fetch,
     publicUrl,
+    orcidOauth,
+    slackOauth: {
+      authorizeUrl: expressConfig.slackOauth.authorizeUrl,
+      clientId: expressConfig.slackOauth.clientId,
+      clientSecret: Redacted.make(expressConfig.slackOauth.clientSecret),
+      tokenUrl: expressConfig.slackOauth.tokenUrl,
+    },
     slackApiConfig,
     cloudinaryApiConfig,
     zenodoApiConfig: {
@@ -195,6 +203,13 @@ export interface Env {
   formStore: Keyv.Keyv
   reviewRequestStore: Keyv.Keyv
   sessionStore: Keyv.Keyv
+  orcidOauth: typeof OrcidOauth.Service
+  slackOauth: {
+    authorizeUrl: URL
+    clientId: string
+    clientSecret: Redacted.Redacted
+    tokenUrl: URL
+  }
   cloudinaryApiConfig: typeof CloudinaryApiConfig.Service
   slackApiConfig: typeof SlackApiConfig.Service
   zenodoApiConfig: {

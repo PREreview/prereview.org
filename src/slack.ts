@@ -16,7 +16,10 @@ import type { SlackUserId } from './slack-user-id.js'
 import type { SlackUser } from './slack-user.js'
 import { NonEmptyStringC } from './types/string.js'
 
-export class SlackApiConfig extends Context.Tag('SlackApiConfig')<SlackApiConfig, { apiToken: Redacted.Redacted }>() {}
+export class SlackApiConfig extends Context.Tag('SlackApiConfig')<
+  SlackApiConfig,
+  { apiToken: Redacted.Redacted; apiUpdate: boolean }
+>() {}
 
 export interface SlackApiEnv {
   slackApiToken: string
