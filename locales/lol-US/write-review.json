@@ -224,6 +224,9 @@
   "writeATweet": {
     "message": "crwdns3980:0crwdne3980:0"
   },
+  "shareOnBluesky": {
+    "message": "crwdns5938:0crwdne5938:0"
+  },
   "shareOnLinkedin": {
     "message": "crwdns3982:0crwdne3982:0"
   },
