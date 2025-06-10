@@ -95,6 +95,8 @@ export const page = ({
                     return text
                       .replaceAll('<visuallyHidden>', '<span class="visually-hidden">')
                       .replaceAll('</visuallyHidden>', '</span>')
+                      .replaceAll('<swoosh>', '<em>')
+                      .replaceAll('</swoosh>', '</em>')
                   },
                 ])
               </script>
