@@ -570,7 +570,7 @@
   "unacceptableBehaviourSexualisedLanguage": {
     "message": "Use of sexualized language or imagery and unwelcome sexual attention or advances."
   },
-    "unacceptableBehaviourInappropriate": {
+  "unacceptableBehaviourReviewingOwnPreprint": {
     "message": "Reviewing your own preprint."
   },
   "unacceptableBehaviourInappropriate": {
