@@ -53,13 +53,14 @@ import type { OrcidToken } from '../src/orcid-token.js'
 import type { Preprint, PreprintTitle } from '../src/preprint.js'
 import { Prereview } from '../src/Prereview.js'
 import type { ResearchInterests } from '../src/research-interests.js'
-import type {
-  FlashMessageResponse,
-  LogInResponse,
-  PageResponse,
-  RedirectResponse,
-  StreamlinePageResponse,
-  TwoUpPageResponse,
+import {
+  type FlashMessageResponse,
+  FlashMessageSchema,
+  type LogInResponse,
+  type PageResponse,
+  type RedirectResponse,
+  type StreamlinePageResponse,
+  type TwoUpPageResponse,
 } from '../src/response.js'
 import type {
   CompletedReviewRequest,
@@ -375,11 +376,14 @@ export const redirectResponse = (): fc.Arbitrary<RedirectResponse> =>
     location: fc.oneof(fc.webPath(), url()),
   })
 
+export const flashMessage = (): fc.Arbitrary<typeof FlashMessageSchema.Type> =>
+  fc.constantFrom(...FlashMessageSchema.literals)
+
 export const flashMessageResponse = (): fc.Arbitrary<FlashMessageResponse> =>
   fc.record({
     _tag: constant('FlashMessageResponse'),
     location: fc.webPath(),
-    message: fc.string(),
+    message: flashMessage(),
   })
 
 export const logInResponse = (): fc.Arbitrary<LogInResponse> =>

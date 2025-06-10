@@ -75,7 +75,7 @@ export interface RedirectResponse {
 export interface FlashMessageResponse {
   readonly _tag: 'FlashMessageResponse'
   readonly location: string
-  readonly message: string
+  readonly message: typeof FlashMessageSchema.Type
 }
 
 export interface LogInResponse {

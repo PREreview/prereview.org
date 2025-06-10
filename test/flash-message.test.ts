@@ -67,7 +67,7 @@ describe('getFlashMessage', () => {
   })
 })
 
-test.prop([fc.connection<HeadersOpen>(), fc.string()])('setFlashMessage', async (connection, message) => {
+test.prop([fc.connection<HeadersOpen>(), fc.flashMessage()])('setFlashMessage', async (connection, message) => {
   const actual = await runMiddleware(_.setFlashMessage(message), connection)()
 
   expect(actual).toStrictEqual(
