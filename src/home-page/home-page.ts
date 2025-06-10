@@ -171,7 +171,7 @@ export const createPage = ({
                   'statisticsReviews',
                 )({
                   number: statistics.prereviews,
-                  data: text => `<data value="${statistics.servers}">${text}</data>`,
+                  data: text => `<data value="${statistics.prereviews}">${text}</data>`,
                 }),
               )}</span
             >
