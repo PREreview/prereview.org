@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import rtlDetect from 'rtl-detect'
 import { Locale } from '../Context.js'
-import { GetPageFromGhost } from '../GhostPage.js'
+import * as GhostPage from '../GhostPage.js'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { type Html, fixHeadingLevels, html, plainText } from '../html.js'
 import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
@@ -10,9 +10,8 @@ import * as Routes from '../routes.js'
 
 export const AboutUsPage = Effect.gen(function* () {
   const locale = yield* Locale
-  const getPageFromGhost = yield* GetPageFromGhost
 
-  const content = yield* getPageFromGhost('6154aa157741400e8722bb14')
+  const content = yield* GhostPage.getPageFromGhost('6154aa157741400e8722bb14')
 
   return createPage({ content, locale })
 }).pipe(Effect.catchAll(() => HavingProblemsPage))

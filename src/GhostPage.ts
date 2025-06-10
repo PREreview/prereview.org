@@ -27,6 +27,8 @@ export class GetPageFromGhost extends Context.Tag('GetPageFromGhost')<
   (id: string) => Effect.Effect<Html, PageIsUnavailable | PageIsNotFound>
 >() {}
 
+export const getPageFromGhost = Effect.serviceFunctionEffect(GetPageFromGhost, identity)
+
 export const getPage = (id: string) =>
   Effect.gen(function* () {
     const client = yield* HttpClient.HttpClient
