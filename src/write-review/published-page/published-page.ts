@@ -70,16 +70,14 @@ export const publishedPage = ({
 
       <div class="button-group" role="group">
         <a
-          href="https://twitter.com/intent/tweet/?${new URLSearchParams({
-            text: plainText`I’ve just published a review of “${preprint.title}”`.toString(),
-            hashtags: 'PreprintReview',
-            via: 'PREreview_',
-            url: url.href,
+          href="https://bsky.app/intent/compose?${new URLSearchParams({
+            text: plainText`I’ve just published a #PreprintReview of “${preprint.title}” on @prereview.bsky.social ${url.href}
+`.toString(),
           }).toString()}"
           target="_blank"
           rel="noopener noreferrer"
-          class="twitter"
-          >${t('write-review', 'writeATweet')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
+          class="bluesky"
+          >${t('write-review', 'shareOnBluesky')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
         >
         <a
           href="https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({

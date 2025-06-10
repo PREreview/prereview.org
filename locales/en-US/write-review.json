@@ -225,6 +225,9 @@
   "writeATweet": {
     "message": "Write a Tweet"
   },
+  "shareOnBluesky": {
+    "message": "Share it on Bluesky"
+  },
   "shareOnLinkedin": {
     "message": "Share it on LinkedIn"
   },
