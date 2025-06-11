@@ -47,11 +47,13 @@ import { reviewsPage } from '../../reviews-page/index.js'
 import * as Routes from '../../routes.js'
 import { getUserFromSlack, SlackApiConfig } from '../../slack.js'
 import type { TemplatePage } from '../../TemplatePage.js'
+import type { NonEmptyString } from '../../types/index.js'
 import type { GenerateUuid } from '../../types/uuid.js'
 import { LoggedInUser, SessionId, type User } from '../../user.js'
 import { ZenodoOrigin } from '../../Zenodo/index.js'
 import * as Response from '../Response.js'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.js'
+import { DataRouter } from './DataRouter.js'
 import { MyDetailsRouter } from './MyDetailsRouter.js'
 import { RequestReviewFlowRouter } from './RequestReviewFlowRouter.js'
 import { WriteReviewRouter } from './WriteReviewRouter.js'
@@ -136,6 +138,7 @@ export const nonEffectRouter: Effect.Effect<
   })
 
   const env = {
+    authorizationHeader: Option.getOrUndefined(Headers.get(request.headers, 'Authorization')),
     body,
     commentsForReview,
     locale,
@@ -154,6 +157,7 @@ export const nonEffectRouter: Effect.Effect<
       clientSecret: Redacted.make(expressConfig.slackOauth.clientSecret),
       tokenUrl: expressConfig.slackOauth.tokenUrl,
     },
+    scietyListToken: Redacted.make(expressConfig.scietyListToken),
     slackApiConfig,
     cloudinaryApiConfig,
     orcidApiConfig: {
@@ -183,6 +187,7 @@ export const nonEffectRouter: Effect.Effect<
 })
 
 export interface Env {
+  authorizationHeader?: string
   body: unknown
   commentsForReview: typeof CommentsForReview.Service
   locale: SupportedLocale
@@ -220,6 +225,7 @@ export interface Env {
   reviewRequestStore: Keyv.Keyv
   sessionStore: Keyv.Keyv
   orcidOauth: typeof OrcidOauth.Service
+  scietyListToken: Redacted.Redacted<NonEmptyString.NonEmptyString>
   slackOauth: {
     authorizeUrl: URL
     clientId: string
@@ -246,6 +252,8 @@ export interface Env {
   fetch: typeof globalThis.fetch
   nodemailer: typeof Nodemailer.Service
 }
+
+const PaltW: <B>(that: () => P.Parser<B>) => <A>(fa: P.Parser<A>) => P.Parser<A | B> = P.alt as never
 
 const routerWithoutHyperTs = pipe(
   [
@@ -464,4 +472,5 @@ const routerWithoutHyperTs = pipe(
   ],
   concatAll(P.getParserMonoid()),
   P.map(handler => flow(FptsToEffect.taskK(handler), Effect.andThen(Response.toHttpServerResponse))),
+  PaltW(() => DataRouter),
 ) satisfies P.Parser<(env: Env) => Effect.Effect<HttpServerResponse.HttpServerResponse, never, unknown>>

@@ -24,7 +24,6 @@ import { withEnv } from './Fpts.js'
 import type * as OpenAlex from './OpenAlex/index.js'
 import type * as Zenodo from './Zenodo/index.js'
 import { type CloudinaryApiEnv, saveAvatarOnCloudinary } from './cloudinary.js'
-import { clubsData } from './clubs-data/index.js'
 import type { OrcidOAuthEnv as ConnectOrcidOAuthEnv } from './connect-orcid/index.js'
 import type { SlackOAuthEnv } from './connect-slack-page/index.js'
 import type { SendEmailEnv } from './email.js'
@@ -55,7 +54,6 @@ import { handleResponse } from './response.js'
 import { reviewsData } from './reviews-data/index.js'
 import {
   changeAvatarMatch,
-  clubsDataMatch,
   logInMatch,
   logOutMatch,
   orcidCodeMatch,
@@ -261,24 +259,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             env,
           ),
         })),
-      ),
-    ),
-    pipe(
-      clubsDataMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.decodeHeader('Authorization', input => (typeof input === 'string' ? E.right(input) : E.right(''))),
-          RM.chainReaderTaskEitherK(clubsData),
-          RM.ichainFirst(() => RM.status(Status.OK)),
-          RM.ichainFirst(() => RM.contentType('application/json')),
-          RM.ichainFirst(() => RM.closeHeaders()),
-          RM.ichainW(RM.send),
-          RM.orElseW(error =>
-            match(error)
-              .with('forbidden', () => pipe(RM.status(Status.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)))
-              .exhaustive(),
-          ),
-        ),
       ),
     ),
     pipe(
