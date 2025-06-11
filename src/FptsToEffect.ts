@@ -30,6 +30,10 @@ export const io: <A>(value: IO.IO<A>) => Effect.Effect<A> = Effect.sync
 
 export const task: <A>(value: T.Task<A>) => Effect.Effect<A> = Effect.promise
 
+export const taskK: <A extends ReadonlyArray<unknown>, B>(
+  f: (...a: A) => T.Task<B>,
+) => (...a: A) => Effect.Effect<B> = f => flow(f, task)
+
 export const taskEither: <E, A>(value: TE.TaskEither<E, A>) => Effect.Effect<A, E> = flow(task, Effect.andThen(either))
 
 export const reader: <R, A>(value: Reader<R, A>, env: R) => Effect.Effect<A> = (value, env) =>

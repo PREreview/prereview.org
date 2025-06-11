@@ -179,7 +179,7 @@ export const nonEffectRouter: Effect.Effect<
     nodemailer,
   } satisfies Env
 
-  return yield* pipe(FptsToEffect.task(handler(env)), Effect.andThen(Response.toHttpServerResponse))
+  return yield* handler(env)
 })
 
 export interface Env {
@@ -463,4 +463,5 @@ const routerWithoutHyperTs = pipe(
     WriteReviewRouter,
   ],
   concatAll(P.getParserMonoid()),
-) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
+  P.map(handler => flow(FptsToEffect.taskK(handler), Effect.andThen(Response.toHttpServerResponse))),
+) satisfies P.Parser<(env: Env) => Effect.Effect<HttpServerResponse.HttpServerResponse, never, unknown>>
