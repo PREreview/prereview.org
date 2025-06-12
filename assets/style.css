@@ -567,6 +567,10 @@ header {
   section & {
     margin-block-start: var(--space-l-xl);
 
+    .tweaked & {
+      margin-block-start: var(--space-2xl-3xl);
+    }
+
     &:has(+ :--list) {
       border-block-end: var(--width-divider-narrow) solid var(--color-red-60);
       padding-block-end: var(--space-4xs);
@@ -2889,7 +2893,7 @@ skip-link {
 }
 
 .tweaked .overview {
-  margin-block-start: var(--space-2xl);
+  margin-block-start: var(--space-2xl-3xl);
 }
 
 .sections {
@@ -2941,10 +2945,6 @@ skip-link {
   :--heading {
     text-wrap-style: balance;
     margin-inline: auto;
-  }
-
-  + * {
-    margin-block-start: var(--space-2xl-3xl);
   }
 }
 
