@@ -11,3 +11,11 @@ cpus = 1
 
 [experimental]
 exec = ["redis-server", "--maxmemory", "100mb", "--maxmemory-policy", "allkeys-lru"]
+
+[checks]
+[checks.redis]
+grace_period = "30s"
+interval = "15s"
+port = 6379
+timeout = "5s"
+type = "tcp"
