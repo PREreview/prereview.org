@@ -104,7 +104,12 @@ pipe(
       Redis.layerHttpCacheConfig(
         Config.all({
           primaryUri: Config.redacted(httpCacheRedisUri),
-          readonlyFallbackUri: Config.redacted(httpCacheRedisUri),
+          readonlyFallbackUri: Config.redacted(
+            pipe(
+              Config.url('HTTP_CACHE_READONLY_FALLBACK_REDIS_URI'),
+              Config.orElse(() => httpCacheRedisUri),
+            ),
+          ),
         }),
       ),
       TemplatePage.optionsLayerConfig({
