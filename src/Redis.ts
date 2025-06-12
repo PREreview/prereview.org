@@ -94,3 +94,12 @@ const layerHttpCache = ({
 
 export const layerHttpCacheConfig = (options: Config.Config.Wrap<Parameters<typeof layerHttpCache>[0]>) =>
   Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layerHttpCache))
+
+export const httpCacheRedisUri = Config.url('HTTP_CACHE_REDIS_URI').pipe(
+  Config.orElse(() =>
+    Config.all({
+      uriTemplate: Config.string('HTTP_CACHE_REDIS_URI_TEMPLATE'),
+      region: Config.nonEmptyString('FLY_REGION'),
+    }).pipe(Config.map(({ uriTemplate, region }) => new URL(uriTemplate.replace('{region}', region)))),
+  ),
+)

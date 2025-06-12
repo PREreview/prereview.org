@@ -22,15 +22,6 @@ import * as TemplatePage from './TemplatePage.js'
 import { isPrereviewTeam } from './user.js'
 import * as Zenodo from './Zenodo/index.js'
 
-const httpCacheRedisUri = Config.url('HTTP_CACHE_REDIS_URI').pipe(
-  Config.orElse(() =>
-    Config.all({
-      uriTemplate: Config.string('HTTP_CACHE_REDIS_URI_TEMPLATE'),
-      region: Config.nonEmptyString('FLY_REGION'),
-    }).pipe(Config.map(({ uriTemplate, region }) => new URL(uriTemplate.replace('{region}', region)))),
-  ),
-)
-
 pipe(
   Program,
   Layer.launch,
@@ -103,11 +94,11 @@ pipe(
       Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
       Redis.layerHttpCacheConfig(
         Config.all({
-          primaryUri: Config.redacted(httpCacheRedisUri),
+          primaryUri: Config.redacted(Redis.httpCacheRedisUri),
           readonlyFallbackUri: Config.redacted(
             pipe(
               Config.url('HTTP_CACHE_READONLY_FALLBACK_REDIS_URI'),
-              Config.orElse(() => httpCacheRedisUri),
+              Config.orElse(() => Redis.httpCacheRedisUri),
             ),
           ),
         }),
