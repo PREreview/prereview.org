@@ -2937,6 +2937,10 @@ skip-link {
       margin-block-start: 0;
     }
 
+    > * {
+      margin-inline: auto;
+    }
+
     @media (width >= 40em) {
       flex-basis: 75%;
     }
@@ -2944,7 +2948,6 @@ skip-link {
 
   :--heading {
     text-wrap-style: balance;
-    margin-inline: auto;
   }
 }
 
