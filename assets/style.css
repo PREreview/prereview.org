@@ -2892,6 +2892,30 @@ skip-link {
   margin-block-start: var(--space-2xl);
 }
 
+.mission {
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--grid-gutter);
+  text-align: center;
+
+  & > div {
+    margin-block-start: var(--space-2xl-3xl);
+
+    @media (width >= 40em) {
+      flex-basis: 75%;
+    }
+  }
+
+  :--heading {
+    text-wrap-style: balance;
+    margin-inline: auto;
+  }
+
+  + * {
+    margin-block-start: var(--space-2xl-3xl);
+  }
+}
+
 .statistics {
   display: flex;
   flex-wrap: wrap;

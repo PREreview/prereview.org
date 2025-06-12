@@ -24,7 +24,6 @@ import type { RecentReviewRequest } from './recent-review-requests.js'
 
 export const createPage = ({
   canSeeDesignTweaks = false,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   canSeeHomePageChanges = false,
   locale,
   recentPrereviews,
@@ -58,106 +57,123 @@ export const createPage = ({
         <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
       </div>
 
-      <div class="overview">
-        <section aria-labelledby="for-underserved-researchers-title">
-          <h2 id="for-underserved-researchers-title">
-            ${translate(locale, 'home-page', 'overviewUnderservedResearchersTitle')()}
-          </h2>
+      ${canSeeHomePageChanges
+        ? html`
+            <section class="mission" aria-labelledby="mission-title">
+              <div>
+                <h2 id="mission-title">For underserved researchers, there’s a better way</h2>
 
-          <p>${translate(locale, 'home-page', 'overviewUnderservedResearchersText')()}</p>
-        </section>
+                <p>
+                  We support and empower diverse and historically excluded communities of researchers (particularly
+                  those at early stages of their career) to find a voice, train, and engage in peer review.
+                </p>
 
-        <div></div>
+                <a href="${Routes.AboutUs}" class="button">Learn more about our mission</a>
+              </div>
+            </section>
+          `
+        : html`
+            <div class="overview">
+              <section aria-labelledby="for-underserved-researchers-title">
+                <h2 id="for-underserved-researchers-title">
+                  ${translate(locale, 'home-page', 'overviewUnderservedResearchersTitle')()}
+                </h2>
 
-        <section aria-labelledby="a-better-way-title">
-          <h2 id="a-better-way-title">${translate(locale, 'home-page', 'overviewBetterWayTitle')()}</h2>
+                <p>${translate(locale, 'home-page', 'overviewUnderservedResearchersText')()}</p>
+              </section>
 
-          <p>${translate(locale, 'home-page', 'overviewBetterWayText')()}</p>
+              <div></div>
 
-          <a href="${Routes.AboutUs}" class="forward"
-            ><span>${translate(locale, 'home-page', 'overviewBetterWayLink')()}</span></a
-          >
-        </section>
-      </div>
+              <section aria-labelledby="a-better-way-title">
+                <h2 id="a-better-way-title">${translate(locale, 'home-page', 'overviewBetterWayTitle')()}</h2>
 
-      ${Array.match(recentReviewRequests, {
-        onEmpty: () => '',
-        onNonEmpty: requests => html`
-          <section aria-labelledby="recent-review-requests-title">
-            <header>
-              <h2 id="recent-review-requests-title">${translate(locale, 'home-page', 'requestsTitle')()}</h2>
-            </header>
-            <ol class="cards" aria-labelledby="recent-review-requests-title" tabindex="0">
-              ${requests.map(
-                (request, index) => html`
-                  <li>
-                    <article aria-labelledby="request-${index}-title">
-                      <h3 id="request-${index}-title" class="visually-hidden">
-                        ${rawHtml(
-                          translate(
-                            locale,
-                            'requests-list',
-                            'requestTitle',
-                          )({
-                            preprint: html`<cite
-                              dir="${rtlDetect.getLangDir(request.preprint.language)}"
-                              lang="${request.preprint.language}"
-                              >${request.preprint.title}</cite
-                            >`.toString(),
-                          }),
-                        )}
-                      </h3>
+                <p>${translate(locale, 'home-page', 'overviewBetterWayText')()}</p>
 
-                      <a
-                        href="${format(writeReviewMatch.formatter, {
-                          id: request.preprint.id,
-                        })}"
-                      >
-                        ${rawHtml(
-                          translate(
-                            locale,
-                            'requests-list',
-                            'requestText',
-                          )({
-                            preprint: html`<cite
-                              dir="${rtlDetect.getLangDir(request.preprint.language)}"
-                              lang="${request.preprint.language}"
-                              >${request.preprint.title}</cite
-                            >`.toString(),
-                          }),
-                        )}
-                      </a>
+                <a href="${Routes.AboutUs}" class="forward"
+                  ><span>${translate(locale, 'home-page', 'overviewBetterWayLink')()}</span></a
+                >
+              </section>
+            </div>
 
-                      ${request.subfields.length > 0
-                        ? html`
-                            <ul class="categories">
-                              ${request.subfields.map(
-                                subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
+            ${Array.match(recentReviewRequests, {
+              onEmpty: () => '',
+              onNonEmpty: requests => html`
+                <section aria-labelledby="recent-review-requests-title">
+                  <header>
+                    <h2 id="recent-review-requests-title">${translate(locale, 'home-page', 'requestsTitle')()}</h2>
+                  </header>
+                  <ol class="cards" aria-labelledby="recent-review-requests-title" tabindex="0">
+                    ${requests.map(
+                      (request, index) => html`
+                        <li>
+                          <article aria-labelledby="request-${index}-title">
+                            <h3 id="request-${index}-title" class="visually-hidden">
+                              ${rawHtml(
+                                translate(
+                                  locale,
+                                  'requests-list',
+                                  'requestTitle',
+                                )({
+                                  preprint: html`<cite
+                                    dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                                    lang="${request.preprint.language}"
+                                    >${request.preprint.title}</cite
+                                  >`.toString(),
+                                }),
                               )}
-                            </ul>
-                          `
-                        : ''}
+                            </h3>
 
-                      <dl>
-                        <dt>${translate(locale, 'requests-list', 'requestPublished')()}</dt>
-                        <dd>${renderDate(locale)(request.published)}</dd>
-                        <dt>${translate(locale, 'requests-list', 'requestServer')()}</dt>
-                        <dd>${PreprintServers.getName(request.preprint.id)}</dd>
-                      </dl>
-                    </article>
-                  </li>
-                `,
-              )}
-            </ol>
+                            <a
+                              href="${format(writeReviewMatch.formatter, {
+                                id: request.preprint.id,
+                              })}"
+                            >
+                              ${rawHtml(
+                                translate(
+                                  locale,
+                                  'requests-list',
+                                  'requestText',
+                                )({
+                                  preprint: html`<cite
+                                    dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                                    lang="${request.preprint.language}"
+                                    >${request.preprint.title}</cite
+                                  >`.toString(),
+                                }),
+                              )}
+                            </a>
 
-            <nav>
-              <a href="${format(reviewRequestsMatch.formatter, {})}" class="forward"
-                ><span>${translate(locale, 'home-page', 'requestsLink')()}</span></a
-              >
-            </nav>
-          </section>
-        `,
-      })}
+                            ${request.subfields.length > 0
+                              ? html`
+                                  <ul class="categories">
+                                    ${request.subfields.map(
+                                      subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
+                                    )}
+                                  </ul>
+                                `
+                              : ''}
+
+                            <dl>
+                              <dt>${translate(locale, 'requests-list', 'requestPublished')()}</dt>
+                              <dd>${renderDate(locale)(request.published)}</dd>
+                              <dt>${translate(locale, 'requests-list', 'requestServer')()}</dt>
+                              <dd>${PreprintServers.getName(request.preprint.id)}</dd>
+                            </dl>
+                          </article>
+                        </li>
+                      `,
+                    )}
+                  </ol>
+
+                  <nav>
+                    <a href="${format(reviewRequestsMatch.formatter, {})}" class="forward"
+                      ><span>${translate(locale, 'home-page', 'requestsLink')()}</span></a
+                    >
+                  </nav>
+                </section>
+              `,
+            })}
+          `}
 
       <section aria-labelledby="statistics-title">
         <header>
