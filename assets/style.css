@@ -2892,6 +2892,34 @@ skip-link {
   margin-block-start: var(--space-2xl);
 }
 
+.sections {
+  display: flex;
+  flex-direction: column;
+  margin-block-start: var(--space-2xl-3xl);
+  margin-inline: calc(50% - 50vi);
+  padding-block: var(--space-l);
+  padding-inline: max(var(--grid-gutter), calc(var(--grid-gutter) + (100vi - var(--grid-max-width)) / 2));
+  column-gap: var(--grid-gutter);
+  row-gap: var(--space-m-l);
+  background-color: var(--color-background-alt);
+
+  & > section {
+    & > :first-child {
+      margin-block-start: 0;
+    }
+
+    & > a {
+      display: block;
+      inline-size: fit-content;
+      margin-block-start: var(--space-xs);
+    }
+  }
+
+  @media (width >= 50em) {
+    flex-direction: row;
+  }
+}
+
 .mission {
   display: flex;
   justify-content: center;

@@ -59,6 +59,41 @@ export const createPage = ({
 
       ${canSeeHomePageChanges
         ? html`
+            <div class="sections">
+              <section aria-labelledby="training-title">
+                <h2 id="training-title">Peer review training</h2>
+
+                <p>
+                  Interactive workshops for organisations and institutions looking to help their members hone their
+                  skills as reviewers.
+                </p>
+
+                <a href="${Routes.Trainings}">Read about our training workshops</a>
+              </section>
+
+              <section aria-labelledby="live-reviews-title">
+                <h2 id="live-reviews-title">Live Reviews</h2>
+
+                <p>
+                  We run collaborative, interactive preprint review calls as an alternative approach to traditional peer
+                  review.
+                </p>
+
+                <a href="${Routes.LiveReviews}">Learn more about Live Reviews</a>
+              </section>
+
+              <section aria-labelledby="clubs-title">
+                <h2 id="clubs-title">PREreview Clubs</h2>
+
+                <p>
+                  Start or join one of our preprint review groups, where members work together to provide timely,
+                  constructive feedback.
+                </p>
+
+                <a href="${Routes.Clubs}">See our many PREreview clubs</a>
+              </section>
+            </div>
+
             <section class="mission" aria-labelledby="mission-title">
               <div>
                 <h2 id="mission-title">For underserved researchers, there’s a better way</h2>
