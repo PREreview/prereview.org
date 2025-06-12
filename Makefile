@@ -1,4 +1,4 @@
-.PHONY: check check-redis-version clean start start-app start-services format lint-css lint-ts prod typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image
+.PHONY: check check-redis-version clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -56,6 +56,13 @@ lint-ts: node_modules src/manifest.json
 
 lint-css: node_modules
 	npx stylelint '**/*.css'
+
+smoketest:
+	docker build --tag prereview-smoketest --target prod .
+	docker compose down
+	docker compose up redis --wait
+	scripts/smoke-test.sh prereview-smoketest
+	docker compose down
 
 typecheck: node_modules src/manifest.json
 	npx tsc --incremental --noEmit --tsBuildInfoFile ".cache/tsc"
