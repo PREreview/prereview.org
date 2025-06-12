@@ -11,9 +11,11 @@ export { type RecentReviewRequest } from './recent-review-requests.js'
 
 export const home = ({
   canSeeDesignTweaks = false,
+  canSeeHomePageChanges = false,
   locale,
 }: {
   canSeeDesignTweaks?: boolean
+  canSeeHomePageChanges?: boolean
   locale: SupportedLocale
 }): RT.ReaderTask<GetRecentPrereviewsEnv & GetRecentReviewRequestsEnv, PageResponse> =>
   pipe(
@@ -23,5 +25,6 @@ export const home = ({
     RT.let('statistics', () => ({ prereviews: 1153, servers: 30, users: 3311 })),
     RT.let('locale', () => locale),
     RT.let('canSeeDesignTweaks', () => canSeeDesignTweaks),
+    RT.let('canSeeHomePageChanges', () => canSeeHomePageChanges),
     RT.map(createPage),
   )

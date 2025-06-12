@@ -1296,6 +1296,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               canAddMultipleAuthors,
               canChooseLocale,
               canSeeDesignTweaks: false,
+              canSeeHomePageChanges: () => false,
               useCrowdinInContext: false,
             }),
             Nodemailer.layer(nodemailer),

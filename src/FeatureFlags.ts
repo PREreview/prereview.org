@@ -7,11 +7,14 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
     canAddMultipleAuthors: (user?: User) => boolean
     canChooseLocale: boolean
     canSeeDesignTweaks: boolean
+    canSeeHomePageChanges: (user?: User) => boolean
     useCrowdinInContext: boolean
   }
 >() {}
 
 export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct.get('canAddMultipleAuthors'))
+
+export const canSeeHomePageChanges = Effect.serviceFunction(FeatureFlags, Struct.get('canSeeHomePageChanges'))
 
 export const { canChooseLocale, canSeeDesignTweaks, useCrowdinInContext } = Effect.serviceConstants(FeatureFlags)
 

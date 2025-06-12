@@ -24,12 +24,15 @@ import type { RecentReviewRequest } from './recent-review-requests.js'
 
 export const createPage = ({
   canSeeDesignTweaks = false,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  canSeeHomePageChanges = false,
   locale,
   recentPrereviews,
   recentReviewRequests,
   statistics,
 }: {
   canSeeDesignTweaks?: boolean
+  canSeeHomePageChanges?: boolean
   locale: SupportedLocale
   recentPrereviews: ReadonlyArray<RecentPrereview>
   recentReviewRequests: ReadonlyArray<RecentReviewRequest>
