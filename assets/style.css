@@ -2929,6 +2929,10 @@ skip-link {
   & > div {
     margin-block-start: var(--space-2xl-3xl);
 
+    & > :first-child {
+      margin-block-start: 0;
+    }
+
     @media (width >= 40em) {
       flex-basis: 75%;
     }
