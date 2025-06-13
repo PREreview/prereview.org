@@ -2908,8 +2908,17 @@ skip-link {
   background-color: var(--color-background-alt);
 
   & > section {
+    display: flex;
+    flex-direction: column;
+
     & > :first-child {
       margin-block-start: 0;
+    }
+
+    & > p {
+      &:has(+ a) {
+        margin-block-end: auto;
+      }
     }
 
     & > a {
