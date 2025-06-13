@@ -273,7 +273,9 @@ const EventsTable = Schema.transformOrFail(
   Schema.Struct({
     eventId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('event_id')),
     resourceId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('resource_id')),
-    resourceVersion: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('resource_version')),
+    resourceVersion: Schema.propertySignature(Schema.Union(Schema.NumberFromString, Schema.Number)).pipe(
+      Schema.fromKey('resource_version'),
+    ),
     eventTimestamp: Schema.propertySignature(Schema.DateTimeUtc).pipe(Schema.fromKey('event_timestamp')),
     eventType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('event_type')),
     payload: Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
