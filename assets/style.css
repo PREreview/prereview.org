@@ -2901,10 +2901,10 @@ skip-link {
   flex-direction: column;
   margin-block-start: var(--space-2xl-3xl);
   margin-inline: calc(50% - 50vi);
-  padding-block: var(--space-l);
+  padding-block: var(--space-l-xl);
   padding-inline: max(var(--grid-gutter), calc(var(--grid-gutter) + (100vi - var(--grid-max-width)) / 2));
   column-gap: var(--grid-gutter);
-  row-gap: var(--space-m-l);
+  row-gap: var(--space-l-xl);
   background-color: var(--color-background-alt);
 
   & > section {
@@ -2925,6 +2925,13 @@ skip-link {
       display: block;
       inline-size: fit-content;
       margin-block-start: var(--space-xs);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: var(--step-1);
     }
   }
 
