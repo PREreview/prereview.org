@@ -13,7 +13,6 @@ import * as GhostPage from './GhostPage.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
-import * as LibsqlEventStore from './LibsqlEventStore.js'
 import { DefaultLocale, translate } from './locales/index.js'
 import * as LoggingHttpClient from './LoggingHttpClient.js'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
@@ -26,6 +25,7 @@ import { PublicUrl } from './public-url.js'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.js'
 import * as ReviewPage from './review-page/index.js'
 import * as ReviewRequests from './ReviewRequests/index.js'
+import * as SqlEventStore from './SqlEventStore.js'
 import { Uuid } from './types/index.js'
 import { WebApp } from './WebApp.js'
 import { createCommentOnZenodo, getPrereviewFromZenodo, publishDepositionOnZenodo } from './zenodo.js'
@@ -364,6 +364,6 @@ export const Program = pipe(
     ),
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
-  Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, LoggingHttpClient.layer)),
+  Layer.provide(Layer.mergeAll(commentEvents, SqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(Uuid.layer, CachingHttpClient.layerRevalidationQueue)),
 )
