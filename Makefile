@@ -46,7 +46,7 @@ prod: .env
 	source .env && mkcert -install -cert-file .dev/server.crt -key-file .dev/server.key $$(echo $${PUBLIC_URL} | awk -F[/:] '{print $$4}')
 
 start-services: .dev/server.crt .dev/server.key
-	docker compose up --detach mailcatcher nginx redis
+	docker compose up --detach mailcatcher nginx redis cockroachdb
 
 format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
