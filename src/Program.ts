@@ -1,7 +1,5 @@
 import { HttpClient } from '@effect/platform'
-import { LibsqlMigrator } from '@effect/sql-libsql'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
-import { fileURLToPath } from 'url'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
@@ -342,11 +340,6 @@ const setUpFetch = Layer.effect(
   }),
 ).pipe(Layer.provide(CachingHttpClient.layer('10 seconds', '30 seconds')))
 
-const MigratorLive = LibsqlMigrator.layer({
-  loader: LibsqlMigrator.fromFileSystem(fileURLToPath(new URL('migrations', import.meta.url))),
-  schemaDirectory: 'src/migrations',
-})
-
 export const Program = pipe(
   Layer.mergeAll(WebApp, Comments.ReactToCommentEvents, CachingHttpClient.layerRevalidationWorker),
   Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment)),
@@ -372,5 +365,5 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(commentEvents, LibsqlEventStore.layer, LoggingHttpClient.layer)),
-  Layer.provide(Layer.mergeAll(Uuid.layer, MigratorLive, CachingHttpClient.layerRevalidationQueue)),
+  Layer.provide(Layer.mergeAll(Uuid.layer, CachingHttpClient.layerRevalidationQueue)),
 )
