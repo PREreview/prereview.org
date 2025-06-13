@@ -145,7 +145,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                           id = ${encoded.id}
                       )
                   `.raw,
-                    Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
+                    Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
                   )
 
                   if (results.rowsAffected !== 1) {
@@ -179,7 +179,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                     id = ${encoded.id}
                     AND version = ${encoded.version}
                 `.raw,
-                  Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
+                  Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
                 )
 
                 if (results.rowsAffected !== 1) {
@@ -230,7 +230,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                             AND resource_version >= ${encoded.resource_version}
                         )
                     `.raw,
-                      Effect.andThen(Schema.decodeUnknown(LibsqlResults)),
+                      Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
                     )
 
                     if (results.rowsAffected !== 1) {
@@ -303,3 +303,17 @@ const EventsTable = Schema.transformOrFail(
 )
 
 const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })
+
+const PgResultsTypeFromSelf = Schema.declare(
+  (input: unknown): input is Array<unknown> & { count: number } =>
+    Array.isArray(input) && 'count' in input && typeof input.count === 'number',
+)
+
+const PgResults = Schema.transformOrFail(PgResultsTypeFromSelf, Schema.Struct({ rowsAffected: Schema.Number }), {
+  strict: true,
+  decode: results => ParseResult.succeed({ rowsAffected: results.count }),
+  encode: (results, _, ast) =>
+    ParseResult.fail(new ParseResult.Forbidden(ast, results, 'Encoding PgResults is forbidden.')),
+})
+
+const SqlQueryResults = Schema.Union(LibsqlResults, PgResults)
