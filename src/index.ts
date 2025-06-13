@@ -22,6 +22,18 @@ import * as TemplatePage from './TemplatePage.js'
 import { isPrereviewTeam } from './user.js'
 import * as Zenodo from './Zenodo/index.js'
 
+const SqlClient = Layer.mergeAll(
+  LibsqlClient.layerConfig({
+    url: Schema.Config(
+      'LIBSQL_URL',
+      Schema.Union(Schema.TemplateLiteral('file:', Schema.String), Schema.Literal(':memory:'), Schema.URL),
+    ),
+    authToken: Config.withDefault(Config.redacted('LIBSQL_AUTH_TOKEN'), undefined),
+  }),
+  Layer.effectDiscard(Effect.logDebug('Database connected')),
+  Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
+)
+
 pipe(
   Program,
   Layer.launch,
@@ -51,17 +63,7 @@ pipe(
         ),
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
       }),
-      Layer.mergeAll(
-        LibsqlClient.layerConfig({
-          url: Schema.Config(
-            'LIBSQL_URL',
-            Schema.Union(Schema.TemplateLiteral('file:', Schema.String), Schema.Literal(':memory:'), Schema.URL),
-          ),
-          authToken: Config.withDefault(Config.redacted('LIBSQL_AUTH_TOKEN'), undefined),
-        }),
-        Layer.effectDiscard(Effect.logDebug('Database connected')),
-        Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
-      ),
+      SqlClient,
       Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
       Layer.effect(
         SlackApiConfig,
