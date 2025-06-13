@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 DOCKER_FILE="Dockerfile"
@@ -13,7 +13,7 @@ if [[ -z "$DOCKER_TAG" ]]; then
 fi
 
 for FLY_FILE in "${FLY_FILES[@]}"; do
-  FLY_TAG=$(awk --field-separator="'" '/^image = / {print $2}' "$FLY_FILE")
+  FLY_TAG=$(awk -F "'" '/^image = / {print $2}' "$FLY_FILE")
   if [[ -z "$FLY_TAG" ]]; then
     echo "ERROR: Could not find Redis image tag in $FLY_FILE"
   fi
