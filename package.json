@@ -11,6 +11,7 @@
     "@effect/platform-node": "^0.85.14",
     "@effect/sql": "^0.37.0",
     "@effect/sql-libsql": "^0.27.10",
+    "@effect/sql-pg": "^0.38.11",
     "@hapi/address": "^5.1.1",
     "@js-temporal/polyfill": "^0.5.1",
     "@keyv/redis": "^3.0.1",

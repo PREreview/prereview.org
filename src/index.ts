@@ -1,5 +1,6 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
+import { PgClient } from '@effect/sql-pg'
 import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
@@ -22,7 +23,15 @@ import * as TemplatePage from './TemplatePage.js'
 import { isPrereviewTeam } from './user.js'
 import * as Zenodo from './Zenodo/index.js'
 
-const SqlClient = Layer.mergeAll(
+const CockroachClientLayer = Layer.mergeAll(
+  PgClient.layerConfig({
+    url: Config.redacted(Config.string('COCKROACHDB_URL')),
+  }),
+  Layer.effectDiscard(Effect.logDebug('Cockroach Database connected')),
+  Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Cockroach Database disconnected'))),
+)
+
+const LibsqlClientLayer = Layer.mergeAll(
   LibsqlClient.layerConfig({
     url: Schema.Config(
       'LIBSQL_URL',
@@ -30,8 +39,13 @@ const SqlClient = Layer.mergeAll(
     ),
     authToken: Config.withDefault(Config.redacted('LIBSQL_AUTH_TOKEN'), undefined),
   }),
-  Layer.effectDiscard(Effect.logDebug('Database connected')),
-  Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Database disconnected'))),
+  Layer.effectDiscard(Effect.logDebug('Libsql Database connected')),
+  Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Libsql Database disconnected'))),
+)
+
+const SqlClient = pipe(
+  CockroachClientLayer,
+  Layer.orElse(() => LibsqlClientLayer),
 )
 
 pipe(
