@@ -2190,6 +2190,20 @@ skip-link {
       inset: 0;
     }
 
+    &:has(> :any-link:hover) {
+      &::after {
+        @media screen {
+          border-color: var(--color-divider);
+
+          @media screen {
+            @media (forced-colors: active) {
+              border-color: CanvasText;
+            }
+          }
+        }
+      }
+    }
+
     &:has(> :focus-visible) {
       &::after {
         @media screen {
@@ -2236,16 +2250,6 @@ skip-link {
 
     & :any-link {
       color: inherit;
-
-      &:hover::after {
-        border-color: var(--color-divider);
-
-        @media screen {
-          @media (forced-colors: active) {
-            border-color: CanvasText;
-          }
-        }
-      }
     }
 
     & > :--list {
