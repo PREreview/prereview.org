@@ -29,7 +29,7 @@ export const make: Effect.Effect<
       event_type TEXT NOT NULL,
       event_timestamp TEXT NOT NULL,
       payload TEXT NOT NULL,
-      FOREIGN KEY(resource_id) REFERENCES resources(id)
+      FOREIGN KEY (resource_id) REFERENCES resources(id),
       UNIQUE (resource_id, resource_version)
     )
   `
