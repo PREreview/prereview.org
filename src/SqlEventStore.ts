@@ -149,7 +149,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                   )
 
                   if (results.rowsAffected !== 1) {
-                    yield* new EventStore.ResourceHasChanged()
+                    return yield* new EventStore.ResourceHasChanged()
                   }
 
                   return
@@ -167,7 +167,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               `
 
                 if (rows.length !== 1) {
-                  yield* new EventStore.FailedToCommitEvent({})
+                  return yield* new EventStore.FailedToCommitEvent({})
                 }
 
                 const results = yield* pipe(
@@ -183,7 +183,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                 )
 
                 if (results.rowsAffected !== 1) {
-                  yield* new EventStore.ResourceHasChanged()
+                  return yield* new EventStore.ResourceHasChanged()
                 }
               }),
               Effect.andThen(() =>
@@ -234,7 +234,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                     )
 
                     if (results.rowsAffected !== 1) {
-                      yield* new EventStore.ResourceHasChanged()
+                      return yield* new EventStore.ResourceHasChanged()
                     }
 
                     return newResourceVersion
