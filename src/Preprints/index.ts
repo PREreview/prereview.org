@@ -1,4 +1,4 @@
-import { FetchHttpClient, HttpClient } from '@effect/platform'
+import type { FetchHttpClient, HttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
 import { getPreprintFromCrossref, type IndeterminateCrossrefPreprintId, isCrossrefPreprintDoi } from '../crossref.js'
 import * as Crossref from '../Crossref/index.js'
@@ -31,8 +31,7 @@ export const { getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId }
 export const layer = Layer.effect(
   Preprints,
   Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const httpClient = yield* HttpClient.HttpClient
+    const context = yield* Effect.context<FetchHttpClient.Fetch | HttpClient.HttpClient>()
 
     const isCrossrefPreprintIdHandledByLegacyAdapter = (
       id: Exclude<IndeterminatePreprintId, PhilsciPreprintId>,
@@ -58,7 +57,7 @@ export const layer = Layer.effect(
       getPreprint: flow(
         getPreprintFromSource,
         Effect.catchTag('NotAPreprint', error => new Preprint.PreprintIsNotFound({ cause: error })),
-        Effect.provideService(HttpClient.HttpClient, httpClient),
+        Effect.provide(context),
       ),
       getPreprintTitle: flow(
         getPreprintFromSource,
@@ -68,14 +67,14 @@ export const layer = Layer.effect(
           title: preprint.title.text,
         })),
         Effect.catchTag('NotAPreprint', error => new Preprint.PreprintIsNotFound({ cause: error })),
-        Effect.provideService(HttpClient.HttpClient, httpClient),
+        Effect.provide(context),
       ),
       resolvePreprintId: (...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>) =>
         pipe(
           Array.map(ids, getPreprintFromSource),
           Effect.raceAll,
           Effect.map(Struct.get('id')),
-          Effect.provideService(HttpClient.HttpClient, httpClient),
+          Effect.provide(context),
         ),
       getPreprintId: pipe(
         Match.type<IndeterminatePreprintId>(),
@@ -91,7 +90,7 @@ export const layer = Layer.effect(
               'PreprintIsNotFound',
               error => new Preprint.PreprintIsUnavailable({ cause: error }),
             ),
-            Effect.provideService(HttpClient.HttpClient, httpClient),
+            Effect.provide(context),
           ),
         ),
         Match.orElse(id => Effect.succeed(id)),

@@ -71,13 +71,8 @@ const loadWithCachingClient = (id: string) =>
 export const layer = Layer.effect(
   GetPageFromGhost,
   Effect.gen(function* () {
-    const httpClient = yield* HttpClient.HttpClient
-    const ghostApi = yield* GhostApi
-    return id =>
-      pipe(
-        loadWithCachingClient(id),
-        Effect.provideService(GhostApi, ghostApi),
-        Effect.provideService(HttpClient.HttpClient, httpClient),
-      )
+    const context = yield* Effect.context<GhostApi | HttpClient.HttpClient>()
+
+    return id => pipe(loadWithCachingClient(id), Effect.provide(context))
   }),
 )

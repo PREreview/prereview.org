@@ -1,4 +1,4 @@
-import { HttpClient } from '@effect/platform'
+import type { HttpClient } from '@effect/platform'
 import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
@@ -299,33 +299,20 @@ const commentEvents = Layer.scoped(
 const getCategories = Layer.effect(
   OpenAlex.GetCategories,
   Effect.gen(function* () {
-    const httpClient = yield* HttpClient.HttpClient
+    const context = yield* Effect.context<HttpClient.HttpClient>()
 
-    return id => pipe(OpenAlex.getCategoriesFromOpenAlex(id), Effect.provideService(HttpClient.HttpClient, httpClient))
+    return id => pipe(OpenAlex.getCategoriesFromOpenAlex(id), Effect.provide(context))
   }),
 )
 
 const commentsForReview = Layer.effect(
   ReviewPage.CommentsForReview,
   Effect.gen(function* () {
-    const httpCache = yield* CachingHttpClient.HttpCache
-    const httpClient = yield* HttpClient.HttpClient
-    const zenodoOrigin = yield* Zenodo.ZenodoOrigin
+    const context = yield* Effect.context<CachingHttpClient.HttpCache | HttpClient.HttpClient | Zenodo.ZenodoOrigin>()
 
     return {
-      get: reviewDoi =>
-        pipe(
-          Zenodo.getCommentsForPrereviewFromZenodo(reviewDoi),
-          Effect.provideService(HttpClient.HttpClient, httpClient),
-          Effect.provideService(Zenodo.ZenodoOrigin, zenodoOrigin),
-        ),
-      invalidate: prereviewId =>
-        pipe(
-          Zenodo.invalidateCommentsForPrereview(prereviewId),
-          Effect.provideService(CachingHttpClient.HttpCache, httpCache),
-          Effect.provideService(HttpClient.HttpClient, httpClient),
-          Effect.provideService(Zenodo.ZenodoOrigin, zenodoOrigin),
-        ),
+      get: reviewDoi => pipe(Zenodo.getCommentsForPrereviewFromZenodo(reviewDoi), Effect.provide(context)),
+      invalidate: prereviewId => pipe(Zenodo.invalidateCommentsForPrereview(prereviewId), Effect.provide(context)),
     }
   }),
 )
