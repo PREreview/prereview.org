@@ -149,9 +149,14 @@ export const createPage = ({
           : ''}
       </div>
 
-      <ol class="cards">
-        ${reviews.map(review => showReview(review, locale))}
-      </ol>
+      ${Array.match(reviews, {
+        onEmpty: () => '',
+        onNonEmpty: reviews => html`
+          <ol class="cards">
+            ${reviews.map(review => showReview(review, locale))}
+          </ol>
+        `,
+      })}
     `,
     canonical: format(preprintReviewsMatch.formatter, { id: preprint.id }),
   })

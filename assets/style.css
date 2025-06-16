@@ -2152,8 +2152,12 @@ skip-link {
 }
 
 .cards {
+  display: flex;
+  flex-direction: column;
   margin-block-start: var(--space-m-l);
   padding-inline-start: 0;
+  column-gap: var(--grid-gutter);
+  row-gap: var(--space-s-l);
   list-style-type: none;
 
   section & {
@@ -2163,6 +2167,7 @@ skip-link {
   > li {
     inline-size: auto;
     max-inline-size: 100%;
+    margin-block-start: 0;
     text-align: initial;
   }
 
@@ -2172,6 +2177,7 @@ skip-link {
     flex-direction: column;
     block-size: 100%;
     inline-size: 100%;
+    margin-block-start: 0;
     padding-block: var(--space-xs);
     padding-inline: var(--space-s);
 
@@ -2182,6 +2188,20 @@ skip-link {
       border: var(--width-divider) solid var(--color-divider-light);
       border-radius: var(--radius-divider);
       inset: 0;
+    }
+
+    &:has(> :any-link:hover) {
+      &::after {
+        @media screen {
+          border-color: var(--color-divider);
+
+          @media screen {
+            @media (forced-colors: active) {
+              border-color: CanvasText;
+            }
+          }
+        }
+      }
     }
 
     &:has(> :focus-visible) {
@@ -2230,16 +2250,6 @@ skip-link {
 
     & :any-link {
       color: inherit;
-
-      &:hover::after {
-        border-color: var(--color-divider);
-
-        @media screen {
-          @media (forced-colors: active) {
-            border-color: CanvasText;
-          }
-        }
-      }
     }
 
     & > :--list {
@@ -2292,19 +2302,16 @@ skip-link {
   }
 
   &[aria-labelledby][tabindex] {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--grid-gutter);
+    flex-flow: row wrap;
+    row-gap: var(--grid-gutter);
     justify-content: center;
 
     & > * {
-      flex-shrink: 0;
       font-size: var(--step--1);
     }
 
     & article {
       inline-size: min(95vw - var(--grid-gutter) * 2, 20em);
-      margin-block-start: 0;
 
       > :not(.visually-hidden, header, :--list, dl) {
         flex-grow: 1;
