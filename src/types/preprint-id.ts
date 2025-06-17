@@ -433,21 +433,28 @@ const extractFromNeurolibrePath = flow(
 const extractFromOsfPath = flow(
   decodeURIComponent,
   Option.liftNullable(s =>
-    /^(?:(preprints)\/)?(?:(africarxiv|edarxiv|metaarxiv|psyarxiv|socarxiv)\/)?([a-z0-9]+)(?:$|\/)/i.exec(s),
+    /^(?:(preprints)\/)?(?:(africarxiv|edarxiv|metaarxiv|psyarxiv|socarxiv)\/)?([a-z0-9]+)(?:_v([1-9][0-9]*))?(?:$|\/)/i.exec(
+      s,
+    ),
   ),
-  Option.andThen(([, preprints, server, id]) =>
+  Option.andThen(([, preprints, server, id, version]) =>
     match([preprints, server])
-      .with([P.optional('preprints'), 'africarxiv'], () => Array.of(`10.31730/osf.io/${id}`))
-      .with([P.optional('preprints'), 'edarxiv'], () => Array.of(`10.35542/osf.io/${id}`))
-      .with([P.optional('preprints'), 'metaarxiv'], () => Array.of(`10.31222/osf.io/${id}`))
-      .with([P.optional('preprints'), 'psyarxiv'], () => Array.of(`10.31234/osf.io/${id}`))
-      .with([P.optional('preprints'), 'socarxiv'], () => Array.of(`10.31235/osf.io/${id}`))
-      .with(['preprints', P.optional(undefined)], () => Array.of(`10.31219/osf.io/${id}`))
-      .otherwise(() => [`10.17605/osf.io/${id}`, `10.31219/osf.io/${id}`]),
+      .with([P.optional('preprints'), 'africarxiv'], () => makeOsfDois('31730', `${id}`, version))
+      .with([P.optional('preprints'), 'edarxiv'], () => makeOsfDois('35542', `${id}`, version))
+      .with([P.optional('preprints'), 'metaarxiv'], () => makeOsfDois('31222', `${id}`, version))
+      .with([P.optional('preprints'), 'psyarxiv'], () => makeOsfDois('31234', `${id}`, version))
+      .with([P.optional('preprints'), 'socarxiv'], () => makeOsfDois('31235', `${id}`, version))
+      .with(['preprints', P.optional(undefined)], () => makeOsfDois('31219', `${id}`, version))
+      .otherwise(() => [...makeOsfDois('17605', `${id}`, version), ...makeOsfDois('31219', `${id}`, version)]),
   ),
   Option.getOrElse(Array.empty),
   Array.filterMap(parsePreprintDoi),
 )
+
+const makeOsfDois = (prefix: string, id: string, version: string | undefined) =>
+  typeof version === 'string'
+    ? [`10.${prefix}/osf.io/${id}_v${version}`, `10.${prefix}/osf.io/${id}`]
+    : Array.of(`10.${prefix}/osf.io/${id}`)
 
 const extractFromPhilsciPath = flow(
   decodeURIComponent,

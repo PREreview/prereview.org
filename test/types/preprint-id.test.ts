@@ -84,7 +84,7 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Array.of(_.fromPreprintDoi(doi)))
   })
 
-  test.prop([fc.africarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+  test.prop([fc.africarxivPreprintUrl().map(([url, id]) => [url, Array.of(id.value)] as const)], {
     examples: [
       // figshare
       [
@@ -92,7 +92,7 @@ describe('fromUrl', () => {
           new URL(
             'https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801',
           ),
-          Doi('10.6084/m9.figshare.19064801.v1'),
+          [Doi('10.6084/m9.figshare.19064801.v1')],
         ],
       ],
       [
@@ -100,7 +100,7 @@ describe('fromUrl', () => {
           new URL(
             'https://www.africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801',
           ),
-          Doi('10.6084/m9.figshare.19064801.v1'),
+          [Doi('10.6084/m9.figshare.19064801.v1')],
         ],
       ], // www.
       [
@@ -108,7 +108,7 @@ describe('fromUrl', () => {
           new URL(
             'http://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801',
           ),
-          Doi('10.6084/m9.figshare.19064801.v1'),
+          [Doi('10.6084/m9.figshare.19064801.v1')],
         ],
       ], // http
       [
@@ -116,7 +116,7 @@ describe('fromUrl', () => {
           new URL(
             'https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801/',
           ),
-          Doi('10.6084/m9.figshare.19064801.v1'),
+          [Doi('10.6084/m9.figshare.19064801.v1')],
         ],
       ], // trailing slash
 
@@ -125,18 +125,24 @@ describe('fromUrl', () => {
           new URL(
             'https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801/1/files/33888380.pdf',
           ),
-          Doi('10.6084/m9.figshare.19064801.v1'),
+          [Doi('10.6084/m9.figshare.19064801.v1')],
         ],
       ], // pdf
       // ofs
-      [[new URL('https://www.osf.io/preprints/africarxiv/grxt6'), Doi('10.31730/osf.io/grxt6')]], // www.
-      [[new URL('http://osf.io/preprints/africarxiv/grxt6'), Doi('10.31730/osf.io/grxt6')]], // http
-      [[new URL('https://osf.io/preprints/africarxiv/grxt6/'), Doi('10.31730/osf.io/grxt6')]], // trailing slash
-      [[new URL('https://osf.io/preprints/africarxiv/grxt6'), Doi('10.31730/osf.io/grxt6')]], // with preprints
-      [[new URL('https://osf.io/preprints/africarxiv/grxt6/download'), Doi('10.31730/osf.io/grxt6')]], // download
+      [[new URL('https://www.osf.io/preprints/africarxiv/grxt6'), [Doi('10.31730/osf.io/grxt6')]]], // www.
+      [[new URL('http://osf.io/preprints/africarxiv/grxt6'), [Doi('10.31730/osf.io/grxt6')]]], // http
+      [[new URL('https://osf.io/preprints/africarxiv/grxt6/'), [Doi('10.31730/osf.io/grxt6')]]], // trailing slash
+      [[new URL('https://osf.io/preprints/africarxiv/grxt6'), [Doi('10.31730/osf.io/grxt6')]]], // with preprints
+      [[new URL('https://osf.io/preprints/africarxiv/grxt6/download'), [Doi('10.31730/osf.io/grxt6')]]], // download
+      [
+        [
+          new URL('https://osf.io/preprints/africarxiv/grxt6_v1'),
+          [Doi('10.31730/osf.io/grxt6_v1'), Doi('10.31730/osf.io/grxt6')],
+        ],
+      ], // with version
     ],
-  })('with an AfricArXiv URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'africarxiv', value: doi }))
+  })('with an AfricArXiv URL', ([url, dois]) => {
+    expect(_.fromUrl(url)).toStrictEqual(dois.map(doi => ({ _tag: 'africarxiv', value: doi })))
   })
 
   test.prop([fc.arxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -294,23 +300,29 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toHaveLength(0)
   })
 
-  test.prop([fc.edarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+  test.prop([fc.edarxivPreprintUrl().map(([url, id]) => [url, Array.of(id.value)] as const)], {
     examples: [
-      [[new URL('https://www.edarxiv.org/wc6r7'), Doi('10.35542/osf.io/wc6r7')]], // www.
-      [[new URL('http://edarxiv.org/wc6r7'), Doi('10.35542/osf.io/wc6r7')]], // http
-      [[new URL('https://edarxiv.org/wc6r7/'), Doi('10.35542/osf.io/wc6r7')]], // trailing slash
-      [[new URL('https://edarxiv.org/preprints/wc6r7'), Doi('10.35542/osf.io/wc6r7')]], // with preprints
-      [[new URL('https://edarxiv.org/wc6r7/download'), Doi('10.35542/osf.io/wc6r7')]], // download
-      [[new URL('https://edarxiv.org/preprints/wc6r7/download'), Doi('10.35542/osf.io/wc6r7')]], // download
-      [[new URL('https://edarxiv.org/wc6r7/download?format=pdf'), Doi('10.35542/osf.io/wc6r7')]], // download pdf
-      [[new URL('https://www.osf.io/preprints/edarxiv/wc6r7'), Doi('10.35542/osf.io/wc6r7')]], // www.
-      [[new URL('http://osf.io/preprints/edarxiv/wc6r7'), Doi('10.35542/osf.io/wc6r7')]], // http
-      [[new URL('https://osf.io/preprints/edarxiv/wc6r7/'), Doi('10.35542/osf.io/wc6r7')]], // trailing slash
-      [[new URL('https://osf.io/preprints/edarxiv/wc6r7'), Doi('10.35542/osf.io/wc6r7')]], // with preprints
-      [[new URL('https://osf.io/preprints/edarxiv/wc6r7/download'), Doi('10.35542/osf.io/wc6r7')]], // download
+      [[new URL('https://www.edarxiv.org/wc6r7'), [Doi('10.35542/osf.io/wc6r7')]]], // www.
+      [[new URL('http://edarxiv.org/wc6r7'), [Doi('10.35542/osf.io/wc6r7')]]], // http
+      [[new URL('https://edarxiv.org/wc6r7/'), [Doi('10.35542/osf.io/wc6r7')]]], // trailing slash
+      [[new URL('https://edarxiv.org/preprints/wc6r7'), [Doi('10.35542/osf.io/wc6r7')]]], // with preprints
+      [[new URL('https://edarxiv.org/wc6r7/download'), [Doi('10.35542/osf.io/wc6r7')]]], // download
+      [[new URL('https://edarxiv.org/preprints/wc6r7/download'), [Doi('10.35542/osf.io/wc6r7')]]], // download
+      [[new URL('https://edarxiv.org/wc6r7/download?format=pdf'), [Doi('10.35542/osf.io/wc6r7')]]], // download pdf
+      [[new URL('https://www.osf.io/preprints/edarxiv/wc6r7'), [Doi('10.35542/osf.io/wc6r7')]]], // www.
+      [[new URL('http://osf.io/preprints/edarxiv/wc6r7'), [Doi('10.35542/osf.io/wc6r7')]]], // http
+      [[new URL('https://osf.io/preprints/edarxiv/wc6r7/'), [Doi('10.35542/osf.io/wc6r7')]]], // trailing slash
+      [[new URL('https://osf.io/preprints/edarxiv/wc6r7'), [Doi('10.35542/osf.io/wc6r7')]]], // with preprints
+      [[new URL('https://osf.io/preprints/edarxiv/wc6r7/download'), [Doi('10.35542/osf.io/wc6r7')]]], // download
+      [
+        [
+          new URL('https://osf.io/preprints/edarxiv/wc6r7_v1'), // with version
+          [Doi('10.35542/osf.io/wc6r7_v1'), Doi('10.35542/osf.io/wc6r7')],
+        ],
+      ],
     ],
-  })('with an edarxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'edarxiv', value: doi }))
+  })('with an edarxiv.org URL', ([url, dois]) => {
+    expect(_.fromUrl(url)).toStrictEqual(dois.map(doi => ({ _tag: 'edarxiv', value: doi })))
   })
 
   test.prop([fc.engrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -475,16 +487,22 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'medrxiv', value: doi }))
   })
 
-  test.prop([fc.metaarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+  test.prop([fc.metaarxivPreprintUrl().map(([url, id]) => [url, Array.of(id.value)] as const)], {
     examples: [
-      [[new URL('https://www.osf.io/preprints/metaarxiv/9a3rw'), Doi('10.31222/osf.io/9a3rw')]], // www.
-      [[new URL('http://osf.io/preprints/metaarxiv/9a3rw'), Doi('10.31222/osf.io/9a3rw')]], // http
-      [[new URL('https://osf.io/preprints/metaarxiv/9a3rw/'), Doi('10.31222/osf.io/9a3rw')]], // trailing slash
-      [[new URL('https://osf.io/preprints/metaarxiv/9a3rw'), Doi('10.31222/osf.io/9a3rw')]], // with preprints
-      [[new URL('https://osf.io/preprints/metaarxiv/9a3rw/download'), Doi('10.31222/osf.io/9a3rw')]], // download
+      [[new URL('https://www.osf.io/preprints/metaarxiv/9a3rw'), [Doi('10.31222/osf.io/9a3rw')]]], // www.
+      [[new URL('http://osf.io/preprints/metaarxiv/9a3rw'), [Doi('10.31222/osf.io/9a3rw')]]], // http
+      [[new URL('https://osf.io/preprints/metaarxiv/9a3rw/'), [Doi('10.31222/osf.io/9a3rw')]]], // trailing slash
+      [[new URL('https://osf.io/preprints/metaarxiv/9a3rw'), [Doi('10.31222/osf.io/9a3rw')]]], // with preprints
+      [[new URL('https://osf.io/preprints/metaarxiv/9a3rw/download'), [Doi('10.31222/osf.io/9a3rw')]]], // download
+      [
+        [
+          new URL('https://osf.io/preprints/metaarxiv/9a3rw_v1'), // with version
+          [Doi('10.31222/osf.io/9a3rw_v1'), Doi('10.31222/osf.io/9a3rw')],
+        ],
+      ],
     ],
-  })('with a MetaArXiv URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'metaarxiv', value: doi }))
+  })('with a MetaArXiv URL', ([url, dois]) => {
+    expect(_.fromUrl(url)).toStrictEqual(dois.map(doi => ({ _tag: 'metaarxiv', value: doi })))
   })
 
   test.prop([fc.neurolibrePreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -684,23 +702,29 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'preprints.org', value: doi }))
   })
 
-  test.prop([fc.psyarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+  test.prop([fc.psyarxivPreprintUrl().map(([url, id]) => [url, Array.of(id.value)] as const)], {
     examples: [
-      [[new URL('https://www.psyarxiv.com/k9mn3'), Doi('10.31234/osf.io/k9mn3')]], // www.
-      [[new URL('http://psyarxiv.com/k9mn3'), Doi('10.31234/osf.io/k9mn3')]], // http
-      [[new URL('https://psyarxiv.com/k9mn3/'), Doi('10.31234/osf.io/k9mn3')]], // trailing slash
-      [[new URL('https://psyarxiv.com/preprints/k9mn3'), Doi('10.31234/osf.io/k9mn3')]], // with preprints
-      [[new URL('https://psyarxiv.com/k9mn3/download'), Doi('10.31234/osf.io/k9mn3')]], // download
-      [[new URL('https://psyarxiv.com/preprints/k9mn3/download'), Doi('10.31234/osf.io/k9mn3')]], // download
-      [[new URL('https://psyarxiv.com/k9mn3/download?format=pdf'), Doi('10.31234/osf.io/k9mn3')]], // download pdf
-      [[new URL('https://www.osf.io/preprints/psyarxiv/k9mn3'), Doi('10.31234/osf.io/k9mn3')]], // www.
-      [[new URL('http://osf.io/preprints/psyarxiv/k9mn3'), Doi('10.31234/osf.io/k9mn3')]], // http
-      [[new URL('https://osf.io/preprints/psyarxiv/k9mn3/'), Doi('10.31234/osf.io/k9mn3')]], // trailing slash
-      [[new URL('https://osf.io/preprints/psyarxiv/k9mn3'), Doi('10.31234/osf.io/k9mn3')]], // with preprints
-      [[new URL('https://osf.io/preprints/psyarxiv/k9mn3/download'), Doi('10.31234/osf.io/k9mn3')]], // download
+      [[new URL('https://www.psyarxiv.com/k9mn3'), [Doi('10.31234/osf.io/k9mn3')]]], // www.
+      [[new URL('http://psyarxiv.com/k9mn3'), [Doi('10.31234/osf.io/k9mn3')]]], // http
+      [[new URL('https://psyarxiv.com/k9mn3/'), [Doi('10.31234/osf.io/k9mn3')]]], // trailing slash
+      [[new URL('https://psyarxiv.com/preprints/k9mn3'), [Doi('10.31234/osf.io/k9mn3')]]], // with preprints
+      [[new URL('https://psyarxiv.com/k9mn3/download'), [Doi('10.31234/osf.io/k9mn3')]]], // download
+      [[new URL('https://psyarxiv.com/preprints/k9mn3/download'), [Doi('10.31234/osf.io/k9mn3')]]], // download
+      [[new URL('https://psyarxiv.com/k9mn3/download?format=pdf'), [Doi('10.31234/osf.io/k9mn3')]]], // download pdf
+      [[new URL('https://www.osf.io/preprints/psyarxiv/k9mn3'), [Doi('10.31234/osf.io/k9mn3')]]], // www.
+      [[new URL('http://osf.io/preprints/psyarxiv/k9mn3'), [Doi('10.31234/osf.io/k9mn3')]]], // http
+      [[new URL('https://osf.io/preprints/psyarxiv/k9mn3/'), [Doi('10.31234/osf.io/k9mn3')]]], // trailing slash
+      [[new URL('https://osf.io/preprints/psyarxiv/k9mn3'), [Doi('10.31234/osf.io/k9mn3')]]], // with preprints
+      [[new URL('https://osf.io/preprints/psyarxiv/k9mn3/download'), [Doi('10.31234/osf.io/k9mn3')]]], // download
+      [
+        [
+          new URL('https://osf.io/preprints/psyarxiv/3ekr8_v2'), // with version
+          [Doi('10.31234/osf.io/3ekr8_v2'), Doi('10.31234/osf.io/3ekr8')],
+        ],
+      ],
     ],
-  })('with an psyarxiv.com URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'psyarxiv', value: doi }))
+  })('with an psyarxiv.com URL', ([url, dois]) => {
+    expect(_.fromUrl(url)).toStrictEqual(dois.map(doi => ({ _tag: 'psyarxiv', value: doi })))
   })
 
   test.prop([fc.researchSquarePreprintUrl().map(([url, id]) => [url, id.value] as const)], {
@@ -801,16 +825,22 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'science-open', value: doi }))
   })
 
-  test.prop([fc.socarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+  test.prop([fc.socarxivPreprintUrl().map(([url, id]) => [url, Array.of(id.value)] as const)], {
     examples: [
-      [[new URL('https://www.osf.io/preprints/socarxiv/8374m'), Doi('10.31235/osf.io/8374m')]], // www.
-      [[new URL('http://osf.io/preprints/socarxiv/8374m'), Doi('10.31235/osf.io/8374m')]], // http
-      [[new URL('https://osf.io/preprints/socarxiv/8374m/'), Doi('10.31235/osf.io/8374m')]], // trailing slash
-      [[new URL('https://osf.io/preprints/socarxiv/8374m'), Doi('10.31235/osf.io/8374m')]], // with preprints
-      [[new URL('https://osf.io/preprints/socarxiv/8374m/download'), Doi('10.31235/osf.io/8374m')]], // download
+      [[new URL('https://www.osf.io/preprints/socarxiv/8374m'), [Doi('10.31235/osf.io/8374m')]]], // www.
+      [[new URL('http://osf.io/preprints/socarxiv/8374m'), [Doi('10.31235/osf.io/8374m')]]], // http
+      [[new URL('https://osf.io/preprints/socarxiv/8374m/'), [Doi('10.31235/osf.io/8374m')]]], // trailing slash
+      [[new URL('https://osf.io/preprints/socarxiv/8374m'), [Doi('10.31235/osf.io/8374m')]]], // with preprints
+      [[new URL('https://osf.io/preprints/socarxiv/8374m/download'), [Doi('10.31235/osf.io/8374m')]]], // download
+      [
+        [
+          new URL('https://osf.io/preprints/socarxiv/8374m_v1'), // with version
+          [Doi('10.31235/osf.io/8374m_v1'), Doi('10.31235/osf.io/8374m')],
+        ],
+      ],
     ],
-  })('with an SocArXiv URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'socarxiv', value: doi }))
+  })('with an SocArXiv URL', ([url, dois]) => {
+    expect(_.fromUrl(url)).toStrictEqual(dois.map(doi => ({ _tag: 'socarxiv', value: doi })))
   })
 
   test.prop([fc.ssrnPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
