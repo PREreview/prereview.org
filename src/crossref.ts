@@ -202,10 +202,16 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     ),
   ),
   pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('22541'), 'DOI'),
-      publisher: D.literal('Authorea, Inc.'),
-    }),
+    D.union(
+      D.fromStruct({
+        DOI: D.fromRefinement(hasRegistrant('22541'), 'DOI'),
+        publisher: D.literal('Authorea, Inc.'),
+      }),
+      D.fromStruct({
+        DOI: D.fromRefinement(hasRegistrant('22541'), 'DOI'),
+        institution: D.fromTuple(D.struct({ name: D.literal('Authorea, Inc.') })),
+      }),
+    ),
     D.map(work => ({ _tag: 'authorea', value: work.DOI }) satisfies AuthoreaPreprintId),
   ),
   pipe(
