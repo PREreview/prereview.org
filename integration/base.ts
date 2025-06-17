@@ -1295,6 +1295,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             FeatureFlags.layer({
               canAddMultipleAuthors,
               canChooseLocale,
+              canReviewDatasets: false,
               canSeeDesignTweaks: false,
               canSeeHomePageChanges: () => false,
               useCrowdinInContext: false,

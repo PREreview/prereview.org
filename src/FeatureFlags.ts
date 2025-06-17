@@ -6,6 +6,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
   {
     canAddMultipleAuthors: (user?: User) => boolean
     canChooseLocale: boolean
+    canReviewDatasets: boolean
     canSeeDesignTweaks: boolean
     canSeeHomePageChanges: (user?: User) => boolean
     useCrowdinInContext: boolean
