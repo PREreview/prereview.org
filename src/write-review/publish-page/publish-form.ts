@@ -33,7 +33,13 @@ import type { User } from '../../user.js'
 import type { CompletedForm } from '../completed-form.js'
 import { backNav } from '../shared-elements.js'
 
-export function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User, locale: SupportedLocale) {
+export function publishForm(
+  preprint: PreprintTitle,
+  review: CompletedForm,
+  user: User,
+  locale: SupportedLocale,
+  aiReviewsAsCc0 = false,
+) {
   const t = translate(locale, 'write-review')
 
   const visuallyHidden: { visuallyHidden: (x: string) => string } = {
@@ -340,7 +346,17 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
           <p>
             ${rawHtml(
               t('weWillAssignLicense')({
-                licenseLink: '<a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a>',
+                licenseLink: match([aiReviewsAsCc0, review.generativeAiIdeas])
+                  .with(
+                    [true, 'yes'],
+                    () => '<a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0&nbsp;1.0</a>',
+                  )
+                  .with(
+                    [false, 'yes'],
+                    [P.boolean, 'no'],
+                    () => '<a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a>',
+                  )
+                  .exhaustive(),
               }),
             )}
           </p>

@@ -178,6 +178,70 @@ describe('writeReviewPublish', () => {
     },
   )
 
+  describe('the form is complete and generative AI was used', () => {
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.completedForm({ generativeAiIdeas: fc.constant('yes') }),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.verifiedContactEmailAddress(),
+      fc.doi(),
+      fc.integer(),
+      fc.boolean(),
+    ])(
+      'when the feature flag is enabled',
+      async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+        const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
+          TE.right([reviewDoi, reviewId]),
+        )
+
+        await _.writeReviewPublish({ aiReviewsAsCc0: true, id: preprintId, locale, method: 'POST', user })({
+          addToSession: () => TE.of(undefined),
+          formStore,
+          getContactEmailAddress: () => TE.right(contactEmailAddress),
+          getPreprintTitle: () => TE.right(preprintTitle),
+          publishPrereview,
+        })()
+
+        expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC0-1.0' }))
+      },
+    )
+
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.completedForm({ generativeAiIdeas: fc.constant('yes') }),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.verifiedContactEmailAddress(),
+      fc.doi(),
+      fc.integer(),
+      fc.boolean(),
+    ])(
+      'when the feature flag is not enabled',
+      async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+        const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
+          TE.right([reviewDoi, reviewId]),
+        )
+
+        await _.writeReviewPublish({ aiReviewsAsCc0: false, id: preprintId, locale, method: 'POST', user })({
+          addToSession: () => TE.of(undefined),
+          formStore,
+          getContactEmailAddress: () => TE.right(contactEmailAddress),
+          getPreprintTitle: () => TE.right(preprintTitle),
+          publishPrereview,
+        })()
+
+        expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC-BY-4.0' }))
+      },
+    )
+  })
+
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),

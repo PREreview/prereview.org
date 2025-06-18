@@ -401,6 +401,7 @@ export const WriteReviewRouter = pipe(
         ({ id }) =>
           (env: Env) =>
             writeReviewPublish({
+              aiReviewsAsCc0: env.featureFlags.aiReviewsAsCc0(env.loggedInUser),
               id,
               locale: env.locale,
               method: env.method,
