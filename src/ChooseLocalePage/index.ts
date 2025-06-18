@@ -5,11 +5,9 @@ import { PageNotFound } from '../PageNotFound/index.js'
 import { createChooseLocalePage } from './ChooseLocalePage.js'
 
 export const ChooseLocalePage = Effect.gen(function* () {
+  yield* FeatureFlags.EnsureCanChooseLocale
+
   const locale = yield* Locale
 
-  if (!(yield* FeatureFlags.canChooseLocale)) {
-    return yield* PageNotFound
-  }
-
   return createChooseLocalePage({ locale })
-})
+}).pipe(Effect.catchTag('CannotChooseLocale', () => PageNotFound))
