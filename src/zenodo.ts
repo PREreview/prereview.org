@@ -684,6 +684,9 @@ function createDepositMetadata(
           }PREreview. You can view the complete PREreview at <a href="${url.href}">${url.href}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
+          license: match(newPrereview.license)
+            .with('CC-BY-4.0', () => 'cc-by-4.0')
+            .exhaustive(),
           communities: [{ identifier: 'prereview-reviews' }],
           keywords: pipe(
             [

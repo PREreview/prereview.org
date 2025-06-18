@@ -38,6 +38,7 @@ export interface NewPrereview {
   preprint: PreprintTitle
   review: Html
   language: Option.Option<LanguageCode>
+  license: 'CC-BY-4.0'
   locale: SupportedLocale
   structured: boolean
   user: User
@@ -142,6 +143,7 @@ const handlePublishForm = ({
         .with({ reviewType: 'questions' }, () => localeToIso6391(locale))
         .with({ reviewType: 'freeform' }, form => detectLanguage(form.review))
         .exhaustive(),
+      license: 'CC-BY-4.0' as const,
       locale,
       persona: form.persona,
       preprint,

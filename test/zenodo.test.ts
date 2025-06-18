@@ -3799,6 +3799,7 @@ describe('createRecordOnZenodo', () => {
         preprint: fc.preprintTitle(),
         review: fc.html(),
         language: fc.maybe(fc.languageCode()),
+        license: fc.constant('CC-BY-4.0'),
         locale: fc.supportedLocale(),
         structured: fc.constant(false),
         user: fc.user(),
@@ -3896,6 +3897,7 @@ describe('createRecordOnZenodo', () => {
                       .with(1, () => [{ name: '1 other author' }])
                       .otherwise(number => [{ name: `${number} other authors` }]),
                   ],
+                  license: 'cc-by-4.0',
                   communities: [{ identifier: 'prereview-reviews' }],
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
@@ -3960,6 +3962,7 @@ ${newPrereview.review.toString()}`,
         preprint: fc.preprintTitle(),
         review: fc.html(),
         language: fc.maybe(fc.languageCode()),
+        license: fc.constant('CC-BY-4.0'),
         locale: fc.supportedLocale(),
         structured: fc.constant(true),
         user: fc.user(),
@@ -4057,6 +4060,7 @@ ${newPrereview.review.toString()}`,
                       .with(1, () => [{ name: '1 other author' }])
                       .otherwise(number => [{ name: `${number} other authors` }]),
                   ],
+                  license: 'cc-by-4.0',
                   communities: [{ identifier: 'prereview-reviews' }],
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
@@ -4125,6 +4129,7 @@ ${newPrereview.review.toString()}`,
         preprint: fc.preprintTitle(),
         review: fc.html(),
         language: fc.maybe(fc.languageCode()),
+        license: fc.constant('CC-BY-4.0'),
         locale: fc.supportedLocale(),
         structured: fc.constant(false),
         user: fc.user(),
@@ -4216,6 +4221,7 @@ ${newPrereview.review.toString()}`,
                       .with(1, () => [{ name: '1 other author' }])
                       .otherwise(number => [{ name: `${number} other authors` }]),
                   ],
+                  license: 'cc-by-4.0',
                   communities: [{ identifier: 'prereview-reviews' }],
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
@@ -4278,6 +4284,7 @@ ${newPrereview.review.toString()}`,
         preprint: fc.preprintTitle(),
         review: fc.html(),
         language: fc.maybe(fc.languageCode()),
+        license: fc.constant('CC-BY-4.0'),
         locale: fc.supportedLocale(),
         structured: fc.constant(true),
         user: fc.user(),
@@ -4369,6 +4376,7 @@ ${newPrereview.review.toString()}`,
                       .with(1, () => [{ name: '1 other author' }])
                       .otherwise(number => [{ name: `${number} other authors` }]),
                   ],
+                  license: 'cc-by-4.0',
                   communities: [{ identifier: 'prereview-reviews' }],
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
@@ -4434,6 +4442,7 @@ ${newPrereview.review.toString()}`,
       preprint: fc.preprintTitle(),
       review: fc.html(),
       language: fc.maybe(fc.languageCode()),
+      license: fc.constant('CC-BY-4.0'),
       locale: fc.supportedLocale(),
       structured: fc.boolean(),
       user: fc.user(),

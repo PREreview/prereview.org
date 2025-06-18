@@ -587,10 +587,11 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.uuid(),
       fc.doi(),
       fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
+      fc.constant('CC-BY-4.0'),
       fc.supportedLocale(),
     ])(
       'when the review can be posted',
-      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, locale) => {
+      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, license, locale) => {
         const fetch = fetchMock
           .sandbox()
           .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, { body: { uuid: preprintUuid } })
@@ -620,6 +621,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
           },
           review: rawHtml('<p>hello</p>'),
           language: Option.none(),
+          license,
           locale,
           structured,
           user,
@@ -645,10 +647,24 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.doi(),
       fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
       fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
+      fc.constant('CC-BY-4.0'),
       fc.supportedLocale(),
     ])(
       'when the review cannot be posted',
-      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, response, locale) => {
+      async (
+        app,
+        key,
+        url,
+        user,
+        preprintId,
+        structured,
+        preprintUuid,
+        reviewDoi,
+        otherAuthors,
+        response,
+        license,
+        locale,
+      ) => {
         const fetch = fetchMock
           .sandbox()
           .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, { body: { uuid: preprintUuid } })
@@ -678,6 +694,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
           },
           review: rawHtml('<p>hello</p>'),
           language: Option.none(),
+          license,
           locale,
           structured,
           user,
@@ -703,10 +720,24 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.doi(),
       fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
       fc.record({ status: fc.integer(), body: fc.string() }),
+      fc.constant('CC-BY-4.0'),
       fc.supportedLocale(),
     ])(
       'when the preprint cannot be resolved',
-      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, response, locale) => {
+      async (
+        app,
+        key,
+        url,
+        user,
+        preprintId,
+        structured,
+        preprintUuid,
+        reviewDoi,
+        otherAuthors,
+        response,
+        license,
+        locale,
+      ) => {
         const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, response)
 
         const actual = await _.createPrereviewOnLegacyPrereview({
@@ -720,6 +751,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
           },
           review: rawHtml('<p>hello</p>'),
           language: Option.none(),
+          license,
           locale,
           structured,
           user,
@@ -745,10 +777,11 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.doi(),
       fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
       fc.error(),
+      fc.constant('CC-BY-4.0'),
       fc.supportedLocale(),
     ])(
       'when fetch throws an error',
-      async (user, app, key, url, preprintId, structured, reviewDoi, otherAuthors, error, locale) => {
+      async (user, app, key, url, preprintId, structured, reviewDoi, otherAuthors, error, license, locale) => {
         const actual = await _.createPrereviewOnLegacyPrereview({
           conduct: 'yes',
           otherAuthors,
@@ -760,6 +793,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
           },
           review: rawHtml('<p>hello</p>'),
           language: Option.none(),
+          license,
           locale,
           structured,
           user,
@@ -785,10 +819,11 @@ describe('createPrereviewOnLegacyPrereview', () => {
     fc.uuid(),
     fc.doi(),
     fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
+    fc.constant('CC-BY-4.0'),
     fc.supportedLocale(),
   ])(
     'when the legacy PREreview should not be updated',
-    async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, locale) => {
+    async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, license, locale) => {
       const actual = await _.createPrereviewOnLegacyPrereview({
         conduct: 'yes',
         otherAuthors,
@@ -800,6 +835,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
         },
         review: rawHtml('<p>hello</p>'),
         language: Option.none(),
+        license,
         locale,
         structured,
         user,
