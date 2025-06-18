@@ -17,14 +17,6 @@ import { PeoplePage } from '../PeoplePage.js'
 import { PrivacyPolicyPage } from '../PrivacyPolicyPage.js'
 import { DataStoreRedis } from '../Redis.js'
 import { ResourcesPage } from '../ResourcesPage.js'
-import type {
-  FlashMessageResponse,
-  LogInResponse,
-  PageResponse,
-  RedirectResponse,
-  StreamlinePageResponse,
-  TwoUpPageResponse,
-} from '../response.js'
 import * as Routes from '../routes.js'
 import { TrainingsPage } from '../TrainingsPage.js'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.js'
@@ -37,13 +29,7 @@ export type { PageUrls } from './ConstructPageUrls.js'
 const MakeRoute = <A, E, R>(
   method: HttpMethod.HttpMethod,
   route: Routes.Route<A>,
-  handler: (
-    a: A,
-  ) => Effect.Effect<
-    PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse | LogInResponse | FlashMessageResponse,
-    E,
-    R
-  >,
+  handler: (a: A) => Effect.Effect<Response.Response, E, R>,
 ) =>
   HttpRouter.makeRoute(
     method,
@@ -54,11 +40,7 @@ const MakeRoute = <A, E, R>(
 const MakeStaticRoute = <E, R>(
   method: HttpMethod.HttpMethod,
   path: `/${string}`,
-  handler: Effect.Effect<
-    PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse | LogInResponse | FlashMessageResponse,
-    E,
-    R
-  >,
+  handler: Effect.Effect<Response.Response, E, R>,
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
 
 const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
