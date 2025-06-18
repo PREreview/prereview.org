@@ -136,7 +136,7 @@ export const ReactToCommentEvents: Layer.Layer<
       Effect.fork,
     )
 
-    yield* pipe(
+    return yield* pipe(
       Queue.take(dequeue),
       Effect.tap(({ commentId }) => Effect.annotateLogsScoped({ commentId })),
       Effect.andThen(

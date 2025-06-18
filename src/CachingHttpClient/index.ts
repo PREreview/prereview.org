@@ -100,7 +100,7 @@ const revalidationWorker = Effect.gen(function* () {
   const revalidationQueue = yield* RevalidationQueue
   const httpClient = yield* HttpClient.HttpClient
 
-  yield* pipe(
+  return yield* pipe(
     Queue.take(revalidationQueue),
     Effect.tap(({ request }) =>
       Effect.logDebug('Cache revalidating request').pipe(

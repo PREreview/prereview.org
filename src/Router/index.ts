@@ -188,7 +188,7 @@ export const Router = pipe(
       const redis = maybeRedis.value
 
       if (redis.status !== 'ready') {
-        yield* Effect.fail(new Error(`Redis not ready (${redis.status})`))
+        return yield* Effect.fail(new Error(`Redis not ready (${redis.status})`))
       }
 
       yield* Effect.tryPromise({ try: () => redis.ping(), catch: identity })
