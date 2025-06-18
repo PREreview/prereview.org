@@ -37,6 +37,10 @@ export const Partners = '/partners'
 export const LiveReviews = '/live-reviews'
 export const Resources = '/resources'
 
+export const ReviewThisDataset = '/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset'
+
+export const ReviewThisDatasetStartNow = '/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset/start-now'
+
 export const WriteComment: Route<{ id: number }> = {
   path: '/reviews/:id/write-a-comment',
   href: params => `/reviews/${params.id}/write-a-comment`,

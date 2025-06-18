@@ -6,10 +6,13 @@ import { ChooseLocalePage } from '../ChooseLocalePage/index.js'
 import { ClubsPage } from '../ClubsPage.js'
 import { CodeOfConductPage } from '../CodeOfConductPage.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
+import * as FeatureFlags from '../FeatureFlags.js'
 import { FundingPage } from '../FundingPage.js'
+import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { HowToUsePage } from '../HowToUsePage.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
 import { MenuPage } from '../MenuPage/index.js'
+import { PageNotFound } from '../PageNotFound/index.js'
 import { PeoplePage } from '../PeoplePage.js'
 import { PrivacyPolicyPage } from '../PrivacyPolicyPage.js'
 import { DataStoreRedis } from '../Redis.js'
@@ -57,6 +60,20 @@ const MakeStaticRoute = <E, R>(
     R
   >,
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
+
+const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
+  MakeStaticRoute('GET', Routes.ReviewThisDataset, HavingProblemsPage),
+  MakeStaticRoute('GET', Routes.ReviewThisDatasetStartNow, HavingProblemsPage),
+]).pipe(
+  HttpRouter.use(
+    HttpMiddleware.make(app =>
+      pipe(
+        Effect.andThen(FeatureFlags.EnsureCanReviewDatasets, app),
+        Effect.catchTag('CannotReviewDatasets', () => Effect.andThen(PageNotFound, Response.toHttpServerResponse)),
+      ),
+    ),
+  ),
+)
 
 const WriteCommentFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.WriteComment, WriteCommentFlow.WriteCommentPage),
@@ -170,6 +187,7 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.Resources, ResourcesPage),
     MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),
   ]),
+  HttpRouter.concat(ReviewADatasetFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
     HttpMiddleware.make(
