@@ -50,8 +50,9 @@ import {
   getPreprintId,
   getPreprintTitle,
 } from './preprint.js'
+import * as Prereview from './Prereview.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
-import type { Prereview, Comment as PrereviewComment } from './review-page/index.js'
+import type { Comment as PrereviewComment } from './review-page/index.js'
 import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.js'
 import type { RecentPrereviews } from './reviews-page/index.js'
 import { reviewMatch } from './routes.js'
@@ -274,15 +275,15 @@ export const getPrereviewFromZenodo = (id: number) =>
     ),
     RTE.mapLeft(error =>
       match(error)
-        .with('removed', () => 'removed' as const)
+        .with('removed', () => new Prereview.PrereviewWasRemoved())
         .with(
           'no reviewed preprint',
           'not-found',
           { _tag: 'PreprintIsNotFound' },
           { status: P.union(Status.NotFound, Status.Gone) },
-          () => 'not-found' as const,
+          () => new Prereview.PrereviewIsNotFound(),
         )
-        .otherwise(() => 'unavailable' as const),
+        .otherwise(() => new Prereview.PrereviewIsUnavailable()),
     ),
   )
 
@@ -740,7 +741,7 @@ function recordToPrereview(
   | Preprint.PreprintIsNotFound
   | 'text-unavailable'
   | 'unknown-license',
-  Prereview
+  Prereview.Prereview
 > {
   return pipe(
     RTE.Do,
@@ -766,6 +767,7 @@ function recordToPrereview(
         >(getAuthors(record) as never),
         club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         doi: RTE.right(record.metadata.doi),
+        id: RTE.right(record.id),
         language: RTE.right(
           pipe(
             Option.fromNullable(record.metadata.language),
@@ -792,6 +794,7 @@ function recordToPrereview(
         text: getReviewText(reviewTextUrl),
       }),
     ),
+    RTE.map(args => new Prereview.Prereview(args)),
   )
 }
 
@@ -914,7 +917,7 @@ function recordToRecentPrereview(
   )
 }
 
-const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
+const PrereviewLicenseD: D.Decoder<Record, Prereview.Prereview['license']> = pipe(
   D.struct({
     metadata: D.struct({
       license: D.struct({ id: pipe(D.string, D.map(String.toUpperCase), D.compose(D.literal('CC-BY-4.0'))) }),
@@ -923,7 +926,7 @@ const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
   D.map(({ metadata }) => metadata.license.id),
 )
 
-function getAuthors(record: Record | InProgressDeposition): Prereview['authors'] {
+function getAuthors(record: Record | InProgressDeposition): Prereview.Prereview['authors'] {
   const [named, last] = Array.unappend(FptsToEffect.array(record.metadata.creators))
 
   if (!Array.isNonEmptyReadonlyArray(named)) {

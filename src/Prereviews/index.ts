@@ -9,7 +9,7 @@ import type { Html } from '../html.js'
 import { getRapidPreviewsFromLegacyPrereview, isLegacyCompatiblePreprint } from '../legacy-prereview.js'
 import type { Prereview as PreprintPrereview, RapidPrereview } from '../preprint-reviews-page/index.js'
 import * as Preprints from '../Preprints/index.js'
-import { Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from '../Prereview.js'
+import type { Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from '../Prereview.js'
 import type { RecentPrereviews } from '../reviews-page/index.js'
 import type { ClubId } from '../types/club-id.js'
 import type { FieldId } from '../types/field.js'
@@ -169,34 +169,14 @@ export const layer = Layer.effect(
           ),
         ),
       getPrereview: id =>
-        pipe(
-          FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {
-            fetch,
-            getPreprint,
-            wasPrereviewRemoved,
-            zenodoApiKey,
-            zenodoUrl,
-            ...logger,
-          }),
-          Effect.mapBoth({
-            onFailure: flow(
-              Match.value,
-              Match.when('not-found', () => new PrereviewIsNotFound()),
-              Match.when('removed', () => new PrereviewWasRemoved()),
-              Match.when('unavailable', () => new PrereviewIsUnavailable()),
-              Match.exhaustive,
-            ),
-            onSuccess: response =>
-              new Prereview({
-                ...response,
-                authors: {
-                  ...response.authors,
-                  named: FptsToEffect.array(response.authors.named),
-                },
-                id,
-              }),
-          }),
-        ),
+        FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {
+          fetch,
+          getPreprint,
+          wasPrereviewRemoved,
+          zenodoApiKey,
+          zenodoUrl,
+          ...logger,
+        }),
       search: args =>
         pipe(
           FptsToEffect.readerTaskEither(getRecentPrereviewsFromZenodo(args), {

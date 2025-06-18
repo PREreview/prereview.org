@@ -41,34 +41,14 @@ const getPrereview = Layer.effect(
     const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
 
     return id =>
-      pipe(
-        FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {
-          fetch,
-          getPreprint,
-          wasPrereviewRemoved,
-          zenodoApiKey,
-          zenodoUrl,
-          ...logger,
-        }),
-        Effect.mapBoth({
-          onFailure: flow(
-            Match.value,
-            Match.when('not-found', () => new Prereview.PrereviewIsNotFound()),
-            Match.when('removed', () => new Prereview.PrereviewWasRemoved()),
-            Match.when('unavailable', () => new Prereview.PrereviewIsUnavailable()),
-            Match.exhaustive,
-          ),
-          onSuccess: response =>
-            new Prereview.Prereview({
-              ...response,
-              authors: {
-                ...response.authors,
-                named: FptsToEffect.array(response.authors.named),
-              },
-              id,
-            }),
-        }),
-      )
+      FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {
+        fetch,
+        getPreprint,
+        wasPrereviewRemoved,
+        zenodoApiKey,
+        zenodoUrl,
+        ...logger,
+      })
   }),
 )
 

@@ -29,6 +29,7 @@ import {
 import { getClubName } from '../src/club-details.js'
 import { plainText, rawHtml } from '../src/html.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../src/preprint.js'
+import * as Prereview from '../src/Prereview.js'
 import { reviewMatch } from '../src/routes.js'
 import { iso6391To3 } from '../src/types/iso639.js'
 import type { NewPrereview } from '../src/write-review/index.js'
@@ -682,25 +683,28 @@ describe('getPrereviewFromZenodo', () => {
       })()
 
       expect(actual).toStrictEqual(
-        E.right({
-          addendum: rawHtml('<p>Some note.</p>'),
-          authors: { named: [{ name: 'PREreviewer' }], anonymous: expectedAnonymous },
-          club,
-          doi: Doi('10.5281/zenodo.1061864'),
-          language: 'en',
-          license: 'CC-BY-4.0',
-          live,
-          published: PlainDate.from('2022-07-05'),
-          preprint: {
-            id: preprint.id,
-            title: preprint.title.text,
-            language: preprint.title.language,
-            url: preprint.url,
-          },
-          requested,
-          structured,
-          text: rawHtml('Some text'),
-        }),
+        E.right(
+          new Prereview.Prereview({
+            addendum: rawHtml('<p>Some note.</p>'),
+            authors: { named: [{ name: 'PREreviewer' }], anonymous: expectedAnonymous },
+            club,
+            doi: Doi('10.5281/zenodo.1061864'),
+            id,
+            language: 'en',
+            license: 'CC-BY-4.0',
+            live,
+            published: PlainDate.from('2022-07-05'),
+            preprint: {
+              id: preprint.id,
+              title: preprint.title.text,
+              language: preprint.title.language,
+              url: preprint.url,
+            },
+            requested,
+            structured,
+            text: rawHtml('Some text'),
+          }),
+        ),
       )
       expect(getPreprint).toHaveBeenCalledWith(expect.objectContaining({ value: preprint.id.value }))
     },
@@ -717,7 +721,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved,
     })()
 
-    expect(actual).toStrictEqual(E.left('removed'))
+    expect(actual).toStrictEqual(E.left(new Prereview.PrereviewWasRemoved()))
   })
 
   test.prop([fc.integer(), fc.constantFrom(Status.NotFound, Status.Gone)])(
@@ -734,7 +738,7 @@ describe('getPrereviewFromZenodo', () => {
         wasPrereviewRemoved: () => false,
       })()
 
-      expect(actual).toStrictEqual(E.left('not-found'))
+      expect(actual).toStrictEqual(E.left(new Prereview.PrereviewIsNotFound()))
     },
   )
 
@@ -796,7 +800,7 @@ describe('getPrereviewFromZenodo', () => {
         wasPrereviewRemoved: () => false,
       })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(actual).toStrictEqual(E.left(new Prereview.PrereviewIsUnavailable()))
       expect(fetch.done()).toBeTruthy()
     },
   )
@@ -815,7 +819,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(actual).toStrictEqual(E.left(new Prereview.PrereviewIsUnavailable()))
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -881,7 +885,13 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left(error._tag === 'PreprintIsNotFound' ? 'not-found' : 'unavailable'))
+    expect(actual).toStrictEqual(
+      E.left(
+        error._tag === 'PreprintIsNotFound'
+          ? new Prereview.PrereviewIsNotFound()
+          : new Prereview.PrereviewIsUnavailable(),
+      ),
+    )
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -938,7 +948,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left('not-found'))
+    expect(actual).toStrictEqual(E.left(new Prereview.PrereviewIsNotFound()))
   })
 
   test.prop([fc.integer(), fc.preprintDoi()])('when the record is not in the community', async (id, preprintDoi) => {
@@ -993,7 +1003,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left('not-found'))
+    expect(actual).toStrictEqual(E.left(new Prereview.PrereviewIsNotFound()))
   })
 
   test.prop([
@@ -1072,7 +1082,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left('not-found'))
+    expect(actual).toStrictEqual(E.left(new Prereview.PrereviewIsNotFound()))
   })
 
   test.prop([fc.integer(), fc.preprintDoi(), fc.string()])(
@@ -1132,7 +1142,7 @@ describe('getPrereviewFromZenodo', () => {
         wasPrereviewRemoved: () => false,
       })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(actual).toStrictEqual(E.left(new Prereview.PrereviewIsUnavailable()))
       expect(fetch.done()).toBeTruthy()
     },
   )
@@ -1192,7 +1202,7 @@ describe('getPrereviewFromZenodo', () => {
         wasPrereviewRemoved: () => false,
       })()
 
-      expect(actual).toStrictEqual(E.left('not-found'))
+      expect(actual).toStrictEqual(E.left(new Prereview.PrereviewIsNotFound()))
     },
   )
 
@@ -1256,7 +1266,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left('not-found'))
+    expect(actual).toStrictEqual(E.left(new Prereview.PrereviewIsNotFound()))
     expect(fetch.done()).toBeTruthy()
   })
 })
