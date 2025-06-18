@@ -25,7 +25,7 @@ export class Prereview extends Data.TaggedClass('Prereview')<{
   doi: Doi
   id: number
   language?: LanguageCode
-  license: 'CC-BY-4.0'
+  license: 'CC0-1.0' | 'CC-BY-4.0'
   published: PlainDate
   preprint: {
     id: PreprintId

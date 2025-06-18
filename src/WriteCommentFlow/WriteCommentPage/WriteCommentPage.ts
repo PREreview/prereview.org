@@ -100,6 +100,14 @@ export const WriteCommentPage = ({
                 ${pipe(
                   Match.value(prereview.license),
                   Match.when(
+                    'CC0-1.0',
+                    () => html`
+                      <dfn>
+                        <abbr title="CC0 1.0 Universal"><span translate="no">CC0 1.0</span></abbr>
+                      </dfn>
+                    `,
+                  ),
+                  Match.when(
                     'CC-BY-4.0',
                     () => html`
                       <dfn>

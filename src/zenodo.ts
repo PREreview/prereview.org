@@ -917,7 +917,7 @@ function recordToRecentPrereview(
   )
 }
 
-const PrereviewLicenseD: D.Decoder<Record, Prereview.Prereview['license']> = pipe(
+const PrereviewLicenseD: D.Decoder<Record, 'CC-BY-4.0'> = pipe(
   D.struct({
     metadata: D.struct({
       license: D.struct({ id: pipe(D.string, D.map(String.toUpperCase), D.compose(D.literal('CC-BY-4.0'))) }),
