@@ -98,6 +98,7 @@ interface AppFixtures {
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
   canChooseLocale: (typeof FeatureFlags.FeatureFlags.Service)['canChooseLocale']
+  canReviewDatasets: (typeof FeatureFlags.FeatureFlags.Service)['canReviewDatasets']
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
 }
@@ -113,6 +114,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(() => false)
   },
   canChooseLocale: async ({}, use) => {
+    await use(false)
+  },
+  canReviewDatasets: async ({}, use) => {
     await use(false)
   },
   careerStageStore: async ({}, use) => {
@@ -1232,6 +1236,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         nodemailer,
         canAddMultipleAuthors,
         canChooseLocale,
+        canReviewDatasets,
       },
       use,
       testInfo,
@@ -1295,7 +1300,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             FeatureFlags.layer({
               canAddMultipleAuthors,
               canChooseLocale,
-              canReviewDatasets: false,
+              canReviewDatasets,
               canSeeDesignTweaks: false,
               canSeeHomePageChanges: () => false,
               useCrowdinInContext: false,
@@ -2089,6 +2094,17 @@ export const canChooseLocale: Fixtures<
   Record<never, never>
 > = {
   canChooseLocale: async ({}, use) => {
+    await use(true)
+  },
+}
+
+export const canReviewDatasets: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canReviewDatasets'>,
+  Record<never, never>
+> = {
+  canReviewDatasets: async ({}, use) => {
     await use(true)
   },
 }
