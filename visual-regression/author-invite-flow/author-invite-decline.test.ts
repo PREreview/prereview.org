@@ -6,6 +6,7 @@ import { declinePage } from '../../src/author-invite-flow/decline-page/decline-p
 import { inviteDeclinedPage } from '../../src/author-invite-flow/decline-page/invite-declined-page.js'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { Prereview } from '../../src/Prereview.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
@@ -14,7 +15,7 @@ test('content looks right before declining', async ({ showPage }) => {
   const response = declinePage({
     locale: DefaultLocale,
     inviteId: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
-    review: {
+    review: new Prereview({
       authors: {
         named: [
           { name: 'Jingfang Hao', orcid: Orcid('0000-0003-4436-3420') },
@@ -27,7 +28,9 @@ test('content looks right before declining', async ({ showPage }) => {
         anonymous: 2,
       },
       doi: Doi('10.5072/zenodo.1061864'),
+      id: 1061861,
       license: 'CC-BY-4.0',
+      live: false,
       preprint: {
         id: {
           _tag: 'biorxiv',
@@ -35,8 +38,10 @@ test('content looks right before declining', async ({ showPage }) => {
         },
         title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
         language: 'en',
+        url: new URL('https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201'),
       },
       published: PlainDate.from('2022-07-05'),
+      requested: false,
       structured: false,
       text: html`<p>
         The manuscript “The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>” by Liu et
@@ -49,7 +54,7 @@ test('content looks right before declining', async ({ showPage }) => {
         capacity. This work enriches the knowledge about the impact of lack of LHCBM1 on antenna size, PSII function,
         LHCSR1 and 3 proteins accumulation and NPQ capacity during a 48-h high light treatment.
       </p>`,
-    },
+    }),
   })
 
   const content = await showPage(response)

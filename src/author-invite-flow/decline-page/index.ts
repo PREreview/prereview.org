@@ -1,12 +1,8 @@
-import { Temporal } from '@js-temporal/polyfill'
-import type { Doi } from 'doi-ts'
-import { type Array, pipe } from 'effect'
+import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import type { LanguageCode } from 'iso-639-1'
-import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import {
@@ -15,37 +11,15 @@ import {
   getAuthorInvite,
   saveAuthorInvite,
 } from '../../author-invite.js'
-import type { Html } from '../../html.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
+import type { Prereview } from '../../Prereview.js'
 import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import { authorInviteDeclineMatch } from '../../routes.js'
-import type { ClubId } from '../../types/club-id.js'
-import type { PreprintId } from '../../types/preprint-id.js'
 import { declinePage } from './decline-page.js'
 import { inviteDeclinedPage } from './invite-declined-page.js'
 
-import PlainDate = Temporal.PlainDate
-
-export interface Prereview {
-  addendum?: Html
-  authors: {
-    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: Orcid }>
-    anonymous: number
-  }
-  club?: ClubId
-  doi: Doi
-  language?: LanguageCode
-  license: 'CC-BY-4.0'
-  published: PlainDate
-  preprint: {
-    id: PreprintId
-    language: LanguageCode
-    title: Html
-  }
-  structured: boolean
-  text: Html
-}
+export type { Prereview } from '../../Prereview.js'
 
 export interface GetPrereviewEnv {
   getPrereview: (id: number) => TE.TaskEither<'unavailable', Prereview>

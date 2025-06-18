@@ -12,26 +12,7 @@ describe('reviewPage', () => {
   test.prop([
     fc.supportedLocale(),
     fc.integer(),
-    fc.record({
-      authors: fc.record({
-        named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
-        anonymous: fc.integer({ min: 0 }),
-      }),
-      doi: fc.doi(),
-      language: fc.option(fc.languageCode(), { nil: undefined }),
-      license: fc.constant('CC-BY-4.0'),
-      live: fc.boolean(),
-      published: fc.plainDate(),
-      preprint: fc.record({
-        id: fc.preprintId(),
-        language: fc.languageCode(),
-        title: fc.html(),
-        url: fc.url(),
-      }),
-      requested: fc.boolean(),
-      structured: fc.boolean(),
-      text: fc.html(),
-    }),
+    fc.prereview(),
     fc.array(
       fc.record({
         authors: fc.record({
@@ -117,42 +98,22 @@ describe('reviewPage', () => {
     })
   })
 
-  test.prop([
-    fc.supportedLocale(),
-    fc.integer(),
-    fc.record({
-      authors: fc.record({
-        named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
-        anonymous: fc.integer({ min: 0 }),
-      }),
-      doi: fc.doi(),
-      language: fc.option(fc.languageCode(), { nil: undefined }),
-      license: fc.constant('CC-BY-4.0'),
-      live: fc.boolean(),
-      published: fc.plainDate(),
-      preprint: fc.record({
-        id: fc.preprintId(),
-        language: fc.languageCode(),
-        title: fc.html(),
-        url: fc.url(),
-      }),
-      requested: fc.boolean(),
-      structured: fc.boolean(),
-      text: fc.html(),
-    }),
-  ])('when the comments cannot be loaded', async (locale, id, prereview) => {
-    const actual = await _.reviewPage({ id, locale })({
-      getPrereview: () => TE.right(prereview),
-      getComments: () => TE.left('unavailable'),
-    })()
+  test.prop([fc.supportedLocale(), fc.integer(), fc.prereview()])(
+    'when the comments cannot be loaded',
+    async (locale, id, prereview) => {
+      const actual = await _.reviewPage({ id, locale })({
+        getPrereview: () => TE.right(prereview),
+        getComments: () => TE.left('unavailable'),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 })

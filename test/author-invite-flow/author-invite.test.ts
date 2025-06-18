@@ -22,24 +22,7 @@ describe('authorInvite', () => {
     fc.constant(undefined),
     fc.supportedLocale(),
     fc.authorInvite().filter(invite => invite.status !== 'declined'),
-    fc.record({
-      authors: fc.record({
-        named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
-        anonymous: fc.integer({ min: 0 }),
-      }),
-      doi: fc.doi(),
-      language: fc.option(fc.languageCode(), { nil: undefined }),
-      license: fc.constant('CC-BY-4.0'),
-      preprint: fc.record({
-        id: fc.preprintId(),
-        language: fc.languageCode(),
-        title: fc.html(),
-        url: fc.url(),
-      }),
-      published: fc.plainDate(),
-      structured: fc.boolean(),
-      text: fc.html(),
-    }),
+    fc.prereview(),
   ])('when the user is not logged in', async (inviteId, user, locale, invite, prereview) => {
     const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
     const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
@@ -64,74 +47,37 @@ describe('authorInvite', () => {
   })
 
   describe('when the user is logged in', () => {
-    test.prop([
-      fc.uuid(),
-      fc.user(),
-      fc.supportedLocale(),
-      fc.openAuthorInvite(),
-      fc.record({
-        authors: fc.record({
-          named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
-          anonymous: fc.integer({ min: 0 }),
-        }),
-        doi: fc.doi(),
-        language: fc.option(fc.languageCode(), { nil: undefined }),
-        license: fc.constant('CC-BY-4.0'),
-        preprint: fc.record({
-          id: fc.preprintId(),
-          language: fc.languageCode(),
-          title: fc.html(),
-          url: fc.url(),
-        }),
-        published: fc.plainDate(),
-        structured: fc.boolean(),
-        text: fc.html(),
-      }),
-    ])('when the invite is open', async (inviteId, user, locale, invite, prereview) => {
-      const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-      const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+    test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.openAuthorInvite(), fc.prereview()])(
+      'when the invite is open',
+      async (inviteId, user, locale, invite, prereview) => {
+        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-      const actual = await _.authorInvite({ id: inviteId, locale, user })({
-        getAuthorInvite,
-        getPrereview,
-      })()
+        const actual = await _.authorInvite({ id: inviteId, locale, user })({
+          getAuthorInvite,
+          getPrereview,
+        })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        canonical: format(authorInviteMatch.formatter, { id: inviteId }),
-        status: Status.OK,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-        allowRobots: false,
-      })
-      expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
-      expect(getPrereview).toHaveBeenCalledWith(invite.review)
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: format(authorInviteMatch.formatter, { id: inviteId }),
+          status: Status.OK,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+          allowRobots: false,
+        })
+        expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
+        expect(getPrereview).toHaveBeenCalledWith(invite.review)
+      },
+    )
 
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
       fc.supportedLocale(),
-      fc.record({
-        authors: fc.record({
-          named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
-          anonymous: fc.integer({ min: 0 }),
-        }),
-        doi: fc.doi(),
-        language: fc.option(fc.languageCode(), { nil: undefined }),
-        license: fc.constant('CC-BY-4.0'),
-        preprint: fc.record({
-          id: fc.preprintId(),
-          language: fc.languageCode(),
-          title: fc.html(),
-          url: fc.url(),
-        }),
-        published: fc.plainDate(),
-        structured: fc.boolean(),
-        text: fc.html(),
-      }),
+      fc.prereview(),
     ])('when the invite is assigned', async (inviteId, [user, invite], locale, prereview) => {
       const actual = await _.authorInvite({ id: inviteId, locale, user })({
         getAuthorInvite: () => TE.right(invite),
@@ -151,24 +97,7 @@ describe('authorInvite', () => {
         .user()
         .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
       fc.supportedLocale(),
-      fc.record({
-        authors: fc.record({
-          named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
-          anonymous: fc.integer({ min: 0 }),
-        }),
-        doi: fc.doi(),
-        language: fc.option(fc.languageCode(), { nil: undefined }),
-        license: fc.constant('CC-BY-4.0'),
-        preprint: fc.record({
-          id: fc.preprintId(),
-          language: fc.languageCode(),
-          title: fc.html(),
-          url: fc.url(),
-        }),
-        published: fc.plainDate(),
-        structured: fc.boolean(),
-        text: fc.html(),
-      }),
+      fc.prereview(),
     ])('when the invite is completed', async (inviteId, [user, invite], locale, prereview) => {
       const actual = await _.authorInvite({ id: inviteId, locale, user })({
         getAuthorInvite: () => TE.right(invite),

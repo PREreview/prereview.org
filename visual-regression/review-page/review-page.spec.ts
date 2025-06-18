@@ -3,7 +3,8 @@ import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import type { Comment, Prereview } from '../../src/review-page/index.js'
+import { Prereview } from '../../src/Prereview.js'
+import type { Comment } from '../../src/review-page/index.js'
 import { createPage } from '../../src/review-page/review-page.js'
 import { expect, test } from '../base.js'
 
@@ -127,7 +128,7 @@ test('content looks right when there are comments', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const review = {
+const review = new Prereview({
   authors: {
     named: [
       { name: 'James Fraser', orcid: Orcid('0000-0002-5080-2859') },
@@ -143,6 +144,7 @@ const review = {
     anonymous: 0,
   },
   doi: Doi('10.5281/zenodo.10779310'),
+  id: 10779310,
   language: 'en',
   license: 'CC-BY-4.0',
   live: false,
@@ -221,14 +223,15 @@ const review = {
     </ul>
     <h2>Competing interests</h2>
     <p>The author declares that they have no competing interests.</p>`,
-} satisfies Prereview
+})
 
-const structuredReview = {
+const structuredReview = new Prereview({
   authors: {
     named: [{ name: 'Justice Nyakura', orcid: Orcid('0000-0003-1065-1950') }],
     anonymous: 0,
   },
   doi: Doi('10.5281/zenodo.10775334'),
+  id: 10775334,
   language: 'en',
   license: 'CC-BY-4.0',
   live: false,
@@ -277,7 +280,7 @@ const structuredReview = {
     </dl>
     <h2>Competing interests</h2>
     <p>The author declares that they have no competing interests.</p>`,
-} satisfies Prereview
+})
 
 const comment1 = {
   authors: {

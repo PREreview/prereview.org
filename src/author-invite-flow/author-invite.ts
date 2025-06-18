@@ -1,11 +1,8 @@
-import { Temporal } from '@js-temporal/polyfill'
-import type { Doi } from 'doi-ts'
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import type { LanguageCode } from 'iso-639-1'
 import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
@@ -15,6 +12,7 @@ import { getClubName } from '../club-details.js'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
+import type { Prereview } from '../Prereview.js'
 import { PageResponse, RedirectResponse } from '../response.js'
 import {
   authorInviteDeclineMatch,
@@ -25,33 +23,11 @@ import {
   profileMatch,
 } from '../routes.js'
 import { renderDate } from '../time.js'
-import type { ClubId } from '../types/club-id.js'
 import { ProfileId } from '../types/index.js'
-import type { PreprintId } from '../types/preprint-id.js'
 import { isPseudonym } from '../types/pseudonym.js'
 import type { User } from '../user.js'
 
-import PlainDate = Temporal.PlainDate
-
-export interface Prereview {
-  addendum?: Html
-  authors: {
-    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: Orcid }>
-    anonymous: number
-  }
-  club?: ClubId
-  doi: Doi
-  language?: LanguageCode
-  license: 'CC-BY-4.0'
-  published: PlainDate
-  preprint: {
-    id: PreprintId
-    language: LanguageCode
-    title: Html
-  }
-  structured: boolean
-  text: Html
-}
+export type { Prereview } from '../Prereview.js'
 
 export interface GetPrereviewEnv {
   getPrereview: (id: number) => TE.TaskEither<'unavailable', Prereview>

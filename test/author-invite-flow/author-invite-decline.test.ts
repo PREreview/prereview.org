@@ -103,24 +103,7 @@ describe('authorInviteDecline', () => {
     fc.uuid(),
     fc.string().filter(method => method !== 'POST'),
     fc.openAuthorInvite(),
-    fc.record({
-      authors: fc.record({
-        named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
-        anonymous: fc.integer({ min: 0 }),
-      }),
-      doi: fc.doi(),
-      language: fc.option(fc.languageCode(), { nil: undefined }),
-      license: fc.constant('CC-BY-4.0'),
-      preprint: fc.record({
-        id: fc.preprintId(),
-        language: fc.languageCode(),
-        title: fc.html(),
-        url: fc.url(),
-      }),
-      published: fc.plainDate(),
-      structured: fc.boolean(),
-      text: fc.html(),
-    }),
+    fc.prereview(),
     fc.supportedLocale(),
   ])('when the invite is open', async (inviteId, method, invite, review, locale) => {
     const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(review))
