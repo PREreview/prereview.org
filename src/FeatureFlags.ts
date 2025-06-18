@@ -4,7 +4,7 @@ import type { User } from './user.js'
 export class FeatureFlags extends Context.Tag('FeatureFlags')<
   FeatureFlags,
   {
-    aiReviewsAsCc0: boolean
+    aiReviewsAsCc0: (user?: User) => boolean
     canAddMultipleAuthors: (user?: User) => boolean
     canChooseLocale: boolean
     canReviewDatasets: boolean
@@ -14,11 +14,13 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
   }
 >() {}
 
+export const aiReviewsAsCc0 = Effect.serviceFunction(FeatureFlags, Struct.get('aiReviewsAsCc0'))
+
 export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct.get('canAddMultipleAuthors'))
 
 export const canSeeHomePageChanges = Effect.serviceFunction(FeatureFlags, Struct.get('canSeeHomePageChanges'))
 
-export const { aiReviewsAsCc0, canChooseLocale, canReviewDatasets, canSeeDesignTweaks, useCrowdinInContext } =
+export const { canChooseLocale, canReviewDatasets, canSeeDesignTweaks, useCrowdinInContext } =
   Effect.serviceConstants(FeatureFlags)
 
 export class CannotChooseLocale extends Data.TaggedError('CannotChooseLocale') {}

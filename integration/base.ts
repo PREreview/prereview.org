@@ -1298,7 +1298,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           Layer.mergeAll(
             CachingHttpClient.layerInMemory(),
             FeatureFlags.layer({
-              aiReviewsAsCc0: false,
+              aiReviewsAsCc0: () => false,
               canAddMultipleAuthors,
               canChooseLocale,
               canReviewDatasets,

@@ -62,7 +62,10 @@ pipe(
   Effect.provide(
     Layer.mergeAll(
       FeatureFlags.layerConfig({
-        aiReviewsAsCc0: Config.withDefault(Config.boolean('AI_REVIEWS_AS_CC0'), false),
+        aiReviewsAsCc0: pipe(
+          Config.withDefault(Config.boolean('AI_REVIEWS_AS_CC0'), false),
+          Config.map(aiReviewsAsCc0 => user => aiReviewsAsCc0 && isPrereviewTeam(user)),
+        ),
         canAddMultipleAuthors: pipe(
           Config.withDefault(Config.boolean('CAN_ADD_MULTIPLE_AUTHORS'), false),
           Config.map(
