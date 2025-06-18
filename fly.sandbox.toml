@@ -8,6 +8,7 @@ size = "shared-cpu-2x"
 strategy = "bluegreen"
 
 [env]
+AI_REVIEWS_AS_CC0 = "true"
 CAN_ADD_MULTIPLE_AUTHORS = "true"
 CAN_CHOOSE_LOCALE = "true"
 CAN_REVIEW_DATASETS = "true"
