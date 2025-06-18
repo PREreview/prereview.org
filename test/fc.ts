@@ -1497,7 +1497,7 @@ export const prereview = (): fc.Arbitrary<Prereview> =>
       doi: doi(),
       id: fc.integer(),
       language: fc.option(languageCode(), { nil: undefined }),
-      license: constant('CC-BY-4.0'),
+      license: constantFrom('CC-BY-4.0', 'CC0-1.0'),
       live: fc.boolean(),
       published: plainDate(),
       preprint: fc.record({
