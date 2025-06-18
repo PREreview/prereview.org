@@ -601,9 +601,19 @@ describe('getPrereviewFromZenodo', () => {
       fc.constant([1, [{ name: '1 other author' }]]),
       fc.integer({ min: 2 }).map(number => [number, [{ name: `${number} other authors` }]] as const),
     ),
+    fc.constantFrom(['CC0-1.0', 'cc-zero'], ['CC-BY-4.0', 'cc-by-4.0']),
   ])(
     'when the PREreview can be loaded',
-    async (id, preprint, club, requested, structured, live, [expectedAnonymous, otherAuthors]) => {
+    async (
+      id,
+      preprint,
+      club,
+      requested,
+      structured,
+      live,
+      [expectedAnonymous, otherAuthors],
+      [expectedLicense, license],
+    ) => {
       const record: Record = {
         conceptdoi: Doi('10.5072/zenodo.1061863'),
         conceptrecid: 1061863,
@@ -645,7 +655,7 @@ describe('getPrereviewFromZenodo', () => {
             Array.match({ onEmpty: () => undefined, onNonEmpty: values => [...values] }),
           ),
           language: 'eng',
-          license: { id: 'cc-by-4.0' },
+          license: { id: license },
           notes: '<p>Some note.</p>',
           publication_date: new Date('2022-07-05'),
           related_identifiers: [
@@ -691,7 +701,7 @@ describe('getPrereviewFromZenodo', () => {
             doi: Doi('10.5281/zenodo.1061864'),
             id,
             language: 'en',
-            license: 'CC-BY-4.0',
+            license: expectedLicense,
             live,
             published: PlainDate.from('2022-07-05'),
             preprint: {
@@ -1086,7 +1096,7 @@ describe('getPrereviewFromZenodo', () => {
   })
 
   test.prop([fc.integer(), fc.preprintDoi(), fc.string()])(
-    'when the record does not have a CC-BY-4.0 license',
+    'when the record does not have a CC-BY-4.0/CC0-1.0 license',
     async (id, preprintDoi, license) => {
       const record: Record = {
         conceptdoi: Doi('10.5072/zenodo.1061863'),

@@ -813,6 +813,7 @@ function recordToPrereviewComment(
       RTE.fromEither(
         pipe(
           PrereviewLicenseD.decode(record),
+          E.filterOrElseW(license => license !== 'CC0-1.0', identity),
           E.mapLeft(() => 'unknown-license' as const),
         ),
       ),
@@ -917,10 +918,20 @@ function recordToRecentPrereview(
   )
 }
 
-const PrereviewLicenseD: D.Decoder<Record, 'CC-BY-4.0'> = pipe(
+const PrereviewLicenseD: D.Decoder<Record, 'CC-BY-4.0' | 'CC0-1.0'> = pipe(
   D.struct({
     metadata: D.struct({
-      license: D.struct({ id: pipe(D.string, D.map(String.toUpperCase), D.compose(D.literal('CC-BY-4.0'))) }),
+      license: D.struct({
+        id: pipe(
+          D.string,
+          D.parse(id =>
+            match(id.toLowerCase())
+              .with('cc-by-4.0', () => D.success('CC-BY-4.0' as const))
+              .with('cc-zero', () => D.success('CC0-1.0' as const))
+              .otherwise(() => D.failure(id, 'Unexpected license ID')),
+          ),
+        ),
+      }),
     }),
   }),
   D.map(({ metadata }) => metadata.license.id),
