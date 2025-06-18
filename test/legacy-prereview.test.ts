@@ -647,7 +647,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.doi(),
       fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
       fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
-      fc.constant('CC-BY-4.0'),
+      fc.constantFrom('CC-BY-4.0', 'CC0-1.0'),
       fc.supportedLocale(),
     ])(
       'when the review cannot be posted',

@@ -686,6 +686,7 @@ function createDepositMetadata(
 ${newPrereview.review.toString()}`,
           license: match(newPrereview.license)
             .with('CC-BY-4.0', () => 'cc-by-4.0')
+            .with('CC0-1.0', () => 'cc-zero')
             .exhaustive(),
           communities: [{ identifier: 'prereview-reviews' }],
           keywords: pipe(

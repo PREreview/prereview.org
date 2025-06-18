@@ -38,7 +38,7 @@ export interface NewPrereview {
   preprint: PreprintTitle
   review: Html
   language: Option.Option<LanguageCode>
-  license: 'CC-BY-4.0'
+  license: 'CC0-1.0' | 'CC-BY-4.0'
   locale: SupportedLocale
   structured: boolean
   user: User
