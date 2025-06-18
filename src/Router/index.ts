@@ -17,6 +17,7 @@ import { PeoplePage } from '../PeoplePage.js'
 import { PrivacyPolicyPage } from '../PrivacyPolicyPage.js'
 import { DataStoreRedis } from '../Redis.js'
 import { ResourcesPage } from '../ResourcesPage.js'
+import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.js'
 import * as Routes from '../routes.js'
 import { TrainingsPage } from '../TrainingsPage.js'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.js'
@@ -44,7 +45,7 @@ const MakeStaticRoute = <E, R>(
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
 
 const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
-  MakeStaticRoute('GET', Routes.ReviewThisDataset, HavingProblemsPage),
+  MakeStaticRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage),
   MakeStaticRoute('GET', Routes.ReviewThisDatasetStartNow, HavingProblemsPage),
 ]).pipe(
   HttpRouter.use(
