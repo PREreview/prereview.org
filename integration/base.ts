@@ -1,6 +1,7 @@
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
+import { PgClient } from '@effect/sql-pg'
 import {
   test as baseTest,
   expect,
@@ -10,7 +11,18 @@ import {
 } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { Effect, Logger as EffectLogger, Fiber, Layer, LogLevel, Option, pipe, Redacted, Schedule } from 'effect'
+import {
+  Config,
+  Effect,
+  Logger as EffectLogger,
+  Fiber,
+  Layer,
+  LogLevel,
+  Option,
+  pipe,
+  Redacted,
+  Schedule,
+} from 'effect'
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
@@ -1333,6 +1345,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
           ),
         ),
+        Effect.provide(PgClient.layerConfig({ url: Config.redacted(Config.string('COCKROACHDB_URL')) })),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
         EffectLogger.withMinimumLogLevel(LogLevel.Debug),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
