@@ -273,6 +273,9 @@ jobs:
         options: >-
           --health-cmd "curl --fail --no-progress-meter http://localhost:8080/health"
           --health-start-period 60s
+          --entrypoint "/cockroach/cockroach.sh start-single-node --insecure"
+        env:
+          COCKROACH_USER: prereview
         ports:
           - 26257:26257
 
