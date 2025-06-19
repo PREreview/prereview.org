@@ -40,5 +40,8 @@ services:
     ports:
       - 8080:8080
       - 26257:26257
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', '--no-progress-meter', 'http://localhost:8080/health']
+      start_period: 60s
     environment:
       - COCKROACH_USER=prereview
