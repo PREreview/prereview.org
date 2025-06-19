@@ -267,18 +267,6 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4, 5]
 
-    services:
-      cockroachdb:
-        image: cockroachdb/cockroach
-        options: >-
-          --health-cmd "curl --fail --no-progress-meter http://localhost:8080/health"
-          --health-start-period 60s
-          --entrypoint "/cockroach/cockroach.sh start-single-node --insecure"
-        env:
-          COCKROACH_USER: prereview
-        ports:
-          - 26257:26257
-
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
@@ -310,11 +298,14 @@ jobs:
           name: locales
           path: src/locales
 
+      - name: 'Start services required by tests'
+        run: docker compose up cockroachdb --wait
+
       - name: 'Run Playwright'
         id: 'playwright'
         uses: docker://mcr.microsoft.com/playwright:v1.51.1-jammy
         with:
-          args: env HOME=/root npx playwright test integration --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
+          args: env HOME=/root COCKROACHDB_URL=postgres://prereview:@host.docker.internal:26257/defaultdb npx playwright test integration --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
