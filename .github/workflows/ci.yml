@@ -267,6 +267,15 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4, 5]
 
+    services:
+      cockroachdb:
+        image: cockroachdb/cockroach
+        options: >-
+          --health-cmd "curl --fail --no-progress-meter http://localhost:8080/health"
+          --health-start-period 60s
+        ports:
+          - 26257:26257
+
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v4.2.2
