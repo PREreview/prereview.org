@@ -461,83 +461,48 @@ export const page = ({
 
                 <ul class="contacts" aria-label="${translate(locale, 'footer', 'contactHeading')()}">
                   <li>
-                    <span class="visually-hidden">
-                      ${rawHtml(
-                        translate(
-                          locale,
-                          'footer',
-                          'contactEmail',
-                        )({
-                          address: html`</span><a href="mailto:contact@prereview.org" class="email" translate="no"
-                            >contact@prereview.org</a
-                            ><span class="visually-hidden">`.toString(),
-                        }),
-                      )}
-                    </span>
-                  </li>
-                  <li>
-                    <span class="visually-hidden">
-                      ${rawHtml(
-                        translate(
-                          locale,
-                          'footer',
-                          'contactBluesky',
-                        )({
-                          handle:
-                            html`</span><a href="https://bsky.app/profile/prereview.bsky.social" class="bluesky" translate="no"
-                            >@prereview.bsky.social</a
-                            ><span class="visually-hidden">`.toString(),
-                        }),
-                      )}
-                    </span>
-                  </li>
-                  <li>
-                    <span class="visually-hidden">
-                      ${rawHtml(
-                        translate(
-                          locale,
-                          'footer',
-                          'contactMastodon',
-                        )({
-                          handle: html`</span><a href="https://mas.to/@prereview" class="mastodon" translate="no"
-                            >@prereview@mas.to</a
-                            ><span class="visually-hidden">`.toString(),
-                        }),
-                      )}
-                    </span>
-                  </li>
-                  <li>
-                    <span class="visually-hidden">
-                      ${rawHtml(
-                        translate(
-                          locale,
-                          'footer',
-                          'contactLinkedIn',
-                        )({
-                          handle: html`</span><a
-                              href="https://www.linkedin.com/company/prereview/"
-                              class="linked-in"
-                              translate="no"
-                            >PREreview</a
-                            ><span class="visually-hidden">`.toString(),
-                        }),
-                      )}</span
+                    <a
+                      href="mailto:contact@prereview.org"
+                      class="email"
+                      aria-label="${translate(locale, 'footer', 'contactEmail')({ address: 'contact@prereview.org' })}"
+                      ><span translate="no">contact@prereview.org</span></a
                     >
                   </li>
                   <li>
-                    <span class="visually-hidden">
-                      ${rawHtml(
-                        translate(
-                          locale,
-                          'footer',
-                          'contactGitHub',
-                        )({
-                          handle: html`</span><a href="https://github.com/PREreview" class="github" translate="no"
-                            >PREreview</a
-                            ><span class="visually-hidden">`.toString(),
-                        }),
-                      )}
-                    </span>
+                    <a
+                      href="https://bsky.app/profile/prereview.bsky.social"
+                      class="bluesky"
+                      aria-label="${translate(
+                        locale,
+                        'footer',
+                        'contactBluesky',
+                      )({ handle: '@prereview.bsky.social' })}"
+                      ><span translate="no">@prereview.bsky.social</span></a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://mas.to/@prereview"
+                      class="mastodon"
+                      aria-label="${translate(locale, 'footer', 'contactMastodon')({ handle: '@prereview@mas.to' })}"
+                      ><span translate="no">@prereview@mas.to</span></a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.linkedin.com/company/prereview/"
+                      class="linked-in"
+                      aria-label="${translate(locale, 'footer', 'contactLinkedIn')({ handle: 'PREreview' })}"
+                      ><span translate="no">PREreview</span></a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://github.com/PREreview"
+                      class="github"
+                      aria-label="${translate(locale, 'footer', 'contactGitHub')({ handle: 'PREreview' })}"
+                      ><span translate="no">PREreview</span></a
+                    >
                   </li>
                 </ul>
 
