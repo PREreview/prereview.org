@@ -2,7 +2,6 @@
 import { Reactivity } from '@effect/experimental'
 import { FetchHttpClient, HttpClient, HttpClientResponse, Url } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
-import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
 import {
   test as baseTest,
@@ -1253,7 +1252,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canReviewDatasets,
       },
       use,
-      testInfo,
     ) => {
       const server = pipe(
         Program,
@@ -1343,7 +1341,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Layer.succeed(PublicUrl, new URL(`http://localhost:${port}`)),
             Layer.succeed(SessionSecret, Redacted.make('')),
             Layer.succeed(ZenodoOrigin, new URL('http://zenodo.test/')),
-            LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` }),
             TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
           ),
         ),
