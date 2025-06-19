@@ -10,45 +10,45 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
     const generateUuid = yield* Uuid.GenerateUuid
 
     yield* sql`
-    CREATE TABLE IF NOT EXISTS resources (
-      id TEXT NOT NULL PRIMARY KEY,
-      type TEXT NOT NULL,
-      version INTEGER NOT NULL
-    )
-  `
+      CREATE TABLE IF NOT EXISTS resources (
+        id TEXT NOT NULL PRIMARY KEY,
+        type TEXT NOT NULL,
+        version INTEGER NOT NULL
+      )
+    `
 
     yield* sql`
-    CREATE TABLE IF NOT EXISTS events (
-      event_id TEXT NOT NULL PRIMARY KEY,
-      resource_id TEXT NOT NULL,
-      resource_version INTEGER NOT NULL,
-      event_type TEXT NOT NULL,
-      event_timestamp TEXT NOT NULL,
-      payload TEXT NOT NULL,
-      FOREIGN KEY (resource_id) REFERENCES resources(id),
-      UNIQUE (resource_id, resource_version)
-    )
-  `
+      CREATE TABLE IF NOT EXISTS events (
+        event_id TEXT NOT NULL PRIMARY KEY,
+        resource_id TEXT NOT NULL,
+        resource_version INTEGER NOT NULL,
+        event_type TEXT NOT NULL,
+        event_timestamp TEXT NOT NULL,
+        payload TEXT NOT NULL,
+        FOREIGN KEY (resource_id) REFERENCES resources (id),
+        UNIQUE (resource_id, resource_version)
+      )
+    `
 
     const getAllEvents: EventStore.EventStore['getAllEvents'] = Effect.gen(function* () {
       const rows = yield* pipe(
         sql`
-        SELECT
-          event_id,
-          resource_id,
-          resource_version,
-          event_type,
-          event_timestamp,
-          payload
-        FROM
-          events
-          INNER JOIN resources ON resources.id = events.resource_id
-        WHERE
-          resources.type = 'Comment'
-        ORDER BY
-          resource_version ASC,
-          event_timestamp ASC
-      `,
+          SELECT
+            event_id,
+            resource_id,
+            resource_version,
+            event_type,
+            event_timestamp,
+            payload
+          FROM
+            events
+            INNER JOIN resources ON resources.id = events.resource_id
+          WHERE
+            resources.type = 'Comment'
+          ORDER BY
+            resource_version ASC,
+            event_timestamp ASC
+        `,
         Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable))),
       )
 
@@ -69,22 +69,22 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
 
         const rows = yield* pipe(
           sql`
-          SELECT
-            event_id,
-            resource_id,
-            resource_version,
-            event_type,
-            event_timestamp,
-            payload
-          FROM
-            events
-          INNER JOIN resources ON resources.id = events.resource_id
-          WHERE
-            resource_id = ${encodedResourceId}
-            AND resources.type = 'Comment'
-          ORDER BY
-            resource_version ASC
-        `,
+            SELECT
+              event_id,
+              resource_id,
+              resource_version,
+              event_type,
+              event_timestamp,
+              payload
+            FROM
+              events
+              INNER JOIN resources ON resources.id = events.resource_id
+            WHERE
+              resource_id = ${encodedResourceId}
+              AND resources.type = 'Comment'
+            ORDER BY
+              resource_version ASC
+          `,
           Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable))),
         )
 
@@ -125,26 +125,22 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                 if (lastKnownVersion === 0) {
                   const results = yield* pipe(
                     sql`
-                    INSERT INTO
-                      resources (
-                        id,
-                        type,
-                        version
-                      )
-                    SELECT
-                      ${encoded.id},
-                      ${encoded.type},
-                      ${encodedNewVersion}
-                    WHERE
-                      NOT EXISTS (
-                        SELECT
-                          id
-                        FROM
-                          resources
-                        WHERE
-                          id = ${encoded.id}
-                      )
-                  `.raw,
+                      INSERT INTO
+                        resources (id, type, version)
+                      SELECT
+                        ${encoded.id},
+                        ${encoded.type},
+                        ${encodedNewVersion}
+                      WHERE
+                        NOT EXISTS (
+                          SELECT
+                            id
+                          FROM
+                            resources
+                          WHERE
+                            id = ${encoded.id}
+                        )
+                    `.raw,
                     Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
                   )
 
@@ -156,15 +152,15 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
                 }
 
                 const rows = yield* sql`
-                SELECT
-                  id,
-                  type
-                FROM
-                  resources
-                WHERE
-                  id = ${encoded.id}
-                  AND type = ${encoded.type}
-              `
+                  SELECT
+                    id,
+                    type
+                  FROM
+                    resources
+                  WHERE
+                    id = ${encoded.id}
+                    AND type = ${encoded.type}
+                `
 
                 if (rows.length !== 1) {
                   return yield* new EventStore.FailedToCommitEvent({})
@@ -172,13 +168,13 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
 
                 const results = yield* pipe(
                   sql`
-                  UPDATE resources
-                  SET
-                    version = ${encodedNewVersion}
-                  WHERE
-                    id = ${encoded.id}
-                    AND version = ${encoded.version}
-                `.raw,
+                    UPDATE resources
+                    SET
+                      version = ${encodedNewVersion}
+                    WHERE
+                      id = ${encoded.id}
+                      AND version = ${encoded.version}
+                  `.raw,
                   Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
                 )
 
@@ -203,33 +199,33 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
 
                     const results = yield* pipe(
                       sql`
-                      INSERT INTO
-                        events (
-                          event_id,
-                          resource_id,
-                          resource_version,
-                          event_type,
-                          event_timestamp,
-                          payload
-                        )
-                      SELECT
-                        ${encoded.event_id},
-                        ${encoded.resource_id},
-                        ${encoded.resource_version},
-                        ${encoded.event_type},
-                        ${encoded.event_timestamp},
-                        ${encoded.payload}
-                      WHERE
-                        NOT EXISTS (
-                          SELECT
-                            event_id
-                          FROM
-                            events
-                          WHERE
-                            resource_id = ${encoded.resource_id}
-                            AND resource_version >= ${encoded.resource_version}
-                        )
-                    `.raw,
+                        INSERT INTO
+                          events (
+                            event_id,
+                            resource_id,
+                            resource_version,
+                            event_type,
+                            event_timestamp,
+                            payload
+                          )
+                        SELECT
+                          ${encoded.event_id},
+                          ${encoded.resource_id},
+                          ${encoded.resource_version},
+                          ${encoded.event_type},
+                          ${encoded.event_timestamp},
+                          ${encoded.payload}
+                        WHERE
+                          NOT EXISTS (
+                            SELECT
+                              event_id
+                            FROM
+                              events
+                            WHERE
+                              resource_id = ${encoded.resource_id}
+                              AND resource_version >= ${encoded.resource_version}
+                          )
+                      `.raw,
                       Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
                     )
 

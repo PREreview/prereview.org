@@ -1,7 +1,15 @@
 {
   "arrowParens": "avoid",
+  "embeddedHtmlTags": [""],
   "printWidth": 120,
   "semi": false,
   "singleQuote": true,
-  "plugins": ["@prettier/plugin-xml", "prettier-plugin-organize-imports", "prettier-plugin-sh", "prettier-plugin-toml"]
+  "plugins": [
+    "@prettier/plugin-xml",
+    "prettier-plugin-embed",
+    "prettier-plugin-organize-imports",
+    "prettier-plugin-sh",
+    "prettier-plugin-sql",
+    "prettier-plugin-toml"
+  ]
 }
