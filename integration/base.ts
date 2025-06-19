@@ -1,4 +1,6 @@
-import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Reactivity } from '@effect/experimental'
+import { FetchHttpClient, HttpClient, HttpClientResponse, Url } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
@@ -34,7 +36,7 @@ import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import { Orcid } from 'orcid-id-ts'
 import type { BrowserContextOptions, Page } from 'playwright-core'
 import { URL } from 'url'
-import { Uuid } from 'uuid-ts'
+import { Uuid, v4 } from 'uuid-ts'
 import {
   EmptyDepositionC,
   InProgressDepositionC,
@@ -1345,7 +1347,26 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
           ),
         ),
-        Effect.provide(PgClient.layerConfig({ url: Config.redacted(Config.string('COCKROACHDB_URL')) })),
+        Effect.provide(
+          pipe(
+            Config.url('COCKROACHDB_URL'),
+            Effect.andThen(url =>
+              Effect.gen(function* () {
+                const pgClient = yield* PgClient.make({ url: Redacted.make(url.href) })
+
+                const databaseName = `test${v4()().slice(0, 8)}`
+
+                yield* pgClient.unsafe(`CREATE DATABASE ${databaseName}`)
+
+                return Url.setPathname(url, databaseName)
+              }),
+            ),
+            Effect.scoped,
+            Effect.provide(Reactivity.layer),
+            Effect.andThen(url => PgClient.layer({ url: Redacted.make(url.href) })),
+            Layer.unwrapEffect,
+          ),
+        ),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
         EffectLogger.withMinimumLogLevel(LogLevel.Debug),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
