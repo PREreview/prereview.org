@@ -298,14 +298,9 @@ jobs:
           name: locales
           path: src/locales
 
-      - name: 'Start services required by tests'
-        run: docker compose up cockroachdb --wait
-
-      - name: 'Run Playwright'
+      - name: 'Run integration tests'
         id: 'playwright'
-        uses: docker://mcr.microsoft.com/playwright:v1.51.1-jammy
-        with:
-          args: env HOME=/root COCKROACHDB_URL=postgres://prereview:@host.docker.internal:26257/defaultdb npx playwright test integration --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
+        run: make test-integration TEST="integration --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4"
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
