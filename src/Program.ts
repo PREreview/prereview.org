@@ -331,6 +331,12 @@ export const Program = pipe(
     ),
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
-  Layer.provide(Layer.mergeAll(commentEvents, SqlEventStore.layer, LoggingHttpClient.layer)),
+  Layer.provide(
+    Layer.mergeAll(
+      commentEvents,
+      Layer.effect(Comments.CommentEventStore, SqlEventStore.make('Comment', Comments.CommentEvent)),
+      LoggingHttpClient.layer,
+    ),
+  ),
   Layer.provide(Layer.mergeAll(Uuid.layer, CachingHttpClient.layerRevalidationQueue)),
 )
