@@ -329,6 +329,7 @@ export const Program = pipe(
         Comments.makeGetNextExpectedCommandForUserOnAComment,
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
+      DatasetReviews.layer,
       Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
     ),
   ),
