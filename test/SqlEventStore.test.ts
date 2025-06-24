@@ -15,8 +15,8 @@ it.prop([fc.uuid()])('starts empty', resourceId =>
   Effect.gen(function* () {
     const eventStore = yield* _.make
 
-    const actual = yield* eventStore.getEvents(resourceId)
-    const all = yield* eventStore.getAllEvents
+    const actual = yield* eventStore.getEvents('Comment', resourceId)
+    const all = yield* eventStore.getAllEvents('Comment')
 
     expect(actual).toStrictEqual({ events: [], latestVersion: 0 })
     expect(all).toStrictEqual([])
@@ -32,10 +32,10 @@ describe('when the last known version is 0', () => {
     Effect.gen(function* () {
       const eventStore = yield* _.make
 
-      yield* eventStore.commitEvents(resourceId, 0)(...events)
+      yield* eventStore.commitEvents('Comment', resourceId, 0)(...events)
 
-      const actual = yield* eventStore.getEvents(resourceId)
-      const all = yield* eventStore.getAllEvents
+      const actual = yield* eventStore.getEvents('Comment', resourceId)
+      const all = yield* eventStore.getAllEvents('Comment')
 
       expect(actual).toStrictEqual({ events, latestVersion: events.length })
       expect(all).toStrictEqual(Array.map(events, (event, i) => ({ event, resourceId, version: i + 1 })))
@@ -55,12 +55,12 @@ describe('when the last known version is invalid', () => {
         Effect.gen(function* () {
           const eventStore = yield* _.make
 
-          const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
+          const error = yield* Effect.flip(eventStore.commitEvents('Comment', resourceId, lastKnownVersion)(...events))
 
           expect(error).toBeInstanceOf(EventStore.FailedToCommitEvent)
 
-          const actual = yield* eventStore.getEvents(resourceId)
-          const all = yield* eventStore.getAllEvents
+          const actual = yield* eventStore.getEvents('Comment', resourceId)
+          const all = yield* eventStore.getAllEvents('Comment')
 
           expect(actual).toStrictEqual({ events: [], latestVersion: 0 })
           expect(all).toStrictEqual([])
@@ -83,14 +83,14 @@ describe('when the last known version is invalid', () => {
       Effect.gen(function* () {
         const eventStore = yield* _.make
 
-        yield* eventStore.commitEvents(resourceId, 0)(...existingEvents)
+        yield* eventStore.commitEvents('Comment', resourceId, 0)(...existingEvents)
 
-        const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
+        const error = yield* Effect.flip(eventStore.commitEvents('Comment', resourceId, lastKnownVersion)(...events))
 
         expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
-        const actual = yield* eventStore.getEvents(resourceId)
-        const all = yield* eventStore.getAllEvents
+        const actual = yield* eventStore.getEvents('Comment', resourceId)
+        const all = yield* eventStore.getAllEvents('Comment')
 
         expect(actual).toStrictEqual({
           events: existingEvents,
@@ -113,11 +113,11 @@ describe('when the last known version is up to date', () => {
       Effect.gen(function* () {
         const eventStore = yield* _.make
 
-        yield* eventStore.commitEvents(resourceId, 0)(event1)
-        yield* eventStore.commitEvents(resourceId, 1)(event2)
+        yield* eventStore.commitEvents('Comment', resourceId, 0)(event1)
+        yield* eventStore.commitEvents('Comment', resourceId, 1)(event2)
 
-        const actual = yield* eventStore.getEvents(resourceId)
-        const all = yield* eventStore.getAllEvents
+        const actual = yield* eventStore.getEvents('Comment', resourceId)
+        const all = yield* eventStore.getAllEvents('Comment')
 
         expect(actual).toStrictEqual({ events: [event1, event2], latestVersion: 2 })
         expect(all).toStrictEqual([
@@ -146,14 +146,14 @@ describe('when the last known version is out of date', () => {
     Effect.gen(function* () {
       const eventStore = yield* _.make
 
-      yield* eventStore.commitEvents(resourceId, 0)(...existingEvents)
+      yield* eventStore.commitEvents('Comment', resourceId, 0)(...existingEvents)
 
-      const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
+      const error = yield* Effect.flip(eventStore.commitEvents('Comment', resourceId, lastKnownVersion)(...events))
 
       expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
-      const actual = yield* eventStore.getEvents(resourceId)
-      const all = yield* eventStore.getAllEvents
+      const actual = yield* eventStore.getEvents('Comment', resourceId)
+      const all = yield* eventStore.getAllEvents('Comment')
 
       expect(actual).toStrictEqual({
         events: existingEvents,
@@ -177,21 +177,21 @@ it.prop([
   Effect.gen(function* () {
     const eventStore = yield* _.make
 
-    yield* eventStore.commitEvents(resourceId1, 0)(event1)
+    yield* eventStore.commitEvents('Comment', resourceId1, 0)(event1)
     yield* TestClock.adjust('1 second')
-    yield* eventStore.commitEvents(resourceId2, 0)(event2)
+    yield* eventStore.commitEvents('Comment', resourceId2, 0)(event2)
     yield* TestClock.adjust('1 second')
-    yield* eventStore.commitEvents(resourceId2, 1)(event3)
+    yield* eventStore.commitEvents('Comment', resourceId2, 1)(event3)
 
-    const actual1 = yield* eventStore.getEvents(resourceId1)
+    const actual1 = yield* eventStore.getEvents('Comment', resourceId1)
 
     expect(actual1).toStrictEqual({ events: [event1], latestVersion: 1 })
 
-    const actual2 = yield* eventStore.getEvents(resourceId2)
+    const actual2 = yield* eventStore.getEvents('Comment', resourceId2)
 
     expect(actual2).toStrictEqual({ events: [event2, event3], latestVersion: 2 })
 
-    const all = yield* eventStore.getAllEvents
+    const all = yield* eventStore.getAllEvents('Comment')
 
     expect(all).toStrictEqual([
       { event: event1, resourceId: resourceId1, version: 1 },

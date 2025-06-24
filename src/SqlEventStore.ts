@@ -30,42 +30,46 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
       )
     `
 
-    const getAllEvents: EventStore.EventStore['getAllEvents'] = Effect.gen(function* () {
-      const rows = yield* pipe(
-        sql`
-          SELECT
-            event_id,
-            resource_id,
-            resource_version,
-            event_type,
-            event_timestamp,
-            payload
-          FROM
-            events
-            INNER JOIN resources ON resources.id = events.resource_id
-          WHERE
-            resources.type = 'Comment'
-          ORDER BY
-            resource_version ASC,
-            event_timestamp ASC
-        `,
-        Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable))),
+    const getAllEvents: EventStore.EventStore['getAllEvents'] = resourceType =>
+      Effect.gen(function* () {
+        const encodedResourceType = yield* Schema.encode(ResourcesTable.fields.type)(resourceType)
+
+        const rows = yield* pipe(
+          sql`
+            SELECT
+              event_id,
+              resource_id,
+              resource_version,
+              event_type,
+              event_timestamp,
+              payload
+            FROM
+              events
+              INNER JOIN resources ON resources.id = events.resource_id
+            WHERE
+              resources.type = ${encodedResourceType}
+            ORDER BY
+              resource_version ASC,
+              event_timestamp ASC
+          `,
+          Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable))),
+        )
+
+        return Array.map(rows, row => ({ resourceId: row.resourceId, event: row.event, version: row.resourceVersion }))
+      }).pipe(
+        Effect.tapError(error =>
+          Effect.annotateLogs(Effect.logError('Unable to get all events'), {
+            error,
+            resourceType,
+          }),
+        ),
+        Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
       )
 
-      return Array.map(rows, row => ({ resourceId: row.resourceId, event: row.event, version: row.resourceVersion }))
-    }).pipe(
-      Effect.tapError(error =>
-        Effect.annotateLogs(Effect.logError('Unable to get all events'), {
-          error,
-          resourceType: 'Comment',
-        }),
-      ),
-      Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
-    )
-
-    const getEvents: EventStore.EventStore['getEvents'] = resourceId =>
+    const getEvents: EventStore.EventStore['getEvents'] = (resourceType, resourceId) =>
       Effect.gen(function* () {
         const encodedResourceId = yield* Schema.encode(ResourcesTable.fields.id)(resourceId)
+        const encodedResourceType = yield* Schema.encode(ResourcesTable.fields.type)(resourceType)
 
         const rows = yield* pipe(
           sql`
@@ -81,7 +85,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               INNER JOIN resources ON resources.id = events.resource_id
             WHERE
               resource_id = ${encodedResourceId}
-              AND resources.type = 'Comment'
+              AND resources.type = ${encodedResourceType}
             ORDER BY
               resource_version ASC
           `,
@@ -99,14 +103,14 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
           Effect.annotateLogs(Effect.logError('Unable to get events'), {
             error,
             resourceId,
-            resourceType: 'Comment',
+            resourceType,
           }),
         ),
         Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
       )
 
     const commitEvents: EventStore.EventStore['commitEvents'] =
-      (resourceId, lastKnownVersion) =>
+      (resourceType, resourceId, lastKnownVersion) =>
       (...events) =>
         sql
           .withTransaction(
@@ -114,7 +118,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               Effect.gen(function* () {
                 const encoded = yield* Schema.encode(ResourcesTable)({
                   id: resourceId,
-                  type: 'Comment',
+                  type: resourceType,
                   version: lastKnownVersion,
                 })
 
@@ -244,7 +248,7 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
               Effect.annotateLogs(Effect.logError('Unable to commit events'), {
                 error,
                 resourceId,
-                resourceType: 'Comment',
+                resourceType,
               }),
             ),
             Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
