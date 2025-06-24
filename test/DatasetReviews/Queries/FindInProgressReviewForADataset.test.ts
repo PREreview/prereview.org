@@ -12,7 +12,7 @@ const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ aut
 
 describe('FindInProgressReviewForADataset', () => {
   describe('when at least one review needs further user input', () => {
-    test.failing('returns the review', () => {
+    test('returns the review', () => {
       const events = [{ event: datasetReviewWasStarted, resourceId }]
 
       const actual = _.FindInProgressReviewForADataset(events)(authorId, datasetId)
