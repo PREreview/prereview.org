@@ -41,6 +41,7 @@ import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/cros
 import type { CrossrefPreprintId } from '../src/Crossref/PreprintId.js'
 import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/datacite.js'
 import type { DatacitePreprintId } from '../src/Datacite/PreprintId.js'
+import * as DatasetReviews from '../src/DatasetReviews/index.js'
 import * as Datasets from '../src/Datasets/index.js'
 import type { Email } from '../src/email.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
@@ -1576,6 +1577,17 @@ export const commentEvent = (): fc.Arbitrary<Comments.CommentEvent> =>
     doiWasAssigned(),
     commentWasPublished(),
   )
+
+export const datasetReviewWasStarted = (): fc.Arbitrary<DatasetReviews.DatasetReviewWasStarted> =>
+  fc
+    .record({
+      authorId: orcid(),
+      datasetId: datasetId(),
+    })
+    .map(data => new DatasetReviews.DatasetReviewWasStarted(data))
+
+export const datasetReviewEvent = (): fc.Arbitrary<DatasetReviews.DatasetReviewEvent> =>
+  fc.oneof(datasetReviewWasStarted())
 
 export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>
   fc.constant(new Comments.CommentWasAlreadyStarted())
