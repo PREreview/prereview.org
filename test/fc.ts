@@ -41,6 +41,7 @@ import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/cros
 import type { CrossrefPreprintId } from '../src/Crossref/PreprintId.js'
 import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/datacite.js'
 import type { DatacitePreprintId } from '../src/Datacite/PreprintId.js'
+import * as Datasets from '../src/Datasets/index.js'
 import type { Email } from '../src/email.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
@@ -1165,6 +1166,11 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     ssrnPreprintId(),
     verixivPreprintId(),
   )
+
+export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> => fc.oneof(dryadDatasetId())
+
+export const dryadDatasetId = (): fc.Arbitrary<Datasets.DryadDatasetId> =>
+  doi(constant('5061')).map(doi => new Datasets.DryadDatasetId({ value: doi }))
 
 export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
 
