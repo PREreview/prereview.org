@@ -1,14 +1,11 @@
-import { Context, Data, Effect, Layer, type Option } from 'effect'
-import type * as Datasets from '../../Datasets/index.js'
-import type { Orcid, Uuid } from '../../types/index.js'
-import type { DatasetReviewsEventStore } from '../Context.js'
+import { Context, Data, Effect, Layer } from 'effect'
+import { DatasetReviewsEventStore } from '../Context.js'
+import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
   {
-    findInProgressReviewForADataset: Query<
-      (authorId: Orcid.Orcid, datasetId: Datasets.DatasetId) => Option.Option<Uuid.Uuid>
-    >
+    findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
   }
 >() {}
 
@@ -19,9 +16,18 @@ type Query<F extends (...args: never) => unknown> = (
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
 const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Service, never, DatasetReviewsEventStore> =
-  Effect.sync(() => {
+  Effect.gen(function* () {
+    const eventStore = yield* DatasetReviewsEventStore
+
     return {
-      findInProgressReviewForADataset: () => new UnableToQuery({}),
+      findInProgressReviewForADataset: Effect.fn(
+        function* (...args) {
+          const events = yield* eventStore.getAllEvents
+
+          return FindInProgressReviewForADataset(events)(...args)
+        },
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+      ),
     }
   })
 
