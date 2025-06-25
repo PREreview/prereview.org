@@ -2,7 +2,7 @@ import { areLoggedIn, test as baseTest, canChooseLocale, canLogIn, canReviewData
 
 const test = baseTest.extend(canReviewDatasets)
 
-test('can review a dataset', async ({ page }, testInfo) => {
+test.extend(canLogIn)('can review a dataset', async ({ page }, testInfo) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset')
 
   await page.getByRole('button', { name: 'Start now' }).click()
