@@ -18,7 +18,7 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotStarted())
   })
 
-  test('already chosen', () => {
+  test('already started', () => {
     const events = [started]
 
     const state = _.foldState(events)
