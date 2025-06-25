@@ -8,7 +8,6 @@ export const FindInProgressReviewForADataset =
   (authorId: Orcid.Orcid, datasetId: Datasets.DatasetId): Option.Option<Uuid.Uuid> => {
     return Array.findFirst(events, ({ event, resourceId }) =>
       Boolean.match(
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         event._tag === 'DatasetReviewWasStarted' &&
           Equal.equals(authorId, event.authorId) &&
           Equal.equals(datasetId, event.datasetId),
