@@ -32,7 +32,9 @@ export const StartNow: Effect.Effect<
     })
   },
   Effect.catchTags({
+    DatasetReviewWasAlreadyStarted: () => HavingProblemsPage,
+    UnableToHandleCommand: () => HavingProblemsPage,
+    UnableToQuery: () => HavingProblemsPage,
     UserIsNotLoggedIn: () => Effect.succeed(Response.LogInResponse({ location: Routes.ReviewThisDatasetStartNow })),
   }),
-  Effect.orElse(() => HavingProblemsPage),
 )()
