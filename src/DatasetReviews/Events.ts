@@ -10,7 +10,7 @@ export class DatasetReviewWasStarted extends Schema.TaggedClass<DatasetReviewWas
 }) {}
 
 export class PublicationWasRequested extends Schema.TaggedClass<PublicationWasRequested>()(
-  'DatasetReviewWasRequested',
+  'PublicationWasRequested',
   {},
 ) {}
 
