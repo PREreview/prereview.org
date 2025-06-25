@@ -1,7 +1,7 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
-import { Config, Effect, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
+import { Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import { CloudinaryApiConfig } from './cloudinary.js'
@@ -30,6 +30,7 @@ const CockroachClientLayer = Layer.mergeAll(
       Config.url('COCKROACHDB_URL'),
       Config.map(url => url.searchParams.has('sslmode', 'verify-full')),
     ),
+    onnotice: Config.succeed(Function.constVoid),
   }),
   Layer.effectDiscard(Effect.logDebug('Cockroach Database connected')),
   Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Cockroach Database disconnected'))),
