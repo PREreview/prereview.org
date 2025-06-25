@@ -33,10 +33,14 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Review a dataset')
 
-    testInfo.fail()
-
     await expect(page.getByRole('main')).toContainText('carry on')
 
     await page.getByRole('button', { name: 'Continue' }).click()
+
+    testInfo.fail()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Does this dataset follow FAIR and CARE principles?',
+    )
   },
 )
