@@ -341,7 +341,7 @@ export const Program = pipe(
       Layer.effect(
         DatasetReviews.DatasetReviewsEventStore,
         SqlEventStore.make('DatasetReview', DatasetReviews.DatasetReviewEvent),
-      ).pipe(Layer.provide(LibsqlClient.layer({ url: ':memory:' }))),
+      ).pipe(Layer.provide(LibsqlClient.layer({ url: 'file::memory:?cache=shared' }))),
       LoggingHttpClient.layer,
     ),
   ),
