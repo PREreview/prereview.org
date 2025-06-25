@@ -69,10 +69,10 @@ describe('FindInProgressReviewForADataset', () => {
 
   describe.each([
     ['completed', [datasetReviewWasStarted, publicationWasRequested, datasetReviewWasPublished]],
-    // ['has publicationWasRequested', [publicationWasRequested]],
-    // ['has datasetReviewWasPublished', [datasetReviewWasPublished]],
+    ['has publicationWasRequested', [publicationWasRequested]],
+    ['has datasetReviewWasPublished', [datasetReviewWasPublished]],
   ])('when no user input is needed for a comment (%s)', (_name, events) => {
-    test.failing('returns nothing', () => {
+    test('returns nothing', () => {
       const actual = _.FindInProgressReviewForADataset(Array.map(events, event => ({ event, resourceId })))(
         authorId,
         datasetId,
