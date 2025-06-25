@@ -69,7 +69,6 @@ describe('FindInProgressReviewForADataset', () => {
 
   describe.each([
     ['completed', [datasetReviewWasStarted, publicationWasRequested, datasetReviewWasPublished]],
-    // ['has datasetReviewWasStarted', [datasetReviewWasStarted]],
     // ['has publicationWasRequested', [publicationWasRequested]],
     // ['has datasetReviewWasPublished', [datasetReviewWasPublished]],
   ])('when no user input is needed for a comment (%s)', (_name, events) => {
