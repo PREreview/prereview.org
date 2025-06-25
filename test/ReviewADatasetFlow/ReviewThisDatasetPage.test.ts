@@ -34,12 +34,9 @@ describe('ReviewThisDatasetPage', () => {
         const actual = yield* _.ReviewThisDatasetPage
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SEE_OTHER,
+          location: Routes.ReviewThisDatasetStartNow,
         })
       }).pipe(
         Effect.provide(queriesLayer({ findInProgressReviewForADataset: () => Effect.succeedSome(reviewId) })),

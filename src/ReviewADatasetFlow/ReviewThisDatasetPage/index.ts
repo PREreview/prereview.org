@@ -3,7 +3,8 @@ import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import * as Datasets from '../../Datasets/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
-import type * as Response from '../../response.js'
+import * as Response from '../../response.js'
+import * as Routes from '../../routes.js'
 import { Doi } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
 import { ReviewThisDatasetPage as MakeResponse } from './ReviewThisDatasetPage.js'
@@ -22,9 +23,9 @@ export const ReviewThisDatasetPage: Effect.Effect<
       onSome: user => DatasetReviews.findInProgressReviewForADataset(user.orcid, datasetId),
     })
 
-    return yield* Option.match(reviewId, {
-      onNone: () => Effect.sync(MakeResponse),
-      onSome: () => HavingProblemsPage,
+    return Option.match(reviewId, {
+      onNone: () => MakeResponse(),
+      onSome: () => Response.RedirectResponse({ location: Routes.ReviewThisDatasetStartNow }),
     })
   },
   Effect.catchTags({
