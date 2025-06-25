@@ -164,11 +164,10 @@ export const EnterEmailAddressSubmission = ({
             return MakeResponse({ commentId, form, locale })
           }
 
-          const generateUuid = yield* Uuid.GenerateUuid
           const saveContactEmailAddress = yield* ContactEmailAddress.SaveContactEmailAddress
           const verifyContactEmailAddressForComment = yield* ContactEmailAddress.VerifyContactEmailAddressForComment
 
-          const verificationToken = yield* generateUuid
+          const verificationToken = yield* Uuid.generateUuid
           const contactEmailAddress = new ContactEmailAddress.UnverifiedContactEmailAddress({
             value: form.emailAddress,
             verificationToken,

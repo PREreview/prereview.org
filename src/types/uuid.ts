@@ -23,7 +23,9 @@ export interface GenerateUuidEnv {
   generateUuid: IO<Uuid>
 }
 
-export const generateUuid = pipe(
+export const generateUuid = Effect.flatten(GenerateUuid)
+
+export const generateUuidIO = pipe(
   RIO.ask<GenerateUuidEnv>(),
   RIO.chainIOK(({ generateUuid }) => generateUuid),
 )

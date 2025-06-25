@@ -14,8 +14,8 @@ import type { ReviewRequestPreprintId } from '../review-request.js'
 import type { ReviewRequests } from '../review-requests-page/index.js'
 import { reviewMatch } from '../routes.js'
 import type { FieldId } from '../types/field.js'
+import { Uuid } from '../types/index.js'
 import { type PreprintId, PreprintIdEquivalence } from '../types/preprint-id.js'
-import { GenerateUuid } from '../types/uuid.js'
 import type { User } from '../user.js'
 import type { NewPrereview } from '../write-review/index.js'
 import { constructCoarReviewActionOfferPayload } from './ConstructCoarReviewActionOfferPayload.js'
@@ -41,8 +41,7 @@ export const publishReviewRequest = Effect.fn(function* (
   user: User,
   persona: 'public' | 'pseudonym',
 ) {
-  const generateUuid = yield* GenerateUuid
-  const uuid = yield* generateUuid
+  const uuid = yield* Uuid.generateUuid
   const coarNotifyConfig = yield* PrereviewCoarNotifyConfig
 
   return yield* pipe(

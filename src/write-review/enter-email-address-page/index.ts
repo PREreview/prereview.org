@@ -22,7 +22,7 @@ import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from
 import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../routes.js'
 import { EmailAddressC } from '../../types/email-address.js'
 import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
-import { type GenerateUuidEnv, generateUuid } from '../../types/uuid.js'
+import { type GenerateUuidEnv, generateUuidIO } from '../../types/uuid.js'
 import type { User } from '../../user.js'
 import { type FormStoreEnv, getForm, nextFormMatch } from '../form.js'
 import { enterEmailAddressPage } from './enter-email-address-page.js'
@@ -129,7 +129,7 @@ const handleEnterEmailAddressForm = ({
         .exhaustive(),
     })),
     RTE.bindTo('value'),
-    RTE.apS('verificationToken', RTE.rightReaderIO(generateUuid)),
+    RTE.apS('verificationToken', RTE.rightReaderIO(generateUuidIO)),
     RTE.map(({ value, verificationToken }) => new UnverifiedContactEmailAddress({ value, verificationToken })),
     RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
     RTE.chainFirstW(contactEmailAddress => verifyContactEmailAddressForReview(user, contactEmailAddress, preprint.id)),

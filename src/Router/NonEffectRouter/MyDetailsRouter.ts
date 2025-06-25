@@ -1,4 +1,4 @@
-import { Effect, flow, pipe, Redacted } from 'effect'
+import { flow, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -41,7 +41,7 @@ import { sendEmailWithNodemailer } from '../../nodemailer.js'
 import * as Routes from '../../routes.js'
 import type { SlackUserId } from '../../slack-user-id.js'
 import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from '../../slack.js'
-import { GenerateUuid } from '../../types/uuid.js'
+import { Uuid } from '../../types/index.js'
 import type * as Response from '../Response.js'
 import type { Env } from './index.js'
 
@@ -308,7 +308,7 @@ export const MyDetailsRouter = pipe(
           },
         ),
         fetch: env.fetch,
-        generateUuid: EffectToFpts.toIO(Effect.flatten(GenerateUuid), env.runtime),
+        generateUuid: EffectToFpts.toIO(Uuid.generateUuid, env.runtime),
         getUserOnboarding: withEnv(Keyv.getUserOnboarding, {
           userOnboardingStore: env.users.userOnboardingStore,
           ...env.logger,

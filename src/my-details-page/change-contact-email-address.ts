@@ -20,7 +20,7 @@ import type { SupportedLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
 import { EmailAddressC } from '../types/email-address.js'
-import { type GenerateUuidEnv, generateUuid } from '../types/uuid.js'
+import { type GenerateUuidEnv, generateUuidIO } from '../types/uuid.js'
 import type { User } from '../user.js'
 import { createFormPage } from './change-contact-email-address-form-page.js'
 
@@ -101,7 +101,7 @@ const handleChangeContactEmailAddressForm = ({
           .with(originalEmailAddress, () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
           .with(P.select(P.string), emailAddress =>
             pipe(
-              RTE.rightReaderIO(generateUuid),
+              RTE.rightReaderIO(generateUuidIO),
               RTE.map(
                 verificationToken =>
                   new UnverifiedContactEmailAddress({

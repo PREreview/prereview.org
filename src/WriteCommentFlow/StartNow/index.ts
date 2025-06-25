@@ -41,8 +41,7 @@ export const StartNow = ({
       Match.value(nextCommand),
       Match.tag('ExpectedToStartAComment', () =>
         Effect.gen(function* () {
-          const generateUuid = yield* Uuid.GenerateUuid
-          const commentId = yield* generateUuid
+          const commentId = yield* Uuid.generateUuid
 
           const handleCommand = yield* Comments.HandleCommentCommand
           const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment

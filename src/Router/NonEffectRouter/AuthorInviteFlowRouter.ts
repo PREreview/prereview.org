@@ -21,7 +21,7 @@ import * as Keyv from '../../keyv.js'
 import { sendEmailWithNodemailer } from '../../nodemailer.js'
 import * as Prereviews from '../../Prereviews/index.js'
 import * as Routes from '../../routes.js'
-import { GenerateUuid } from '../../types/uuid.js'
+import { Uuid } from '../../types/index.js'
 import { addAuthorToRecordOnZenodo } from '../../zenodo.js'
 import * as Zenodo from '../../Zenodo/index.js'
 import type * as Response from '../Response.js'
@@ -132,7 +132,7 @@ export const AuthorInviteFlowRouter = pipe(
             zenodoUrl: env.zenodoApiConfig.origin,
           },
         ),
-        generateUuid: EffectToFpts.toIO(Effect.flatten(GenerateUuid), env.runtime),
+        generateUuid: EffectToFpts.toIO(Uuid.generateUuid, env.runtime),
         getPrereview: EffectToFpts.toTaskEitherK(
           flow(
             Prereviews.getPrereview,

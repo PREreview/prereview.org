@@ -20,7 +20,7 @@ import { type AddToSessionEnv, type PopFromSessionEnv, addToSession, popFromSess
 import { type EditSlackUserIdEnv, saveSlackUserId } from '../slack-user-id.js'
 import { type IsSlackUserEnv, isSlackUser } from '../slack-user.js'
 import { NonEmptyStringC } from '../types/string.js'
-import { type GenerateUuidEnv, generateUuid } from '../types/uuid.js'
+import { type GenerateUuidEnv, generateUuidIO } from '../types/uuid.js'
 import type { User } from '../user.js'
 import { accessDeniedMessage } from './access-denied-message.js'
 import { connectSlackPage } from './connect-slack-page.js'
@@ -116,7 +116,7 @@ export const connectSlackStart = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-    RTE.bind('state', () => RTE.rightReaderIO(generateUuid)),
+    RTE.bind('state', () => RTE.rightReaderIO(generateUuidIO)),
     RTE.bindW(
       'authorizationRequestUrl',
       RTE.fromReaderK(({ state }) => authorizationRequestUrl(state)),

@@ -17,8 +17,9 @@ import * as OpenAlex from '../../OpenAlex/index.js'
 import * as Preprints from '../../Preprints/index.js'
 import { isReviewRequested, sendPrereviewToPrereviewCoarNotifyInbox } from '../../prereview-coar-notify/index.js'
 import * as Routes from '../../routes.js'
+import { Uuid } from '../../types/index.js'
 import type { PreprintId } from '../../types/preprint-id.js'
-import { generateUuid, GenerateUuid } from '../../types/uuid.js'
+import { generateUuidIO } from '../../types/uuid.js'
 import {
   type NewPrereview,
   writeReview,
@@ -430,7 +431,7 @@ export const WriteReviewRouter = pipe(
           { sessionStore: env.sessionStore, ...env.logger },
         ),
         formStore: env.formStore,
-        generateUuid: EffectToFpts.toIO(Effect.flatten(GenerateUuid), env.runtime),
+        generateUuid: EffectToFpts.toIO(Uuid.generateUuid, env.runtime),
         getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, {
           contactEmailAddressStore: env.users.contactEmailAddressStore,
           ...env.logger,
@@ -451,12 +452,12 @@ export const WriteReviewRouter = pipe(
           createAuthorInvite: withEnv(
             (authorInvite: OpenAuthorInvite) =>
               pipe(
-                RTE.rightReaderIO(generateUuid),
+                RTE.rightReaderIO(generateUuidIO),
                 RTE.chainFirstW(uuid => Keyv.saveAuthorInvite(uuid, authorInvite)),
               ),
             {
               authorInviteStore: env.authorInviteStore,
-              generateUuid: EffectToFpts.toIO(Effect.flatten(GenerateUuid), env.runtime),
+              generateUuid: EffectToFpts.toIO(Uuid.generateUuid, env.runtime),
               ...env.logger,
             },
           ),
