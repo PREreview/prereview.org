@@ -1,6 +1,6 @@
 import { Array, Context, Data, Effect, Layer, pipe } from 'effect'
 import type { Uuid } from '../../types/index.js'
-import { DatasetReviewsEventStore } from '../Context.js'
+import { DatasetReviewsEventStore } from '../Events.js'
 import type * as Errors from './Errors.js'
 import * as StartDatasetReview from './StartDatasetReview.js'
 

@@ -1,5 +1,5 @@
 import { Context, Data, Effect, Layer } from 'effect'
-import { DatasetReviewsEventStore } from '../Context.js'
+import { DatasetReviewsEventStore } from '../Events.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<

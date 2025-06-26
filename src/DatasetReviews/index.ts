@@ -3,7 +3,6 @@ import * as Commands from './Commands/index.js'
 import * as Queries from './Queries/index.js'
 
 export { DatasetReviewCommands, UnableToHandleCommand } from './Commands/index.js'
-export * from './Context.js'
 export * from './Events.js'
 export { DatasetReviewQueries, UnableToQuery } from './Queries/index.js'
 

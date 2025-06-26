@@ -1,8 +1,14 @@
-import { Schema } from 'effect'
+import { Context, Schema } from 'effect'
 import * as Datasets from '../Datasets/index.js'
+import type { EventStore } from '../EventStore.js'
 import { Doi, Orcid } from '../types/index.js'
 
 export type DatasetReviewEvent = typeof DatasetReviewEvent.Type
+
+export class DatasetReviewsEventStore extends Context.Tag('DatasetReviewsEventStore')<
+  DatasetReviewsEventStore,
+  EventStore<DatasetReviewEvent>
+>() {}
 
 export class DatasetReviewWasStarted extends Schema.TaggedClass<DatasetReviewWasStarted>()('DatasetReviewWasStarted', {
   authorId: Orcid.OrcidSchema,
