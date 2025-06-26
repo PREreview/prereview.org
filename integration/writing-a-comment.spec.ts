@@ -4,15 +4,18 @@ import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import {
   areLoggedIn,
+  test as baseTest,
   canChooseLocale,
   canLogIn,
   expect,
   hasAnUnverifiedEmailAddress,
   hasAVerifiedEmailAddress,
-  test,
+  useCockroachDB,
   waitForNotBusy,
   willPublishAComment,
 } from './base.js'
+
+const test = baseTest.extend(useCockroachDB)
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAComment)(
   'can write a comment on a PREreview',

@@ -1,6 +1,14 @@
-import { areLoggedIn, test as baseTest, canChooseLocale, canLogIn, canReviewDatasets, expect } from './base.js'
+import {
+  areLoggedIn,
+  test as baseTest,
+  canChooseLocale,
+  canLogIn,
+  canReviewDatasets,
+  expect,
+  useCockroachDB,
+} from './base.js'
 
-const test = baseTest.extend(canReviewDatasets)
+const test = baseTest.extend(useCockroachDB).extend(canReviewDatasets)
 
 test.extend(canLogIn)('can review a dataset', async ({ page }, testInfo) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })

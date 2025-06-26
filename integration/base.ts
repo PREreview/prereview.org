@@ -2,6 +2,8 @@
 import { Reactivity } from '@effect/experimental'
 import { FetchHttpClient, HttpClient, HttpClientResponse, Url } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
+import { SqlClient } from '@effect/sql'
+import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
 import {
   test as baseTest,
@@ -90,6 +92,7 @@ import LogEntry = L.LogEntry
 export { expect } from '@playwright/test'
 
 interface AppFixtures {
+  sqlClientLayer: Layer.Layer<SqlClient.SqlClient, unknown>
   fetch: fetchMock.FetchMockSandbox
   logger: Logger
   oauthServer: OAuth2Server
@@ -1250,6 +1253,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canAddMultipleAuthors,
         canChooseLocale,
         canReviewDatasets,
+        sqlClientLayer,
       },
       use,
     ) => {
@@ -1344,26 +1348,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
           ),
         ),
-        Effect.provide(
-          pipe(
-            Config.url('COCKROACHDB_URL'),
-            Effect.andThen(url =>
-              Effect.gen(function* () {
-                const pgClient = yield* PgClient.make({ url: Redacted.make(url.href) })
-
-                const databaseName = `test${v4()().slice(0, 8)}`
-
-                yield* pgClient.unsafe(`CREATE DATABASE ${databaseName}`)
-
-                return Url.setPathname(url, databaseName)
-              }),
-            ),
-            Effect.scoped,
-            Effect.provide(Reactivity.layer),
-            Effect.andThen(url => PgClient.layer({ url: Redacted.make(url.href) })),
-            Layer.unwrapEffect,
-          ),
-        ),
+        Effect.provide(sqlClientLayer),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
         EffectLogger.withMinimumLogLevel(LogLevel.Debug),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
@@ -1390,6 +1375,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   slackUserIdStore: async ({}, use) => {
     await use(new Keyv())
   },
+  sqlClientLayer: async ({}, use, testInfo) => {
+    await use(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` }))
+  },
   userOnboardingStore: async ({}, use) => {
     await use(new Keyv())
   },
@@ -1398,6 +1386,35 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   wasPrereviewRemoved: async ({}, use) => {
     await use(() => false)
+  },
+}
+
+export const useCockroachDB: Fixtures<
+  Pick<AppFixtures, 'sqlClientLayer'>,
+  Record<never, never>,
+  Pick<AppFixtures, 'sqlClientLayer'>
+> = {
+  sqlClientLayer: async ({}, use) => {
+    await use(
+      pipe(
+        Config.url('COCKROACHDB_URL'),
+        Effect.andThen(url =>
+          Effect.gen(function* () {
+            const pgClient = yield* PgClient.make({ url: Redacted.make(url.href) })
+
+            const databaseName = `test${v4()().slice(0, 8)}`
+
+            yield* pgClient.unsafe(`CREATE DATABASE ${databaseName}`)
+
+            return Url.setPathname(url, databaseName)
+          }),
+        ),
+        Effect.scoped,
+        Effect.provide(Reactivity.layer),
+        Effect.andThen(url => PgClient.layer({ url: Redacted.make(url.href) })),
+        Layer.unwrapEffect,
+      ),
+    )
   },
 }
 
