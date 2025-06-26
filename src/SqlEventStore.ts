@@ -69,8 +69,48 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
       Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     )
 
-    const getAllEventsOfType: EventStore.EventStore<A>['getAllEventsOfType'] = () =>
-      Effect.fail(new EventStore.FailedToGetEvents({ cause: new Error('not implemented') }))
+    const getAllEventsOfType: EventStore.EventStore<A>['getAllEventsOfType'] = Effect.fn(
+      function* <T extends A['_tag']>(...types: ReadonlyArray<T>) {
+        const encodedResourceType = yield* Schema.encode(resourcesTable.fields.type)(resourceType)
+
+        const rows = yield* pipe(
+          sql`
+            SELECT
+              event_id,
+              resource_id,
+              resource_version,
+              event_type,
+              event_timestamp,
+              payload
+            FROM
+              events
+              INNER JOIN resources ON resources.id = events.resource_id
+            WHERE
+              resources.type = ${encodedResourceType}
+              AND ${sql.in('event_type', types)}
+            ORDER BY
+              resource_version ASC,
+              event_timestamp ASC
+          `,
+          Effect.andThen(
+            Schema.decodeUnknown(Schema.Array(EventsTable(eventSchema.pipe(Schema.filter(hasTag(...types)))))),
+          ),
+        )
+
+        return Array.map(rows, row => ({
+          resourceId: row.resourceId,
+          event: row.event,
+          version: row.resourceVersion,
+        }))
+      },
+      Effect.tapError(error =>
+        Effect.annotateLogs(Effect.logError('Unable to get all events'), {
+          error,
+          resourceType,
+        }),
+      ),
+      Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+    )
 
     const getEvents: EventStore.EventStore<A>['getEvents'] = resourceId =>
       Effect.gen(function* () {
@@ -262,6 +302,11 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
 
     return { getAllEvents, getAllEventsOfType, getEvents, commitEvents }
   })
+
+const hasTag =
+  <Tag extends string>(...tags: ReadonlyArray<Tag>) =>
+  <T extends { _tag: string }>(tagged: T): tagged is Extract<T, { _tag: Tag }> =>
+    Array.contains(tags, tagged._tag)
 
 const ResourcesTable = (resourceType: string) =>
   Schema.Struct({

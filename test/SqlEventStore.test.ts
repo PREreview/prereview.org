@@ -246,7 +246,7 @@ it.prop([
   }).pipe(Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make), Effect.provide(TestLibsqlClient), EffectTest.run),
 )
 
-test.failing.each([
+test.each([
   [
     'one type',
     ['CodeOfConductWasAgreed'],
