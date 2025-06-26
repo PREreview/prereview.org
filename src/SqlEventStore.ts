@@ -3,7 +3,7 @@ import { Array, DateTime, Effect, flow, ParseResult, pipe, Schema } from 'effect
 import * as EventStore from './EventStore.js'
 import { Uuid } from './types/index.js'
 
-export const make = <A, I extends { _tag: string }>(
+export const make = <A extends { _tag: string }, I extends { _tag: string }>(
   resourceType: string,
   eventSchema: Schema.Schema<A, I>,
 ): Effect.Effect<EventStore.EventStore<A>, SqlError.SqlError, SqlClient.SqlClient | Uuid.GenerateUuid> =>
@@ -68,6 +68,9 @@ export const make = <A, I extends { _tag: string }>(
       ),
       Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     )
+
+    const getAllEventsOfType: EventStore.EventStore<A>['getAllEventsOfType'] = () =>
+      Effect.fail(new EventStore.FailedToGetEvents({ cause: new Error('not implemented') }))
 
     const getEvents: EventStore.EventStore<A>['getEvents'] = resourceId =>
       Effect.gen(function* () {
@@ -257,7 +260,7 @@ export const make = <A, I extends { _tag: string }>(
             Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
           )
 
-    return { getAllEvents, getEvents, commitEvents }
+    return { getAllEvents, getAllEventsOfType, getEvents, commitEvents }
   })
 
 const ResourcesTable = (resourceType: string) =>
