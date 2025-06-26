@@ -123,37 +123,29 @@ export const GetNextExpectedCommandForUserOnAComment =
     return Either.right(new ExpectedCommand.ExpectedToPublishComment({ commentId }))
   }
 
-const buildInputForCommentZenodoRecord = (
-  events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
-  commentId: Uuid.Uuid,
-) => {
-  const pertinentEvents = pipe(
-    events,
-    Array.filter(({ resourceId }) => resourceId === commentId),
-    Array.map(({ event }) => event),
-  )
+export const buildInputForCommentZenodoRecord = (events: ReadonlyArray<CommentEvent>) => {
   const authorId = pipe(
-    pertinentEvents,
+    events,
     Array.findLast(event => event._tag === 'CommentWasStarted'),
     Option.map(event => event.authorId),
   )
   const prereviewId = pipe(
-    pertinentEvents,
+    events,
     Array.findLast(event => event._tag === 'CommentWasStarted'),
     Option.map(event => event.prereviewId),
   )
   const persona = pipe(
-    pertinentEvents,
+    events,
     Array.findLast(event => event._tag === 'PersonaWasChosen'),
     Option.map(event => event.persona),
   )
   const comment = pipe(
-    pertinentEvents,
+    events,
     Array.findLast(event => event._tag === 'CommentWasEntered'),
     Option.map(event => event.comment),
   )
   const competingInterests = pipe(
-    pertinentEvents,
+    events,
     Array.findLast(event => event._tag === 'CompetingInterestsWereDeclared'),
     Option.map(event => event.competingInterests),
   )
@@ -182,7 +174,13 @@ export const GetACommentInNeedOfADoi = (
 
     if (event._tag === 'CommentPublicationWasRequested' && !hasADoi.has(resourceId)) {
       return pipe(
-        buildInputForCommentZenodoRecord(events, resourceId),
+        buildInputForCommentZenodoRecord(
+          pipe(
+            events,
+            Array.filter(({ resourceId: eventResourceId }) => eventResourceId === resourceId),
+            Array.map(({ event }) => event),
+          ),
+        ),
         Either.fromOption(() => new UnexpectedSequenceOfEvents()),
         Either.map(inputForCommentZenodoRecord => ({
           commentId: resourceId,
