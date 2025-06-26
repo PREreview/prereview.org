@@ -1,10 +1,15 @@
 import { Array, Boolean, Equal, Match, Option, pipe, Record, Tuple } from 'effect'
 import type * as Datasets from '../../Datasets/index.js'
 import type { Orcid, Uuid } from '../../types/index.js'
-import type { DatasetReviewEvent } from '../Events.js'
+import type * as Events from '../Events.js'
 
 export const FindInProgressReviewForADataset =
-  (events: ReadonlyArray<{ readonly event: DatasetReviewEvent; readonly resourceId: Uuid.Uuid }>) =>
+  (
+    events: ReadonlyArray<{
+      readonly event: Events.DatasetReviewWasStarted | Events.PublicationWasRequested | Events.DatasetReviewWasPublished
+      readonly resourceId: Uuid.Uuid
+    }>,
+  ) =>
   (authorId: Orcid.Orcid, datasetId: Datasets.DatasetId): Option.Option<Uuid.Uuid> =>
     pipe(
       Array.reduce(events, Record.empty<Uuid.Uuid, boolean>(), (candidates, { event, resourceId }) =>
@@ -21,7 +26,6 @@ export const FindInProgressReviewForADataset =
             return candidates
           },
           PublicationWasRequested: () => Record.replace(candidates, resourceId, true),
-          DoiWasAssigned: () => candidates,
           DatasetReviewWasPublished: () => Record.replace(candidates, resourceId, true),
         }),
       ),

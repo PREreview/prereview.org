@@ -22,7 +22,11 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
     return {
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
-          const events = yield* eventStore.getAllEvents
+          const events = yield* eventStore.getAllEventsOfType(
+            'DatasetReviewWasStarted',
+            'PublicationWasRequested',
+            'DatasetReviewWasPublished',
+          )
 
           return FindInProgressReviewForADataset(events)(...args)
         },
