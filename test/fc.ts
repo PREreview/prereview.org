@@ -1586,8 +1586,27 @@ export const datasetReviewWasStarted = (): fc.Arbitrary<DatasetReviews.DatasetRe
     })
     .map(data => new DatasetReviews.DatasetReviewWasStarted(data))
 
+export const datesetReviewPublicationWasRequested = (): fc.Arbitrary<DatasetReviews.PublicationWasRequested> =>
+  fc.constant(new DatasetReviews.PublicationWasRequested())
+
+export const datasetReviewDoiWasAssigned = (): fc.Arbitrary<DatasetReviews.DoiWasAssigned> =>
+  fc
+    .record({
+      id: fc.integer(),
+      doi: doi(),
+    })
+    .map(data => new DatasetReviews.DoiWasAssigned(data))
+
+export const datasetReviewWasPublished = (): fc.Arbitrary<DatasetReviews.DatasetReviewWasPublished> =>
+  fc.constant(new DatasetReviews.DatasetReviewWasPublished())
+
 export const datasetReviewEvent = (): fc.Arbitrary<DatasetReviews.DatasetReviewEvent> =>
-  fc.oneof(datasetReviewWasStarted())
+  fc.oneof(
+    datasetReviewWasStarted(),
+    datesetReviewPublicationWasRequested(),
+    datasetReviewDoiWasAssigned(),
+    datasetReviewWasPublished(),
+  )
 
 export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>
   fc.constant(new Comments.CommentWasAlreadyStarted())
