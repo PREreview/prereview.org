@@ -64,7 +64,7 @@ test('can find and view a club', async ({ fetch, page }) => {
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/reviews/7820084')
+  await page.goto('/reviews/7820084', { waitUntil: 'commit' })
 
   fetch.get(
     {
@@ -297,7 +297,7 @@ test('might not load the PREreviews in time', async ({ fetch, page }) => {
     { delay: Duration.toMillis('2.5 seconds') },
   )
 
-  await page.goto('/clubs/asapbio-metabolism')
+  await page.goto('/clubs/asapbio-metabolism', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
 })
@@ -317,7 +317,7 @@ test('the list might be empty', async ({ fetch, page }) => {
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
   )
 
-  await page.goto('/clubs/asapbio-metabolism')
+  await page.goto('/clubs/asapbio-metabolism', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd')
 })

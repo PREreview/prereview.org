@@ -6,7 +6,7 @@ import { RecordsC } from 'zenodo-ts'
 import { expect, test } from './base.js'
 
 test('can find and view a preprint', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
 
   fetch
     .getOnce(
@@ -101,7 +101,7 @@ test('might not load PREreviews in time', async ({ fetch, page }) => {
     { delay: Duration.toMillis('2.5 seconds') },
   )
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
 })

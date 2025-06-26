@@ -46,7 +46,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isANewUser)(
 
     await expect(page.getByRole('main')).not.toContainText('Welcome to PREreview!')
 
-    await page.goto('/')
+    await page.goto('/', { waitUntil: 'commit' })
     await menu.click()
 
     await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
@@ -135,7 +135,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can connect my ORCID record', async (
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to grant access to your ORCID record',
   async ({ oauthServer, page }) => {
-    await page.goto('/connect-orcid')
+    await page.goto('/connect-orcid', { waitUntil: 'commit' })
     oauthServer.service.once('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
       url.searchParams.delete('code')
       url.searchParams.set('error', 'access_denied')
@@ -236,7 +236,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to grant access to your Slack Community account',
   async ({ oauthServer, page }) => {
-    await page.goto('/connect-slack')
+    await page.goto('/connect-slack', { waitUntil: 'commit' })
     oauthServer.service.once('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
       url.searchParams.delete('code')
       url.searchParams.set('error', 'access_denied')
@@ -394,7 +394,7 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
   const logIn = page.getByRole('link', { name: 'Log in' })
 
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await menu.click()
 
   await expect(logIn).toBeInViewport()
@@ -417,7 +417,7 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
 test.extend(canLogIn).extend(userIsBlocked)("can't log in when blocked", async ({ javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await menu.click()
   await page.getByRole('link', { name: 'Log in' }).click()
 
@@ -437,7 +437,7 @@ test.extend(canLogIn).extend(userIsBlocked)("can't log in when blocked", async (
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'cannot remove an email address',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/my-details/change-email-address')
+    await page.goto('/my-details/change-email-address', { waitUntil: 'commit' })
     await page.getByLabel('What is your email address?').clear()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -455,7 +455,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)('have to give a valid email address', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/my-details/change-email-address')
+  await page.goto('/my-details/change-email-address', { waitUntil: 'commit' })
   await page.getByLabel('What is your email address?').fill('not an email address')
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -473,7 +473,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to give a valid email address', 
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('have to upload an avatar', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/my-details/change-avatar')
+  await page.goto('/my-details/change-avatar', { waitUntil: 'commit' })
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -492,7 +492,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to upload an avatar', async ({ j
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to upload an avatar of a reasonable size',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/my-details/change-avatar')
+    await page.goto('/my-details/change-avatar', { waitUntil: 'commit' })
     await page
       .getByLabel('Upload an avatar')
       .setInputFiles({ name: 'some-file', mimeType: 'application/octet-stream', buffer: Buffer.alloc(5_242_880) })
@@ -515,7 +515,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to upload an image as an avatar',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/my-details/change-avatar')
+    await page.goto('/my-details/change-avatar', { waitUntil: 'commit' })
     await page.getByLabel('Upload an avatar').setInputFiles(import.meta.filename)
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -536,7 +536,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you are open for requests',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/my-details/change-open-for-requests')
+    await page.goto('/my-details/change-open-for-requests', { waitUntil: 'commit' })
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -559,7 +559,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say what your career stage is',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/my-details/change-career-stage')
+    await page.goto('/my-details/change-career-stage', { waitUntil: 'commit' })
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 

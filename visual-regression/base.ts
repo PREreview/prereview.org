@@ -39,7 +39,7 @@ export const test = baseTest.extend<ShowPage>({
         .otherwise(url => route.fulfill({ path: path.join('dist/assets', new URL(url).pathname) }))
     })
 
-    await page.goto('http://example.com')
+    await page.goto('http://example.com', { waitUntil: 'commit' })
 
     await use(page)
   },

@@ -3,7 +3,7 @@ import { canChooseLocale, expect, test } from './base.js'
 test.extend(canChooseLocale)('can choose a locale through picker and path', async ({ fetch, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
 
@@ -21,7 +21,7 @@ test.extend(canChooseLocale)('can choose a locale through picker and path', asyn
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Sobre nós')
 
-  await page.goto('/en-us')
+  await page.goto('/en-us', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
 
@@ -30,7 +30,7 @@ test.extend(canChooseLocale)('can choose a locale through picker and path', asyn
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('About')
 
-  await page.goto('/pt-br')
+  await page.goto('/pt-br', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
 
@@ -45,7 +45,7 @@ test.extend(canChooseLocale)('can choose a locale through picker and path', asyn
 })
 
 test.extend(canChooseLocale).extend({ locale: 'pt-BR' })('with a Brazilian-Portuguese browser', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
 
@@ -55,7 +55,7 @@ test.extend(canChooseLocale).extend({ locale: 'pt-BR' })('with a Brazilian-Portu
 })
 
 test.extend(canChooseLocale).extend({ locale: 'pt-PT' })('with a European-Portuguese browser', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
   await expect(page.getByRole('link', { name: 'português (Brasil)' })).toHaveAttribute('aria-current', 'true')
@@ -66,7 +66,7 @@ test.extend(canChooseLocale).extend({ locale: 'pt-PT' })('with a European-Portug
 })
 
 test.extend(canChooseLocale).extend({ locale: 'is' })('with an Icelandic browser', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
   await expect(page.getByRole('link', { name: 'English (US)' })).toHaveAttribute('aria-current', 'true')

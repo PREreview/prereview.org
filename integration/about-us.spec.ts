@@ -4,7 +4,7 @@ import { expect, test } from './base.js'
 test('can read about us', async ({ fetch, javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await menu.click()
 
   fetch.getOnce(
@@ -28,7 +28,7 @@ test('might not load the text in time', async ({ fetch, page }) => {
     { delay: Duration.toMillis('2.5 seconds') },
   )
 
-  await page.goto('/about')
+  await page.goto('/about', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
 })

@@ -22,7 +22,7 @@ import {
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/')
+    await page.goto('/', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Review a preprint' }).click()
     await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -93,7 +93,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
 )
 
 test.extend(canChooseLocale)('can choose a locale before starting', async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
 
   await page.getByRole('link', { name: 'português (Brasil)' }).click()
 
@@ -103,7 +103,7 @@ test.extend(canChooseLocale)('can choose a locale before starting', async ({ pag
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a question-based PREreview',
   async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Review a preprint' }).click()
     await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -203,7 +203,7 @@ test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ 
     },
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
   )
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
   await expect(page.getByRole('main')).toContainText('We will ask you to log in')
@@ -216,7 +216,7 @@ test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'are taken to the start of the review process after successfully completing it',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -249,7 +249,7 @@ test
   .extend(areLoggedIn)
   .extend(hasAVerifiedEmailAddress)
   .extend(willPublishAReview)('updates the legacy PREreview', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -292,7 +292,7 @@ test
   .extend(areLoggedIn)
   .extend(hasAVerifiedEmailAddress)
   .extend(willPublishAReview)('might not update the legacy PREreview in time', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -333,7 +333,7 @@ test
 test.extend(canLogIn).extend(areLoggedIn)(
   'can paste an already-written PREreview',
   async ({ context, javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -380,7 +380,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can format a PREreview',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -557,7 +557,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview with more authors',
   async ({ emails, fetch, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -703,7 +703,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
   'can enter multiple authors at the same time',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -730,7 +730,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   "can publish a PREreview with more authors who don't want to be listed as authors",
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -766,7 +766,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview with competing interests',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -799,7 +799,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview using a pseudonym',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -829,7 +829,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can change the review after previewing',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -868,7 +868,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can change the name after previewing',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -900,7 +900,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can change the use of AI after previewing',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -934,7 +934,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can change the competing interests after previewing',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -969,7 +969,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can change your answers when answering questions after previewing',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1144,7 +1144,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can go back through the form',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1207,7 +1207,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form when answering questions', async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With prompts').check()
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -1305,7 +1305,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form when ans
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'see existing values when going back a step',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1372,7 +1372,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'see existing values when adding authors and going back a step',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1427,7 +1427,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'see existing values when answering questions and going back a step',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1525,7 +1525,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already logged in", async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
 
   await expect(page.getByRole('main')).not.toContainText('ORCID')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
@@ -1538,12 +1538,12 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step if you have already started a PREreview',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
-    await page.goto('/')
+    await page.goto('/', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Review a preprint' }).click()
     await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1560,11 +1560,11 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step after logging in if you have already started a PREreview',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.goto('/log-out')
+    await page.goto('/log-out', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Review a preprint' }).click()
     await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1580,7 +1580,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test('when the preprint is not found', async ({ fetch, page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/this-should-not-find-anything')
 
@@ -1592,7 +1592,7 @@ test('when the preprint is not found', async ({ fetch, page }) => {
 })
 
 test('when it is not a preprint', async ({ fetch, page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/not-a-preprint')
 
@@ -1660,7 +1660,7 @@ test('when it is not a preprint', async ({ fetch, page }) => {
 })
 
 test('might not load the preprint in time', async ({ fetch, page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/this-should-take-too-long')
 
@@ -1676,7 +1676,7 @@ test('might not load the preprint in time', async ({ fetch, page }) => {
 })
 
 test('when is DOI is not supported', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page.getByLabel('Which preprint are you reviewing?').fill('10.5555/12345678')
 
@@ -1686,7 +1686,7 @@ test('when is DOI is not supported', async ({ page }) => {
 })
 
 test('when is URL is not supported', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page
     .getByLabel('Which preprint are you reviewing?')
@@ -1698,7 +1698,7 @@ test('when is URL is not supported', async ({ page }) => {
 })
 
 test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ oauthServer, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   oauthServer.service.once('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
     url.searchParams.delete('code')
     url.searchParams.set('error', 'access_denied')
@@ -1711,7 +1711,7 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ oauthSer
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to give your email address',
   async ({ emails, javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1758,7 +1758,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
   'have to verify your email address',
   async ({ emails, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1795,7 +1795,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'can resend the verification email',
   async ({ emails, javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1841,7 +1841,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test('are told if ORCID is unavailable', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   fetch.postOnce('http://orcid.test/token', { status: Status.ServiceUnavailable })
   await page.getByRole('button', { name: 'Start now' }).click()
 
@@ -1849,7 +1849,7 @@ test('are told if ORCID is unavailable', async ({ fetch, page }) => {
 })
 
 test('might not authenticate with ORCID in time', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   fetch.postOnce(
     'http://orcid.test/token',
     {
@@ -1871,7 +1871,7 @@ test('might not authenticate with ORCID in time', async ({ fetch, page }) => {
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'are told if Zenodo is unavailable',
   async ({ fetch, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1898,7 +1898,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 )
 
 test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   fetch.get(
     {
       url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
@@ -1915,7 +1915,7 @@ test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, pag
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say what type of review you want to do',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1937,7 +1937,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)('have to enter a review', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -1960,7 +1960,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a review', async ({ jav
 test.extend(canLogIn).extend(areLoggedIn)(
   "can't use the template as the review",
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1981,7 +1981,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)('have to paste a review', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('I’ve already written the review').check()
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -2003,7 +2003,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to paste a review', async ({ jav
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if the introduction explains the objective',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2034,7 +2034,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if the methods are appropriate',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2067,7 +2067,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if the results presented are supported by the data',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2101,7 +2101,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if the data presentations are appropriate and clear',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2138,7 +2138,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say how well the authors discuss their findings and next steps',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2177,7 +2177,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if the findings are novel',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2218,7 +2218,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if would benefit from language editing',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2256,7 +2256,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if others should read this preprint',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2296,7 +2296,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if it is ready for a full and detailed review',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2339,7 +2339,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -2367,7 +2367,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if there are more authors',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2400,7 +2400,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say that the other authors have read and approved the PREreview',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2433,7 +2433,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   "have to give the other author's details",
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2532,7 +2532,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
   "have to give the other author's details when entering multiple",
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2586,7 +2586,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canAddMultipleAuthors)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you want to remove an author',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2624,7 +2624,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)('have to declare the use of AI', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -2656,7 +2656,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to declare the use of AI', async
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare the use of AI by any author',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2699,7 +2699,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare any competing interests',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2749,7 +2749,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare any competing interests by any author',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2805,7 +2805,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to agree to the Code of Conduct',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2837,7 +2837,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)('have to enter an email address', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -2872,7 +2872,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter an email address', asyn
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to enter a valid email address',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -2909,7 +2909,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn)("can't review my own preprint", async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-12345678')
+  await page.goto('/preprints/doi-10.1101-12345678', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Write a PREreview' }).click()
   await page.getByRole('button', { name: 'Start now' }).click()
 
@@ -2919,12 +2919,12 @@ test.extend(canLogIn)("can't review my own preprint", async ({ page }) => {
 test.extend(canLogIn).extend(areLoggedIn)(
   "can't review my own preprint when I'm already logged in",
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-12345678')
+    await page.goto('/preprints/doi-10.1101-12345678', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
 
-    await page.goto('/preprints/doi-10.1101-12345678/write-a-prereview/review-type')
+    await page.goto('/preprints/doi-10.1101-12345678/write-a-prereview/review-type', { waitUntil: 'commit' })
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
   },

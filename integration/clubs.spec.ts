@@ -4,7 +4,7 @@ import { expect, test } from './base.js'
 test('can read about clubs', async ({ fetch, javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
 
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/64637b4c07fb34a92c7f84ec', query: { key: 'key' } },
@@ -30,7 +30,7 @@ test('might not load the text in time', async ({ fetch, page }) => {
     { delay: Duration.toMillis('2.5 seconds') },
   )
 
-  await page.goto('/clubs')
+  await page.goto('/clubs', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
 })

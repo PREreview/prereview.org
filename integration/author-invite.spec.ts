@@ -84,7 +84,7 @@ test.extend(canChooseLocale).extend(invitedToBeAnAuthor)(
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor)(
   'can change the name after previewing',
   async ({ page }) => {
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -100,7 +100,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
 )
 
 test.extend(canLogIn).extend(invitedToBeAnAuthor)('have to choose a name', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
+  await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -121,11 +121,11 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)('have to choose a name', async
 })
 
 test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use the invite email address', async ({ page }) => {
-  await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
+  await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address')
+  await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
@@ -138,11 +138,11 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use the invite email addr
 test.extend(canLogIn).extend(invitedToBeAnAuthor)(
   'can use a different email address',
   async ({ emails, javaScriptEnabled, page }) => {
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address')
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address', { waitUntil: 'commit' })
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
@@ -175,11 +175,11 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
 test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAuthor)(
   'have to verify your email address',
   async ({ emails, javaScriptEnabled, page }) => {
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address')
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address', { waitUntil: 'commit' })
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
@@ -212,11 +212,11 @@ test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAu
 test.extend(canLogIn).extend(invitedToBeAnAuthor)(
   'have to enter an email address',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address')
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address', { waitUntil: 'commit' })
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -253,11 +253,11 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
 test.extend(canLogIn).extend(invitedToBeAnAuthor)(
   'have to enter a valid email address',
   async ({ javaScriptEnabled, page }) => {
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address')
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address', { waitUntil: 'commit' })
     await page.getByLabel('A different one').check()
     await page.getByLabel('What is your email address?').fill('not an email address')
     await page.getByRole('button', { name: 'Save and continue' }).click()

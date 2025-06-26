@@ -2,7 +2,7 @@ import { Status } from 'hyper-ts'
 import { areLoggedIn, canChooseLocale, canLogIn, expect, test } from './base.js'
 
 test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Request a review' }).click()
   await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -25,7 +25,7 @@ test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
 })
 
 test.extend(canChooseLocale)('can choose a locale before starting', async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
 
   await page.getByRole('link', { name: 'português (Brasil)' }).click()
 
@@ -33,7 +33,7 @@ test.extend(canChooseLocale)('can choose a locale before starting', async ({ pag
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can request a PREreview using a pseudonym', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Orange Panda').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -51,11 +51,11 @@ test.extend(canLogIn).extend(areLoggedIn)('can request a PREreview using a pseud
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step if you have already started requesting a PREreview',
   async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/')
+    await page.goto('/', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Request a review' }).click()
     await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -70,7 +70,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already logged in", async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
 
   await expect(page.getByRole('main')).not.toContainText('ORCID')
 
@@ -80,7 +80,7 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can change the name after previewing', async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -96,7 +96,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change the name after previewing'
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -113,7 +113,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a step', async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -126,7 +126,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('requires a valid preprint', async ({ page }) => {
-  await page.goto('/request-a-prereview')
+  await page.goto('/request-a-prereview', { waitUntil: 'commit' })
   await page.getByLabel('Which preprint would you like reviewed?').fill('not-a-preprint')
   await page.getByRole('button', { name: 'Continue' }).click()
 
@@ -138,7 +138,7 @@ test.extend(canLogIn).extend(areLoggedIn)('requires a valid preprint', async ({ 
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('when the DOI is not supported', async ({ page }) => {
-  await page.goto('/request-a-prereview')
+  await page.goto('/request-a-prereview', { waitUntil: 'commit' })
   await page.getByLabel('Which preprint would you like reviewed?').fill('10.5555/12345678')
   await page.getByRole('button', { name: 'Continue' }).click()
 
@@ -146,7 +146,7 @@ test.extend(canLogIn).extend(areLoggedIn)('when the DOI is not supported', async
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('when the URL is not supported', async ({ page }) => {
-  await page.goto('/request-a-prereview')
+  await page.goto('/request-a-prereview', { waitUntil: 'commit' })
   await page
     .getByLabel('Which preprint would you like reviewed?')
     .fill('https://chemrxiv.org/engage/chemrxiv/article-details/6424647b91074bccd07d1aa5')
@@ -156,7 +156,7 @@ test.extend(canLogIn).extend(areLoggedIn)('when the URL is not supported', async
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('when it is not a preprint', async ({ fetch, page }) => {
-  await page.goto('/request-a-prereview')
+  await page.goto('/request-a-prereview', { waitUntil: 'commit' })
   await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/not-a-preprint')
 
   fetch.get('https://api.crossref.org/works/10.1101%2Fnot-a-preprint', {
@@ -223,7 +223,7 @@ test.extend(canLogIn).extend(areLoggedIn)('when it is not a preprint', async ({ 
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('when the preprint is not found', async ({ fetch, page }) => {
-  await page.goto('/request-a-prereview')
+  await page.goto('/request-a-prereview', { waitUntil: 'commit' })
   await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/this-should-not-find-anything')
 
   fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
@@ -234,7 +234,7 @@ test.extend(canLogIn).extend(areLoggedIn)('when the preprint is not found', asyn
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('when the preprint is not supported', async ({ fetch, page }) => {
-  await page.goto('/request-a-prereview')
+  await page.goto('/request-a-prereview', { waitUntil: 'commit' })
   await page.getByLabel('Which preprint would you like reviewed?').fill('https://philsci-archive.pitt.edu/23254/')
 
   fetch.get('https://philsci-archive.pitt.edu/cgi/export/eprint/23254/JSON/pittphilsci-eprint-23254.json', {
@@ -316,7 +316,7 @@ test.extend(canLogIn).extend(areLoggedIn)('when the preprint is not supported', 
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -333,7 +333,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ page
 })
 
 test('can view a recent request', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page
     .getByRole('region', { name: 'Recent review requests' })
     .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })
@@ -343,7 +343,7 @@ test('can view a recent request', async ({ page }) => {
 })
 
 test('can view an older request', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all requests' }).click()
 
   await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
@@ -363,7 +363,7 @@ test('can view an older request', async ({ javaScriptEnabled, page }) => {
 })
 
 test('can view an older request in a specific language', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all requests' }).click()
 
   const filters = page.getByRole('search', { name: 'Filter' })
@@ -388,7 +388,7 @@ test('can view an older request in a specific language', async ({ page }) => {
 })
 
 test('can view an older request in a specific field', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all requests' }).click()
 
   const filters = page.getByRole('search', { name: 'Filter' })

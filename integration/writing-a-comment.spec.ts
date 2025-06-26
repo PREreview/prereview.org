@@ -84,7 +84,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishACommen
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864')
+    await page.goto('/reviews/1061864', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Write a comment' }).click()
 
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
@@ -187,7 +187,7 @@ test.extend(canChooseLocale)('can choose a locale before starting', async ({ fet
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
-  await page.goto('/reviews/1061864/write-a-comment')
+  await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'português (Brasil)' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Escrever um comentário')
@@ -263,7 +263,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -363,7 +363,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -456,7 +456,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -552,12 +552,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/reviews/1061864')
+    await page.goto('/reviews/1061864', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Write a comment' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a comment')
@@ -639,7 +639,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -753,7 +753,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -863,7 +863,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -971,7 +971,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1078,7 +1078,7 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/reviews/1061864/write-a-comment')
+  await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a comment')
   await expect(page.getByRole('main')).not.toContainText('ORCID')
@@ -1156,7 +1156,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a comment', async ({ ja
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/reviews/1061864/write-a-comment')
+  await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await waitForNotBusy(page)
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1241,7 +1241,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/reviews/1061864/write-a-comment')
+  await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await waitForNotBusy(page)
   await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1334,7 +1334,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1445,7 +1445,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1541,7 +1541,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
         { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       )
 
-    await page.goto('/reviews/1061864/write-a-comment')
+    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')

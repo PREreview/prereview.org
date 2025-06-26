@@ -8,7 +8,7 @@ import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base
 test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ fetch, javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
 
   fetch.get(
     {
@@ -294,7 +294,7 @@ test.extend(canLogIn).extend(areLoggedIn)('might not load my PREreviews in time'
     { delay: Duration.toMillis('2.5 seconds') },
   )
 
-  await page.goto('/my-prereviews')
+  await page.goto('/my-prereviews', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
 })
@@ -375,7 +375,7 @@ test('can find and view a review', async ({ fetch, page }) => {
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
   await page
     .getByRole('article', { name: 'PREreview by Jingfang Hao et al.' })
     .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al.' })
@@ -482,7 +482,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
   await page
     .getByRole('article', { name: 'PREreview by Jingfang Hao et al.' })
     .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al.' })
@@ -621,7 +621,7 @@ test('can find and view comments to a review', async ({ fetch, page }) => {
       body: '<h1>Some title in the comment</h1><p>... some comment text ...</p>',
     })
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
   await page
     .getByRole('article', { name: 'PREreview by Jingfang Hao et al.' })
     .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al.' })
@@ -707,7 +707,7 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
   await page
     .getByRole('article', { name: 'PREreview by Jingfang Hao et al. of ASAPbio Metabolism Crowd' })
     .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al. of ASAPbio Metabolism Crowd' })
@@ -784,7 +784,7 @@ test('can view a recent review', async ({ fetch, page }) => {
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page
     .getByRole('region', { name: 'Recent PREreviews' })
     .getByRole('link', {
@@ -864,7 +864,7 @@ test("can view a recent review that's part of a club", async ({ fetch, page }) =
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page
     .getByRole('region', { name: 'Recent PREreviews' })
     .getByRole('link', {
@@ -945,7 +945,7 @@ test('can view an older review', async ({ fetch, javaScriptEnabled, page }) => {
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
   await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
@@ -1042,7 +1042,7 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent PREreviews')
@@ -1058,7 +1058,7 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
 })
 
 test('can find an older review of a certain preprint', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
   const filters = page.getByRole('search', { name: 'Filter' })
@@ -1074,7 +1074,7 @@ test('can find an older review of a certain preprint', async ({ page }) => {
 })
 
 test('can view an older review in a specific language', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
   const filters = page.getByRole('search', { name: 'Filter' })
@@ -1090,7 +1090,7 @@ test('can view an older review in a specific language', async ({ page }) => {
 })
 
 test('can view an older review in a specific field', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
   const filters = page.getByRole('search', { name: 'Filter' })
@@ -1212,7 +1212,7 @@ test('might not load the older reviews in time', async ({ fetch, page }) => {
     { delay: Duration.toMillis('2.5 seconds'), overwriteRoutes: true },
   )
 
-  await page.goto('/reviews')
+  await page.goto('/reviews', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
 })
@@ -1277,13 +1277,13 @@ test('might not load the PREreview in time', async ({ fetch, page }) => {
     { delay: Duration.toMillis('2.5 seconds') },
   )
 
-  await page.goto('/reviews/1061864')
+  await page.goto('/reviews/1061864', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
 })
 
 test.extend(prereviewWasRemoved)('when the PREreview was removed', async ({ page }) => {
-  await page.goto('/reviews/12345678')
+  await page.goto('/reviews/12345678', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('PREreview removed')
 })

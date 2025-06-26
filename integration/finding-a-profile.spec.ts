@@ -65,7 +65,7 @@ test('can find and view a profile', async ({ fetch, page }) => {
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/reviews/7747129')
+  await page.goto('/reviews/7747129', { waitUntil: 'commit' })
 
   fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-2695-5951/personal-details', {
     body: { name: { 'given-names': { value: 'CJ' }, 'family-name': { value: 'San Felipe' } } },
@@ -186,7 +186,7 @@ test('can find and view a profile', async ({ fetch, page }) => {
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my profile', async ({ fetch, page }) => {
-  await page.goto('/my-details')
+  await page.goto('/my-details', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Connect Slack account' }).click()
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByRole('link', { name: 'Enter preference for review requests' }).click()
@@ -314,7 +314,7 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
 
-  await page.goto('/reviews/7747129')
+  await page.goto('/reviews/7747129', { waitUntil: 'commit' })
 
   fetch.get(
     {
@@ -432,7 +432,7 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
 })
 
 test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", async ({ fetch, page }) => {
-  await page.goto('/my-details')
+  await page.goto('/my-details', { waitUntil: 'commit' })
 
   fetch.get(
     {
@@ -471,7 +471,7 @@ test('the list might be empty', async ({ fetch, page }) => {
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
   )
 
-  await page.goto('/profiles/0000-0002-6109-0367')
+  await page.goto('/profiles/0000-0002-6109-0367', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Daniela Saderi')
 })

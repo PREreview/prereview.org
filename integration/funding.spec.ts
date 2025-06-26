@@ -2,7 +2,7 @@ import { Duration } from 'effect'
 import { expect, test } from './base.js'
 
 test("can read about how we're funded", async ({ fetch, page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'commit' })
 
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb12', query: { key: 'key' } },
@@ -22,7 +22,7 @@ test('might not load the text in time', async ({ fetch, page }) => {
     { delay: Duration.toMillis('2.5 seconds') },
   )
 
-  await page.goto('/funding')
+  await page.goto('/funding', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
 })

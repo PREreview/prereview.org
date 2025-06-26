@@ -435,7 +435,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
       },
     })
 
-  await page.goto('/preprints/doi-10.1101-2022.02.14.480364')
+  await page.goto('/preprints/doi-10.1101-2022.02.14.480364', { waitUntil: 'commit' })
 
   await expect(page.getByRole('region', { name: 'Aggregated Rapid PREreviews' })).toBeVisible()
 })
