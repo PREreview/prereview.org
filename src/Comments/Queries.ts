@@ -3,7 +3,7 @@ import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { InputForCommentZenodoRecord } from './Context.js'
 import * as Errors from './Errors.js'
-import type { CommentEvent } from './Events.js'
+import type { CommentEvent, CommentPublicationWasRequested, DoiWasAssigned } from './Events.js'
 import { EvolveComment } from './Evolve.js'
 import * as ExpectedCommand from './ExpectedCommand.js'
 import { CommentNotStarted, type CommentState } from './State.js'
@@ -162,7 +162,10 @@ export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequ
 export class NoCommentsInNeedOfADoi extends Data.TaggedClass('NoCommentsInNeedOfADoi') {}
 
 export const GetACommentInNeedOfADoi = (
-  events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
+  events: ReadonlyArray<{
+    readonly event: CommentPublicationWasRequested | DoiWasAssigned
+    readonly resourceId: Uuid.Uuid
+  }>,
 ): Either.Either<Uuid.Uuid, NoCommentsInNeedOfADoi> => {
   const hasADoi = new Set()
 
@@ -172,7 +175,7 @@ export const GetACommentInNeedOfADoi = (
       continue
     }
 
-    if (event._tag === 'CommentPublicationWasRequested' && !hasADoi.has(resourceId)) {
+    if (!hasADoi.has(resourceId)) {
       return Either.right(resourceId)
     }
   }

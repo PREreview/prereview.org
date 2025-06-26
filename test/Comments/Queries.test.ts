@@ -348,29 +348,12 @@ describe('buildInputForCommentZenodoRecord', () => {
 })
 
 describe('GetACommentInNeedOfADoi', () => {
-  const authorId = Orcid('0000-0002-1825-0097')
-  const prereviewId = 123
   const resourceId = Uuid.Uuid('358f7fc0-9725-4192-8673-d7c64f398401')
-  const commentWasStarted = new Comments.CommentWasStarted({ authorId, prereviewId })
-  const commentWasEntered = new Comments.CommentWasEntered({ comment: html`Some comment` })
-  const personaWasChosen = new Comments.PersonaWasChosen({ persona: 'public' })
-  const competingInterestsWereDeclared = new Comments.CompetingInterestsWereDeclared({
-    competingInterests: Option.none(),
-  })
-  const codeOfConductWasAgreed = new Comments.CodeOfConductWasAgreed({ competingInterests: Option.none() })
   const commentPublicationWasRequested = new Comments.CommentPublicationWasRequested()
   const doiWasAssigned = new Comments.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') })
 
-  const eventsNeededToRequestPublication = [
-    commentWasStarted,
-    commentWasEntered,
-    personaWasChosen,
-    competingInterestsWereDeclared,
-    codeOfConductWasAgreed,
-  ]
-
   test('finds a comment in need of a DOI', () => {
-    const events = [...eventsNeededToRequestPublication, commentPublicationWasRequested]
+    const events = [commentPublicationWasRequested]
 
     const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
 
@@ -378,38 +361,23 @@ describe('GetACommentInNeedOfADoi', () => {
   })
 
   test.prop([
-    fc.nonEmptyArray(fc.uuid().filter(otherResourceId => resourceId !== otherResourceId)).map(resourceIds =>
-      Array.flatMap(resourceIds, resourceId =>
-        Array.map([...eventsNeededToRequestPublication, commentPublicationWasRequested], event => ({
-          event,
-          resourceId,
-        })),
+    fc
+      .nonEmptyArray(fc.uuid().filter(otherResourceId => resourceId !== otherResourceId))
+      .map(resourceIds =>
+        Array.map(resourceIds, resourceId => ({ event: commentPublicationWasRequested, resourceId })),
       ),
-    ),
   ])('finds the newest comment in need of a DOI when multiple comments need a DOI', otherEvents => {
     const actual = _.GetACommentInNeedOfADoi(
-      Array.flatten([
-        Array.map(eventsNeededToRequestPublication, event => ({ event, resourceId })),
-        otherEvents,
-        Array.of({ event: commentPublicationWasRequested, resourceId }),
-      ]),
+      Array.flatten([otherEvents, Array.of({ event: commentPublicationWasRequested, resourceId })]),
     )
 
     expect(actual).toStrictEqual(Either.right(resourceId))
   })
 
   test('ignores comments that already have a DOI', () => {
-    const events = [...eventsNeededToRequestPublication, commentPublicationWasRequested, doiWasAssigned]
+    const events = [commentPublicationWasRequested, doiWasAssigned]
 
     const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
-
-    expect(actual).toStrictEqual(Either.left(new _.NoCommentsInNeedOfADoi()))
-  })
-
-  test('ignores comments for which publication has not been requested', () => {
-    const actual = _.GetACommentInNeedOfADoi(
-      Array.map(eventsNeededToRequestPublication, event => ({ event, resourceId })),
-    )
 
     expect(actual).toStrictEqual(Either.left(new _.NoCommentsInNeedOfADoi()))
   })

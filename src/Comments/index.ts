@@ -129,7 +129,7 @@ export const ReactToCommentEvents: Layer.Layer<
     const dequeue = yield* PubSub.subscribe(commentEvents)
 
     yield* pipe(
-      eventStore.getAllEvents,
+      eventStore.getAllEventsOfType('CommentPublicationWasRequested', 'DoiWasAssigned'),
       Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
       Effect.bindTo('commentId'),
       Effect.bind('inputForCommentZenodoRecord', ({ commentId }) =>
