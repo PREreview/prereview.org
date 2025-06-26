@@ -4,7 +4,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can log out', async ({ javaScriptEnab
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
   const logOut = page.getByRole('link', { name: 'Log out' })
 
-  await page.goto('/', { waitUntil: 'commit' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
   await menu.click()
 
   await expect(logOut).toBeInViewport()

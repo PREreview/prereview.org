@@ -1478,7 +1478,7 @@ export const prereviewWasRemoved: Fixtures<
 
 export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, Pick<PlaywrightTestArgs, 'page'>> = {
   page: async ({ page }, use) => {
-    await page.goto('/log-in', { waitUntil: 'commit' })
+    await page.goto('/log-in', { waitUntil: 'domcontentloaded' })
 
     await expect(page).toHaveTitle(/PREreview/)
 

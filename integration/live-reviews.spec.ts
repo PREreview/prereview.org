@@ -4,7 +4,7 @@ import { expect, test } from './base.js'
 test('can read about Live Reviews', async ({ fetch, javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-  await page.goto('/', { waitUntil: 'commit' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
 
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb10', query: { key: 'key' } },

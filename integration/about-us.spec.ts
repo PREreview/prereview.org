@@ -4,7 +4,7 @@ import { expect, test } from './base.js'
 test('can read about us', async ({ fetch, javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-  await page.goto('/', { waitUntil: 'commit' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
   await menu.click()
 
   fetch.getOnce(

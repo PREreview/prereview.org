@@ -4,7 +4,7 @@ import { expect, test } from './base.js'
 test('can read about clubs', async ({ fetch, javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-  await page.goto('/', { waitUntil: 'commit' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
 
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/64637b4c07fb34a92c7f84ec', query: { key: 'key' } },

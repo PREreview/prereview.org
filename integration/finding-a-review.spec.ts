@@ -8,7 +8,7 @@ import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base
 test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ fetch, javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-  await page.goto('/', { waitUntil: 'commit' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
 
   fetch.get(
     {

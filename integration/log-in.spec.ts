@@ -394,7 +394,7 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
   const logIn = page.getByRole('link', { name: 'Log in' })
 
-  await page.goto('/', { waitUntil: 'commit' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
   await menu.click()
 
   await expect(logIn).toBeInViewport()
@@ -417,7 +417,7 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
 test.extend(canLogIn).extend(userIsBlocked)("can't log in when blocked", async ({ javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-  await page.goto('/', { waitUntil: 'commit' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
   await menu.click()
   await page.getByRole('link', { name: 'Log in' }).click()
 
