@@ -77,15 +77,15 @@ export const GetNextExpectedCommandForUser =
   }
 
 export const GetNextExpectedCommandForUserOnAComment =
-  (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
+  (events: ReadonlyArray<CommentEvent>) =>
   (
     commentId: Uuid.Uuid,
   ): Either.Either<
     Exclude<ExpectedCommand.ExpectedCommandForUser, ExpectedCommand.ExpectedToStartAComment>,
     Errors.CommentHasNotBeenStarted | Errors.CommentIsBeingPublished | Errors.CommentWasAlreadyPublished
   > => {
-    const comment = Array.reduce(events, new CommentNotStarted() as CommentState, (state, { event, resourceId }) =>
-      resourceId === commentId ? EvolveComment(state)(event) : state,
+    const comment = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
+      EvolveComment(state)(event),
     )
 
     if (comment._tag === 'CommentNotStarted') {

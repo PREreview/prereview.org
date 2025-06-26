@@ -218,27 +218,21 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
         ],
       ],
     ])('returns %s', (expected, events) => {
-      const actual = _.GetNextExpectedCommandForUserOnAComment(Array.map(events, event => ({ event, resourceId })))(
-        resourceId,
-      )
+      const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
       expect(actual).toStrictEqual(Either.right(expect.objectContaining({ _tag: expected, commentId: resourceId })))
     })
 
     test('when last answer was changed', () => {
       const events = [commentWasStarted, commentWasEntered, commentWasEntered]
-      const actual = _.GetNextExpectedCommandForUserOnAComment(Array.map(events, event => ({ event, resourceId })))(
-        resourceId,
-      )
+      const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
       expect(actual).toStrictEqual(Either.right(new Comments.ExpectedToChooseAPersona({ commentId: resourceId })))
     })
 
     test('when a previous answer was changed', () => {
       const events = [commentWasStarted, commentWasEntered, personaWasChosen, commentWasEntered]
-      const actual = _.GetNextExpectedCommandForUserOnAComment(Array.map(events, event => ({ event, resourceId })))(
-        resourceId,
-      )
+      const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
       expect(actual).toStrictEqual(
         Either.right(new Comments.ExpectedToDeclareCompetingInterests({ commentId: resourceId })),
@@ -255,9 +249,7 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
         existenceOfVerifiedEmailAddressWasConfirmed,
         personaWasChosen,
       ]
-      const actual = _.GetNextExpectedCommandForUserOnAComment(Array.map(events, event => ({ event, resourceId })))(
-        resourceId,
-      )
+      const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
       expect(actual).toStrictEqual(Either.right(new Comments.ExpectedToPublishComment({ commentId: resourceId })))
     })
@@ -272,12 +264,7 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
   test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
     'when the comment is being published',
     (authorId, prereviewId, resourceId) => {
-      const events = [
-        {
-          event: new Comments.CommentPublicationWasRequested({ prereviewId, authorId }),
-          resourceId,
-        },
-      ]
+      const events = [new Comments.CommentPublicationWasRequested({ prereviewId, authorId })]
       const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
       expect(actual).toStrictEqual(Either.left(new Comments.CommentIsBeingPublished()))
@@ -287,12 +274,7 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
   test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
     'when the comment has been published',
     (authorId, prereviewId, resourceId) => {
-      const events = [
-        {
-          event: new Comments.CommentPublicationWasRequested({ prereviewId, authorId }),
-          resourceId,
-        },
-      ]
+      const events = [new Comments.CommentPublicationWasRequested({ prereviewId, authorId })]
       const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
       expect(actual).toStrictEqual(Either.left(new Comments.CommentWasAlreadyPublished()))

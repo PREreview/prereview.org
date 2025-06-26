@@ -105,9 +105,9 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
 
   return commentId =>
     Effect.gen(function* () {
-      const events = yield* eventStore.getAllEvents
+      const events = yield* eventStore.getEvents(commentId)
 
-      return Queries.GetNextExpectedCommandForUserOnAComment(events)(commentId)
+      return Queries.GetNextExpectedCommandForUserOnAComment(events.events)(commentId)
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
 })
 
