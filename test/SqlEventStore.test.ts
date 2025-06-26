@@ -5,6 +5,7 @@ import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Array, Effect, Equal, Layer, TestClock } from 'effect'
 import { CommentEvent } from '../src/Comments/Events.js'
+import { DatasetReviewEvent } from '../src/DatasetReviews/Events.js'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/SqlEventStore.js'
 import { Uuid } from '../src/types/index.js'
@@ -48,6 +49,40 @@ describe('when the last known version is 0', () => {
         EffectTest.run,
       ),
   )
+
+  describe('but the resource exists with a different type', () => {
+    it.prop([
+      fc.tuple(fc.string(), fc.string()).filter(([a, b]) => !Equal.equals(a, b)),
+      fc.uuid(),
+      fc.nonEmptyArray(fc.commentEvent()),
+      fc.nonEmptyArray(fc.datasetReviewEvent()),
+    ])('does nothing', ([resourceType, otherResourceType], resourceId, events, otherEvents) =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make(resourceType, CommentEvent)
+        const otherEventStore = yield* _.make(otherResourceType, DatasetReviewEvent)
+
+        yield* otherEventStore.commitEvents(resourceId, 0)(...otherEvents)
+
+        const error = yield* Effect.flip(eventStore.commitEvents(resourceId, 0)(...events))
+
+        expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
+
+        const actual = yield* eventStore.getEvents(resourceId)
+        const all = yield* eventStore.getAllEvents
+        const actualOther = yield* otherEventStore.getEvents(resourceId)
+        const allOther = yield* otherEventStore.getAllEvents
+
+        expect(actual).toStrictEqual({ events: [], latestVersion: 0 })
+        expect(all).toHaveLength(0)
+        expect(actualOther).toStrictEqual({ events: otherEvents, latestVersion: otherEvents.length })
+        expect(allOther).toHaveLength(otherEvents.length)
+      }).pipe(
+        Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
+        Effect.provide(TestLibsqlClient),
+        EffectTest.run,
+      ),
+    )
+  })
 })
 
 describe('when the last known version is invalid', () => {
