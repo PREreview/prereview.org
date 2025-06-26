@@ -123,7 +123,9 @@ export const GetNextExpectedCommandForUserOnAComment =
     return Either.right(new ExpectedCommand.ExpectedToPublishComment({ commentId }))
   }
 
-export const buildInputForCommentZenodoRecord = (events: ReadonlyArray<CommentEvent>) => {
+export const buildInputForCommentZenodoRecord = (
+  events: ReadonlyArray<CommentEvent>,
+): Either.Either<InputForCommentZenodoRecord, UnexpectedSequenceOfEvents> => {
   const authorId = pipe(
     events,
     Array.findLast(event => event._tag === 'CommentWasStarted'),
@@ -149,7 +151,11 @@ export const buildInputForCommentZenodoRecord = (events: ReadonlyArray<CommentEv
     Array.findLast(event => event._tag === 'CompetingInterestsWereDeclared'),
     Option.map(event => event.competingInterests),
   )
-  return Option.all({ authorId, prereviewId, persona, comment, competingInterests })
+
+  return Either.fromOption(
+    Option.all({ authorId, prereviewId, persona, comment, competingInterests }),
+    () => new UnexpectedSequenceOfEvents(),
+  )
 }
 
 export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents') {}
@@ -181,7 +187,6 @@ export const GetACommentInNeedOfADoi = (
             Array.map(({ event }) => event),
           ),
         ),
-        Either.fromOption(() => new UnexpectedSequenceOfEvents()),
         Either.map(inputForCommentZenodoRecord => ({
           commentId: resourceId,
           inputForCommentZenodoRecord,

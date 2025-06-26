@@ -1,4 +1,4 @@
-import { Array, Effect, Layer, Match, pipe, PubSub, Queue, Schedule } from 'effect'
+import { Array, Effect, Layer, Match, pipe, PubSub, Queue, Schedule, Struct } from 'effect'
 import * as ReviewPage from '../review-page/index.js'
 import type { Uuid } from '../types/index.js'
 import {
@@ -147,11 +147,14 @@ export const ReactToCommentEvents: Layer.Layer<
           Match.when({ event: { _tag: 'CommentWasStarted' } }, ({ commentId }) =>
             React.CheckIfUserHasAVerifiedEmailAddress(commentId),
           ),
-          Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, () =>
+          Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId }) =>
             pipe(
-              eventStore.getAllEvents,
-              Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
-              Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
+              eventStore.getEvents(commentId),
+              Effect.andThen(Struct.get('events')),
+              Effect.andThen(Queries.buildInputForCommentZenodoRecord),
+              Effect.andThen(inputForCommentZenodoRecord =>
+                React.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),
+              ),
             ),
           ),
           Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ commentId, event }) =>
