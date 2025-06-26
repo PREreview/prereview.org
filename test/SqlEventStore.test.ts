@@ -1,10 +1,10 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { it } from '@fast-check/jest'
+import { it, test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Array, Effect, Equal, Layer, TestClock } from 'effect'
-import { CommentEvent } from '../src/Comments/Events.js'
+import { CodeOfConductWasAgreed, CommentEvent } from '../src/Comments/Events.js'
 import { DatasetReviewEvent } from '../src/DatasetReviews/Events.js'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/SqlEventStore.js'
@@ -239,6 +239,20 @@ it.prop([
       { event: event2, resourceId: resourceId2, version: 1 },
       { event: event3, resourceId: resourceId2, version: 2 },
     ])
+  }).pipe(Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make), Effect.provide(TestLibsqlClient), EffectTest.run),
+)
+
+test.failing('find events fof a certain type', () =>
+  Effect.gen(function* () {
+    const events = [new CodeOfConductWasAgreed(), new CodeOfConductWasAgreed(), new CodeOfConductWasAgreed()] as const
+
+    const eventStore = yield* _.make('Comment', CommentEvent)
+
+    yield* eventStore.commitEvents(Uuid.Uuid('872d24c0-a78a-4a45-9ed0-051a38306707'), 0)(...events)
+
+    const actual = yield* eventStore.getAllEventsOfType('CodeOfConductWasAgreed')
+
+    expect(actual).toHaveLength(3)
   }).pipe(Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make), Effect.provide(TestLibsqlClient), EffectTest.run),
 )
 
