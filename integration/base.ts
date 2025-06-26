@@ -2,7 +2,7 @@
 import { Reactivity } from '@effect/experimental'
 import { FetchHttpClient, HttpClient, HttpClientResponse, Url } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
-import { SqlClient } from '@effect/sql'
+import type { SqlClient } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
 import {
