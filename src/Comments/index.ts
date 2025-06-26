@@ -131,6 +131,14 @@ export const ReactToCommentEvents: Layer.Layer<
     yield* pipe(
       eventStore.getAllEvents,
       Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
+      Effect.bindTo('commentId'),
+      Effect.bind('inputForCommentZenodoRecord', ({ commentId }) =>
+        pipe(
+          eventStore.getEvents(commentId),
+          Effect.andThen(Struct.get('events')),
+          Effect.andThen(Queries.buildInputForCommentZenodoRecord),
+        ),
+      ),
       Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
       Effect.catchTag('NoCommentsInNeedOfADoi', () => Effect.void),
       Effect.catchAll(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), { error })),

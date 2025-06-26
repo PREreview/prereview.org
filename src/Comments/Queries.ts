@@ -163,13 +163,7 @@ export class NoCommentsInNeedOfADoi extends Data.TaggedClass('NoCommentsInNeedOf
 
 export const GetACommentInNeedOfADoi = (
   events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>,
-): Either.Either<
-  {
-    commentId: Uuid.Uuid
-    inputForCommentZenodoRecord: InputForCommentZenodoRecord
-  },
-  UnexpectedSequenceOfEvents | NoCommentsInNeedOfADoi
-> => {
+): Either.Either<Uuid.Uuid, NoCommentsInNeedOfADoi> => {
   const hasADoi = new Set()
 
   for (const { event, resourceId } of events.toReversed()) {
@@ -179,19 +173,7 @@ export const GetACommentInNeedOfADoi = (
     }
 
     if (event._tag === 'CommentPublicationWasRequested' && !hasADoi.has(resourceId)) {
-      return pipe(
-        buildInputForCommentZenodoRecord(
-          pipe(
-            events,
-            Array.filter(({ resourceId: eventResourceId }) => eventResourceId === resourceId),
-            Array.map(({ event }) => event),
-          ),
-        ),
-        Either.map(inputForCommentZenodoRecord => ({
-          commentId: resourceId,
-          inputForCommentZenodoRecord,
-        })),
-      )
+      return Either.right(resourceId)
     }
   }
 

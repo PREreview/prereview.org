@@ -300,6 +300,53 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
   )
 })
 
+describe('buildInputForCommentZenodoRecord', () => {
+  const authorId = Orcid('0000-0002-1825-0097')
+  const prereviewId = 123
+  const commentWasStarted = new Comments.CommentWasStarted({ authorId, prereviewId })
+  const commentWasEntered = new Comments.CommentWasEntered({ comment: html`Some comment` })
+  const personaWasChosen = new Comments.PersonaWasChosen({ persona: 'public' })
+  const competingInterestsWereDeclared = new Comments.CompetingInterestsWereDeclared({
+    competingInterests: Option.none(),
+  })
+  const codeOfConductWasAgreed = new Comments.CodeOfConductWasAgreed({ competingInterests: Option.none() })
+  const commentPublicationWasRequested = new Comments.CommentPublicationWasRequested()
+
+  test('builds input', () => {
+    const events = [
+      commentWasStarted,
+      commentWasEntered,
+      personaWasChosen,
+      competingInterestsWereDeclared,
+      codeOfConductWasAgreed,
+      commentPublicationWasRequested,
+    ]
+
+    const expectedInputForCommentZenodoRecord: Comments.InputForCommentZenodoRecord = {
+      authorId: commentWasStarted.authorId,
+      prereviewId: commentWasStarted.prereviewId,
+      comment: commentWasEntered.comment,
+      persona: personaWasChosen.persona,
+      competingInterests: competingInterestsWereDeclared.competingInterests,
+    }
+
+    const actual = _.buildInputForCommentZenodoRecord(events)
+
+    expect(actual).toStrictEqual(Either.right(expectedInputForCommentZenodoRecord))
+  })
+
+  test.each([
+    ['no CommentWasStarted', [commentWasEntered, personaWasChosen, competingInterestsWereDeclared]],
+    ['no CommentWasEntered', [commentWasStarted, personaWasChosen, competingInterestsWereDeclared]],
+    ['no PersonaWasChosen', [commentWasStarted, commentWasEntered, competingInterestsWereDeclared]],
+    ['no CompetingInterestsWereDeclared', [commentWasStarted, commentWasEntered, personaWasChosen]],
+  ])('returns an UnexpectedSequenceOfEvents when %s', (_name, events) => {
+    const actual = _.buildInputForCommentZenodoRecord([...events, commentPublicationWasRequested])
+
+    expect(actual).toStrictEqual(Either.left(new _.UnexpectedSequenceOfEvents()))
+  })
+})
+
 describe('GetACommentInNeedOfADoi', () => {
   const authorId = Orcid('0000-0002-1825-0097')
   const prereviewId = 123
@@ -325,32 +372,9 @@ describe('GetACommentInNeedOfADoi', () => {
   test('finds a comment in need of a DOI', () => {
     const events = [...eventsNeededToRequestPublication, commentPublicationWasRequested]
 
-    const expectedInputForCommentZenodoRecord: Comments.InputForCommentZenodoRecord = {
-      authorId: commentWasStarted.authorId,
-      prereviewId: commentWasStarted.prereviewId,
-      comment: commentWasEntered.comment,
-      persona: personaWasChosen.persona,
-      competingInterests: competingInterestsWereDeclared.competingInterests,
-    }
-
     const actual = _.GetACommentInNeedOfADoi(Array.map(events, event => ({ event, resourceId })))
 
-    expect(actual).toStrictEqual(
-      Either.right({ commentId: resourceId, inputForCommentZenodoRecord: expectedInputForCommentZenodoRecord }),
-    )
-  })
-
-  test.each([
-    ['no CommentWasStarted', [commentWasEntered, personaWasChosen, competingInterestsWereDeclared]],
-    ['no CommentWasEntered', [commentWasStarted, personaWasChosen, competingInterestsWereDeclared]],
-    ['no PersonaWasChosen', [commentWasStarted, commentWasEntered, competingInterestsWereDeclared]],
-    ['no CompetingInterestsWereDeclared', [commentWasStarted, commentWasEntered, personaWasChosen]],
-  ])('returns an UnexpectedSequenceOfEvents when %s', (_name, events) => {
-    const actual = _.GetACommentInNeedOfADoi(
-      Array.map([...events, commentPublicationWasRequested], event => ({ event, resourceId })),
-    )
-
-    expect(actual).toStrictEqual(Either.left(new _.UnexpectedSequenceOfEvents()))
+    expect(actual).toStrictEqual(Either.right(resourceId))
   })
 
   test.prop([
@@ -363,14 +387,6 @@ describe('GetACommentInNeedOfADoi', () => {
       ),
     ),
   ])('finds the newest comment in need of a DOI when multiple comments need a DOI', otherEvents => {
-    const expectedInputForCommentZenodoRecord: Comments.InputForCommentZenodoRecord = {
-      authorId: commentWasStarted.authorId,
-      prereviewId: commentWasStarted.prereviewId,
-      comment: commentWasEntered.comment,
-      persona: personaWasChosen.persona,
-      competingInterests: competingInterestsWereDeclared.competingInterests,
-    }
-
     const actual = _.GetACommentInNeedOfADoi(
       Array.flatten([
         Array.map(eventsNeededToRequestPublication, event => ({ event, resourceId })),
@@ -379,9 +395,7 @@ describe('GetACommentInNeedOfADoi', () => {
       ]),
     )
 
-    expect(actual).toStrictEqual(
-      Either.right({ commentId: resourceId, inputForCommentZenodoRecord: expectedInputForCommentZenodoRecord }),
-    )
+    expect(actual).toStrictEqual(Either.right(resourceId))
   })
 
   test('ignores comments that already have a DOI', () => {
