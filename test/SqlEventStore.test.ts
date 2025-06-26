@@ -4,7 +4,11 @@ import { LibsqlClient } from '@effect/sql-libsql'
 import { it, test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Array, Effect, Equal, Layer, TestClock } from 'effect'
-import { CodeOfConductWasAgreed, CommentEvent } from '../src/Comments/Events.js'
+import {
+  CodeOfConductWasAgreed,
+  CommentEvent,
+  ExistenceOfVerifiedEmailAddressWasConfirmed,
+} from '../src/Comments/Events.js'
 import { DatasetReviewEvent } from '../src/DatasetReviews/Events.js'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/SqlEventStore.js'
@@ -242,17 +246,36 @@ it.prop([
   }).pipe(Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make), Effect.provide(TestLibsqlClient), EffectTest.run),
 )
 
-test.failing('find events fof a certain type', () =>
+test.failing.each([
+  [
+    'one type',
+    ['CodeOfConductWasAgreed'],
+    [new CodeOfConductWasAgreed(), new CodeOfConductWasAgreed(), new CodeOfConductWasAgreed()],
+    3,
+  ],
+  [
+    'multiple types',
+    ['CodeOfConductWasAgreed', 'ExistenceOfVerifiedEmailAddressWasConfirmed'],
+    [new CodeOfConductWasAgreed(), new ExistenceOfVerifiedEmailAddressWasConfirmed(), new CodeOfConductWasAgreed()],
+    3,
+  ],
+  [
+    'other types',
+    ['CodeOfConductWasAgreed'],
+    [new CodeOfConductWasAgreed(), new ExistenceOfVerifiedEmailAddressWasConfirmed(), new CodeOfConductWasAgreed()],
+    2,
+  ],
+] as Array.NonEmptyReadonlyArray<
+  [string, Array.NonEmptyReadonlyArray<CommentEvent['_tag']>, Array.NonEmptyReadonlyArray<CommentEvent>, number]
+>)('find events of a certain type (%s)', (_name, types, events, expectedLength) =>
   Effect.gen(function* () {
-    const events = [new CodeOfConductWasAgreed(), new CodeOfConductWasAgreed(), new CodeOfConductWasAgreed()] as const
-
     const eventStore = yield* _.make('Comment', CommentEvent)
 
     yield* eventStore.commitEvents(Uuid.Uuid('872d24c0-a78a-4a45-9ed0-051a38306707'), 0)(...events)
 
-    const actual = yield* eventStore.getAllEventsOfType('CodeOfConductWasAgreed')
+    const actual = yield* eventStore.getAllEventsOfType(...types)
 
-    expect(actual).toHaveLength(3)
+    expect(actual).toHaveLength(expectedLength)
   }).pipe(Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make), Effect.provide(TestLibsqlClient), EffectTest.run),
 )
 
