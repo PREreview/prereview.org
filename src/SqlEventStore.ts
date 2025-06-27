@@ -21,6 +21,8 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
       )
     `
 
+    yield* sql`CREATE INDEX IF NOT EXISTS resources_type_idx ON resources (type)`
+
     yield* sql`
       CREATE TABLE IF NOT EXISTS events (
         event_id TEXT NOT NULL PRIMARY KEY,
@@ -33,6 +35,18 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
         UNIQUE (resource_id, resource_version)
       )
     `
+
+    yield* sql.onDialectOrElse({
+      pg: () => sql`
+        CREATE INDEX IF NOT EXISTS events_resource_id_idx ON events (resource_id) STORING (
+          resource_version,
+          event_type,
+          event_timestamp,
+          payload
+        )
+      `,
+      orElse: () => Effect.void,
+    })
 
     const getAllEvents: EventStore.EventStore<A>['getAllEvents'] = Effect.gen(function* () {
       const encodedResourceType = yield* Schema.encode(resourcesTable.fields.type)(resourceType)
