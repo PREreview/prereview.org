@@ -1586,6 +1586,14 @@ export const datasetReviewWasStarted = (): fc.Arbitrary<DatasetReviews.DatasetRe
     })
     .map(data => new DatasetReviews.DatasetReviewWasStarted(data))
 
+export const datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples =
+  (): fc.Arbitrary<DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples> =>
+    fc
+      .record({
+        answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+      })
+      .map(data => new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples(data))
+
 export const datesetReviewPublicationWasRequested = (): fc.Arbitrary<DatasetReviews.PublicationWasRequested> =>
   fc.constant(new DatasetReviews.PublicationWasRequested())
 
@@ -1603,6 +1611,7 @@ export const datasetReviewWasPublished = (): fc.Arbitrary<DatasetReviews.Dataset
 export const datasetReviewEvent = (): fc.Arbitrary<DatasetReviews.DatasetReviewEvent> =>
   fc.oneof(
     datasetReviewWasStarted(),
+    datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
     datesetReviewPublicationWasRequested(),
     datasetReviewDoiWasAssigned(),
     datasetReviewWasPublished(),

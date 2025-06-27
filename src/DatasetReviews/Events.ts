@@ -15,6 +15,11 @@ export class DatasetReviewWasStarted extends Schema.TaggedClass<DatasetReviewWas
   datasetId: Datasets.DatasetId,
 }) {}
 
+export class AnsweredIfTheDatasetFollowsFairAndCarePrinciples extends Schema.TaggedClass<AnsweredIfTheDatasetFollowsFairAndCarePrinciples>()(
+  'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+  { answer: Schema.Literal('yes', 'partly', 'no', 'unsure') },
+) {}
+
 export class PublicationWasRequested extends Schema.TaggedClass<PublicationWasRequested>()(
   'PublicationWasRequested',
   {},
@@ -32,6 +37,7 @@ export class DatasetReviewWasPublished extends Schema.TaggedClass<DatasetReviewW
 
 export const DatasetReviewEvent = Schema.Union(
   DatasetReviewWasStarted,
+  AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
   PublicationWasRequested,
   DoiWasAssigned,
   DatasetReviewWasPublished,
