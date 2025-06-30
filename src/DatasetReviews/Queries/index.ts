@@ -1,11 +1,14 @@
 import { Context, Data, Effect, Layer } from 'effect'
+import type { Orcid, Uuid } from '../../types/index.js'
 import { DatasetReviewsEventStore } from '../Events.js'
+import type * as Errors from './Errors.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
   {
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
+    getAuthor: (datasetReviewId: Uuid.Uuid) => Effect.Effect<Orcid.Orcid, Errors.UnknownDatasetReview | UnableToQuery>
   }
 >() {}
 
@@ -34,6 +37,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         },
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
       ),
+      getAuthor: () => new UnableToQuery({}),
     }
   })
 
