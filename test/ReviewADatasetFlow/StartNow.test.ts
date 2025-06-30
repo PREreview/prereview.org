@@ -20,12 +20,9 @@ describe('StartNow', () => {
         const actual = yield* _.StartNow
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SEE_OTHER,
+          location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId: uuid }),
         })
       }).pipe(
         Effect.provide(commandsLayer({ startDatasetReview: () => Effect.void })),

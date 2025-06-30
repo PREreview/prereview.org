@@ -26,9 +26,11 @@ export const StartNow: Effect.Effect<
 
         yield* DatasetReviews.startDatasetReview(reviewId, { authorId: user.orcid, datasetId })
 
-        return yield* HavingProblemsPage
+        return Response.RedirectResponse({
+          location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId: reviewId }),
+        })
       }),
-      onSome: () => Effect.sync(CarryOnPage),
+      onSome: datasetReviewId => Effect.succeed(CarryOnPage({ datasetReviewId })),
     })
   },
   Effect.catchTags({

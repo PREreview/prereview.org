@@ -1,8 +1,9 @@
 import { html, plainText } from '../../html.js'
 import { PageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
+import type { Uuid } from '../../types/index.js'
 
-export const CarryOnPage = () =>
+export const CarryOnPage = ({ datasetReviewId }: { datasetReviewId: Uuid.Uuid }) =>
   PageResponse({
     title: plainText`Review a dataset`,
     main: html`
@@ -14,7 +15,12 @@ export const CarryOnPage = () =>
         next step so you can carry&nbsp;on.
       </p>
 
-      <a href="#" role="button" draggable="false">Continue</a>
+      <a
+        href="${Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId })}"
+        role="button"
+        draggable="false"
+        >Continue</a
+      >
     `,
     canonical: Routes.ReviewThisDatasetStartNow,
   })
