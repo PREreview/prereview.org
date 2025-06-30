@@ -18,6 +18,8 @@ type CommandHandler<Command, Error> = (
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
+export const { startDatasetReview } = Effect.serviceFunctions(DatasetReviewCommands)
+
 const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Service, never, DatasetReviewsEventStore> =
   Effect.gen(function* () {
     const eventStore = yield* DatasetReviewsEventStore
