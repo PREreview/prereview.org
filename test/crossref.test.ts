@@ -207,14 +207,14 @@ describe('getPreprintFromCrossref', () => {
         E.right({
           abstract: {
             language: 'en',
-            text: expect.stringContaining('<p>The Beninese agricultural sector'),
+            text: expect.htmlContaining('<p>The Beninese agricultural sector'),
           },
           authors: [{ name: 'Abdoul kafid Chabi TOKO KOUTOGUI', orcid: undefined }],
           id,
           posted,
           title: {
             language: 'fr',
-            text: expect.stringContaining('LE FINANCEMENT PARTICIPATIF'),
+            text: expect.htmlContaining('LE FINANCEMENT PARTICIPATIF'),
           },
           url: new URL('https://osf.io/yv9az'),
         }),
@@ -307,7 +307,7 @@ describe('getPreprintFromCrossref', () => {
           E.right({
             abstract: {
               language: 'en',
-              text: expect.stringContaining('<p>Some properties of the Dawson Integral are presented first'),
+              text: expect.htmlContaining('<p>Some properties of the Dawson Integral are presented first'),
             },
             authors: [
               { name: 'Osman Yurekli', orcid: '0000-0002-2160-6138' },
@@ -409,7 +409,7 @@ describe('getPreprintFromCrossref', () => {
           E.right({
             abstract: {
               language: 'en',
-              text: expect.stringContaining('<p>Phlebia genus is a relevant group of fungi'),
+              text: expect.htmlContaining('<p>Phlebia genus is a relevant group of fungi'),
             },
             authors: [
               { name: 'Denis Magaña-Ortiz', orcid: '0000-0001-5486-5489' },
@@ -641,7 +641,7 @@ describe('getPreprintFromCrossref', () => {
         E.right({
           abstract: {
             language: 'en',
-            text: expect.stringContaining('<p>The ability to build upon'),
+            text: expect.htmlContaining('<p>The ability to build upon'),
           },
           authors: [{ name: 'Rowan Cockett', orcid: '0000-0002-7859-8394' }],
           id,

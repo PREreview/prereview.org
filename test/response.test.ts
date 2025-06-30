@@ -54,7 +54,7 @@ describe('handleResponse', () => {
             expect(templatePage).toHaveBeenCalledWith({
               title: response.title,
               description: response.description,
-              content: expect.stringContaining(response.main.toString()),
+              content: expect.htmlContaining(response.main),
               skipLinks: [[expect.anything(), '#main']],
               current: response.current,
               js: response.js,
@@ -98,7 +98,7 @@ describe('handleResponse', () => {
           expect(templatePage).toHaveBeenCalledWith({
             title: response.title,
             description: response.description,
-            content: expect.stringContaining(response.main.toString()),
+            content: expect.htmlContaining(response.main),
             skipLinks: [[expect.anything(), '#main']],
             current: response.current,
             js: response.js,
@@ -282,7 +282,7 @@ describe('handleResponse', () => {
             expect(templatePage).toHaveBeenCalledWith({
               title: response.title,
               description: response.description,
-              content: expect.stringContaining(response.main.toString()),
+              content: expect.htmlContaining(response.main),
               skipLinks: [[expect.anything(), '#main']],
               current: response.current,
               js: response.js,
@@ -328,7 +328,7 @@ describe('handleResponse', () => {
           expect(templatePage).toHaveBeenCalledWith({
             title: response.title,
             description: response.description,
-            content: expect.stringContaining(response.main.toString()),
+            content: expect.htmlContaining(response.main),
             skipLinks: [[expect.anything(), '#main']],
             current: response.current,
             js: response.js,
@@ -514,7 +514,7 @@ describe('handleResponse', () => {
         expect(templatePage).toHaveBeenCalledWith({
           title: response.title,
           description: response.description,
-          content: expect.stringContaining(response.main.toString()),
+          content: expect.htmlContaining(response.main),
           skipLinks: [
             [expect.anything(), '#preprint-details'],
             [expect.anything(), '#prereviews'],
@@ -560,7 +560,7 @@ describe('handleResponse', () => {
         expect(templatePage).toHaveBeenCalledWith({
           title: response.title,
           description: response.description,
-          content: expect.stringContaining(response.main.toString()),
+          content: expect.htmlContaining(response.main),
           skipLinks: [
             [expect.anything(), '#preprint-details'],
             [expect.anything(), '#prereviews'],

@@ -91,7 +91,7 @@ describe('getPreprintFromPhilsci', () => {
       E.right({
         abstract: {
           language: 'en',
-          text: expect.stringContaining('In response to broad transformations'),
+          text: expect.htmlContaining('In response to broad transformations'),
         },
         authors: [
           {

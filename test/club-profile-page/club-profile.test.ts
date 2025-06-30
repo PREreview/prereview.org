@@ -32,8 +32,8 @@ describe('clubProfile', () => {
       _tag: 'PageResponse',
       canonical: format(clubProfileMatch.formatter, { id: clubId }),
       status: Status.OK,
-      title: expect.stringContaining(getClubName(clubId)),
-      main: expect.stringContaining(encode(getClubName(clubId))),
+      title: expect.plainTextContaining(getClubName(clubId)),
+      main: expect.htmlContaining(encode(getClubName(clubId))),
       skipToLabel: 'main',
       js: [],
     })

@@ -157,7 +157,7 @@ describe('writeReviewPublish', () => {
         otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
         persona: newReview.persona,
         preprint: preprintTitle,
-        review: expect.stringContaining(newReview.review.toString()),
+        review: expect.htmlContaining(newReview.review),
         language: expect.anything(),
         license: 'CC-BY-4.0',
         locale,

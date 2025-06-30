@@ -1,7 +1,9 @@
 import type { Tester, TesterContext } from '@jest/expect-utils'
 import { expect } from '@jest/globals'
 import { Equal, Utils } from 'effect'
+import type { MatcherFunction } from 'expect'
 import * as fc from 'fast-check'
+import type { Html } from '../src/html.js'
 
 if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
   fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })
@@ -46,4 +48,57 @@ function temporalEquals(this: TesterContext, a: unknown, b: unknown, customTeste
   }
 
   return this.equals(a.toString(), b.toString(), customTesters)
+}
+
+const htmlContaining: MatcherFunction<[sample: Html | string]> = function (actual, sample) {
+  if (typeof actual !== 'string' && !(actual instanceof String)) {
+    throw new TypeError('Not Html')
+  }
+
+  if (!actual.includes(sample.toString())) {
+    return {
+      message: () => `expected ${this.utils.printReceived(actual)} to be Html ${this.utils.printExpected(sample)}`,
+      pass: false,
+    }
+  }
+
+  return {
+    message: () => `expected ${this.utils.printReceived(actual)} not to be Html ${this.utils.printExpected(sample)}`,
+    pass: true,
+  }
+}
+
+const plainTextContaining: MatcherFunction<[sample: string]> = function (actual, sample) {
+  if (typeof actual !== 'string' && !(actual instanceof String)) {
+    throw new TypeError('Not PlainText')
+  }
+
+  if (!actual.includes(sample.toString())) {
+    return {
+      message: () => `expected ${this.utils.printReceived(actual)} to be PlainText ${this.utils.printExpected(sample)}`,
+      pass: false,
+    }
+  }
+
+  return {
+    message: () =>
+      `expected ${this.utils.printReceived(actual)} not to be PlainText ${this.utils.printExpected(sample)}`,
+    pass: true,
+  }
+}
+
+expect.extend({
+  htmlContaining,
+  plainTextContaining,
+})
+
+declare module 'expect' {
+  interface AsymmetricMatchers {
+    htmlContaining(sample: Html | string): void
+    plainTextContaining(sample: string): void
+  }
+  interface Matchers<R> {
+    htmlContaining(sample: Html | string): R
+    plainTextContaining(sample: string): R
+  }
 }

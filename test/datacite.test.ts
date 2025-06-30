@@ -197,7 +197,7 @@ describe('getPreprintFromDatacite', () => {
           E.right({
             abstract: {
               language: 'en',
-              text: expect.stringContaining('<p>Mini review on mechanisms'),
+              text: expect.htmlContaining('<p>Mini review on mechanisms'),
             },
             authors: [
               { name: 'Noel-David NOGBOU', orcid: undefined },
@@ -363,7 +363,7 @@ describe('getPreprintFromDatacite', () => {
           E.right({
             abstract: {
               language: 'en',
-              text: expect.stringContaining('<p>According to the WHO'),
+              text: expect.htmlContaining('<p>According to the WHO'),
             },
             authors: [
               { name: 'Yisa Sarah Sokolabe', orcid: undefined },
@@ -825,7 +825,7 @@ describe('getPreprintFromDatacite', () => {
         E.right({
           abstract: {
             language: 'de',
-            text: expect.stringContaining('<p>Das Ziel dieser Arbeit ist es,'),
+            text: expect.htmlContaining('<p>Das Ziel dieser Arbeit ist es,'),
           },
           authors: [{ name: 'Philipp Ganster', orcid: undefined }],
           id,

@@ -73,8 +73,8 @@ describe('profile', () => {
           _tag: 'PageResponse',
           canonical: format(profileMatch.formatter, { profile }),
           status: Status.OK,
-          title: expect.stringContaining(name ? plainText(name).toString() : profile.orcid),
-          main: expect.stringContaining(profile.orcid),
+          title: expect.plainTextContaining(name ? plainText(name).toString() : profile.orcid),
+          main: expect.htmlContaining(profile.orcid),
           skipToLabel: 'main',
           js: [],
         })
@@ -195,8 +195,8 @@ describe('profile', () => {
         _tag: 'PageResponse',
         canonical: format(profileMatch.formatter, { profile }),
         status: Status.OK,
-        title: expect.stringContaining(name ? plainText(name).toString() : profile.orcid),
-        main: expect.stringContaining(profile.orcid),
+        title: expect.plainTextContaining(name ? plainText(name).toString() : profile.orcid),
+        main: expect.htmlContaining(profile.orcid),
         skipToLabel: 'main',
         js: [],
       })
@@ -495,8 +495,8 @@ describe('profile', () => {
         _tag: 'PageResponse',
         canonical: format(profileMatch.formatter, { profile }),
         status: Status.OK,
-        title: expect.stringContaining(profile.pseudonym),
-        main: expect.stringContaining(profile.pseudonym),
+        title: expect.plainTextContaining(profile.pseudonym),
+        main: expect.htmlContaining(profile.pseudonym),
         skipToLabel: 'main',
         js: [],
       })
