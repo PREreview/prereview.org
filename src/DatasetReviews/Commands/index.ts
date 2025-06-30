@@ -48,4 +48,4 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
     }
   })
 
-export const layer = Layer.effect(DatasetReviewCommands, makeDatasetReviewCommands)
+export const commandsLayer = Layer.effect(DatasetReviewCommands, makeDatasetReviewCommands)

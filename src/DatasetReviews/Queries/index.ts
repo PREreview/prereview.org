@@ -35,4 +35,4 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
     }
   })
 
-export const layer = Layer.effect(DatasetReviewQueries, makeDatasetReviewQueries)
+export const queriesLayer = Layer.effect(DatasetReviewQueries, makeDatasetReviewQueries)
