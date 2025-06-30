@@ -1,4 +1,11 @@
-import { HttpBody, HttpClientError, HttpClientRequest, HttpClientResponse, type HttpMethod } from '@effect/platform'
+import {
+  HttpBody,
+  HttpClientError,
+  HttpClientRequest,
+  HttpClientResponse,
+  type HttpMethod,
+  UrlParams,
+} from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
@@ -174,6 +181,9 @@ const right = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A>> => arb.m
 
 export const either = <E, A>(leftArb: fc.Arbitrary<E>, rightArb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A, E>> =>
   fc.oneof(left(leftArb), right(rightArb))
+
+export const urlParams = (): fc.Arbitrary<UrlParams.UrlParams> =>
+  fc.webQueryParameters().map(params => UrlParams.fromInput(new URLSearchParams(params)))
 
 export const durationInput = (): fc.Arbitrary<Duration.DurationInput> => fc.integer({ min: 0 }).map(Duration.seconds)
 

@@ -1,5 +1,5 @@
 import { type HttpMethod, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { Effect, flow, identity, Option, pipe, Record } from 'effect'
+import { Effect, flow, identity, Option, pipe, Record, Struct } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.js'
@@ -8,7 +8,6 @@ import { CodeOfConductPage } from '../CodeOfConductPage.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { FundingPage } from '../FundingPage.js'
-import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { HowToUsePage } from '../HowToUsePage.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
 import { MenuPage } from '../MenuPage/index.js'
@@ -47,8 +46,20 @@ const MakeStaticRoute = <E, R>(
 const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
   MakeStaticRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage),
   MakeStaticRoute('GET', Routes.ReviewThisDatasetStartNow, ReviewADatasetFlow.StartNow),
-  MakeRoute('GET', Routes.ReviewADatasetFollowsFairAndCarePrinciples, () => HavingProblemsPage),
-  MakeRoute('POST', Routes.ReviewADatasetFollowsFairAndCarePrinciples, () => HavingProblemsPage),
+  MakeRoute(
+    'GET',
+    Routes.ReviewADatasetFollowsFairAndCarePrinciples,
+    ReviewADatasetFlow.FollowsFairAndCarePrinciplesQuestion,
+  ),
+  MakeRoute(
+    'POST',
+    Routes.ReviewADatasetFollowsFairAndCarePrinciples,
+    flow(
+      Effect.succeed,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(ReviewADatasetFlow.FollowsFairAndCarePrinciplesSubmission),
+    ),
+  ),
 ]).pipe(
   HttpRouter.use(
     HttpMiddleware.make(app =>
