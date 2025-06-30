@@ -4,6 +4,14 @@
   "printWidth": 120,
   "semi": false,
   "singleQuote": true,
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "options": {
+        "parser": "typescript"
+      }
+    }
+  ],
   "plugins": [
     "@prettier/plugin-xml",
     "prettier-plugin-embed",
