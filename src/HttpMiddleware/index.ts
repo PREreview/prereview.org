@@ -18,8 +18,9 @@ import { FlashMessageSchema } from '../response.js'
 import { securityHeaders } from '../securityHeaders.js'
 import { Uuid } from '../types/index.js'
 import { UserOnboardingService } from '../user-onboarding.js'
-import { LoggedInUser, SessionId, UserSchema } from '../user.js'
+import { EnsureUserIsLoggedIn, LoggedInUser, SessionId, UserSchema } from '../user.js'
 import { detectLocale } from './DetectLocale.js'
+import { forceLogIn } from './ForceLogIn.js'
 import * as LocaleCookie from './LocaleCookie.js'
 import * as LocaleInPath from './LocaleInPath.js'
 
@@ -185,6 +186,14 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
         }),
     })
   }),
+)
+
+export const ensureUserIsLoggedIn = HttpMiddleware.make(app =>
+  pipe(
+    EnsureUserIsLoggedIn,
+    Effect.andThen(user => Effect.provideService(app, LoggedInUser, user)),
+    Effect.catchTag('UserIsNotLoggedIn', () => forceLogIn),
+  ),
 )
 
 export const removeLocaleFromPathForRouting = HttpMiddleware.make(

@@ -4,6 +4,7 @@ import {
   HttpClientRequest,
   HttpClientResponse,
   type HttpMethod,
+  HttpServerRequest,
   UrlParams,
 } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
@@ -12,7 +13,7 @@ import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { Doi, isDoi } from 'doi-ts'
 import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Tuple } from 'effect'
-import type { Response as ExpressResponse, Request } from 'express'
+import type { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
 import type * as H from 'hyper-ts'
@@ -486,6 +487,10 @@ export const httpClientResponseError = (): fc.Arbitrary<HttpClientError.Response
 
 export const httpClientError = (): fc.Arbitrary<HttpClientError.HttpClientError> =>
   fc.oneof(httpClientRequestError(), httpClientResponseError())
+
+export const httpServerRequest = (
+  ...args: Parameters<typeof fetchRequest>
+): fc.Arbitrary<HttpServerRequest.HttpServerRequest> => fetchRequest(...args).map(HttpServerRequest.fromWeb)
 
 export const cookieName = (): fc.Arbitrary<string> => fc.lorem({ maxCount: 1 })
 
@@ -1335,6 +1340,27 @@ export const cacheableStatusCode = (): fc.Arbitrary<CacheableStatusCodes> => sta
 
 export const nonCacheableStatusCode = (): fc.Arbitrary<NonCacheableStatusCodes> => statusCode().filter(isNonCacheable)
 
+export const fetchRequest = ({
+  headers: headers_,
+  method: method_,
+  url: url_,
+}: {
+  headers?: fc.Arbitrary<Headers>
+  method?: fc.Arbitrary<string>
+  url?: fc.Arbitrary<URL>
+} = {}): fc.Arbitrary<Request> =>
+  fc
+    .record({
+      headers: headers_ ?? headers(),
+      method: method_ ?? requestMethod(),
+      url: url_ ?? url(),
+    })
+    .map(args => {
+      return Object.defineProperties(new Request(args.url, args), {
+        [fc.toStringMethod]: { value: () => fc.stringify({ ...args, headers: { ...args.headers } }) },
+      })
+    })
+
 export const fetchResponse = ({
   headers: headers_,
   status,
@@ -1386,7 +1412,7 @@ export const request = ({
   headers?: fc.Arbitrary<RequestHeaders>
   method?: fc.Arbitrary<RequestMethod>
   path?: fc.Arbitrary<string>
-} = {}): fc.Arbitrary<Request> =>
+} = {}): fc.Arbitrary<ExpressRequest> =>
   fc
     .record({
       body: body ?? constant(undefined),
