@@ -1,4 +1,4 @@
-import { type HttpMethod, HttpMiddleware, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { type HttpMethod, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Effect, flow, identity, Option, pipe, Record, Struct } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
@@ -9,6 +9,7 @@ import { EdiaStatementPage } from '../EdiaStatementPage.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { FundingPage } from '../FundingPage.js'
 import { HowToUsePage } from '../HowToUsePage.js'
+import * as HttpMiddleware from '../HttpMiddleware/index.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
 import { MenuPage } from '../MenuPage/index.js'
 import { PageNotFound } from '../PageNotFound/index.js'
@@ -44,7 +45,6 @@ const MakeStaticRoute = <E, R>(
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
 
 const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
-  MakeStaticRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage),
   MakeStaticRoute('GET', Routes.ReviewThisDatasetStartNow, ReviewADatasetFlow.StartNow),
   MakeRoute(
     'GET',
@@ -61,6 +61,8 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
     ),
   ),
 ]).pipe(
+  HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
+  HttpRouter.append(MakeStaticRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage)),
   HttpRouter.use(
     HttpMiddleware.make(app =>
       pipe(

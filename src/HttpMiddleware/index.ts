@@ -24,7 +24,7 @@ import { forceLogIn } from './ForceLogIn.js'
 import * as LocaleCookie from './LocaleCookie.js'
 import * as LocaleInPath from './LocaleInPath.js'
 
-export const { logger } = HttpMiddleware
+export const { logger, make, withLoggerDisabled } = HttpMiddleware
 
 export const removeTrailingSlashes = HttpMiddleware.make(app =>
   Effect.gen(function* () {

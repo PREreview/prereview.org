@@ -4,13 +4,14 @@ import type { Locale } from '../../Context.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import type * as Response from '../../response.js'
 import type { Uuid } from '../../types/index.js'
+import type { LoggedInUser } from '../../user.js'
 
 export const FollowsFairAndCarePrinciplesQuestion = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
 }: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, Locale> => HavingProblemsPage
+}): Effect.Effect<Response.Response, never, Locale | LoggedInUser> => HavingProblemsPage
 
 export const FollowsFairAndCarePrinciplesSubmission = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,4 +21,4 @@ export const FollowsFairAndCarePrinciplesSubmission = ({
 }: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, Locale> => HavingProblemsPage
+}): Effect.Effect<Response.Response, never, Locale | LoggedInUser> => HavingProblemsPage

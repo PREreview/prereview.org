@@ -6,17 +6,17 @@ import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import { Doi, Uuid } from '../../types/index.js'
-import { EnsureUserIsLoggedIn } from '../../user.js'
+import { LoggedInUser } from '../../user.js'
 import { CarryOnPage } from './CarryOnPage.js'
 
 export const StartNow: Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | Uuid.GenerateUuid
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Uuid.GenerateUuid
 > = Effect.fn(
   function* () {
     const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-    const user = yield* EnsureUserIsLoggedIn
+    const user = yield* LoggedInUser
 
     const reviewId = yield* DatasetReviews.findInProgressReviewForADataset(user.orcid, datasetId)
 
@@ -37,6 +37,5 @@ export const StartNow: Effect.Effect<
     DatasetReviewWasAlreadyStarted: () => HavingProblemsPage,
     UnableToHandleCommand: () => HavingProblemsPage,
     UnableToQuery: () => HavingProblemsPage,
-    UserIsNotLoggedIn: () => Effect.succeed(Response.LogInResponse({ location: Routes.ReviewThisDatasetStartNow })),
   }),
 )()

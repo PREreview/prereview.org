@@ -4,27 +4,30 @@ import { Effect } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
 import * as _ from '../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/index.js'
+import { LoggedInUser } from '../../src/user.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
-test.prop([fc.uuid(), fc.supportedLocale()])('FollowsFairAndCarePrinciplesQuestion', (datasetReviewId, locale) =>
-  Effect.gen(function* () {
-    const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
+test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+  'FollowsFairAndCarePrinciplesQuestion',
+  (datasetReviewId, locale, user) =>
+    Effect.gen(function* () {
+      const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.SERVICE_UNAVAILABLE,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.SERVICE_UNAVAILABLE,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(Effect.provideService(Locale, locale), Effect.provideService(LoggedInUser, user), EffectTest.run),
 )
 
-test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale()])(
+test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
   'FollowsFairAndCarePrinciplesSubmission',
-  (datasetReviewId, body, locale) =>
+  (datasetReviewId, body, locale, user) =>
     Effect.gen(function* () {
       const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
 
@@ -36,5 +39,5 @@ test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale()])(
         skipToLabel: 'main',
         js: [],
       })
-    }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+    }).pipe(Effect.provideService(Locale, locale), Effect.provideService(LoggedInUser, user), EffectTest.run),
 )

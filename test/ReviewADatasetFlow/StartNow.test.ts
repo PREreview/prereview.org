@@ -108,23 +108,6 @@ describe('StartNow', () => {
       EffectTest.run,
     ),
   )
-
-  test.prop([fc.supportedLocale()])('when the user is not logged in', locale =>
-    Effect.gen(function* () {
-      const actual = yield* _.StartNow
-
-      expect(actual).toStrictEqual({
-        _tag: 'LogInResponse',
-        location: Routes.ReviewThisDatasetStartNow,
-      })
-    }).pipe(
-      Effect.provide(commandsLayer()),
-      Effect.provide(queriesLayer()),
-      Effect.provideService(Locale, locale),
-      Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
-      EffectTest.run,
-    ),
-  )
 })
 
 const commandsLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewCommands.Service>) =>
