@@ -615,6 +615,7 @@ article {
 
 :--heading {
   inline-size: fit-content;
+  max-inline-size: 100%;
   font-weight: 700;
   line-height: 1.2;
   text-wrap-style: pretty;
