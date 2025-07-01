@@ -73,6 +73,7 @@ describe('constructPageUrls', () => {
       ],
       {
         examples: [
+          [['en-US', 'http://example.com', '/', 'http://example.com/en-us']],
           [['en-US', 'http://example.com', '/about', 'http://example.com/en-us/about']],
           [['pt-BR', 'http://example.com', '/about', 'http://example.com/pt-br/about']],
           [['en-US', 'http://example.com', '/reviews?page=2', 'http://example.com/en-us/reviews?page=2']],
