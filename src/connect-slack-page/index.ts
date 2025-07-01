@@ -19,7 +19,7 @@ import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../ro
 import { type AddToSessionEnv, type PopFromSessionEnv, addToSession, popFromSession } from '../session.js'
 import { type EditSlackUserIdEnv, saveSlackUserId } from '../slack-user-id.js'
 import { type IsSlackUserEnv, isSlackUser } from '../slack-user.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { NonEmptyStringC } from '../types/NonEmptyString.js'
 import { type GenerateUuidEnv, generateUuidIO } from '../types/uuid.js'
 import type { User } from '../user.js'
 import { accessDeniedMessage } from './access-denied-message.js'

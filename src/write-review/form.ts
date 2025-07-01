@@ -29,8 +29,8 @@ import {
   writeReviewUseOfAiMatch,
 } from '../routes.js'
 import { EmailAddressC } from '../types/email-address.js'
+import { NonEmptyStringC } from '../types/NonEmptyString.js'
 import type { PreprintId } from '../types/preprint-id.js'
-import { NonEmptyStringC } from '../types/string.js'
 
 export type Form = C.TypeOf<typeof FormC>
 

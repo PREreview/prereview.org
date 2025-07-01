@@ -6,8 +6,8 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
 import type { ClubId } from '../types/club-id.js'
 import type { FieldId } from '../types/field.js'
+import type { NonEmptyString } from '../types/NonEmptyString.js'
 import type { PreprintId } from '../types/preprint-id.js'
-import type { NonEmptyString } from '../types/string.js'
 import type { SubfieldId } from '../types/subfield.js'
 
 import PlainDate = Temporal.PlainDate

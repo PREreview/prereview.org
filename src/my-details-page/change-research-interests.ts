@@ -10,7 +10,7 @@ import type { SupportedLocale } from '../locales/index.js'
 import { deleteResearchInterests, getResearchInterests, saveResearchInterests } from '../research-interests.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { NonEmptyStringC } from '../types/NonEmptyString.js'
 import type { User } from '../user.js'
 import { createFormPage } from './change-research-interests-form-page.js'
 

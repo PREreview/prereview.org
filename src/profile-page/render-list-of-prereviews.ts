@@ -7,7 +7,7 @@ import { type SupportedLocale, translate } from '../locales/index.js'
 import * as PreprintServers from '../PreprintServers/index.js'
 import { reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
-import type { NonEmptyString } from '../types/string.js'
+import type { NonEmptyString } from '../types/NonEmptyString.js'
 import { getSubfieldName } from '../types/subfield.js'
 import type { Prereviews } from './prereviews.js'
 

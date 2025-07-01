@@ -5,7 +5,7 @@ import * as IOE from 'fp-ts/lib/IOEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import { v4 } from 'uuid-ts'
-import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
 
 export type EnvVars = D.TypeOf<typeof EnvD>
 

@@ -83,7 +83,7 @@ import { PublicUrl } from '../src/public-url.js'
 import { SlackApiConfig } from '../src/slack.js'
 import * as TemplatePage from '../src/TemplatePage.js'
 import { EmailAddress } from '../src/types/email-address.js'
-import type { NonEmptyString } from '../src/types/string.js'
+import type { NonEmptyString } from '../src/types/NonEmptyString.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
 import { ZenodoOrigin } from '../src/Zenodo/CommunityRecords.js'
 import Logger = L.Logger

@@ -13,9 +13,9 @@ import type { Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewW
 import type { RecentPrereviews } from '../reviews-page/index.js'
 import type { ClubId } from '../types/club-id.js'
 import type { FieldId } from '../types/field.js'
+import type { NonEmptyString } from '../types/NonEmptyString.js'
 import type { PreprintId } from '../types/preprint-id.js'
 import type { ProfileId } from '../types/profile-id.js'
-import type { NonEmptyString } from '../types/string.js'
 import type { SubfieldId } from '../types/subfield.js'
 import type { User } from '../user.js'
 import {

@@ -11,7 +11,7 @@ import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
 import type { EmailAddress } from '../../types/email-address.js'
-import type { NonEmptyString } from '../../types/string.js'
+import type { NonEmptyString } from '../../types/NonEmptyString.js'
 import { backNav, prereviewOfSuffix } from '../shared-elements.js'
 
 export function addAuthorForm({

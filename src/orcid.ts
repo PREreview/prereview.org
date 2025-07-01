@@ -12,7 +12,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import { timeoutRequest, useStaleCache } from './fetch.js'
-import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
 
 export interface OrcidApiEnv {
   readonly orcidApiUrl: URL

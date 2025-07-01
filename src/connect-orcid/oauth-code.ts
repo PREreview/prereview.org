@@ -13,7 +13,7 @@ import { maybeGetOrcidToken, saveOrcidToken } from '../orcid-token.js'
 import { toUrl } from '../public-url.js'
 import { FlashMessageResponse } from '../response.js'
 import { connectOrcidMatch, myDetailsMatch } from '../routes.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { NonEmptyStringC } from '../types/NonEmptyString.js'
 import type { User } from '../user.js'
 import { connectFailureMessage } from './failure-message.js'
 

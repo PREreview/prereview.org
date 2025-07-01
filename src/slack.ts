@@ -14,7 +14,7 @@ import { URL } from 'url'
 import { timeoutRequest } from './fetch.js'
 import type { SlackUserId } from './slack-user-id.js'
 import type { SlackUser } from './slack-user.js'
-import { NonEmptyStringC } from './types/string.js'
+import { NonEmptyStringC } from './types/NonEmptyString.js'
 
 export class SlackApiConfig extends Context.Tag('SlackApiConfig')<
   SlackApiConfig,

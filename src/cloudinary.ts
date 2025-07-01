@@ -17,7 +17,7 @@ import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { EnvFor } from './Fpts.js'
 import type { PublicUrlEnv } from './public-url.js'
-import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
 
 export class CloudinaryApiConfig extends Context.Tag('CloudinaryApiConfig')<
   CloudinaryApiConfig,

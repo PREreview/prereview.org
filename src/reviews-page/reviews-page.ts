@@ -10,7 +10,7 @@ import { PageResponse } from '../response.js'
 import { reviewMatch, reviewsMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import { type FieldId, fieldIds, getFieldName } from '../types/field.js'
-import type { NonEmptyString } from '../types/string.js'
+import type { NonEmptyString } from '../types/NonEmptyString.js'
 import { getSubfieldName } from '../types/subfield.js'
 import type { RecentPrereviews } from './recent-prereviews.js'
 

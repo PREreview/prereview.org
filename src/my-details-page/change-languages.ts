@@ -10,7 +10,7 @@ import { deleteLanguages, getLanguages, saveLanguages } from '../languages.js'
 import type { SupportedLocale } from '../locales/index.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { NonEmptyStringC } from '../types/NonEmptyString.js'
 import type { User } from '../user.js'
 import { createFormPage } from './change-languages-form-page.js'
 

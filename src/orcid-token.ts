@@ -4,7 +4,7 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
 
 export interface OrcidToken {
   readonly accessToken: NonEmptyString

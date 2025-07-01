@@ -3,7 +3,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import { RawHtmlC } from '../html.js'
 import { EmailAddressC } from '../types/email-address.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { NonEmptyStringC } from '../types/NonEmptyString.js'
 import type { Form } from './form.js'
 
 export type CompletedForm = C.TypeOf<typeof CompletedFormC>

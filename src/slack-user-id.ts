@@ -3,7 +3,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import type { Orcid } from 'orcid-id-ts'
-import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
+import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
 
 export interface SlackUserId {
   readonly accessToken: NonEmptyString

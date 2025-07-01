@@ -11,8 +11,8 @@ import {
 import { html } from '../src/html.js'
 import { DefaultLocale } from '../src/locales/index.js'
 import { EmailAddress } from '../src/types/email-address.js'
+import type { NonEmptyString } from '../src/types/NonEmptyString.js'
 import type { Pseudonym } from '../src/types/pseudonym.js'
-import type { NonEmptyString } from '../src/types/string.js'
 import { expect, test } from './base.js'
 
 test('email-verification HTML looks right', async ({ page }) => {

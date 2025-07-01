@@ -13,7 +13,7 @@ import {
   writeReviewRemoveAuthorMatch,
 } from '../../routes.js'
 import type { EmailAddress } from '../../types/email-address.js'
-import type { NonEmptyString } from '../../types/string.js'
+import type { NonEmptyString } from '../../types/NonEmptyString.js'
 import { backNav, prereviewOfSuffix } from '../shared-elements.js'
 
 export function addAuthorsForm({

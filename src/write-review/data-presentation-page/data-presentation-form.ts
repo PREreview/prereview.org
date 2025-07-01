@@ -10,7 +10,7 @@ import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewDataPresentationMatch, writeReviewResultsSupportedMatch } from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
-import type { NonEmptyString } from '../../types/string.js'
+import type { NonEmptyString } from '../../types/NonEmptyString.js'
 import { prereviewOfSuffix } from '../shared-elements.js'
 
 export interface DataPresentationForm {

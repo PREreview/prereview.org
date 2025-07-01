@@ -4,7 +4,7 @@ import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { RecentPrereviews } from '../../src/reviews-page/index.js'
 import { createPage, emptyPage } from '../../src/reviews-page/reviews-page.js'
-import type { NonEmptyString } from '../../src/types/string.js'
+import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate

@@ -10,7 +10,7 @@ import type { SupportedLocale } from '../locales/index.js'
 import { deleteLocation, getLocation, saveLocation } from '../location.js'
 import { LogInResponse, RedirectResponse } from '../response.js'
 import { myDetailsMatch } from '../routes.js'
-import { NonEmptyStringC } from '../types/string.js'
+import { NonEmptyStringC } from '../types/NonEmptyString.js'
 import type { User } from '../user.js'
 import { createFormPage } from './change-location-form-page.js'
 

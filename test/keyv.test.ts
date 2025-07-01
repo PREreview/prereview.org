@@ -9,7 +9,7 @@ import { ContactEmailAddressC } from '../src/contact-email-address.js'
 import * as _ from '../src/keyv.js'
 import { OrcidTokenC } from '../src/orcid-token.js'
 import { SlackUserIdC } from '../src/slack-user-id.js'
-import { NonEmptyStringC, isNonEmptyString } from '../src/types/string.js'
+import { NonEmptyStringC, isNonEmptyString } from '../src/types/NonEmptyString.js'
 import { UserOnboardingC } from '../src/user-onboarding.js'
 import * as fc from './fc.js'
 

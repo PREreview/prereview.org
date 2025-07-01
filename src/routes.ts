@@ -11,9 +11,9 @@ import * as FptsToEffect from './FptsToEffect.js'
 import { ClubIdC } from './types/club-id.js'
 import { isFieldId } from './types/field.js'
 import { ProfileId, Uuid } from './types/index.js'
+import { NonEmptyStringC } from './types/NonEmptyString.js'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './types/preprint-id.js'
 import { PseudonymC } from './types/pseudonym.js'
-import { NonEmptyStringC } from './types/string.js'
 import { UuidC } from './types/uuid.js'
 
 export interface Route<A extends { readonly [K in keyof A]: unknown }> {

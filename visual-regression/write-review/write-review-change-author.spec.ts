@@ -5,7 +5,7 @@ import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { EmailAddress } from '../../src/types/email-address.js'
-import type { NonEmptyString } from '../../src/types/string.js'
+import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { changeAuthorForm } from '../../src/write-review/change-author-page/change-author-form.js'
 import { expect, test } from '../base.js'
 

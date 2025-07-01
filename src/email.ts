@@ -18,8 +18,8 @@ import {
   writeReviewVerifyEmailAddressMatch,
 } from './routes.js'
 import { EmailAddress } from './types/email-address.js'
+import type { NonEmptyString } from './types/NonEmptyString.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
-import type { NonEmptyString } from './types/string.js'
 import type { User } from './user.js'
 
 export interface SendEmailEnv {
