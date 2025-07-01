@@ -1,5 +1,5 @@
 import { HashMap, HashSet, Option, pipe, Tuple } from 'effect'
-import { SupportedLocales, type SupportedLocale } from '../locales/index.js'
+import { UserSelectableLocales, type SupportedLocale } from '../locales/index.js'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../response.js'
 
 export interface PageUrls {
@@ -18,7 +18,7 @@ export const constructPageUrls = (
     canonical => ({
       canonical,
       localeUrls: pipe(
-        SupportedLocales,
+        UserSelectableLocales,
         HashSet.map(locale =>
           Tuple.make(
             locale,

@@ -56,7 +56,7 @@ import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as t
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
 import type { JapanLinkCenterPreprintId } from '../src/JapanLinkCenter/PreprintId.js'
 import type { Languages } from '../src/languages.js'
-import { type SupportedLocale, SupportedLocales } from '../src/locales/index.js'
+import { type SupportedLocale, SupportedLocales, UserSelectableLocales } from '../src/locales/index.js'
 import type { Location } from '../src/location.js'
 import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.js'
@@ -273,6 +273,9 @@ export const locale = (): fc.Arbitrary<string> =>
 
 export const supportedLocale = (): fc.Arbitrary<SupportedLocale> =>
   constantFrom(...Array.fromIterable(SupportedLocales))
+
+export const userSelectableLocale = (): fc.Arbitrary<SupportedLocale> =>
+  constantFrom(...Array.fromIterable(UserSelectableLocales))
 
 export const pageResponse = ({
   allowRobots,

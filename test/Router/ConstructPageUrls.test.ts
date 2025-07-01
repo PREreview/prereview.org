@@ -2,7 +2,7 @@ import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { HashMap, HashSet, Option, Tuple } from 'effect'
 import { constructPageUrls } from '../../src/Router/ConstructPageUrls.js'
-import { SupportedLocales } from '../../src/locales/index.js'
+import { UserSelectableLocales } from '../../src/locales/index.js'
 import type { PageResponse } from '../../src/response.js'
 import * as fc from '../fc.js'
 
@@ -47,11 +47,11 @@ describe('constructPageUrls', () => {
 
   describe('localeUrls', () => {
     it.prop([fc.url().map(url => Tuple.make(url.origin, `${url.pathname}${url.search}`))])(
-      'constructs a url for each supported locale',
+      'constructs a url for each selectable locale',
       ([origin, pathAndQueryString]) => {
         const pageUrls = constructPageUrls({} as unknown as PageResponse, origin, pathAndQueryString)
 
-        expect(HashMap.size(pageUrls.localeUrls)).toBe(HashSet.size(SupportedLocales))
+        expect(HashMap.size(pageUrls.localeUrls)).toBe(HashSet.size(UserSelectableLocales))
       },
     )
 
@@ -59,7 +59,7 @@ describe('constructPageUrls', () => {
       [
         fc
           .tuple(
-            fc.supportedLocale(),
+            fc.userSelectableLocale(),
             fc.url().filter(url => url.pathname !== '/'),
           )
           .map(([locale, url]) =>
@@ -80,7 +80,7 @@ describe('constructPageUrls', () => {
           [['en-US', 'http://example.com', '/?foo=bar', 'http://example.com/en-us?foo=bar']],
         ],
       },
-    )('constructs the url for each supported locale', ([locale, origin, pathAndQueryString, expected]) => {
+    )('constructs the url for each selectable locale', ([locale, origin, pathAndQueryString, expected]) => {
       const pageUrls = constructPageUrls({} as unknown as PageResponse, origin, pathAndQueryString)
 
       expect(HashMap.unsafeGet(pageUrls.localeUrls, locale).href).toStrictEqual(expected)
