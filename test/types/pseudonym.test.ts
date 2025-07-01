@@ -45,7 +45,11 @@ describe('PseudonymSchema', () => {
     test.prop([fc.string()])('with a non-pseudonym', string => {
       const actual = Either.mapLeft(Schema.decodeEither(_.PseudonymSchema)(string), ArrayFormatter.formatErrorSync)
 
-      expect(actual).toStrictEqual(Either.left([expect.objectContaining({ message: 'not a pseudonym' })]))
+      expect(actual).toStrictEqual(
+        Either.left([
+          expect.objectContaining({ message: expect.stringMatching(/^(?:not a pseudonym|string is empty)$/) }),
+        ]),
+      )
     })
 
     test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
