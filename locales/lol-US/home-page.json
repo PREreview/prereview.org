@@ -11,6 +11,42 @@
   "requestReviewButton": {
     "message": "crwdns1846:0crwdne1846:0"
   },
+  "trainingTitle": {
+    "message": "crwdns5942:0crwdne5942:0"
+  },
+  "trainingText": {
+    "message": "crwdns5944:0crwdne5944:0"
+  },
+  "trainingLink": {
+    "message": "crwdns5946:0crwdne5946:0"
+  },
+  "liveReviewsTitle": {
+    "message": "crwdns5948:0crwdne5948:0"
+  },
+  "liveReviewsText": {
+    "message": "crwdns5950:0crwdne5950:0"
+  },
+  "liveReviewsLink": {
+    "message": "crwdns5952:0crwdne5952:0"
+  },
+  "clubsTitle": {
+    "message": "crwdns5954:0crwdne5954:0"
+  },
+  "clubsText": {
+    "message": "crwdns5956:0crwdne5956:0"
+  },
+  "clubsLink": {
+    "message": "crwdns5958:0crwdne5958:0"
+  },
+  "missionTitle": {
+    "message": "crwdns5960:0crwdne5960:0"
+  },
+  "missionText": {
+    "message": "crwdns5962:0crwdne5962:0"
+  },
+  "missionLink": {
+    "message": "crwdns5964:0crwdne5964:0"
+  },
   "overviewUnderservedResearchersTitle": {
     "message": "crwdns1848:0crwdne1848:0"
   },
