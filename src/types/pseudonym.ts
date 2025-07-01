@@ -1,17 +1,33 @@
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
-import { pipe, Schema } from 'effect'
+import { type Brand, Either, pipe, Schema } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import type { NonEmptyString } from './NonEmptyString.js'
+import * as EffectToFpts from '../EffectToFpts.js'
+import { type NonEmptyString, NonEmptyStringSchema } from './NonEmptyString.js'
 
-export type Pseudonym = NonEmptyString & PseudonymBrand
+const PseudonymBrand: unique symbol = Symbol.for('Pseudonym')
 
-export const PseudonymC = C.fromDecoder(pipe(D.string, D.refine(isPseudonym, 'Pseudonym')))
+export type Pseudonym = NonEmptyString & Brand.Brand<typeof PseudonymBrand>
 
-export const PseudonymSchema: Schema.Schema<Pseudonym, string> = pipe(
-  Schema.String,
+export const PseudonymC = C.fromDecoder(
+  pipe(
+    D.string,
+    D.parse(s =>
+      EffectToFpts.either(
+        Either.try({
+          try: () => PseudonymSchema.make(s),
+          catch: () => D.error(s, 'Pseudonym'),
+        }),
+      ),
+    ),
+  ),
+)
+
+export const PseudonymSchema = pipe(
+  NonEmptyStringSchema,
   Schema.filter(isPseudonym, { message: () => 'not a pseudonym' }),
+  Schema.brand(PseudonymBrand),
 )
 
 export function isPseudonym(value: string): value is Pseudonym {
@@ -22,8 +38,4 @@ export function isPseudonym(value: string): value is Pseudonym {
   }
 
   return colors.includes(parts[0]) && animals.map(animal => capitalCase(animal)).includes(parts[1])
-}
-
-interface PseudonymBrand {
-  readonly Pseudonym: unique symbol
 }
