@@ -1,8 +1,10 @@
+import { Option } from 'effect'
 import { html, plainText } from '../../html.js'
 import { PageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
+import type { User } from '../../user.js'
 
-export const ReviewThisDatasetPage = () => {
+export const ReviewThisDatasetPage = ({ user }: { user: Option.Option<User> }) => {
   return PageResponse({
     title: plainText`Review a dataset`,
     main: html`
@@ -48,6 +50,26 @@ export const ReviewThisDatasetPage = () => {
         <cite>Metadata collected from 500 articles in the field of ecology and evolution</cite>. We’ll ask questions
         about the dataset to create a structured review.
       </p>
+
+      ${Option.match(user, {
+        onSome: () => '',
+        onNone: () => html`
+          <h2>Before you start</h2>
+
+          <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
+
+          <details>
+            <summary><span>What is an ORCID&nbsp;iD?</span></summary>
+
+            <div>
+              <p>
+                An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a unique identifier that distinguishes
+                you from everyone with the same or similar name.
+              </p>
+            </div>
+          </details>
+        `,
+      })}
 
       <a href="${Routes.ReviewThisDatasetStartNow}" role="button" draggable="false">Start now</a>
     `,

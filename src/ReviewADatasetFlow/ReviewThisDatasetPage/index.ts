@@ -24,7 +24,7 @@ export const ReviewThisDatasetPage: Effect.Effect<
     })
 
     return Option.match(reviewId, {
-      onNone: () => MakeResponse(),
+      onNone: () => MakeResponse({ user }),
       onSome: () => Response.RedirectResponse({ location: Routes.ReviewThisDatasetStartNow }),
     })
   },
