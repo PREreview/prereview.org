@@ -1,7 +1,7 @@
 import { Orcid } from 'orcid-id-ts'
 import { html, plainText } from '../src/html.js'
 import { PageResponse } from '../src/response.js'
-import type { Pseudonym } from '../src/types/pseudonym.js'
+import type { Pseudonym } from '../src/types/Pseudonym.js'
 import type { User } from '../src/user.js'
 import { expect, test } from './base.js'
 

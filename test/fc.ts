@@ -86,7 +86,7 @@ import {
   isNonCacheable,
 } from '../src/status-code.js'
 import { type ClubId, clubIds } from '../src/types/club-id.js'
-import { EmailAddress } from '../src/types/email-address.js'
+import { EmailAddress } from '../src/types/EmailAddress.js'
 import { type FieldId, fieldIds } from '../src/types/field.js'
 import { OrcidLocale, ProfileId } from '../src/types/index.js'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.js'
@@ -133,7 +133,7 @@ import {
   type ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/types/preprint-id.js'
-import type { Pseudonym } from '../src/types/pseudonym.js'
+import type { Pseudonym } from '../src/types/Pseudonym.js'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.js'
 import type { UserOnboarding } from '../src/user-onboarding.js'
 import type { User } from '../src/user.js'

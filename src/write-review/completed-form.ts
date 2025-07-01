@@ -2,7 +2,7 @@ import { pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import { RawHtmlC } from '../html.js'
-import { EmailAddressC } from '../types/email-address.js'
+import { EmailAddressC } from '../types/EmailAddress.js'
 import { NonEmptyStringC } from '../types/NonEmptyString.js'
 import type { Form } from './form.js'
 

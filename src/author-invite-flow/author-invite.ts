@@ -24,7 +24,7 @@ import {
 } from '../routes.js'
 import { renderDate } from '../time.js'
 import { ProfileId } from '../types/index.js'
-import { isPseudonym } from '../types/pseudonym.js'
+import { isPseudonym } from '../types/Pseudonym.js'
 import type { User } from '../user.js'
 
 export type { Prereview } from '../Prereview.js'

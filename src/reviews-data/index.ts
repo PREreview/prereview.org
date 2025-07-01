@@ -13,7 +13,7 @@ import { match, P } from 'ts-pattern'
 import type { ScietyListEnv } from '../sciety-list/index.js'
 import type { ClubId } from '../types/club-id.js'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
-import { isPseudonym } from '../types/pseudonym.js'
+import { isPseudonym } from '../types/Pseudonym.js'
 
 import PlainDate = Temporal.PlainDate
 

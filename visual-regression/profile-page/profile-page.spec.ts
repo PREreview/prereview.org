@@ -6,7 +6,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import { createPage } from '../../src/profile-page/create-page.js'
 import type { Prereviews } from '../../src/profile-page/prereviews.js'
 import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate

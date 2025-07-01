@@ -5,7 +5,7 @@ import { missingE } from '../../src/form.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { personaForm } from '../../src/request-review-flow/persona-page/persona-form.js'
 import type { ReviewRequestPreprintId } from '../../src/review-request.js'
-import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { Pseudonym } from '../../src/types/Pseudonym.js'
 import type { User } from '../../src/user.js'
 import { expect, test } from '../base.js'
 

@@ -3,7 +3,7 @@ import { Array, Equal, flow, type Option, pipe, type Record, Struct } from 'effe
 import { Eq as eqOrcid, Orcid } from 'orcid-id-ts'
 import { type Html, html } from './html.js'
 import type { ClubId } from './types/club-id.js'
-import { EmailAddress } from './types/email-address.js'
+import { EmailAddress } from './types/EmailAddress.js'
 
 import PlainDate = Temporal.PlainDate
 

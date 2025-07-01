@@ -13,7 +13,7 @@ import { isFieldId } from './types/field.js'
 import { ProfileId, Uuid } from './types/index.js'
 import { NonEmptyStringC } from './types/NonEmptyString.js'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './types/preprint-id.js'
-import { PseudonymC } from './types/pseudonym.js'
+import { PseudonymC } from './types/Pseudonym.js'
 import { UuidC } from './types/uuid.js'
 
 export interface Route<A extends { readonly [K in keyof A]: unknown }> {

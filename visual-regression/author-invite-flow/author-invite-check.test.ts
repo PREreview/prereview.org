@@ -3,7 +3,7 @@ import { Uuid } from 'uuid-ts'
 import { checkPage } from '../../src/author-invite-flow/check-page/check-page.js'
 import { failureMessage } from '../../src/author-invite-flow/check-page/failure-message.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

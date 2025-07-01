@@ -12,7 +12,7 @@ import * as Routes from '../routes.js'
 import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import { ProfileId } from '../types/index.js'
-import { isPseudonym } from '../types/pseudonym.js'
+import { isPseudonym } from '../types/Pseudonym.js'
 import type { Comment } from './comments.js'
 import type { Prereview } from './prereview.js'
 

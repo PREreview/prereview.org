@@ -3,7 +3,7 @@ import { Uuid } from 'uuid-ts'
 import { enterEmailAddressForm } from '../../src/author-invite-flow/enter-email-address-page/enter-email-address-form.js'
 import { invalidE, missingE } from '../../src/form.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import { EmailAddress } from '../../src/types/email-address.js'
+import { EmailAddress } from '../../src/types/EmailAddress.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

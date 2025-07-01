@@ -1,7 +1,7 @@
 import { pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { PseudonymProfileId } from '../types/profile-id.js'
-import type { Pseudonym } from '../types/pseudonym.js'
+import type { Pseudonym } from '../types/Pseudonym.js'
 import { type Prereviews, getPrereviews } from './prereviews.js'
 
 export interface PseudonymProfile {

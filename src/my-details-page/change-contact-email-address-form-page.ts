@@ -9,7 +9,7 @@ import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
-import type { EmailAddress } from '../types/email-address.js'
+import type { EmailAddress } from '../types/EmailAddress.js'
 
 interface ChangeContactEmailAddressForm {
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>

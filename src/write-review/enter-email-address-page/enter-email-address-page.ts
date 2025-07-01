@@ -10,7 +10,7 @@ import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewConductMatch, writeReviewEnterEmailAddressMatch } from '../../routes.js'
 import { errorPrefix } from '../../shared-translation-elements.js'
-import type { EmailAddress } from '../../types/email-address.js'
+import type { EmailAddress } from '../../types/EmailAddress.js'
 import { prereviewOfSuffix } from '../shared-elements.js'
 
 export interface EnterEmailAddressForm {

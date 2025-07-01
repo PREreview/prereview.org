@@ -8,7 +8,7 @@ import { StreamlinePageResponse } from '../../response.js'
 import type { IncompleteReviewRequest, ReviewRequestPreprintId } from '../../review-request.js'
 import { profileMatch, requestReviewCheckMatch, requestReviewPersonaMatch } from '../../routes.js'
 import { ProfileId } from '../../types/index.js'
-import { isPseudonym } from '../../types/pseudonym.js'
+import { isPseudonym } from '../../types/Pseudonym.js'
 import type { User } from '../../user.js'
 
 const visuallyHidden = (s: string) => `<span class="visually-hidden">${s}</span>`

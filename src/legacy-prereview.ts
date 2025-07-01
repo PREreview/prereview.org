@@ -16,7 +16,7 @@ import type { Uuid } from 'uuid-ts'
 import { timeoutRequest, useStaleCache } from './fetch.js'
 import { ProfileId } from './types/index.js'
 import { type IndeterminatePreprintId, type PreprintId, parsePreprintDoi } from './types/preprint-id.js'
-import { PseudonymC, isPseudonym } from './types/pseudonym.js'
+import { PseudonymC, isPseudonym } from './types/Pseudonym.js'
 import { UuidC } from './types/uuid.js'
 import type { NewPrereview } from './write-review/index.js'
 

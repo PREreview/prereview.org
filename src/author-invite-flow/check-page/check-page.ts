@@ -6,7 +6,7 @@ import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../routes.js'
 import { ProfileId } from '../../types/index.js'
-import { isPseudonym } from '../../types/pseudonym.js'
+import { isPseudonym } from '../../types/Pseudonym.js'
 import type { User } from '../../user.js'
 
 export function checkPage({

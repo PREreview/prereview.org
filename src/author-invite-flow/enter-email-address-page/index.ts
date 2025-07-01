@@ -33,7 +33,7 @@ import {
   authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePublishedMatch,
 } from '../../routes.js'
-import { EmailAddressC } from '../../types/email-address.js'
+import { EmailAddressC } from '../../types/EmailAddress.js'
 import { type GenerateUuidEnv, generateUuidIO } from '../../types/uuid.js'
 import type { User } from '../../user.js'
 import { enterEmailAddressForm } from './enter-email-address-form.js'

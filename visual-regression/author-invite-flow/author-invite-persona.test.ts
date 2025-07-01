@@ -4,7 +4,7 @@ import { Uuid } from 'uuid-ts'
 import { personaForm } from '../../src/author-invite-flow/persona-page/persona-form.js'
 import { missingE } from '../../src/form.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

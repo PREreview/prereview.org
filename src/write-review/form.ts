@@ -28,7 +28,7 @@ import {
   writeReviewShouldReadMatch,
   writeReviewUseOfAiMatch,
 } from '../routes.js'
-import { EmailAddressC } from '../types/email-address.js'
+import { EmailAddressC } from '../types/EmailAddress.js'
 import { NonEmptyStringC } from '../types/NonEmptyString.js'
 import type { PreprintId } from '../types/preprint-id.js'
 

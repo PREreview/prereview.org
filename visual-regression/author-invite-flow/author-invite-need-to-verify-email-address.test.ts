@@ -2,7 +2,7 @@ import { Uuid } from 'uuid-ts'
 import { needToVerifyEmailAddressPage } from '../../src/author-invite-flow/need-to-verify-email-address-page/need-to-verify-email-address-page.js'
 import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import { EmailAddress } from '../../src/types/email-address.js'
+import { EmailAddress } from '../../src/types/EmailAddress.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

@@ -4,7 +4,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import { checkPage } from '../../src/request-review-flow/check-page/check-page.js'
 import { failureMessage } from '../../src/request-review-flow/check-page/failure-message.js'
 import type { ReviewRequestPreprintId } from '../../src/review-request.js'
-import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
 const preprint = {

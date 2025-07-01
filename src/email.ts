@@ -17,7 +17,7 @@ import {
   verifyContactEmailAddressMatch,
   writeReviewVerifyEmailAddressMatch,
 } from './routes.js'
-import { EmailAddress } from './types/email-address.js'
+import { EmailAddress } from './types/EmailAddress.js'
 import type { NonEmptyString } from './types/NonEmptyString.js'
 import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import type { User } from './user.js'

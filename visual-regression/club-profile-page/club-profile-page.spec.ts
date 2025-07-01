@@ -7,7 +7,7 @@ import type { Prereviews } from '../../src/club-profile-page/prereviews.js'
 import { html, rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { ClubId } from '../../src/types/club-id.js'
-import { EmailAddress } from '../../src/types/email-address.js'
+import { EmailAddress } from '../../src/types/EmailAddress.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate

@@ -1,6 +1,6 @@
 import { Data, Function } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
-import type { Pseudonym } from './pseudonym.js'
+import type { Pseudonym } from './Pseudonym.js'
 
 export type ProfileId = OrcidProfileId | PseudonymProfileId
 

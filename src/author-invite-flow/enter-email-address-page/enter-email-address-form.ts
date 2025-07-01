@@ -10,7 +10,7 @@ import { translate, type SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteEnterEmailAddressMatch } from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
-import type { EmailAddress } from '../../types/email-address.js'
+import type { EmailAddress } from '../../types/EmailAddress.js'
 
 export interface EnterEmailAddressForm {
   readonly useInvitedAddress: E.Either<MissingE, 'yes' | 'no' | undefined>

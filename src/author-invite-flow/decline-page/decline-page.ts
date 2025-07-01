@@ -12,7 +12,7 @@ import { PageResponse } from '../../response.js'
 import { authorInviteDeclineMatch, clubProfileMatch, profileMatch } from '../../routes.js'
 import { renderDate } from '../../time.js'
 import { ProfileId } from '../../types/index.js'
-import { isPseudonym } from '../../types/pseudonym.js'
+import { isPseudonym } from '../../types/Pseudonym.js'
 import type { Prereview } from './index.js'
 
 export const declinePage = ({

@@ -2,7 +2,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import { invalidE, missingE } from '../../src/form.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { createFormPage } from '../../src/my-details-page/change-contact-email-address-form-page.js'
-import { EmailAddress } from '../../src/types/email-address.js'
+import { EmailAddress } from '../../src/types/EmailAddress.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

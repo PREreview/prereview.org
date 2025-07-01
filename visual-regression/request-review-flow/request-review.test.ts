@@ -4,7 +4,7 @@ import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { requestReviewPage } from '../../src/request-review-flow/request-review-page/request-review-page.js'
-import type { Pseudonym } from '../../src/types/pseudonym.js'
+import type { Pseudonym } from '../../src/types/Pseudonym.js'
 import type { User } from '../../src/user.js'
 import { expect, test } from '../base.js'
 

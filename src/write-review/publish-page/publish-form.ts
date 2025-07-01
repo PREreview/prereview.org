@@ -28,7 +28,7 @@ import {
   writeReviewUseOfAiMatch,
 } from '../../routes.js'
 import { ProfileId } from '../../types/index.js'
-import { isPseudonym } from '../../types/pseudonym.js'
+import { isPseudonym } from '../../types/Pseudonym.js'
 import type { User } from '../../user.js'
 import type { CompletedForm } from '../completed-form.js'
 import { backNav } from '../shared-elements.js'

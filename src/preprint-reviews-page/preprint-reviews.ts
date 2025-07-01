@@ -15,7 +15,7 @@ import { isReviewRequestPreprintId } from '../review-request.js'
 import { preprintReviewsMatch, profileMatch, requestReviewMatch, reviewMatch, writeReviewMatch } from '../routes.js'
 import { renderDate } from '../time.js'
 import { ProfileId } from '../types/index.js'
-import { isPseudonym } from '../types/pseudonym.js'
+import { isPseudonym } from '../types/Pseudonym.js'
 import type { Prereview } from './prereviews.js'
 import type { RapidPrereview } from './rapid-prereviews.js'
 
