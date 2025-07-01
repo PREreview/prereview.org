@@ -83,7 +83,7 @@ import { PublicUrl } from '../src/public-url.js'
 import { SlackApiConfig } from '../src/slack.js'
 import * as TemplatePage from '../src/TemplatePage.js'
 import { EmailAddress } from '../src/types/EmailAddress.js'
-import type { NonEmptyString } from '../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../src/types/NonEmptyString.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
 import { ZenodoOrigin } from '../src/Zenodo/CommunityRecords.js'
 import Logger = L.Logger
@@ -1292,7 +1292,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           orcidTokenStore: new Keyv(),
           researchInterestsStore,
           reviewRequestStore,
-          scietyListToken: 'secret' as NonEmptyString,
+          scietyListToken: NonEmptyString('secret'),
           sessionCookie: 'session',
           sessionStore: new Keyv(),
           slackApiToken: '',
@@ -2104,7 +2104,7 @@ export const invitedToBeAnAuthor: Fixtures<
 
     const email = createAuthorInviteEmail(
       {
-        name: 'Josiah Carberry' as NonEmptyString,
+        name: NonEmptyString('Josiah Carberry'),
         emailAddress: EmailAddress('jcarberry@example.com'),
       },
       Uuid('bec5727e-9992-4f3b-85be-6712df617b9d'),

@@ -12,7 +12,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import { timeoutRequest, useStaleCache } from './fetch.js'
-import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
+import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
 
 export interface OrcidApiEnv {
   readonly orcidApiUrl: URL
@@ -67,9 +67,8 @@ export const getNameFromOrcid = flow(
     () => 'unavailable' as const,
     personalDetails =>
       match(personalDetails)
-        .with(
-          { name: { 'given-names': { value: P.string }, 'family-name': { value: P.string } } },
-          ({ name }) => `${name['given-names'].value} ${name['family-name'].value}` as NonEmptyString,
+        .with({ name: { 'given-names': { value: P.string }, 'family-name': { value: P.string } } }, ({ name }) =>
+          NonEmptyString(`${name['given-names'].value} ${name['family-name'].value}`),
         )
         .with({ name: { 'given-names': { value: P.string } } }, ({ name }) => name['given-names'].value)
         .with({ name: null }, { 'error-code': P.union(9018, 9044) }, () => undefined)

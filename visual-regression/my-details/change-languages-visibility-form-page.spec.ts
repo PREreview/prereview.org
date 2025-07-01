@@ -1,11 +1,11 @@
 import { DefaultLocale } from '../../src/locales/index.js'
 import { createFormPage } from '../../src/my-details-page/change-languages-visibility-form-page.js'
-import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = createFormPage({
-    languages: { value: 'Ut lobortis turpis et dolor tincidunt suscipit.' as NonEmptyString, visibility: 'public' },
+    languages: { value: NonEmptyString('Ut lobortis turpis et dolor tincidunt suscipit.'), visibility: 'public' },
     locale: DefaultLocale,
   })
 

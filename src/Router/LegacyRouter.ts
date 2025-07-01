@@ -1,5 +1,5 @@
 import { type HttpMethod, HttpRouter } from '@effect/platform'
-import type { Doi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
@@ -32,7 +32,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
       Effect.andThen(({ suffix }) =>
         movedPermanently(
           format(Routes.preprintReviewsMatch.formatter, {
-            id: { _tag: 'biorxiv-medrxiv', value: `10.1101/${suffix}` as Doi<'1101'> },
+            id: { _tag: 'biorxiv-medrxiv', value: Doi(`10.1101/${suffix}`) },
           }),
         ),
       ),
@@ -46,7 +46,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
       Effect.andThen(({ suffix }) =>
         movedPermanently(
           format(Routes.preprintReviewsMatch.formatter, {
-            id: { _tag: 'zenodo-africarxiv', value: `10.5281/${suffix}` as Doi<'5281'> },
+            id: { _tag: 'zenodo-africarxiv', value: Doi(`10.5281/${suffix}`) },
           }),
         ),
       ),

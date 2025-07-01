@@ -4,7 +4,7 @@ import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { RecentPrereviews } from '../../src/reviews-page/index.js'
 import { createPage, emptyPage } from '../../src/reviews-page/reviews-page.js'
-import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
@@ -29,7 +29,7 @@ test('content looks right with a query', async ({ showPage }) => {
     {
       currentPage: 1,
       totalPages: 3,
-      query: 'Josiah Carberry' as NonEmptyString,
+      query: NonEmptyString('Josiah Carberry'),
       recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
     },
     DefaultLocale,
@@ -81,7 +81,7 @@ test('content looks right when empty', async ({ showPage }) => {
 })
 
 test('content looks right when empty with a query', async ({ showPage }) => {
-  const response = emptyPage({ query: 'Josiah Carberry' as NonEmptyString }, DefaultLocale)
+  const response = emptyPage({ query: NonEmptyString('Josiah Carberry') }, DefaultLocale)
 
   const content = await showPage(response)
 

@@ -3,7 +3,7 @@ import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
-import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import type { CompletedForm } from '../../src/write-review/completed-form.js'
 import { publishedPage } from '../../src/write-review/published-page/published-page.js'
 import { expect, test } from '../base.js'
@@ -57,9 +57,9 @@ test('content looks right when there are more authors', async ({ showPage }) => 
         ...form,
         moreAuthors: 'yes',
         otherAuthors: [
-          { name: 'Jean-Baptiste Botul' as NonEmptyString, emailAddress: EmailAddress('jbbotul@example.com') },
-          { name: 'Arne Saknussemm' as NonEmptyString, emailAddress: EmailAddress('asaknussemm@example.com') },
-          { name: 'Otto Lidenbrock' as NonEmptyString, emailAddress: EmailAddress('olidenbrock@example.com') },
+          { name: NonEmptyString('Jean-Baptiste Botul'), emailAddress: EmailAddress('jbbotul@example.com') },
+          { name: NonEmptyString('Arne Saknussemm'), emailAddress: EmailAddress('asaknussemm@example.com') },
+          { name: NonEmptyString('Otto Lidenbrock'), emailAddress: EmailAddress('olidenbrock@example.com') },
         ],
       },
     },
@@ -90,7 +90,8 @@ const form = {
   moreAuthors: 'no',
   generativeAiIdeas: 'no',
   competingInterests: 'yes',
-  competingInterestsDetails:
-    'In dictum consequat nibh, quis dapibus justo consequat quis. Duis nec mi orci. Phasellus tincidunt erat vitae ex sollicitudin molestie. Mauris faucibus erat sit amet felis viverra aliquam. Quisque eget mattis ante. Nam volutpat mattis ante, porttitor porta magna auctor ut. Praesent id ipsum quis nisl suscipit feugiat at non enim. Duis placerat est id dui pulvinar, ac viverra tortor feugiat. Morbi auctor lobortis vestibulum. Nullam bibendum consequat mi. Proin accumsan eros ut eros hendrerit, quis congue eros hendrerit. Suspendisse ac gravida diam.' as NonEmptyString,
+  competingInterestsDetails: NonEmptyString(
+    'In dictum consequat nibh, quis dapibus justo consequat quis. Duis nec mi orci. Phasellus tincidunt erat vitae ex sollicitudin molestie. Mauris faucibus erat sit amet felis viverra aliquam. Quisque eget mattis ante. Nam volutpat mattis ante, porttitor porta magna auctor ut. Praesent id ipsum quis nisl suscipit feugiat at non enim. Duis placerat est id dui pulvinar, ac viverra tortor feugiat. Morbi auctor lobortis vestibulum. Nullam bibendum consequat mi. Proin accumsan eros ut eros hendrerit, quis congue eros hendrerit. Suspendisse ac gravida diam.',
+  ),
   conduct: 'yes',
 } satisfies CompletedForm

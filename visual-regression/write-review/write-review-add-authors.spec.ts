@@ -3,7 +3,7 @@ import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
-import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { addAuthorsForm } from '../../src/write-review/add-authors-page/add-authors-form.js'
 import { expect, test } from '../base.js'
 
@@ -20,7 +20,7 @@ const locale = DefaultLocale
 
 test('content looks right when there is another author', async ({ showPage }) => {
   const response = addAuthorsForm({
-    authors: [{ name: 'Josiah Carberry' as NonEmptyString, emailAddress: EmailAddress('jcarberry@example.com') }],
+    authors: [{ name: NonEmptyString('Josiah Carberry'), emailAddress: EmailAddress('jcarberry@example.com') }],
     preprint,
     locale,
   })
@@ -33,10 +33,10 @@ test('content looks right when there is another author', async ({ showPage }) =>
 test('content looks right when there are other authors', async ({ showPage }) => {
   const response = addAuthorsForm({
     authors: [
-      { name: 'Josiah Carberry' as NonEmptyString, emailAddress: EmailAddress('jcarberry@example.com') },
-      { name: 'Jean-Baptiste Botul' as NonEmptyString, emailAddress: EmailAddress('jbbotul@example.com') },
-      { name: 'Arne Saknussemm' as NonEmptyString, emailAddress: EmailAddress('asaknussemm@example.com') },
-      { name: 'Otto Lidenbrock' as NonEmptyString, emailAddress: EmailAddress('olidenbrock@example.com') },
+      { name: NonEmptyString('Josiah Carberry'), emailAddress: EmailAddress('jcarberry@example.com') },
+      { name: NonEmptyString('Jean-Baptiste Botul'), emailAddress: EmailAddress('jbbotul@example.com') },
+      { name: NonEmptyString('Arne Saknussemm'), emailAddress: EmailAddress('asaknussemm@example.com') },
+      { name: NonEmptyString('Otto Lidenbrock'), emailAddress: EmailAddress('olidenbrock@example.com') },
     ],
     preprint,
     locale,

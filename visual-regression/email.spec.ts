@@ -11,7 +11,7 @@ import {
 import { html } from '../src/html.js'
 import { DefaultLocale } from '../src/locales/index.js'
 import { EmailAddress } from '../src/types/EmailAddress.js'
-import type { NonEmptyString } from '../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../src/types/NonEmptyString.js'
 import { Pseudonym } from '../src/types/Pseudonym.js'
 import { expect, test } from './base.js'
 
@@ -134,7 +134,7 @@ test('email-verification text for a comment looks right', async ({ page }) => {
 test('author-invite HTML looks right', async ({ page }) => {
   const email = createAuthorInviteEmail(
     {
-      name: 'Josiah Carberry' as NonEmptyString,
+      name: NonEmptyString('Josiah Carberry'),
       emailAddress: EmailAddress('jcarberry@example.com'),
     },
     Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d'),
@@ -160,7 +160,7 @@ test('author-invite HTML looks right', async ({ page }) => {
 test('author-invite text looks right', async ({ page }) => {
   const email = createAuthorInviteEmail(
     {
-      name: 'Josiah Carberry' as NonEmptyString,
+      name: NonEmptyString('Josiah Carberry'),
       emailAddress: EmailAddress('jcarberry@example.com'),
     },
     Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d'),

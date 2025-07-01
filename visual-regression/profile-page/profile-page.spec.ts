@@ -5,7 +5,7 @@ import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { createPage } from '../../src/profile-page/create-page.js'
 import type { Prereviews } from '../../src/profile-page/prereviews.js'
-import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
@@ -15,7 +15,7 @@ test('content looks right', async ({ showPage }) => {
   const response = createPage(
     {
       type: 'orcid',
-      name: 'Josiah Carberry' as NonEmptyString,
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       slackUser: {
         name: 'jcarberry',
@@ -23,9 +23,9 @@ test('content looks right', async ({ showPage }) => {
         profile: new URL('http://example.com/'),
       },
       careerStage: 'late',
-      researchInterests: 'Psychoceramics' as NonEmptyString,
-      location: 'Providence, Rhode Island' as NonEmptyString,
-      languages: 'English' as NonEmptyString,
+      researchInterests: NonEmptyString('Psychoceramics'),
+      location: NonEmptyString('Providence, Rhode Island'),
+      languages: NonEmptyString('English'),
       clubs: ['asapbio-cancer-biology', 'language-club'],
       avatar: new URL('https://placehold.co/300x300'),
       isOpenForRequests: true,
@@ -43,7 +43,7 @@ test('content looks right when empty', async ({ showPage }) => {
   const response = createPage(
     {
       type: 'orcid',
-      name: 'Josiah Carberry' as NonEmptyString,
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       slackUser: undefined,
       careerStage: undefined,

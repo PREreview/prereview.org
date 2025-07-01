@@ -4,7 +4,7 @@ import { Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import * as _ from '../../src/Comments/index.js'
 import { html } from '../../src/html.js'
-import type { NonEmptyString } from '../../src/types/index.js'
+import { NonEmptyString } from '../../src/types/index.js'
 import { CommandHandlerSpecification } from '../CommandHandlerSpecification.js'
 
 const given = CommandHandlerSpecification.for({
@@ -145,12 +145,12 @@ describe('when ready for publication', () => {
     given(...minimumEventsToBeReady)
       .when(
         new _.DeclareCompetingInterests({
-          competingInterests: Option.some('Some competing interests.' as NonEmptyString.NonEmptyString),
+          competingInterests: Option.some(NonEmptyString.NonEmptyString('Some competing interests.')),
         }),
       )
       .then(
         new _.CompetingInterestsWereDeclared({
-          competingInterests: Option.some('Some competing interests.' as NonEmptyString.NonEmptyString),
+          competingInterests: Option.some(NonEmptyString.NonEmptyString('Some competing interests.')),
         }),
       ))
 

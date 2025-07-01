@@ -4,7 +4,7 @@ import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
-import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import type { User } from '../../src/user.js'
 import { publishForm } from '../../src/write-review/publish-page/publish-form.js'
@@ -107,8 +107,9 @@ test("content looks right when there's competing interests", async ({ showPage }
       moreAuthors: 'no',
       generativeAiIdeas: 'no',
       competingInterests: 'yes',
-      competingInterestsDetails:
-        'In dictum consequat nibh, quis dapibus justo consequat quis. Duis nec mi orci. Phasellus tincidunt erat vitae ex sollicitudin molestie. Mauris faucibus erat sit amet felis viverra aliquam. Quisque eget mattis ante. Nam volutpat mattis ante, porttitor porta magna auctor ut. Praesent id ipsum quis nisl suscipit feugiat at non enim. Duis placerat est id dui pulvinar, ac viverra tortor feugiat. Morbi auctor lobortis vestibulum. Nullam bibendum consequat mi. Proin accumsan eros ut eros hendrerit, quis congue eros hendrerit. Suspendisse ac gravida diam.' as NonEmptyString,
+      competingInterestsDetails: NonEmptyString(
+        'In dictum consequat nibh, quis dapibus justo consequat quis. Duis nec mi orci. Phasellus tincidunt erat vitae ex sollicitudin molestie. Mauris faucibus erat sit amet felis viverra aliquam. Quisque eget mattis ante. Nam volutpat mattis ante, porttitor porta magna auctor ut. Praesent id ipsum quis nisl suscipit feugiat at non enim. Duis placerat est id dui pulvinar, ac viverra tortor feugiat. Morbi auctor lobortis vestibulum. Nullam bibendum consequat mi. Proin accumsan eros ut eros hendrerit, quis congue eros hendrerit. Suspendisse ac gravida diam.',
+      ),
       conduct: 'yes',
     },
     user,
@@ -130,9 +131,9 @@ test('content looks right when there are other authors', async ({ showPage }) =>
       persona: 'public',
       moreAuthors: 'yes',
       otherAuthors: [
-        { name: 'Jean-Baptiste Botul' as NonEmptyString, emailAddress: EmailAddress('jbbotul@example.com') },
-        { name: 'Arne Saknussemm' as NonEmptyString, emailAddress: EmailAddress('asaknussemm@example.com') },
-        { name: 'Otto Lidenbrock' as NonEmptyString, emailAddress: EmailAddress('olidenbrock@example.com') },
+        { name: NonEmptyString('Jean-Baptiste Botul'), emailAddress: EmailAddress('jbbotul@example.com') },
+        { name: NonEmptyString('Arne Saknussemm'), emailAddress: EmailAddress('asaknussemm@example.com') },
+        { name: NonEmptyString('Otto Lidenbrock'), emailAddress: EmailAddress('olidenbrock@example.com') },
       ],
       generativeAiIdeas: 'no',
       competingInterests: 'no',
@@ -193,28 +194,33 @@ test("content looks right when it's questions with details", async ({ showPage }
       reviewType: 'questions',
       alreadyWritten: 'no',
       introductionMatches: 'yes',
-      introductionMatchesDetails:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.' as NonEmptyString,
+      introductionMatchesDetails: NonEmptyString(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
+      ),
       methodsAppropriate: 'highly-appropriate',
-      methodsAppropriateDetails: 'Proin massa ex, condimentum eu lobortis at, fringilla quis nisi.' as NonEmptyString,
+      methodsAppropriateDetails: NonEmptyString('Proin massa ex, condimentum eu lobortis at, fringilla quis nisi.'),
       resultsSupported: 'well-supported',
-      resultsSupportedDetails:
-        'Aenean accumsan placerat quam, et egestas diam luctus at. Vestibulum nec mattis ligula. Vestibulum convallis ante sed ante fermentum congue. Curabitur quis tempus dui. Quisque nibh tellus, ornare bibendum scelerisque vel, tristique ut nunc. Nam a tempor ipsum. Sed cursus felis eget nulla efficitur porttitor. Praesent nisi eros, elementum sed vulputate sit amet, auctor eget sem.' as NonEmptyString,
+      resultsSupportedDetails: NonEmptyString(
+        'Aenean accumsan placerat quam, et egestas diam luctus at. Vestibulum nec mattis ligula. Vestibulum convallis ante sed ante fermentum congue. Curabitur quis tempus dui. Quisque nibh tellus, ornare bibendum scelerisque vel, tristique ut nunc. Nam a tempor ipsum. Sed cursus felis eget nulla efficitur porttitor. Praesent nisi eros, elementum sed vulputate sit amet, auctor eget sem.',
+      ),
       dataPresentation: 'neutral',
-      dataPresentationDetails: 'Nulla velit mi, commodo ut ex vitae, tempus commodo ligula.' as NonEmptyString,
+      dataPresentationDetails: NonEmptyString('Nulla velit mi, commodo ut ex vitae, tempus commodo ligula.'),
       findingsNextSteps: 'insufficiently',
-      findingsNextStepsDetails:
-        'Quisque mollis pellentesque eros. Quisque ut iaculis purus. Quisque ac pretium mauris, at molestie enim. Maecenas nisl eros, consectetur vel volutpat id, porta hendrerit sapien. Sed eget arcu quam. Morbi nec magna congue, imperdiet libero vel, mattis risus. Morbi accumsan orci vel mi lobortis, luctus imperdiet ligula lacinia. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vulputate magna in augue mattis facilisis. Ut sollicitudin laoreet justo nec tincidunt.' as NonEmptyString,
+      findingsNextStepsDetails: NonEmptyString(
+        'Quisque mollis pellentesque eros. Quisque ut iaculis purus. Quisque ac pretium mauris, at molestie enim. Maecenas nisl eros, consectetur vel volutpat id, porta hendrerit sapien. Sed eget arcu quam. Morbi nec magna congue, imperdiet libero vel, mattis risus. Morbi accumsan orci vel mi lobortis, luctus imperdiet ligula lacinia. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vulputate magna in augue mattis facilisis. Ut sollicitudin laoreet justo nec tincidunt.',
+      ),
       novel: 'no',
-      novelDetails: 'Sed hendrerit tempor dui, a feugiat eros semper et.' as NonEmptyString,
+      novelDetails: NonEmptyString('Sed hendrerit tempor dui, a feugiat eros semper et.'),
       languageEditing: 'yes',
-      languageEditingDetails:
-        'Etiam imperdiet, dui vel placerat molestie, quam nisl ultrices eros, id pulvinar magna eros sed libero.' as NonEmptyString,
+      languageEditingDetails: NonEmptyString(
+        'Etiam imperdiet, dui vel placerat molestie, quam nisl ultrices eros, id pulvinar magna eros sed libero.',
+      ),
       shouldRead: 'yes-but',
-      shouldReadDetails:
-        'Vivamus bibendum, odio vel euismod malesuada, arcu sapien suscipit velit, ut consequat dui ligula at diam. Nunc consequat neque in consectetur faucibus. Integer fringilla pretium dolor vel finibus. Sed pretium dictum diam non bibendum. Nulla facilisi. Maecenas tempor erat quis libero molestie iaculis. Vestibulum vel neque non purus vulputate pellentesque in eget diam. Vestibulum vel risus ut ante mattis feugiat. Curabitur porta eget ante in imperdiet. Duis non enim vitae lacus mollis tristique. Nullam mollis egestas nunc eget feugiat. Sed a dignissim lorem, a tempus ex.' as NonEmptyString,
+      shouldReadDetails: NonEmptyString(
+        'Vivamus bibendum, odio vel euismod malesuada, arcu sapien suscipit velit, ut consequat dui ligula at diam. Nunc consequat neque in consectetur faucibus. Integer fringilla pretium dolor vel finibus. Sed pretium dictum diam non bibendum. Nulla facilisi. Maecenas tempor erat quis libero molestie iaculis. Vestibulum vel neque non purus vulputate pellentesque in eget diam. Vestibulum vel risus ut ante mattis feugiat. Curabitur porta eget ante in imperdiet. Duis non enim vitae lacus mollis tristique. Nullam mollis egestas nunc eget feugiat. Sed a dignissim lorem, a tempus ex.',
+      ),
       readyFullReview: 'yes-changes',
-      readyFullReviewDetails: 'In iaculis sapien nec tortor mattis, vitae elementum risus blandit.' as NonEmptyString,
+      readyFullReviewDetails: NonEmptyString('In iaculis sapien nec tortor mattis, vitae elementum risus blandit.'),
       persona: 'public',
       moreAuthors: 'no',
       generativeAiIdeas: 'no',

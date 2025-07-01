@@ -1,13 +1,13 @@
 import { Option } from 'effect'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { createFormPage } from '../../src/my-details-page/change-location-form-page.js'
-import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = createFormPage(
     Option.some({
-      value: 'Nulla porttitor eros dapibus quam convallis ultricies' as NonEmptyString,
+      value: NonEmptyString('Nulla porttitor eros dapibus quam convallis ultricies'),
       visibility: 'public',
     }),
     DefaultLocale,

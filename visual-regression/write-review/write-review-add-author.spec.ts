@@ -4,7 +4,7 @@ import { invalidE, missingE } from '../../src/form.js'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
-import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { addAuthorForm } from '../../src/write-review/add-author-page/add-author-form.js'
 import { addMultipleAuthorsForm } from '../../src/write-review/add-author-page/add-multiple-authors.js'
 import { expect, test } from '../base.js'
@@ -52,7 +52,7 @@ test('content looks right when fields are missing', async ({ showPage }) => {
 test('content looks right when fields are invalid', async ({ showPage }) => {
   const response = addAuthorForm({
     form: {
-      name: E.right('a name' as NonEmptyString),
+      name: E.right(NonEmptyString('a name')),
       emailAddress: E.left(invalidE('not an email address')),
     },
     preprint,

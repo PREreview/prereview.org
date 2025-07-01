@@ -201,7 +201,7 @@ export function plainText(
   input: TemplateStringsArray | Html | string,
   ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>
 ): PlainText {
-  const isTemplateStringsArray = Array.isArray as unknown as Predicate.Refinement<unknown, TemplateStringsArray>
+  const isTemplateStringsArray: Predicate.Refinement<unknown, TemplateStringsArray> = Array.isArray
 
   const value = decode(
     stripTags(mathmlToTex((isTemplateStringsArray(input) ? html(input, ...placeholders) : input).toString())),

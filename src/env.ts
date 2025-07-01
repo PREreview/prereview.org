@@ -5,7 +5,7 @@ import * as IOE from 'fp-ts/lib/IOEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import { v4 } from 'uuid-ts'
-import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
+import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
 
 export type EnvVars = D.TypeOf<typeof EnvD>
 
@@ -65,7 +65,7 @@ const EnvD = pipe(
     LEGACY_PREREVIEW_UPDATE: withDefault(BooleanD, false),
     ORCID_API_URL: withDefault(UrlD, new URL('https://pub.orcid.org/')),
     REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
-    SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, v4()() as unknown as NonEmptyString),
+    SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, NonEmptyString(v4()())),
     SLACK_API_TOKEN: D.string,
     SLACK_CLIENT_ID: D.string,
     SLACK_CLIENT_SECRET: D.string,

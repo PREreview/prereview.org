@@ -5,7 +5,7 @@ import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../.
 import { DefaultLocale } from '../../src/locales/index.js'
 import { createPage } from '../../src/my-details-page/my-details-page.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
-import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import type { UserOnboarding } from '../../src/user-onboarding.js'
 import type { User } from '../../src/user.js'
@@ -18,8 +18,8 @@ test('content looks right when publicly visible', async ({ showPage }) => {
     userOnboarding,
     avatar: Option.some(new URL('https://placehold.co/300x300')),
     orcidToken: Option.some({
-      accessToken: 'some-token' as NonEmptyString,
-      scopes: HashSet.make('some-scope' as NonEmptyString),
+      accessToken: NonEmptyString('some-token'),
+      scopes: HashSet.make(NonEmptyString('some-scope')),
     }),
     slackUser: Option.some({
       name: 'jcarberry',
@@ -32,16 +32,17 @@ test('content looks right when publicly visible', async ({ showPage }) => {
     openForRequests: Option.some({ value: true, visibility: 'public' }),
     careerStage: Option.some({ value: 'mid', visibility: 'public' }),
     researchInterests: Option.some({
-      value:
-        'Ut faucibus congue leo, quis rhoncus nulla venenatis vel. In iaculis commodo sodales. Mauris ut convallis nisl. Sed sit amet ex quis mi placerat elementum.' as NonEmptyString,
+      value: NonEmptyString(
+        'Ut faucibus congue leo, quis rhoncus nulla venenatis vel. In iaculis commodo sodales. Mauris ut convallis nisl. Sed sit amet ex quis mi placerat elementum.',
+      ),
       visibility: 'public',
     }),
     location: Option.some({
-      value: 'Nulla porttitor eros dapibus quam convallis ultricies' as NonEmptyString,
+      value: NonEmptyString('Nulla porttitor eros dapibus quam convallis ultricies'),
       visibility: 'public',
     }),
     languages: Option.some({
-      value: 'Ut lobortis turpis et dolor tincidunt suscipit.' as NonEmptyString,
+      value: NonEmptyString('Ut lobortis turpis et dolor tincidunt suscipit.'),
       visibility: 'public',
     }),
   })
@@ -72,16 +73,17 @@ test('content looks right when restricted visible', async ({ showPage }) => {
     openForRequests: Option.some({ value: false, visibility: 'restricted' }),
     careerStage: Option.some({ value: 'late', visibility: 'restricted' }),
     researchInterests: Option.some({
-      value:
-        'Ut faucibus congue leo, quis rhoncus nulla venenatis vel. In iaculis commodo sodales. Mauris ut convallis nisl. Sed sit amet ex quis mi placerat elementum.' as NonEmptyString,
+      value: NonEmptyString(
+        'Ut faucibus congue leo, quis rhoncus nulla venenatis vel. In iaculis commodo sodales. Mauris ut convallis nisl. Sed sit amet ex quis mi placerat elementum.',
+      ),
       visibility: 'restricted',
     }),
     location: Option.some({
-      value: 'Nulla porttitor eros dapibus quam convallis ultricies' as NonEmptyString,
+      value: NonEmptyString('Nulla porttitor eros dapibus quam convallis ultricies'),
       visibility: 'restricted',
     }),
     languages: Option.some({
-      value: 'Ut lobortis turpis et dolor tincidunt suscipit.' as NonEmptyString,
+      value: NonEmptyString('Ut lobortis turpis et dolor tincidunt suscipit.'),
       visibility: 'restricted',
     }),
   })

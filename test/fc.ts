@@ -10,7 +10,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
-import { type Doi, isDoi } from 'doi-ts'
+import { Doi, isDoi } from 'doi-ts'
 import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Tuple } from 'effect'
 import type { Response as ExpressResponse, Request } from 'express'
 import * as fc from 'fast-check'
@@ -604,7 +604,7 @@ export const africarxivFigsharePreprintUrl = (): fc.Arbitrary<[URL, AfricarxivFi
     )
     .map(([type, title, id]) => [
       new URL(`https://africarxiv.figshare.com/articles/${type}/${title}/${id}`),
-      { _tag: 'africarxiv', value: `10.6084/m9.figshare.${id}.v1` as Doi<'6084'> },
+      { _tag: 'africarxiv', value: Doi(`10.6084/m9.figshare.${id}.v1`) },
     ])
 
 export const africarxivOsfPreprintId = (): fc.Arbitrary<AfricarxivOsfPreprintId> =>
@@ -618,7 +618,7 @@ export const africarxivOsfPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivOsfPrep
     .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => [
       new URL(`https://osf.io/preprints/africarxiv/${id}`),
-      { _tag: 'africarxiv', value: `10.31730/osf.io/${id}` as Doi<'31730'> },
+      { _tag: 'africarxiv', value: Doi(`10.31730/osf.io/${id}`) },
     ])
 
 export const africarxivUbuntunetPreprintId = (): fc.Arbitrary<AfricarxivUbuntunetPreprintId> =>
@@ -651,7 +651,7 @@ export const arxivPreprintUrl = (): fc.Arbitrary<[URL, ArxivPreprintId]> =>
     .filter(suffix => isDoi(`10.48550/${suffix}`))
     .map(suffix => [
       new URL(`https://arxiv.org/abs/${suffix}`),
-      { _tag: 'arxiv', value: `10.48550/arXiv.${suffix}` as Doi<'48550'> },
+      { _tag: 'arxiv', value: Doi(`10.48550/arXiv.${suffix}`) },
     ])
 
 export const authoreaPreprintId = (): fc.Arbitrary<AuthoreaPreprintId> =>
@@ -675,7 +675,7 @@ export const biorxivPreprintUrl = (): fc.Arbitrary<[URL, BiorxivPreprintId]> =>
     .filter(suffix => isDoi(`10.1101/${suffix}`))
     .map(suffix => [
       new URL(`https://www.biorxiv.org/content/10.1101/${suffix}`),
-      { _tag: 'biorxiv', value: `10.1101/${suffix}` as Doi<'1101'> },
+      { _tag: 'biorxiv', value: Doi(`10.1101/${suffix}`) },
     ])
 
 export const chemrxivPreprintId = (): fc.Arbitrary<ChemrxivPreprintId> =>
@@ -725,10 +725,7 @@ export const edarxivPreprintUrl = (): fc.Arbitrary<[URL, EdarxivPreprintId]> =>
       fc.string({ unit: alphanumeric(), minLength: 1 }),
       fc.constantFrom('https://edarxiv.org', 'https://osf.io/preprints/edarxiv'),
     )
-    .map(([id, baseUrl]) => [
-      new URL(`${baseUrl}/${id}`),
-      { _tag: 'edarxiv', value: `10.35542/osf.io/${id}` as Doi<'35542'> },
-    ])
+    .map(([id, baseUrl]) => [new URL(`${baseUrl}/${id}`), { _tag: 'edarxiv', value: Doi(`10.35542/osf.io/${id}`) }])
 
 export const engrxivPreprintId = (): fc.Arbitrary<EngrxivPreprintId> =>
   fc.record({
@@ -739,10 +736,7 @@ export const engrxivPreprintId = (): fc.Arbitrary<EngrxivPreprintId> =>
 export const engrxivPreprintUrl = (): fc.Arbitrary<[URL, EngrxivPreprintId]> =>
   fc
     .integer({ min: 1 })
-    .map(id => [
-      new URL(`https://engrxiv.org/preprint/view/${id}`),
-      { _tag: 'engrxiv', value: `10.31224/${id}` as Doi<'31224'> },
-    ])
+    .map(id => [new URL(`https://engrxiv.org/preprint/view/${id}`), { _tag: 'engrxiv', value: Doi(`10.31224/${id}`) }])
 
 export const jxivPreprintId = (): fc.Arbitrary<JxivPreprintId> =>
   fc.record({
@@ -755,7 +749,7 @@ export const jxivPreprintUrl = (): fc.Arbitrary<[URL, JxivPreprintId]> =>
     .integer({ min: 1 })
     .map(id => [
       new URL(`https://jxiv.jst.go.jp/index.php/jxiv/preprint/view/${id}`),
-      { _tag: 'jxiv', value: `10.51094/jxiv.${id}` as Doi<'51094'> },
+      { _tag: 'jxiv', value: Doi(`10.51094/jxiv.${id}`) },
     ])
 
 export const lifecycleJournalPreprintId = (): fc.Arbitrary<LifecycleJournalPreprintId> =>
@@ -770,8 +764,8 @@ export const lifecycleJournalPreprintUrl = (): fc.Arbitrary<
   fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => [
     new URL(`https://osf.io/${id}`),
     [
-      { _tag: 'osf-lifecycle-journal', value: `10.17605/osf.io/${id}` as Doi<'17605'> },
-      { _tag: 'osf-preprints', value: `10.31219/osf.io/${id}` as Doi<'31219'> },
+      { _tag: 'osf-lifecycle-journal', value: Doi(`10.17605/osf.io/${id}`) },
+      { _tag: 'osf-preprints', value: Doi(`10.31219/osf.io/${id}`) },
     ],
   ])
 export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
@@ -786,7 +780,7 @@ export const medrxivPreprintUrl = (): fc.Arbitrary<[URL, MedrxivPreprintId]> =>
     .filter(suffix => isDoi(`10.1101/${suffix}`))
     .map(suffix => [
       new URL(`https://www.medrxiv.org/content/10.1101/${suffix}`),
-      { _tag: 'medrxiv', value: `10.1101/${suffix}` as Doi<'1101'> },
+      { _tag: 'medrxiv', value: Doi(`10.1101/${suffix}`) },
     ])
 
 export const metaarxivPreprintId = (): fc.Arbitrary<MetaarxivPreprintId> =>
@@ -800,7 +794,7 @@ export const metaarxivPreprintUrl = (): fc.Arbitrary<[URL, MetaarxivPreprintId]>
     .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => [
       new URL(`https://osf.io/preprints/metaarxiv/${id}`),
-      { _tag: 'metaarxiv', value: `10.31222/osf.io/${id}` as Doi<'31222'> },
+      { _tag: 'metaarxiv', value: Doi(`10.31222/osf.io/${id}`) },
     ])
 
 export const neurolibrePreprintId = (): fc.Arbitrary<NeurolibrePreprintId> =>
@@ -814,7 +808,7 @@ export const neurolibrePreprintUrl = (): fc.Arbitrary<[URL, NeurolibrePreprintId
     .string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), minLength: 1 })
     .map(id => [
       new URL(`https://neurolibre.org/papers/10.55458/neurolibre.${id}`),
-      { _tag: 'neurolibre', value: `10.55458/neurolibre.${id}` as Doi<'55458'> },
+      { _tag: 'neurolibre', value: Doi(`10.55458/neurolibre.${id}`) },
     ])
 
 export const osfPreprintId = (): fc.Arbitrary<OsfPreprintId> =>
@@ -827,8 +821,8 @@ export const osfPreprintUrl = (): fc.Arbitrary<[URL, [OsfOrLifecycleJournalPrepr
   fc.string({ unit: alphanumeric(), minLength: 1 }).map(id => [
     new URL(`https://osf.io/${id}`),
     [
-      { _tag: 'osf-lifecycle-journal', value: `10.17605/osf.io/${id}` as Doi<'17605'> },
-      { _tag: 'osf-preprints', value: `10.31219/osf.io/${id}` as Doi<'31219'> },
+      { _tag: 'osf-lifecycle-journal', value: Doi(`10.17605/osf.io/${id}`) },
+      { _tag: 'osf-preprints', value: Doi(`10.31219/osf.io/${id}`) },
     ],
   ])
 
@@ -848,8 +842,8 @@ export const osfPreprintsPreprintUrl = (): fc.Arbitrary<
         Tuple.make(
           new URL(`https://osf.io/${id}`),
           Tuple.make(
-            { _tag: 'osf-lifecycle-journal' as const, value: `10.17605/osf.io/${id}` as Doi<'17605'> },
-            { _tag: 'osf-preprints' as const, value: `10.31219/osf.io/${id}` as Doi<'31219'> },
+            { _tag: 'osf-lifecycle-journal' as const, value: Doi(`10.17605/osf.io/${id}`) },
+            { _tag: 'osf-preprints' as const, value: Doi(`10.31219/osf.io/${id}`) },
           ),
         ),
       ),
@@ -858,7 +852,7 @@ export const osfPreprintsPreprintUrl = (): fc.Arbitrary<
       .map(id =>
         Tuple.make(
           new URL(`https://osf.io/preprints/${id}`),
-          Tuple.make({ _tag: 'osf-preprints' as const, value: `10.31219/osf.io/${id}` as Doi<'31219'> }),
+          Tuple.make({ _tag: 'osf-preprints' as const, value: Doi(`10.31219/osf.io/${id}`) }),
         ),
       ),
   )
@@ -886,7 +880,7 @@ export const preprintsorgPreprintUrl = (): fc.Arbitrary<[URL, PreprintsorgPrepri
     )
     .map(([id, version]) => [
       new URL(`https://www.preprints.org/manuscript/${id}/v${version}`),
-      { _tag: 'preprints.org', value: `10.20944/preprints${id}.v${version}` as Doi<'20944'> },
+      { _tag: 'preprints.org', value: Doi(`10.20944/preprints${id}.v${version}`) },
     ])
 
 export const psyarxivPreprintId = (): fc.Arbitrary<PsyarxivPreprintId> =>
@@ -901,10 +895,7 @@ export const psyarxivPreprintUrl = (): fc.Arbitrary<[URL, PsyarxivPreprintId]> =
       fc.string({ unit: alphanumeric(), minLength: 1 }),
       fc.constantFrom('https://psyarxiv.com', 'https://osf.io/preprints/psyarxiv'),
     )
-    .map(([id, baseUrl]) => [
-      new URL(`${baseUrl}/${id}`),
-      { _tag: 'psyarxiv', value: `10.31234/osf.io/${id}` as Doi<'31234'> },
-    ])
+    .map(([id, baseUrl]) => [new URL(`${baseUrl}/${id}`), { _tag: 'psyarxiv', value: Doi(`10.31234/osf.io/${id}`) }])
 
 export const psychArchivesPreprintId = (): fc.Arbitrary<PsychArchivesPreprintId> =>
   fc.record({
@@ -923,7 +914,7 @@ export const researchSquarePreprintUrl = (): fc.Arbitrary<[URL, ResearchSquarePr
     .tuple(fc.integer({ min: 1 }), fc.integer({ min: 1 }))
     .map(([id, version]) => [
       new URL(`https://www.researchsquare.com/article/rs-${id}/v${version}`),
-      { _tag: 'research-square', value: `10.21203/rs.3.rs-${id}/v${version}` as Doi<'21203'> },
+      { _tag: 'research-square', value: Doi(`10.21203/rs.3.rs-${id}/v${version}`) },
     ])
 
 export const scieloPreprintId = (): fc.Arbitrary<ScieloPreprintId> =>
@@ -937,7 +928,7 @@ export const scieloPreprintUrl = (): fc.Arbitrary<[URL, ScieloPreprintId]> =>
     .integer({ min: 1 })
     .map(id => [
       new URL(`https://preprints.scielo.org/index.php/scielo/preprint/view/${id}`),
-      { _tag: 'scielo', value: `10.1590/SciELOPreprints.${id}` as Doi<'1590'> },
+      { _tag: 'scielo', value: Doi(`10.1590/SciELOPreprints.${id}`) },
     ])
 
 export const scienceOpenPreprintId = (): fc.Arbitrary<ScienceOpenPreprintId> =>
@@ -963,7 +954,7 @@ export const socarxivPreprintUrl = (): fc.Arbitrary<[URL, SocarxivPreprintId]> =
     .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => [
       new URL(`https://osf.io/preprints/socarxiv/${id}`),
-      { _tag: 'socarxiv', value: `10.31235/osf.io/${id}` as Doi<'31235'> },
+      { _tag: 'socarxiv', value: Doi(`10.31235/osf.io/${id}`) },
     ])
 
 export const ssrnPreprintId = (): fc.Arbitrary<SsrnPreprintId> =>
@@ -975,10 +966,7 @@ export const ssrnPreprintId = (): fc.Arbitrary<SsrnPreprintId> =>
 export const ssrnPreprintUrl = (): fc.Arbitrary<[URL, SsrnPreprintId]> =>
   fc
     .integer({ min: 1 })
-    .map(id => [
-      new URL(`https://ssrn.com/abstract=${id}`),
-      { _tag: 'ssrn', value: `10.2139/ssrn.${id}` as Doi<'2139'> },
-    ])
+    .map(id => [new URL(`https://ssrn.com/abstract=${id}`), { _tag: 'ssrn', value: Doi(`10.2139/ssrn.${id}`) }])
 
 export const verixivPreprintId = (): fc.Arbitrary<VerixivPreprintId> =>
   fc.record({
@@ -1004,10 +992,7 @@ export const zenodoPreprintId = (): fc.Arbitrary<ZenodoPreprintId> =>
 export const zenodoPreprintUrl = (): fc.Arbitrary<[URL, ZenodoPreprintId]> =>
   fc
     .integer({ min: 1 })
-    .map(id => [
-      new URL(`https://zenodo.org/record/${id}`),
-      { _tag: 'zenodo', value: `10.5281/zenodo.${id}` as Doi<'5281'> },
-    ])
+    .map(id => [new URL(`https://zenodo.org/record/${id}`), { _tag: 'zenodo', value: Doi(`10.5281/zenodo.${id}`) }])
 
 export const biorxivOrMedrxivPreprintId = (): fc.Arbitrary<BiorxivOrMedrxivPreprintId> =>
   fc.record({

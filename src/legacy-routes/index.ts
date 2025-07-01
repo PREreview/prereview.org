@@ -1,4 +1,4 @@
-import { type Doi, isDoi } from 'doi-ts'
+import { Doi, isDoi } from 'doi-ts'
 import { Option, Tuple, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -53,7 +53,7 @@ const ArxivPreprintIdC = C.make(
       const [, match] = /^arxiv-([A-z0-9.+-]+?)(?:v[0-9]+)?$/i.exec(s) ?? []
 
       if (typeof match === 'string') {
-        return D.success({ _tag: 'arxiv', value: `10.48550/arxiv.${match}` as Doi<'48550'> } satisfies ArxivPreprintId)
+        return D.success({ _tag: 'arxiv', value: Doi(`10.48550/arxiv.${match}`) } satisfies ArxivPreprintId)
       }
 
       return D.failure(s, 'ID')

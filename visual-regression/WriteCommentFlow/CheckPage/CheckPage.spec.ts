@@ -2,7 +2,7 @@ import { Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
-import { type NonEmptyString, Uuid } from '../../../src/types/index.js'
+import { NonEmptyString, Uuid } from '../../../src/types/index.js'
 import { Pseudonym } from '../../../src/types/Pseudonym.js'
 import type { User } from '../../../src/user.js'
 import * as _ from '../../../src/WriteCommentFlow/CheckPage/CheckPage.js'
@@ -41,7 +41,7 @@ test('content looks right using a pseudonym', async ({ showPage }) => {
 test('content looks right with competing interests', async ({ showPage }) => {
   const response = _.CheckPage({
     competingInterests: Option.some(
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' as NonEmptyString.NonEmptyString,
+      NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     ),
     comment,
     commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),

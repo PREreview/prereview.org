@@ -1,6 +1,6 @@
 import { Either } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.js'
-import { type NonEmptyString, Uuid } from '../../../src/types/index.js'
+import { NonEmptyString, Uuid } from '../../../src/types/index.js'
 import * as CompetingInterestsForm from '../../../src/WriteCommentFlow/CompetingInterestsPage/CompetingInterestsForm.js'
 import * as _ from '../../../src/WriteCommentFlow/CompetingInterestsPage/CompetingInterestsPage.js'
 import { expect, test } from '../../base.js'
@@ -22,8 +22,9 @@ test('content looks right when there are details', async ({ showPage }) => {
     commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     form: new CompetingInterestsForm.CompletedFormYes({
       competingInterests: 'yes',
-      competingInterestsDetails:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' as NonEmptyString.NonEmptyString,
+      competingInterestsDetails: NonEmptyString.NonEmptyString(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      ),
     }),
     locale: DefaultLocale,
   })
