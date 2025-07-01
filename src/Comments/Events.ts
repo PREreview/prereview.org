@@ -1,12 +1,12 @@
 import { Schema } from 'effect'
-import { rawHtml, type Html } from '../html.js'
+import { Html, rawHtml } from '../html.js'
 import { Doi, NonEmptyString, Orcid } from '../types/index.js'
 
-const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.Object, {
+const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
   strict: true,
   decode: rawHtml,
   encode: String,
-}) as Schema.Schema<Html, string>
+})
 
 export class CommentWasStarted extends Schema.TaggedClass<CommentWasStarted>()('CommentWasStarted', {
   prereviewId: Schema.Number,

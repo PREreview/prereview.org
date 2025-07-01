@@ -3,7 +3,7 @@ import { expect } from '@jest/globals'
 import { Equal, Utils } from 'effect'
 import type { MatcherFunction } from 'expect'
 import * as fc from 'fast-check'
-import type { Html } from '../src/html.js'
+import { Html, PlainText } from '../src/html.js'
 
 if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
   fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })
@@ -51,11 +51,11 @@ function temporalEquals(this: TesterContext, a: unknown, b: unknown, customTeste
 }
 
 const htmlContaining: MatcherFunction<[sample: Html | string]> = function (actual, sample) {
-  if (typeof actual !== 'string' && !(actual instanceof String)) {
+  if (!(actual instanceof Html)) {
     throw new TypeError('Not Html')
   }
 
-  if (!actual.includes(sample.toString())) {
+  if (!actual.value.includes(sample.toString())) {
     return {
       message: () => `expected ${this.utils.printReceived(actual)} to be Html ${this.utils.printExpected(sample)}`,
       pass: false,
@@ -69,11 +69,11 @@ const htmlContaining: MatcherFunction<[sample: Html | string]> = function (actua
 }
 
 const plainTextContaining: MatcherFunction<[sample: string]> = function (actual, sample) {
-  if (typeof actual !== 'string' && !(actual instanceof String)) {
+  if (!(actual instanceof PlainText)) {
     throw new TypeError('Not PlainText')
   }
 
-  if (!actual.includes(sample.toString())) {
+  if (!actual.value.includes(sample)) {
     return {
       message: () => `expected ${this.utils.printReceived(actual)} to be PlainText ${this.utils.printExpected(sample)}`,
       pass: false,

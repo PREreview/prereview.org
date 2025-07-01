@@ -2,13 +2,13 @@ import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Context, Data, Effect, flow, identity, Layer, Match, pipe, Redacted, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { URL } from 'url'
-import { type Html, rawHtml, sanitizeHtml } from './html.js'
+import { Html, rawHtml, sanitizeHtml } from './html.js'
 
-const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.Object, {
+const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
   strict: true,
   decode: string => sanitizeHtml(string, true),
   encode: String,
-}) as Schema.Schema<Html, string>
+})
 
 const GhostPageSchema = Schema.Struct({
   pages: Schema.Tuple(

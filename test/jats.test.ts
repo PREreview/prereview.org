@@ -198,37 +198,37 @@ describe('transformJatsToHtml', () => {
     [
       '<jats:ext-link> with a protocol-relative link',
       '<jats:ext-link ext-link-type="uri" xlink:href="//example.com/">a</jats:ext-link>',
-      '<a>a</a>',
+      rawHtml('<a>a</a>'),
     ],
     [
       '<jats:ext-link> with a HTTPS link',
       '<jats:ext-link ext-link-type="uri" xlink:href="https://example.com/">a</jats:ext-link>',
-      '<a href="https://example.com/">a</a>',
+      rawHtml('<a href="https://example.com/">a</a>'),
     ],
     [
       '<jats:ext-link> with an FTP link',
       '<jats:ext-link ext-link-type="uri" xlink:href="ftp://example.com/">a</jats:ext-link>',
-      '<a href="ftp://example.com/">a</a>',
+      rawHtml('<a href="ftp://example.com/">a</a>'),
     ],
     [
       '<jats:ext-link> with an email link',
       '<jats:ext-link ext-link-type="uri" xlink:href="mailto:hello@example.com">a</jats:ext-link>',
-      '<a href="mailto:hello@example.com">a</a>',
+      rawHtml('<a href="mailto:hello@example.com">a</a>'),
     ],
     [
       '<jats:ext-link> with a fragment link',
       '<jats:ext-link ext-link-type="uri" xlink:href="#foo">a</jats:ext-link>',
-      '<a>a</a>',
+      rawHtml('<a>a</a>'),
     ],
     [
       '<jats:ext-link> with a relative link',
       '<jats:ext-link ext-link-type="uri" xlink:href="/foo">a</jats:ext-link>',
-      '<a>a</a>',
+      rawHtml('<a>a</a>'),
     ],
     [
       '<jats:ext-link> with a javascript link',
       '<jats:ext-link ext-link-type="uri" xlink:href="javascript:alert(\'foo\')">a</jats:ext-link>',
-      '<a>a</a>',
+      rawHtml('<a>a</a>'),
     ],
     ['<jats:extended-by>', '<jats:extended-by>extended-by</jats:extended-by>', rawHtml('extended-by')],
     ['<jats:fax>', '<jats:fax>fax</jats:fax>', rawHtml('fax')],
@@ -435,37 +435,37 @@ describe('transformJatsToHtml', () => {
     [
       '<jats:related-object> with a protocol-relative link',
       '<jats:related-object ext-link-type="uri" xlink:href="//example.com/">a</jats:related-object>',
-      '<a>a</a>',
+      rawHtml('<a>a</a>'),
     ],
     [
       '<jats:related-object> with a HTTPS link',
       '<jats:related-object ext-link-type="uri" xlink:href="https://example.com/">a</jats:related-object>',
-      '<a href="https://example.com/">a</a>',
+      rawHtml('<a href="https://example.com/">a</a>'),
     ],
     [
       '<jats:related-object> with an FTP link',
       '<jats:related-object ext-link-type="uri" xlink:href="ftp://example.com/">a</jats:related-object>',
-      '<a href="ftp://example.com/">a</a>',
+      rawHtml('<a href="ftp://example.com/">a</a>'),
     ],
     [
       '<jats:related-object> with an email link',
       '<jats:related-object ext-link-type="uri" xlink:href="mailto:hello@example.com">a</jats:related-object>',
-      '<a href="mailto:hello@example.com">a</a>',
+      rawHtml('<a href="mailto:hello@example.com">a</a>'),
     ],
     [
       '<jats:related-object> with a fragment link',
       '<jats:related-object ext-link-type="uri" xlink:href="#foo">a</jats:related-object>',
-      '<a>a</a>',
+      rawHtml('<a>a</a>'),
     ],
     [
       '<jats:related-object> with a relative link',
       '<jats:related-object ext-link-type="uri" xlink:href="/foo">a</jats:related-object>',
-      '<a>a</a>',
+      rawHtml('<a>a</a>'),
     ],
     [
       '<jats:related-object> with a javascript link',
       '<jats:related-object ext-link-type="uri" xlink:href="javascript:alert(\'foo\')">a</jats:related-object>',
-      '<a>a</a>',
+      rawHtml('<a>a</a>'),
     ],
     ['<jats:resource-group>', '<jats:resource-group>resource-group</jats:resource-group>', rawHtml('resource-group')],
     ['<jats:resource-id>', '<jats:resource-id>resource-id</jats:resource-id>', rawHtml('resource-id')],
@@ -596,6 +596,6 @@ describe('transformJatsToHtml', () => {
   ])('%s', (_name, input, expected) => {
     const actual = _.transformJatsToHtml(input)
 
-    expect(actual.toString()).toStrictEqual(expected.toString())
+    expect(actual).toStrictEqual(expected)
   })
 })

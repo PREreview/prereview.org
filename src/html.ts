@@ -1,4 +1,4 @@
-import { Array, type Predicate, pipe } from 'effect'
+import { Array, Data, Match, type Predicate, pipe } from 'effect'
 import { decode } from 'html-entities'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -9,31 +9,59 @@ import raw from 'nanohtml/raw.js'
 import sanitize from 'sanitize-html'
 import stripTags from 'striptags'
 
-export interface Html {
-  readonly Html: unique symbol
-
-  toString(): string
+export class Html extends Data.TaggedClass('Html')<{
+  value: string
+}> {
+  toString() {
+    return this.value
+  }
 }
 
-export interface PlainText {
-  readonly PlainText: unique symbol
-
-  toString(): string
+export class PlainText extends Data.TaggedClass('PlainText')<{
+  value: string
+}> {
+  toString() {
+    return this.value
+  }
 }
+
+const nanohtmlPlaceholder = pipe(
+  Match.type<Html | PlainText | string | number>(),
+  Match.tag('Html', html => raw(html.value)),
+  Match.tag('PlainText', plainText => plainText.value),
+  Match.orElse(value => value),
+)
 
 export function html(
   literals: TemplateStringsArray,
   ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>
 ): Html {
-  return nanohtml(literals, ...placeholders) as unknown as Html
+  const value = ensureString(
+    nanohtml(
+      literals,
+      ...placeholders.map(placeholder => {
+        if (typeof placeholder === 'string' || typeof placeholder === 'number' || '_tag' in placeholder) {
+          return nanohtmlPlaceholder(placeholder)
+        }
+
+        return placeholder.map(nanohtmlPlaceholder)
+      }),
+    ),
+  )
+
+  return new Html({ value })
 }
 
 export function rawHtml(html: string): Html {
-  return raw(texToMathml(html)) as unknown as Html
+  const value = ensureString(raw(texToMathml(html)))
+
+  return new Html({ value })
 }
 
 export function mjmlToHtml(mjml: Html): Html {
-  return raw(processMjml(mjml.toString()).html) as unknown as Html
+  const value = ensureString(raw(processMjml(mjml.toString()).html))
+
+  return new Html({ value })
 }
 
 export function sanitizeHtml(html: string, trusted = false): Html {
@@ -175,21 +203,25 @@ export function plainText(
 ): PlainText {
   const isTemplateStringsArray = Array.isArray as unknown as Predicate.Refinement<unknown, TemplateStringsArray>
 
-  return decode(
+  const value = decode(
     stripTags(mathmlToTex((isTemplateStringsArray(input) ? html(input, ...placeholders) : input).toString())),
-  ) as unknown as PlainText
+  )
+
+  return new PlainText({ value })
 }
 
 export const RawHtmlC = C.make(
   pipe(
     D.union(
-      pipe(D.string),
+      pipe(
+        D.string,
+        D.map(html => rawHtml(html)),
+      ),
       pipe(
         D.id(),
-        D.parse(s => (s instanceof String ? D.success(s) : D.failure(s, 'String'))),
+        D.parse(s => (s instanceof Html ? D.success(s) : D.failure(s, 'Html'))),
       ),
     ),
-    D.map(html => rawHtml(html as string)),
   ),
   { encode: String },
 )
@@ -213,4 +245,16 @@ function mathmlToTex(input: string) {
     /<math[\s\S]*?(?:display="(block)")?>[\s\S]*?<annotation encoding="application\/x-tex">([\s\S]+?)<\/annotation>[\s\S]*?<\/math>/gi,
     (_, display: string, tex: string) => (display === 'block' ? `$$${tex}$$` : `$${tex}$`),
   )
+}
+
+function ensureString(value: unknown): string {
+  if (value instanceof Html || value instanceof PlainText) {
+    return value.value
+  }
+
+  if (typeof value !== 'string' && !(value instanceof String)) {
+    throw new TypeError('Not a string')
+  }
+
+  return value.toString()
 }
