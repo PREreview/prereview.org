@@ -1,12 +1,50 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { HashMap, HashSet, Tuple } from 'effect'
+import { HashMap, HashSet, Option, Tuple } from 'effect'
 import { constructPageUrls } from '../../src/Router/ConstructPageUrls.js'
 import { SupportedLocales } from '../../src/locales/index.js'
 import type { PageResponse } from '../../src/response.js'
 import * as fc from '../fc.js'
 
 describe('constructPageUrls', () => {
+  describe('canonical', () => {
+    it.prop(
+      [
+        fc
+          .url()
+          .map(url =>
+            Tuple.make(
+              url.origin,
+              `${url.pathname}${url.search}`,
+              `${url.origin}${encodeURI(`${url.pathname}${url.search}`)}`,
+            ),
+          ),
+        fc.string(),
+      ],
+      {
+        examples: [
+          [['http://example.com', '/', 'http://example.com/'], '/anything'],
+          [['http://example.com', '/about', 'http://example.com/about'], '/anything'],
+          [['http://example.com', '/reviews?page=2', 'http://example.com/reviews?page=2'], '/anything'],
+          [['http://example.com', '/?foo=bar baz', 'http://example.com/?foo=bar%20baz'], '/anything'],
+        ],
+      },
+    )('constructs an absolute url', ([origin, canonical, expected], pathAndQueryString) => {
+      const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, pathAndQueryString)
+
+      expect(Option.getOrUndefined(pageUrls.canonical)?.href).toStrictEqual(expected)
+    })
+
+    it.prop([fc.url().map(url => Tuple.make(url.origin, `${url.pathname}${url.search}`))])(
+      "does nothing when there isn't one",
+      ([origin, pathAndQueryString]) => {
+        const pageUrls = constructPageUrls({} as unknown as PageResponse, origin, pathAndQueryString)
+
+        expect(pageUrls.canonical).toStrictEqual(Option.none())
+      },
+    )
+  })
+
   describe('localeUrls', () => {
     it.prop([fc.url().map(url => Tuple.make(url.origin, `${url.pathname}${url.search}`))])(
       'constructs a url for each supported locale',
