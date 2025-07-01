@@ -12,6 +12,54 @@
   "requestReviewButton": {
     "message": "Request a review"
   },
+  "trainingTitle": {
+    "message": "Peer review training",
+    "description": "Title of the section about the peer review training services that PREreview offers."
+  },
+  "trainingText": {
+    "message": "Interactive workshops for organisations and institutions looking to help their members hone their skills as reviewers.",
+    "description": "Description of the peer review training services that PREreview offers."
+  },
+  "trainingLink": {
+    "message": "Read about our training workshops",
+    "description": "Text of a link to find out more about the peer review training services that PREreview offers."
+  },
+  "liveReviewsTitle": {
+    "message": "Live Reviews",
+    "description": "Title of the section about the Live Reviews that PREreview runs."
+  },
+  "liveReviewsText": {
+    "message": "We run collaborative, interactive preprint review calls as an alternative approach to traditional peer review.",
+    "description": "Description of the Live Reviews that PREreview runs."
+  },
+  "liveReviewsLink": {
+    "message": "Learn more about Live Reviews",
+    "description": "Text of a link to find out more about the Live Reviews that PREreview runs."
+  },
+  "clubsTitle": {
+    "message": "PREreview Clubs",
+    "description": "Title of the section describing PREreview Clubs."
+  },
+  "clubsText": {
+    "message": "Start or join one of our preprint review groups, where members work together to provide timely, constructive feedback.",
+    "description": "An introduction to PREreview Clubs."
+  },
+  "clubsLink": {
+    "message": "See our many PREreview clubs",
+    "description": "Text of a link to find out more about PREreview Clubs."
+  },
+  "missionTitle": {
+    "message": "For underserved researchers, there’s a better way",
+    "description": "Title for the section about why PREreview exists."
+  },
+  "missionText": {
+    "message": "We support and empower diverse and historically excluded communities of researchers (particularly those at early stages of their career) to find a voice, train, and engage in peer review.",
+    "description": "A description of what PREreview does and why it exists."
+  },
+  "missionLink": {
+    "message": "Learn more about our mission",
+    "description": "Text of a link to find out more about PREreview and its mission."
+  },
   "overviewUnderservedResearchersTitle": {
     "message": "For underserved researchers"
   },

@@ -61,49 +61,37 @@ export const createPage = ({
         ? html`
             <div class="sections">
               <section aria-labelledby="training-title">
-                <h2 id="training-title">Peer review training</h2>
+                <h2 id="training-title">${translate(locale, 'home-page', 'trainingTitle')()}</h2>
 
-                <p>
-                  Interactive workshops for organisations and institutions looking to help their members hone their
-                  skills as reviewers.
-                </p>
+                <p>${translate(locale, 'home-page', 'trainingText')()}</p>
 
-                <a href="${Routes.Trainings}">Read about our training workshops</a>
+                <a href="${Routes.Trainings}">${translate(locale, 'home-page', 'trainingLink')()}</a>
               </section>
 
               <section aria-labelledby="live-reviews-title">
-                <h2 id="live-reviews-title">Live Reviews</h2>
+                <h2 id="live-reviews-title">${translate(locale, 'home-page', 'liveReviewsTitle')()}</h2>
 
-                <p>
-                  We run collaborative, interactive preprint review calls as an alternative approach to traditional peer
-                  review.
-                </p>
+                <p>${translate(locale, 'home-page', 'liveReviewsText')()}</p>
 
-                <a href="${Routes.LiveReviews}">Learn more about Live Reviews</a>
+                <a href="${Routes.LiveReviews}">${translate(locale, 'home-page', 'liveReviewsLink')()}</a>
               </section>
 
               <section aria-labelledby="clubs-title">
-                <h2 id="clubs-title">PREreview Clubs</h2>
+                <h2 id="clubs-title">${translate(locale, 'home-page', 'clubsTitle')()}</h2>
 
-                <p>
-                  Start or join one of our preprint review groups, where members work together to provide timely,
-                  constructive feedback.
-                </p>
+                <p>${translate(locale, 'home-page', 'clubsText')()}</p>
 
-                <a href="${Routes.Clubs}">See our many PREreview clubs</a>
+                <a href="${Routes.Clubs}">${translate(locale, 'home-page', 'clubsLink')()}</a>
               </section>
             </div>
 
             <section class="mission" aria-labelledby="mission-title">
               <div>
-                <h2 id="mission-title">For underserved researchers, there’s a better way</h2>
+                <h2 id="mission-title">${translate(locale, 'home-page', 'missionTitle')()}</h2>
 
-                <p>
-                  We support and empower diverse and historically excluded communities of researchers (particularly
-                  those at early stages of their career) to find a voice, train, and engage in peer review.
-                </p>
+                <p>${translate(locale, 'home-page', 'missionText')()}</p>
 
-                <a href="${Routes.AboutUs}" class="button">Learn more about our mission</a>
+                <a href="${Routes.AboutUs}" class="button">${translate(locale, 'home-page', 'missionLink')()}</a>
               </div>
             </section>
 
