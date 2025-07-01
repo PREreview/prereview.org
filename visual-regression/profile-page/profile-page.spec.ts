@@ -6,7 +6,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import { createPage } from '../../src/profile-page/create-page.js'
 import type { Prereviews } from '../../src/profile-page/prereviews.js'
 import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import type { Pseudonym } from '../../src/types/Pseudonym.js'
+import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
@@ -67,7 +67,7 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
   const response = createPage(
     {
       type: 'pseudonym',
-      name: 'Orange Panda' as Pseudonym,
+      name: Pseudonym('Orange Panda'),
       prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
     },
     DefaultLocale,
@@ -82,7 +82,7 @@ test('content looks right with a pseudonym when empty', async ({ showPage }) => 
   const response = createPage(
     {
       type: 'pseudonym',
-      name: 'Orange Panda' as Pseudonym,
+      name: Pseudonym('Orange Panda'),
       prereviews: [],
     },
     DefaultLocale,

@@ -5,7 +5,7 @@ import { Uuid } from 'uuid-ts'
 import { authorInvitePublished } from '../../src/author-invite-flow/index.js'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import type { Pseudonym } from '../../src/types/Pseudonym.js'
+import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
 const locale = DefaultLocale
@@ -16,7 +16,7 @@ test('content looks right', async ({ showPage }) => {
     user: {
       name: 'Josiah Carberry',
       orcid: Orcid('0000-0002-1825-0097'),
-      pseudonym: 'Orange Panda' as Pseudonym,
+      pseudonym: Pseudonym('Orange Panda'),
     },
     locale,
   })({

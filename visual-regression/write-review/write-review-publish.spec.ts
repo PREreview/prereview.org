@@ -5,7 +5,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
 import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import type { Pseudonym } from '../../src/types/Pseudonym.js'
+import { Pseudonym } from '../../src/types/Pseudonym.js'
 import type { User } from '../../src/user.js'
 import { publishForm } from '../../src/write-review/publish-page/publish-form.js'
 import { expect, test } from '../base.js'
@@ -22,7 +22,7 @@ const preprint = {
 const user = {
   name: 'Josiah Carberry',
   orcid: Orcid('0000-0002-1825-0097'),
-  pseudonym: 'Orange Panda' as Pseudonym,
+  pseudonym: Pseudonym('Orange Panda'),
 } satisfies User
 
 const locale = DefaultLocale

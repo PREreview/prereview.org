@@ -12,7 +12,7 @@ import { html } from '../src/html.js'
 import { DefaultLocale } from '../src/locales/index.js'
 import { EmailAddress } from '../src/types/EmailAddress.js'
 import type { NonEmptyString } from '../src/types/NonEmptyString.js'
-import type { Pseudonym } from '../src/types/Pseudonym.js'
+import { Pseudonym } from '../src/types/Pseudonym.js'
 import { expect, test } from './base.js'
 
 test('email-verification HTML looks right', async ({ page }) => {
@@ -20,7 +20,7 @@ test('email-verification HTML looks right', async ({ page }) => {
     user: {
       name: 'Josiah Carberry',
       orcid: Orcid('0000-0002-1825-0097'),
-      pseudonym: 'Orange Panda' as Pseudonym,
+      pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
@@ -39,7 +39,7 @@ test('email-verification text looks right', async ({ page }) => {
     user: {
       name: 'Josiah Carberry',
       orcid: Orcid('0000-0002-1825-0097'),
-      pseudonym: 'Orange Panda' as Pseudonym,
+      pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
@@ -58,7 +58,7 @@ test('email-verification HTML for an invited author looks right', async ({ page 
     user: {
       name: 'Josiah Carberry',
       orcid: Orcid('0000-0002-1825-0097'),
-      pseudonym: 'Orange Panda' as Pseudonym,
+      pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
@@ -77,7 +77,7 @@ test('email-verification text for an invited author looks right', async ({ page 
     user: {
       name: 'Josiah Carberry',
       orcid: Orcid('0000-0002-1825-0097'),
-      pseudonym: 'Orange Panda' as Pseudonym,
+      pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
@@ -96,7 +96,7 @@ test('email-verification HTML for a comment looks right', async ({ page }) => {
     user: {
       name: 'Josiah Carberry',
       orcid: Orcid('0000-0002-1825-0097'),
-      pseudonym: 'Orange Panda' as Pseudonym,
+      pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
@@ -116,7 +116,7 @@ test('email-verification text for a comment looks right', async ({ page }) => {
     user: {
       name: 'Josiah Carberry',
       orcid: Orcid('0000-0002-1825-0097'),
-      pseudonym: 'Orange Panda' as Pseudonym,
+      pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),

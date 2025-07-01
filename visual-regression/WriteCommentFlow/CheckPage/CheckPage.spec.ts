@@ -3,7 +3,7 @@ import { Orcid } from 'orcid-id-ts'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import { type NonEmptyString, Uuid } from '../../../src/types/index.js'
-import type { Pseudonym } from '../../../src/types/Pseudonym.js'
+import { Pseudonym } from '../../../src/types/Pseudonym.js'
 import type { User } from '../../../src/user.js'
 import * as _ from '../../../src/WriteCommentFlow/CheckPage/CheckPage.js'
 import { expect, test } from '../../base.js'
@@ -58,7 +58,7 @@ test('content looks right with competing interests', async ({ showPage }) => {
 const user = {
   name: 'Josiah Carberry',
   orcid: Orcid('0000-0002-1825-0097'),
-  pseudonym: 'Orange Panda' as Pseudonym,
+  pseudonym: Pseudonym('Orange Panda'),
 } satisfies User
 
 const comment = html`

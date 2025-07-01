@@ -4,7 +4,7 @@ import { Orcid } from 'orcid-id-ts'
 import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import * as _ from '../../src/my-prereviews-page/list-of-prereviews.js'
-import type { Pseudonym } from '../../src/types/Pseudonym.js'
+import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
@@ -16,7 +16,7 @@ test('content looks right', async ({ showPage }) => {
       user: {
         name: 'Josiah Carberry',
         orcid: Orcid('0000-0002-1825-0097'),
-        pseudonym: 'Orange Panda' as Pseudonym,
+        pseudonym: Pseudonym('Orange Panda'),
       },
     }),
     DefaultLocale,

@@ -133,7 +133,7 @@ import {
   type ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/types/preprint-id.js'
-import type { Pseudonym } from '../src/types/Pseudonym.js'
+import { Pseudonym } from '../src/types/Pseudonym.js'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.js'
 import type { UserOnboarding } from '../src/user-onboarding.js'
 import type { User } from '../src/user.js'
@@ -1280,7 +1280,7 @@ export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
 export const clubId = (): fc.Arbitrary<ClubId> => constantFrom(...clubIds)
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
-  fc.tuple(constantFrom(...colors), constantFrom(...animals)).map(parts => capitalCase(parts.join(' ')) as Pseudonym)
+  fc.tuple(constantFrom(...colors), constantFrom(...animals)).map(parts => Pseudonym(capitalCase(parts.join(' '))))
 
 export const profileId = (): fc.Arbitrary<ProfileId.ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())
 

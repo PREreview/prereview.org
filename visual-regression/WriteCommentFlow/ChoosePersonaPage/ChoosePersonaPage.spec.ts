@@ -2,7 +2,7 @@ import { Either } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import { Uuid } from '../../../src/types/index.js'
-import type { Pseudonym } from '../../../src/types/Pseudonym.js'
+import { Pseudonym } from '../../../src/types/Pseudonym.js'
 import type { User } from '../../../src/user.js'
 import * as ChoosePersonaForm from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaForm.js'
 import * as _ from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaPage.js'
@@ -50,5 +50,5 @@ test('content looks right when the persona is missing', async ({ showPage }) => 
 const user = {
   name: 'Josiah Carberry',
   orcid: Orcid('0000-0002-1825-0097'),
-  pseudonym: 'Orange Panda' as Pseudonym,
+  pseudonym: Pseudonym('Orange Panda'),
 } satisfies User

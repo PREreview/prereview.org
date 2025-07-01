@@ -4,7 +4,7 @@ import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { Preprint } from '../../src/preprint.js'
-import type { Pseudonym } from '../../src/types/Pseudonym.js'
+import { Pseudonym } from '../../src/types/Pseudonym.js'
 import type { User } from '../../src/user.js'
 import { startPage } from '../../src/write-review/write-a-prereview-page/write-a-prereview-page.js'
 import { expect, test } from '../base.js'
@@ -63,5 +63,5 @@ const preprint = Preprint({
 const user = {
   name: 'Josiah Carberry',
   orcid: Orcid('0000-0002-1825-0097'),
-  pseudonym: 'Orange Panda' as Pseudonym,
+  pseudonym: Pseudonym('Orange Panda'),
 } satisfies User

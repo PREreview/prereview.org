@@ -6,7 +6,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import { createPage } from '../../src/my-details-page/my-details-page.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
 import type { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import type { Pseudonym } from '../../src/types/Pseudonym.js'
+import { Pseudonym } from '../../src/types/Pseudonym.js'
 import type { UserOnboarding } from '../../src/user-onboarding.js'
 import type { User } from '../../src/user.js'
 import { expect, test } from '../base.js'
@@ -115,7 +115,7 @@ test('content looks right when empty', async ({ showPage }) => {
 const user = {
   name: 'Josiah Carberry',
   orcid: Orcid('0000-0002-1825-0097'),
-  pseudonym: 'Orange Panda' as Pseudonym,
+  pseudonym: Pseudonym('Orange Panda'),
 } satisfies User
 
 const userOnboarding = {

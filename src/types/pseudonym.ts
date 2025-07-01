@@ -39,3 +39,5 @@ export function isPseudonym(value: string): value is Pseudonym {
 
   return colors.includes(parts[0]) && animals.map(animal => capitalCase(animal)).includes(parts[1])
 }
+
+export const Pseudonym = (pseudonym: string) => PseudonymSchema.make(pseudonym)

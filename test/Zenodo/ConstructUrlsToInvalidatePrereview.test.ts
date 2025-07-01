@@ -3,7 +3,7 @@ import { Array, Effect } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { Doi } from '../../src/types/index.js'
 import type { BiorxivPreprintId } from '../../src/types/preprint-id.js'
-import type { Pseudonym } from '../../src/types/Pseudonym.js'
+import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { ZenodoOrigin } from '../../src/Zenodo/CommunityRecords.js'
 import * as _ from '../../src/Zenodo/ConstructUrlsToInvalidatePrereview.js'
 import * as EffectTest from '../EffectTest.js'
@@ -16,7 +16,7 @@ describe('constructUrlsToInvalidatePrereview', () => {
       const user = {
         name: 'Josiah Carberry',
         orcid: Orcid('0000-0002-1825-0097'),
-        pseudonym: 'Orange Panda' as Pseudonym,
+        pseudonym: Pseudonym('Orange Panda'),
       }
 
       const expectedUrls = [

@@ -8,7 +8,7 @@ import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { Prereview } from '../../src/Prereview.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
-import type { Pseudonym } from '../../src/types/Pseudonym.js'
+import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
@@ -78,7 +78,7 @@ test('content looks right when logged in', async ({ showPage }) => {
     user: {
       name: 'Josiah Carberry',
       orcid: Orcid('0000-0002-1825-0097'),
-      pseudonym: 'Orange Panda' as Pseudonym,
+      pseudonym: Pseudonym('Orange Panda'),
     },
   })({
     getAuthorInvite: () =>

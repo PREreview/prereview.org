@@ -3,7 +3,7 @@ import { missingE } from '../../../src/form.js'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import type { PreprintTitle } from '../../../src/preprint.js'
-import { Doi, Orcid, type Pseudonym } from '../../../src/types/index.js'
+import { Doi, Orcid, Pseudonym } from '../../../src/types/index.js'
 import type { User } from '../../../src/user.js'
 import { personaForm } from '../../../src/write-review/persona/persona-form.js'
 import { expect, test } from '../../base.js'
@@ -38,5 +38,5 @@ const preprint = {
 const user = {
   name: 'Josiah Carberry',
   orcid: Orcid.Orcid('0000-0002-1825-0097'),
-  pseudonym: 'Orange Panda' as Pseudonym.Pseudonym,
+  pseudonym: Pseudonym.Pseudonym('Orange Panda'),
 } satisfies User
