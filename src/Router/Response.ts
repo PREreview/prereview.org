@@ -60,7 +60,7 @@ export const toHttpServerResponse = (
     const request = yield* HttpServerRequest.HttpServerRequest
     const allowRobots = response._tag !== 'TwoUpPageResponse' ? response.allowRobots !== false : true
 
-    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, request.url)
+    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, locale, request.url)
 
     const links = Option.match(pageUrls.canonical, {
       onNone: Array.empty,

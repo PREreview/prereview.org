@@ -2,7 +2,7 @@ import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { HashMap, HashSet, Option, Tuple } from 'effect'
 import { constructPageUrls } from '../../src/Router/ConstructPageUrls.js'
-import { UserSelectableLocales } from '../../src/locales/index.js'
+import { DefaultLocale, UserSelectableLocales } from '../../src/locales/index.js'
 import type { PageResponse } from '../../src/response.js'
 import * as fc from '../fc.js'
 
@@ -11,34 +11,39 @@ describe('constructPageUrls', () => {
     it.prop(
       [
         fc
-          .url()
-          .map(url =>
+          .tuple(
+            fc.supportedLocale(),
+            fc.url().filter(url => url.pathname !== '/'),
+          )
+          .map(([locale, url]) =>
             Tuple.make(
+              locale,
               url.origin,
               `${url.pathname}${url.search}`,
-              `${url.origin}${encodeURI(`${url.pathname}${url.search}`)}`,
+              `${url.origin}/${locale.toLowerCase()}${encodeURI(`${url.pathname}${url.search}`)}`,
             ),
           ),
         fc.string(),
       ],
       {
         examples: [
-          [['http://example.com', '/', 'http://example.com/'], '/anything'],
-          [['http://example.com', '/about', 'http://example.com/about'], '/anything'],
-          [['http://example.com', '/reviews?page=2', 'http://example.com/reviews?page=2'], '/anything'],
-          [['http://example.com', '/?foo=bar baz', 'http://example.com/?foo=bar%20baz'], '/anything'],
+          [['en-US', 'http://example.com', '/', 'http://example.com/en-us'], '/anything'],
+          [['en-US', 'http://example.com', '/about', 'http://example.com/en-us/about'], '/anything'],
+          [['pt-BR', 'http://example.com', '/about', 'http://example.com/pt-br/about'], '/anything'],
+          [['en-US', 'http://example.com', '/reviews?page=2', 'http://example.com/en-us/reviews?page=2'], '/anything'],
+          [['en-US', 'http://example.com', '/?foo=bar baz', 'http://example.com/en-us?foo=bar%20baz'], '/anything'],
         ],
       },
-    )('constructs an absolute url', ([origin, canonical, expected], pathAndQueryString) => {
-      const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, pathAndQueryString)
+    )('constructs an absolute url', ([locale, origin, canonical, expected], pathAndQueryString) => {
+      const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, locale, pathAndQueryString)
 
       expect(Option.getOrUndefined(pageUrls.canonical)?.href).toStrictEqual(expected)
     })
 
-    it.prop([fc.url().map(url => Tuple.make(url.origin, `${url.pathname}${url.search}`))])(
+    it.prop([fc.url().map(url => Tuple.make(url.origin, `${url.pathname}${url.search}`)), fc.supportedLocale()])(
       "does nothing when there isn't one",
-      ([origin, pathAndQueryString]) => {
-        const pageUrls = constructPageUrls({} as unknown as PageResponse, origin, pathAndQueryString)
+      ([origin, pathAndQueryString], locale) => {
+        const pageUrls = constructPageUrls({} as unknown as PageResponse, origin, locale, pathAndQueryString)
 
         expect(pageUrls.canonical).toStrictEqual(Option.none())
       },
@@ -46,10 +51,10 @@ describe('constructPageUrls', () => {
   })
 
   describe('localeUrls', () => {
-    it.prop([fc.url().map(url => Tuple.make(url.origin, `${url.pathname}${url.search}`))])(
+    it.prop([fc.url().map(url => Tuple.make(url.origin, `${url.pathname}${url.search}`)), fc.userSelectableLocale()])(
       'constructs a url for each selectable locale',
-      ([origin, pathAndQueryString]) => {
-        const pageUrls = constructPageUrls({} as unknown as PageResponse, origin, pathAndQueryString)
+      ([origin, pathAndQueryString], locale) => {
+        const pageUrls = constructPageUrls({} as unknown as PageResponse, origin, locale, pathAndQueryString)
 
         expect(HashMap.size(pageUrls.localeUrls)).toBe(HashSet.size(UserSelectableLocales))
       },
@@ -81,7 +86,7 @@ describe('constructPageUrls', () => {
         ],
       },
     )('constructs the url for each selectable locale', ([locale, origin, pathAndQueryString, expected]) => {
-      const pageUrls = constructPageUrls({} as unknown as PageResponse, origin, pathAndQueryString)
+      const pageUrls = constructPageUrls({} as unknown as PageResponse, origin, DefaultLocale, pathAndQueryString)
 
       expect(HashMap.unsafeGet(pageUrls.localeUrls, locale).href).toStrictEqual(expected)
     })

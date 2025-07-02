@@ -10,11 +10,14 @@ export interface PageUrls {
 export const constructPageUrls = (
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse,
   appOrigin: string,
+  locale: SupportedLocale,
   pathAndQueryString: string,
 ): PageUrls =>
   pipe(
     Option.fromNullable(response.canonical),
-    Option.map(canonical => new URL(`${appOrigin}${encodeURI(canonical).replace(/^([^/])/, '/$1')}`)),
+    Option.map(
+      canonical => new URL(`${appOrigin}/${locale.toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),
+    ),
     canonical => ({
       canonical,
       localeUrls: pipe(
