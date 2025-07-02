@@ -1,8 +1,9 @@
 import { Cookies, HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
-import { Array, Boolean, Effect, identity, Option, pipe, Schema } from 'effect'
+import { Array, Boolean, Effect, HashMap, identity, Option, pipe, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { FlashMessage, Locale } from '../Context.js'
+import * as FeatureFlags from '../FeatureFlags.js'
 import { OrcidOauth } from '../OrcidOauth.js'
 import { TemplatePage } from '../TemplatePage.js'
 import { PublicUrl } from '../public-url.js'
@@ -21,7 +22,7 @@ export const toHttpServerResponse = (
 ): Effect.Effect<
   HttpServerResponse.HttpServerResponse,
   never,
-  Locale | TemplatePage | OrcidOauth | PublicUrl | HttpServerRequest.HttpServerRequest
+  Locale | TemplatePage | OrcidOauth | PublicUrl | HttpServerRequest.HttpServerRequest | FeatureFlags.FeatureFlags
 > => {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
@@ -62,9 +63,18 @@ export const toHttpServerResponse = (
 
     const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, locale, request.url)
 
+    const canChooseLocale = yield* FeatureFlags.canChooseLocale
+
     const links = Option.match(pageUrls.canonical, {
       onNone: Array.empty,
-      onSome: canonical => Array.of({ uri: canonical.href, rel: 'canonical' }),
+      onSome: canonical =>
+        pipe(
+          canChooseLocale ? pageUrls.localeUrls : HashMap.empty(),
+          HashMap.reduce(Array.empty<(typeof Http.LinkHeaderSchema.Type)[number]>(), (links, url, locale) =>
+            Array.append(links, { uri: url.href, rel: 'alternate', hreflang: locale }),
+          ),
+          Array.prepend({ uri: canonical.href, rel: 'canonical' }),
+        ),
     })
 
     return yield* pipe(

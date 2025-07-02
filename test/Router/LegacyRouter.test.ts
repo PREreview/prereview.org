@@ -4,6 +4,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
+import * as FeatureFlags from '../../src/FeatureFlags.js'
 import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import * as OrcidOauth from '../../src/OrcidOauth.js'
@@ -83,6 +84,7 @@ describe('LegacyRouter', () => {
         OrcidOauth.layer({ url: new URL('http://orcid.test'), clientId: 'id', clientSecret: Redacted.make('secret') }),
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
+      Effect.provide(featureFlagsLayer),
       EffectTest.run,
     ),
   )
@@ -128,6 +130,7 @@ describe('LegacyRouter', () => {
         }),
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
+      Effect.provide(featureFlagsLayer),
       EffectTest.run,
     ),
   )
@@ -158,7 +161,18 @@ describe('LegacyRouter', () => {
         }),
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
+      Effect.provide(featureFlagsLayer),
       EffectTest.run,
     ),
   )
+})
+
+const featureFlagsLayer = FeatureFlags.layer({
+  aiReviewsAsCc0: shouldNotBeCalled,
+  canAddMultipleAuthors: shouldNotBeCalled,
+  canChooseLocale: false,
+  canReviewDatasets: false,
+  canSeeDesignTweaks: false,
+  canSeeHomePageChanges: shouldNotBeCalled,
+  useCrowdinInContext: false,
 })
