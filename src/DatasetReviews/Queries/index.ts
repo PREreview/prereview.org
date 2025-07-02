@@ -4,6 +4,8 @@ import { DatasetReviewsEventStore } from '../Events.js'
 import type * as Errors from './Errors.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 
+export * from './Errors.js'
+
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
   {
