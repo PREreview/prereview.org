@@ -113,6 +113,7 @@ describe('StartNow', () => {
 const commandsLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewCommands.Service>) =>
   Layer.succeed(DatasetReviews.DatasetReviewCommands, {
     startDatasetReview: () => Effect.sync(shouldNotBeCalled),
+    answerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.sync(shouldNotBeCalled),
     ...implementations,
   })
 

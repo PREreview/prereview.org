@@ -1,6 +1,7 @@
 import { Array, Context, Data, Effect, Layer, pipe } from 'effect'
 import type { Uuid } from '../../types/index.js'
 import { DatasetReviewsEventStore } from '../Events.js'
+import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import type * as Errors from './Errors.js'
 import * as StartDatasetReview from './StartDatasetReview.js'
 
@@ -10,6 +11,10 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
   DatasetReviewCommands,
   {
     startDatasetReview: CommandHandler<StartDatasetReview.StartDatasetReview, Errors.DatasetReviewWasAlreadyStarted>
+    answerIfTheDatasetFollowsFairAndCarePrinciples: CommandHandler<
+      AnswerIfTheDatasetFollowsFairAndCarePrinciples.Command,
+      AnswerIfTheDatasetFollowsFairAndCarePrinciples.Error
+    >
   }
 >() {}
 
@@ -20,7 +25,8 @@ type CommandHandler<Command, Error> = (
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
-export const { startDatasetReview } = Effect.serviceFunctions(DatasetReviewCommands)
+export const { startDatasetReview, answerIfTheDatasetFollowsFairAndCarePrinciples } =
+  Effect.serviceFunctions(DatasetReviewCommands)
 
 const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Service, never, DatasetReviewsEventStore> =
   Effect.gen(function* () {
@@ -34,6 +40,28 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           yield* pipe(
             StartDatasetReview.foldState(events),
             StartDatasetReview.decide(command),
+            Effect.tap(
+              Array.match({
+                onEmpty: () => Effect.void,
+                onNonEmpty: events => eventStore.commitEvents(datasetReviewId, latestVersion)(...events),
+              }),
+            ),
+          )
+        },
+        Effect.catchTag(
+          'FailedToCommitEvent',
+          'FailedToGetEvents',
+          'ResourceHasChanged',
+          cause => new UnableToHandleCommand({ cause }),
+        ),
+      ),
+      answerIfTheDatasetFollowsFairAndCarePrinciples: Effect.fn(
+        function* (datasetReviewId, command) {
+          const { events, latestVersion } = yield* eventStore.getEvents(datasetReviewId)
+
+          yield* pipe(
+            AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState(events),
+            AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide(command),
             Effect.tap(
               Array.match({
                 onEmpty: () => Effect.void,
