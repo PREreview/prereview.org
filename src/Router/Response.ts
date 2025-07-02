@@ -1,4 +1,4 @@
-import { Cookies, HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
+import { Cookies, HttpServerResponse, UrlParams } from '@effect/platform'
 import { Array, Boolean, Effect, HashMap, identity, Option, pipe, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
@@ -22,7 +22,7 @@ export const toHttpServerResponse = (
 ): Effect.Effect<
   HttpServerResponse.HttpServerResponse,
   never,
-  Locale | TemplatePage | OrcidOauth | PublicUrl | HttpServerRequest.HttpServerRequest | FeatureFlags.FeatureFlags
+  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.FeatureFlags
 > => {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
@@ -58,22 +58,21 @@ export const toHttpServerResponse = (
       onTrue: () => Effect.succeedNone,
     })
     const message = yield* Effect.serviceOption(FlashMessage)
-    const request = yield* HttpServerRequest.HttpServerRequest
     const allowRobots = response._tag !== 'TwoUpPageResponse' ? response.allowRobots !== false : true
 
-    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, locale, request.url)
+    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, locale)
 
     const canChooseLocale = yield* FeatureFlags.canChooseLocale
 
-    const links = Option.match(pageUrls.canonical, {
+    const links = Option.match(pageUrls, {
       onNone: Array.empty,
-      onSome: canonical =>
+      onSome: pageUrls =>
         pipe(
           canChooseLocale ? pageUrls.localeUrls : HashMap.empty(),
           HashMap.reduce(Array.empty<(typeof Http.LinkHeaderSchema.Type)[number]>(), (links, url, locale) =>
             Array.append(links, { uri: url.href, rel: 'alternate', hreflang: locale }),
           ),
-          Array.prepend({ uri: canonical.href, rel: 'canonical' }),
+          Array.prepend({ uri: pageUrls.canonical.href, rel: 'canonical' }),
         ),
     })
 
@@ -82,7 +81,7 @@ export const toHttpServerResponse = (
         toPage({
           locale,
           message: Option.getOrUndefined(message),
-          pageUrls,
+          pageUrls: Option.getOrUndefined(pageUrls),
           response,
           userOnboarding: Option.getOrUndefined(userOnboarding),
           user: Option.getOrUndefined(user),

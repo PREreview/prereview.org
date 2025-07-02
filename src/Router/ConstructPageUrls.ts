@@ -3,7 +3,7 @@ import { UserSelectableLocales, type SupportedLocale } from '../locales/index.js
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../response.js'
 
 export interface PageUrls {
-  canonical: Option.Option<URL>
+  canonical: URL
   localeUrls: HashMap.HashMap<SupportedLocale, URL>
 }
 
@@ -11,24 +11,20 @@ export const constructPageUrls = (
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse,
   appOrigin: string,
   locale: SupportedLocale,
-  pathAndQueryString: string,
-): PageUrls =>
+): Option.Option<PageUrls> =>
   pipe(
     Option.fromNullable(response.canonical),
-    Option.map(
-      canonical => new URL(`${appOrigin}/${locale.toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),
-    ),
-    canonical => ({
-      canonical,
+    Option.map(canonical => ({
+      canonical: new URL(`${appOrigin}/${locale.toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),
       localeUrls: pipe(
         UserSelectableLocales,
         HashSet.map(locale =>
           Tuple.make(
             locale,
-            new URL(`${appOrigin}/${locale.toLowerCase()}${pathAndQueryString.replace(/^\/(?=\?|$)/, '')}`),
+            new URL(`${appOrigin}/${locale.toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),
           ),
         ),
         HashMap.fromIterable,
       ),
-    }),
+    })),
   )
