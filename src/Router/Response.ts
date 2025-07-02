@@ -62,6 +62,11 @@ export const toHttpServerResponse = (
 
     const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, request.url)
 
+    const links = Option.match(pageUrls.canonical, {
+      onNone: Array.empty,
+      onSome: canonical => Array.of({ uri: canonical.href, rel: 'canonical' }),
+    })
+
     return yield* pipe(
       templatePage(
         toPage({
@@ -80,13 +85,9 @@ export const toHttpServerResponse = (
         onSome: () =>
           HttpServerResponse.unsafeSetCookie('flash-message', '', { expires: new Date(1), httpOnly: true, path: '/' }),
       }),
-      Option.match(pageUrls.canonical, {
-        onNone: () => identity,
-        onSome: canonical =>
-          HttpServerResponse.setHeader(
-            'Link',
-            Schema.encodeSync(Http.LinkHeaderSchema)(Array.of({ uri: canonical.href, rel: 'canonical' })),
-          ),
+      Array.match(links, {
+        onEmpty: () => identity,
+        onNonEmpty: links => HttpServerResponse.setHeader('Link', Schema.encodeSync(Http.LinkHeaderSchema)(links)),
       }),
       Boolean.match(allowRobots, {
         onFalse: () => HttpServerResponse.setHeader('X-Robots-Tag', 'none, noarchive'),
