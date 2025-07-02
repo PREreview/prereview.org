@@ -1,10 +1,10 @@
 import { HashMap, HashSet, Option, pipe, Tuple } from 'effect'
-import { UserSelectableLocales, type SupportedLocale } from '../locales/index.js'
+import { UserSelectableLocales, type SupportedLocale, type UserSelectableLocale } from '../locales/index.js'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../response.js'
 
 export interface PageUrls {
   canonical: URL
-  localeUrls: HashMap.HashMap<SupportedLocale, URL>
+  localeUrls: HashMap.HashMap<UserSelectableLocale, URL>
 }
 
 export const constructPageUrls = (

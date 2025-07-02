@@ -5,16 +5,21 @@ import * as {{@key}} from './{{.}}.js'
 
 export type SupportedLocale = {{#locales}}| '{{.}}'{{/locales}}
 
-export const DefaultLocale: SupportedLocale = '{{defaultLocale}}'
+export type UserSelectableLocale = Exclude<SupportedLocale, '{{crowdinInContextLocale}}'>
+
+export const DefaultLocale: UserSelectableLocale = '{{defaultLocale}}'
 
 export const CrowdinInContextLocale: SupportedLocale = '{{crowdinInContextLocale}}'
 
 export const SupportedLocales = HashSet.fromIterable<SupportedLocale>([{{#locales}}'{{.}}', {{/locales}}])
 
-export const UserSelectableLocales = HashSet.fromIterable<SupportedLocale>([{{#locales}}'{{.}}', {{/locales}}]).pipe(HashSet.remove<SupportedLocale>('{{crowdinInContextLocale}}'))
+export const UserSelectableLocales = HashSet.fromIterable<SupportedLocale>([{{#locales}}'{{.}}', {{/locales}}]).pipe(HashSet.remove<SupportedLocale>('{{crowdinInContextLocale}}')) as HashSet.HashSet<UserSelectableLocale>
 
 export const isSupportedLocale = (locale: string): locale is SupportedLocale =>
   [{{#locales}}'{{.}}', {{/locales}}].includes(locale)
+
+export const isUserSelectableLocales = (locale: string): locale is UserSelectableLocale =>
+  isSupportedLocale(locale) && locale !== '{{crowdinInContextLocale}}'
 
 type Module = keyof Translations
 type Key<M extends Module> = keyof Translations[M]

@@ -18,7 +18,7 @@ describe('detectLocale', () => {
     expect(_.detectLocale(input)).toStrictEqual(Option.some(expected))
   })
 
-  it.each(['', ' ', 'foo', 'is'])('finds no match for "%s"', input => {
+  it.each(['', ' ', 'foo', 'is', 'lol-US'])('finds no match for "%s"', input => {
     expect(_.detectLocale(input)).toStrictEqual(Option.none())
   })
 })

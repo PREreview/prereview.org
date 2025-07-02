@@ -1,5 +1,5 @@
 import { Array, HashSet, Option, pipe, String } from 'effect'
-import { SupportedLocales, type SupportedLocale } from '../locales/index.js'
+import { type UserSelectableLocale, UserSelectableLocales } from '../locales/index.js'
 
 export const removeLocaleFromPath = (pathAndQuerystring: string): string => {
   const [path, queryParams] = pathAndQuerystring.split('?')
@@ -8,7 +8,7 @@ export const removeLocaleFromPath = (pathAndQuerystring: string): string => {
   }
   const parts = path.split('/')
 
-  const lowerCaseSupportedLocales = HashSet.map(SupportedLocales, String.toLowerCase)
+  const lowerCaseSupportedLocales = HashSet.map(UserSelectableLocales, String.toLowerCase)
 
   if (!HashSet.has(lowerCaseSupportedLocales, parts[1])) {
     return pathAndQuerystring
@@ -23,7 +23,7 @@ export const removeLocaleFromPath = (pathAndQuerystring: string): string => {
   )
 }
 
-export const getLocaleFromPath = (pathAndQuerystring: string): Option.Option<SupportedLocale> => {
+export const getLocaleFromPath = (pathAndQuerystring: string): Option.Option<UserSelectableLocale> => {
   const path = pathAndQuerystring.split('?')[0]
   if (path === undefined) {
     return Option.none()
@@ -31,7 +31,7 @@ export const getLocaleFromPath = (pathAndQuerystring: string): Option.Option<Sup
 
   const parts = path.split('/')
 
-  for (const supportedLocale of SupportedLocales) {
+  for (const supportedLocale of UserSelectableLocales) {
     if (parts[1] === supportedLocale.toLowerCase()) {
       return Option.some(supportedLocale)
     }

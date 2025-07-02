@@ -8,6 +8,7 @@ const localeInPathCases = [
   ['/en-us', '/', Option.some('en-US')],
   ['/en-US', '/en-US', Option.none()],
   ['/pt-br', '/', Option.some('pt-BR')],
+  ['/lol-us', '/lol-us', Option.none()],
   ['/en-us/', '/', Option.some('en-US')],
   ['/pt-br/', '/', Option.some('pt-BR')],
   ['/en-us?foo=bar', '/?foo=bar', Option.some('en-US')],
