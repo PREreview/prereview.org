@@ -5,6 +5,8 @@ import * as Errors from './Errors.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAuthor } from './GetAuthor.js'
 
+export * from './Errors.js'
+
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
   {
