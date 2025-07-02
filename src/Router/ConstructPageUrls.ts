@@ -1,5 +1,10 @@
-import { HashMap, HashSet, Option, pipe, Tuple } from 'effect'
-import { UserSelectableLocales, type SupportedLocale, type UserSelectableLocale } from '../locales/index.js'
+import { Boolean, HashMap, HashSet, Option, pipe, Tuple } from 'effect'
+import {
+  isUserSelectableLocale,
+  UserSelectableLocales,
+  type SupportedLocale,
+  type UserSelectableLocale,
+} from '../locales/index.js'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../response.js'
 
 export interface PageUrls {
@@ -15,7 +20,10 @@ export const constructPageUrls = (
   pipe(
     Option.fromNullable(response.canonical),
     Option.map(canonical => ({
-      canonical: new URL(`${appOrigin}/${locale.toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),
+      canonical: Boolean.match(isUserSelectableLocale(locale), {
+        onTrue: () => new URL(`${appOrigin}/${locale.toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),
+        onFalse: () => new URL(`${appOrigin}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),
+      }),
       localeUrls: pipe(
         UserSelectableLocales,
         HashSet.map(locale =>
