@@ -1,10 +1,9 @@
-import { Context, Data, Effect, Layer } from 'effect'
+import { Array, Context, Data, Effect, Layer } from 'effect'
 import type { Orcid, Uuid } from '../../types/index.js'
 import { DatasetReviewsEventStore } from '../Events.js'
-import type * as Errors from './Errors.js'
+import * as Errors from './Errors.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
-
-export * from './Errors.js'
+import { GetAuthor } from './GetAuthor.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
@@ -39,7 +38,18 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         },
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
       ),
-      getAuthor: () => new UnableToQuery({}),
+      getAuthor: Effect.fn(
+        function* (...args) {
+          const { events } = yield* eventStore.getEvents(...args)
+
+          if (Array.isEmptyReadonlyArray(events)) {
+            return yield* new Errors.UnknownDatasetReview({ cause: 'No events found' })
+          }
+
+          return yield* GetAuthor(events)
+        },
+        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+      ),
     }
   })
 
