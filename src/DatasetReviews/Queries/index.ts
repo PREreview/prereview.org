@@ -20,7 +20,7 @@ type Query<F extends (...args: never) => unknown> = (
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
-export const { findInProgressReviewForADataset } = Effect.serviceFunctions(DatasetReviewQueries)
+export const { findInProgressReviewForADataset, getAuthor } = Effect.serviceFunctions(DatasetReviewQueries)
 
 const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Service, never, DatasetReviewsEventStore> =
   Effect.gen(function* () {
