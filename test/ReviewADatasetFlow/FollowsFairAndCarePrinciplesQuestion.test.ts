@@ -1,43 +1,208 @@
 import { test } from '@fast-check/jest'
-import { expect } from '@jest/globals'
-import { Effect } from 'effect'
+import { describe, expect } from '@jest/globals'
+import { Effect, Equal, Layer } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
+import * as DatasetReviews from '../../src/DatasetReviews/index.js'
+import { UnknownDatasetReview } from '../../src/DatasetReviews/Queries/Errors.js'
 import * as _ from '../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/index.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
-test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
-  'FollowsFairAndCarePrinciplesQuestion',
-  (datasetReviewId, locale, user) =>
+describe('FollowsFairAndCarePrinciplesQuestion', () => {
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+    'when the dataset review is by the user',
+    (datasetReviewId, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.SERVICE_UNAVAILABLE,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+  )
+
+  test.prop([
+    fc.uuid(),
+    fc.supportedLocale(),
+    fc
+      .tuple(fc.user(), fc.orcid())
+      .filter(([user, datasetReviewAuthor]) => !Equal.equals(user.orcid, datasetReviewAuthor)),
+  ])('when the dataset review is by a different user', (datasetReviewId, locale, [user, datasetReviewAuthor]) =>
     Effect.gen(function* () {
       const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.NOT_FOUND,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
-    }).pipe(Effect.provideService(Locale, locale), Effect.provideService(LoggedInUser, user), EffectTest.run),
-)
+    }).pipe(
+      Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(datasetReviewAuthor) })),
+      Effect.provideService(Locale, locale),
+      Effect.provideService(LoggedInUser, user),
+      EffectTest.run,
+    ),
+  )
 
-test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
-  'FollowsFairAndCarePrinciplesSubmission',
-  (datasetReviewId, body, locale, user) =>
+  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
+    "when the dataset review hasn't been started",
+    (datasetReviewId, body, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NOT_FOUND,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(queriesLayer({ getAuthor: () => new UnknownDatasetReview({}) })),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+  )
+
+  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
+    "when the dataset review can't been queried",
+    (datasetReviewId, body, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.SERVICE_UNAVAILABLE,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(queriesLayer({ getAuthor: () => new DatasetReviews.UnableToQuery({}) })),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+  )
+})
+
+describe('FollowsFairAndCarePrinciplesSubmission', () => {
+  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
+    'when the dataset review is by the user',
+    (datasetReviewId, body, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.SERVICE_UNAVAILABLE,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+  )
+
+  test.prop([
+    fc.uuid(),
+    fc.urlParams(),
+    fc.supportedLocale(),
+    fc
+      .tuple(fc.user(), fc.orcid())
+      .filter(([user, datasetReviewAuthor]) => !Equal.equals(user.orcid, datasetReviewAuthor)),
+  ])('when the dataset review is by a different user', (datasetReviewId, body, locale, [user, datasetReviewAuthor]) =>
     Effect.gen(function* () {
       const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.NOT_FOUND,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
         js: [],
       })
-    }).pipe(Effect.provideService(Locale, locale), Effect.provideService(LoggedInUser, user), EffectTest.run),
-)
+    }).pipe(
+      Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(datasetReviewAuthor) })),
+      Effect.provideService(Locale, locale),
+      Effect.provideService(LoggedInUser, user),
+      EffectTest.run,
+    ),
+  )
+
+  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
+    "when the dataset review hasn't been started",
+    (datasetReviewId, body, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NOT_FOUND,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(queriesLayer({ getAuthor: () => new UnknownDatasetReview({}) })),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+  )
+
+  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
+    "when the dataset review can't been queried",
+    (datasetReviewId, body, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.SERVICE_UNAVAILABLE,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(queriesLayer({ getAuthor: () => new DatasetReviews.UnableToQuery({}) })),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+  )
+})
+
+const queriesLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewQueries.Service>) =>
+  Layer.succeed(DatasetReviews.DatasetReviewQueries, {
+    findInProgressReviewForADataset: () => Effect.sync(shouldNotBeCalled),
+    getAuthor: () => Effect.sync(shouldNotBeCalled),
+    ...implementations,
+  })
