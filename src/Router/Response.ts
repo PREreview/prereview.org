@@ -1,5 +1,5 @@
 import { Cookies, HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
-import { Boolean, Effect, identity, Option, pipe } from 'effect'
+import { Array, Boolean, Effect, identity, Option, pipe, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
 import { FlashMessage, Locale } from '../Context.js'
@@ -12,6 +12,7 @@ import { OrcidLocale } from '../types/index.js'
 import { UserOnboardingService } from '../user-onboarding.js'
 import { LoggedInUser } from '../user.js'
 import * as ConstructPageUrls from './ConstructPageUrls.js'
+import * as Http from './Http.js'
 
 export type { Response } from '../response.js'
 
@@ -81,7 +82,11 @@ export const toHttpServerResponse = (
       }),
       Option.match(pageUrls.canonical, {
         onNone: () => identity,
-        onSome: canonical => HttpServerResponse.setHeader('Link', `<${canonical.href}>; rel="canonical"`),
+        onSome: canonical =>
+          HttpServerResponse.setHeader(
+            'Link',
+            Schema.encodeSync(Http.LinkHeaderSchema)(Array.of({ uri: canonical.href, rel: 'canonical' })),
+          ),
       }),
       Boolean.match(allowRobots, {
         onFalse: () => HttpServerResponse.setHeader('X-Robots-Tag', 'none, noarchive'),
