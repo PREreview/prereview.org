@@ -2,7 +2,7 @@ import { Array, Boolean, Option, pipe } from 'effect'
 import { parseAcceptLanguage } from 'intl-parse-accept-language'
 import {
   DefaultLocale,
-  isUserSelectableLocales,
+  isUserSelectableLocale,
   UserSelectableLocales,
   type UserSelectableLocale,
 } from '../locales/index.js'
@@ -12,7 +12,7 @@ export const detectLocale = (acceptLanguageHeader: string): Option.Option<UserSe
 
   return pipe(
     Array.findFirst(parsed, candidate => {
-      if (isUserSelectableLocales(candidate)) {
+      if (isUserSelectableLocale(candidate)) {
         return Option.some(candidate)
       }
 

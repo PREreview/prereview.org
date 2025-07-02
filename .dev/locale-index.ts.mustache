@@ -18,7 +18,7 @@ export const UserSelectableLocales = HashSet.fromIterable<SupportedLocale>([{{#l
 export const isSupportedLocale = (locale: string): locale is SupportedLocale =>
   [{{#locales}}'{{.}}', {{/locales}}].includes(locale)
 
-export const isUserSelectableLocales = (locale: string): locale is UserSelectableLocale =>
+export const isUserSelectableLocale = (locale: string): locale is UserSelectableLocale =>
   isSupportedLocale(locale) && locale !== '{{crowdinInContextLocale}}'
 
 type Module = keyof Translations

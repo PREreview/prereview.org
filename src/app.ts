@@ -22,7 +22,7 @@ import { type RouterEnv, routes } from './app-router.js'
 import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
-import { isUserSelectableLocales, type SupportedLocale } from './locales/index.js'
+import { isUserSelectableLocale, type SupportedLocale } from './locales/index.js'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
 import { handleResponse } from './response.js'
 import { securityHeaders } from './securityHeaders.js'
@@ -152,7 +152,7 @@ export const app = (config: ConfigEnv) => {
         next()
       })
       .use(
-        isUserSelectableLocales(locale)
+        isUserSelectableLocale(locale)
           ? LocaleCookie.setLocaleCookieInExpress(locale)
           : (req, res, next) => {
               res.cookie('locale', locale)
