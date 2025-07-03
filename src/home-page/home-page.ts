@@ -643,13 +643,7 @@ export const createPage = ({
           </li>
           <li>
             <a href="https://www.gatesfoundation.org/">
-              <img
-                src="${assets['gates.svg']}"
-                width="500"
-                height="100"
-                loading="lazy"
-                alt="Bill & Melinda Gates Foundation"
-              />
+              <img src="${assets['gates.svg']}" width="2000" height="221.65" loading="lazy" alt="Gates Foundation" />
             </a>
           </li>
           <li>
