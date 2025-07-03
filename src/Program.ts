@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
+import { Config, Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
@@ -341,7 +341,13 @@ export const Program = pipe(
       Layer.effect(
         DatasetReviews.DatasetReviewsEventStore,
         SqlEventStore.make('DatasetReview', DatasetReviews.DatasetReviewEvent),
-      ).pipe(Layer.provide(LibsqlClient.layer({ url: 'file::memory:?cache=shared' }))),
+      ).pipe(
+        Layer.provide(
+          LibsqlClient.layerConfig({
+            url: Config.withDefault(Config.string('DATASET_REVIEWS_LIBSQL_URL'), 'file::memory:?cache=shared'),
+          }),
+        ),
+      ),
       LoggingHttpClient.layer,
     ),
   ),

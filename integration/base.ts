@@ -16,6 +16,7 @@ import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
 import {
   Config,
+  ConfigProvider,
   Effect,
   Logger as EffectLogger,
   Fiber,
@@ -1256,6 +1257,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         sqlClientLayer,
       },
       use,
+      testInfo,
     ) => {
       const server = pipe(
         Program,
@@ -1353,6 +1355,14 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         EffectLogger.withMinimumLogLevel(LogLevel.Debug),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
         Effect.orDie,
+        Effect.withConfigProvider(
+          ConfigProvider.orElse(
+            ConfigProvider.fromJson({
+              DATASET_REVIEWS_LIBSQL_URL: `file:${testInfo.outputPath('dataset-reviews.db')}`,
+            }),
+            ConfigProvider.fromEnv,
+          ),
+        ),
       )
 
       const fiber = Effect.runFork(server)
