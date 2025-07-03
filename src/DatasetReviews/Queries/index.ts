@@ -9,6 +9,10 @@ import { GetAuthor } from './GetAuthor.js'
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
   {
+    checkIfReviewIsInProgress: Query<
+      (datasetReviewId: Uuid.Uuid) => void,
+      Errors.DatasetReviewIsBeingPublished | Errors.DatasetReviewHasBeenPublished | Errors.UnknownDatasetReview
+    >
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => Orcid.Orcid, Errors.UnknownDatasetReview>
     getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: Query<
@@ -24,14 +28,19 @@ type Query<F extends (...args: never) => unknown, E = never> = (
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
-export const { findInProgressReviewForADataset, getAuthor, getAnswerToIfTheDatasetFollowsFairAndCarePrinciples } =
-  Effect.serviceFunctions(DatasetReviewQueries)
+export const {
+  checkIfReviewIsInProgress,
+  findInProgressReviewForADataset,
+  getAuthor,
+  getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
+} = Effect.serviceFunctions(DatasetReviewQueries)
 
 const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Service, never, DatasetReviewsEventStore> =
   Effect.gen(function* () {
     const eventStore = yield* DatasetReviewsEventStore
 
     return {
+      checkIfReviewIsInProgress: () => new UnableToQuery({}),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
           const events = yield* eventStore.getAllEventsOfType(

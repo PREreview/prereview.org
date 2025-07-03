@@ -293,6 +293,7 @@ const commandsLayer = (implementations?: Partial<typeof DatasetReviews.DatasetRe
 
 const queriesLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewQueries.Service>) =>
   Layer.succeed(DatasetReviews.DatasetReviewQueries, {
+    checkIfReviewIsInProgress: () => Effect.sync(shouldNotBeCalled),
     findInProgressReviewForADataset: () => Effect.sync(shouldNotBeCalled),
     getAuthor: () => Effect.sync(shouldNotBeCalled),
     getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.sync(shouldNotBeCalled),
