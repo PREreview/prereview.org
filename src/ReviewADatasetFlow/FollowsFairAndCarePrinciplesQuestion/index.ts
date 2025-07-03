@@ -7,6 +7,8 @@ import { PageNotFound } from '../../PageNotFound/index.js'
 import type * as Response from '../../response.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import * as FollowsFairAndCarePrinciplesForm from './FollowsFairAndCarePrinciplesForm.js'
+import { FollowsFairAndCarePrinciplesQuestion as MakeResponse } from './FollowsFairAndCarePrinciplesQuestion.js'
 
 export const FollowsFairAndCarePrinciplesQuestion = ({
   datasetReviewId,
@@ -21,7 +23,12 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
       return yield* PageNotFound
     }
 
-    return yield* HavingProblemsPage
+    const form = yield* Effect.andThen(
+      DatasetReviews.getAnswerToIfTheDatasetFollowsFairAndCarePrinciples(datasetReviewId),
+      FollowsFairAndCarePrinciplesForm.fromAnswer,
+    )
+
+    return MakeResponse({ datasetReviewId, form })
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => HavingProblemsPage,

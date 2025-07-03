@@ -59,7 +59,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         },
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
       ),
-      getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => new UnableToQuery({ cause: 'Not implemented' }),
+      getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.succeedNone,
     }
   })
 

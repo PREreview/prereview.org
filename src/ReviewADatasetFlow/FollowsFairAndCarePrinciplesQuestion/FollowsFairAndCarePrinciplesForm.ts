@@ -1,4 +1,4 @@
-import { Data, type Either } from 'effect'
+import { Data, Option, type Either } from 'effect'
 
 export type FollowsFairAndCarePrinciplesForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -13,3 +13,10 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   followsFairAndCarePrinciples: 'yes' | 'partly' | 'no' | 'unsure'
 }> {}
+
+export const fromAnswer: (
+  answer: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>,
+) => FollowsFairAndCarePrinciplesForm = Option.match({
+  onNone: () => new EmptyForm(),
+  onSome: answer => new CompletedForm({ followsFairAndCarePrinciples: answer }),
+})

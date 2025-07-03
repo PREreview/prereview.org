@@ -6,28 +6,35 @@ import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import { UnknownDatasetReview } from '../../src/DatasetReviews/Queries/Errors.js'
 import * as _ from '../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/index.js'
+import * as Routes from '../../src/routes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('FollowsFairAndCarePrinciplesQuestion', () => {
-  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.user(), fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure'))])(
     'when the dataset review is by the user',
-    (datasetReviewId, locale, user) =>
+    (datasetReviewId, locale, user, answer) =>
       Effect.gen(function* () {
         const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
+          _tag: 'StreamlinePageResponse',
+          canonical: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId }),
+          status: StatusCodes.OK,
           title: expect.anything(),
           main: expect.anything(),
-          skipToLabel: 'main',
+          skipToLabel: 'form',
           js: [],
         })
       }).pipe(
-        Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
+        Effect.provide(
+          queriesLayer({
+            getAuthor: () => Effect.succeed(user.orcid),
+            getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.succeed(answer),
+          }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
