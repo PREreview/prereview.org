@@ -12,19 +12,17 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
   {
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
-    getAuthor: (datasetReviewId: Uuid.Uuid) => Effect.Effect<Orcid.Orcid, Errors.UnknownDatasetReview | UnableToQuery>
-    getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: (
-      datasetReviewId: Uuid.Uuid,
-    ) => Effect.Effect<
-      Option.Option<AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']>,
-      Errors.UnknownDatasetReview | UnableToQuery
+    getAuthor: Query<(datasetReviewId: Uuid.Uuid) => Orcid.Orcid, Errors.UnknownDatasetReview>
+    getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: Query<
+      (datasetReviewId: Uuid.Uuid) => Option.Option<AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']>,
+      Errors.UnknownDatasetReview
     >
   }
 >() {}
 
-type Query<F extends (...args: never) => unknown> = (
+type Query<F extends (...args: never) => unknown, E = never> = (
   ...args: Parameters<F>
-) => Effect.Effect<ReturnType<F>, UnableToQuery>
+) => Effect.Effect<ReturnType<F>, UnableToQuery | E>
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
