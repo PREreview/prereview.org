@@ -3,6 +3,7 @@ import type { Orcid, Uuid } from '../../types/index.js'
 import { type AnsweredIfTheDatasetFollowsFairAndCarePrinciples, DatasetReviewsEventStore } from '../Events.js'
 import * as Errors from './Errors.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
+import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAuthor } from './GetAuthor.js'
 
 export * from './Errors.js'
@@ -59,7 +60,18 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         },
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
       ),
-      getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.succeedNone,
+      getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: Effect.fn(
+        function* (...args) {
+          const { events } = yield* eventStore.getEvents(...args)
+
+          if (Array.isEmptyReadonlyArray(events)) {
+            return yield* new Errors.UnknownDatasetReview({ cause: 'No events found' })
+          }
+
+          return GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples(events)
+        },
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+      ),
     }
   })
 
