@@ -1,6 +1,6 @@
-import { Array, Context, Data, Effect, Layer } from 'effect'
+import { Array, Context, Data, Effect, Layer, type Option } from 'effect'
 import type { Orcid, Uuid } from '../../types/index.js'
-import { DatasetReviewsEventStore } from '../Events.js'
+import { type AnsweredIfTheDatasetFollowsFairAndCarePrinciples, DatasetReviewsEventStore } from '../Events.js'
 import * as Errors from './Errors.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAuthor } from './GetAuthor.js'
@@ -12,6 +12,12 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   {
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     getAuthor: (datasetReviewId: Uuid.Uuid) => Effect.Effect<Orcid.Orcid, Errors.UnknownDatasetReview | UnableToQuery>
+    getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: (
+      datasetReviewId: Uuid.Uuid,
+    ) => Effect.Effect<
+      Option.Option<AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']>,
+      Errors.UnknownDatasetReview | UnableToQuery
+    >
   }
 >() {}
 
@@ -21,7 +27,8 @@ type Query<F extends (...args: never) => unknown> = (
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
-export const { findInProgressReviewForADataset, getAuthor } = Effect.serviceFunctions(DatasetReviewQueries)
+export const { findInProgressReviewForADataset, getAuthor, getAnswerToIfTheDatasetFollowsFairAndCarePrinciples } =
+  Effect.serviceFunctions(DatasetReviewQueries)
 
 const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Service, never, DatasetReviewsEventStore> =
   Effect.gen(function* () {
@@ -52,6 +59,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         },
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
       ),
+      getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => new UnableToQuery({ cause: 'Not implemented' }),
     }
   })
 
