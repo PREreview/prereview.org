@@ -1351,6 +1351,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           ),
         ),
         Effect.provide(sqlClientLayer),
+        Effect.tapErrorCause(Effect.logError),
         Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
         EffectLogger.withMinimumLogLevel(LogLevel.Debug),
         Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
