@@ -5,7 +5,6 @@ import { Effect, Equal, Layer, Option } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
-import { UnknownDatasetReview } from '../../src/DatasetReviews/Queries/Errors.js'
 import * as _ from '../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/index.js'
 import * as Routes from '../../src/routes.js'
 import { LoggedInUser } from '../../src/user.js'
@@ -83,7 +82,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(queriesLayer({ getAuthor: () => new UnknownDatasetReview({}) })),
+        Effect.provide(queriesLayer({ getAuthor: () => new DatasetReviews.UnknownDatasetReview({}) })),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -254,7 +253,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
         })
       }).pipe(
         Effect.provide(commandsLayer()),
-        Effect.provide(queriesLayer({ getAuthor: () => new UnknownDatasetReview({}) })),
+        Effect.provide(queriesLayer({ getAuthor: () => new DatasetReviews.UnknownDatasetReview({}) })),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,

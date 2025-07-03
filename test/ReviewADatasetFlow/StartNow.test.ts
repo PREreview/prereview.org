@@ -3,7 +3,6 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Layer } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
-import { DatasetReviewWasAlreadyStarted } from '../../src/DatasetReviews/Commands/Errors.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/StartNow/index.js'
 import * as Routes from '../../src/routes.js'
@@ -38,7 +37,10 @@ describe('StartNow', () => {
       fc.supportedLocale(),
       fc.user(),
       fc.uuid(),
-      fc.constantFrom(new DatasetReviews.UnableToHandleCommand({}), new DatasetReviewWasAlreadyStarted()),
+      fc.constantFrom(
+        new DatasetReviews.UnableToHandleCommand({}),
+        new DatasetReviews.DatasetReviewWasAlreadyStarted(),
+      ),
     ])("the review can't be started", (locale, user, uuid, error) =>
       Effect.gen(function* () {
         const actual = yield* _.StartNow
