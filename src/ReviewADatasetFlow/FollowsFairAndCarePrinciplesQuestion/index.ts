@@ -23,6 +23,8 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
       return yield* PageNotFound
     }
 
+    yield* DatasetReviews.checkIfReviewIsInProgress(datasetReviewId)
+
     const form = yield* Effect.andThen(
       DatasetReviews.getAnswerToIfTheDatasetFollowsFairAndCarePrinciples(datasetReviewId),
       FollowsFairAndCarePrinciplesForm.fromAnswer,
@@ -31,6 +33,8 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
     return MakeResponse({ datasetReviewId, form })
   }).pipe(
     Effect.catchTags({
+      DatasetReviewHasBeenPublished: () => HavingProblemsPage,
+      DatasetReviewIsBeingPublished: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UnknownDatasetReview: () => PageNotFound,
     }),
