@@ -2,6 +2,7 @@ import { Array, Context, Data, Effect, Layer, type Option } from 'effect'
 import type { Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import { type AnsweredIfTheDatasetFollowsFairAndCarePrinciples, DatasetReviewsEventStore } from '../Events.js'
+import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAuthor } from './GetAuthor.js'
@@ -40,7 +41,18 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
     const eventStore = yield* DatasetReviewsEventStore
 
     return {
-      checkIfReviewIsInProgress: () => new UnableToQuery({}),
+      checkIfReviewIsInProgress: Effect.fn(
+        function* (...args) {
+          const { events } = yield* eventStore.getEvents(...args)
+
+          if (Array.isEmptyReadonlyArray(events)) {
+            return yield* new Errors.UnknownDatasetReview({ cause: 'No events found' })
+          }
+
+          return yield* CheckIfReviewIsInProgress(events)
+        },
+        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+      ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
           const events = yield* eventStore.getAllEventsOfType(
