@@ -67,9 +67,9 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
     ),
   )
 
-  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
     "when the dataset review hasn't been started",
-    (datasetReviewId, body, locale, user) =>
+    (datasetReviewId, locale, user) =>
       Effect.gen(function* () {
         const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
 
@@ -89,9 +89,9 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
       ),
   )
 
-  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
     "when the dataset review can't been queried",
-    (datasetReviewId, body, locale, user) =>
+    (datasetReviewId, locale, user) =>
       Effect.gen(function* () {
         const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
 
