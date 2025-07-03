@@ -1,6 +1,7 @@
+import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Equal, Layer } from 'effect'
+import { Effect, Equal, Layer, Option } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
@@ -113,26 +114,63 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
 })
 
 describe('FollowsFairAndCarePrinciplesSubmission', () => {
-  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
-    'when the dataset review is by the user',
-    (datasetReviewId, body, locale, user) =>
-      Effect.gen(function* () {
-        const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
+  test.prop([
+    fc.uuid(),
+    fc.urlParams(fc.record({ followsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+    fc.supportedLocale(),
+    fc.user(),
+  ])('when there is an answer', (datasetReviewId, body, locale, user) =>
+    Effect.gen(function* () {
+      const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
-        Effect.provideService(Locale, locale),
-        Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.SERVICE_UNAVAILABLE,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(
+      Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
+      Effect.provideService(Locale, locale),
+      Effect.provideService(LoggedInUser, user),
+      EffectTest.run,
+    ),
+  )
+  test.prop([
+    fc.uuid(),
+    fc.oneof(
+      fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'followsFairAndCarePrinciples'))),
+      fc.urlParams(
+        fc.record({
+          followsFairAndCarePrinciples: fc
+            .string()
+            .filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
+        }),
       ),
+    ),
+    fc.supportedLocale(),
+    fc.user(),
+  ])("when there isn't an answer", (datasetReviewId, body, locale, user) =>
+    Effect.gen(function* () {
+      const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
+
+      expect(actual).toStrictEqual({
+        _tag: 'StreamlinePageResponse',
+        canonical: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId }),
+        status: StatusCodes.BAD_REQUEST,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
+      })
+    }).pipe(
+      Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
+      Effect.provideService(Locale, locale),
+      Effect.provideService(LoggedInUser, user),
+      EffectTest.run,
+    ),
   )
 
   test.prop([

@@ -188,8 +188,10 @@ const right = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A>> => arb.m
 export const either = <E, A>(leftArb: fc.Arbitrary<E>, rightArb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A, E>> =>
   fc.oneof(left(leftArb), right(rightArb))
 
-export const urlParams = (): fc.Arbitrary<UrlParams.UrlParams> =>
-  fc.webQueryParameters().map(params => UrlParams.fromInput(new URLSearchParams(params)))
+export const urlParams = (params?: fc.Arbitrary<UrlParams.Input>): fc.Arbitrary<UrlParams.UrlParams> =>
+  (params ?? fc.webQueryParameters().map(params => new URLSearchParams(params))).map(params =>
+    UrlParams.fromInput(params),
+  )
 
 export const durationInput = (): fc.Arbitrary<Duration.DurationInput> => fc.integer({ min: 0 }).map(Duration.seconds)
 
