@@ -1,12 +1,10 @@
 import { Array, Context, Data, Effect, Layer, type Option } from 'effect'
 import type { Orcid, Uuid } from '../../types/index.js'
+import * as Errors from '../Errors.js'
 import { type AnsweredIfTheDatasetFollowsFairAndCarePrinciples, DatasetReviewsEventStore } from '../Events.js'
-import * as Errors from './Errors.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAuthor } from './GetAuthor.js'
-
-export * from './Errors.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,

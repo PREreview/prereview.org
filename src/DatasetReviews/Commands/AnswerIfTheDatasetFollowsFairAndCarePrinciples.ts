@@ -1,6 +1,6 @@
 import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
+import * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
-import * as Errors from './Errors.js'
 
 export interface Command {
   readonly answer: 'yes' | 'partly' | 'no' | 'unsure'

@@ -1,7 +1,7 @@
 import { Array, Either, flow, Option, Struct } from 'effect'
 import type { Orcid } from '../../types/index.js'
+import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
-import * as Errors from './Errors.js'
 
 export const GetAuthor: (
   events: ReadonlyArray<Events.DatasetReviewEvent>,
