@@ -114,30 +114,66 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
 })
 
 describe('FollowsFairAndCarePrinciplesSubmission', () => {
-  test.prop([
-    fc.uuid(),
-    fc.urlParams(fc.record({ followsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
-    fc.supportedLocale(),
-    fc.user(),
-  ])('when there is an answer', (datasetReviewId, body, locale, user) =>
-    Effect.gen(function* () {
-      const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
+  describe('when there is an answer', () => {
+    test.prop([
+      fc.uuid(),
+      fc.urlParams(fc.record({ followsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+      fc.supportedLocale(),
+      fc.user(),
+    ])('when the answer can be saved', (datasetReviewId, body, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(
-      Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
-      Effect.provideService(Locale, locale),
-      Effect.provideService(LoggedInUser, user),
-      EffectTest.run,
-    ),
-  )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.SERVICE_UNAVAILABLE,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(commandsLayer({ answerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.void })),
+        Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+    )
+
+    test.prop([
+      fc.uuid(),
+      fc.urlParams(fc.record({ followsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.constantFrom(
+        new DatasetReviews.UnableToHandleCommand({}),
+        new DatasetReviews.DatasetReviewHasNotBeenStarted(),
+        new DatasetReviews.DatasetReviewIsBeingPublished(),
+        new DatasetReviews.DatasetReviewHasBeenPublished(),
+      ),
+    ])("when the answer can't be saved", (datasetReviewId, body, locale, user, error) =>
+      Effect.gen(function* () {
+        const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.SERVICE_UNAVAILABLE,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(commandsLayer({ answerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.fail(error) })),
+        Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+    )
+  })
+
   test.prop([
     fc.uuid(),
     fc.oneof(
@@ -166,6 +202,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
         js: ['error-summary.js'],
       })
     }).pipe(
+      Effect.provide(commandsLayer()),
       Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
@@ -193,6 +230,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
         js: [],
       })
     }).pipe(
+      Effect.provide(commandsLayer()),
       Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(datasetReviewAuthor) })),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
@@ -215,6 +253,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
           js: [],
         })
       }).pipe(
+        Effect.provide(commandsLayer()),
         Effect.provide(queriesLayer({ getAuthor: () => new UnknownDatasetReview({}) })),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
@@ -237,6 +276,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
           js: [],
         })
       }).pipe(
+        Effect.provide(commandsLayer()),
         Effect.provide(queriesLayer({ getAuthor: () => new DatasetReviews.UnableToQuery({}) })),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
@@ -244,6 +284,13 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
       ),
   )
 })
+
+const commandsLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewCommands.Service>) =>
+  Layer.succeed(DatasetReviews.DatasetReviewCommands, {
+    startDatasetReview: () => Effect.sync(shouldNotBeCalled),
+    answerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.sync(shouldNotBeCalled),
+    ...implementations,
+  })
 
 const queriesLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewQueries.Service>) =>
   Layer.succeed(DatasetReviews.DatasetReviewQueries, {

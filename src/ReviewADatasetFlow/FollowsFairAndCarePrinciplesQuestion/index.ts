@@ -42,7 +42,11 @@ export const FollowsFairAndCarePrinciplesSubmission = ({
 }: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
+}): Effect.Effect<
+  Response.Response,
+  never,
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
+> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
@@ -54,7 +58,16 @@ export const FollowsFairAndCarePrinciplesSubmission = ({
     const form = yield* FollowsFairAndCarePrinciplesForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
-      CompletedForm: () => HavingProblemsPage,
+      CompletedForm: Effect.fn(
+        function* (form: FollowsFairAndCarePrinciplesForm.CompletedForm) {
+          yield* DatasetReviews.answerIfTheDatasetFollowsFairAndCarePrinciples(datasetReviewId, {
+            answer: form.followsFairAndCarePrinciples,
+          })
+
+          return yield* HavingProblemsPage
+        },
+        Effect.catchAll(() => HavingProblemsPage),
+      ),
       InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form })),
     })
   }).pipe(
