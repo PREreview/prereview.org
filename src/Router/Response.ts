@@ -122,7 +122,7 @@ export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogI
   return yield* HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
     status: StatusCodes.SEE_OTHER,
     cookies: Cookies.fromIterable([
-      Cookies.unsafeMakeCookie('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
+      Cookies.unsafeMakeCookie('flash-message', 'logged-in-demo', { httpOnly: true, path: '/' }),
       Cookies.unsafeMakeCookie(sessionCookie, cookieSignature.sign(encodedSessionId, Redacted.value(secret)), {
         httpOnly: true,
         path: '/',

@@ -164,6 +164,7 @@ export function handleResponse({
 export const FlashMessageSchema = Schema.Literal(
   'logged-out',
   'logged-in',
+  'logged-in-demo',
   'blocked',
   'verify-contact-email',
   'verify-contact-email-resend',
@@ -423,6 +424,13 @@ function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>, locale: Suppo
         type: 'success',
         title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
         content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageLoggedIn')())}</p>`,
+      }),
+    )
+    .with('logged-in-demo', () =>
+      showNotificationBanner({
+        type: 'success',
+        title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
+        content: html`<p>You have been logged in as a demo user.</p>`,
       }),
     )
     .with('blocked', () =>

@@ -580,7 +580,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogInAsDemoUser)('can log in as a demo user', async ({ javaScriptEnabled, page }, testInfo) => {
+test.extend(canLogInAsDemoUser)('can log in as a demo user', async ({ javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
   const logIn = page.getByRole('link', { name: 'Log in as a demo user' })
 
@@ -593,7 +593,6 @@ test.extend(canLogInAsDemoUser)('can log in as a demo user', async ({ javaScript
   } else {
     await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
   }
-  testInfo.fail()
   await expect(page.getByRole('alert', { name: 'Success' })).toContainText('demo user')
 
   await menu.click()
