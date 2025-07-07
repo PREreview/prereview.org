@@ -79,6 +79,7 @@ pipe(
           ),
         ),
         canChooseLocale: Config.withDefault(Config.boolean('CAN_CHOOSE_LOCALE'), false),
+        canLogInAsDemoUser: Config.withDefault(Config.boolean('CAN_LOG_IN_AS_DEMO_USER'), false),
         canReviewDatasets: Config.withDefault(Config.boolean('CAN_REVIEW_DATASETS'), false),
         canSeeDesignTweaks: Config.withDefault(Config.boolean('CAN_SEE_DESIGN_TWEAKS'), false),
         canSeeHomePageChanges: pipe(
