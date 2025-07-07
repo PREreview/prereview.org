@@ -17,6 +17,9 @@
   "messageLoggedIn": {
     "message": "crwdns1754:0crwdne1754:0"
   },
+  "messageLoggedInDemoUser": {
+    "message": "crwdns5966:0crwdne5966:0"
+  },
   "messageVerifyEmail": {
     "message": "crwdns1756:0crwdne1756:0"
   },
