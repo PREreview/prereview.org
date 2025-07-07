@@ -115,6 +115,7 @@ interface AppFixtures {
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
   canChooseLocale: (typeof FeatureFlags.FeatureFlags.Service)['canChooseLocale']
+  canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
   canReviewDatasets: (typeof FeatureFlags.FeatureFlags.Service)['canReviewDatasets']
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
@@ -131,6 +132,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(() => false)
   },
   canChooseLocale: async ({}, use) => {
+    await use(false)
+  },
+  canLogInAsDemoUser: async ({}, use) => {
     await use(false)
   },
   canReviewDatasets: async ({}, use) => {
@@ -1253,6 +1257,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         nodemailer,
         canAddMultipleAuthors,
         canChooseLocale,
+        canLogInAsDemoUser,
         canReviewDatasets,
         sqlClientLayer,
       },
@@ -1319,7 +1324,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               aiReviewsAsCc0: () => false,
               canAddMultipleAuthors,
               canChooseLocale,
-              canLogInAsDemoUser: false,
+              canLogInAsDemoUser,
               canReviewDatasets,
               canSeeDesignTweaks: false,
               canSeeHomePageChanges: () => false,
@@ -1469,6 +1474,16 @@ export const canLogIn: Fixtures<
     await userOnboardingStore.set('0000-0002-1825-0097', { seenMyDetailsPage: hasSeenMyDetailsPage })
 
     await use(page)
+  },
+}
+
+export const canLogInAsDemoUser: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canLogInAsDemoUser'>
+> = {
+  canLogInAsDemoUser: async ({}, use) => {
+    await use(true)
   },
 }
 

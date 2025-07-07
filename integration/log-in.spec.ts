@@ -4,6 +4,7 @@ import path from 'path'
 import {
   areLoggedIn,
   canLogIn,
+  canLogInAsDemoUser,
   expect,
   hasAVerifiedEmailAddress,
   isANewUser,
@@ -578,3 +579,35 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('Early')).toBeFocused()
   },
 )
+
+test.extend(canLogInAsDemoUser)('can log in as a demo user', async ({ javaScriptEnabled, page }, testInfo) => {
+  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const logIn = page.getByRole('link', { name: 'Log in as a demo user' })
+
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
+  await menu.click()
+  await logIn.click()
+
+  testInfo.fail()
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+  }
+  await expect(page.getByRole('alert', { name: 'Success' })).toContainText('demo user')
+
+  await menu.click()
+  await expect(logIn).toBeHidden()
+
+  await page.reload()
+
+  await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+
+  await menu.click()
+  await page.getByRole('link', { name: 'My details' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Name Josiah Carberry')
+  await expect(page.getByRole('main')).toContainText('ORCID iD 0000-0003-4921-6155')
+  await expect(page.getByRole('main')).toContainText('PREreview pseudonym Orange Panda')
+})
