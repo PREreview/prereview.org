@@ -26,11 +26,18 @@ export const { canChooseLocale, canLogInAsDemoUser, canReviewDatasets, canSeeDes
 
 export class CannotChooseLocale extends Data.TaggedError('CannotChooseLocale') {}
 
+export class CannotLogInAsDemoUser extends Data.TaggedError('CannotLogInAsDemoUser') {}
+
 export class CannotReviewDatasets extends Data.TaggedError('CannotReviewDatasets') {}
 
 export const EnsureCanChooseLocale = Effect.if(canChooseLocale, {
   onTrue: () => Effect.void,
   onFalse: () => new CannotChooseLocale(),
+})
+
+export const EnsureCanLogInAsDemoUser = Effect.if(canLogInAsDemoUser, {
+  onTrue: () => Effect.void,
+  onFalse: () => new CannotLogInAsDemoUser(),
 })
 
 export const EnsureCanReviewDatasets = Effect.if(canReviewDatasets, {
