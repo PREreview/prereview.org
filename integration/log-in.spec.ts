@@ -608,6 +608,6 @@ test.extend(canLogInAsDemoUser)('can log in as a demo user', async ({ javaScript
   await page.getByRole('link', { name: 'My details' }).click()
 
   await expect(page.getByRole('main')).toContainText('Name Josiah Carberry')
-  await expect(page.getByRole('main')).toContainText('ORCID iD 0000-0003-4921-6155')
+  await expect(page.getByRole('main')).toContainText('ORCID iD 0000-0002-1825-0097')
   await expect(page.getByRole('main')).toContainText('PREreview pseudonym Orange Panda')
 })
