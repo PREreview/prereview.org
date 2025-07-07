@@ -74,31 +74,33 @@ export const createMenuPage = ({
           <h3>${t('myAccount')()}</h3>
           <ul>
             ${Option.match(user, {
-              onSome: () =>
-                html` <li>
-                    <a href="${format(Routes.myDetailsMatch.formatter, {})}"
-                      >${t('menuMyDetails')()}${Option.match(
-                        Option.filter(userOnboarding, Struct.get('seenMyDetailsPage')),
-                        {
-                          onSome: () => '',
-                          onNone: () =>
-                            html` <span role="status"
-                              ><span class="visually-hidden">${t('menuNewNotification')()}</span></span
-                            >`,
-                        },
-                      )}</a
-                    >
-                  </li>
-                  <li>
-                    <a href="${format(Routes.myPrereviewsMatch.formatter, {})}">${t('menuMyPrereviews')()}</a>
-                  </li>
-                  <li>
-                    <a href="${format(Routes.logOutMatch.formatter, {})}">${t('menuLogOut')()}</a>
-                  </li>`,
-              onNone: () =>
-                html` <li>
+              onSome: () => html`
+                <li>
+                  <a href="${format(Routes.myDetailsMatch.formatter, {})}"
+                    >${t('menuMyDetails')()}${Option.match(
+                      Option.filter(userOnboarding, Struct.get('seenMyDetailsPage')),
+                      {
+                        onSome: () => '',
+                        onNone: () =>
+                          html` <span role="status"
+                            ><span class="visually-hidden">${t('menuNewNotification')()}</span></span
+                          >`,
+                      },
+                    )}</a
+                  >
+                </li>
+                <li>
+                  <a href="${format(Routes.myPrereviewsMatch.formatter, {})}">${t('menuMyPrereviews')()}</a>
+                </li>
+                <li>
+                  <a href="${format(Routes.logOutMatch.formatter, {})}">${t('menuLogOut')()}</a>
+                </li>
+              `,
+              onNone: () => html`
+                <li>
                   <a href="${format(Routes.logInMatch.formatter, {})}">${t('menuLogIn')()}</a>
-                </li>`,
+                </li>
+              `,
             })}
           </ul>
         </div>

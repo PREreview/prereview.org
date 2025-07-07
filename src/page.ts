@@ -275,7 +275,8 @@ export const page = ({
                       <h3>${translate(locale, 'header', 'myAccount')()}</h3>
                       <ul>
                         ${user
-                          ? html` <li>
+                          ? html`
+                              <li>
                                 <a
                                   href="${format(Routes.myDetailsMatch.formatter, {})}"
                                   ${current === 'my-details' ? html`aria-current="page"` : ''}
@@ -303,12 +304,15 @@ export const page = ({
                                 <a href="${format(Routes.logOutMatch.formatter, {})}"
                                   >${translate(locale, 'header', 'menuLogOut')()}</a
                                 >
-                              </li>`
-                          : html` <li>
-                              <a href="${format(Routes.logInMatch.formatter, {})}"
-                                >${translate(locale, 'header', 'menuLogIn')()}</a
-                              >
-                            </li>`}
+                              </li>
+                            `
+                          : html`
+                              <li>
+                                <a href="${format(Routes.logInMatch.formatter, {})}"
+                                  >${translate(locale, 'header', 'menuLogIn')()}</a
+                                >
+                              </li>
+                            `}
                       </ul>
                     </div>
                   </div>
