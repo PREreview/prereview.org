@@ -155,34 +155,32 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
       Effect.option,
     )
 
-    return yield* Option.match(sessionId, {
-      onNone: () => app,
+    const session = yield* Option.match(sessionId, {
+      onNone: () => Effect.succeedNone,
       onSome: sessionId =>
+        pipe(
+          Effect.tryPromise(() => sessionStore.get(sessionId)),
+          Effect.andThen(Schema.decodeUnknown(Schema.Struct({ user: UserSchema }))),
+          Effect.option,
+        ),
+    })
+
+    return yield* Option.match(Option.all({ session, sessionId }), {
+      onNone: () => app,
+      onSome: ({ session: { user }, sessionId }) =>
         Effect.gen(function* () {
-          const session = yield* pipe(
-            Effect.tryPromise(() => sessionStore.get(sessionId)),
-            Effect.andThen(Schema.decodeUnknown(Schema.Struct({ user: UserSchema }))),
-            Effect.option,
+          const userOnboarding = yield* pipe(
+            Effect.tryPromise(() => userOnboardingStore.get(user.orcid)),
+            Effect.andThen(Schema.decodeUnknown(Schema.Struct({ seenMyDetailsPage: Schema.Boolean }))),
+            Effect.orElseSucceed(() => ({ seenMyDetailsPage: false })),
           )
 
-          return yield* Option.match(session, {
-            onNone: () => app,
-            onSome: ({ user }) =>
-              Effect.gen(function* () {
-                const userOnboarding = yield* pipe(
-                  Effect.tryPromise(() => userOnboardingStore.get(user.orcid)),
-                  Effect.andThen(Schema.decodeUnknown(Schema.Struct({ seenMyDetailsPage: Schema.Boolean }))),
-                  Effect.orElseSucceed(() => ({ seenMyDetailsPage: false })),
-                )
-
-                return yield* pipe(
-                  app,
-                  Effect.provideService(SessionId, sessionId),
-                  Effect.provideService(LoggedInUser, user),
-                  Effect.provideService(UserOnboardingService, userOnboarding),
-                )
-              }),
-          })
+          return yield* pipe(
+            app,
+            Effect.provideService(SessionId, sessionId),
+            Effect.provideService(LoggedInUser, user),
+            Effect.provideService(UserOnboardingService, userOnboarding),
+          )
         }),
     })
   }),
