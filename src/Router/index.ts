@@ -8,10 +8,10 @@ import { CodeOfConductPage } from '../CodeOfConductPage.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { FundingPage } from '../FundingPage.js'
-import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { HowToUsePage } from '../HowToUsePage.js'
 import * as HttpMiddleware from '../HttpMiddleware/index.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
+import { LogInDemoUser } from '../LogInDemoUser.js'
 import { MenuPage } from '../MenuPage/index.js'
 import { PageNotFound } from '../PageNotFound/index.js'
 import { PeoplePage } from '../PeoplePage.js'
@@ -180,7 +180,7 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.Funding, FundingPage),
     MakeStaticRoute('GET', Routes.HowToUse, HowToUsePage),
     MakeStaticRoute('GET', Routes.LiveReviews, LiveReviewsPage),
-    MakeStaticRoute('GET', Routes.LogInDemo, HavingProblemsPage),
+    MakeStaticRoute('GET', Routes.LogInDemo, LogInDemoUser),
     MakeStaticRoute('GET', Routes.Menu, MenuPage),
     MakeStaticRoute('GET', Routes.People, PeoplePage),
     MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),
