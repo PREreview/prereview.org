@@ -1,5 +1,5 @@
 import { type HttpMethod, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { Effect, flow, identity, Option, pipe, Record, Struct } from 'effect'
+import { Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.js'
@@ -180,7 +180,18 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.Funding, FundingPage),
     MakeStaticRoute('GET', Routes.HowToUse, HowToUsePage),
     MakeStaticRoute('GET', Routes.LiveReviews, LiveReviewsPage),
-    MakeStaticRoute('GET', Routes.LogInDemo, LogInDemoUser),
+    HttpRouter.makeRoute(
+      'GET',
+      Routes.LogInDemo,
+      Effect.andThen(
+        LogInDemoUser,
+        flow(
+          Match.value,
+          Match.tag('ForceLogInResponse', Response.handleForceLogInResponse),
+          Match.orElse(Response.toHttpServerResponse),
+        ),
+      ),
+    ),
     MakeStaticRoute('GET', Routes.Menu, MenuPage),
     MakeStaticRoute('GET', Routes.People, PeoplePage),
     MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),

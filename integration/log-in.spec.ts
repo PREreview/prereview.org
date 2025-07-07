@@ -588,13 +588,12 @@ test.extend(canLogInAsDemoUser)('can log in as a demo user', async ({ javaScript
   await menu.click()
   await logIn.click()
 
-  testInfo.fail()
-
   if (javaScriptEnabled) {
     await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
   } else {
     await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
   }
+  testInfo.fail()
   await expect(page.getByRole('alert', { name: 'Success' })).toContainText('demo user')
 
   await menu.click()

@@ -78,6 +78,11 @@ export interface FlashMessageResponse {
   readonly message: typeof FlashMessageSchema.Type
 }
 
+export interface ForceLogInResponse {
+  readonly _tag: 'ForceLogInResponse'
+  readonly user: User
+}
+
 export interface LogInResponse {
   readonly _tag: 'LogInResponse'
   readonly location: string
@@ -123,6 +128,11 @@ export const FlashMessageResponse = (args: Omit<FlashMessageResponse, '_tag'>): 
 
 export const LogInResponse = (args: Omit<LogInResponse, '_tag'>): LogInResponse => ({
   _tag: 'LogInResponse',
+  ...args,
+})
+
+export const ForceLogInResponse = (args: Omit<ForceLogInResponse, '_tag'>): ForceLogInResponse => ({
+  _tag: 'ForceLogInResponse',
   ...args,
 })
 

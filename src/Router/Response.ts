@@ -1,17 +1,18 @@
 import { Cookies, HttpServerResponse, UrlParams } from '@effect/platform'
-import { Array, Boolean, Effect, HashMap, identity, Option, pipe, Schema } from 'effect'
+import cookieSignature from 'cookie-signature'
+import { Array, Boolean, Effect, HashMap, identity, Option, pipe, Redacted, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
 import { StatusCodes } from 'http-status-codes'
-import { FlashMessage, Locale } from '../Context.js'
+import { ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { OrcidOauth } from '../OrcidOauth.js'
-import { TemplatePage } from '../TemplatePage.js'
 import { PublicUrl } from '../public-url.js'
-import { toPage, type Response } from '../response.js'
+import { toPage, type ForceLogInResponse, type Response } from '../response.js'
 import * as Routes from '../routes.js'
-import { OrcidLocale } from '../types/index.js'
+import { TemplatePage } from '../TemplatePage.js'
+import { OrcidLocale, Uuid } from '../types/index.js'
 import { UserOnboardingService } from '../user-onboarding.js'
-import { LoggedInUser } from '../user.js'
+import { LoggedInUser, UserSchema } from '../user.js'
 import * as ConstructPageUrls from './ConstructPageUrls.js'
 import * as Http from './Http.js'
 
@@ -105,6 +106,30 @@ export const toHttpServerResponse = (
     )
   })
 }
+
+export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogInResponse) {
+  const secret = yield* SessionSecret
+  const { sessionCookie, sessionStore } = yield* ExpressConfig
+
+  const sessionId = yield* Uuid.generateUuid
+  const session = { user: response.user }
+
+  const encodedSessionId = yield* Schema.encode(Uuid.UuidSchema)(sessionId)
+  const encodedSession = yield* Schema.encode(Schema.Struct({ user: UserSchema }))(session)
+
+  yield* Effect.tryPromise(() => sessionStore.set(encodedSessionId, encodedSession))
+
+  return yield* HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
+    status: StatusCodes.SEE_OTHER,
+    cookies: Cookies.fromIterable([
+      Cookies.unsafeMakeCookie('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
+      Cookies.unsafeMakeCookie(sessionCookie, cookieSignature.sign(encodedSessionId, Redacted.value(secret)), {
+        httpOnly: true,
+        path: '/',
+      }),
+    ]),
+  })
+}, Effect.orDie)
 
 function generateAuthorizationRequestUrl({
   scope,

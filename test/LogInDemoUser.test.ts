@@ -15,12 +15,12 @@ describe('LogInDemoUser', () => {
       const actual = yield* _.LogInDemoUser
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        _tag: 'ForceLogInResponse',
+        user: {
+          name: 'Josiah Carberry',
+          orcid: '0000-0002-1825-0097',
+          pseudonym: 'Orange Panda',
+        },
       })
     }).pipe(Effect.provideService(Locale, locale), Effect.provide(featureFlagsLayer(true)), EffectTest.run),
   )
