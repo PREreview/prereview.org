@@ -41,6 +41,10 @@
   "menuLogIn": {
     "message": "Log in"
   },
+  "menuLogInDemoUser": {
+    "message": "Log in as a demo user",
+    "description": "Link that logs you in as a special user for demonstration purposes."
+  },
   "menuReviews": {
     "message": "Reviews"
   },

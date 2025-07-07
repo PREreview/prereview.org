@@ -430,7 +430,7 @@ function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>, locale: Suppo
       showNotificationBanner({
         type: 'success',
         title: rawHtml(translate(locale, 'flash-messages', 'titleSuccess')()),
-        content: html`<p>You have been logged in as a demo user.</p>`,
+        content: html`<p>${rawHtml(translate(locale, 'flash-messages', 'messageLoggedInDemoUser')())}</p>`,
       }),
     )
     .with('blocked', () =>

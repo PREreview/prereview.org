@@ -17,6 +17,10 @@
   "messageLoggedIn": {
     "message": "You have been logged in."
   },
+  "messageLoggedInDemoUser": {
+    "message": "You have been logged in as a demo user.",
+    "description": "Message shown when you have logged in as a special user for demonstration purposes."
+  },
   "messageVerifyEmail": {
     "message": "We’re sending you an email. Please open it and follow the link to verify your address."
   },

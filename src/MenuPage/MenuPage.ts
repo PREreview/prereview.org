@@ -106,7 +106,7 @@ export const createMenuPage = ({
                   onFalse: () => '',
                   onTrue: () => html`
                     <li>
-                      <a href="${Routes.LogInDemo}">Log in as a demo user</a>
+                      <a href="${Routes.LogInDemo}">${t('menuLogInDemoUser')()}</a>
                     </li>
                   `,
                 })}
