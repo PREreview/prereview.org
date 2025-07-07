@@ -1,4 +1,4 @@
-import { Array, HashMap, String, Tuple, pipe } from 'effect'
+import { Array, Boolean, HashMap, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import rtlDetect from 'rtl-detect'
@@ -55,6 +55,7 @@ export const page = ({
   environmentLabel,
   fathomId,
   publicUrl,
+  canLogInAsDemoUser = false,
   canChooseLocale = false,
   useCrowdinInContext,
   canSeeDesignTweaks = false,
@@ -63,6 +64,7 @@ export const page = ({
   environmentLabel?: 'dev' | 'sandbox'
   fathomId?: string
   publicUrl: URL
+  canLogInAsDemoUser?: boolean
   canChooseLocale?: boolean
   useCrowdinInContext: boolean
   canSeeDesignTweaks?: boolean
@@ -312,6 +314,14 @@ export const page = ({
                                   >${translate(locale, 'header', 'menuLogIn')()}</a
                                 >
                               </li>
+                              ${Boolean.match(canLogInAsDemoUser, {
+                                onFalse: () => '',
+                                onTrue: () => html`
+                                  <li>
+                                    <a href="${Routes.LogInDemo}">Log in as a demo user</a>
+                                  </li>
+                                `,
+                              })}
                             `}
                       </ul>
                     </div>

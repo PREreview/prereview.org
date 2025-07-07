@@ -1,4 +1,4 @@
-import { Option, Struct } from 'effect'
+import { Boolean, Option, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
@@ -8,10 +8,12 @@ import type { UserOnboarding } from '../user-onboarding.js'
 import type { User } from '../user.js'
 
 export const createMenuPage = ({
+  canLogInAsDemoUser = false,
   locale,
   user,
   userOnboarding,
 }: {
+  canLogInAsDemoUser?: boolean
   locale: SupportedLocale
   user: Option.Option<User>
   userOnboarding: Option.Option<UserOnboarding>
@@ -100,6 +102,14 @@ export const createMenuPage = ({
                 <li>
                   <a href="${format(Routes.logInMatch.formatter, {})}">${t('menuLogIn')()}</a>
                 </li>
+                ${Boolean.match(canLogInAsDemoUser, {
+                  onFalse: () => '',
+                  onTrue: () => html`
+                    <li>
+                      <a href="${Routes.LogInDemo}">Log in as a demo user</a>
+                    </li>
+                  `,
+                })}
               `,
             })}
           </ul>
