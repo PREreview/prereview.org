@@ -30,6 +30,7 @@ import {
 } from 'node-mocks-http'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
+import { UserSelectableLanguage } from '../assets/locales/index.js'
 import type {
   AssignedAuthorInvite,
   AuthorInvite,
@@ -59,6 +60,7 @@ import type { Languages } from '../src/languages.js'
 import {
   type SupportedLocale,
   SupportedLocales,
+  UserSelectableLanguages,
   type UserSelectableLocale,
   UserSelectableLocales,
 } from '../src/locales/index.js'
@@ -283,6 +285,9 @@ export const supportedLocale = (): fc.Arbitrary<SupportedLocale> =>
 
 export const userSelectableLocale = (): fc.Arbitrary<UserSelectableLocale> =>
   constantFrom(...Array.fromIterable(UserSelectableLocales))
+
+export const userSelectableLanguage = (): fc.Arbitrary<UserSelectableLanguage> =>
+  constantFrom(...Array.fromIterable(UserSelectableLanguages))
 
 export const pageResponse = ({
   allowRobots,

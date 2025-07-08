@@ -7,6 +7,8 @@ export type SupportedLocale = {{#locales}}| '{{.}}'{{/locales}}
 
 export type UserSelectableLocale = Exclude<SupportedLocale, '{{crowdinInContextLocale}}'>
 
+export type UserSelectableLanguage = {{#languages}}| '{{@key}}'{{/languages}}
+
 export const DefaultLocale: UserSelectableLocale = '{{defaultLocale}}'
 
 export const CrowdinInContextLocale: SupportedLocale = '{{crowdinInContextLocale}}'
@@ -15,11 +17,19 @@ export const SupportedLocales = HashSet.fromIterable<SupportedLocale>([{{#locale
 
 export const UserSelectableLocales = HashSet.fromIterable<SupportedLocale>([{{#locales}}'{{.}}', {{/locales}}]).pipe(HashSet.remove<SupportedLocale>('{{crowdinInContextLocale}}')) as HashSet.HashSet<UserSelectableLocale>
 
+export const UserSelectableLanguages = HashSet.fromIterable<UserSelectableLanguage>([{{#languages}}'{{@key}}', {{/languages}}])
+
 export const isSupportedLocale = (locale: string): locale is SupportedLocale =>
   [{{#locales}}'{{.}}', {{/locales}}].includes(locale)
 
 export const isUserSelectableLocale = (locale: string): locale is UserSelectableLocale =>
   isSupportedLocale(locale) && locale !== '{{crowdinInContextLocale}}'
+
+export const getLocaleForLanguage = (language: UserSelectableLanguage): SupportedLocale => ({
+{{#languages}}
+  '{{@key}}': '{{.}}',
+{{/languages}}
+} as const)[language]
 
 type Module = keyof Translations
 type Key<M extends Module> = keyof Translations[M]

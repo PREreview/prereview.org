@@ -17,6 +17,12 @@ for locale in "${locales[@]}"; do
   realLocales+=("$locale")
 done
 
+declare -A languages
+
+languages['en']='en-US'
+languages['es']='es-419'
+languages['pt']='pt-BR'
+
 compile_module() {
   target="$1"
   module="$2"

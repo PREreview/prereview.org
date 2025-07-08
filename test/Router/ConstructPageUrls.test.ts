@@ -2,7 +2,13 @@ import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { HashMap, HashSet, Option, Tuple } from 'effect'
 import { constructPageUrls } from '../../src/Router/ConstructPageUrls.js'
-import { CrowdinInContextLocale, DefaultLocale, UserSelectableLocales } from '../../src/locales/index.js'
+import {
+  CrowdinInContextLocale,
+  DefaultLocale,
+  getLocaleForLanguage,
+  UserSelectableLanguages,
+  UserSelectableLocales,
+} from '../../src/locales/index.js'
 import type { PageResponse } from '../../src/response.js'
 import * as fc from '../fc.js'
 
@@ -82,11 +88,13 @@ describe('constructPageUrls', () => {
 
     describe('localeUrls', () => {
       it.prop([fc.url().map(url => Tuple.make(url.origin, `${url.pathname}${url.search}`)), fc.userSelectableLocale()])(
-        'constructs a url for each selectable locale',
+        'constructs a url for each selectable locale and language',
         ([origin, canonical], locale) => {
           const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, locale)
 
-          expect(HashMap.size(Option.getOrThrow(pageUrls).localeUrls)).toBe(HashSet.size(UserSelectableLocales))
+          expect(HashMap.size(Option.getOrThrow(pageUrls).localeUrls)).toBe(
+            HashSet.size(UserSelectableLocales) + HashSet.size(UserSelectableLanguages),
+          )
         },
       )
 
@@ -119,6 +127,37 @@ describe('constructPageUrls', () => {
         const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, DefaultLocale)
 
         expect(HashMap.unsafeGet(Option.getOrThrow(pageUrls).localeUrls, locale).href).toStrictEqual(expected)
+      })
+
+      it.prop(
+        [
+          fc
+            .tuple(
+              fc.userSelectableLanguage(),
+              fc.url().filter(url => url.pathname !== '/'),
+            )
+            .map(([language, url]) =>
+              Tuple.make(
+                language,
+                url.origin,
+                `${url.pathname}${url.search}`,
+                `${url.origin}/${getLocaleForLanguage(language).toLowerCase()}${encodeURI(`${url.pathname}${url.search}`)}`,
+              ),
+            ),
+        ],
+        {
+          examples: [
+            [['en', 'http://example.com', '/', 'http://example.com/en-us']],
+            [['en', 'http://example.com', '/about', 'http://example.com/en-us/about']],
+            [['pt', 'http://example.com', '/about', 'http://example.com/pt-br/about']],
+            [['en', 'http://example.com', '/reviews?page=2', 'http://example.com/en-us/reviews?page=2']],
+            [['en', 'http://example.com', '/?foo=bar', 'http://example.com/en-us?foo=bar']],
+          ],
+        },
+      )('constructs the url for each selectable language', ([language, origin, canonical, expected]) => {
+        const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, DefaultLocale)
+
+        expect(HashMap.unsafeGet(Option.getOrThrow(pageUrls).localeUrls, language).href).toStrictEqual(expected)
       })
     })
 

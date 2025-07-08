@@ -1,15 +1,18 @@
 import { Boolean, HashMap, HashSet, Option, pipe, Tuple } from 'effect'
 import {
+  getLocaleForLanguage,
   isUserSelectableLocale,
+  UserSelectableLanguages,
   UserSelectableLocales,
   type SupportedLocale,
+  type UserSelectableLanguage,
   type UserSelectableLocale,
 } from '../locales/index.js'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../response.js'
 
 export interface PageUrls {
   canonical: URL
-  localeUrls: HashMap.HashMap<UserSelectableLocale, URL>
+  localeUrls: HashMap.HashMap<UserSelectableLocale | UserSelectableLanguage, URL>
   xDefault: URL
 }
 
@@ -34,6 +37,20 @@ export const constructPageUrls = (
           ),
         ),
         HashMap.fromIterable,
+        HashMap.union(
+          pipe(
+            UserSelectableLanguages,
+            HashSet.map(langauge =>
+              Tuple.make(
+                langauge,
+                new URL(
+                  `${appOrigin}/${getLocaleForLanguage(langauge).toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`,
+                ),
+              ),
+            ),
+            HashMap.fromIterable,
+          ),
+        ),
       ),
       xDefault: new URL(`${appOrigin}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),
     })),
