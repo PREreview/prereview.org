@@ -30,7 +30,6 @@ import {
 } from 'node-mocks-http'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
-import { UserSelectableLanguage } from '../assets/locales/index.js'
 import type {
   AssignedAuthorInvite,
   AuthorInvite,
@@ -60,6 +59,7 @@ import type { Languages } from '../src/languages.js'
 import {
   type SupportedLocale,
   SupportedLocales,
+  type UserSelectableLanguage,
   UserSelectableLanguages,
   type UserSelectableLocale,
   UserSelectableLocales,
