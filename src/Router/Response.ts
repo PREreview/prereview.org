@@ -74,6 +74,7 @@ export const toHttpServerResponse = (
             Array.append(links, { uri: url.href, rel: 'alternate', hreflang: locale }),
           ),
           Array.prepend({ uri: pageUrls.canonical.href, rel: 'canonical' }),
+          Array.append({ uri: pageUrls.xDefault.href, rel: 'alternate', hreflang: 'x-default' }),
         ),
     })
 

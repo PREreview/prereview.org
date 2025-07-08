@@ -121,6 +121,36 @@ describe('constructPageUrls', () => {
         expect(HashMap.unsafeGet(Option.getOrThrow(pageUrls).localeUrls, locale).href).toStrictEqual(expected)
       })
     })
+
+    describe('xDefault', () => {
+      it.prop(
+        [
+          fc.supportedLocale(),
+          fc
+            .url()
+            .filter(url => url.pathname !== '/')
+            .map(url =>
+              Tuple.make(
+                url.origin,
+                `${url.pathname}${url.search}`,
+                `${url.origin}${encodeURI(`${url.pathname}${url.search}`)}`,
+              ),
+            ),
+        ],
+        {
+          examples: [
+            ['lol-US', ['http://example.com', '/', 'http://example.com/']],
+            ['en-US', ['http://example.com', '/about', 'http://example.com/about']],
+            ['pt-BR', ['http://example.com', '/reviews?page=2', 'http://example.com/reviews?page=2']],
+            ['es-419', ['http://example.com', '/?foo=bar baz', 'http://example.com/?foo=bar%20baz']],
+          ],
+        },
+      )('constructs an absolute url', (locale, [origin, canonical, expected]) => {
+        const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, locale)
+
+        expect(Option.getOrThrow(pageUrls).xDefault.href).toStrictEqual(expected)
+      })
+    })
   })
 
   describe("when there isn't a canonical url", () => {

@@ -10,6 +10,7 @@ import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '..
 export interface PageUrls {
   canonical: URL
   localeUrls: HashMap.HashMap<UserSelectableLocale, URL>
+  xDefault: URL
 }
 
 export const constructPageUrls = (
@@ -34,5 +35,6 @@ export const constructPageUrls = (
         ),
         HashMap.fromIterable,
       ),
+      xDefault: new URL(`${appOrigin}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),
     })),
   )
