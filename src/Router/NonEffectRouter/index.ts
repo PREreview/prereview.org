@@ -79,6 +79,10 @@ export const nonEffectRouter: Effect.Effect<
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
+  if (request.url.includes('//')) {
+    return yield* new HttpServerError.RouteNotFound({ request })
+  }
+
   const route = yield* Either.try({
     try: () => P.Route.parse(request.url),
     catch: () => new HttpServerError.RouteNotFound({ request }),
