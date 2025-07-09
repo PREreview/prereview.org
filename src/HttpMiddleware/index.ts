@@ -29,14 +29,18 @@ export const { logger, make, withLoggerDisabled } = HttpMiddleware
 export const removeTrailingSlashes = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const request = yield* HttpServerRequest.HttpServerRequest
+    const publicUrl = yield* PublicUrl
 
     if (HttpMethod.hasBody(request.method) || '/' !== request.url[request.url.length - 1] || '/' === request.url) {
       return yield* app
     }
 
-    return yield* HttpServerResponse.redirect(request.url.slice(0, request.url.length - 1), {
-      status: StatusCodes.MOVED_PERMANENTLY,
-    })
+    return yield* HttpServerResponse.redirect(
+      new URL(`${publicUrl.origin}${request.url.slice(0, request.url.length - 1)}`),
+      {
+        status: StatusCodes.MOVED_PERMANENTLY,
+      },
+    )
   }),
 )
 
