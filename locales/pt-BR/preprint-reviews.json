@@ -32,8 +32,14 @@
   "prereviewByOneAuthor": {
     "message": "Avaliação PREreview de {author}"
   },
+  "prereviewByOneAuthorInClub": {
+    "message": "Avaliação PREreview feita por {author} do/a {club}"
+  },
   "prereviewByMultipleAuthors": {
     "message": "Avaliação PREreview de {author} et al."
+  },
+  "prereviewByMultipleAuthorsInClub": {
+    "message": "Avaliação PREreview feita por {author} et al. do/a {club}"
   },
   "otherAuthors": {
     "message": "{number, plural, one {{number, number} outro autor} other {{number, number} outros autores}}"
@@ -41,11 +47,20 @@
   "authoredBy": {
     "message": "<visuallyHidden>De autoria</visuallyHidden> de {authors}"
   },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>De autoria</visuallyHidden> de {authors} do/a {club}"
+  },
   "readPrereviewByOneAuthor": {
     "message": "Ler <visuallyHidden>a avaliação PREreview de {author}</visuallyHidden>"
   },
+  "readPrereviewByOneAuthorInClub": {
+    "message": "Ler <visuallyHidden>a avaliação PREreview de {author} do/a {club}</visuallyHidden>"
+  },
   "readPrereviewByMultipleAuthors": {
     "message": "Ler <visuallyHidden>a avaliação PREreview de {author} et al.</visuallyHidden>"
+  },
+  "readPrereviewByMultipleAuthorsInClub": {
+    "message": "Ler <visuallyHidden>a avaliação PREreview de {author} et al. do/a {club}</visuallyHidden>"
   },
   "rapidPrereviews": {
     "message": "{number, plural, one {{number, number} Avaliação PREreview Rápida} other {{number, number} Avaliações PREreview Rápidas}}"

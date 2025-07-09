@@ -41,6 +41,9 @@
   "menuLogIn": {
     "message": "Entrar"
   },
+  "menuLogInDemoUser": {
+    "message": "Entrar como usuário de demonstração"
+  },
   "menuReviews": {
     "message": "Avaliações"
   },

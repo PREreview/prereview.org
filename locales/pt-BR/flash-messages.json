@@ -17,6 +17,9 @@
   "messageLoggedIn": {
     "message": "Login realizado com sucesso."
   },
+  "messageLoggedInDemoUser": {
+    "message": "Você entrou como usuário de demonstração."
+  },
   "messageVerifyEmail": {
     "message": "Enviamos um e-mail para você. Por favor, abra o e-mail e clique no link para confirmar seu endereço."
   },

@@ -221,6 +221,9 @@
   "letCommunityKnow": {
     "message": "Avise à comunidade que você publicou sua avaliação."
   },
+  "shareOnBluesky": {
+    "message": "Compartilhe no Bluesky"
+  },
   "shareOnLinkedin": {
     "message": "Compartilhe no LinkedIn"
   },
@@ -565,6 +568,9 @@
   },
   "unacceptableBehaviourSexualisedLanguage": {
     "message": "Uso de linguagem ou imagens sexualizadas e atenção ou avanços sexuais indesejados."
+  },
+  "unacceptableBehaviourReviewingOwnPreprint": {
+    "message": "Avaliação do próprio preprint."
   },
   "unacceptableBehaviourInappropriate": {
     "message": "Qualquer outro comportamento que possa, de forma razoável, ser considerado inadequado em um ambiente profissional."
