@@ -18,6 +18,7 @@ export const WebApp = pipe(
   HttpMiddleware.getFlashMessage,
   HttpMiddleware.getLoggedInUser,
   HttpMiddleware.getLocale,
+  HttpMiddleware.stopSuspiciousRequests,
   HttpMiddleware.logRequest,
   HttpMiddleware.logDefects,
   HttpServer.serve(flow(HttpMiddleware.logger, HttpMiddleware.annotateLogsWithRequestId)),

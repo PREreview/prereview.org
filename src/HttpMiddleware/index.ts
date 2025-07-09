@@ -8,7 +8,7 @@ import {
   Path,
 } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
-import { Cause, Config, Duration, Effect, Layer, Option, pipe, Redacted, Schema } from 'effect'
+import { Array, Cause, Config, Duration, Effect, Layer, Option, pipe, Redacted, Schema, String } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.js'
 import * as FeatureFlags from '../FeatureFlags.js'
@@ -245,6 +245,37 @@ export const getLocale = HttpMiddleware.make(app =>
     const response = yield* Effect.provideService(app, Locale, detectedLocale)
 
     return yield* pipe(response, LocaleCookie.setLocaleCookie(detectedLocale))
+  }),
+)
+
+export const stopSuspiciousRequests = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const request = yield* HttpServerRequest.HttpServerRequest
+
+    const isRequestSuspicious = Array.findFirst(
+      [
+        '../', // represents ../
+        '%2e%2e%2f', // represents ../
+        '%2e%2e/', // represents ../
+        '..%2f', // represents ../
+        '..\\', // represents ..\
+        '%2e%2e%5c', // represents ..\
+        '%2e%2e\\', // represents ..\
+        '..%5c', // represents ..\
+        '%252e%252e%255c', // represents ..\
+        '..%255c', // represents ..\
+        '..%5c', // represents ..\
+        '%252e%252e%255c', // represents ..\
+        '..%255c', // represents ..\
+      ],
+      search => String.includes(search)(request.url),
+    )
+
+    if (Option.isSome(isRequestSuspicious)) {
+      return yield* HttpServerResponse.empty({ status: StatusCodes.NOT_FOUND })
+    }
+
+    return yield* app
   }),
 )
 
