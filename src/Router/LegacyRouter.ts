@@ -95,14 +95,6 @@ export const LegacyRouter = HttpRouter.fromIterable([
   ),
   MakeRoute('*', '/extension', showRemovedPermanentlyMessage),
   MakeStaticRoute('*', '/find-a-preprint', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
-  MakeRoute(
-    '*',
-    '/inst/:instId',
-    pipe(
-      HttpRouter.schemaParams(Schema.Struct({ instId: Schema.String })),
-      Effect.andThen(({ instId }) => movedPermanently(`https://www.authorea.com/inst/${instId}`)),
-    ),
-  ),
   MakeStaticRoute('*', '/login', movedPermanently(format(Routes.logInMatch.formatter, {}))),
   MakeStaticRoute('*', '/logout', movedPermanently(format(Routes.logOutMatch.formatter, {}))),
   MakeStaticRoute('*', '/preprint-journal-clubs', movedPermanently(Routes.LiveReviews)),
@@ -112,34 +104,6 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute('*', '/settings/api', showRemovedForNowMessage),
   MakeRoute('*', '/settings/drafts', showRemovedForNowMessage),
   MakeStaticRoute('*', '/signup', movedPermanently(format(Routes.logInMatch.formatter, {}))),
-  MakeRoute(
-    '*',
-    '/users/:userId/articles/:articleId',
-    pipe(
-      HttpRouter.schemaParams(Schema.Struct({ articleId: Schema.String, userId: Schema.String })),
-      Effect.andThen(({ articleId, userId }) =>
-        movedPermanently(encodeURI(`https://www.authorea.com/users/${userId}/articles/${articleId}`)),
-      ),
-    ),
-  ),
-  MakeRoute(
-    '*',
-    '/users/:userId',
-    pipe(
-      HttpRouter.schemaParams(Schema.Struct({ userId: Schema.String })),
-      Effect.andThen(({ userId }) => movedPermanently(`https://www.authorea.com/users/${userId}`)),
-    ),
-  ),
-  MakeRoute(
-    '*',
-    '/users/:userId/articles/:articleId/_show_article',
-    pipe(
-      HttpRouter.schemaParams(Schema.Struct({ articleId: Schema.String, userId: Schema.String })),
-      Effect.andThen(({ articleId, userId }) =>
-        movedPermanently(encodeURI(`https://www.authorea.com/users/${userId}/articles/${articleId}`)),
-      ),
-    ),
-  ),
   MakeStaticRoute('*', '/)', movedPermanently(format(Routes.homeMatch.formatter, {}))),
   MakeStaticRoute('*', '/),', movedPermanently(format(Routes.homeMatch.formatter, {}))),
 ])
