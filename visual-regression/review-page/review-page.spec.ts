@@ -6,6 +6,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import { Prereview } from '../../src/Prereview.js'
 import type { Comment } from '../../src/review-page/index.js'
 import { createPage } from '../../src/review-page/review-page.js'
+import { BiorxivPreprintId, EdarxivPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
@@ -150,7 +151,7 @@ const review = new Prereview({
   live: false,
   published: PlainDate.from('2024-03-04'),
   preprint: {
-    id: { _tag: 'biorxiv', value: Doi('10.1101/2023.12.21.572824') },
+    id: new BiorxivPreprintId({ value: Doi('10.1101/2023.12.21.572824') }),
     title: html`Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants`,
     language: 'en',
     url: new URL('https://biorxiv.org/lookup/doi/10.1101/2023.12.21.572824'),
@@ -237,7 +238,7 @@ const structuredReview = new Prereview({
   live: false,
   published: PlainDate.from('2024-03-03'),
   preprint: {
-    id: { _tag: 'edarxiv', value: Doi('10.35542/osf.io/hsnke') },
+    id: new EdarxivPreprintId({ value: Doi('10.35542/osf.io/hsnke') }),
     title: html`A population perspective on international students in Australian universities`,
     language: 'fr',
     url: new URL('https://osf.io/hsnke'),

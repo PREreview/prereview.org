@@ -13,12 +13,12 @@ import { timeoutRequest, useStaleCache } from './fetch.js'
 import { sanitizeHtml } from './html.js'
 import * as Preprint from './preprint.js'
 import { Orcid } from './types/index.js'
-import type {
-  AfricarxivFigsharePreprintId,
-  AfricarxivUbuntunetPreprintId,
+import {
+  type AfricarxivFigsharePreprintId,
+  type AfricarxivUbuntunetPreprintId,
   ArcadiaSciencePreprintId,
-  IndeterminatePreprintId,
-  PreprintId,
+  type IndeterminatePreprintId,
+  type PreprintId,
   PsychArchivesPreprintId,
 } from './types/preprint-id.js'
 
@@ -110,8 +110,8 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             match({ type, text })
               .returnType<Option.Option<LanguageCode>>()
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
-              .with({ type: 'arcadia-science' }, () => Option.some('en' as const))
-              .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
+              .with({ type: 'ArcadiaSciencePreprintId' }, () => Option.some('en' as const))
+              .with({ type: 'PsychArchivesPreprintId', text: P.select() }, detectLanguageFrom('de', 'en'))
               .exhaustive(),
           ),
         ),
@@ -134,8 +134,8 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             match({ type, text })
               .returnType<Option.Option<LanguageCode>>()
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
-              .with({ type: 'arcadia-science' }, () => Option.some('en' as const))
-              .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
+              .with({ type: 'ArcadiaSciencePreprintId' }, () => Option.some('en' as const))
+              .with({ type: 'PsychArchivesPreprintId', text: P.select() }, detectLanguageFrom('de', 'en'))
               .exhaustive(),
           ),
         ),
@@ -191,20 +191,14 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
       doi: D.fromRefinement(hasRegistrant('57844'), 'DOI'),
       publisher: D.literal('Arcadia Science'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'arcadia-science',
-          value: work.doi,
-        }) satisfies ArcadiaSciencePreprintId,
-    ),
+    D.map(work => new ArcadiaSciencePreprintId({ value: work.doi })),
   ),
   pipe(
     D.fromStruct({
       doi: D.fromRefinement(hasRegistrant('23668'), 'DOI'),
       publisher: D.literal('PsychArchives', 'Leibniz Institut für Psychologie (ZPID)'),
     }),
-    D.map(work => ({ _tag: 'psycharchives', value: work.doi }) satisfies PsychArchivesPreprintId),
+    D.map(work => new PsychArchivesPreprintId({ value: work.doi })),
   ),
 )
 

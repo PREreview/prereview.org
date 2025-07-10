@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals'
 import { Array, Effect } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { Doi } from '../../src/types/index.js'
-import type { BiorxivPreprintId } from '../../src/types/preprint-id.js'
+import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { ZenodoOrigin } from '../../src/Zenodo/CommunityRecords.js'
 import * as _ from '../../src/Zenodo/ConstructUrlsToInvalidatePrereview.js'
@@ -12,7 +12,7 @@ describe('constructUrlsToInvalidatePrereview', () => {
   it('constructs valid urls', () =>
     Effect.gen(function* () {
       const prereviewId = 12345
-      const preprintId = { _tag: 'biorxiv', value: Doi.Doi('10.1101/12345') } satisfies BiorxivPreprintId
+      const preprintId = new BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
       const user = {
         name: 'Josiah Carberry',
         orcid: Orcid('0000-0002-1825-0097'),

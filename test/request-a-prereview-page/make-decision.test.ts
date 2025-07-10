@@ -10,7 +10,13 @@ import {
   type ResolvePreprintIdEnv,
 } from '../../src/preprint.js'
 import * as _ from '../../src/request-a-prereview-page/make-decision.js'
-import { fromPreprintDoi } from '../../src/types/preprint-id.js'
+import {
+  BiorxivPreprintId,
+  fromPreprintDoi,
+  MedrxivPreprintId,
+  OsfPreprintId,
+  OsfPreprintsPreprintId,
+} from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -31,38 +37,38 @@ describe('makeDecision', () => {
               'https://doi.org/10.1101/2021.06.18.21258689', // doi.org URL
               [{ _tag: 'biorxiv-medrxiv', value: Doi('10.1101/2021.06.18.21258689') }],
             ],
-            { _tag: 'medrxiv', value: Doi('10.1101/2021.06.18.21258689') },
+            new MedrxivPreprintId({ value: Doi('10.1101/2021.06.18.21258689') }),
           ],
           [
             [
               ' https://doi.org/10.1101/2021.06.18.21258689 ', // doi.org URL with whitespace
               [{ _tag: 'biorxiv-medrxiv', value: Doi('10.1101/2021.06.18.21258689') }],
             ],
-            { _tag: 'medrxiv', value: Doi('10.1101/2021.06.18.21258689') },
+            new MedrxivPreprintId({ value: Doi('10.1101/2021.06.18.21258689') }),
           ],
           [
             [
               'https://www.biorxiv.org/content/10.1101/2021.06.18.21258689', // biorxiv.org URL
-              [{ _tag: 'biorxiv', value: Doi('10.1101/2021.06.18.21258689') }],
+              [new BiorxivPreprintId({ value: Doi('10.1101/2021.06.18.21258689') })],
             ],
-            { _tag: 'biorxiv', value: Doi('10.1101/2021.06.18.21258689') },
+            new BiorxivPreprintId({ value: Doi('10.1101/2021.06.18.21258689') }),
           ],
           [
             [
               ' http://www.biorxiv.org/content/10.1101/2021.06.18.21258689 ', // biorxiv.org URL with whitespace
-              [{ _tag: 'biorxiv', value: Doi('10.1101/2021.06.18.21258689') }],
+              [new BiorxivPreprintId({ value: Doi('10.1101/2021.06.18.21258689') })],
             ],
-            { _tag: 'biorxiv', value: Doi('10.1101/2021.06.18.21258689') },
+            new BiorxivPreprintId({ value: Doi('10.1101/2021.06.18.21258689') }),
           ],
           [
             [
               'https://osf.io/eq8bk/', // ambigious URL
               [
                 { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/eq8bk') },
-                { _tag: 'osf-preprints', value: Doi('10.31219/osf.io/eq8bk') },
+                new OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/eq8bk') }),
               ],
             ],
-            { _tag: 'osf', value: Doi('10.17605/osf.io/eq8bk') },
+            new OsfPreprintId({ value: Doi('10.17605/osf.io/eq8bk') }),
           ],
         ],
       },

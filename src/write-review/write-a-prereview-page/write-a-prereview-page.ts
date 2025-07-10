@@ -61,7 +61,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: Us
             </div>
             ${match(preprint.id)
               .with(
-                { _tag: 'philsci' },
+                { _tag: 'PhilsciPreprintId' },
                 id => html`
                   <div>
                     <dt>${translate(locale, 'write-review', 'itemId')()}</dt>

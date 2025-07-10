@@ -3,6 +3,7 @@ import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import type { PreprintTitle } from '../../../src/preprint.js'
 import { Doi, EmailAddress, Uuid } from '../../../src/types/index.js'
+import { BiorxivPreprintId } from '../../../src/types/preprint-id.js'
 import { needToVerifyEmailAddressMessage } from '../../../src/write-review/need-to-verify-email-address/need-to-verify-email-address-message.js'
 import { expect, test } from '../../base.js'
 
@@ -22,10 +23,7 @@ const contactEmailAddress = new UnverifiedContactEmailAddress({
 const locale = DefaultLocale
 
 const preprint = {
-  id: {
-    _tag: 'biorxiv',
-    value: Doi.Doi('10.1101/2022.01.13.476201'),
-  },
+  id: new BiorxivPreprintId({ value: Doi.Doi('10.1101/2022.01.13.476201') }),
   title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
   language: 'en',
 } satisfies PreprintTitle

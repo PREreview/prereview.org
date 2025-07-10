@@ -6,7 +6,7 @@ import { detectLanguage, detectLanguageFrom } from '../detect-language.js'
 import { type Html, sanitizeHtml } from '../html.js'
 import { transformJatsToHtml } from '../jats.js'
 import * as Preprint from '../preprint.js'
-import { fromPreprintDoi } from '../types/preprint-id.js'
+import { BiorxivPreprintId, fromPreprintDoi, MedrxivPreprintId } from '../types/preprint-id.js'
 import { type CrossrefPreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
 import type { Work } from './Work.js'
 
@@ -31,17 +31,11 @@ const determineCrossrefPreprintId = (work: Work): Either.Either<CrossrefPreprint
     const institutionName = work.institution?.[0].name
 
     if (institutionName === 'bioRxiv') {
-      return {
-        value: indeterminateId.value,
-        _tag: 'biorxiv',
-      }
+      return new BiorxivPreprintId({ value: indeterminateId.value })
     }
 
     if (institutionName === 'medRxiv') {
-      return {
-        value: indeterminateId.value,
-        _tag: 'medrxiv',
-      }
+      return new MedrxivPreprintId({ value: indeterminateId.value })
     }
 
     return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
@@ -120,15 +114,15 @@ export const workToPreprint = (
 
 const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
-    biorxiv: () => Option.some('en' as const),
-    medrxiv: () => Option.some('en' as const),
-    metaarxiv: () => Option.some('en' as const),
-    neurolibre: () => Option.some('en' as const),
-    'osf-preprints': () => detectLanguage(text),
-    'preprints.org': () => Option.some('en' as const),
-    'research-square': () => Option.some('en' as const),
-    scielo: () => detectLanguageFrom('en', 'es', 'pt')(text),
-    socarxiv: () => detectLanguage(text),
-    ssrn: () => Option.some('en' as const),
-    verixiv: () => Option.some('en' as const),
+    BiorxivPreprintId: () => Option.some('en' as const),
+    MedrxivPreprintId: () => Option.some('en' as const),
+    MetaarxivPreprintId: () => Option.some('en' as const),
+    NeurolibrePreprintId: () => Option.some('en' as const),
+    OsfPreprintsPreprintId: () => detectLanguage(text),
+    PreprintsorgPreprintId: () => Option.some('en' as const),
+    ResearchSquarePreprintId: () => Option.some('en' as const),
+    ScieloPreprintId: () => detectLanguageFrom('en', 'es', 'pt')(text),
+    SocarxivPreprintId: () => detectLanguage(text),
+    SsrnPreprintId: () => Option.some('en' as const),
+    VerixivPreprintId: () => Option.some('en' as const),
   })

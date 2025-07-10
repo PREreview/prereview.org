@@ -4,6 +4,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
 import { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { BiorxivPreprintId, PhilsciPreprintId } from '../../src/types/preprint-id.js'
 import type { CompletedForm } from '../../src/write-review/completed-form.js'
 import { publishedPage } from '../../src/write-review/published-page/published-page.js'
 import { expect, test } from '../base.js'
@@ -35,7 +36,7 @@ test('content looks right when the preprint is not on Sciety', async ({ showPage
       form,
     },
     preprint: {
-      id: { _tag: 'philsci', value: 21986 },
+      id: new PhilsciPreprintId({ value: 21986 }),
       title: html`Philosophy of Open Science`,
       language: 'en',
     },
@@ -74,10 +75,7 @@ test('content looks right when there are more authors', async ({ showPage }) => 
 })
 
 const preprint = {
-  id: {
-    _tag: 'biorxiv',
-    value: Doi('10.1101/2022.01.13.476201'),
-  },
+  id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
   title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
   language: 'en',
 } satisfies PreprintTitle

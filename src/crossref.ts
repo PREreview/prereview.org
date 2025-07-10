@@ -15,18 +15,18 @@ import * as Preprint from './preprint.js'
 import {
   AdvancePreprintId,
   type AfricarxivOsfPreprintId,
-  type AuthoreaPreprintId,
-  type ChemrxivPreprintId,
-  type CurvenotePreprintId,
-  type EartharxivPreprintId,
-  type EcoevorxivPreprintId,
-  type EdarxivPreprintId,
-  type EngrxivPreprintId,
+  AuthoreaPreprintId,
+  ChemrxivPreprintId,
+  CurvenotePreprintId,
+  EartharxivPreprintId,
+  EcoevorxivPreprintId,
+  EdarxivPreprintId,
+  EngrxivPreprintId,
   type IndeterminatePreprintId,
   type PreprintId,
-  type PsyarxivPreprintId,
-  type ScienceOpenPreprintId,
-  type TechrxivPreprintId,
+  PsyarxivPreprintId,
+  ScienceOpenPreprintId,
+  TechrxivPreprintId,
 } from './types/preprint-id.js'
 
 const crossrefDoiPrefixes = [
@@ -161,16 +161,16 @@ const detectLanguageForServer = ({
   match({ type, text })
     .with({ type: 'AdvancePreprintId' }, () => Option.some('en' as const))
     .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
-    .with({ type: 'authorea', text: P.select() }, detectLanguage)
-    .with({ type: 'chemrxiv' }, () => Option.some('en' as const))
-    .with({ type: 'curvenote' }, () => Option.some('en' as const))
-    .with({ type: 'eartharxiv' }, () => Option.some('en' as const))
-    .with({ type: 'ecoevorxiv' }, () => Option.some('en' as const))
-    .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
-    .with({ type: 'engrxiv' }, () => Option.some('en' as const))
-    .with({ type: 'psyarxiv' }, () => Option.some('en' as const))
-    .with({ type: 'science-open', text: P.select() }, detectLanguage)
-    .with({ type: 'techrxiv' }, () => Option.some('en' as const))
+    .with({ type: 'AuthoreaPreprintId', text: P.select() }, detectLanguage)
+    .with({ type: 'ChemrxivPreprintId' }, () => Option.some('en' as const))
+    .with({ type: 'CurvenotePreprintId' }, () => Option.some('en' as const))
+    .with({ type: 'EartharxivPreprintId' }, () => Option.some('en' as const))
+    .with({ type: 'EcoevorxivPreprintId' }, () => Option.some('en' as const))
+    .with({ type: 'EdarxivPreprintId', text: P.select() }, detectLanguage)
+    .with({ type: 'EngrxivPreprintId' }, () => Option.some('en' as const))
+    .with({ type: 'PsyarxivPreprintId' }, () => Option.some('en' as const))
+    .with({ type: 'ScienceOpenPreprintId', text: P.select() }, detectLanguage)
+    .with({ type: 'TechrxivPreprintId' }, () => Option.some('en' as const))
     .exhaustive()
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
@@ -206,59 +206,35 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         institution: D.fromTuple(D.struct({ name: D.literal('Authorea, Inc.') })),
       }),
     ),
-    D.map(work => ({ _tag: 'authorea', value: work.DOI }) satisfies AuthoreaPreprintId),
+    D.map(work => new AuthoreaPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('26434'), 'DOI'),
       publisher: D.literal('American Chemical Society (ACS)'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'chemrxiv',
-          value: work.DOI,
-        }) satisfies ChemrxivPreprintId,
-    ),
+    D.map(work => new ChemrxivPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('62329'), 'DOI'),
       publisher: D.literal('Curvenote Inc.'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'curvenote',
-          value: work.DOI,
-        }) satisfies CurvenotePreprintId,
-    ),
+    D.map(work => new CurvenotePreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('31223'), 'DOI'),
       publisher: D.literal('California Digital Library (CDL)'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'eartharxiv',
-          value: work.DOI,
-        }) satisfies EartharxivPreprintId,
-    ),
+    D.map(work => new EartharxivPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('32942'), 'DOI'),
       publisher: D.literal('California Digital Library (CDL)'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'ecoevorxiv',
-          value: work.DOI,
-        }) satisfies EcoevorxivPreprintId,
-    ),
+    D.map(work => new EcoevorxivPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
@@ -266,26 +242,14 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Center for Open Science'),
       'group-title': D.literal('EdArXiv'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'edarxiv',
-          value: work.DOI,
-        }) satisfies EdarxivPreprintId,
-    ),
+    D.map(work => new EdarxivPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('31224'), 'DOI'),
       publisher: D.literal('Open Engineering Inc'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'engrxiv',
-          value: work.DOI,
-        }) satisfies EngrxivPreprintId,
-    ),
+    D.map(work => new EngrxivPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
@@ -293,32 +257,20 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Center for Open Science'),
       'group-title': D.literal('PsyArXiv'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'psyarxiv',
-          value: work.DOI,
-        }) satisfies PsyarxivPreprintId,
-    ),
+    D.map(work => new PsyarxivPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('14293'), 'DOI'),
       publisher: D.literal('ScienceOpen'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'science-open',
-          value: work.DOI,
-        }) satisfies ScienceOpenPreprintId,
-    ),
+    D.map(work => new ScienceOpenPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('36227'), 'DOI'),
       publisher: D.literal('Institute of Electrical and Electronics Engineers (IEEE)'),
     }),
-    D.map(work => ({ _tag: 'techrxiv', value: work.DOI }) satisfies TechrxivPreprintId),
+    D.map(work => new TechrxivPreprintId({ value: work.DOI })),
   ),
 )

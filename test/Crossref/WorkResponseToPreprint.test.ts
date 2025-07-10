@@ -10,6 +10,19 @@ import { workToPreprint } from '../../src/Crossref/Preprint.js'
 import { ResponseSchema, Work } from '../../src/Crossref/Work.js'
 import { rawHtml } from '../../src/html.js'
 import { Preprint } from '../../src/preprint.js'
+import {
+  BiorxivPreprintId,
+  MedrxivPreprintId,
+  MetaarxivPreprintId,
+  NeurolibrePreprintId,
+  OsfPreprintsPreprintId,
+  PreprintsorgPreprintId,
+  ResearchSquarePreprintId,
+  ScieloPreprintId,
+  SocarxivPreprintId,
+  SsrnPreprintId,
+  VerixivPreprintId,
+} from '../../src/types/preprint-id.js'
 import * as EffectTest from '../EffectTest.js'
 
 test.each([
@@ -25,7 +38,7 @@ test.each([
         { name: 'Naofumi Otsuru', orcid: undefined },
         { name: 'Hideaki Onishi', orcid: undefined },
       ],
-      id: { _tag: 'ssrn', value: Doi('10.2139/ssrn.5186959') },
+      id: new SsrnPreprintId({ value: Doi('10.2139/ssrn.5186959') }),
       posted: 2025,
       title: {
         language: 'en',
@@ -45,7 +58,7 @@ test.each([
         { name: 'Nadia Blostein', orcid: Orcid('0000-0002-1864-1899') },
         { name: 'Nikola Stikov', orcid: Orcid('0000-0002-8480-5230') },
       ],
-      id: { _tag: 'neurolibre', value: Doi('10.55458/neurolibre.00031') },
+      id: new NeurolibrePreprintId({ value: Doi('10.55458/neurolibre.00031') }),
       posted: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),
       title: {
         language: 'en',
@@ -69,7 +82,7 @@ test.each([
         { name: 'Kathryn E Holt', orcid: Orcid('0000-0003-3949-2471') },
         { name: 'Serge Mostowy', orcid: Orcid('0000-0002-7286-6503') },
       ],
-      id: { _tag: 'biorxiv', value: Doi('10.1101/2025.02.05.636615') },
+      id: new BiorxivPreprintId({ value: Doi('10.1101/2025.02.05.636615') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 2, day: 5 }),
       title: {
         language: 'en',
@@ -97,7 +110,7 @@ test.each([
         { name: 'Valerio Napolioni', orcid: undefined },
         { name: 'Renato Polimanti', orcid: Orcid('0000-0003-0745-6046') },
       ],
-      id: { _tag: 'medrxiv', value: Doi('10.1101/2024.05.27.24307989') },
+      id: new MedrxivPreprintId({ value: Doi('10.1101/2024.05.27.24307989') }),
       posted: Temporal.PlainDate.from({ year: 2024, month: 5, day: 28 }),
       title: {
         language: 'en',
@@ -124,7 +137,7 @@ test.each([
         { name: 'Luiz Gonzaga Jr', orcid: Orcid('0000-0002-7661-2447') },
         { name: 'Lincon Rodrigues Silva', orcid: Orcid('0009-0000-5951-4434') },
       ],
-      id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.11415') },
+      id: new ScieloPreprintId({ value: Doi('10.1590/scielopreprints.11415') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 10 }),
       title: {
         language: 'en',
@@ -148,7 +161,7 @@ test.each([
         { name: 'Elodia Honse Lebourg', orcid: undefined },
         { name: 'Rosa Maria Da Exaltação Coutrim', orcid: Orcid('0000-0002-9510-1263') },
       ],
-      id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.11538') },
+      id: new ScieloPreprintId({ value: Doi('10.1590/scielopreprints.11538') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 4, day: 11 }),
       title: {
         language: 'pt',
@@ -172,7 +185,7 @@ test.each([
         { name: 'Luis Alejandro Andrade Dorado', orcid: Orcid('0000-0002-2731-6908') },
         { name: 'Jesús Antonio Castillo Franco', orcid: undefined },
       ],
-      id: { _tag: 'scielo', value: Doi('10.1590/scielopreprints.11386') },
+      id: new ScieloPreprintId({ value: Doi('10.1590/scielopreprints.11386') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 18 }),
       title: {
         language: 'es',
@@ -197,7 +210,7 @@ test.each([
         { name: 'Cristof Plothe', orcid: undefined },
         { name: 'Theresa Lawrie', orcid: undefined },
       ],
-      id: { _tag: 'preprints.org', value: Doi('10.20944/preprints202303.0344.v1') },
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202303.0344.v1') }),
       posted: Temporal.PlainDate.from({ year: 2023, month: 3, day: 20 }),
       title: {
         language: 'en',
@@ -221,7 +234,7 @@ test.each([
         { name: 'Álvaro Acosta-Serrano', orcid: Orcid('0000-0002-2576-7959') },
         { name: 'Lee Rafuse Haines', orcid: Orcid('0000-0001-8821-6479') },
       ],
-      id: { _tag: 'verixiv', value: Doi('10.12688/verixiv.54.1') },
+      id: new VerixivPreprintId({ value: Doi('10.12688/verixiv.54.1') }),
       posted: Temporal.PlainDate.from({ year: 2024, month: 8, day: 29 }),
       title: {
         language: 'en',
@@ -257,7 +270,7 @@ test.each([
         { name: 'Joshua N Adkins', orcid: Orcid('0000-0003-0399-0700') },
         { name: 'The MoTrPAC Study Group', orcid: undefined },
       ],
-      id: { _tag: 'biorxiv', value: Doi('10.1101/2025.04.10.647997') },
+      id: new BiorxivPreprintId({ value: Doi('10.1101/2025.04.10.647997') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 4, day: 16 }),
       title: {
         language: 'en',
@@ -281,7 +294,7 @@ test.each([
         { name: 'Neha', orcid: Orcid('0000-0002-5719-6572') },
         { name: 'Parimal Das', orcid: Orcid('0000-0002-9857-4277') },
       ],
-      id: { _tag: 'biorxiv', value: Doi('10.1101/2023.07.06.547934') },
+      id: new BiorxivPreprintId({ value: Doi('10.1101/2023.07.06.547934') }),
       posted: Temporal.PlainDate.from({ year: 2023, month: 7, day: 6 }),
       title: {
         language: 'en',
@@ -330,7 +343,7 @@ test.each([
         { name: 'Paula R Williamson', orcid: undefined },
         { name: 'Mike Clarke', orcid: undefined },
       ],
-      id: { _tag: 'research-square', value: Doi('10.21203/rs.1.1/v2') },
+      id: new ResearchSquarePreprintId({ value: Doi('10.21203/rs.1.1/v2') }),
       posted: Temporal.PlainDate.from({ year: 2019, month: 10, day: 9 }),
       title: {
         language: 'en',
@@ -352,7 +365,7 @@ test.each([
         { name: 'Garret Christensen', orcid: undefined },
         { name: 'Edward Miguel', orcid: undefined },
       ],
-      id: { _tag: 'metaarxiv', value: Doi('10.31222/osf.io/9a3rw') },
+      id: new MetaarxivPreprintId({ value: Doi('10.31222/osf.io/9a3rw') }),
       posted: Temporal.PlainDate.from({ year: 2017, month: 3, day: 3 }),
       title: {
         language: 'en',
@@ -371,7 +384,7 @@ test.each([
     response: 'socarxiv.json',
     expected: Preprint({
       authors: [{ name: 'Paula Sequeiros', orcid: Orcid('0000-0003-2069-5631') }],
-      id: { _tag: 'socarxiv', value: Doi('10.31235/osf.io/ny6h2') },
+      id: new SocarxivPreprintId({ value: Doi('10.31235/osf.io/ny6h2') }),
       posted: Temporal.PlainDate.from({ year: 2022, month: 11, day: 26 }),
       title: {
         language: 'pt',
@@ -390,7 +403,7 @@ test.each([
     response: 'osf-preprints.json',
     expected: Preprint({
       authors: [{ name: 'Tran Duc Hung Long', orcid: undefined }],
-      id: { _tag: 'osf-preprints', value: Doi('10.31219/osf.io/t9gbj') },
+      id: new OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/t9gbj') }),
       posted: Temporal.PlainDate.from({ year: 2021, month: 10, day: 11 }),
       title: {
         language: 'vi',

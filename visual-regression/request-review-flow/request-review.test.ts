@@ -4,15 +4,13 @@ import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import type { PreprintTitle } from '../../src/preprint.js'
 import { requestReviewPage } from '../../src/request-review-flow/request-review-page/request-review-page.js'
+import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import type { User } from '../../src/user.js'
 import { expect, test } from '../base.js'
 
 const preprint = {
-  id: {
-    _tag: 'biorxiv',
-    value: Doi('10.1101/2022.01.13.476201'),
-  },
+  id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
   title: html`Cytoplasmic protein-free mRNA induces stress granules by two G3BP1/2-dependent mechanisms`,
   language: 'en',
 } satisfies PreprintTitle

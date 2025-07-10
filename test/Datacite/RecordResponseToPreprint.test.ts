@@ -10,6 +10,12 @@ import { recordToPreprint } from '../../src/Datacite/Preprint.js'
 import { Record, ResponseSchema } from '../../src/Datacite/Record.js'
 import { rawHtml } from '../../src/html.js'
 import { Preprint } from '../../src/preprint.js'
+import {
+  ArxivPreprintId,
+  LifecycleJournalPreprintId,
+  OsfPreprintId,
+  ZenodoPreprintId,
+} from '../../src/types/preprint-id.js'
 import * as EffectTest from '../EffectTest.js'
 
 test.each([
@@ -30,7 +36,7 @@ test.each([
         { name: 'Gabriela Duarte Bezerra', orcid: Orcid('0000-0002-7472-4621') },
         { name: 'WONESKA RODRIGUES PINHEIRO', orcid: undefined },
       ],
-      id: { _tag: 'osf', value: Doi('10.17605/osf.io/eq8bk') },
+      id: new OsfPreprintId({ value: Doi('10.17605/osf.io/eq8bk') }),
       posted: Temporal.PlainDate.from({ year: 2023, month: 9, day: 13 }),
       title: {
         language: 'pt',
@@ -59,7 +65,7 @@ test.each([
         { name: 'Dr. Faridahwati Mohd. Shamsudin', orcid: undefined },
         { name: 'Shahratul Karmila Rosland', orcid: Orcid('0009-0000-3311-5160') },
       ],
-      id: { _tag: 'lifecycle-journal', value: Doi('10.17605/osf.io/bu3rj') },
+      id: new LifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/bu3rj') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 4, day: 3 }),
       title: {
         language: 'en',
@@ -80,7 +86,7 @@ test.each([
         ),
       },
       authors: [{ name: 'Ian Hussey', orcid: Orcid('0000-0001-8906-7559') }],
-      id: { _tag: 'lifecycle-journal', value: Doi('10.17605/osf.io/bmqcw') },
+      id: new LifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/bmqcw') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 9 }),
       title: {
         language: 'en',
@@ -111,7 +117,7 @@ test.each([
         { name: 'J. W. Zhang', orcid: undefined },
         { name: 'L. J. Wang', orcid: undefined },
       ],
-      id: { _tag: 'arxiv', value: Doi('10.48550/arxiv.2201.06719') },
+      id: new ArxivPreprintId({ value: Doi('10.48550/arxiv.2201.06719') }),
       posted: Temporal.PlainDate.from({ year: 2022, month: 1, day: 18 }),
       title: {
         language: 'en',
@@ -132,7 +138,7 @@ test.each([
         ),
       },
       authors: [{ name: 'Keyang Ding', orcid: undefined }],
-      id: { _tag: 'zenodo', value: Doi('10.5281/zenodo.7955181') },
+      id: new ZenodoPreprintId({ value: Doi('10.5281/zenodo.7955181') }),
       posted: Temporal.PlainDate.from({ year: 2023, month: 5, day: 21 }),
       title: {
         language: 'en',
@@ -192,7 +198,7 @@ test.each([
         { name: 'Mingxun Wang', orcid: Orcid('0000-0001-7647-6097') },
         { name: 'Oliver Kohlbacher', orcid: Orcid('0000-0003-1739-4598') },
       ],
-      id: { _tag: 'zenodo', value: Doi('10.5281/zenodo.14928694') },
+      id: new ZenodoPreprintId({ value: Doi('10.5281/zenodo.14928694') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 2, day: 26 }),
       title: {
         language: 'en',
@@ -213,7 +219,7 @@ test.each([
         ),
       },
       authors: [{ name: 'Zhi Kai Zou', orcid: Orcid('0009-0000-4279-1064') }],
-      id: { _tag: 'zenodo', value: Doi('10.5281/zenodo.14788393') },
+      id: new ZenodoPreprintId({ value: Doi('10.5281/zenodo.14788393') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 4, day: 20 }),
       title: {
         language: 'en',
@@ -234,7 +240,7 @@ test.each([
         { name: 'Pallab Pradhan', orcid: Orcid('0000-0002-7862-9998') },
         { name: 'Nick Bearman', orcid: Orcid('0000-0002-8396-4061') },
       ],
-      id: { _tag: 'zenodo', value: Doi('10.5281/zenodo.15399868') },
+      id: new ZenodoPreprintId({ value: Doi('10.5281/zenodo.15399868') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 5, day: 14 }),
       title: {
         language: 'en',

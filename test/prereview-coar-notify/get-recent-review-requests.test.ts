@@ -20,7 +20,15 @@ describe('getRecentReviewRequests', () => {
           preprint: fc
             .indeterminatePreprintIdWithDoi()
             .filter(
-              id => !['biorxiv', 'medrxiv', 'osf', 'lifecycle-journal', 'zenodo', 'africarxiv'].includes(id._tag),
+              id =>
+                ![
+                  'BiorxivPreprintId',
+                  'MedrxivPreprintId',
+                  'OsfPreprintId',
+                  'LifecycleJournalPreprintId',
+                  'ZenodoPreprintId',
+                  'africarxiv',
+                ].includes(id._tag),
             ),
           fields: fc.array(fc.fieldId()),
           subfields: fc.array(fc.subfieldId()),

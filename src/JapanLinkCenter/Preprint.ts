@@ -1,6 +1,7 @@
 import { Array, Either, Option, pipe } from 'effect'
 import { html } from '../html.js'
 import * as Preprint from '../preprint.js'
+import { JxivPreprintId } from '../types/preprint-id.js'
 import { isDoiFromSupportedPublisher, type JapanLinkCenterPreprintId } from './PreprintId.js'
 import type { Record } from './Record.js'
 
@@ -14,7 +15,7 @@ const determineJapanLinkCenterPreprintId = (
       return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
     }
 
-    return { _tag: 'jxiv', value: doi } satisfies JapanLinkCenterPreprintId
+    return new JxivPreprintId({ value: doi })
   })
 
 export const recordToPreprint = (

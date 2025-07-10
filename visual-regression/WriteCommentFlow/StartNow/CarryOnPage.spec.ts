@@ -6,6 +6,7 @@ import { DefaultLocale } from '../../../src/locales/index.js'
 import * as Prereview from '../../../src/Prereview.js'
 import * as Routes from '../../../src/routes.js'
 import { Uuid } from '../../../src/types/index.js'
+import { BiorxivPreprintId } from '../../../src/types/preprint-id.js'
 import * as _ from '../../../src/WriteCommentFlow/StartNow/CarryOnPage.js'
 import { expect, test } from '../../base.js'
 
@@ -46,7 +47,7 @@ const prereview = new Prereview.Prereview({
   live: false,
   published: PlainDate.from('2024-03-04'),
   preprint: {
-    id: { _tag: 'biorxiv', value: Doi('10.1101/2023.12.21.572824') },
+    id: new BiorxivPreprintId({ value: Doi('10.1101/2023.12.21.572824') }),
     title: html`Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants`,
     language: 'en',
     url: new URL('https://biorxiv.org/lookup/doi/10.1101/2023.12.21.572824'),

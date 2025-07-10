@@ -7,6 +7,7 @@ import { rawHtml } from '../../src/html.js'
 import * as _ from '../../src/JapanLinkCenter/Preprint.js'
 import { Record } from '../../src/JapanLinkCenter/Record.js'
 import { Preprint } from '../../src/preprint.js'
+import { JxivPreprintId } from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 
 describe('recordToPreprint', () => {
@@ -20,7 +21,7 @@ describe('recordToPreprint', () => {
           { name: 'Miwako Honma', orcid: undefined },
           { name: 'Keiko Yamada', orcid: undefined },
         ],
-        id: { _tag: 'jxiv', value: Doi('10.51094/jxiv.1041') },
+        id: new JxivPreprintId({ value: Doi('10.51094/jxiv.1041') }),
         posted: Temporal.PlainDate.from('2025-01-28'),
         title: {
           language: 'en',

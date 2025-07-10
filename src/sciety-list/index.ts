@@ -42,7 +42,7 @@ const PlainDateE: E.Encoder<string, PlainDate> = StringE
 const PreprintIdE = {
   encode: id =>
     match(id)
-      .with({ _tag: 'philsci' }, ({ value }) => `https://philsci-archive.pitt.edu/${value}/`)
+      .with({ _tag: 'PhilsciPreprintId' }, ({ value }) => `https://philsci-archive.pitt.edu/${value}/`)
       .with({ value: P.when(isDoi) }, ({ value }) => `doi:${value}`)
       .exhaustive(),
 } satisfies E.Encoder<string, IndeterminatePreprintId>

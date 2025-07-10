@@ -724,7 +724,7 @@ ${newPrereview.review.toString()}`,
 
 export function toExternalIdentifier(preprint: IndeterminatePreprintId) {
   return match(preprint)
-    .with({ _tag: 'philsci' }, preprint => ({
+    .with({ _tag: 'PhilsciPreprintId' }, preprint => ({
       scheme: 'url',
       identifier: `https://philsci-archive.pitt.edu/${preprint.value}/`,
     }))

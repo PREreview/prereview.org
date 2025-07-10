@@ -5,6 +5,7 @@ import { missingE } from '../../src/form.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { personaForm } from '../../src/request-review-flow/persona-page/persona-form.js'
 import type { ReviewRequestPreprintId } from '../../src/review-request.js'
+import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import type { User } from '../../src/user.js'
 import { expect, test } from '../base.js'
@@ -15,10 +16,7 @@ const user = {
   pseudonym: Pseudonym('Orange Panda'),
 } satisfies User
 
-const preprint = {
-  _tag: 'biorxiv',
-  value: Doi('10.1101/2022.01.13.476201'),
-} satisfies ReviewRequestPreprintId
+const preprint = new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }) satisfies ReviewRequestPreprintId
 
 const locale = DefaultLocale
 

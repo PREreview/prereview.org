@@ -11,7 +11,7 @@ import { P, match } from 'ts-pattern'
 import { timeoutRequest, useStaleCache } from './fetch.js'
 import { sanitizeHtml } from './html.js'
 import * as Preprint from './preprint.js'
-import type { PhilsciPreprintId } from './types/preprint-id.js'
+import { PhilsciPreprintId } from './types/preprint-id.js'
 
 import PlainDate = Temporal.PlainDate
 import PlainYearMonth = Temporal.PlainYearMonth
@@ -139,7 +139,7 @@ function eprintToPreprint(eprint: D.TypeOf<typeof EprintD>): E.Either<D.DecodeEr
         orcid: author.orcid ?? undefined,
       })),
     ),
-    E.let('id', () => ({ _tag: 'philsci', value: eprint.eprintid }) satisfies PhilsciPreprintId),
+    E.let('id', () => new PhilsciPreprintId({ value: eprint.eprintid })),
     E.let('posted', () => eprint.date ?? eprint.datestamp),
     E.let('abstract', () =>
       typeof eprint.abstract === 'string'

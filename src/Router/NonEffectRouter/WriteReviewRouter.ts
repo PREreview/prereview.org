@@ -466,7 +466,7 @@ export const WriteReviewRouter = pipe(
             (id: PreprintId) =>
               pipe(
                 match(id)
-                  .with({ _tag: 'philsci' }, () => RTE.of([]))
+                  .with({ _tag: 'PhilsciPreprintId' }, () => RTE.of([]))
                   .otherwise(
                     EffectToFpts.toReaderTaskEitherK(id =>
                       pipe(OpenAlex.GetCategories, Effect.andThen(Function.apply(id.value))),

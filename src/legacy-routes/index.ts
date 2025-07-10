@@ -17,9 +17,9 @@ import type { SupportedLocale } from '../locales/index.js'
 import { RedirectResponse, type Response } from '../response.js'
 import { preprintReviewsMatch, profileMatch, writeReviewReviewTypeMatch } from '../routes.js'
 import {
-  type ArxivPreprintId,
+  ArxivPreprintId,
   type IndeterminatePreprintId,
-  type PhilsciPreprintId,
+  PhilsciPreprintId,
   PreprintDoiD,
   fromPreprintDoi,
 } from '../types/preprint-id.js'
@@ -53,7 +53,7 @@ const ArxivPreprintIdC = C.make(
       const [, match] = /^arxiv-([A-z0-9.+-]+?)(?:v[0-9]+)?$/i.exec(s) ?? []
 
       if (typeof match === 'string') {
-        return D.success({ _tag: 'arxiv', value: Doi(`10.48550/arxiv.${match}`) } satisfies ArxivPreprintId)
+        return D.success(new ArxivPreprintId({ value: Doi(`10.48550/arxiv.${match}`) }))
       }
 
       return D.failure(s, 'ID')
@@ -89,7 +89,7 @@ const PreprintPhilsciC = C.make(
       const [, match] = /^philsci-([1-9][0-9]*)$/.exec(s) ?? []
 
       if (typeof match === 'string') {
-        return D.success({ _tag: 'philsci', value: parseInt(match, 10) } satisfies PhilsciPreprintId)
+        return D.success(new PhilsciPreprintId({ value: parseInt(match, 10) }))
       }
 
       return D.failure(s, 'ID')
@@ -105,7 +105,7 @@ const PreprintPhilsciC = C.make(
 const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
   encode: id =>
     match(id)
-      .with({ _tag: 'philsci' }, PreprintPhilsciC.encode)
+      .with({ _tag: 'PhilsciPreprintId' }, PreprintPhilsciC.encode)
       .with({ value: p.when(isDoi) }, PreprintDoiC.encode)
       .exhaustive(),
 })

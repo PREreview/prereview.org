@@ -6,7 +6,7 @@ import { detectLanguage, detectLanguageFrom } from '../detect-language.js'
 import { type Html, sanitizeHtml } from '../html.js'
 import * as Preprint from '../preprint.js'
 import { Orcid } from '../types/index.js'
-import { fromPreprintDoi } from '../types/preprint-id.js'
+import { fromPreprintDoi, LifecycleJournalPreprintId, OsfPreprintId, ZenodoPreprintId } from '../types/preprint-id.js'
 import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
 import type { Record } from './Record.js'
 
@@ -19,9 +19,9 @@ export const recordToPreprint = (
     if (
       record.types.resourceType?.toLowerCase() !== 'preprint' &&
       record.types.resourceTypeGeneral?.toLowerCase() !== 'preprint' &&
-      (id._tag !== 'lifecycle-journal' ||
+      (id._tag !== 'LifecycleJournalPreprintId' ||
         !['journalarticle', 'studyregistration'].includes(record.types.resourceTypeGeneral?.toLowerCase() as never)) &&
-      (id._tag !== 'arxiv' || record.types.resourceTypeGeneral?.toLowerCase() !== 'text')
+      (id._tag !== 'ArxivPreprintId' || record.types.resourceTypeGeneral?.toLowerCase() !== 'text')
     ) {
       yield* Either.left(new Preprint.NotAPreprint({ cause: record.types }))
     }
@@ -78,10 +78,10 @@ const determineDatacitePreprintId = (
 
     if (indeterminateId._tag === 'osf-lifecycle-journal') {
       if (record.publisher === 'Lifecycle Journal') {
-        return { _tag: 'lifecycle-journal', value: indeterminateId.value }
+        return new LifecycleJournalPreprintId({ value: indeterminateId.value })
       }
 
-      return { _tag: 'osf', value: indeterminateId.value }
+      return new OsfPreprintId({ value: indeterminateId.value })
     }
 
     if (indeterminateId._tag === 'zenodo-africarxiv') {
@@ -95,7 +95,7 @@ const determineDatacitePreprintId = (
         return { _tag: 'africarxiv', value: indeterminateId.value }
       }
 
-      return { _tag: 'zenodo', value: indeterminateId.value }
+      return new ZenodoPreprintId({ value: indeterminateId.value })
     }
 
     return indeterminateId
@@ -165,8 +165,8 @@ const getAbstract = (
 const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
     africarxiv: () => detectLanguageFrom('en', 'fr')(text),
-    arxiv: () => Option.some('en' as const),
-    'lifecycle-journal': () => Option.some('en' as const),
-    osf: () => detectLanguage(text),
-    zenodo: () => detectLanguage(text),
+    ArxivPreprintId: () => Option.some('en' as const),
+    LifecycleJournalPreprintId: () => Option.some('en' as const),
+    OsfPreprintId: () => detectLanguage(text),
+    ZenodoPreprintId: () => detectLanguage(text),
   })

@@ -151,7 +151,7 @@ const unsupportedUrlE = (actual: URL): UnsupportedUrlE => ({
 
 function createUnknownPreprintPage(preprint: IndeterminatePreprintId, locale: SupportedLocale) {
   return match(preprint)
-    .with({ _tag: 'philsci' }, preprint => createUnknownPhilsciPreprintPage(preprint, locale))
+    .with({ _tag: 'PhilsciPreprintId' }, preprint => createUnknownPhilsciPreprintPage(preprint, locale))
     .with({ value: P.when(isDoi) }, preprint => createUnknownPreprintWithDoiPage(preprint, locale))
     .exhaustive()
 }

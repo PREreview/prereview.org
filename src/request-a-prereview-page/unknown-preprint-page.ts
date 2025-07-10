@@ -14,7 +14,7 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
     main: html`
       <h1>${translate(locale, 'request-a-prereview-page', 'dontKnowPreprint')()}</h1>
 
-      ${preprint._tag === 'philsci'
+      ${preprint._tag === 'PhilsciPreprintId'
         ? html`
             <p>
               ${rawHtml(
@@ -42,38 +42,41 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                 Match.valueTags(preprint, {
                   AdvancePreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAdvance'),
                   africarxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAfricarxiv'),
-                  'arcadia-science': () => translate(locale, 'request-a-prereview-page', 'doiCouldBeArcadiaScience'),
-                  arxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeArxiv'),
-                  authorea: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAuthorea'),
-                  biorxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeBiorxiv'),
+                  ArcadiaSciencePreprintId: () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeArcadiaScience'),
+                  ArxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeArxiv'),
+                  AuthoreaPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAuthorea'),
+                  BiorxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeBiorxiv'),
                   'biorxiv-medrxiv': () => translate(locale, 'request-a-prereview-page', 'doiCouldBeBiorxivMedrxiv'),
-                  chemrxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeChemrxiv'),
-                  curvenote: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeCurvenote'),
-                  eartharxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEartharxiv'),
-                  ecoevorxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEcoevorxiv'),
-                  edarxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEdarxiv'),
-                  engrxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEngrxiv'),
-                  jxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeJxiv'),
-                  'lifecycle-journal': () =>
+                  ChemrxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeChemrxiv'),
+                  CurvenotePreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeCurvenote'),
+                  EartharxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEartharxiv'),
+                  EcoevorxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEcoevorxiv'),
+                  EdarxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEdarxiv'),
+                  EngrxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEngrxiv'),
+                  JxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeJxiv'),
+                  LifecycleJournalPreprintId: () =>
                     translate(locale, 'request-a-prereview-page', 'doiCouldBeLifecycleJournal'),
-                  medrxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeMedrxiv'),
-                  metaarxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeMetaarxiv'),
-                  neurolibre: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeNeurolibre'),
-                  osf: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeOsf'),
-                  'osf-preprints': () => translate(locale, 'request-a-prereview-page', 'doiCouldBeOsf'),
+                  MedrxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeMedrxiv'),
+                  MetaarxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeMetaarxiv'),
+                  NeurolibrePreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeNeurolibre'),
+                  OsfPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeOsf'),
+                  OsfPreprintsPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeOsf'),
                   'osf-lifecycle-journal': () =>
                     translate(locale, 'request-a-prereview-page', 'doiCouldBeOsfLifecycleJournal'),
-                  'preprints.org': () => translate(locale, 'request-a-prereview-page', 'doiCouldBePreprintsorg'),
-                  psyarxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBePsyarxiv'),
-                  psycharchives: () => translate(locale, 'request-a-prereview-page', 'doiCouldBePsycharchives'),
-                  'research-square': () => translate(locale, 'request-a-prereview-page', 'doiCouldBeResearchSquare'),
-                  scielo: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeScielo'),
-                  'science-open': () => translate(locale, 'request-a-prereview-page', 'doiCouldBeScienceOpen'),
-                  socarxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeSocarxiv'),
-                  ssrn: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeSsrn'),
-                  techrxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeTechrxiv'),
-                  verixiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeVerixiv'),
-                  zenodo: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeZenodo'),
+                  PreprintsorgPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBePreprintsorg'),
+                  PsyarxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBePsyarxiv'),
+                  PsychArchivesPreprintId: () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBePsycharchives'),
+                  ResearchSquarePreprintId: () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeResearchSquare'),
+                  ScieloPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeScielo'),
+                  ScienceOpenPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeScienceOpen'),
+                  SocarxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeSocarxiv'),
+                  SsrnPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeSsrn'),
+                  TechrxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeTechrxiv'),
+                  VerixivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeVerixiv'),
+                  ZenodoPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeZenodo'),
                   'zenodo-africarxiv': () =>
                     translate(locale, 'request-a-prereview-page', 'doiCouldBeZenodoAfricarxiv'),
                 })({ doi: html`<q class="select-all" translate="no">${preprint.value}</q>`.toString() }),

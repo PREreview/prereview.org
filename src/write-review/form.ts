@@ -40,7 +40,7 @@ export interface FormStoreEnv {
 
 export function formKey(user: Orcid, preprint: PreprintId) {
   return match(preprint)
-    .with({ _tag: 'philsci' }, preprint => `${user}_philsci_${preprint.value}`)
+    .with({ _tag: 'PhilsciPreprintId' }, preprint => `${user}_philsci_${preprint.value}`)
     .with({ value: P.when(isDoi) }, preprint => `${user}_${preprint.value}`)
     .exhaustive()
 }

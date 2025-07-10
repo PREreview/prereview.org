@@ -2,12 +2,10 @@ import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { carryOnPage } from '../../src/request-review-flow/start-page/carry-on-page.js'
 import type { ReviewRequestPreprintId } from '../../src/review-request.js'
+import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
-const preprint = {
-  _tag: 'biorxiv',
-  value: Doi('10.1101/2022.01.13.476201'),
-} satisfies ReviewRequestPreprintId
+const preprint = new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }) satisfies ReviewRequestPreprintId
 
 const locale = DefaultLocale
 
