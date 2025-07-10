@@ -11,7 +11,11 @@ import type { RecentReviewRequest } from '../home-page/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
 import type { ReviewRequestPreprintId } from '../review-request.js'
-import type { ReviewRequests } from '../review-requests-page/index.js'
+import {
+  RecentReviewRequestsAreUnavailable,
+  RecentReviewRequestsNotFound,
+  type ReviewRequests,
+} from '../review-requests-page/index.js'
 import { reviewMatch } from '../routes.js'
 import type { FieldId } from '../types/field.js'
 import { Uuid } from '../types/index.js'
@@ -74,7 +78,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
   page: number
 }): RTE.ReaderTaskEither<
   FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
-  'not-found' | 'unavailable',
+  RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
   ReviewRequests
 > =>
   pipe(
@@ -92,7 +96,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
         RTE.apS(
           'reviewRequests',
           pipe(
-            RTE.fromOption(() => 'not-found' as const)(Array.get(pages, page - 1)),
+            RTE.fromOption(() => new RecentReviewRequestsNotFound({}))(Array.get(pages, page - 1)),
             RTE.chainW(
               RTE.traverseReadonlyNonEmptyArrayWithIndex((_, { timestamp, preprint, fields, subfields }) =>
                 pipe(
@@ -102,7 +106,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
                     'preprint',
                     pipe(
                       getPreprintTitle(preprint),
-                      RTE.mapLeft(() => 'unavailable' as const),
+                      RTE.mapLeft(cause => new RecentReviewRequestsAreUnavailable({ cause })),
                     ),
                   ),
                   RTE.let('fields', () => fields),
@@ -121,12 +125,12 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
   page: number,
 ): RTE.ReaderTaskEither<
   FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
-  'not-found' | 'unavailable',
+  RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
   ReadonlyArray<RecentReviewRequest>
 > =>
   pipe(
     RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
-    RTE.chainOptionKW(() => 'not-found' as const)(flow(Array.chunksOf(5), Array.get(page - 1))),
+    RTE.chainOptionKW(() => new RecentReviewRequestsNotFound({}))(flow(Array.chunksOf(5), Array.get(page - 1))),
     RTE.chainW(
       RTE.traverseArray(({ timestamp, preprint, fields, subfields }: RecentReviewRequestFromPrereviewCoarNotify) =>
         pipe(
@@ -136,7 +140,7 @@ export const getRecentReviewRequestsFromPrereviewCoarNotify = (
             'preprint',
             pipe(
               getPreprintTitle(preprint),
-              RTE.mapLeft(() => 'unavailable' as const),
+              RTE.mapLeft(cause => new RecentReviewRequestsAreUnavailable({ cause })),
             ),
           ),
           RTE.let('fields', () => fields),

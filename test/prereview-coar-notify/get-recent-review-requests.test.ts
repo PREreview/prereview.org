@@ -7,6 +7,7 @@ import * as IO from 'fp-ts/lib/IO.js'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/prereview-coar-notify/get-recent-review-requests.js'
 import { RecentReviewRequestsC } from '../../src/prereview-coar-notify/get-recent-review-requests.js'
+import { RecentReviewRequestsAreUnavailable } from '../../src/review-requests-page/review-requests.js'
 import * as fc from './fc.js'
 
 describe('getRecentReviewRequests', () => {
@@ -56,7 +57,7 @@ describe('getRecentReviewRequests', () => {
         logger: () => IO.of(undefined),
       })()
 
-      expect(result).toStrictEqual(E.left('unavailable'))
+      expect(result).toStrictEqual(E.left(new RecentReviewRequestsAreUnavailable({ cause: 'network' })))
     })
 
     test.prop([fc.origin(), fc.fetchResponse({ status: fc.statusCode().filter(status => status !== Status.OK) })])(
@@ -68,7 +69,7 @@ describe('getRecentReviewRequests', () => {
           logger: () => IO.of(undefined),
         })()
 
-        expect(result).toStrictEqual(E.left('unavailable'))
+        expect(result).toStrictEqual(E.left(new RecentReviewRequestsAreUnavailable({ cause: 'non-200-response' })))
       },
     )
   })

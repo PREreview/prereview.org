@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { type Array, pipe } from 'effect'
+import { type Array, Data, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -32,8 +32,16 @@ export interface GetReviewRequestsEnv {
     field?: FieldId
     language?: LanguageCode
     page: number
-  }) => TE.TaskEither<'not-found' | 'unavailable', ReviewRequests>
+  }) => TE.TaskEither<RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable, ReviewRequests>
 }
+
+export class RecentReviewRequestsNotFound extends Data.TaggedError('RecentReviewRequestsNotFound')<{
+  cause?: unknown
+}> {}
+
+export class RecentReviewRequestsAreUnavailable extends Data.TaggedError('RecentReviewRequestsAreUnavailable')<{
+  cause?: unknown
+}> {}
 
 export const getReviewRequests = (...args: Parameters<GetReviewRequestsEnv['getReviewRequests']>) =>
   pipe(

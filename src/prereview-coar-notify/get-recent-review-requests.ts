@@ -12,6 +12,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import iso6391 from 'iso-639-1'
 import * as L from 'logger-fp-ts'
 import safeStableStringify from 'safe-stable-stringify'
+import { RecentReviewRequestsAreUnavailable } from '../review-requests-page/index.js'
 import { isFieldId } from '../types/field.js'
 import { parsePreprintDoi } from '../types/preprint-id.js'
 import { isSubfieldId } from '../types/subfield.js'
@@ -81,5 +82,5 @@ export const getRecentReviewRequests = flow(
   RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
   RTE.chainTaskEitherKW(flow(F.decode(RecentReviewRequestsC), TE.mapLeft(D.draw))),
   RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get recent review requests')))),
-  RTE.mapLeft(() => 'unavailable' as const),
+  RTE.mapLeft(cause => new RecentReviewRequestsAreUnavailable({ cause })),
 )

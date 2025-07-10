@@ -55,7 +55,9 @@ describe('reviewRequests', () => {
     fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
   ])("when the requests can't be loaded", async (locale, page, field, language) => {
-    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('unavailable'))
+    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
+      TE.left(new _.RecentReviewRequestsAreUnavailable({})),
+    )
 
     const actual = await _.reviewRequests({ field, language, locale, page })({
       getReviewRequests,
@@ -77,7 +79,9 @@ describe('reviewRequests', () => {
     fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
   ])("when requests can't be found", async (locale, field, language) => {
-    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('not-found'))
+    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
+      TE.left(new _.RecentReviewRequestsNotFound({})),
+    )
 
     const actual = await _.reviewRequests({ field, language, locale, page: 1 })({
       getReviewRequests,
@@ -103,7 +107,9 @@ describe('reviewRequests', () => {
     fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
   ])("when the requests page can't be found", async (locale, page, field, language) => {
-    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_ => TE.left('not-found'))
+    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
+      TE.left(new _.RecentReviewRequestsNotFound({})),
+    )
 
     const actual = await _.reviewRequests({ field, language, locale, page })({
       getReviewRequests,

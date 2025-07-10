@@ -10,7 +10,12 @@ import type { FieldId } from '../types/field.js'
 import { createEmptyPage, createPage } from './review-requests-page.js'
 import { type GetReviewRequestsEnv, getReviewRequests } from './review-requests.js'
 
-export type { GetReviewRequestsEnv, ReviewRequests } from './review-requests.js'
+export {
+  RecentReviewRequestsAreUnavailable,
+  RecentReviewRequestsNotFound,
+  type GetReviewRequestsEnv,
+  type ReviewRequests,
+} from './review-requests.js'
 
 export const reviewRequests = ({
   field,
@@ -28,9 +33,11 @@ export const reviewRequests = ({
     RTE.let('locale', () => locale),
     RTE.matchW(
       error =>
-        match(error)
-          .with('not-found', () => (page === 1 ? createEmptyPage({ field, language, locale }) : pageNotFound(locale)))
-          .with('unavailable', () => havingProblemsPage(locale))
+        match(error._tag)
+          .with('RecentReviewRequestsNotFound', () =>
+            page === 1 ? createEmptyPage({ field, language, locale }) : pageNotFound(locale),
+          )
+          .with('RecentReviewRequestsAreUnavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       createPage,
     ),
