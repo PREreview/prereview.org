@@ -2,7 +2,7 @@ import { Match } from 'effect'
 import type { PreprintId } from '../types/preprint-id.js'
 
 export const getName = Match.typeTags<PreprintId, string>()({
-  advance: () => 'Advance',
+  AdvancePreprintId: () => 'Advance',
   africarxiv: () => 'AfricArXiv Preprints',
   'arcadia-science': () => 'Arcadia Science',
   arxiv: () => 'arXiv',

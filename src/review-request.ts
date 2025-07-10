@@ -137,7 +137,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
     .with(
       {
         _tag: P.union(
-          'advance',
+          'AdvancePreprintId',
           'arxiv',
           'biorxiv',
           'chemrxiv',

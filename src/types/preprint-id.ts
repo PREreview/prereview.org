@@ -1,9 +1,10 @@
 import { Url, UrlParams } from '@effect/platform'
 import { type Doi, Eq as eqDoi, hasRegistrant, isDoi, parse } from 'doi-ts'
-import { Array, Data, Either, type Equivalence, Option, Predicate, flow, pipe } from 'effect'
+import { Array, Data, Either, type Equivalence, Option, Predicate, Schema, flow, pipe } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import * as FptsToEffect from '../FptsToEffect.js'
+import { RegistrantDoiSchema } from './Doi.js'
 
 export type PreprintId =
   | AdvancePreprintId
@@ -44,10 +45,9 @@ export type IndeterminatePreprintId =
   | OsfOrLifecycleJournalPreprintId
   | ZenodoOrAfricarxivPreprintId
 
-export interface AdvancePreprintId {
-  readonly _tag: 'advance'
-  readonly value: Doi<'31124'>
-}
+export class AdvancePreprintId extends Schema.TaggedClass<AdvancePreprintId>()('AdvancePreprintId', {
+  value: RegistrantDoiSchema('31124'),
+}) {}
 
 export type AfricarxivPreprintId =
   | AfricarxivFigsharePreprintId
@@ -317,7 +317,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('23668'), doi => ({ _tag: 'psycharchives', value: doi }) satisfies PsychArchivesPreprintId)
     .when(hasRegistrant('26434'), doi => ({ _tag: 'chemrxiv', value: doi }) satisfies ChemrxivPreprintId)
     .when(hasRegistrant('20944'), doi => ({ _tag: 'preprints.org', value: doi }) satisfies PreprintsorgPreprintId)
-    .when(hasRegistrant('31124'), doi => ({ _tag: 'advance', value: doi }) satisfies AdvancePreprintId)
+    .when(hasRegistrant('31124'), doi => new AdvancePreprintId({ value: doi }))
     .when(hasRegistrant('31219'), doi => ({ _tag: 'osf-preprints', value: doi }) satisfies OsfPreprintsPreprintId)
     .when(hasRegistrant('31222'), doi => ({ _tag: 'metaarxiv', value: doi }) satisfies MetaarxivPreprintId)
     .when(hasRegistrant('31223'), doi => ({ _tag: 'eartharxiv', value: doi }) satisfies EartharxivPreprintId)

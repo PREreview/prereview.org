@@ -12,21 +12,21 @@ import { timeoutRequest, useStaleCache } from './fetch.js'
 import { type Html, sanitizeHtml } from './html.js'
 import { transformJatsToHtml } from './jats.js'
 import * as Preprint from './preprint.js'
-import type {
+import {
   AdvancePreprintId,
-  AfricarxivOsfPreprintId,
-  AuthoreaPreprintId,
-  ChemrxivPreprintId,
-  CurvenotePreprintId,
-  EartharxivPreprintId,
-  EcoevorxivPreprintId,
-  EdarxivPreprintId,
-  EngrxivPreprintId,
-  IndeterminatePreprintId,
-  PreprintId,
-  PsyarxivPreprintId,
-  ScienceOpenPreprintId,
-  TechrxivPreprintId,
+  type AfricarxivOsfPreprintId,
+  type AuthoreaPreprintId,
+  type ChemrxivPreprintId,
+  type CurvenotePreprintId,
+  type EartharxivPreprintId,
+  type EcoevorxivPreprintId,
+  type EdarxivPreprintId,
+  type EngrxivPreprintId,
+  type IndeterminatePreprintId,
+  type PreprintId,
+  type PsyarxivPreprintId,
+  type ScienceOpenPreprintId,
+  type TechrxivPreprintId,
 } from './types/preprint-id.js'
 
 const crossrefDoiPrefixes = [
@@ -159,7 +159,7 @@ const detectLanguageForServer = ({
   text: Html
 }): Option.Option<LanguageCode> =>
   match({ type, text })
-    .with({ type: 'advance' }, () => Option.some('en' as const))
+    .with({ type: 'AdvancePreprintId' }, () => Option.some('en' as const))
     .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
     .with({ type: 'authorea', text: P.select() }, detectLanguage)
     .with({ type: 'chemrxiv' }, () => Option.some('en' as const))
@@ -179,13 +179,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       DOI: D.fromRefinement(hasRegistrant('31124'), 'DOI'),
       institution: D.fromTuple(D.struct({ name: D.literal('Advance') })),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'advance',
-          value: work.DOI,
-        }) satisfies AdvancePreprintId,
-    ),
+    D.map(work => new AdvancePreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({

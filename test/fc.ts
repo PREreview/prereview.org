@@ -99,7 +99,7 @@ import { type FieldId, fieldIds } from '../src/types/field.js'
 import { OrcidLocale, ProfileId } from '../src/types/index.js'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.js'
 import {
-  type AdvancePreprintId,
+  AdvancePreprintId,
   type AfricarxivFigsharePreprintId,
   type AfricarxivOsfPreprintId,
   type AfricarxivPreprintId,
@@ -593,10 +593,7 @@ export const japanLinkCenterPreprintDoi = (): fc.Arbitrary<JapanLinkCenterPrepri
   japanLinkCenterPreprintId().map(id => id.value)
 
 export const advancePreprintId = (): fc.Arbitrary<AdvancePreprintId> =>
-  fc.record({
-    _tag: constant('advance'),
-    value: doi(constant('31124')),
-  })
+  doi(constant('31124')).map(doi => new AdvancePreprintId({ value: doi }))
 
 export const africarxivPreprintId = (): fc.Arbitrary<AfricarxivPreprintId> =>
   fc.oneof(

@@ -23,7 +23,7 @@ export function createUnknownPreprintWithDoiPage(
       <p>
         ${rawHtml(
           Match.valueTags(preprint, {
-            advance: () => t('review-a-preprint', 'doiCouldBeAdvance'),
+            AdvancePreprintId: () => t('review-a-preprint', 'doiCouldBeAdvance'),
             africarxiv: () => t('review-a-preprint', 'doiCouldBeAfricarxiv'),
             'arcadia-science': () => t('review-a-preprint', 'doiCouldBeArcadiaScience'),
             arxiv: () => t('review-a-preprint', 'doiCouldBeArxiv'),

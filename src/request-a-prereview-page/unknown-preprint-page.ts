@@ -40,7 +40,7 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
             <p>
               ${rawHtml(
                 Match.valueTags(preprint, {
-                  advance: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAdvance'),
+                  AdvancePreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAdvance'),
                   africarxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAfricarxiv'),
                   'arcadia-science': () => translate(locale, 'request-a-prereview-page', 'doiCouldBeArcadiaScience'),
                   arxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeArxiv'),
