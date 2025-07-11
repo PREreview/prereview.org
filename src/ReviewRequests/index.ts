@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Effect, Layer, pipe, Struct } from 'effect'
+import { Array, Context, Effect, flow, Layer, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
 import type * as Preprints from '../Preprints/index.js'
@@ -8,6 +8,11 @@ import {
   getReviewRequestsFromPrereviewCoarNotify,
   type PrereviewCoarNotifyConfig,
 } from '../prereview-coar-notify/index.js'
+import type {
+  ReviewRequests as PageOfReviewRequests,
+  RecentReviewRequestsAreUnavailable,
+  RecentReviewRequestsNotFound,
+} from '../review-requests-page/index.js'
 import type { FieldId } from '../types/field.js'
 import type { PreprintId } from '../types/preprint-id.js'
 import type { SubfieldId } from '../types/subfield.js'
@@ -29,10 +34,17 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
   ReviewRequests,
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<ReviewRequest>>
+    search: (query: {
+      field?: FieldId
+      language?: LanguageCode
+      page: number
+    }) => Effect.Effect<PageOfReviewRequests, RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable>
   }
 >() {}
 
 export const { getFiveMostRecent } = Effect.serviceConstants(ReviewRequests)
+
+export const { search } = Effect.serviceFunctions(ReviewRequests)
 
 export const layer = Layer.effect(
   ReviewRequests,
@@ -45,6 +57,7 @@ export const layer = Layer.effect(
         Effect.match({ onSuccess: Struct.get('reviewRequests'), onFailure: Array.empty }),
         Effect.provide(context),
       ),
+      search: flow(getReviewRequestsFromPrereviewCoarNotify, Effect.provide(context)),
     }
   }),
 )

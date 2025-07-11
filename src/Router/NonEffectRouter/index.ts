@@ -31,10 +31,7 @@ import { OrcidOauth } from '../../OrcidOauth.js'
 import { partners } from '../../partners.js'
 import { preprintReviews } from '../../preprint-reviews-page/index.js'
 import * as Preprints from '../../Preprints/index.js'
-import {
-  getReviewRequestsFromPrereviewCoarNotify,
-  PrereviewCoarNotifyConfig,
-} from '../../prereview-coar-notify/index.js'
+import { PrereviewCoarNotifyConfig } from '../../prereview-coar-notify/index.js'
 import * as Prereviews from '../../Prereviews/index.js'
 import { profile } from '../../profile-page/index.js'
 import { PublicUrl } from '../../public-url.js'
@@ -463,7 +460,7 @@ const routerWithoutHyperTs = pipe(
         ({ field, language, page }) =>
           (env: Env) =>
             reviewRequests({ field, language, locale: env.locale, page: page ?? 1 })({
-              getReviewRequests: EffectToFpts.toTaskEitherK(getReviewRequestsFromPrereviewCoarNotify, env.runtime),
+              getReviewRequests: EffectToFpts.toTaskEitherK(ReviewRequests.search, env.runtime),
             }),
       ),
     ),
