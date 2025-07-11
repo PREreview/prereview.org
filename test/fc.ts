@@ -117,6 +117,7 @@ import {
   EdarxivPreprintId,
   EngrxivPreprintId,
   type IndeterminatePreprintId,
+  type IndeterminatePreprintIdWithDoi,
   JxivPreprintId,
   LifecycleJournalPreprintId,
   MedrxivPreprintId,
@@ -127,6 +128,7 @@ import {
   OsfPreprintsPreprintId,
   PhilsciPreprintId,
   type PreprintId,
+  type PreprintIdWithDoi,
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
   PsychArchivesPreprintId,
@@ -540,8 +542,7 @@ export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbi
 
 export const nonPreprintDoi = (): fc.Arbitrary<Doi> => doi().filter(Predicate.not(isPreprintDoi))
 
-export const preprintDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>['value']> =>
-  preprintIdWithDoi().map(id => id.value)
+export const preprintDoi = (): fc.Arbitrary<PreprintIdWithDoi['value']> => preprintIdWithDoi().map(id => id.value)
 
 export const nonPreprintUrl = (): fc.Arbitrary<URL> => fc.oneof(url(), unsupportedPreprintUrl())
 
@@ -940,7 +941,7 @@ export const zenodoOrAfricarxivPreprintId = (): fc.Arbitrary<ZenodoOrAfricarxivP
 
 export const preprintId = (): fc.Arbitrary<PreprintId> => fc.oneof(philsciPreprintId(), preprintIdWithDoi())
 
-export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>> =>
+export const preprintIdWithDoi = (): fc.Arbitrary<PreprintIdWithDoi> =>
   fc.oneof(
     advancePreprintId(),
     africarxivPreprintId(),
@@ -977,7 +978,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
 export const indeterminatePreprintId = (): fc.Arbitrary<IndeterminatePreprintId> =>
   fc.oneof(philsciPreprintId(), indeterminatePreprintIdWithDoi())
 
-export const indeterminatePreprintIdWithDoi = (): fc.Arbitrary<Extract<IndeterminatePreprintId, { value: Doi }>> =>
+export const indeterminatePreprintIdWithDoi = (): fc.Arbitrary<IndeterminatePreprintIdWithDoi> =>
   fc.oneof(
     preprintIdWithDoi(),
     biorxivOrMedrxivPreprintId(),

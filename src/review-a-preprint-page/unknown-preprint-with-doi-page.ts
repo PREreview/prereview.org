@@ -1,4 +1,3 @@
-import type { Doi } from 'doi-ts'
 import { Match } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
@@ -6,12 +5,9 @@ import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { reviewAPreprintMatch } from '../routes.js'
-import type { IndeterminatePreprintId } from '../types/preprint-id.js'
+import type { IndeterminatePreprintIdWithDoi } from '../types/preprint-id.js'
 
-export function createUnknownPreprintWithDoiPage(
-  preprint: Extract<IndeterminatePreprintId, { value: Doi }>,
-  locale: SupportedLocale,
-) {
+export function createUnknownPreprintWithDoiPage(preprint: IndeterminatePreprintIdWithDoi, locale: SupportedLocale) {
   const t = translate(locale)
 
   return PageResponse({

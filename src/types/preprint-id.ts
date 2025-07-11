@@ -8,7 +8,11 @@ import { RegistrantDoiSchema } from './Doi.js'
 
 export type PreprintId = typeof PreprintId.Type
 
+export type PreprintIdWithDoi = typeof PreprintIdWithDoi.Type
+
 export type IndeterminatePreprintId = typeof IndeterminatePreprintId.Type
+
+export type IndeterminatePreprintIdWithDoi = typeof IndeterminatePreprintIdWithDoi.Type
 
 export class AdvancePreprintId extends Schema.TaggedClass<AdvancePreprintId>()('AdvancePreprintId', {
   value: RegistrantDoiSchema('31124'),
@@ -186,7 +190,7 @@ export class ZenodoOrAfricarxivPreprintId extends Schema.TaggedClass<ZenodoOrAfr
   { value: RegistrantDoiSchema('5281') },
 ) {}
 
-export const PreprintId = Schema.Union(
+export const PreprintIdWithDoi = Schema.Union(
   AdvancePreprintId,
   AfricarxivPreprintId,
   ArcadiaSciencePreprintId,
@@ -206,7 +210,6 @@ export const PreprintId = Schema.Union(
   NeurolibrePreprintId,
   OsfPreprintId,
   OsfPreprintsPreprintId,
-  PhilsciPreprintId,
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
   PsychArchivesPreprintId,
@@ -220,12 +223,16 @@ export const PreprintId = Schema.Union(
   ZenodoPreprintId,
 )
 
-export const IndeterminatePreprintId = Schema.Union(
-  PreprintId,
+export const PreprintId = Schema.Union(PreprintIdWithDoi, PhilsciPreprintId)
+
+export const IndeterminatePreprintIdWithDoi = Schema.Union(
+  PreprintIdWithDoi,
   BiorxivOrMedrxivPreprintId,
   OsfOrLifecycleJournalPreprintId,
   ZenodoOrAfricarxivPreprintId,
 )
+
+export const IndeterminatePreprintId = Schema.Union(IndeterminatePreprintIdWithDoi, PhilsciPreprintId)
 
 export class MultipleIndeterminatePreprintIds extends Data.TaggedClass('MultipleIndeterminatePreprintIds')<{
   ids: Array.NonEmptyArray<IndeterminatePreprintId>
@@ -243,52 +250,55 @@ export const PreprintIdEquivalence: Equivalence.Equivalence<IndeterminatePreprin
   return FptsToEffect.eq(eqDoi)(a.value, b.value as typeof a.value)
 }
 
-export const isPreprintDoi: Predicate.Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> =
-  hasRegistrant(
-    '1101',
-    '1590',
-    '2139',
-    '5281',
-    '6084',
-    '12688',
-    '14293',
-    '17605',
-    '21203',
-    '26434',
-    '20944',
-    '22541',
-    '23668',
-    '31124',
-    '31219',
-    '31222',
-    '31223',
-    '31224',
-    '31234',
-    '31235',
-    '31730',
-    '32942',
-    '35542',
-    '36227',
-    '48550',
-    '51094',
-    '55458',
-    '57844',
-    '60763',
-    '62329',
-  )
+export const isPreprintDoi: Predicate.Refinement<Doi, IndeterminatePreprintIdWithDoi['value']> = hasRegistrant(
+  '1101',
+  '1590',
+  '2139',
+  '5281',
+  '6084',
+  '12688',
+  '14293',
+  '17605',
+  '21203',
+  '26434',
+  '20944',
+  '22541',
+  '23668',
+  '31124',
+  '31219',
+  '31222',
+  '31223',
+  '31224',
+  '31234',
+  '31235',
+  '31730',
+  '32942',
+  '35542',
+  '36227',
+  '48550',
+  '51094',
+  '55458',
+  '57844',
+  '60763',
+  '62329',
+)
 
-export const PreprintDoiD: D.Decoder<unknown, Extract<IndeterminatePreprintId, { value: Doi }>['value']> =
-  D.fromRefinement(Predicate.compose(isDoi, isPreprintDoi), 'DOI')
+export const PreprintDoiD: D.Decoder<unknown, IndeterminatePreprintIdWithDoi['value']> = D.fromRefinement(
+  Predicate.compose(isDoi, isPreprintDoi),
+  'DOI',
+)
 
-export const parsePreprintDoi: (input: string) => Option.Option<Extract<IndeterminatePreprintId, { value: Doi }>> =
-  flow(parse, FptsToEffect.option, Option.filter(isPreprintDoi), Option.map(fromPreprintDoi))
+export const parsePreprintDoi: (input: string) => Option.Option<IndeterminatePreprintIdWithDoi> = flow(
+  parse,
+  FptsToEffect.option,
+  Option.filter(isPreprintDoi),
+  Option.map(fromPreprintDoi),
+)
 
-export function fromPreprintDoi<D extends Extract<IndeterminatePreprintId, { value: Doi }>['value']>(
+export function fromPreprintDoi<D extends IndeterminatePreprintIdWithDoi['value']>(
   doi: D,
 ): Extract<IndeterminatePreprintId, { value: D }>
-export function fromPreprintDoi(
-  doi: Extract<IndeterminatePreprintId, { value: Doi }>['value'],
-): Extract<IndeterminatePreprintId, { value: Doi }> {
+export function fromPreprintDoi(doi: IndeterminatePreprintIdWithDoi['value']): IndeterminatePreprintIdWithDoi {
   return match(doi)
     .when(hasRegistrant('1101'), doi => new BiorxivOrMedrxivPreprintId({ value: doi }))
     .when(hasRegistrant('1590'), doi => new ScieloPreprintId({ value: doi }))
