@@ -6,54 +6,15 @@ import { P, match } from 'ts-pattern'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { RegistrantDoiSchema } from './Doi.js'
 
-export type PreprintId =
-  | AdvancePreprintId
-  | AfricarxivPreprintId
-  | ArcadiaSciencePreprintId
-  | ArxivPreprintId
-  | AuthoreaPreprintId
-  | BiorxivPreprintId
-  | ChemrxivPreprintId
-  | CurvenotePreprintId
-  | EartharxivPreprintId
-  | EcoevorxivPreprintId
-  | EdarxivPreprintId
-  | EngrxivPreprintId
-  | JxivPreprintId
-  | LifecycleJournalPreprintId
-  | MedrxivPreprintId
-  | MetaarxivPreprintId
-  | NeurolibrePreprintId
-  | OsfPreprintId
-  | OsfPreprintsPreprintId
-  | PhilsciPreprintId
-  | PreprintsorgPreprintId
-  | PsyarxivPreprintId
-  | PsychArchivesPreprintId
-  | ResearchSquarePreprintId
-  | ScieloPreprintId
-  | ScienceOpenPreprintId
-  | SocarxivPreprintId
-  | SsrnPreprintId
-  | TechrxivPreprintId
-  | VerixivPreprintId
-  | ZenodoPreprintId
+export type PreprintId = typeof PreprintId.Type
 
-export type IndeterminatePreprintId =
-  | PreprintId
-  | BiorxivOrMedrxivPreprintId
-  | OsfOrLifecycleJournalPreprintId
-  | ZenodoOrAfricarxivPreprintId
+export type IndeterminatePreprintId = typeof IndeterminatePreprintId.Type
 
 export class AdvancePreprintId extends Schema.TaggedClass<AdvancePreprintId>()('AdvancePreprintId', {
   value: RegistrantDoiSchema('31124'),
 }) {}
 
-export type AfricarxivPreprintId =
-  | AfricarxivFigsharePreprintId
-  | AfricarxivOsfPreprintId
-  | AfricarxivUbuntunetPreprintId
-  | AfricarxivZenodoPreprintId
+export type AfricarxivPreprintId = typeof AfricarxivPreprintId.Type
 
 export class AfricarxivFigsharePreprintId extends Schema.TaggedClass<AfricarxivFigsharePreprintId>()(
   'AfricarxivFigsharePreprintId',
@@ -224,6 +185,47 @@ export class ZenodoOrAfricarxivPreprintId extends Schema.TaggedClass<ZenodoOrAfr
   'ZenodoOrAfricarxivPreprintId',
   { value: RegistrantDoiSchema('5281') },
 ) {}
+
+export const PreprintId = Schema.Union(
+  AdvancePreprintId,
+  AfricarxivPreprintId,
+  ArcadiaSciencePreprintId,
+  ArxivPreprintId,
+  AuthoreaPreprintId,
+  BiorxivPreprintId,
+  ChemrxivPreprintId,
+  CurvenotePreprintId,
+  EartharxivPreprintId,
+  EcoevorxivPreprintId,
+  EdarxivPreprintId,
+  EngrxivPreprintId,
+  JxivPreprintId,
+  LifecycleJournalPreprintId,
+  MedrxivPreprintId,
+  MetaarxivPreprintId,
+  NeurolibrePreprintId,
+  OsfPreprintId,
+  OsfPreprintsPreprintId,
+  PhilsciPreprintId,
+  PreprintsorgPreprintId,
+  PsyarxivPreprintId,
+  PsychArchivesPreprintId,
+  ResearchSquarePreprintId,
+  ScieloPreprintId,
+  ScienceOpenPreprintId,
+  SocarxivPreprintId,
+  SsrnPreprintId,
+  TechrxivPreprintId,
+  VerixivPreprintId,
+  ZenodoPreprintId,
+)
+
+export const IndeterminatePreprintId = Schema.Union(
+  PreprintId,
+  BiorxivOrMedrxivPreprintId,
+  OsfOrLifecycleJournalPreprintId,
+  ZenodoOrAfricarxivPreprintId,
+)
 
 export class MultipleIndeterminatePreprintIds extends Data.TaggedClass('MultipleIndeterminatePreprintIds')<{
   ids: Array.NonEmptyArray<IndeterminatePreprintId>
