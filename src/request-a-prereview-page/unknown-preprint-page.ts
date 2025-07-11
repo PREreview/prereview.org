@@ -53,7 +53,8 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   ArxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeArxiv'),
                   AuthoreaPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAuthorea'),
                   BiorxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeBiorxiv'),
-                  'biorxiv-medrxiv': () => translate(locale, 'request-a-prereview-page', 'doiCouldBeBiorxivMedrxiv'),
+                  BiorxivOrMedrxivPreprintId: () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeBiorxivMedrxiv'),
                   ChemrxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeChemrxiv'),
                   CurvenotePreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeCurvenote'),
                   EartharxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEartharxiv'),
@@ -68,7 +69,7 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   NeurolibrePreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeNeurolibre'),
                   OsfPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeOsf'),
                   OsfPreprintsPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeOsf'),
-                  'osf-lifecycle-journal': () =>
+                  OsfOrLifecycleJournalPreprintId: () =>
                     translate(locale, 'request-a-prereview-page', 'doiCouldBeOsfLifecycleJournal'),
                   PreprintsorgPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBePreprintsorg'),
                   PsyarxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBePsyarxiv'),
@@ -83,7 +84,7 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   TechrxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeTechrxiv'),
                   VerixivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeVerixiv'),
                   ZenodoPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeZenodo'),
-                  'zenodo-africarxiv': () =>
+                  ZenodoOrAfricarxivPreprintId: () =>
                     translate(locale, 'request-a-prereview-page', 'doiCouldBeZenodoAfricarxiv'),
                 })({ doi: html`<q class="select-all" translate="no">${preprint.value}</q>`.toString() }),
               )}

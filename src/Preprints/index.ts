@@ -81,9 +81,9 @@ export const layer = Layer.effect(
       getPreprintId: pipe(
         Match.type<IndeterminatePreprintId>(),
         Match.tag(
-          'biorxiv-medrxiv',
-          'osf-lifecycle-journal',
-          'zenodo-africarxiv',
+          'BiorxivOrMedrxivPreprintId',
+          'OsfOrLifecycleJournalPreprintId',
+          'ZenodoOrAfricarxivPreprintId',
           flow(
             getPreprintFromSource,
             Effect.map(Struct.get('id')),

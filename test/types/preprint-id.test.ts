@@ -43,7 +43,7 @@ describe('PreprintIdEquivalence', () => {
         [
           [
             new _.BiorxivPreprintId({ value: Doi('10.1101/abc123') }),
-            { _tag: 'biorxiv-medrxiv', value: Doi('10.1101/abc123') },
+            new _.BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/abc123') }),
           ],
         ],
       ],
@@ -388,7 +388,7 @@ describe('fromUrl', () => {
         [
           new URL('https://www.osf.io/ngpkr'), // www.
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ngpkr') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ngpkr') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ngpkr') }),
           ],
         ],
@@ -397,7 +397,7 @@ describe('fromUrl', () => {
         [
           new URL('http://osf.io/ngpkr'), // http
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ngpkr') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ngpkr') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ngpkr') }),
           ],
         ],
@@ -406,7 +406,7 @@ describe('fromUrl', () => {
         [
           new URL('https://osf.io/ngpkr/'), // trailing slash
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ngpkr') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ngpkr') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ngpkr') }),
           ],
         ],
@@ -415,7 +415,7 @@ describe('fromUrl', () => {
         [
           new URL('https://osf.io/ngpkr/files'), // files
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ngpkr') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ngpkr') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ngpkr') }),
           ],
         ],
@@ -424,7 +424,7 @@ describe('fromUrl', () => {
         [
           new URL('https://osf.io/ngpkr/files/osfstorage/67f92093ee1abafa7ffe2baa'), // file
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ngpkr') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ngpkr') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ngpkr') }),
           ],
         ],
@@ -433,7 +433,7 @@ describe('fromUrl', () => {
         [
           new URL('https://osf.io/ngpkr?revisionId=67f92088449eb891c08a2bec'), // revisionId
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ngpkr') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ngpkr') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ngpkr') }),
           ],
         ],
@@ -556,7 +556,7 @@ describe('fromUrl', () => {
         [
           new URL('https://www.osf.io/eq8bk'), // www.
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/eq8bk') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/eq8bk') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/eq8bk') }),
           ],
         ],
@@ -565,7 +565,7 @@ describe('fromUrl', () => {
         [
           new URL('http://osf.io/eq8bk'), // http
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/eq8bk') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/eq8bk') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/eq8bk') }),
           ],
         ],
@@ -574,7 +574,7 @@ describe('fromUrl', () => {
         [
           new URL('https://osf.io/eq8bk/'), // trailing slash
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/eq8bk') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/eq8bk') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/eq8bk') }),
           ],
         ],
@@ -583,7 +583,7 @@ describe('fromUrl', () => {
         [
           new URL('https://osf.io/eq8bk/files'), // download
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/eq8bk') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/eq8bk') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/eq8bk') }),
           ],
         ],
@@ -592,7 +592,7 @@ describe('fromUrl', () => {
         [
           new URL('https://osf.io/eq8bk/files/osfstorage/65011184767f4a2606de90c6'), // file
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/eq8bk') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/eq8bk') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/eq8bk') }),
           ],
         ],
@@ -608,7 +608,7 @@ describe('fromUrl', () => {
         [
           new URL('https://www.osf.io/ewdn8'), // www.
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ewdn8') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ewdn8') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ewdn8') }),
           ],
         ],
@@ -617,7 +617,7 @@ describe('fromUrl', () => {
         [
           new URL('http://osf.io/ewdn8'), // http
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ewdn8') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ewdn8') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ewdn8') }),
           ],
         ],
@@ -626,7 +626,7 @@ describe('fromUrl', () => {
         [
           new URL('https://osf.io/ewdn8/'), // trailing slash
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ewdn8') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ewdn8') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ewdn8') }),
           ],
         ],
@@ -641,7 +641,7 @@ describe('fromUrl', () => {
         [
           new URL('https://osf.io/ewdn8/download'), // download
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ewdn8') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ewdn8') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ewdn8') }),
           ],
         ],
@@ -656,7 +656,7 @@ describe('fromUrl', () => {
         [
           new URL('https://osf.io/ewdn8/download?format=pdf'), // download pdf
           [
-            { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/ewdn8') },
+            new _.OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/ewdn8') }),
             new _.OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/ewdn8') }),
           ],
         ],
@@ -961,7 +961,7 @@ describe('fromUrl', () => {
       [[new URL('https://zenodo.org/record/4290795/export/json'), Doi('10.5281/zenodo.4290795')]], // export
     ],
   })('with a Zenodo URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Array.of({ _tag: 'zenodo-africarxiv', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(Array.of(new _.ZenodoOrAfricarxivPreprintId({ value: doi })))
   })
 
   test.prop([fc.url()], {

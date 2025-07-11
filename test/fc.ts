@@ -108,7 +108,7 @@ import {
   ArcadiaSciencePreprintId,
   ArxivPreprintId,
   AuthoreaPreprintId,
-  type BiorxivOrMedrxivPreprintId,
+  BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
   CurvenotePreprintId,
@@ -122,7 +122,7 @@ import {
   MedrxivPreprintId,
   MetaarxivPreprintId,
   NeurolibrePreprintId,
-  type OsfOrLifecycleJournalPreprintId,
+  OsfOrLifecycleJournalPreprintId,
   OsfPreprintId,
   OsfPreprintsPreprintId,
   PhilsciPreprintId,
@@ -137,7 +137,7 @@ import {
   SsrnPreprintId,
   TechrxivPreprintId,
   VerixivPreprintId,
-  type ZenodoOrAfricarxivPreprintId,
+  ZenodoOrAfricarxivPreprintId,
   ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/types/preprint-id.js'
@@ -741,7 +741,7 @@ export const lifecycleJournalPreprintUrl = (): fc.Arbitrary<
     .map(id => [
       new URL(`https://osf.io/${id}`),
       [
-        { _tag: 'osf-lifecycle-journal', value: Doi(`10.17605/osf.io/${id}`) },
+        new OsfOrLifecycleJournalPreprintId({ value: Doi(`10.17605/osf.io/${id}`) }),
         new OsfPreprintsPreprintId({ value: Doi(`10.31219/osf.io/${id}`) }),
       ],
     ])
@@ -789,7 +789,7 @@ export const osfPreprintUrl = (): fc.Arbitrary<[URL, [OsfOrLifecycleJournalPrepr
     .map(id => [
       new URL(`https://osf.io/${id}`),
       [
-        { _tag: 'osf-lifecycle-journal', value: Doi(`10.17605/osf.io/${id}`) },
+        new OsfOrLifecycleJournalPreprintId({ value: Doi(`10.17605/osf.io/${id}`) }),
         new OsfPreprintsPreprintId({ value: Doi(`10.31219/osf.io/${id}`) }),
       ],
     ])
@@ -807,7 +807,7 @@ export const osfPreprintsPreprintUrl = (): fc.Arbitrary<
         Tuple.make(
           new URL(`https://osf.io/${id}`),
           Tuple.make(
-            { _tag: 'osf-lifecycle-journal' as const, value: Doi(`10.17605/osf.io/${id}`) },
+            new OsfOrLifecycleJournalPreprintId({ value: Doi(`10.17605/osf.io/${id}`) }),
             new OsfPreprintsPreprintId({ value: Doi(`10.31219/osf.io/${id}`) }),
           ),
         ),
@@ -930,22 +930,13 @@ export const zenodoPreprintUrl = (): fc.Arbitrary<[URL, ZenodoPreprintId]> =>
     ])
 
 export const biorxivOrMedrxivPreprintId = (): fc.Arbitrary<BiorxivOrMedrxivPreprintId> =>
-  fc.record({
-    _tag: constant('biorxiv-medrxiv'),
-    value: doi(constant('1101')),
-  })
+  doi(constant('1101')).map(doi => new BiorxivOrMedrxivPreprintId({ value: doi }))
 
 export const osfOrLifecycleJournalPreprintId = (): fc.Arbitrary<OsfOrLifecycleJournalPreprintId> =>
-  fc.record({
-    _tag: constant('osf-lifecycle-journal'),
-    value: doi(constant('17605')),
-  })
+  doi(constant('17605')).map(doi => new OsfOrLifecycleJournalPreprintId({ value: doi }))
 
 export const zenodoOrAfricarxivPreprintId = (): fc.Arbitrary<ZenodoOrAfricarxivPreprintId> =>
-  fc.record({
-    _tag: constant('zenodo-africarxiv'),
-    value: doi(constant('5281')),
-  })
+  doi(constant('5281')).map(doi => new ZenodoOrAfricarxivPreprintId({ value: doi }))
 
 export const preprintId = (): fc.Arbitrary<PreprintId> => fc.oneof(philsciPreprintId(), preprintIdWithDoi())
 

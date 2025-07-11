@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../Context.js'
 import { RedirectResponse } from '../response.js'
 import * as Routes from '../routes.js'
+import { BiorxivOrMedrxivPreprintId, ZenodoOrAfricarxivPreprintId } from '../types/preprint-id.js'
 import { removedForNowPage } from './RemovedForNowPage.js'
 import { removedPermanentlyPage } from './RemovedPermanentlyPage.js'
 import * as Response from './Response.js'
@@ -32,7 +33,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
       Effect.andThen(({ suffix }) =>
         movedPermanently(
           format(Routes.preprintReviewsMatch.formatter, {
-            id: { _tag: 'biorxiv-medrxiv', value: Doi(`10.1101/${suffix}`) },
+            id: new BiorxivOrMedrxivPreprintId({ value: Doi(`10.1101/${suffix}`) }),
           }),
         ),
       ),
@@ -46,7 +47,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
       Effect.andThen(({ suffix }) =>
         movedPermanently(
           format(Routes.preprintReviewsMatch.formatter, {
-            id: { _tag: 'zenodo-africarxiv', value: Doi(`10.5281/${suffix}`) },
+            id: new ZenodoOrAfricarxivPreprintId({ value: Doi(`10.5281/${suffix}`) }),
           }),
         ),
       ),

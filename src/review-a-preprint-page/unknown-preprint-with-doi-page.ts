@@ -32,7 +32,7 @@ export function createUnknownPreprintWithDoiPage(
             ArxivPreprintId: () => t('review-a-preprint', 'doiCouldBeArxiv'),
             AuthoreaPreprintId: () => t('review-a-preprint', 'doiCouldBeAuthorea'),
             BiorxivPreprintId: () => t('review-a-preprint', 'doiCouldBeBiorxiv'),
-            'biorxiv-medrxiv': () => t('review-a-preprint', 'doiCouldBeBiorxivMedrxiv'),
+            BiorxivOrMedrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeBiorxivMedrxiv'),
             ChemrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeChemrxiv'),
             CurvenotePreprintId: () => t('review-a-preprint', 'doiCouldBeCurvenote'),
             EartharxivPreprintId: () => t('review-a-preprint', 'doiCouldBeEartharxiv'),
@@ -46,7 +46,7 @@ export function createUnknownPreprintWithDoiPage(
             NeurolibrePreprintId: () => t('review-a-preprint', 'doiCouldBeNeurolibre'),
             OsfPreprintId: () => t('review-a-preprint', 'doiCouldBeOsf'),
             OsfPreprintsPreprintId: () => t('review-a-preprint', 'doiCouldBeOsf'),
-            'osf-lifecycle-journal': () => t('review-a-preprint', 'doiCouldBeOsfLifecycleJournal'),
+            OsfOrLifecycleJournalPreprintId: () => t('review-a-preprint', 'doiCouldBeOsfLifecycleJournal'),
             PreprintsorgPreprintId: () => t('review-a-preprint', 'doiCouldBePreprintsorg'),
             PsyarxivPreprintId: () => t('review-a-preprint', 'doiCouldBePsyarxiv'),
             PsychArchivesPreprintId: () => t('review-a-preprint', 'doiCouldBePsycharchives'),
@@ -58,7 +58,7 @@ export function createUnknownPreprintWithDoiPage(
             TechrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeTechrxiv'),
             VerixivPreprintId: () => t('review-a-preprint', 'doiCouldBeVerixiv'),
             ZenodoPreprintId: () => t('review-a-preprint', 'doiCouldBeZenodo'),
-            'zenodo-africarxiv': () => t('review-a-preprint', 'doiCouldBeZenodoAfricarxiv'),
+            ZenodoOrAfricarxivPreprintId: () => t('review-a-preprint', 'doiCouldBeZenodoAfricarxiv'),
           })({ doi: html`<q class="select-all" translate="no">${preprint.value}</q>`.toString() }),
         )}
       </p>

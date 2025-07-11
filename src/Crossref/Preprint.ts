@@ -24,7 +24,7 @@ const determineCrossrefPreprintId = (work: Work): Either.Either<CrossrefPreprint
 
     const indeterminateId = fromPreprintDoi(doi)
 
-    if (indeterminateId._tag !== 'biorxiv-medrxiv') {
+    if (indeterminateId._tag !== 'BiorxivOrMedrxivPreprintId') {
       return indeterminateId
     }
 

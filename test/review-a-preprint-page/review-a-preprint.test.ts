@@ -15,9 +15,11 @@ import {
 import * as _ from '../../src/review-a-preprint-page/index.js'
 import { reviewAPreprintMatch, writeReviewMatch } from '../../src/routes.js'
 import {
+  BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
   fromPreprintDoi,
   MedrxivPreprintId,
+  OsfOrLifecycleJournalPreprintId,
   OsfPreprintId,
   OsfPreprintsPreprintId,
 } from '../../src/types/preprint-id.js'
@@ -59,7 +61,7 @@ describe('reviewAPreprint', () => {
             DefaultLocale,
             [
               'https://doi.org/10.1101/2021.06.18.21258689', // doi.org URL
-              [{ _tag: 'biorxiv-medrxiv', value: Doi('10.1101/2021.06.18.21258689') }],
+              [new BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/2021.06.18.21258689') })],
             ],
             new MedrxivPreprintId({ value: Doi('10.1101/2021.06.18.21258689') }),
           ],
@@ -67,7 +69,7 @@ describe('reviewAPreprint', () => {
             DefaultLocale,
             [
               ' https://doi.org/10.1101/2021.06.18.21258689 ', // doi.org URL with whitespace
-              [{ _tag: 'biorxiv-medrxiv', value: Doi('10.1101/2021.06.18.21258689') }],
+              [new BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/2021.06.18.21258689') })],
             ],
             new MedrxivPreprintId({ value: Doi('10.1101/2021.06.18.21258689') }),
           ],
@@ -92,7 +94,7 @@ describe('reviewAPreprint', () => {
             [
               'https://osf.io/eq8bk/', // ambigious URL
               [
-                { _tag: 'osf-lifecycle-journal', value: Doi('10.17605/osf.io/eq8bk') },
+                new OsfOrLifecycleJournalPreprintId({ value: Doi('10.17605/osf.io/eq8bk') }),
                 new OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/eq8bk') }),
               ],
             ],

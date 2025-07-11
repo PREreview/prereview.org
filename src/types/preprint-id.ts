@@ -210,20 +210,20 @@ export class ZenodoPreprintId extends Schema.TaggedClass<ZenodoPreprintId>()('Ze
   value: RegistrantDoiSchema('5281'),
 }) {}
 
-export interface BiorxivOrMedrxivPreprintId {
-  readonly _tag: 'biorxiv-medrxiv'
-  readonly value: Doi<'1101'>
-}
+export class BiorxivOrMedrxivPreprintId extends Schema.TaggedClass<BiorxivOrMedrxivPreprintId>()(
+  'BiorxivOrMedrxivPreprintId',
+  { value: RegistrantDoiSchema('1101') },
+) {}
 
-export interface OsfOrLifecycleJournalPreprintId {
-  readonly _tag: 'osf-lifecycle-journal'
-  readonly value: Doi<'17605'>
-}
+export class OsfOrLifecycleJournalPreprintId extends Schema.TaggedClass<OsfOrLifecycleJournalPreprintId>()(
+  'OsfOrLifecycleJournalPreprintId',
+  { value: RegistrantDoiSchema('17605') },
+) {}
 
-export interface ZenodoOrAfricarxivPreprintId {
-  readonly _tag: 'zenodo-africarxiv'
-  readonly value: Doi<'5281'>
-}
+export class ZenodoOrAfricarxivPreprintId extends Schema.TaggedClass<ZenodoOrAfricarxivPreprintId>()(
+  'ZenodoOrAfricarxivPreprintId',
+  { value: RegistrantDoiSchema('5281') },
+) {}
 
 export class MultipleIndeterminatePreprintIds extends Data.TaggedClass('MultipleIndeterminatePreprintIds')<{
   ids: Array.NonEmptyArray<IndeterminatePreprintId>
@@ -288,20 +288,14 @@ export function fromPreprintDoi(
   doi: Extract<IndeterminatePreprintId, { value: Doi }>['value'],
 ): Extract<IndeterminatePreprintId, { value: Doi }> {
   return match(doi)
-    .when(hasRegistrant('1101'), doi => ({ _tag: 'biorxiv-medrxiv', value: doi }) satisfies BiorxivOrMedrxivPreprintId)
+    .when(hasRegistrant('1101'), doi => new BiorxivOrMedrxivPreprintId({ value: doi }))
     .when(hasRegistrant('1590'), doi => new ScieloPreprintId({ value: doi }))
     .when(hasRegistrant('2139'), doi => new SsrnPreprintId({ value: doi }))
-    .when(
-      hasRegistrant('5281'),
-      doi => ({ _tag: 'zenodo-africarxiv', value: doi }) satisfies ZenodoOrAfricarxivPreprintId,
-    )
+    .when(hasRegistrant('5281'), doi => new ZenodoOrAfricarxivPreprintId({ value: doi }))
     .when(hasRegistrant('6084'), doi => new AfricarxivFigsharePreprintId({ value: doi }))
     .when(hasRegistrant('12688'), doi => new VerixivPreprintId({ value: doi }))
     .when(hasRegistrant('14293'), doi => new ScienceOpenPreprintId({ value: doi }))
-    .when(
-      hasRegistrant('17605'),
-      doi => ({ _tag: 'osf-lifecycle-journal', value: doi }) satisfies OsfOrLifecycleJournalPreprintId,
-    )
+    .when(hasRegistrant('17605'), doi => new OsfOrLifecycleJournalPreprintId({ value: doi }))
     .when(hasRegistrant('21203'), doi => new ResearchSquarePreprintId({ value: doi }))
     .when(hasRegistrant('22541'), doi => new AuthoreaPreprintId({ value: doi }))
     .when(hasRegistrant('23668'), doi => new PsychArchivesPreprintId({ value: doi }))

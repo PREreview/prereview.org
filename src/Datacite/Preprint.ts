@@ -82,7 +82,7 @@ const determineDatacitePreprintId = (
 
     const indeterminateId = fromPreprintDoi(doi)
 
-    if (indeterminateId._tag === 'osf-lifecycle-journal') {
+    if (indeterminateId._tag === 'OsfOrLifecycleJournalPreprintId') {
       if (record.publisher === 'Lifecycle Journal') {
         return new LifecycleJournalPreprintId({ value: indeterminateId.value })
       }
@@ -90,7 +90,7 @@ const determineDatacitePreprintId = (
       return new OsfPreprintId({ value: indeterminateId.value })
     }
 
-    if (indeterminateId._tag === 'zenodo-africarxiv') {
+    if (indeterminateId._tag === 'ZenodoOrAfricarxivPreprintId') {
       if (
         Array.some(
           record.relatedIdentifiers,
