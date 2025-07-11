@@ -1,15 +1,12 @@
 import type { HttpClient } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Effect, Layer, pipe, Redacted } from 'effect'
+import { Array, Context, Effect, Layer, pipe, Redacted, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as EffectToFpts from '../EffectToFpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { Html } from '../html.js'
 import * as Preprints from '../Preprints/index.js'
-import {
-  getRecentReviewRequestsFromPrereviewCoarNotify,
-  PrereviewCoarNotifyConfig,
-} from '../prereview-coar-notify/index.js'
+import { getReviewRequestsFromPrereviewCoarNotify, PrereviewCoarNotifyConfig } from '../prereview-coar-notify/index.js'
 import type { FieldId } from '../types/field.js'
 import type { PreprintId } from '../types/preprint-id.js'
 import type { SubfieldId } from '../types/subfield.js'
@@ -45,13 +42,13 @@ export const layer = Layer.effect(
 
     return {
       getFiveMostRecent: pipe(
-        FptsToEffect.readerTaskEither(getRecentReviewRequestsFromPrereviewCoarNotify(1), {
+        FptsToEffect.readerTaskEither(getReviewRequestsFromPrereviewCoarNotify({ page: 1 }), {
           ...coarNotify,
           coarNotifyToken: Redacted.value(coarNotify.coarNotifyToken),
           getPreprintTitle,
           runtime,
         }),
-        Effect.orElseSucceed(Array.empty),
+        Effect.match({ onSuccess: Struct.get('reviewRequests'), onFailure: Array.empty }),
       ),
     }
   }),

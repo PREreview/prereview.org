@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import type { Doi } from 'doi-ts'
-import { Array, Context, Effect, type Redacted, flow, identity, pipe } from 'effect'
+import { Array, Context, Effect, type Redacted, identity, pipe } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -9,7 +9,6 @@ import { match } from 'ts-pattern'
 import type { EffectEnv } from '../EffectToFpts.js'
 import * as EffectToFpts from '../EffectToFpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
-import type { RecentReviewRequest } from '../home-page/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
 import type { ReviewRequestPreprintId } from '../review-request.js'
@@ -25,7 +24,7 @@ import { type PreprintId, PreprintIdEquivalence } from '../types/preprint-id.js'
 import type { User } from '../user.js'
 import type { NewPrereview } from '../write-review/index.js'
 import { constructCoarReviewActionOfferPayload } from './ConstructCoarReviewActionOfferPayload.js'
-import { type RecentReviewRequestFromPrereviewCoarNotify, getRecentReviewRequests } from './GetRecentReviewRequests.js'
+import { getRecentReviewRequests } from './GetRecentReviewRequests.js'
 import { postNewPrereview } from './new-prereview.js'
 import { sendReviewActionOffer } from './SendReviewActionOffer.js'
 
@@ -119,37 +118,6 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
             ),
             RTE.map(FptsToEffect.array),
           ),
-        ),
-      ),
-    ),
-  )
-
-export const getRecentReviewRequestsFromPrereviewCoarNotify = (
-  page: number,
-): RTE.ReaderTaskEither<
-  EffectEnv<HttpClient.HttpClient> & GetPreprintTitleEnv & PrereviewCoarNotifyEnv,
-  RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
-  ReadonlyArray<RecentReviewRequest>
-> =>
-  pipe(
-    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) =>
-      EffectToFpts.toReaderTaskEither(getRecentReviewRequests(coarNotifyUrl)),
-    ),
-    RTE.chainOptionKW(() => new RecentReviewRequestsNotFound({}))(flow(Array.chunksOf(5), Array.get(page - 1))),
-    RTE.chainW(
-      RTE.traverseArray(({ timestamp, preprint, fields, subfields }: RecentReviewRequestFromPrereviewCoarNotify) =>
-        pipe(
-          RTE.Do,
-          RTE.let('published', () => timestamp.toZonedDateTimeISO('UTC').toPlainDate()),
-          RTE.apS(
-            'preprint',
-            pipe(
-              getPreprintTitle(preprint),
-              RTE.mapLeft(cause => new RecentReviewRequestsAreUnavailable({ cause })),
-            ),
-          ),
-          RTE.let('fields', () => fields),
-          RTE.let('subfields', () => subfields),
         ),
       ),
     ),
