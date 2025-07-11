@@ -312,7 +312,13 @@ const setUpFetch = Layer.effect(
 export const Program = pipe(
   Layer.mergeAll(WebApp, Comments.ReactToCommentEvents, CachingHttpClient.layerRevalidationWorker),
   Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment)),
-  Layer.provide(Layer.mergeAll(getPrereview, Prereviews.layer, ReviewRequests.layer)),
+  Layer.provide(
+    Layer.mergeAll(
+      getPrereview,
+      Prereviews.layer,
+      Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes')),
+    ),
+  ),
   Layer.provide(
     Layer.mergeAll(
       Layer.provide(Preprints.layer, CachingHttpClient.layer('1 day')),
