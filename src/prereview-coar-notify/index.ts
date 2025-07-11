@@ -6,6 +6,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
+import type { EffectEnv } from '../EffectToFpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { RecentReviewRequest } from '../home-page/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
@@ -77,7 +78,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
   language?: LanguageCode
   page: number
 }): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
+  EffectEnv<never> & FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
   RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
   ReviewRequests
 > =>
@@ -124,7 +125,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
 export const getRecentReviewRequestsFromPrereviewCoarNotify = (
   page: number,
 ): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
+  EffectEnv<never> & FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
   RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
   ReadonlyArray<RecentReviewRequest>
 > =>

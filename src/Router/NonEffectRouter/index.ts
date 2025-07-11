@@ -468,6 +468,7 @@ const routerWithoutHyperTs = pipe(
                 coarNotifyUrl: env.prereviewCoarNotifyConfig.coarNotifyUrl,
                 fetch: env.fetch,
                 getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
+                runtime: env.runtime,
                 ...env.logger,
               }),
             }),

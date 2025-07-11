@@ -1,12 +1,12 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
+import { Runtime, Schema } from 'effect'
 import type { Fetch } from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/prereview-coar-notify/get-recent-review-requests.js'
-import { RecentReviewRequestsC } from '../../src/prereview-coar-notify/get-recent-review-requests.js'
 import { RecentReviewRequestsAreUnavailable } from '../../src/review-requests-page/review-requests.js'
 import * as fc from './fc.js'
 
@@ -40,7 +40,7 @@ describe('getRecentReviewRequests', () => {
           fc.constant(requests),
           fc.fetchResponse({
             status: fc.constant(Status.OK),
-            text: fc.constant(RecentReviewRequestsC.encode(requests)),
+            text: fc.constant(Schema.encodeSync(Schema.parseJson(_.RecentReviewRequestsSchema))(requests)),
           }),
         ),
       ),
@@ -51,6 +51,7 @@ describe('getRecentReviewRequests', () => {
       fetch,
       clock: SystemClock,
       logger: () => IO.of(undefined),
+      runtime: Runtime.defaultRuntime,
     })()
 
     expect(result).toStrictEqual(E.right(requests))
@@ -63,6 +64,7 @@ describe('getRecentReviewRequests', () => {
         fetch: () => Promise.reject(reason),
         clock: SystemClock,
         logger: () => IO.of(undefined),
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(result).toStrictEqual(E.left(new RecentReviewRequestsAreUnavailable({ cause: 'network' })))
@@ -75,6 +77,7 @@ describe('getRecentReviewRequests', () => {
           fetch: () => Promise.resolve(response),
           clock: SystemClock,
           logger: () => IO.of(undefined),
+          runtime: Runtime.defaultRuntime,
         })()
 
         expect(result).toStrictEqual(E.left(new RecentReviewRequestsAreUnavailable({ cause: 'non-200-response' })))

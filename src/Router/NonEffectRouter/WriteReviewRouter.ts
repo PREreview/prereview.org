@@ -488,6 +488,7 @@ export const WriteReviewRouter = pipe(
               coarNotifyToken: Redacted.value(env.prereviewCoarNotifyConfig.coarNotifyToken),
               coarNotifyUrl: env.prereviewCoarNotifyConfig.coarNotifyUrl,
               fetch: env.fetch,
+              runtime: env.runtime,
               ...env.logger,
             },
           ),

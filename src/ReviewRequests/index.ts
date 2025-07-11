@@ -44,6 +44,7 @@ export const layer = Layer.effect(
     const logger = yield* DeprecatedLoggerEnv
     const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
     const coarNotify = yield* PrereviewCoarNotifyConfig
+    const runtime = yield* Effect.runtime()
 
     return {
       getFiveMostRecent: pipe(
@@ -52,6 +53,7 @@ export const layer = Layer.effect(
           coarNotifyToken: Redacted.value(coarNotify.coarNotifyToken),
           fetch,
           getPreprintTitle,
+          runtime,
           ...logger,
         }),
         Effect.orElseSucceed(Array.empty),
