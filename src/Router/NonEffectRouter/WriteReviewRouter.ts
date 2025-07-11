@@ -2,7 +2,6 @@ import { Array, Effect, flow, Function, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
@@ -15,7 +14,8 @@ import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '.
 import { sendEmailWithNodemailer } from '../../nodemailer.js'
 import * as OpenAlex from '../../OpenAlex/index.js'
 import * as Preprints from '../../Preprints/index.js'
-import { isReviewRequested, sendPrereviewToPrereviewCoarNotifyInbox } from '../../prereview-coar-notify/index.js'
+import { sendPrereviewToPrereviewCoarNotifyInbox } from '../../prereview-coar-notify/index.js'
+import * as ReviewRequests from '../../ReviewRequests/index.js'
 import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
 import type { PreprintId } from '../../types/preprint-id.js'
@@ -479,19 +479,7 @@ export const WriteReviewRouter = pipe(
               ),
             { runtime: env.runtime },
           ),
-          isReviewRequested: withEnv(
-            flow(
-              isReviewRequested,
-              RTE.getOrElse(() => RT.of(false)),
-            ),
-            {
-              coarNotifyToken: Redacted.value(env.prereviewCoarNotifyConfig.coarNotifyToken),
-              coarNotifyUrl: env.prereviewCoarNotifyConfig.coarNotifyUrl,
-              fetch: env.fetch,
-              runtime: env.runtime,
-              ...env.logger,
-            },
-          ),
+          isReviewRequested: EffectToFpts.toTaskK(ReviewRequests.isReviewRequested, env.runtime),
           legacyPrereviewApi: {
             app: env.legacyPrereviewApiConfig.app,
             key: Redacted.value(env.legacyPrereviewApiConfig.key),

@@ -4,6 +4,7 @@ import { Array, Context, Effect, flow, Layer, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
 import type * as Preprints from '../Preprints/index.js'
+import * as PrereviewCoarNotify from '../prereview-coar-notify/index.js'
 import {
   getReviewRequestsFromPrereviewCoarNotify,
   type PrereviewCoarNotifyConfig,
@@ -34,6 +35,7 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
   ReviewRequests,
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<ReviewRequest>>
+    isReviewRequested: (id: PreprintId) => Effect.Effect<boolean>
     search: (query: {
       field?: FieldId
       language?: LanguageCode
@@ -44,7 +46,7 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
 
 export const { getFiveMostRecent } = Effect.serviceConstants(ReviewRequests)
 
-export const { search } = Effect.serviceFunctions(ReviewRequests)
+export const { isReviewRequested, search } = Effect.serviceFunctions(ReviewRequests)
 
 export const layer = Layer.effect(
   ReviewRequests,
@@ -55,6 +57,11 @@ export const layer = Layer.effect(
       getFiveMostRecent: pipe(
         getReviewRequestsFromPrereviewCoarNotify({ page: 1 }),
         Effect.match({ onSuccess: Struct.get('reviewRequests'), onFailure: Array.empty }),
+        Effect.provide(context),
+      ),
+      isReviewRequested: flow(
+        PrereviewCoarNotify.isReviewRequested,
+        Effect.orElseSucceed(() => false),
         Effect.provide(context),
       ),
       search: flow(getReviewRequestsFromPrereviewCoarNotify, Effect.provide(context)),

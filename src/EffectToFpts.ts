@@ -71,6 +71,14 @@ export const toReaderTask = <A, R>(effect: Effect.Effect<A, never, R>): RT.Reade
     RT.chainTaskK(({ runtime }) => toTask(effect, runtime)),
   )
 
+export const toTaskK =
+  <A extends ReadonlyArray<unknown>, B, R>(
+    f: (...a: A) => Effect.Effect<B, never, R>,
+    runtime: Runtime.Runtime<R>,
+  ): ((...a: A) => T.Task<B>) =>
+  (...a) =>
+    toTask(f(...a), runtime)
+
 export const toTask =
   <A, R>(effect: Effect.Effect<A, never, R>, runtime: Runtime.Runtime<R>): T.Task<A> =>
   () =>

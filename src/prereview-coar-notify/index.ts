@@ -6,7 +6,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import * as EffectToFpts from '../EffectToFpts.js'
 import * as Preprints from '../Preprints/index.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
 import type { ReviewRequestPreprintId } from '../review-request.js'
@@ -60,10 +59,9 @@ export const publishReviewRequest = Effect.fn(function* (
 
 export const isReviewRequested = (id: PreprintId) =>
   pipe(
-    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) =>
-      EffectToFpts.toReaderTaskEither(getRecentReviewRequests(coarNotifyUrl)),
-    ),
-    RTE.map(Array.some(request => PreprintIdEquivalence(request.preprint, id))),
+    Effect.andThen(PrereviewCoarNotifyConfig, Struct.get('coarNotifyUrl')),
+    Effect.andThen(getRecentReviewRequests),
+    Effect.andThen(Array.some(request => PreprintIdEquivalence(request.preprint, id))),
   )
 
 export const getReviewRequestsFromPrereviewCoarNotify = ({
