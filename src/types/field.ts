@@ -1,3 +1,4 @@
+import { pipe, Schema } from 'effect'
 import { type SupportedLocale, translate } from '../locales/index.js'
 
 export type FieldId = (typeof fieldIds)[number]
@@ -30,6 +31,8 @@ export const fieldIds = [
   '35',
   '36',
 ] as const
+
+export const FieldIdSchema = pipe(Schema.String, Schema.filter(isFieldId))
 
 export function getFieldName(id: FieldId, locale: SupportedLocale): string {
   return translate(locale, 'fields', `field${id}`)()

@@ -1,3 +1,4 @@
+import { pipe, Schema } from 'effect'
 import { type SupportedLocale, translate } from '../locales/index.js'
 
 export type SubfieldId = (typeof subfieldIds)[number]
@@ -256,6 +257,8 @@ export const subfieldIds = [
   '3614',
   '3616',
 ] as const
+
+export const SubfieldIdSchema = pipe(Schema.String, Schema.filter(isSubfieldId))
 
 export function getSubfieldName(id: SubfieldId, locale: SupportedLocale): string {
   return translate(locale, 'subfields', `subfield${id}`)()

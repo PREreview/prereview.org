@@ -1,10 +1,10 @@
 import { Url, UrlParams } from '@effect/platform'
 import { type Doi, Eq as eqDoi, hasRegistrant, isDoi, parse } from 'doi-ts'
-import { Array, Data, Either, type Equivalence, Option, Predicate, Schema, flow, pipe } from 'effect'
+import { Array, Data, Either, type Equivalence, Option, ParseResult, Predicate, Schema, flow, pipe } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import * as FptsToEffect from '../FptsToEffect.js'
-import { RegistrantDoiSchema } from './Doi.js'
+import { DoiSchema, RegistrantDoiSchema } from './Doi.js'
 
 export type PreprintId = typeof PreprintId.Type
 
@@ -281,6 +281,17 @@ export const isPreprintDoi: Predicate.Refinement<Doi, IndeterminatePreprintIdWit
   '57844',
   '60763',
   '62329',
+)
+
+export const IndeterminatePreprintIdFromDoiSchema = Schema.transformOrFail(
+  DoiSchema,
+  Schema.typeSchema(IndeterminatePreprintIdWithDoi),
+  {
+    strict: true,
+    decode: (doi, _, ast) =>
+      ParseResult.fromOption(parsePreprintDoi(doi), () => new ParseResult.Type(ast, doi, 'Not a preprint DOI')),
+    encode: id => ParseResult.succeed(id.value),
+  },
 )
 
 export const PreprintDoiD: D.Decoder<unknown, IndeterminatePreprintIdWithDoi['value']> = D.fromRefinement(
