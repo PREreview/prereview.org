@@ -24,7 +24,10 @@ export function createUnknownPreprintWithDoiPage(
         ${rawHtml(
           Match.valueTags(preprint, {
             AdvancePreprintId: () => t('review-a-preprint', 'doiCouldBeAdvance'),
-            africarxiv: () => t('review-a-preprint', 'doiCouldBeAfricarxiv'),
+            AfricarxivFigsharePreprintId: () => t('review-a-preprint', 'doiCouldBeAfricarxiv'),
+            AfricarxivOsfPreprintId: () => t('review-a-preprint', 'doiCouldBeAfricarxiv'),
+            AfricarxivUbuntunetPreprintId: () => t('review-a-preprint', 'doiCouldBeAfricarxiv'),
+            AfricarxivZenodoPreprintId: () => t('review-a-preprint', 'doiCouldBeAfricarxiv'),
             ArcadiaSciencePreprintId: () => t('review-a-preprint', 'doiCouldBeArcadiaScience'),
             ArxivPreprintId: () => t('review-a-preprint', 'doiCouldBeArxiv'),
             AuthoreaPreprintId: () => t('review-a-preprint', 'doiCouldBeAuthorea'),

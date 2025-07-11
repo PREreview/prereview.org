@@ -100,11 +100,11 @@ import { OrcidLocale, ProfileId } from '../src/types/index.js'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.js'
 import {
   AdvancePreprintId,
-  type AfricarxivFigsharePreprintId,
-  type AfricarxivOsfPreprintId,
+  AfricarxivFigsharePreprintId,
+  AfricarxivOsfPreprintId,
   type AfricarxivPreprintId,
-  type AfricarxivUbuntunetPreprintId,
-  type AfricarxivZenodoPreprintId,
+  AfricarxivUbuntunetPreprintId,
+  AfricarxivZenodoPreprintId,
   ArcadiaSciencePreprintId,
   ArxivPreprintId,
   AuthoreaPreprintId,
@@ -607,10 +607,7 @@ export const africarxivPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivPreprintId
   fc.oneof(africarxivFigsharePreprintUrl(), africarxivOsfPreprintUrl())
 
 export const africarxivFigsharePreprintId = (): fc.Arbitrary<AfricarxivFigsharePreprintId> =>
-  fc.record({
-    _tag: constant('africarxiv'),
-    value: doi(constant('6084')),
-  })
+  doi(constant('6084')).map(doi => new AfricarxivFigsharePreprintId({ value: doi }))
 
 export const africarxivFigsharePreprintUrl = (): fc.Arbitrary<[URL, AfricarxivFigsharePreprintId]> =>
   fc
@@ -621,34 +618,25 @@ export const africarxivFigsharePreprintUrl = (): fc.Arbitrary<[URL, AfricarxivFi
     )
     .map(([type, title, id]) => [
       new URL(`https://africarxiv.figshare.com/articles/${type}/${title}/${id}`),
-      { _tag: 'africarxiv', value: Doi(`10.6084/m9.figshare.${id}.v1`) },
+      new AfricarxivFigsharePreprintId({ value: Doi(`10.6084/m9.figshare.${id}.v1`) }),
     ])
 
 export const africarxivOsfPreprintId = (): fc.Arbitrary<AfricarxivOsfPreprintId> =>
-  fc.record({
-    _tag: constant('africarxiv'),
-    value: doi(constant('31730')),
-  })
+  doi(constant('31730')).map(doi => new AfricarxivOsfPreprintId({ value: doi }))
 
 export const africarxivOsfPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivOsfPreprintId]> =>
   fc
     .string({ unit: alphanumeric(), minLength: 1 })
     .map(id => [
       new URL(`https://osf.io/preprints/africarxiv/${id}`),
-      { _tag: 'africarxiv', value: Doi(`10.31730/osf.io/${id}`) },
+      new AfricarxivOsfPreprintId({ value: Doi(`10.31730/osf.io/${id}`) }),
     ])
 
 export const africarxivUbuntunetPreprintId = (): fc.Arbitrary<AfricarxivUbuntunetPreprintId> =>
-  fc.record({
-    _tag: constant('africarxiv'),
-    value: doi(constant('60763')),
-  })
+  doi(constant('60763')).map(doi => new AfricarxivUbuntunetPreprintId({ value: doi }))
 
 export const africarxivZenodoPreprintId = (): fc.Arbitrary<AfricarxivZenodoPreprintId> =>
-  fc.record({
-    _tag: constant('africarxiv'),
-    value: doi(constant('5281')),
-  })
+  doi(constant('5281')).map(doi => new AfricarxivZenodoPreprintId({ value: doi }))
 
 export const arcadiaSciencePreprintId = (): fc.Arbitrary<ArcadiaSciencePreprintId> =>
   doi(constant('57844')).map(doi => new ArcadiaSciencePreprintId({ value: doi }))

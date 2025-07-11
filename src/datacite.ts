@@ -14,8 +14,8 @@ import { sanitizeHtml } from './html.js'
 import * as Preprint from './preprint.js'
 import { Orcid } from './types/index.js'
 import {
-  type AfricarxivFigsharePreprintId,
-  type AfricarxivUbuntunetPreprintId,
+  AfricarxivFigsharePreprintId,
+  AfricarxivUbuntunetPreprintId,
   ArcadiaSciencePreprintId,
   type IndeterminatePreprintId,
   type PreprintId,
@@ -109,7 +109,10 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           E.fromOptionK(() => 'unknown language' as const)(({ text }) =>
             match({ type, text })
               .returnType<Option.Option<LanguageCode>>()
-              .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
+              .with(
+                { type: P.union('AfricarxivFigsharePreprintId', 'AfricarxivUbuntunetPreprintId'), text: P.select() },
+                detectLanguageFrom('en', 'fr'),
+              )
               .with({ type: 'ArcadiaSciencePreprintId' }, () => Option.some('en' as const))
               .with({ type: 'PsychArchivesPreprintId', text: P.select() }, detectLanguageFrom('de', 'en'))
               .exhaustive(),
@@ -133,7 +136,10 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           E.fromOptionK(() => 'unknown language')(({ text }) =>
             match({ type, text })
               .returnType<Option.Option<LanguageCode>>()
-              .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
+              .with(
+                { type: P.union('AfricarxivFigsharePreprintId', 'AfricarxivUbuntunetPreprintId'), text: P.select() },
+                detectLanguageFrom('en', 'fr'),
+              )
               .with({ type: 'ArcadiaSciencePreprintId' }, () => Option.some('en' as const))
               .with({ type: 'PsychArchivesPreprintId', text: P.select() }, detectLanguageFrom('de', 'en'))
               .exhaustive(),
@@ -165,26 +171,14 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
     D.fromStruct({
       doi: D.fromRefinement(hasRegistrant('60763'), 'DOI'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'africarxiv',
-          value: work.doi,
-        }) satisfies AfricarxivUbuntunetPreprintId,
-    ),
+    D.map(work => new AfricarxivUbuntunetPreprintId({ value: work.doi })),
   ),
   pipe(
     D.fromStruct({
       doi: D.fromRefinement(hasRegistrant('6084'), 'DOI'),
       publisher: D.literal('AfricArXiv'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'africarxiv',
-          value: work.doi,
-        }) satisfies AfricarxivFigsharePreprintId,
-    ),
+    D.map(work => new AfricarxivFigsharePreprintId({ value: work.doi })),
   ),
   pipe(
     D.fromStruct({

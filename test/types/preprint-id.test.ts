@@ -74,7 +74,7 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Array.of(_.fromPreprintDoi(doi)))
   })
 
-  test.prop([fc.africarxivPreprintUrl().map(([url, id]) => [url, Array.of(id.value)] as const)], {
+  test.prop([fc.africarxivPreprintUrl().map(([url, id]) => [url, Array.of(id)] as const)], {
     examples: [
       // figshare
       [
@@ -82,7 +82,7 @@ describe('fromUrl', () => {
           new URL(
             'https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801',
           ),
-          [Doi('10.6084/m9.figshare.19064801.v1')],
+          [new _.AfricarxivFigsharePreprintId({ value: Doi('10.6084/m9.figshare.19064801.v1') })],
         ],
       ],
       [
@@ -90,7 +90,7 @@ describe('fromUrl', () => {
           new URL(
             'https://www.africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801',
           ),
-          [Doi('10.6084/m9.figshare.19064801.v1')],
+          [new _.AfricarxivFigsharePreprintId({ value: Doi('10.6084/m9.figshare.19064801.v1') })],
         ],
       ], // www.
       [
@@ -98,7 +98,7 @@ describe('fromUrl', () => {
           new URL(
             'http://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801',
           ),
-          [Doi('10.6084/m9.figshare.19064801.v1')],
+          [new _.AfricarxivFigsharePreprintId({ value: Doi('10.6084/m9.figshare.19064801.v1') })],
         ],
       ], // http
       [
@@ -106,7 +106,7 @@ describe('fromUrl', () => {
           new URL(
             'https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801/',
           ),
-          [Doi('10.6084/m9.figshare.19064801.v1')],
+          [new _.AfricarxivFigsharePreprintId({ value: Doi('10.6084/m9.figshare.19064801.v1') })],
         ],
       ], // trailing slash
 
@@ -115,24 +115,52 @@ describe('fromUrl', () => {
           new URL(
             'https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801/1/files/33888380.pdf',
           ),
-          [Doi('10.6084/m9.figshare.19064801.v1')],
+          [new _.AfricarxivFigsharePreprintId({ value: Doi('10.6084/m9.figshare.19064801.v1') })],
         ],
       ], // pdf
       // ofs
-      [[new URL('https://www.osf.io/preprints/africarxiv/grxt6'), [Doi('10.31730/osf.io/grxt6')]]], // www.
-      [[new URL('http://osf.io/preprints/africarxiv/grxt6'), [Doi('10.31730/osf.io/grxt6')]]], // http
-      [[new URL('https://osf.io/preprints/africarxiv/grxt6/'), [Doi('10.31730/osf.io/grxt6')]]], // trailing slash
-      [[new URL('https://osf.io/preprints/africarxiv/grxt6'), [Doi('10.31730/osf.io/grxt6')]]], // with preprints
-      [[new URL('https://osf.io/preprints/africarxiv/grxt6/download'), [Doi('10.31730/osf.io/grxt6')]]], // download
+      [
+        [
+          new URL('https://www.osf.io/preprints/africarxiv/grxt6'),
+          [new _.AfricarxivOsfPreprintId({ value: Doi('10.31730/osf.io/grxt6') })],
+        ],
+      ], // www.
+      [
+        [
+          new URL('http://osf.io/preprints/africarxiv/grxt6'),
+          [new _.AfricarxivOsfPreprintId({ value: Doi('10.31730/osf.io/grxt6') })],
+        ],
+      ], // http
+      [
+        [
+          new URL('https://osf.io/preprints/africarxiv/grxt6/'),
+          [new _.AfricarxivOsfPreprintId({ value: Doi('10.31730/osf.io/grxt6') })],
+        ],
+      ], // trailing slash
+      [
+        [
+          new URL('https://osf.io/preprints/africarxiv/grxt6'),
+          [new _.AfricarxivOsfPreprintId({ value: Doi('10.31730/osf.io/grxt6') })],
+        ],
+      ], // with preprints
+      [
+        [
+          new URL('https://osf.io/preprints/africarxiv/grxt6/download'),
+          [new _.AfricarxivOsfPreprintId({ value: Doi('10.31730/osf.io/grxt6') })],
+        ],
+      ], // download
       [
         [
           new URL('https://osf.io/preprints/africarxiv/grxt6_v1'),
-          [Doi('10.31730/osf.io/grxt6_v1'), Doi('10.31730/osf.io/grxt6')],
+          [
+            new _.AfricarxivOsfPreprintId({ value: Doi('10.31730/osf.io/grxt6_v1') }),
+            new _.AfricarxivOsfPreprintId({ value: Doi('10.31730/osf.io/grxt6') }),
+          ],
         ],
       ], // with version
     ],
-  })('with an AfricArXiv URL', ([url, dois]) => {
-    expect(_.fromUrl(url)).toStrictEqual(dois.map(doi => ({ _tag: 'africarxiv', value: doi })))
+  })('with an AfricArXiv URL', ([url, ids]) => {
+    expect(_.fromUrl(url)).toStrictEqual(ids)
   })
 
   test.prop([fc.arxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {

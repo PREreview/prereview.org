@@ -3,7 +3,10 @@ import type { PreprintId } from '../types/preprint-id.js'
 
 export const getName = Match.typeTags<PreprintId, string>()({
   AdvancePreprintId: () => 'Advance',
-  africarxiv: () => 'AfricArXiv Preprints',
+  AfricarxivFigsharePreprintId: () => 'AfricArXiv Preprints',
+  AfricarxivOsfPreprintId: () => 'AfricArXiv Preprints',
+  AfricarxivUbuntunetPreprintId: () => 'AfricArXiv Preprints',
+  AfricarxivZenodoPreprintId: () => 'AfricArXiv Preprints',
   ArcadiaSciencePreprintId: () => 'Arcadia Science',
   ArxivPreprintId: () => 'arXiv',
   AuthoreaPreprintId: () => 'Authorea',

@@ -55,25 +55,37 @@ export type AfricarxivPreprintId =
   | AfricarxivUbuntunetPreprintId
   | AfricarxivZenodoPreprintId
 
-export interface AfricarxivFigsharePreprintId {
-  readonly _tag: 'africarxiv'
-  readonly value: Doi<'6084'>
-}
+export class AfricarxivFigsharePreprintId extends Schema.TaggedClass<AfricarxivFigsharePreprintId>()(
+  'AfricarxivFigsharePreprintId',
+  {
+    value: RegistrantDoiSchema('6084'),
+  },
+) {}
 
-export interface AfricarxivOsfPreprintId {
-  readonly _tag: 'africarxiv'
-  readonly value: Doi<'31730'>
-}
+export class AfricarxivOsfPreprintId extends Schema.TaggedClass<AfricarxivOsfPreprintId>()('AfricarxivOsfPreprintId', {
+  value: RegistrantDoiSchema('31730'),
+}) {}
 
-export interface AfricarxivUbuntunetPreprintId {
-  readonly _tag: 'africarxiv'
-  readonly value: Doi<'60763'>
-}
+export class AfricarxivUbuntunetPreprintId extends Schema.TaggedClass<AfricarxivUbuntunetPreprintId>()(
+  'AfricarxivUbuntunetPreprintId',
+  {
+    value: RegistrantDoiSchema('60763'),
+  },
+) {}
 
-export interface AfricarxivZenodoPreprintId {
-  readonly _tag: 'africarxiv'
-  readonly value: Doi<'5281'>
-}
+export class AfricarxivZenodoPreprintId extends Schema.TaggedClass<AfricarxivZenodoPreprintId>()(
+  'AfricarxivZenodoPreprintId',
+  {
+    value: RegistrantDoiSchema('5281'),
+  },
+) {}
+
+export const AfricarxivPreprintId = Schema.Union(
+  AfricarxivFigsharePreprintId,
+  AfricarxivOsfPreprintId,
+  AfricarxivUbuntunetPreprintId,
+  AfricarxivZenodoPreprintId,
+)
 
 export class ArcadiaSciencePreprintId extends Schema.TaggedClass<ArcadiaSciencePreprintId>()(
   'ArcadiaSciencePreprintId',
@@ -283,7 +295,7 @@ export function fromPreprintDoi(
       hasRegistrant('5281'),
       doi => ({ _tag: 'zenodo-africarxiv', value: doi }) satisfies ZenodoOrAfricarxivPreprintId,
     )
-    .when(hasRegistrant('6084'), doi => ({ _tag: 'africarxiv', value: doi }) satisfies AfricarxivFigsharePreprintId)
+    .when(hasRegistrant('6084'), doi => new AfricarxivFigsharePreprintId({ value: doi }))
     .when(hasRegistrant('12688'), doi => new VerixivPreprintId({ value: doi }))
     .when(hasRegistrant('14293'), doi => new ScienceOpenPreprintId({ value: doi }))
     .when(
@@ -302,7 +314,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('31224'), doi => new EngrxivPreprintId({ value: doi }))
     .when(hasRegistrant('31234'), doi => new PsyarxivPreprintId({ value: doi }))
     .when(hasRegistrant('31235'), doi => new SocarxivPreprintId({ value: doi }))
-    .when(hasRegistrant('31730'), doi => ({ _tag: 'africarxiv', value: doi }) satisfies AfricarxivOsfPreprintId)
+    .when(hasRegistrant('31730'), doi => new AfricarxivOsfPreprintId({ value: doi }))
     .when(hasRegistrant('32942'), doi => new EcoevorxivPreprintId({ value: doi }))
     .when(hasRegistrant('35542'), doi => new EdarxivPreprintId({ value: doi }))
     .when(hasRegistrant('36227'), doi => new TechrxivPreprintId({ value: doi }))
@@ -310,7 +322,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('51094'), doi => new JxivPreprintId({ value: doi }))
     .when(hasRegistrant('55458'), doi => new NeurolibrePreprintId({ value: doi }))
     .when(hasRegistrant('57844'), doi => new ArcadiaSciencePreprintId({ value: doi }))
-    .when(hasRegistrant('60763'), doi => ({ _tag: 'africarxiv', value: doi }) satisfies AfricarxivUbuntunetPreprintId)
+    .when(hasRegistrant('60763'), doi => new AfricarxivUbuntunetPreprintId({ value: doi }))
     .when(hasRegistrant('62329'), doi => new CurvenotePreprintId({ value: doi }))
     .exhaustive()
 }
@@ -386,13 +398,14 @@ const extractFromEngrxivPath = flow(
   Array.fromOption,
 )
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const extractFromFigsharePath = (type: 'africarxiv') =>
   flow(
     decodeURIComponent,
     Option.liftNullable(s => /^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i.exec(s)?.[1]),
     Option.andThen(id => `10.6084/m9.figshare.${id}.v1`),
     Option.filter(Predicate.compose(isDoi, hasRegistrant('6084'))),
-    Option.andThen(doi => ({ _tag: type, value: doi }) satisfies AfricarxivFigsharePreprintId),
+    Option.andThen(doi => new AfricarxivFigsharePreprintId({ value: doi })),
     Array.fromOption,
   )
 

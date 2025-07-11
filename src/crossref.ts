@@ -14,7 +14,7 @@ import { transformJatsToHtml } from './jats.js'
 import * as Preprint from './preprint.js'
 import {
   AdvancePreprintId,
-  type AfricarxivOsfPreprintId,
+  AfricarxivOsfPreprintId,
   AuthoreaPreprintId,
   ChemrxivPreprintId,
   CurvenotePreprintId,
@@ -160,7 +160,7 @@ const detectLanguageForServer = ({
 }): Option.Option<LanguageCode> =>
   match({ type, text })
     .with({ type: 'AdvancePreprintId' }, () => Option.some('en' as const))
-    .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
+    .with({ type: 'AfricarxivOsfPreprintId', text: P.select() }, detectLanguageFrom('en', 'fr'))
     .with({ type: 'AuthoreaPreprintId', text: P.select() }, detectLanguage)
     .with({ type: 'ChemrxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'CurvenotePreprintId' }, () => Option.some('en' as const))
@@ -187,13 +187,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Center for Open Science'),
       'group-title': D.literal('AfricArXiv'),
     }),
-    D.map(
-      work =>
-        ({
-          _tag: 'africarxiv',
-          value: work.DOI,
-        }) satisfies AfricarxivOsfPreprintId,
-    ),
+    D.map(work => new AfricarxivOsfPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.union(

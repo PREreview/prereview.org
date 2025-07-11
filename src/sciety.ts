@@ -1,5 +1,4 @@
-import { hasRegistrant } from 'doi-ts'
-import { Option, pipe, type Predicate } from 'effect'
+import { Option, type Predicate } from 'effect'
 import { P, match } from 'ts-pattern'
 import type {
   AfricarxivOsfPreprintId,
@@ -34,6 +33,7 @@ export const isScietyPreprint: Predicate.Refinement<PreprintId, PreprintIdSuppor
       .with(
         {
           _tag: P.union(
+            'AfricarxivOsfPreprintId',
             'BiorxivPreprintId',
             'EdarxivPreprintId',
             'MedrxivPreprintId',
@@ -47,7 +47,6 @@ export const isScietyPreprint: Predicate.Refinement<PreprintId, PreprintIdSuppor
         },
         Option.some,
       )
-      .with({ _tag: 'africarxiv', value: P.when(pipe(hasRegistrant('31730'))) }, Option.some)
       .otherwise(Option.none),
 )
 

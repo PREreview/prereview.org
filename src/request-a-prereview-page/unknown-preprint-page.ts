@@ -41,7 +41,13 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
               ${rawHtml(
                 Match.valueTags(preprint, {
                   AdvancePreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAdvance'),
-                  africarxiv: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAfricarxiv'),
+                  AfricarxivFigsharePreprintId: () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeAfricarxiv'),
+                  AfricarxivOsfPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeAfricarxiv'),
+                  AfricarxivUbuntunetPreprintId: () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeAfricarxiv'),
+                  AfricarxivZenodoPreprintId: () =>
+                    translate(locale, 'request-a-prereview-page', 'doiCouldBeAfricarxiv'),
                   ArcadiaSciencePreprintId: () =>
                     translate(locale, 'request-a-prereview-page', 'doiCouldBeArcadiaScience'),
                   ArxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeArxiv'),

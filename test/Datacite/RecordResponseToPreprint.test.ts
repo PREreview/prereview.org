@@ -11,6 +11,7 @@ import { Record, ResponseSchema } from '../../src/Datacite/Record.js'
 import { rawHtml } from '../../src/html.js'
 import { Preprint } from '../../src/preprint.js'
 import {
+  AfricarxivZenodoPreprintId,
   ArxivPreprintId,
   LifecycleJournalPreprintId,
   OsfPreprintId,
@@ -160,7 +161,7 @@ test.each([
         { name: 'Louise Bezuidenhout', orcid: Orcid('0000-0003-4328-3963') },
         { name: 'Johanna Havemann', orcid: Orcid('0000-0002-6157-1494') },
       ],
-      id: { _tag: 'africarxiv', value: Doi('10.5281/zenodo.4290795') },
+      id: new AfricarxivZenodoPreprintId({ value: Doi('10.5281/zenodo.4290795') }),
       posted: Temporal.PlainDate.from({ year: 2020, month: 9, day: 3 }),
       title: {
         language: 'en',

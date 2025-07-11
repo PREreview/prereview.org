@@ -6,7 +6,13 @@ import { detectLanguage, detectLanguageFrom } from '../detect-language.js'
 import { type Html, sanitizeHtml } from '../html.js'
 import * as Preprint from '../preprint.js'
 import { Orcid } from '../types/index.js'
-import { fromPreprintDoi, LifecycleJournalPreprintId, OsfPreprintId, ZenodoPreprintId } from '../types/preprint-id.js'
+import {
+  AfricarxivZenodoPreprintId,
+  fromPreprintDoi,
+  LifecycleJournalPreprintId,
+  OsfPreprintId,
+  ZenodoPreprintId,
+} from '../types/preprint-id.js'
 import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
 import type { Record } from './Record.js'
 
@@ -92,7 +98,7 @@ const determineDatacitePreprintId = (
             relationType === 'IsPartOf' && relatedIdentifier === 'https://zenodo.org/communities/africarxiv',
         )
       ) {
-        return { _tag: 'africarxiv', value: indeterminateId.value }
+        return new AfricarxivZenodoPreprintId({ value: indeterminateId.value })
       }
 
       return new ZenodoPreprintId({ value: indeterminateId.value })
@@ -164,7 +170,7 @@ const getAbstract = (
 
 const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
-    africarxiv: () => detectLanguageFrom('en', 'fr')(text),
+    AfricarxivZenodoPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     ArxivPreprintId: () => Option.some('en' as const),
     LifecycleJournalPreprintId: () => Option.some('en' as const),
     OsfPreprintId: () => detectLanguage(text),

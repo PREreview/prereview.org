@@ -1,4 +1,3 @@
-import { hasRegistrant } from 'doi-ts'
 import { flow, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
@@ -138,6 +137,7 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
       {
         _tag: P.union(
           'AdvancePreprintId',
+          'AfricarxivUbuntunetPreprintId',
           'ArxivPreprintId',
           'BiorxivPreprintId',
           'ChemrxivPreprintId',
@@ -160,11 +160,6 @@ export function isReviewRequestPreprintId(preprint: PreprintId): preprint is Rev
           'ZenodoPreprintId',
         ),
       },
-      () => true,
-    )
-    .with(
-      { _tag: 'africarxiv' },
-      preprint => hasRegistrant('60763')(preprint.value),
       () => true,
     )
     .otherwise(() => false)

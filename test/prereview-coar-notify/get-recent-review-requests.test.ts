@@ -27,7 +27,7 @@ describe('getRecentReviewRequests', () => {
                   'OsfPreprintId',
                   'LifecycleJournalPreprintId',
                   'ZenodoPreprintId',
-                  'africarxiv',
+                  'AfricarxivZenodoPreprintId',
                 ].includes(id._tag),
             ),
           fields: fc.array(fc.fieldId()),
