@@ -1,12 +1,13 @@
+import type { HttpClient } from '@effect/platform'
 import type { Doi } from 'doi-ts'
 import { Array, Context, Effect, type Redacted, flow, identity, pipe } from 'effect'
 import type * as F from 'fetch-fp-ts'
-import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import type { EffectEnv } from '../EffectToFpts.js'
+import * as EffectToFpts from '../EffectToFpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { RecentReviewRequest } from '../home-page/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
@@ -24,10 +25,7 @@ import { type PreprintId, PreprintIdEquivalence } from '../types/preprint-id.js'
 import type { User } from '../user.js'
 import type { NewPrereview } from '../write-review/index.js'
 import { constructCoarReviewActionOfferPayload } from './ConstructCoarReviewActionOfferPayload.js'
-import {
-  type RecentReviewRequestFromPrereviewCoarNotify,
-  getRecentReviewRequests,
-} from './get-recent-review-requests.js'
+import { type RecentReviewRequestFromPrereviewCoarNotify, getRecentReviewRequests } from './GetRecentReviewRequests.js'
 import { postNewPrereview } from './new-prereview.js'
 import { sendReviewActionOffer } from './SendReviewActionOffer.js'
 
@@ -65,7 +63,9 @@ export const publishReviewRequest = Effect.fn(function* (
 
 export const isReviewRequested = (id: PreprintId) =>
   pipe(
-    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
+    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) =>
+      EffectToFpts.toReaderTaskEither(getRecentReviewRequests(coarNotifyUrl)),
+    ),
     RTE.map(Array.some(request => PreprintIdEquivalence(request.preprint, id))),
   )
 
@@ -78,12 +78,14 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
   language?: LanguageCode
   page: number
 }): RTE.ReaderTaskEither<
-  EffectEnv<never> & FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
+  EffectEnv<HttpClient.HttpClient> & GetPreprintTitleEnv & PrereviewCoarNotifyEnv,
   RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
   ReviewRequests
 > =>
   pipe(
-    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
+    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) =>
+      EffectToFpts.toReaderTaskEither(getRecentReviewRequests(coarNotifyUrl)),
+    ),
     RTE.map(field ? Array.filter(request => request.fields.includes(field)) : identity),
     RTE.map(language ? Array.filter(request => request.language === language) : identity),
     RTE.map(Array.chunksOf(5)),
@@ -125,12 +127,14 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
 export const getRecentReviewRequestsFromPrereviewCoarNotify = (
   page: number,
 ): RTE.ReaderTaskEither<
-  EffectEnv<never> & FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
+  EffectEnv<HttpClient.HttpClient> & GetPreprintTitleEnv & PrereviewCoarNotifyEnv,
   RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
   ReadonlyArray<RecentReviewRequest>
 > =>
   pipe(
-    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
+    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) =>
+      EffectToFpts.toReaderTaskEither(getRecentReviewRequests(coarNotifyUrl)),
+    ),
     RTE.chainOptionKW(() => new RecentReviewRequestsNotFound({}))(flow(Array.chunksOf(5), Array.get(page - 1))),
     RTE.chainW(
       RTE.traverseArray(({ timestamp, preprint, fields, subfields }: RecentReviewRequestFromPrereviewCoarNotify) =>

@@ -1,8 +1,7 @@
-import { FetchHttpClient } from '@effect/platform'
+import type { HttpClient } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Context, Effect, Layer, pipe, Redacted } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { DeprecatedLoggerEnv } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { Html } from '../html.js'
@@ -40,21 +39,17 @@ export const { getFiveMostRecent } = Effect.serviceConstants(ReviewRequests)
 export const layer = Layer.effect(
   ReviewRequests,
   Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const logger = yield* DeprecatedLoggerEnv
     const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
     const coarNotify = yield* PrereviewCoarNotifyConfig
-    const runtime = yield* Effect.runtime()
+    const runtime = yield* Effect.runtime<HttpClient.HttpClient>()
 
     return {
       getFiveMostRecent: pipe(
         FptsToEffect.readerTaskEither(getRecentReviewRequestsFromPrereviewCoarNotify(1), {
           ...coarNotify,
           coarNotifyToken: Redacted.value(coarNotify.coarNotifyToken),
-          fetch,
           getPreprintTitle,
           runtime,
-          ...logger,
         }),
         Effect.orElseSucceed(Array.empty),
       ),

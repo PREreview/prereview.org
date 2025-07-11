@@ -1,12 +1,7 @@
-import { flow, ParseResult, pipe, Schema } from 'effect'
-import * as F from 'fetch-fp-ts'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
-import * as D from 'io-ts/lib/Decoder.js'
+import { HttpClient, HttpClientResponse } from '@effect/platform'
+import { Effect, Equal, ParseResult, pipe, Schema } from 'effect'
+import { StatusCodes } from 'http-status-codes'
 import iso6391 from 'iso-639-1'
-import * as L from 'logger-fp-ts'
-import * as EffectToFpts from '../EffectToFpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { RecentReviewRequestsAreUnavailable } from '../review-requests-page/index.js'
 import { isFieldId } from '../types/field.js'
@@ -46,16 +41,20 @@ export const RecentReviewRequestsSchema = Schema.Array(
 
 export type RecentReviewRequestFromPrereviewCoarNotify = (typeof RecentReviewRequestsSchema.Type)[number]
 
-export const getRecentReviewRequests = flow(
-  (baseUrl: URL) => new URL('/requests', baseUrl),
-  F.Request('GET'),
-  F.send,
-  RTE.mapLeft(() => 'network'),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
-  RTE.chainTaskEitherKW(flow(F.decode(D.string), TE.mapLeft(D.draw))),
-  RTE.chainW(EffectToFpts.toReaderTaskEitherK(Schema.decode(Schema.parseJson(RecentReviewRequestsSchema)))),
-  RTE.orElseFirstW(
-    RTE.fromReaderIOK(flow(error => ({ error: error.toString() }), L.errorP('Failed to get recent review requests'))),
-  ),
-  RTE.mapLeft(cause => new RecentReviewRequestsAreUnavailable({ cause })),
-)
+export const getRecentReviewRequests = (
+  baseUrl: URL,
+): Effect.Effect<
+  ReadonlyArray<RecentReviewRequestFromPrereviewCoarNotify>,
+  RecentReviewRequestsAreUnavailable,
+  HttpClient.HttpClient
+> =>
+  pipe(
+    HttpClient.get(new URL('/requests', baseUrl)),
+    Effect.mapError(error => new RecentReviewRequestsAreUnavailable({ cause: error })),
+    Effect.andThen(HttpClientResponse.filterStatus(Equal.equals(StatusCodes.OK))),
+    Effect.andThen(HttpClientResponse.schemaBodyJson(RecentReviewRequestsSchema)),
+    Effect.catchTag('ParseError', 'ResponseError', error => new RecentReviewRequestsAreUnavailable({ cause: error })),
+    Effect.tapErrorTag('RecentReviewRequestsAreUnavailable', error =>
+      Effect.logError('Failed to get recent review requests').pipe(Effect.annotateLogs({ error })),
+    ),
+  )

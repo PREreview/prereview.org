@@ -466,10 +466,8 @@ const routerWithoutHyperTs = pipe(
               getReviewRequests: withEnv(getReviewRequestsFromPrereviewCoarNotify, {
                 coarNotifyToken: Redacted.value(env.prereviewCoarNotifyConfig.coarNotifyToken),
                 coarNotifyUrl: env.prereviewCoarNotifyConfig.coarNotifyUrl,
-                fetch: env.fetch,
                 getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
                 runtime: env.runtime,
-                ...env.logger,
               }),
             }),
       ),
