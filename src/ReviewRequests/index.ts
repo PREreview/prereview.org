@@ -1,12 +1,13 @@
 import type { HttpClient } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Effect, Layer, pipe, Redacted, Struct } from 'effect'
+import { Array, Context, Effect, Layer, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import * as EffectToFpts from '../EffectToFpts.js'
-import * as FptsToEffect from '../FptsToEffect.js'
 import type { Html } from '../html.js'
-import * as Preprints from '../Preprints/index.js'
-import { getReviewRequestsFromPrereviewCoarNotify, PrereviewCoarNotifyConfig } from '../prereview-coar-notify/index.js'
+import type * as Preprints from '../Preprints/index.js'
+import {
+  getReviewRequestsFromPrereviewCoarNotify,
+  type PrereviewCoarNotifyConfig,
+} from '../prereview-coar-notify/index.js'
 import type { FieldId } from '../types/field.js'
 import type { PreprintId } from '../types/preprint-id.js'
 import type { SubfieldId } from '../types/subfield.js'
@@ -36,19 +37,13 @@ export const { getFiveMostRecent } = Effect.serviceConstants(ReviewRequests)
 export const layer = Layer.effect(
   ReviewRequests,
   Effect.gen(function* () {
-    const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
-    const coarNotify = yield* PrereviewCoarNotifyConfig
-    const runtime = yield* Effect.runtime<HttpClient.HttpClient>()
+    const context = yield* Effect.context<HttpClient.HttpClient | Preprints.Preprints | PrereviewCoarNotifyConfig>()
 
     return {
       getFiveMostRecent: pipe(
-        FptsToEffect.readerTaskEither(getReviewRequestsFromPrereviewCoarNotify({ page: 1 }), {
-          ...coarNotify,
-          coarNotifyToken: Redacted.value(coarNotify.coarNotifyToken),
-          getPreprintTitle,
-          runtime,
-        }),
+        getReviewRequestsFromPrereviewCoarNotify({ page: 1 }),
         Effect.match({ onSuccess: Struct.get('reviewRequests'), onFailure: Array.empty }),
+        Effect.provide(context),
       ),
     }
   }),

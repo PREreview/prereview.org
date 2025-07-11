@@ -463,12 +463,7 @@ const routerWithoutHyperTs = pipe(
         ({ field, language, page }) =>
           (env: Env) =>
             reviewRequests({ field, language, locale: env.locale, page: page ?? 1 })({
-              getReviewRequests: withEnv(getReviewRequestsFromPrereviewCoarNotify, {
-                coarNotifyToken: Redacted.value(env.prereviewCoarNotifyConfig.coarNotifyToken),
-                coarNotifyUrl: env.prereviewCoarNotifyConfig.coarNotifyUrl,
-                getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
-                runtime: env.runtime,
-              }),
+              getReviewRequests: EffectToFpts.toTaskEitherK(getReviewRequestsFromPrereviewCoarNotify, env.runtime),
             }),
       ),
     ),

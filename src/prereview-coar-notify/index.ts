@@ -1,15 +1,13 @@
 import type { HttpClient } from '@effect/platform'
 import type { Doi } from 'doi-ts'
-import { Array, Context, Effect, type Redacted, identity, pipe } from 'effect'
+import { Array, Context, Effect, identity, pipe, type Redacted, Struct } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import type { EffectEnv } from '../EffectToFpts.js'
 import * as EffectToFpts from '../EffectToFpts.js'
-import * as FptsToEffect from '../FptsToEffect.js'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
+import * as Preprints from '../Preprints/index.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
 import type { ReviewRequestPreprintId } from '../review-request.js'
 import {
@@ -76,47 +74,45 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
   field?: FieldId
   language?: LanguageCode
   page: number
-}): RTE.ReaderTaskEither<
-  EffectEnv<HttpClient.HttpClient> & GetPreprintTitleEnv & PrereviewCoarNotifyEnv,
+}): Effect.Effect<
+  ReviewRequests,
   RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
-  ReviewRequests
+  HttpClient.HttpClient | Preprints.Preprints | PrereviewCoarNotifyConfig
 > =>
   pipe(
-    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) =>
-      EffectToFpts.toReaderTaskEither(getRecentReviewRequests(coarNotifyUrl)),
-    ),
-    RTE.map(field ? Array.filter(request => request.fields.includes(field)) : identity),
-    RTE.map(language ? Array.filter(request => request.language === language) : identity),
-    RTE.map(Array.chunksOf(5)),
-    RTE.chainW(pages =>
+    Effect.andThen(PrereviewCoarNotifyConfig, Struct.get('coarNotifyUrl')),
+    Effect.andThen(getRecentReviewRequests),
+    Effect.andThen(field ? Array.filter(request => request.fields.includes(field)) : identity),
+    Effect.andThen(language ? Array.filter(request => request.language === language) : identity),
+    Effect.andThen(Array.chunksOf(5)),
+    Effect.andThen(pages =>
       pipe(
-        RTE.Do,
-        RTE.let('currentPage', () => page),
-        RTE.let('totalPages', () => pages.length),
-        RTE.let('field', () => field),
-        RTE.let('language', () => language),
-        RTE.apS(
-          'reviewRequests',
+        Effect.Do,
+        Effect.let('currentPage', () => page),
+        Effect.let('totalPages', () => pages.length),
+        Effect.let('field', () => field),
+        Effect.let('language', () => language),
+        Effect.bind('reviewRequests', () =>
           pipe(
-            RTE.fromOption(() => new RecentReviewRequestsNotFound({}))(Array.get(pages, page - 1)),
-            RTE.chainW(
-              RTE.traverseReadonlyNonEmptyArrayWithIndex((_, { timestamp, preprint, fields, subfields }) =>
-                pipe(
-                  RTE.Do,
-                  RTE.let('published', () => timestamp.toZonedDateTimeISO('UTC').toPlainDate()),
-                  RTE.apS(
-                    'preprint',
-                    pipe(
-                      getPreprintTitle(preprint),
-                      RTE.mapLeft(cause => new RecentReviewRequestsAreUnavailable({ cause })),
+            Effect.mapError(Array.get(pages, page - 1), () => new RecentReviewRequestsNotFound({})),
+            Effect.andThen(
+              Effect.forEach(
+                ({ timestamp, preprint, fields, subfields }) =>
+                  pipe(
+                    Effect.Do,
+                    Effect.let('published', () => timestamp.toZonedDateTimeISO('UTC').toPlainDate()),
+                    Effect.bind('preprint', () =>
+                      Effect.mapError(
+                        Preprints.getPreprintTitle(preprint),
+                        cause => new RecentReviewRequestsAreUnavailable({ cause }),
+                      ),
                     ),
+                    Effect.let('fields', () => fields),
+                    Effect.let('subfields', () => subfields),
                   ),
-                  RTE.let('fields', () => fields),
-                  RTE.let('subfields', () => subfields),
-                ),
+                { concurrency: 'inherit' },
               ),
             ),
-            RTE.map(FptsToEffect.array),
           ),
         ),
       ),
