@@ -44,6 +44,7 @@ describe('LogInDemoUser', () => {
 const featureFlagsLayer = (canLogInAsDemoUser: boolean) =>
   FeatureFlags.layer({
     aiReviewsAsCc0: shouldNotBeCalled,
+    askAiReviewEarly: shouldNotBeCalled,
     canAddMultipleAuthors: shouldNotBeCalled,
     canChooseLocale: false,
     canLogInAsDemoUser,

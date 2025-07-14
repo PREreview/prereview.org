@@ -140,6 +140,7 @@ describe('LegacyRouter', () => {
 
 const featureFlagsLayer = FeatureFlags.layer({
   aiReviewsAsCc0: shouldNotBeCalled,
+  askAiReviewEarly: shouldNotBeCalled,
   canAddMultipleAuthors: shouldNotBeCalled,
   canChooseLocale: false,
   canLogInAsDemoUser: false,

@@ -71,6 +71,10 @@ pipe(
           Config.withDefault(Config.boolean('AI_REVIEWS_AS_CC0'), false),
           Config.map(aiReviewsAsCc0 => user => aiReviewsAsCc0 && isPrereviewTeam(user)),
         ),
+        askAiReviewEarly: pipe(
+          Config.withDefault(Config.boolean('ASK_AI_REVIEW_EARLY'), false),
+          Config.map(askAiReviewEarly => user => askAiReviewEarly && isPrereviewTeam(user)),
+        ),
         canAddMultipleAuthors: pipe(
           Config.withDefault(Config.boolean('CAN_ADD_MULTIPLE_AUTHORS'), false),
           Config.map(

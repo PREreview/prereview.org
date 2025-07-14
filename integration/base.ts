@@ -1323,6 +1323,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             CachingHttpClient.layerInMemory(),
             FeatureFlags.layer({
               aiReviewsAsCc0: () => false,
+              askAiReviewEarly: () => false,
               canAddMultipleAuthors,
               canChooseLocale,
               canLogInAsDemoUser,

@@ -5,6 +5,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
   FeatureFlags,
   {
     aiReviewsAsCc0: (user?: User) => boolean
+    askAiReviewEarly: (user?: User) => boolean
     canAddMultipleAuthors: (user?: User) => boolean
     canChooseLocale: boolean
     canLogInAsDemoUser: boolean
@@ -16,6 +17,8 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
 >() {}
 
 export const aiReviewsAsCc0 = Effect.serviceFunction(FeatureFlags, Struct.get('aiReviewsAsCc0'))
+
+export const askAiReviewEarly = Effect.serviceFunction(FeatureFlags, Struct.get('aiReviewsAsCc0'))
 
 export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct.get('canAddMultipleAuthors'))
 
