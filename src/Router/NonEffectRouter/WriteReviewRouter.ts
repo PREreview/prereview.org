@@ -72,7 +72,12 @@ export const WriteReviewRouter = pipe(
       P.map(
         ({ id }) =>
           (env: Env) =>
-            writeReviewStart({ id, locale: env.locale, user: env.loggedInUser }),
+            writeReviewStart({
+              askAiReviewEarly: env.featureFlags.askAiReviewEarly(env.loggedInUser),
+              id,
+              locale: env.locale,
+              user: env.loggedInUser,
+            }),
       ),
     ),
     pipe(
