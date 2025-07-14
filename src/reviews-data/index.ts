@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, flow, Function, pipe } from 'effect'
+import { Array, flow, Function, Match, pipe } from 'effect'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
@@ -55,7 +55,7 @@ const PreprintIdE = {
 const PrereviewE = pipe(
   E.struct({
     preprint: PreprintIdE,
-    server: StringE,
+    server: E.id<Server>(),
     createdAt: PlainDateE,
     doi: DoiE,
     authors: ReadonlyArrayE(E.struct({ author: StringE, authorType: StringE })),
@@ -71,9 +71,42 @@ const PrereviewE = pipe(
   ),
 ) satisfies E.Encoder<JsonRecord, TransformedPrereview>
 
+type Server =
+  | 'advance'
+  | 'africarxiv'
+  | 'arcadia-science'
+  | 'arxiv'
+  | 'authorea'
+  | 'biorxiv'
+  | 'chemrxiv'
+  | 'curvenote'
+  | 'eartharxiv'
+  | 'ecoevorxiv'
+  | 'edarxiv'
+  | 'engrxiv'
+  | 'jxiv'
+  | 'lifecycle-journal'
+  | 'medrxiv'
+  | 'metaarxiv'
+  | 'neurolibre'
+  | 'osf'
+  | 'osf-preprints'
+  | 'philsci'
+  | 'preprints.org'
+  | 'psyarxiv'
+  | 'psycharchives'
+  | 'research-square'
+  | 'scielo'
+  | 'science-open'
+  | 'socarxiv'
+  | 'ssrn'
+  | 'techrxiv'
+  | 'verixiv'
+  | 'zenodo'
+
 interface TransformedPrereview {
   preprint: IndeterminatePreprintId
-  server: string
+  server: Server
   createdAt: PlainDate
   doi: Doi
   authors: ReadonlyArray<{ author: string; authorType: 'public' | 'pseudonym' }>
@@ -88,6 +121,43 @@ const PrereviewsE = ReadonlyArrayE(PrereviewE)
 
 const JsonE: E.Encoder<string, Json> = { encode: safeStableStringify }
 
+const preprintIdToServer = Match.typeTags<PreprintId, Server>()({
+  AdvancePreprintId: () => 'advance',
+  AfricarxivFigsharePreprintId: () => 'africarxiv',
+  AfricarxivOsfPreprintId: () => 'africarxiv',
+  AfricarxivUbuntunetPreprintId: () => 'africarxiv',
+  AfricarxivZenodoPreprintId: () => 'africarxiv',
+  ArcadiaSciencePreprintId: () => 'arcadia-science',
+  ArxivPreprintId: () => 'arxiv',
+  AuthoreaPreprintId: () => 'authorea',
+  BiorxivPreprintId: () => 'biorxiv',
+  ChemrxivPreprintId: () => 'chemrxiv',
+  CurvenotePreprintId: () => 'curvenote',
+  EartharxivPreprintId: () => 'eartharxiv',
+  EcoevorxivPreprintId: () => 'ecoevorxiv',
+  EdarxivPreprintId: () => 'edarxiv',
+  EngrxivPreprintId: () => 'engrxiv',
+  JxivPreprintId: () => 'jxiv',
+  LifecycleJournalPreprintId: () => 'lifecycle-journal',
+  MedrxivPreprintId: () => 'medrxiv',
+  MetaarxivPreprintId: () => 'metaarxiv',
+  NeurolibrePreprintId: () => 'neurolibre',
+  OsfPreprintId: () => 'osf',
+  OsfPreprintsPreprintId: () => 'osf-preprints',
+  PhilsciPreprintId: () => 'philsci',
+  PreprintsorgPreprintId: () => 'preprints.org',
+  PsyarxivPreprintId: () => 'psyarxiv',
+  PsychArchivesPreprintId: () => 'psycharchives',
+  ResearchSquarePreprintId: () => 'research-square',
+  ScieloPreprintId: () => 'scielo',
+  ScienceOpenPreprintId: () => 'science-open',
+  SocarxivPreprintId: () => 'socarxiv',
+  SsrnPreprintId: () => 'ssrn',
+  TechrxivPreprintId: () => 'techrxiv',
+  VerixivPreprintId: () => 'verixiv',
+  ZenodoPreprintId: () => 'zenodo',
+})
+
 const isAllowed = (authorizationHeader: string) =>
   pipe(
     RTE.ask<ScietyListEnv>(),
@@ -97,7 +167,7 @@ const isAllowed = (authorizationHeader: string) =>
 
 const transform = (prereview: Prereview): TransformedPrereview => ({
   preprint: prereview.preprint,
-  server: prereview.preprint._tag,
+  server: preprintIdToServer(prereview.preprint),
   createdAt: prereview.createdAt,
   doi: prereview.doi,
   authors: pipe(
