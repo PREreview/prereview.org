@@ -17,10 +17,12 @@ import { getForm, nextFormMatch, saveForm, updateForm, type Form, type FormStore
 import { useOfAiForm, type UseOfAiForm } from './use-of-ai-form.js'
 
 export const writeReviewUseOfAi = ({
+  askAiReviewEarly = false,
   id,
   locale,
   user,
 }: {
+  askAiReviewEarly?: boolean
   id: IndeterminatePreprintId
   locale: SupportedLocale
   user?: User
@@ -37,6 +39,7 @@ export const writeReviewUseOfAi = ({
           RTE.Do,
           RTE.let('locale', () => locale),
           RTE.let('preprint', () => preprint),
+          RTE.let('askAiReviewEarly', () => askAiReviewEarly),
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.matchW(
@@ -54,11 +57,13 @@ export const writeReviewUseOfAi = ({
   )
 
 export const writeReviewUseOfAiSubmission = ({
+  askAiReviewEarly = false,
   body,
   id,
   locale,
   user,
 }: {
+  askAiReviewEarly?: boolean
   body: unknown
   id: IndeterminatePreprintId
   locale: SupportedLocale
@@ -77,6 +82,7 @@ export const writeReviewUseOfAiSubmission = ({
           RTE.let('locale', () => locale),
           RTE.let('preprint', () => preprint),
           RTE.let('body', () => body),
+          RTE.let('askAiReviewEarly', () => askAiReviewEarly),
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.matchEW(
@@ -96,26 +102,38 @@ export const writeReviewUseOfAiSubmission = ({
   )
 
 const showUseOfAiForm = ({
+  askAiReviewEarly,
   form,
   preprint,
   locale,
 }: {
+  askAiReviewEarly: boolean
   form: Form
   preprint: PreprintTitle
   locale: SupportedLocale
-}) => useOfAiForm(preprint, { generativeAiIdeas: E.right(form.generativeAiIdeas) }, locale, form.moreAuthors)
+}) =>
+  useOfAiForm(
+    preprint,
+    { generativeAiIdeas: E.right(form.generativeAiIdeas) },
+    locale,
+    form.moreAuthors,
+    askAiReviewEarly,
+  )
 
 const showUseOfAiErrorForm =
-  (preprint: PreprintTitle, moreAuthors: Form['moreAuthors'], locale: SupportedLocale) => (form: UseOfAiForm) =>
-    useOfAiForm(preprint, form, locale, moreAuthors)
+  (preprint: PreprintTitle, moreAuthors: Form['moreAuthors'], locale: SupportedLocale, askAiReviewEarly: boolean) =>
+  (form: UseOfAiForm) =>
+    useOfAiForm(preprint, form, locale, moreAuthors, askAiReviewEarly)
 
 const handleUseOfAiForm = ({
+  askAiReviewEarly,
   body,
   form,
   preprint,
   user,
   locale,
 }: {
+  askAiReviewEarly: boolean
   body: unknown
   form: Form
   preprint: PreprintTitle
@@ -138,7 +156,10 @@ const handleUseOfAiForm = ({
       error =>
         match(error)
           .with('form-unavailable', () => havingProblemsPage(locale))
-          .with({ generativeAiIdeas: P.any }, showUseOfAiErrorForm(preprint, form.moreAuthors, locale))
+          .with(
+            { generativeAiIdeas: P.any },
+            showUseOfAiErrorForm(preprint, form.moreAuthors, locale, askAiReviewEarly),
+          )
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
     ),

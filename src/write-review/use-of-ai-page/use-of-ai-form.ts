@@ -8,7 +8,12 @@ import { html, plainText, rawHtml } from '../../html.js'
 import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
-import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewUseOfAiMatch } from '../../routes.js'
+import {
+  writeReviewAddAuthorsMatch,
+  writeReviewAuthorsMatch,
+  writeReviewReviewTypeMatch,
+  writeReviewUseOfAiMatch,
+} from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
 import { backNav, prereviewOfSuffix } from '../shared-elements.js'
 
@@ -21,10 +26,15 @@ export function useOfAiForm(
   form: UseOfAiForm,
   locale: SupportedLocale,
   moreAuthors?: 'yes' | 'yes-private' | 'no',
+  askAiReviewEarly = false,
 ) {
   const error = hasAnError(form)
   const otherAuthors = moreAuthors !== 'no'
-  const backMatch = moreAuthors === 'yes' ? writeReviewAddAuthorsMatch : writeReviewAuthorsMatch
+  const backMatch = askAiReviewEarly
+    ? writeReviewReviewTypeMatch
+    : moreAuthors === 'yes'
+      ? writeReviewAddAuthorsMatch
+      : writeReviewAuthorsMatch
   const t = translate(locale)
 
   return StreamlinePageResponse({

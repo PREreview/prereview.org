@@ -327,6 +327,7 @@ export const WriteReviewRouter = pipe(
         ({ id }) =>
           (env: Env) =>
             (env.method === 'POST' ? writeReviewUseOfAiSubmission : writeReviewUseOfAi)({
+              askAiReviewEarly: env.featureFlags.askAiReviewEarly(env.loggedInUser),
               body: env.body,
               id,
               locale: env.locale,
