@@ -96,11 +96,15 @@ export function deleteForm(
   )
 }
 
-export const nextFormMatch = (form: Form) =>
-  match(form)
+export const nextFormMatch = (form: Form, askAiReviewEarly = false) =>
+  match({ ...form, askAiReviewEarly })
     .with(
       { alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
       () => writeReviewReviewTypeMatch,
+    )
+    .with(
+      { alreadyWritten: 'yes', generativeAiIdeas: P.optional(undefined), askAiReviewEarly: true },
+      () => writeReviewUseOfAiMatch,
     )
     .with(
       { reviewType: 'questions', introductionMatches: P.optional(undefined) },

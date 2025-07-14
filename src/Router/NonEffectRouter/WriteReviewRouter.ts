@@ -81,6 +81,7 @@ export const WriteReviewRouter = pipe(
         ({ id }) =>
           (env: Env) =>
             writeReviewReviewType({
+              askAiReviewEarly: env.featureFlags.askAiReviewEarly(env.loggedInUser),
               body: env.body,
               id,
               locale: env.locale,

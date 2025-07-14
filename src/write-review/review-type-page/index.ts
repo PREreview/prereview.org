@@ -19,12 +19,14 @@ import { ensureUserIsNotAnAuthor } from '../user-is-author.js'
 import { reviewTypeForm } from './review-type-form.js'
 
 export const writeReviewReviewType = ({
+  askAiReviewEarly = false,
   body,
   id,
   locale,
   method,
   user,
 }: {
+  askAiReviewEarly?: boolean
   body: unknown
   id: IndeterminatePreprintId
   locale: SupportedLocale
@@ -67,6 +69,7 @@ export const writeReviewReviewType = ({
           RTE.let('body', () => body),
           RTE.let('method', () => method),
           RTE.let('locale', () => locale),
+          RTE.let('askAiReviewEarly', () => askAiReviewEarly),
           RTE.matchEW(
             error =>
               RT.of(
@@ -106,12 +109,14 @@ const showReviewTypeForm = ({
   )
 
 const handleReviewTypeForm = ({
+  askAiReviewEarly,
   body,
   form,
   locale,
   preprint,
   user,
 }: {
+  askAiReviewEarly: boolean
   body: unknown
   form: Form
   locale: SupportedLocale
@@ -146,7 +151,8 @@ const handleReviewTypeForm = ({
           .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ reviewType: P.any }, form => reviewTypeForm(preprint, form, locale))
           .exhaustive(),
-      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+      form =>
+        RedirectResponse({ location: format(nextFormMatch(form, askAiReviewEarly).formatter, { id: preprint.id }) }),
     ),
   )
 
