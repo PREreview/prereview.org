@@ -54,7 +54,7 @@ describe('StartNow', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(commandsLayer({ startDatasetReview: () => Effect.fail(error) })),
+        Effect.provide(commandsLayer({ startDatasetReview: () => error })),
         Effect.provide(queriesLayer({ findInProgressReviewForADataset: () => Effect.succeedNone })),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),

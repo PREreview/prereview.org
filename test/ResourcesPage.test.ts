@@ -34,7 +34,7 @@ describe('ResourcesPage', () => {
     'when the page cannot be loaded',
     (locale, error) =>
       Effect.gen(function* () {
-        const actual = yield* _.ResourcesPage.pipe(Effect.provideService(GetPageFromGhost, () => Effect.fail(error)))
+        const actual = yield* _.ResourcesPage.pipe(Effect.provideService(GetPageFromGhost, () => error))
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',

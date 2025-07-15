@@ -221,7 +221,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(commandsLayer({ answerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.fail(error) })),
+        Effect.provide(commandsLayer({ answerIfTheDatasetFollowsFairAndCarePrinciples: () => error })),
         Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),

@@ -25,7 +25,7 @@ describe('TrainingsPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(GetPageFromGhost, () => Effect.fail(error)),
+        Effect.provideService(GetPageFromGhost, () => error),
         EffectTest.run,
       ),
   )

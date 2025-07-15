@@ -253,7 +253,7 @@ describe('CompetingInterestsSubmission', () => {
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-            Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
+            Effect.provideService(Comments.HandleCommentCommand, () => error),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(LoggedInUser, user),
             EffectTest.run,

@@ -39,7 +39,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.CheckIfUserHasAVerifiedEmailAddress(commentId),
-        Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
+        Effect.provideService(Comments.HandleCommentCommand, () => error),
         Effect.either,
       )
 
@@ -133,7 +133,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),
-          Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
+          Effect.provideService(Comments.HandleCommentCommand, () => error),
           Effect.either,
         )
 
@@ -190,7 +190,7 @@ describe('PublishCommentWhenDoiWasAssigned', () => {
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.PublishCommentWhenDoiWasAssigned({ commentId, event }),
-          Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
+          Effect.provideService(Comments.HandleCommentCommand, () => error),
           Effect.either,
         )
 
