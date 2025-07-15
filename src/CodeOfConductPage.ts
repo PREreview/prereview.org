@@ -3,7 +3,7 @@ import rtlDetect from 'rtl-detect'
 import { Locale } from './Context.js'
 import * as GhostPage from './GhostPage/index.js'
 import { HavingProblemsPage } from './HavingProblemsPage/index.js'
-import { fixHeadingLevels, html, plainText, type Html } from './html.js'
+import { fixHeadingLevels, html, plainText } from './html.js'
 import { DefaultLocale, translate, type SupportedLocale } from './locales/index.js'
 import { PageResponse } from './response.js'
 import * as Routes from './routes.js'
@@ -16,7 +16,7 @@ export const CodeOfConductPage = Effect.gen(function* () {
   return createPage({ content, locale })
 }).pipe(Effect.catchAll(() => HavingProblemsPage))
 
-function createPage({ content, locale }: { content: Html; locale: SupportedLocale }) {
+function createPage({ content, locale }: { content: GhostPage.GhostPage; locale: SupportedLocale }) {
   const t = translate(locale)
 
   return PageResponse({
