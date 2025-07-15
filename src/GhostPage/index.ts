@@ -47,6 +47,7 @@ export const layer = Layer.effect(
 const pageIds = {
   AboutUs: {
     'en-US': '6154aa157741400e8722bb14',
+    'pt-BR': '68753c7207fb34a92c7fb259',
   },
   Clubs: {
     'en-US': '64637b4c07fb34a92c7f84ec',
