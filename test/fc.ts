@@ -1377,7 +1377,11 @@ export const languageCode = (): fc.Arbitrary<LanguageCode> => constantFrom(...IS
 
 export const orcidLocale = (): fc.Arbitrary<OrcidLocale.OrcidLocale> => constantFrom(...OrcidLocale.OrcidLocales)
 
-export const ghostPage = (): fc.Arbitrary<GhostPage> => html()
+export const ghostPage = (): fc.Arbitrary<GhostPage> =>
+  fc.record({
+    html: html(),
+    locale: supportedLocale(),
+  })
 
 export const user = ({ orcid: userOrcid }: { orcid?: fc.Arbitrary<User['orcid']> } = {}): fc.Arbitrary<User> =>
   fc.record({
