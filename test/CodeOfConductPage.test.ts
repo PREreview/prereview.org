@@ -10,7 +10,7 @@ import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 
 describe('CodeOfConductPage', () => {
-  test.prop([fc.supportedLocale(), fc.html()])('when the page can be loaded', (locale, page) =>
+  test.prop([fc.supportedLocale(), fc.ghostPage()])('when the page can be loaded', (locale, page) =>
     Effect.gen(function* () {
       const getPageFromGhost = jest.fn<typeof GetPageFromGhost.Service>(_ => Effect.succeed(page))
 

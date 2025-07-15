@@ -9,10 +9,12 @@ export class PageIsUnavailable extends Data.TaggedError('PageIsUnavailable') {}
 
 export class GetPageFromGhost extends Context.Tag('GetPageFromGhost')<
   GetPageFromGhost,
-  (id: PageId) => Effect.Effect<Html, PageIsUnavailable>
+  (id: PageId) => Effect.Effect<GhostPage, PageIsUnavailable>
 >() {}
 
 export const getPageFromGhost = Effect.serviceFunctionEffect(GetPageFromGhost, identity)
+
+export type GhostPage = Html
 
 type PageId = keyof typeof pageIds
 

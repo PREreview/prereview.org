@@ -52,6 +52,7 @@ import type { DatacitePreprintId } from '../src/Datacite/PreprintId.js'
 import * as DatasetReviews from '../src/DatasetReviews/index.js'
 import * as Datasets from '../src/Datasets/index.js'
 import type { Email } from '../src/email.js'
+import type { GhostPage } from '../src/GhostPage/index.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
 import type { JapanLinkCenterPreprintId } from '../src/JapanLinkCenter/PreprintId.js'
@@ -1375,6 +1376,8 @@ export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<No
 export const languageCode = (): fc.Arbitrary<LanguageCode> => constantFrom(...ISO6391.getAllCodes())
 
 export const orcidLocale = (): fc.Arbitrary<OrcidLocale.OrcidLocale> => constantFrom(...OrcidLocale.OrcidLocales)
+
+export const ghostPage = (): fc.Arbitrary<GhostPage> => html()
 
 export const user = ({ orcid: userOrcid }: { orcid?: fc.Arbitrary<User['orcid']> } = {}): fc.Arbitrary<User> =>
   fc.record({

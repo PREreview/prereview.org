@@ -10,7 +10,7 @@ import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('AboutUsPage', () => {
-  test.prop([fc.supportedLocale(), fc.html()])('when the page can be loaded', (locale, html) =>
+  test.prop([fc.supportedLocale(), fc.ghostPage()])('when the page can be loaded', (locale, page) =>
     Effect.gen(function* () {
       const actual = yield* _.AboutUsPage
 
@@ -26,7 +26,7 @@ describe('AboutUsPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(GetPageFromGhost, () => Effect.succeed(html)),
+      Effect.provideService(GetPageFromGhost, () => Effect.succeed(page)),
       EffectTest.run,
     ),
   )
