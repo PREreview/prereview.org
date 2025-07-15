@@ -11,7 +11,7 @@ import { createContactEmailAddressVerificationEmailForComment } from './email.js
 import { collapseRequests } from './fetch.js'
 import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
-import * as GhostPage from './GhostPage.js'
+import * as GhostPage from './GhostPage/index.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
 import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'

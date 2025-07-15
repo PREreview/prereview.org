@@ -4,10 +4,10 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
 import fetchMock from 'fetch-mock'
 import { Status } from 'hyper-ts'
-import * as _ from '../src/GhostPage.js'
-import { rawHtml } from '../src/html.js'
-import * as EffectTest from './EffectTest.js'
-import * as fc from './fc.js'
+import * as _ from '../../src/GhostPage/GetPage.js'
+import { rawHtml } from '../../src/html.js'
+import * as EffectTest from '../EffectTest.js'
+import * as fc from '../fc.js'
 
 describe('getPage', () => {
   test.prop([

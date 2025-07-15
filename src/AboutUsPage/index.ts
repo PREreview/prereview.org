@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import rtlDetect from 'rtl-detect'
 import { Locale } from '../Context.js'
-import * as GhostPage from '../GhostPage.js'
+import * as GhostPage from '../GhostPage/index.js'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { type Html, fixHeadingLevels, html, plainText } from '../html.js'
 import { DefaultLocale, type SupportedLocale, translate } from '../locales/index.js'
