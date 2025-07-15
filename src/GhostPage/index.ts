@@ -27,7 +27,7 @@ const loadWithCachingClient = (page: PageId) =>
     getGhostIdAndLocaleForPage(page),
     Effect.bind('html', ({ id }) => getPage(id)),
     Effect.tapError(error => Effect.logError('Failed to load ghost page').pipe(Effect.annotateLogs({ error }))),
-    Effect.catchTag('GhostPageNotFound', 'GhostPageUnavailable', () => Effect.fail(new PageIsUnavailable())),
+    Effect.catchTag('GhostPageNotFound', 'GhostPageUnavailable', () => new PageIsUnavailable()),
   )
 
 export const layer = Layer.effect(
