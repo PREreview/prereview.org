@@ -4,7 +4,7 @@ import { Effect } from 'effect'
 import { Status } from 'hyper-ts'
 import { Locale } from '../src/Context.js'
 import * as _ from '../src/FundingPage.js'
-import { GetPageFromGhost, PageIsNotFound, PageIsUnavailable } from '../src/GhostPage/index.js'
+import { GetPageFromGhost, PageIsUnavailable } from '../src/GhostPage/index.js'
 import * as Routes from '../src/routes.js'
 import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
@@ -30,20 +30,18 @@ describe('FundingPage', () => {
     }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 
-  test.prop([fc.supportedLocale(), fc.constantFrom(new PageIsUnavailable(), new PageIsNotFound())])(
-    'when the page cannot be loaded',
-    (locale, error) =>
-      Effect.gen(function* () {
-        const actual = yield* _.FundingPage.pipe(Effect.provideService(GetPageFromGhost, () => error))
+  test.prop([fc.supportedLocale()])('when the page cannot be loaded', locale =>
+    Effect.gen(function* () {
+      const actual = yield* _.FundingPage.pipe(Effect.provideService(GetPageFromGhost, () => new PageIsUnavailable()))
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 })
