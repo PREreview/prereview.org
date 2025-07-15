@@ -1,5 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Data, Effect, identity, Layer, pipe, type Record } from 'effect'
+import { Locale } from '../Context.js'
 import type { Html } from '../html.js'
 import type { SupportedLocale } from '../locales/index.js'
 import { getPage, type GhostApi } from './GetPage.js'
@@ -10,7 +11,7 @@ export class PageIsUnavailable extends Data.TaggedError('PageIsUnavailable') {}
 
 export class GetPageFromGhost extends Context.Tag('GetPageFromGhost')<
   GetPageFromGhost,
-  (id: PageId) => Effect.Effect<GhostPage, PageIsUnavailable>
+  (id: PageId) => Effect.Effect<GhostPage, PageIsUnavailable, Locale>
 >() {}
 
 export const getPageFromGhost = Effect.serviceFunctionEffect(GetPageFromGhost, identity)
@@ -22,10 +23,14 @@ export interface GhostPage {
 
 type PageId = keyof typeof pageIds
 
-const loadWithCachingClient = (id: PageId) =>
+const getLocaleForPage = <I extends PageId>(id: I): Effect.Effect<keyof (typeof pageIds)[I], never, Locale> =>
+  Effect.andThen(Locale, locale => (locale in pageIds[id] ? locale : 'en-US')) as never
+
+const loadWithCachingClient = <I extends PageId>(id: I) =>
   pipe(
-    getPage(pageIds[id]['en-US']),
-    Effect.andThen(html => ({ html, locale: 'en-US' as const })),
+    Effect.Do,
+    Effect.bind('locale', () => getLocaleForPage(id)),
+    Effect.bind('html', ({ locale }) => getPage(pageIds[id][locale] as string)),
     Effect.tapError(error => Effect.logError('Failed to load ghost page').pipe(Effect.annotateLogs({ error }))),
     Effect.catchTag('GhostPageNotFound', 'GhostPageUnavailable', () => Effect.fail(new PageIsUnavailable())),
   )
