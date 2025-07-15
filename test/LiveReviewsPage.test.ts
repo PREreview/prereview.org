@@ -26,7 +26,7 @@ describe('LiveReviewsPage', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getPageFromGhost).toHaveBeenCalledWith('6154aa157741400e8722bb10')
+      expect(getPageFromGhost).toHaveBeenCalledWith('LiveReviews')
     }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 

@@ -26,7 +26,7 @@ describe('HowToUsePage', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getPageFromGhost).toHaveBeenCalledWith('651d895e07fb34a92c7f8d28')
+      expect(getPageFromGhost).toHaveBeenCalledWith('HowToUse')
     }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 

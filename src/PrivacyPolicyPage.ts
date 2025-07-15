@@ -11,7 +11,7 @@ import * as Routes from './routes.js'
 export const PrivacyPolicyPage = Effect.gen(function* () {
   const locale = yield* Locale
 
-  const content = yield* GhostPage.getPageFromGhost('6154aa157741400e8722bb0f')
+  const content = yield* GhostPage.getPageFromGhost('PrivacyPolicy')
 
   return createPage({ content, locale })
 }).pipe(Effect.catchAll(() => HavingProblemsPage))

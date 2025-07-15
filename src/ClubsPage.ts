@@ -11,7 +11,7 @@ import * as Routes from './routes.js'
 export const ClubsPage = Effect.gen(function* () {
   const locale = yield* Locale
 
-  const content = yield* GhostPage.getPageFromGhost('64637b4c07fb34a92c7f84ec')
+  const content = yield* GhostPage.getPageFromGhost('Clubs')
 
   return createPage({ content, locale })
 }).pipe(Effect.catchAll(() => HavingProblemsPage))

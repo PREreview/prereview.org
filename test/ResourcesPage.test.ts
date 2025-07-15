@@ -26,7 +26,7 @@ describe('ResourcesPage', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getPageFromGhost).toHaveBeenCalledWith('6526c6ae07fb34a92c7f8d6f')
+      expect(getPageFromGhost).toHaveBeenCalledWith('Resources')
     }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 

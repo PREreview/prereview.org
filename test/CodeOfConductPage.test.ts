@@ -26,7 +26,7 @@ describe('CodeOfConductPage', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getPageFromGhost).toHaveBeenCalledWith('6154aa157741400e8722bb00')
+      expect(getPageFromGhost).toHaveBeenCalledWith('CodeOfConduct')
     }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 

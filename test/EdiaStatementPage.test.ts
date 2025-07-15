@@ -26,7 +26,7 @@ describe('EdiaStatementPage', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getPageFromGhost).toHaveBeenCalledWith('6154aa157741400e8722bb17')
+      expect(getPageFromGhost).toHaveBeenCalledWith('EdiaStatement')
     }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 

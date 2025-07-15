@@ -26,7 +26,7 @@ describe('ClubsPage', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getPageFromGhost).toHaveBeenCalledWith('64637b4c07fb34a92c7f84ec')
+      expect(getPageFromGhost).toHaveBeenCalledWith('Clubs')
     }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 

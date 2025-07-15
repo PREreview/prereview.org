@@ -11,7 +11,7 @@ import * as Routes from './routes.js'
 export const PeoplePage = Effect.gen(function* () {
   const locale = yield* Locale
 
-  const content = yield* GhostPage.getPageFromGhost('6154aa157741400e8722bb0a')
+  const content = yield* GhostPage.getPageFromGhost('People')
 
   return createPage({ content, locale })
 }).pipe(Effect.catchAll(() => HavingProblemsPage))
