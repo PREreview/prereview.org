@@ -1,5 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import { Context, Data, Effect, identity, Layer, pipe } from 'effect'
+import { Context, Data, Effect, identity, Layer, pipe, type Record } from 'effect'
 import type { Html } from '../html.js'
 import type { SupportedLocale } from '../locales/index.js'
 import { getPage, type GhostApi } from './GetPage.js'
@@ -73,4 +73,4 @@ const pageIds = {
   Trainings: {
     'en-US': '64639b5007fb34a92c7f8518',
   },
-}
+} satisfies Record.ReadonlyRecord<string, Partial<Record.ReadonlyRecord<SupportedLocale, string>>>
