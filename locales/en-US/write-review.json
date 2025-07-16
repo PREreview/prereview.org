@@ -552,9 +552,6 @@
   "examplesOfUnacceptableBehaviour": {
     "message": "Examples of unacceptable behaviors"
   },
-    "unacceptableBehaviourReviewingOwnPreprint": {
-    "message": "Reviewing your own preprint."
-  },
   "unacceptableBehaviourTrollingEtc": {
     "message": "Trolling, insulting or derogatory comments, and personal or political attacks."
   },
@@ -569,6 +566,9 @@
   },
   "unacceptableBehaviourSexualisedLanguage": {
     "message": "Use of sexualized language or imagery and unwelcome sexual attention or advances."
+  },
+  "unacceptableBehaviourReviewingOwnPreprint": {
+    "message": "Reviewing your own preprint."
   },
   "unacceptableBehaviourInappropriate": {
     "message": "Other conduct which could reasonably be considered inappropriate in a professional setting."

@@ -68,12 +68,12 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
 
               <div>
                 <ul>
+                  <li>${t('write-review', 'unacceptableBehaviourReviewingOwnPreprint')()}</li>
                   <li>${t('write-review', 'unacceptableBehaviourTrollingEtc')()}</li>
                   <li>${t('write-review', 'unacceptableBehaviourUnconstructive')()}</li>
                   <li>${t('write-review', 'unacceptableBehaviourHarassment')()}</li>
                   <li>${t('write-review', 'unacceptableBehaviourPublishingConfidentialInformation')()}</li>
                   <li>${t('write-review', 'unacceptableBehaviourSexualisedLanguage')()}</li>
-                  <li>${t('write-review', 'unacceptableBehaviourReviewingOwnPreprint')()}</li>
                   <li>${t('write-review', 'unacceptableBehaviourInappropriate')()}</li>
                 </ul>
               </div>
