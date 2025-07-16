@@ -4,13 +4,13 @@ import { Effect } from 'effect'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/AboutUsPage/index.js'
 import { Locale } from '../../src/Context.js'
-import { GetPageFromGhost, PageIsNotFound, PageIsUnavailable } from '../../src/GhostPage.js'
+import { GetPageFromGhost, PageIsUnavailable } from '../../src/GhostPage/index.js'
 import * as Routes from '../../src/routes.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('AboutUsPage', () => {
-  test.prop([fc.supportedLocale(), fc.html()])('when the page can be loaded', (locale, html) =>
+  test.prop([fc.supportedLocale(), fc.ghostPage()])('when the page can be loaded', (locale, page) =>
     Effect.gen(function* () {
       const actual = yield* _.AboutUsPage
 
@@ -26,29 +26,27 @@ describe('AboutUsPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(GetPageFromGhost, () => Effect.succeed(html)),
+      Effect.provideService(GetPageFromGhost, () => Effect.succeed(page)),
       EffectTest.run,
     ),
   )
 
-  test.prop([fc.supportedLocale(), fc.constantFrom(new PageIsUnavailable(), new PageIsNotFound())])(
-    'when the page cannot be loaded',
-    async (locale, error) =>
-      Effect.gen(function* () {
-        const actual = yield* _.AboutUsPage
+  test.prop([fc.supportedLocale()])('when the page cannot be loaded', async locale =>
+    Effect.gen(function* () {
+      const actual = yield* _.AboutUsPage
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provideService(Locale, locale),
-        Effect.provideService(GetPageFromGhost, () => Effect.fail(error)),
-        EffectTest.run,
-      ),
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(
+      Effect.provideService(Locale, locale),
+      Effect.provideService(GetPageFromGhost, () => new PageIsUnavailable()),
+      EffectTest.run,
+    ),
   )
 })

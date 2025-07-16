@@ -1,8 +1,8 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
-import { Context, Data, Effect, flow, identity, Layer, Match, pipe, Redacted, Schema } from 'effect'
+import { Context, Data, Effect, flow, identity, Match, pipe, Redacted, Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { URL } from 'url'
-import { Html, rawHtml, sanitizeHtml } from './html.js'
+import { Html, rawHtml, sanitizeHtml } from '../html.js'
 
 const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
   strict: true,
@@ -17,17 +17,6 @@ const GhostPageSchema = Schema.Struct({
     }),
   ),
 })
-
-export class PageIsNotFound extends Data.TaggedError('PageIsNotFound') {}
-
-export class PageIsUnavailable extends Data.TaggedError('PageIsUnavailable') {}
-
-export class GetPageFromGhost extends Context.Tag('GetPageFromGhost')<
-  GetPageFromGhost,
-  (id: string) => Effect.Effect<Html, PageIsUnavailable | PageIsNotFound>
->() {}
-
-export const getPageFromGhost = Effect.serviceFunctionEffect(GetPageFromGhost, identity)
 
 export const getPage = (id: string) =>
   Effect.gen(function* () {
@@ -59,20 +48,3 @@ export class GhostPageUnavailable extends Data.TaggedError('GhostPageUnavailable
 export class GhostPageNotFound extends Data.TaggedError('GhostPageNotFound') {}
 
 export class GhostApi extends Context.Tag('GhostApi')<GhostApi, { key: Redacted.Redacted }>() {}
-
-const loadWithCachingClient = (id: string) =>
-  pipe(
-    getPage(id),
-    Effect.tapError(error => Effect.logError('Failed to load ghost page').pipe(Effect.annotateLogs({ error }))),
-    Effect.catchTag('GhostPageNotFound', () => Effect.fail(new PageIsNotFound())),
-    Effect.catchTag('GhostPageUnavailable', () => Effect.fail(new PageIsUnavailable())),
-  )
-
-export const layer = Layer.effect(
-  GetPageFromGhost,
-  Effect.gen(function* () {
-    const context = yield* Effect.context<GhostApi | HttpClient.HttpClient>()
-
-    return id => pipe(loadWithCachingClient(id), Effect.provide(context))
-  }),
-)

@@ -101,7 +101,7 @@ describe('StartNow', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Uuid.GenerateUuid, Effect.succeed(commentId)),
-          Effect.provideService(Comments.HandleCommentCommand, () => Effect.fail(error)),
+          Effect.provideService(Comments.HandleCommentCommand, () => error),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
             Effect.succeed(new Comments.ExpectedToStartAComment()),
           ),

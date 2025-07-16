@@ -4,13 +4,13 @@ import { Effect } from 'effect'
 import { Status } from 'hyper-ts'
 import * as _ from '../src/CodeOfConductPage.js'
 import { Locale } from '../src/Context.js'
-import { GetPageFromGhost, PageIsNotFound, PageIsUnavailable } from '../src/GhostPage.js'
+import { GetPageFromGhost, PageIsUnavailable } from '../src/GhostPage/index.js'
 import * as Routes from '../src/routes.js'
 import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 
 describe('CodeOfConductPage', () => {
-  test.prop([fc.supportedLocale(), fc.html()])('when the page can be loaded', (locale, page) =>
+  test.prop([fc.supportedLocale(), fc.ghostPage()])('when the page can be loaded', (locale, page) =>
     Effect.gen(function* () {
       const getPageFromGhost = jest.fn<typeof GetPageFromGhost.Service>(_ => Effect.succeed(page))
 
@@ -26,26 +26,24 @@ describe('CodeOfConductPage', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getPageFromGhost).toHaveBeenCalledWith('6154aa157741400e8722bb00')
+      expect(getPageFromGhost).toHaveBeenCalledWith('CodeOfConduct')
     }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 
-  test.prop([fc.supportedLocale(), fc.constantFrom(new PageIsUnavailable(), new PageIsNotFound())])(
-    'when the page cannot be loaded',
-    (locale, error) =>
-      Effect.gen(function* () {
-        const actual = yield* _.CodeOfConductPage.pipe(
-          Effect.provideService(GetPageFromGhost, () => Effect.fail(error)),
-        )
+  test.prop([fc.supportedLocale()])('when the page cannot be loaded', locale =>
+    Effect.gen(function* () {
+      const actual = yield* _.CodeOfConductPage.pipe(
+        Effect.provideService(GetPageFromGhost, () => new PageIsUnavailable()),
+      )
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 })

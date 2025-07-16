@@ -61,7 +61,7 @@ import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Contex
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import * as FeatureFlags from '../src/FeatureFlags.js'
-import { GhostApi } from '../src/GhostPage.js'
+import * as Ghost from '../src/GhostPage/index.js'
 import { rawHtml } from '../src/html.js'
 import type {
   AuthorInviteStoreEnv,
@@ -1334,7 +1334,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             }),
             Nodemailer.layer(nodemailer),
             Layer.succeed(FetchHttpClient.Fetch, fetch as typeof globalThis.fetch),
-            Layer.succeed(GhostApi, { key: Redacted.make('key') }),
+            Layer.succeed(Ghost.GhostApi, { key: Redacted.make('key') }),
             Layer.succeed(SlackApiConfig, { apiToken: Redacted.make(''), apiUpdate: true }),
             Layer.succeed(CloudinaryApiConfig, {
               cloudName: 'prereview',

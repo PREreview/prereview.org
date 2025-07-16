@@ -11,7 +11,7 @@ import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from
 import { ExpressConfigLive } from './ExpressServer.js'
 import * as FeatureFlags from './FeatureFlags.js'
 import * as FptsToEffect from './FptsToEffect.js'
-import { GhostApi } from './GhostPage.js'
+import { GhostApi } from './GhostPage/index.js'
 import * as Nodemailer from './nodemailer.js'
 import * as OrcidOauth from './OrcidOauth.js'
 import * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
