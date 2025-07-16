@@ -57,7 +57,6 @@ export function competingInterestsForm(
 
           <div>
             <ul>
-              <li>${t('write-review', 'conflictAuthorOfPreprint')()}</li>
               <li>${t('write-review', 'conflictPersonalRelationship')()}</li>
               <li>${t('write-review', 'conflictRivalOfAuthor')()}</li>
               <li>${t('write-review', 'conflictRecentlyWorkedTogether')()}</li>
