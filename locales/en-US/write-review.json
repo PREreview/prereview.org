@@ -498,9 +498,6 @@
   "examples": {
     "message": "Examples"
   },
-  "conflictAuthorOfPreprint": {
-    "message": "You are the author of the preprint"
-  },
   "conflictPersonalRelationship": {
     "message": "You have a personal relationship with the author."
   },
