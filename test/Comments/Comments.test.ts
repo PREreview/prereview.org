@@ -70,26 +70,26 @@ describe('when in progress', () => {
   test('can choose persona', () =>
     given(started)
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
-      .then(new _.PersonaWasChosen({ persona: 'pseudonym' })))
+      .then(new _.PersonaForCommentWasChosen({ persona: 'pseudonym' })))
 
   test('can declare competing interests', () =>
     given(started)
       .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
-      .then(new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() })))
+      .then(new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() })))
 
   test('can agree to the code of conduct', () =>
-    given(started).when(new _.AgreeToCodeOfConduct()).then(new _.CodeOfConductWasAgreed()))
+    given(started).when(new _.AgreeToCodeOfConduct()).then(new _.CodeOfConductForCommentWasAgreed()))
 
   test('re-agreeing to the code of conduct does nothing', () =>
-    given(started, new _.CodeOfConductWasAgreed()).when(new _.AgreeToCodeOfConduct()).thenNothing())
+    given(started, new _.CodeOfConductForCommentWasAgreed()).when(new _.AgreeToCodeOfConduct()).thenNothing())
 
   test('can confirm the existence of a verified email address', () =>
     given(started)
       .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
-      .then(new _.ExistenceOfVerifiedEmailAddressWasConfirmed()))
+      .then(new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed()))
 
   test('re-confirming the existence of a verified email address does nothing', () =>
-    given(started, new _.ExistenceOfVerifiedEmailAddressWasConfirmed())
+    given(started, new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed())
       .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
       .thenNothing())
 
@@ -100,9 +100,9 @@ describe('when in progress', () => {
     given(
       started,
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
     )
       .when(new _.PublishComment())
       .thenError(new _.CommentIsIncomplete()))
@@ -120,10 +120,10 @@ describe('when ready for publication', () => {
   const minimumEventsToBeReady = [
     new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
     new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-    new _.PersonaWasChosen({ persona: 'public' }),
-    new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-    new _.CodeOfConductWasAgreed(),
-    new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
+    new _.PersonaForCommentWasChosen({ persona: 'public' }),
+    new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+    new _.CodeOfConductForCommentWasAgreed(),
+    new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
   ]
 
   test('cannot be started again', () =>
@@ -139,7 +139,7 @@ describe('when ready for publication', () => {
   test('can choose persona', () =>
     given(...minimumEventsToBeReady)
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
-      .then(new _.PersonaWasChosen({ persona: 'pseudonym' })))
+      .then(new _.PersonaForCommentWasChosen({ persona: 'pseudonym' })))
 
   test('can re-declare competing interests', () =>
     given(...minimumEventsToBeReady)
@@ -149,7 +149,7 @@ describe('when ready for publication', () => {
         }),
       )
       .then(
-        new _.CompetingInterestsWereDeclared({
+        new _.CompetingInterestsForCommentWereDeclared({
           competingInterests: Option.some(NonEmptyString.NonEmptyString('Some competing interests.')),
         }),
       ))
@@ -167,12 +167,12 @@ describe('when ready for publication', () => {
   test('can request publication', () =>
     given(...minimumEventsToBeReady)
       .when(new _.PublishComment())
-      .then(new _.CommentPublicationWasRequested()))
+      .then(new _.PublicationOfCommentWasRequested()))
 
   test('DOI can be marked as assigned', () =>
     given(...minimumEventsToBeReady)
       .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
-      .then(new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
+      .then(new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
 
   test('cannot be marked as published', () =>
     given(...minimumEventsToBeReady)
@@ -185,11 +185,11 @@ describe('when being published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.CommentPublicationWasRequested(),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.PublicationOfCommentWasRequested(),
     )
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentIsBeingPublished()))
@@ -198,11 +198,11 @@ describe('when being published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.CommentPublicationWasRequested(),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.PublicationOfCommentWasRequested(),
     )
       .when(new _.EnterComment({ comment: html`<p>Some different comment.</p>` }))
       .thenError(new _.CommentIsBeingPublished()))
@@ -211,11 +211,11 @@ describe('when being published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.CommentPublicationWasRequested(),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.PublicationOfCommentWasRequested(),
     )
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
       .thenError(new _.CommentIsBeingPublished()))
@@ -224,11 +224,11 @@ describe('when being published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.CommentPublicationWasRequested(),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.PublicationOfCommentWasRequested(),
     )
       .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
       .thenError(new _.CommentIsBeingPublished()))
@@ -237,11 +237,11 @@ describe('when being published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.CommentPublicationWasRequested(),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.PublicationOfCommentWasRequested(),
     )
       .when(new _.AgreeToCodeOfConduct())
       .thenError(new _.CommentIsBeingPublished()))
@@ -250,11 +250,11 @@ describe('when being published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.CommentPublicationWasRequested(),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.PublicationOfCommentWasRequested(),
     )
       .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
       .thenError(new _.CommentIsBeingPublished()))
@@ -263,11 +263,11 @@ describe('when being published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.CommentPublicationWasRequested(),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.PublicationOfCommentWasRequested(),
     )
       .when(new _.PublishComment())
       .thenNothing())
@@ -277,24 +277,24 @@ describe('when being published', () => {
       given(
         new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-        new _.PersonaWasChosen({ persona: 'public' }),
-        new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-        new _.CodeOfConductWasAgreed(),
-        new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-        new _.CommentPublicationWasRequested(),
+        new _.PersonaForCommentWasChosen({ persona: 'public' }),
+        new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+        new _.CodeOfConductForCommentWasAgreed(),
+        new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+        new _.PublicationOfCommentWasRequested(),
       )
         .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
-        .then(new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
+        .then(new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
 
     test('cannot be marked as published', () =>
       given(
         new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-        new _.PersonaWasChosen({ persona: 'public' }),
-        new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-        new _.CodeOfConductWasAgreed(),
-        new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-        new _.CommentPublicationWasRequested(),
+        new _.PersonaForCommentWasChosen({ persona: 'public' }),
+        new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+        new _.CodeOfConductForCommentWasAgreed(),
+        new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+        new _.PublicationOfCommentWasRequested(),
       )
         .when(new _.MarkCommentAsPublished())
         .thenError(new _.DoiIsNotAssigned()))
@@ -305,12 +305,12 @@ describe('when being published', () => {
       given(
         new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-        new _.PersonaWasChosen({ persona: 'public' }),
-        new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-        new _.CodeOfConductWasAgreed(),
-        new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-        new _.CommentPublicationWasRequested(),
-        new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+        new _.PersonaForCommentWasChosen({ persona: 'public' }),
+        new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+        new _.CodeOfConductForCommentWasAgreed(),
+        new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+        new _.PublicationOfCommentWasRequested(),
+        new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       )
         .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
         .thenError(new _.DoiIsAlreadyAssigned()))
@@ -319,12 +319,12 @@ describe('when being published', () => {
       given(
         new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
         new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-        new _.PersonaWasChosen({ persona: 'public' }),
-        new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-        new _.CodeOfConductWasAgreed(),
-        new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-        new _.CommentPublicationWasRequested(),
-        new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+        new _.PersonaForCommentWasChosen({ persona: 'public' }),
+        new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+        new _.CodeOfConductForCommentWasAgreed(),
+        new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+        new _.PublicationOfCommentWasRequested(),
+        new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       )
         .when(new _.MarkCommentAsPublished())
         .then(new _.CommentWasPublished()))
@@ -336,11 +336,11 @@ describe('when published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
       .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
@@ -350,11 +350,11 @@ describe('when published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
       .when(new _.EnterComment({ comment: html`<p>Some different comment.</p>` }))
@@ -364,11 +364,11 @@ describe('when published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
       .when(new _.ChoosePersona({ persona: 'pseudonym' }))
@@ -378,11 +378,11 @@ describe('when published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
       .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
@@ -392,11 +392,11 @@ describe('when published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
       .when(new _.AgreeToCodeOfConduct())
@@ -406,11 +406,11 @@ describe('when published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
       .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
@@ -420,11 +420,11 @@ describe('when published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
       .when(new _.PublishComment())
@@ -434,11 +434,11 @@ describe('when published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
       .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
@@ -448,11 +448,11 @@ describe('when published', () => {
     given(
       new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }),
       new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` }),
-      new _.PersonaWasChosen({ persona: 'public' }),
-      new _.CompetingInterestsWereDeclared({ competingInterests: Option.none() }),
-      new _.CodeOfConductWasAgreed(),
-      new _.ExistenceOfVerifiedEmailAddressWasConfirmed(),
-      new _.DoiWasAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.PersonaForCommentWasChosen({ persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed(),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
       .when(new _.MarkCommentAsPublished())

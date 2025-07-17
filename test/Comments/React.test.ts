@@ -163,13 +163,13 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
   )
 })
 
-describe('PublishCommentWhenDoiWasAssigned', () => {
-  test.prop([fc.uuid(), fc.doiWasAssigned()])('published comment', (commentId, event) =>
+describe('PublishCommentWhenCommentWasAssignedADoi', () => {
+  test.prop([fc.uuid(), fc.commentWasAssignedADoi()])('published comment', (commentId, event) =>
     Effect.gen(function* () {
       const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
       yield* Effect.provideService(
-        _.PublishCommentWhenDoiWasAssigned({ commentId, event }),
+        _.PublishCommentWhenCommentWasAssignedADoi({ commentId, event }),
         Comments.HandleCommentCommand,
         handleCommentCommand,
       )
@@ -184,12 +184,12 @@ describe('PublishCommentWhenDoiWasAssigned', () => {
     ),
   )
 
-  test.prop([fc.uuid(), fc.doiWasAssigned(), fc.commentError()])(
+  test.prop([fc.uuid(), fc.commentWasAssignedADoi(), fc.commentError()])(
     "when the comment can't be updated",
     (commentId, event, error) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
-          _.PublishCommentWhenDoiWasAssigned({ commentId, event }),
+          _.PublishCommentWhenCommentWasAssignedADoi({ commentId, event }),
           Effect.provideService(Comments.HandleCommentCommand, () => error),
           Effect.either,
         )
@@ -201,10 +201,10 @@ describe('PublishCommentWhenDoiWasAssigned', () => {
       ),
   )
 
-  test.prop([fc.uuid(), fc.doiWasAssigned()])("when the comment can't be published", (commentId, event) =>
+  test.prop([fc.uuid(), fc.commentWasAssignedADoi()])("when the comment can't be published", (commentId, event) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
-        _.PublishCommentWhenDoiWasAssigned({ commentId, event }),
+        _.PublishCommentWhenCommentWasAssignedADoi({ commentId, event }),
         Effect.provideService(Comments.PublishCommentOnZenodo, () =>
           Effect.fail(new Comments.UnableToPublishComment({})),
         ),

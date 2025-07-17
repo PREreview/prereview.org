@@ -1484,34 +1484,35 @@ export const commentWasEntered = (): fc.Arbitrary<Comments.CommentWasEntered> =>
     })
     .map(data => new Comments.CommentWasEntered(data))
 
-export const personaWasChosen = (): fc.Arbitrary<Comments.PersonaWasChosen> =>
+export const personaForCommentWasChosen = (): fc.Arbitrary<Comments.PersonaForCommentWasChosen> =>
   fc
     .record({
       persona: constantFrom('public', 'pseudonym'),
     })
-    .map(data => new Comments.PersonaWasChosen(data))
+    .map(data => new Comments.PersonaForCommentWasChosen(data))
 
-export const competingInterestsWereDeclared = (): fc.Arbitrary<Comments.CompetingInterestsWereDeclared> =>
-  fc
-    .record({
-      competingInterests: maybe(nonEmptyString()),
-    })
-    .map(data => new Comments.CompetingInterestsWereDeclared(data))
+export const competingInterestsForCommentWereDeclared =
+  (): fc.Arbitrary<Comments.CompetingInterestsForCommentWereDeclared> =>
+    fc
+      .record({
+        competingInterests: maybe(nonEmptyString()),
+      })
+      .map(data => new Comments.CompetingInterestsForCommentWereDeclared(data))
 
-export const existenceOfVerifiedEmailAddressWasConfirmed =
-  (): fc.Arbitrary<Comments.ExistenceOfVerifiedEmailAddressWasConfirmed> =>
-    fc.constant(new Comments.ExistenceOfVerifiedEmailAddressWasConfirmed())
+export const existenceOfVerifiedEmailAddressForCommentWasConfirmed =
+  (): fc.Arbitrary<Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed> =>
+    fc.constant(new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed())
 
-export const commentPublicationWasRequested = (): fc.Arbitrary<Comments.CommentPublicationWasRequested> =>
-  fc.constant(new Comments.CommentPublicationWasRequested())
+export const publicationOfCommentWasRequested = (): fc.Arbitrary<Comments.PublicationOfCommentWasRequested> =>
+  fc.constant(new Comments.PublicationOfCommentWasRequested())
 
-export const doiWasAssigned = (): fc.Arbitrary<Comments.DoiWasAssigned> =>
+export const commentWasAssignedADoi = (): fc.Arbitrary<Comments.CommentWasAssignedADoi> =>
   fc
     .record({
       id: fc.integer(),
       doi: doi(),
     })
-    .map(data => new Comments.DoiWasAssigned(data))
+    .map(data => new Comments.CommentWasAssignedADoi(data))
 
 export const commentWasPublished = (): fc.Arbitrary<Comments.CommentWasPublished> =>
   fc.constant(new Comments.CommentWasPublished())
@@ -1520,11 +1521,11 @@ export const commentEvent = (): fc.Arbitrary<Comments.CommentEvent> =>
   fc.oneof(
     commentWasStarted(),
     commentWasEntered(),
-    personaWasChosen(),
-    competingInterestsWereDeclared(),
-    existenceOfVerifiedEmailAddressWasConfirmed(),
-    commentPublicationWasRequested(),
-    doiWasAssigned(),
+    personaForCommentWasChosen(),
+    competingInterestsForCommentWereDeclared(),
+    existenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+    publicationOfCommentWasRequested(),
+    commentWasAssignedADoi(),
     commentWasPublished(),
   )
 

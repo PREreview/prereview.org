@@ -17,31 +17,34 @@ export class CommentWasEntered extends Schema.TaggedClass<CommentWasEntered>()('
   comment: HtmlSchema,
 }) {}
 
-export class PersonaWasChosen extends Schema.TaggedClass<PersonaWasChosen>()('PersonaWasChosen', {
-  persona: Schema.Literal('public', 'pseudonym'),
-}) {}
+export class PersonaForCommentWasChosen extends Schema.TaggedClass<PersonaForCommentWasChosen>()(
+  'PersonaForCommentWasChosen',
+  {
+    persona: Schema.Literal('public', 'pseudonym'),
+  },
+) {}
 
-export class CompetingInterestsWereDeclared extends Schema.TaggedClass<CompetingInterestsWereDeclared>()(
-  'CompetingInterestsWereDeclared',
+export class CompetingInterestsForCommentWereDeclared extends Schema.TaggedClass<CompetingInterestsForCommentWereDeclared>()(
+  'CompetingInterestsForCommentWereDeclared',
   { competingInterests: Schema.OptionFromNullOr(NonEmptyString.NonEmptyStringSchema) },
 ) {}
 
-export class CodeOfConductWasAgreed extends Schema.TaggedClass<CodeOfConductWasAgreed>()(
-  'CodeOfConductWasAgreed',
+export class CodeOfConductForCommentWasAgreed extends Schema.TaggedClass<CodeOfConductForCommentWasAgreed>()(
+  'CodeOfConductForCommentWasAgreed',
   {},
 ) {}
 
-export class ExistenceOfVerifiedEmailAddressWasConfirmed extends Schema.TaggedClass<ExistenceOfVerifiedEmailAddressWasConfirmed>()(
-  'ExistenceOfVerifiedEmailAddressWasConfirmed',
+export class ExistenceOfVerifiedEmailAddressForCommentWasConfirmed extends Schema.TaggedClass<ExistenceOfVerifiedEmailAddressForCommentWasConfirmed>()(
+  'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed',
   {},
 ) {}
 
-export class CommentPublicationWasRequested extends Schema.TaggedClass<CommentPublicationWasRequested>()(
-  'CommentPublicationWasRequested',
+export class PublicationOfCommentWasRequested extends Schema.TaggedClass<PublicationOfCommentWasRequested>()(
+  'PublicationOfCommentWasRequested',
   {},
 ) {}
 
-export class DoiWasAssigned extends Schema.TaggedClass<DoiWasAssigned>()('DoiWasAssigned', {
+export class CommentWasAssignedADoi extends Schema.TaggedClass<CommentWasAssignedADoi>()('CommentWasAssignedADoi', {
   id: Schema.Number,
   doi: Doi.DoiSchema,
 }) {}
@@ -53,11 +56,11 @@ export type CommentEvent = typeof CommentEvent.Type
 export const CommentEvent = Schema.Union(
   CommentWasStarted,
   CommentWasEntered,
-  PersonaWasChosen,
-  CompetingInterestsWereDeclared,
-  CodeOfConductWasAgreed,
-  ExistenceOfVerifiedEmailAddressWasConfirmed,
-  CommentPublicationWasRequested,
-  DoiWasAssigned,
+  PersonaForCommentWasChosen,
+  CompetingInterestsForCommentWereDeclared,
+  CodeOfConductForCommentWasAgreed,
+  ExistenceOfVerifiedEmailAddressForCommentWasConfirmed,
+  PublicationOfCommentWasRequested,
+  CommentWasAssignedADoi,
   CommentWasPublished,
 )

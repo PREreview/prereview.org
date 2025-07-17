@@ -5,9 +5,9 @@ import { it, test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Array, Effect, Equal, Layer, TestClock } from 'effect'
 import {
-  CodeOfConductWasAgreed,
+  CodeOfConductForCommentWasAgreed,
   CommentEvent,
-  ExistenceOfVerifiedEmailAddressWasConfirmed,
+  ExistenceOfVerifiedEmailAddressForCommentWasConfirmed,
 } from '../src/Comments/Events.js'
 import { DatasetReviewEvent } from '../src/DatasetReviews/Events.js'
 import * as EventStore from '../src/EventStore.js'
@@ -249,20 +249,32 @@ it.prop([
 test.each([
   [
     'one type',
-    ['CodeOfConductWasAgreed'],
-    [new CodeOfConductWasAgreed(), new CodeOfConductWasAgreed(), new CodeOfConductWasAgreed()],
+    ['CodeOfConductForCommentWasAgreed'],
+    [
+      new CodeOfConductForCommentWasAgreed(),
+      new CodeOfConductForCommentWasAgreed(),
+      new CodeOfConductForCommentWasAgreed(),
+    ],
     3,
   ],
   [
     'multiple types',
-    ['CodeOfConductWasAgreed', 'ExistenceOfVerifiedEmailAddressWasConfirmed'],
-    [new CodeOfConductWasAgreed(), new ExistenceOfVerifiedEmailAddressWasConfirmed(), new CodeOfConductWasAgreed()],
+    ['CodeOfConductForCommentWasAgreed', 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'],
+    [
+      new CodeOfConductForCommentWasAgreed(),
+      new ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new CodeOfConductForCommentWasAgreed(),
+    ],
     3,
   ],
   [
     'other types',
-    ['CodeOfConductWasAgreed'],
-    [new CodeOfConductWasAgreed(), new ExistenceOfVerifiedEmailAddressWasConfirmed(), new CodeOfConductWasAgreed()],
+    ['CodeOfConductForCommentWasAgreed'],
+    [
+      new CodeOfConductForCommentWasAgreed(),
+      new ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
+      new CodeOfConductForCommentWasAgreed(),
+    ],
     2,
   ],
 ] as Array.NonEmptyReadonlyArray<

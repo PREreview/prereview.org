@@ -39,10 +39,10 @@ const onChoosePersona = (command: Commands.ChoosePersona) =>
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', () => Either.left(new Errors.CommentHasNotBeenStarted())),
     Match.tag('CommentInProgress', () =>
-      Either.right(Array.of(new Events.PersonaWasChosen({ persona: command.persona }))),
+      Either.right(Array.of(new Events.PersonaForCommentWasChosen({ persona: command.persona }))),
     ),
     Match.tag('CommentReadyForPublishing', () =>
-      Either.right(Array.of(new Events.PersonaWasChosen({ persona: command.persona }))),
+      Either.right(Array.of(new Events.PersonaForCommentWasChosen({ persona: command.persona }))),
     ),
     Match.tag('CommentBeingPublished', () => Either.left(new Errors.CommentIsBeingPublished())),
     Match.tag('CommentPublished', () => Either.left(new Errors.CommentWasAlreadyPublished())),
@@ -54,7 +54,9 @@ const onAgreeToCodeOfConduct = () =>
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', () => Either.left(new Errors.CommentHasNotBeenStarted())),
     Match.tag('CommentInProgress', state =>
-      Either.right(!state.codeOfConductAgreed ? Array.of(new Events.CodeOfConductWasAgreed()) : Array.empty()),
+      Either.right(
+        !state.codeOfConductAgreed ? Array.of(new Events.CodeOfConductForCommentWasAgreed()) : Array.empty(),
+      ),
     ),
     Match.tag('CommentReadyForPublishing', () => Either.right(Array.empty())),
     Match.tag('CommentBeingPublished', () => Either.left(new Errors.CommentIsBeingPublished())),
@@ -68,12 +70,16 @@ const onDeclareCompetingInterests = (command: Commands.DeclareCompetingInterests
     Match.tag('CommentNotStarted', () => Either.left(new Errors.CommentHasNotBeenStarted())),
     Match.tag('CommentInProgress', () =>
       Either.right(
-        Array.of(new Events.CompetingInterestsWereDeclared({ competingInterests: command.competingInterests })),
+        Array.of(
+          new Events.CompetingInterestsForCommentWereDeclared({ competingInterests: command.competingInterests }),
+        ),
       ),
     ),
     Match.tag('CommentReadyForPublishing', () =>
       Either.right(
-        Array.of(new Events.CompetingInterestsWereDeclared({ competingInterests: command.competingInterests })),
+        Array.of(
+          new Events.CompetingInterestsForCommentWereDeclared({ competingInterests: command.competingInterests }),
+        ),
       ),
     ),
     Match.tag('CommentBeingPublished', () => Either.left(new Errors.CommentIsBeingPublished())),
@@ -88,7 +94,7 @@ const onConfirmExistenceOfVerifiedEmailAddress = () =>
     Match.tag('CommentInProgress', state =>
       Either.right(
         !state.verifiedEmailAddressExists
-          ? Array.of(new Events.ExistenceOfVerifiedEmailAddressWasConfirmed())
+          ? Array.of(new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed())
           : Array.empty(),
       ),
     ),
@@ -103,7 +109,7 @@ const onPublishComment = () =>
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', () => Either.left(new Errors.CommentHasNotBeenStarted())),
     Match.tag('CommentInProgress', () => Either.left(new Errors.CommentIsIncomplete())),
-    Match.tag('CommentReadyForPublishing', () => Either.right(Array.of(new Events.CommentPublicationWasRequested()))),
+    Match.tag('CommentReadyForPublishing', () => Either.right(Array.of(new Events.PublicationOfCommentWasRequested()))),
     Match.tag('CommentBeingPublished', () => Either.right(Array.empty())),
     Match.tag('CommentPublished', () => Either.left(new Errors.CommentWasAlreadyPublished())),
     Match.exhaustive,
@@ -115,11 +121,11 @@ const onMarkDoiAsAssigned = (command: Commands.MarkDoiAsAssigned) =>
     Match.tag('CommentNotStarted', () => Either.left(new Errors.CommentHasNotBeenStarted())),
     Match.tag('CommentInProgress', () => Either.left(new Errors.CommentIsIncomplete())),
     Match.tag('CommentReadyForPublishing', () =>
-      Either.right(Array.of(new Events.DoiWasAssigned({ doi: command.doi, id: command.id }))),
+      Either.right(Array.of(new Events.CommentWasAssignedADoi({ doi: command.doi, id: command.id }))),
     ),
     Match.tag('CommentBeingPublished', state =>
       state.doi === undefined || state.id === undefined
-        ? Either.right(Array.of(new Events.DoiWasAssigned({ doi: command.doi, id: command.id })))
+        ? Either.right(Array.of(new Events.CommentWasAssignedADoi({ doi: command.doi, id: command.id })))
         : Either.left(new Errors.DoiIsAlreadyAssigned()),
     ),
     Match.tag('CommentPublished', () => Either.left(new Errors.CommentWasAlreadyPublished())),

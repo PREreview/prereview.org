@@ -129,7 +129,7 @@ export const ReactToCommentEvents: Layer.Layer<
     const dequeue = yield* PubSub.subscribe(commentEvents)
 
     yield* pipe(
-      eventStore.getAllEventsOfType('CommentPublicationWasRequested', 'DoiWasAssigned'),
+      eventStore.getAllEventsOfType('PublicationOfCommentWasRequested', 'CommentWasAssignedADoi'),
       Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
       Effect.bindTo('commentId'),
       Effect.bind('inputForCommentZenodoRecord', ({ commentId }) =>
@@ -155,7 +155,7 @@ export const ReactToCommentEvents: Layer.Layer<
           Match.when({ event: { _tag: 'CommentWasStarted' } }, ({ commentId }) =>
             React.CheckIfUserHasAVerifiedEmailAddress(commentId),
           ),
-          Match.when({ event: { _tag: 'CommentPublicationWasRequested' } }, ({ commentId }) =>
+          Match.when({ event: { _tag: 'PublicationOfCommentWasRequested' } }, ({ commentId }) =>
             pipe(
               eventStore.getEvents(commentId),
               Effect.andThen(Struct.get('events')),
@@ -165,8 +165,8 @@ export const ReactToCommentEvents: Layer.Layer<
               ),
             ),
           ),
-          Match.when({ event: { _tag: 'DoiWasAssigned' } }, ({ commentId, event }) =>
-            React.PublishCommentWhenDoiWasAssigned({ commentId, event }),
+          Match.when({ event: { _tag: 'CommentWasAssignedADoi' } }, ({ commentId, event }) =>
+            React.PublishCommentWhenCommentWasAssignedADoi({ commentId, event }),
           ),
           Match.when({ event: { _tag: 'CommentWasPublished' } }, ({ commentId }) =>
             pipe(

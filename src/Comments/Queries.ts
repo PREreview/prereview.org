@@ -3,7 +3,7 @@ import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from '../types/index.js'
 import type { InputForCommentZenodoRecord } from './Context.js'
 import * as Errors from './Errors.js'
-import type { CommentEvent, CommentPublicationWasRequested, DoiWasAssigned } from './Events.js'
+import type { CommentEvent, CommentWasAssignedADoi, PublicationOfCommentWasRequested } from './Events.js'
 import { EvolveComment } from './Evolve.js'
 import * as ExpectedCommand from './ExpectedCommand.js'
 import { CommentNotStarted, type CommentState } from './State.js'
@@ -138,7 +138,7 @@ export const buildInputForCommentZenodoRecord = (
   )
   const persona = pipe(
     events,
-    Array.findLast(event => event._tag === 'PersonaWasChosen'),
+    Array.findLast(event => event._tag === 'PersonaForCommentWasChosen'),
     Option.map(event => event.persona),
   )
   const comment = pipe(
@@ -148,7 +148,7 @@ export const buildInputForCommentZenodoRecord = (
   )
   const competingInterests = pipe(
     events,
-    Array.findLast(event => event._tag === 'CompetingInterestsWereDeclared'),
+    Array.findLast(event => event._tag === 'CompetingInterestsForCommentWereDeclared'),
     Option.map(event => event.competingInterests),
   )
 
@@ -163,14 +163,14 @@ export class NoCommentsInNeedOfADoi extends Data.TaggedClass('NoCommentsInNeedOf
 
 export const GetACommentInNeedOfADoi = (
   events: ReadonlyArray<{
-    readonly event: CommentPublicationWasRequested | DoiWasAssigned
+    readonly event: PublicationOfCommentWasRequested | CommentWasAssignedADoi
     readonly resourceId: Uuid.Uuid
   }>,
 ): Either.Either<Uuid.Uuid, NoCommentsInNeedOfADoi> => {
   const hasADoi = new Set()
 
   for (const { event, resourceId } of events.toReversed()) {
-    if (event._tag === 'DoiWasAssigned') {
+    if (event._tag === 'CommentWasAssignedADoi') {
       hasADoi.add(resourceId)
       continue
     }

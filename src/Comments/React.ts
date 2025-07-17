@@ -12,7 +12,7 @@ import {
   UnableToHandleCommand,
 } from './Context.js'
 import type { CommentError } from './Errors.js'
-import type { DoiWasAssigned } from './Events.js'
+import type { CommentWasAssignedADoi } from './Events.js'
 
 type ToDo = unknown
 
@@ -72,12 +72,12 @@ export const AssignCommentADoiWhenPublicationWasRequested = ({
     )
   })
 
-export const PublishCommentWhenDoiWasAssigned = ({
+export const PublishCommentWhenCommentWasAssignedADoi = ({
   commentId,
   event,
 }: {
   commentId: Uuid.Uuid
-  event: DoiWasAssigned
+  event: CommentWasAssignedADoi
 }): Effect.Effect<void, ToDo, HandleCommentCommand | PublishCommentOnZenodo> =>
   Effect.gen(function* () {
     const handleCommand = yield* HandleCommentCommand

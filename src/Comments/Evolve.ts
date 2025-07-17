@@ -30,7 +30,7 @@ const onCommentWasEntered = (event: Events.CommentWasEntered) =>
     Match.exhaustive,
   )
 
-const onPersonaWasChosen = (event: Events.PersonaWasChosen) =>
+const onPersonaForCommentWasChosen = (event: Events.PersonaForCommentWasChosen) =>
   flow(
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', comment => comment),
@@ -44,7 +44,7 @@ const onPersonaWasChosen = (event: Events.PersonaWasChosen) =>
     Match.exhaustive,
   )
 
-const onCompetingInterestsWereDeclared = (event: Events.CompetingInterestsWereDeclared) =>
+const onCompetingInterestsForCommentWereDeclared = (event: Events.CompetingInterestsForCommentWereDeclared) =>
   flow(
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', comment => comment),
@@ -61,7 +61,7 @@ const onCompetingInterestsWereDeclared = (event: Events.CompetingInterestsWereDe
     Match.exhaustive,
   )
 
-const onCodeOfConductWasAgreed = () =>
+const onCodeOfConductForCommentWasAgreed = () =>
   flow(
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', comment => comment),
@@ -72,7 +72,7 @@ const onCodeOfConductWasAgreed = () =>
     Match.exhaustive,
   )
 
-const onExistenceOfVerifiedEmailAddressWasConfirmed = () =>
+const onExistenceOfVerifiedEmailAddressForCommentWasConfirmed = () =>
   flow(
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', comment => comment),
@@ -86,7 +86,7 @@ const onExistenceOfVerifiedEmailAddressWasConfirmed = () =>
     Match.exhaustive,
   )
 
-const onCommentPublicationWasRequested = () =>
+const onPublicationOfCommentWasRequested = () =>
   flow(
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', comment => comment),
@@ -97,7 +97,7 @@ const onCommentPublicationWasRequested = () =>
     Match.exhaustive,
   )
 
-const onDoiWasAssigned = (event: Events.DoiWasAssigned) =>
+const onCommentWasAssignedADoi = (event: Events.CommentWasAssignedADoi) =>
   flow(
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', comment => comment),
@@ -131,12 +131,15 @@ const onEvent = pipe(
   Match.type<Events.CommentEvent>(),
   Match.tag('CommentWasStarted', onCommentWasStarted),
   Match.tag('CommentWasEntered', onCommentWasEntered),
-  Match.tag('PersonaWasChosen', onPersonaWasChosen),
-  Match.tag('CompetingInterestsWereDeclared', onCompetingInterestsWereDeclared),
-  Match.tag('CodeOfConductWasAgreed', onCodeOfConductWasAgreed),
-  Match.tag('ExistenceOfVerifiedEmailAddressWasConfirmed', onExistenceOfVerifiedEmailAddressWasConfirmed),
-  Match.tag('CommentPublicationWasRequested', onCommentPublicationWasRequested),
-  Match.tag('DoiWasAssigned', onDoiWasAssigned),
+  Match.tag('PersonaForCommentWasChosen', onPersonaForCommentWasChosen),
+  Match.tag('CompetingInterestsForCommentWereDeclared', onCompetingInterestsForCommentWereDeclared),
+  Match.tag('CodeOfConductForCommentWasAgreed', onCodeOfConductForCommentWasAgreed),
+  Match.tag(
+    'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed',
+    onExistenceOfVerifiedEmailAddressForCommentWasConfirmed,
+  ),
+  Match.tag('PublicationOfCommentWasRequested', onPublicationOfCommentWasRequested),
+  Match.tag('CommentWasAssignedADoi', onCommentWasAssignedADoi),
   Match.tag('CommentWasPublished', onCommentWasPublished),
   Match.exhaustive,
 )
