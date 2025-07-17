@@ -36,9 +36,9 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
       )
     `
 
-    yield* sql.withTransaction(
-      sql.onDialectOrElse({
-        pg: () =>
+    yield* sql.onDialectOrElse({
+      pg: () =>
+        sql.withTransaction(
           pipe(
             sql`
               SELECT
@@ -62,9 +62,9 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
               }),
             ),
           ),
-        orElse: () => Effect.void,
-      }),
-    )
+        ),
+      orElse: () => Effect.void,
+    })
 
     yield* sql.onDialectOrElse({
       pg: () => sql`
