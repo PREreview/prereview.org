@@ -40,7 +40,13 @@ export const decide: {
     Match.valueTags(state, {
       NotStarted: () =>
         Either.right(
-          Array.of(new Events.DatasetReviewWasStarted({ authorId: command.authorId, datasetId: command.datasetId })),
+          Array.of(
+            new Events.DatasetReviewWasStarted({
+              authorId: command.authorId,
+              datasetId: command.datasetId,
+              datasetReviewId: command.datasetReviewId,
+            }),
+          ),
         ),
       HasBeenStarted: () => Either.left(new Errors.DatasetReviewWasAlreadyStarted()),
     }),

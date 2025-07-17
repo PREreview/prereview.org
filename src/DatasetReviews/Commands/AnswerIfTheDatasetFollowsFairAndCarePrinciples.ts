@@ -57,13 +57,25 @@ export const decide: {
       IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
       HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
       NotAnswered: () =>
-        Either.right(Array.of(new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: command.answer }))),
+        Either.right(
+          Array.of(
+            new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+              answer: command.answer,
+              datasetReviewId: command.datasetReviewId,
+            }),
+          ),
+        ),
       HasBeenAnswered: ({ answer }) =>
         Boolean.match(Equal.equals(command.answer, answer), {
           onTrue: () => Either.right(Array.empty()),
           onFalse: () =>
             Either.right(
-              Array.of(new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: command.answer })),
+              Array.of(
+                new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+                  answer: command.answer,
+                  datasetReviewId: command.datasetReviewId,
+                }),
+              ),
             ),
         }),
     }),

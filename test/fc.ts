@@ -1534,6 +1534,7 @@ export const datasetReviewWasStarted = (): fc.Arbitrary<DatasetReviews.DatasetRe
     .record({
       authorId: orcid(),
       datasetId: datasetId(),
+      datasetReviewId: uuid(),
     })
     .map(data => new DatasetReviews.DatasetReviewWasStarted(data))
 
@@ -1542,23 +1543,25 @@ export const datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples =
     fc
       .record({
         answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+        datasetReviewId: uuid(),
       })
       .map(data => new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples(data))
 
 export const publicationOfDatasetReviewWasRequested =
   (): fc.Arbitrary<DatasetReviews.PublicationOfDatasetReviewWasRequested> =>
-    fc.constant(new DatasetReviews.PublicationOfDatasetReviewWasRequested())
+    fc.record({ datasetReviewId: uuid() }).map(data => new DatasetReviews.PublicationOfDatasetReviewWasRequested(data))
 
 export const datasetReviewWasAssignedADoi = (): fc.Arbitrary<DatasetReviews.DatasetReviewWasAssignedADoi> =>
   fc
     .record({
       id: fc.integer(),
       doi: doi(),
+      datasetReviewId: uuid(),
     })
     .map(data => new DatasetReviews.DatasetReviewWasAssignedADoi(data))
 
 export const datasetReviewWasPublished = (): fc.Arbitrary<DatasetReviews.DatasetReviewWasPublished> =>
-  fc.constant(new DatasetReviews.DatasetReviewWasPublished())
+  fc.record({ datasetReviewId: uuid() }).map(data => new DatasetReviews.DatasetReviewWasPublished(data))
 
 export const datasetReviewEvent = (): fc.Arbitrary<DatasetReviews.DatasetReviewEvent> =>
   fc.oneof(

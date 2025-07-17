@@ -5,12 +5,13 @@ import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
 import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
 
+const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const resourceId = Uuid.Uuid('b005c394-b9a5-4713-b6a9-bafc8467c3f4')
-const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId })
-const publicationWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested()
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished()
+const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const publicationWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({ datasetReviewId })
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
 
 describe('FindInProgressReviewForADataset', () => {
   describe('when at least one review needs further user input', () => {
@@ -37,6 +38,7 @@ describe('FindInProgressReviewForADataset', () => {
         event: new DatasetReviews.DatasetReviewWasStarted({
           authorId: Orcid.Orcid('0000-0002-6109-0367'),
           datasetId,
+          datasetReviewId,
         }),
         resourceId,
       },
@@ -56,6 +58,7 @@ describe('FindInProgressReviewForADataset', () => {
           event: new DatasetReviews.DatasetReviewWasStarted({
             authorId,
             datasetId: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.9ghx3ffhb') }),
+            datasetReviewId,
           }),
           resourceId,
         },

@@ -4,18 +4,21 @@ import { Array, Option, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, Orcid } from '../../../src/types/index.js'
+import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
+const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId })
+const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'yes' })
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'yes', datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no' })
-const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested()
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished()
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
+const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+  datasetReviewId,
+})
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
 
 describe('GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples', () => {
   describe('when the question has been answered', () => {
