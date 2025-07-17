@@ -50,7 +50,7 @@
     "logging-ts": "^0.3.4",
     "markdown-it": "^14.1.0",
     "mjml": "^4.15.3",
-    "multer": "^2.0.1",
+    "multer": "^2.0.2",
     "nanohtml": "^1.10.0",
     "nodemailer": "^7.0.5",
     "normalize-url": "^8.0.2",
