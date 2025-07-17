@@ -1,12 +1,13 @@
 import { Array, Boolean, Data, Either, flow, Function, Match, Predicate } from 'effect'
 import type * as Datasets from '../../Datasets/index.js'
-import type { Orcid } from '../../types/index.js'
+import type { Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
 
 export interface StartDatasetReview {
   readonly authorId: Orcid.Orcid
   readonly datasetId: Datasets.DatasetId
+  readonly datasetReviewId: Uuid.Uuid
 }
 
 export type StartDatasetReviewState = NotStarted | HasBeenStarted

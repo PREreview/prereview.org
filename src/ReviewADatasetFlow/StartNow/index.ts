@@ -24,7 +24,7 @@ export const StartNow: Effect.Effect<
       onNone: Effect.fn(function* () {
         const reviewId = yield* Uuid.generateUuid
 
-        yield* DatasetReviews.startDatasetReview(reviewId, { authorId: user.orcid, datasetId })
+        yield* DatasetReviews.startDatasetReview({ authorId: user.orcid, datasetId, datasetReviewId: reviewId })
 
         return Response.RedirectResponse({
           location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId: reviewId }),

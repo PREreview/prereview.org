@@ -4,9 +4,10 @@ import { Array, Either, Equal, identity, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, Orcid } from '../../../src/types/index.js'
+import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
+const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId })
@@ -96,13 +97,13 @@ describe('foldState', () => {
 
 describe('decide', () => {
   test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('has not been started', answer => {
-    const result = _.decide(new _.NotStarted(), { answer })
+    const result = _.decide(new _.NotStarted(), { answer, datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
   test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('has not been answered', answer => {
-    const result = _.decide(new _.NotAnswered(), { answer })
+    const result = _.decide(new _.NotAnswered(), { answer, datasetReviewId })
 
     expect(result).toStrictEqual(
       Either.right(Array.of(new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer }))),
@@ -115,7 +116,7 @@ describe('decide', () => {
         .tuple(fc.constantFrom('yes', 'partly', 'no', 'unsure'), fc.constantFrom('yes', 'partly', 'no', 'unsure'))
         .filter(([answer1, answer2]) => !Equal.equals(answer1, answer2)),
     ])('with a different answer', ([answer1, answer2]) => {
-      const result = _.decide(new _.HasBeenAnswered({ answer: answer1 }), { answer: answer2 })
+      const result = _.decide(new _.HasBeenAnswered({ answer: answer1 }), { answer: answer2, datasetReviewId })
 
       expect(result).toStrictEqual(
         Either.right(
@@ -125,20 +126,20 @@ describe('decide', () => {
     })
 
     test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('with the same answer', answer => {
-      const result = _.decide(new _.HasBeenAnswered({ answer }), { answer })
+      const result = _.decide(new _.HasBeenAnswered({ answer }), { answer, datasetReviewId })
 
       expect(result).toStrictEqual(Either.right(Array.empty()))
     })
   })
 
   test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('is being published', answer => {
-    const result = _.decide(new _.IsBeingPublished(), { answer })
+    const result = _.decide(new _.IsBeingPublished(), { answer, datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
   })
 
   test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('has been published', answer => {
-    const result = _.decide(new _.HasBeenPublished(), { answer })
+    const result = _.decide(new _.HasBeenPublished(), { answer, datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
   })

@@ -1,9 +1,11 @@
 import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
+import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
 
 export interface Command {
   readonly answer: 'yes' | 'partly' | 'no' | 'unsure'
+  readonly datasetReviewId: Uuid.Uuid
 }
 
 export type Error =

@@ -16,8 +16,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
   }
 >() {}
 
-type CommandHandler<Command, Error> = (
-  datasetReviewId: Uuid.Uuid,
+type CommandHandler<Command extends { datasetReviewId: Uuid.Uuid }, Error> = (
   command: Command,
 ) => Effect.Effect<void, UnableToHandleCommand | Error>
 
@@ -33,13 +32,13 @@ const makeDatasetReviewCommands: Effect.Effect<
 > = Effect.gen(function* () {
   const eventStore = yield* Events.DatasetReviewsEventStore
 
-  const handleCommand = <State, Command, Error>(
+  const handleCommand = <State, Command extends { datasetReviewId: Uuid.Uuid }, Error>(
     foldState: (events: ReadonlyArray<Events.DatasetReviewEvent>) => State,
     decide: (command: Command) => (state: State) => Either.Either<ReadonlyArray<Events.DatasetReviewEvent>, Error>,
   ): CommandHandler<Command, Error> =>
     Effect.fn(
-      function* (datasetReviewId, command) {
-        const { events, latestVersion } = yield* eventStore.getEvents(datasetReviewId)
+      function* (command) {
+        const { events, latestVersion } = yield* eventStore.getEvents(command.datasetReviewId)
 
         yield* pipe(
           foldState(events),
@@ -47,7 +46,7 @@ const makeDatasetReviewCommands: Effect.Effect<
           Effect.tap(
             Array.match({
               onEmpty: () => Effect.void,
-              onNonEmpty: events => eventStore.commitEvents(datasetReviewId, latestVersion)(...events),
+              onNonEmpty: events => eventStore.commitEvents(command.datasetReviewId, latestVersion)(...events),
             }),
           ),
         )

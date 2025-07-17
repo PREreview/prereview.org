@@ -64,8 +64,9 @@ export const FollowsFairAndCarePrinciplesSubmission = ({
     return yield* Match.valueTags(form, {
       CompletedForm: Effect.fn(
         function* (form: FollowsFairAndCarePrinciplesForm.CompletedForm) {
-          yield* DatasetReviews.answerIfTheDatasetFollowsFairAndCarePrinciples(datasetReviewId, {
+          yield* DatasetReviews.answerIfTheDatasetFollowsFairAndCarePrinciples({
             answer: form.followsFairAndCarePrinciples,
+            datasetReviewId,
           })
 
           return yield* HavingProblemsPage
