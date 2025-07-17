@@ -12,7 +12,7 @@ const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.ws
 const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no' })
-const publicationWasRequested = new DatasetReviews.PublicationWasRequested()
+const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested()
 const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished()
 
 describe('CheckIfReviewIsInProgress', () => {
@@ -46,14 +46,26 @@ describe('CheckIfReviewIsInProgress', () => {
     it.prop(
       [
         fc
-          .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewPublicationWasRequested())
+          .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
       ],
       {
         examples: [
-          [[datasetReviewWasStarted, publicationWasRequested]], // was requested
-          [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples, publicationWasRequested]], // also answered
-          [[datasetReviewWasStarted, publicationWasRequested, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // different order
+          [[datasetReviewWasStarted, publicationOfDatasetReviewWasRequested]], // was requested
+          [
+            [
+              datasetReviewWasStarted,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples,
+              publicationOfDatasetReviewWasRequested,
+            ],
+          ], // also answered
+          [
+            [
+              datasetReviewWasStarted,
+              publicationOfDatasetReviewWasRequested,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples,
+            ],
+          ], // different order
         ],
       },
     )('returns an error', events => {
@@ -73,7 +85,7 @@ describe('CheckIfReviewIsInProgress', () => {
       {
         examples: [
           [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // was published
-          [[datasetReviewWasStarted, publicationWasRequested, datasetReviewWasPublished]], // also requested
+          [[datasetReviewWasStarted, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // also requested
           [[datasetReviewWasStarted, datasetReviewWasPublished, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // different order
         ],
       },

@@ -1544,16 +1544,17 @@ export const datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples =
       })
       .map(data => new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples(data))
 
-export const datasetReviewPublicationWasRequested = (): fc.Arbitrary<DatasetReviews.PublicationWasRequested> =>
-  fc.constant(new DatasetReviews.PublicationWasRequested())
+export const publicationOfDatasetReviewWasRequested =
+  (): fc.Arbitrary<DatasetReviews.PublicationOfDatasetReviewWasRequested> =>
+    fc.constant(new DatasetReviews.PublicationOfDatasetReviewWasRequested())
 
-export const datasetReviewDoiWasAssigned = (): fc.Arbitrary<DatasetReviews.DoiWasAssigned> =>
+export const datasetReviewWasAssignedADoi = (): fc.Arbitrary<DatasetReviews.DatasetReviewWasAssignedADoi> =>
   fc
     .record({
       id: fc.integer(),
       doi: doi(),
     })
-    .map(data => new DatasetReviews.DoiWasAssigned(data))
+    .map(data => new DatasetReviews.DatasetReviewWasAssignedADoi(data))
 
 export const datasetReviewWasPublished = (): fc.Arbitrary<DatasetReviews.DatasetReviewWasPublished> =>
   fc.constant(new DatasetReviews.DatasetReviewWasPublished())
@@ -1562,8 +1563,8 @@ export const datasetReviewEvent = (): fc.Arbitrary<DatasetReviews.DatasetReviewE
   fc.oneof(
     datasetReviewWasStarted(),
     datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
-    datasetReviewPublicationWasRequested(),
-    datasetReviewDoiWasAssigned(),
+    publicationOfDatasetReviewWasRequested(),
+    datasetReviewWasAssignedADoi(),
     datasetReviewWasPublished(),
   )
 

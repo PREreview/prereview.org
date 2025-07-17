@@ -9,7 +9,7 @@ const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const resourceId = Uuid.Uuid('b005c394-b9a5-4713-b6a9-bafc8467c3f4')
 const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId })
-const publicationWasRequested = new DatasetReviews.PublicationWasRequested()
+const publicationWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested()
 const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished()
 
 describe('FindInProgressReviewForADataset', () => {

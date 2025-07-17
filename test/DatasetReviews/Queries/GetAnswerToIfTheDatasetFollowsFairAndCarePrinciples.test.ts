@@ -14,7 +14,7 @@ const answeredIfTheDatasetFollowsFairAndCarePrinciples =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'yes' })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no' })
-const publicationWasRequested = new DatasetReviews.PublicationWasRequested()
+const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested()
 const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished()
 
 describe('GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples', () => {
@@ -39,7 +39,7 @@ describe('GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples', () => {
                 // multiple events
                 datasetReviewWasStarted,
                 answeredIfTheDatasetFollowsFairAndCarePrinciples,
-                publicationWasRequested,
+                publicationOfDatasetReviewWasRequested,
               ),
               answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
             ],
@@ -73,7 +73,7 @@ describe('GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples', () => {
       {
         examples: [
           [Array.empty()], // no events
-          [Array.make(datasetReviewWasStarted, publicationWasRequested, datasetReviewWasPublished)], // no AnsweredIfTheDatasetFollowsFairAndCarePrinciples
+          [Array.make(datasetReviewWasStarted, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished)], // no AnsweredIfTheDatasetFollowsFairAndCarePrinciples
         ],
       },
     )('returns nothing', events => {

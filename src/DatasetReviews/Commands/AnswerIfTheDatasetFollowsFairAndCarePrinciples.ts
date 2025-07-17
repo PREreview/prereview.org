@@ -34,7 +34,7 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
     return new HasBeenPublished()
   }
 
-  if (Array.some(events, hasTag('PublicationWasRequested'))) {
+  if (Array.some(events, hasTag('PublicationOfDatasetReviewWasRequested'))) {
     return new IsBeingPublished()
   }
 

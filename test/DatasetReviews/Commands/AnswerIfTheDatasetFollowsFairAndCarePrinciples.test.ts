@@ -12,7 +12,7 @@ const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.ws
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId })
 const answered1 = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no' })
 const answered2 = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'yes' })
-const publicationWasRequested = new DatasetReviews.PublicationWasRequested()
+const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested()
 const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished()
 
 describe('foldState', () => {
@@ -58,14 +58,14 @@ describe('foldState', () => {
   test.prop(
     [
       fc
-        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewPublicationWasRequested())
+        .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
     {
       examples: [
-        [[started, publicationWasRequested]], // was requested
-        [[started, answered1, publicationWasRequested]], // also answered
-        [[started, publicationWasRequested, answered1]], // different order
+        [[started, publicationOfDatasetReviewWasRequested]], // was requested
+        [[started, answered1, publicationOfDatasetReviewWasRequested]], // also answered
+        [[started, publicationOfDatasetReviewWasRequested, answered1]], // different order
       ],
     },
   )('is being published', events => {
@@ -83,7 +83,7 @@ describe('foldState', () => {
     {
       examples: [
         [[started, answered1, datasetReviewWasPublished]], // was published
-        [[started, answered1, publicationWasRequested, datasetReviewWasPublished]], // also requested
+        [[started, answered1, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // also requested
         [[started, datasetReviewWasPublished, answered1]], // different order
       ],
     },

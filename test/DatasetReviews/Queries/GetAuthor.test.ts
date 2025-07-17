@@ -12,7 +12,7 @@ const authorId2 = Orcid.Orcid('0000-0002-6109-0367')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId })
 const datasetReviewWasStarted2 = new DatasetReviews.DatasetReviewWasStarted({ authorId: authorId2, datasetId })
-const publicationWasRequested = new DatasetReviews.PublicationWasRequested()
+const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested()
 const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished()
 
 describe('GetAuthor', () => {
@@ -26,7 +26,7 @@ describe('GetAuthor', () => {
       {
         examples: [
           [[Array.of(datasetReviewWasStarted), authorId]], // only a DatasetReviewWasStarted
-          [[Array.make(datasetReviewWasStarted, publicationWasRequested), authorId]], // multiple events
+          [[Array.make(datasetReviewWasStarted, publicationOfDatasetReviewWasRequested), authorId]], // multiple events
           [[Array.make(datasetReviewWasStarted2, datasetReviewWasStarted), authorId]], // multiple DatasetReviewWasStarted events
         ],
       },
@@ -41,7 +41,7 @@ describe('GetAuthor', () => {
     test.prop([fc.array(fc.datasetReviewEvent().filter(event => event._tag !== 'DatasetReviewWasStarted'))], {
       examples: [
         [Array.empty()], // no events
-        [Array.make(publicationWasRequested, datasetReviewWasPublished)], // no DatasetReviewWasStarted
+        [Array.make(publicationOfDatasetReviewWasRequested, datasetReviewWasPublished)], // no DatasetReviewWasStarted
       ],
     })('returns an error', events => {
       const actual = _.GetAuthor(events)

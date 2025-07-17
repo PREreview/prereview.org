@@ -16,7 +16,7 @@ export const CheckIfReviewIsInProgress = (
     return Either.left(new Errors.DatasetReviewHasBeenPublished())
   }
 
-  if (Array.some(events, hasTag('PublicationWasRequested'))) {
+  if (Array.some(events, hasTag('PublicationOfDatasetReviewWasRequested'))) {
     return Either.left(new Errors.DatasetReviewIsBeingPublished())
   }
 

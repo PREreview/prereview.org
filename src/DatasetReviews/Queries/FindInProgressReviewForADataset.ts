@@ -6,7 +6,10 @@ import type * as Events from '../Events.js'
 export const FindInProgressReviewForADataset =
   (
     events: ReadonlyArray<{
-      readonly event: Events.DatasetReviewWasStarted | Events.PublicationWasRequested | Events.DatasetReviewWasPublished
+      readonly event:
+        | Events.DatasetReviewWasStarted
+        | Events.PublicationOfDatasetReviewWasRequested
+        | Events.DatasetReviewWasPublished
       readonly resourceId: Uuid.Uuid
     }>,
   ) =>
@@ -25,7 +28,7 @@ export const FindInProgressReviewForADataset =
 
             return candidates
           },
-          PublicationWasRequested: () => Record.replace(candidates, resourceId, true),
+          PublicationOfDatasetReviewWasRequested: () => Record.replace(candidates, resourceId, true),
           DatasetReviewWasPublished: () => Record.replace(candidates, resourceId, true),
         }),
       ),

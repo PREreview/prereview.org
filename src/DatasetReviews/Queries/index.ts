@@ -57,7 +57,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         function* (...args) {
           const events = yield* eventStore.getAllEventsOfType(
             'DatasetReviewWasStarted',
-            'PublicationWasRequested',
+            'PublicationOfDatasetReviewWasRequested',
             'DatasetReviewWasPublished',
           )
 

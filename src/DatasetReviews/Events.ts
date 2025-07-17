@@ -20,15 +20,18 @@ export class AnsweredIfTheDatasetFollowsFairAndCarePrinciples extends Schema.Tag
   { answer: Schema.Literal('yes', 'partly', 'no', 'unsure') },
 ) {}
 
-export class PublicationWasRequested extends Schema.TaggedClass<PublicationWasRequested>()(
-  'PublicationWasRequested',
+export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<PublicationOfDatasetReviewWasRequested>()(
+  'PublicationOfDatasetReviewWasRequested',
   {},
 ) {}
 
-export class DoiWasAssigned extends Schema.TaggedClass<DoiWasAssigned>()('DoiWasAssigned', {
-  id: Schema.Number,
-  doi: Doi.DoiSchema,
-}) {}
+export class DatasetReviewWasAssignedADoi extends Schema.TaggedClass<DatasetReviewWasAssignedADoi>()(
+  'DatasetReviewWasAssignedADoi',
+  {
+    id: Schema.Number,
+    doi: Doi.DoiSchema,
+  },
+) {}
 
 export class DatasetReviewWasPublished extends Schema.TaggedClass<DatasetReviewWasPublished>()(
   'DatasetReviewWasPublished',
@@ -38,7 +41,7 @@ export class DatasetReviewWasPublished extends Schema.TaggedClass<DatasetReviewW
 export const DatasetReviewEvent = Schema.Union(
   DatasetReviewWasStarted,
   AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
-  PublicationWasRequested,
-  DoiWasAssigned,
+  PublicationOfDatasetReviewWasRequested,
+  DatasetReviewWasAssignedADoi,
   DatasetReviewWasPublished,
 )
