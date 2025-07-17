@@ -1472,6 +1472,7 @@ export const prereview = (): fc.Arbitrary<Prereview> =>
 export const commentWasStarted = (): fc.Arbitrary<Comments.CommentWasStarted> =>
   fc
     .record({
+      commentId: uuid(),
       prereviewId: fc.integer(),
       authorId: orcid(),
     })
@@ -1480,6 +1481,7 @@ export const commentWasStarted = (): fc.Arbitrary<Comments.CommentWasStarted> =>
 export const commentWasEntered = (): fc.Arbitrary<Comments.CommentWasEntered> =>
   fc
     .record({
+      commentId: uuid(),
       comment: html(),
     })
     .map(data => new Comments.CommentWasEntered(data))
@@ -1487,6 +1489,7 @@ export const commentWasEntered = (): fc.Arbitrary<Comments.CommentWasEntered> =>
 export const personaForCommentWasChosen = (): fc.Arbitrary<Comments.PersonaForCommentWasChosen> =>
   fc
     .record({
+      commentId: uuid(),
       persona: constantFrom('public', 'pseudonym'),
     })
     .map(data => new Comments.PersonaForCommentWasChosen(data))
@@ -1495,27 +1498,31 @@ export const competingInterestsForCommentWereDeclared =
   (): fc.Arbitrary<Comments.CompetingInterestsForCommentWereDeclared> =>
     fc
       .record({
+        commentId: uuid(),
         competingInterests: maybe(nonEmptyString()),
       })
       .map(data => new Comments.CompetingInterestsForCommentWereDeclared(data))
 
 export const existenceOfVerifiedEmailAddressForCommentWasConfirmed =
   (): fc.Arbitrary<Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed> =>
-    fc.constant(new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed())
+    fc
+      .record({ commentId: uuid() })
+      .map(data => new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(data))
 
 export const publicationOfCommentWasRequested = (): fc.Arbitrary<Comments.PublicationOfCommentWasRequested> =>
-  fc.constant(new Comments.PublicationOfCommentWasRequested())
+  fc.record({ commentId: uuid() }).map(data => new Comments.PublicationOfCommentWasRequested(data))
 
 export const commentWasAssignedADoi = (): fc.Arbitrary<Comments.CommentWasAssignedADoi> =>
   fc
     .record({
+      commentId: uuid(),
       id: fc.integer(),
       doi: doi(),
     })
     .map(data => new Comments.CommentWasAssignedADoi(data))
 
 export const commentWasPublished = (): fc.Arbitrary<Comments.CommentWasPublished> =>
-  fc.constant(new Comments.CommentWasPublished())
+  fc.record({ commentId: uuid() }).map(data => new Comments.CommentWasPublished(data))
 
 export const commentEvent = (): fc.Arbitrary<Comments.CommentEvent> =>
   fc.oneof(

@@ -246,14 +246,16 @@ it.prop([
   }).pipe(Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make), Effect.provide(TestLibsqlClient), EffectTest.run),
 )
 
+const commentId = Uuid.Uuid('6e0508a5-b227-4bca-b534-7285ec09afff')
+
 test.each([
   [
     'one type',
     ['CodeOfConductForCommentWasAgreed'],
     [
-      new CodeOfConductForCommentWasAgreed(),
-      new CodeOfConductForCommentWasAgreed(),
-      new CodeOfConductForCommentWasAgreed(),
+      new CodeOfConductForCommentWasAgreed({ commentId }),
+      new CodeOfConductForCommentWasAgreed({ commentId }),
+      new CodeOfConductForCommentWasAgreed({ commentId }),
     ],
     3,
   ],
@@ -261,9 +263,9 @@ test.each([
     'multiple types',
     ['CodeOfConductForCommentWasAgreed', 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'],
     [
-      new CodeOfConductForCommentWasAgreed(),
-      new ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
-      new CodeOfConductForCommentWasAgreed(),
+      new CodeOfConductForCommentWasAgreed({ commentId }),
+      new ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+      new CodeOfConductForCommentWasAgreed({ commentId }),
     ],
     3,
   ],
@@ -271,9 +273,9 @@ test.each([
     'other types',
     ['CodeOfConductForCommentWasAgreed'],
     [
-      new CodeOfConductForCommentWasAgreed(),
-      new ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
-      new CodeOfConductForCommentWasAgreed(),
+      new CodeOfConductForCommentWasAgreed({ commentId }),
+      new ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+      new CodeOfConductForCommentWasAgreed({ commentId }),
     ],
     2,
   ],
