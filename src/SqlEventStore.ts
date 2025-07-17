@@ -30,11 +30,41 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
         resource_version INTEGER NOT NULL,
         event_type TEXT NOT NULL,
         event_timestamp TEXT NOT NULL,
-        payload TEXT NOT NULL,
+        payload JSONB NOT NULL,
         FOREIGN KEY (resource_id) REFERENCES resources (id),
         UNIQUE (resource_id, resource_version)
       )
     `
+
+    yield* sql.withTransaction(
+      sql.onDialectOrElse({
+        pg: () =>
+          pipe(
+            sql`
+              SELECT
+                1
+              FROM
+                INFORMATION_SCHEMA.COLUMNS
+              WHERE
+                table_name = 'events'
+                AND column_name = 'payload'
+                AND data_type = 'text'
+            `,
+            Effect.andThen(
+              Array.match({
+                onEmpty: () => Effect.void,
+                onNonEmpty: () => sql`
+                  DROP INDEX IF EXISTS events_resource_id_idx;
+
+                  ALTER TABLE events
+                  ALTER COLUMN payload TYPE JSONB USING payload::jsonb;
+                `,
+              }),
+            ),
+          ),
+        orElse: () => Effect.void,
+      }),
+    )
 
     yield* sql.onDialectOrElse({
       pg: () => sql`
@@ -278,7 +308,10 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
                           ${encoded.resource_version},
                           ${encoded.event_type},
                           ${encoded.event_timestamp},
-                          ${encoded.payload}
+                          ${sql.onDialectOrElse({
+                          pg: () => sql`'${sql.unsafe(JSON.stringify(encoded.payload))}'::jsonb`,
+                          orElse: () => sql`${JSON.stringify(encoded.payload)}`,
+                        })}
                         WHERE
                           NOT EXISTS (
                             SELECT
@@ -339,7 +372,10 @@ const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema
       ),
       eventTimestamp: Schema.propertySignature(Schema.DateTimeUtc).pipe(Schema.fromKey('event_timestamp')),
       eventType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('event_type')),
-      payload: Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
+      payload: Schema.Union(
+        Schema.Record({ key: Schema.String, value: Schema.Unknown }),
+        Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
+      ),
     }),
     Schema.typeSchema(
       Schema.Struct({
